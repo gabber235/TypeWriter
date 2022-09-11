@@ -1,0 +1,54 @@
+package me.gabber235.typewriter.entry.dialogue
+
+import me.gabber235.typewriter.entry.dialogue.messengers.MessengerFinder
+import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
+import me.gabber235.typewriter.entry.event.Event
+import me.gabber235.typewriter.facts.FactDatabase
+import me.gabber235.typewriter.interaction.InteractionHandler
+import org.bukkit.entity.Player
+
+class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) {
+
+	private var currentEntry: DialogueEntry = initialEntry
+	private var currentMessenger = MessengerFinder.findMessenger(player, initialEntry)
+	private var cycle = 0
+
+	val triggers: List<String>
+		get() = currentMessenger.triggers
+
+	fun init() {
+		cycle = 0
+		currentMessenger.init(player)
+		tick()
+	}
+
+	private fun cleanupEntry(final: Boolean) {
+		val messenger = currentMessenger
+		messenger.dispose(player)
+		if (final) messenger.end(player)
+
+		FactDatabase.modify(player.uniqueId, messenger.modifiers)
+	}
+
+	fun tick() {
+		currentMessenger.tick(player, cycle++)
+
+		if (currentMessenger.state == MessengerState.FINISHED) {
+			InteractionHandler.triggerEvent(Event("system.dialogue.next", player))
+		} else if (currentMessenger.state == MessengerState.CANCELLED) {
+			InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
+		}
+	}
+
+	fun next(nextEntry: DialogueEntry): Boolean {
+		cleanupEntry(false)
+		currentEntry = nextEntry
+		currentMessenger = MessengerFinder.findMessenger(player, nextEntry)
+		init()
+		return true
+	}
+
+	fun end() {
+		cleanupEntry(true)
+	}
+}

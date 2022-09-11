@@ -1,0 +1,51 @@
+name: typewriter
+description: Visual quest configuration
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.5
+  freezed_annotation: ^2.1.0
+  json_annotation: ^4.6.0
+  graphview: ^1.1.1
+  flutter_hooks: ^0.18.5+1
+  hooks_riverpod: ^1.0.4
+  auto_size_text: ^3.0.0
+  google_fonts: ^3.0.1
+  font_awesome_flutter: ^10.2.1
+  file_picker: ^5.0.1
+  rive: ^0.9.1
+  dropdown_search: ^5.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+  build_runner: ^2.2.0
+  freezed: ^2.1.0+1
+  json_serializable: ^6.3.1
+  icons_launcher: ^2.0.5
+
+icons_launcher:
+  image_path: "assets/Typewriter.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
+    macos:
+      enable: true
+    windows:
+      enable: true
+    linux:
+      enable: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
