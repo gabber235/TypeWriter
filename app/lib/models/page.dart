@@ -26,8 +26,14 @@ class PageModel with _$PageModel {
       _$PageModelFromJson(json);
 }
 
+abstract class Entry {
+  String get name;
+
+  String get id;
+}
+
 @freezed
-class Fact with _$Fact {
+class Fact with _$Fact implements Entry {
   const factory Fact({
     required String id,
     required String name,
@@ -40,7 +46,7 @@ class Fact with _$Fact {
 
 enum FactLifetime {
   permanent("Saved permanently, it never gets removed"),
-  cron("Saved until a specified date, like (0 0 * * 1)"),
+  cron("Saved until a specified date, like \"0 0 * * 1\""),
   timed("Saved for a specified duration, like 20 minutes"),
   server("Saved until the shutdown of a server"),
   session("Saved until a player logouts of the server"),
@@ -51,15 +57,11 @@ enum FactLifetime {
   const FactLifetime(this.description);
 }
 
-abstract class Entry {
-  String get name;
-
-  String get id;
-
+abstract class TriggerEntry extends Entry {
   List<String> get triggers;
 }
 
-abstract class RuleEntry extends Entry {
+abstract class RuleEntry extends TriggerEntry {
   List<String> get triggeredBy;
 
   List<Criterion> get criteria;
@@ -68,7 +70,7 @@ abstract class RuleEntry extends Entry {
 }
 
 @Freezed(unionKey: "type", unionValueCase: FreezedUnionCase.snake)
-class Event with _$Event implements Entry {
+class Event with _$Event implements TriggerEntry {
   const factory Event({
     required String name,
     required String id,
@@ -151,18 +153,6 @@ class Option with _$Option {
   factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
 }
 
-extension FactExtension on Fact {
-  String get formattedName {
-    return name
-        .split(".")
-        .map((e) => e.capitalize)
-        .join(" | ")
-        .split("_")
-        .map((e) => e.capitalize)
-        .join(" ");
-  }
-}
-
 extension LifetimeExtension on FactLifetime {
   String get formattedName {
     return name.split(".").last.capitalize;
@@ -170,9 +160,13 @@ extension LifetimeExtension on FactLifetime {
 }
 
 extension EntryExtension on Entry {
+  bool get isFact => this is Fact;
+
   bool get isEvent => this is Event;
 
   bool get isDialogue => this is Dialogue;
+
+  Fact? get asFact => this is Fact ? this as Fact : null;
 
   Event? get asEvent => this is Event ? this as Event : null;
 
@@ -197,14 +191,27 @@ extension EntryExtension on Entry {
   }
 
   Color color(bool dark) {
-    return asEvent?.color(dark) ?? asDialogue?.color(dark) ?? Colors.grey;
+    return asFact?.color(dark) ??
+        asEvent?.color(dark) ??
+        asDialogue?.color(dark) ??
+        Colors.grey;
+  }
+}
+
+extension FactExtension on Fact {
+  Color color(bool dark) {
+    if (dark) {
+      return Colors.purple.shade700;
+    } else {
+      return Colors.purple.shade100;
+    }
   }
 }
 
 extension EventExtension on Event {
   Color color(bool dark) {
     if (dark) {
-      return Colors.amberAccent.shade700;
+      return const Color(0xffFBB612);
     } else {
       return Colors.amberAccent.shade100;
     }
@@ -250,20 +257,14 @@ extension DialogueExtension on Dialogue {
 }
 
 extension PageModelExtension on PageModel {
-  List<Entry> get entries => [...dialogue, ...events];
+  List<Entry> get entries => [...facts, ...triggerEntries];
+
+  List<TriggerEntry> get triggerEntries => [...rules, ...events];
 
   List<RuleEntry> get rules => dialogue;
 
   Entry? getEntry(String id) {
-    final rule = dialogue.firstWhereOrNull((e) => e.id == id);
-    if (rule != null) {
-      return rule;
-    }
-    final event = events.firstWhereOrNull((e) => e.id == id);
-    if (event != null) {
-      return event;
-    }
-    return null;
+    return entries.firstWhereOrNull((e) => e.id == id);
   }
 
   Graph toGraph() {
@@ -275,7 +276,7 @@ extension PageModelExtension on PageModel {
     }
 
     // Create edges
-    for (final entry in entries) {
+    for (final entry in triggerEntries) {
       for (final trigger in entry.triggers) {
         rules
             .where((rule) => rule.triggeredBy.contains(trigger))
@@ -382,7 +383,7 @@ extension PageModelExtension on PageModel {
 
     // Check that all rules are triggered by an entry or option
     for (final rule in rules) {
-      if (entries
+      if (triggerEntries
               .where((e) => rule.triggeredBy.any((t) => e.triggers.contains(t)))
               .isEmpty &&
           dialogue

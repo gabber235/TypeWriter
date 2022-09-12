@@ -5,7 +5,6 @@ import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:graphview/GraphView.dart';
@@ -13,7 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:typewriter/models/page.dart';
 import 'package:typewriter/pages/inspection_menu.dart';
 import 'package:typewriter/pages/open_page.dart';
-import 'package:typewriter/widgets/dropdown.dart';
+import 'package:typewriter/pages/static_nodes.dart';
 
 final fileNameProvider = StateProvider<String>((ref) {
   return "test.json";
@@ -35,15 +34,16 @@ class PageNotifier extends StateNotifier<PageModel> {
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_random.nextInt(_chars.length))));
 
-  void addFact() {
+  Fact addFact() {
     final fact = Fact(
       name: "new_fact",
       id: getRandomString(15),
     );
     insertFact(fact);
+    return fact;
   }
 
-  void addDialogue() {
+  SpokenDialogue addDialogue() {
     final dialogue = SpokenDialogue(
       name: "new_dialogue",
       id: getRandomString(15),
@@ -53,9 +53,10 @@ class PageNotifier extends StateNotifier<PageModel> {
       triggers: [],
     );
     insertDialogue(dialogue);
+    return dialogue;
   }
 
-  void addEvent() {
+  Event addEvent() {
     final event = NpcEvent(
       name: "new_event",
       id: getRandomString(15),
@@ -63,6 +64,7 @@ class PageNotifier extends StateNotifier<PageModel> {
       triggers: [],
     );
     insertEvent(event);
+    return event;
   }
 
   void insertFact(Fact fact) {
@@ -82,7 +84,7 @@ class PageNotifier extends StateNotifier<PageModel> {
     ]);
   }
 
-  void transformType(Entry entry, String type) {
+  void transformType(TriggerEntry entry, String type) {
     if (entry is Event) {
       Event event = entry;
       if (type == "npc_interact") {
@@ -168,6 +170,14 @@ class PageGraph extends HookConsumerWidget {
       body: Stack(
         children: [
           const _Graph(),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 1500),
+            curve: Curves.elasticOut,
+            bottom: 0,
+            left: 0,
+            right: selected != null ? 450 : 0,
+            child: const StaticEntries(),
+          ),
           if (selected != null)
             Align(
               alignment: const Alignment(0.98, 0),
@@ -218,20 +228,22 @@ class _Graph extends HookConsumerWidget {
               final rule = page.rules.firstWhereOrNull((r) => r.id == id);
 
               if (rule != null) {
-                return _Node(
+                return NodeWidget(
                   id: rule.id,
                   name: rule.formattedName,
-                  color: rule.backgroundColor(context),
+                  backgroundColor: rule.backgroundColor(context),
+                  icon: rule.icon(context),
                 );
               }
 
               final event = page.events.firstWhereOrNull((e) => e.id == id);
 
               if (event != null) {
-                return _Node(
+                return NodeWidget(
                   id: event.id,
                   name: event.formattedName,
-                  color: event.backgroundColor(context),
+                  backgroundColor: event.backgroundColor(context),
+                  icon: event.icon(context),
                 );
               }
 
@@ -254,7 +266,10 @@ class _AppBar extends HookConsumerWidget {
       elevation: 0,
       backgroundColor: Colors.transparent,
       leading: IconButton(
-        icon: const Icon(FontAwesomeIcons.chevronLeft),
+        icon: const Icon(
+          FontAwesomeIcons.chevronLeft,
+        ),
+        color: Theme.of(context).textTheme.titleLarge?.color,
         onPressed: () async {
           final sureLeave = await showDialog<bool>(
             context: context,
@@ -287,22 +302,10 @@ class _AppBar extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextButton(
-            onPressed: () => showDialog(
-                context: context, builder: (context) => const _FactModal()),
-            child: Row(
-              children: const [
-                Text("Modify Facts"),
-                SizedBox(width: 8),
-                Icon(FontAwesomeIcons.penFancy, size: 18),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextButton(
-            onPressed: () => ref.read(pageProvider.notifier).addDialogue(),
+            onPressed: () {
+              final event = ref.read(pageProvider.notifier).addEvent();
+              ref.read(selectedProvider.notifier).state = event.id;
+            },
             child: Row(
               children: const [
                 Text("Add Event"),
@@ -316,7 +319,10 @@ class _AppBar extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextButton(
-            onPressed: () => ref.read(pageProvider.notifier).addDialogue(),
+            onPressed: () {
+              final dialogue = ref.read(pageProvider.notifier).addDialogue();
+              ref.read(selectedProvider.notifier).state = dialogue.id;
+            },
             child: Row(
               children: const [
                 Text("Add Dialogue"),
@@ -390,16 +396,20 @@ class _AppBar extends HookConsumerWidget {
   }
 }
 
-class _Node extends HookConsumerWidget {
+class NodeWidget extends HookConsumerWidget {
   final String id;
   final String name;
-  final Color color;
+  final Color backgroundColor;
+  final Color? foregroundColor;
+  final Widget? icon;
 
-  const _Node({
+  const NodeWidget({
     Key? key,
     required this.id,
     required this.name,
-    required this.color,
+    required this.backgroundColor,
+    this.foregroundColor,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -415,7 +425,7 @@ class _Node extends HookConsumerWidget {
       },
       child: Material(
         borderRadius: BorderRadius.circular(4),
-        color: color,
+        color: backgroundColor,
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: AnimatedContainer(
@@ -426,306 +436,85 @@ class _Node extends HookConsumerWidget {
               border: Border.all(
                 color: selected
                     ? Theme.of(context).scaffoldBackgroundColor
-                    : color,
+                    : backgroundColor,
                 width: 3,
               ),
             ),
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Text(
-                name,
-                style: GoogleFonts.jetBrainsMono(fontSize: 13),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-final _factProvider = Provider<Fact>((ref) {
-  return const Fact(id: "", name: "");
-});
-
-class _FactModal extends HookConsumerWidget {
-  const _FactModal({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final facts = ref.watch(pageProvider.select((value) => value.facts));
-    return SimpleDialog(
-      title: const Text(
-        "Facts",
-        style: TextStyle(fontSize: 30),
-      ),
-      children: [
-        DataTable(
-          showBottomBorder: true,
-          showCheckboxColumn: true,
-          dataRowHeight: 60,
-          columnSpacing: 20,
-          columns: const [
-            DataColumn(label: Text("Name")),
-            DataColumn(label: Text("Lifetime")),
-            DataColumn(label: Text("Data")),
-            DataColumn(label: Text("Options")),
-          ],
-          rows: [
-            for (final fact in facts)
-              DataRow(
-                selected: false,
-                cells: [
-                  DataCell(ProviderScope(
-                    overrides: [
-                      _factProvider.overrideWithValue(fact),
-                    ],
-                    child: const _TableNameCell(),
-                  )),
-                  DataCell(ProviderScope(
-                    overrides: [
-                      _factProvider.overrideWithValue(fact),
-                    ],
-                    child: const _TableLifetimeCell(),
-                  )),
-                  DataCell(ProviderScope(
-                    overrides: [
-                      _factProvider.overrideWithValue(fact),
-                    ],
-                    child: const _TableDataCell(),
-                  )),
-                  DataCell(
-                    IconButton(
-                      icon: const Icon(FontAwesomeIcons.trash, size: 18),
-                      color: Colors.redAccent,
-                      onPressed: () async {
-                        final delete = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text("Delete Fact"),
-                            content: const Text(
-                                "Are you sure you want to delete this fact?"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, false),
-                                child: const Text("Cancel"),
-                              ),
-                              ElevatedButton(
-                                onPressed: () => Navigator.pop(context, true),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: const [
-                                    Text("Delete"),
-                                    SizedBox(width: 8),
-                                    Icon(
-                                      FontAwesomeIcons.trash,
-                                      size: 18,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                        if (delete == true) {
-                          ref.read(pageProvider.notifier).deleteEntry(fact.id);
-                        }
-                      },
-                    ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (icon != null) ...[
+                    icon!,
+                    const SizedBox(width: 12),
+                  ],
+                  Text(
+                    name,
+                    style: GoogleFonts.jetBrainsMono(
+                        fontSize: 13, color: foregroundColor),
                   ),
                 ],
               ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {
-                ref.read(pageProvider.notifier).addFact();
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Text("Add Fact"),
-                  SizedBox(width: 4),
-                  Icon(
-                    FontAwesomeIcons.plus,
-                    size: 18,
-                  )
-                ],
-              ),
             ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _TableNameCell extends HookConsumerWidget {
-  const _TableNameCell({
-    Key? key,
-  }) : super(key: key);
-
-  void _updateFact(String name, WidgetRef ref) {
-    ref
-        .read(pageProvider.notifier)
-        .insertFact(ref.read(_factProvider).copyWith(name: name));
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final fact = ref.watch(_factProvider);
-    final controller = useTextEditingController(text: fact.formattedName);
-    final focus = useFocusNode();
-    final focused = useState(false);
-
-    useEffect(() {
-      focus.addListener(() {
-        if (focus.hasFocus) {
-          controller.text = fact.name;
-          focused.value = true;
-          controller.selection =
-              TextSelection.collapsed(offset: controller.text.length);
-        } else {
-          controller.text = fact.formattedName;
-          focused.value = false;
-        }
-      });
-      return null;
-    });
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextField(
-        controller: controller,
-        focusNode: focus,
-        textCapitalization: TextCapitalization.none,
-        textInputAction: TextInputAction.done,
-        maxLines: 1,
-        onChanged: (name) => _updateFact(name, ref),
-        onSubmitted: (name) => _updateFact(name, ref),
-        onEditingComplete: () => controller.text,
-        inputFormatters: [
-          TextInputFormatter.withFunction((oldValue, newValue) =>
-              newValue.copyWith(
-                  text: newValue.text.toLowerCase().replaceAll(" ", "_"))),
-          FilteringTextInputFormatter.singleLineFormatter,
-          FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9_.]')),
-        ],
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-          filled: focused.value,
-        ),
-      ),
-    );
-  }
-}
-
-class _TableLifetimeCell extends HookConsumerWidget {
-  const _TableLifetimeCell({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final lifetime = ref.watch(_factProvider.select((value) => value.lifetime));
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Dropdown(
-        value: lifetime,
-        values: FactLifetime.values,
-        filled: false,
-        padding: EdgeInsets.zero,
-        builder: (context, lifetime) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(lifetime.formattedName),
-              Text(lifetime.description,
-                  style: Theme.of(context).textTheme.caption),
-            ],
           ),
         ),
-        onChanged: (lifetime) => ref
-            .read(pageProvider.notifier)
-            .insertFact(ref.read(_factProvider).copyWith(
-                  lifetime: lifetime,
-                  data: "",
-                )),
       ),
     );
   }
 }
 
-class _TableDataCell extends HookConsumerWidget {
-  const _TableDataCell({
-    Key? key,
-  }) : super(key: key);
-
-  void _updateFact(String data, WidgetRef ref) {
-    ref
-        .read(pageProvider.notifier)
-        .insertFact(ref.read(_factProvider).copyWith(data: data));
+extension IconExtension on Entry {
+  Widget? icon(BuildContext context) {
+    if (isFact) return _factIcon(context);
+    if (isEvent) return _eventIcon(context);
+    if (isDialogue) return _dialogueIcon(context);
+    return null;
   }
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final lifetime = ref.watch(_factProvider.select((value) => value.lifetime));
-    final data = ref.watch(_factProvider.select((value) => value.data));
-    final controller = useTextEditingController(text: data);
-    final focus = useFocusNode();
-    final focused = useState(false);
-
-    if (lifetime == FactLifetime.permanent ||
-        lifetime == FactLifetime.server ||
-        lifetime == FactLifetime.session) {
-      return Container();
+  Widget? _factIcon(BuildContext context) {
+    final fact = asFact;
+    if (fact == null) return null;
+    switch (fact.lifetime) {
+      case FactLifetime.permanent:
+        return Icon(FontAwesomeIcons.solidHardDrive,
+            size: 18, color: fact.textColor(context));
+      case FactLifetime.cron:
+        return Icon(FontAwesomeIcons.clockRotateLeft,
+            size: 18, color: fact.textColor(context));
+      case FactLifetime.timed:
+        return Icon(FontAwesomeIcons.stopwatch,
+            size: 18, color: fact.textColor(context));
+      case FactLifetime.server:
+        return Icon(FontAwesomeIcons.server,
+            size: 18, color: fact.textColor(context));
+      case FactLifetime.session:
+        return Icon(FontAwesomeIcons.userClock,
+            size: 18, color: fact.textColor(context));
     }
+  }
 
-    useEffect(() {
-      focus.addListener(() {
-        focused.value = focus.hasFocus;
-      });
-    });
+  Widget? _eventIcon(BuildContext context) {
+    final event = asEvent;
+    if (event == null) return null;
+    if (this is NpcEvent) {
+      return Icon(FontAwesomeIcons.userTie,
+          size: 18, color: event.textColor(context));
+    }
+    return null;
+  }
 
-    useEffect(() {
-      if (controller.text != data) controller.text = data;
-      return null;
-    }, [data]);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextField(
-        controller: controller,
-        focusNode: focus,
-        textCapitalization: TextCapitalization.none,
-        textInputAction: TextInputAction.done,
-        maxLines: 1,
-        onChanged: (data) => _updateFact(data, ref),
-        onSubmitted: (data) => _updateFact(data, ref),
-        inputFormatters: [
-          FilteringTextInputFormatter.singleLineFormatter,
-          if (lifetime == FactLifetime.cron)
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9*,\-/ ]')),
-          if (lifetime == FactLifetime.timed)
-            FilteringTextInputFormatter.allow(RegExp(r"[0-9a-z ]"))
-        ],
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-          filled: focused.value,
-        ),
-      ),
-    );
+  Widget? _dialogueIcon(BuildContext context) {
+    final dialogue = asDialogue;
+    if (dialogue == null) return null;
+    if (this is SpokenDialogue) {
+      return Icon(FontAwesomeIcons.solidMessage,
+          size: 18, color: dialogue.textColor(context));
+    }
+    if (this is OptionDialogue) {
+      return Icon(FontAwesomeIcons.list,
+          size: 18, color: dialogue.textColor(context));
+    }
+    return null;
   }
 }

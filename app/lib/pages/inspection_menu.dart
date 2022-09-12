@@ -69,6 +69,11 @@ class Inspector extends HookConsumerWidget {
       primaryColor: entry.textColor(context),
     );
 
+    final fact = entry.asFact;
+    if (fact != null) {
+      return Theme(data: themData, child: _FactInspector(fact: fact));
+    }
+
     final event = entry.asEvent;
     if (event != null) {
       return Theme(data: themData, child: _EventInspector(event: event));
@@ -80,6 +85,42 @@ class Inspector extends HookConsumerWidget {
           data: themData, child: _DialogueInspector(dialogue: dialogue));
     }
     return Container();
+  }
+}
+
+class _FactInspector extends HookConsumerWidget {
+  final Fact fact;
+
+  const _FactInspector({
+    Key? key,
+    required this.fact,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        _EntryInformation(
+          entry: fact,
+          onNameChanged: (name) => ref
+              .read(pageProvider.notifier)
+              .insertFact(fact.copyWith(name: name)),
+        ),
+        const Divider(),
+        _LifetimeField(fact: fact),
+        if (fact.lifetime == FactLifetime.cron) ...[
+          const Divider(),
+          _CronDataField(fact: fact),
+        ],
+        if (fact.lifetime == FactLifetime.timed) ...[
+          const Divider(),
+          _TimedDataField(fact: fact),
+        ],
+        const Divider(),
+        _Operations(entry: fact),
+      ],
+    );
   }
 }
 
@@ -101,21 +142,26 @@ class _EventInspector extends HookConsumerWidget {
           onNameChanged: (name) => ref
               .read(pageProvider.notifier)
               .insertEvent(event.copyWith(name: name)),
-          onTriggerAdd: () => ref
+        ),
+        const Divider(),
+        _TriggersField(
+          title: "Triggers",
+          triggers: event.triggers,
+          onAdd: () => ref
               .read(pageProvider.notifier)
               .insertEvent(event.copyWith(triggers: [...event.triggers, ""])),
-          onTriggerChanged: (index, trigger) => ref
+          onChanged: (index, trigger) => ref
               .read(pageProvider.notifier)
               .insertEvent(event.copyWith(triggers: [
                 ...event.triggers.take(index),
                 trigger,
                 ...event.triggers.skip(index + 1),
               ])),
-          onTriggerRemove: (trigger) => ref
-              .read(pageProvider.notifier)
-              .insertEvent(event.copyWith(triggers: [
-                ...event.triggers.where((t) => t != trigger),
-              ])),
+          onRemove: (trigger) => ref.read(pageProvider.notifier).insertEvent(
+                event.copyWith(triggers: [
+                  ...event.triggers.where((t) => t != trigger),
+                ]),
+              ),
         ),
         const Divider(),
         const _SectionTitle(title: "Type"),
@@ -130,9 +176,7 @@ class _EventInspector extends HookConsumerWidget {
           _NpcIdentifierField(event: event as NpcEvent),
         ],
         const Divider(),
-        const _SectionTitle(title: "Operations"),
-        const SizedBox(height: 8),
-        _DeleteEntry(id: event.id),
+        _Operations(entry: event),
       ],
     );
   }
@@ -156,16 +200,21 @@ class _DialogueInspector extends HookConsumerWidget {
           onNameChanged: (name) => ref
               .read(pageProvider.notifier)
               .insertDialogue(dialogue.copyWith(name: name)),
-          onTriggerAdd: () => ref.read(pageProvider.notifier).insertDialogue(
+        ),
+        const Divider(),
+        _TriggersField(
+          title: dialogue is OptionDialogue ? "Global Triggers" : "Triggers",
+          triggers: dialogue.triggers,
+          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(
               dialogue.copyWith(triggers: [...dialogue.triggers, ""])),
-          onTriggerChanged: (index, trigger) => ref
+          onChanged: (index, trigger) => ref
               .read(pageProvider.notifier)
               .insertDialogue(dialogue.copyWith(triggers: [
                 ...dialogue.triggers.sublist(0, index),
                 trigger,
                 ...dialogue.triggers.sublist(index + 1),
               ])),
-          onTriggerRemove: (trigger) => ref
+          onRemove: (trigger) => ref
               .read(pageProvider.notifier)
               .insertDialogue(dialogue.copyWith(triggers: [
                 ...dialogue.triggers.where((e) => e != trigger),
@@ -195,7 +244,7 @@ class _DialogueInspector extends HookConsumerWidget {
               ])),
           onQuery: (value) => ref
               .read(pageProvider)
-              .entries
+              .triggerEntries
               .expand((entry) => [
                     ...entry.triggers,
                     if (entry is RuleEntry) ...entry.triggeredBy,
@@ -277,9 +326,7 @@ class _DialogueInspector extends HookConsumerWidget {
           _OptionsList(dialogue: dialogue as OptionDialogue),
         ],
         const Divider(),
-        const _SectionTitle(title: "Operations"),
-        const SizedBox(height: 8),
-        _DeleteEntry(id: dialogue.id),
+        _Operations(entry: dialogue),
       ],
     );
   }
@@ -291,17 +338,11 @@ class _EntryInformation extends StatelessWidget {
   final Entry entry;
 
   final Function(String) onNameChanged;
-  final Function() onTriggerAdd;
-  final Function(int, String) onTriggerChanged;
-  final Function(String) onTriggerRemove;
 
   const _EntryInformation({
     Key? key,
     required this.entry,
     required this.onNameChanged,
-    required this.onTriggerAdd,
-    required this.onTriggerChanged,
-    required this.onTriggerRemove,
   }) : super(key: key);
 
   @override
@@ -316,14 +357,6 @@ class _EntryInformation extends StatelessWidget {
         _Identifier(id: entry.id),
         const Divider(),
         _NameField(name: entry.name, onChanged: onNameChanged),
-        const Divider(),
-        _TriggersField(
-          title: entry is OptionDialogue ? "Global Triggers" : "Triggers",
-          triggers: entry.triggers,
-          onAdd: onTriggerAdd,
-          onChanged: onTriggerChanged,
-          onRemove: onTriggerRemove,
-        ),
       ],
     );
   }
@@ -458,7 +491,7 @@ class _TriggersField extends HookConsumerWidget {
           onRemove: onRemove,
           onQuery: (value) => ref
               .read(pageProvider)
-              .entries
+              .triggerEntries
               .expand((entry) => [
                     ...entry.triggers,
                     if (entry is RuleEntry) ...entry.triggeredBy,
@@ -554,7 +587,6 @@ class _AutoCompleteField extends StatelessWidget {
   final String text;
   final String hintText;
   final IconData? icon;
-  final EdgeInsets? padding;
 
   final Iterable<String> Function(String) onQuery;
   final Function(String) onChanged;
@@ -568,7 +600,6 @@ class _AutoCompleteField extends StatelessWidget {
     required this.onQuery,
     required this.onChanged,
     this.inputFormatters,
-    this.padding,
   }) : super(key: key);
 
   @override
@@ -597,7 +628,6 @@ class _AutoCompleteField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             suffixIcon: icon != null ? Icon(icon, size: 18) : null,
-            contentPadding: padding,
           ),
         );
       },
@@ -814,6 +844,27 @@ class _TypeSelector extends StatelessWidget {
   }
 }
 
+class _Operations extends StatelessWidget {
+  const _Operations({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
+
+  final Entry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const _SectionTitle(title: "Operations"),
+        const SizedBox(height: 8),
+        _DeleteEntry(id: entry.id),
+      ],
+    );
+  }
+}
+
 class _DeleteEntry extends HookConsumerWidget {
   final String id;
 
@@ -876,6 +927,155 @@ class _DeleteEntry extends HookConsumerWidget {
 }
 
 //</editor-fold>
+// -------- Fact Specific Widgets --------
+//<editor-fold desc="Fact Specific Widgets">
+class _LifetimeField extends HookConsumerWidget {
+  final Fact fact;
+
+  const _LifetimeField({Key? key, required this.fact}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lifetime = fact.lifetime;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const SizedBox(height: 8),
+        const _SectionTitle(title: "Lifetime"),
+        const SizedBox(height: 8),
+        Dropdown(
+          value: lifetime,
+          values: FactLifetime.values,
+          padding: EdgeInsets.zero,
+          alignment: AlignmentDirectional.centerEnd,
+          builder: (context, lifetime) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(lifetime.formattedName),
+                Flexible(
+                  child: Text(lifetime.description,
+                      style: Theme.of(context).textTheme.caption),
+                ),
+              ],
+            ),
+          ),
+          onChanged: (lifetime) =>
+              ref.read(pageProvider.notifier).insertFact(fact.copyWith(
+                    lifetime: lifetime,
+                    data: "",
+                  )),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+class _CronDataField extends HookConsumerWidget {
+  final Fact fact;
+
+  const _CronDataField({Key? key, required this.fact}) : super(key: key);
+
+  void _onChanged(String value, WidgetRef ref) {
+    ref.read(pageProvider.notifier).insertFact(fact.copyWith(
+          data: value,
+        ));
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textController = useTextEditingController(text: fact.data);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const SizedBox(height: 8),
+        const _SectionTitle(title: "Cron Data"),
+        const SizedBox(height: 8),
+        TextField(
+          controller: textController,
+          onSubmitted: (value) {
+            _onChanged(value, ref);
+          },
+          onEditingComplete: () {
+            _onChanged(textController.text, ref);
+          },
+          onChanged: (value) {
+            _onChanged(value, ref);
+          },
+          textAlign: TextAlign.right,
+          textCapitalization: TextCapitalization.none,
+          textInputAction: TextInputAction.done,
+          maxLines: 1,
+          inputFormatters: [
+            FilteringTextInputFormatter.singleLineFormatter,
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9*,\-/ ]')),
+          ],
+          decoration: const InputDecoration(
+            hintText: "Cron Data",
+            suffixIcon: Icon(FontAwesomeIcons.clockRotateLeft, size: 18),
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+class _TimedDataField extends HookConsumerWidget {
+  final Fact fact;
+
+  const _TimedDataField({Key? key, required this.fact}) : super(key: key);
+
+  void _onChanged(String value, WidgetRef ref) {
+    ref.read(pageProvider.notifier).insertFact(fact.copyWith(
+          data: value,
+        ));
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textController = useTextEditingController(text: fact.data);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const SizedBox(height: 8),
+        const _SectionTitle(title: "Timed Data"),
+        const SizedBox(height: 8),
+        TextField(
+          controller: textController,
+          onSubmitted: (value) {
+            _onChanged(value, ref);
+          },
+          onEditingComplete: () {
+            _onChanged(textController.text, ref);
+          },
+          onChanged: (value) {
+            _onChanged(value, ref);
+          },
+          textAlign: TextAlign.right,
+          textCapitalization: TextCapitalization.none,
+          textInputAction: TextInputAction.done,
+          maxLines: 1,
+          inputFormatters: [
+            FilteringTextInputFormatter.singleLineFormatter,
+            FilteringTextInputFormatter.allow(RegExp(r"[0-9a-z ]")),
+          ],
+          decoration: const InputDecoration(
+            hintText: "Timed Data",
+            suffixIcon: Icon(FontAwesomeIcons.stopwatch, size: 18),
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+//</editor-fold>
 // -------- Event Specific Widgets --------
 //<editor-fold desc="Event Specific Widgets">
 class _NpcIdentifierField extends HookConsumerWidget {
@@ -913,7 +1113,6 @@ class _NpcIdentifierField extends HookConsumerWidget {
         textCapitalization: TextCapitalization.none,
         textInputAction: TextInputAction.done,
         maxLines: 1,
-        style: GoogleFonts.jetBrainsMono(),
         decoration: const InputDecoration(
           hintText: "Enter a npc identifier",
           suffixIcon: Icon(FontAwesomeIcons.solidIdBadge, size: 18),

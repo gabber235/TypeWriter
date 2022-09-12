@@ -21,6 +21,7 @@ dependencies:
   file_picker: ^5.0.1
   rive: ^0.9.1
   dropdown_search: ^5.0.2
+  dotted_border: ^2.0.0+2
 
 dev_dependencies:
   flutter_test:

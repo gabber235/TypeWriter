@@ -11,6 +11,7 @@ class Dropdown<T> extends StatelessWidget {
   final bool filled;
   final EdgeInsets padding;
   final BorderRadius? borderRadius;
+  final AlignmentDirectional? alignment;
 
   final Widget Function(BuildContext context, T value)? builder;
 
@@ -24,6 +25,7 @@ class Dropdown<T> extends StatelessWidget {
     this.builder,
     this.icon = FontAwesomeIcons.caretDown,
     this.borderRadius,
+    this.alignment,
   }) : super(key: key);
 
   @override
@@ -38,12 +40,14 @@ class Dropdown<T> extends StatelessWidget {
         icon: Icon(icon, size: icon != null ? 18 : 0),
         value: value,
         underline: Container(),
+        alignment: alignment ?? AlignmentDirectional.centerStart,
         style: GoogleFonts.jetBrainsMono(
             textStyle:
                 TextStyle(color: Theme.of(context).textTheme.bodyText1!.color)),
         borderRadius: borderRadius ?? BorderRadius.circular(8),
         items: values
             .map((e) => DropdownMenuItem(
+                  alignment: alignment ?? AlignmentDirectional.centerStart,
                   value: e,
                   child: builder != null
                       ? builder!(context, e)
