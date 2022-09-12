@@ -15,7 +15,7 @@ class BedrockSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry)
 		FloodgateApi.getInstance().sendForm(
 			player.uniqueId,
 			CustomForm.builder()
-				.title("<bold>${entry.speaker}</bold>".legacy())
+				.title("<bold>${entry.speakerDisplayName}</bold>".legacy())
 				.label("${entry.text.legacy()}\n\n")
 				.closedOrInvalidResultHandler { _, _ ->
 					state = MessengerState.CANCELLED

@@ -1,8 +1,7 @@
 package me.gabber235.typewriter.entry.dialogue.entries
 
 import com.google.gson.annotations.SerializedName
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.DialogueEntry
 
 data class SpokenDialogueEntry(
@@ -16,4 +15,7 @@ data class SpokenDialogueEntry(
 	override val text: String = "",
 	val speaker: String = "",
 	val duration: Int = 40,
-) : DialogueEntry
+) : DialogueEntry {
+	val speakerDisplayName: String
+		get() = EntryDatabase.getSpeaker(speaker)?.displayName ?: ""
+}

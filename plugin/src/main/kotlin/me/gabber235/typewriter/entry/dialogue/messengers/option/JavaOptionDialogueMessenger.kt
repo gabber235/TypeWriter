@@ -23,6 +23,7 @@ class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
 	private val selected get() = usableOptions[selectedIndex]
 
 	private var usableOptions: List<Option> = emptyList()
+	private var speakerDisplayName = ""
 
 	override val triggers: List<String>
 		get() = entry.triggers + selected.triggers
@@ -33,6 +34,8 @@ class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
 	override fun init(player: Player) {
 		val facts = player.facts
 		usableOptions = entry.options.filter { it.criteria.matches(facts) }.sortedByDescending { it.criteria.size }
+
+		speakerDisplayName = entry.speakerDisplayName
 
 		listen<PlayerSwapHandItemsEvent> { event ->
 			if (event.player.uniqueId != player.uniqueId) return@listen
@@ -58,7 +61,7 @@ class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
 	override fun tick(player: Player, cycle: Int) {
 		val message = """
 			|<gray><st>${" ".repeat(60)}</st>
-			|<white> ${entry.speaker}: ${entry.text}
+			|<white> ${speakerDisplayName}: ${entry.text}
 			|
 			|${formatOptions()}
 			|<#5d6c78>[ <grey><white>Scroll</white> to change option and press<white> <key:key.swapOffhand> </white>to select <#5d6c78>]

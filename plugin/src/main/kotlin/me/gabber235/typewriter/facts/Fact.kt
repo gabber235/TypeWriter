@@ -1,13 +1,14 @@
 package me.gabber235.typewriter.facts
 
 import com.google.gson.annotations.SerializedName
+import me.gabber235.typewriter.entry.Entry
 
 data class FactEntry(
-	val id: String,
-	val name: String,
+	override val id: String,
+	override val name: String,
 	val lifetime: FactLifetime,
 	val data: String,
-)
+) : Entry
 
 enum class FactLifetime {
 	@SerializedName("permanent")

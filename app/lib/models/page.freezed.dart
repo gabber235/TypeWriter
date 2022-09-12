@@ -21,6 +21,7 @@ PageModel _$PageModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PageModel {
   List<Fact> get facts => throw _privateConstructorUsedError;
+  List<Speaker> get speakers => throw _privateConstructorUsedError;
   List<Event> get events => throw _privateConstructorUsedError;
   List<Dialogue> get dialogue => throw _privateConstructorUsedError;
 
@@ -34,7 +35,11 @@ mixin _$PageModel {
 abstract class $PageModelCopyWith<$Res> {
   factory $PageModelCopyWith(PageModel value, $Res Function(PageModel) then) =
       _$PageModelCopyWithImpl<$Res>;
-  $Res call({List<Fact> facts, List<Event> events, List<Dialogue> dialogue});
+  $Res call(
+      {List<Fact> facts,
+      List<Speaker> speakers,
+      List<Event> events,
+      List<Dialogue> dialogue});
 }
 
 /// @nodoc
@@ -48,6 +53,7 @@ class _$PageModelCopyWithImpl<$Res> implements $PageModelCopyWith<$Res> {
   @override
   $Res call({
     Object? facts = freezed,
+    Object? speakers = freezed,
     Object? events = freezed,
     Object? dialogue = freezed,
   }) {
@@ -56,6 +62,10 @@ class _$PageModelCopyWithImpl<$Res> implements $PageModelCopyWith<$Res> {
           ? _value.facts
           : facts // ignore: cast_nullable_to_non_nullable
               as List<Fact>,
+      speakers: speakers == freezed
+          ? _value.speakers
+          : speakers // ignore: cast_nullable_to_non_nullable
+              as List<Speaker>,
       events: events == freezed
           ? _value.events
           : events // ignore: cast_nullable_to_non_nullable
@@ -74,7 +84,11 @@ abstract class _$$_PageModelCopyWith<$Res> implements $PageModelCopyWith<$Res> {
           _$_PageModel value, $Res Function(_$_PageModel) then) =
       __$$_PageModelCopyWithImpl<$Res>;
   @override
-  $Res call({List<Fact> facts, List<Event> events, List<Dialogue> dialogue});
+  $Res call(
+      {List<Fact> facts,
+      List<Speaker> speakers,
+      List<Event> events,
+      List<Dialogue> dialogue});
 }
 
 /// @nodoc
@@ -90,6 +104,7 @@ class __$$_PageModelCopyWithImpl<$Res> extends _$PageModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? facts = freezed,
+    Object? speakers = freezed,
     Object? events = freezed,
     Object? dialogue = freezed,
   }) {
@@ -98,6 +113,10 @@ class __$$_PageModelCopyWithImpl<$Res> extends _$PageModelCopyWithImpl<$Res>
           ? _value._facts
           : facts // ignore: cast_nullable_to_non_nullable
               as List<Fact>,
+      speakers: speakers == freezed
+          ? _value._speakers
+          : speakers // ignore: cast_nullable_to_non_nullable
+              as List<Speaker>,
       events: events == freezed
           ? _value._events
           : events // ignore: cast_nullable_to_non_nullable
@@ -115,9 +134,11 @@ class __$$_PageModelCopyWithImpl<$Res> extends _$PageModelCopyWithImpl<$Res>
 class _$_PageModel implements _PageModel {
   const _$_PageModel(
       {final List<Fact> facts = const [],
+      final List<Speaker> speakers = const [],
       final List<Event> events = const [],
       final List<Dialogue> dialogue = const []})
       : _facts = facts,
+        _speakers = speakers,
         _events = events,
         _dialogue = dialogue;
 
@@ -130,6 +151,14 @@ class _$_PageModel implements _PageModel {
   List<Fact> get facts {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_facts);
+  }
+
+  final List<Speaker> _speakers;
+  @override
+  @JsonKey()
+  List<Speaker> get speakers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_speakers);
   }
 
   final List<Event> _events;
@@ -150,7 +179,7 @@ class _$_PageModel implements _PageModel {
 
   @override
   String toString() {
-    return 'PageModel(facts: $facts, events: $events, dialogue: $dialogue)';
+    return 'PageModel(facts: $facts, speakers: $speakers, events: $events, dialogue: $dialogue)';
   }
 
   @override
@@ -159,6 +188,7 @@ class _$_PageModel implements _PageModel {
         (other.runtimeType == runtimeType &&
             other is _$_PageModel &&
             const DeepCollectionEquality().equals(other._facts, _facts) &&
+            const DeepCollectionEquality().equals(other._speakers, _speakers) &&
             const DeepCollectionEquality().equals(other._events, _events) &&
             const DeepCollectionEquality().equals(other._dialogue, _dialogue));
   }
@@ -168,6 +198,7 @@ class _$_PageModel implements _PageModel {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_facts),
+      const DeepCollectionEquality().hash(_speakers),
       const DeepCollectionEquality().hash(_events),
       const DeepCollectionEquality().hash(_dialogue));
 
@@ -187,6 +218,7 @@ class _$_PageModel implements _PageModel {
 abstract class _PageModel implements PageModel {
   const factory _PageModel(
       {final List<Fact> facts,
+      final List<Speaker> speakers,
       final List<Event> events,
       final List<Dialogue> dialogue}) = _$_PageModel;
 
@@ -195,6 +227,8 @@ abstract class _PageModel implements PageModel {
 
   @override
   List<Fact> get facts;
+  @override
+  List<Speaker> get speakers;
   @override
   List<Event> get events;
   @override
@@ -389,6 +423,174 @@ abstract class _Fact implements Fact {
   @override
   @JsonKey(ignore: true)
   _$$_FactCopyWith<_$_Fact> get copyWith => throw _privateConstructorUsedError;
+}
+
+Speaker _$SpeakerFromJson(Map<String, dynamic> json) {
+  return _Speaker.fromJson(json);
+}
+
+/// @nodoc
+mixin _$Speaker {
+  String get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get displayName => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $SpeakerCopyWith<Speaker> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SpeakerCopyWith<$Res> {
+  factory $SpeakerCopyWith(Speaker value, $Res Function(Speaker) then) =
+      _$SpeakerCopyWithImpl<$Res>;
+  $Res call({String id, String name, String displayName});
+}
+
+/// @nodoc
+class _$SpeakerCopyWithImpl<$Res> implements $SpeakerCopyWith<$Res> {
+  _$SpeakerCopyWithImpl(this._value, this._then);
+
+  final Speaker _value;
+  // ignore: unused_field
+  final $Res Function(Speaker) _then;
+
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? name = freezed,
+    Object? displayName = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      displayName: displayName == freezed
+          ? _value.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+abstract class _$$_SpeakerCopyWith<$Res> implements $SpeakerCopyWith<$Res> {
+  factory _$$_SpeakerCopyWith(
+          _$_Speaker value, $Res Function(_$_Speaker) then) =
+      __$$_SpeakerCopyWithImpl<$Res>;
+  @override
+  $Res call({String id, String name, String displayName});
+}
+
+/// @nodoc
+class __$$_SpeakerCopyWithImpl<$Res> extends _$SpeakerCopyWithImpl<$Res>
+    implements _$$_SpeakerCopyWith<$Res> {
+  __$$_SpeakerCopyWithImpl(_$_Speaker _value, $Res Function(_$_Speaker) _then)
+      : super(_value, (v) => _then(v as _$_Speaker));
+
+  @override
+  _$_Speaker get _value => super._value as _$_Speaker;
+
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? name = freezed,
+    Object? displayName = freezed,
+  }) {
+    return _then(_$_Speaker(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      displayName: displayName == freezed
+          ? _value.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_Speaker implements _Speaker {
+  const _$_Speaker(
+      {required this.id, required this.name, this.displayName = ""});
+
+  factory _$_Speaker.fromJson(Map<String, dynamic> json) =>
+      _$$_SpeakerFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String name;
+  @override
+  @JsonKey()
+  final String displayName;
+
+  @override
+  String toString() {
+    return 'Speaker(id: $id, name: $name, displayName: $displayName)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_Speaker &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality()
+                .equals(other.displayName, displayName));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(displayName));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$_SpeakerCopyWith<_$_Speaker> get copyWith =>
+      __$$_SpeakerCopyWithImpl<_$_Speaker>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_SpeakerToJson(
+      this,
+    );
+  }
+}
+
+abstract class _Speaker implements Speaker {
+  const factory _Speaker(
+      {required final String id,
+      required final String name,
+      final String displayName}) = _$_Speaker;
+
+  factory _Speaker.fromJson(Map<String, dynamic> json) = _$_Speaker.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get name;
+  @override
+  String get displayName;
+  @override
+  @JsonKey(ignore: true)
+  _$$_SpeakerCopyWith<_$_Speaker> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 Event _$EventFromJson(Map<String, dynamic> json) {

@@ -6,10 +6,13 @@ import me.gabber235.typewriter.facts.Fact
 interface Entry {
 	val id: String
 	val name: String
+}
+
+interface TriggerEntry : Entry {
 	val triggers: List<String>
 }
 
-interface RuleEntry : Entry {
+interface RuleEntry : TriggerEntry {
 	val criteria: List<Criteria>
 	val modifiers: List<Modifier>
 }

@@ -1,10 +1,9 @@
 package me.gabber235.typewriter.entry.event
 
-import me.gabber235.typewriter.entry.Entry
-import me.gabber235.typewriter.entry.RuleEntry
+import me.gabber235.typewriter.entry.TriggerEntry
 import org.bukkit.entity.Player
 
-interface EventEntry : Entry
+interface EventEntry : TriggerEntry
 
 open class Event(val name: String, val player: Player) {
 	override fun equals(other: Any?): Boolean {

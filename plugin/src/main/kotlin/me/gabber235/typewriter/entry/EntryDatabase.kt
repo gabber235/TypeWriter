@@ -16,6 +16,7 @@ import kotlin.reflect.KClass
 
 object EntryDatabase {
 	private var facts = listOf<FactEntry>()
+	private var speakers = listOf<SpeakerEntry>()
 	private var events = listOf<EventEntry>()
 	private var dialogue = listOf<DialogueEntry>()
 
@@ -31,10 +32,11 @@ object EntryDatabase {
 		}
 
 		this.facts = pages?.flatMap { it.facts } ?: listOf()
+		this.speakers = pages?.flatMap { it.speakers } ?: listOf()
 		this.events = pages?.flatMap { it.events } ?: listOf()
 		this.dialogue = pages?.flatMap { it.dialogue } ?: listOf()
 
-		println("Loaded ${facts.size} facts, ${events.size} events and ${dialogue.size} dialogue entries")
+		println("Loaded ${facts.size} facts, ${speakers.size} speakers, ${events.size} events and ${dialogue.size} dialogue entries")
 	}
 
 	fun <T : EventEntry> findEventEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
@@ -45,6 +47,9 @@ object EntryDatabase {
 		val rules = dialogue.filter { trigger in it.triggerdBy }.sortedByDescending { it.criteria.size }
 		return rules.find { rule -> rule.criteria.matches(facts) }
 	}
+
+	fun findSpeakerByName(name: String) = speakers.firstOrNull { it.name == name }
+	fun getSpeaker(id: String) = speakers.firstOrNull { it.id == id }
 }
 
 private val eventFactory = RuntimeTypeAdapterFactory.of(EventEntry::class.java)
@@ -64,6 +69,7 @@ private fun JsonReader.parsePage(): Page =
 
 private class Page(
 	val facts: List<FactEntry>,
+	val speakers: List<SpeakerEntry>,
 	val events: List<EventEntry>,
 	val dialogue: List<DialogueEntry>
 )

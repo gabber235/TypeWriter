@@ -74,6 +74,11 @@ class Inspector extends HookConsumerWidget {
       return Theme(data: themData, child: _FactInspector(fact: fact));
     }
 
+    final speaker = entry.asSpeaker;
+    if (speaker != null) {
+      return Theme(data: themData, child: _SpeakerInspector(speaker: speaker));
+    }
+
     final event = entry.asEvent;
     if (event != null) {
       return Theme(data: themData, child: _EventInspector(event: event));
@@ -119,6 +124,34 @@ class _FactInspector extends HookConsumerWidget {
         ],
         const Divider(),
         _Operations(entry: fact),
+      ],
+    );
+  }
+}
+
+class _SpeakerInspector extends HookConsumerWidget {
+  final Speaker speaker;
+
+  const _SpeakerInspector({
+    Key? key,
+    required this.speaker,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        _EntryInformation(
+          entry: speaker,
+          onNameChanged: (name) => ref
+              .read(pageProvider.notifier)
+              .insertSpeaker(speaker.copyWith(name: name)),
+        ),
+        const Divider(),
+        _DisplayNameField(speaker: speaker),
+        const Divider(),
+        _Operations(entry: speaker),
       ],
     );
   }
@@ -714,7 +747,11 @@ class _CriteriaField extends HookConsumerWidget {
                   },
                 ),
                 dropdownBuilder: (context, fact) {
-                  return AutoSizeText(fact?.name ?? "", maxLines: 1);
+                  return AutoSizeText(
+                    fact?.name ?? "",
+                    maxLines: 1,
+                    textAlign: TextAlign.right,
+                  );
                 },
                 filterFn: (fact, string) {
                   return fact.name.contains(string) ||
@@ -926,6 +963,73 @@ class _DeleteEntry extends HookConsumerWidget {
   }
 }
 
+class _SpeakerSelector extends HookConsumerWidget {
+  final String currentId;
+  final Function(Speaker) onSelected;
+
+  const _SpeakerSelector({
+    Key? key,
+    required this.currentId,
+    required this.onSelected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final speakers = ref.watch(pageProvider.select((value) => value.speakers));
+    return DropdownSearch<Speaker>(
+      items: speakers,
+      selectedItem: speakers.firstWhereOrNull((s) => s.id == currentId),
+      dropdownButtonProps: const DropdownButtonProps(
+        icon: Icon(FontAwesomeIcons.caretDown, size: 18),
+      ),
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        textAlign: TextAlign.right,
+        dropdownSearchDecoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          hintText: "Select a speaker",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+      popupProps: PopupProps.menu(
+        showSearchBox: true,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 16.0, top: 8),
+          child: Text("Select a speaker",
+              style: Theme.of(context).textTheme.titleMedium),
+        ),
+        itemBuilder: (context, item, isSelected) {
+          return ListTile(
+            title: AutoSizeText(item.name, maxLines: 1),
+            selected: isSelected,
+          );
+        },
+      ),
+      dropdownBuilder: (context, speaker) {
+        return AutoSizeText(
+          speaker?.formattedName ?? "",
+          maxLines: 1,
+          textAlign: TextAlign.right,
+        );
+      },
+      filterFn: (speaker, string) {
+        return speaker.name.contains(string) ||
+            speaker.formattedName.contains(string);
+      },
+      onChanged: (speaker) {
+        if (speaker == null) return;
+        onSelected(speaker);
+      },
+      onSaved: (fact) {
+        if (fact == null) return;
+        onSelected(fact);
+      },
+    );
+  }
+}
+
 //</editor-fold>
 // -------- Fact Specific Widgets --------
 //<editor-fold desc="Fact Specific Widgets">
@@ -1015,7 +1119,7 @@ class _CronDataField extends HookConsumerWidget {
             FilteringTextInputFormatter.allow(RegExp(r'[0-9*,\-/ ]')),
           ],
           decoration: const InputDecoration(
-            hintText: "Cron Data",
+            hintText: "Enter a cron expression",
             suffixIcon: Icon(FontAwesomeIcons.clockRotateLeft, size: 18),
           ),
         ),
@@ -1065,8 +1169,57 @@ class _TimedDataField extends HookConsumerWidget {
             FilteringTextInputFormatter.allow(RegExp(r"[0-9a-z ]")),
           ],
           decoration: const InputDecoration(
-            hintText: "Timed Data",
+            hintText: "Enter a duration",
             suffixIcon: Icon(FontAwesomeIcons.stopwatch, size: 18),
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+//</editor-fold>
+// -------- Speaker Specific Widgets --------
+//<editor-fold desc="Speaker Specific Widgets">
+class _DisplayNameField extends HookConsumerWidget {
+  final Speaker speaker;
+
+  const _DisplayNameField({Key? key, required this.speaker}) : super(key: key);
+
+  void _onChanged(String value, WidgetRef ref) {
+    ref.read(pageProvider.notifier).insertSpeaker(speaker.copyWith(
+          displayName: value,
+        ));
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textController = useTextEditingController(text: speaker.displayName);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const SizedBox(height: 8),
+        const _SectionTitle(title: "Display Name"),
+        const SizedBox(height: 8),
+        TextField(
+          controller: textController,
+          onSubmitted: (value) {
+            _onChanged(value, ref);
+          },
+          onEditingComplete: () {
+            _onChanged(textController.text, ref);
+          },
+          onChanged: (value) {
+            _onChanged(value, ref);
+          },
+          textAlign: TextAlign.right,
+          textCapitalization: TextCapitalization.none,
+          textInputAction: TextInputAction.done,
+          maxLines: 1,
+          decoration: const InputDecoration(
+            hintText: "Enter a display name",
+            suffixIcon: Icon(FontAwesomeIcons.tag, size: 18),
           ),
         ),
         const SizedBox(height: 8),
@@ -1091,33 +1244,14 @@ class _NpcIdentifierField extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textEditingController = useTextEditingController(
-      text: event.identifier,
-    );
-
     return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
       const _SectionTitle(title: "Npc Identifier"),
       const SizedBox(height: 8),
-      TextField(
-        controller: textEditingController,
-        onSubmitted: (value) {
-          _onChanged(value, ref);
-        },
-        onEditingComplete: () {
-          _onChanged(textEditingController.text, ref);
-        },
-        onChanged: (value) {
-          _onChanged(value, ref);
-        },
-        textAlign: TextAlign.right,
-        textCapitalization: TextCapitalization.none,
-        textInputAction: TextInputAction.done,
-        maxLines: 1,
-        decoration: const InputDecoration(
-          hintText: "Enter a npc identifier",
-          suffixIcon: Icon(FontAwesomeIcons.solidIdBadge, size: 18),
-        ),
-      ),
+      _SpeakerSelector(
+          currentId: event.identifier,
+          onSelected: (value) {
+            _onChanged(value.id, ref);
+          }),
     ]);
   }
 }
@@ -1135,16 +1269,13 @@ class _SpeakerField extends HookConsumerWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
       const _SectionTitle(title: "Speaker"),
       const SizedBox(height: 8),
-      _AutoCompleteField(
-        text: dialogue.speaker,
-        hintText: "Enter a speaker",
-        icon: FontAwesomeIcons.solidUser,
-        onQuery: (query) =>
-            ref.watch(pageProvider).dialogue.map((e) => e.speaker),
-        onChanged: (text) => ref
-            .read(pageProvider.notifier)
-            .insertDialogue(dialogue.copyWith(speaker: text)),
-      ),
+      _SpeakerSelector(
+          currentId: dialogue.speaker,
+          onSelected: (value) {
+            ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
+                  speaker: value.id,
+                ));
+          }),
     ]);
   }
 }

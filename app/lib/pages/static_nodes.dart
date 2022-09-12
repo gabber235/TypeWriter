@@ -4,6 +4,53 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:typewriter/models/page.dart';
 import 'package:typewriter/pages/graph.dart';
+import 'package:typewriter/widgets/dropdown.dart';
+
+final _typeProvider = StateProvider<_StaticEntry>((ref) {
+  return _StaticEntry.fact;
+});
+
+enum _StaticEntry {
+  fact("Facts", "Fact"),
+  speaker("Speakers", "Speaker"),
+  ;
+
+  final String title;
+  final String singular;
+
+  const _StaticEntry(this.title, this.singular);
+
+  AlwaysAliveProviderListenable<List<Entry>> selectEntries(WidgetRef ref) {
+    switch (this) {
+      case _StaticEntry.fact:
+        return pageProvider.select((value) => value.facts);
+      case _StaticEntry.speaker:
+        return pageProvider.select((value) => value.speakers);
+    }
+  }
+
+  Entry createDummy() {
+    switch (this) {
+      case _StaticEntry.fact:
+        return const Fact(id: "", name: "");
+      case _StaticEntry.speaker:
+        return const Speaker(id: "", name: "");
+    }
+  }
+
+  void addEntry(WidgetRef ref) {
+    Entry entry;
+    switch (this) {
+      case _StaticEntry.fact:
+        entry = ref.read(pageProvider.notifier).addFact();
+        break;
+      case _StaticEntry.speaker:
+        entry = ref.read(pageProvider.notifier).addSpeaker();
+        break;
+    }
+    ref.read(selectedProvider.notifier).state = entry.id;
+  }
+}
 
 class StaticEntries extends HookConsumerWidget {
   const StaticEntries({
@@ -12,16 +59,12 @@ class StaticEntries extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Entry> entries =
-        ref.watch(pageProvider.select((value) => value.facts));
+    final type = ref.watch(_typeProvider);
+    List<Entry> entries = ref.watch(type.selectEntries(ref));
 
-    final bgColor = entries.isNotEmpty
-        ? entries[0].backgroundColor(context)
-        : Colors.black.withOpacity(0.1);
-
-    final textColor = entries.isNotEmpty
-        ? entries[0].textColor(context)
-        : Colors.black.withOpacity(0.1);
+    final dummy = type.createDummy();
+    final bgColor = dummy.backgroundColor(context);
+    final textColor = dummy.textColor(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -34,7 +77,22 @@ class StaticEntries extends HookConsumerWidget {
           Row(
             children: [
               const SizedBox(width: 24),
-              Text("Facts", style: Theme.of(context).textTheme.headline6),
+              Dropdown<_StaticEntry>(
+                value: type,
+                values: _StaticEntry.values,
+                onChanged: (value) {
+                  ref.read(_typeProvider.notifier).state = value;
+                },
+                filled: false,
+                builder: (context, value) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    value.title,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 0),
+              ),
               const Spacer(),
             ],
           ),
@@ -77,16 +135,12 @@ class StaticEntries extends HookConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 24),
                           ),
-                          onPressed: () {
-                            final fact =
-                                ref.read(pageProvider.notifier).addFact();
-                            ref.read(selectedProvider.notifier).state = fact.id;
-                          },
+                          onPressed: () => type.addEntry(ref),
                           child: Row(
-                            children: const [
-                              Text("Add Fact"),
-                              SizedBox(width: 8),
-                              Icon(FontAwesomeIcons.plus, size: 18),
+                            children: [
+                              Text("Add ${type.singular}"),
+                              const SizedBox(width: 8),
+                              const Icon(FontAwesomeIcons.plus, size: 18),
                             ],
                           ),
                         ),

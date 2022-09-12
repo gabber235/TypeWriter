@@ -33,7 +33,7 @@ class BedrockOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry)
 		FloodgateApi.getInstance().sendForm(
 			player.uniqueId,
 			CustomForm.builder()
-				.title("<bold>${entry.speaker}</bold>".legacy())
+				.title("<bold>${entry.speakerDisplayName}</bold>".legacy())
 				.label("${entry.text.legacy()}\n\n\n")
 				.dropdown(
 					"Select Response",

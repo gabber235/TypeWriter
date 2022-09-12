@@ -18,8 +18,13 @@ class TypeWriterTrait : Trait("typewriter") {
 	var identifier: String = ""
 
 	private fun triggerEvent(player: Player) {
+		val speaker = EntryDatabase.findSpeakerByName(identifier)
+		if (speaker == null) {
+			println("Could not find a speaker with name $identifier.")
+			return
+		}
 		val triggers = EntryDatabase.findEventEntries(NpcEventEntry::class) {
-			it.identifier == identifier
+			it.identifier == speaker.id
 		}
 			.flatMap { it.triggers }
 		if (triggers.isEmpty()) return

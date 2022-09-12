@@ -18,6 +18,7 @@ String pageModelToJson(PageModel data) => json.encode(data.toJson());
 class PageModel with _$PageModel {
   const factory PageModel({
     @Default([]) List<Fact> facts,
+    @Default([]) List<Speaker> speakers,
     @Default([]) List<Event> events,
     @Default([]) List<Dialogue> dialogue,
   }) = _PageModel;
@@ -55,6 +56,18 @@ enum FactLifetime {
   final String description;
 
   const FactLifetime(this.description);
+}
+
+@freezed
+class Speaker with _$Speaker implements Entry {
+  const factory Speaker({
+    required String id,
+    required String name,
+    @Default("") @JsonKey(name: "display_name") String displayName,
+  }) = _Speaker;
+
+  factory Speaker.fromJson(Map<String, dynamic> json) =>
+      _$SpeakerFromJson(json);
 }
 
 abstract class TriggerEntry extends Entry {
@@ -162,11 +175,15 @@ extension LifetimeExtension on FactLifetime {
 extension EntryExtension on Entry {
   bool get isFact => this is Fact;
 
+  bool get isSpeaker => this is Speaker;
+
   bool get isEvent => this is Event;
 
   bool get isDialogue => this is Dialogue;
 
   Fact? get asFact => this is Fact ? this as Fact : null;
+
+  Speaker? get asSpeaker => this is Speaker ? this as Speaker : null;
 
   Event? get asEvent => this is Event ? this as Event : null;
 
@@ -192,6 +209,7 @@ extension EntryExtension on Entry {
 
   Color color(bool dark) {
     return asFact?.color(dark) ??
+        asSpeaker?.color(dark) ??
         asEvent?.color(dark) ??
         asDialogue?.color(dark) ??
         Colors.grey;
@@ -204,6 +222,16 @@ extension FactExtension on Fact {
       return Colors.purple.shade700;
     } else {
       return Colors.purple.shade100;
+    }
+  }
+}
+
+extension SpeakerExtension on Speaker {
+  Color color(bool dark) {
+    if (dark) {
+      return Colors.orange.shade700;
+    } else {
+      return Colors.orange.shade100;
     }
   }
 }
@@ -257,7 +285,7 @@ extension DialogueExtension on Dialogue {
 }
 
 extension PageModelExtension on PageModel {
-  List<Entry> get entries => [...facts, ...triggerEntries];
+  List<Entry> get entries => [...facts, ...speakers, ...triggerEntries];
 
   List<TriggerEntry> get triggerEntries => [...rules, ...events];
 
@@ -330,6 +358,15 @@ extension PageModelExtension on PageModel {
     if (dialogue.any((e) => e.text.isEmpty)) {
       return "All SpokenDialogues must have a valid text, ${dialogue.firstWhere((e) => e.text.isEmpty).name} does not";
     }
+    // All dialogue must have a non-empty speaker
+    if (dialogue.any((e) => e.speaker.isEmpty)) {
+      return "All SpokenDialogues must have a non-empty speaker, ${dialogue.firstWhere((e) => e.speaker.isEmpty).name} does not";
+    }
+    // All dialogue speakers must be a valid speaker
+    if (dialogue.any((e) => speakers.none((s) => s.id == e.speaker))) {
+      return "All SpokenDialogues must have a valid speaker, ${dialogue.firstWhere((e) => speakers.none((s) => s.id == e.speaker)).name} does not";
+    }
+
     // All SpokenDialogues must have a valid speaker
     if (dialogue.any((e) => e is SpokenDialogue && e.speaker.isEmpty)) {
       return "All SpokenDialogues must have a valid speaker, ${dialogue.firstWhere((e) => e is SpokenDialogue && e.speaker.isEmpty).name} does not";

@@ -43,6 +43,15 @@ class PageNotifier extends StateNotifier<PageModel> {
     return fact;
   }
 
+  Speaker addSpeaker() {
+    final speaker = Speaker(
+      name: "new_speaker",
+      id: getRandomString(15),
+    );
+    insertSpeaker(speaker);
+    return speaker;
+  }
+
   SpokenDialogue addDialogue() {
     final dialogue = SpokenDialogue(
       name: "new_dialogue",
@@ -70,6 +79,13 @@ class PageNotifier extends StateNotifier<PageModel> {
   void insertFact(Fact fact) {
     state = state
         .copyWith(facts: [...state.facts.where((e) => e.id != fact.id), fact]);
+  }
+
+  void insertSpeaker(Speaker speaker) {
+    state = state.copyWith(speakers: [
+      ...state.speakers.where((e) => e.id != speaker.id),
+      speaker
+    ]);
   }
 
   void insertEvent(Event event) {
@@ -130,6 +146,7 @@ class PageNotifier extends StateNotifier<PageModel> {
   void deleteEntry(String id) {
     state = state.copyWith(
       facts: state.facts.where((e) => e.id != id).toList(),
+      speakers: state.speakers.where((e) => e.id != id).toList(),
       events: state.events.where((e) => e.id != id).toList(),
       dialogue: state.dialogue.where((d) => d.id != id).toList(),
     );
@@ -467,6 +484,7 @@ class NodeWidget extends HookConsumerWidget {
 extension IconExtension on Entry {
   Widget? icon(BuildContext context) {
     if (isFact) return _factIcon(context);
+    if (isSpeaker) return _speakerIcon(context);
     if (isEvent) return _eventIcon(context);
     if (isDialogue) return _dialogueIcon(context);
     return null;
@@ -492,6 +510,10 @@ extension IconExtension on Entry {
         return Icon(FontAwesomeIcons.userClock,
             size: 18, color: fact.textColor(context));
     }
+  }
+
+  Widget? _speakerIcon(BuildContext context) {
+    return Icon(FontAwesomeIcons.userTag, size: 18, color: textColor(context));
   }
 
   Widget? _eventIcon(BuildContext context) {

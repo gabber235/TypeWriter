@@ -11,6 +11,10 @@ _$_PageModel _$$_PageModelFromJson(Map<String, dynamic> json) => _$_PageModel(
               ?.map((e) => Fact.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      speakers: (json['speakers'] as List<dynamic>?)
+              ?.map((e) => Speaker.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       events: (json['events'] as List<dynamic>?)
               ?.map((e) => Event.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -24,6 +28,7 @@ _$_PageModel _$$_PageModelFromJson(Map<String, dynamic> json) => _$_PageModel(
 Map<String, dynamic> _$$_PageModelToJson(_$_PageModel instance) =>
     <String, dynamic>{
       'facts': instance.facts,
+      'speakers': instance.speakers,
       'events': instance.events,
       'dialogue': instance.dialogue,
     };
@@ -50,6 +55,19 @@ const _$FactLifetimeEnumMap = {
   FactLifetime.server: 'server',
   FactLifetime.session: 'session',
 };
+
+_$_Speaker _$$_SpeakerFromJson(Map<String, dynamic> json) => _$_Speaker(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      displayName: json['displayName'] as String? ?? "",
+    );
+
+Map<String, dynamic> _$$_SpeakerToJson(_$_Speaker instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'displayName': instance.displayName,
+    };
 
 _$_Event _$$_EventFromJson(Map<String, dynamic> json) => _$_Event(
       name: json['name'] as String,

@@ -13,7 +13,10 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 class JavaSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
 	Messenger<SpokenDialogueEntry>(player, entry) {
 
+	private var speakerDisplayName = ""
 	override fun init(player: Player) {
+		speakerDisplayName = entry.speakerDisplayName
+
 		listen<PlayerSwapHandItemsEvent> { event ->
 			if (event.player.uniqueId != player.uniqueId) return@listen
 			state = MessengerState.FINISHED
@@ -24,8 +27,6 @@ class JavaSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
 
 	override fun tick(player: Player, cycle: Int) {
 		val duration = entry.duration
-		val speaker = entry.speaker
-		val text = entry.text
 
 		val percentage = (cycle / duration.toDouble())
 
@@ -36,12 +37,12 @@ class JavaSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
 		val message = """
 				|<gray><st>${" ".repeat(60)}</st>
 				|
-				|<gray>    [ <bold>$speaker</bold> ]
+				|<gray>    [ <bold>$speakerDisplayName</bold> ]
 				|
 				|<white>
 			""".trimMargin()
 			.asMini()
-			.append(text(text, percentage.coerceAtMost(1.0)).color(NamedTextColor.WHITE))
+			.append(text(entry.text, percentage.coerceAtMost(1.0)).color(NamedTextColor.WHITE))
 			.append(
 				"""
 				|
