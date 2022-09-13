@@ -21,6 +21,7 @@ class PageModel with _$PageModel {
     @Default([]) List<Speaker> speakers,
     @Default([]) List<Event> events,
     @Default([]) List<Dialogue> dialogue,
+    @Default([]) List<ActionEntry> actions,
   }) = _PageModel;
 
   factory PageModel.fromJson(Map<String, dynamic> json) =>
@@ -142,6 +143,32 @@ class Dialogue with _$Dialogue implements RuleEntry {
       _$DialogueFromJson(json);
 }
 
+@Freezed(unionKey: "type", unionValueCase: FreezedUnionCase.snake)
+class ActionEntry with _$ActionEntry implements RuleEntry {
+  @FreezedUnionValue("default")
+  const factory ActionEntry({
+    required String name,
+    required String id,
+    @Default([]) @JsonKey(name: "triggered_by") List<String> triggeredBy,
+    @Default([]) List<String> triggers,
+    @Default([]) List<Criterion> criteria,
+    @Default([]) List<Criterion> modifiers,
+  }) = _ActionEntry;
+
+  @FreezedUnionValue("simple")
+  const factory ActionEntry.simple({
+    required String name,
+    required String id,
+    @Default([]) @JsonKey(name: "triggered_by") List<String> triggeredBy,
+    @Default([]) List<String> triggers,
+    @Default([]) List<Criterion> criteria,
+    @Default([]) List<Criterion> modifiers,
+  }) = SimpleAction;
+
+  factory ActionEntry.fromJson(Map<String, dynamic> json) =>
+      _$ActionEntryFromJson(json);
+}
+
 @freezed
 class Criterion with _$Criterion {
   const factory Criterion({
@@ -181,6 +208,8 @@ extension EntryExtension on Entry {
 
   bool get isDialogue => this is Dialogue;
 
+  bool get isAction => this is ActionEntry;
+
   Fact? get asFact => this is Fact ? this as Fact : null;
 
   Speaker? get asSpeaker => this is Speaker ? this as Speaker : null;
@@ -188,6 +217,8 @@ extension EntryExtension on Entry {
   Event? get asEvent => this is Event ? this as Event : null;
 
   Dialogue? get asDialogue => this is Dialogue ? this as Dialogue : null;
+
+  ActionEntry? get asAction => this is ActionEntry ? this as ActionEntry : null;
 
   String get formattedName {
     return name
@@ -212,6 +243,7 @@ extension EntryExtension on Entry {
         asSpeaker?.color(dark) ??
         asEvent?.color(dark) ??
         asDialogue?.color(dark) ??
+        asAction?.color(dark) ??
         Colors.grey;
   }
 }
@@ -284,12 +316,26 @@ extension DialogueExtension on Dialogue {
   }
 }
 
+extension ActionExtension on ActionEntry {
+  Color color(bool dark) {
+    if (dark) {
+      return Colors.red.shade700;
+    } else {
+      return Colors.red.shade100;
+    }
+  }
+
+  String get type {
+    return "simple";
+  }
+}
+
 extension PageModelExtension on PageModel {
   List<Entry> get entries => [...facts, ...speakers, ...triggerEntries];
 
   List<TriggerEntry> get triggerEntries => [...rules, ...events];
 
-  List<RuleEntry> get rules => dialogue;
+  List<RuleEntry> get rules => [...dialogue, ...actions];
 
   Entry? getEntry(String id) {
     return entries.firstWhereOrNull((e) => e.id == id);

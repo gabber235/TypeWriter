@@ -2,6 +2,8 @@ package me.gabber235.typewriter.facts
 
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.entry.Entry
+import java.time.LocalDateTime
+import java.util.*
 
 data class FactEntry(
 	override val id: String,
@@ -9,6 +11,13 @@ data class FactEntry(
 	val lifetime: FactLifetime,
 	val data: String,
 ) : Entry
+
+
+val FactEntry.formattedName: String
+	get() = name.split(".")
+		.joinToString(" | ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+		.split("_")
+		.joinToString(" ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
 
 enum class FactLifetime {
 	@SerializedName("permanent")
@@ -27,15 +36,15 @@ enum class FactLifetime {
 	SESSION,    // Saved until a player logouts of the server
 }
 
-data class Fact(val name: String, val value: Int) {
+data class Fact(val id: String, val value: Int, val lastUpdate: LocalDateTime = LocalDateTime.now()) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (other !is Fact) return false
 
-		if (name != other.name) return false
+		if (id != other.id) return false
 
 		return true
 	}
 
-	override fun hashCode(): Int = name.hashCode()
+	override fun hashCode(): Int = id.hashCode()
 }

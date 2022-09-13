@@ -24,6 +24,7 @@ mixin _$PageModel {
   List<Speaker> get speakers => throw _privateConstructorUsedError;
   List<Event> get events => throw _privateConstructorUsedError;
   List<Dialogue> get dialogue => throw _privateConstructorUsedError;
+  List<ActionEntry> get actions => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,7 +40,8 @@ abstract class $PageModelCopyWith<$Res> {
       {List<Fact> facts,
       List<Speaker> speakers,
       List<Event> events,
-      List<Dialogue> dialogue});
+      List<Dialogue> dialogue,
+      List<ActionEntry> actions});
 }
 
 /// @nodoc
@@ -56,6 +58,7 @@ class _$PageModelCopyWithImpl<$Res> implements $PageModelCopyWith<$Res> {
     Object? speakers = freezed,
     Object? events = freezed,
     Object? dialogue = freezed,
+    Object? actions = freezed,
   }) {
     return _then(_value.copyWith(
       facts: facts == freezed
@@ -74,6 +77,10 @@ class _$PageModelCopyWithImpl<$Res> implements $PageModelCopyWith<$Res> {
           ? _value.dialogue
           : dialogue // ignore: cast_nullable_to_non_nullable
               as List<Dialogue>,
+      actions: actions == freezed
+          ? _value.actions
+          : actions // ignore: cast_nullable_to_non_nullable
+              as List<ActionEntry>,
     ));
   }
 }
@@ -88,7 +95,8 @@ abstract class _$$_PageModelCopyWith<$Res> implements $PageModelCopyWith<$Res> {
       {List<Fact> facts,
       List<Speaker> speakers,
       List<Event> events,
-      List<Dialogue> dialogue});
+      List<Dialogue> dialogue,
+      List<ActionEntry> actions});
 }
 
 /// @nodoc
@@ -107,6 +115,7 @@ class __$$_PageModelCopyWithImpl<$Res> extends _$PageModelCopyWithImpl<$Res>
     Object? speakers = freezed,
     Object? events = freezed,
     Object? dialogue = freezed,
+    Object? actions = freezed,
   }) {
     return _then(_$_PageModel(
       facts: facts == freezed
@@ -125,6 +134,10 @@ class __$$_PageModelCopyWithImpl<$Res> extends _$PageModelCopyWithImpl<$Res>
           ? _value._dialogue
           : dialogue // ignore: cast_nullable_to_non_nullable
               as List<Dialogue>,
+      actions: actions == freezed
+          ? _value._actions
+          : actions // ignore: cast_nullable_to_non_nullable
+              as List<ActionEntry>,
     ));
   }
 }
@@ -136,11 +149,13 @@ class _$_PageModel implements _PageModel {
       {final List<Fact> facts = const [],
       final List<Speaker> speakers = const [],
       final List<Event> events = const [],
-      final List<Dialogue> dialogue = const []})
+      final List<Dialogue> dialogue = const [],
+      final List<ActionEntry> actions = const []})
       : _facts = facts,
         _speakers = speakers,
         _events = events,
-        _dialogue = dialogue;
+        _dialogue = dialogue,
+        _actions = actions;
 
   factory _$_PageModel.fromJson(Map<String, dynamic> json) =>
       _$$_PageModelFromJson(json);
@@ -177,9 +192,17 @@ class _$_PageModel implements _PageModel {
     return EqualUnmodifiableListView(_dialogue);
   }
 
+  final List<ActionEntry> _actions;
+  @override
+  @JsonKey()
+  List<ActionEntry> get actions {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_actions);
+  }
+
   @override
   String toString() {
-    return 'PageModel(facts: $facts, speakers: $speakers, events: $events, dialogue: $dialogue)';
+    return 'PageModel(facts: $facts, speakers: $speakers, events: $events, dialogue: $dialogue, actions: $actions)';
   }
 
   @override
@@ -190,7 +213,8 @@ class _$_PageModel implements _PageModel {
             const DeepCollectionEquality().equals(other._facts, _facts) &&
             const DeepCollectionEquality().equals(other._speakers, _speakers) &&
             const DeepCollectionEquality().equals(other._events, _events) &&
-            const DeepCollectionEquality().equals(other._dialogue, _dialogue));
+            const DeepCollectionEquality().equals(other._dialogue, _dialogue) &&
+            const DeepCollectionEquality().equals(other._actions, _actions));
   }
 
   @JsonKey(ignore: true)
@@ -200,7 +224,8 @@ class _$_PageModel implements _PageModel {
       const DeepCollectionEquality().hash(_facts),
       const DeepCollectionEquality().hash(_speakers),
       const DeepCollectionEquality().hash(_events),
-      const DeepCollectionEquality().hash(_dialogue));
+      const DeepCollectionEquality().hash(_dialogue),
+      const DeepCollectionEquality().hash(_actions));
 
   @JsonKey(ignore: true)
   @override
@@ -220,7 +245,8 @@ abstract class _PageModel implements PageModel {
       {final List<Fact> facts,
       final List<Speaker> speakers,
       final List<Event> events,
-      final List<Dialogue> dialogue}) = _$_PageModel;
+      final List<Dialogue> dialogue,
+      final List<ActionEntry> actions}) = _$_PageModel;
 
   factory _PageModel.fromJson(Map<String, dynamic> json) =
       _$_PageModel.fromJson;
@@ -233,6 +259,8 @@ abstract class _PageModel implements PageModel {
   List<Event> get events;
   @override
   List<Dialogue> get dialogue;
+  @override
+  List<ActionEntry> get actions;
   @override
   @JsonKey(ignore: true)
   _$$_PageModelCopyWith<_$_PageModel> get copyWith =>
@@ -433,6 +461,7 @@ Speaker _$SpeakerFromJson(Map<String, dynamic> json) {
 mixin _$Speaker {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: "display_name")
   String get displayName => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -444,7 +473,10 @@ mixin _$Speaker {
 abstract class $SpeakerCopyWith<$Res> {
   factory $SpeakerCopyWith(Speaker value, $Res Function(Speaker) then) =
       _$SpeakerCopyWithImpl<$Res>;
-  $Res call({String id, String name, String displayName});
+  $Res call(
+      {String id,
+      String name,
+      @JsonKey(name: "display_name") String displayName});
 }
 
 /// @nodoc
@@ -484,7 +516,10 @@ abstract class _$$_SpeakerCopyWith<$Res> implements $SpeakerCopyWith<$Res> {
           _$_Speaker value, $Res Function(_$_Speaker) then) =
       __$$_SpeakerCopyWithImpl<$Res>;
   @override
-  $Res call({String id, String name, String displayName});
+  $Res call(
+      {String id,
+      String name,
+      @JsonKey(name: "display_name") String displayName});
 }
 
 /// @nodoc
@@ -523,7 +558,9 @@ class __$$_SpeakerCopyWithImpl<$Res> extends _$SpeakerCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_Speaker implements _Speaker {
   const _$_Speaker(
-      {required this.id, required this.name, this.displayName = ""});
+      {required this.id,
+      required this.name,
+      @JsonKey(name: "display_name") this.displayName = ""});
 
   factory _$_Speaker.fromJson(Map<String, dynamic> json) =>
       _$$_SpeakerFromJson(json);
@@ -533,7 +570,7 @@ class _$_Speaker implements _Speaker {
   @override
   final String name;
   @override
-  @JsonKey()
+  @JsonKey(name: "display_name")
   final String displayName;
 
   @override
@@ -577,7 +614,7 @@ abstract class _Speaker implements Speaker {
   const factory _Speaker(
       {required final String id,
       required final String name,
-      final String displayName}) = _$_Speaker;
+      @JsonKey(name: "display_name") final String displayName}) = _$_Speaker;
 
   factory _Speaker.fromJson(Map<String, dynamic> json) = _$_Speaker.fromJson;
 
@@ -586,6 +623,7 @@ abstract class _Speaker implements Speaker {
   @override
   String get name;
   @override
+  @JsonKey(name: "display_name")
   String get displayName;
   @override
   @JsonKey(ignore: true)
@@ -2515,6 +2553,778 @@ abstract class OptionDialogue implements Dialogue {
   @override
   @JsonKey(ignore: true)
   _$$OptionDialogueCopyWith<_$OptionDialogue> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+ActionEntry _$ActionEntryFromJson(Map<String, dynamic> json) {
+  switch (json['type']) {
+    case 'default':
+      return _ActionEntry.fromJson(json);
+    case 'simple':
+      return SimpleAction.fromJson(json);
+
+    default:
+      throw CheckedFromJsonException(
+          json, 'type', 'ActionEntry', 'Invalid union type "${json['type']}"!');
+  }
+}
+
+/// @nodoc
+mixin _$ActionEntry {
+  String get name => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy => throw _privateConstructorUsedError;
+  List<String> get triggers => throw _privateConstructorUsedError;
+  List<Criterion> get criteria => throw _privateConstructorUsedError;
+  List<Criterion> get modifiers => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        $default, {
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        simple,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        simple,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        simple,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ActionEntry value) $default, {
+    required TResult Function(SimpleAction value) simple,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult Function(_ActionEntry value)? $default, {
+    TResult Function(SimpleAction value)? simple,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ActionEntry value)? $default, {
+    TResult Function(SimpleAction value)? simple,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $ActionEntryCopyWith<ActionEntry> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ActionEntryCopyWith<$Res> {
+  factory $ActionEntryCopyWith(
+          ActionEntry value, $Res Function(ActionEntry) then) =
+      _$ActionEntryCopyWithImpl<$Res>;
+  $Res call(
+      {String name,
+      String id,
+      @JsonKey(name: "triggered_by") List<String> triggeredBy,
+      List<String> triggers,
+      List<Criterion> criteria,
+      List<Criterion> modifiers});
+}
+
+/// @nodoc
+class _$ActionEntryCopyWithImpl<$Res> implements $ActionEntryCopyWith<$Res> {
+  _$ActionEntryCopyWithImpl(this._value, this._then);
+
+  final ActionEntry _value;
+  // ignore: unused_field
+  final $Res Function(ActionEntry) _then;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? id = freezed,
+    Object? triggeredBy = freezed,
+    Object? triggers = freezed,
+    Object? criteria = freezed,
+    Object? modifiers = freezed,
+  }) {
+    return _then(_value.copyWith(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      triggeredBy: triggeredBy == freezed
+          ? _value.triggeredBy
+          : triggeredBy // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      triggers: triggers == freezed
+          ? _value.triggers
+          : triggers // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      criteria: criteria == freezed
+          ? _value.criteria
+          : criteria // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+      modifiers: modifiers == freezed
+          ? _value.modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+    ));
+  }
+}
+
+/// @nodoc
+abstract class _$$_ActionEntryCopyWith<$Res>
+    implements $ActionEntryCopyWith<$Res> {
+  factory _$$_ActionEntryCopyWith(
+          _$_ActionEntry value, $Res Function(_$_ActionEntry) then) =
+      __$$_ActionEntryCopyWithImpl<$Res>;
+  @override
+  $Res call(
+      {String name,
+      String id,
+      @JsonKey(name: "triggered_by") List<String> triggeredBy,
+      List<String> triggers,
+      List<Criterion> criteria,
+      List<Criterion> modifiers});
+}
+
+/// @nodoc
+class __$$_ActionEntryCopyWithImpl<$Res> extends _$ActionEntryCopyWithImpl<$Res>
+    implements _$$_ActionEntryCopyWith<$Res> {
+  __$$_ActionEntryCopyWithImpl(
+      _$_ActionEntry _value, $Res Function(_$_ActionEntry) _then)
+      : super(_value, (v) => _then(v as _$_ActionEntry));
+
+  @override
+  _$_ActionEntry get _value => super._value as _$_ActionEntry;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? id = freezed,
+    Object? triggeredBy = freezed,
+    Object? triggers = freezed,
+    Object? criteria = freezed,
+    Object? modifiers = freezed,
+  }) {
+    return _then(_$_ActionEntry(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      triggeredBy: triggeredBy == freezed
+          ? _value._triggeredBy
+          : triggeredBy // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      triggers: triggers == freezed
+          ? _value._triggers
+          : triggers // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      criteria: criteria == freezed
+          ? _value._criteria
+          : criteria // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+      modifiers: modifiers == freezed
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_ActionEntry implements _ActionEntry {
+  const _$_ActionEntry(
+      {required this.name,
+      required this.id,
+      @JsonKey(name: "triggered_by") final List<String> triggeredBy = const [],
+      final List<String> triggers = const [],
+      final List<Criterion> criteria = const [],
+      final List<Criterion> modifiers = const [],
+      final String? $type})
+      : _triggeredBy = triggeredBy,
+        _triggers = triggers,
+        _criteria = criteria,
+        _modifiers = modifiers,
+        $type = $type ?? 'default';
+
+  factory _$_ActionEntry.fromJson(Map<String, dynamic> json) =>
+      _$$_ActionEntryFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String id;
+  final List<String> _triggeredBy;
+  @override
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggeredBy);
+  }
+
+  final List<String> _triggers;
+  @override
+  @JsonKey()
+  List<String> get triggers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggers);
+  }
+
+  final List<Criterion> _criteria;
+  @override
+  @JsonKey()
+  List<Criterion> get criteria {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_criteria);
+  }
+
+  final List<Criterion> _modifiers;
+  @override
+  @JsonKey()
+  List<Criterion> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
+
+  @JsonKey(name: 'type')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'ActionEntry(name: $name, id: $id, triggeredBy: $triggeredBy, triggers: $triggers, criteria: $criteria, modifiers: $modifiers)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_ActionEntry &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality()
+                .equals(other._triggeredBy, _triggeredBy) &&
+            const DeepCollectionEquality().equals(other._triggers, _triggers) &&
+            const DeepCollectionEquality().equals(other._criteria, _criteria) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(_triggeredBy),
+      const DeepCollectionEquality().hash(_triggers),
+      const DeepCollectionEquality().hash(_criteria),
+      const DeepCollectionEquality().hash(_modifiers));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$_ActionEntryCopyWith<_$_ActionEntry> get copyWith =>
+      __$$_ActionEntryCopyWithImpl<_$_ActionEntry>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        $default, {
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        simple,
+  }) {
+    return $default(name, id, triggeredBy, triggers, criteria, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        simple,
+  }) {
+    return $default?.call(name, id, triggeredBy, triggers, criteria, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        simple,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(name, id, triggeredBy, triggers, criteria, modifiers);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ActionEntry value) $default, {
+    required TResult Function(SimpleAction value) simple,
+  }) {
+    return $default(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult Function(_ActionEntry value)? $default, {
+    TResult Function(SimpleAction value)? simple,
+  }) {
+    return $default?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ActionEntry value)? $default, {
+    TResult Function(SimpleAction value)? simple,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_ActionEntryToJson(
+      this,
+    );
+  }
+}
+
+abstract class _ActionEntry implements ActionEntry {
+  const factory _ActionEntry(
+      {required final String name,
+      required final String id,
+      @JsonKey(name: "triggered_by") final List<String> triggeredBy,
+      final List<String> triggers,
+      final List<Criterion> criteria,
+      final List<Criterion> modifiers}) = _$_ActionEntry;
+
+  factory _ActionEntry.fromJson(Map<String, dynamic> json) =
+      _$_ActionEntry.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get id;
+  @override
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy;
+  @override
+  List<String> get triggers;
+  @override
+  List<Criterion> get criteria;
+  @override
+  List<Criterion> get modifiers;
+  @override
+  @JsonKey(ignore: true)
+  _$$_ActionEntryCopyWith<_$_ActionEntry> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SimpleActionCopyWith<$Res>
+    implements $ActionEntryCopyWith<$Res> {
+  factory _$$SimpleActionCopyWith(
+          _$SimpleAction value, $Res Function(_$SimpleAction) then) =
+      __$$SimpleActionCopyWithImpl<$Res>;
+  @override
+  $Res call(
+      {String name,
+      String id,
+      @JsonKey(name: "triggered_by") List<String> triggeredBy,
+      List<String> triggers,
+      List<Criterion> criteria,
+      List<Criterion> modifiers});
+}
+
+/// @nodoc
+class __$$SimpleActionCopyWithImpl<$Res> extends _$ActionEntryCopyWithImpl<$Res>
+    implements _$$SimpleActionCopyWith<$Res> {
+  __$$SimpleActionCopyWithImpl(
+      _$SimpleAction _value, $Res Function(_$SimpleAction) _then)
+      : super(_value, (v) => _then(v as _$SimpleAction));
+
+  @override
+  _$SimpleAction get _value => super._value as _$SimpleAction;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? id = freezed,
+    Object? triggeredBy = freezed,
+    Object? triggers = freezed,
+    Object? criteria = freezed,
+    Object? modifiers = freezed,
+  }) {
+    return _then(_$SimpleAction(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      triggeredBy: triggeredBy == freezed
+          ? _value._triggeredBy
+          : triggeredBy // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      triggers: triggers == freezed
+          ? _value._triggers
+          : triggers // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      criteria: criteria == freezed
+          ? _value._criteria
+          : criteria // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+      modifiers: modifiers == freezed
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SimpleAction implements SimpleAction {
+  const _$SimpleAction(
+      {required this.name,
+      required this.id,
+      @JsonKey(name: "triggered_by") final List<String> triggeredBy = const [],
+      final List<String> triggers = const [],
+      final List<Criterion> criteria = const [],
+      final List<Criterion> modifiers = const [],
+      final String? $type})
+      : _triggeredBy = triggeredBy,
+        _triggers = triggers,
+        _criteria = criteria,
+        _modifiers = modifiers,
+        $type = $type ?? 'simple';
+
+  factory _$SimpleAction.fromJson(Map<String, dynamic> json) =>
+      _$$SimpleActionFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String id;
+  final List<String> _triggeredBy;
+  @override
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggeredBy);
+  }
+
+  final List<String> _triggers;
+  @override
+  @JsonKey()
+  List<String> get triggers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggers);
+  }
+
+  final List<Criterion> _criteria;
+  @override
+  @JsonKey()
+  List<Criterion> get criteria {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_criteria);
+  }
+
+  final List<Criterion> _modifiers;
+  @override
+  @JsonKey()
+  List<Criterion> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
+
+  @JsonKey(name: 'type')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'ActionEntry.simple(name: $name, id: $id, triggeredBy: $triggeredBy, triggers: $triggers, criteria: $criteria, modifiers: $modifiers)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SimpleAction &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality()
+                .equals(other._triggeredBy, _triggeredBy) &&
+            const DeepCollectionEquality().equals(other._triggers, _triggers) &&
+            const DeepCollectionEquality().equals(other._criteria, _criteria) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(_triggeredBy),
+      const DeepCollectionEquality().hash(_triggers),
+      const DeepCollectionEquality().hash(_criteria),
+      const DeepCollectionEquality().hash(_modifiers));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$SimpleActionCopyWith<_$SimpleAction> get copyWith =>
+      __$$SimpleActionCopyWithImpl<_$SimpleAction>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        $default, {
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        simple,
+  }) {
+    return simple(name, id, triggeredBy, triggers, criteria, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        simple,
+  }) {
+    return simple?.call(name, id, triggeredBy, triggers, criteria, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        simple,
+    required TResult orElse(),
+  }) {
+    if (simple != null) {
+      return simple(name, id, triggeredBy, triggers, criteria, modifiers);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ActionEntry value) $default, {
+    required TResult Function(SimpleAction value) simple,
+  }) {
+    return simple(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult Function(_ActionEntry value)? $default, {
+    TResult Function(SimpleAction value)? simple,
+  }) {
+    return simple?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ActionEntry value)? $default, {
+    TResult Function(SimpleAction value)? simple,
+    required TResult orElse(),
+  }) {
+    if (simple != null) {
+      return simple(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SimpleActionToJson(
+      this,
+    );
+  }
+}
+
+abstract class SimpleAction implements ActionEntry {
+  const factory SimpleAction(
+      {required final String name,
+      required final String id,
+      @JsonKey(name: "triggered_by") final List<String> triggeredBy,
+      final List<String> triggers,
+      final List<Criterion> criteria,
+      final List<Criterion> modifiers}) = _$SimpleAction;
+
+  factory SimpleAction.fromJson(Map<String, dynamic> json) =
+      _$SimpleAction.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get id;
+  @override
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy;
+  @override
+  List<String> get triggers;
+  @override
+  List<Criterion> get criteria;
+  @override
+  List<Criterion> get modifiers;
+  @override
+  @JsonKey(ignore: true)
+  _$$SimpleActionCopyWith<_$SimpleAction> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

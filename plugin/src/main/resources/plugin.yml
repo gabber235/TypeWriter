@@ -2,7 +2,7 @@ name: Typewriter
 version: '${version}'
 main: me.gabber235.typewriter.Typewriter
 api-version: 1.18
-softdepend: [ Citizens, Floodgate ]
+softdepend: [ Citizens, floodgate ]
 depend: [ ProtocolLib ]
 authors: [ gabber235 ]
 description: Minecraft's Real Quest Plugin

@@ -23,6 +23,10 @@ _$_PageModel _$$_PageModelFromJson(Map<String, dynamic> json) => _$_PageModel(
               ?.map((e) => Dialogue.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      actions: (json['actions'] as List<dynamic>?)
+              ?.map((e) => ActionEntry.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$_PageModelToJson(_$_PageModel instance) =>
@@ -31,6 +35,7 @@ Map<String, dynamic> _$$_PageModelToJson(_$_PageModel instance) =>
       'speakers': instance.speakers,
       'events': instance.events,
       'dialogue': instance.dialogue,
+      'actions': instance.actions,
     };
 
 _$_Fact _$$_FactFromJson(Map<String, dynamic> json) => _$_Fact(
@@ -59,14 +64,14 @@ const _$FactLifetimeEnumMap = {
 _$_Speaker _$$_SpeakerFromJson(Map<String, dynamic> json) => _$_Speaker(
       id: json['id'] as String,
       name: json['name'] as String,
-      displayName: json['displayName'] as String? ?? "",
+      displayName: json['display_name'] as String? ?? "",
     );
 
 Map<String, dynamic> _$$_SpeakerToJson(_$_Speaker instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'displayName': instance.displayName,
+      'display_name': instance.displayName,
     };
 
 _$_Event _$$_EventFromJson(Map<String, dynamic> json) => _$_Event(
@@ -223,6 +228,74 @@ Map<String, dynamic> _$$OptionDialogueToJson(_$OptionDialogue instance) =>
       'criteria': instance.criteria,
       'modifiers': instance.modifiers,
       'options': instance.options,
+      'type': instance.$type,
+    };
+
+_$_ActionEntry _$$_ActionEntryFromJson(Map<String, dynamic> json) =>
+    _$_ActionEntry(
+      name: json['name'] as String,
+      id: json['id'] as String,
+      triggeredBy: (json['triggered_by'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      triggers: (json['triggers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      criteria: (json['criteria'] as List<dynamic>?)
+              ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      $type: json['type'] as String?,
+    );
+
+Map<String, dynamic> _$$_ActionEntryToJson(_$_ActionEntry instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'id': instance.id,
+      'triggered_by': instance.triggeredBy,
+      'triggers': instance.triggers,
+      'criteria': instance.criteria,
+      'modifiers': instance.modifiers,
+      'type': instance.$type,
+    };
+
+_$SimpleAction _$$SimpleActionFromJson(Map<String, dynamic> json) =>
+    _$SimpleAction(
+      name: json['name'] as String,
+      id: json['id'] as String,
+      triggeredBy: (json['triggered_by'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      triggers: (json['triggers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      criteria: (json['criteria'] as List<dynamic>?)
+              ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      $type: json['type'] as String?,
+    );
+
+Map<String, dynamic> _$$SimpleActionToJson(_$SimpleAction instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'id': instance.id,
+      'triggered_by': instance.triggeredBy,
+      'triggers': instance.triggers,
+      'criteria': instance.criteria,
+      'modifiers': instance.modifiers,
       'type': instance.$type,
     };
 

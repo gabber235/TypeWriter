@@ -15,6 +15,7 @@ interface TriggerEntry : Entry {
 interface RuleEntry : TriggerEntry {
 	val criteria: List<Criteria>
 	val modifiers: List<Modifier>
+	val triggerdBy: List<String>
 }
 
 enum class CriteriaOperator {
@@ -40,7 +41,7 @@ data class Criteria(
 	val value: Int,
 ) {
 	fun isValid(facts: Set<Fact>): Boolean {
-		val value = facts.find { it.name == this.fact }?.value ?: 0
+		val value = facts.find { it.id == this.fact }?.value ?: 0
 		return when (operator) {
 			CriteriaOperator.EQUALS                -> value == this.value
 			CriteriaOperator.LESS_THAN             -> value < this.value

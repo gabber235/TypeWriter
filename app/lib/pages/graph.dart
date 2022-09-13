@@ -52,6 +52,17 @@ class PageNotifier extends StateNotifier<PageModel> {
     return speaker;
   }
 
+  Event addEvent() {
+    final event = NpcEvent(
+      name: "new_event",
+      id: getRandomString(15),
+      identifier: "",
+      triggers: [],
+    );
+    insertEvent(event);
+    return event;
+  }
+
   SpokenDialogue addDialogue() {
     final dialogue = SpokenDialogue(
       name: "new_dialogue",
@@ -65,15 +76,15 @@ class PageNotifier extends StateNotifier<PageModel> {
     return dialogue;
   }
 
-  Event addEvent() {
-    final event = NpcEvent(
-      name: "new_event",
+  ActionEntry addAction() {
+    final action = ActionEntry.simple(
+      name: "new_action",
       id: getRandomString(15),
-      identifier: "",
+      triggeredBy: [],
       triggers: [],
     );
-    insertEvent(event);
-    return event;
+    insertAction(action);
+    return action;
   }
 
   void insertFact(Fact fact) {
@@ -98,6 +109,11 @@ class PageNotifier extends StateNotifier<PageModel> {
       ...state.dialogue.where((d) => d.id != dialogue.id),
       dialogue
     ]);
+  }
+
+  void insertAction(ActionEntry action) {
+    state = state.copyWith(
+        actions: [...state.actions.where((a) => a.id != action.id), action]);
   }
 
   void transformType(TriggerEntry entry, String type) {
@@ -140,6 +156,20 @@ class PageNotifier extends StateNotifier<PageModel> {
       }
 
       insertDialogue(dialogue);
+    } else if (entry is ActionEntry) {
+      ActionEntry action = entry;
+      if (type == "simple") {
+        action = ActionEntry.simple(
+          name: action.name,
+          id: action.id,
+          triggers: action.triggers,
+          triggeredBy: action.triggeredBy,
+          criteria: action.criteria,
+          modifiers: action.modifiers,
+        );
+      }
+
+      insertAction(action);
     }
   }
 
@@ -149,6 +179,7 @@ class PageNotifier extends StateNotifier<PageModel> {
       speakers: state.speakers.where((e) => e.id != id).toList(),
       events: state.events.where((e) => e.id != id).toList(),
       dialogue: state.dialogue.where((d) => d.id != id).toList(),
+      actions: state.actions.where((a) => a.id != id).toList(),
     );
   }
 }
@@ -188,8 +219,8 @@ class PageGraph extends HookConsumerWidget {
         children: [
           const _Graph(),
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 1500),
-            curve: Curves.elasticOut,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOutCubic,
             bottom: 0,
             left: 0,
             right: selected != null ? 450 : 0,
@@ -316,6 +347,22 @@ class _AppBar extends HookConsumerWidget {
         },
       ),
       actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: TextButton(
+            onPressed: () {
+              final action = ref.read(pageProvider.notifier).addAction();
+              ref.read(selectedProvider.notifier).state = action.id;
+            },
+            child: Row(
+              children: const [
+                Text("Add Action"),
+                SizedBox(width: 8),
+                Icon(FontAwesomeIcons.personRunning, size: 18),
+              ],
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextButton(
@@ -487,6 +534,7 @@ extension IconExtension on Entry {
     if (isSpeaker) return _speakerIcon(context);
     if (isEvent) return _eventIcon(context);
     if (isDialogue) return _dialogueIcon(context);
+    if (isAction) return _actionIcon(context);
     return null;
   }
 
@@ -538,5 +586,12 @@ extension IconExtension on Entry {
           size: 18, color: dialogue.textColor(context));
     }
     return null;
+  }
+
+  Widget? _actionIcon(BuildContext context) {
+    final action = asAction;
+    if (action == null) return null;
+    return Icon(FontAwesomeIcons.personRunning,
+        size: 18, color: action.textColor(context));
   }
 }

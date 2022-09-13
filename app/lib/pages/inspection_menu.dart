@@ -89,6 +89,12 @@ class Inspector extends HookConsumerWidget {
       return Theme(
           data: themData, child: _DialogueInspector(dialogue: dialogue));
     }
+
+    final action = entry.asAction;
+    if (action != null) {
+      return Theme(data: themData, child: _ActionInspector(action: action));
+    }
+
     return Container();
   }
 }
@@ -275,17 +281,13 @@ class _DialogueInspector extends HookConsumerWidget {
               .insertDialogue(dialogue.copyWith(triggeredBy: [
                 ...dialogue.triggeredBy.where((e) => e != value),
               ])),
-          onQuery: (value) => ref
-              .read(pageProvider)
-              .triggerEntries
-              .expand((entry) => [
+          onQuery: (value) =>
+              ref.read(pageProvider).triggerEntries.expand((entry) => [
                     ...entry.triggers,
                     if (entry is RuleEntry) ...entry.triggeredBy,
                     if (entry is OptionDialogue)
                       ...entry.options.expand((e) => e.triggers),
-                  ])
-              .toSet()
-            ..addAll(["system.interaction.start", "system.interaction.end"]),
+                  ]),
         ),
         const Divider(),
         const _SectionTitle(title: "Criteria"),
@@ -360,6 +362,143 @@ class _DialogueInspector extends HookConsumerWidget {
         ],
         const Divider(),
         _Operations(entry: dialogue),
+      ],
+    );
+  }
+}
+
+class _ActionInspector extends HookConsumerWidget {
+  final ActionEntry action;
+
+  const _ActionInspector({
+    Key? key,
+    required this.action,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        _EntryInformation(
+          entry: action,
+          onNameChanged: (name) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(name: name)),
+        ),
+        const Divider(),
+        _TriggersField(
+          title: "Triggers",
+          triggers: action.triggers,
+          onAdd: () => ref.read(pageProvider.notifier).insertAction(
+              action.copyWith(triggers: [...action.triggers, ""])),
+          onChanged: (index, trigger) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(triggers: [
+                ...action.triggers.sublist(0, index),
+                trigger,
+                ...action.triggers.sublist(index + 1),
+              ])),
+          onRemove: (trigger) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(triggers: [
+                ...action.triggers.where((e) => e != trigger),
+              ])),
+        ),
+        const Divider(),
+        const _SectionTitle(title: "Triggered By"),
+        const SizedBox(height: 8),
+        _SizableList(
+          hintText: "Enter a trigger",
+          addButtonText: "Add Trigger By",
+          icon: FontAwesomeIcons.satelliteDish,
+          list: action.triggeredBy,
+          onAdd: () => ref.read(pageProvider.notifier).insertAction(
+              action.copyWith(triggeredBy: [...action.triggeredBy, ""])),
+          onChanged: (index, value) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(triggeredBy: [
+                ...action.triggeredBy.sublist(0, index),
+                value,
+                ...action.triggeredBy.sublist(index + 1),
+              ])),
+          onRemove: (value) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(triggeredBy: [
+                ...action.triggeredBy.where((e) => e != value),
+              ])),
+          onQuery: (value) => ref
+              .read(pageProvider)
+              .triggerEntries
+              .expand((entry) => [
+                    ...entry.triggers,
+                    if (entry is RuleEntry) ...entry.triggeredBy,
+                    if (entry is OptionDialogue)
+                      ...entry.options.expand((e) => e.triggers),
+                  ])
+              .toSet(),
+        ),
+        const Divider(),
+        const _SectionTitle(title: "Criteria"),
+        const SizedBox(height: 8),
+        _CriteriaField(
+          criteria: action.criteria,
+          operators: const ["==", ">=", "<=", ">", "<"],
+          onAdd: () => ref.read(pageProvider.notifier).insertAction(action
+                  .copyWith(criteria: [
+                ...action.criteria,
+                const Criterion(fact: "", operator: "==", value: 0)
+              ])),
+          onChanged: (index, criterion) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(criteria: [
+                ...action.criteria.sublist(0, index),
+                criterion,
+                ...action.criteria.sublist(index + 1),
+              ])),
+          onRemove: (index) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(criteria: [
+                ...action.criteria.sublist(0, index),
+                ...action.criteria.sublist(index + 1),
+              ])),
+        ),
+        const Divider(),
+        const _SectionTitle(title: "Modifiers"),
+        const SizedBox(height: 8),
+        _CriteriaField(
+          addButtonText: "Add Modifier",
+          criteria: action.modifiers,
+          operators: const ["=", "+"],
+          onAdd: () => ref.read(pageProvider.notifier).insertAction(action
+                  .copyWith(modifiers: [
+                ...action.modifiers,
+                const Criterion(fact: "", operator: "=", value: 0)
+              ])),
+          onChanged: (index, criterion) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(modifiers: [
+                ...action.modifiers.sublist(0, index),
+                criterion,
+                ...action.modifiers.sublist(index + 1),
+              ])),
+          onRemove: (index) => ref
+              .read(pageProvider.notifier)
+              .insertAction(action.copyWith(modifiers: [
+                ...action.modifiers.sublist(0, index),
+                ...action.modifiers.sublist(index + 1),
+              ])),
+        ),
+        const Divider(),
+        const _SectionTitle(title: "Type"),
+        const SizedBox(height: 8),
+        _TypeSelector(
+            types: const ["simple"],
+            selected: action.type,
+            onChanged: (type) =>
+                ref.read(pageProvider.notifier).transformType(action, type)),
+        const Divider(),
+        _Operations(entry: action),
       ],
     );
   }

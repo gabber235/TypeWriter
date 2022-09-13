@@ -60,16 +60,20 @@ class StaticEntries extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final type = ref.watch(_typeProvider);
+    final selected = ref.watch(selectedProvider);
     List<Entry> entries = ref.watch(type.selectEntries(ref));
 
     final dummy = type.createDummy();
     final bgColor = dummy.backgroundColor(context);
     final textColor = dummy.textColor(context);
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(topRight: Radius.circular(8)),
-        border: Border.all(color: bgColor),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(selected.isNotEmpty ? 8 : 0)),
+        border: Border.all(color: bgColor, width: 3),
       ),
       child: Column(
         children: [
