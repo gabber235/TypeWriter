@@ -551,9 +551,6 @@ extension IconExtension on Entry {
       case FactLifetime.timed:
         return Icon(FontAwesomeIcons.stopwatch,
             size: 18, color: fact.textColor(context));
-      case FactLifetime.server:
-        return Icon(FontAwesomeIcons.server,
-            size: 18, color: fact.textColor(context));
       case FactLifetime.session:
         return Icon(FontAwesomeIcons.userClock,
             size: 18, color: fact.textColor(context));

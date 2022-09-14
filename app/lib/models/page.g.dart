@@ -57,7 +57,6 @@ const _$FactLifetimeEnumMap = {
   FactLifetime.permanent: 'permanent',
   FactLifetime.cron: 'cron',
   FactLifetime.timed: 'timed',
-  FactLifetime.server: 'server',
   FactLifetime.session: 'session',
 };
 

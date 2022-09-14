@@ -13,7 +13,7 @@ import me.gabber235.typewriter.entry.event.entries.NpcEventEntry
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.facts.FactEntry
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import java.io.File
+import me.gabber235.typewriter.utils.get
 import kotlin.reflect.KClass
 
 object EntryDatabase {
@@ -90,7 +90,5 @@ private class Page(
 	val dialogue: List<DialogueEntry> = listOf(),
 	val actions: List<ActionEntry> = listOf(),
 )
-
-private operator fun File.get(name: String): File = File(this, name)
 
 fun Iterable<Criteria>.matches(facts: Set<Fact>): Boolean = all { it.isValid(facts) }

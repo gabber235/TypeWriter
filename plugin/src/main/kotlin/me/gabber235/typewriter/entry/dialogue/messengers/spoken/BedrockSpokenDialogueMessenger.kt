@@ -5,7 +5,7 @@ import me.gabber235.typewriter.entry.dialogue.messengers.Messenger
 import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
 import me.gabber235.typewriter.utils.legacy
 import org.bukkit.entity.Player
-import org.geysermc.cumulus.form.CustomForm
+import org.geysermc.cumulus.form.SimpleForm
 import org.geysermc.floodgate.api.FloodgateApi
 
 class BedrockSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
@@ -14,9 +14,10 @@ class BedrockSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry)
 		super.init(player)
 		FloodgateApi.getInstance().sendForm(
 			player.uniqueId,
-			CustomForm.builder()
+			SimpleForm.builder()
 				.title("<bold>${entry.speakerDisplayName}</bold>".legacy())
-				.label("${entry.text.legacy()}\n\n")
+				.content("${entry.text.legacy()}\n\n")
+				.button("Continue")
 				.closedOrInvalidResultHandler { _, _ ->
 					state = MessengerState.CANCELLED
 				}

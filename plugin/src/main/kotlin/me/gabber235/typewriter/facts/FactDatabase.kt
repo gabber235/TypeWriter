@@ -1,32 +1,105 @@
 package me.gabber235.typewriter.facts
 
+import com.github.shynixn.mccoroutine.launchAsync
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.entry.Modifier
-import me.gabber235.typewriter.entry.ModifierOperator
+import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.facts.storage.FileFactStorage
 import org.bukkit.entity.Player
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedDeque
 
 object FactDatabase {
-	private val facts = ConcurrentHashMap<UUID, Set<Fact>>()
+	private lateinit var storage: FactStorage
+
+	// Local stored version of player facts
+	private val cache = ConcurrentHashMap<UUID, Set<Fact>>()
+
+	// Queue of players which facts need to be saved
+	private val flush = ConcurrentLinkedDeque<UUID>()
 
 	fun init() {
+		storage = FileFactStorage()
+		storage.init()
+
+		plugin.listen<AsyncPlayerPreLoginEvent> { event ->
+			runBlocking {
+				loadFacts(event.uniqueId)
+			}
+		}
+
 		plugin.listen<PlayerQuitEvent> { event ->
-			facts.remove(event.player.uniqueId)
+			val facts = cache.remove(event.player.uniqueId)
+			if (facts != null) {
+				plugin.launchAsync {
+					storeFacts(event.player.uniqueId)
+				}
+			}
+		}
+
+		plugin.launchAsync {
+			while (plugin.isEnabled) {
+				delay(1000)
+				cache.keys.forEach { uuid ->
+					cache.computeIfPresent(uuid) { _, facts ->
+						val newFacts = facts.filterExpiredFacts()
+						if (newFacts.size != facts.size) flush.add(uuid)
+						newFacts
+					}
+				}
+
+				while (flush.isNotEmpty()) {
+					storeFacts(flush.poll())
+				}
+			}
 		}
 	}
 
-	fun getFacts(uuid: UUID): Set<Fact> = facts.getOrPut(uuid) { emptySet() }
+	fun shutdown() {
+		runBlocking {
+			cache.keys.forEach { uuid ->
+				storeFacts(uuid)
+			}
+		}
+		flush.clear()
+		storage.shutdown()
+	}
+
+	private fun Set<Fact>.filterExpiredFacts(): Set<Fact> {
+		return filter { !it.hasExpired }.toSet()
+	}
+
+	private fun Set<Fact>.filterSavableFacts(): Set<Fact> {
+		val ignore = EntryDatabase.facts.filter { it.lifetime == FactLifetime.SESSION }.map { it.id }
+		return filter { !ignore.contains(it.id) }.toSet()
+	}
+
+	private suspend fun loadFacts(uuid: UUID): Set<Fact> {
+		val facts = storage.loadFacts(uuid)
+			.filterExpiredFacts()
+		cache[uuid] = facts
+		return facts
+	}
+
+	private suspend fun storeFacts(uuid: UUID) {
+		val facts = cache[uuid]?.filterExpiredFacts()?.filterSavableFacts() ?: return
+		storage.storeFacts(uuid, facts)
+	}
+
+	fun getFacts(uuid: UUID): Set<Fact> = cache.getOrPut(uuid) { emptySet() }
 	fun getFact(uuid: UUID, name: String): Fact {
 		val facts = getFacts(uuid)
 		val fact = facts.find { it.id == name }
 		return if (fact != null) fact
 		else {
 			val newFact = Fact(name, 0)
-			this.facts[uuid] = facts + newFact
+			this.cache[uuid] = facts + newFact
 			newFact
 		}
 	}
@@ -45,11 +118,12 @@ object FactDatabase {
 	}
 
 	fun modify(uuid: UUID, modifier: FactsModifier.() -> Unit) {
-		facts.compute(uuid) { _, facts ->
+		cache.compute(uuid) { _, facts ->
 			val factsModifier = FactsModifier(facts ?: emptySet())
 			modifier(factsModifier)
 			factsModifier.build()
 		}
+		flush.add(uuid)
 	}
 }
 

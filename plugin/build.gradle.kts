@@ -39,6 +39,8 @@ dependencies {
 	compileOnly("com.google.code.gson:gson:2.9.1")
 	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
+	
+	testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
 
 val targetJavaVersion = 17
@@ -46,6 +48,10 @@ java {
 	val javaVersion = JavaVersion.toVersion(targetJavaVersion)
 	sourceCompatibility = javaVersion
 	targetCompatibility = javaVersion
+}
+
+tasks.test {
+	useJUnitPlatform()
 }
 
 

@@ -50,7 +50,6 @@ enum FactLifetime {
   permanent("Saved permanently, it never gets removed"),
   cron("Saved until a specified date, like \"0 0 * * 1\""),
   timed("Saved for a specified duration, like 20 minutes"),
-  server("Saved until the shutdown of a server"),
   session("Saved until a player logouts of the server"),
   ;
 

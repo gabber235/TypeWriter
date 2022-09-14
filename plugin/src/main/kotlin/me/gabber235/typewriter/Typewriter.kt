@@ -50,6 +50,7 @@ class Typewriter : KotlinPlugin() {
 
 	override fun onDisable() {
 		InteractionHandler.shutdown()
+		FactDatabase.shutdown()
 		adventure.close()
 	}
 }
