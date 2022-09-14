@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entry.dialogue.entries.OptionDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.messengers.Messenger
 import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
 import me.gabber235.typewriter.entry.matches
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.facts.facts
 import me.gabber235.typewriter.utils.legacy
 import org.bukkit.entity.Player
@@ -26,18 +27,18 @@ class BedrockOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry)
 		get() = entry.modifiers + selected.modifiers
 
 
-	override fun init(player: Player) {
-		super.init(player)
+	override fun init() {
+		super.init()
 		val facts = player.facts
 		usableOptions = entry.options.filter { it.criteria.matches(facts) }
 		FloodgateApi.getInstance().sendForm(
 			player.uniqueId,
 			CustomForm.builder()
 				.title("<bold>${entry.speakerDisplayName}</bold>".legacy())
-				.label("${entry.text.legacy()}\n\n\n")
+				.label("${entry.text.parsePlaceholders(player).legacy()}\n\n\n")
 				.dropdown(
 					"Select Response",
-					usableOptions.map { it.text.legacy() })
+					usableOptions.map { it.text.parsePlaceholders(player).legacy() })
 				.label("\n\n\n\n")
 				.closedOrInvalidResultHandler { _, _ ->
 					state = MessengerState.CANCELLED

@@ -19,6 +19,8 @@ repositories {
 	maven("https://oss.sonatype.org/content/groups/public/")
 	maven("https://libraries.minecraft.net/")
 	maven("https://repo.codemc.io/repository/maven-snapshots/")
+	maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+	maven("https://repo.bg-software.com/repository/api/")
 	maven("https://repo.opencollab.dev/maven-snapshots/")
 }
 
@@ -28,18 +30,20 @@ dependencies {
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 	implementation("com.github.dyam0:LirandAPI:26f60a4baa")
-	compileOnly("com.mojang:brigadier:1.0.18")
 	implementation("net.kyori:adventure-api:4.11.0")
 	implementation("net.kyori:adventure-text-minimessage:4.11.0")
 	implementation("net.kyori:adventure-text-serializer-plain:4.11.0")
 	implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
 	implementation("net.kyori:adventure-text-serializer-gson:4.11.0")
 	implementation("net.kyori:adventure-platform-bukkit:4.1.2")
+	compileOnly("com.mojang:brigadier:1.0.18")
+	compileOnly("me.clip:placeholderapi:2.11.2")
 	compileOnly("net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT")
+	compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.11.1")
 	compileOnly("com.google.code.gson:gson:2.9.1")
 	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
-	
+
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
 

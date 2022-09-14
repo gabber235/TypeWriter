@@ -1,7 +1,8 @@
 package me.gabber235.typewriter.entry.dialogue.entries
 
 import com.google.gson.annotations.SerializedName
-import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.entry.Criteria
+import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.dialogue.DialogueEntry
 
 data class OptionDialogueEntry(
@@ -13,12 +14,9 @@ data class OptionDialogueEntry(
 	override val triggers: List<String> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	override val text: String = "",
-	val speaker: String = "",
+	override val speaker: String = "",
 	val options: List<Option> = emptyList(),
-) : DialogueEntry {
-	val speakerDisplayName: String
-		get() = EntryDatabase.getSpeaker(speaker)?.displayName ?: ""
-}
+) : DialogueEntry
 
 data class Option(
 	val text: String = "",

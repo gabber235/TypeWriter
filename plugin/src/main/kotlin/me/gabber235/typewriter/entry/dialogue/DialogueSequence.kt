@@ -8,34 +8,38 @@ import me.gabber235.typewriter.interaction.InteractionHandler
 import org.bukkit.entity.Player
 
 class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) {
-
 	private var currentEntry: DialogueEntry = initialEntry
 	private var currentMessenger = MessengerFinder.findMessenger(player, initialEntry)
 	private var cycle = 0
+	var isActive = false
+		private set
 
 	val triggers: List<String>
 		get() = currentMessenger.triggers
 
 	fun init() {
+		isActive = true
 		cycle = 0
-		currentMessenger.init(player)
+		currentMessenger.init()
 		tick()
 	}
 
 	private fun cleanupEntry(final: Boolean) {
 		val messenger = currentMessenger
-		messenger.dispose(player)
-		if (final) messenger.end(player)
+		messenger.dispose()
+		if (final) messenger.end()
 
 		FactDatabase.modify(player.uniqueId, messenger.modifiers)
 	}
 
 	fun tick() {
-		currentMessenger.tick(player, cycle++)
+		currentMessenger.tick(cycle++)
 
 		if (currentMessenger.state == MessengerState.FINISHED) {
+			isActive = false
 			InteractionHandler.triggerEvent(Event("system.dialogue.next", player))
 		} else if (currentMessenger.state == MessengerState.CANCELLED) {
+			isActive = false
 			InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
 		}
 	}
@@ -49,6 +53,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 	}
 
 	fun end() {
+		isActive = false
 		cleanupEntry(true)
 	}
 }

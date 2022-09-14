@@ -56,5 +56,15 @@
       <option name="name" value="maven8" />
       <option name="url" value="https://repo.opencollab.dev/maven-snapshots/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven9" />
+      <option name="name" value="maven9" />
+      <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven10" />
+      <option name="name" value="maven10" />
+      <option name="url" value="https://repo.bg-software.com/repository/api/" />
+    </remote-repository>
   </component>
 </project>

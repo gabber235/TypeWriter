@@ -12,8 +12,9 @@ import lirand.api.dsl.command.types.WordType
 import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.extensions.npc.TypeWriterTrait
 import me.gabber235.typewriter.facts.*
-import me.gabber235.typewriter.npc.TypeWriterTrait
+import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.utils.msg
 import me.gabber235.typewriter.utils.sendMini
 import net.citizensnpcs.api.CitizensAPI
@@ -48,7 +49,12 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 				facts.map { it to EntryDatabase.getFact(it.id) }.forEach { (fact, entry) ->
 					if (entry == null) return@forEach
 					source.sendMini(
-						"<hover:show_text:'Click to modify <blue>${entry.formattedName}</blue> for <red>${name}</red>'><click:suggest_command:'/tw facts $name set ${entry.name} ${fact.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${fact.value} <gray><i>(${
+						"<hover:show_text:'${
+							entry.comment.replace(
+								Regex(" +"),
+								" "
+							)
+						}\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts $name set ${entry.name} ${fact.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${fact.value} <gray><i>(${
 							formatter.format(
 								fact.lastUpdate
 							)
@@ -71,6 +77,7 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 							FactDatabase.modify(player.get().uniqueId) {
 								set(fact.get().id, value.get())
 							}
+							source.msg("Set <blue>${fact.get().formattedName}</blue> to ${value.get()} for ${player.get().name}")
 						}
 					}
 				}
@@ -99,6 +106,7 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 						FactDatabase.modify(source.uniqueId) {
 							set(fact.get().id, value.get())
 						}
+						source.msg("Fact <blue>${fact.get().formattedName}</blue> set to ${value.get()}.")
 					}
 				}
 			}
@@ -112,6 +120,17 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 					}
 				}
 				source.msg("All your facts have been reset.")
+			}
+		}
+	}
+
+	literal("event") {
+		literal("run") {
+			argument("event", EventType) { event ->
+				executes {
+					source.msg("Running event <yellow>${event.get()}</yellow>...")
+					InteractionHandler.startInteractionAndTrigger(source as Player, listOf(event.get()))
+				}
 			}
 		}
 	}
@@ -174,5 +193,27 @@ open class FactType(
 	}
 
 	override fun getExamples(): Collection<String> = listOf("test.fact", "key.some_fact")
+
+}
+
+open class EventType() : WordType<String> {
+	companion object Instance : EventType()
+
+	override fun parse(reader: StringReader): String = reader.readUnquoted()
+
+
+	override fun <S> listSuggestions(
+		context: CommandContext<S>,
+		builder: SuggestionsBuilder
+	): CompletableFuture<Suggestions> {
+
+		EntryDatabase.getAllTriggers().filter { it.startsWith(builder.remaining, true) }.forEach {
+			builder.suggest(it)
+		}
+
+		return builder.buildFuture()
+	}
+
+	override fun getExamples(): Collection<String> = listOf("test.fact", "key.some_event")
 
 }

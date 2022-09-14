@@ -126,6 +126,18 @@ class PageNotifier extends StateNotifier<PageModel> {
           identifier: "",
           triggers: event.triggers,
         );
+      } else if (type == "run_command") {
+        event = Event.runCommand(
+          name: event.name,
+          id: event.id,
+          triggers: event.triggers,
+        );
+      } else if (type == "island_create") {
+        event = Event.islandCreate(
+          name: event.name,
+          id: event.id,
+          triggers: event.triggers,
+        );
       }
 
       insertEvent(event);
@@ -144,6 +156,17 @@ class PageNotifier extends StateNotifier<PageModel> {
         );
       } else if (type == "option") {
         dialogue = Dialogue.option(
+          name: dialogue.name,
+          id: dialogue.id,
+          triggers: dialogue.triggers,
+          triggeredBy: dialogue.triggeredBy,
+          criteria: dialogue.criteria,
+          modifiers: dialogue.modifiers,
+          text: dialogue.text,
+          speaker: dialogue.speaker,
+        );
+      } else if (type == "message") {
+        dialogue = Dialogue.message(
           name: dialogue.name,
           id: dialogue.id,
           triggers: dialogue.triggers,
@@ -564,8 +587,14 @@ extension IconExtension on Entry {
   Widget? _eventIcon(BuildContext context) {
     final event = asEvent;
     if (event == null) return null;
-    if (this is NpcEvent) {
+    if (event is NpcEvent) {
       return Icon(FontAwesomeIcons.userTie,
+          size: 18, color: event.textColor(context));
+    } else if (event is RunCommandEvent) {
+      return Icon(FontAwesomeIcons.terminal,
+          size: 18, color: event.textColor(context));
+    } else if (event is IslandCreateEvent) {
+      return Icon(FontAwesomeIcons.houseMedicalCircleCheck,
           size: 18, color: event.textColor(context));
     }
     return null;
@@ -574,12 +603,14 @@ extension IconExtension on Entry {
   Widget? _dialogueIcon(BuildContext context) {
     final dialogue = asDialogue;
     if (dialogue == null) return null;
-    if (this is SpokenDialogue) {
+    if (dialogue is SpokenDialogue) {
       return Icon(FontAwesomeIcons.solidMessage,
           size: 18, color: dialogue.textColor(context));
-    }
-    if (this is OptionDialogue) {
+    } else if (dialogue is OptionDialogue) {
       return Icon(FontAwesomeIcons.list,
+          size: 18, color: dialogue.textColor(context));
+    } else if (dialogue is MessageDialogue) {
+      return Icon(FontAwesomeIcons.solidEnvelope,
           size: 18, color: dialogue.textColor(context));
     }
     return null;

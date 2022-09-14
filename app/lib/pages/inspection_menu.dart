@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:typewriter/main.dart';
 import 'package:typewriter/models/page.dart';
 import 'package:typewriter/pages/graph.dart';
 import 'package:typewriter/widgets/dropdown.dart';
+import 'package:typewriter/widgets/inspector/action_inspector.dart';
+import 'package:typewriter/widgets/inspector/dialogue_inspector.dart';
+import 'package:typewriter/widgets/inspector/event_inspector.dart';
+import 'package:typewriter/widgets/inspector/facts_inspector.dart';
+import 'package:typewriter/widgets/inspector/speaker_inspector.dart';
 
 class InspectionMenu extends HookConsumerWidget {
   final Entry entry;
@@ -71,447 +75,42 @@ class Inspector extends HookConsumerWidget {
 
     final fact = entry.asFact;
     if (fact != null) {
-      return Theme(data: themData, child: _FactInspector(fact: fact));
+      return Theme(data: themData, child: FactInspector(fact: fact));
     }
 
     final speaker = entry.asSpeaker;
     if (speaker != null) {
-      return Theme(data: themData, child: _SpeakerInspector(speaker: speaker));
+      return Theme(data: themData, child: SpeakerInspector(speaker: speaker));
     }
 
     final event = entry.asEvent;
     if (event != null) {
-      return Theme(data: themData, child: _EventInspector(event: event));
+      return Theme(data: themData, child: EventInspector(event: event));
     }
 
     final dialogue = entry.asDialogue;
     if (dialogue != null) {
       return Theme(
-          data: themData, child: _DialogueInspector(dialogue: dialogue));
+          data: themData, child: DialogueInspector(dialogue: dialogue));
     }
 
     final action = entry.asAction;
     if (action != null) {
-      return Theme(data: themData, child: _ActionInspector(action: action));
+      return Theme(data: themData, child: ActionInspector(action: action));
     }
 
     return Container();
   }
 }
 
-class _FactInspector extends HookConsumerWidget {
-  final Fact fact;
-
-  const _FactInspector({
-    Key? key,
-    required this.fact,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        _EntryInformation(
-          entry: fact,
-          onNameChanged: (name) => ref
-              .read(pageProvider.notifier)
-              .insertFact(fact.copyWith(name: name)),
-        ),
-        const Divider(),
-        _LifetimeField(fact: fact),
-        if (fact.lifetime == FactLifetime.cron) ...[
-          const Divider(),
-          _CronDataField(fact: fact),
-        ],
-        if (fact.lifetime == FactLifetime.timed) ...[
-          const Divider(),
-          _TimedDataField(fact: fact),
-        ],
-        const Divider(),
-        _Operations(entry: fact),
-      ],
-    );
-  }
-}
-
-class _SpeakerInspector extends HookConsumerWidget {
-  final Speaker speaker;
-
-  const _SpeakerInspector({
-    Key? key,
-    required this.speaker,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        _EntryInformation(
-          entry: speaker,
-          onNameChanged: (name) => ref
-              .read(pageProvider.notifier)
-              .insertSpeaker(speaker.copyWith(name: name)),
-        ),
-        const Divider(),
-        _DisplayNameField(speaker: speaker),
-        const Divider(),
-        _Operations(entry: speaker),
-      ],
-    );
-  }
-}
-
-class _EventInspector extends HookConsumerWidget {
-  final Event event;
-
-  const _EventInspector({
-    Key? key,
-    required this.event,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        _EntryInformation(
-          entry: event,
-          onNameChanged: (name) => ref
-              .read(pageProvider.notifier)
-              .insertEvent(event.copyWith(name: name)),
-        ),
-        const Divider(),
-        _TriggersField(
-          title: "Triggers",
-          triggers: event.triggers,
-          onAdd: () => ref
-              .read(pageProvider.notifier)
-              .insertEvent(event.copyWith(triggers: [...event.triggers, ""])),
-          onChanged: (index, trigger) => ref
-              .read(pageProvider.notifier)
-              .insertEvent(event.copyWith(triggers: [
-                ...event.triggers.take(index),
-                trigger,
-                ...event.triggers.skip(index + 1),
-              ])),
-          onRemove: (trigger) => ref.read(pageProvider.notifier).insertEvent(
-                event.copyWith(triggers: [
-                  ...event.triggers.where((t) => t != trigger),
-                ]),
-              ),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Type"),
-        const SizedBox(height: 8),
-        _TypeSelector(
-            types: const ["npc_interact"],
-            selected: event.type,
-            onChanged: (type) =>
-                ref.read(pageProvider.notifier).transformType(event, type)),
-        if (event is NpcEvent) ...[
-          const Divider(),
-          _NpcIdentifierField(event: event as NpcEvent),
-        ],
-        const Divider(),
-        _Operations(entry: event),
-      ],
-    );
-  }
-}
-
-class _DialogueInspector extends HookConsumerWidget {
-  final Dialogue dialogue;
-
-  const _DialogueInspector({
-    Key? key,
-    required this.dialogue,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        _EntryInformation(
-          entry: dialogue,
-          onNameChanged: (name) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(name: name)),
-        ),
-        const Divider(),
-        _TriggersField(
-          title: dialogue is OptionDialogue ? "Global Triggers" : "Triggers",
-          triggers: dialogue.triggers,
-          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(
-              dialogue.copyWith(triggers: [...dialogue.triggers, ""])),
-          onChanged: (index, trigger) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(triggers: [
-                ...dialogue.triggers.sublist(0, index),
-                trigger,
-                ...dialogue.triggers.sublist(index + 1),
-              ])),
-          onRemove: (trigger) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(triggers: [
-                ...dialogue.triggers.where((e) => e != trigger),
-              ])),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Triggered By"),
-        const SizedBox(height: 8),
-        _SizableList(
-          hintText: "Enter a trigger",
-          addButtonText: "Add Trigger By",
-          icon: FontAwesomeIcons.satelliteDish,
-          list: dialogue.triggeredBy,
-          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(
-              dialogue.copyWith(triggeredBy: [...dialogue.triggeredBy, ""])),
-          onChanged: (index, value) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(triggeredBy: [
-                ...dialogue.triggeredBy.sublist(0, index),
-                value,
-                ...dialogue.triggeredBy.sublist(index + 1),
-              ])),
-          onRemove: (value) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(triggeredBy: [
-                ...dialogue.triggeredBy.where((e) => e != value),
-              ])),
-          onQuery: (value) =>
-              ref.read(pageProvider).triggerEntries.expand((entry) => [
-                    ...entry.triggers,
-                    if (entry is RuleEntry) ...entry.triggeredBy,
-                    if (entry is OptionDialogue)
-                      ...entry.options.expand((e) => e.triggers),
-                  ]),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Criteria"),
-        const SizedBox(height: 8),
-        _CriteriaField(
-          criteria: dialogue.criteria,
-          operators: const ["==", ">=", "<=", ">", "<"],
-          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(dialogue
-                  .copyWith(criteria: [
-                ...dialogue.criteria,
-                const Criterion(fact: "", operator: "==", value: 0)
-              ])),
-          onChanged: (index, criterion) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(criteria: [
-                ...dialogue.criteria.sublist(0, index),
-                criterion,
-                ...dialogue.criteria.sublist(index + 1),
-              ])),
-          onRemove: (index) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(criteria: [
-                ...dialogue.criteria.sublist(0, index),
-                ...dialogue.criteria.sublist(index + 1),
-              ])),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Modifiers"),
-        const SizedBox(height: 8),
-        _CriteriaField(
-          addButtonText: "Add Modifier",
-          criteria: dialogue.modifiers,
-          operators: const ["=", "+"],
-          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(dialogue
-                  .copyWith(modifiers: [
-                ...dialogue.modifiers,
-                const Criterion(fact: "", operator: "=", value: 0)
-              ])),
-          onChanged: (index, criterion) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(modifiers: [
-                ...dialogue.modifiers.sublist(0, index),
-                criterion,
-                ...dialogue.modifiers.sublist(index + 1),
-              ])),
-          onRemove: (index) => ref
-              .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(modifiers: [
-                ...dialogue.modifiers.sublist(0, index),
-                ...dialogue.modifiers.sublist(index + 1),
-              ])),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Type"),
-        const SizedBox(height: 8),
-        _TypeSelector(
-            types: const ["spoken", "option"],
-            selected: dialogue.type,
-            onChanged: (type) =>
-                ref.read(pageProvider.notifier).transformType(dialogue, type)),
-        const Divider(),
-        _SpeakerField(dialogue: dialogue),
-        const Divider(),
-        _TextField(dialogue: dialogue),
-        if (dialogue is SpokenDialogue) ...[
-          const Divider(),
-          _DurationField(dialogue: dialogue as SpokenDialogue),
-        ],
-        if (dialogue is OptionDialogue) ...[
-          const Divider(),
-          _OptionsList(dialogue: dialogue as OptionDialogue),
-        ],
-        const Divider(),
-        _Operations(entry: dialogue),
-      ],
-    );
-  }
-}
-
-class _ActionInspector extends HookConsumerWidget {
-  final ActionEntry action;
-
-  const _ActionInspector({
-    Key? key,
-    required this.action,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        _EntryInformation(
-          entry: action,
-          onNameChanged: (name) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(name: name)),
-        ),
-        const Divider(),
-        _TriggersField(
-          title: "Triggers",
-          triggers: action.triggers,
-          onAdd: () => ref.read(pageProvider.notifier).insertAction(
-              action.copyWith(triggers: [...action.triggers, ""])),
-          onChanged: (index, trigger) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(triggers: [
-                ...action.triggers.sublist(0, index),
-                trigger,
-                ...action.triggers.sublist(index + 1),
-              ])),
-          onRemove: (trigger) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(triggers: [
-                ...action.triggers.where((e) => e != trigger),
-              ])),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Triggered By"),
-        const SizedBox(height: 8),
-        _SizableList(
-          hintText: "Enter a trigger",
-          addButtonText: "Add Trigger By",
-          icon: FontAwesomeIcons.satelliteDish,
-          list: action.triggeredBy,
-          onAdd: () => ref.read(pageProvider.notifier).insertAction(
-              action.copyWith(triggeredBy: [...action.triggeredBy, ""])),
-          onChanged: (index, value) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(triggeredBy: [
-                ...action.triggeredBy.sublist(0, index),
-                value,
-                ...action.triggeredBy.sublist(index + 1),
-              ])),
-          onRemove: (value) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(triggeredBy: [
-                ...action.triggeredBy.where((e) => e != value),
-              ])),
-          onQuery: (value) => ref
-              .read(pageProvider)
-              .triggerEntries
-              .expand((entry) => [
-                    ...entry.triggers,
-                    if (entry is RuleEntry) ...entry.triggeredBy,
-                    if (entry is OptionDialogue)
-                      ...entry.options.expand((e) => e.triggers),
-                  ])
-              .toSet(),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Criteria"),
-        const SizedBox(height: 8),
-        _CriteriaField(
-          criteria: action.criteria,
-          operators: const ["==", ">=", "<=", ">", "<"],
-          onAdd: () => ref.read(pageProvider.notifier).insertAction(action
-                  .copyWith(criteria: [
-                ...action.criteria,
-                const Criterion(fact: "", operator: "==", value: 0)
-              ])),
-          onChanged: (index, criterion) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(criteria: [
-                ...action.criteria.sublist(0, index),
-                criterion,
-                ...action.criteria.sublist(index + 1),
-              ])),
-          onRemove: (index) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(criteria: [
-                ...action.criteria.sublist(0, index),
-                ...action.criteria.sublist(index + 1),
-              ])),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Modifiers"),
-        const SizedBox(height: 8),
-        _CriteriaField(
-          addButtonText: "Add Modifier",
-          criteria: action.modifiers,
-          operators: const ["=", "+"],
-          onAdd: () => ref.read(pageProvider.notifier).insertAction(action
-                  .copyWith(modifiers: [
-                ...action.modifiers,
-                const Criterion(fact: "", operator: "=", value: 0)
-              ])),
-          onChanged: (index, criterion) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(modifiers: [
-                ...action.modifiers.sublist(0, index),
-                criterion,
-                ...action.modifiers.sublist(index + 1),
-              ])),
-          onRemove: (index) => ref
-              .read(pageProvider.notifier)
-              .insertAction(action.copyWith(modifiers: [
-                ...action.modifiers.sublist(0, index),
-                ...action.modifiers.sublist(index + 1),
-              ])),
-        ),
-        const Divider(),
-        const _SectionTitle(title: "Type"),
-        const SizedBox(height: 8),
-        _TypeSelector(
-            types: const ["simple"],
-            selected: action.type,
-            onChanged: (type) =>
-                ref.read(pageProvider.notifier).transformType(action, type)),
-        const Divider(),
-        _Operations(entry: action),
-      ],
-    );
-  }
-}
-
 // ------- Generic entry information -------
 //<editor-fold desc="Entry Information">
-class _EntryInformation extends StatelessWidget {
+class EntryInformation extends StatelessWidget {
   final Entry entry;
 
   final Function(String) onNameChanged;
 
-  const _EntryInformation({
+  const EntryInformation({
     Key? key,
     required this.entry,
     required this.onNameChanged,
@@ -522,22 +121,22 @@ class _EntryInformation extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _Title(
+        Title(
           title: entry.formattedName,
           color: entry.textColor(context),
         ),
-        _Identifier(id: entry.id),
+        Identifier(id: entry.id),
         const Divider(),
-        _NameField(name: entry.name, onChanged: onNameChanged),
+        NameField(name: entry.name, onChanged: onNameChanged),
       ],
     );
   }
 }
 
-class _SectionTitle extends StatelessWidget {
+class SectionTitle extends StatelessWidget {
   final String title;
 
-  const _SectionTitle({
+  const SectionTitle({
     Key? key,
     required this.title,
   }) : super(key: key);
@@ -546,20 +145,18 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: GoogleFonts.jetBrainsMono(
-        textStyle: const TextStyle(fontSize: 14),
-      ),
+      style: const TextStyle(fontSize: 14),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
   }
 }
 
-class _Title extends StatelessWidget {
+class Title extends StatelessWidget {
   final String title;
   final Color color;
 
-  const _Title({
+  const Title({
     Key? key,
     required this.title,
     required this.color,
@@ -569,18 +166,16 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       title,
-      style: GoogleFonts.roboto(
-          textStyle: TextStyle(
-              color: color, fontSize: 40, fontWeight: FontWeight.w900)),
+      style: TextStyle(color: color, fontSize: 40, fontWeight: FontWeight.w900),
       maxLines: 1,
     );
   }
 }
 
-class _Identifier extends StatelessWidget {
+class Identifier extends StatelessWidget {
   final String id;
 
-  const _Identifier({Key? key, required this.id}) : super(key: key);
+  const Identifier({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -588,48 +183,81 @@ class _Identifier extends StatelessWidget {
   }
 }
 
-class _NameField extends HookWidget {
+class SingleLineTextField extends HookWidget {
+  final String? text;
+  final Function(String)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType keyboardType;
+  final String? hintText;
+  final IconData? icon;
+
+  const SingleLineTextField({
+    Key? key,
+    this.text,
+    this.onChanged,
+    this.inputFormatters,
+    this.keyboardType = TextInputType.text,
+    this.hintText,
+    this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = useTextEditingController(text: text);
+    return TextField(
+      controller: controller,
+      onEditingComplete: () => onChanged?.call(controller.text),
+      onSubmitted: onChanged,
+      onChanged: onChanged,
+      textAlign: TextAlign.right,
+      textCapitalization: TextCapitalization.none,
+      textInputAction: TextInputAction.done,
+      maxLines: 1,
+      keyboardType: keyboardType,
+      inputFormatters: [
+        FilteringTextInputFormatter.singleLineFormatter,
+        if (inputFormatters != null) ...inputFormatters!,
+      ],
+      decoration: InputDecoration(
+        suffixIcon: icon != null ? Icon(icon, size: 18) : null,
+        hintText: hintText,
+      ),
+    );
+  }
+}
+
+class NameField extends HookWidget {
   final String name;
   final Function(String) onChanged;
 
-  const _NameField({Key? key, required this.name, required this.onChanged})
+  const NameField({Key? key, required this.name, required this.onChanged})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final controller = useTextEditingController(text: name);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        const _SectionTitle(title: "Name"),
+        const SectionTitle(title: "Name"),
         const SizedBox(height: 1),
-        TextField(
-          controller: controller,
-          onEditingComplete: () => onChanged(controller.text),
-          onSubmitted: onChanged,
+        SingleLineTextField(
+          text: name,
           onChanged: onChanged,
-          textAlign: TextAlign.right,
-          textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.done,
-          maxLines: 1,
           inputFormatters: [
             TextInputFormatter.withFunction((oldValue, newValue) =>
                 newValue.copyWith(
                     text: newValue.text.toLowerCase().replaceAll(" ", "_"))),
-            FilteringTextInputFormatter.singleLineFormatter,
             FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9_.]')),
           ],
-          decoration: const InputDecoration(
-            suffixIcon: Icon(FontAwesomeIcons.signature, size: 18),
-            hintText: "Enter a name",
-          ),
+          hintText: "Enter a name",
+          icon: FontAwesomeIcons.signature,
         ),
       ],
     );
   }
 }
 
-class _TriggersField extends HookConsumerWidget {
+class TriggersField extends HookConsumerWidget {
   final String title;
   final List<String> triggers;
 
@@ -637,7 +265,7 @@ class _TriggersField extends HookConsumerWidget {
   final Function(int, String) onChanged;
   final Function(String) onRemove;
 
-  const _TriggersField({
+  const TriggersField({
     Key? key,
     this.title = "Triggers",
     required this.triggers,
@@ -651,9 +279,9 @@ class _TriggersField extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _SectionTitle(title: title),
+        SectionTitle(title: title),
         const SizedBox(height: 1),
-        _SizableList(
+        SizableList(
           hintText: "Enter a trigger",
           addButtonText: "Add Triggered",
           icon: FontAwesomeIcons.towerCell,
@@ -678,84 +306,7 @@ class _TriggersField extends HookConsumerWidget {
   }
 }
 
-class _SizableList extends StatelessWidget {
-  final String hintText;
-  final String addButtonText;
-  final IconData icon;
-  final List<String> list;
-
-  final Function() onAdd;
-  final Function(int, String) onChanged;
-  final Function(String) onRemove;
-
-  final Iterable<String> Function(String) onQuery;
-
-  const _SizableList({
-    Key? key,
-    required this.list,
-    this.hintText = "Enter a value",
-    this.addButtonText = "Add",
-    this.icon = FontAwesomeIcons.pen,
-    required this.onAdd,
-    required this.onChanged,
-    required this.onRemove,
-    required this.onQuery,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        for (var i = 0; i < list.length; i++) ...[
-          const SizedBox(height: 8),
-          Row(children: [
-            IconButton(
-              onPressed: () => onRemove(list[i]),
-              icon: const Icon(FontAwesomeIcons.trash, size: 18),
-              color: Colors.red,
-            ),
-            Expanded(
-              child: _AutoCompleteField(
-                text: list[i],
-                hintText: hintText,
-                icon: icon,
-                onChanged: (text) => onChanged(i, text),
-                onQuery: onQuery,
-                inputFormatters: [
-                  TextInputFormatter.withFunction((oldValue, newValue) =>
-                      newValue.copyWith(
-                          text: newValue.text
-                              .toLowerCase()
-                              .replaceAll(" ", "_"))),
-                  FilteringTextInputFormatter.singleLineFormatter,
-                  FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9_.]')),
-                ],
-              ),
-            )
-          ]),
-        ],
-        const SizedBox(height: 8),
-        TextButton(
-          onPressed: onAdd,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(addButtonText),
-              const SizedBox(width: 4),
-              const Icon(
-                FontAwesomeIcons.plus,
-                size: 18,
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _AutoCompleteField extends StatelessWidget {
+class AutoCompleteField extends StatelessWidget {
   final String text;
   final String hintText;
   final IconData? icon;
@@ -764,7 +315,7 @@ class _AutoCompleteField extends StatelessWidget {
   final Function(String) onChanged;
   final List<TextInputFormatter>? inputFormatters;
 
-  const _AutoCompleteField({
+  const AutoCompleteField({
     Key? key,
     required this.text,
     this.icon,
@@ -816,7 +367,84 @@ class _AutoCompleteField extends StatelessWidget {
   }
 }
 
-class _CriteriaField extends HookConsumerWidget {
+class SizableList extends StatelessWidget {
+  final String hintText;
+  final String addButtonText;
+  final IconData icon;
+  final List<String> list;
+
+  final Function() onAdd;
+  final Function(int, String) onChanged;
+  final Function(String) onRemove;
+
+  final Iterable<String> Function(String) onQuery;
+
+  const SizableList({
+    Key? key,
+    required this.list,
+    this.hintText = "Enter a value",
+    this.addButtonText = "Add",
+    this.icon = FontAwesomeIcons.pen,
+    required this.onAdd,
+    required this.onChanged,
+    required this.onRemove,
+    required this.onQuery,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        for (var i = 0; i < list.length; i++) ...[
+          const SizedBox(height: 8),
+          Row(children: [
+            IconButton(
+              onPressed: () => onRemove(list[i]),
+              icon: const Icon(FontAwesomeIcons.trash, size: 18),
+              color: Colors.red,
+            ),
+            Expanded(
+              child: AutoCompleteField(
+                text: list[i],
+                hintText: hintText,
+                icon: icon,
+                onChanged: (text) => onChanged(i, text),
+                onQuery: onQuery,
+                inputFormatters: [
+                  TextInputFormatter.withFunction((oldValue, newValue) =>
+                      newValue.copyWith(
+                          text: newValue.text
+                              .toLowerCase()
+                              .replaceAll(" ", "_"))),
+                  FilteringTextInputFormatter.singleLineFormatter,
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9_.]')),
+                ],
+              ),
+            )
+          ]),
+        ],
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: onAdd,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(addButtonText),
+              const SizedBox(width: 4),
+              const Icon(
+                FontAwesomeIcons.plus,
+                size: 18,
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CriteriaField extends HookConsumerWidget {
   final String addButtonText;
   final List<Criterion> criteria;
   final List<String> operators;
@@ -825,7 +453,7 @@ class _CriteriaField extends HookConsumerWidget {
   final Function(int, Criterion) onChanged;
   final Function(int) onRemove;
 
-  const _CriteriaField({
+  const CriteriaField({
     Key? key,
     this.addButtonText = "Add Criterion",
     required this.criteria,
@@ -935,8 +563,10 @@ class _CriteriaField extends HookConsumerWidget {
                     borderSide: BorderSide.none,
                   ),
                 ),
-                onChanged: (value) =>
-                    onChanged(i, criteria[i].copyWith(value: int.parse(value))),
+                onChanged: (value) {
+                  final intValue = int.tryParse(value) ?? 0;
+                  onChanged(i, criteria[i].copyWith(value: intValue));
+                },
               ),
             ),
           ]),
@@ -961,12 +591,12 @@ class _CriteriaField extends HookConsumerWidget {
   }
 }
 
-class _TypeSelector extends StatelessWidget {
+class TypeSelector extends StatelessWidget {
   final List<String> types;
   final String selected;
   final Function(String) onChanged;
 
-  const _TypeSelector({
+  const TypeSelector({
     Key? key,
     required this.types,
     required this.selected,
@@ -1020,8 +650,8 @@ class _TypeSelector extends StatelessWidget {
   }
 }
 
-class _Operations extends StatelessWidget {
-  const _Operations({
+class Operations extends StatelessWidget {
+  const Operations({
     Key? key,
     required this.entry,
   }) : super(key: key);
@@ -1033,7 +663,7 @@ class _Operations extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        const _SectionTitle(title: "Operations"),
+        const SectionTitle(title: "Operations"),
         const SizedBox(height: 8),
         _DeleteEntry(id: entry.id),
       ],
@@ -1102,11 +732,11 @@ class _DeleteEntry extends HookConsumerWidget {
   }
 }
 
-class _SpeakerSelector extends HookConsumerWidget {
+class SpeakerSelector extends HookConsumerWidget {
   final String currentId;
   final Function(Speaker) onSelected;
 
-  const _SpeakerSelector({
+  const SpeakerSelector({
     Key? key,
     required this.currentId,
     required this.onSelected,
@@ -1165,560 +795,6 @@ class _SpeakerSelector extends HookConsumerWidget {
         if (fact == null) return;
         onSelected(fact);
       },
-    );
-  }
-}
-
-//</editor-fold>
-// -------- Fact Specific Widgets --------
-//<editor-fold desc="Fact Specific Widgets">
-class _LifetimeField extends HookConsumerWidget {
-  final Fact fact;
-
-  const _LifetimeField({Key? key, required this.fact}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final lifetime = fact.lifetime;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        const SizedBox(height: 8),
-        const _SectionTitle(title: "Lifetime"),
-        const SizedBox(height: 8),
-        Dropdown(
-          value: lifetime,
-          values: FactLifetime.values,
-          padding: EdgeInsets.zero,
-          alignment: AlignmentDirectional.centerEnd,
-          builder: (context, lifetime) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(lifetime.formattedName),
-                Flexible(
-                  child: Text(lifetime.description,
-                      style: Theme.of(context).textTheme.caption),
-                ),
-              ],
-            ),
-          ),
-          onChanged: (lifetime) =>
-              ref.read(pageProvider.notifier).insertFact(fact.copyWith(
-                    lifetime: lifetime,
-                    data: "",
-                  )),
-        ),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-class _CronDataField extends HookConsumerWidget {
-  final Fact fact;
-
-  const _CronDataField({Key? key, required this.fact}) : super(key: key);
-
-  void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertFact(fact.copyWith(
-          data: value,
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final textController = useTextEditingController(text: fact.data);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        const SizedBox(height: 8),
-        const _SectionTitle(title: "Cron Data"),
-        const SizedBox(height: 8),
-        TextField(
-          controller: textController,
-          onSubmitted: (value) {
-            _onChanged(value, ref);
-          },
-          onEditingComplete: () {
-            _onChanged(textController.text, ref);
-          },
-          onChanged: (value) {
-            _onChanged(value, ref);
-          },
-          textAlign: TextAlign.right,
-          textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.done,
-          maxLines: 1,
-          inputFormatters: [
-            FilteringTextInputFormatter.singleLineFormatter,
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9*,\-/ ]')),
-          ],
-          decoration: const InputDecoration(
-            hintText: "Enter a cron expression",
-            suffixIcon: Icon(FontAwesomeIcons.clockRotateLeft, size: 18),
-          ),
-        ),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-class _TimedDataField extends HookConsumerWidget {
-  final Fact fact;
-
-  const _TimedDataField({Key? key, required this.fact}) : super(key: key);
-
-  void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertFact(fact.copyWith(
-          data: value,
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final textController = useTextEditingController(text: fact.data);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        const SizedBox(height: 8),
-        const _SectionTitle(title: "Timed Data"),
-        const SizedBox(height: 8),
-        TextField(
-          controller: textController,
-          onSubmitted: (value) {
-            _onChanged(value, ref);
-          },
-          onEditingComplete: () {
-            _onChanged(textController.text, ref);
-          },
-          onChanged: (value) {
-            _onChanged(value, ref);
-          },
-          textAlign: TextAlign.right,
-          textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.done,
-          maxLines: 1,
-          inputFormatters: [
-            FilteringTextInputFormatter.singleLineFormatter,
-            FilteringTextInputFormatter.allow(RegExp(r"[0-9a-z ]")),
-          ],
-          decoration: const InputDecoration(
-            hintText: "Enter a duration",
-            suffixIcon: Icon(FontAwesomeIcons.stopwatch, size: 18),
-          ),
-        ),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-//</editor-fold>
-// -------- Speaker Specific Widgets --------
-//<editor-fold desc="Speaker Specific Widgets">
-class _DisplayNameField extends HookConsumerWidget {
-  final Speaker speaker;
-
-  const _DisplayNameField({Key? key, required this.speaker}) : super(key: key);
-
-  void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertSpeaker(speaker.copyWith(
-          displayName: value,
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final textController = useTextEditingController(text: speaker.displayName);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        const SizedBox(height: 8),
-        const _SectionTitle(title: "Display Name"),
-        const SizedBox(height: 8),
-        TextField(
-          controller: textController,
-          onSubmitted: (value) {
-            _onChanged(value, ref);
-          },
-          onEditingComplete: () {
-            _onChanged(textController.text, ref);
-          },
-          onChanged: (value) {
-            _onChanged(value, ref);
-          },
-          textAlign: TextAlign.right,
-          textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.done,
-          maxLines: 1,
-          decoration: const InputDecoration(
-            hintText: "Enter a display name",
-            suffixIcon: Icon(FontAwesomeIcons.tag, size: 18),
-          ),
-        ),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-//</editor-fold>
-// -------- Event Specific Widgets --------
-//<editor-fold desc="Event Specific Widgets">
-class _NpcIdentifierField extends HookConsumerWidget {
-  final NpcEvent event;
-
-  const _NpcIdentifierField({Key? key, required this.event}) : super(key: key);
-
-  void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertEvent(event.copyWith(
-          identifier: value,
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-      const _SectionTitle(title: "Npc Identifier"),
-      const SizedBox(height: 8),
-      _SpeakerSelector(
-          currentId: event.identifier,
-          onSelected: (value) {
-            _onChanged(value.id, ref);
-          }),
-    ]);
-  }
-}
-
-//</editor-fold>
-// -------- Dialogue Specific Widgets --------
-//<editor-fold desc="Dialogue Specific Widgets">
-class _SpeakerField extends HookConsumerWidget {
-  final Dialogue dialogue;
-
-  const _SpeakerField({Key? key, required this.dialogue}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-      const _SectionTitle(title: "Speaker"),
-      const SizedBox(height: 8),
-      _SpeakerSelector(
-          currentId: dialogue.speaker,
-          onSelected: (value) {
-            ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
-                  speaker: value.id,
-                ));
-          }),
-    ]);
-  }
-}
-
-class _TextField extends HookConsumerWidget {
-  final Dialogue dialogue;
-
-  const _TextField({
-    Key? key,
-    required this.dialogue,
-  }) : super(key: key);
-
-  void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
-          text: value,
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final textEditingController = useTextEditingController(text: dialogue.text);
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-      const _SectionTitle(title: "Text"),
-      const SizedBox(height: 8),
-      TextField(
-        controller: textEditingController,
-        onSubmitted: (value) {
-          _onChanged(value, ref);
-        },
-        onEditingComplete: () {
-          _onChanged(textEditingController.text, ref);
-        },
-        onChanged: (value) {
-          _onChanged(value, ref);
-        },
-        textAlign: TextAlign.right,
-        textCapitalization: TextCapitalization.none,
-        textInputAction: TextInputAction.done,
-        style: GoogleFonts.jetBrainsMono(),
-        maxLines: null,
-        decoration: const InputDecoration(
-          hintText: "Enter speakable text",
-          suffixIcon: Icon(FontAwesomeIcons.solidMessage, size: 18),
-          contentPadding: EdgeInsets.only(left: 8, top: 12, bottom: 12),
-        ),
-      ),
-    ]);
-  }
-}
-
-class _DurationField extends HookConsumerWidget {
-  final SpokenDialogue dialogue;
-
-  const _DurationField({
-    Key? key,
-    required this.dialogue,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final textEditingController = useTextEditingController(
-      text: (dialogue.duration * 50).toString(),
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        const _SectionTitle(title: "Duration"),
-        const SizedBox(height: 8),
-        TextField(
-          controller: textEditingController,
-          textAlign: TextAlign.right,
-          textCapitalization: TextCapitalization.none,
-          textInputAction: TextInputAction.done,
-          style: GoogleFonts.jetBrainsMono(),
-          maxLines: 1,
-          keyboardType: TextInputType.number,
-          onChanged: (value) {
-            ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
-                  duration: (int.tryParse(value) ?? 0) ~/ 50,
-                ));
-          },
-          decoration: const InputDecoration(
-            hintText: "Enter a duration",
-            suffixIcon: Icon(FontAwesomeIcons.solidClock, size: 18),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _OptionsList extends HookConsumerWidget {
-  final OptionDialogue dialogue;
-
-  const _OptionsList({
-    Key? key,
-    required this.dialogue,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final expanded = useState([]);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        const _SectionTitle(title: "Options"),
-        const SizedBox(height: 8),
-        ExpansionPanelList(
-          expansionCallback: (index, isExpanded) {
-            if (isExpanded) {
-              expanded.value = expanded.value.where((e) => e != index).toList();
-            } else {
-              expanded.value = [...expanded.value, index];
-            }
-          },
-          children: [
-            for (var i = 0; i < dialogue.options.length; i++)
-              ExpansionPanel(
-                isExpanded: expanded.value.contains(i),
-                backgroundColor: context.isDark
-                    ? Colors.black.withOpacity(0.05)
-                    : Colors.white.withOpacity(0.80),
-                headerBuilder: (context, expanded) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (expanded) ...[
-                        IconButton(
-                          onPressed: () =>
-                              ref.read(pageProvider.notifier).insertDialogue(
-                                    dialogue.copyWith(
-                                      options: [
-                                        ...dialogue.options.sublist(0, i),
-                                        ...dialogue.options.sublist(i + 1),
-                                      ],
-                                    ),
-                                  ),
-                          icon: const Icon(FontAwesomeIcons.trash, size: 18),
-                          color: Colors.red,
-                        ),
-                        const Spacer(),
-                      ],
-                      Flexible(
-                        child: _SectionTitle(title: dialogue.options[i].text),
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  );
-                },
-                body: _OptionField(
-                  option: dialogue.options[i],
-                  index: i,
-                  onChanged: (option) =>
-                      ref.read(pageProvider.notifier).insertDialogue(
-                            dialogue.copyWith(
-                              options: [
-                                ...dialogue.options.sublist(0, i),
-                                option,
-                                ...dialogue.options.sublist(i + 1),
-                              ],
-                            ),
-                          ),
-                ),
-              )
-          ],
-        ),
-        TextButton(
-          onPressed: () {
-            ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
-                  options: [...dialogue.options, const Option(text: "")],
-                ));
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Text("Add Option"),
-              SizedBox(width: 4),
-              Icon(
-                FontAwesomeIcons.plus,
-                size: 18,
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _OptionField extends HookWidget {
-  final Option option;
-  final int index;
-
-  final Function(Option) onChanged;
-
-  const _OptionField({
-    Key? key,
-    required this.option,
-    required this.index,
-    required this.onChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final textEditingController = useTextEditingController(text: option.text);
-
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          const Divider(),
-          const _SectionTitle(title: "Text"),
-          const SizedBox(height: 8),
-          TextField(
-            controller: textEditingController,
-            textAlign: TextAlign.right,
-            textCapitalization: TextCapitalization.none,
-            textInputAction: TextInputAction.done,
-            maxLines: 1,
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              onChanged(option.copyWith(text: value));
-            },
-            decoration: const InputDecoration(
-              hintText: "Enter text",
-              suffixIcon: Icon(FontAwesomeIcons.solidHandPointer, size: 18),
-            ),
-          ),
-          const Divider(),
-          _TriggersField(
-            triggers: option.triggers,
-            onAdd: () => onChanged(option.copyWith(
-              triggers: [...option.triggers, ""],
-            )),
-            onChanged: (index, trigger) => onChanged(option.copyWith(
-              triggers: [
-                ...option.triggers.sublist(0, index),
-                trigger,
-                ...option.triggers.sublist(index + 1),
-              ],
-            )),
-            onRemove: (trigger) => onChanged(option.copyWith(
-              triggers: option.triggers.where((t) => t != trigger).toList(),
-            )),
-          ),
-          const Divider(),
-          const _SectionTitle(title: "Criteria"),
-          const SizedBox(height: 8),
-          _CriteriaField(
-            criteria: option.criteria,
-            operators: const ["==", ">=", "<=", ">", "<"],
-            onAdd: () => onChanged(option.copyWith(
-              criteria: [
-                ...option.criteria,
-                const Criterion(fact: "", operator: "==", value: 0)
-              ],
-            )),
-            onChanged: (index, criteria) => onChanged(option.copyWith(
-              criteria: [
-                ...option.criteria.sublist(0, index),
-                criteria,
-                ...option.criteria.sublist(index + 1),
-              ],
-            )),
-            onRemove: (index) => onChanged(option.copyWith(
-              criteria: [
-                ...option.criteria.sublist(0, index),
-                ...option.criteria.sublist(index + 1),
-              ],
-            )),
-          ),
-          const Divider(),
-          const _SectionTitle(title: "Modifiers"),
-          const SizedBox(height: 8),
-          _CriteriaField(
-            criteria: option.modifiers,
-            operators: const ["=", "+"],
-            addButtonText: "Add Modifier",
-            onAdd: () => onChanged(option.copyWith(
-              modifiers: [
-                ...option.modifiers,
-                const Criterion(fact: "", operator: "=", value: 0)
-              ],
-            )),
-            onChanged: (index, modifier) => onChanged(option.copyWith(
-              modifiers: [
-                ...option.modifiers.sublist(0, index),
-                modifier,
-                ...option.modifiers.sublist(index + 1),
-              ],
-            )),
-            onRemove: (index) => onChanged(option.copyWith(
-              modifiers: [
-                ...option.modifiers.sublist(0, index),
-                ...option.modifiers.sublist(index + 1),
-              ],
-            )),
-          ),
-        ],
-      ),
     );
   }
 }

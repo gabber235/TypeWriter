@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.npc
+package me.gabber235.typewriter.extensions.npc
 
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.event.entries.NpcEventEntry

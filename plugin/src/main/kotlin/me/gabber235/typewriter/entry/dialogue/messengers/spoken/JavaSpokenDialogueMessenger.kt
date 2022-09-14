@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entry.dialogue.messengers.spoken
 import me.gabber235.typewriter.entry.dialogue.entries.SpokenDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.messengers.Messenger
 import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.utils.*
 import net.kyori.adventure.text.*
@@ -14,7 +15,8 @@ class JavaSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
 	Messenger<SpokenDialogueEntry>(player, entry) {
 
 	private var speakerDisplayName = ""
-	override fun init(player: Player) {
+	override fun init() {
+		super.init()
 		speakerDisplayName = entry.speakerDisplayName
 
 		listen<PlayerSwapHandItemsEvent> { event ->
@@ -22,10 +24,9 @@ class JavaSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
 			state = MessengerState.FINISHED
 			event.isCancelled = true
 		}
-		super.init(player)
 	}
 
-	override fun tick(player: Player, cycle: Int) {
+	override fun tick(cycle: Int) {
 		val duration = entry.duration
 
 		val percentage = (cycle / duration.toDouble())
@@ -42,7 +43,12 @@ class JavaSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
 				|<white>
 			""".trimMargin()
 			.asMini()
-			.append(text(entry.text, percentage.coerceAtMost(1.0)).color(NamedTextColor.WHITE))
+			.append(
+				text(
+					entry.text.parsePlaceholders(player),
+					percentage.coerceAtMost(1.0)
+				).color(NamedTextColor.WHITE)
+			)
 			.append(
 				"""
 				|

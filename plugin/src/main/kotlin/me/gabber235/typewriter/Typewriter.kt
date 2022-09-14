@@ -3,10 +3,12 @@ package me.gabber235.typewriter
 import com.comphenix.protocol.ProtocolLibrary
 import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.extensions.npc.NpcHandler
+import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
+import me.gabber235.typewriter.extensions.superiorisland.SuperiorIslandExtension
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
-import me.gabber235.typewriter.npc.NpcHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 
 class Typewriter : KotlinPlugin() {
@@ -39,8 +41,16 @@ class Typewriter : KotlinPlugin() {
 		ProtocolLibrary.getProtocolManager()
 			.addPacketListener(ChatHistoryHandler)
 
+		if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
+			TypewriteExpansion.register()
+		}
+
 		if (server.pluginManager.isPluginEnabled("Citizens")) {
 			NpcHandler.init()
+		}
+
+		if (server.pluginManager.isPluginEnabled("SuperiorSkyblock2")) {
+			SuperiorIslandExtension.init()
 		}
 	}
 

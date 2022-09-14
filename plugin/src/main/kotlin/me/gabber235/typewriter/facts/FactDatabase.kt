@@ -77,7 +77,7 @@ object FactDatabase {
 
 	private fun Set<Fact>.filterSavableFacts(): Set<Fact> {
 		val ignore = EntryDatabase.facts.filter { it.lifetime == FactLifetime.SESSION }.map { it.id }
-		return filter { !ignore.contains(it.id) }.toSet()
+		return filter { !ignore.contains(it.id) }.filter { it.value != 0 }.toSet()
 	}
 
 	private suspend fun loadFacts(uuid: UUID): Set<Fact> {
@@ -93,16 +93,21 @@ object FactDatabase {
 	}
 
 	fun getFacts(uuid: UUID): Set<Fact> = cache.getOrPut(uuid) { emptySet() }
+
 	fun getFact(uuid: UUID, name: String): Fact {
 		val facts = getFacts(uuid)
 		val fact = facts.find { it.id == name }
 		return if (fact != null) fact
 		else {
+			// We dont have to save this since it will not be saved when a fact.value == 0
 			val newFact = Fact(name, 0)
 			this.cache[uuid] = facts + newFact
 			newFact
 		}
 	}
+
+	fun getCachedFact(uuid: UUID, name: String) =
+		cache[uuid]?.firstOrNull { it.id == name || EntryDatabase.getFact(it.id)?.name == name }
 
 	fun modify(uuid: UUID, modifiers: List<Modifier>) {
 		modify(uuid) {

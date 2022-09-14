@@ -4,8 +4,8 @@ import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.dialogue.DialogueEntry
-import me.gabber235.typewriter.entry.dialogue.entries.OptionDialogueEntry
-import me.gabber235.typewriter.entry.dialogue.entries.SpokenDialogueEntry
+import me.gabber235.typewriter.entry.dialogue.entries.*
+import me.gabber235.typewriter.entry.dialogue.messengers.message.UniversalMessageDialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.messengers.option.BedrockOptionDialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.messengers.option.JavaOptionDialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.messengers.spoken.BedrockSpokenDialogueMessenger
@@ -19,17 +19,21 @@ object MessengerFinder {
 
 	fun findMessenger(player: Player, entry: DialogueEntry): Messenger<out DialogueEntry> {
 		return when (entry) {
-			is SpokenDialogueEntry -> {
+			is SpokenDialogueEntry  -> {
 				if (player.isFloodgate) BedrockSpokenDialogueMessenger(player, entry)
 				else JavaSpokenDialogueMessenger(player, entry)
 			}
 
-			is OptionDialogueEntry -> {
+			is OptionDialogueEntry  -> {
 				if (player.isFloodgate) BedrockOptionDialogueMessenger(player, entry)
 				else JavaOptionDialogueMessenger(player, entry)
 			}
 
-			else                   -> {
+			is MessageDialogueEntry -> {
+				UniversalMessageDialogueMessenger(player, entry)
+			}
+
+			else                    -> {
 				throw IllegalArgumentException("No messenger found for entry type ${entry::class.simpleName}")
 			}
 		}
@@ -55,14 +59,14 @@ open class Messenger<DE : DialogueEntry>(val player: Player, val entry: DE) {
 	open var state: MessengerState = MessengerState.RUNNING
 		protected set
 
-	open fun init(player: Player) {}
-	open fun tick(player: Player, cycle: Int) {}
+	open fun init() {}
+	open fun tick(cycle: Int) {}
 
-	open fun dispose(player: Player) {
+	open fun dispose() {
 		HandlerList.unregisterAll(listener)
 	}
 
-	open fun end(player: Player) {
+	open fun end() {
 		player.chatHistory.resendMessages(player)
 	}
 

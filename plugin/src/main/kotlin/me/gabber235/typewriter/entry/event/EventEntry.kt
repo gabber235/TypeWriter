@@ -5,19 +5,19 @@ import org.bukkit.entity.Player
 
 interface EventEntry : TriggerEntry
 
-open class Event(val name: String, val player: Player) {
+open class Event(val id: String, val player: Player) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (other !is Event) return false
 
-		if (name != other.name) return false
+		if (id != other.id) return false
 		if (player.uniqueId != other.player.uniqueId) return false
 
 		return true
 	}
 
 	override fun hashCode(): Int {
-		var result = name.hashCode()
+		var result = id.hashCode()
 		result = 31 * result + player.uniqueId.hashCode()
 		return result
 	}

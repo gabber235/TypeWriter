@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entry.dialogue.entries.OptionDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.messengers.Messenger
 import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
 import me.gabber235.typewriter.entry.matches
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.facts.facts
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.utils.asMini
@@ -31,7 +32,8 @@ class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
 	override val modifiers: List<Modifier>
 		get() = entry.modifiers + selected.modifiers
 
-	override fun init(player: Player) {
+	override fun init() {
+		super.init()
 		val facts = player.facts
 		usableOptions = entry.options.filter { it.criteria.matches(facts) }.sortedByDescending { it.criteria.size }
 
@@ -53,12 +55,12 @@ class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
 				var newIndex = (index + dif) % usableOptions.size
 				while (newIndex < 0) newIndex += usableOptions.size
 				selectedIndex = newIndex
-				tick(player, 0)
+				tick(0)
 			}
 		}
 	}
 
-	override fun tick(player: Player, cycle: Int) {
+	override fun tick(cycle: Int) {
 		val message = """
 			|<gray><st>${" ".repeat(60)}</st>
 			|<white> ${speakerDisplayName}: ${entry.text}
@@ -72,7 +74,7 @@ class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
 		player.sendMessage(component)
 	}
 
-	override fun end(player: Player) {
+	override fun end() {
 		player.chatHistory.resendMessages(player)
 	}
 
@@ -95,9 +97,9 @@ class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
 			else "  "
 
 			lines += if (selected) {
-				" $prefix <#5d6c78>[ <white>${option.text} <#5d6c78>]\n"
+				" $prefix <#5d6c78>[ <white>${option.text.parsePlaceholders(player)} <#5d6c78>]\n"
 			} else {
-				" $prefix <#5d6c78>[ <grey>${option.text} <#5d6c78>]\n"
+				" $prefix <#5d6c78>[ <grey>${option.text.parsePlaceholders(player)} <#5d6c78>]\n"
 			}
 		}
 

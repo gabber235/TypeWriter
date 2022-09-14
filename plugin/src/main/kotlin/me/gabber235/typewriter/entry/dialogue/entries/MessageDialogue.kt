@@ -5,7 +5,7 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.dialogue.DialogueEntry
 
-data class SpokenDialogueEntry(
+data class MessageDialogueEntry(
 	override val id: String = "",
 	override val name: String = "",
 	@SerializedName("triggered_by")
@@ -15,5 +15,4 @@ data class SpokenDialogueEntry(
 	override val modifiers: List<Modifier> = emptyList(),
 	override val text: String = "",
 	override val speaker: String = "",
-	val duration: Int = 40,
 ) : DialogueEntry

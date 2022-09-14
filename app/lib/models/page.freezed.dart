@@ -275,6 +275,7 @@ Fact _$FactFromJson(Map<String, dynamic> json) {
 mixin _$Fact {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  String get comment => throw _privateConstructorUsedError;
   FactLifetime get lifetime => throw _privateConstructorUsedError;
   String get data => throw _privateConstructorUsedError;
 
@@ -287,7 +288,12 @@ mixin _$Fact {
 abstract class $FactCopyWith<$Res> {
   factory $FactCopyWith(Fact value, $Res Function(Fact) then) =
       _$FactCopyWithImpl<$Res>;
-  $Res call({String id, String name, FactLifetime lifetime, String data});
+  $Res call(
+      {String id,
+      String name,
+      String comment,
+      FactLifetime lifetime,
+      String data});
 }
 
 /// @nodoc
@@ -302,6 +308,7 @@ class _$FactCopyWithImpl<$Res> implements $FactCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
+    Object? comment = freezed,
     Object? lifetime = freezed,
     Object? data = freezed,
   }) {
@@ -313,6 +320,10 @@ class _$FactCopyWithImpl<$Res> implements $FactCopyWith<$Res> {
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      comment: comment == freezed
+          ? _value.comment
+          : comment // ignore: cast_nullable_to_non_nullable
               as String,
       lifetime: lifetime == freezed
           ? _value.lifetime
@@ -331,7 +342,12 @@ abstract class _$$_FactCopyWith<$Res> implements $FactCopyWith<$Res> {
   factory _$$_FactCopyWith(_$_Fact value, $Res Function(_$_Fact) then) =
       __$$_FactCopyWithImpl<$Res>;
   @override
-  $Res call({String id, String name, FactLifetime lifetime, String data});
+  $Res call(
+      {String id,
+      String name,
+      String comment,
+      FactLifetime lifetime,
+      String data});
 }
 
 /// @nodoc
@@ -347,6 +363,7 @@ class __$$_FactCopyWithImpl<$Res> extends _$FactCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
+    Object? comment = freezed,
     Object? lifetime = freezed,
     Object? data = freezed,
   }) {
@@ -358,6 +375,10 @@ class __$$_FactCopyWithImpl<$Res> extends _$FactCopyWithImpl<$Res>
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      comment: comment == freezed
+          ? _value.comment
+          : comment // ignore: cast_nullable_to_non_nullable
               as String,
       lifetime: lifetime == freezed
           ? _value.lifetime
@@ -377,6 +398,7 @@ class _$_Fact implements _Fact {
   const _$_Fact(
       {required this.id,
       required this.name,
+      this.comment = "",
       this.lifetime = FactLifetime.permanent,
       this.data = ""});
 
@@ -388,6 +410,9 @@ class _$_Fact implements _Fact {
   final String name;
   @override
   @JsonKey()
+  final String comment;
+  @override
+  @JsonKey()
   final FactLifetime lifetime;
   @override
   @JsonKey()
@@ -395,7 +420,7 @@ class _$_Fact implements _Fact {
 
   @override
   String toString() {
-    return 'Fact(id: $id, name: $name, lifetime: $lifetime, data: $data)';
+    return 'Fact(id: $id, name: $name, comment: $comment, lifetime: $lifetime, data: $data)';
   }
 
   @override
@@ -405,6 +430,7 @@ class _$_Fact implements _Fact {
             other is _$_Fact &&
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.comment, comment) &&
             const DeepCollectionEquality().equals(other.lifetime, lifetime) &&
             const DeepCollectionEquality().equals(other.data, data));
   }
@@ -415,6 +441,7 @@ class _$_Fact implements _Fact {
       runtimeType,
       const DeepCollectionEquality().hash(id),
       const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(comment),
       const DeepCollectionEquality().hash(lifetime),
       const DeepCollectionEquality().hash(data));
 
@@ -435,6 +462,7 @@ abstract class _Fact implements Fact {
   const factory _Fact(
       {required final String id,
       required final String name,
+      final String comment,
       final FactLifetime lifetime,
       final String data}) = _$_Fact;
 
@@ -444,6 +472,8 @@ abstract class _Fact implements Fact {
   String get id;
   @override
   String get name;
+  @override
+  String get comment;
   @override
   FactLifetime get lifetime;
   @override
@@ -637,6 +667,10 @@ Event _$EventFromJson(Map<String, dynamic> json) {
       return _Event.fromJson(json);
     case 'npc_interact':
       return NpcEvent.fromJson(json);
+    case 'run_command':
+      return RunCommandEvent.fromJson(json);
+    case 'island_create':
+      return IslandCreateEvent.fromJson(json);
 
     default:
       throw CheckedFromJsonException(
@@ -653,24 +687,39 @@ mixin _$Event {
   TResult when<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers) $default, {
     required TResult Function(
-            String name, String id, String identifier, List<String> triggers)
+            String name, String id, List<String> triggers, String identifier)
         npc,
+    required TResult Function(
+            String name, String id, List<String> triggers, String command)
+        runCommand,
+    required TResult Function(String name, String id, List<String> triggers)
+        islandCreate,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers)? $default, {
     TResult Function(
-            String name, String id, String identifier, List<String> triggers)?
+            String name, String id, List<String> triggers, String identifier)?
         npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers)? $default, {
     TResult Function(
-            String name, String id, String identifier, List<String> triggers)?
+            String name, String id, List<String> triggers, String identifier)?
         npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -678,18 +727,24 @@ mixin _$Event {
   TResult map<TResult extends Object?>(
     TResult Function(_Event value) $default, {
     required TResult Function(NpcEvent value) npc,
+    required TResult Function(RunCommandEvent value) runCommand,
+    required TResult Function(IslandCreateEvent value) islandCreate,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult Function(_Event value)? $default, {
     TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_Event value)? $default, {
     TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -838,8 +893,13 @@ class _$_Event implements _Event {
   TResult when<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers) $default, {
     required TResult Function(
-            String name, String id, String identifier, List<String> triggers)
+            String name, String id, List<String> triggers, String identifier)
         npc,
+    required TResult Function(
+            String name, String id, List<String> triggers, String command)
+        runCommand,
+    required TResult Function(String name, String id, List<String> triggers)
+        islandCreate,
   }) {
     return $default(name, id, triggers);
   }
@@ -849,8 +909,13 @@ class _$_Event implements _Event {
   TResult? whenOrNull<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers)? $default, {
     TResult Function(
-            String name, String id, String identifier, List<String> triggers)?
+            String name, String id, List<String> triggers, String identifier)?
         npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
   }) {
     return $default?.call(name, id, triggers);
   }
@@ -860,8 +925,13 @@ class _$_Event implements _Event {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers)? $default, {
     TResult Function(
-            String name, String id, String identifier, List<String> triggers)?
+            String name, String id, List<String> triggers, String identifier)?
         npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -875,6 +945,8 @@ class _$_Event implements _Event {
   TResult map<TResult extends Object?>(
     TResult Function(_Event value) $default, {
     required TResult Function(NpcEvent value) npc,
+    required TResult Function(RunCommandEvent value) runCommand,
+    required TResult Function(IslandCreateEvent value) islandCreate,
   }) {
     return $default(this);
   }
@@ -884,6 +956,8 @@ class _$_Event implements _Event {
   TResult? mapOrNull<TResult extends Object?>(
     TResult Function(_Event value)? $default, {
     TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
   }) {
     return $default?.call(this);
   }
@@ -893,6 +967,8 @@ class _$_Event implements _Event {
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_Event value)? $default, {
     TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -935,7 +1011,7 @@ abstract class _$$NpcEventCopyWith<$Res> implements $EventCopyWith<$Res> {
           _$NpcEvent value, $Res Function(_$NpcEvent) then) =
       __$$NpcEventCopyWithImpl<$Res>;
   @override
-  $Res call({String name, String id, String identifier, List<String> triggers});
+  $Res call({String name, String id, List<String> triggers, String identifier});
 }
 
 /// @nodoc
@@ -951,8 +1027,8 @@ class __$$NpcEventCopyWithImpl<$Res> extends _$EventCopyWithImpl<$Res>
   $Res call({
     Object? name = freezed,
     Object? id = freezed,
-    Object? identifier = freezed,
     Object? triggers = freezed,
+    Object? identifier = freezed,
   }) {
     return _then(_$NpcEvent(
       name: name == freezed
@@ -963,14 +1039,14 @@ class __$$NpcEventCopyWithImpl<$Res> extends _$EventCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      identifier: identifier == freezed
-          ? _value.identifier
-          : identifier // ignore: cast_nullable_to_non_nullable
-              as String,
       triggers: triggers == freezed
           ? _value._triggers
           : triggers // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      identifier: identifier == freezed
+          ? _value.identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -981,8 +1057,8 @@ class _$NpcEvent implements NpcEvent {
   const _$NpcEvent(
       {required this.name,
       required this.id,
-      this.identifier = "",
       final List<String> triggers = const [],
+      this.identifier = "",
       final String? $type})
       : _triggers = triggers,
         $type = $type ?? 'npc_interact';
@@ -994,9 +1070,6 @@ class _$NpcEvent implements NpcEvent {
   final String name;
   @override
   final String id;
-  @override
-  @JsonKey()
-  final String identifier;
   final List<String> _triggers;
   @override
   @JsonKey()
@@ -1005,12 +1078,16 @@ class _$NpcEvent implements NpcEvent {
     return EqualUnmodifiableListView(_triggers);
   }
 
+  @override
+  @JsonKey()
+  final String identifier;
+
   @JsonKey(name: 'type')
   final String $type;
 
   @override
   String toString() {
-    return 'Event.npc(name: $name, id: $id, identifier: $identifier, triggers: $triggers)';
+    return 'Event.npc(name: $name, id: $id, triggers: $triggers, identifier: $identifier)';
   }
 
   @override
@@ -1020,9 +1097,9 @@ class _$NpcEvent implements NpcEvent {
             other is _$NpcEvent &&
             const DeepCollectionEquality().equals(other.name, name) &&
             const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other._triggers, _triggers) &&
             const DeepCollectionEquality()
-                .equals(other.identifier, identifier) &&
-            const DeepCollectionEquality().equals(other._triggers, _triggers));
+                .equals(other.identifier, identifier));
   }
 
   @JsonKey(ignore: true)
@@ -1031,8 +1108,8 @@ class _$NpcEvent implements NpcEvent {
       runtimeType,
       const DeepCollectionEquality().hash(name),
       const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(identifier),
-      const DeepCollectionEquality().hash(_triggers));
+      const DeepCollectionEquality().hash(_triggers),
+      const DeepCollectionEquality().hash(identifier));
 
   @JsonKey(ignore: true)
   @override
@@ -1044,10 +1121,15 @@ class _$NpcEvent implements NpcEvent {
   TResult when<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers) $default, {
     required TResult Function(
-            String name, String id, String identifier, List<String> triggers)
+            String name, String id, List<String> triggers, String identifier)
         npc,
+    required TResult Function(
+            String name, String id, List<String> triggers, String command)
+        runCommand,
+    required TResult Function(String name, String id, List<String> triggers)
+        islandCreate,
   }) {
-    return npc(name, id, identifier, triggers);
+    return npc(name, id, triggers, identifier);
   }
 
   @override
@@ -1055,10 +1137,15 @@ class _$NpcEvent implements NpcEvent {
   TResult? whenOrNull<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers)? $default, {
     TResult Function(
-            String name, String id, String identifier, List<String> triggers)?
+            String name, String id, List<String> triggers, String identifier)?
         npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
   }) {
-    return npc?.call(name, id, identifier, triggers);
+    return npc?.call(name, id, triggers, identifier);
   }
 
   @override
@@ -1066,12 +1153,17 @@ class _$NpcEvent implements NpcEvent {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String name, String id, List<String> triggers)? $default, {
     TResult Function(
-            String name, String id, String identifier, List<String> triggers)?
+            String name, String id, List<String> triggers, String identifier)?
         npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
     required TResult orElse(),
   }) {
     if (npc != null) {
-      return npc(name, id, identifier, triggers);
+      return npc(name, id, triggers, identifier);
     }
     return orElse();
   }
@@ -1081,6 +1173,8 @@ class _$NpcEvent implements NpcEvent {
   TResult map<TResult extends Object?>(
     TResult Function(_Event value) $default, {
     required TResult Function(NpcEvent value) npc,
+    required TResult Function(RunCommandEvent value) runCommand,
+    required TResult Function(IslandCreateEvent value) islandCreate,
   }) {
     return npc(this);
   }
@@ -1090,6 +1184,8 @@ class _$NpcEvent implements NpcEvent {
   TResult? mapOrNull<TResult extends Object?>(
     TResult Function(_Event value)? $default, {
     TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
   }) {
     return npc?.call(this);
   }
@@ -1099,6 +1195,8 @@ class _$NpcEvent implements NpcEvent {
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_Event value)? $default, {
     TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
     required TResult orElse(),
   }) {
     if (npc != null) {
@@ -1119,8 +1217,8 @@ abstract class NpcEvent implements Event {
   const factory NpcEvent(
       {required final String name,
       required final String id,
-      final String identifier,
-      final List<String> triggers}) = _$NpcEvent;
+      final List<String> triggers,
+      final String identifier}) = _$NpcEvent;
 
   factory NpcEvent.fromJson(Map<String, dynamic> json) = _$NpcEvent.fromJson;
 
@@ -1128,12 +1226,462 @@ abstract class NpcEvent implements Event {
   String get name;
   @override
   String get id;
+  @override
+  List<String> get triggers;
   String get identifier;
+  @override
+  @JsonKey(ignore: true)
+  _$$NpcEventCopyWith<_$NpcEvent> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$RunCommandEventCopyWith<$Res>
+    implements $EventCopyWith<$Res> {
+  factory _$$RunCommandEventCopyWith(
+          _$RunCommandEvent value, $Res Function(_$RunCommandEvent) then) =
+      __$$RunCommandEventCopyWithImpl<$Res>;
+  @override
+  $Res call({String name, String id, List<String> triggers, String command});
+}
+
+/// @nodoc
+class __$$RunCommandEventCopyWithImpl<$Res> extends _$EventCopyWithImpl<$Res>
+    implements _$$RunCommandEventCopyWith<$Res> {
+  __$$RunCommandEventCopyWithImpl(
+      _$RunCommandEvent _value, $Res Function(_$RunCommandEvent) _then)
+      : super(_value, (v) => _then(v as _$RunCommandEvent));
+
+  @override
+  _$RunCommandEvent get _value => super._value as _$RunCommandEvent;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? id = freezed,
+    Object? triggers = freezed,
+    Object? command = freezed,
+  }) {
+    return _then(_$RunCommandEvent(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      triggers: triggers == freezed
+          ? _value._triggers
+          : triggers // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      command: command == freezed
+          ? _value.command
+          : command // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$RunCommandEvent implements RunCommandEvent {
+  const _$RunCommandEvent(
+      {required this.name,
+      required this.id,
+      final List<String> triggers = const [],
+      this.command = "",
+      final String? $type})
+      : _triggers = triggers,
+        $type = $type ?? 'run_command';
+
+  factory _$RunCommandEvent.fromJson(Map<String, dynamic> json) =>
+      _$$RunCommandEventFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String id;
+  final List<String> _triggers;
+  @override
+  @JsonKey()
+  List<String> get triggers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggers);
+  }
+
+  @override
+  @JsonKey()
+  final String command;
+
+  @JsonKey(name: 'type')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'Event.runCommand(name: $name, id: $id, triggers: $triggers, command: $command)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RunCommandEvent &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other._triggers, _triggers) &&
+            const DeepCollectionEquality().equals(other.command, command));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(_triggers),
+      const DeepCollectionEquality().hash(command));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$RunCommandEventCopyWith<_$RunCommandEvent> get copyWith =>
+      __$$RunCommandEventCopyWithImpl<_$RunCommandEvent>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(String name, String id, List<String> triggers) $default, {
+    required TResult Function(
+            String name, String id, List<String> triggers, String identifier)
+        npc,
+    required TResult Function(
+            String name, String id, List<String> triggers, String command)
+        runCommand,
+    required TResult Function(String name, String id, List<String> triggers)
+        islandCreate,
+  }) {
+    return runCommand(name, id, triggers, command);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult Function(String name, String id, List<String> triggers)? $default, {
+    TResult Function(
+            String name, String id, List<String> triggers, String identifier)?
+        npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
+  }) {
+    return runCommand?.call(name, id, triggers, command);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(String name, String id, List<String> triggers)? $default, {
+    TResult Function(
+            String name, String id, List<String> triggers, String identifier)?
+        npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
+    required TResult orElse(),
+  }) {
+    if (runCommand != null) {
+      return runCommand(name, id, triggers, command);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_Event value) $default, {
+    required TResult Function(NpcEvent value) npc,
+    required TResult Function(RunCommandEvent value) runCommand,
+    required TResult Function(IslandCreateEvent value) islandCreate,
+  }) {
+    return runCommand(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult Function(_Event value)? $default, {
+    TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
+  }) {
+    return runCommand?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_Event value)? $default, {
+    TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
+    required TResult orElse(),
+  }) {
+    if (runCommand != null) {
+      return runCommand(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$RunCommandEventToJson(
+      this,
+    );
+  }
+}
+
+abstract class RunCommandEvent implements Event {
+  const factory RunCommandEvent(
+      {required final String name,
+      required final String id,
+      final List<String> triggers,
+      final String command}) = _$RunCommandEvent;
+
+  factory RunCommandEvent.fromJson(Map<String, dynamic> json) =
+      _$RunCommandEvent.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get id;
+  @override
+  List<String> get triggers;
+  String get command;
+  @override
+  @JsonKey(ignore: true)
+  _$$RunCommandEventCopyWith<_$RunCommandEvent> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$IslandCreateEventCopyWith<$Res>
+    implements $EventCopyWith<$Res> {
+  factory _$$IslandCreateEventCopyWith(
+          _$IslandCreateEvent value, $Res Function(_$IslandCreateEvent) then) =
+      __$$IslandCreateEventCopyWithImpl<$Res>;
+  @override
+  $Res call({String name, String id, List<String> triggers});
+}
+
+/// @nodoc
+class __$$IslandCreateEventCopyWithImpl<$Res> extends _$EventCopyWithImpl<$Res>
+    implements _$$IslandCreateEventCopyWith<$Res> {
+  __$$IslandCreateEventCopyWithImpl(
+      _$IslandCreateEvent _value, $Res Function(_$IslandCreateEvent) _then)
+      : super(_value, (v) => _then(v as _$IslandCreateEvent));
+
+  @override
+  _$IslandCreateEvent get _value => super._value as _$IslandCreateEvent;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? id = freezed,
+    Object? triggers = freezed,
+  }) {
+    return _then(_$IslandCreateEvent(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      triggers: triggers == freezed
+          ? _value._triggers
+          : triggers // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$IslandCreateEvent implements IslandCreateEvent {
+  const _$IslandCreateEvent(
+      {required this.name,
+      required this.id,
+      final List<String> triggers = const [],
+      final String? $type})
+      : _triggers = triggers,
+        $type = $type ?? 'island_create';
+
+  factory _$IslandCreateEvent.fromJson(Map<String, dynamic> json) =>
+      _$$IslandCreateEventFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String id;
+  final List<String> _triggers;
+  @override
+  @JsonKey()
+  List<String> get triggers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggers);
+  }
+
+  @JsonKey(name: 'type')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'Event.islandCreate(name: $name, id: $id, triggers: $triggers)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$IslandCreateEvent &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other._triggers, _triggers));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(_triggers));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$IslandCreateEventCopyWith<_$IslandCreateEvent> get copyWith =>
+      __$$IslandCreateEventCopyWithImpl<_$IslandCreateEvent>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(String name, String id, List<String> triggers) $default, {
+    required TResult Function(
+            String name, String id, List<String> triggers, String identifier)
+        npc,
+    required TResult Function(
+            String name, String id, List<String> triggers, String command)
+        runCommand,
+    required TResult Function(String name, String id, List<String> triggers)
+        islandCreate,
+  }) {
+    return islandCreate(name, id, triggers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult Function(String name, String id, List<String> triggers)? $default, {
+    TResult Function(
+            String name, String id, List<String> triggers, String identifier)?
+        npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
+  }) {
+    return islandCreate?.call(name, id, triggers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(String name, String id, List<String> triggers)? $default, {
+    TResult Function(
+            String name, String id, List<String> triggers, String identifier)?
+        npc,
+    TResult Function(
+            String name, String id, List<String> triggers, String command)?
+        runCommand,
+    TResult Function(String name, String id, List<String> triggers)?
+        islandCreate,
+    required TResult orElse(),
+  }) {
+    if (islandCreate != null) {
+      return islandCreate(name, id, triggers);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_Event value) $default, {
+    required TResult Function(NpcEvent value) npc,
+    required TResult Function(RunCommandEvent value) runCommand,
+    required TResult Function(IslandCreateEvent value) islandCreate,
+  }) {
+    return islandCreate(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult Function(_Event value)? $default, {
+    TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
+  }) {
+    return islandCreate?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_Event value)? $default, {
+    TResult Function(NpcEvent value)? npc,
+    TResult Function(RunCommandEvent value)? runCommand,
+    TResult Function(IslandCreateEvent value)? islandCreate,
+    required TResult orElse(),
+  }) {
+    if (islandCreate != null) {
+      return islandCreate(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$IslandCreateEventToJson(
+      this,
+    );
+  }
+}
+
+abstract class IslandCreateEvent implements Event {
+  const factory IslandCreateEvent(
+      {required final String name,
+      required final String id,
+      final List<String> triggers}) = _$IslandCreateEvent;
+
+  factory IslandCreateEvent.fromJson(Map<String, dynamic> json) =
+      _$IslandCreateEvent.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get id;
   @override
   List<String> get triggers;
   @override
   @JsonKey(ignore: true)
-  _$$NpcEventCopyWith<_$NpcEvent> get copyWith =>
+  _$$IslandCreateEventCopyWith<_$IslandCreateEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1145,6 +1693,8 @@ Dialogue _$DialogueFromJson(Map<String, dynamic> json) {
       return SpokenDialogue.fromJson(json);
     case 'option':
       return OptionDialogue.fromJson(json);
+    case 'message':
+      return MessageDialogue.fromJson(json);
 
     default:
       throw CheckedFromJsonException(
@@ -1197,6 +1747,16 @@ mixin _$Dialogue {
             List<Criterion> modifiers,
             List<Option> options)
         option,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        message,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1233,6 +1793,16 @@ mixin _$Dialogue {
             List<Criterion> modifiers,
             List<Option> options)?
         option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1269,6 +1839,16 @@ mixin _$Dialogue {
             List<Criterion> modifiers,
             List<Option> options)?
         option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1277,6 +1857,7 @@ mixin _$Dialogue {
     TResult Function(_Dialogue value) $default, {
     required TResult Function(SpokenDialogue value) spoken,
     required TResult Function(OptionDialogue value) option,
+    required TResult Function(MessageDialogue value) message,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1284,6 +1865,7 @@ mixin _$Dialogue {
     TResult Function(_Dialogue value)? $default, {
     TResult Function(SpokenDialogue value)? spoken,
     TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1291,6 +1873,7 @@ mixin _$Dialogue {
     TResult Function(_Dialogue value)? $default, {
     TResult Function(SpokenDialogue value)? spoken,
     TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1586,6 +2169,16 @@ class _$_Dialogue implements _Dialogue {
             List<Criterion> modifiers,
             List<Option> options)
         option,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        message,
   }) {
     return $default(
         name, id, triggeredBy, triggers, speaker, text, criteria, modifiers);
@@ -1626,6 +2219,16 @@ class _$_Dialogue implements _Dialogue {
             List<Criterion> modifiers,
             List<Option> options)?
         option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
   }) {
     return $default?.call(
         name, id, triggeredBy, triggers, speaker, text, criteria, modifiers);
@@ -1666,6 +2269,16 @@ class _$_Dialogue implements _Dialogue {
             List<Criterion> modifiers,
             List<Option> options)?
         option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -1681,6 +2294,7 @@ class _$_Dialogue implements _Dialogue {
     TResult Function(_Dialogue value) $default, {
     required TResult Function(SpokenDialogue value) spoken,
     required TResult Function(OptionDialogue value) option,
+    required TResult Function(MessageDialogue value) message,
   }) {
     return $default(this);
   }
@@ -1691,6 +2305,7 @@ class _$_Dialogue implements _Dialogue {
     TResult Function(_Dialogue value)? $default, {
     TResult Function(SpokenDialogue value)? spoken,
     TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
   }) {
     return $default?.call(this);
   }
@@ -1701,6 +2316,7 @@ class _$_Dialogue implements _Dialogue {
     TResult Function(_Dialogue value)? $default, {
     TResult Function(SpokenDialogue value)? spoken,
     TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -1982,6 +2598,16 @@ class _$SpokenDialogue implements SpokenDialogue {
             List<Criterion> modifiers,
             List<Option> options)
         option,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        message,
   }) {
     return spoken(name, id, triggeredBy, triggers, speaker, text, criteria,
         modifiers, duration);
@@ -2022,6 +2648,16 @@ class _$SpokenDialogue implements SpokenDialogue {
             List<Criterion> modifiers,
             List<Option> options)?
         option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
   }) {
     return spoken?.call(name, id, triggeredBy, triggers, speaker, text,
         criteria, modifiers, duration);
@@ -2062,6 +2698,16 @@ class _$SpokenDialogue implements SpokenDialogue {
             List<Criterion> modifiers,
             List<Option> options)?
         option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
     required TResult orElse(),
   }) {
     if (spoken != null) {
@@ -2077,6 +2723,7 @@ class _$SpokenDialogue implements SpokenDialogue {
     TResult Function(_Dialogue value) $default, {
     required TResult Function(SpokenDialogue value) spoken,
     required TResult Function(OptionDialogue value) option,
+    required TResult Function(MessageDialogue value) message,
   }) {
     return spoken(this);
   }
@@ -2087,6 +2734,7 @@ class _$SpokenDialogue implements SpokenDialogue {
     TResult Function(_Dialogue value)? $default, {
     TResult Function(SpokenDialogue value)? spoken,
     TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
   }) {
     return spoken?.call(this);
   }
@@ -2097,6 +2745,7 @@ class _$SpokenDialogue implements SpokenDialogue {
     TResult Function(_Dialogue value)? $default, {
     TResult Function(SpokenDialogue value)? spoken,
     TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
     required TResult orElse(),
   }) {
     if (spoken != null) {
@@ -2386,6 +3035,16 @@ class _$OptionDialogue implements OptionDialogue {
             List<Criterion> modifiers,
             List<Option> options)
         option,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        message,
   }) {
     return option(name, id, triggeredBy, triggers, speaker, text, criteria,
         modifiers, options);
@@ -2426,6 +3085,16 @@ class _$OptionDialogue implements OptionDialogue {
             List<Criterion> modifiers,
             List<Option> options)?
         option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
   }) {
     return option?.call(name, id, triggeredBy, triggers, speaker, text,
         criteria, modifiers, options);
@@ -2466,6 +3135,16 @@ class _$OptionDialogue implements OptionDialogue {
             List<Criterion> modifiers,
             List<Option> options)?
         option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
     required TResult orElse(),
   }) {
     if (option != null) {
@@ -2481,6 +3160,7 @@ class _$OptionDialogue implements OptionDialogue {
     TResult Function(_Dialogue value) $default, {
     required TResult Function(SpokenDialogue value) spoken,
     required TResult Function(OptionDialogue value) option,
+    required TResult Function(MessageDialogue value) message,
   }) {
     return option(this);
   }
@@ -2491,6 +3171,7 @@ class _$OptionDialogue implements OptionDialogue {
     TResult Function(_Dialogue value)? $default, {
     TResult Function(SpokenDialogue value)? spoken,
     TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
   }) {
     return option?.call(this);
   }
@@ -2501,6 +3182,7 @@ class _$OptionDialogue implements OptionDialogue {
     TResult Function(_Dialogue value)? $default, {
     TResult Function(SpokenDialogue value)? spoken,
     TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
     required TResult orElse(),
   }) {
     if (option != null) {
@@ -2553,6 +3235,423 @@ abstract class OptionDialogue implements Dialogue {
   @override
   @JsonKey(ignore: true)
   _$$OptionDialogueCopyWith<_$OptionDialogue> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$MessageDialogueCopyWith<$Res>
+    implements $DialogueCopyWith<$Res> {
+  factory _$$MessageDialogueCopyWith(
+          _$MessageDialogue value, $Res Function(_$MessageDialogue) then) =
+      __$$MessageDialogueCopyWithImpl<$Res>;
+  @override
+  $Res call(
+      {String name,
+      String id,
+      @JsonKey(name: "triggered_by") List<String> triggeredBy,
+      List<String> triggers,
+      String speaker,
+      String text,
+      List<Criterion> criteria,
+      List<Criterion> modifiers});
+}
+
+/// @nodoc
+class __$$MessageDialogueCopyWithImpl<$Res> extends _$DialogueCopyWithImpl<$Res>
+    implements _$$MessageDialogueCopyWith<$Res> {
+  __$$MessageDialogueCopyWithImpl(
+      _$MessageDialogue _value, $Res Function(_$MessageDialogue) _then)
+      : super(_value, (v) => _then(v as _$MessageDialogue));
+
+  @override
+  _$MessageDialogue get _value => super._value as _$MessageDialogue;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? id = freezed,
+    Object? triggeredBy = freezed,
+    Object? triggers = freezed,
+    Object? speaker = freezed,
+    Object? text = freezed,
+    Object? criteria = freezed,
+    Object? modifiers = freezed,
+  }) {
+    return _then(_$MessageDialogue(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      triggeredBy: triggeredBy == freezed
+          ? _value._triggeredBy
+          : triggeredBy // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      triggers: triggers == freezed
+          ? _value._triggers
+          : triggers // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      speaker: speaker == freezed
+          ? _value.speaker
+          : speaker // ignore: cast_nullable_to_non_nullable
+              as String,
+      text: text == freezed
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+      criteria: criteria == freezed
+          ? _value._criteria
+          : criteria // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+      modifiers: modifiers == freezed
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$MessageDialogue implements MessageDialogue {
+  const _$MessageDialogue(
+      {required this.name,
+      required this.id,
+      @JsonKey(name: "triggered_by") final List<String> triggeredBy = const [],
+      final List<String> triggers = const [],
+      required this.speaker,
+      required this.text,
+      final List<Criterion> criteria = const [],
+      final List<Criterion> modifiers = const [],
+      final String? $type})
+      : _triggeredBy = triggeredBy,
+        _triggers = triggers,
+        _criteria = criteria,
+        _modifiers = modifiers,
+        $type = $type ?? 'message';
+
+  factory _$MessageDialogue.fromJson(Map<String, dynamic> json) =>
+      _$$MessageDialogueFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String id;
+  final List<String> _triggeredBy;
+  @override
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggeredBy);
+  }
+
+  final List<String> _triggers;
+  @override
+  @JsonKey()
+  List<String> get triggers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggers);
+  }
+
+  @override
+  final String speaker;
+  @override
+  final String text;
+  final List<Criterion> _criteria;
+  @override
+  @JsonKey()
+  List<Criterion> get criteria {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_criteria);
+  }
+
+  final List<Criterion> _modifiers;
+  @override
+  @JsonKey()
+  List<Criterion> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
+
+  @JsonKey(name: 'type')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'Dialogue.message(name: $name, id: $id, triggeredBy: $triggeredBy, triggers: $triggers, speaker: $speaker, text: $text, criteria: $criteria, modifiers: $modifiers)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$MessageDialogue &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality()
+                .equals(other._triggeredBy, _triggeredBy) &&
+            const DeepCollectionEquality().equals(other._triggers, _triggers) &&
+            const DeepCollectionEquality().equals(other.speaker, speaker) &&
+            const DeepCollectionEquality().equals(other.text, text) &&
+            const DeepCollectionEquality().equals(other._criteria, _criteria) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(_triggeredBy),
+      const DeepCollectionEquality().hash(_triggers),
+      const DeepCollectionEquality().hash(speaker),
+      const DeepCollectionEquality().hash(text),
+      const DeepCollectionEquality().hash(_criteria),
+      const DeepCollectionEquality().hash(_modifiers));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$MessageDialogueCopyWith<_$MessageDialogue> get copyWith =>
+      __$$MessageDialogueCopyWithImpl<_$MessageDialogue>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        $default, {
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)
+        spoken,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            List<Option> options)
+        option,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        message,
+  }) {
+    return message(
+        name, id, triggeredBy, triggers, speaker, text, criteria, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        spoken,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            List<Option> options)?
+        option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
+  }) {
+    return message?.call(
+        name, id, triggeredBy, triggers, speaker, text, criteria, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        spoken,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            List<Option> options)?
+        option,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            String speaker,
+            String text,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        message,
+    required TResult orElse(),
+  }) {
+    if (message != null) {
+      return message(
+          name, id, triggeredBy, triggers, speaker, text, criteria, modifiers);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_Dialogue value) $default, {
+    required TResult Function(SpokenDialogue value) spoken,
+    required TResult Function(OptionDialogue value) option,
+    required TResult Function(MessageDialogue value) message,
+  }) {
+    return message(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult Function(_Dialogue value)? $default, {
+    TResult Function(SpokenDialogue value)? spoken,
+    TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
+  }) {
+    return message?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_Dialogue value)? $default, {
+    TResult Function(SpokenDialogue value)? spoken,
+    TResult Function(OptionDialogue value)? option,
+    TResult Function(MessageDialogue value)? message,
+    required TResult orElse(),
+  }) {
+    if (message != null) {
+      return message(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$MessageDialogueToJson(
+      this,
+    );
+  }
+}
+
+abstract class MessageDialogue implements Dialogue {
+  const factory MessageDialogue(
+      {required final String name,
+      required final String id,
+      @JsonKey(name: "triggered_by") final List<String> triggeredBy,
+      final List<String> triggers,
+      required final String speaker,
+      required final String text,
+      final List<Criterion> criteria,
+      final List<Criterion> modifiers}) = _$MessageDialogue;
+
+  factory MessageDialogue.fromJson(Map<String, dynamic> json) =
+      _$MessageDialogue.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get id;
+  @override
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy;
+  @override
+  List<String> get triggers;
+  @override
+  String get speaker;
+  @override
+  String get text;
+  @override
+  List<Criterion> get criteria;
+  @override
+  List<Criterion> get modifiers;
+  @override
+  @JsonKey(ignore: true)
+  _$$MessageDialogueCopyWith<_$MessageDialogue> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

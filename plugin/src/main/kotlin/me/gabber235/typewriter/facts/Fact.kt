@@ -13,6 +13,7 @@ import kotlin.time.toJavaDuration
 data class FactEntry(
 	override val id: String = "",
 	override val name: String = "",
+	val comment: String = "",
 	val lifetime: FactLifetime = FactLifetime.PERMANENT,
 	val data: String = "",
 ) : Entry {
@@ -66,7 +67,6 @@ data class Fact(val id: String, val value: Int, val lastUpdate: LocalDateTime = 
 val Fact.hasExpired: Boolean
 	get() {
 		val entry = EntryDatabase.getFact(id) ?: return true
-		println("Cache ${entry.cache}")
 		return when (val cache = entry.cache) {
 			is Duration       -> {
 				LocalDateTime.now().isAfter(lastUpdate.plus(cache.toJavaDuration()))

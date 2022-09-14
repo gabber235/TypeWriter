@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.npc
+package me.gabber235.typewriter.extensions.npc
 
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.trait.TraitInfo

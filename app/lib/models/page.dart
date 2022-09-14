@@ -39,6 +39,7 @@ class Fact with _$Fact implements Entry {
   const factory Fact({
     required String id,
     required String name,
+    @Default("") String comment,
     @Default(FactLifetime.permanent) FactLifetime lifetime,
     @Default("") String data,
   }) = _Fact;
@@ -94,9 +95,25 @@ class Event with _$Event implements TriggerEntry {
   const factory Event.npc({
     required String name,
     required String id,
-    @Default("") String identifier,
     @Default([]) List<String> triggers,
+    @Default("") String identifier,
   }) = NpcEvent;
+
+  @FreezedUnionValue("run_command")
+  const factory Event.runCommand({
+    required String name,
+    required String id,
+    @Default([]) List<String> triggers,
+    @Default("") String command,
+  }) = RunCommandEvent;
+
+  // SuperiorSkyblock 2 Events
+  @FreezedUnionValue("island_create")
+  const factory Event.islandCreate({
+    required String name,
+    required String id,
+    @Default([]) List<String> triggers,
+  }) = IslandCreateEvent;
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 }
@@ -137,6 +154,17 @@ class Dialogue with _$Dialogue implements RuleEntry {
     @Default([]) List<Criterion> modifiers,
     @Default([]) List<Option> options,
   }) = OptionDialogue;
+
+  const factory Dialogue.message({
+    required String name,
+    required String id,
+    @Default([]) @JsonKey(name: "triggered_by") List<String> triggeredBy,
+    @Default([]) List<String> triggers,
+    required String speaker,
+    required String text,
+    @Default([]) List<Criterion> criteria,
+    @Default([]) List<Criterion> modifiers,
+  }) = MessageDialogue;
 
   factory Dialogue.fromJson(Map<String, dynamic> json) =>
       _$DialogueFromJson(json);
@@ -279,9 +307,13 @@ extension EventExtension on Event {
   String get type {
     if (this is NpcEvent) {
       return "npc_interact";
-    } else {
-      return "event";
+    } else if (this is RunCommandEvent) {
+      return "run_command";
+    } else if (this is IslandCreateEvent) {
+      return "island_create";
     }
+
+    return "event";
   }
 }
 
@@ -299,6 +331,12 @@ extension DialogueExtension on Dialogue {
       } else {
         return Colors.green.shade100;
       }
+    } else if (this is MessageDialogue) {
+      if (dark) {
+        return const Color(0xff1c4da3);
+      } else {
+        return const Color(0xff6279a1);
+      }
     } else {
       return Colors.grey;
     }
@@ -309,9 +347,11 @@ extension DialogueExtension on Dialogue {
       return "spoken";
     } else if (this is OptionDialogue) {
       return "option";
-    } else {
-      return "dialogue";
+    } else if (this is MessageDialogue) {
+      return "message";
     }
+
+    return "dialogue";
   }
 }
 
@@ -439,10 +479,10 @@ extension PageModelExtension on PageModel {
       return "All Facts must have a valid name, ${facts.firstWhere((e) => e.name.isEmpty).name} does not";
     }
 
-    String? checkCriterion(Criterion criterion) {
+    String? checkCriterion(Entry entry, Criterion criterion) {
       // Check if the criterion has a existing fact
       if (facts.firstWhereOrNull((f) => f.id == criterion.fact) == null) {
-        return "Criterion ${criterion.fact} does not have a valid fact";
+        return "A Criterion/Modifier in ${entry.name} has a invalid fact: ${criterion.fact}";
       }
       return null;
     }
@@ -450,15 +490,32 @@ extension PageModelExtension on PageModel {
     // Check for all rules if the criteria and modifiers are valid
     for (final rule in rules) {
       for (final criterion in rule.criteria) {
-        final error = checkCriterion(criterion);
+        final error = checkCriterion(rule, criterion);
         if (error != null) {
           return error;
         }
       }
       for (final modification in rule.modifiers) {
-        final error = checkCriterion(modification);
+        final error = checkCriterion(rule, modification);
         if (error != null) {
           return error;
+        }
+      }
+
+      if (rule is OptionDialogue) {
+        for (final option in rule.options) {
+          for (final criterion in option.criteria) {
+            final error = checkCriterion(rule, criterion);
+            if (error != null) {
+              return error;
+            }
+          }
+          for (final modification in option.modifiers) {
+            final error = checkCriterion(rule, modification);
+            if (error != null) {
+              return error;
+            }
+          }
         }
       }
     }

@@ -6,10 +6,9 @@ import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.entry.action.ActionEntry
 import me.gabber235.typewriter.entry.action.SimpleActionEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueEntry
-import me.gabber235.typewriter.entry.dialogue.entries.OptionDialogueEntry
-import me.gabber235.typewriter.entry.dialogue.entries.SpokenDialogueEntry
+import me.gabber235.typewriter.entry.dialogue.entries.*
 import me.gabber235.typewriter.entry.event.EventEntry
-import me.gabber235.typewriter.entry.event.entries.NpcEventEntry
+import me.gabber235.typewriter.entry.event.entries.*
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.facts.FactEntry
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
@@ -62,14 +61,33 @@ object EntryDatabase {
 
 	fun getFact(id: String) = facts.firstOrNull { it.id == id }
 	fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
+
+	fun getAllTriggers() = listOf(
+		*events.toTypedArray(),
+		*dialogue.toTypedArray(),
+		*actions.toTypedArray()
+	).flatMap { entry ->
+		val triggers = entry.triggers.toMutableList()
+		if (entry is RuleEntry) {
+			triggers += entry.triggerdBy
+		}
+		if (entry is OptionDialogueEntry) {
+			triggers += entry.options.flatMap { it.triggers }
+		}
+
+		triggers
+	}
 }
 
 private val eventFactory = RuntimeTypeAdapterFactory.of(EventEntry::class.java)
 	.registerSubtype(NpcEventEntry::class.java, "npc_interact")
+	.registerSubtype(RunCommandEventEntry::class.java, "run_command")
+	.registerSubtype(IslandCreateEventEntry::class.java, "island_create")
 
 private val dialogueFactory = RuntimeTypeAdapterFactory.of(DialogueEntry::class.java)
 	.registerSubtype(SpokenDialogueEntry::class.java, "spoken")
 	.registerSubtype(OptionDialogueEntry::class.java, "option")
+	.registerSubtype(MessageDialogueEntry::class.java, "message")
 
 private val actionFactory = RuntimeTypeAdapterFactory.of(ActionEntry::class.java)
 	.registerSubtype(SimpleActionEntry::class.java, "simple")

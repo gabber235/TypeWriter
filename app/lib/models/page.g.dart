@@ -41,6 +41,7 @@ Map<String, dynamic> _$$_PageModelToJson(_$_PageModel instance) =>
 _$_Fact _$$_FactFromJson(Map<String, dynamic> json) => _$_Fact(
       id: json['id'] as String,
       name: json['name'] as String,
+      comment: json['comment'] as String? ?? "",
       lifetime: $enumDecodeNullable(_$FactLifetimeEnumMap, json['lifetime']) ??
           FactLifetime.permanent,
       data: json['data'] as String? ?? "",
@@ -49,6 +50,7 @@ _$_Fact _$$_FactFromJson(Map<String, dynamic> json) => _$_Fact(
 Map<String, dynamic> _$$_FactToJson(_$_Fact instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'comment': instance.comment,
       'lifetime': _$FactLifetimeEnumMap[instance.lifetime]!,
       'data': instance.data,
     };
@@ -93,11 +95,11 @@ Map<String, dynamic> _$$_EventToJson(_$_Event instance) => <String, dynamic>{
 _$NpcEvent _$$NpcEventFromJson(Map<String, dynamic> json) => _$NpcEvent(
       name: json['name'] as String,
       id: json['id'] as String,
-      identifier: json['identifier'] as String? ?? "",
       triggers: (json['triggers'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      identifier: json['identifier'] as String? ?? "",
       $type: json['type'] as String?,
     );
 
@@ -105,7 +107,47 @@ Map<String, dynamic> _$$NpcEventToJson(_$NpcEvent instance) =>
     <String, dynamic>{
       'name': instance.name,
       'id': instance.id,
+      'triggers': instance.triggers,
       'identifier': instance.identifier,
+      'type': instance.$type,
+    };
+
+_$RunCommandEvent _$$RunCommandEventFromJson(Map<String, dynamic> json) =>
+    _$RunCommandEvent(
+      name: json['name'] as String,
+      id: json['id'] as String,
+      triggers: (json['triggers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      command: json['command'] as String? ?? "",
+      $type: json['type'] as String?,
+    );
+
+Map<String, dynamic> _$$RunCommandEventToJson(_$RunCommandEvent instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'id': instance.id,
+      'triggers': instance.triggers,
+      'command': instance.command,
+      'type': instance.$type,
+    };
+
+_$IslandCreateEvent _$$IslandCreateEventFromJson(Map<String, dynamic> json) =>
+    _$IslandCreateEvent(
+      name: json['name'] as String,
+      id: json['id'] as String,
+      triggers: (json['triggers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      $type: json['type'] as String?,
+    );
+
+Map<String, dynamic> _$$IslandCreateEventToJson(_$IslandCreateEvent instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'id': instance.id,
       'triggers': instance.triggers,
       'type': instance.$type,
     };
@@ -227,6 +269,44 @@ Map<String, dynamic> _$$OptionDialogueToJson(_$OptionDialogue instance) =>
       'criteria': instance.criteria,
       'modifiers': instance.modifiers,
       'options': instance.options,
+      'type': instance.$type,
+    };
+
+_$MessageDialogue _$$MessageDialogueFromJson(Map<String, dynamic> json) =>
+    _$MessageDialogue(
+      name: json['name'] as String,
+      id: json['id'] as String,
+      triggeredBy: (json['triggered_by'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      triggers: (json['triggers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      speaker: json['speaker'] as String,
+      text: json['text'] as String,
+      criteria: (json['criteria'] as List<dynamic>?)
+              ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      $type: json['type'] as String?,
+    );
+
+Map<String, dynamic> _$$MessageDialogueToJson(_$MessageDialogue instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'id': instance.id,
+      'triggered_by': instance.triggeredBy,
+      'triggers': instance.triggers,
+      'speaker': instance.speaker,
+      'text': instance.text,
+      'criteria': instance.criteria,
+      'modifiers': instance.modifiers,
       'type': instance.$type,
     };
 

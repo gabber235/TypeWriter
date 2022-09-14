@@ -16,7 +16,7 @@ class Interaction(val player: Player) {
 	}
 
 	fun onEvent(event: Event) {
-		if (event.name == "system.dialogue.next") {
+		if (event.id == "system.dialogue.next") {
 			val dialog = dialogue ?: return
 			if (dialog.triggers.isEmpty()) {
 				InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
@@ -27,7 +27,7 @@ class Interaction(val player: Player) {
 			}
 			return
 		}
-		if (event.name == "system.dialogue.end") {
+		if (event.id == "system.dialogue.end") {
 			dialogue?.end()
 			dialogue = null
 			return
@@ -35,7 +35,7 @@ class Interaction(val player: Player) {
 
 		// Try to trigger new/next dialogue
 		val facts = player.facts
-		val nextDialogue = EntryDatabase.findDialogue(event.name, facts)
+		val nextDialogue = EntryDatabase.findDialogue(event.id, facts)
 		if (nextDialogue != null) {
 			if (dialogue == null) {
 				dialogue = DialogueSequence(player, nextDialogue)
@@ -43,6 +43,8 @@ class Interaction(val player: Player) {
 			} else {
 				dialogue?.next(nextDialogue)
 			}
+		} else if (dialogue?.isActive == false) {
+			InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
 		}
 
 	}
