@@ -22,6 +22,9 @@ dependencies:
   rive: ^0.9.1
   dropdown_search: ^5.0.2
   dotted_border: ^2.0.0+2
+  tuple: ^2.0.0
+  material_floating_search_bar: ^0.3.7
+  fuzzy: ^0.4.0-nullsafety.0
 
 dev_dependencies:
   flutter_test:

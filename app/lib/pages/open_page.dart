@@ -25,55 +25,58 @@ class OpenPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Spacer(),
-        const Expanded(
-          flex: 2,
-          child: RiveAnimation.asset("assets/game_character.riv"),
-        ),
-        Text("Your journey starts here",
-            style: GoogleFonts.jetBrainsMono(
-                textStyle: const TextStyle(
-                    fontSize: 40, fontWeight: FontWeight.bold))),
-        const SizedBox(height: 24),
-        TextButton(
-          onPressed: () {
-            ref.read(pageProvider.notifier).addEvent();
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Text("Create A New Page"),
-              SizedBox(width: 8),
-              Icon(FontAwesomeIcons.plus),
-            ],
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Spacer(),
+          const Expanded(
+            flex: 2,
+            child: RiveAnimation.asset("assets/game_character.riv"),
           ),
-        ),
-        const SizedBox(height: 12),
-        ElevatedButton(
-          onPressed: () async {
-            final result = await pickFile();
-            if (result == null) return;
-            final bytes = result.files.first.bytes;
-            if (bytes == null) return;
-            final text = String.fromCharCodes(bytes);
-            final model = pageModelFromJson(text);
-            ref.read(pageProvider.notifier).setModel(model);
-            ref.read(fileNameProvider.notifier).state = result.files.first.name;
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Text("Open An Existing Page"),
-              SizedBox(width: 8),
-              Icon(FontAwesomeIcons.folderOpen),
-            ],
+          Text("Your journey starts here",
+              style: GoogleFonts.jetBrainsMono(
+                  textStyle: const TextStyle(
+                      fontSize: 40, fontWeight: FontWeight.bold))),
+          const SizedBox(height: 24),
+          TextButton(
+            onPressed: () {
+              ref.read(pageProvider.notifier).addEvent();
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text("Create A New Page"),
+                SizedBox(width: 8),
+                Icon(FontAwesomeIcons.plus),
+              ],
+            ),
           ),
-        ),
-        const Spacer(),
-      ],
+          const SizedBox(height: 12),
+          ElevatedButton(
+            onPressed: () async {
+              final result = await pickFile();
+              if (result == null) return;
+              final bytes = result.files.first.bytes;
+              if (bytes == null) return;
+              final text = String.fromCharCodes(bytes);
+              final model = pageModelFromJson(text);
+              ref.read(pageProvider.notifier).setModel(model);
+              ref.read(fileNameProvider.notifier).state =
+                  result.files.first.name;
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text("Open An Existing Page"),
+                SizedBox(width: 8),
+                Icon(FontAwesomeIcons.folderOpen),
+              ],
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
     );
   }
 }

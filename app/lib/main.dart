@@ -17,9 +17,7 @@ class TypeWriterApp extends StatelessWidget {
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
       debugShowCheckedModeBanner: false,
-      home: const Scaffold(
-        body: PageGraph(),
-      ),
+      home: const PageGraph(),
     );
   }
 

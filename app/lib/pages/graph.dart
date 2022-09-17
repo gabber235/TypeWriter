@@ -5,14 +5,17 @@ import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:graphview/GraphView.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:typewriter/hooks/delayed_execution.dart';
 import 'package:typewriter/models/page.dart';
 import 'package:typewriter/pages/inspection_menu.dart';
 import 'package:typewriter/pages/open_page.dart';
 import 'package:typewriter/pages/static_nodes.dart';
+import 'package:typewriter/widgets/search_bar.dart';
 
 final fileNameProvider = StateProvider<String>((ref) {
   return "test.json";
@@ -224,8 +227,17 @@ class PageGraph extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final page = ref.watch(pageProvider);
     final selectedId = ref.watch(selectedProvider);
+    final searching = ref.watch(searchingProvider);
+
+    final focus = useFocusNode();
 
     final selected = page.getEntry(selectedId);
+
+    useDelayedExecution(() {
+      if (!searching) {
+        focus.requestFocus();
+      }
+    }, runEveryBuild: true);
 
     if (page.events.isEmpty && page.rules.isEmpty) {
       return const SizedBox.expand(
@@ -233,30 +245,60 @@ class PageGraph extends HookConsumerWidget {
       );
     }
 
-    return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(60),
-        child: _AppBar(),
-      ),
-      body: Stack(
-        children: [
-          const _Graph(),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOutCubic,
-            bottom: 0,
-            left: 0,
-            right: selected != null ? 450 : 0,
-            child: const StaticEntries(),
+    return Shortcuts(
+      shortcuts: {
+        if (Platform.isIOS || Platform.isMacOS)
+          const SingleActivator(LogicalKeyboardKey.keyP,
+              shift: true, meta: true): SearchIntent()
+        else
+          const SingleActivator(LogicalKeyboardKey.keyP,
+              shift: true, control: true): SearchIntent(),
+        if (Platform.isIOS || Platform.isMacOS)
+          const SingleActivator(LogicalKeyboardKey.keyK, meta: true):
+              SearchIntent()
+        else
+          const SingleActivator(LogicalKeyboardKey.keyK, control: true):
+              SearchIntent(),
+      },
+      child: Actions(
+        actions: {
+          SearchIntent: CallbackAction<SearchIntent>(
+            onInvoke: (intent) =>
+                ref.read(searchingProvider.notifier).startSearch(),
           ),
-          if (selected != null)
-            Align(
-              alignment: const Alignment(0.98, 0),
-              child: InspectionMenu(
-                entry: selected,
-              ),
+        },
+        child: Focus(
+          autofocus: true,
+          canRequestFocus: true,
+          focusNode: focus,
+          child: Scaffold(
+            appBar: const PreferredSize(
+              preferredSize: Size.fromHeight(60),
+              child: _AppBar(),
             ),
-        ],
+            body: Stack(
+              children: [
+                const _Graph(),
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeOutCubic,
+                  bottom: 0,
+                  left: 0,
+                  right: selected != null ? 450 : 0,
+                  child: const StaticEntries(),
+                ),
+                if (selected != null)
+                  Align(
+                    alignment: const Alignment(0.98, 0),
+                    child: InspectionMenu(
+                      entry: selected,
+                    ),
+                  ),
+                if (searching) const SearchBar(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -372,50 +414,22 @@ class _AppBar extends HookConsumerWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextButton(
-            onPressed: () {
-              final action = ref.read(pageProvider.notifier).addAction();
-              ref.read(selectedProvider.notifier).state = action.id;
-            },
-            child: Row(
-              children: const [
-                Text("Add Action"),
-                SizedBox(width: 8),
-                Icon(FontAwesomeIcons.personRunning, size: 18),
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextButton(
-            onPressed: () {
-              final event = ref.read(pageProvider.notifier).addEvent();
-              ref.read(selectedProvider.notifier).state = event.id;
-            },
-            child: Row(
-              children: const [
-                Text("Add Event"),
-                SizedBox(width: 8),
-                Icon(FontAwesomeIcons.bolt, size: 18),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextButton(
-            onPressed: () {
-              final dialogue = ref.read(pageProvider.notifier).addDialogue();
-              ref.read(selectedProvider.notifier).state = dialogue.id;
-            },
-            child: Row(
-              children: const [
-                Text("Add Dialogue"),
-                SizedBox(width: 8),
-                Icon(FontAwesomeIcons.solidComments, size: 18),
-              ],
+          child: Tooltip(
+            message: "Shortcut: Ctrl/Cmd + Shift + P",
+            waitDuration: const Duration(milliseconds: 500),
+            child: TextButton(
+              onPressed: () {
+                final action = Actions.maybeFind<SearchIntent>(context);
+                if (action == null) return;
+                Actions.of(context).invokeAction(action, SearchIntent());
+              },
+              child: Row(
+                children: const [
+                  Text("Search Nodes"),
+                  SizedBox(width: 8),
+                  Icon(FontAwesomeIcons.magnifyingGlass, size: 18),
+                ],
+              ),
             ),
           ),
         ),
@@ -548,78 +562,5 @@ class NodeWidget extends HookConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-extension IconExtension on Entry {
-  Widget? icon(BuildContext context) {
-    if (isFact) return _factIcon(context);
-    if (isSpeaker) return _speakerIcon(context);
-    if (isEvent) return _eventIcon(context);
-    if (isDialogue) return _dialogueIcon(context);
-    if (isAction) return _actionIcon(context);
-    return null;
-  }
-
-  Widget? _factIcon(BuildContext context) {
-    final fact = asFact;
-    if (fact == null) return null;
-    switch (fact.lifetime) {
-      case FactLifetime.permanent:
-        return Icon(FontAwesomeIcons.solidHardDrive,
-            size: 18, color: fact.textColor(context));
-      case FactLifetime.cron:
-        return Icon(FontAwesomeIcons.clockRotateLeft,
-            size: 18, color: fact.textColor(context));
-      case FactLifetime.timed:
-        return Icon(FontAwesomeIcons.stopwatch,
-            size: 18, color: fact.textColor(context));
-      case FactLifetime.session:
-        return Icon(FontAwesomeIcons.userClock,
-            size: 18, color: fact.textColor(context));
-    }
-  }
-
-  Widget? _speakerIcon(BuildContext context) {
-    return Icon(FontAwesomeIcons.userTag, size: 18, color: textColor(context));
-  }
-
-  Widget? _eventIcon(BuildContext context) {
-    final event = asEvent;
-    if (event == null) return null;
-    if (event is NpcEvent) {
-      return Icon(FontAwesomeIcons.userTie,
-          size: 18, color: event.textColor(context));
-    } else if (event is RunCommandEvent) {
-      return Icon(FontAwesomeIcons.terminal,
-          size: 18, color: event.textColor(context));
-    } else if (event is IslandCreateEvent) {
-      return Icon(FontAwesomeIcons.houseMedicalCircleCheck,
-          size: 18, color: event.textColor(context));
-    }
-    return null;
-  }
-
-  Widget? _dialogueIcon(BuildContext context) {
-    final dialogue = asDialogue;
-    if (dialogue == null) return null;
-    if (dialogue is SpokenDialogue) {
-      return Icon(FontAwesomeIcons.solidMessage,
-          size: 18, color: dialogue.textColor(context));
-    } else if (dialogue is OptionDialogue) {
-      return Icon(FontAwesomeIcons.list,
-          size: 18, color: dialogue.textColor(context));
-    } else if (dialogue is MessageDialogue) {
-      return Icon(FontAwesomeIcons.solidEnvelope,
-          size: 18, color: dialogue.textColor(context));
-    }
-    return null;
-  }
-
-  Widget? _actionIcon(BuildContext context) {
-    final action = asAction;
-    if (action == null) return null;
-    return Icon(FontAwesomeIcons.personRunning,
-        size: 18, color: action.textColor(context));
   }
 }

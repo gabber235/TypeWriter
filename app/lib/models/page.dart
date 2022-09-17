@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:graphview/GraphView.dart';
+import 'package:tuple/tuple.dart';
 import 'package:typewriter/main.dart';
 
 part 'page.freezed.dart';
@@ -220,6 +222,136 @@ class Option with _$Option {
   factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
 }
 
+enum EntryType<E extends Entry> {
+  fact<Fact>(
+    "Fact",
+    iconBuilder: factIcon,
+    lightColor: Color(0xFFE1BEE7),
+    darkColor: Color(0xFF7B1FA2),
+  ),
+  speaker<Speaker>(
+    "Speaker",
+    icon: FontAwesomeIcons.userTag,
+    lightColor: Color(0xFFFFE0B2),
+    darkColor: Color(0xFFF57C00),
+  ),
+  npcEvent<NpcEvent>(
+    "Npc Interact Event",
+    icon: FontAwesomeIcons.userTie,
+  ),
+  runCommandEvent<RunCommandEvent>(
+    "Run Command Event",
+    icon: FontAwesomeIcons.terminal,
+  ),
+  islandCreateEvent<IslandCreateEvent>(
+    "Island Create Event",
+    icon: FontAwesomeIcons.houseMedicalCircleCheck,
+  ),
+  event<Event>(
+    "Event",
+    lightColor: Color(0xFFFFE57F),
+    darkColor: Color(0xffFBB612),
+  ),
+  spokenDialogue<SpokenDialogue>(
+    "Spoken Dialogue",
+    icon: FontAwesomeIcons.solidMessage,
+    lightColor: Color(0xFFBBDEFB),
+    darkColor: Color(0xFF1E88E5),
+  ),
+  optionDialogue<OptionDialogue>(
+    "Option Dialogue",
+    icon: FontAwesomeIcons.list,
+    lightColor: Color(0xFFC8E6C9),
+    darkColor: Color(0xFF4CAF50),
+  ),
+  messageDialogue<MessageDialogue>(
+    "Message Dialogue",
+    icon: FontAwesomeIcons.solidEnvelope,
+    lightColor: Color(0xff6279a1),
+    darkColor: Color(0xff1c4da3),
+  ),
+  simpleAction<SimpleAction>(
+    "Simple Action",
+    icon: FontAwesomeIcons.personRunning,
+    lightColor: Color(0xFFFFCDD2),
+    darkColor: Color(0xFFD32F2F),
+  ),
+  ;
+
+  final String name;
+  final Color? lightColor;
+  final Color? darkColor;
+
+  final Widget Function(E entry)? iconBuilder;
+  final IconData? icon;
+
+  const EntryType(
+    this.name, {
+    this.lightColor,
+    this.darkColor,
+    this.iconBuilder,
+    this.icon,
+  });
+
+  Widget? getIcon(E entry, bool dark) {
+    Widget? widget;
+    if (iconBuilder != null) {
+      widget = iconBuilder!(entry);
+    } else if (icon != null) {
+      widget = Icon(icon);
+    }
+    if (widget == null) return null;
+
+    final color = (dark ? darkColor : lightColor) ?? entry.color(dark);
+
+    return IconTheme(
+      data: IconThemeData(
+        color: color,
+        size: 18,
+      ),
+      child: widget,
+    );
+  }
+
+  bool isType(Entry entry) {
+    return entry is E;
+  }
+
+  E? parseType(Entry entry) {
+    return isType(entry) ? entry as E : null;
+  }
+
+  static Tuple2<T, EntryType<T>>? findType<T extends Entry>(Entry entry) {
+    final type = EntryType.values
+        .whereType<EntryType<T>>()
+        .firstWhereOrNull((type) => type.isType(entry));
+    if (type == null) return null;
+    final t = type.parseType(entry);
+    if (t == null) return null;
+    return Tuple2(t, type);
+  }
+
+  static List<EntryType<T>> findTypes<T extends Entry>(Entry entry) {
+    return EntryType.values
+        .whereType<EntryType<T>>()
+        .where((type) => type.isType(entry))
+        .toList();
+  }
+}
+
+Widget factIcon(Fact fact) {
+  switch (fact.lifetime) {
+    case FactLifetime.permanent:
+      return const Icon(FontAwesomeIcons.solidHardDrive);
+    case FactLifetime.cron:
+      return const Icon(FontAwesomeIcons.clockRotateLeft);
+    case FactLifetime.timed:
+      return const Icon(FontAwesomeIcons.stopwatch);
+    case FactLifetime.session:
+      return const Icon(FontAwesomeIcons.userClock);
+  }
+}
+
 extension LifetimeExtension on FactLifetime {
   String get formattedName {
     return name.split(".").last.capitalize;
@@ -257,6 +389,13 @@ extension EntryExtension on Entry {
         .join(" ");
   }
 
+  Widget? icon(BuildContext context) {
+    return EntryType.findTypes(this)
+        .map((type) => type.getIcon(this, !context.isDark))
+        .whereNotNull()
+        .firstOrNull;
+  }
+
   Color textColor(BuildContext context) {
     return color(Theme.of(context).brightness == Brightness.light);
   }
@@ -266,44 +405,18 @@ extension EntryExtension on Entry {
   }
 
   Color color(bool dark) {
-    return asFact?.color(dark) ??
-        asSpeaker?.color(dark) ??
-        asEvent?.color(dark) ??
-        asDialogue?.color(dark) ??
-        asAction?.color(dark) ??
-        Colors.grey;
-  }
-}
+    final types = EntryType.findTypes(this);
+    final typing = types.firstWhereOrNull(
+        (type) => dark ? type.darkColor != null : type.lightColor != null);
 
-extension FactExtension on Fact {
-  Color color(bool dark) {
-    if (dark) {
-      return Colors.purple.shade700;
-    } else {
-      return Colors.purple.shade100;
+    if (typing != null) {
+      return (dark ? typing.darkColor : typing.lightColor) ?? Colors.grey;
     }
-  }
-}
-
-extension SpeakerExtension on Speaker {
-  Color color(bool dark) {
-    if (dark) {
-      return Colors.orange.shade700;
-    } else {
-      return Colors.orange.shade100;
-    }
+    return Colors.grey;
   }
 }
 
 extension EventExtension on Event {
-  Color color(bool dark) {
-    if (dark) {
-      return const Color(0xffFBB612);
-    } else {
-      return Colors.amberAccent.shade100;
-    }
-  }
-
   String get type {
     if (this is NpcEvent) {
       return "npc_interact";
@@ -318,30 +431,6 @@ extension EventExtension on Event {
 }
 
 extension DialogueExtension on Dialogue {
-  Color color(bool dark) {
-    if (this is SpokenDialogue) {
-      if (dark) {
-        return Colors.blue.shade600;
-      } else {
-        return Colors.blue.shade100;
-      }
-    } else if (this is OptionDialogue) {
-      if (dark) {
-        return Colors.green.shade500;
-      } else {
-        return Colors.green.shade100;
-      }
-    } else if (this is MessageDialogue) {
-      if (dark) {
-        return const Color(0xff1c4da3);
-      } else {
-        return const Color(0xff6279a1);
-      }
-    } else {
-      return Colors.grey;
-    }
-  }
-
   String get type {
     if (this is SpokenDialogue) {
       return "spoken";
@@ -356,14 +445,6 @@ extension DialogueExtension on Dialogue {
 }
 
 extension ActionExtension on ActionEntry {
-  Color color(bool dark) {
-    if (dark) {
-      return Colors.red.shade700;
-    } else {
-      return Colors.red.shade100;
-    }
-  }
-
   String get type {
     return "simple";
   }
