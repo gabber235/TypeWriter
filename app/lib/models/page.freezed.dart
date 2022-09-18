@@ -2037,8 +2037,8 @@ class _$_Dialogue implements _Dialogue {
       required this.id,
       @JsonKey(name: "triggered_by") final List<String> triggeredBy = const [],
       final List<String> triggers = const [],
-      required this.speaker,
-      required this.text,
+      this.speaker = "",
+      this.text = "",
       final List<Criterion> criteria = const [],
       final List<Criterion> modifiers = const [],
       final String? $type})
@@ -2072,8 +2072,10 @@ class _$_Dialogue implements _Dialogue {
   }
 
   @override
+  @JsonKey()
   final String speaker;
   @override
+  @JsonKey()
   final String text;
   final List<Criterion> _criteria;
   @override
@@ -2339,8 +2341,8 @@ abstract class _Dialogue implements Dialogue {
       required final String id,
       @JsonKey(name: "triggered_by") final List<String> triggeredBy,
       final List<String> triggers,
-      required final String speaker,
-      required final String text,
+      final String speaker,
+      final String text,
       final List<Criterion> criteria,
       final List<Criterion> modifiers}) = _$_Dialogue;
 
@@ -2459,8 +2461,8 @@ class _$SpokenDialogue implements SpokenDialogue {
       required this.id,
       @JsonKey(name: "triggered_by") final List<String> triggeredBy = const [],
       final List<String> triggers = const [],
-      required this.speaker,
-      required this.text,
+      this.speaker = "",
+      this.text = "",
       final List<Criterion> criteria = const [],
       final List<Criterion> modifiers = const [],
       this.duration = 40,
@@ -2495,8 +2497,10 @@ class _$SpokenDialogue implements SpokenDialogue {
   }
 
   @override
+  @JsonKey()
   final String speaker;
   @override
+  @JsonKey()
   final String text;
   final List<Criterion> _criteria;
   @override
@@ -2768,8 +2772,8 @@ abstract class SpokenDialogue implements Dialogue {
       required final String id,
       @JsonKey(name: "triggered_by") final List<String> triggeredBy,
       final List<String> triggers,
-      required final String speaker,
-      required final String text,
+      final String speaker,
+      final String text,
       final List<Criterion> criteria,
       final List<Criterion> modifiers,
       final int duration}) = _$SpokenDialogue;
@@ -2891,8 +2895,8 @@ class _$OptionDialogue implements OptionDialogue {
       required this.id,
       @JsonKey(name: "triggered_by") final List<String> triggeredBy = const [],
       final List<String> triggers = const [],
-      required this.speaker,
-      required this.text,
+      this.speaker = "",
+      this.text = "",
       final List<Criterion> criteria = const [],
       final List<Criterion> modifiers = const [],
       final List<Option> options = const [],
@@ -2928,8 +2932,10 @@ class _$OptionDialogue implements OptionDialogue {
   }
 
   @override
+  @JsonKey()
   final String speaker;
   @override
+  @JsonKey()
   final String text;
   final List<Criterion> _criteria;
   @override
@@ -3205,8 +3211,8 @@ abstract class OptionDialogue implements Dialogue {
       required final String id,
       @JsonKey(name: "triggered_by") final List<String> triggeredBy,
       final List<String> triggers,
-      required final String speaker,
-      required final String text,
+      final String speaker,
+      final String text,
       final List<Criterion> criteria,
       final List<Criterion> modifiers,
       final List<Option> options}) = _$OptionDialogue;
@@ -3322,8 +3328,8 @@ class _$MessageDialogue implements MessageDialogue {
       required this.id,
       @JsonKey(name: "triggered_by") final List<String> triggeredBy = const [],
       final List<String> triggers = const [],
-      required this.speaker,
-      required this.text,
+      this.speaker = "",
+      this.text = "",
       final List<Criterion> criteria = const [],
       final List<Criterion> modifiers = const [],
       final String? $type})
@@ -3357,8 +3363,10 @@ class _$MessageDialogue implements MessageDialogue {
   }
 
   @override
+  @JsonKey()
   final String speaker;
   @override
+  @JsonKey()
   final String text;
   final List<Criterion> _criteria;
   @override
@@ -3624,8 +3632,8 @@ abstract class MessageDialogue implements Dialogue {
       required final String id,
       @JsonKey(name: "triggered_by") final List<String> triggeredBy,
       final List<String> triggers,
-      required final String speaker,
-      required final String text,
+      final String speaker,
+      final String text,
       final List<Criterion> criteria,
       final List<Criterion> modifiers}) = _$MessageDialogue;
 

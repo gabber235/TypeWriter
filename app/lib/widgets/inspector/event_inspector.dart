@@ -22,7 +22,7 @@ class EventInspector extends HookConsumerWidget {
           entry: event,
           onNameChanged: (name) => ref
               .read(pageProvider.notifier)
-              .insertEvent(event.copyWith(name: name)),
+              .insertEntry(event.copyWith(name: name)),
         ),
         const Divider(),
         TriggersField(
@@ -30,28 +30,20 @@ class EventInspector extends HookConsumerWidget {
           triggers: event.triggers,
           onAdd: () => ref
               .read(pageProvider.notifier)
-              .insertEvent(event.copyWith(triggers: [...event.triggers, ""])),
+              .insertEntry(event.copyWith(triggers: [...event.triggers, ""])),
           onChanged: (index, trigger) => ref
               .read(pageProvider.notifier)
-              .insertEvent(event.copyWith(triggers: [
+              .insertEntry(event.copyWith(triggers: [
                 ...event.triggers.take(index),
                 trigger,
                 ...event.triggers.skip(index + 1),
               ])),
-          onRemove: (trigger) => ref.read(pageProvider.notifier).insertEvent(
+          onRemove: (trigger) => ref.read(pageProvider.notifier).insertEntry(
                 event.copyWith(triggers: [
                   ...event.triggers.where((t) => t != trigger),
                 ]),
               ),
         ),
-        const Divider(),
-        const SectionTitle(title: "Type"),
-        const SizedBox(height: 8),
-        TypeSelector(
-            types: const ["npc_interact", "run_command", "island_create"],
-            selected: event.type,
-            onChanged: (type) =>
-                ref.read(pageProvider.notifier).transformType(event, type)),
         if (event is NpcEvent) ...[
           const Divider(),
           _NpcIdentifierField(event: event as NpcEvent),
@@ -82,7 +74,7 @@ class _NpcIdentifierField extends HookConsumerWidget {
         SpeakerSelector(
             currentId: event.identifier,
             onSelected: (value) {
-              ref.read(pageProvider.notifier).insertEvent(event.copyWith(
+              ref.read(pageProvider.notifier).insertEntry(event.copyWith(
                     identifier: value.id,
                   ));
             }),
@@ -120,7 +112,7 @@ class _CommandRegexField extends HookConsumerWidget {
             })
           ],
           onChanged: (value) {
-            ref.read(pageProvider.notifier).insertEvent(event.copyWith(
+            ref.read(pageProvider.notifier).insertEntry(event.copyWith(
                   command: value,
                 ));
           },

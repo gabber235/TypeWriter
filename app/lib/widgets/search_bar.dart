@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:typewriter/hooks/delayed_execution.dart';
 import 'package:typewriter/hooks/search_bar_controller.dart';
+import 'package:typewriter/main.dart';
 import 'package:typewriter/models/page.dart';
 import 'package:typewriter/pages/graph.dart';
 
@@ -26,7 +27,7 @@ class SearchingNotifier extends StateNotifier<bool> {
 
   void endSearch() async {
     if (state == false) return;
-    if (ref.read(_entriesProvider).isNotEmpty) {
+    if (ref.read(_actionsProvider).isNotEmpty) {
       ref.read(_closingProvider.notifier).state = true;
       await Future.delayed(const Duration(milliseconds: 300));
     }
@@ -44,52 +45,147 @@ final _closingProvider = StateProvider<bool>((ref) => false);
 
 final _queryProvider = StateProvider<String>((ref) => "");
 
-final _fuzzyProvider = Provider<Fuzzy<Entry>>((ref) {
+final _entriesFuzzyProvider = Provider<Fuzzy<Entry>>((ref) {
   return Fuzzy(
     ref.watch(pageProvider).entries,
     options: FuzzyOptions(
-      threshold: 0.7,
+      threshold: 0.4,
       sortFn: (a, b) => a.matches
           .map((e) => e.score)
           .sum
           .compareTo(b.matches.map((e) => e.score).sum),
       keys: [
-        WeightedKey(name: 'id', getter: (sn) => sn.id, weight: 0.1),
+        WeightedKey(name: 'id', getter: (sn) => sn.id, weight: 0.05),
         WeightedKey(
             name: 'name-suffix',
             getter: (sn) => sn.name.split(".").last,
-            weight: 0.9),
+            weight: 0.4),
         WeightedKey(
-            name: 'name-full', getter: (sn) => sn.formattedName, weight: 0.2),
+            name: 'name-full', getter: (sn) => sn.formattedName, weight: 0.15),
         WeightedKey(
             name: 'type',
             getter: (sn) =>
                 EntryType.findTypes(sn).map((e) => e.name).join(" "),
-            weight: 0.9)
+            weight: 0.4)
       ],
     ),
   );
 });
 
-final _entriesProvider = Provider<List<Entry>>((ref) {
+final _addEntriesFuzzyProvider = Provider<Fuzzy<EntryType>>((ref) {
+  return Fuzzy(
+    EntryType.values.where((type) => type.factory != null).toList(),
+    options: FuzzyOptions(
+      threshold: 0.1,
+      sortFn: (a, b) => a.matches
+          .map((e) => e.score)
+          .sum
+          .compareTo(b.matches.map((e) => e.score).sum),
+      keys: [
+        WeightedKey(name: 'name', getter: (sn) => "Add ${sn.name}", weight: 1),
+      ],
+    ),
+  );
+});
+
+final _actionsProvider = Provider<List<Action>>((ref) {
   final query = ref.watch(_queryProvider);
-  final fuzzy = ref.watch(_fuzzyProvider);
+  final fuzzy = ref.watch(_entriesFuzzyProvider);
 
   if (query.isEmpty) return [];
   final results = fuzzy.search(query).map((e) => e.item).toList();
 
   if (query.contains(":")) {
+    if (query.toLowerCase().startsWith("add:")) {
+      return EntryType.values
+          .where((type) => type.factory != null)
+          .map((e) => AddEntryAction(e))
+          .toList();
+    }
+
     final type = EntryType.values.firstWhereOrNull((type) =>
         query.toLowerCase().startsWith("${type.name.toLowerCase()}:"));
     if (type != null) {
       return results
-          .where((e) => EntryType.findTypes(e).contains(type))
-          .toList();
+              .where((e) => EntryType.findTypes(e).contains(type))
+              .map((e) => EntryAction(e))
+              .whereType<Action>()
+              .toList() +
+          [AddEntryAction(type)];
     }
   }
 
-  return results;
+  final addResults = ref
+      .watch(_addEntriesFuzzyProvider)
+      .search(query)
+      .map((e) => e.item)
+      .toList();
+
+  return addResults.map((e) => AddEntryAction(e)).whereType<Action>().toList() +
+      results.map((e) => EntryAction(e)).whereType<Action>().toList();
 });
+
+abstract class Action<T> {
+  Color color(BuildContext context);
+
+  Widget icon(BuildContext context);
+
+  Widget suffixIcon(BuildContext context);
+
+  String title(BuildContext context);
+
+  void activate(BuildContext context, WidgetRef ref);
+}
+
+/// Action for selecting an existing entry.
+class EntryAction extends Action<Entry> {
+  final Entry entry;
+
+  EntryAction(this.entry);
+
+  @override
+  Color color(BuildContext context) => entry.backgroundColor(context);
+
+  @override
+  Widget icon(BuildContext context) => entry.icon(context);
+
+  @override
+  Widget suffixIcon(BuildContext context) =>
+      const Icon(FontAwesomeIcons.upRightFromSquare);
+
+  @override
+  String title(BuildContext context) => entry.formattedName;
+
+  @override
+  void activate(BuildContext context, WidgetRef ref) {
+    ref.read(selectedProvider.notifier).state = entry.id;
+  }
+}
+
+class AddEntryAction extends Action<EntryType<Entry>> {
+  final EntryType<Entry> type;
+
+  AddEntryAction(this.type);
+
+  @override
+  Color color(BuildContext context) => type.backgroundColor(context);
+
+  @override
+  Widget icon(BuildContext context) =>
+      type.getIcon(null, !context.isDark) ?? const SizedBox();
+
+  @override
+  Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.plus);
+
+  @override
+  String title(BuildContext context) => "Add ${type.name}";
+
+  @override
+  void activate(BuildContext context, WidgetRef ref) {
+    final entry = ref.read(pageProvider.notifier).addEntry(type);
+    ref.read(selectedProvider.notifier).state = entry?.id ?? "";
+  }
+}
 
 class SearchBar extends HookConsumerWidget {
   const SearchBar({
@@ -97,11 +193,11 @@ class SearchBar extends HookConsumerWidget {
   }) : super(key: key);
 
   void activateItem(
-      List<Entry> entries, int index, BuildContext context, WidgetRef ref) {
-    if (index >= entries.length) return;
+      List<Action> actions, int index, BuildContext context, WidgetRef ref) {
+    if (index >= actions.length) return;
     if (index < 0) return;
-    final entry = entries[index];
-    ref.read(selectedProvider.notifier).state = entry.id;
+    final action = actions[index];
+    action.activate(context, ref);
     ref.read(searchingProvider.notifier).endSearch();
   }
 
@@ -125,9 +221,9 @@ class SearchBar extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useSearchBarController();
     final closing = ref.watch(_closingProvider);
-    final entries = ref.watch(_entriesProvider);
-    final focusNodes = List.generate(entries.length, (index) => FocusNode());
-    final globalKeys = List.generate(entries.length, (index) => GlobalKey());
+    final actions = ref.watch(_actionsProvider);
+    final focusNodes = List.generate(actions.length, (index) => FocusNode());
+    final globalKeys = List.generate(actions.length, (index) => GlobalKey());
 
     useDelayedExecution(() {
       if (!closing) {
@@ -167,7 +263,7 @@ class SearchBar extends HookConsumerWidget {
                   ref.read(searchingProvider.notifier).endSearch(),
             ),
             ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (intent) => activateItem(entries,
+              onInvoke: (intent) => activateItem(actions,
                   focusNodes.indexWhere((n) => n.hasFocus), context, ref),
             ),
           },
@@ -204,18 +300,16 @@ class SearchBar extends HookConsumerWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          for (var i = 0; i < entries.length; i++)
+                          for (var i = 0; i < actions.length; i++)
                             _ResultTile(
                               key: globalKeys[i],
                               onPressed: () =>
-                                  activateItem(entries, i, context, ref),
+                                  activateItem(actions, i, context, ref),
                               focusNode: focusNodes[i],
-                              color: entries[i].backgroundColor(context),
-                              title: entries[i].formattedName,
-                              icon: entries[i].icon(context) ??
-                                  const Icon(Icons.help),
-                              suffixIcon: const Icon(
-                                  FontAwesomeIcons.upRightFromSquare),
+                              color: actions[i].color(context),
+                              title: actions[i].title(context),
+                              icon: actions[i].icon(context),
+                              suffixIcon: actions[i].suffixIcon(context),
                             ),
                         ],
                       ),

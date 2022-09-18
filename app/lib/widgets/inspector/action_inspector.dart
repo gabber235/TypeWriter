@@ -22,24 +22,25 @@ class ActionInspector extends HookConsumerWidget {
           entry: action,
           onNameChanged: (name) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(name: name)),
+              .insertEntry(action.copyWith(name: name)),
         ),
         const Divider(),
         TriggersField(
           title: "Triggers",
           triggers: action.triggers,
-          onAdd: () => ref.read(pageProvider.notifier).insertAction(
-              action.copyWith(triggers: [...action.triggers, ""])),
+          onAdd: () => ref
+              .read(pageProvider.notifier)
+              .insertEntry(action.copyWith(triggers: [...action.triggers, ""])),
           onChanged: (index, trigger) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(triggers: [
+              .insertEntry(action.copyWith(triggers: [
                 ...action.triggers.sublist(0, index),
                 trigger,
                 ...action.triggers.sublist(index + 1),
               ])),
           onRemove: (trigger) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(triggers: [
+              .insertEntry(action.copyWith(triggers: [
                 ...action.triggers.where((e) => e != trigger),
               ])),
         ),
@@ -51,18 +52,18 @@ class ActionInspector extends HookConsumerWidget {
           addButtonText: "Add Trigger By",
           icon: FontAwesomeIcons.satelliteDish,
           list: action.triggeredBy,
-          onAdd: () => ref.read(pageProvider.notifier).insertAction(
+          onAdd: () => ref.read(pageProvider.notifier).insertEntry(
               action.copyWith(triggeredBy: [...action.triggeredBy, ""])),
           onChanged: (index, value) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(triggeredBy: [
+              .insertEntry(action.copyWith(triggeredBy: [
                 ...action.triggeredBy.sublist(0, index),
                 value,
                 ...action.triggeredBy.sublist(index + 1),
               ])),
           onRemove: (value) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(triggeredBy: [
+              .insertEntry(action.copyWith(triggeredBy: [
                 ...action.triggeredBy.where((e) => e != value),
               ])),
           onQuery: (value) => ref
@@ -82,21 +83,21 @@ class ActionInspector extends HookConsumerWidget {
         CriteriaField(
           criteria: action.criteria,
           operators: const ["==", ">=", "<=", ">", "<"],
-          onAdd: () => ref.read(pageProvider.notifier).insertAction(action
+          onAdd: () => ref.read(pageProvider.notifier).insertEntry(action
                   .copyWith(criteria: [
                 ...action.criteria,
                 const Criterion(fact: "", operator: "==", value: 0)
               ])),
           onChanged: (index, criterion) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(criteria: [
+              .insertEntry(action.copyWith(criteria: [
                 ...action.criteria.sublist(0, index),
                 criterion,
                 ...action.criteria.sublist(index + 1),
               ])),
           onRemove: (index) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(criteria: [
+              .insertEntry(action.copyWith(criteria: [
                 ...action.criteria.sublist(0, index),
                 ...action.criteria.sublist(index + 1),
               ])),
@@ -108,33 +109,25 @@ class ActionInspector extends HookConsumerWidget {
           addButtonText: "Add Modifier",
           criteria: action.modifiers,
           operators: const ["=", "+"],
-          onAdd: () => ref.read(pageProvider.notifier).insertAction(action
+          onAdd: () => ref.read(pageProvider.notifier).insertEntry(action
                   .copyWith(modifiers: [
                 ...action.modifiers,
                 const Criterion(fact: "", operator: "=", value: 0)
               ])),
           onChanged: (index, criterion) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(modifiers: [
+              .insertEntry(action.copyWith(modifiers: [
                 ...action.modifiers.sublist(0, index),
                 criterion,
                 ...action.modifiers.sublist(index + 1),
               ])),
           onRemove: (index) => ref
               .read(pageProvider.notifier)
-              .insertAction(action.copyWith(modifiers: [
+              .insertEntry(action.copyWith(modifiers: [
                 ...action.modifiers.sublist(0, index),
                 ...action.modifiers.sublist(index + 1),
               ])),
         ),
-        const Divider(),
-        const SectionTitle(title: "Type"),
-        const SizedBox(height: 8),
-        TypeSelector(
-            types: const ["simple"],
-            selected: action.type,
-            onChanged: (type) =>
-                ref.read(pageProvider.notifier).transformType(action, type)),
         const Divider(),
         Operations(entry: action),
       ],

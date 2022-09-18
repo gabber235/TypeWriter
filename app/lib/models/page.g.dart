@@ -163,8 +163,8 @@ _$_Dialogue _$$_DialogueFromJson(Map<String, dynamic> json) => _$_Dialogue(
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      speaker: json['speaker'] as String,
-      text: json['text'] as String,
+      speaker: json['speaker'] as String? ?? "",
+      text: json['text'] as String? ?? "",
       criteria: (json['criteria'] as List<dynamic>?)
               ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -201,8 +201,8 @@ _$SpokenDialogue _$$SpokenDialogueFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      speaker: json['speaker'] as String,
-      text: json['text'] as String,
+      speaker: json['speaker'] as String? ?? "",
+      text: json['text'] as String? ?? "",
       criteria: (json['criteria'] as List<dynamic>?)
               ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -241,8 +241,8 @@ _$OptionDialogue _$$OptionDialogueFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      speaker: json['speaker'] as String,
-      text: json['text'] as String,
+      speaker: json['speaker'] as String? ?? "",
+      text: json['text'] as String? ?? "",
       criteria: (json['criteria'] as List<dynamic>?)
               ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -284,8 +284,8 @@ _$MessageDialogue _$$MessageDialogueFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      speaker: json['speaker'] as String,
-      text: json['text'] as String,
+      speaker: json['speaker'] as String? ?? "",
+      text: json['text'] as String? ?? "",
       criteria: (json['criteria'] as List<dynamic>?)
               ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
               .toList() ??

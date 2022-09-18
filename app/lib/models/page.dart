@@ -127,8 +127,8 @@ class Dialogue with _$Dialogue implements RuleEntry {
     required String id,
     @Default([]) @JsonKey(name: "triggered_by") List<String> triggeredBy,
     @Default([]) List<String> triggers,
-    required String speaker,
-    required String text,
+    @Default("") String speaker,
+    @Default("") String text,
     @Default([]) List<Criterion> criteria,
     @Default([]) List<Criterion> modifiers,
   }) = _Dialogue;
@@ -138,8 +138,8 @@ class Dialogue with _$Dialogue implements RuleEntry {
     required String id,
     @Default([]) @JsonKey(name: "triggered_by") List<String> triggeredBy,
     @Default([]) List<String> triggers,
-    required String speaker,
-    required String text,
+    @Default("") String speaker,
+    @Default("") String text,
     @Default([]) List<Criterion> criteria,
     @Default([]) List<Criterion> modifiers,
     @Default(40) int duration,
@@ -150,8 +150,8 @@ class Dialogue with _$Dialogue implements RuleEntry {
     required String id,
     @Default([]) @JsonKey(name: "triggered_by") List<String> triggeredBy,
     @Default([]) List<String> triggers,
-    required String speaker,
-    required String text,
+    @Default("") String speaker,
+    @Default("") String text,
     @Default([]) List<Criterion> criteria,
     @Default([]) List<Criterion> modifiers,
     @Default([]) List<Option> options,
@@ -162,8 +162,8 @@ class Dialogue with _$Dialogue implements RuleEntry {
     required String id,
     @Default([]) @JsonKey(name: "triggered_by") List<String> triggeredBy,
     @Default([]) List<String> triggers,
-    required String speaker,
-    required String text,
+    @Default("") String speaker,
+    @Default("") String text,
     @Default([]) List<Criterion> criteria,
     @Default([]) List<Criterion> modifiers,
   }) = MessageDialogue;
@@ -226,26 +226,32 @@ enum EntryType<E extends Entry> {
   fact<Fact>(
     "Fact",
     iconBuilder: factIcon,
+    icon: FontAwesomeIcons.fileSignature,
     lightColor: Color(0xFFE1BEE7),
     darkColor: Color(0xFF7B1FA2),
+    factory: factFactory,
   ),
   speaker<Speaker>(
     "Speaker",
     icon: FontAwesomeIcons.userTag,
     lightColor: Color(0xFFFFE0B2),
     darkColor: Color(0xFFF57C00),
+    factory: speakerFactory,
   ),
   npcEvent<NpcEvent>(
     "Npc Interact Event",
     icon: FontAwesomeIcons.userTie,
+    factory: npcEventFactory,
   ),
   runCommandEvent<RunCommandEvent>(
     "Run Command Event",
     icon: FontAwesomeIcons.terminal,
+    factory: runCommandEventFactory,
   ),
   islandCreateEvent<IslandCreateEvent>(
     "Island Create Event",
     icon: FontAwesomeIcons.houseMedicalCircleCheck,
+    factory: islandCreateEventFactory,
   ),
   event<Event>(
     "Event",
@@ -257,24 +263,28 @@ enum EntryType<E extends Entry> {
     icon: FontAwesomeIcons.solidMessage,
     lightColor: Color(0xFFBBDEFB),
     darkColor: Color(0xFF1E88E5),
+    factory: spokenDialogueFactory,
   ),
   optionDialogue<OptionDialogue>(
     "Option Dialogue",
     icon: FontAwesomeIcons.list,
     lightColor: Color(0xFFC8E6C9),
     darkColor: Color(0xFF4CAF50),
+    factory: optionDialogueFactory,
   ),
   messageDialogue<MessageDialogue>(
     "Message Dialogue",
     icon: FontAwesomeIcons.solidEnvelope,
     lightColor: Color(0xff6279a1),
     darkColor: Color(0xff1c4da3),
+    factory: messageDialogueFactory,
   ),
   simpleAction<SimpleAction>(
     "Simple Action",
     icon: FontAwesomeIcons.personRunning,
     lightColor: Color(0xFFFFCDD2),
     darkColor: Color(0xFFD32F2F),
+    factory: simpleActionFactory,
   ),
   ;
 
@@ -285,24 +295,28 @@ enum EntryType<E extends Entry> {
   final Widget Function(E entry)? iconBuilder;
   final IconData? icon;
 
+  final Entry Function(String id)? factory;
+
   const EntryType(
     this.name, {
     this.lightColor,
     this.darkColor,
     this.iconBuilder,
     this.icon,
+    this.factory,
   });
 
-  Widget? getIcon(E entry, bool dark) {
+  Widget? getIcon(E? entry, bool dark) {
     Widget? widget;
-    if (iconBuilder != null) {
+    if (iconBuilder != null && entry != null) {
       widget = iconBuilder!(entry);
     } else if (icon != null) {
       widget = Icon(icon);
     }
     if (widget == null) return null;
 
-    final color = (dark ? darkColor : lightColor) ?? entry.color(dark);
+    final color =
+        (dark ? darkColor : lightColor) ?? entry?.color(dark) ?? getColor(dark);
 
     return IconTheme(
       data: IconThemeData(
@@ -313,9 +327,33 @@ enum EntryType<E extends Entry> {
     );
   }
 
+  Color getColor(bool dark) {
+    if ((dark ? darkColor : lightColor) != null) {
+      return dark ? darkColor! : lightColor!;
+    }
+    final types = EntryType.findTypesWhereType<E>();
+    final typing = types.firstWhereOrNull(
+        (type) => dark ? type.darkColor != null : type.lightColor != null);
+
+    if (typing != null) {
+      return (dark ? typing.darkColor : typing.lightColor) ?? Colors.grey;
+    }
+    return Colors.grey;
+  }
+
+  Color textColor(BuildContext context) {
+    return getColor(Theme.of(context).brightness == Brightness.light);
+  }
+
+  Color backgroundColor(BuildContext context) {
+    return getColor(Theme.of(context).brightness == Brightness.dark);
+  }
+
   bool isType(Entry entry) {
     return entry is E;
   }
+
+  bool isSubtype<S>() => <S>[] is List<E>;
 
   E? parseType(Entry entry) {
     return isType(entry) ? entry as E : null;
@@ -337,7 +375,35 @@ enum EntryType<E extends Entry> {
         .where((type) => type.isType(entry))
         .toList();
   }
+
+  static List<EntryType<Entry>> findTypesWhereType<T extends Entry>() {
+    return EntryType.values.where((type) => type.isSubtype<T>()).toList();
+  }
 }
+
+Fact factFactory(String id) => Fact(id: id, name: 'new_fact');
+
+Speaker speakerFactory(String id) => Speaker(id: id, name: 'new_speaker');
+
+NpcEvent npcEventFactory(String id) => NpcEvent(id: id, name: 'new_npc_event');
+
+RunCommandEvent runCommandEventFactory(String id) =>
+    RunCommandEvent(id: id, name: 'new_run_command_event');
+
+IslandCreateEvent islandCreateEventFactory(String id) =>
+    IslandCreateEvent(id: id, name: 'new_island_create_event');
+
+SpokenDialogue spokenDialogueFactory(String id) =>
+    SpokenDialogue(id: id, name: 'new_spoken_dialogue');
+
+OptionDialogue optionDialogueFactory(String id) =>
+    OptionDialogue(id: id, name: 'new_option_dialogue');
+
+MessageDialogue messageDialogueFactory(String id) =>
+    MessageDialogue(id: id, name: 'new_message_dialogue');
+
+SimpleAction simpleActionFactory(String id) =>
+    SimpleAction(id: id, name: 'new_simple_action');
 
 Widget factIcon(Fact fact) {
   switch (fact.lifetime) {
@@ -353,9 +419,7 @@ Widget factIcon(Fact fact) {
 }
 
 extension LifetimeExtension on FactLifetime {
-  String get formattedName {
-    return name.split(".").last.capitalize;
-  }
+  String get formattedName => name.split(".").last.capitalize;
 }
 
 extension EntryExtension on Entry {
@@ -389,11 +453,12 @@ extension EntryExtension on Entry {
         .join(" ");
   }
 
-  Widget? icon(BuildContext context) {
+  Widget icon(BuildContext context) {
     return EntryType.findTypes(this)
-        .map((type) => type.getIcon(this, !context.isDark))
-        .whereNotNull()
-        .firstOrNull;
+            .map((type) => type.getIcon(this, !context.isDark))
+            .whereNotNull()
+            .firstOrNull ??
+        const SizedBox.shrink();
   }
 
   Color textColor(BuildContext context) {
@@ -404,16 +469,8 @@ extension EntryExtension on Entry {
     return color(Theme.of(context).brightness == Brightness.dark);
   }
 
-  Color color(bool dark) {
-    final types = EntryType.findTypes(this);
-    final typing = types.firstWhereOrNull(
-        (type) => dark ? type.darkColor != null : type.lightColor != null);
-
-    if (typing != null) {
-      return (dark ? typing.darkColor : typing.lightColor) ?? Colors.grey;
-    }
-    return Colors.grey;
-  }
+  Color color(bool dark) =>
+      EntryType.findType(this)?.item2.getColor(dark) ?? Colors.grey;
 }
 
 extension EventExtension on Event {

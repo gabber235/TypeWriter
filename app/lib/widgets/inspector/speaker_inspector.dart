@@ -22,7 +22,7 @@ class SpeakerInspector extends HookConsumerWidget {
           entry: speaker,
           onNameChanged: (name) => ref
               .read(pageProvider.notifier)
-              .insertSpeaker(speaker.copyWith(name: name)),
+              .insertEntry(speaker.copyWith(name: name)),
         ),
         const Divider(),
         _DisplayNameField(speaker: speaker),
@@ -39,7 +39,7 @@ class _DisplayNameField extends HookConsumerWidget {
   const _DisplayNameField({Key? key, required this.speaker}) : super(key: key);
 
   void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertSpeaker(speaker.copyWith(
+    ref.read(pageProvider.notifier).insertEntry(speaker.copyWith(
           displayName: value,
         ));
   }

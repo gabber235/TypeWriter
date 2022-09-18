@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,6 +26,7 @@ class OpenPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final openedSelector = useState(false);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -41,7 +43,7 @@ class OpenPage extends HookConsumerWidget {
           const SizedBox(height: 24),
           TextButton(
             onPressed: () {
-              ref.read(pageProvider.notifier).addEvent();
+              ref.read(pageProvider.notifier).addEntry(EntryType.npcEvent);
             },
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -55,7 +57,10 @@ class OpenPage extends HookConsumerWidget {
           const SizedBox(height: 12),
           ElevatedButton(
             onPressed: () async {
+              if (openedSelector.value) return;
+              openedSelector.value = true;
               final result = await pickFile();
+              openedSelector.value = false;
               if (result == null) return;
               final bytes = result.files.first.bytes;
               if (bytes == null) return;

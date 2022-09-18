@@ -25,24 +25,24 @@ class DialogueInspector extends HookConsumerWidget {
           entry: dialogue,
           onNameChanged: (name) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(name: name)),
+              .insertEntry(dialogue.copyWith(name: name)),
         ),
         const Divider(),
         TriggersField(
           title: dialogue is OptionDialogue ? "Global Triggers" : "Triggers",
           triggers: dialogue.triggers,
-          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(
+          onAdd: () => ref.read(pageProvider.notifier).insertEntry(
               dialogue.copyWith(triggers: [...dialogue.triggers, ""])),
           onChanged: (index, trigger) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(triggers: [
+              .insertEntry(dialogue.copyWith(triggers: [
                 ...dialogue.triggers.sublist(0, index),
                 trigger,
                 ...dialogue.triggers.sublist(index + 1),
               ])),
           onRemove: (trigger) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(triggers: [
+              .insertEntry(dialogue.copyWith(triggers: [
                 ...dialogue.triggers.where((e) => e != trigger),
               ])),
         ),
@@ -54,18 +54,18 @@ class DialogueInspector extends HookConsumerWidget {
           addButtonText: "Add Trigger By",
           icon: FontAwesomeIcons.satelliteDish,
           list: dialogue.triggeredBy,
-          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(
+          onAdd: () => ref.read(pageProvider.notifier).insertEntry(
               dialogue.copyWith(triggeredBy: [...dialogue.triggeredBy, ""])),
           onChanged: (index, value) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(triggeredBy: [
+              .insertEntry(dialogue.copyWith(triggeredBy: [
                 ...dialogue.triggeredBy.sublist(0, index),
                 value,
                 ...dialogue.triggeredBy.sublist(index + 1),
               ])),
           onRemove: (value) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(triggeredBy: [
+              .insertEntry(dialogue.copyWith(triggeredBy: [
                 ...dialogue.triggeredBy.where((e) => e != value),
               ])),
           onQuery: (value) =>
@@ -82,21 +82,21 @@ class DialogueInspector extends HookConsumerWidget {
         CriteriaField(
           criteria: dialogue.criteria,
           operators: const ["==", ">=", "<=", ">", "<"],
-          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(dialogue
+          onAdd: () => ref.read(pageProvider.notifier).insertEntry(dialogue
                   .copyWith(criteria: [
                 ...dialogue.criteria,
                 const Criterion(fact: "", operator: "==", value: 0)
               ])),
           onChanged: (index, criterion) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(criteria: [
+              .insertEntry(dialogue.copyWith(criteria: [
                 ...dialogue.criteria.sublist(0, index),
                 criterion,
                 ...dialogue.criteria.sublist(index + 1),
               ])),
           onRemove: (index) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(criteria: [
+              .insertEntry(dialogue.copyWith(criteria: [
                 ...dialogue.criteria.sublist(0, index),
                 ...dialogue.criteria.sublist(index + 1),
               ])),
@@ -108,33 +108,25 @@ class DialogueInspector extends HookConsumerWidget {
           addButtonText: "Add Modifier",
           criteria: dialogue.modifiers,
           operators: const ["=", "+"],
-          onAdd: () => ref.read(pageProvider.notifier).insertDialogue(dialogue
+          onAdd: () => ref.read(pageProvider.notifier).insertEntry(dialogue
                   .copyWith(modifiers: [
                 ...dialogue.modifiers,
                 const Criterion(fact: "", operator: "=", value: 0)
               ])),
           onChanged: (index, criterion) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(modifiers: [
+              .insertEntry(dialogue.copyWith(modifiers: [
                 ...dialogue.modifiers.sublist(0, index),
                 criterion,
                 ...dialogue.modifiers.sublist(index + 1),
               ])),
           onRemove: (index) => ref
               .read(pageProvider.notifier)
-              .insertDialogue(dialogue.copyWith(modifiers: [
+              .insertEntry(dialogue.copyWith(modifiers: [
                 ...dialogue.modifiers.sublist(0, index),
                 ...dialogue.modifiers.sublist(index + 1),
               ])),
         ),
-        const Divider(),
-        const SectionTitle(title: "Type"),
-        const SizedBox(height: 8),
-        TypeSelector(
-            types: const ["spoken", "option", "message"],
-            selected: dialogue.type,
-            onChanged: (type) =>
-                ref.read(pageProvider.notifier).transformType(dialogue, type)),
         const Divider(),
         _SpeakerField(dialogue: dialogue),
         const Divider(),
@@ -167,7 +159,7 @@ class _SpeakerField extends HookConsumerWidget {
       SpeakerSelector(
           currentId: dialogue.speaker,
           onSelected: (value) {
-            ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
+            ref.read(pageProvider.notifier).insertEntry(dialogue.copyWith(
                   speaker: value.id,
                 ));
           }),
@@ -184,7 +176,7 @@ class _TextField extends HookConsumerWidget {
   }) : super(key: key);
 
   void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
+    ref.read(pageProvider.notifier).insertEntry(dialogue.copyWith(
           text: value,
         ));
   }
@@ -243,7 +235,7 @@ class _DurationField extends HookConsumerWidget {
             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
           ],
           onChanged: (value) {
-            ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
+            ref.read(pageProvider.notifier).insertEntry(dialogue.copyWith(
                   duration: (int.tryParse(value) ?? 0) ~/ 50,
                 ));
           },
@@ -294,7 +286,7 @@ class _OptionsList extends HookConsumerWidget {
                       if (expanded) ...[
                         IconButton(
                           onPressed: () =>
-                              ref.read(pageProvider.notifier).insertDialogue(
+                              ref.read(pageProvider.notifier).insertEntry(
                                     dialogue.copyWith(
                                       options: [
                                         ...dialogue.options.sublist(0, i),
@@ -318,7 +310,7 @@ class _OptionsList extends HookConsumerWidget {
                   option: dialogue.options[i],
                   index: i,
                   onChanged: (option) =>
-                      ref.read(pageProvider.notifier).insertDialogue(
+                      ref.read(pageProvider.notifier).insertEntry(
                             dialogue.copyWith(
                               options: [
                                 ...dialogue.options.sublist(0, i),
@@ -333,7 +325,7 @@ class _OptionsList extends HookConsumerWidget {
         ),
         TextButton(
           onPressed: () {
-            ref.read(pageProvider.notifier).insertDialogue(dialogue.copyWith(
+            ref.read(pageProvider.notifier).insertEntry(dialogue.copyWith(
                   options: [...dialogue.options, const Option(text: "")],
                 ));
           },
@@ -369,8 +361,6 @@ class _OptionField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textEditingController = useTextEditingController(text: option.text);
-
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(

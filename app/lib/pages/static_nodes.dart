@@ -11,14 +11,17 @@ final _typeProvider = StateProvider<_StaticEntry>((ref) {
 });
 
 enum _StaticEntry {
-  fact("Facts", "Fact"),
-  speaker("Speakers", "Speaker"),
+  fact(EntryType.fact),
+  speaker(EntryType.speaker),
   ;
 
-  final String title;
-  final String singular;
+  final EntryType type;
 
-  const _StaticEntry(this.title, this.singular);
+  String get title => "${type.name}s";
+
+  String get singular => type.name;
+
+  const _StaticEntry(this.type);
 
   AlwaysAliveProviderListenable<List<Entry>> selectEntries(WidgetRef ref) {
     switch (this) {
@@ -29,26 +32,9 @@ enum _StaticEntry {
     }
   }
 
-  Entry createDummy() {
-    switch (this) {
-      case _StaticEntry.fact:
-        return const Fact(id: "", name: "");
-      case _StaticEntry.speaker:
-        return const Speaker(id: "", name: "");
-    }
-  }
-
   void addEntry(WidgetRef ref) {
-    Entry entry;
-    switch (this) {
-      case _StaticEntry.fact:
-        entry = ref.read(pageProvider.notifier).addFact();
-        break;
-      case _StaticEntry.speaker:
-        entry = ref.read(pageProvider.notifier).addSpeaker();
-        break;
-    }
-    ref.read(selectedProvider.notifier).state = entry.id;
+    Entry? entry = ref.read(pageProvider.notifier).addEntry(type);
+    ref.read(selectedProvider.notifier).state = entry?.id ?? "";
   }
 }
 
@@ -59,13 +45,13 @@ class StaticEntries extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final type = ref.watch(_typeProvider);
+    final staticType = ref.watch(_typeProvider);
     final selected = ref.watch(selectedProvider);
-    List<Entry> entries = ref.watch(type.selectEntries(ref));
+    List<Entry> entries = ref.watch(staticType.selectEntries(ref));
 
-    final dummy = type.createDummy();
-    final bgColor = dummy.backgroundColor(context);
-    final textColor = dummy.textColor(context);
+    final entryType = staticType.type;
+    final bgColor = entryType.backgroundColor(context);
+    final textColor = entryType.textColor(context);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
@@ -82,7 +68,7 @@ class StaticEntries extends HookConsumerWidget {
             children: [
               const SizedBox(width: 24),
               Dropdown<_StaticEntry>(
-                value: type,
+                value: staticType,
                 values: _StaticEntry.values,
                 onChanged: (value) {
                   ref.read(_typeProvider.notifier).state = value;
@@ -107,23 +93,6 @@ class StaticEntries extends HookConsumerWidget {
               child: CustomScrollView(
                 scrollDirection: Axis.horizontal,
                 slivers: [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      childCount: entries.length,
-                      (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: NodeWidget(
-                            id: entries[index].id,
-                            name: entries[index].formattedName,
-                            backgroundColor:
-                                entries[index].backgroundColor(context),
-                            icon: entries[index].icon(context),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -139,16 +108,33 @@ class StaticEntries extends HookConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 24),
                           ),
-                          onPressed: () => type.addEntry(ref),
+                          onPressed: () => staticType.addEntry(ref),
                           child: Row(
                             children: [
-                              Text("Add ${type.singular}"),
+                              Text("Add ${staticType.singular}"),
                               const SizedBox(width: 8),
                               const Icon(FontAwesomeIcons.plus, size: 18),
                             ],
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: entries.length,
+                      (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: NodeWidget(
+                            id: entries[index].id,
+                            name: entries[index].formattedName,
+                            backgroundColor:
+                                entries[index].backgroundColor(context),
+                            icon: entries[index].icon(context),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

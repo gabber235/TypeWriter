@@ -25,7 +25,7 @@ class FactInspector extends HookConsumerWidget {
           entry: fact,
           onNameChanged: (name) => ref
               .read(pageProvider.notifier)
-              .insertFact(fact.copyWith(name: name)),
+              .insertEntry(fact.copyWith(name: name)),
         ),
         const Divider(),
         _CommentField(fact: fact),
@@ -55,7 +55,7 @@ class _CommentField extends HookConsumerWidget {
   }) : super(key: key);
 
   void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertFact(fact.copyWith(
+    ref.read(pageProvider.notifier).insertEntry(fact.copyWith(
           comment: value,
         ));
   }
@@ -127,7 +127,7 @@ class _LifetimeField extends HookConsumerWidget {
             ),
           ),
           onChanged: (lifetime) =>
-              ref.read(pageProvider.notifier).insertFact(fact.copyWith(
+              ref.read(pageProvider.notifier).insertEntry(fact.copyWith(
                     lifetime: lifetime,
                     data: "",
                   )),
@@ -144,7 +144,7 @@ class _CronDataField extends HookConsumerWidget {
   const _CronDataField({Key? key, required this.fact}) : super(key: key);
 
   void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertFact(fact.copyWith(
+    ref.read(pageProvider.notifier).insertEntry(fact.copyWith(
           data: value,
         ));
   }
@@ -180,7 +180,7 @@ class _TimedDataField extends HookConsumerWidget {
   const _TimedDataField({Key? key, required this.fact}) : super(key: key);
 
   void _onChanged(String value, WidgetRef ref) {
-    ref.read(pageProvider.notifier).insertFact(fact.copyWith(
+    ref.read(pageProvider.notifier).insertEntry(fact.copyWith(
           data: value,
         ));
   }

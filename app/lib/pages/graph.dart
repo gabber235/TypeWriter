@@ -37,165 +37,34 @@ class PageNotifier extends StateNotifier<PageModel> {
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_random.nextInt(_chars.length))));
 
-  Fact addFact() {
-    final fact = Fact(
-      name: "new_fact",
-      id: getRandomString(15),
-    );
-    insertFact(fact);
-    return fact;
+  Entry? addEntry(EntryType<Entry> type) {
+    String id = getRandomString(15);
+    // Make sure we don't have a duplicate id
+    while (state.entries.any((e) => e.id == id)) {
+      id = getRandomString(15);
+    }
+    final entry = type.factory?.call(id);
+    if (entry == null) return null;
+    insertEntry(entry);
+    return entry;
   }
 
-  Speaker addSpeaker() {
-    final speaker = Speaker(
-      name: "new_speaker",
-      id: getRandomString(15),
-    );
-    insertSpeaker(speaker);
-    return speaker;
-  }
-
-  Event addEvent() {
-    final event = NpcEvent(
-      name: "new_event",
-      id: getRandomString(15),
-      identifier: "",
-      triggers: [],
-    );
-    insertEvent(event);
-    return event;
-  }
-
-  SpokenDialogue addDialogue() {
-    final dialogue = SpokenDialogue(
-      name: "new_dialogue",
-      id: getRandomString(15),
-      speaker: "",
-      text: "",
-      triggeredBy: [],
-      triggers: [],
-    );
-    insertDialogue(dialogue);
-    return dialogue;
-  }
-
-  ActionEntry addAction() {
-    final action = ActionEntry.simple(
-      name: "new_action",
-      id: getRandomString(15),
-      triggeredBy: [],
-      triggers: [],
-    );
-    insertAction(action);
-    return action;
-  }
-
-  void insertFact(Fact fact) {
-    state = state
-        .copyWith(facts: [...state.facts.where((e) => e.id != fact.id), fact]);
-  }
-
-  void insertSpeaker(Speaker speaker) {
-    state = state.copyWith(speakers: [
-      ...state.speakers.where((e) => e.id != speaker.id),
-      speaker
-    ]);
-  }
-
-  void insertEvent(Event event) {
-    state = state.copyWith(
-        events: [...state.events.where((e) => e.id != event.id), event]);
-  }
-
-  void insertDialogue(Dialogue dialogue) {
-    state = state.copyWith(dialogue: [
-      ...state.dialogue.where((d) => d.id != dialogue.id),
-      dialogue
-    ]);
-  }
-
-  void insertAction(ActionEntry action) {
-    state = state.copyWith(
-        actions: [...state.actions.where((a) => a.id != action.id), action]);
-  }
-
-  void transformType(TriggerEntry entry, String type) {
-    if (entry is Event) {
-      Event event = entry;
-      if (type == "npc_interact") {
-        event = Event.npc(
-          name: event.name,
-          id: event.id,
-          identifier: "",
-          triggers: event.triggers,
-        );
-      } else if (type == "run_command") {
-        event = Event.runCommand(
-          name: event.name,
-          id: event.id,
-          triggers: event.triggers,
-        );
-      } else if (type == "island_create") {
-        event = Event.islandCreate(
-          name: event.name,
-          id: event.id,
-          triggers: event.triggers,
-        );
-      }
-
-      insertEvent(event);
+  void insertEntry(Entry entry) {
+    if (entry is Fact) {
+      state = state.copyWith(
+          facts: [...state.facts.where((e) => e.id != entry.id), entry]);
+    } else if (entry is Speaker) {
+      state = state.copyWith(
+          speakers: [...state.speakers.where((e) => e.id != entry.id), entry]);
+    } else if (entry is Event) {
+      state = state.copyWith(
+          events: [...state.events.where((e) => e.id != entry.id), entry]);
     } else if (entry is Dialogue) {
-      Dialogue dialogue = entry;
-      if (type == "spoken") {
-        dialogue = Dialogue.spoken(
-          name: dialogue.name,
-          id: dialogue.id,
-          triggers: dialogue.triggers,
-          triggeredBy: dialogue.triggeredBy,
-          criteria: dialogue.criteria,
-          modifiers: dialogue.modifiers,
-          text: dialogue.text,
-          speaker: dialogue.speaker,
-        );
-      } else if (type == "option") {
-        dialogue = Dialogue.option(
-          name: dialogue.name,
-          id: dialogue.id,
-          triggers: dialogue.triggers,
-          triggeredBy: dialogue.triggeredBy,
-          criteria: dialogue.criteria,
-          modifiers: dialogue.modifiers,
-          text: dialogue.text,
-          speaker: dialogue.speaker,
-        );
-      } else if (type == "message") {
-        dialogue = Dialogue.message(
-          name: dialogue.name,
-          id: dialogue.id,
-          triggers: dialogue.triggers,
-          triggeredBy: dialogue.triggeredBy,
-          criteria: dialogue.criteria,
-          modifiers: dialogue.modifiers,
-          text: dialogue.text,
-          speaker: dialogue.speaker,
-        );
-      }
-
-      insertDialogue(dialogue);
+      state = state.copyWith(
+          dialogue: [...state.dialogue.where((e) => e.id != entry.id), entry]);
     } else if (entry is ActionEntry) {
-      ActionEntry action = entry;
-      if (type == "simple") {
-        action = ActionEntry.simple(
-          name: action.name,
-          id: action.id,
-          triggers: action.triggers,
-          triggeredBy: action.triggeredBy,
-          criteria: action.criteria,
-          modifiers: action.modifiers,
-        );
-      }
-
-      insertAction(action);
+      state = state.copyWith(
+          actions: [...state.actions.where((e) => e.id != entry.id), entry]);
     }
   }
 
