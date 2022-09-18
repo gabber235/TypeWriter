@@ -3,8 +3,7 @@ package me.gabber235.typewriter.entry
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
 import me.gabber235.typewriter.Typewriter
-import me.gabber235.typewriter.entry.action.ActionEntry
-import me.gabber235.typewriter.entry.action.SimpleActionEntry
+import me.gabber235.typewriter.entry.action.*
 import me.gabber235.typewriter.entry.dialogue.DialogueEntry
 import me.gabber235.typewriter.entry.dialogue.entries.*
 import me.gabber235.typewriter.entry.event.EventEntry
@@ -91,6 +90,7 @@ private val dialogueFactory = RuntimeTypeAdapterFactory.of(DialogueEntry::class.
 
 private val actionFactory = RuntimeTypeAdapterFactory.of(ActionEntry::class.java)
 	.registerSubtype(SimpleActionEntry::class.java, "simple")
+	.registerSubtype(DelayedActionEntry::class.java, "delayed")
 
 private val gson = GsonBuilder()
 	.registerTypeAdapterFactory(eventFactory)

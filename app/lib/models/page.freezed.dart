@@ -493,6 +493,7 @@ mixin _$Speaker {
   String get name => throw _privateConstructorUsedError;
   @JsonKey(name: "display_name")
   String get displayName => throw _privateConstructorUsedError;
+  String get sound => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -506,7 +507,8 @@ abstract class $SpeakerCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      @JsonKey(name: "display_name") String displayName});
+      @JsonKey(name: "display_name") String displayName,
+      String sound});
 }
 
 /// @nodoc
@@ -522,6 +524,7 @@ class _$SpeakerCopyWithImpl<$Res> implements $SpeakerCopyWith<$Res> {
     Object? id = freezed,
     Object? name = freezed,
     Object? displayName = freezed,
+    Object? sound = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -536,6 +539,10 @@ class _$SpeakerCopyWithImpl<$Res> implements $SpeakerCopyWith<$Res> {
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
+      sound: sound == freezed
+          ? _value.sound
+          : sound // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -549,7 +556,8 @@ abstract class _$$_SpeakerCopyWith<$Res> implements $SpeakerCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      @JsonKey(name: "display_name") String displayName});
+      @JsonKey(name: "display_name") String displayName,
+      String sound});
 }
 
 /// @nodoc
@@ -566,6 +574,7 @@ class __$$_SpeakerCopyWithImpl<$Res> extends _$SpeakerCopyWithImpl<$Res>
     Object? id = freezed,
     Object? name = freezed,
     Object? displayName = freezed,
+    Object? sound = freezed,
   }) {
     return _then(_$_Speaker(
       id: id == freezed
@@ -580,6 +589,10 @@ class __$$_SpeakerCopyWithImpl<$Res> extends _$SpeakerCopyWithImpl<$Res>
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
+      sound: sound == freezed
+          ? _value.sound
+          : sound // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -590,7 +603,8 @@ class _$_Speaker implements _Speaker {
   const _$_Speaker(
       {required this.id,
       required this.name,
-      @JsonKey(name: "display_name") this.displayName = ""});
+      @JsonKey(name: "display_name") this.displayName = "",
+      this.sound = ""});
 
   factory _$_Speaker.fromJson(Map<String, dynamic> json) =>
       _$$_SpeakerFromJson(json);
@@ -602,10 +616,13 @@ class _$_Speaker implements _Speaker {
   @override
   @JsonKey(name: "display_name")
   final String displayName;
+  @override
+  @JsonKey()
+  final String sound;
 
   @override
   String toString() {
-    return 'Speaker(id: $id, name: $name, displayName: $displayName)';
+    return 'Speaker(id: $id, name: $name, displayName: $displayName, sound: $sound)';
   }
 
   @override
@@ -616,7 +633,8 @@ class _$_Speaker implements _Speaker {
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality().equals(other.name, name) &&
             const DeepCollectionEquality()
-                .equals(other.displayName, displayName));
+                .equals(other.displayName, displayName) &&
+            const DeepCollectionEquality().equals(other.sound, sound));
   }
 
   @JsonKey(ignore: true)
@@ -625,7 +643,8 @@ class _$_Speaker implements _Speaker {
       runtimeType,
       const DeepCollectionEquality().hash(id),
       const DeepCollectionEquality().hash(name),
-      const DeepCollectionEquality().hash(displayName));
+      const DeepCollectionEquality().hash(displayName),
+      const DeepCollectionEquality().hash(sound));
 
   @JsonKey(ignore: true)
   @override
@@ -644,7 +663,8 @@ abstract class _Speaker implements Speaker {
   const factory _Speaker(
       {required final String id,
       required final String name,
-      @JsonKey(name: "display_name") final String displayName}) = _$_Speaker;
+      @JsonKey(name: "display_name") final String displayName,
+      final String sound}) = _$_Speaker;
 
   factory _Speaker.fromJson(Map<String, dynamic> json) = _$_Speaker.fromJson;
 
@@ -655,6 +675,8 @@ abstract class _Speaker implements Speaker {
   @override
   @JsonKey(name: "display_name")
   String get displayName;
+  @override
+  String get sound;
   @override
   @JsonKey(ignore: true)
   _$$_SpeakerCopyWith<_$_Speaker> get copyWith =>
@@ -3669,6 +3691,8 @@ ActionEntry _$ActionEntryFromJson(Map<String, dynamic> json) {
       return _ActionEntry.fromJson(json);
     case 'simple':
       return SimpleAction.fromJson(json);
+    case 'delayed':
+      return DelayedAction.fromJson(json);
 
     default:
       throw CheckedFromJsonException(
@@ -3703,6 +3727,15 @@ mixin _$ActionEntry {
             List<Criterion> criteria,
             List<Criterion> modifiers)
         simple,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)
+        delayed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -3723,6 +3756,15 @@ mixin _$ActionEntry {
             List<Criterion> criteria,
             List<Criterion> modifiers)?
         simple,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        delayed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -3743,6 +3785,15 @@ mixin _$ActionEntry {
             List<Criterion> criteria,
             List<Criterion> modifiers)?
         simple,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        delayed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -3750,18 +3801,21 @@ mixin _$ActionEntry {
   TResult map<TResult extends Object?>(
     TResult Function(_ActionEntry value) $default, {
     required TResult Function(SimpleAction value) simple,
+    required TResult Function(DelayedAction value) delayed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult Function(_ActionEntry value)? $default, {
     TResult Function(SimpleAction value)? simple,
+    TResult Function(DelayedAction value)? delayed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_ActionEntry value)? $default, {
     TResult Function(SimpleAction value)? simple,
+    TResult Function(DelayedAction value)? delayed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -4009,6 +4063,15 @@ class _$_ActionEntry implements _ActionEntry {
             List<Criterion> criteria,
             List<Criterion> modifiers)
         simple,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)
+        delayed,
   }) {
     return $default(name, id, triggeredBy, triggers, criteria, modifiers);
   }
@@ -4032,6 +4095,15 @@ class _$_ActionEntry implements _ActionEntry {
             List<Criterion> criteria,
             List<Criterion> modifiers)?
         simple,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        delayed,
   }) {
     return $default?.call(name, id, triggeredBy, triggers, criteria, modifiers);
   }
@@ -4055,6 +4127,15 @@ class _$_ActionEntry implements _ActionEntry {
             List<Criterion> criteria,
             List<Criterion> modifiers)?
         simple,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        delayed,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -4068,6 +4149,7 @@ class _$_ActionEntry implements _ActionEntry {
   TResult map<TResult extends Object?>(
     TResult Function(_ActionEntry value) $default, {
     required TResult Function(SimpleAction value) simple,
+    required TResult Function(DelayedAction value) delayed,
   }) {
     return $default(this);
   }
@@ -4077,6 +4159,7 @@ class _$_ActionEntry implements _ActionEntry {
   TResult? mapOrNull<TResult extends Object?>(
     TResult Function(_ActionEntry value)? $default, {
     TResult Function(SimpleAction value)? simple,
+    TResult Function(DelayedAction value)? delayed,
   }) {
     return $default?.call(this);
   }
@@ -4086,6 +4169,7 @@ class _$_ActionEntry implements _ActionEntry {
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_ActionEntry value)? $default, {
     TResult Function(SimpleAction value)? simple,
+    TResult Function(DelayedAction value)? delayed,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -4311,6 +4395,15 @@ class _$SimpleAction implements SimpleAction {
             List<Criterion> criteria,
             List<Criterion> modifiers)
         simple,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)
+        delayed,
   }) {
     return simple(name, id, triggeredBy, triggers, criteria, modifiers);
   }
@@ -4334,6 +4427,15 @@ class _$SimpleAction implements SimpleAction {
             List<Criterion> criteria,
             List<Criterion> modifiers)?
         simple,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        delayed,
   }) {
     return simple?.call(name, id, triggeredBy, triggers, criteria, modifiers);
   }
@@ -4357,6 +4459,15 @@ class _$SimpleAction implements SimpleAction {
             List<Criterion> criteria,
             List<Criterion> modifiers)?
         simple,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        delayed,
     required TResult orElse(),
   }) {
     if (simple != null) {
@@ -4370,6 +4481,7 @@ class _$SimpleAction implements SimpleAction {
   TResult map<TResult extends Object?>(
     TResult Function(_ActionEntry value) $default, {
     required TResult Function(SimpleAction value) simple,
+    required TResult Function(DelayedAction value) delayed,
   }) {
     return simple(this);
   }
@@ -4379,6 +4491,7 @@ class _$SimpleAction implements SimpleAction {
   TResult? mapOrNull<TResult extends Object?>(
     TResult Function(_ActionEntry value)? $default, {
     TResult Function(SimpleAction value)? simple,
+    TResult Function(DelayedAction value)? delayed,
   }) {
     return simple?.call(this);
   }
@@ -4388,6 +4501,7 @@ class _$SimpleAction implements SimpleAction {
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_ActionEntry value)? $default, {
     TResult Function(SimpleAction value)? simple,
+    TResult Function(DelayedAction value)? delayed,
     required TResult orElse(),
   }) {
     if (simple != null) {
@@ -4432,6 +4546,357 @@ abstract class SimpleAction implements ActionEntry {
   @override
   @JsonKey(ignore: true)
   _$$SimpleActionCopyWith<_$SimpleAction> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DelayedActionCopyWith<$Res>
+    implements $ActionEntryCopyWith<$Res> {
+  factory _$$DelayedActionCopyWith(
+          _$DelayedAction value, $Res Function(_$DelayedAction) then) =
+      __$$DelayedActionCopyWithImpl<$Res>;
+  @override
+  $Res call(
+      {String name,
+      String id,
+      @JsonKey(name: "triggered_by") List<String> triggeredBy,
+      List<String> triggers,
+      List<Criterion> criteria,
+      List<Criterion> modifiers,
+      int duration});
+}
+
+/// @nodoc
+class __$$DelayedActionCopyWithImpl<$Res>
+    extends _$ActionEntryCopyWithImpl<$Res>
+    implements _$$DelayedActionCopyWith<$Res> {
+  __$$DelayedActionCopyWithImpl(
+      _$DelayedAction _value, $Res Function(_$DelayedAction) _then)
+      : super(_value, (v) => _then(v as _$DelayedAction));
+
+  @override
+  _$DelayedAction get _value => super._value as _$DelayedAction;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? id = freezed,
+    Object? triggeredBy = freezed,
+    Object? triggers = freezed,
+    Object? criteria = freezed,
+    Object? modifiers = freezed,
+    Object? duration = freezed,
+  }) {
+    return _then(_$DelayedAction(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      triggeredBy: triggeredBy == freezed
+          ? _value._triggeredBy
+          : triggeredBy // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      triggers: triggers == freezed
+          ? _value._triggers
+          : triggers // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      criteria: criteria == freezed
+          ? _value._criteria
+          : criteria // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+      modifiers: modifiers == freezed
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Criterion>,
+      duration: duration == freezed
+          ? _value.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DelayedAction implements DelayedAction {
+  const _$DelayedAction(
+      {required this.name,
+      required this.id,
+      @JsonKey(name: "triggered_by") final List<String> triggeredBy = const [],
+      final List<String> triggers = const [],
+      final List<Criterion> criteria = const [],
+      final List<Criterion> modifiers = const [],
+      this.duration = 0,
+      final String? $type})
+      : _triggeredBy = triggeredBy,
+        _triggers = triggers,
+        _criteria = criteria,
+        _modifiers = modifiers,
+        $type = $type ?? 'delayed';
+
+  factory _$DelayedAction.fromJson(Map<String, dynamic> json) =>
+      _$$DelayedActionFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String id;
+  final List<String> _triggeredBy;
+  @override
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggeredBy);
+  }
+
+  final List<String> _triggers;
+  @override
+  @JsonKey()
+  List<String> get triggers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_triggers);
+  }
+
+  final List<Criterion> _criteria;
+  @override
+  @JsonKey()
+  List<Criterion> get criteria {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_criteria);
+  }
+
+  final List<Criterion> _modifiers;
+  @override
+  @JsonKey()
+  List<Criterion> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
+
+  @override
+  @JsonKey()
+  final int duration;
+
+  @JsonKey(name: 'type')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'ActionEntry.delayed(name: $name, id: $id, triggeredBy: $triggeredBy, triggers: $triggers, criteria: $criteria, modifiers: $modifiers, duration: $duration)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DelayedAction &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality()
+                .equals(other._triggeredBy, _triggeredBy) &&
+            const DeepCollectionEquality().equals(other._triggers, _triggers) &&
+            const DeepCollectionEquality().equals(other._criteria, _criteria) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers) &&
+            const DeepCollectionEquality().equals(other.duration, duration));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(_triggeredBy),
+      const DeepCollectionEquality().hash(_triggers),
+      const DeepCollectionEquality().hash(_criteria),
+      const DeepCollectionEquality().hash(_modifiers),
+      const DeepCollectionEquality().hash(duration));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$DelayedActionCopyWith<_$DelayedAction> get copyWith =>
+      __$$DelayedActionCopyWithImpl<_$DelayedAction>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        $default, {
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)
+        simple,
+    required TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)
+        delayed,
+  }) {
+    return delayed(
+        name, id, triggeredBy, triggers, criteria, modifiers, duration);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        simple,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        delayed,
+  }) {
+    return delayed?.call(
+        name, id, triggeredBy, triggers, criteria, modifiers, duration);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        $default, {
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers)?
+        simple,
+    TResult Function(
+            String name,
+            String id,
+            @JsonKey(name: "triggered_by") List<String> triggeredBy,
+            List<String> triggers,
+            List<Criterion> criteria,
+            List<Criterion> modifiers,
+            int duration)?
+        delayed,
+    required TResult orElse(),
+  }) {
+    if (delayed != null) {
+      return delayed(
+          name, id, triggeredBy, triggers, criteria, modifiers, duration);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ActionEntry value) $default, {
+    required TResult Function(SimpleAction value) simple,
+    required TResult Function(DelayedAction value) delayed,
+  }) {
+    return delayed(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult Function(_ActionEntry value)? $default, {
+    TResult Function(SimpleAction value)? simple,
+    TResult Function(DelayedAction value)? delayed,
+  }) {
+    return delayed?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ActionEntry value)? $default, {
+    TResult Function(SimpleAction value)? simple,
+    TResult Function(DelayedAction value)? delayed,
+    required TResult orElse(),
+  }) {
+    if (delayed != null) {
+      return delayed(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DelayedActionToJson(
+      this,
+    );
+  }
+}
+
+abstract class DelayedAction implements ActionEntry {
+  const factory DelayedAction(
+      {required final String name,
+      required final String id,
+      @JsonKey(name: "triggered_by") final List<String> triggeredBy,
+      final List<String> triggers,
+      final List<Criterion> criteria,
+      final List<Criterion> modifiers,
+      final int duration}) = _$DelayedAction;
+
+  factory DelayedAction.fromJson(Map<String, dynamic> json) =
+      _$DelayedAction.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get id;
+  @override
+  @JsonKey(name: "triggered_by")
+  List<String> get triggeredBy;
+  @override
+  List<String> get triggers;
+  @override
+  List<Criterion> get criteria;
+  @override
+  List<Criterion> get modifiers;
+  int get duration;
+  @override
+  @JsonKey(ignore: true)
+  _$$DelayedActionCopyWith<_$DelayedAction> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

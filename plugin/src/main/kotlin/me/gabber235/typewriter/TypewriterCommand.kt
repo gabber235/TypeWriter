@@ -15,6 +15,7 @@ import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.extensions.npc.TypeWriterTrait
 import me.gabber235.typewriter.facts.*
 import me.gabber235.typewriter.interaction.InteractionHandler
+import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.utils.msg
 import me.gabber235.typewriter.utils.sendMini
 import net.citizensnpcs.api.CitizensAPI
@@ -131,6 +132,15 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 					source.msg("Running event <yellow>${event.get()}</yellow>...")
 					InteractionHandler.startInteractionAndTrigger(source as Player, listOf(event.get()))
 				}
+			}
+		}
+	}
+
+	literal("clearChat") {
+		executesPlayer {
+			source.chatHistory.let {
+				it.clear()
+				it.resendMessages(source)
 			}
 		}
 	}

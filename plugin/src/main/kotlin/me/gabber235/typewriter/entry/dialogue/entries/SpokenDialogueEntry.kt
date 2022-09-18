@@ -15,5 +15,5 @@ data class SpokenDialogueEntry(
 	override val modifiers: List<Modifier> = emptyList(),
 	override val text: String = "",
 	override val speaker: String = "",
-	val duration: Int = 40,
+	val duration: Int = 40, // in ticks
 ) : DialogueEntry

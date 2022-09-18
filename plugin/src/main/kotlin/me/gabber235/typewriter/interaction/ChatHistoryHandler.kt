@@ -46,18 +46,22 @@ class ChatHistory {
 		}
 	}
 
-	private fun clear() = "\n".repeat(80 - messages.size)
+	fun clear() {
+		messages.clear()
+	}
+
+	private fun clearMessage() = "\n".repeat(80 - messages.size)
 
 	fun resendMessages(player: Player, clear: Boolean = true) {
 		var msg = Component.text("no-index")
-		if (clear) msg = msg.append(clear().asMini())
+		if (clear) msg = msg.append(clearMessage().asMini())
 		messages.forEach { msg = msg.append(Component.text("\n")).append(it) }
 		player.sendMessage(msg)
 	}
 
 	fun composeDarkMessage(message: Component, clear: Boolean = true): Component {
 		var msg = Component.text("no-index")
-		if (clear) msg = msg.append(clear().asMini())
+		if (clear) msg = msg.append(clearMessage().asMini())
 		messages.forEach {
 			msg = msg.append("<#7d8085>${it.plainText()}</#7d8085>\n".asMini())
 		}

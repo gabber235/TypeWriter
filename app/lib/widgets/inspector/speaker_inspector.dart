@@ -27,6 +27,8 @@ class SpeakerInspector extends HookConsumerWidget {
         const Divider(),
         _DisplayNameField(speaker: speaker),
         const Divider(),
+        _SoundField(speaker: speaker),
+        const Divider(),
         Operations(entry: speaker),
       ],
     );
@@ -61,6 +63,36 @@ class _DisplayNameField extends HookConsumerWidget {
           icon: FontAwesomeIcons.tag,
         ),
         const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+class _SoundField extends HookConsumerWidget {
+  final Speaker speaker;
+
+  const _SoundField({
+    Key? key,
+    required this.speaker,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const SectionTitle(title: "Sound"),
+        const SizedBox(height: 8),
+        SingleLineTextField(
+          text: speaker.sound,
+          onChanged: (value) {
+            ref.read(pageProvider.notifier).insertEntry(speaker.copyWith(
+                  sound: value,
+                ));
+          },
+          hintText: "Enter a minecraft sound",
+          icon: FontAwesomeIcons.volumeHigh,
+        ),
       ],
     );
   }

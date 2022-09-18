@@ -131,6 +131,9 @@ class DialogueInspector extends HookConsumerWidget {
         _SpeakerField(dialogue: dialogue),
         const Divider(),
         _TextField(dialogue: dialogue),
+
+        // ----------------- Custom Fields -----------------
+
         if (dialogue is SpokenDialogue) ...[
           const Divider(),
           _DurationField(dialogue: dialogue as SpokenDialogue),
@@ -139,6 +142,8 @@ class DialogueInspector extends HookConsumerWidget {
           const Divider(),
           _OptionsList(dialogue: dialogue as OptionDialogue),
         ],
+
+        // -------------------------------------------------
         const Divider(),
         Operations(entry: dialogue),
       ],
@@ -239,7 +244,7 @@ class _DurationField extends HookConsumerWidget {
                   duration: (int.tryParse(value) ?? 0) ~/ 50,
                 ));
           },
-          hintText: "Enter a duration",
+          hintText: "Enter a duration (ms)",
           icon: FontAwesomeIcons.solidClock,
         ),
       ],

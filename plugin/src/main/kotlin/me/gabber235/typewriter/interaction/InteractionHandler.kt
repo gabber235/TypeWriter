@@ -101,6 +101,7 @@ object InteractionHandler {
 
 		plugin.listen<PlayerQuitEvent> { event ->
 			interactions.remove(event.player.uniqueId)?.end()
+			event.player.chatHistory.clear()
 		}
 
 		plugin.listen<PlayerCommandPreprocessEvent>(priority = EventPriority.MONITOR, ignoreCancelled = true) { event ->

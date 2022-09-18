@@ -66,6 +66,7 @@ _$_Speaker _$$_SpeakerFromJson(Map<String, dynamic> json) => _$_Speaker(
       id: json['id'] as String,
       name: json['name'] as String,
       displayName: json['display_name'] as String? ?? "",
+      sound: json['sound'] as String? ?? "",
     );
 
 Map<String, dynamic> _$$_SpeakerToJson(_$_Speaker instance) =>
@@ -73,6 +74,7 @@ Map<String, dynamic> _$$_SpeakerToJson(_$_Speaker instance) =>
       'id': instance.id,
       'name': instance.name,
       'display_name': instance.displayName,
+      'sound': instance.sound,
     };
 
 _$_Event _$$_EventFromJson(Map<String, dynamic> json) => _$_Event(
@@ -375,6 +377,42 @@ Map<String, dynamic> _$$SimpleActionToJson(_$SimpleAction instance) =>
       'triggers': instance.triggers,
       'criteria': instance.criteria,
       'modifiers': instance.modifiers,
+      'type': instance.$type,
+    };
+
+_$DelayedAction _$$DelayedActionFromJson(Map<String, dynamic> json) =>
+    _$DelayedAction(
+      name: json['name'] as String,
+      id: json['id'] as String,
+      triggeredBy: (json['triggered_by'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      triggers: (json['triggers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      criteria: (json['criteria'] as List<dynamic>?)
+              ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Criterion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      duration: json['duration'] as int? ?? 0,
+      $type: json['type'] as String?,
+    );
+
+Map<String, dynamic> _$$DelayedActionToJson(_$DelayedAction instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'id': instance.id,
+      'triggered_by': instance.triggeredBy,
+      'triggers': instance.triggers,
+      'criteria': instance.criteria,
+      'modifiers': instance.modifiers,
+      'duration': instance.duration,
       'type': instance.$type,
     };
 

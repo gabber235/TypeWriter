@@ -1,12 +1,14 @@
 package me.gabber235.typewriter.entry.dialogue
 
-import me.gabber235.typewriter.entry.EntryDatabase
-import me.gabber235.typewriter.entry.RuleEntry
+import me.gabber235.typewriter.entry.*
 
 interface DialogueEntry : RuleEntry {
 	val speaker: String
 	val text: String
 	val speakerDisplayName: String
-		get() = EntryDatabase.getSpeaker(speaker)?.displayName ?: ""
+		get() = speakerEntry?.displayName ?: ""
+
+	val speakerEntry: SpeakerEntry?
+		get() = EntryDatabase.getSpeaker(speaker)
 }
 

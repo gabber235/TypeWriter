@@ -67,6 +67,7 @@ class Speaker with _$Speaker implements Entry {
     required String id,
     required String name,
     @Default("") @JsonKey(name: "display_name") String displayName,
+    @Default("") String sound,
   }) = _Speaker;
 
   factory Speaker.fromJson(Map<String, dynamic> json) =>
@@ -174,7 +175,6 @@ class Dialogue with _$Dialogue implements RuleEntry {
 
 @Freezed(unionKey: "type", unionValueCase: FreezedUnionCase.snake)
 class ActionEntry with _$ActionEntry implements RuleEntry {
-  @FreezedUnionValue("default")
   const factory ActionEntry({
     required String name,
     required String id,
@@ -184,7 +184,6 @@ class ActionEntry with _$ActionEntry implements RuleEntry {
     @Default([]) List<Criterion> modifiers,
   }) = _ActionEntry;
 
-  @FreezedUnionValue("simple")
   const factory ActionEntry.simple({
     required String name,
     required String id,
@@ -193,6 +192,16 @@ class ActionEntry with _$ActionEntry implements RuleEntry {
     @Default([]) List<Criterion> criteria,
     @Default([]) List<Criterion> modifiers,
   }) = SimpleAction;
+
+  const factory ActionEntry.delayed({
+    required String name,
+    required String id,
+    @Default([]) @JsonKey(name: "triggered_by") List<String> triggeredBy,
+    @Default([]) List<String> triggers,
+    @Default([]) List<Criterion> criteria,
+    @Default([]) List<Criterion> modifiers,
+    @Default(0) int duration,
+  }) = DelayedAction;
 
   factory ActionEntry.fromJson(Map<String, dynamic> json) =>
       _$ActionEntryFromJson(json);
@@ -275,16 +284,24 @@ enum EntryType<E extends Entry> {
   messageDialogue<MessageDialogue>(
     "Message Dialogue",
     icon: FontAwesomeIcons.solidEnvelope,
-    lightColor: Color(0xff6279a1),
+    lightColor: Color(0xff7d9cd1),
     darkColor: Color(0xff1c4da3),
     factory: messageDialogueFactory,
+  ),
+  action<ActionEntry>(
+    "Action",
+    lightColor: Color(0xFFFFCDD2),
+    darkColor: Color(0xFFD32F2F),
   ),
   simpleAction<SimpleAction>(
     "Simple Action",
     icon: FontAwesomeIcons.personRunning,
-    lightColor: Color(0xFFFFCDD2),
-    darkColor: Color(0xFFD32F2F),
     factory: simpleActionFactory,
+  ),
+  delayedAction<DelayedAction>(
+    "Delayed Action",
+    icon: FontAwesomeIcons.hourglassHalf,
+    factory: delayedActionFactory,
   ),
   ;
 
@@ -404,6 +421,9 @@ MessageDialogue messageDialogueFactory(String id) =>
 
 SimpleAction simpleActionFactory(String id) =>
     SimpleAction(id: id, name: 'new_simple_action');
+
+DelayedAction delayedActionFactory(String id) =>
+    DelayedAction(id: id, name: 'new_delayed_action');
 
 Widget factIcon(Fact fact) {
   switch (fact.lifetime) {

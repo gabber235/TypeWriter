@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:typewriter/models/page.dart';
@@ -128,8 +129,50 @@ class ActionInspector extends HookConsumerWidget {
                 ...action.modifiers.sublist(index + 1),
               ])),
         ),
+
+        // ----------------- Custom Fields -----------------
+        if (action is DelayedAction) ...[
+          const Divider(),
+          _DurationField(action: action as DelayedAction),
+        ],
+        // -------------------------------------------------
+
         const Divider(),
         Operations(entry: action),
+      ],
+    );
+  }
+}
+
+class _DurationField extends HookConsumerWidget {
+  final DelayedAction action;
+
+  const _DurationField({
+    Key? key,
+    required this.action,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const SectionTitle(title: "Duration"),
+        const SizedBox(height: 8),
+        SingleLineTextField(
+          text: (action.duration).toString(),
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+          ],
+          onChanged: (value) {
+            ref.read(pageProvider.notifier).insertEntry(action.copyWith(
+                  duration: (int.tryParse(value) ?? 0),
+                ));
+          },
+          hintText: "Enter a duration (ms)",
+          icon: FontAwesomeIcons.solidClock,
+        ),
       ],
     );
   }

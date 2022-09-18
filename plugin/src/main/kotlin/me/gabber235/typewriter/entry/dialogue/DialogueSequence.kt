@@ -1,10 +1,12 @@
 package me.gabber235.typewriter.entry.dialogue
 
+import lirand.api.extensions.world.playSound
 import me.gabber235.typewriter.entry.dialogue.messengers.MessengerFinder
 import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
 import me.gabber235.typewriter.entry.event.Event
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.InteractionHandler
+import org.bukkit.*
 import org.bukkit.entity.Player
 
 class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) {
@@ -21,6 +23,13 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 		isActive = true
 		cycle = 0
 		currentMessenger.init()
+		if (!currentEntry.speakerEntry?.sound.isNullOrBlank()) {
+			val soundNamespace = NamespacedKey.fromString(currentEntry.speakerEntry?.sound ?: "")
+			val sound = Sound.values().firstOrNull() { it.key == soundNamespace }
+			if (sound != null) {
+				player.playSound(sound, SoundCategory.VOICE)
+			}
+		}
 		tick()
 	}
 

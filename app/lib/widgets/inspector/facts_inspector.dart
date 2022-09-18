@@ -31,6 +31,9 @@ class FactInspector extends HookConsumerWidget {
         _CommentField(fact: fact),
         const Divider(),
         _LifetimeField(fact: fact),
+
+        // ----------------- Custom Fields -----------------
+
         if (fact.lifetime == FactLifetime.cron) ...[
           const Divider(),
           _CronDataField(fact: fact),
@@ -39,6 +42,8 @@ class FactInspector extends HookConsumerWidget {
           const Divider(),
           _TimedDataField(fact: fact),
         ],
+
+        // -------------------------------------------------
         const Divider(),
         Operations(entry: fact),
       ],

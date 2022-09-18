@@ -44,6 +44,9 @@ class EventInspector extends HookConsumerWidget {
                 ]),
               ),
         ),
+
+        // ----------------- Custom Fields -----------------
+
         if (event is NpcEvent) ...[
           const Divider(),
           _NpcIdentifierField(event: event as NpcEvent),
@@ -52,6 +55,8 @@ class EventInspector extends HookConsumerWidget {
           const Divider(),
           _CommandRegexField(event: event as RunCommandEvent),
         ],
+
+        // -------------------------------------------------
         const Divider(),
         Operations(entry: event),
       ],
