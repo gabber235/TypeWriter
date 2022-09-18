@@ -473,40 +473,6 @@ extension EntryExtension on Entry {
       EntryType.findType(this)?.item2.getColor(dark) ?? Colors.grey;
 }
 
-extension EventExtension on Event {
-  String get type {
-    if (this is NpcEvent) {
-      return "npc_interact";
-    } else if (this is RunCommandEvent) {
-      return "run_command";
-    } else if (this is IslandCreateEvent) {
-      return "island_create";
-    }
-
-    return "event";
-  }
-}
-
-extension DialogueExtension on Dialogue {
-  String get type {
-    if (this is SpokenDialogue) {
-      return "spoken";
-    } else if (this is OptionDialogue) {
-      return "option";
-    } else if (this is MessageDialogue) {
-      return "message";
-    }
-
-    return "dialogue";
-  }
-}
-
-extension ActionExtension on ActionEntry {
-  String get type {
-    return "simple";
-  }
-}
-
 extension PageModelExtension on PageModel {
   List<Entry> get entries => [...facts, ...speakers, ...triggerEntries];
 

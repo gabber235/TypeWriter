@@ -10,7 +10,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:graphview/GraphView.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/hooks/delayed_execution.dart';
 import 'package:typewriter/models/page.dart';
 import 'package:typewriter/pages/inspection_menu.dart';
 import 'package:typewriter/pages/open_page.dart';
@@ -102,11 +101,16 @@ class PageGraph extends HookConsumerWidget {
 
     final selected = page.getEntry(selectedId);
 
-    useDelayedExecution(() {
-      if (!searching) {
+    final currentFocus = FocusScope.of(context).focusedChild;
+
+    useEffect(() {
+      // For shortcuts to work, a widget must be focused.
+      // So if nothing is focused, request focus for a placeholder focus.
+      if (currentFocus == null) {
         focus.requestFocus();
       }
-    }, runEveryBuild: true);
+      return null;
+    }, [currentFocus]);
 
     if (page.events.isEmpty && page.rules.isEmpty) {
       return const SizedBox.expand(
@@ -183,8 +187,8 @@ class _Graph extends HookConsumerWidget {
     final page = ref.watch(pageProvider);
     final graph = page.toGraph();
     final builder = SugiyamaConfiguration()
-      ..nodeSeparation = (30)
-      ..levelSeparation = (30)
+      ..nodeSeparation = (40)
+      ..levelSeparation = (40)
       ..orientation = SugiyamaConfiguration.ORIENTATION_LEFT_RIGHT;
 
     return GestureDetector(
