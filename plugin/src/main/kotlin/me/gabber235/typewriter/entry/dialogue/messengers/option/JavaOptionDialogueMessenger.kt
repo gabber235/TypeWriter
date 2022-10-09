@@ -66,7 +66,7 @@ class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
 			|<white> ${speakerDisplayName}: ${entry.text}
 			|
 			|${formatOptions()}
-			|<#5d6c78>[ <grey><white>Scroll</white> to change option and press<white> <key:key.swapOffhand> </white>to select <#5d6c78>]
+			|<#5d6c78>[ <grey><white>Scroll</white> to change option and press<white> <key:key.swapOffhand> </white>to select <#5d6c78>]</#5d6c78>
 			|<gray><st>${" ".repeat(60)}</st>
 		""".trimMargin().asMini()
 
