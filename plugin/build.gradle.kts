@@ -3,12 +3,12 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
 	id("java")
-	kotlin("jvm") version "1.7.10"
+	kotlin("jvm") version "1.7.20"
 	id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 group = "me.gabber235"
-version = "0.0.1"
+version = "0.1.0"
 
 repositories {
 	maven("https://repo.citizensnpcs.co/")
@@ -26,6 +26,7 @@ repositories {
 
 dependencies {
 	implementation(kotlin("stdlib"))
+	implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.20")
 	compileOnly("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
@@ -40,7 +41,7 @@ dependencies {
 	compileOnly("me.clip:placeholderapi:2.11.2")
 	compileOnly("net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT")
 	compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.11.1")
-	compileOnly("com.google.code.gson:gson:2.9.1")
+	compileOnly("com.google.code.gson:gson:2.10")
 	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 

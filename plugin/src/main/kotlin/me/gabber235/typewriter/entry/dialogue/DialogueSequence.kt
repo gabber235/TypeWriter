@@ -1,8 +1,6 @@
 package me.gabber235.typewriter.entry.dialogue
 
 import lirand.api.extensions.world.playSound
-import me.gabber235.typewriter.entry.dialogue.messengers.MessengerFinder
-import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
 import me.gabber235.typewriter.entry.event.Event
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.InteractionHandler

@@ -21,7 +21,11 @@ object ChatHistoryHandler :
 		if (event.packetType == PacketType.Play.Server.SYSTEM_CHAT) {
 			val handle = event.packet.handle
 			val method = handle::class.java.getMethod("content")
-			val content = method.invoke(handle) as String
+			val content = method.invoke(handle) as? String
+			if (content == null) {
+				plugin.logger.warning("Could not get content from packet")
+				return
+			}
 			val component = GsonComponentSerializer.gson().deserialize(content)
 			if (component is TextComponent && component.content() == "no-index") return
 			getHistory(event.player).addMessage(component)

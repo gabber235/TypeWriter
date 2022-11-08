@@ -206,7 +206,7 @@ open class FactType(
 
 }
 
-open class EventType() : WordType<String> {
+open class EventType : WordType<String> {
 	companion object Instance : EventType()
 
 	override fun parse(reader: StringReader): String = reader.readUnquoted()

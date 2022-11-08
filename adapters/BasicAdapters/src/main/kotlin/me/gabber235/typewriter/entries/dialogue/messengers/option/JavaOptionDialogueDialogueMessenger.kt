@@ -1,10 +1,11 @@
-package me.gabber235.typewriter.entry.dialogue.messengers.option
+package me.gabber235.typewriter.entries.dialogue.messengers.option
 
+import me.gabber235.typewriter.adapters.Messenger
+import me.gabber235.typewriter.adapters.MessengerFilter
+import me.gabber235.typewriter.entries.dialogue.Option
+import me.gabber235.typewriter.entries.dialogue.OptionDialogueEntry
 import me.gabber235.typewriter.entry.Modifier
-import me.gabber235.typewriter.entry.dialogue.entries.Option
-import me.gabber235.typewriter.entry.dialogue.entries.OptionDialogueEntry
-import me.gabber235.typewriter.entry.dialogue.messengers.Messenger
-import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
+import me.gabber235.typewriter.entry.dialogue.*
 import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.facts.facts
@@ -17,8 +18,13 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import kotlin.math.max
 import kotlin.math.min
 
-class JavaOptionDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
-	Messenger<OptionDialogueEntry>(player, entry) {
+@Messenger(OptionDialogueEntry::class)
+class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
+	DialogueMessenger<OptionDialogueEntry>(player, entry) {
+
+	companion object : MessengerFilter {
+		override fun filter(player: Player, entry: DialogueEntry): Boolean = true
+	}
 
 	private var selectedIndex = 0
 	private val selected get() = usableOptions[selectedIndex]

@@ -99,7 +99,7 @@ object FactDatabase {
 		val fact = facts.find { it.id == name }
 		return if (fact != null) fact
 		else {
-			// We dont have to save this since it will not be saved when a fact.value == 0
+			// We don't have to save this since it will not be saved when a fact.value == 0
 			val newFact = Fact(name, 0)
 			this.cache[uuid] = facts + newFact
 			newFact

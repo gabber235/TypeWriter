@@ -7,7 +7,6 @@ import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.event.Event
-import me.gabber235.typewriter.entry.event.entries.RunCommandEventEntry
 import me.gabber235.typewriter.facts.facts
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
@@ -107,14 +106,15 @@ object InteractionHandler {
 		plugin.listen<PlayerCommandPreprocessEvent>(priority = EventPriority.MONITOR, ignoreCancelled = true) { event ->
 			triggerEvent(Event("system.dialogue.end", event.player))
 
-			val message = event.message.removePrefix("/")
-
-			val triggers = EntryDatabase.findEventEntries(RunCommandEventEntry::class) {
-				Regex(it.command).matches(message)
-			}
-				.flatMap { it.triggers }
-			if (triggers.isEmpty()) return@listen
-			startInteractionAndTrigger(event.player, triggers)
+			// TODO: Move this to the BasicAdapter
+//			val message = event.message.removePrefix("/")
+//
+//			val triggers = EntryDatabase.findEventEntries(RunCommandEventEntry::class) {
+//				Regex(it.command).matches(message)
+//			}
+//				.flatMap { it.triggers }
+//			if (triggers.isEmpty()) return@listen
+//			startInteractionAndTrigger(event.player, triggers)
 		}
 	}
 

@@ -1,14 +1,17 @@
-package me.gabber235.typewriter.entry.action
+package me.gabber235.typewriter.entries.action
 
 import com.github.shynixn.mccoroutine.launch
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.delay
 import me.gabber235.typewriter.Typewriter.Companion.plugin
+import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.action.ActionEntry
 import me.gabber235.typewriter.interaction.InteractionHandler
 import org.bukkit.entity.Player
 
+@Entry("delayed_action", "Delay an action for a certain amount of time")
 class DelayedActionEntry(
 	override val id: String = "",
 	override val name: String = "",

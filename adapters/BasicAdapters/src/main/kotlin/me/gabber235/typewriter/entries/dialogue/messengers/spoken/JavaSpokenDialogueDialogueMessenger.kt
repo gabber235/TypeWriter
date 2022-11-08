@@ -1,8 +1,9 @@
-package me.gabber235.typewriter.entry.dialogue.messengers.spoken
+package me.gabber235.typewriter.entries.dialogue.messengers.spoken
 
-import me.gabber235.typewriter.entry.dialogue.entries.SpokenDialogueEntry
-import me.gabber235.typewriter.entry.dialogue.messengers.Messenger
-import me.gabber235.typewriter.entry.dialogue.messengers.MessengerState
+import me.gabber235.typewriter.adapters.Messenger
+import me.gabber235.typewriter.adapters.MessengerFilter
+import me.gabber235.typewriter.entries.dialogue.SpokenDialogueEntry
+import me.gabber235.typewriter.entry.dialogue.*
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.utils.*
@@ -11,8 +12,13 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
-class JavaSpokenDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
-	Messenger<SpokenDialogueEntry>(player, entry) {
+@Messenger(SpokenDialogueEntry::class)
+class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
+	DialogueMessenger<SpokenDialogueEntry>(player, entry) {
+
+	companion object : MessengerFilter {
+		override fun filter(player: Player, entry: DialogueEntry): Boolean = true
+	}
 
 	private var speakerDisplayName = ""
 	override fun init() {
