@@ -6,11 +6,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fuzzy/fuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:typewriter/deprecated//models/page.dart';
+import 'package:typewriter/deprecated//pages/graph.dart';
 import 'package:typewriter/hooks/delayed_execution.dart';
 import 'package:typewriter/hooks/search_bar_controller.dart';
 import 'package:typewriter/main.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/graph.dart';
 
 /// When the user wants to search for nodes.
 class SearchIntent extends Intent {}

@@ -6,15 +6,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:typewriter/deprecated/models/page.dart';
+import 'package:typewriter/deprecated/pages/graph.dart';
+import 'package:typewriter/deprecated/widgets/dropdown.dart';
+import 'package:typewriter/deprecated/widgets/inspector/action_inspector.dart';
+import 'package:typewriter/deprecated/widgets/inspector/dialogue_inspector.dart';
+import 'package:typewriter/deprecated/widgets/inspector/event_inspector.dart';
+import 'package:typewriter/deprecated/widgets/inspector/facts_inspector.dart';
+import 'package:typewriter/deprecated/widgets/inspector/speaker_inspector.dart';
 import 'package:typewriter/main.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/graph.dart';
-import 'package:typewriter/widgets/dropdown.dart';
-import 'package:typewriter/widgets/inspector/action_inspector.dart';
-import 'package:typewriter/widgets/inspector/dialogue_inspector.dart';
-import 'package:typewriter/widgets/inspector/event_inspector.dart';
-import 'package:typewriter/widgets/inspector/facts_inspector.dart';
-import 'package:typewriter/widgets/inspector/speaker_inspector.dart';
 
 class InspectionMenu extends HookConsumerWidget {
   final Entry entry;

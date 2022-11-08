@@ -10,11 +10,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:graphview/GraphView.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/inspection_menu.dart';
-import 'package:typewriter/pages/open_page.dart';
-import 'package:typewriter/pages/static_nodes.dart';
-import 'package:typewriter/widgets/search_bar.dart';
+import 'package:typewriter/deprecated/models/page.dart';
+import 'package:typewriter/deprecated/pages/inspection_menu.dart';
+import 'package:typewriter/deprecated/pages/open_page.dart';
+import 'package:typewriter/deprecated/pages/static_nodes.dart';
+import 'package:typewriter/deprecated/widgets/search_bar.dart';
 
 final fileNameProvider = StateProvider<String>((ref) {
   return "test.json";

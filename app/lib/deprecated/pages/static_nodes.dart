@@ -2,9 +2,9 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/graph.dart';
-import 'package:typewriter/widgets/dropdown.dart';
+import 'package:typewriter/deprecated/models/page.dart';
+import 'package:typewriter/deprecated/pages/graph.dart';
+import 'package:typewriter/deprecated/widgets/dropdown.dart';
 
 final _typeProvider = StateProvider<_StaticEntry>((ref) {
   return _StaticEntry.fact;

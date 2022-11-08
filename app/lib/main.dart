@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/pages/graph.dart';
+import 'package:typewriter/app_router.dart';
 
 void main() {
   runApp(const ProviderScope(child: TypeWriterApp()));
 }
 
-class TypeWriterApp extends StatelessWidget {
+final appRouter = Provider<AppRouter>((ref) => AppRouter());
+
+class TypeWriterApp extends HookConsumerWidget {
   const TypeWriterApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouter);
+    return MaterialApp.router(
       title: 'TypeWriter',
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
       debugShowCheckedModeBanner: false,
-      home: const PageGraph(),
+      routerDelegate: router.delegate(),
+      routeInformationParser: router.defaultRouteParser(),
     );
   }
 
@@ -51,6 +55,18 @@ extension StringExtension on String {
       return this;
     }
     return "${this[0].toUpperCase()}${substring(1)}";
+  }
+
+  String get formatted {
+    if (isEmpty) {
+      return this;
+    }
+    return split(".")
+        .map((e) => e.capitalize)
+        .join(" | ")
+        .split("_")
+        .map((e) => e.capitalize)
+        .join(" ");
   }
 }
 

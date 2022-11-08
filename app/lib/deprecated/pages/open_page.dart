@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rive/rive.dart';
-import 'package:typewriter/models/page.dart';
+import 'package:typewriter/deprecated/models/page.dart';
 
 import 'graph.dart';
 

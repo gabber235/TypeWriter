@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/graph.dart';
-import 'package:typewriter/pages/inspection_menu.dart';
+import 'package:typewriter/deprecated/models/page.dart';
+import 'package:typewriter/deprecated/pages/graph.dart';
+import 'package:typewriter/deprecated/pages/inspection_menu.dart';
 
 class EventInspector extends HookConsumerWidget {
   final Event event;

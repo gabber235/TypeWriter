@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/graph.dart';
-import 'package:typewriter/pages/inspection_menu.dart';
-import 'package:typewriter/widgets/dropdown.dart';
+import 'package:typewriter/deprecated/models/page.dart';
+import 'package:typewriter/deprecated/pages/graph.dart';
+import 'package:typewriter/deprecated/pages/inspection_menu.dart';
+import 'package:typewriter/deprecated/widgets/dropdown.dart';
 
 class FactInspector extends HookConsumerWidget {
   final Fact fact;
