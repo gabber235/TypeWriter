@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:typewriter/models/file_path.dart';
+import 'package:typewriter/widgets/filled_button.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -23,21 +24,15 @@ class HomePage extends HookConsumerWidget {
           const Text("Your journey starts here",
               style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
           const SizedBox(height: 24),
-          ElevatedButton(
+          FilledButton.icon(
             onPressed: () async {
               if (openedSelector.value) return;
               openedSelector.value = true;
               await pickDirectory(ref);
               openedSelector.value = false;
             },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                Text("Open Typewriter Directory"),
-                SizedBox(width: 8),
-                Icon(FontAwesomeIcons.folderOpen),
-              ],
-            ),
+            label: const Text("Open Typewriter Directory"),
+            icon: const Icon(FontAwesomeIcons.folderOpen),
           ),
           const Spacer(),
         ],

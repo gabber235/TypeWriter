@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:graphview/GraphView.dart';
 import 'package:tuple/tuple.dart';
-import 'package:typewriter/main.dart';
+import 'package:typewriter/utils/extensions.dart';
 
 part 'page.freezed.dart';
 

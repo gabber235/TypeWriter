@@ -14,7 +14,7 @@ import 'package:typewriter/deprecated/widgets/inspector/dialogue_inspector.dart'
 import 'package:typewriter/deprecated/widgets/inspector/event_inspector.dart';
 import 'package:typewriter/deprecated/widgets/inspector/facts_inspector.dart';
 import 'package:typewriter/deprecated/widgets/inspector/speaker_inspector.dart';
-import 'package:typewriter/main.dart';
+import 'package:typewriter/utils/extensions.dart';
 
 class InspectionMenu extends HookConsumerWidget {
   final Entry entry;
@@ -244,9 +244,7 @@ class NameField extends HookWidget {
           text: name,
           onChanged: onChanged,
           inputFormatters: [
-            TextInputFormatter.withFunction((oldValue, newValue) =>
-                newValue.copyWith(
-                    text: newValue.text.toLowerCase().replaceAll(" ", "_"))),
+            snakeCaseFormatter(),
             FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9_.]')),
           ],
           hintText: "Enter a name",
@@ -412,11 +410,7 @@ class SizableList extends StatelessWidget {
                 onChanged: (text) => onChanged(i, text),
                 onQuery: onQuery,
                 inputFormatters: [
-                  TextInputFormatter.withFunction((oldValue, newValue) =>
-                      newValue.copyWith(
-                          text: newValue.text
-                              .toLowerCase()
-                              .replaceAll(" ", "_"))),
+                  snakeCaseFormatter(),
                   FilteringTextInputFormatter.singleLineFormatter,
                   FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9_.]')),
                 ],

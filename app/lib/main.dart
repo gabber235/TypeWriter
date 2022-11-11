@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:typewriter/app_router.dart';
@@ -31,47 +32,28 @@ class TypeWriterApp extends HookConsumerWidget {
     return baseTheme.copyWith(
       textTheme: GoogleFonts.jetBrainsMonoTextTheme(baseTheme.textTheme),
       inputDecorationTheme: InputDecorationTheme(
-        contentPadding: const EdgeInsets.only(left: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
         fillColor: brightness == Brightness.light
             ? Colors.black.withOpacity(0.05)
-            : Colors.white.withOpacity(0.05),
+            : Colors.black.withOpacity(0.2),
         filled: true,
+        errorStyle: const TextStyle(
+          color: Colors.redAccent,
+          fontSize: 12,
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.redAccent.shade200, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
       ),
     );
-  }
-}
-
-extension BuildContextExtension on BuildContext {
-  bool get isDark => Theme.of(this).brightness == Brightness.dark;
-}
-
-extension StringExtension on String {
-  String get capitalize {
-    if (isEmpty) {
-      return this;
-    }
-    return "${this[0].toUpperCase()}${substring(1)}";
-  }
-
-  String get formatted {
-    if (isEmpty) {
-      return this;
-    }
-    return split(".")
-        .map((e) => e.capitalize)
-        .join(" | ")
-        .split("_")
-        .map((e) => e.capitalize)
-        .join(" ");
-  }
-}
-
-extension ObjectExtension on Object? {
-  T? cast<T>() {
-    return this is T ? this as T : null;
   }
 }

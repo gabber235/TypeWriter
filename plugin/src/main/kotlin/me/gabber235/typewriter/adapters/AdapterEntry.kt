@@ -12,7 +12,7 @@ data class AdapterEntry(
 	val name: String,
 	val description: String,
 	val type: AdapterEntryType,
-	val fields: ObjectField,
+	val fields: FieldType,
 	@Transient
 	val clazz: Class<*>,
 )

@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:typewriter/deprecated/models/page.dart';
 import 'package:typewriter/deprecated/pages/graph.dart';
 import 'package:typewriter/deprecated/pages/inspection_menu.dart';
-import 'package:typewriter/main.dart';
+import 'package:typewriter/utils/extensions.dart';
 
 class DialogueInspector extends HookConsumerWidget {
   final Dialogue dialogue;

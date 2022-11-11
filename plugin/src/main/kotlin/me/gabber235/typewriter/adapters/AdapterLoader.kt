@@ -121,6 +121,7 @@ object AdapterLoader {
 			// Create the adapter data
 			AdapterData(
 				adapterAnnotation?.name ?: "",
+				adapterAnnotation?.description ?: "",
 				adapterAnnotation?.version ?: "",
 				entries,
 				messengers,
@@ -139,6 +140,7 @@ object AdapterLoader {
 
 data class AdapterData(
 	val name: String,
+	val description: String,
 	val version: String,
 	val entries: List<AdapterEntry>,
 	@Transient
@@ -152,6 +154,7 @@ data class AdapterData(
 @Target(AnnotationTarget.CLASS)
 annotation class Adapter(
 	val name: String,
+	val description: String,
 	val version: String,
 )
 

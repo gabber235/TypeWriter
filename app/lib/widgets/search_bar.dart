@@ -6,11 +6,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fuzzy/fuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:typewriter/deprecated//models/page.dart';
-import 'package:typewriter/deprecated//pages/graph.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:typewriter/app_router.dart';
 import 'package:typewriter/hooks/delayed_execution.dart';
 import 'package:typewriter/hooks/search_bar_controller.dart';
-import 'package:typewriter/utils/extensions.dart';
+import 'package:typewriter/main.dart';
+import 'package:typewriter/models/add_entry.dart';
+import 'package:typewriter/models/page.dart';
+import 'package:typewriter/pages/page_editor.dart';
+
+part 'search_bar.g.dart';
 
 /// When the user wants to search for nodes.
 class SearchIntent extends Intent {}
@@ -27,10 +32,10 @@ class SearchingNotifier extends StateNotifier<bool> {
 
   void endSearch() async {
     if (state == false) return;
-    if (ref.read(_actionsProvider).isNotEmpty) {
-      ref.read(_closingProvider.notifier).state = true;
-      await Future.delayed(const Duration(milliseconds: 300));
-    }
+    // if (ref.read(_actionsProvider).isNotEmpty) {
+    //   ref.read(_closingProvider.notifier).state = true;
+    //   await Future.delayed(const Duration(milliseconds: 300));
+    // }
 
     ref.read(_queryProvider.notifier).state = "";
     ref.read(_closingProvider.notifier).state = false;
@@ -45,9 +50,12 @@ final _closingProvider = StateProvider<bool>((ref) => false);
 
 final _queryProvider = StateProvider<String>((ref) => "");
 
-final _entriesFuzzyProvider = Provider<Fuzzy<Entry>>((ref) {
+@riverpod
+Fuzzy<Entry> _fuzzyEntries(_FuzzyEntriesRef ref) {
+  final pages = ref.watch(pagesProvider);
+
   return Fuzzy(
-    [], // ref.watch(pageProvider).entries,
+    pages.expand((p) => p.entries).toList(),
     options: FuzzyOptions(
       threshold: 0.4,
       sortFn: (a, b) => a.matches
@@ -62,19 +70,22 @@ final _entriesFuzzyProvider = Provider<Fuzzy<Entry>>((ref) {
             weight: 0.4),
         WeightedKey(
             name: 'name-full', getter: (sn) => sn.formattedName, weight: 0.15),
-        WeightedKey(
-            name: 'type',
-            getter: (sn) =>
-                EntryType.findTypes(sn).map((e) => e.name).join(" "),
-            weight: 0.4)
+        // WeightedKey(
+        //     name: 'type',
+        //     getter: (sn) =>
+        //         EntryType.findTypes(sn).map((e) => e.name).join(" "),
+        //     weight: 0.4)
       ],
     ),
   );
-});
+}
 
-final _addEntriesFuzzyProvider = Provider<Fuzzy<EntryType>>((ref) {
+@riverpod
+Fuzzy<AddEntry> _fuzzyAddEntries(_FuzzyAddEntriesRef ref) {
+  final addEntries = ref.watch(addEntriesProvider);
+
   return Fuzzy(
-    EntryType.values.where((type) => type.factory != null).toList(),
+    addEntries,
     options: FuzzyOptions(
       threshold: 0.1,
       sortFn: (a, b) => a.matches
@@ -82,50 +93,52 @@ final _addEntriesFuzzyProvider = Provider<Fuzzy<EntryType>>((ref) {
           .sum
           .compareTo(b.matches.map((e) => e.score).sum),
       keys: [
-        WeightedKey(name: 'name', getter: (sn) => "Add ${sn.name}", weight: 1),
+        WeightedKey(name: 'name', getter: (sn) => "Add ${sn.title}", weight: 1),
       ],
     ),
   );
-});
+}
 
-final _actionsProvider = Provider<List<Action>>((ref) {
+@riverpod
+List<_Action> _actions(_ActionsRef ref) {
   final query = ref.watch(_queryProvider);
-  final fuzzy = ref.watch(_entriesFuzzyProvider);
+  final fuzzy = ref.watch(_fuzzyEntriesProvider);
+  final addEntries = ref.watch(addEntriesProvider);
 
   if (query.isEmpty) return [];
   final results = fuzzy.search(query).map((e) => e.item).toList();
 
   if (query.contains(":")) {
     if (query.toLowerCase().startsWith("add:")) {
-      return EntryType.values
-          .where((type) => type.factory != null)
-          .map((e) => AddEntryAction(e))
-          .toList();
+      return addEntries.map((e) => AddEntryAction(e)).toList();
     }
 
-    final type = EntryType.values.firstWhereOrNull((type) =>
-        query.toLowerCase().startsWith("${type.name.toLowerCase()}:"));
-    if (type != null) {
-      return results
-              .where((e) => EntryType.findTypes(e).contains(type))
-              .map((e) => EntryAction(e))
-              .whereType<Action>()
-              .toList() +
-          [AddEntryAction(type)];
-    }
+    // final type = addEntries.firstWhereOrNull((type) =>
+    //     query.toLowerCase().startsWith("${type.title.toLowerCase()}:"));
+    // if (type != null) {
+    //   return results
+    //           .where((e) => EntryType.findTypes(e).contains(type))
+    //           .map((e) => EntryAction(e))
+    //           .whereType<Action>()
+    //           .toList() +
+    //       [AddEntryAction(type)];
+    // }
   }
 
   final addResults = ref
-      .watch(_addEntriesFuzzyProvider)
+      .watch(_fuzzyAddEntriesProvider)
       .search(query)
       .map((e) => e.item)
       .toList();
 
-  return addResults.map((e) => AddEntryAction(e)).whereType<Action>().toList() +
-      results.map((e) => EntryAction(e)).whereType<Action>().toList();
-});
+  return addResults
+          .map((e) => AddEntryAction(e))
+          .whereType<_Action>()
+          .toList() +
+      results.map((e) => EntryAction(e)).whereType<_Action>().toList();
+}
 
-abstract class Action<T> {
+abstract class _Action {
   Color color(BuildContext context);
 
   Widget icon(BuildContext context);
@@ -134,20 +147,22 @@ abstract class Action<T> {
 
   String title(BuildContext context);
 
+  String description(BuildContext context);
+
   void activate(BuildContext context, WidgetRef ref);
 }
 
 /// Action for selecting an existing entry.
-class EntryAction extends Action<Entry> {
+class EntryAction extends _Action {
   final Entry entry;
 
   EntryAction(this.entry);
 
   @override
-  Color color(BuildContext context) => entry.backgroundColor(context);
+  Color color(BuildContext context) => Colors.grey;
 
   @override
-  Widget icon(BuildContext context) => entry.icon(context);
+  Widget icon(BuildContext context) => const Icon(Icons.question_mark);
 
   @override
   Widget suffixIcon(BuildContext context) =>
@@ -157,33 +172,47 @@ class EntryAction extends Action<Entry> {
   String title(BuildContext context) => entry.formattedName;
 
   @override
-  void activate(BuildContext context, WidgetRef ref) {
-    ref.read(selectedProvider.notifier).state = entry.id;
+  String description(BuildContext context) => entry.id;
+
+  @override
+  void activate(BuildContext context, WidgetRef ref) async {
+    if (!ref.read(pageProvider).entries.any((e) => e.id == entry.id)) {
+      final page = ref
+          .read(pagesProvider)
+          .firstWhereOrNull((p) => p.entries.any((e) => e.id == entry.id));
+      if (page != null) {
+        await ref.read(appRouter).push(PageEditorRoute(pageId: page.name));
+      }
+    }
+
+    // TODO: Select the entry.
   }
 }
 
-class AddEntryAction extends Action<EntryType<Entry>> {
-  final EntryType<Entry> type;
+class AddEntryAction extends _Action {
+  final AddEntry type;
 
   AddEntryAction(this.type);
 
   @override
-  Color color(BuildContext context) => type.backgroundColor(context);
+  Color color(BuildContext context) => type.color;
 
   @override
-  Widget icon(BuildContext context) =>
-      type.getIcon(null, !context.isDark) ?? const SizedBox();
+  Widget icon(BuildContext context) => Icon(type.icon);
 
   @override
   Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.plus);
 
   @override
-  String title(BuildContext context) => "Add ${type.name}";
+  String title(BuildContext context) => "Add ${type.title}";
+
+  @override
+  String description(BuildContext context) => type.description;
 
   @override
   void activate(BuildContext context, WidgetRef ref) {
-    // final entry = ref.read(pageProvider.notifier).addEntry(type);
-    // ref.read(selectedProvider.notifier).state = entry?.id ?? "";
+    type.onAdd(ref);
+    // TODO: Select the entry.
   }
 }
 
@@ -192,8 +221,8 @@ class SearchBar extends HookConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  void activateItem(
-      List<Action> actions, int index, BuildContext context, WidgetRef ref) {
+  void _activateItem(
+      List<_Action> actions, int index, BuildContext context, WidgetRef ref) {
     if (index >= actions.length) return;
     if (index < 0) return;
     final action = actions[index];
@@ -263,7 +292,7 @@ class SearchBar extends HookConsumerWidget {
                   ref.read(searchingProvider.notifier).endSearch(),
             ),
             ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (intent) => activateItem(actions,
+              onInvoke: (intent) => _activateItem(actions,
                   focusNodes.indexWhere((n) => n.hasFocus), context, ref),
             ),
           },
@@ -304,10 +333,11 @@ class SearchBar extends HookConsumerWidget {
                             _ResultTile(
                               key: globalKeys[i],
                               onPressed: () =>
-                                  activateItem(actions, i, context, ref),
+                                  _activateItem(actions, i, context, ref),
                               focusNode: focusNodes[i],
                               color: actions[i].color(context),
                               title: actions[i].title(context),
+                              description: actions[i].description(context),
                               icon: actions[i].icon(context),
                               suffixIcon: actions[i].suffixIcon(context),
                             ),
@@ -333,6 +363,7 @@ class _ResultTile extends HookWidget {
   final Widget icon;
   final Widget suffixIcon;
   final String title;
+  final String description;
 
   const _ResultTile({
     Key? key,
@@ -342,6 +373,7 @@ class _ResultTile extends HookWidget {
     this.icon = const Icon(Icons.search),
     this.suffixIcon = const Icon(Icons.arrow_forward_ios),
     this.title = '',
+    this.description = '',
   }) : super(key: key);
 
   @override
@@ -376,13 +408,29 @@ class _ResultTile extends HookWidget {
               ),
               const SizedBox(width: 20),
               Expanded(
-                child: AutoSizeText(
-                  maxLines: 1,
-                  title,
-                  style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                        color: focused.value ? Colors.white : null,
-                        fontWeight: focused.value ? FontWeight.bold : null,
-                      ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AutoSizeText(
+                      maxLines: 1,
+                      title,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                            color: focused.value ? Colors.white : null,
+                            fontWeight: focused.value ? FontWeight.bold : null,
+                          ),
+                    ),
+                    AutoSizeText(
+                      maxLines: 1,
+                      description,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.caption?.copyWith(
+                            color: focused.value ? Colors.white : null,
+                            fontWeight: focused.value ? FontWeight.bold : null,
+                          ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 8),

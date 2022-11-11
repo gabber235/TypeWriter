@@ -7,7 +7,7 @@ import 'package:typewriter/pages/pages_list.dart';
 
 part 'app_router.gr.dart';
 
-@AdaptiveAutoRouter(
+@CustomAutoRouter(
   replaceInRouteName: "Page,Route",
   routes: [
     AutoRoute(page: HomePage, initial: true),
@@ -37,5 +37,17 @@ part 'app_router.gr.dart';
       ],
     ),
   ],
+  transitionsBuilder: slideLeftWithFade,
 )
 class AppRouter extends _$AppRouter {}
+
+Widget slideLeftWithFade(BuildContext context, Animation<double> animation,
+    Animation<double> secondaryAnimation, Widget child) {
+  return SlideTransition(
+    position: Tween<Offset>(
+      begin: const Offset(.5, 0.0),
+      end: Offset.zero,
+    ).animate(animation),
+    child: FadeTransition(opacity: animation, child: child),
+  );
+}
