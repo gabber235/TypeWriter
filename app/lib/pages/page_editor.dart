@@ -10,6 +10,8 @@ import 'package:typewriter/models/page.dart' as model;
 import 'package:typewriter/utils/extensions.dart';
 import 'package:typewriter/widgets/always_focused.dart';
 import 'package:typewriter/widgets/auto_saver.dart';
+import 'package:typewriter/widgets/entries_graph.dart';
+import 'package:typewriter/widgets/inspector.dart';
 import 'package:typewriter/widgets/search_bar.dart';
 import 'package:typewriter/widgets/shortcut_label.dart';
 
@@ -81,9 +83,20 @@ class _Content extends HookConsumerWidget {
     return Stack(
       children: [
         Column(
-          children: const [
-            _AppBar(),
-            Divider(),
+          children: [
+            const _AppBar(),
+            const Divider(),
+            Expanded(
+              child: Row(
+                children: const [
+                  Expanded(
+                    child: _PageContent(),
+                  ),
+                  VerticalDivider(),
+                  Inspector(),
+                ],
+              ),
+            ),
           ],
         ),
         if (searching) const SearchBar(),
@@ -153,5 +166,16 @@ class _SearchBar extends HookConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class _PageContent extends HookConsumerWidget {
+  const _PageContent({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const EntriesGraph();
   }
 }

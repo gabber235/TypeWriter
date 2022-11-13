@@ -7,7 +7,7 @@ import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
-import me.gabber235.typewriter.entry.action.ActionEntry
+import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.interaction.InteractionHandler
 import org.bukkit.entity.Player
 

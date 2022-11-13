@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Messenger
 import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entries.dialogue.SpokenDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.*
+import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.utils.*

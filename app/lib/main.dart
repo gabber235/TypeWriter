@@ -41,6 +41,7 @@ class TypeWriterApp extends HookConsumerWidget {
             ? Colors.black.withOpacity(0.05)
             : Colors.black.withOpacity(0.2),
         filled: true,
+        hoverColor: Colors.black.withOpacity(0.1),
         errorStyle: const TextStyle(
           color: Colors.redAccent,
           fontSize: 12,

@@ -8,12 +8,15 @@ class FilledButton extends HookConsumerWidget {
   final Widget child;
   final VoidCallback? onPressed;
 
+  final Color? color;
+
   final MaterialStatesController? controller;
 
   const FilledButton({
     Key? key,
     required this.child,
     required this.onPressed,
+    this.color,
     this.controller,
   }) : super(key: key);
 
@@ -22,6 +25,7 @@ class FilledButton extends HookConsumerWidget {
     required Widget icon,
     required Widget label,
     required VoidCallback? onPressed,
+    Color? color,
     MaterialStatesController? controller,
   }) = _FilledButtonIcon;
 
@@ -30,7 +34,7 @@ class FilledButton extends HookConsumerWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: color ?? Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         disabledBackgroundColor:
             Theme.of(context).colorScheme.primary.withOpacity(0.3),
@@ -52,6 +56,7 @@ class _FilledButtonIcon extends FilledButton {
     required Widget label,
     required super.onPressed,
     super.controller,
+    super.color,
   }) : super(
           child: _FilledButtonWithIconChild(label: label, icon: icon),
         );

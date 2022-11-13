@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.entry.event
+package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.entry.TriggerEntry
 import org.bukkit.entity.Player

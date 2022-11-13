@@ -1,6 +1,6 @@
 package me.gabber235.typewriter.entry.event.entries
 
-import me.gabber235.typewriter.entry.event.EventEntry
+import me.gabber235.typewriter.entry.entries.EventEntry
 
 class NpcEventEntry(
 	override val id: String = "",

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
-import me.gabber235.typewriter.entry.dialogue.DialogueEntry
+import me.gabber235.typewriter.entry.entries.DialogueEntry
 
 @Entry("option", "Display a list of options to the player")
 data class OptionDialogueEntry(

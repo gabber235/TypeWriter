@@ -76,8 +76,9 @@ object FactDatabase {
 	}
 
 	private fun Set<Fact>.filterSavableFacts(): Set<Fact> {
-		val ignore = EntryDatabase.facts.filter { it.lifetime == FactLifetime.SESSION }.map { it.id }
-		return filter { !ignore.contains(it.id) }.filter { it.value != 0 }.toSet()
+		return filter { it.value != 0 }
+			.filter { EntryDatabase.getFact(it.id)?.canSave(it) == true }
+			.toSet()
 	}
 
 	private suspend fun loadFacts(uuid: UUID): Set<Fact> {

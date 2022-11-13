@@ -18,7 +18,8 @@ class TypeWriterTrait : Trait("typewriter") {
 	var identifier: String = ""
 
 	private fun triggerEvent(player: Player) {
-		val speaker = EntryDatabase.findSpeakerByName(identifier)
+		// TODO: Remap the find entity by name to a find entity by identifier (with a corresponding entry)
+		val speaker = EntryDatabase.findEntityByName(identifier)
 		if (speaker == null) {
 			println("Could not find a speaker with name $identifier.")
 			return

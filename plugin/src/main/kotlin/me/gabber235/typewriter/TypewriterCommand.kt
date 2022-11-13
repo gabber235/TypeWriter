@@ -12,6 +12,7 @@ import lirand.api.dsl.command.types.WordType
 import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.extensions.npc.TypeWriterTrait
 import me.gabber235.typewriter.facts.*
 import me.gabber235.typewriter.interaction.InteractionHandler

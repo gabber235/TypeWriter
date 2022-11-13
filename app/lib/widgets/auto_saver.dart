@@ -13,26 +13,30 @@ class AutoSaver extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final saver = ref.watch(autoSaverProvider);
 
-    return saver.when(
-      loading: () {
-        return Row(
-          children: const [
-            SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-            SizedBox(width: 8),
-            Text('Saving...'),
-          ],
-        );
-      },
-      error: (error, st) {
-        return Text("Unable to save: $error",
-            style: const TextStyle(color: Colors.red));
-      },
-      data: (info) => _Success(info: info),
-    );
+    if (saver is SavingState) {
+      return Row(
+        children: const [
+          SizedBox(
+            width: 12,
+            height: 12,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          SizedBox(width: 8),
+          Text('Saving...'),
+        ],
+      );
+    }
+
+    if (saver is ErrorState) {
+      return Text("Unable to save: ${saver.error}",
+          style: const TextStyle(color: Colors.red));
+    }
+
+    if (saver is SavedInfo) {
+      return _Success(info: saver);
+    }
+
+    return const SizedBox.shrink();
   }
 }
 

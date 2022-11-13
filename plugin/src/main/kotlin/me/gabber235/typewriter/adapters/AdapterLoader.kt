@@ -4,8 +4,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.entry.dialogue.DialogueEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
+import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
 import me.gabber235.typewriter.utils.get
 import java.io.File
@@ -22,7 +22,8 @@ private val gson =
 			.registerSubtype(ListField::class.java, "list")
 			.registerSubtype(ObjectField::class.java, "object")
 			.registerSubtype(EnumField::class.java, "enum")
-	).create()
+	).enableComplexMapKeySerialization()
+		.create()
 
 object AdapterLoader {
 	private var adapters = listOf<AdapterData>()
@@ -86,17 +87,18 @@ object AdapterLoader {
 			val adapterAnnotation = adapterClass.getAnnotation(Adapter::class.java)
 
 			// Entries info
-			val entries = entryClasses.map { entryClass ->
-				val entryAnnotation = entryClass.getAnnotation(Entry::class.java)
+			val entries = entryClasses.filter { me.gabber235.typewriter.entry.Entry::class.java.isAssignableFrom(it) }
+				.map { it as Class<out me.gabber235.typewriter.entry.Entry> }
+				.map { entryClass ->
+					val entryAnnotation = entryClass.getAnnotation(Entry::class.java)
 
-				AdapterEntry(
-					entryAnnotation.name,
-					entryAnnotation.description,
-					AdapterEntryType.fromClass(entryClass),
-					ObjectField.fromTypeToken(TypeToken.get(entryClass)),
-					entryClass,
-				)
-			}
+					EntryBlueprint(
+						entryAnnotation.name,
+						entryAnnotation.description,
+						ObjectField.fromTypeToken(TypeToken.get(entryClass)),
+						entryClass,
+					)
+				}
 
 			// Messengers info
 			val messengers = messengerClasses.map { messengerClass ->
@@ -142,7 +144,7 @@ data class AdapterData(
 	val name: String,
 	val description: String,
 	val version: String,
-	val entries: List<AdapterEntry>,
+	val entries: List<EntryBlueprint>,
 	@Transient
 	val messengers: List<MessengerData>,
 	@Transient

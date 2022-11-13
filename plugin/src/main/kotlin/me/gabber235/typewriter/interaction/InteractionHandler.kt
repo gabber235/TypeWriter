@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.EntryDatabase
-import me.gabber235.typewriter.entry.event.Event
+import me.gabber235.typewriter.entry.entries.Event
 import me.gabber235.typewriter.facts.facts
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority

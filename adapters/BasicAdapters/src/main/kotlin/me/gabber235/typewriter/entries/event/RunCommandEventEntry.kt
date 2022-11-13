@@ -1,7 +1,7 @@
 package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.entry.event.EventEntry
+import me.gabber235.typewriter.entry.entries.EventEntry
 
 @Entry("run_command", "When a player runs a command")
 class RunCommandEventEntry(

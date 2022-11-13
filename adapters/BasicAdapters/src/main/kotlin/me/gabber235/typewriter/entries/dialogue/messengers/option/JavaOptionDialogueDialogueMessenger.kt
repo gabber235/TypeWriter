@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entries.dialogue.Option
 import me.gabber235.typewriter.entries.dialogue.OptionDialogueEntry
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.dialogue.*
+import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.facts.facts

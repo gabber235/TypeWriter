@@ -24,29 +24,6 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
 List<AddEntry> addEntries(AddEntriesRef ref) {
   final adapterEntries = ref.watch(adapterEntriesProvider);
   return [
-    AddEntry(
-        title: "Fact",
-        description: "Identifier for simple data",
-        color: Colors.purple,
-        icon: FontAwesomeIcons.fileSignature,
-        onAdd: (ref) {
-          final id = getRandomString(10);
-          ref
-              .read(pageProvider)
-              .insertFact(ref, FactEntry(id: id, name: "New Fact"));
-        }),
-    AddEntry(
-      title: "Speaker",
-      description: "A npc that can speak",
-      color: Colors.orange,
-      icon: FontAwesomeIcons.userTag,
-      onAdd: (ref) {
-        final id = getRandomString(10);
-        ref
-            .read(pageProvider)
-            .insertSpeaker(ref, SpeakerEntry(id: id, name: "New Speaker"));
-      },
-    ),
     for (var e in adapterEntries)
       AddEntry(
         title: e.name.formatted,
@@ -54,21 +31,9 @@ List<AddEntry> addEntries(AddEntriesRef ref) {
         color: Colors.grey,
         icon: FontAwesomeIcons.fileImport,
         onAdd: (ref) {
-          final entry = DynamicEntry.newEntry(
-              id: getRandomString(15),
-              name: "New ${e.name.formatted}",
-              type: e.name);
-          switch (e.type) {
-            case EntryType.action:
-              ref.read(pageProvider).insertAction(ref, entry);
-              break;
-            case EntryType.dialogue:
-              ref.read(pageProvider).insertDialogue(ref, entry);
-              break;
-            case EntryType.event:
-              ref.read(pageProvider).insertEvent(ref, entry);
-              break;
-          }
+          final entry = Entry.newEntry(
+              id: getRandomString(15), name: "new_${e.name}", type: e.name);
+          ref.read(pageProvider).insertEntry(ref, entry);
         },
       ),
   ];

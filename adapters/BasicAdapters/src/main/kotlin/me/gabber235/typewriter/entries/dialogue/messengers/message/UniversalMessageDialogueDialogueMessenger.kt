@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Messenger
 import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entries.dialogue.MessageDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.*
+import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.sendMini
 import org.bukkit.entity.Player

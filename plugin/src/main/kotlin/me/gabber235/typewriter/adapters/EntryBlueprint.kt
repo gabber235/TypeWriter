@@ -3,37 +3,17 @@ package me.gabber235.typewriter.adapters
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import lirand.api.utilities.allFields
-import me.gabber235.typewriter.entry.action.ActionEntry
-import me.gabber235.typewriter.entry.dialogue.DialogueEntry
-import me.gabber235.typewriter.entry.event.EventEntry
+import me.gabber235.typewriter.entry.Entry
+import me.gabber235.typewriter.entry.entries.*
 import java.lang.reflect.ParameterizedType
 
-data class AdapterEntry(
+data class EntryBlueprint(
 	val name: String,
 	val description: String,
-	val type: AdapterEntryType,
 	val fields: FieldType,
 	@Transient
-	val clazz: Class<*>,
+	val clazz: Class<out Entry>,
 )
-
-enum class AdapterEntryType {
-	ACTION,
-	DIALOGUE,
-	EVENT,
-	;
-
-	companion object {
-		fun fromClass(clazz: Class<*>): AdapterEntryType {
-			return when {
-				DialogueEntry::class.java.isAssignableFrom(clazz) -> DIALOGUE
-				ActionEntry::class.java.isAssignableFrom(clazz)   -> ACTION
-				EventEntry::class.java.isAssignableFrom(clazz)    -> EVENT
-				else                                              -> throw IllegalArgumentException("Unknown adapter entry type for class $clazz")
-			}
-		}
-	}
-}
 
 sealed class FieldType {
 	companion object {
@@ -54,7 +34,7 @@ sealed class FieldType {
 					}
 				}
 
-				token.rawType.isEnum                             -> EnumField(token.rawType.enumConstants.map { it.toString() })
+				token.rawType.isEnum                             -> EnumField.fromTypeToken(token)
 				else                                             -> ObjectField.fromTypeToken(token)
 			}
 		}
@@ -65,9 +45,16 @@ class PrimitiveField(val type: PrimitiveFieldType) : FieldType()
 
 
 enum class PrimitiveFieldType {
+	@SerializedName("boolean")
 	BOOLEAN,
+
+	@SerializedName("double")
 	DOUBLE,
+
+	@SerializedName("integer")
 	INTEGER,
+
+	@SerializedName("string")
 	STRING,
 	;
 
@@ -87,7 +74,22 @@ enum class PrimitiveFieldType {
 }
 
 // If the field is an enum, the values will be the enum constants
-class EnumField(val values: List<String>) : FieldType()
+class EnumField(val values: List<String>) : FieldType() {
+	companion object {
+		fun fromTypeToken(token: TypeToken<*>): EnumField {
+			/// If the enum fields have an @SerializedName annotation, use that as the value
+			/// Otherwise, use the enum constant name
+
+			val values = token.rawType.enumConstants.filterIsInstance<Enum<*>>().map { enumConstant ->
+				val field = enumConstant.javaClass.getField(enumConstant.name)
+				val annotation = field.getAnnotation(SerializedName::class.java)
+				annotation?.value ?: enumConstant.name
+			}
+
+			return EnumField(values)
+		}
+	}
+}
 
 // If the field is a list, this is the type of the list
 class ListField(val type: FieldType) : FieldType()

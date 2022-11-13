@@ -2,7 +2,7 @@ package me.gabber235.typewriter.interaction
 
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.dialogue.DialogueSequence
-import me.gabber235.typewriter.entry.event.Event
+import me.gabber235.typewriter.entry.entries.Event
 import me.gabber235.typewriter.facts.facts
 import org.bukkit.entity.Player
 

@@ -122,21 +122,34 @@ class EmptyPageEditor extends HookConsumerWidget {
     Key? key,
   }) : super(key: key);
 
+  Future<String?> _showAddPageDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) => const _AddPageDialogue(),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
-      children: const [
-        Spacer(),
-        Expanded(
+      children: [
+        const Spacer(),
+        const Expanded(
           flex: 2,
           child: RiveAnimation.asset(
             "assets/cute_robot.riv",
             stateMachines: ["Motion"],
           ),
         ),
-        Text("Select a page to edit",
+        const Text("Select a page to edit or",
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-        Spacer(),
+        const SizedBox(height: 24),
+        FilledButton.icon(
+          label: const Text("Add Page"),
+          onPressed: () => _showAddPageDialog(context),
+          icon: const Icon(FontAwesomeIcons.plus),
+        ),
+        const Spacer(),
       ],
     );
   }
@@ -149,28 +162,11 @@ class _AddPageButton extends HookConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  // Show a dialog where a name can be entered.
   Future<String?> _showAddPageDialog(BuildContext context) async {
-    return showDialog<String>(
+    return showDialog(
       context: context,
-      builder: (context) {
-        return const _AddPageDialogue();
-      },
+      builder: (context) => const _AddPageDialogue(),
     );
-  }
-
-  // Add a new page with the given name.
-  void _addPage(WidgetRef ref, String name) {
-    ref.read(bookProvider.notifier).insertPage(model.Page(name: name));
-  }
-
-  // Show a dialog for adding a new page. If a name is entered, add a new page.
-  Future<void> _addPageDialog(BuildContext context, WidgetRef ref) async {
-    final name = await _showAddPageDialog(context);
-    if (name != null && name.isNotEmpty) {
-      _addPage(ref, name);
-      ref.read(appRouter).push(PageEditorRoute(pageId: name));
-    }
   }
 
   @override
@@ -182,7 +178,7 @@ class _AddPageButton extends HookConsumerWidget {
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       child: InkWell(
-        onTap: () => _addPageDialog(context, ref),
+        onTap: () => _showAddPageDialog(context),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -211,6 +207,11 @@ class _AddPageDialogue extends HookConsumerWidget {
   const _AddPageDialogue({
     Key? key,
   }) : super(key: key);
+
+  _addPage(WidgetRef ref, String name) {
+    ref.read(bookProvider.notifier).insertPage(model.Page(name: name));
+    ref.read(appRouter).push(PageEditorRoute(pageId: name));
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -256,15 +257,14 @@ class _AddPageDialogue extends HookConsumerWidget {
         ),
         onSubmitted: (value) {
           if (!disabled) {
+            _addPage(ref, value);
             Navigator.of(context).pop(controller.text);
           }
         },
       ),
       actions: [
         TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.of(context).pop(),
           child: const Text("Cancel"),
         ),
         FilledButton.icon(

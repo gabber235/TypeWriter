@@ -1,30 +1,53 @@
 /// Auto saves when the book provider changes.
 /// It has a 1 second debounce to avoid saving too often.
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:typewriter/models/book.dart';
 import 'package:typewriter/utils/debouncer.dart';
 
 part 'auto_saver.freezed.dart';
 
-part 'auto_saver.g.dart';
+final autoSaverProvider =
+    StateNotifierProvider.autoDispose<_AutoSaverNotifier, AutoSaverState>(
+        (ref) {
+  final autoSaver = _AutoSaverNotifier(ref);
+  ref.listen(bookProvider, (previous, next) => autoSaver.onBookChanged());
+  return autoSaver;
+});
 
-final _debouncerProvider =
-    Provider<Debouncer>((ref) => Debouncer(milliseconds: 1000));
+class _AutoSaverNotifier extends StateNotifier<AutoSaverState> {
+  final Ref _ref;
+  final Debouncer _debouncer = Debouncer(milliseconds: 5000);
 
-@riverpod
-Future<SavedInfo> autoSaver(AutoSaverRef ref) async {
-  final debouncer = ref.watch(_debouncerProvider);
-  ref.watch(bookProvider);
-  await debouncer.run(() async {
-    await ref.read(bookProvider.notifier).save();
-  });
-  return SavedInfo(time: DateTime.now());
+  _AutoSaverNotifier(this._ref)
+      : super(AutoSaverState.saved(time: DateTime.utc(0)));
+
+  void onBookChanged() {
+    state = const AutoSaverState.saving();
+    _debouncer.run(() async {
+      try {
+        await _ref.read(bookProvider.notifier).save();
+        state = AutoSaverState.saved(time: DateTime.now());
+      } catch (e) {
+        state = AutoSaverState.error(e.toString());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _ref.read(bookProvider.notifier).save();
+    super.dispose();
+  }
 }
 
 @freezed
-class SavedInfo with _$SavedInfo {
-  const factory SavedInfo({
+class AutoSaverState with _$AutoSaverState {
+  const factory AutoSaverState.saving() = SavingState;
+
+  const factory AutoSaverState.saved({
     required DateTime time,
-  }) = _SavedInfo;
+  }) = SavedInfo;
+
+  const factory AutoSaverState.error(String error) = ErrorState;
 }

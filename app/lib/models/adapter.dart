@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:theme_json_converter/theme_json_converter.dart';
 import 'package:typewriter/models/book.dart';
 
 part 'adapter.freezed.dart';
@@ -42,20 +44,12 @@ class AdapterEntry with _$AdapterEntry {
   const factory AdapterEntry({
     required String name,
     required String description,
-    required EntryType type,
+    required ObjectField fields,
+    @ColorConverter() @Default(Colors.grey) Color color,
   }) = _AdapterEntry;
 
   factory AdapterEntry.fromJson(Map<String, dynamic> json) =>
       _$AdapterEntryFromJson(json);
-}
-
-enum EntryType {
-  @JsonValue("DIALOGUE")
-  dialogue,
-  @JsonValue("ACTION")
-  action,
-  @JsonValue("EVENT")
-  event,
 }
 
 @Freezed(unionKey: 'kind')
@@ -84,12 +78,8 @@ class FieldType with _$FieldType {
 }
 
 enum PrimitiveFieldType {
-  @JsonValue("BOOLEAN")
   boolean,
-  @JsonValue("DOUBLE")
   double,
-  @JsonValue("INTEGER")
   integer,
-  @JsonValue("STRING")
   string,
 }

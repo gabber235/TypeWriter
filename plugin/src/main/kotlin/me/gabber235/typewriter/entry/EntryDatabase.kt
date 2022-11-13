@@ -4,16 +4,11 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
 import me.gabber235.typewriter.Typewriter
-import me.gabber235.typewriter.adapters.AdapterEntryType
 import me.gabber235.typewriter.adapters.AdapterLoader
-import me.gabber235.typewriter.entry.action.ActionEntry
-import me.gabber235.typewriter.entry.action.SimpleActionEntry
-import me.gabber235.typewriter.entry.dialogue.DialogueEntry
-import me.gabber235.typewriter.entry.event.EventEntry
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.event.entries.IslandCreateEventEntry
 import me.gabber235.typewriter.entry.event.entries.NpcEventEntry
 import me.gabber235.typewriter.facts.Fact
-import me.gabber235.typewriter.facts.FactEntry
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
 import me.gabber235.typewriter.utils.get
 import kotlin.reflect.KClass
@@ -21,7 +16,7 @@ import kotlin.reflect.KClass
 object EntryDatabase {
 	var facts = listOf<FactEntry>()
 		private set
-	private var speakers = listOf<SpeakerEntry>()
+	private var entities = listOf<EntityEntry>()
 	private var events = listOf<EventEntry>()
 	private var dialogue = listOf<DialogueEntry>()
 	private var actions = listOf<ActionEntry>()
@@ -39,42 +34,28 @@ object EntryDatabase {
 			dialogueReader.parsePage(gson)
 		}
 
-		this.facts = pages?.flatMap { it.facts } ?: listOf()
-		this.speakers = pages?.flatMap { it.speakers } ?: listOf()
-		this.events = pages?.flatMap { it.events } ?: listOf()
-		this.dialogue = pages?.flatMap { it.dialogue } ?: listOf()
-		this.actions = pages?.flatMap { it.actions } ?: listOf()
+		this.facts = pages?.flatMap { it.entries.filterIsInstance<FactEntry>() } ?: listOf()
+		this.entities = pages?.flatMap { it.entries.filterIsInstance<EntityEntry>() } ?: listOf()
+		this.events = pages?.flatMap { it.entries.filterIsInstance<EventEntry>() } ?: listOf()
+		this.dialogue = pages?.flatMap { it.entries.filterIsInstance<DialogueEntry>() } ?: listOf()
+		this.actions = pages?.flatMap { it.entries.filterIsInstance<ActionEntry>() } ?: listOf()
 
-		println("Loaded ${facts.size} fact, ${speakers.size} speaker, ${events.size} event, ${dialogue.size} dialogue and ${actions.size} action entries")
+		println("Loaded ${facts.size} fact, ${entities.size} entities, ${events.size} event, ${dialogue.size} dialogue and ${actions.size} action entries")
 	}
 
 	fun gson(): Gson {
-		val actionFactory = RuntimeTypeAdapterFactory.of(ActionEntry::class.java)
-			.registerSubtype(SimpleActionEntry::class.java, "simple")
-
-		val dialogueFactory = RuntimeTypeAdapterFactory.of(DialogueEntry::class.java)
-
-		val eventFactory = RuntimeTypeAdapterFactory.of(EventEntry::class.java)
+		val entryFactory = RuntimeTypeAdapterFactory.of(Entry::class.java)
 			.registerSubtype(NpcEventEntry::class.java, "npc_interact")
 			.registerSubtype(IslandCreateEventEntry::class.java, "island_create")
 
 		AdapterLoader.getAdapterData().flatMap { it.entries }.forEach {
-			println("Registering ${it.type} entry ${it.name}")
-			when (it.type) {
-				AdapterEntryType.ACTION   -> actionFactory.registerSubtype(it.clazz as Class<out ActionEntry>, it.name)
-				AdapterEntryType.DIALOGUE -> dialogueFactory.registerSubtype(
-					it.clazz as Class<out DialogueEntry>,
-					it.name
-				)
-
-				AdapterEntryType.EVENT    -> eventFactory.registerSubtype(it.clazz as Class<out EventEntry>, it.name)
-			}
+			// TODO: Remove debug println
+			println("Registering entry ${it.name}")
+			entryFactory.registerSubtype(it.clazz, it.name)
 		}
 
 		return GsonBuilder()
-			.registerTypeAdapterFactory(eventFactory)
-			.registerTypeAdapterFactory(dialogueFactory)
-			.registerTypeAdapterFactory(actionFactory)
+			.registerTypeAdapterFactory(entryFactory)
 			.create()
 	}
 
@@ -91,8 +72,14 @@ object EntryDatabase {
 		return actions.filter { trigger in it.triggerdBy }.filter { rule -> rule.criteria.matches(facts) }
 	}
 
-	fun getSpeaker(id: String) = speakers.firstOrNull { it.id == id }
-	fun findSpeakerByName(name: String) = speakers.firstOrNull { it.name == name }
+	fun getEntity(id: String) = entities.firstOrNull { it.id == id }
+
+	@JvmName("getEntityWithType")
+	inline fun <reified E : EntityEntry> getEntity(id: String) = getEntity(id) as? E
+	fun findEntityByName(name: String) = entities.firstOrNull { it.name == name }
+
+	@JvmName("findEntityByNameWithType")
+	inline fun <reified E : EntityEntry> findEntityByName(name: String) = findEntityByName(name) as? E
 
 	fun getFact(id: String) = facts.firstOrNull { it.id == id }
 	fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
@@ -119,11 +106,7 @@ private fun JsonReader.parsePage(gson: Gson): Page =
 	gson.fromJson(this, Page::class.java)
 
 private class Page(
-	val facts: List<FactEntry> = listOf(),
-	val speakers: List<SpeakerEntry> = listOf(),
-	val events: List<EventEntry> = listOf(),
-	val dialogue: List<DialogueEntry> = listOf(),
-	val actions: List<ActionEntry> = listOf(),
+	val entries: List<Entry>,
 )
 
 fun Iterable<Criteria>.matches(facts: Set<Fact>): Boolean = all { it.isValid(facts) }

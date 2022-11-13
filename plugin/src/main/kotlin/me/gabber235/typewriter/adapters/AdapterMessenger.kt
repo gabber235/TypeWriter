@@ -1,7 +1,7 @@
 package me.gabber235.typewriter.adapters
 
-import me.gabber235.typewriter.entry.dialogue.DialogueEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
+import me.gabber235.typewriter.entry.entries.DialogueEntry
 import org.bukkit.entity.Player
 
 class MessengerData(
