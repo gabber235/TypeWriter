@@ -24,16 +24,15 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
 List<AddEntry> addEntries(AddEntriesRef ref) {
   final adapterEntries = ref.watch(adapterEntriesProvider);
   return [
-    for (var e in adapterEntries)
+    for (var entry in adapterEntries)
       AddEntry(
-        title: e.name.formatted,
-        description: e.description,
+        title: entry.name.formatted,
+        description: entry.description,
         color: Colors.grey,
         icon: FontAwesomeIcons.fileImport,
         onAdd: (ref) {
-          final entry = Entry.newEntry(
-              id: getRandomString(15), name: "new_${e.name}", type: e.name);
-          ref.read(pageProvider).insertEntry(ref, entry);
+          final e = Entry.fromAdapter(id: getRandomString(15), entry: entry);
+          ref.read(pageProvider).insertEntry(ref, e);
         },
       ),
   ];

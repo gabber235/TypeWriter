@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:typewriter/models/adapter.dart';
 import 'package:typewriter/models/book.dart';
 import 'package:typewriter/utils/extensions.dart';
 
@@ -53,12 +54,12 @@ class Entry {
 
   Entry(this.data);
 
-  Entry.newEntry(
-      {required String id, required String name, required String type})
+  Entry.fromAdapter({required String id, required AdapterEntry entry})
       : data = {
+          ...entry.fields.defaultValue,
           "id": id,
-          "name": name,
-          "type": type,
+          "name": "new_${entry.name}",
+          "type": entry.name,
         };
 
   factory Entry.fromJson(Map<String, dynamic> json) {

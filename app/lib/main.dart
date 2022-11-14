@@ -55,6 +55,7 @@ class TypeWriterApp extends HookConsumerWidget {
           borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
       ),
+      errorColor: Colors.red,
     );
   }
 }

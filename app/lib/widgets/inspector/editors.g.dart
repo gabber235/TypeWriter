@@ -108,7 +108,7 @@ class FieldValueFamily extends Family<dynamic> {
   String? get name => r'fieldValueProvider';
 }
 
-String $editorFiltersHash() => r'37d70e63141dfeee6d1c67f3ccbc267ec6a1eb72';
+String $editorFiltersHash() => r'ab54e4daa4690707469c7b867f8974a4623e06a7';
 
 /// See also [editorFilters].
 final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>(
@@ -118,3 +118,81 @@ final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>(
       const bool.fromEnvironment('dart.vm.product') ? null : $editorFiltersHash,
 );
 typedef EditorFiltersRef = AutoDisposeProviderRef<List<EditorFilter>>;
+String $pathDisplayNameHash() => r'a9ff4fd1947cdf5b357898abaa11e36ce6fd2114';
+
+/// See also [pathDisplayName].
+class PathDisplayNameProvider extends AutoDisposeProvider<String> {
+  PathDisplayNameProvider(
+    this.path, [
+    this.defaultValue = "",
+  ]) : super(
+          (ref) => pathDisplayName(
+            ref,
+            path,
+            defaultValue,
+          ),
+          from: pathDisplayNameProvider,
+          name: r'pathDisplayNameProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : $pathDisplayNameHash,
+        );
+
+  final String path;
+  final String defaultValue;
+
+  @override
+  bool operator ==(Object other) {
+    return other is PathDisplayNameProvider &&
+        other.path == path &&
+        other.defaultValue == defaultValue;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, path.hashCode);
+    hash = _SystemHash.combine(hash, defaultValue.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef PathDisplayNameRef = AutoDisposeProviderRef<String>;
+
+/// See also [pathDisplayName].
+final pathDisplayNameProvider = PathDisplayNameFamily();
+
+class PathDisplayNameFamily extends Family<String> {
+  PathDisplayNameFamily();
+
+  PathDisplayNameProvider call(
+    String path, [
+    String defaultValue = "",
+  ]) {
+    return PathDisplayNameProvider(
+      path,
+      defaultValue,
+    );
+  }
+
+  @override
+  AutoDisposeProvider<String> getProviderOverride(
+    covariant PathDisplayNameProvider provider,
+  ) {
+    return call(
+      provider.path,
+      provider.defaultValue,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'pathDisplayNameProvider';
+}

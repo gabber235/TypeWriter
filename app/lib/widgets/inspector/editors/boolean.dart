@@ -30,6 +30,7 @@ class BooleanEditor extends HookConsumerWidget {
     final value = ref.watch(fieldValueProvider(path, false));
     return Row(
       children: [
+        SelectableText(ref.watch(pathDisplayNameProvider(path))),
         Checkbox(
             value: value,
             onChanged: (value) {

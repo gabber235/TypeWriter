@@ -69,6 +69,11 @@ class FieldType with _$FieldType {
     required FieldType type,
   }) = ListField;
 
+  const factory FieldType.map({
+    required FieldType key,
+    required FieldType value,
+  }) = MapField;
+
   const factory FieldType.object({
     required Map<String, FieldType> fields,
   }) = ObjectField;
@@ -77,9 +82,45 @@ class FieldType with _$FieldType {
       _$FieldTypeFromJson(json);
 }
 
+extension FieldTypeExtension on FieldType {
+  dynamic get defaultValue {
+    return when(
+      () => null,
+      primitive: (type) => type.defaultValue,
+      enumField: (values) => values.first,
+      list: (type) => [],
+      map: (key, value) => {},
+      object: (fields) =>
+          fields.map((key, value) => MapEntry(key, value.defaultValue)),
+    );
+  }
+
+  bool get hasCustomLayout {
+    if (this is ObjectField) {
+      return true;
+    }
+    if (this is ListField) {
+      return true;
+    }
+    if (this is MapField) {
+      return true;
+    }
+    if (this is PrimitiveField &&
+        (this as PrimitiveField).type == PrimitiveFieldType.boolean) {
+      return true;
+    }
+    return false;
+  }
+}
+
 enum PrimitiveFieldType {
-  boolean,
-  double,
-  integer,
-  string,
+  boolean(false),
+  double(0.0),
+  integer(0),
+  string(""),
+  ;
+
+  final dynamic defaultValue;
+
+  const PrimitiveFieldType(this.defaultValue);
 }

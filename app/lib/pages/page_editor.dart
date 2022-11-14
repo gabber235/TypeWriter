@@ -88,6 +88,7 @@ class _Content extends HookConsumerWidget {
             const Divider(),
             Expanded(
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Expanded(
                     child: _PageContent(),

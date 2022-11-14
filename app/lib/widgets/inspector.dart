@@ -38,7 +38,7 @@ class Inspector extends HookConsumerWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
         child: selectedEntry != null
-            ? const _EntryInspector()
+            ? _EntryInspector(key: ValueKey(selectedEntry.id))
             : const _EmptyInspector(),
       ),
     );
@@ -112,15 +112,18 @@ class _EntryInspector extends HookConsumerWidget {
 
     return SingleChildScrollView(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Heading(),
           const Divider(),
           const NameField(),
+          const Divider(),
           ObjectEditor(
             path: "",
             object: object,
             ignoreFields: const ["id", "name"],
+            defaultExpanded: true,
           ),
           const Divider(),
           const Operations(),

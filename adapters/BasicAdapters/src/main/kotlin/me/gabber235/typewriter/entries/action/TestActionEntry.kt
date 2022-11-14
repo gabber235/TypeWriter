@@ -18,6 +18,20 @@ data class TestActionEntry(
 	val bool: Boolean = false,
 	val enum: TestEnum = TestEnum.A,
 	val list: List<String> = emptyList(),
-
-	) :
+	val map: Map<String, String> = emptyMap(),
+	val complexMap: Map<TestEnum, List<Int>> = emptyMap(),
+	val nested: NestedEntry = NestedEntry()
+) :
 	me.gabber235.typewriter.entry.Entry
+
+
+class NestedEntry(
+	val text: String = "",
+	val number: Int = 0,
+	val decimal: Double = 0.0,
+	val bool: Boolean = false,
+	val enum: TestEnum = TestEnum.A,
+	val list: List<String> = emptyList(),
+	val map: Map<String, String> = emptyMap(),
+	val complexMap: Map<TestEnum, List<Int>> = emptyMap()
+)

@@ -19,9 +19,10 @@ private val gson =
 	GsonBuilder().registerTypeAdapterFactory(
 		RuntimeTypeAdapterFactory.of(FieldType::class.java, "kind")
 			.registerSubtype(PrimitiveField::class.java, "primitive")
-			.registerSubtype(ListField::class.java, "list")
-			.registerSubtype(ObjectField::class.java, "object")
 			.registerSubtype(EnumField::class.java, "enum")
+			.registerSubtype(ListField::class.java, "list")
+			.registerSubtype(MapField::class.java, "map")
+			.registerSubtype(ObjectField::class.java, "object")
 	).enableComplexMapKeySerialization()
 		.create()
 

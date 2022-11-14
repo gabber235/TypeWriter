@@ -432,6 +432,8 @@ FieldType _$FieldTypeFromJson(Map<String, dynamic> json) {
       return EnumField.fromJson(json);
     case 'list':
       return ListField.fromJson(json);
+    case 'map':
+      return MapField.fromJson(json);
     case 'object':
       return ObjectField.fromJson(json);
 
@@ -449,6 +451,7 @@ mixin _$FieldType {
     required TResult Function(PrimitiveFieldType type) primitive,
     required TResult Function(List<String> values) enumField,
     required TResult Function(FieldType type) list,
+    required TResult Function(FieldType key, FieldType value) map,
     required TResult Function(Map<String, FieldType> fields) object,
   }) =>
       throw _privateConstructorUsedError;
@@ -458,6 +461,7 @@ mixin _$FieldType {
     TResult? Function(PrimitiveFieldType type)? primitive,
     TResult? Function(List<String> values)? enumField,
     TResult? Function(FieldType type)? list,
+    TResult? Function(FieldType key, FieldType value)? map,
     TResult? Function(Map<String, FieldType> fields)? object,
   }) =>
       throw _privateConstructorUsedError;
@@ -467,6 +471,7 @@ mixin _$FieldType {
     TResult Function(PrimitiveFieldType type)? primitive,
     TResult Function(List<String> values)? enumField,
     TResult Function(FieldType type)? list,
+    TResult Function(FieldType key, FieldType value)? map,
     TResult Function(Map<String, FieldType> fields)? object,
     required TResult orElse(),
   }) =>
@@ -477,6 +482,7 @@ mixin _$FieldType {
     required TResult Function(PrimitiveField value) primitive,
     required TResult Function(EnumField value) enumField,
     required TResult Function(ListField value) list,
+    required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
   }) =>
       throw _privateConstructorUsedError;
@@ -486,6 +492,7 @@ mixin _$FieldType {
     TResult? Function(PrimitiveField value)? primitive,
     TResult? Function(EnumField value)? enumField,
     TResult? Function(ListField value)? list,
+    TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
   }) =>
       throw _privateConstructorUsedError;
@@ -495,6 +502,7 @@ mixin _$FieldType {
     TResult Function(PrimitiveField value)? primitive,
     TResult Function(EnumField value)? enumField,
     TResult Function(ListField value)? list,
+    TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
     required TResult orElse(),
   }) =>
@@ -568,6 +576,7 @@ class _$_FieldType implements _FieldType {
     required TResult Function(PrimitiveFieldType type) primitive,
     required TResult Function(List<String> values) enumField,
     required TResult Function(FieldType type) list,
+    required TResult Function(FieldType key, FieldType value) map,
     required TResult Function(Map<String, FieldType> fields) object,
   }) {
     return $default();
@@ -580,6 +589,7 @@ class _$_FieldType implements _FieldType {
     TResult? Function(PrimitiveFieldType type)? primitive,
     TResult? Function(List<String> values)? enumField,
     TResult? Function(FieldType type)? list,
+    TResult? Function(FieldType key, FieldType value)? map,
     TResult? Function(Map<String, FieldType> fields)? object,
   }) {
     return $default?.call();
@@ -592,6 +602,7 @@ class _$_FieldType implements _FieldType {
     TResult Function(PrimitiveFieldType type)? primitive,
     TResult Function(List<String> values)? enumField,
     TResult Function(FieldType type)? list,
+    TResult Function(FieldType key, FieldType value)? map,
     TResult Function(Map<String, FieldType> fields)? object,
     required TResult orElse(),
   }) {
@@ -608,6 +619,7 @@ class _$_FieldType implements _FieldType {
     required TResult Function(PrimitiveField value) primitive,
     required TResult Function(EnumField value) enumField,
     required TResult Function(ListField value) list,
+    required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
   }) {
     return $default(this);
@@ -620,6 +632,7 @@ class _$_FieldType implements _FieldType {
     TResult? Function(PrimitiveField value)? primitive,
     TResult? Function(EnumField value)? enumField,
     TResult? Function(ListField value)? list,
+    TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
   }) {
     return $default?.call(this);
@@ -632,6 +645,7 @@ class _$_FieldType implements _FieldType {
     TResult Function(PrimitiveField value)? primitive,
     TResult Function(EnumField value)? enumField,
     TResult Function(ListField value)? list,
+    TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
     required TResult orElse(),
   }) {
@@ -732,6 +746,7 @@ class _$PrimitiveField implements PrimitiveField {
     required TResult Function(PrimitiveFieldType type) primitive,
     required TResult Function(List<String> values) enumField,
     required TResult Function(FieldType type) list,
+    required TResult Function(FieldType key, FieldType value) map,
     required TResult Function(Map<String, FieldType> fields) object,
   }) {
     return primitive(type);
@@ -744,6 +759,7 @@ class _$PrimitiveField implements PrimitiveField {
     TResult? Function(PrimitiveFieldType type)? primitive,
     TResult? Function(List<String> values)? enumField,
     TResult? Function(FieldType type)? list,
+    TResult? Function(FieldType key, FieldType value)? map,
     TResult? Function(Map<String, FieldType> fields)? object,
   }) {
     return primitive?.call(type);
@@ -756,6 +772,7 @@ class _$PrimitiveField implements PrimitiveField {
     TResult Function(PrimitiveFieldType type)? primitive,
     TResult Function(List<String> values)? enumField,
     TResult Function(FieldType type)? list,
+    TResult Function(FieldType key, FieldType value)? map,
     TResult Function(Map<String, FieldType> fields)? object,
     required TResult orElse(),
   }) {
@@ -772,6 +789,7 @@ class _$PrimitiveField implements PrimitiveField {
     required TResult Function(PrimitiveField value) primitive,
     required TResult Function(EnumField value) enumField,
     required TResult Function(ListField value) list,
+    required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
   }) {
     return primitive(this);
@@ -784,6 +802,7 @@ class _$PrimitiveField implements PrimitiveField {
     TResult? Function(PrimitiveField value)? primitive,
     TResult? Function(EnumField value)? enumField,
     TResult? Function(ListField value)? list,
+    TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
   }) {
     return primitive?.call(this);
@@ -796,6 +815,7 @@ class _$PrimitiveField implements PrimitiveField {
     TResult Function(PrimitiveField value)? primitive,
     TResult Function(EnumField value)? enumField,
     TResult Function(ListField value)? list,
+    TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
     required TResult orElse(),
   }) {
@@ -908,6 +928,7 @@ class _$EnumField implements EnumField {
     required TResult Function(PrimitiveFieldType type) primitive,
     required TResult Function(List<String> values) enumField,
     required TResult Function(FieldType type) list,
+    required TResult Function(FieldType key, FieldType value) map,
     required TResult Function(Map<String, FieldType> fields) object,
   }) {
     return enumField(values);
@@ -920,6 +941,7 @@ class _$EnumField implements EnumField {
     TResult? Function(PrimitiveFieldType type)? primitive,
     TResult? Function(List<String> values)? enumField,
     TResult? Function(FieldType type)? list,
+    TResult? Function(FieldType key, FieldType value)? map,
     TResult? Function(Map<String, FieldType> fields)? object,
   }) {
     return enumField?.call(values);
@@ -932,6 +954,7 @@ class _$EnumField implements EnumField {
     TResult Function(PrimitiveFieldType type)? primitive,
     TResult Function(List<String> values)? enumField,
     TResult Function(FieldType type)? list,
+    TResult Function(FieldType key, FieldType value)? map,
     TResult Function(Map<String, FieldType> fields)? object,
     required TResult orElse(),
   }) {
@@ -948,6 +971,7 @@ class _$EnumField implements EnumField {
     required TResult Function(PrimitiveField value) primitive,
     required TResult Function(EnumField value) enumField,
     required TResult Function(ListField value) list,
+    required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
   }) {
     return enumField(this);
@@ -960,6 +984,7 @@ class _$EnumField implements EnumField {
     TResult? Function(PrimitiveField value)? primitive,
     TResult? Function(EnumField value)? enumField,
     TResult? Function(ListField value)? list,
+    TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
   }) {
     return enumField?.call(this);
@@ -972,6 +997,7 @@ class _$EnumField implements EnumField {
     TResult Function(PrimitiveField value)? primitive,
     TResult Function(EnumField value)? enumField,
     TResult Function(ListField value)? list,
+    TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
     required TResult orElse(),
   }) {
@@ -1086,6 +1112,7 @@ class _$ListField implements ListField {
     required TResult Function(PrimitiveFieldType type) primitive,
     required TResult Function(List<String> values) enumField,
     required TResult Function(FieldType type) list,
+    required TResult Function(FieldType key, FieldType value) map,
     required TResult Function(Map<String, FieldType> fields) object,
   }) {
     return list(type);
@@ -1098,6 +1125,7 @@ class _$ListField implements ListField {
     TResult? Function(PrimitiveFieldType type)? primitive,
     TResult? Function(List<String> values)? enumField,
     TResult? Function(FieldType type)? list,
+    TResult? Function(FieldType key, FieldType value)? map,
     TResult? Function(Map<String, FieldType> fields)? object,
   }) {
     return list?.call(type);
@@ -1110,6 +1138,7 @@ class _$ListField implements ListField {
     TResult Function(PrimitiveFieldType type)? primitive,
     TResult Function(List<String> values)? enumField,
     TResult Function(FieldType type)? list,
+    TResult Function(FieldType key, FieldType value)? map,
     TResult Function(Map<String, FieldType> fields)? object,
     required TResult orElse(),
   }) {
@@ -1126,6 +1155,7 @@ class _$ListField implements ListField {
     required TResult Function(PrimitiveField value) primitive,
     required TResult Function(EnumField value) enumField,
     required TResult Function(ListField value) list,
+    required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
   }) {
     return list(this);
@@ -1138,6 +1168,7 @@ class _$ListField implements ListField {
     TResult? Function(PrimitiveField value)? primitive,
     TResult? Function(EnumField value)? enumField,
     TResult? Function(ListField value)? list,
+    TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
   }) {
     return list?.call(this);
@@ -1150,6 +1181,7 @@ class _$ListField implements ListField {
     TResult Function(PrimitiveField value)? primitive,
     TResult Function(EnumField value)? enumField,
     TResult Function(ListField value)? list,
+    TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
     required TResult orElse(),
   }) {
@@ -1175,6 +1207,210 @@ abstract class ListField implements FieldType {
   FieldType get type;
   @JsonKey(ignore: true)
   _$$ListFieldCopyWith<_$ListField> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$MapFieldCopyWith<$Res> {
+  factory _$$MapFieldCopyWith(
+          _$MapField value, $Res Function(_$MapField) then) =
+      __$$MapFieldCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FieldType key, FieldType value});
+
+  $FieldTypeCopyWith<$Res> get key;
+  $FieldTypeCopyWith<$Res> get value;
+}
+
+/// @nodoc
+class __$$MapFieldCopyWithImpl<$Res>
+    extends _$FieldTypeCopyWithImpl<$Res, _$MapField>
+    implements _$$MapFieldCopyWith<$Res> {
+  __$$MapFieldCopyWithImpl(_$MapField _value, $Res Function(_$MapField) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? key = null,
+    Object? value = null,
+  }) {
+    return _then(_$MapField(
+      key: null == key
+          ? _value.key
+          : key // ignore: cast_nullable_to_non_nullable
+              as FieldType,
+      value: null == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as FieldType,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $FieldTypeCopyWith<$Res> get key {
+    return $FieldTypeCopyWith<$Res>(_value.key, (value) {
+      return _then(_value.copyWith(key: value));
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $FieldTypeCopyWith<$Res> get value {
+    return $FieldTypeCopyWith<$Res>(_value.value, (value) {
+      return _then(_value.copyWith(value: value));
+    });
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$MapField implements MapField {
+  const _$MapField(
+      {required this.key, required this.value, final String? $type})
+      : $type = $type ?? 'map';
+
+  factory _$MapField.fromJson(Map<String, dynamic> json) =>
+      _$$MapFieldFromJson(json);
+
+  @override
+  final FieldType key;
+  @override
+  final FieldType value;
+
+  @JsonKey(name: 'kind')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'FieldType.map(key: $key, value: $value)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$MapField &&
+            (identical(other.key, key) || other.key == key) &&
+            (identical(other.value, value) || other.value == value));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, key, value);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$MapFieldCopyWith<_$MapField> get copyWith =>
+      __$$MapFieldCopyWithImpl<_$MapField>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function() $default, {
+    required TResult Function(PrimitiveFieldType type) primitive,
+    required TResult Function(List<String> values) enumField,
+    required TResult Function(FieldType type) list,
+    required TResult Function(FieldType key, FieldType value) map,
+    required TResult Function(Map<String, FieldType> fields) object,
+  }) {
+    return map(key, value);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function()? $default, {
+    TResult? Function(PrimitiveFieldType type)? primitive,
+    TResult? Function(List<String> values)? enumField,
+    TResult? Function(FieldType type)? list,
+    TResult? Function(FieldType key, FieldType value)? map,
+    TResult? Function(Map<String, FieldType> fields)? object,
+  }) {
+    return map?.call(key, value);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function()? $default, {
+    TResult Function(PrimitiveFieldType type)? primitive,
+    TResult Function(List<String> values)? enumField,
+    TResult Function(FieldType type)? list,
+    TResult Function(FieldType key, FieldType value)? map,
+    TResult Function(Map<String, FieldType> fields)? object,
+    required TResult orElse(),
+  }) {
+    if (map != null) {
+      return map(key, value);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_FieldType value) $default, {
+    required TResult Function(PrimitiveField value) primitive,
+    required TResult Function(EnumField value) enumField,
+    required TResult Function(ListField value) list,
+    required TResult Function(MapField value) map,
+    required TResult Function(ObjectField value) object,
+  }) {
+    return map(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_FieldType value)? $default, {
+    TResult? Function(PrimitiveField value)? primitive,
+    TResult? Function(EnumField value)? enumField,
+    TResult? Function(ListField value)? list,
+    TResult? Function(MapField value)? map,
+    TResult? Function(ObjectField value)? object,
+  }) {
+    return map?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_FieldType value)? $default, {
+    TResult Function(PrimitiveField value)? primitive,
+    TResult Function(EnumField value)? enumField,
+    TResult Function(ListField value)? list,
+    TResult Function(MapField value)? map,
+    TResult Function(ObjectField value)? object,
+    required TResult orElse(),
+  }) {
+    if (map != null) {
+      return map(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$MapFieldToJson(
+      this,
+    );
+  }
+}
+
+abstract class MapField implements FieldType {
+  const factory MapField(
+      {required final FieldType key,
+      required final FieldType value}) = _$MapField;
+
+  factory MapField.fromJson(Map<String, dynamic> json) = _$MapField.fromJson;
+
+  FieldType get key;
+  FieldType get value;
+  @JsonKey(ignore: true)
+  _$$MapFieldCopyWith<_$MapField> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1261,6 +1497,7 @@ class _$ObjectField implements ObjectField {
     required TResult Function(PrimitiveFieldType type) primitive,
     required TResult Function(List<String> values) enumField,
     required TResult Function(FieldType type) list,
+    required TResult Function(FieldType key, FieldType value) map,
     required TResult Function(Map<String, FieldType> fields) object,
   }) {
     return object(fields);
@@ -1273,6 +1510,7 @@ class _$ObjectField implements ObjectField {
     TResult? Function(PrimitiveFieldType type)? primitive,
     TResult? Function(List<String> values)? enumField,
     TResult? Function(FieldType type)? list,
+    TResult? Function(FieldType key, FieldType value)? map,
     TResult? Function(Map<String, FieldType> fields)? object,
   }) {
     return object?.call(fields);
@@ -1285,6 +1523,7 @@ class _$ObjectField implements ObjectField {
     TResult Function(PrimitiveFieldType type)? primitive,
     TResult Function(List<String> values)? enumField,
     TResult Function(FieldType type)? list,
+    TResult Function(FieldType key, FieldType value)? map,
     TResult Function(Map<String, FieldType> fields)? object,
     required TResult orElse(),
   }) {
@@ -1301,6 +1540,7 @@ class _$ObjectField implements ObjectField {
     required TResult Function(PrimitiveField value) primitive,
     required TResult Function(EnumField value) enumField,
     required TResult Function(ListField value) list,
+    required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
   }) {
     return object(this);
@@ -1313,6 +1553,7 @@ class _$ObjectField implements ObjectField {
     TResult? Function(PrimitiveField value)? primitive,
     TResult? Function(EnumField value)? enumField,
     TResult? Function(ListField value)? list,
+    TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
   }) {
     return object?.call(this);
@@ -1325,6 +1566,7 @@ class _$ObjectField implements ObjectField {
     TResult Function(PrimitiveField value)? primitive,
     TResult Function(EnumField value)? enumField,
     TResult Function(ListField value)? list,
+    TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
     required TResult orElse(),
   }) {

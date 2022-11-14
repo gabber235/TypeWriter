@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/widgets/dropdown.dart';
 import 'package:typewriter/models/adapter.dart';
+import 'package:typewriter/widgets/dropdown.dart';
+import 'package:typewriter/widgets/inspector.dart';
 import 'package:typewriter/widgets/inspector/editors.dart';
-
-import '../../inspector.dart';
 
 class EnumEditorFilter extends EditorFilter {
   @override
@@ -21,20 +21,40 @@ class EnumEditor extends HookConsumerWidget {
   final String path;
   final EnumField field;
 
+  final String? forcedValue;
+  final IconData icon;
+  final Function(String)? onChanged;
+
   const EnumEditor({
     super.key,
     required this.path,
     required this.field,
+    this.forcedValue,
+    this.icon = FontAwesomeIcons.list,
+    this.onChanged,
   }) : super();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(fieldValueProvider(path, field.values.first));
-    return Dropdown<String>(
-      value: value,
-      values: field.values,
-      onChanged: (value) =>
-          ref.read(entryDefinitionProvider)?.updateField(ref, path, value),
+    return Row(
+      children: [
+        Expanded(
+          child: Dropdown<String>(
+            icon: icon,
+            value: forcedValue ?? value,
+            values: field.values,
+            builder: (context, value) => Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Text(value),
+            ),
+            onChanged: onChanged ??
+                (value) => ref
+                    .read(entryDefinitionProvider)
+                    ?.updateField(ref, path, value),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $addEntriesHash() => r'd0b5751b289cea2f5924beda95c32f1b36c6f0f8';
+String $addEntriesHash() => r'c8658f83f9bbb9b8af2ee954fc2e79b3d6201d19';
 
 /// See also [addEntries].
 final addEntriesProvider = AutoDisposeProvider<List<AddEntry>>(

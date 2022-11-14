@@ -45,7 +45,7 @@ class _DeleteEntry extends HookConsumerWidget {
                 onPressed: () => Navigator.of(context).pop(true),
                 icon: const FaIcon(FontAwesomeIcons.trash),
                 label: const Text("Delete"),
-                color: Colors.red,
+                color: Theme.of(context).errorColor,
               ),
             ],
           ),
@@ -74,7 +74,7 @@ class _DeleteEntry extends HookConsumerWidget {
       onPressed: () => _confirmDeleteAndDelete(context, ref),
       icon: const FaIcon(FontAwesomeIcons.trash),
       label: const Text("Delete Entry"),
-      color: Colors.red,
+      color: Theme.of(context).errorColor,
     );
   }
 }

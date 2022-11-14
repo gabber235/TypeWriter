@@ -92,6 +92,19 @@ Map<String, dynamic> _$$ListFieldToJson(_$ListField instance) =>
       'kind': instance.$type,
     };
 
+_$MapField _$$MapFieldFromJson(Map<String, dynamic> json) => _$MapField(
+      key: FieldType.fromJson(json['key'] as Map<String, dynamic>),
+      value: FieldType.fromJson(json['value'] as Map<String, dynamic>),
+      $type: json['kind'] as String?,
+    );
+
+Map<String, dynamic> _$$MapFieldToJson(_$MapField instance) =>
+    <String, dynamic>{
+      'key': instance.key,
+      'value': instance.value,
+      'kind': instance.$type,
+    };
+
 _$ObjectField _$$ObjectFieldFromJson(Map<String, dynamic> json) =>
     _$ObjectField(
       fields: (json['fields'] as Map<String, dynamic>).map(
