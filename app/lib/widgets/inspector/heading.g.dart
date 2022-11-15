@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'add_entry.dart';
+part of 'heading.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -29,13 +29,13 @@ class _SystemHash {
   }
 }
 
-String $addEntriesHash() => r'c8658f83f9bbb9b8af2ee954fc2e79b3d6201d19';
+String $_entryColorHash() => r'96b722d9a3a503c1c9161463f5584bdbc8f0e841';
 
-/// See also [addEntries].
-final addEntriesProvider = AutoDisposeProvider<List<AddEntry>>(
-  addEntries,
-  name: r'addEntriesProvider',
+/// See also [_entryColor].
+final _entryColorProvider = AutoDisposeProvider<Color>(
+  _entryColor,
+  name: r'_entryColorProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $addEntriesHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : $_entryColorHash,
 );
-typedef AddEntriesRef = AutoDisposeProviderRef<List<AddEntry>>;
+typedef _EntryColorRef = AutoDisposeProviderRef<Color>;

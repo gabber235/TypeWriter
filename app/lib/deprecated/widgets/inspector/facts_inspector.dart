@@ -1,24 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/models/page.dart';
-import 'package:typewriter/deprecated/pages/graph.dart';
-import 'package:typewriter/deprecated/pages/inspection_menu.dart';
-import 'package:typewriter/deprecated/widgets/dropdown.dart';
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/models/page.dart";
+import "package:typewriter/deprecated/pages/graph.dart";
+import "package:typewriter/deprecated/pages/inspection_menu.dart";
+import "package:typewriter/deprecated/widgets/dropdown.dart";
 
 class FactInspector extends HookConsumerWidget {
-  final Fact fact;
 
   const FactInspector({
-    Key? key,
+    super.key,
     required this.fact,
-  }) : super(key: key);
+  });
+  final Fact fact;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         EntryInformation(
@@ -48,21 +47,19 @@ class FactInspector extends HookConsumerWidget {
         Operations(entry: fact),
       ],
     );
-  }
 }
 
 class _CommentField extends HookConsumerWidget {
-  final Fact fact;
 
   const _CommentField({
-    Key? key,
     required this.fact,
-  }) : super(key: key);
+  });
+  final Fact fact;
 
   void _onChanged(String value, WidgetRef ref) {
     ref.read(pageProvider.notifier).insertEntry(fact.copyWith(
           comment: value,
-        ));
+        ),);
   }
 
   @override
@@ -93,14 +90,14 @@ class _CommentField extends HookConsumerWidget {
           contentPadding: EdgeInsets.only(left: 8, top: 12, bottom: 12),
         ),
       ),
-    ]);
+    ],);
   }
 }
 
 class _LifetimeField extends HookConsumerWidget {
-  final Fact fact;
 
-  const _LifetimeField({Key? key, required this.fact}) : super(key: key);
+  const _LifetimeField({required this.fact});
+  final Fact fact;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -126,7 +123,7 @@ class _LifetimeField extends HookConsumerWidget {
                 Text(lifetime.formattedName),
                 Flexible(
                   child: Text(lifetime.description,
-                      style: Theme.of(context).textTheme.caption),
+                      style: Theme.of(context).textTheme.caption,),
                 ),
               ],
             ),
@@ -135,7 +132,7 @@ class _LifetimeField extends HookConsumerWidget {
               ref.read(pageProvider.notifier).insertEntry(fact.copyWith(
                     lifetime: lifetime,
                     data: "",
-                  )),
+                  ),),
         ),
         const SizedBox(height: 8),
       ],
@@ -144,19 +141,18 @@ class _LifetimeField extends HookConsumerWidget {
 }
 
 class _CronDataField extends HookConsumerWidget {
-  final Fact fact;
 
-  const _CronDataField({Key? key, required this.fact}) : super(key: key);
+  const _CronDataField({required this.fact});
+  final Fact fact;
 
   void _onChanged(String value, WidgetRef ref) {
     ref.read(pageProvider.notifier).insertEntry(fact.copyWith(
           data: value,
-        ));
+        ),);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SizedBox(height: 8),
@@ -168,7 +164,7 @@ class _CronDataField extends HookConsumerWidget {
             _onChanged(value, ref);
           },
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9*,\-/ ]')),
+            FilteringTextInputFormatter.allow(RegExp(r"[0-9*,\-/ ]")),
           ],
           hintText: "Enter a cron expression",
           icon: FontAwesomeIcons.clockRotateLeft,
@@ -176,23 +172,21 @@ class _CronDataField extends HookConsumerWidget {
         const SizedBox(height: 8),
       ],
     );
-  }
 }
 
 class _TimedDataField extends HookConsumerWidget {
-  final Fact fact;
 
-  const _TimedDataField({Key? key, required this.fact}) : super(key: key);
+  const _TimedDataField({required this.fact});
+  final Fact fact;
 
   void _onChanged(String value, WidgetRef ref) {
     ref.read(pageProvider.notifier).insertEntry(fact.copyWith(
           data: value,
-        ));
+        ),);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SizedBox(height: 8),
@@ -204,7 +198,7 @@ class _TimedDataField extends HookConsumerWidget {
             _onChanged(value, ref);
           },
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r"[0-9a-z ]")),
+            FilteringTextInputFormatter.allow(RegExp("[0-9a-z ]")),
           ],
           hintText: "Enter a duration",
           icon: FontAwesomeIcons.stopwatch,
@@ -212,5 +206,4 @@ class _TimedDataField extends HookConsumerWidget {
         const SizedBox(height: 8),
       ],
     );
-  }
 }

@@ -108,7 +108,7 @@ class FieldValueFamily extends Family<dynamic> {
   String? get name => r'fieldValueProvider';
 }
 
-String $editorFiltersHash() => r'ab54e4daa4690707469c7b867f8974a4623e06a7';
+String $editorFiltersHash() => r'71de73000df5ef6b6ae10c1329a44c90f83be712';
 
 /// See also [editorFilters].
 final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>(
@@ -118,7 +118,7 @@ final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>(
       const bool.fromEnvironment('dart.vm.product') ? null : $editorFiltersHash,
 );
 typedef EditorFiltersRef = AutoDisposeProviderRef<List<EditorFilter>>;
-String $pathDisplayNameHash() => r'a9ff4fd1947cdf5b357898abaa11e36ce6fd2114';
+String $pathDisplayNameHash() => r'5a1d7d01eff96745145d531682d9ac4f119f1fff';
 
 /// See also [pathDisplayName].
 class PathDisplayNameProvider extends AutoDisposeProvider<String> {

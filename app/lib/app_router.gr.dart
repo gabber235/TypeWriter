@@ -52,11 +52,10 @@ class _$AppRouter extends RootStackRouter {
     PageEditorRoute.name: (routeData) {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<PageEditorRouteArgs>(
-          orElse: () =>
-              PageEditorRouteArgs(pageId: pathParams.getString('id')));
+          orElse: () => PageEditorRouteArgs(id: pathParams.getString('id')));
       return CustomPage<dynamic>(
           routeData: routeData,
-          child: PageEditor(key: args.key, pageId: args.pageId),
+          child: PageEditor(id: args.id, key: args.key),
           transitionsBuilder: slideLeftWithFade,
           opaque: true,
           barrierDismissible: false);
@@ -122,24 +121,24 @@ class EmptyPageEditorRoute extends PageRouteInfo<void> {
 /// generated route for
 /// [PageEditor]
 class PageEditorRoute extends PageRouteInfo<PageEditorRouteArgs> {
-  PageEditorRoute({Key? key, required String pageId})
+  PageEditorRoute({required String id, Key? key})
       : super(PageEditorRoute.name,
             path: ':id',
-            args: PageEditorRouteArgs(key: key, pageId: pageId),
-            rawPathParams: {'id': pageId});
+            args: PageEditorRouteArgs(id: id, key: key),
+            rawPathParams: {'id': id});
 
   static const String name = 'PageEditorRoute';
 }
 
 class PageEditorRouteArgs {
-  const PageEditorRouteArgs({this.key, required this.pageId});
+  const PageEditorRouteArgs({required this.id, this.key});
+
+  final String id;
 
   final Key? key;
 
-  final String pageId;
-
   @override
   String toString() {
-    return 'PageEditorRouteArgs{key: $key, pageId: $pageId}';
+    return 'PageEditorRouteArgs{id: $id, key: $key}';
   }
 }

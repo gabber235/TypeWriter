@@ -1,33 +1,31 @@
-import 'package:collapsible/collapsible.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/pages/inspection_menu.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/widgets/filled_button.dart';
-import 'package:typewriter/widgets/inspector.dart';
-import 'package:typewriter/widgets/inspector/editors.dart';
-import 'package:typewriter/widgets/inspector/editors/field.dart';
+import "package:collapsible/collapsible.dart";
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/widgets/filled_button.dart";
+import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/inspector/editors.dart";
+import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/listable_header.dart";
 
 class ListEditorFilter extends EditorFilter {
   @override
-  bool canFilter(FieldType type) => type is ListField;
+  bool canEdit(FieldType type) => type is ListField;
 
   @override
-  Widget build(String path, FieldType type) =>
-      ListEditor(path: path, field: type as ListField);
+  Widget build(String path, FieldType type) => ListEditor(path: path, field: type as ListField);
 }
 
 class ListEditor extends HookConsumerWidget {
-  final String path;
-  final ListField field;
-
   const ListEditor({
-    super.key,
     required this.path,
     required this.field,
+    super.key,
   }) : super();
+  final String path;
+  final ListField field;
 
   void _addNew(WidgetRef ref, List<dynamic> value) {
     ref.read(entryDefinitionProvider)?.updateField(
@@ -37,7 +35,7 @@ class ListEditor extends HookConsumerWidget {
     );
   }
 
-  _reorderList(List<dynamic> value, int oldIndex, int newIndex) {
+  void _reorderList(List<dynamic> value, int oldIndex, int newIndex) {
     final item = value.removeAt(oldIndex);
     if (newIndex > oldIndex) {
       value.insert(newIndex - 1, item);
@@ -47,7 +45,11 @@ class ListEditor extends HookConsumerWidget {
   }
 
   void _reorder(
-      WidgetRef ref, List<dynamic> value, int oldIndex, int newIndex) {
+    WidgetRef ref,
+    List<dynamic> value,
+    int oldIndex,
+    int newIndex,
+  ) {
     final newValue = [...value];
     _reorderList(newValue, oldIndex, newIndex);
 
@@ -64,40 +66,18 @@ class ListEditor extends HookConsumerWidget {
     final expanded = useState(false);
     final globalKeys = useMemoized(
       () => List.generate(
-          value.length, (index) => GlobalKey(debugLabel: 'item-$index')),
+        value.length,
+        (index) => GlobalKey(debugLabel: "item-$index"),
+      ),
       [value.length],
     );
     return Column(
       children: [
-        Row(
-          children: [
-            Material(
-              borderRadius: BorderRadius.circular(4),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(4),
-                onTap: () => expanded.value = !expanded.value,
-                child: Row(
-                  children: [
-                    Icon(
-                        expanded.value ? Icons.expand_less : Icons.expand_more),
-                    SectionTitle(
-                        title: ref.watch(pathDisplayNameProvider(path))),
-                    const SizedBox(width: 8),
-                    Text("(${value.length})",
-                        style: Theme.of(context).textTheme.caption),
-                    const SizedBox(width: 8),
-                  ],
-                ),
-              ),
-            ),
-            const Spacer(),
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.plus, size: 16),
-              onPressed: () {
-                _addNew(ref, value);
-              },
-            ),
-          ],
+        ListableHeader(
+          path: path,
+          length: value.length,
+          expanded: expanded,
+          onAdd: () => _addNew(ref, value),
         ),
         Collapsible(
           collapsed: !expanded.value,
@@ -112,14 +92,13 @@ class ListEditor extends HookConsumerWidget {
                 _reorderList(globalKeys, oldIndex, newIndex);
               },
               shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return _ListItem(
-                    key: globalKeys[index],
-                    index: index,
-                    value: value,
-                    path: path,
-                    field: field);
-              },
+              itemBuilder: (context, index) => _ListItem(
+                key: globalKeys[index],
+                index: index,
+                value: value,
+                path: path,
+                field: field,
+              ),
             ),
           ),
         ),
@@ -130,11 +109,11 @@ class ListEditor extends HookConsumerWidget {
 
 class _ListItem extends HookConsumerWidget {
   const _ListItem({
-    super.key,
     required this.index,
     required this.value,
     required this.path,
     required this.field,
+    super.key,
   }) : super();
 
   final int index;
@@ -150,22 +129,26 @@ class _ListItem extends HookConsumerWidget {
         );
   }
 
-  void _checkRemove(BuildContext context, WidgetRef ref, List<dynamic> value,
-      int index) async {
-    bool remove = await showDialog(
+  Future<void> _checkRemove(
+    BuildContext context,
+    WidgetRef ref,
+    List<dynamic> value,
+    int index,
+  ) async {
+    final bool remove = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Remove item?'),
-        content: const Text('Are you sure you want to remove this item?'),
+        title: const Text("Remove item?"),
+        content: const Text("Are you sure you want to remove this item?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: const Text("Cancel"),
           ),
           FilledButton.icon(
             onPressed: () => Navigator.of(context).pop(true),
             icon: const Icon(FontAwesomeIcons.trash),
-            label: const Text('Remove'),
+            label: const Text("Remove"),
             color: Theme.of(context).errorColor,
           ),
         ],

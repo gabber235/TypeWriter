@@ -1,19 +1,17 @@
-import 'dart:convert';
-import 'dart:io';
+import "dart:convert";
+import "dart:io";
 
-import 'package:file_picker/file_picker.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/app_router.dart';
-import 'package:typewriter/main.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/models/book.dart';
-import 'package:typewriter/models/page.dart';
+import "package:file_picker/file_picker.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/app_router.dart";
+import "package:typewriter/main.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/book.dart";
+import "package:typewriter/models/page.dart";
 
-final directoryPathProvider = StateProvider<String>((ref) {
-  return "";
-});
+final directoryPathProvider = StateProvider<String>((ref) => "");
 
-Future<void> pickDirectory(WidgetRef ref) async {
+Future<void> pickAndLoadBook(WidgetRef ref) async {
   final result = await FilePicker.platform.getDirectoryPath(
     dialogTitle: "Select typewriter folder",
     lockParentWindow: true,
@@ -26,7 +24,7 @@ Future<void> pickDirectory(WidgetRef ref) async {
   final adapters = await _loadAdapters(result);
   final pages = await _loadPages(result);
 
-  ref.read(bookProvider.notifier).loadBook(
+  await ref.read(bookProvider.notifier).loadBook(
         Book(
           name: "Typewriter",
           path: result,
@@ -35,7 +33,7 @@ Future<void> pickDirectory(WidgetRef ref) async {
         ),
       );
 
-  ref.read(appRouter).push(const BookRoute());
+  await ref.read(appRouter).push(const BookRoute());
 }
 
 Future<List<Adapter>> _loadAdapters(String path) async {
@@ -48,7 +46,7 @@ Future<List<Adapter>> _loadAdapters(String path) async {
   final content = await file.readAsString();
   final json = jsonDecode(content);
 
-  return (json as List).map((e) => Adapter.fromJson(e)).toList();
+  return (json as List).map((e) => Adapter.fromJson(e as Map<String, dynamic>)).toList();
 }
 
 Future<List<Page>> _loadPages(String path) async {
@@ -72,7 +70,7 @@ Future<Page> _loadPage(File file) async {
 
   final content = await file.readAsString();
   final json = {
-    ...(jsonDecode(content) as Map<String, dynamic>),
+    ...jsonDecode(content) as Map<String, dynamic>,
     "name": name,
   };
 

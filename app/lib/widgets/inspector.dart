@@ -1,27 +1,24 @@
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/page_editor.dart';
-import 'package:typewriter/widgets/inspector/editors/name.dart';
-import 'package:typewriter/widgets/inspector/editors/object.dart';
-import 'package:typewriter/widgets/inspector/heading.dart';
-import 'package:typewriter/widgets/inspector/operations.dart';
+import "package:collection/collection.dart";
+import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/page.dart";
+import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/widgets/inspector/editors/name.dart";
+import "package:typewriter/widgets/inspector/editors/object.dart";
+import "package:typewriter/widgets/inspector/heading.dart";
+import "package:typewriter/widgets/inspector/operations.dart";
 
-part 'inspector.g.dart';
+part "inspector.g.dart";
 
-final selectedEntryIdProvider = StateProvider.autoDispose<String>((ref) => '');
+final selectedEntryIdProvider = StateProvider.autoDispose<String>((ref) => "");
 
 @riverpod
 Entry? selectedEntry(SelectedEntryRef ref) {
   final selectedEntryId = ref.watch(selectedEntryIdProvider);
-  final pages = ref.watch(pagesProvider);
-  return pages
-      .map((page) => page.entries)
-      .expand((entries) => entries)
-      .firstWhereOrNull((entry) => entry.id == selectedEntryId);
+  final page = ref.watch(currentPageProvider);
+  return page?.entries.firstWhereOrNull((e) => e.id == selectedEntryId);
 }
 
 class Inspector extends HookConsumerWidget {
@@ -37,9 +34,7 @@ class Inspector extends HookConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
-        child: selectedEntry != null
-            ? _EntryInspector(key: ValueKey(selectedEntry.id))
-            : const _EmptyInspector(),
+        child: selectedEntry != null ? _EntryInspector(key: ValueKey(selectedEntry.id)) : const _EmptyInspector(),
       ),
     );
   }
@@ -47,28 +42,26 @@ class Inspector extends HookConsumerWidget {
 
 /// The content of the inspector when no entry is selected.
 class _EmptyInspector extends HookConsumerWidget {
-  const _EmptyInspector({
-    Key? key,
-  }) : super(key: key);
+  const _EmptyInspector();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Inspector'),
-        const SizedBox(height: 12),
-        Text("Select an entry to edit it's properties",
-            style: Theme.of(context).textTheme.caption),
-      ],
-    );
-  }
+  Widget build(BuildContext context, WidgetRef ref) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Inspector"),
+          const SizedBox(height: 12),
+          Text(
+            "Select an entry to edit it's properties",
+            style: Theme.of(context).textTheme.caption,
+          ),
+        ],
+      );
 }
 
 @riverpod
 EntryDefinition? entryDefinition(EntryDefinitionRef ref) {
   final entry = ref.watch(selectedEntryProvider);
-  final adapterEntry = ref.watch(adapterEntryProvider(entry?.type ?? ''));
+  final adapterEntry = ref.watch(entryBlueprintProvider(entry?.type ?? ""));
   if (entry == null || adapterEntry == null) {
     return null;
   }
@@ -76,17 +69,16 @@ EntryDefinition? entryDefinition(EntryDefinitionRef ref) {
 }
 
 class EntryDefinition {
-  final Entry entry;
-  final AdapterEntry adapterEntry;
-
   EntryDefinition({
     required this.entry,
     required this.adapterEntry,
   });
+  final Entry entry;
+  final EntryBlueprint adapterEntry;
 
   void updateEntry(WidgetRef ref, Entry entry) {
-    final page = ref.read(pageProvider);
-    page.insertEntry(ref, entry);
+    final page = ref.read(currentPageProvider);
+    page?.insertEntry(ref, entry);
   }
 
   void updateField(WidgetRef ref, String field, dynamic value) {
@@ -104,7 +96,8 @@ class _EntryInspector extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final object = ref.watch(
-        entryDefinitionProvider.select((def) => def?.adapterEntry.fields));
+      entryDefinitionProvider.select((def) => def?.adapterEntry.fields),
+    );
 
     if (object == null) {
       return const SizedBox();

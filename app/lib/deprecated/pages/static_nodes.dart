@@ -1,14 +1,12 @@
-import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/models/page.dart';
-import 'package:typewriter/deprecated/pages/graph.dart';
-import 'package:typewriter/deprecated/widgets/dropdown.dart';
+import "package:dotted_border/dotted_border.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/models/page.dart";
+import "package:typewriter/deprecated/pages/graph.dart";
+import "package:typewriter/deprecated/widgets/dropdown.dart";
 
-final _typeProvider = StateProvider<_StaticEntry>((ref) {
-  return _StaticEntry.fact;
-});
+final _typeProvider = StateProvider<_StaticEntry>((ref) => _StaticEntry.fact);
 
 enum _StaticEntry {
   fact(EntryType.fact),
@@ -33,21 +31,21 @@ enum _StaticEntry {
   }
 
   void addEntry(WidgetRef ref) {
-    Entry? entry = ref.read(pageProvider.notifier).addEntry(type);
+    final entry = ref.read(pageProvider.notifier).addEntry(type);
     ref.read(selectedProvider.notifier).state = entry?.id ?? "";
   }
 }
 
 class StaticEntries extends HookConsumerWidget {
   const StaticEntries({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final staticType = ref.watch(_typeProvider);
     final selected = ref.watch(selectedProvider);
-    List<Entry> entries = ref.watch(staticType.selectEntries(ref));
+    final entries = ref.watch(staticType.selectEntries(ref));
 
     final entryType = staticType.type;
     final bgColor = entryType.backgroundColor(context);
@@ -58,7 +56,7 @@ class StaticEntries extends HookConsumerWidget {
       curve: Curves.easeOut,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-            topRight: Radius.circular(selected.isNotEmpty ? 8 : 0)),
+            topRight: Radius.circular(selected.isNotEmpty ? 8 : 0),),
         border: Border.all(color: bgColor, width: 3),
       ),
       child: Column(
@@ -106,7 +104,7 @@ class StaticEntries extends HookConsumerWidget {
                           style: TextButton.styleFrom(
                             foregroundColor: textColor,
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 24),
+                                horizontal: 8, vertical: 24,),
                           ),
                           onPressed: () => staticType.addEntry(ref),
                           child: Row(
@@ -123,8 +121,7 @@ class StaticEntries extends HookConsumerWidget {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       childCount: entries.length,
-                      (BuildContext context, int index) {
-                        return Padding(
+                      (context, index) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: NodeWidget(
                             id: entries[index].id,
@@ -133,8 +130,7 @@ class StaticEntries extends HookConsumerWidget {
                                 entries[index].backgroundColor(context),
                             icon: entries[index].icon(context),
                           ),
-                        );
-                      },
+                        ),
                     ),
                   ),
                 ],

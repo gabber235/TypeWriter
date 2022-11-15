@@ -1,18 +1,19 @@
-import 'dart:convert';
+import "dart:convert";
 
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/models/book.dart';
-import 'package:typewriter/utils/extensions.dart';
+import "package:freezed_annotation/freezed_annotation.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/book.dart";
+import "package:typewriter/utils/extensions.dart";
 
-part 'page.freezed.dart';
+part "page.freezed.dart";
+part "page.g.dart";
 
-part 'page.g.dart';
-
-final pagesProvider = Provider<List<Page>>((ref) {
+@riverpod
+List<Page> pages(PagesRef ref) {
   return ref.watch(bookProvider).pages;
-}, dependencies: [bookProvider]);
+}
 
 @freezed
 class Page with _$Page {
@@ -36,43 +37,56 @@ extension PageExtension on Page {
 
   void insertEntry(WidgetRef ref, Entry entry) {
     updatePage(
-        ref,
-        (page) => page.copyWith(
-            entries: [...page.entries.where((e) => e.id != entry.id), entry]));
+      ref,
+      (page) {
+        // If the entry already exists, replace it at the same index.
+        final index = page.entries.indexWhere((e) => e.id == entry.id);
+        if (index != -1) {
+          return page.copyWith(
+            entries: [
+              ...page.entries.sublist(0, index),
+              entry,
+              ...page.entries.sublist(index + 1),
+            ],
+          );
+        }
+        // Otherwise, just add it to the end.
+        return page.copyWith(
+          entries: [...page.entries, entry],
+        );
+      },
+    );
   }
 
   void deleteEntry(WidgetRef ref, Entry entry) {
     updatePage(
-        ref,
-        (page) => page.copyWith(
-            entries: [...page.entries.where((e) => e.id != entry.id)]));
+      ref,
+      (page) => page.copyWith(
+        entries: [...page.entries.where((e) => e.id != entry.id)],
+      ),
+    );
   }
 }
 
 class Entry {
-  final Map<String, dynamic> data;
-
   Entry(this.data);
 
-  Entry.fromAdapter({required String id, required AdapterEntry entry})
+  Entry.fromBlueprint({required String id, required EntryBlueprint blueprint})
       : data = {
-          ...entry.fields.defaultValue,
+          ...blueprint.fields.defaultValue,
           "id": id,
-          "name": "new_${entry.name}",
-          "type": entry.name,
+          "name": "new_${blueprint.name}",
+          "type": blueprint.name,
         };
 
-  factory Entry.fromJson(Map<String, dynamic> json) {
-    return Entry(json);
-  }
+  factory Entry.fromJson(Map<String, dynamic> json) => Entry(json);
+  final Map<String, dynamic> data;
 
-  Map<String, dynamic> toJson() {
-    return data;
-  }
+  Map<String, dynamic> toJson() => data;
 
   /// Returns a inner field of this entry.
   /// These fields can be nested using dot notation, like "data.value", "data.1.value", etc.
-  /// If the field is not found, null is returned.
+  /// If the field is not found, a given default value is returned.
   dynamic get(String field, [dynamic defaultValue]) {
     final parts = field.split(".");
     dynamic current = data;
@@ -81,9 +95,7 @@ class Entry {
         current = current[part];
         continue;
       }
-      if (current is List &&
-          int.tryParse(part) != null &&
-          current.length > int.parse(part)) {
+      if (current is List && int.tryParse(part) != null && current.length > int.parse(part)) {
         current = current[int.parse(part)];
         continue;
       }
@@ -97,23 +109,29 @@ class Entry {
   Entry copyWith(String field, dynamic value) {
     final parts = field.split(".");
     final last = parts.removeLast();
+    // Make a deep copy of the data. To avoid modifying the original data.
     final data = jsonDecode(jsonEncode(this.data));
+
+    // Traverse the data to find the field to update.
     dynamic current = data;
     for (final part in parts) {
+      // If the current fields is a map, we try to find the next field in it.
       if (current is Map && current.containsKey(part)) {
         current = current[part];
         continue;
       }
-      if (current is List &&
-          int.tryParse(part) != null &&
-          current.length > int.parse(part)) {
+
+      // If the current field is a list, we try to find the next index in it.
+      if (current is List && int.tryParse(part) != null && current.length > int.parse(part)) {
         current = current[int.parse(part)];
         continue;
       }
 
+      // If the field could not be found, we don't update anything and return the original entry.
       return this;
     }
 
+    // Update the field.
     if (current is Map) {
       current[last] = value;
     }
@@ -125,15 +143,13 @@ class Entry {
   }
 
   @override
-  String toString() {
-    return 'DynamicEntry{data: $data}';
-  }
+  String toString() => "DynamicEntry{data: $data}";
 
-  String get id => data['id'] as String;
+  String get id => data["id"] as String;
 
-  String get name => data['name'] as String;
+  String get name => data["name"] as String;
 
   String get formattedName => name.formatted;
 
-  String get type => data['type'] as String;
+  String get type => data["type"] as String;
 }

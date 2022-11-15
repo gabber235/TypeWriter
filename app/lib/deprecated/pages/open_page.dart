@@ -1,23 +1,23 @@
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rive/rive.dart';
-import 'package:typewriter/deprecated/models/page.dart';
+import "package:file_picker/file_picker.dart";
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:google_fonts/google_fonts.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:rive/rive.dart";
+import "package:typewriter/deprecated/models/page.dart";
 
-import 'graph.dart';
+import "graph.dart";
 
 class OpenPage extends HookConsumerWidget {
   const OpenPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   Future<FilePickerResult?> pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['json'],
+      allowedExtensions: ["json"],
       dialogTitle: "Select a page file to continue the journey",
       withData: true,
     );
@@ -39,7 +39,7 @@ class OpenPage extends HookConsumerWidget {
           Text("Your journey starts here",
               style: GoogleFonts.jetBrainsMono(
                   textStyle: const TextStyle(
-                      fontSize: 40, fontWeight: FontWeight.bold))),
+                      fontSize: 40, fontWeight: FontWeight.bold,),),),
           const SizedBox(height: 24),
           TextButton(
             onPressed: () {

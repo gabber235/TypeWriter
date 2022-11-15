@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'inspector.dart';
+part of 'pages_list.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -29,24 +29,13 @@ class _SystemHash {
   }
 }
 
-String $selectedEntryHash() => r'c9bab242f9d119edd93f0a3994a5fe81bbe5f3e8';
+String $_pageNamesHash() => r'c3dc5aefd2cf87079dd7d91a0e23b72a7eb4bd8e';
 
-/// See also [selectedEntry].
-final selectedEntryProvider = AutoDisposeProvider<Entry?>(
-  selectedEntry,
-  name: r'selectedEntryProvider',
+/// See also [_pageNames].
+final _pageNamesProvider = AutoDisposeProvider<List<String>>(
+  _pageNames,
+  name: r'_pageNamesProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $selectedEntryHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : $_pageNamesHash,
 );
-typedef SelectedEntryRef = AutoDisposeProviderRef<Entry?>;
-String $entryDefinitionHash() => r'be97bb1135227dd2591eed39856d37a27abedd7a';
-
-/// See also [entryDefinition].
-final entryDefinitionProvider = AutoDisposeProvider<EntryDefinition?>(
-  entryDefinition,
-  name: r'entryDefinitionProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : $entryDefinitionHash,
-);
-typedef EntryDefinitionRef = AutoDisposeProviderRef<EntryDefinition?>;
+typedef _PageNamesRef = AutoDisposeProviderRef<List<String>>;

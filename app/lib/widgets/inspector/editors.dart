@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/utils/extensions.dart';
-import 'package:typewriter/widgets/inspector.dart';
-import 'package:typewriter/widgets/inspector/editors/boolean.dart';
-import 'package:typewriter/widgets/inspector/editors/enum.dart';
-import 'package:typewriter/widgets/inspector/editors/list.dart';
-import 'package:typewriter/widgets/inspector/editors/map.dart';
-import 'package:typewriter/widgets/inspector/editors/number.dart';
-import 'package:typewriter/widgets/inspector/editors/object.dart';
-import 'package:typewriter/widgets/inspector/editors/string.dart';
+import "package:flutter/material.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/inspector/editors/boolean.dart";
+import "package:typewriter/widgets/inspector/editors/enum.dart";
+import "package:typewriter/widgets/inspector/editors/list.dart";
+import "package:typewriter/widgets/inspector/editors/map.dart";
+import "package:typewriter/widgets/inspector/editors/number.dart";
+import "package:typewriter/widgets/inspector/editors/object.dart";
+import "package:typewriter/widgets/inspector/editors/string.dart";
 
-part 'editors.g.dart';
+part "editors.g.dart";
 
 @riverpod
 dynamic fieldValue(FieldValueRef ref, String path, [dynamic defaultValue]) {
@@ -21,31 +20,32 @@ dynamic fieldValue(FieldValueRef ref, String path, [dynamic defaultValue]) {
 }
 
 @riverpod
-List<EditorFilter> editorFilters(EditorFiltersRef ref) {
-  return [
-    StringEditorFilter(),
-    NumberEditorFilter(),
-    BooleanEditorFilter(),
-    EnumEditorFilter(),
-    ListEditorFilter(),
-    MapEditorFilter(),
-    ObjectEditorFilter(),
-  ];
-}
+List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
+      StringEditorFilter(),
+      NumberEditorFilter(),
+      BooleanEditorFilter(),
+      EnumEditorFilter(),
+      ListEditorFilter(),
+      MapEditorFilter(),
+      ObjectEditorFilter(),
+    ];
 
 abstract class EditorFilter {
-  bool canFilter(FieldType type);
+  bool canEdit(FieldType type);
 
   Widget build(String path, FieldType type);
 }
 
 @riverpod
-String pathDisplayName(PathDisplayNameRef ref, String path,
-    [String defaultValue = ""]) {
+String pathDisplayName(
+  PathDisplayNameRef ref,
+  String path, [
+  String defaultValue = "",
+]) {
   String parseName(String path) {
     final parts = path.split(".");
     final name = parts.last;
-    if (name == '') return defaultValue;
+    if (name == "") return defaultValue;
     if (int.tryParse(name) != null) {
       final parent = parts.sublist(0, parts.length - 1).join(".");
       final parentName = parseName(parent);

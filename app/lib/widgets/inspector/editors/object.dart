@@ -1,35 +1,33 @@
-import 'package:collapsible/collapsible.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/pages/inspection_menu.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/utils/extensions.dart';
-import 'package:typewriter/widgets/inspector/editors.dart';
-import 'package:typewriter/widgets/inspector/editors/field.dart';
+import "package:collapsible/collapsible.dart";
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/pages/inspection_menu.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/inspector/editors.dart";
+import "package:typewriter/widgets/inspector/editors/field.dart";
 
 class ObjectEditorFilter extends EditorFilter {
   @override
-  bool canFilter(FieldType type) => type is ObjectField;
+  bool canEdit(FieldType type) => type is ObjectField;
 
   @override
-  Widget build(String path, FieldType type) =>
-      ObjectEditor(path: path, object: type as ObjectField);
+  Widget build(String path, FieldType type) => ObjectEditor(path: path, object: type as ObjectField);
 }
 
 class ObjectEditor extends HookConsumerWidget {
-  final String path;
-  final ObjectField object;
-  final List<String> ignoreFields;
-  final bool defaultExpanded;
-
   const ObjectEditor({
-    super.key,
     required this.path,
     required this.object,
     this.ignoreFields = const [],
     this.defaultExpanded = false,
+    super.key,
   }) : super();
+  final String path;
+  final ObjectField object;
+  final List<String> ignoreFields;
+  final bool defaultExpanded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,7 +45,8 @@ class ObjectEditor extends HookConsumerWidget {
               children: [
                 Icon(expanded.value ? Icons.expand_less : Icons.expand_more),
                 SectionTitle(
-                    title: ref.watch(pathDisplayNameProvider(path, "Fields"))),
+                  title: ref.watch(pathDisplayNameProvider(path, "Fields")),
+                ),
               ],
             ),
           ),
@@ -69,11 +68,12 @@ class ObjectEditor extends HookConsumerWidget {
                       const SizedBox(height: 8),
                     ],
                     FieldEditor(
-                        key: ValueKey(
-                            path.isNotEmpty ? "$path.${field.key}" : field.key),
-                        path:
-                            path.isNotEmpty ? "$path.${field.key}" : field.key,
-                        type: field.value),
+                      key: ValueKey(
+                        path.isNotEmpty ? "$path.${field.key}" : field.key,
+                      ),
+                      path: path.isNotEmpty ? "$path.${field.key}" : field.key,
+                      type: field.value,
+                    ),
                   ],
               ],
             ),

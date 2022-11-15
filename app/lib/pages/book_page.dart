@@ -1,20 +1,18 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/app_router.dart';
+import "package:auto_route/auto_route.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/app_router.dart";
 
 class BookPage extends HookConsumerWidget {
-  const BookPage({Key? key}) : super(key: key);
+  const BookPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return AutoTabsRouter(
-      routes: const [
-        PagesListRoute(),
-      ],
-      builder: (context, child, animation) {
-        return Scaffold(
+  Widget build(BuildContext context, WidgetRef ref) => AutoTabsRouter(
+        routes: const [
+          PagesListRoute(),
+        ],
+        builder: (context, child, animation) => Scaffold(
           body: Row(
             children: [
               const _SideRail(),
@@ -26,16 +24,12 @@ class BookPage extends HookConsumerWidget {
               ),
             ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
 }
 
 class _SideRail extends HookConsumerWidget {
-  const _SideRail({
-    Key? key,
-  }) : super(key: key);
+  const _SideRail();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,14 +52,12 @@ class _SideRail extends HookConsumerWidget {
 }
 
 class _RailButton extends HookConsumerWidget {
-  final int index;
-  final IconData icon;
-
   const _RailButton(
     this.index, {
-    Key? key,
     required this.icon,
-  }) : super(key: key);
+  });
+  final int index;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,9 +67,7 @@ class _RailButton extends HookConsumerWidget {
       color: isSelected ? Colors.white.withOpacity(0.15) : Colors.transparent,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
-        onTap: () {
-          tabRouter.setActiveIndex(index);
-        },
+        onTap: () => tabRouter.setActiveIndex(index),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(12.0),

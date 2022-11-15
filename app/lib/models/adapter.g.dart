@@ -11,7 +11,7 @@ _$_Adapter _$$_AdapterFromJson(Map<String, dynamic> json) => _$_Adapter(
       description: json['description'] as String,
       version: json['version'] as String,
       entries: (json['entries'] as List<dynamic>)
-          .map((e) => AdapterEntry.fromJson(e as Map<String, dynamic>))
+          .map((e) => EntryBlueprint.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -23,8 +23,8 @@ Map<String, dynamic> _$$_AdapterToJson(_$_Adapter instance) =>
       'entries': instance.entries,
     };
 
-_$_AdapterEntry _$$_AdapterEntryFromJson(Map<String, dynamic> json) =>
-    _$_AdapterEntry(
+_$_EntryBlueprint _$$_EntryBlueprintFromJson(Map<String, dynamic> json) =>
+    _$_EntryBlueprint(
       name: json['name'] as String,
       description: json['description'] as String,
       fields: ObjectField.fromJson(json['fields'] as Map<String, dynamic>),
@@ -33,7 +33,7 @@ _$_AdapterEntry _$$_AdapterEntryFromJson(Map<String, dynamic> json) =>
           : const ColorConverter().fromJson(json['color'] as String),
     );
 
-Map<String, dynamic> _$$_AdapterEntryToJson(_$_AdapterEntry instance) =>
+Map<String, dynamic> _$$_EntryBlueprintToJson(_$_EntryBlueprint instance) =>
     <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
@@ -146,9 +146,11 @@ class _SystemHash {
   }
 }
 
-String $adaptersHash() => r'39c289ee0d4a8e60e6fccc8ebb2dac29e6ad2919';
+String $adaptersHash() => r'b55e4dd5d1802c4e21359d057a765443bb896bd3';
 
-/// See also [adapters].
+/// A generated provider to fetch and cache a list of [Adapter]s.
+///
+/// Copied from [adapters].
 final adaptersProvider = AutoDisposeProvider<List<Adapter>>(
   adapters,
   name: r'adaptersProvider',
@@ -156,41 +158,45 @@ final adaptersProvider = AutoDisposeProvider<List<Adapter>>(
       const bool.fromEnvironment('dart.vm.product') ? null : $adaptersHash,
 );
 typedef AdaptersRef = AutoDisposeProviderRef<List<Adapter>>;
-String $adapterEntriesHash() => r'e4a4c54d59b3bcf60472c24166173d0e20a70260';
+String $entryBlueprintsHash() => r'0e9019f7b17aa6dbeaed59a83c58fa1f1c0a52f6';
 
-/// See also [adapterEntries].
-final adapterEntriesProvider = AutoDisposeProvider<List<AdapterEntry>>(
-  adapterEntries,
-  name: r'adapterEntriesProvider',
+/// A generated provider to fetch and cache a list of all the [EntryBlueprint]s.
+///
+/// Copied from [entryBlueprints].
+final entryBlueprintsProvider = AutoDisposeProvider<List<EntryBlueprint>>(
+  entryBlueprints,
+  name: r'entryBlueprintsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $adapterEntriesHash,
+      : $entryBlueprintsHash,
 );
-typedef AdapterEntriesRef = AutoDisposeProviderRef<List<AdapterEntry>>;
-String $adapterEntryHash() => r'f00f08d020dc320557235c673f24a81626659f17';
+typedef EntryBlueprintsRef = AutoDisposeProviderRef<List<EntryBlueprint>>;
+String $entryBlueprintHash() => r'd49a1e5e458e22493e802271db7ba55fffb887bc';
 
-/// See also [adapterEntry].
-class AdapterEntryProvider extends AutoDisposeProvider<AdapterEntry?> {
-  AdapterEntryProvider(
+/// A generated provider to fetch and cache a specific [EntryBlueprint] by its [name].
+///
+/// Copied from [entryBlueprint].
+class EntryBlueprintProvider extends AutoDisposeProvider<EntryBlueprint?> {
+  EntryBlueprintProvider(
     this.name,
   ) : super(
-          (ref) => adapterEntry(
+          (ref) => entryBlueprint(
             ref,
             name,
           ),
-          from: adapterEntryProvider,
-          name: r'adapterEntryProvider',
+          from: entryBlueprintProvider,
+          name: r'entryBlueprintProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $adapterEntryHash,
+                  : $entryBlueprintHash,
         );
 
   final String name;
 
   @override
   bool operator ==(Object other) {
-    return other is AdapterEntryProvider && other.name == name;
+    return other is EntryBlueprintProvider && other.name == name;
   }
 
   @override
@@ -202,25 +208,27 @@ class AdapterEntryProvider extends AutoDisposeProvider<AdapterEntry?> {
   }
 }
 
-typedef AdapterEntryRef = AutoDisposeProviderRef<AdapterEntry?>;
+typedef EntryBlueprintRef = AutoDisposeProviderRef<EntryBlueprint?>;
 
-/// See also [adapterEntry].
-final adapterEntryProvider = AdapterEntryFamily();
+/// A generated provider to fetch and cache a specific [EntryBlueprint] by its [name].
+///
+/// Copied from [entryBlueprint].
+final entryBlueprintProvider = EntryBlueprintFamily();
 
-class AdapterEntryFamily extends Family<AdapterEntry?> {
-  AdapterEntryFamily();
+class EntryBlueprintFamily extends Family<EntryBlueprint?> {
+  EntryBlueprintFamily();
 
-  AdapterEntryProvider call(
+  EntryBlueprintProvider call(
     String name,
   ) {
-    return AdapterEntryProvider(
+    return EntryBlueprintProvider(
       name,
     );
   }
 
   @override
-  AutoDisposeProvider<AdapterEntry?> getProviderOverride(
-    covariant AdapterEntryProvider provider,
+  AutoDisposeProvider<EntryBlueprint?> getProviderOverride(
+    covariant EntryBlueprintProvider provider,
   ) {
     return call(
       provider.name,
@@ -234,5 +242,5 @@ class AdapterEntryFamily extends Family<AdapterEntry?> {
   List<ProviderOrFamily>? get dependencies => null;
 
   @override
-  String? get name => r'adapterEntryProvider';
+  String? get name => r'entryBlueprintProvider';
 }

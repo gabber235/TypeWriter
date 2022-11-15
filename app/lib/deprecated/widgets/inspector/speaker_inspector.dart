@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/models/page.dart';
-import 'package:typewriter/deprecated/pages/graph.dart';
-import 'package:typewriter/deprecated/pages/inspection_menu.dart';
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/models/page.dart";
+import "package:typewriter/deprecated/pages/graph.dart";
+import "package:typewriter/deprecated/pages/inspection_menu.dart";
 
 class SpeakerInspector extends HookConsumerWidget {
-  final Speaker speaker;
 
   const SpeakerInspector({
-    Key? key,
+    super.key,
     required this.speaker,
-  }) : super(key: key);
+  });
+  final Speaker speaker;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         EntryInformation(
@@ -32,23 +31,21 @@ class SpeakerInspector extends HookConsumerWidget {
         Operations(entry: speaker),
       ],
     );
-  }
 }
 
 class _DisplayNameField extends HookConsumerWidget {
-  final Speaker speaker;
 
-  const _DisplayNameField({Key? key, required this.speaker}) : super(key: key);
+  const _DisplayNameField({required this.speaker});
+  final Speaker speaker;
 
   void _onChanged(String value, WidgetRef ref) {
     ref.read(pageProvider.notifier).insertEntry(speaker.copyWith(
           displayName: value,
-        ));
+        ),);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SizedBox(height: 8),
@@ -65,20 +62,17 @@ class _DisplayNameField extends HookConsumerWidget {
         const SizedBox(height: 8),
       ],
     );
-  }
 }
 
 class _SoundField extends HookConsumerWidget {
-  final Speaker speaker;
 
   const _SoundField({
-    Key? key,
     required this.speaker,
-  }) : super(key: key);
+  });
+  final Speaker speaker;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SectionTitle(title: "Sound"),
@@ -88,12 +82,11 @@ class _SoundField extends HookConsumerWidget {
           onChanged: (value) {
             ref.read(pageProvider.notifier).insertEntry(speaker.copyWith(
                   sound: value,
-                ));
+                ),);
           },
           hintText: "Enter a minecraft sound",
           icon: FontAwesomeIcons.volumeHigh,
         ),
       ],
     );
-  }
 }

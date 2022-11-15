@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.5
+  collection:
   freezed_annotation: ^2.2.0
   json_annotation: ^4.7.0
   graphview: ^1.1.1
@@ -29,6 +30,7 @@ dependencies:
   auto_route: ^5.0.2
   theme_json_converter: ^0.1.0
   collapsible: ^1.0.0
+  riverpod_annotation: ^1.0.6
 
 dev_dependencies:
   flutter_test:

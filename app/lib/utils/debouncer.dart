@@ -1,12 +1,12 @@
-import 'dart:async';
+import "dart:async";
 
 typedef FutureOrVoidCallback = FutureOr<void> Function();
 
 class Debouncer {
-  final int milliseconds;
-  Timer? _timer;
 
   Debouncer({required this.milliseconds});
+  final int milliseconds;
+  Timer? _timer;
 
   void run(FutureOrVoidCallback action) {
     _timer?.cancel();

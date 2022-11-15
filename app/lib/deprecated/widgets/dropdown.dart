@@ -1,8 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:google_fonts/google_fonts.dart";
 
 class Dropdown<T> extends StatelessWidget {
+
+  const Dropdown({
+    super.key,
+    required this.value,
+    required this.values,
+    required this.onChanged,
+    this.filled = true,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16),
+    this.builder,
+    this.icon = FontAwesomeIcons.caretDown,
+    this.borderRadius,
+    this.alignment,
+  });
   final T value;
   final List<T> values;
   final Function(T value) onChanged;
@@ -15,22 +28,8 @@ class Dropdown<T> extends StatelessWidget {
 
   final Widget Function(BuildContext context, T value)? builder;
 
-  const Dropdown({
-    Key? key,
-    required this.value,
-    required this.values,
-    required this.onChanged,
-    this.filled = true,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16),
-    this.builder,
-    this.icon = FontAwesomeIcons.caretDown,
-    this.borderRadius,
-    this.alignment,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: padding,
       decoration: BoxDecoration(
         color: filled ? Theme.of(context).inputDecorationTheme.fillColor : null,
@@ -43,7 +42,7 @@ class Dropdown<T> extends StatelessWidget {
         alignment: alignment ?? AlignmentDirectional.centerStart,
         style: GoogleFonts.jetBrainsMono(
             textStyle:
-                TextStyle(color: Theme.of(context).textTheme.bodyText1!.color)),
+                TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),),
         borderRadius: borderRadius ?? BorderRadius.circular(8),
         items: values
             .map((e) => DropdownMenuItem(
@@ -52,7 +51,7 @@ class Dropdown<T> extends StatelessWidget {
                   child: builder != null
                       ? builder!(context, e)
                       : Text(e.toString()),
-                ))
+                ),)
             .toList(),
         onChanged: (value) {
           if (value == null) return;
@@ -60,5 +59,4 @@ class Dropdown<T> extends StatelessWidget {
         },
       ),
     );
-  }
 }

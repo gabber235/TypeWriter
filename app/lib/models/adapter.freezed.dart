@@ -23,7 +23,7 @@ mixin _$Adapter {
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get version => throw _privateConstructorUsedError;
-  List<AdapterEntry> get entries => throw _privateConstructorUsedError;
+  List<EntryBlueprint> get entries => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,7 +39,7 @@ abstract class $AdapterCopyWith<$Res> {
       {String name,
       String description,
       String version,
-      List<AdapterEntry> entries});
+      List<EntryBlueprint> entries});
 }
 
 /// @nodoc
@@ -76,7 +76,7 @@ class _$AdapterCopyWithImpl<$Res, $Val extends Adapter>
       entries: null == entries
           ? _value.entries
           : entries // ignore: cast_nullable_to_non_nullable
-              as List<AdapterEntry>,
+              as List<EntryBlueprint>,
     ) as $Val);
   }
 }
@@ -92,7 +92,7 @@ abstract class _$$_AdapterCopyWith<$Res> implements $AdapterCopyWith<$Res> {
       {String name,
       String description,
       String version,
-      List<AdapterEntry> entries});
+      List<EntryBlueprint> entries});
 }
 
 /// @nodoc
@@ -126,7 +126,7 @@ class __$$_AdapterCopyWithImpl<$Res>
       entries: null == entries
           ? _value._entries
           : entries // ignore: cast_nullable_to_non_nullable
-              as List<AdapterEntry>,
+              as List<EntryBlueprint>,
     ));
   }
 }
@@ -138,7 +138,7 @@ class _$_Adapter implements _Adapter {
       {required this.name,
       required this.description,
       required this.version,
-      required final List<AdapterEntry> entries})
+      required final List<EntryBlueprint> entries})
       : _entries = entries;
 
   factory _$_Adapter.fromJson(Map<String, dynamic> json) =>
@@ -150,9 +150,9 @@ class _$_Adapter implements _Adapter {
   final String description;
   @override
   final String version;
-  final List<AdapterEntry> _entries;
+  final List<EntryBlueprint> _entries;
   @override
-  List<AdapterEntry> get entries {
+  List<EntryBlueprint> get entries {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_entries);
   }
@@ -198,7 +198,7 @@ abstract class _Adapter implements Adapter {
       {required final String name,
       required final String description,
       required final String version,
-      required final List<AdapterEntry> entries}) = _$_Adapter;
+      required final List<EntryBlueprint> entries}) = _$_Adapter;
 
   factory _Adapter.fromJson(Map<String, dynamic> json) = _$_Adapter.fromJson;
 
@@ -209,19 +209,19 @@ abstract class _Adapter implements Adapter {
   @override
   String get version;
   @override
-  List<AdapterEntry> get entries;
+  List<EntryBlueprint> get entries;
   @override
   @JsonKey(ignore: true)
   _$$_AdapterCopyWith<_$_Adapter> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-AdapterEntry _$AdapterEntryFromJson(Map<String, dynamic> json) {
-  return _AdapterEntry.fromJson(json);
+EntryBlueprint _$EntryBlueprintFromJson(Map<String, dynamic> json) {
+  return _EntryBlueprint.fromJson(json);
 }
 
 /// @nodoc
-mixin _$AdapterEntry {
+mixin _$EntryBlueprint {
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   ObjectField get fields => throw _privateConstructorUsedError;
@@ -230,15 +230,15 @@ mixin _$AdapterEntry {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $AdapterEntryCopyWith<AdapterEntry> get copyWith =>
+  $EntryBlueprintCopyWith<EntryBlueprint> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AdapterEntryCopyWith<$Res> {
-  factory $AdapterEntryCopyWith(
-          AdapterEntry value, $Res Function(AdapterEntry) then) =
-      _$AdapterEntryCopyWithImpl<$Res, AdapterEntry>;
+abstract class $EntryBlueprintCopyWith<$Res> {
+  factory $EntryBlueprintCopyWith(
+          EntryBlueprint value, $Res Function(EntryBlueprint) then) =
+      _$EntryBlueprintCopyWithImpl<$Res, EntryBlueprint>;
   @useResult
   $Res call(
       {String name,
@@ -248,9 +248,9 @@ abstract class $AdapterEntryCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$AdapterEntryCopyWithImpl<$Res, $Val extends AdapterEntry>
-    implements $AdapterEntryCopyWith<$Res> {
-  _$AdapterEntryCopyWithImpl(this._value, this._then);
+class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
+    implements $EntryBlueprintCopyWith<$Res> {
+  _$EntryBlueprintCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -287,11 +287,11 @@ class _$AdapterEntryCopyWithImpl<$Res, $Val extends AdapterEntry>
 }
 
 /// @nodoc
-abstract class _$$_AdapterEntryCopyWith<$Res>
-    implements $AdapterEntryCopyWith<$Res> {
-  factory _$$_AdapterEntryCopyWith(
-          _$_AdapterEntry value, $Res Function(_$_AdapterEntry) then) =
-      __$$_AdapterEntryCopyWithImpl<$Res>;
+abstract class _$$_EntryBlueprintCopyWith<$Res>
+    implements $EntryBlueprintCopyWith<$Res> {
+  factory _$$_EntryBlueprintCopyWith(
+          _$_EntryBlueprint value, $Res Function(_$_EntryBlueprint) then) =
+      __$$_EntryBlueprintCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -302,11 +302,11 @@ abstract class _$$_AdapterEntryCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_AdapterEntryCopyWithImpl<$Res>
-    extends _$AdapterEntryCopyWithImpl<$Res, _$_AdapterEntry>
-    implements _$$_AdapterEntryCopyWith<$Res> {
-  __$$_AdapterEntryCopyWithImpl(
-      _$_AdapterEntry _value, $Res Function(_$_AdapterEntry) _then)
+class __$$_EntryBlueprintCopyWithImpl<$Res>
+    extends _$EntryBlueprintCopyWithImpl<$Res, _$_EntryBlueprint>
+    implements _$$_EntryBlueprintCopyWith<$Res> {
+  __$$_EntryBlueprintCopyWithImpl(
+      _$_EntryBlueprint _value, $Res Function(_$_EntryBlueprint) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -317,7 +317,7 @@ class __$$_AdapterEntryCopyWithImpl<$Res>
     Object? fields = null,
     Object? color = null,
   }) {
-    return _then(_$_AdapterEntry(
+    return _then(_$_EntryBlueprint(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -340,15 +340,15 @@ class __$$_AdapterEntryCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_AdapterEntry implements _AdapterEntry {
-  const _$_AdapterEntry(
+class _$_EntryBlueprint implements _EntryBlueprint {
+  const _$_EntryBlueprint(
       {required this.name,
       required this.description,
       required this.fields,
       @ColorConverter() this.color = Colors.grey});
 
-  factory _$_AdapterEntry.fromJson(Map<String, dynamic> json) =>
-      _$$_AdapterEntryFromJson(json);
+  factory _$_EntryBlueprint.fromJson(Map<String, dynamic> json) =>
+      _$$_EntryBlueprintFromJson(json);
 
   @override
   final String name;
@@ -363,14 +363,14 @@ class _$_AdapterEntry implements _AdapterEntry {
 
   @override
   String toString() {
-    return 'AdapterEntry(name: $name, description: $description, fields: $fields, color: $color)';
+    return 'EntryBlueprint(name: $name, description: $description, fields: $fields, color: $color)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AdapterEntry &&
+            other is _$_EntryBlueprint &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -386,26 +386,26 @@ class _$_AdapterEntry implements _AdapterEntry {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AdapterEntryCopyWith<_$_AdapterEntry> get copyWith =>
-      __$$_AdapterEntryCopyWithImpl<_$_AdapterEntry>(this, _$identity);
+  _$$_EntryBlueprintCopyWith<_$_EntryBlueprint> get copyWith =>
+      __$$_EntryBlueprintCopyWithImpl<_$_EntryBlueprint>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_AdapterEntryToJson(
+    return _$$_EntryBlueprintToJson(
       this,
     );
   }
 }
 
-abstract class _AdapterEntry implements AdapterEntry {
-  const factory _AdapterEntry(
+abstract class _EntryBlueprint implements EntryBlueprint {
+  const factory _EntryBlueprint(
       {required final String name,
       required final String description,
       required final ObjectField fields,
-      @ColorConverter() final Color color}) = _$_AdapterEntry;
+      @ColorConverter() final Color color}) = _$_EntryBlueprint;
 
-  factory _AdapterEntry.fromJson(Map<String, dynamic> json) =
-      _$_AdapterEntry.fromJson;
+  factory _EntryBlueprint.fromJson(Map<String, dynamic> json) =
+      _$_EntryBlueprint.fromJson;
 
   @override
   String get name;
@@ -418,7 +418,7 @@ abstract class _AdapterEntry implements AdapterEntry {
   Color get color;
   @override
   @JsonKey(ignore: true)
-  _$$_AdapterEntryCopyWith<_$_AdapterEntry> get copyWith =>
+  _$$_EntryBlueprintCopyWith<_$_EntryBlueprint> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

@@ -1,14 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 
 class SingleLineTextField extends HookWidget {
-  final String? text;
-  final Function(String)? onChanged;
-  final List<TextInputFormatter>? inputFormatters;
-  final TextInputType keyboardType;
-  final String? hintText;
-  final IconData? icon;
 
   const SingleLineTextField({
     super.key,
@@ -19,6 +13,12 @@ class SingleLineTextField extends HookWidget {
     this.hintText,
     this.icon,
   }) : super();
+  final String? text;
+  final Function(String)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType keyboardType;
+  final String? hintText;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {

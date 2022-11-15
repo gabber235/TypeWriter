@@ -1,22 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/models/page.dart';
-import 'package:typewriter/deprecated/pages/graph.dart';
-import 'package:typewriter/deprecated/pages/inspection_menu.dart';
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/models/page.dart";
+import "package:typewriter/deprecated/pages/graph.dart";
+import "package:typewriter/deprecated/pages/inspection_menu.dart";
 
 class ActionInspector extends HookConsumerWidget {
-  final ActionEntry action;
 
   const ActionInspector({
-    Key? key,
+    super.key,
     required this.action,
-  }) : super(key: key);
+  });
+  final ActionEntry action;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         EntryInformation(
@@ -38,12 +37,12 @@ class ActionInspector extends HookConsumerWidget {
                 ...action.triggers.sublist(0, index),
                 trigger,
                 ...action.triggers.sublist(index + 1),
-              ])),
+              ],),),
           onRemove: (trigger) => ref
               .read(pageProvider.notifier)
               .insertEntry(action.copyWith(triggers: [
                 ...action.triggers.where((e) => e != trigger),
-              ])),
+              ],),),
         ),
         const Divider(),
         const SectionTitle(title: "Triggered By"),
@@ -54,19 +53,19 @@ class ActionInspector extends HookConsumerWidget {
           icon: FontAwesomeIcons.satelliteDish,
           list: action.triggeredBy,
           onAdd: () => ref.read(pageProvider.notifier).insertEntry(
-              action.copyWith(triggeredBy: [...action.triggeredBy, ""])),
+              action.copyWith(triggeredBy: [...action.triggeredBy, ""]),),
           onChanged: (index, value) => ref
               .read(pageProvider.notifier)
               .insertEntry(action.copyWith(triggeredBy: [
                 ...action.triggeredBy.sublist(0, index),
                 value,
                 ...action.triggeredBy.sublist(index + 1),
-              ])),
+              ],),),
           onRemove: (value) => ref
               .read(pageProvider.notifier)
               .insertEntry(action.copyWith(triggeredBy: [
                 ...action.triggeredBy.where((e) => e != value),
-              ])),
+              ],),),
           onQuery: (value) => ref
               .read(pageProvider)
               .triggerEntries
@@ -75,7 +74,7 @@ class ActionInspector extends HookConsumerWidget {
                     if (entry is RuleEntry) ...entry.triggeredBy,
                     if (entry is OptionDialogue)
                       ...entry.options.expand((e) => e.triggers),
-                  ])
+                  ],)
               .toSet(),
         ),
         const Divider(),
@@ -88,20 +87,20 @@ class ActionInspector extends HookConsumerWidget {
                   .copyWith(criteria: [
                 ...action.criteria,
                 const Criterion(fact: "", operator: "==", value: 0)
-              ])),
+              ],),),
           onChanged: (index, criterion) => ref
               .read(pageProvider.notifier)
               .insertEntry(action.copyWith(criteria: [
                 ...action.criteria.sublist(0, index),
                 criterion,
                 ...action.criteria.sublist(index + 1),
-              ])),
+              ],),),
           onRemove: (index) => ref
               .read(pageProvider.notifier)
               .insertEntry(action.copyWith(criteria: [
                 ...action.criteria.sublist(0, index),
                 ...action.criteria.sublist(index + 1),
-              ])),
+              ],),),
         ),
         const Divider(),
         const SectionTitle(title: "Modifiers"),
@@ -114,20 +113,20 @@ class ActionInspector extends HookConsumerWidget {
                   .copyWith(modifiers: [
                 ...action.modifiers,
                 const Criterion(fact: "", operator: "=", value: 0)
-              ])),
+              ],),),
           onChanged: (index, criterion) => ref
               .read(pageProvider.notifier)
               .insertEntry(action.copyWith(modifiers: [
                 ...action.modifiers.sublist(0, index),
                 criterion,
                 ...action.modifiers.sublist(index + 1),
-              ])),
+              ],),),
           onRemove: (index) => ref
               .read(pageProvider.notifier)
               .insertEntry(action.copyWith(modifiers: [
                 ...action.modifiers.sublist(0, index),
                 ...action.modifiers.sublist(index + 1),
-              ])),
+              ],),),
         ),
 
         // ----------------- Custom Fields -----------------
@@ -141,20 +140,17 @@ class ActionInspector extends HookConsumerWidget {
         Operations(entry: action),
       ],
     );
-  }
 }
 
 class _DurationField extends HookConsumerWidget {
-  final DelayedAction action;
 
   const _DurationField({
-    Key? key,
     required this.action,
-  }) : super(key: key);
+  });
+  final DelayedAction action;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SectionTitle(title: "Duration"),
@@ -163,17 +159,16 @@ class _DurationField extends HookConsumerWidget {
           text: (action.duration).toString(),
           keyboardType: TextInputType.number,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+            FilteringTextInputFormatter.allow(RegExp("[0-9]")),
           ],
           onChanged: (value) {
             ref.read(pageProvider.notifier).insertEntry(action.copyWith(
-                  duration: (int.tryParse(value) ?? 0),
-                ));
+                  duration: int.tryParse(value) ?? 0,
+                ),);
           },
           hintText: "Enter a duration (ms)",
           icon: FontAwesomeIcons.solidClock,
         ),
       ],
     );
-  }
 }

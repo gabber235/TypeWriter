@@ -1,16 +1,15 @@
-import 'dart:convert';
-import 'dart:io';
+import "dart:convert";
+import "dart:io";
 
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/models/page.dart';
+import "package:freezed_annotation/freezed_annotation.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/page.dart";
 
-part 'book.freezed.dart';
+part "book.freezed.dart";
 
-final bookProvider = StateNotifierProvider<BookNotifier, Book>((ref) {
-  return BookNotifier(const Book(name: '', path: '', adapters: [], pages: []));
-});
+final bookProvider = StateNotifierProvider<BookNotifier, Book>(
+    (ref) => BookNotifier(const Book(name: "", path: "", adapters: [], pages: [])),);
 
 @freezed
 class Book with _$Book {
@@ -23,16 +22,18 @@ class Book with _$Book {
 }
 
 class BookNotifier extends StateNotifier<Book> {
-  BookNotifier(Book state) : super(state);
+  BookNotifier(super.state);
 
-  void loadBook(Book book) async {
+  /// Loads in the parsed book.
+  Future<void> loadBook(Book book) async {
     state = book;
   }
 
   /// Inserts a page. If the page already exists, it will be replaced.
   void insertPage(Page page) {
     state = state.copyWith(
-        pages: [...state.pages.where((p) => p.name != page.name), page]);
+      pages: [...state.pages.where((p) => p.name != page.name), page],
+    );
   }
 
   /// Removes a page.

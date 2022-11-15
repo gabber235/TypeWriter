@@ -1,32 +1,31 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:collection/collection.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/models/page.dart';
-import 'package:typewriter/deprecated/pages/graph.dart';
-import 'package:typewriter/deprecated/widgets/dropdown.dart';
-import 'package:typewriter/deprecated/widgets/inspector/action_inspector.dart';
-import 'package:typewriter/deprecated/widgets/inspector/dialogue_inspector.dart';
-import 'package:typewriter/deprecated/widgets/inspector/event_inspector.dart';
-import 'package:typewriter/deprecated/widgets/inspector/facts_inspector.dart';
-import 'package:typewriter/deprecated/widgets/inspector/speaker_inspector.dart';
-import 'package:typewriter/utils/extensions.dart';
+import "package:auto_size_text/auto_size_text.dart";
+import "package:collection/collection.dart";
+import "package:dropdown_search/dropdown_search.dart";
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/models/page.dart";
+import "package:typewriter/deprecated/pages/graph.dart";
+import "package:typewriter/deprecated/widgets/dropdown.dart";
+import "package:typewriter/deprecated/widgets/inspector/action_inspector.dart";
+import "package:typewriter/deprecated/widgets/inspector/dialogue_inspector.dart";
+import "package:typewriter/deprecated/widgets/inspector/event_inspector.dart";
+import "package:typewriter/deprecated/widgets/inspector/facts_inspector.dart";
+import "package:typewriter/deprecated/widgets/inspector/speaker_inspector.dart";
+import "package:typewriter/utils/extensions.dart";
 
 class InspectionMenu extends HookConsumerWidget {
-  final Entry entry;
 
   const InspectionMenu({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
+  final Entry entry;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) => Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(8),
@@ -56,16 +55,15 @@ class InspectionMenu extends HookConsumerWidget {
         ),
       ),
     );
-  }
 }
 
 class Inspector extends HookConsumerWidget {
-  final Entry entry;
 
   const Inspector({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
+  final Entry entry;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,7 +89,7 @@ class Inspector extends HookConsumerWidget {
     final dialogue = entry.asDialogue;
     if (dialogue != null) {
       return Theme(
-          data: themData, child: DialogueInspector(dialogue: dialogue));
+          data: themData, child: DialogueInspector(dialogue: dialogue),);
     }
 
     final action = entry.asAction;
@@ -106,19 +104,18 @@ class Inspector extends HookConsumerWidget {
 // ------- Generic entry information -------
 //<editor-fold desc="Entry Information">
 class EntryInformation extends StatelessWidget {
+
+  const EntryInformation({
+    super.key,
+    required this.entry,
+    required this.onNameChanged,
+  });
   final Entry entry;
 
   final Function(String) onNameChanged;
 
-  const EntryInformation({
-    Key? key,
-    required this.entry,
-    required this.onNameChanged,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Title(
@@ -130,76 +127,69 @@ class EntryInformation extends StatelessWidget {
         NameField(name: entry.name, onChanged: onNameChanged),
       ],
     );
-  }
 }
 
 class SectionTitle extends StatelessWidget {
-  final String title;
 
   const SectionTitle({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
+  final String title;
 
   @override
-  Widget build(BuildContext context) {
-    return Text(
+  Widget build(BuildContext context) => Text(
       title,
       style: const TextStyle(fontSize: 14),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
-  }
 }
 
 class Title extends StatelessWidget {
+
+  const Title({
+    super.key,
+    required this.title,
+    required this.color,
+  });
   final String title;
   final Color color;
 
-  const Title({
-    Key? key,
-    required this.title,
-    required this.color,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return AutoSizeText(
+  Widget build(BuildContext context) => AutoSizeText(
       title,
       style: TextStyle(color: color, fontSize: 40, fontWeight: FontWeight.w900),
       maxLines: 1,
     );
-  }
 }
 
 class Identifier extends StatelessWidget {
+
+  const Identifier({super.key, required this.id});
   final String id;
 
-  const Identifier({Key? key, required this.id}) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return SelectableText(id, style: Theme.of(context).textTheme.caption);
-  }
+  Widget build(BuildContext context) => SelectableText(id, style: Theme.of(context).textTheme.caption);
 }
 
 class SingleLineTextField extends HookWidget {
-  final String? text;
-  final Function(String)? onChanged;
-  final List<TextInputFormatter>? inputFormatters;
-  final TextInputType keyboardType;
-  final String? hintText;
-  final IconData? icon;
 
   const SingleLineTextField({
-    Key? key,
+    super.key,
     this.text,
     this.onChanged,
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
     this.hintText,
     this.icon,
-  }) : super(key: key);
+  });
+  final String? text;
+  final Function(String)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType keyboardType;
+  final String? hintText;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -227,15 +217,13 @@ class SingleLineTextField extends HookWidget {
 }
 
 class NameField extends HookWidget {
+
+  const NameField({super.key, required this.name, required this.onChanged});
   final String name;
   final Function(String) onChanged;
 
-  const NameField({Key? key, required this.name, required this.onChanged})
-      : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SectionTitle(title: "Name"),
@@ -245,17 +233,25 @@ class NameField extends HookWidget {
           onChanged: onChanged,
           inputFormatters: [
             snakeCaseFormatter(),
-            FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9_.]')),
+            FilteringTextInputFormatter.allow(RegExp("[a-z0-9_.]")),
           ],
           hintText: "Enter a name",
           icon: FontAwesomeIcons.signature,
         ),
       ],
     );
-  }
 }
 
 class TriggersField extends HookConsumerWidget {
+
+  const TriggersField({
+    super.key,
+    this.title = "Triggers",
+    required this.triggers,
+    required this.onAdd,
+    required this.onChanged,
+    required this.onRemove,
+  });
   final String title;
   final List<String> triggers;
 
@@ -263,18 +259,8 @@ class TriggersField extends HookConsumerWidget {
   final Function(int, String) onChanged;
   final Function(String) onRemove;
 
-  const TriggersField({
-    Key? key,
-    this.title = "Triggers",
-    required this.triggers,
-    required this.onAdd,
-    required this.onChanged,
-    required this.onRemove,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         SectionTitle(title: title),
@@ -295,16 +281,25 @@ class TriggersField extends HookConsumerWidget {
                     if (entry is RuleEntry) ...entry.triggeredBy,
                     if (entry is OptionDialogue)
                       ...entry.options.expand((e) => e.triggers),
-                  ])
+                  ],)
               .where((trigger) => trigger.contains(value))
               .toSet(),
         ),
       ],
     );
-  }
 }
 
 class AutoCompleteField extends StatelessWidget {
+
+  const AutoCompleteField({
+    super.key,
+    required this.text,
+    this.icon,
+    this.hintText = "Enter a value",
+    required this.onQuery,
+    required this.onChanged,
+    this.inputFormatters,
+  });
   final String text;
   final String hintText;
   final IconData? icon;
@@ -313,23 +308,11 @@ class AutoCompleteField extends StatelessWidget {
   final Function(String) onChanged;
   final List<TextInputFormatter>? inputFormatters;
 
-  const AutoCompleteField({
-    Key? key,
-    required this.text,
-    this.icon,
-    this.hintText = "Enter a value",
-    required this.onQuery,
-    required this.onChanged,
-    this.inputFormatters,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Autocomplete<String>(
+  Widget build(BuildContext context) => Autocomplete<String>(
       initialValue: TextEditingValue(text: text),
       fieldViewBuilder:
-          (context, textEditingController, focusNode, onFieldSubmitted) {
-        return TextField(
+          (context, textEditingController, focusNode, onFieldSubmitted) => TextField(
           controller: textEditingController,
           focusNode: focusNode,
           onSubmitted: (value) {
@@ -350,11 +333,8 @@ class AutoCompleteField extends StatelessWidget {
             hintText: hintText,
             suffixIcon: icon != null ? Icon(icon, size: 18) : null,
           ),
-        );
-      },
-      onSelected: (value) {
-        onChanged(value);
-      },
+        ),
+      onSelected: onChanged,
       optionsBuilder: (textEditingValue) {
         if (textEditingValue.text.trim().isEmpty) return const Iterable.empty();
         return onQuery(textEditingValue.text)
@@ -362,10 +342,21 @@ class AutoCompleteField extends StatelessWidget {
             .toSet();
       },
     );
-  }
 }
 
 class SizableList extends StatelessWidget {
+
+  const SizableList({
+    super.key,
+    required this.list,
+    this.hintText = "Enter a value",
+    this.addButtonText = "Add",
+    this.icon = FontAwesomeIcons.pen,
+    required this.onAdd,
+    required this.onChanged,
+    required this.onRemove,
+    required this.onQuery,
+  });
   final String hintText;
   final String addButtonText;
   final IconData icon;
@@ -377,21 +368,8 @@ class SizableList extends StatelessWidget {
 
   final Iterable<String> Function(String) onQuery;
 
-  const SizableList({
-    Key? key,
-    required this.list,
-    this.hintText = "Enter a value",
-    this.addButtonText = "Add",
-    this.icon = FontAwesomeIcons.pen,
-    required this.onAdd,
-    required this.onChanged,
-    required this.onRemove,
-    required this.onQuery,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         for (var i = 0; i < list.length; i++) ...[
@@ -412,11 +390,11 @@ class SizableList extends StatelessWidget {
                 inputFormatters: [
                   snakeCaseFormatter(),
                   FilteringTextInputFormatter.singleLineFormatter,
-                  FilteringTextInputFormatter.allow(RegExp(r'[a-z0-9_.]')),
+                  FilteringTextInputFormatter.allow(RegExp("[a-z0-9_.]")),
                 ],
               ),
             )
-          ]),
+          ],),
         ],
         const SizedBox(height: 8),
         TextButton(
@@ -435,10 +413,19 @@ class SizableList extends StatelessWidget {
         ),
       ],
     );
-  }
 }
 
 class CriteriaField extends HookConsumerWidget {
+
+  const CriteriaField({
+    super.key,
+    this.addButtonText = "Add Criterion",
+    required this.criteria,
+    required this.operators,
+    required this.onAdd,
+    required this.onChanged,
+    required this.onRemove,
+  });
   final String addButtonText;
   final List<Criterion> criteria;
   final List<String> operators;
@@ -446,16 +433,6 @@ class CriteriaField extends HookConsumerWidget {
   final Function() onAdd;
   final Function(int, Criterion) onChanged;
   final Function(int) onRemove;
-
-  const CriteriaField({
-    Key? key,
-    this.addButtonText = "Add Criterion",
-    required this.criteria,
-    required this.operators,
-    required this.onAdd,
-    required this.onChanged,
-    required this.onRemove,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -487,7 +464,7 @@ class CriteriaField extends HookConsumerWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8)),
+                          bottomLeft: Radius.circular(8),),
                       borderSide: BorderSide.none,
                     ),
                   ),
@@ -497,27 +474,21 @@ class CriteriaField extends HookConsumerWidget {
                   title: Padding(
                     padding: const EdgeInsets.only(left: 16.0, top: 8),
                     child: Text("Select a fact",
-                        style: Theme.of(context).textTheme.titleMedium),
+                        style: Theme.of(context).textTheme.titleMedium,),
                   ),
-                  itemBuilder: (context, item, isSelected) {
-                    return ListTile(
+                  itemBuilder: (context, item, isSelected) => ListTile(
                       title: AutoSizeText(item.name, maxLines: 1),
                       subtitle: Text(item.lifetime.formattedName),
                       selected: isSelected,
-                    );
-                  },
+                    ),
                 ),
-                dropdownBuilder: (context, fact) {
-                  return AutoSizeText(
+                dropdownBuilder: (context, fact) => AutoSizeText(
                     fact?.name ?? "",
                     maxLines: 1,
                     textAlign: TextAlign.right,
-                  );
-                },
-                filterFn: (fact, string) {
-                  return fact.name.contains(string) ||
-                      fact.formattedName.contains(string);
-                },
+                  ),
+                filterFn: (fact, string) => fact.name.contains(string) ||
+                      fact.formattedName.contains(string),
                 onChanged: (fact) {
                   if (fact == null) return;
                   onChanged(i, criteria[i].copyWith(fact: fact.id));
@@ -545,7 +516,7 @@ class CriteriaField extends HookConsumerWidget {
                 maxLines: 1,
                 keyboardType: TextInputType.number,
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                 ],
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.symmetric(horizontal: 8),
@@ -563,7 +534,7 @@ class CriteriaField extends HookConsumerWidget {
                 },
               ),
             ),
-          ]),
+          ],),
         ],
         const SizedBox(height: 8),
         TextButton(
@@ -586,16 +557,16 @@ class CriteriaField extends HookConsumerWidget {
 }
 
 class TypeSelector extends StatelessWidget {
-  final List<String> types;
-  final String selected;
-  final Function(String) onChanged;
 
   const TypeSelector({
-    Key? key,
+    super.key,
     required this.types,
     required this.selected,
     required this.onChanged,
-  }) : super(key: key);
+  });
+  final List<String> types;
+  final String selected;
+  final Function(String) onChanged;
 
   String formattedName(String name) {
     // Transform snake_case to Normal Case
@@ -603,8 +574,7 @@ class TypeSelector extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Dropdown(
+  Widget build(BuildContext context) => Dropdown(
       value: selected,
       values: types,
       builder: (context, value) => Text(formattedName(value)),
@@ -615,7 +585,7 @@ class TypeSelector extends StatelessWidget {
             builder: (context) => AlertDialog(
               title: const Text("Are you sure?"),
               content: const Text(
-                  "Changing the type will reset some of the values of this entry."),
+                  "Changing the type will reset some of the values of this entry.",),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
@@ -641,20 +611,18 @@ class TypeSelector extends StatelessWidget {
         }
       },
     );
-  }
 }
 
 class Operations extends StatelessWidget {
   const Operations({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   final Entry entry;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SectionTitle(title: "Operations"),
@@ -662,20 +630,17 @@ class Operations extends StatelessWidget {
         _DeleteEntry(id: entry.id),
       ],
     );
-  }
 }
 
 class _DeleteEntry extends HookConsumerWidget {
-  final String id;
 
   const _DeleteEntry({
-    Key? key,
     required this.id,
-  }) : super(key: key);
+  });
+  final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ElevatedButton(
+  Widget build(BuildContext context, WidgetRef ref) => ElevatedButton(
       onPressed: () async {
         final sure = await showDialog<bool>(
           context: context,
@@ -723,18 +688,17 @@ class _DeleteEntry extends HookConsumerWidget {
         ],
       ),
     );
-  }
 }
 
 class SpeakerSelector extends HookConsumerWidget {
-  final String currentId;
-  final Function(Speaker) onSelected;
 
   const SpeakerSelector({
-    Key? key,
+    super.key,
     required this.currentId,
     required this.onSelected,
-  }) : super(key: key);
+  });
+  final String currentId;
+  final Function(Speaker) onSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -761,26 +725,20 @@ class SpeakerSelector extends HookConsumerWidget {
         title: Padding(
           padding: const EdgeInsets.only(left: 16.0, top: 8),
           child: Text("Select a speaker",
-              style: Theme.of(context).textTheme.titleMedium),
+              style: Theme.of(context).textTheme.titleMedium,),
         ),
-        itemBuilder: (context, item, isSelected) {
-          return ListTile(
+        itemBuilder: (context, item, isSelected) => ListTile(
             title: AutoSizeText(item.name, maxLines: 1),
             selected: isSelected,
-          );
-        },
+          ),
       ),
-      dropdownBuilder: (context, speaker) {
-        return AutoSizeText(
+      dropdownBuilder: (context, speaker) => AutoSizeText(
           speaker?.formattedName ?? "",
           maxLines: 1,
           textAlign: TextAlign.right,
-        );
-      },
-      filterFn: (speaker, string) {
-        return speaker.name.contains(string) ||
-            speaker.formattedName.contains(string);
-      },
+        ),
+      filterFn: (speaker, string) => speaker.name.contains(string) ||
+            speaker.formattedName.contains(string),
       onChanged: (speaker) {
         if (speaker == null) return;
         onSelected(speaker);

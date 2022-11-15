@@ -1,16 +1,16 @@
-import 'dart:convert';
+import "dart:convert";
 
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:graphview/GraphView.dart';
-import 'package:tuple/tuple.dart';
-import 'package:typewriter/utils/extensions.dart';
+import "package:collection/collection.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:freezed_annotation/freezed_annotation.dart";
+import "package:graphview/GraphView.dart";
+import "package:tuple/tuple.dart";
+import "package:typewriter/utils/extensions.dart";
 
-part 'page.freezed.dart';
+part "page.freezed.dart";
 
-part 'page.g.dart';
+part "page.g.dart";
 
 PageModel pageModelFromJson(String str) => PageModel.fromJson(json.decode(str));
 
@@ -350,7 +350,7 @@ enum EntryType<E extends Entry> {
     }
     final types = EntryType.findTypesWhereType<E>();
     final typing = types.firstWhereOrNull(
-        (type) => dark ? type.darkColor != null : type.lightColor != null);
+        (type) => dark ? type.darkColor != null : type.lightColor != null,);
 
     if (typing != null) {
       return (dark ? typing.darkColor : typing.lightColor) ?? Colors.grey;
@@ -358,23 +358,15 @@ enum EntryType<E extends Entry> {
     return Colors.grey;
   }
 
-  Color textColor(BuildContext context) {
-    return getColor(Theme.of(context).brightness == Brightness.light);
-  }
+  Color textColor(BuildContext context) => getColor(Theme.of(context).brightness == Brightness.light);
 
-  Color backgroundColor(BuildContext context) {
-    return getColor(Theme.of(context).brightness == Brightness.dark);
-  }
+  Color backgroundColor(BuildContext context) => getColor(Theme.of(context).brightness == Brightness.dark);
 
-  bool isType(Entry entry) {
-    return entry is E;
-  }
+  bool isType(Entry entry) => entry is E;
 
   bool isSubtype<S>() => <S>[] is List<E>;
 
-  E? parseType(Entry entry) {
-    return isType(entry) ? entry as E : null;
-  }
+  E? parseType(Entry entry) => isType(entry) ? entry as E : null;
 
   static Tuple2<T, EntryType<T>>? findType<T extends Entry>(Entry entry) {
     final type = EntryType.values
@@ -386,44 +378,40 @@ enum EntryType<E extends Entry> {
     return Tuple2(t, type);
   }
 
-  static List<EntryType<T>> findTypes<T extends Entry>(Entry entry) {
-    return EntryType.values
+  static List<EntryType<T>> findTypes<T extends Entry>(Entry entry) => EntryType.values
         .whereType<EntryType<T>>()
         .where((type) => type.isType(entry))
         .toList();
-  }
 
-  static List<EntryType<Entry>> findTypesWhereType<T extends Entry>() {
-    return EntryType.values.where((type) => type.isSubtype<T>()).toList();
-  }
+  static List<EntryType<Entry>> findTypesWhereType<T extends Entry>() => EntryType.values.where((type) => type.isSubtype<T>()).toList();
 }
 
-Fact factFactory(String id) => Fact(id: id, name: 'new_fact');
+Fact factFactory(String id) => Fact(id: id, name: "new_fact");
 
-Speaker speakerFactory(String id) => Speaker(id: id, name: 'new_speaker');
+Speaker speakerFactory(String id) => Speaker(id: id, name: "new_speaker");
 
-NpcEvent npcEventFactory(String id) => NpcEvent(id: id, name: 'new_npc_event');
+NpcEvent npcEventFactory(String id) => NpcEvent(id: id, name: "new_npc_event");
 
 RunCommandEvent runCommandEventFactory(String id) =>
-    RunCommandEvent(id: id, name: 'new_run_command_event');
+    RunCommandEvent(id: id, name: "new_run_command_event");
 
 IslandCreateEvent islandCreateEventFactory(String id) =>
-    IslandCreateEvent(id: id, name: 'new_island_create_event');
+    IslandCreateEvent(id: id, name: "new_island_create_event");
 
 SpokenDialogue spokenDialogueFactory(String id) =>
-    SpokenDialogue(id: id, name: 'new_spoken_dialogue');
+    SpokenDialogue(id: id, name: "new_spoken_dialogue");
 
 OptionDialogue optionDialogueFactory(String id) =>
-    OptionDialogue(id: id, name: 'new_option_dialogue');
+    OptionDialogue(id: id, name: "new_option_dialogue");
 
 MessageDialogue messageDialogueFactory(String id) =>
-    MessageDialogue(id: id, name: 'new_message_dialogue');
+    MessageDialogue(id: id, name: "new_message_dialogue");
 
 SimpleAction simpleActionFactory(String id) =>
-    SimpleAction(id: id, name: 'new_simple_action');
+    SimpleAction(id: id, name: "new_simple_action");
 
 DelayedAction delayedActionFactory(String id) =>
-    DelayedAction(id: id, name: 'new_delayed_action');
+    DelayedAction(id: id, name: "new_delayed_action");
 
 Widget factIcon(Fact fact) {
   switch (fact.lifetime) {
@@ -463,31 +451,23 @@ extension EntryExtension on Entry {
 
   ActionEntry? get asAction => this is ActionEntry ? this as ActionEntry : null;
 
-  String get formattedName {
-    return name
+  String get formattedName => name
         .split(".")
         .map((e) => e.capitalize)
         .join(" | ")
         .split("_")
         .map((e) => e.capitalize)
         .join(" ");
-  }
 
-  Widget icon(BuildContext context) {
-    return EntryType.findTypes(this)
+  Widget icon(BuildContext context) => EntryType.findTypes(this)
             .map((type) => type.getIcon(this, !context.isDark))
             .whereNotNull()
             .firstOrNull ??
         const SizedBox.shrink();
-  }
 
-  Color textColor(BuildContext context) {
-    return color(Theme.of(context).brightness == Brightness.light);
-  }
+  Color textColor(BuildContext context) => color(Theme.of(context).brightness == Brightness.light);
 
-  Color backgroundColor(BuildContext context) {
-    return color(Theme.of(context).brightness == Brightness.dark);
-  }
+  Color backgroundColor(BuildContext context) => color(Theme.of(context).brightness == Brightness.dark);
 
   Color color(bool dark) =>
       EntryType.findType(this)?.item2.getColor(dark) ?? Colors.grey;
@@ -500,9 +480,7 @@ extension PageModelExtension on PageModel {
 
   List<RuleEntry> get rules => [...dialogue, ...actions];
 
-  Entry? getEntry(String id) {
-    return entries.firstWhereOrNull((e) => e.id == id);
-  }
+  Entry? getEntry(String id) => entries.firstWhereOrNull((e) => e.id == id);
 
   Graph toGraph() {
     final graph = Graph();
@@ -525,7 +503,7 @@ extension PageModelExtension on PageModel {
                   : Colors.grey;
 
           graph.addEdge(Node.Id(entry.id), Node.Id(rule.id),
-              paint: Paint()..color = color);
+              paint: Paint()..color = color,);
         });
       }
     }
@@ -534,7 +512,7 @@ extension PageModelExtension on PageModel {
       for (final trigger in dialogue.options.expand((o) => o.triggers)) {
         rules.where((rule) => rule.triggeredBy.contains(trigger)).forEach((r) {
           graph.addEdge(Node.Id(dialogue.id), Node.Id(r.id),
-              paint: Paint()..color = Colors.green);
+              paint: Paint()..color = Colors.green,);
         });
       }
     }
@@ -594,7 +572,7 @@ extension PageModelExtension on PageModel {
     }
     // All OptionDialogues options must have a valid text
     if (dialogue.any(
-        (e) => e is OptionDialogue && e.options.any((o) => o.text.isEmpty))) {
+        (e) => e is OptionDialogue && e.options.any((o) => o.text.isEmpty),)) {
       return "All OptionDialogues options must have a valid text, ${dialogue.firstWhere((e) => e is OptionDialogue && e.options.any((o) => o.text.isEmpty)).name} does not";
     }
 
@@ -654,7 +632,7 @@ extension PageModelExtension on PageModel {
                   e is OptionDialogue &&
                   e.options
                       .expand((o) => o.triggers)
-                      .any((t) => rule.triggeredBy.contains(t)))
+                      .any((t) => rule.triggeredBy.contains(t)),)
               .isEmpty) {
         return "Rule ${rule.name} is triggered by ${rule.triggeredBy} which is not triggered by any entry or option";
       }

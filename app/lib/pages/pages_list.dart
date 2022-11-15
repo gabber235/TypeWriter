@@ -1,45 +1,43 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rive/rive.dart';
-import 'package:typewriter/app_router.dart';
-import 'package:typewriter/hooks/route_state.dart';
-import 'package:typewriter/main.dart';
-import 'package:typewriter/models/book.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/models/page.dart' as model;
-import 'package:typewriter/utils/extensions.dart';
-import 'package:typewriter/widgets/filled_button.dart';
+import "package:auto_route/auto_route.dart";
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:rive/rive.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/app_router.dart";
+import "package:typewriter/main.dart";
+import "package:typewriter/models/book.dart";
+import "package:typewriter/models/page.dart" as model;
+import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/filled_button.dart";
+
+part "pages_list.g.dart";
 
 class PagesList extends StatelessWidget {
-  const PagesList({Key? key}) : super(key: key);
+  const PagesList({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          _PagesSelector(),
-          Expanded(child: AutoRouter()),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => SizedBox.expand(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            _PagesSelector(),
+            Expanded(child: AutoRouter()),
+          ],
+        ),
+      );
 }
 
-final _pageNamesProvider = Provider<List<String>>((ref) {
-  return ref.watch(pagesProvider).map((e) => e.name).sorted().toList();
-});
+@riverpod
+List<String> _pageNames(_PageNamesRef ref) {
+  return ref.watch(bookProvider).pages.map((e) => e.name).toList();
+}
 
 class _PagesSelector extends HookConsumerWidget {
-  const _PagesSelector({
-    Key? key,
-  }) : super(key: key);
+  const _PagesSelector();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -66,20 +64,14 @@ class _PagesSelector extends HookConsumerWidget {
 }
 
 class _PageTile extends HookConsumerWidget {
-  final String name;
-
   const _PageTile({
-    Key? key,
     required this.name,
-  }) : super(key: key);
+  });
+  final String name;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = useRouteState(
-      () => context.innerRouterOf(PagesListRoute.name),
-      (controller) => controller.current.pathParams.getString("id", "") == name,
-      defaultValue: false,
-    );
+    final isSelected = ref.watch(currentPageIdProvider.select((id) => id == name));
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -89,7 +81,7 @@ class _PageTile extends HookConsumerWidget {
         child: InkWell(
           onTap: () {
             if (!isSelected) {
-              context.router.push(PageEditorRoute(pageId: name));
+              context.router.push(PageEditorRoute(id: name));
             }
           },
           borderRadius: BorderRadius.circular(8),
@@ -119,98 +111,108 @@ class _PageTile extends HookConsumerWidget {
 
 class EmptyPageEditor extends HookConsumerWidget {
   const EmptyPageEditor({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
-  Future<String?> _showAddPageDialog(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder: (context) => const _AddPageDialogue(),
-    );
-  }
+  Future<String?> _showAddPageDialog(BuildContext context) async => showDialog(
+        context: context,
+        builder: (context) => const _AddPageDialogue(),
+      );
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      children: [
-        const Spacer(),
-        const Expanded(
-          flex: 2,
-          child: RiveAnimation.asset(
-            "assets/cute_robot.riv",
-            stateMachines: ["Motion"],
+  Widget build(BuildContext context, WidgetRef ref) => Column(
+        children: [
+          const Spacer(),
+          const Expanded(
+            flex: 2,
+            child: RiveAnimation.asset(
+              "assets/cute_robot.riv",
+              stateMachines: ["Motion"],
+            ),
           ),
-        ),
-        const Text("Select a page to edit or",
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 24),
-        FilledButton.icon(
-          label: const Text("Add Page"),
-          onPressed: () => _showAddPageDialog(context),
-          icon: const Icon(FontAwesomeIcons.plus),
-        ),
-        const Spacer(),
-      ],
-    );
-  }
+          const Text(
+            "Select a page to edit or",
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 24),
+          FilledButton.icon(
+            label: const Text("Add Page"),
+            onPressed: () => _showAddPageDialog(context),
+            icon: const Icon(FontAwesomeIcons.plus),
+          ),
+          const Spacer(),
+        ],
+      );
 }
 
 // A button for adding a new page.
 // Button has a outline.
 class _AddPageButton extends HookConsumerWidget {
-  const _AddPageButton({
-    Key? key,
-  }) : super(key: key);
+  const _AddPageButton();
 
-  Future<String?> _showAddPageDialog(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder: (context) => const _AddPageDialogue(),
-    );
-  }
+  Future<String?> _showAddPageDialog(BuildContext context) async => showDialog(
+        context: context,
+        builder: (context) => const _AddPageDialogue(),
+      );
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Material(
-      color: Colors.transparent,
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(color: Color(0xff214780)),
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
-      child: InkWell(
-        onTap: () => _showAddPageDialog(context),
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  "Add page",
-                  style: Theme.of(context).textTheme.caption?.copyWith(
-                        color: Colors.white,
-                      ),
+  Widget build(BuildContext context, WidgetRef ref) => Material(
+        color: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(color: Color(0xff214780)),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        child: InkWell(
+          onTap: () => _showAddPageDialog(context),
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    "Add page",
+                    style: Theme.of(context).textTheme.caption?.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.add, size: 16),
-            ],
+                const SizedBox(width: 8),
+                const Icon(Icons.add, size: 16),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 class _AddPageDialogue extends HookConsumerWidget {
-  const _AddPageDialogue({
-    Key? key,
-  }) : super(key: key);
+  const _AddPageDialogue();
 
-  _addPage(WidgetRef ref, String name) {
+  void _addPage(WidgetRef ref, String name) {
     ref.read(bookProvider.notifier).insertPage(model.Page(name: name));
-    ref.read(appRouter).push(PageEditorRoute(pageId: name));
+    ref.read(appRouter).push(PageEditorRoute(id: name));
+  }
+
+  /// Validates the proposed name for a page.
+  /// A name is invalid if it is empty or if it already exists.
+  void _validateName(TextEditingController controller, ValueNotifier<bool> hasTyped, List<String> pagesNames,
+      ValueNotifier<String> error,) {
+    var errorText = "";
+
+    if (controller.text.isNotEmpty) {
+      hasTyped.value = true;
+    }
+
+    // We don't want to scare the user with an error message if they haven't typed anything yet.
+    if (controller.text.isEmpty && hasTyped.value) {
+      errorText = "Name cannot be empty";
+    } else if (pagesNames.contains(controller.text)) {
+      errorText = "Page already exists";
+    }
+
+    error.value = errorText;
   }
 
   @override
@@ -222,24 +224,14 @@ class _AddPageDialogue extends HookConsumerWidget {
 
     final disabled = error.value.isNotEmpty || controller.text.isEmpty;
 
-    useEffect(() {
-      controller.addListener(() {
-        var errorText = "";
-
-        if (controller.text.isNotEmpty) {
-          hasTyped.value = true;
-        }
-
-        if (controller.text.isEmpty && hasTyped.value) {
-          errorText = "Name cannot be empty";
-        } else if (pagesNames.contains(controller.text)) {
-          errorText = "Page already exists";
-        }
-
-        error.value = errorText;
-      });
-      return null;
-    }, [controller]);
+    useEffect(
+      () {
+        void validator() => _validateName(controller, hasTyped, pagesNames, error);
+        controller.addListener(validator);
+        return () => controller.removeListener(validator);
+      },
+      [controller, pagesNames],
+    );
 
     return AlertDialog(
       title: const Text("Add a new page"),
@@ -249,7 +241,7 @@ class _AddPageDialogue extends HookConsumerWidget {
         inputFormatters: [
           snakeCaseFormatter(),
           FilteringTextInputFormatter.singleLineFormatter,
-          FilteringTextInputFormatter.allow(RegExp(r"[a-z0-9_]")),
+          FilteringTextInputFormatter.allow(RegExp("[a-z0-9_]")),
         ],
         decoration: InputDecoration(
           hintText: "Page name",

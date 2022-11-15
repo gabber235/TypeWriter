@@ -1,24 +1,22 @@
-import 'dart:io';
-import 'dart:math';
+import "dart:io";
+import "dart:math";
 
-import 'package:collection/collection.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:graphview/GraphView.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/models/page.dart';
-import 'package:typewriter/deprecated/pages/inspection_menu.dart';
-import 'package:typewriter/deprecated/pages/open_page.dart';
-import 'package:typewriter/deprecated/pages/static_nodes.dart';
-import 'package:typewriter/deprecated/widgets/search_bar.dart';
+import "package:collection/collection.dart";
+import "package:file_picker/file_picker.dart";
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:google_fonts/google_fonts.dart";
+import "package:graphview/GraphView.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/models/page.dart";
+import "package:typewriter/deprecated/pages/inspection_menu.dart";
+import "package:typewriter/deprecated/pages/open_page.dart";
+import "package:typewriter/deprecated/pages/static_nodes.dart";
+import "package:typewriter/deprecated/widgets/search_bar.dart";
 
-final fileNameProvider = StateProvider<String>((ref) {
-  return "test.json";
-});
+final fileNameProvider = StateProvider<String>((ref) => "test.json");
 
 class PageNotifier extends StateNotifier<PageModel> {
   PageNotifier() : super(const PageModel());
@@ -30,14 +28,14 @@ class PageNotifier extends StateNotifier<PageModel> {
   }
 
   static const _chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+      "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
   final Random _random = Random();
 
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-      length, (_) => _chars.codeUnitAt(_random.nextInt(_chars.length))));
+      length, (_) => _chars.codeUnitAt(_random.nextInt(_chars.length)),),);
 
   Entry? addEntry(EntryType<Entry> type) {
-    String id = getRandomString(15);
+    var id = getRandomString(15);
     // Make sure we don't have a duplicate id
     while (state.entries.any((e) => e.id == id)) {
       id = getRandomString(15);
@@ -51,19 +49,19 @@ class PageNotifier extends StateNotifier<PageModel> {
   void insertEntry(Entry entry) {
     if (entry is Fact) {
       state = state.copyWith(
-          facts: [...state.facts.where((e) => e.id != entry.id), entry]);
+          facts: [...state.facts.where((e) => e.id != entry.id), entry],);
     } else if (entry is Speaker) {
       state = state.copyWith(
-          speakers: [...state.speakers.where((e) => e.id != entry.id), entry]);
+          speakers: [...state.speakers.where((e) => e.id != entry.id), entry],);
     } else if (entry is Event) {
       state = state.copyWith(
-          events: [...state.events.where((e) => e.id != entry.id), entry]);
+          events: [...state.events.where((e) => e.id != entry.id), entry],);
     } else if (entry is Dialogue) {
       state = state.copyWith(
-          dialogue: [...state.dialogue.where((e) => e.id != entry.id), entry]);
+          dialogue: [...state.dialogue.where((e) => e.id != entry.id), entry],);
     } else if (entry is ActionEntry) {
       state = state.copyWith(
-          actions: [...state.actions.where((e) => e.id != entry.id), entry]);
+          actions: [...state.actions.where((e) => e.id != entry.id), entry],);
     }
   }
 
@@ -78,18 +76,14 @@ class PageNotifier extends StateNotifier<PageModel> {
   }
 }
 
-final pageProvider = StateNotifierProvider<PageNotifier, PageModel>((ref) {
-  return PageNotifier();
-});
+final pageProvider = StateNotifierProvider<PageNotifier, PageModel>((ref) => PageNotifier());
 
-final selectedProvider = StateProvider<String>((ref) {
-  return "";
-});
+final selectedProvider = StateProvider<String>((ref) => "");
 
 class PageGraph extends HookConsumerWidget {
   const PageGraph({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,7 +104,7 @@ class PageGraph extends HookConsumerWidget {
         focus.requestFocus();
       }
       return null;
-    }, [currentFocus]);
+    }, [currentFocus],);
 
     if (page.events.isEmpty && page.rules.isEmpty) {
       return const SizedBox.expand(
@@ -122,10 +116,10 @@ class PageGraph extends HookConsumerWidget {
       shortcuts: {
         if (Platform.isIOS || Platform.isMacOS)
           const SingleActivator(LogicalKeyboardKey.keyP,
-              shift: true, meta: true): SearchIntent()
+              shift: true, meta: true,): SearchIntent()
         else
           const SingleActivator(LogicalKeyboardKey.keyP,
-              shift: true, control: true): SearchIntent(),
+              shift: true, control: true,): SearchIntent(),
         if (Platform.isIOS || Platform.isMacOS)
           const SingleActivator(LogicalKeyboardKey.keyK, meta: true):
               SearchIntent()
@@ -178,9 +172,7 @@ class PageGraph extends HookConsumerWidget {
 }
 
 class _Graph extends HookConsumerWidget {
-  const _Graph({
-    Key? key,
-  }) : super(key: key);
+  const _Graph();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -208,7 +200,7 @@ class _Graph extends HookConsumerWidget {
               ..color = Colors.green
               ..strokeWidth = 1
               ..style = PaintingStyle.stroke,
-            builder: (Node node) {
+            builder: (node) {
               final id = node.key!.value as String?;
 
               final rule = page.rules.firstWhereOrNull((r) => r.id == id);
@@ -235,19 +227,16 @@ class _Graph extends HookConsumerWidget {
 
               return const SizedBox();
             },
-          )),
+          ),),
     );
   }
 }
 
 class _AppBar extends HookConsumerWidget {
-  const _AppBar({
-    Key? key,
-  }) : super(key: key);
+  const _AppBar();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return AppBar(
+  Widget build(BuildContext context, WidgetRef ref) => AppBar(
       title: Text("Page Editor", style: Theme.of(context).textTheme.titleLarge),
       elevation: 0,
       backgroundColor: Colors.transparent,
@@ -262,7 +251,7 @@ class _AppBar extends HookConsumerWidget {
             builder: (context) => AlertDialog(
               title: const Text("Are you sure you want to leave?"),
               content: const Text(
-                  "Any unsaved changes will be lost if you leave this page."),
+                  "Any unsaved changes will be lost if you leave this page.",),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
@@ -331,7 +320,7 @@ class _AppBar extends HookConsumerWidget {
                             Text("Ignore"),
                             SizedBox(width: 8),
                             Icon(FontAwesomeIcons.triangleExclamation,
-                                size: 18),
+                                size: 18,),
                           ],
                         ),
                       ),
@@ -345,7 +334,7 @@ class _AppBar extends HookConsumerWidget {
                 if (ignore != true) return;
               }
 
-              String? output = await FilePicker.platform.saveFile(
+              final output = await FilePicker.platform.saveFile(
                 dialogTitle: "Save page to a file",
                 allowedExtensions: ["json"],
                 type: FileType.custom,
@@ -353,7 +342,7 @@ class _AppBar extends HookConsumerWidget {
               );
               if (output == null) return;
               final text = pageModelToJson(page);
-              File(output).writeAsString(text);
+              await File(output).writeAsString(text);
             },
             child: Row(
               children: const [
@@ -367,24 +356,23 @@ class _AppBar extends HookConsumerWidget {
         const SizedBox(width: 20),
       ],
     );
-  }
 }
 
 class NodeWidget extends HookConsumerWidget {
-  final String id;
-  final String name;
-  final Color backgroundColor;
-  final Color? foregroundColor;
-  final Widget? icon;
 
   const NodeWidget({
-    Key? key,
+    super.key,
     required this.id,
     required this.name,
     required this.backgroundColor,
     this.foregroundColor,
     this.icon,
-  }) : super(key: key);
+  });
+  final String id;
+  final String name;
+  final Color backgroundColor;
+  final Color? foregroundColor;
+  final Widget? icon;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -426,7 +414,7 @@ class NodeWidget extends HookConsumerWidget {
                   Text(
                     name,
                     style: GoogleFonts.jetBrainsMono(
-                        fontSize: 13, color: foregroundColor),
+                        fontSize: 13, color: foregroundColor,),
                   ),
                 ],
               ),

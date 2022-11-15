@@ -1,13 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rive/rive.dart';
-import 'package:typewriter/models/file_path.dart';
-import 'package:typewriter/widgets/filled_button.dart';
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:rive/rive.dart";
+import "package:typewriter/models/file_path.dart";
+import "package:typewriter/widgets/filled_button.dart";
 
 class HomePage extends HookConsumerWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
+
+  Future<void> _openSelector(WidgetRef ref, ValueNotifier<bool> openedSelector) async {
+    if (openedSelector.value) return;
+    openedSelector.value = true;
+    await pickAndLoadBook(ref);
+    openedSelector.value = false;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,16 +28,13 @@ class HomePage extends HookConsumerWidget {
             flex: 2,
             child: RiveAnimation.asset("assets/game_character.riv"),
           ),
-          const Text("Your journey starts here",
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+          const Text(
+            "Your journey starts here",
+            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 24),
           FilledButton.icon(
-            onPressed: () async {
-              if (openedSelector.value) return;
-              openedSelector.value = true;
-              await pickDirectory(ref);
-              openedSelector.value = false;
-            },
+            onPressed: () => _openSelector(ref, openedSelector),
             label: const Text("Open Typewriter Directory"),
             icon: const Icon(FontAwesomeIcons.folderOpen),
           ),

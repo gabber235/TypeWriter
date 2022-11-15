@@ -1,13 +1,17 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/utils/extensions.dart';
-import 'package:typewriter/widgets/inspector.dart';
+import "package:auto_size_text/auto_size_text.dart";
+import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/inspector.dart";
 
-final _entryColorProvider = Provider.autoDispose<Color>((ref) {
+part "heading.g.dart";
+
+@riverpod
+Color _entryColor(_EntryColorRef ref) {
   final def = ref.watch(entryDefinitionProvider);
   return def?.adapterEntry.color ?? Colors.grey;
-}, dependencies: [entryDefinitionProvider]);
+}
 
 class Heading extends HookConsumerWidget {
   const Heading({
@@ -24,41 +28,35 @@ class Heading extends HookConsumerWidget {
       children: [
         Title(
           color: color,
-          title: def?.entry.name.formatted ?? '',
+          title: def?.entry.name.formatted ?? "",
         ),
-        Identifier(id: def?.entry.id ?? ''),
+        Identifier(id: def?.entry.id ?? ""),
       ],
     );
   }
 }
 
 class Title extends StatelessWidget {
+  const Title({
+    required this.title,
+    required this.color,
+    super.key,
+  });
   final String title;
   final Color color;
 
-  const Title({
-    Key? key,
-    required this.title,
-    required this.color,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return AutoSizeText(
-      title,
-      style: TextStyle(color: color, fontSize: 40, fontWeight: FontWeight.w900),
-      maxLines: 1,
-    );
-  }
+  Widget build(BuildContext context) => AutoSizeText(
+        title,
+        style: TextStyle(color: color, fontSize: 40, fontWeight: FontWeight.w900),
+        maxLines: 1,
+      );
 }
 
 class Identifier extends StatelessWidget {
+  const Identifier({super.key, required this.id});
   final String id;
 
-  const Identifier({Key? key, required this.id}) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return SelectableText(id, style: Theme.of(context).textTheme.caption);
-  }
+  Widget build(BuildContext context) => SelectableText(id, style: Theme.of(context).textTheme.caption);
 }

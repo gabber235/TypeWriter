@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/models/page.dart';
-import 'package:typewriter/deprecated/pages/graph.dart';
-import 'package:typewriter/deprecated/pages/inspection_menu.dart';
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/models/page.dart";
+import "package:typewriter/deprecated/pages/graph.dart";
+import "package:typewriter/deprecated/pages/inspection_menu.dart";
 
 class EventInspector extends HookConsumerWidget {
-  final Event event;
 
   const EventInspector({
-    Key? key,
+    super.key,
     required this.event,
-  }) : super(key: key);
+  });
+  final Event event;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         EntryInformation(
@@ -37,11 +36,11 @@ class EventInspector extends HookConsumerWidget {
                 ...event.triggers.take(index),
                 trigger,
                 ...event.triggers.skip(index + 1),
-              ])),
+              ],),),
           onRemove: (trigger) => ref.read(pageProvider.notifier).insertEntry(
                 event.copyWith(triggers: [
                   ...event.triggers.where((t) => t != trigger),
-                ]),
+                ],),
               ),
         ),
 
@@ -61,17 +60,15 @@ class EventInspector extends HookConsumerWidget {
         Operations(entry: event),
       ],
     );
-  }
 }
 
 class _NpcIdentifierField extends HookConsumerWidget {
+
+  const _NpcIdentifierField({required this.event});
   final NpcEvent event;
 
-  const _NpcIdentifierField({Key? key, required this.event}) : super(key: key);
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SectionTitle(title: "Npc Identifier"),
@@ -81,24 +78,21 @@ class _NpcIdentifierField extends HookConsumerWidget {
             onSelected: (value) {
               ref.read(pageProvider.notifier).insertEntry(event.copyWith(
                     identifier: value.id,
-                  ));
-            }),
+                  ),);
+            },),
       ],
     );
-  }
 }
 
 class _CommandRegexField extends HookConsumerWidget {
-  final RunCommandEvent event;
 
   const _CommandRegexField({
-    Key? key,
     required this.event,
-  }) : super(key: key);
+  });
+  final RunCommandEvent event;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SectionTitle(title: "Command Regex"),
@@ -111,7 +105,7 @@ class _CommandRegexField extends HookConsumerWidget {
                 return newValue.copyWith(
                     text: newValue.text.substring(1),
                     selection: TextSelection.collapsed(
-                        offset: newValue.text.length - 1));
+                        offset: newValue.text.length - 1,),);
               }
               return newValue;
             })
@@ -119,11 +113,10 @@ class _CommandRegexField extends HookConsumerWidget {
           onChanged: (value) {
             ref.read(pageProvider.notifier).insertEntry(event.copyWith(
                   command: value,
-                ));
+                ),);
           },
           hintText: "Enter a command regex",
         ),
       ],
     );
-  }
 }

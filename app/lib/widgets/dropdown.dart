@@ -1,8 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:google_fonts/google_fonts.dart";
 
 class Dropdown<T> extends StatelessWidget {
+  const Dropdown({
+    required this.value,
+    required this.values,
+    required this.onChanged,
+    this.filled = true,
+    this.padding = const EdgeInsets.symmetric(horizontal: 12),
+    this.builder,
+    this.icon = FontAwesomeIcons.list,
+    this.borderRadius,
+    this.alignment,
+    super.key,
+  });
   final T value;
   final List<T> values;
   final Function(T value) onChanged;
@@ -15,61 +27,50 @@ class Dropdown<T> extends StatelessWidget {
 
   final Widget Function(BuildContext context, T value)? builder;
 
-  const Dropdown({
-    Key? key,
-    required this.value,
-    required this.values,
-    required this.onChanged,
-    this.filled = true,
-    this.padding = const EdgeInsets.symmetric(horizontal: 12),
-    this.builder,
-    this.icon = FontAwesomeIcons.list,
-    this.borderRadius,
-    this.alignment,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color: filled ? Theme.of(context).inputDecorationTheme.fillColor : null,
-        borderRadius: borderRadius ?? BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: const Color(0xFFBEBEBE), size: 16),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButton<T>(
-              value: value,
-              icon: Container(),
-              underline: Container(),
-              alignment: alignment ?? AlignmentDirectional.centerStart,
-              style: GoogleFonts.jetBrainsMono(
+  Widget build(BuildContext context) => Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          color: filled ? Theme.of(context).inputDecorationTheme.fillColor : null,
+          borderRadius: borderRadius ?? BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: const Color(0xFFBEBEBE), size: 16),
+            const SizedBox(width: 12),
+            Expanded(
+              child: DropdownButton<T>(
+                value: value,
+                icon: Container(),
+                underline: Container(),
+                alignment: alignment ?? AlignmentDirectional.centerStart,
+                style: GoogleFonts.jetBrainsMono(
                   textStyle: TextStyle(
-                      color: Theme.of(context).textTheme.bodyText1!.color)),
-              borderRadius: borderRadius ?? BorderRadius.circular(8),
-              items: values
-                  .map((e) => DropdownMenuItem(
-                        alignment:
-                            alignment ?? AlignmentDirectional.centerStart,
+                    color: Theme.of(context).textTheme.bodyText1!.color,
+                  ),
+                ),
+                borderRadius: borderRadius ?? BorderRadius.circular(8),
+                items: values
+                    .map(
+                      (e) => DropdownMenuItem(
+                        alignment: alignment ?? AlignmentDirectional.centerStart,
                         value: e,
-                        child: builder != null
-                            ? builder!(context, e)
-                            : Text(e.toString()),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                if (value == null) return;
-                onChanged(value);
-              },
+                        child: builder != null ? builder!(context, e) : Text(e.toString()),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  onChanged(value);
+                },
+              ),
             ),
-          ),
-          const Icon(FontAwesomeIcons.caretDown,
-              size: 16, color: Color(0xFFBEBEBE)),
-        ],
-      ),
-    );
-  }
+            const Icon(
+              FontAwesomeIcons.caretDown,
+              size: 16,
+              color: Color(0xFFBEBEBE),
+            ),
+          ],
+        ),
+      );
 }

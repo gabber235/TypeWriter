@@ -1,19 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 
 /// Run code after the widget tree has build.
 ///
 /// By default this is only ran on initialization.
 /// But this can be changed to run every build.
-void useDelayedExecution(Function function, {bool runEveryBuild = false}) {
-  return use(_DelayedExecutionHook(function, runEveryBuild: runEveryBuild));
-}
+void useDelayedExecution(Function function, {bool runEveryBuild = false}) => use(_DelayedExecutionHook(function, runEveryBuild: runEveryBuild));
 
 class _DelayedExecutionHook extends Hook<void> {
-  final Function function;
-  final bool runEveryBuild;
 
   const _DelayedExecutionHook(this.function, {required this.runEveryBuild});
+  final Function function;
+  final bool runEveryBuild;
 
   @override
   _DelayedExecutionHookState createState() => _DelayedExecutionHookState();

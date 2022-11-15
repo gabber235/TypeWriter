@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'search_bar.dart';
+part of 'entries_graph.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -29,34 +29,14 @@ class _SystemHash {
   }
 }
 
-String $_fuzzyEntriesHash() => r'34ffff98f1b2c262ecb01421d24a7034f77cb3ff';
+String $graphableEntriesHash() => r'333285470a7e9487207327aede9dee4e66c3b503';
 
-/// See also [_fuzzyEntries].
-final _fuzzyEntriesProvider = AutoDisposeProvider<Fuzzy<Entry>>(
-  _fuzzyEntries,
-  name: r'_fuzzyEntriesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_fuzzyEntriesHash,
-);
-typedef _FuzzyEntriesRef = AutoDisposeProviderRef<Fuzzy<Entry>>;
-String $_fuzzyAddEntriesHash() => r'68074cdb6afb1954d9991dbc7bd39d4e098742dd';
-
-/// See also [_fuzzyAddEntries].
-final _fuzzyAddEntriesProvider = AutoDisposeProvider<Fuzzy<EntryBlueprint>>(
-  _fuzzyAddEntries,
-  name: r'_fuzzyAddEntriesProvider',
+/// See also [graphableEntries].
+final graphableEntriesProvider = AutoDisposeProvider<List<Entry>>(
+  graphableEntries,
+  name: r'graphableEntriesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $_fuzzyAddEntriesHash,
+      : $graphableEntriesHash,
 );
-typedef _FuzzyAddEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryBlueprint>>;
-String $_actionsHash() => r'9d97edc939d2a61ed1f81adee9c64bef6f57dd5f';
-
-/// See also [_actions].
-final _actionsProvider = AutoDisposeProvider<List<_Action>>(
-  _actions,
-  name: r'_actionsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_actionsHash,
-);
-typedef _ActionsRef = AutoDisposeProviderRef<List<_Action>>;
+typedef GraphableEntriesRef = AutoDisposeProviderRef<List<Entry>>;

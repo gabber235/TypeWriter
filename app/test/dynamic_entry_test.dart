@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:typewriter/models/page.dart';
+import "package:flutter_test/flutter_test.dart";
+import "package:typewriter/models/page.dart";
 
 void main() {
-  var rawDynamicEntry = {
+  final rawDynamicEntry = {
     "id": "1",
     "name": "test",
     "type": "test_type",
@@ -36,7 +36,7 @@ void main() {
   };
 
   test("When a entry is parsed expect its fields to be able to be fetched", () {
-    var entry = Entry(rawDynamicEntry);
+    final entry = Entry(rawDynamicEntry);
 
     expect(entry.id, "1");
     expect(entry.name, "test");
@@ -59,7 +59,7 @@ void main() {
   });
 
   test("When a key is not found, null is returned", () {
-    var entry = Entry(rawDynamicEntry);
+    final entry = Entry(rawDynamicEntry);
     expect(entry.get("not_found"), null);
     expect(entry.get("simple_list.4"), null);
     expect(entry.get("complex_list.4.name"), null);
@@ -68,7 +68,7 @@ void main() {
   });
 
   test("When a key is not found, a default value is returned", () {
-    var entry = Entry(rawDynamicEntry);
+    final entry = Entry(rawDynamicEntry);
     expect(entry.get("not_found", "default"), "default");
     expect(entry.get("simple_list.4", "default"), "default");
     expect(entry.get("complex_list.4.name", "default"), "default");
@@ -77,7 +77,7 @@ void main() {
   });
 
   test("When a dynamic entry is updated, the new value is returned", () {
-    var entry = Entry(rawDynamicEntry);
+    final entry = Entry(rawDynamicEntry);
     var newEntry = entry.copyWith("simple_list.1", 4);
     expect(newEntry.get("simple_list.1"), 4);
 
@@ -93,7 +93,7 @@ void main() {
 
   test("When a entry is updated, expect the original entry to be unchanged",
       () {
-    var entry = Entry(rawDynamicEntry);
+    final entry = Entry(rawDynamicEntry);
     entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
     expect(entry.get("complex_map.key2.inner_list.1.name"), "test2");
   });

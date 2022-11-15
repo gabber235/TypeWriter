@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/app_router.dart';
+import "package:flutter/material.dart";
+import "package:google_fonts/google_fonts.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/app_router.dart";
 
 void main() {
   runApp(const ProviderScope(child: TypeWriterApp()));
@@ -11,13 +10,13 @@ void main() {
 final appRouter = Provider<AppRouter>((ref) => AppRouter());
 
 class TypeWriterApp extends HookConsumerWidget {
-  const TypeWriterApp({Key? key}) : super(key: key);
+  const TypeWriterApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouter);
     return MaterialApp.router(
-      title: 'TypeWriter',
+      title: "TypeWriter",
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
       debugShowCheckedModeBanner: false,
@@ -27,7 +26,7 @@ class TypeWriterApp extends HookConsumerWidget {
   }
 
   ThemeData _buildTheme(Brightness brightness) {
-    var baseTheme = ThemeData(brightness: brightness);
+    final baseTheme = ThemeData(brightness: brightness);
 
     return baseTheme.copyWith(
       textTheme: GoogleFonts.jetBrainsMonoTextTheme(baseTheme.textTheme),

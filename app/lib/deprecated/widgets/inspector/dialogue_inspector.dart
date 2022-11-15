@@ -1,24 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/deprecated/models/page.dart';
-import 'package:typewriter/deprecated/pages/graph.dart';
-import 'package:typewriter/deprecated/pages/inspection_menu.dart';
-import 'package:typewriter/utils/extensions.dart';
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/deprecated/models/page.dart";
+import "package:typewriter/deprecated/pages/graph.dart";
+import "package:typewriter/deprecated/pages/inspection_menu.dart";
+import "package:typewriter/utils/extensions.dart";
 
 class DialogueInspector extends HookConsumerWidget {
-  final Dialogue dialogue;
 
   const DialogueInspector({
-    Key? key,
+    super.key,
     required this.dialogue,
-  }) : super(key: key);
+  });
+  final Dialogue dialogue;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         EntryInformation(
@@ -32,19 +31,19 @@ class DialogueInspector extends HookConsumerWidget {
           title: dialogue is OptionDialogue ? "Global Triggers" : "Triggers",
           triggers: dialogue.triggers,
           onAdd: () => ref.read(pageProvider.notifier).insertEntry(
-              dialogue.copyWith(triggers: [...dialogue.triggers, ""])),
+              dialogue.copyWith(triggers: [...dialogue.triggers, ""]),),
           onChanged: (index, trigger) => ref
               .read(pageProvider.notifier)
               .insertEntry(dialogue.copyWith(triggers: [
                 ...dialogue.triggers.sublist(0, index),
                 trigger,
                 ...dialogue.triggers.sublist(index + 1),
-              ])),
+              ],),),
           onRemove: (trigger) => ref
               .read(pageProvider.notifier)
               .insertEntry(dialogue.copyWith(triggers: [
                 ...dialogue.triggers.where((e) => e != trigger),
-              ])),
+              ],),),
         ),
         const Divider(),
         const SectionTitle(title: "Triggered By"),
@@ -55,26 +54,26 @@ class DialogueInspector extends HookConsumerWidget {
           icon: FontAwesomeIcons.satelliteDish,
           list: dialogue.triggeredBy,
           onAdd: () => ref.read(pageProvider.notifier).insertEntry(
-              dialogue.copyWith(triggeredBy: [...dialogue.triggeredBy, ""])),
+              dialogue.copyWith(triggeredBy: [...dialogue.triggeredBy, ""]),),
           onChanged: (index, value) => ref
               .read(pageProvider.notifier)
               .insertEntry(dialogue.copyWith(triggeredBy: [
                 ...dialogue.triggeredBy.sublist(0, index),
                 value,
                 ...dialogue.triggeredBy.sublist(index + 1),
-              ])),
+              ],),),
           onRemove: (value) => ref
               .read(pageProvider.notifier)
               .insertEntry(dialogue.copyWith(triggeredBy: [
                 ...dialogue.triggeredBy.where((e) => e != value),
-              ])),
+              ],),),
           onQuery: (value) =>
               ref.read(pageProvider).triggerEntries.expand((entry) => [
                     ...entry.triggers,
                     if (entry is RuleEntry) ...entry.triggeredBy,
                     if (entry is OptionDialogue)
                       ...entry.options.expand((e) => e.triggers),
-                  ]),
+                  ],),
         ),
         const Divider(),
         const SectionTitle(title: "Criteria"),
@@ -86,20 +85,20 @@ class DialogueInspector extends HookConsumerWidget {
                   .copyWith(criteria: [
                 ...dialogue.criteria,
                 const Criterion(fact: "", operator: "==", value: 0)
-              ])),
+              ],),),
           onChanged: (index, criterion) => ref
               .read(pageProvider.notifier)
               .insertEntry(dialogue.copyWith(criteria: [
                 ...dialogue.criteria.sublist(0, index),
                 criterion,
                 ...dialogue.criteria.sublist(index + 1),
-              ])),
+              ],),),
           onRemove: (index) => ref
               .read(pageProvider.notifier)
               .insertEntry(dialogue.copyWith(criteria: [
                 ...dialogue.criteria.sublist(0, index),
                 ...dialogue.criteria.sublist(index + 1),
-              ])),
+              ],),),
         ),
         const Divider(),
         const SectionTitle(title: "Modifiers"),
@@ -112,20 +111,20 @@ class DialogueInspector extends HookConsumerWidget {
                   .copyWith(modifiers: [
                 ...dialogue.modifiers,
                 const Criterion(fact: "", operator: "=", value: 0)
-              ])),
+              ],),),
           onChanged: (index, criterion) => ref
               .read(pageProvider.notifier)
               .insertEntry(dialogue.copyWith(modifiers: [
                 ...dialogue.modifiers.sublist(0, index),
                 criterion,
                 ...dialogue.modifiers.sublist(index + 1),
-              ])),
+              ],),),
           onRemove: (index) => ref
               .read(pageProvider.notifier)
               .insertEntry(dialogue.copyWith(modifiers: [
                 ...dialogue.modifiers.sublist(0, index),
                 ...dialogue.modifiers.sublist(index + 1),
-              ])),
+              ],),),
         ),
         const Divider(),
         _SpeakerField(dialogue: dialogue),
@@ -148,17 +147,15 @@ class DialogueInspector extends HookConsumerWidget {
         Operations(entry: dialogue),
       ],
     );
-  }
 }
 
 class _SpeakerField extends HookConsumerWidget {
+
+  const _SpeakerField({required this.dialogue});
   final Dialogue dialogue;
 
-  const _SpeakerField({Key? key, required this.dialogue}) : super(key: key);
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+  Widget build(BuildContext context, WidgetRef ref) => Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
       const SectionTitle(title: "Speaker"),
       const SizedBox(height: 8),
       SpeakerSelector(
@@ -166,24 +163,22 @@ class _SpeakerField extends HookConsumerWidget {
           onSelected: (value) {
             ref.read(pageProvider.notifier).insertEntry(dialogue.copyWith(
                   speaker: value.id,
-                ));
-          }),
-    ]);
-  }
+                ),);
+          },),
+    ],);
 }
 
 class _TextField extends HookConsumerWidget {
-  final Dialogue dialogue;
 
   const _TextField({
-    Key? key,
     required this.dialogue,
-  }) : super(key: key);
+  });
+  final Dialogue dialogue;
 
   void _onChanged(String value, WidgetRef ref) {
     ref.read(pageProvider.notifier).insertEntry(dialogue.copyWith(
           text: value,
-        ));
+        ),);
   }
 
   @override
@@ -214,21 +209,19 @@ class _TextField extends HookConsumerWidget {
           contentPadding: EdgeInsets.only(left: 8, top: 12, bottom: 12),
         ),
       ),
-    ]);
+    ],);
   }
 }
 
 class _DurationField extends HookConsumerWidget {
-  final SpokenDialogue dialogue;
 
   const _DurationField({
-    Key? key,
     required this.dialogue,
-  }) : super(key: key);
+  });
+  final SpokenDialogue dialogue;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SectionTitle(title: "Duration"),
@@ -237,28 +230,26 @@ class _DurationField extends HookConsumerWidget {
           text: (dialogue.duration * 50).toString(),
           keyboardType: TextInputType.number,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+            FilteringTextInputFormatter.allow(RegExp("[0-9]")),
           ],
           onChanged: (value) {
             ref.read(pageProvider.notifier).insertEntry(dialogue.copyWith(
                   duration: (int.tryParse(value) ?? 0) ~/ 50,
-                ));
+                ),);
           },
           hintText: "Enter a duration (ms)",
           icon: FontAwesomeIcons.solidClock,
         ),
       ],
     );
-  }
 }
 
 class _OptionsList extends HookConsumerWidget {
-  final OptionDialogue dialogue;
 
   const _OptionsList({
-    Key? key,
     required this.dialogue,
-  }) : super(key: key);
+  });
+  final OptionDialogue dialogue;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -284,8 +275,7 @@ class _OptionsList extends HookConsumerWidget {
                 backgroundColor: context.isDark
                     ? Colors.black.withOpacity(0.05)
                     : Colors.white.withOpacity(0.80),
-                headerBuilder: (context, expanded) {
-                  return Row(
+                headerBuilder: (context, expanded) => Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       if (expanded) ...[
@@ -309,8 +299,7 @@ class _OptionsList extends HookConsumerWidget {
                       ),
                       const SizedBox(width: 8),
                     ],
-                  );
-                },
+                  ),
                 body: _OptionField(
                   option: dialogue.options[i],
                   index: i,
@@ -332,7 +321,7 @@ class _OptionsList extends HookConsumerWidget {
           onPressed: () {
             ref.read(pageProvider.notifier).insertEntry(dialogue.copyWith(
                   options: [...dialogue.options, const Option(text: "")],
-                ));
+                ),);
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -352,21 +341,19 @@ class _OptionsList extends HookConsumerWidget {
 }
 
 class _OptionField extends HookWidget {
+
+  const _OptionField({
+    required this.option,
+    required this.index,
+    required this.onChanged,
+  });
   final Option option;
   final int index;
 
   final Function(Option) onChanged;
 
-  const _OptionField({
-    Key? key,
-    required this.option,
-    required this.index,
-    required this.onChanged,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -387,17 +374,17 @@ class _OptionField extends HookWidget {
             triggers: option.triggers,
             onAdd: () => onChanged(option.copyWith(
               triggers: [...option.triggers, ""],
-            )),
+            ),),
             onChanged: (index, trigger) => onChanged(option.copyWith(
               triggers: [
                 ...option.triggers.sublist(0, index),
                 trigger,
                 ...option.triggers.sublist(index + 1),
               ],
-            )),
+            ),),
             onRemove: (trigger) => onChanged(option.copyWith(
               triggers: option.triggers.where((t) => t != trigger).toList(),
-            )),
+            ),),
           ),
           const Divider(),
           const SectionTitle(title: "Criteria"),
@@ -410,20 +397,20 @@ class _OptionField extends HookWidget {
                 ...option.criteria,
                 const Criterion(fact: "", operator: "==", value: 0)
               ],
-            )),
+            ),),
             onChanged: (index, criteria) => onChanged(option.copyWith(
               criteria: [
                 ...option.criteria.sublist(0, index),
                 criteria,
                 ...option.criteria.sublist(index + 1),
               ],
-            )),
+            ),),
             onRemove: (index) => onChanged(option.copyWith(
               criteria: [
                 ...option.criteria.sublist(0, index),
                 ...option.criteria.sublist(index + 1),
               ],
-            )),
+            ),),
           ),
           const Divider(),
           const SectionTitle(title: "Modifiers"),
@@ -437,23 +424,22 @@ class _OptionField extends HookWidget {
                 ...option.modifiers,
                 const Criterion(fact: "", operator: "=", value: 0)
               ],
-            )),
+            ),),
             onChanged: (index, modifier) => onChanged(option.copyWith(
               modifiers: [
                 ...option.modifiers.sublist(0, index),
                 modifier,
                 ...option.modifiers.sublist(index + 1),
               ],
-            )),
+            ),),
             onRemove: (index) => onChanged(option.copyWith(
               modifiers: [
                 ...option.modifiers.sublist(0, index),
                 ...option.modifiers.sublist(index + 1),
               ],
-            )),
+            ),),
           ),
         ],
       ),
     );
-  }
 }

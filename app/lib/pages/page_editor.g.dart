@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'search_bar.dart';
+part of 'page_editor.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -29,34 +29,34 @@ class _SystemHash {
   }
 }
 
-String $_fuzzyEntriesHash() => r'34ffff98f1b2c262ecb01421d24a7034f77cb3ff';
+String $currentPageIdHash() => r'571974ea9917592aa36a30958783a1be0406e796';
 
-/// See also [_fuzzyEntries].
-final _fuzzyEntriesProvider = AutoDisposeProvider<Fuzzy<Entry>>(
-  _fuzzyEntries,
-  name: r'_fuzzyEntriesProvider',
+/// See also [currentPageId].
+final currentPageIdProvider = AutoDisposeProvider<String?>(
+  currentPageId,
+  name: r'currentPageIdProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_fuzzyEntriesHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : $currentPageIdHash,
 );
-typedef _FuzzyEntriesRef = AutoDisposeProviderRef<Fuzzy<Entry>>;
-String $_fuzzyAddEntriesHash() => r'68074cdb6afb1954d9991dbc7bd39d4e098742dd';
+typedef CurrentPageIdRef = AutoDisposeProviderRef<String?>;
+String $currentPageLabelHash() => r'3a0685c6033a322a1538a72ce9f77abd6add0ab9';
 
-/// See also [_fuzzyAddEntries].
-final _fuzzyAddEntriesProvider = AutoDisposeProvider<Fuzzy<EntryBlueprint>>(
-  _fuzzyAddEntries,
-  name: r'_fuzzyAddEntriesProvider',
+/// See also [currentPageLabel].
+final currentPageLabelProvider = AutoDisposeProvider<String>(
+  currentPageLabel,
+  name: r'currentPageLabelProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $_fuzzyAddEntriesHash,
+      : $currentPageLabelHash,
 );
-typedef _FuzzyAddEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryBlueprint>>;
-String $_actionsHash() => r'9d97edc939d2a61ed1f81adee9c64bef6f57dd5f';
+typedef CurrentPageLabelRef = AutoDisposeProviderRef<String>;
+String $currentPageHash() => r'019404b1e80234d7a6d9ed18030acc589ce2d700';
 
-/// See also [_actions].
-final _actionsProvider = AutoDisposeProvider<List<_Action>>(
-  _actions,
-  name: r'_actionsProvider',
+/// See also [currentPage].
+final currentPageProvider = AutoDisposeProvider<Page?>(
+  currentPage,
+  name: r'currentPageProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_actionsHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : $currentPageHash,
 );
-typedef _ActionsRef = AutoDisposeProviderRef<List<_Action>>;
+typedef CurrentPageRef = AutoDisposeProviderRef<Page?>;

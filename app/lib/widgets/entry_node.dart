@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/utils/extensions.dart';
-import 'package:typewriter/widgets/inspector.dart';
+import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/page.dart";
+import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/inspector.dart";
 
 class EntryNode extends HookConsumerWidget {
-  final Entry entry;
-
   const EntryNode({
-    super.key,
     required this.entry,
+    super.key,
   }) : super();
+  final Entry entry;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final adapterEntry = ref.watch(adapterEntryProvider(entry.type));
+    final adapterEntry = ref.watch(entryBlueprintProvider(entry.type));
     if (adapterEntry == null) {
       return Container();
     }
@@ -30,29 +29,25 @@ class EntryNode extends HookConsumerWidget {
 }
 
 class _EntryNode extends HookConsumerWidget {
+  const _EntryNode({
+    required this.id,
+    this.backgroundColor = Colors.grey,
+    this.foregroundColor = Colors.black,
+    this.name = "",
+    this.icon = const Icon(Icons.book),
+  });
   final String id;
   final Color backgroundColor;
   final Color foregroundColor;
   final String name;
   final Widget icon;
 
-  const _EntryNode({
-    Key? key,
-    required this.id,
-    this.backgroundColor = Colors.grey,
-    this.foregroundColor = Colors.black,
-    this.name = '',
-    this.icon = const Icon(Icons.book),
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isSelected = ref.watch(selectedEntryIdProvider) == id;
 
     return GestureDetector(
-      onTap: () {
-        ref.read(selectedEntryIdProvider.notifier).state = id;
-      },
+      onTap: () => ref.read(selectedEntryIdProvider.notifier).state = id,
       child: Material(
         borderRadius: BorderRadius.circular(4),
         color: backgroundColor,
@@ -64,9 +59,7 @@ class _EntryNode extends HookConsumerWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: isSelected
-                    ? Theme.of(context).scaffoldBackgroundColor
-                    : backgroundColor,
+                color: isSelected ? Theme.of(context).scaffoldBackgroundColor : backgroundColor,
                 width: 3,
               ),
             ),
