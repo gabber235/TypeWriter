@@ -15,16 +15,13 @@ class Interaction(val player: Player) {
 		dialogue?.tick()
 	}
 
+	/**
+	 * Handles an event.
+	 * All events that start with "system." are handled by the plugin itself.
+	 */
 	fun onEvent(event: Event) {
 		if (event.id == "system.dialogue.next") {
-			val dialog = dialogue ?: return
-			if (dialog.triggers.isEmpty()) {
-				InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
-				return
-			}
-			dialog.triggers.forEach {
-				InteractionHandler.triggerEvent(Event(it, player))
-			}
+			onDialogueNext()
 			return
 		}
 		if (event.id == "system.dialogue.end") {
@@ -34,19 +31,45 @@ class Interaction(val player: Player) {
 		}
 
 		// Try to trigger new/next dialogue
+		tryTriggerNextDialogue(event)
+	}
+
+	/**
+	 * Tries to trigger a new dialogue.
+	 * If no dialogue can be found, it will end the dialogue sequence.
+	 */
+	private fun tryTriggerNextDialogue(event: Event) {
 		val facts = player.facts
 		val nextDialogue = EntryDatabase.findDialogue(event.id, facts)
 		if (nextDialogue != null) {
+			// If there is no sequence yet, start a new one
 			if (dialogue == null) {
 				dialogue = DialogueSequence(player, nextDialogue)
 				dialogue?.init()
 			} else {
+				// If there is a sequence, trigger the next dialogue
 				dialogue?.next(nextDialogue)
 			}
 		} else if (dialogue?.isActive == false) {
+			// If there is no next dialogue and the sequence isn't active anymore, we can end the sequence
 			InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
 		}
+	}
 
+	/**
+	 * Called when the player clicks the next button.
+	 * If there is no next dialogue, the sequence will be ended.
+	 */
+	private fun onDialogueNext() {
+		val dialog = dialogue ?: return
+		if (dialog.triggers.isEmpty()) {
+			InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
+			return
+		}
+		dialog.triggers.forEach {
+			InteractionHandler.triggerEvent(Event(it, player))
+		}
+		return
 	}
 
 	fun end() {

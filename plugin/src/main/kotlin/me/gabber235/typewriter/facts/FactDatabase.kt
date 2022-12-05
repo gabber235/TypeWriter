@@ -28,12 +28,15 @@ object FactDatabase {
 		storage = FileFactStorage()
 		storage.init()
 
+		// Load facts for players before they join.
+		// This way we can delay the loading screen.
 		plugin.listen<AsyncPlayerPreLoginEvent> { event ->
 			runBlocking {
 				loadFacts(event.uniqueId)
 			}
 		}
 
+		// Save facts when a player leaves
 		plugin.listen<PlayerQuitEvent> { event ->
 			val facts = cache.remove(event.player.uniqueId)
 			if (facts != null) {
@@ -43,6 +46,8 @@ object FactDatabase {
 			}
 		}
 
+		// Filter expired facts every second.
+		// After that, save the facts of the players who have facts that expired or changed.
 		plugin.launchAsync {
 			while (plugin.isEnabled) {
 				delay(1000)
@@ -138,7 +143,8 @@ class FactsModifier(private val facts: Set<Fact>) {
 	private val modifications = mutableMapOf<String, Int>()
 
 	fun modify(id: String, modifier: (Int) -> Int) {
-		modifications[id] = modifier(modifications[id] ?: facts.firstOrNull { it.id == id }?.value ?: 0)
+		val oldValue = modifications[id] ?: facts.firstOrNull { it.id == id }?.value ?: 0
+		modifications[id] = modifier(oldValue)
 	}
 
 	fun set(id: String, value: Int) {
@@ -150,6 +156,7 @@ class FactsModifier(private val facts: Set<Fact>) {
 		modifications.forEach { (name, value) ->
 			val fact = newFacts.find { it.id == name }
 			if (fact != null) {
+				// Always remove the fact, and only add it again if it has a value
 				newFacts.remove(fact)
 				if (value != 0) newFacts.add(fact.copy(value = value, lastUpdate = LocalDateTime.now()))
 			} else if (value != 0) {

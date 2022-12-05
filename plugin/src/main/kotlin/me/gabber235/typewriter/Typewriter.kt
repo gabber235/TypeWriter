@@ -36,7 +36,7 @@ class Typewriter : KotlinPlugin() {
 
 		if (!server.pluginManager.isPluginEnabled("ProtocolLib")) {
 			logger.warning("ProtocolLib is not enabled, Typewriter will not work without it. Shutting down...")
-			isEnabled = false
+			server.pluginManager.disablePlugin(this)
 			return
 		}
 

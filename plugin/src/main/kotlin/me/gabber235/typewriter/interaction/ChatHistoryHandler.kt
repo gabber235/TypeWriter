@@ -27,6 +27,8 @@ object ChatHistoryHandler :
 				return
 			}
 			val component = GsonComponentSerializer.gson().deserialize(content)
+			// If the message is a broadcast of previous messages.
+			// We don't want to add this to the history.
 			if (component is TextComponent && component.content() == "no-index") return
 			getHistory(event.player).addMessage(component)
 		}
@@ -57,6 +59,7 @@ class ChatHistory {
 	private fun clearMessage() = "\n".repeat(80 - messages.size)
 
 	fun resendMessages(player: Player, clear: Boolean = true) {
+		// Start with "no-index" to prevent the server from adding the message to the history
 		var msg = Component.text("no-index")
 		if (clear) msg = msg.append(clearMessage().asMini())
 		messages.forEach { msg = msg.append(Component.text("\n")).append(it) }
@@ -64,6 +67,7 @@ class ChatHistory {
 	}
 
 	fun composeDarkMessage(message: Component, clear: Boolean = true): Component {
+		// Start with "no-index" to prevent the server from adding the message to the history
 		var msg = Component.text("no-index")
 		if (clear) msg = msg.append(clearMessage().asMini())
 		messages.forEach {

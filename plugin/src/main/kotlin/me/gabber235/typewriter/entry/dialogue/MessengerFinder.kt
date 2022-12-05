@@ -16,13 +16,15 @@ object MessengerFinder {
 	private var messengers = emptyMap<MessengerData, MessengerFilter>()
 
 	fun init() {
-		messengers = AdapterLoader.getAdapterData().flatMap { it.messengers }.associateBy({ it }, {
-			if (it.filter.kotlin.isCompanion) {
-				it.filter.kotlin.objectInstance as MessengerFilter
-			} else {
-				it.filter.kotlin.createInstance()
-			}
-		})
+		messengers = AdapterLoader.getAdapterData().flatMap { it.messengers }.associateBy({ it }, ::instantiateFilter)
+	}
+
+	private fun instantiateFilter(data: MessengerData): MessengerFilter {
+		return if (data.filter.kotlin.isCompanion) {
+			data.filter.kotlin.objectInstance as MessengerFilter
+		} else {
+			data.filter.kotlin.createInstance()
+		}
 	}
 
 	fun findMessenger(player: Player, entry: DialogueEntry): DialogueMessenger<out DialogueEntry> {

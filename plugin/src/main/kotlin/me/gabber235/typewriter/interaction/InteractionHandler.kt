@@ -44,16 +44,29 @@ object InteractionHandler {
 		}
 	}
 
-	fun startInteractionAndTrigger(player: Player, initialTriggers: List<String>) {
+	/** Some triggers start an interaction. Though we don't want to trigger the starting of an interaction multiple times,
+	 * we need to check if the player is already in an interaction.
+	 *
+	 * @param player The player who interacted
+	 * @param triggers A list of triggers that should be fired.
+	 */
+	fun startInteractionAndTrigger(player: Player, triggers: List<String>) {
 		if (!interactions.containsKey(player.uniqueId)) {
 			triggerEvent(Event("system.interaction.start", player))
 		}
-		for (trigger in initialTriggers) {
+		for (trigger in triggers) {
 			triggerEvent(Event(trigger, player))
 		}
 	}
 
 
+	/**
+	 * Triggers an event.
+	 * All events that start with "system." are handled by the plugin itself.
+	 * All other events are handled based on the entries in the database.
+	 *
+	 * @param event The event to trigger
+	 */
 	fun triggerEvent(event: Event) {
 		val interaction = interactions[event.player.uniqueId]
 		if (event.id == "system.interaction.start") {
@@ -73,6 +86,15 @@ object InteractionHandler {
 
 		interaction?.onEvent(event)
 
+		triggerActions(event)
+	}
+
+	/**
+	 * Triggers all actions that are registered for the given event.
+	 *
+	 * @param event The event that should be triggered
+	 */
+	private fun triggerActions(event: Event) {
 		// Trigger all actions
 		val actions = EntryDatabase.findActions(event.id, event.player.facts)
 		actions.forEach { action ->
@@ -86,6 +108,7 @@ object InteractionHandler {
 	}
 
 	fun init() {
+		// We want interactions to end if the interaction is not active.
 		job = plugin.launch {
 			while (plugin.isEnabled) {
 				delay(50)
@@ -98,11 +121,13 @@ object InteractionHandler {
 			}
 		}
 
+		// When a player leaves the server, we need to end the interaction and clear its chat history.
 		plugin.listen<PlayerQuitEvent> { event ->
 			interactions.remove(event.player.uniqueId)?.end()
 			event.player.chatHistory.clear()
 		}
 
+		// When a player tries to execute a command, we need to end the interaction.
 		plugin.listen<PlayerCommandPreprocessEvent>(priority = EventPriority.MONITOR, ignoreCancelled = true) { event ->
 			triggerEvent(Event("system.dialogue.end", event.player))
 

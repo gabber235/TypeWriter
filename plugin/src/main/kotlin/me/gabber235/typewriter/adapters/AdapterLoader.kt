@@ -10,6 +10,7 @@ import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
 import me.gabber235.typewriter.utils.get
 import java.io.File
 import java.net.URLClassLoader
+import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObject
@@ -29,11 +30,9 @@ private val gson =
 object AdapterLoader {
 	private var adapters = listOf<AdapterData>()
 	fun loadAdapters() {
-		adapters = plugin.dataFolder["adapters"].listFiles()?.mapNotNull {
-			if (it.extension == "jar") {
-				plugin.logger.info("Loading adapter ${it.nameWithoutExtension}")
-				loadAdapter(it)
-			} else null
+		adapters = plugin.dataFolder["adapters"].listFiles()?.filter { it.extension == "jar" }?.map {
+			plugin.logger.info("Loading adapter ${it.nameWithoutExtension}")
+			loadAdapter(it)
 		} ?: listOf()
 
 		// Write the adapters to a file
@@ -54,87 +53,102 @@ object AdapterLoader {
 	private val ignorePrefixes = listOf("kotlin", "java", "META-INF", "org/bukkit", "org/intellij", "org/jetbrains")
 
 	private fun loadAdapter(file: File): AdapterData {
-		val jarFile = JarFile(file)
-		val loader = URLClassLoader(arrayOf(file.toURI().toURL()), javaClass.classLoader)
+		val classes = loadClasses(file)
 
-		var adapterClass: Class<*>? = null
-		val entryClasses = mutableListOf<Class<*>>()
-		val messengerClasses = mutableListOf<Class<*>>()
+		val adapterClass: Class<*> = classes.firstOrNull { it.hasAnnotation(Adapter::class) }
+			?: throw IllegalArgumentException("No adapter class found in ${file.name}")
 
-		val jars = jarFile.entries()
-		while (jars.hasMoreElements()) {
-			val entry = jars.nextElement()
-			if (entry.name.endsWith(".class") && ignorePrefixes.none { entry.name.startsWith(it) }) {
-				val className = entry.name.replace("/", ".").substring(0, entry.name.length - 6)
-				val clazz = loader.loadClass(className)
-
-				if (clazz.isAnnotationPresent(Adapter::class.java)) {
-					adapterClass = clazz
-				} else if (clazz.isAnnotationPresent(Entry::class.java)) {
-					entryClasses.add(clazz)
-				} else if (clazz.isAnnotationPresent(Messenger::class.java)) {
-					messengerClasses.add(clazz)
-				}
-			}
-		}
-
-		if (adapterClass == null) {
-			throw IllegalArgumentException("No adapter class found in ${file.name}")
-		}
+		val entryClasses = classes.filter { it.hasAnnotation(Entry::class) }
+		val messengerClasses = classes.filter { it.hasAnnotation(Messenger::class) }
 
 
-		val adapter = {
-			// Apdapter info
-			val adapterAnnotation = adapterClass.getAnnotation(Adapter::class.java)
+		return constructAdapter(adapterClass, entryClasses, messengerClasses)
+	}
 
-			// Entries info
-			val entries = entryClasses.filter { me.gabber235.typewriter.entry.Entry::class.java.isAssignableFrom(it) }
-				.map { it as Class<out me.gabber235.typewriter.entry.Entry> }
-				.map { entryClass ->
-					val entryAnnotation = entryClass.getAnnotation(Entry::class.java)
+	private fun constructAdapter(
+		adapterClass: Class<*>,
+		entryClasses: List<Class<*>>,
+		messengerClasses: List<Class<*>>
+	): AdapterData {
+		val adapterAnnotation = adapterClass.getAnnotation(Adapter::class.java)
 
-					EntryBlueprint(
-						entryAnnotation.name,
-						entryAnnotation.description,
-						ObjectField.fromTypeToken(TypeToken.get(entryClass)),
-						entryClass,
-					)
-				}
+		// Entries info
+		val blueprints = constructEntryBlueprints(entryClasses)
 
-			// Messengers info
-			val messengers = messengerClasses.map { messengerClass ->
-				val messengerAnnotation = messengerClass.getAnnotation(Messenger::class.java)
+		// Messengers info
+		val messengers = constructMessengers(messengerClasses)
 
-				//TODO: Make compatible with java.
-				val filter = if (messengerClass.kotlin.companionObject?.isSubclassOf(MessengerFilter::class) == true) {
-					messengerClass.kotlin.companionObject!!.java
-				} else {
-					EmptyMessengerFilter::class.java
-				}
+		// Create the adapter data
+		return AdapterData(
+			adapterAnnotation?.name ?: "",
+			adapterAnnotation?.description ?: "",
+			adapterAnnotation?.version ?: "",
+			blueprints,
+			messengers,
+			adapterClass,
+		)
+	}
 
+	private fun constructEntryBlueprints(entryClasses: List<Class<*>>) =
+		entryClasses.filter { me.gabber235.typewriter.entry.Entry::class.java.isAssignableFrom(it) }
+			.map { it as Class<out me.gabber235.typewriter.entry.Entry> }
+			.map { entryClass ->
+				val entryAnnotation = entryClass.getAnnotation(Entry::class.java)
 
-				MessengerData(
-					messengerClass as Class<out DialogueMessenger<*>>,
-					messengerAnnotation.dialogue.java,
-					filter as Class<out MessengerFilter>,
-					messengerAnnotation.priority,
+				EntryBlueprint(
+					entryAnnotation.name,
+					entryAnnotation.description,
+					ObjectField.fromTypeToken(TypeToken.get(entryClass)),
+					entryClass,
 				)
 			}
 
-			// Create the adapter data
-			AdapterData(
-				adapterAnnotation?.name ?: "",
-				adapterAnnotation?.description ?: "",
-				adapterAnnotation?.version ?: "",
-				entries,
-				messengers,
-				adapterClass,
+	private fun constructMessengers(messengerClasses: List<Class<*>>) =
+		messengerClasses.map { messengerClass ->
+			val messengerAnnotation = messengerClass.getAnnotation(Messenger::class.java)
+
+			val filter = findFilterForMessenger(messengerClass)
+			
+			MessengerData(
+				messengerClass as Class<out DialogueMessenger<*>>,
+				messengerAnnotation.dialogue.java,
+				filter as Class<out MessengerFilter>,
+				messengerAnnotation.priority,
 			)
 		}
 
+	//TODO: Make compatible with java.
+	private fun findFilterForMessenger(messengerClass: Class<*>) =
+		if (messengerClass.kotlin.companionObject?.isSubclassOf(MessengerFilter::class) == true) {
+			messengerClass.kotlin.companionObject!!.java
+		} else {
+			EmptyMessengerFilter::class.java
+		}
 
-		return adapter()
+	private fun loadClasses(file: File): List<Class<*>> {
+		val jarFile = JarFile(file)
+		val loader = URLClassLoader(arrayOf(file.toURI().toURL()), javaClass.classLoader)
+		val entries = jarFile.entries()
+
+		val classes = mutableListOf<Class<*>>()
+		while (entries.hasMoreElements()) {
+			val entry = entries.nextElement()
+			if (isClassFile(entry) && notIgnored(entry)) {
+				val className = entry.name.replace("/", ".").substring(0, entry.name.length - 6)
+				classes.add(loader.loadClass(className))
+			}
+		}
+
+		return classes
 	}
+
+	private fun Class<*>.hasAnnotation(annotation: KClass<out Annotation>): Boolean {
+		return isAnnotationPresent(annotation.java)
+	}
+
+	private fun notIgnored(entry: JarEntry) = ignorePrefixes.none { entry.name.startsWith(it) }
+
+	private fun isClassFile(entry: JarEntry) = entry.name.endsWith(".class")
 
 	fun getAdapterData(): List<AdapterData> {
 		return adapters

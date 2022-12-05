@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import lirand.api.dsl.command.builders.LiteralDSLBuilder
 import lirand.api.dsl.command.builders.command
 import lirand.api.dsl.command.types.PlayerType
 import lirand.api.dsl.command.types.WordType
@@ -31,6 +32,20 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 	requiresPermissions("typewriter.use")
 	alias("tw")
 
+	reloadCommands()
+
+	factsCommands()
+
+	eventsCommands()
+
+	clearChatCommand()
+
+	if (server.pluginManager.isPluginEnabled("Citizens")) {
+		npcCommands()
+	}
+}
+
+private fun LiteralDSLBuilder.reloadCommands() {
 	literal("reload") {
 		executes {
 			source.msg("Reloading configuration...")
@@ -38,7 +53,9 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			source.msg("Configuration reloaded!")
 		}
 	}
+}
 
+private fun LiteralDSLBuilder.factsCommands() {
 	literal("facts") {
 		fun Player.listFacts(source: CommandSender) {
 			val facts = facts
@@ -67,13 +84,13 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 		}
 
 
-		argument("player", PlayerType.Instance) { player ->
+		argument("player", PlayerType) { player ->
 			executes {
 				player.get().listFacts(source)
 			}
 
 			literal("set") {
-				argument("fact", FactType.Instance) { fact ->
+				argument("fact", FactType) { fact ->
 					argument("value", integer(0)) { value ->
 						executes {
 							FactDatabase.modify(player.get().uniqueId) {
@@ -102,7 +119,7 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			source.listFacts(source)
 		}
 		literal("set") {
-			argument("fact", FactType.Instance) { fact ->
+			argument("fact", FactType) { fact ->
 				argument("value", integer(0)) { value ->
 					executesPlayer {
 						FactDatabase.modify(source.uniqueId) {
@@ -125,7 +142,9 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			}
 		}
 	}
+}
 
+private fun LiteralDSLBuilder.eventsCommands() {
 	literal("event") {
 		literal("run") {
 			argument("event", EventType) { event ->
@@ -136,7 +155,9 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			}
 		}
 	}
+}
 
+private fun LiteralDSLBuilder.clearChatCommand() {
 	literal("clearChat") {
 		executesPlayer {
 			source.chatHistory.let {
@@ -145,34 +166,34 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			}
 		}
 	}
+}
 
-	if (server.pluginManager.isPluginEnabled("Citizens")) {
-		literal("npc") {
-			literal("identifier") {
-				argument("name", string()) { name ->
-					fun NPC?.setIdentifier(source: CommandSender, name: String) {
-						if (this == null) {
-							source.msg("No NPC selected!")
-							return
-						}
-
-						val trait = this.getOrAddTrait(TypeWriterTrait::class.java)
-						trait.identifier = name
-
-						source.msg("Identifier set to $name")
+private fun LiteralDSLBuilder.npcCommands() {
+	literal("npc") {
+		literal("identifier") {
+			argument("name", string()) { name ->
+				fun NPC?.setIdentifier(source: CommandSender, name: String) {
+					if (this == null) {
+						source.msg("No NPC selected!")
+						return
 					}
 
-					executesPlayer {
-						val npc = CitizensAPI.getDefaultNPCSelector().getSelected(source)
+					val trait = this.getOrAddTrait(TypeWriterTrait::class.java)
+					trait.identifier = name
+
+					source.msg("Identifier set to $name")
+				}
+
+				executesPlayer {
+					val npc = CitizensAPI.getDefaultNPCSelector().getSelected(source)
+					npc.setIdentifier(source, name.get())
+				}
+
+
+				argument("target", PlayerType) { player ->
+					executes {
+						val npc = CitizensAPI.getDefaultNPCSelector().getSelected(player.get())
 						npc.setIdentifier(source, name.get())
-					}
-
-
-					argument("target", PlayerType.Instance) { player ->
-						executes {
-							val npc = CitizensAPI.getDefaultNPCSelector().getSelected(player.get())
-							npc.setIdentifier(source, name.get())
-						}
 					}
 				}
 			}

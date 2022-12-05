@@ -45,6 +45,7 @@ object EntryDatabase {
 
 	fun gson(): Gson {
 		val entryFactory = RuntimeTypeAdapterFactory.of(Entry::class.java)
+			// TODO: Remove hardcoded classes
 			.registerSubtype(NpcEventEntry::class.java, "npc_interact")
 			.registerSubtype(IslandCreateEventEntry::class.java, "island_create")
 

@@ -18,27 +18,25 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 	val triggers: List<String>
 		get() = currentMessenger.triggers
 
+	private val speakerHasSound get() = !currentEntry.speakerEntry?.sound.isNullOrBlank()
+
 	fun init() {
 		isActive = true
 		cycle = 0
 		currentMessenger.init()
 
-		if (!currentEntry.speakerEntry?.sound.isNullOrBlank()) {
-			val soundNamespace = NamespacedKey.fromString(currentEntry.speakerEntry?.sound ?: "")
-			val sound = Sound.values().firstOrNull { it.key == soundNamespace }
-			if (sound != null) {
-				player.playSound(sound, SoundCategory.VOICE)
-			}
+		if (speakerHasSound) {
+			playSpeakerSound()
 		}
 		tick()
 	}
 
-	private fun cleanupEntry(final: Boolean) {
-		val messenger = currentMessenger
-		messenger.dispose()
-		if (final) messenger.end()
-
-		FactDatabase.modify(player.uniqueId, messenger.modifiers)
+	private fun playSpeakerSound() {
+		val soundNamespace = NamespacedKey.fromString(currentEntry.speakerEntry?.sound ?: return)
+		val sound = Sound.values().firstOrNull { it.key == soundNamespace }
+		if (sound != null) {
+			player.playSound(sound, SoundCategory.VOICE)
+		}
 	}
 
 	fun tick() {
@@ -59,6 +57,14 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 		currentMessenger = MessengerFinder.findMessenger(player, nextEntry)
 		init()
 		return true
+	}
+
+	private fun cleanupEntry(final: Boolean) {
+		val messenger = currentMessenger
+		messenger.dispose()
+		if (final) messenger.end()
+
+		FactDatabase.modify(player.uniqueId, messenger.modifiers)
 	}
 
 	fun end() {

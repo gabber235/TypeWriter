@@ -27,6 +27,7 @@ data class Fact(val id: String, val value: Int, val lastUpdate: LocalDateTime = 
 
 val Fact.hasExpired: Boolean
 	get() {
+		// If the fact is not in the database, we want to remove it anyway.
 		val entry = EntryDatabase.getFact(id) ?: return true
 		return entry.hasExpired(this)
 	}
