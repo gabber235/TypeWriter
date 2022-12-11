@@ -14,5 +14,5 @@ class SimpleActionEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	@SerializedName("triggered_by")
-	override val triggerdBy: List<String> = emptyList(),
+	override val triggeredBy: List<String> = emptyList(),
 ) : ActionEntry

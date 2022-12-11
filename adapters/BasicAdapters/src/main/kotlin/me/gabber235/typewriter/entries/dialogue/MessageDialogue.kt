@@ -11,7 +11,7 @@ data class MessageDialogueEntry(
 	override val id: String = "",
 	override val name: String = "",
 	@SerializedName("triggered_by")
-	override val triggerdBy: List<String> = emptyList(),
+	override val triggeredBy: List<String> = emptyList(),
 	override val triggers: List<String> = emptyList(),
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),

@@ -18,7 +18,7 @@ import kotlin.reflect.full.isSubclassOf
 
 private val gson =
 	GsonBuilder().registerTypeAdapterFactory(
-		RuntimeTypeAdapterFactory.of(FieldType::class.java, "kind")
+		RuntimeTypeAdapterFactory.of(FieldInfo::class.java, "kind")
 			.registerSubtype(PrimitiveField::class.java, "primitive")
 			.registerSubtype(EnumField::class.java, "enum")
 			.registerSubtype(ListField::class.java, "list")
@@ -108,7 +108,7 @@ object AdapterLoader {
 			val messengerAnnotation = messengerClass.getAnnotation(Messenger::class.java)
 
 			val filter = findFilterForMessenger(messengerClass)
-			
+
 			MessengerData(
 				messengerClass as Class<out DialogueMessenger<*>>,
 				messengerAnnotation.dialogue.java,

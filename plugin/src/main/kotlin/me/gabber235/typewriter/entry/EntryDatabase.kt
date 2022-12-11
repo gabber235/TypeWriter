@@ -65,12 +65,12 @@ object EntryDatabase {
 	}
 
 	fun findDialogue(trigger: String, facts: Set<Fact>): DialogueEntry? {
-		val rules = dialogue.filter { trigger in it.triggerdBy }.sortedByDescending { it.criteria.size }
+		val rules = dialogue.filter { trigger in it.triggeredBy }.sortedByDescending { it.criteria.size }
 		return rules.find { rule -> rule.criteria.matches(facts) }
 	}
 
 	fun findActions(trigger: String, facts: Set<Fact>): List<ActionEntry> {
-		return actions.filter { trigger in it.triggerdBy }.filter { rule -> rule.criteria.matches(facts) }
+		return actions.filter { trigger in it.triggeredBy }.filter { rule -> rule.criteria.matches(facts) }
 	}
 
 	fun getEntity(id: String) = entities.firstOrNull { it.id == id }
@@ -92,7 +92,7 @@ object EntryDatabase {
 	).flatMap { entry ->
 		val triggers = entry.triggers.toMutableList()
 		if (entry is RuleEntry) {
-			triggers += entry.triggerdBy
+			triggers += entry.triggeredBy
 		}
 		// TODO Fix this in a better way, such that Adapters can change this.
 //		if (entry is OptionDialogueEntry) {

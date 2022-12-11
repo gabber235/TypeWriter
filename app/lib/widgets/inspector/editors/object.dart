@@ -10,10 +10,10 @@ import "package:typewriter/widgets/inspector/editors/field.dart";
 
 class ObjectEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldType type) => type is ObjectField;
+  bool canEdit(FieldInfo type) => type is ObjectField;
 
   @override
-  Widget build(String path, FieldType type) => ObjectEditor(path: path, object: type as ObjectField);
+  Widget build(String path, FieldInfo type) => ObjectEditor(path: path, object: type as ObjectField);
 }
 
 class ObjectEditor extends HookConsumerWidget {

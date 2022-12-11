@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $graphableEntriesHash() => r'333285470a7e9487207327aede9dee4e66c3b503';
+String $graphableEntriesHash() => r'68b1991d5e2b6a1da63980ea666199152df7a4c0';
 
 /// See also [graphableEntries].
 final graphableEntriesProvider = AutoDisposeProvider<List<Entry>>(
@@ -40,3 +40,92 @@ final graphableEntriesProvider = AutoDisposeProvider<List<Entry>>(
       : $graphableEntriesHash,
 );
 typedef GraphableEntriesRef = AutoDisposeProviderRef<List<Entry>>;
+String $triggerPathsHash() => r'fe9fc27eaf50cce29fb0c25957206160dd9f66d0';
+
+/// See also [triggerPaths].
+class TriggerPathsProvider extends AutoDisposeProvider<List<String>> {
+  TriggerPathsProvider(
+    this.type,
+    this.isReceiver,
+  ) : super(
+          (ref) => triggerPaths(
+            ref,
+            type,
+            isReceiver,
+          ),
+          from: triggerPathsProvider,
+          name: r'triggerPathsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : $triggerPathsHash,
+        );
+
+  final String type;
+  final bool isReceiver;
+
+  @override
+  bool operator ==(Object other) {
+    return other is TriggerPathsProvider &&
+        other.type == type &&
+        other.isReceiver == isReceiver;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, type.hashCode);
+    hash = _SystemHash.combine(hash, isReceiver.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef TriggerPathsRef = AutoDisposeProviderRef<List<String>>;
+
+/// See also [triggerPaths].
+final triggerPathsProvider = TriggerPathsFamily();
+
+class TriggerPathsFamily extends Family<List<String>> {
+  TriggerPathsFamily();
+
+  TriggerPathsProvider call(
+    String type,
+    bool isReceiver,
+  ) {
+    return TriggerPathsProvider(
+      type,
+      isReceiver,
+    );
+  }
+
+  @override
+  AutoDisposeProvider<List<String>> getProviderOverride(
+    covariant TriggerPathsProvider provider,
+  ) {
+    return call(
+      provider.type,
+      provider.isReceiver,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'triggerPathsProvider';
+}
+
+String $graphHash() => r'7157f428dd428ec78e90d051b83fa1b317ed8999';
+
+/// See also [graph].
+final graphProvider = AutoDisposeProvider<Graph>(
+  graph,
+  name: r'graphProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : $graphHash,
+);
+typedef GraphRef = AutoDisposeProviderRef<Graph>;

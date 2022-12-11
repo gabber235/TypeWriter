@@ -42,23 +42,33 @@ Map<String, dynamic> _$$_EntryBlueprintToJson(_$_EntryBlueprint instance) =>
     };
 
 _$_FieldType _$$_FieldTypeFromJson(Map<String, dynamic> json) => _$_FieldType(
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       $type: json['kind'] as String?,
     );
 
 Map<String, dynamic> _$$_FieldTypeToJson(_$_FieldType instance) =>
     <String, dynamic>{
+      'modifiers': instance.modifiers,
       'kind': instance.$type,
     };
 
 _$PrimitiveField _$$PrimitiveFieldFromJson(Map<String, dynamic> json) =>
     _$PrimitiveField(
       type: $enumDecode(_$PrimitiveFieldTypeEnumMap, json['type']),
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       $type: json['kind'] as String?,
     );
 
 Map<String, dynamic> _$$PrimitiveFieldToJson(_$PrimitiveField instance) =>
     <String, dynamic>{
       'type': _$PrimitiveFieldTypeEnumMap[instance.type]!,
+      'modifiers': instance.modifiers,
       'kind': instance.$type,
     };
 
@@ -72,29 +82,43 @@ const _$PrimitiveFieldTypeEnumMap = {
 _$EnumField _$$EnumFieldFromJson(Map<String, dynamic> json) => _$EnumField(
       values:
           (json['values'] as List<dynamic>).map((e) => e as String).toList(),
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       $type: json['kind'] as String?,
     );
 
 Map<String, dynamic> _$$EnumFieldToJson(_$EnumField instance) =>
     <String, dynamic>{
       'values': instance.values,
+      'modifiers': instance.modifiers,
       'kind': instance.$type,
     };
 
 _$ListField _$$ListFieldFromJson(Map<String, dynamic> json) => _$ListField(
-      type: FieldType.fromJson(json['type'] as Map<String, dynamic>),
+      type: FieldInfo.fromJson(json['type'] as Map<String, dynamic>),
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       $type: json['kind'] as String?,
     );
 
 Map<String, dynamic> _$$ListFieldToJson(_$ListField instance) =>
     <String, dynamic>{
       'type': instance.type,
+      'modifiers': instance.modifiers,
       'kind': instance.$type,
     };
 
 _$MapField _$$MapFieldFromJson(Map<String, dynamic> json) => _$MapField(
-      key: FieldType.fromJson(json['key'] as Map<String, dynamic>),
-      value: FieldType.fromJson(json['value'] as Map<String, dynamic>),
+      key: FieldInfo.fromJson(json['key'] as Map<String, dynamic>),
+      value: FieldInfo.fromJson(json['value'] as Map<String, dynamic>),
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       $type: json['kind'] as String?,
     );
 
@@ -102,21 +126,38 @@ Map<String, dynamic> _$$MapFieldToJson(_$MapField instance) =>
     <String, dynamic>{
       'key': instance.key,
       'value': instance.value,
+      'modifiers': instance.modifiers,
       'kind': instance.$type,
     };
 
 _$ObjectField _$$ObjectFieldFromJson(Map<String, dynamic> json) =>
     _$ObjectField(
       fields: (json['fields'] as Map<String, dynamic>).map(
-        (k, e) => MapEntry(k, FieldType.fromJson(e as Map<String, dynamic>)),
+        (k, e) => MapEntry(k, FieldInfo.fromJson(e as Map<String, dynamic>)),
       ),
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       $type: json['kind'] as String?,
     );
 
 Map<String, dynamic> _$$ObjectFieldToJson(_$ObjectField instance) =>
     <String, dynamic>{
       'fields': instance.fields,
+      'modifiers': instance.modifiers,
       'kind': instance.$type,
+    };
+
+_$_Modifier _$$_ModifierFromJson(Map<String, dynamic> json) => _$_Modifier(
+      name: json['name'] as String,
+      data: json['data'],
+    );
+
+Map<String, dynamic> _$$_ModifierToJson(_$_Modifier instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'data': instance.data,
     };
 
 // **************************************************************************
@@ -243,4 +284,163 @@ class EntryBlueprintFamily extends Family<EntryBlueprint?> {
 
   @override
   String? get name => r'entryBlueprintProvider';
+}
+
+String $fieldModifiersHash() => r'ad6700316538a1e9a2dfba24f4f124f68cf845c6';
+
+/// See also [fieldModifiers].
+class FieldModifiersProvider
+    extends AutoDisposeProvider<Map<String, Modifier>> {
+  FieldModifiersProvider(
+    this.blueprint,
+    this.name,
+  ) : super(
+          (ref) => fieldModifiers(
+            ref,
+            blueprint,
+            name,
+          ),
+          from: fieldModifiersProvider,
+          name: r'fieldModifiersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : $fieldModifiersHash,
+        );
+
+  final String blueprint;
+  final String name;
+
+  @override
+  bool operator ==(Object other) {
+    return other is FieldModifiersProvider &&
+        other.blueprint == blueprint &&
+        other.name == name;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, blueprint.hashCode);
+    hash = _SystemHash.combine(hash, name.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef FieldModifiersRef = AutoDisposeProviderRef<Map<String, Modifier>>;
+
+/// See also [fieldModifiers].
+final fieldModifiersProvider = FieldModifiersFamily();
+
+class FieldModifiersFamily extends Family<Map<String, Modifier>> {
+  FieldModifiersFamily();
+
+  FieldModifiersProvider call(
+    String blueprint,
+    String name,
+  ) {
+    return FieldModifiersProvider(
+      blueprint,
+      name,
+    );
+  }
+
+  @override
+  AutoDisposeProvider<Map<String, Modifier>> getProviderOverride(
+    covariant FieldModifiersProvider provider,
+  ) {
+    return call(
+      provider.blueprint,
+      provider.name,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'fieldModifiersProvider';
+}
+
+String $modifierPathsHash() => r'da7347b63deeccd651514c7b338113d7d56424a5';
+
+/// See also [modifierPaths].
+class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
+  ModifierPathsProvider(
+    this.blueprint,
+    this.name,
+  ) : super(
+          (ref) => modifierPaths(
+            ref,
+            blueprint,
+            name,
+          ),
+          from: modifierPathsProvider,
+          name: r'modifierPathsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : $modifierPathsHash,
+        );
+
+  final String blueprint;
+  final String name;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ModifierPathsProvider &&
+        other.blueprint == blueprint &&
+        other.name == name;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, blueprint.hashCode);
+    hash = _SystemHash.combine(hash, name.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef ModifierPathsRef = AutoDisposeProviderRef<List<String>>;
+
+/// See also [modifierPaths].
+final modifierPathsProvider = ModifierPathsFamily();
+
+class ModifierPathsFamily extends Family<List<String>> {
+  ModifierPathsFamily();
+
+  ModifierPathsProvider call(
+    String blueprint,
+    String name,
+  ) {
+    return ModifierPathsProvider(
+      blueprint,
+      name,
+    );
+  }
+
+  @override
+  AutoDisposeProvider<List<String>> getProviderOverride(
+    covariant ModifierPathsProvider provider,
+  ) {
+    return call(
+      provider.blueprint,
+      provider.name,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'modifierPathsProvider';
 }

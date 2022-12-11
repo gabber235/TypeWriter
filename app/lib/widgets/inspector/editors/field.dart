@@ -11,7 +11,7 @@ class FieldEditor extends HookConsumerWidget {
     super.key,
   }) : super();
   final String path;
-  final FieldType type;
+  final FieldInfo type;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

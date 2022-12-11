@@ -26,10 +26,6 @@ class Page with _$Page {
 }
 
 extension PageExtension on Page {
-  List<Entry> get graphableEntries => [
-        ...entries,
-      ];
-
   void updatePage(WidgetRef ref, Page Function(Page) update) {
     final newPage = update(this);
     ref.read(bookProvider.notifier).insertPage(newPage);
@@ -102,6 +98,46 @@ class Entry {
       return defaultValue;
     }
     return current;
+  }
+
+  /// Returns all values of a given path.
+  /// This may look similar to [get], but it returns all values of a given path.
+  /// Hence wildcards are supported, like "data.*.value", "data.*.1.value", etc.
+  List<dynamic> getAll(String path) {
+    final parts = path.split(".");
+    final values = <dynamic>[];
+    final current = <dynamic>[data];
+    for (final part in parts) {
+      if (part == "*") {
+        final next = <dynamic>[];
+        for (final item in current) {
+          if (item is Map) {
+            next.addAll(item.values);
+          }
+          if (item is List) {
+            next.addAll(item);
+          }
+        }
+        current
+          ..clear()
+          ..addAll(next);
+        continue;
+      }
+      final next = <dynamic>[];
+      for (final item in current) {
+        if (item is Map && item.containsKey(part)) {
+          next.add(item[part]);
+        }
+        if (item is List && int.tryParse(part) != null && item.length > int.parse(part)) {
+          next.add(item[int.parse(part)]);
+        }
+      }
+      current
+        ..clear()
+        ..addAll(next);
+    }
+    values.addAll(current);
+    return values;
   }
 
   /// Returns a new copy of this entry with the given field updated.

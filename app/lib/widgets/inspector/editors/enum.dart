@@ -8,10 +8,10 @@ import "package:typewriter/widgets/inspector/editors.dart";
 
 class EnumEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldType type) => type is EnumField && type.values.isNotEmpty;
+  bool canEdit(FieldInfo type) => type is EnumField && type.values.isNotEmpty;
 
   @override
-  Widget build(String path, FieldType type) => EnumEditor(
+  Widget build(String path, FieldInfo type) => EnumEditor(
         path: path,
         field: type as EnumField,
       );

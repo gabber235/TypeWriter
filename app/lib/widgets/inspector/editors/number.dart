@@ -9,11 +9,11 @@ import "package:typewriter/widgets/inspector/single_line_text_field.dart";
 
 class NumberEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldType type) =>
+  bool canEdit(FieldInfo type) =>
       type is PrimitiveField && (type.type == PrimitiveFieldType.integer || type.type == PrimitiveFieldType.double);
 
   @override
-  Widget build(String path, FieldType type) => IntegerEditor(path: path, field: type as PrimitiveField);
+  Widget build(String path, FieldInfo type) => IntegerEditor(path: path, field: type as PrimitiveField);
 }
 
 class IntegerEditor extends HookConsumerWidget {

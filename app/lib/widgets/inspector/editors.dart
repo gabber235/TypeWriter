@@ -10,6 +10,7 @@ import "package:typewriter/widgets/inspector/editors/map.dart";
 import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
+import 'package:typewriter/widgets/inspector/editors/triggers.dart';
 
 part "editors.g.dart";
 
@@ -21,6 +22,9 @@ dynamic fieldValue(FieldValueRef ref, String path, [dynamic defaultValue]) {
 
 @riverpod
 List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
+      TriggerEditorFilter(),
+
+      // Default filters
       StringEditorFilter(),
       NumberEditorFilter(),
       BooleanEditorFilter(),
@@ -31,9 +35,9 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
     ];
 
 abstract class EditorFilter {
-  bool canEdit(FieldType type);
+  bool canEdit(FieldInfo info);
 
-  Widget build(String path, FieldType type);
+  Widget build(String path, FieldInfo info);
 }
 
 @riverpod

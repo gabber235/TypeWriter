@@ -7,10 +7,10 @@ import "../../inspector.dart";
 
 class BooleanEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldType type) => type is PrimitiveField && type.type == PrimitiveFieldType.boolean;
+  bool canEdit(FieldInfo type) => type is PrimitiveField && type.type == PrimitiveFieldType.boolean;
 
   @override
-  Widget build(String path, FieldType type) => BooleanEditor(path: path, field: type as PrimitiveField);
+  Widget build(String path, FieldInfo type) => BooleanEditor(path: path, field: type as PrimitiveField);
 }
 
 class BooleanEditor extends HookConsumerWidget {

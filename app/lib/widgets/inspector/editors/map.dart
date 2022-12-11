@@ -15,10 +15,10 @@ import "package:typewriter/widgets/inspector/listable_header.dart";
 
 class MapEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldType type) => type is MapField;
+  bool canEdit(FieldInfo type) => type is MapField;
 
   @override
-  Widget build(String path, FieldType type) => MapEditor(path: path, field: type as MapField);
+  Widget build(String path, FieldInfo type) => MapEditor(path: path, field: type as MapField);
 }
 
 class MapEditor extends HookConsumerWidget {

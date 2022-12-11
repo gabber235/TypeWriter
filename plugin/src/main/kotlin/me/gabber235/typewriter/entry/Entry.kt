@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entry
 
 import com.google.gson.annotations.SerializedName
+import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.facts.Fact
 
 interface Entry {
@@ -9,13 +10,16 @@ interface Entry {
 }
 
 interface TriggerEntry : Entry {
+	@Triggers
 	val triggers: List<String>
 }
 
 interface RuleEntry : TriggerEntry {
 	val criteria: List<Criteria>
 	val modifiers: List<Modifier>
-	val triggerdBy: List<String>
+
+	@Triggers(isReceiver = true)
+	val triggeredBy: List<String>
 }
 
 enum class CriteriaOperator {
@@ -29,7 +33,7 @@ enum class CriteriaOperator {
 	GREATER_THAN,
 
 	@SerializedName("<=")
-	LER_THAN_OR_EQUAL,
+	LESS_THAN_OR_EQUALS,
 
 	@SerializedName(">=")
 	GREATER_THAN_OR_EQUAL,
@@ -46,7 +50,7 @@ data class Criteria(
 			CriteriaOperator.EQUALS                -> value == this.value
 			CriteriaOperator.LESS_THAN             -> value < this.value
 			CriteriaOperator.GREATER_THAN          -> value > this.value
-			CriteriaOperator.LER_THAN_OR_EQUAL     -> value <= this.value
+			CriteriaOperator.LESS_THAN_OR_EQUALS   -> value <= this.value
 			CriteriaOperator.GREATER_THAN_OR_EQUAL -> value >= this.value
 		}
 	}

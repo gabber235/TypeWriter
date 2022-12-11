@@ -20,7 +20,7 @@ class DelayedActionEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	@SerializedName("triggered_by")
-	override val triggerdBy: List<String> = emptyList(),
+	override val triggeredBy: List<String> = emptyList(),
 	private val duration: Long = 0, // Number of milliseconds
 ) : ActionEntry {
 	// Disable the normal triggers. So that the action can manually trigger the next actions.

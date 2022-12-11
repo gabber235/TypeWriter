@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.adapters
 
+import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import lirand.api.utilities.allFields
@@ -10,14 +11,16 @@ import java.lang.reflect.ParameterizedType
 data class EntryBlueprint(
 	val name: String,
 	val description: String,
-	val fields: FieldType,
+	val fields: FieldInfo,
 	@Transient
 	val clazz: Class<out Entry>,
 )
 
-sealed class FieldType {
+sealed class FieldInfo {
+	val modifiers: MutableList<JsonObject> = mutableListOf()
+
 	companion object {
-		fun fromTypeToken(token: TypeToken<*>): FieldType {
+		fun fromTypeToken(token: TypeToken<*>): FieldInfo {
 			val primitive = PrimitiveFieldType.fromTokenType(token)
 			if (primitive != null) {
 				return PrimitiveField(primitive)
@@ -52,7 +55,7 @@ sealed class FieldType {
 	}
 }
 
-class PrimitiveField(val type: PrimitiveFieldType) : FieldType()
+class PrimitiveField(val type: PrimitiveFieldType) : FieldInfo()
 
 
 enum class PrimitiveFieldType {
@@ -89,7 +92,7 @@ enum class PrimitiveFieldType {
 }
 
 // If the field is an enum, the values will be the enum constants
-class EnumField(val values: List<String>) : FieldType() {
+class EnumField(val values: List<String>) : FieldInfo() {
 	companion object {
 		fun fromTypeToken(token: TypeToken<*>): EnumField {
 			/// If the enum fields have an @SerializedName annotation, use that as the value
@@ -107,16 +110,16 @@ class EnumField(val values: List<String>) : FieldType() {
 }
 
 // If the field is a list, this is the type of the list
-class ListField(val type: FieldType) : FieldType()
+class ListField(val type: FieldInfo) : FieldInfo()
 
 // If the field is a map, this is the type of the map
-class MapField(val key: FieldType, val value: FieldType) : FieldType()
+class MapField(val key: FieldInfo, val value: FieldInfo) : FieldInfo()
 
 // If the field is an object, this is the type of the object
-class ObjectField(val fields: Map<String, FieldType>) : FieldType() {
+class ObjectField(val fields: Map<String, FieldInfo>) : FieldInfo() {
 	companion object {
 		fun fromTypeToken(token: TypeToken<*>): ObjectField {
-			val fields = mutableMapOf<String, FieldType>()
+			val fields = mutableMapOf<String, FieldInfo>()
 
 			token.rawType.allFields.forEach { field ->
 				val name =
@@ -126,12 +129,19 @@ class ObjectField(val fields: Map<String, FieldType>) : FieldType() {
 						field.name
 					}
 
-				val type = FieldType.fromTypeToken(TypeToken.get(field.genericType))
+				val info = FieldInfo.fromTypeToken(TypeToken.get(field.genericType))
 
-				fields[name] = type
+				// If a field has a modifier for the ui. E.g. it is a trigger or fact or something else.
+				// We add a bit of extra information to the field. This is used by the UI to
+				// display the field differently.
+				computeFieldModifiers(field, info)
+
+				fields[name] = info
 			}
 
 			return ObjectField(fields)
 		}
 	}
 }
+
+

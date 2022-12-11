@@ -27,9 +27,9 @@ void main() {
         "id": "2",
         "name": "test2",
         "inner_list": [
-          {"id": "1", "name": "test1"},
-          {"id": "2", "name": "test2"},
-          {"id": "3", "name": "test3"}
+          {"id": "1", "name": "test_a"},
+          {"id": "2", "name": "test_b"},
+          {"id": "3", "name": "test_c"}
         ]
       }
     }
@@ -55,7 +55,7 @@ void main() {
     expect(entry.get("simple_map"), {"key1": "value1", "key2": "value2"});
     expect(entry.get("simple_map.key1"), "value1");
 
-    expect(entry.get("complex_map.key2.inner_list.1.name"), "test2");
+    expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
   });
 
   test("When a key is not found, null is returned", () {
@@ -76,6 +76,15 @@ void main() {
     expect(entry.get("simple_map.key3", "default"), "default");
   });
 
+  test("When a path is fetched, all values should be returned", () {
+    final entry = Entry(rawDynamicEntry);
+    expect(entry.getAll("simple_list.*"), [1, 2, 3]);
+    expect(entry.getAll("simple_map.*"), ["value1", "value2"]);
+    expect(entry.getAll("complex_map.*.name"), ["test1", "test2"]);
+    expect(entry.getAll("complex_map.*.inner_list.*.name"), ["test1", "test2", "test3", "test_a", "test_b", "test_c"]);
+    expect(entry.getAll("complex_map.key2.inner_list.*.name"), ["test_a", "test_b", "test_c"]);
+  });
+
   test("When a dynamic entry is updated, the new value is returned", () {
     final entry = Entry(rawDynamicEntry);
     var newEntry = entry.copyWith("simple_list.1", 4);
@@ -91,10 +100,9 @@ void main() {
     expect(newEntry.get("complex_map.key2.inner_list.1.name"), "new_name");
   });
 
-  test("When a entry is updated, expect the original entry to be unchanged",
-      () {
+  test("When a entry is updated, expect the original entry to be unchanged", () {
     final entry = Entry(rawDynamicEntry);
     entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
-    expect(entry.get("complex_map.key2.inner_list.1.name"), "test2");
+    expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
   });
 }

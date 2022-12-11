@@ -21,7 +21,7 @@ class _$AppRouter extends RootStackRouter {
       return CustomPage<dynamic>(
           routeData: routeData,
           child: const HomePage(),
-          transitionsBuilder: slideLeftWithFade,
+          transitionsBuilder: TransitionsBuilders.noTransition,
           opaque: true,
           barrierDismissible: false);
     },
@@ -29,7 +29,7 @@ class _$AppRouter extends RootStackRouter {
       return CustomPage<dynamic>(
           routeData: routeData,
           child: const BookPage(),
-          transitionsBuilder: slideLeftWithFade,
+          transitionsBuilder: TransitionsBuilders.noTransition,
           opaque: true,
           barrierDismissible: false);
     },
@@ -37,7 +37,7 @@ class _$AppRouter extends RootStackRouter {
       return CustomPage<dynamic>(
           routeData: routeData,
           child: const PagesList(),
-          transitionsBuilder: slideLeftWithFade,
+          transitionsBuilder: TransitionsBuilders.noTransition,
           opaque: true,
           barrierDismissible: false);
     },
@@ -45,7 +45,7 @@ class _$AppRouter extends RootStackRouter {
       return CustomPage<dynamic>(
           routeData: routeData,
           child: const EmptyPageEditor(),
-          transitionsBuilder: slideLeftWithFade,
+          transitionsBuilder: TransitionsBuilders.noTransition,
           opaque: true,
           barrierDismissible: false);
     },
@@ -56,7 +56,7 @@ class _$AppRouter extends RootStackRouter {
       return CustomPage<dynamic>(
           routeData: routeData,
           child: PageEditor(id: args.id, key: args.key),
-          transitionsBuilder: slideLeftWithFade,
+          transitionsBuilder: TransitionsBuilders.noTransition,
           opaque: true,
           barrierDismissible: false);
     }

@@ -8,10 +8,10 @@ import "package:typewriter/widgets/inspector/single_line_text_field.dart";
 
 class StringEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldType type) => type is PrimitiveField && type.type == PrimitiveFieldType.string;
+  bool canEdit(FieldInfo info) => info is PrimitiveField && info.type == PrimitiveFieldType.string;
 
   @override
-  Widget build(String path, FieldType type) => StringEditor(path: path, field: type as PrimitiveField);
+  Widget build(String path, FieldInfo info) => StringEditor(path: path, field: info as PrimitiveField);
 }
 
 class StringEditor extends HookConsumerWidget {

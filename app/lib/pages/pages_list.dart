@@ -120,29 +120,32 @@ class EmptyPageEditor extends HookConsumerWidget {
       );
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Column(
-        children: [
-          const Spacer(),
-          const Expanded(
-            flex: 2,
-            child: RiveAnimation.asset(
-              "assets/cute_robot.riv",
-              stateMachines: ["Motion"],
-            ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+        const Spacer(),
+        const Expanded(
+          flex: 2,
+          child: RiveAnimation.asset(
+            "assets/cute_robot.riv",
+            stateMachines: ["Motion"],
           ),
-          const Text(
-            "Select a page to edit or",
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 24),
-          FilledButton.icon(
-            label: const Text("Add Page"),
-            onPressed: () => _showAddPageDialog(context),
-            icon: const Icon(FontAwesomeIcons.plus),
-          ),
-          const Spacer(),
-        ],
-      );
+        ),
+        const Text(
+          "Select a page to edit or",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 24),
+        FilledButton.icon(
+          label: const Text("Add Page"),
+          onPressed: () => _showAddPageDialog(context),
+          icon: const Icon(FontAwesomeIcons.plus),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
 }
 
 // A button for adding a new page.
@@ -197,8 +200,12 @@ class _AddPageDialogue extends HookConsumerWidget {
 
   /// Validates the proposed name for a page.
   /// A name is invalid if it is empty or if it already exists.
-  void _validateName(TextEditingController controller, ValueNotifier<bool> hasTyped, List<String> pagesNames,
-      ValueNotifier<String> error,) {
+  void _validateName(
+    TextEditingController controller,
+    ValueNotifier<bool> hasTyped,
+    List<String> pagesNames,
+    ValueNotifier<String> error,
+  ) {
     var errorText = "";
 
     if (controller.text.isNotEmpty) {

@@ -12,10 +12,10 @@ import "package:typewriter/widgets/inspector/listable_header.dart";
 
 class ListEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldType type) => type is ListField;
+  bool canEdit(FieldInfo type) => type is ListField;
 
   @override
-  Widget build(String path, FieldType type) => ListEditor(path: path, field: type as ListField);
+  Widget build(String path, FieldInfo type) => ListEditor(path: path, field: type as ListField);
 }
 
 class ListEditor extends HookConsumerWidget {

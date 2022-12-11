@@ -422,7 +422,7 @@ abstract class _EntryBlueprint implements EntryBlueprint {
       throw _privateConstructorUsedError;
 }
 
-FieldType _$FieldTypeFromJson(Map<String, dynamic> json) {
+FieldInfo _$FieldInfoFromJson(Map<String, dynamic> json) {
   switch (json['kind']) {
     case 'default':
       return _FieldType.fromJson(json);
@@ -439,40 +439,53 @@ FieldType _$FieldTypeFromJson(Map<String, dynamic> json) {
 
     default:
       throw CheckedFromJsonException(
-          json, 'kind', 'FieldType', 'Invalid union type "${json['kind']}"!');
+          json, 'kind', 'FieldInfo', 'Invalid union type "${json['kind']}"!');
   }
 }
 
 /// @nodoc
-mixin _$FieldType {
+mixin _$FieldInfo {
+  List<Modifier> get modifiers => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function(PrimitiveFieldType type) primitive,
-    required TResult Function(List<String> values) enumField,
-    required TResult Function(FieldType type) list,
-    required TResult Function(FieldType key, FieldType value) map,
-    required TResult Function(Map<String, FieldType> fields) object,
+    TResult Function(List<Modifier> modifiers) $default, {
+    required TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)
+        primitive,
+    required TResult Function(List<String> values, List<Modifier> modifiers)
+        enumField,
+    required TResult Function(FieldInfo type, List<Modifier> modifiers) list,
+    required TResult Function(
+            FieldInfo key, FieldInfo value, List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, FieldInfo> fields, List<Modifier> modifiers)
+        object,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function(PrimitiveFieldType type)? primitive,
-    TResult? Function(List<String> values)? enumField,
-    TResult? Function(FieldType type)? list,
-    TResult? Function(FieldType key, FieldType value)? map,
-    TResult? Function(Map<String, FieldType> fields)? object,
+    TResult? Function(List<Modifier> modifiers)? $default, {
+    TResult? Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult? Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult? Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function(PrimitiveFieldType type)? primitive,
-    TResult Function(List<String> values)? enumField,
-    TResult Function(FieldType type)? list,
-    TResult Function(FieldType key, FieldType value)? map,
-    TResult Function(Map<String, FieldType> fields)? object,
+    TResult Function(List<Modifier> modifiers)? $default, {
+    TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -508,106 +521,173 @@ mixin _$FieldType {
   }) =>
       throw _privateConstructorUsedError;
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $FieldInfoCopyWith<FieldInfo> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FieldTypeCopyWith<$Res> {
-  factory $FieldTypeCopyWith(FieldType value, $Res Function(FieldType) then) =
-      _$FieldTypeCopyWithImpl<$Res, FieldType>;
+abstract class $FieldInfoCopyWith<$Res> {
+  factory $FieldInfoCopyWith(FieldInfo value, $Res Function(FieldInfo) then) =
+      _$FieldInfoCopyWithImpl<$Res, FieldInfo>;
+  @useResult
+  $Res call({List<Modifier> modifiers});
 }
 
 /// @nodoc
-class _$FieldTypeCopyWithImpl<$Res, $Val extends FieldType>
-    implements $FieldTypeCopyWith<$Res> {
-  _$FieldTypeCopyWithImpl(this._value, this._then);
+class _$FieldInfoCopyWithImpl<$Res, $Val extends FieldInfo>
+    implements $FieldInfoCopyWith<$Res> {
+  _$FieldInfoCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? modifiers = null,
+  }) {
+    return _then(_value.copyWith(
+      modifiers: null == modifiers
+          ? _value.modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
+    ) as $Val);
+  }
 }
 
 /// @nodoc
-abstract class _$$_FieldTypeCopyWith<$Res> {
+abstract class _$$_FieldTypeCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
   factory _$$_FieldTypeCopyWith(
           _$_FieldType value, $Res Function(_$_FieldType) then) =
       __$$_FieldTypeCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({List<Modifier> modifiers});
 }
 
 /// @nodoc
 class __$$_FieldTypeCopyWithImpl<$Res>
-    extends _$FieldTypeCopyWithImpl<$Res, _$_FieldType>
+    extends _$FieldInfoCopyWithImpl<$Res, _$_FieldType>
     implements _$$_FieldTypeCopyWith<$Res> {
   __$$_FieldTypeCopyWithImpl(
       _$_FieldType _value, $Res Function(_$_FieldType) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? modifiers = null,
+  }) {
+    return _then(_$_FieldType(
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
+    ));
+  }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$_FieldType implements _FieldType {
-  const _$_FieldType({final String? $type}) : $type = $type ?? 'default';
+  const _$_FieldType(
+      {final List<Modifier> modifiers = const [], final String? $type})
+      : _modifiers = modifiers,
+        $type = $type ?? 'default';
 
   factory _$_FieldType.fromJson(Map<String, dynamic> json) =>
       _$$_FieldTypeFromJson(json);
+
+  final List<Modifier> _modifiers;
+  @override
+  @JsonKey()
+  List<Modifier> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
 
   @JsonKey(name: 'kind')
   final String $type;
 
   @override
   String toString() {
-    return 'FieldType()';
+    return 'FieldInfo(modifiers: $modifiers)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_FieldType);
+        (other.runtimeType == runtimeType &&
+            other is _$_FieldType &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_modifiers));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_FieldTypeCopyWith<_$_FieldType> get copyWith =>
+      __$$_FieldTypeCopyWithImpl<_$_FieldType>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function(PrimitiveFieldType type) primitive,
-    required TResult Function(List<String> values) enumField,
-    required TResult Function(FieldType type) list,
-    required TResult Function(FieldType key, FieldType value) map,
-    required TResult Function(Map<String, FieldType> fields) object,
+    TResult Function(List<Modifier> modifiers) $default, {
+    required TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)
+        primitive,
+    required TResult Function(List<String> values, List<Modifier> modifiers)
+        enumField,
+    required TResult Function(FieldInfo type, List<Modifier> modifiers) list,
+    required TResult Function(
+            FieldInfo key, FieldInfo value, List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, FieldInfo> fields, List<Modifier> modifiers)
+        object,
   }) {
-    return $default();
+    return $default(modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function(PrimitiveFieldType type)? primitive,
-    TResult? Function(List<String> values)? enumField,
-    TResult? Function(FieldType type)? list,
-    TResult? Function(FieldType key, FieldType value)? map,
-    TResult? Function(Map<String, FieldType> fields)? object,
+    TResult? Function(List<Modifier> modifiers)? $default, {
+    TResult? Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult? Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult? Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
   }) {
-    return $default?.call();
+    return $default?.call(modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function(PrimitiveFieldType type)? primitive,
-    TResult Function(List<String> values)? enumField,
-    TResult Function(FieldType type)? list,
-    TResult Function(FieldType key, FieldType value)? map,
-    TResult Function(Map<String, FieldType> fields)? object,
+    TResult Function(List<Modifier> modifiers)? $default, {
+    TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
     required TResult orElse(),
   }) {
     if ($default != null) {
-      return $default();
+      return $default(modifiers);
     }
     return orElse();
   }
@@ -663,25 +743,34 @@ class _$_FieldType implements _FieldType {
   }
 }
 
-abstract class _FieldType implements FieldType {
-  const factory _FieldType() = _$_FieldType;
+abstract class _FieldType implements FieldInfo {
+  const factory _FieldType({final List<Modifier> modifiers}) = _$_FieldType;
 
   factory _FieldType.fromJson(Map<String, dynamic> json) =
       _$_FieldType.fromJson;
+
+  @override
+  List<Modifier> get modifiers;
+  @override
+  @JsonKey(ignore: true)
+  _$$_FieldTypeCopyWith<_$_FieldType> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$PrimitiveFieldCopyWith<$Res> {
+abstract class _$$PrimitiveFieldCopyWith<$Res>
+    implements $FieldInfoCopyWith<$Res> {
   factory _$$PrimitiveFieldCopyWith(
           _$PrimitiveField value, $Res Function(_$PrimitiveField) then) =
       __$$PrimitiveFieldCopyWithImpl<$Res>;
+  @override
   @useResult
-  $Res call({PrimitiveFieldType type});
+  $Res call({PrimitiveFieldType type, List<Modifier> modifiers});
 }
 
 /// @nodoc
 class __$$PrimitiveFieldCopyWithImpl<$Res>
-    extends _$FieldTypeCopyWithImpl<$Res, _$PrimitiveField>
+    extends _$FieldInfoCopyWithImpl<$Res, _$PrimitiveField>
     implements _$$PrimitiveFieldCopyWith<$Res> {
   __$$PrimitiveFieldCopyWithImpl(
       _$PrimitiveField _value, $Res Function(_$PrimitiveField) _then)
@@ -691,12 +780,17 @@ class __$$PrimitiveFieldCopyWithImpl<$Res>
   @override
   $Res call({
     Object? type = null,
+    Object? modifiers = null,
   }) {
     return _then(_$PrimitiveField(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PrimitiveFieldType,
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
     ));
   }
 }
@@ -704,21 +798,32 @@ class __$$PrimitiveFieldCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$PrimitiveField implements PrimitiveField {
-  const _$PrimitiveField({required this.type, final String? $type})
-      : $type = $type ?? 'primitive';
+  const _$PrimitiveField(
+      {required this.type,
+      final List<Modifier> modifiers = const [],
+      final String? $type})
+      : _modifiers = modifiers,
+        $type = $type ?? 'primitive';
 
   factory _$PrimitiveField.fromJson(Map<String, dynamic> json) =>
       _$$PrimitiveFieldFromJson(json);
 
   @override
   final PrimitiveFieldType type;
+  final List<Modifier> _modifiers;
+  @override
+  @JsonKey()
+  List<Modifier> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
 
   @JsonKey(name: 'kind')
   final String $type;
 
   @override
   String toString() {
-    return 'FieldType.primitive(type: $type)';
+    return 'FieldInfo.primitive(type: $type, modifiers: $modifiers)';
   }
 
   @override
@@ -726,12 +831,15 @@ class _$PrimitiveField implements PrimitiveField {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PrimitiveField &&
-            (identical(other.type, type) || other.type == type));
+            (identical(other.type, type) || other.type == type) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, type);
+  int get hashCode => Object.hash(
+      runtimeType, type, const DeepCollectionEquality().hash(_modifiers));
 
   @JsonKey(ignore: true)
   @override
@@ -742,42 +850,54 @@ class _$PrimitiveField implements PrimitiveField {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function(PrimitiveFieldType type) primitive,
-    required TResult Function(List<String> values) enumField,
-    required TResult Function(FieldType type) list,
-    required TResult Function(FieldType key, FieldType value) map,
-    required TResult Function(Map<String, FieldType> fields) object,
+    TResult Function(List<Modifier> modifiers) $default, {
+    required TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)
+        primitive,
+    required TResult Function(List<String> values, List<Modifier> modifiers)
+        enumField,
+    required TResult Function(FieldInfo type, List<Modifier> modifiers) list,
+    required TResult Function(
+            FieldInfo key, FieldInfo value, List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, FieldInfo> fields, List<Modifier> modifiers)
+        object,
   }) {
-    return primitive(type);
+    return primitive(type, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function(PrimitiveFieldType type)? primitive,
-    TResult? Function(List<String> values)? enumField,
-    TResult? Function(FieldType type)? list,
-    TResult? Function(FieldType key, FieldType value)? map,
-    TResult? Function(Map<String, FieldType> fields)? object,
+    TResult? Function(List<Modifier> modifiers)? $default, {
+    TResult? Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult? Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult? Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
   }) {
-    return primitive?.call(type);
+    return primitive?.call(type, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function(PrimitiveFieldType type)? primitive,
-    TResult Function(List<String> values)? enumField,
-    TResult Function(FieldType type)? list,
-    TResult Function(FieldType key, FieldType value)? map,
-    TResult Function(Map<String, FieldType> fields)? object,
+    TResult Function(List<Modifier> modifiers)? $default, {
+    TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
     required TResult orElse(),
   }) {
     if (primitive != null) {
-      return primitive(type);
+      return primitive(type, modifiers);
     }
     return orElse();
   }
@@ -833,31 +953,36 @@ class _$PrimitiveField implements PrimitiveField {
   }
 }
 
-abstract class PrimitiveField implements FieldType {
-  const factory PrimitiveField({required final PrimitiveFieldType type}) =
-      _$PrimitiveField;
+abstract class PrimitiveField implements FieldInfo {
+  const factory PrimitiveField(
+      {required final PrimitiveFieldType type,
+      final List<Modifier> modifiers}) = _$PrimitiveField;
 
   factory PrimitiveField.fromJson(Map<String, dynamic> json) =
       _$PrimitiveField.fromJson;
 
   PrimitiveFieldType get type;
+  @override
+  List<Modifier> get modifiers;
+  @override
   @JsonKey(ignore: true)
   _$$PrimitiveFieldCopyWith<_$PrimitiveField> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$EnumFieldCopyWith<$Res> {
+abstract class _$$EnumFieldCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
   factory _$$EnumFieldCopyWith(
           _$EnumField value, $Res Function(_$EnumField) then) =
       __$$EnumFieldCopyWithImpl<$Res>;
+  @override
   @useResult
-  $Res call({List<String> values});
+  $Res call({List<String> values, List<Modifier> modifiers});
 }
 
 /// @nodoc
 class __$$EnumFieldCopyWithImpl<$Res>
-    extends _$FieldTypeCopyWithImpl<$Res, _$EnumField>
+    extends _$FieldInfoCopyWithImpl<$Res, _$EnumField>
     implements _$$EnumFieldCopyWith<$Res> {
   __$$EnumFieldCopyWithImpl(
       _$EnumField _value, $Res Function(_$EnumField) _then)
@@ -867,12 +992,17 @@ class __$$EnumFieldCopyWithImpl<$Res>
   @override
   $Res call({
     Object? values = null,
+    Object? modifiers = null,
   }) {
     return _then(_$EnumField(
       values: null == values
           ? _value._values
           : values // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
     ));
   }
 }
@@ -880,8 +1010,12 @@ class __$$EnumFieldCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$EnumField implements EnumField {
-  const _$EnumField({required final List<String> values, final String? $type})
+  const _$EnumField(
+      {required final List<String> values,
+      final List<Modifier> modifiers = const [],
+      final String? $type})
       : _values = values,
+        _modifiers = modifiers,
         $type = $type ?? 'enum';
 
   factory _$EnumField.fromJson(Map<String, dynamic> json) =>
@@ -894,12 +1028,20 @@ class _$EnumField implements EnumField {
     return EqualUnmodifiableListView(_values);
   }
 
+  final List<Modifier> _modifiers;
+  @override
+  @JsonKey()
+  List<Modifier> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
+
   @JsonKey(name: 'kind')
   final String $type;
 
   @override
   String toString() {
-    return 'FieldType.enumField(values: $values)';
+    return 'FieldInfo.enumField(values: $values, modifiers: $modifiers)';
   }
 
   @override
@@ -907,13 +1049,17 @@ class _$EnumField implements EnumField {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EnumField &&
-            const DeepCollectionEquality().equals(other._values, _values));
+            const DeepCollectionEquality().equals(other._values, _values) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_values));
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_values),
+      const DeepCollectionEquality().hash(_modifiers));
 
   @JsonKey(ignore: true)
   @override
@@ -924,42 +1070,54 @@ class _$EnumField implements EnumField {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function(PrimitiveFieldType type) primitive,
-    required TResult Function(List<String> values) enumField,
-    required TResult Function(FieldType type) list,
-    required TResult Function(FieldType key, FieldType value) map,
-    required TResult Function(Map<String, FieldType> fields) object,
+    TResult Function(List<Modifier> modifiers) $default, {
+    required TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)
+        primitive,
+    required TResult Function(List<String> values, List<Modifier> modifiers)
+        enumField,
+    required TResult Function(FieldInfo type, List<Modifier> modifiers) list,
+    required TResult Function(
+            FieldInfo key, FieldInfo value, List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, FieldInfo> fields, List<Modifier> modifiers)
+        object,
   }) {
-    return enumField(values);
+    return enumField(values, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function(PrimitiveFieldType type)? primitive,
-    TResult? Function(List<String> values)? enumField,
-    TResult? Function(FieldType type)? list,
-    TResult? Function(FieldType key, FieldType value)? map,
-    TResult? Function(Map<String, FieldType> fields)? object,
+    TResult? Function(List<Modifier> modifiers)? $default, {
+    TResult? Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult? Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult? Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
   }) {
-    return enumField?.call(values);
+    return enumField?.call(values, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function(PrimitiveFieldType type)? primitive,
-    TResult Function(List<String> values)? enumField,
-    TResult Function(FieldType type)? list,
-    TResult Function(FieldType key, FieldType value)? map,
-    TResult Function(Map<String, FieldType> fields)? object,
+    TResult Function(List<Modifier> modifiers)? $default, {
+    TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
     required TResult orElse(),
   }) {
     if (enumField != null) {
-      return enumField(values);
+      return enumField(values, modifiers);
     }
     return orElse();
   }
@@ -1015,31 +1173,37 @@ class _$EnumField implements EnumField {
   }
 }
 
-abstract class EnumField implements FieldType {
-  const factory EnumField({required final List<String> values}) = _$EnumField;
+abstract class EnumField implements FieldInfo {
+  const factory EnumField(
+      {required final List<String> values,
+      final List<Modifier> modifiers}) = _$EnumField;
 
   factory EnumField.fromJson(Map<String, dynamic> json) = _$EnumField.fromJson;
 
   List<String> get values;
+  @override
+  List<Modifier> get modifiers;
+  @override
   @JsonKey(ignore: true)
   _$$EnumFieldCopyWith<_$EnumField> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ListFieldCopyWith<$Res> {
+abstract class _$$ListFieldCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
   factory _$$ListFieldCopyWith(
           _$ListField value, $Res Function(_$ListField) then) =
       __$$ListFieldCopyWithImpl<$Res>;
+  @override
   @useResult
-  $Res call({FieldType type});
+  $Res call({FieldInfo type, List<Modifier> modifiers});
 
-  $FieldTypeCopyWith<$Res> get type;
+  $FieldInfoCopyWith<$Res> get type;
 }
 
 /// @nodoc
 class __$$ListFieldCopyWithImpl<$Res>
-    extends _$FieldTypeCopyWithImpl<$Res, _$ListField>
+    extends _$FieldInfoCopyWithImpl<$Res, _$ListField>
     implements _$$ListFieldCopyWith<$Res> {
   __$$ListFieldCopyWithImpl(
       _$ListField _value, $Res Function(_$ListField) _then)
@@ -1049,19 +1213,24 @@ class __$$ListFieldCopyWithImpl<$Res>
   @override
   $Res call({
     Object? type = null,
+    Object? modifiers = null,
   }) {
     return _then(_$ListField(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as FieldType,
+              as FieldInfo,
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
     ));
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $FieldTypeCopyWith<$Res> get type {
-    return $FieldTypeCopyWith<$Res>(_value.type, (value) {
+  $FieldInfoCopyWith<$Res> get type {
+    return $FieldInfoCopyWith<$Res>(_value.type, (value) {
       return _then(_value.copyWith(type: value));
     });
   }
@@ -1070,21 +1239,32 @@ class __$$ListFieldCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ListField implements ListField {
-  const _$ListField({required this.type, final String? $type})
-      : $type = $type ?? 'list';
+  const _$ListField(
+      {required this.type,
+      final List<Modifier> modifiers = const [],
+      final String? $type})
+      : _modifiers = modifiers,
+        $type = $type ?? 'list';
 
   factory _$ListField.fromJson(Map<String, dynamic> json) =>
       _$$ListFieldFromJson(json);
 
   @override
-  final FieldType type;
+  final FieldInfo type;
+  final List<Modifier> _modifiers;
+  @override
+  @JsonKey()
+  List<Modifier> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
 
   @JsonKey(name: 'kind')
   final String $type;
 
   @override
   String toString() {
-    return 'FieldType.list(type: $type)';
+    return 'FieldInfo.list(type: $type, modifiers: $modifiers)';
   }
 
   @override
@@ -1092,12 +1272,15 @@ class _$ListField implements ListField {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ListField &&
-            (identical(other.type, type) || other.type == type));
+            (identical(other.type, type) || other.type == type) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, type);
+  int get hashCode => Object.hash(
+      runtimeType, type, const DeepCollectionEquality().hash(_modifiers));
 
   @JsonKey(ignore: true)
   @override
@@ -1108,42 +1291,54 @@ class _$ListField implements ListField {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function(PrimitiveFieldType type) primitive,
-    required TResult Function(List<String> values) enumField,
-    required TResult Function(FieldType type) list,
-    required TResult Function(FieldType key, FieldType value) map,
-    required TResult Function(Map<String, FieldType> fields) object,
+    TResult Function(List<Modifier> modifiers) $default, {
+    required TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)
+        primitive,
+    required TResult Function(List<String> values, List<Modifier> modifiers)
+        enumField,
+    required TResult Function(FieldInfo type, List<Modifier> modifiers) list,
+    required TResult Function(
+            FieldInfo key, FieldInfo value, List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, FieldInfo> fields, List<Modifier> modifiers)
+        object,
   }) {
-    return list(type);
+    return list(type, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function(PrimitiveFieldType type)? primitive,
-    TResult? Function(List<String> values)? enumField,
-    TResult? Function(FieldType type)? list,
-    TResult? Function(FieldType key, FieldType value)? map,
-    TResult? Function(Map<String, FieldType> fields)? object,
+    TResult? Function(List<Modifier> modifiers)? $default, {
+    TResult? Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult? Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult? Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
   }) {
-    return list?.call(type);
+    return list?.call(type, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function(PrimitiveFieldType type)? primitive,
-    TResult Function(List<String> values)? enumField,
-    TResult Function(FieldType type)? list,
-    TResult Function(FieldType key, FieldType value)? map,
-    TResult Function(Map<String, FieldType> fields)? object,
+    TResult Function(List<Modifier> modifiers)? $default, {
+    TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
     required TResult orElse(),
   }) {
     if (list != null) {
-      return list(type);
+      return list(type, modifiers);
     }
     return orElse();
   }
@@ -1199,32 +1394,38 @@ class _$ListField implements ListField {
   }
 }
 
-abstract class ListField implements FieldType {
-  const factory ListField({required final FieldType type}) = _$ListField;
+abstract class ListField implements FieldInfo {
+  const factory ListField(
+      {required final FieldInfo type,
+      final List<Modifier> modifiers}) = _$ListField;
 
   factory ListField.fromJson(Map<String, dynamic> json) = _$ListField.fromJson;
 
-  FieldType get type;
+  FieldInfo get type;
+  @override
+  List<Modifier> get modifiers;
+  @override
   @JsonKey(ignore: true)
   _$$ListFieldCopyWith<_$ListField> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$MapFieldCopyWith<$Res> {
+abstract class _$$MapFieldCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
   factory _$$MapFieldCopyWith(
           _$MapField value, $Res Function(_$MapField) then) =
       __$$MapFieldCopyWithImpl<$Res>;
+  @override
   @useResult
-  $Res call({FieldType key, FieldType value});
+  $Res call({FieldInfo key, FieldInfo value, List<Modifier> modifiers});
 
-  $FieldTypeCopyWith<$Res> get key;
-  $FieldTypeCopyWith<$Res> get value;
+  $FieldInfoCopyWith<$Res> get key;
+  $FieldInfoCopyWith<$Res> get value;
 }
 
 /// @nodoc
 class __$$MapFieldCopyWithImpl<$Res>
-    extends _$FieldTypeCopyWithImpl<$Res, _$MapField>
+    extends _$FieldInfoCopyWithImpl<$Res, _$MapField>
     implements _$$MapFieldCopyWith<$Res> {
   __$$MapFieldCopyWithImpl(_$MapField _value, $Res Function(_$MapField) _then)
       : super(_value, _then);
@@ -1234,31 +1435,36 @@ class __$$MapFieldCopyWithImpl<$Res>
   $Res call({
     Object? key = null,
     Object? value = null,
+    Object? modifiers = null,
   }) {
     return _then(_$MapField(
       key: null == key
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
-              as FieldType,
+              as FieldInfo,
       value: null == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
-              as FieldType,
+              as FieldInfo,
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
     ));
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $FieldTypeCopyWith<$Res> get key {
-    return $FieldTypeCopyWith<$Res>(_value.key, (value) {
+  $FieldInfoCopyWith<$Res> get key {
+    return $FieldInfoCopyWith<$Res>(_value.key, (value) {
       return _then(_value.copyWith(key: value));
     });
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $FieldTypeCopyWith<$Res> get value {
-    return $FieldTypeCopyWith<$Res>(_value.value, (value) {
+  $FieldInfoCopyWith<$Res> get value {
+    return $FieldInfoCopyWith<$Res>(_value.value, (value) {
       return _then(_value.copyWith(value: value));
     });
   }
@@ -1268,23 +1474,34 @@ class __$$MapFieldCopyWithImpl<$Res>
 @JsonSerializable()
 class _$MapField implements MapField {
   const _$MapField(
-      {required this.key, required this.value, final String? $type})
-      : $type = $type ?? 'map';
+      {required this.key,
+      required this.value,
+      final List<Modifier> modifiers = const [],
+      final String? $type})
+      : _modifiers = modifiers,
+        $type = $type ?? 'map';
 
   factory _$MapField.fromJson(Map<String, dynamic> json) =>
       _$$MapFieldFromJson(json);
 
   @override
-  final FieldType key;
+  final FieldInfo key;
   @override
-  final FieldType value;
+  final FieldInfo value;
+  final List<Modifier> _modifiers;
+  @override
+  @JsonKey()
+  List<Modifier> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
 
   @JsonKey(name: 'kind')
   final String $type;
 
   @override
   String toString() {
-    return 'FieldType.map(key: $key, value: $value)';
+    return 'FieldInfo.map(key: $key, value: $value, modifiers: $modifiers)';
   }
 
   @override
@@ -1293,12 +1510,15 @@ class _$MapField implements MapField {
         (other.runtimeType == runtimeType &&
             other is _$MapField &&
             (identical(other.key, key) || other.key == key) &&
-            (identical(other.value, value) || other.value == value));
+            (identical(other.value, value) || other.value == value) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, key, value);
+  int get hashCode => Object.hash(
+      runtimeType, key, value, const DeepCollectionEquality().hash(_modifiers));
 
   @JsonKey(ignore: true)
   @override
@@ -1309,42 +1529,54 @@ class _$MapField implements MapField {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function(PrimitiveFieldType type) primitive,
-    required TResult Function(List<String> values) enumField,
-    required TResult Function(FieldType type) list,
-    required TResult Function(FieldType key, FieldType value) map,
-    required TResult Function(Map<String, FieldType> fields) object,
+    TResult Function(List<Modifier> modifiers) $default, {
+    required TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)
+        primitive,
+    required TResult Function(List<String> values, List<Modifier> modifiers)
+        enumField,
+    required TResult Function(FieldInfo type, List<Modifier> modifiers) list,
+    required TResult Function(
+            FieldInfo key, FieldInfo value, List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, FieldInfo> fields, List<Modifier> modifiers)
+        object,
   }) {
-    return map(key, value);
+    return map(key, value, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function(PrimitiveFieldType type)? primitive,
-    TResult? Function(List<String> values)? enumField,
-    TResult? Function(FieldType type)? list,
-    TResult? Function(FieldType key, FieldType value)? map,
-    TResult? Function(Map<String, FieldType> fields)? object,
+    TResult? Function(List<Modifier> modifiers)? $default, {
+    TResult? Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult? Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult? Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
   }) {
-    return map?.call(key, value);
+    return map?.call(key, value, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function(PrimitiveFieldType type)? primitive,
-    TResult Function(List<String> values)? enumField,
-    TResult Function(FieldType type)? list,
-    TResult Function(FieldType key, FieldType value)? map,
-    TResult Function(Map<String, FieldType> fields)? object,
+    TResult Function(List<Modifier> modifiers)? $default, {
+    TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
     required TResult orElse(),
   }) {
     if (map != null) {
-      return map(key, value);
+      return map(key, value, modifiers);
     }
     return orElse();
   }
@@ -1400,32 +1632,38 @@ class _$MapField implements MapField {
   }
 }
 
-abstract class MapField implements FieldType {
+abstract class MapField implements FieldInfo {
   const factory MapField(
-      {required final FieldType key,
-      required final FieldType value}) = _$MapField;
+      {required final FieldInfo key,
+      required final FieldInfo value,
+      final List<Modifier> modifiers}) = _$MapField;
 
   factory MapField.fromJson(Map<String, dynamic> json) = _$MapField.fromJson;
 
-  FieldType get key;
-  FieldType get value;
+  FieldInfo get key;
+  FieldInfo get value;
+  @override
+  List<Modifier> get modifiers;
+  @override
   @JsonKey(ignore: true)
   _$$MapFieldCopyWith<_$MapField> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ObjectFieldCopyWith<$Res> {
+abstract class _$$ObjectFieldCopyWith<$Res>
+    implements $FieldInfoCopyWith<$Res> {
   factory _$$ObjectFieldCopyWith(
           _$ObjectField value, $Res Function(_$ObjectField) then) =
       __$$ObjectFieldCopyWithImpl<$Res>;
+  @override
   @useResult
-  $Res call({Map<String, FieldType> fields});
+  $Res call({Map<String, FieldInfo> fields, List<Modifier> modifiers});
 }
 
 /// @nodoc
 class __$$ObjectFieldCopyWithImpl<$Res>
-    extends _$FieldTypeCopyWithImpl<$Res, _$ObjectField>
+    extends _$FieldInfoCopyWithImpl<$Res, _$ObjectField>
     implements _$$ObjectFieldCopyWith<$Res> {
   __$$ObjectFieldCopyWithImpl(
       _$ObjectField _value, $Res Function(_$ObjectField) _then)
@@ -1435,12 +1673,17 @@ class __$$ObjectFieldCopyWithImpl<$Res>
   @override
   $Res call({
     Object? fields = null,
+    Object? modifiers = null,
   }) {
     return _then(_$ObjectField(
       fields: null == fields
           ? _value._fields
           : fields // ignore: cast_nullable_to_non_nullable
-              as Map<String, FieldType>,
+              as Map<String, FieldInfo>,
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
     ));
   }
 }
@@ -1449,18 +1692,29 @@ class __$$ObjectFieldCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ObjectField implements ObjectField {
   const _$ObjectField(
-      {required final Map<String, FieldType> fields, final String? $type})
+      {required final Map<String, FieldInfo> fields,
+      final List<Modifier> modifiers = const [],
+      final String? $type})
       : _fields = fields,
+        _modifiers = modifiers,
         $type = $type ?? 'object';
 
   factory _$ObjectField.fromJson(Map<String, dynamic> json) =>
       _$$ObjectFieldFromJson(json);
 
-  final Map<String, FieldType> _fields;
+  final Map<String, FieldInfo> _fields;
   @override
-  Map<String, FieldType> get fields {
+  Map<String, FieldInfo> get fields {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_fields);
+  }
+
+  final List<Modifier> _modifiers;
+  @override
+  @JsonKey()
+  List<Modifier> get modifiers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
   }
 
   @JsonKey(name: 'kind')
@@ -1468,7 +1722,7 @@ class _$ObjectField implements ObjectField {
 
   @override
   String toString() {
-    return 'FieldType.object(fields: $fields)';
+    return 'FieldInfo.object(fields: $fields, modifiers: $modifiers)';
   }
 
   @override
@@ -1476,13 +1730,17 @@ class _$ObjectField implements ObjectField {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ObjectField &&
-            const DeepCollectionEquality().equals(other._fields, _fields));
+            const DeepCollectionEquality().equals(other._fields, _fields) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_fields));
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_fields),
+      const DeepCollectionEquality().hash(_modifiers));
 
   @JsonKey(ignore: true)
   @override
@@ -1493,42 +1751,54 @@ class _$ObjectField implements ObjectField {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function() $default, {
-    required TResult Function(PrimitiveFieldType type) primitive,
-    required TResult Function(List<String> values) enumField,
-    required TResult Function(FieldType type) list,
-    required TResult Function(FieldType key, FieldType value) map,
-    required TResult Function(Map<String, FieldType> fields) object,
+    TResult Function(List<Modifier> modifiers) $default, {
+    required TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)
+        primitive,
+    required TResult Function(List<String> values, List<Modifier> modifiers)
+        enumField,
+    required TResult Function(FieldInfo type, List<Modifier> modifiers) list,
+    required TResult Function(
+            FieldInfo key, FieldInfo value, List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, FieldInfo> fields, List<Modifier> modifiers)
+        object,
   }) {
-    return object(fields);
+    return object(fields, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function()? $default, {
-    TResult? Function(PrimitiveFieldType type)? primitive,
-    TResult? Function(List<String> values)? enumField,
-    TResult? Function(FieldType type)? list,
-    TResult? Function(FieldType key, FieldType value)? map,
-    TResult? Function(Map<String, FieldType> fields)? object,
+    TResult? Function(List<Modifier> modifiers)? $default, {
+    TResult? Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult? Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult? Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
   }) {
-    return object?.call(fields);
+    return object?.call(fields, modifiers);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function()? $default, {
-    TResult Function(PrimitiveFieldType type)? primitive,
-    TResult Function(List<String> values)? enumField,
-    TResult Function(FieldType type)? list,
-    TResult Function(FieldType key, FieldType value)? map,
-    TResult Function(Map<String, FieldType> fields)? object,
+    TResult Function(List<Modifier> modifiers)? $default, {
+    TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
     required TResult orElse(),
   }) {
     if (object != null) {
-      return object(fields);
+      return object(fields, modifiers);
     }
     return orElse();
   }
@@ -1584,15 +1854,170 @@ class _$ObjectField implements ObjectField {
   }
 }
 
-abstract class ObjectField implements FieldType {
-  const factory ObjectField({required final Map<String, FieldType> fields}) =
-      _$ObjectField;
+abstract class ObjectField implements FieldInfo {
+  const factory ObjectField(
+      {required final Map<String, FieldInfo> fields,
+      final List<Modifier> modifiers}) = _$ObjectField;
 
   factory ObjectField.fromJson(Map<String, dynamic> json) =
       _$ObjectField.fromJson;
 
-  Map<String, FieldType> get fields;
+  Map<String, FieldInfo> get fields;
+  @override
+  List<Modifier> get modifiers;
+  @override
   @JsonKey(ignore: true)
   _$$ObjectFieldCopyWith<_$ObjectField> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+Modifier _$ModifierFromJson(Map<String, dynamic> json) {
+  return _Modifier.fromJson(json);
+}
+
+/// @nodoc
+mixin _$Modifier {
+  String get name => throw _privateConstructorUsedError;
+  dynamic get data => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $ModifierCopyWith<Modifier> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ModifierCopyWith<$Res> {
+  factory $ModifierCopyWith(Modifier value, $Res Function(Modifier) then) =
+      _$ModifierCopyWithImpl<$Res, Modifier>;
+  @useResult
+  $Res call({String name, dynamic data});
+}
+
+/// @nodoc
+class _$ModifierCopyWithImpl<$Res, $Val extends Modifier>
+    implements $ModifierCopyWith<$Res> {
+  _$ModifierCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? data = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      data: null == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_ModifierCopyWith<$Res> implements $ModifierCopyWith<$Res> {
+  factory _$$_ModifierCopyWith(
+          _$_Modifier value, $Res Function(_$_Modifier) then) =
+      __$$_ModifierCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, dynamic data});
+}
+
+/// @nodoc
+class __$$_ModifierCopyWithImpl<$Res>
+    extends _$ModifierCopyWithImpl<$Res, _$_Modifier>
+    implements _$$_ModifierCopyWith<$Res> {
+  __$$_ModifierCopyWithImpl(
+      _$_Modifier _value, $Res Function(_$_Modifier) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? data = null,
+  }) {
+    return _then(_$_Modifier(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      data: null == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_Modifier implements _Modifier {
+  const _$_Modifier({required this.name, this.data});
+
+  factory _$_Modifier.fromJson(Map<String, dynamic> json) =>
+      _$$_ModifierFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final dynamic data;
+
+  @override
+  String toString() {
+    return 'Modifier(name: $name, data: $data)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_Modifier &&
+            (identical(other.name, name) || other.name == name) &&
+            const DeepCollectionEquality().equals(other.data, data));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, name, const DeepCollectionEquality().hash(data));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_ModifierCopyWith<_$_Modifier> get copyWith =>
+      __$$_ModifierCopyWithImpl<_$_Modifier>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_ModifierToJson(
+      this,
+    );
+  }
+}
+
+abstract class _Modifier implements Modifier {
+  const factory _Modifier({required final String name, final dynamic data}) =
+      _$_Modifier;
+
+  factory _Modifier.fromJson(Map<String, dynamic> json) = _$_Modifier.fromJson;
+
+  @override
+  String get name;
+  @override
+  dynamic get data;
+  @override
+  @JsonKey(ignore: true)
+  _$$_ModifierCopyWith<_$_Modifier> get copyWith =>
       throw _privateConstructorUsedError;
 }

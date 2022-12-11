@@ -23,6 +23,16 @@ List<EntryBlueprint> entryBlueprints(EntryBlueprintsRef ref) =>
 EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String name) =>
     ref.watch(entryBlueprintsProvider).firstWhereOrNull((e) => e.name == name);
 
+@riverpod
+Map<String, Modifier> fieldModifiers(FieldModifiersRef ref, String blueprint, String name) {
+  return ref.watch(entryBlueprintProvider(blueprint))?.fieldsWithModifier(name) ?? {};
+}
+
+@riverpod
+List<String> modifierPaths(ModifierPathsRef ref, String blueprint, String name) {
+  return ref.watch(fieldModifiersProvider(blueprint, name)).keys.toList();
+}
+
 /// A data model that represents an adapter.
 @freezed
 class Adapter with _$Adapter {
@@ -51,51 +61,92 @@ class EntryBlueprint with _$EntryBlueprint {
 
 /// A data model for the fields of an adapter entry.
 @Freezed(unionKey: "kind")
-class FieldType with _$FieldType {
+class FieldInfo with _$FieldInfo {
   /// A default constructor that should never be used.
-  const factory FieldType() = _FieldType;
+  const factory FieldInfo({
+    @Default([]) List<Modifier> modifiers,
+  }) = _FieldType;
 
   /// Primitive field type, such as a string or a number.
-  const factory FieldType.primitive({
+  const factory FieldInfo.primitive({
     required PrimitiveFieldType type,
+    @Default([]) List<Modifier> modifiers,
   }) = PrimitiveField;
 
   /// Enum field type, such as a list of options.
   @FreezedUnionValue("enum")
-  const factory FieldType.enumField({
+  const factory FieldInfo.enumField({
     required List<String> values,
+    @Default([]) List<Modifier> modifiers,
   }) = EnumField;
 
   /// List field type, such as a list of strings.
-  const factory FieldType.list({
-    required FieldType type,
+  const factory FieldInfo.list({
+    required FieldInfo type,
+    @Default([]) List<Modifier> modifiers,
   }) = ListField;
 
   /// Map field type, such as a map of strings to strings.
   /// Only strings and enums are supported as keys.
-  const factory FieldType.map({
-    required FieldType key,
-    required FieldType value,
+  const factory FieldInfo.map({
+    required FieldInfo key,
+    required FieldInfo value,
+    @Default([]) List<Modifier> modifiers,
   }) = MapField;
 
   /// Object field type, such as a nested object.
-  const factory FieldType.object({
-    required Map<String, FieldType> fields,
+  const factory FieldInfo.object({
+    required Map<String, FieldInfo> fields,
+    @Default([]) List<Modifier> modifiers,
   }) = ObjectField;
 
-  factory FieldType.fromJson(Map<String, dynamic> json) => _$FieldTypeFromJson(json);
+  factory FieldInfo.fromJson(Map<String, dynamic> json) => _$FieldInfoFromJson(json);
+}
+
+@freezed
+class Modifier with _$Modifier {
+  const factory Modifier({
+    required String name,
+    dynamic data,
+  }) = _Modifier;
+
+  factory Modifier.fromJson(Map<String, dynamic> json) => _$ModifierFromJson(json);
+}
+
+extension EntryBlueprintExt on EntryBlueprint {
+  Map<String, Modifier> fieldsWithModifier(String name) => _fieldsWithModifier(name, "", fields);
+
+  /// Parse through the fields of this entry and return a list of all the fields that have the given modifier with [name].
+  Map<String, Modifier> _fieldsWithModifier(String name, String path, FieldInfo info) {
+    final fields = {
+      if (info.hasModifier(name)) path: info.getModifier(name)!,
+    };
+
+    final separator = path.isEmpty ? "" : ".";
+    if (info is ObjectField) {
+      for (final field in info.fields.entries) {
+        fields.addAll(_fieldsWithModifier(name, "$path$separator${field.key}", field.value));
+      }
+    } else if (info is ListField) {
+      fields.addAll(_fieldsWithModifier(name, "$path$separator*", info.type));
+    } else if (info is MapField) {
+      fields.addAll(_fieldsWithModifier(name, "$path$separator*", info.value));
+    }
+
+    return fields;
+  }
 }
 
 /// Since freezed does not support methods on data models, we have to create a separate extension class.
-extension FieldTypeExtension on FieldType {
+extension FieldTypeExtension on FieldInfo {
   /// Get the default value for this field type.
   dynamic get defaultValue => when(
-        () => null,
-        primitive: (type) => type.defaultValue,
-        enumField: (values) => values.first,
-        list: (type) => [],
-        map: (key, value) => {},
-        object: (fields) => fields.map((key, value) => MapEntry(key, value.defaultValue)),
+        (_) => null,
+        primitive: (type, _) => type.defaultValue,
+        enumField: (values, _) => values.first,
+        list: (type, _) => [],
+        map: (key, value, _) => {},
+        object: (fields, _) => fields.map((key, value) => MapEntry(key, value.defaultValue)),
       );
 
   /// If the [ObjectEditor] needs to show a default layout or if a field declares a custom layout.
@@ -113,6 +164,14 @@ extension FieldTypeExtension on FieldType {
       return true;
     }
     return false;
+  }
+
+  Modifier? getModifier(String name) {
+    return modifiers.firstWhereOrNull((e) => e.name == name);
+  }
+
+  bool hasModifier(String name) {
+    return getModifier(name) != null;
   }
 }
 
