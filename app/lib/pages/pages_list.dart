@@ -4,7 +4,6 @@ import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:rive/rive.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/main.dart";
@@ -12,6 +11,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart" as model;
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import 'package:typewriter/widgets/empty_screen.dart';
 import "package:typewriter/widgets/filled_button.dart";
 
 part "pages_list.g.dart";
@@ -121,29 +121,10 @@ class EmptyPageEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      children: [
-        const Spacer(),
-        const Expanded(
-          flex: 2,
-          child: RiveAnimation.asset(
-            "assets/cute_robot.riv",
-            stateMachines: ["Motion"],
-          ),
-        ),
-        const Text(
-          "Select a page to edit or",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 24),
-        FilledButton.icon(
-          label: const Text("Add Page"),
-          onPressed: () => _showAddPageDialog(context),
-          icon: const Icon(FontAwesomeIcons.plus),
-        ),
-        const Spacer(),
-      ],
+    return EmptyScreen(
+      title: "Select a page to edit or",
+      buttonText: "Add Page",
+      onButtonPressed: () => _showAddPageDialog(context),
     );
   }
 }

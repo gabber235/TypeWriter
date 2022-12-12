@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entry
 
 import com.google.gson.annotations.SerializedName
+import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.facts.Fact
 
@@ -9,11 +10,16 @@ interface Entry {
 	val name: String
 }
 
+@Tags("static")
+interface StaticEntry : Entry
+
+@Tags("trigger")
 interface TriggerEntry : Entry {
 	@Triggers
 	val triggers: List<String>
 }
 
+@Tags("rule")
 interface RuleEntry : TriggerEntry {
 	val criteria: List<Criteria>
 	val modifiers: List<Modifier>
@@ -40,6 +46,7 @@ enum class CriteriaOperator {
 }
 
 data class Criteria(
+	@field:me.gabber235.typewriter.adapters.modifiers.Fact
 	val fact: String,
 	val operator: CriteriaOperator,
 	val value: Int,
@@ -65,6 +72,7 @@ enum class ModifierOperator {
 }
 
 data class Modifier(
+	@field:me.gabber235.typewriter.adapters.modifiers.Fact
 	val fact: String,
 	val operator: ModifierOperator,
 	val value: Int,

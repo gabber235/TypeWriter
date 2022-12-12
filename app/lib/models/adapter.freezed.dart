@@ -225,8 +225,11 @@ mixin _$EntryBlueprint {
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   ObjectField get fields => throw _privateConstructorUsedError;
+  List<String> get tags => throw _privateConstructorUsedError;
   @ColorConverter()
   Color get color => throw _privateConstructorUsedError;
+  @IconConverter()
+  IconData get icon => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -244,7 +247,9 @@ abstract class $EntryBlueprintCopyWith<$Res> {
       {String name,
       String description,
       ObjectField fields,
-      @ColorConverter() Color color});
+      List<String> tags,
+      @ColorConverter() Color color,
+      @IconConverter() IconData icon});
 }
 
 /// @nodoc
@@ -263,7 +268,9 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
     Object? name = null,
     Object? description = null,
     Object? fields = null,
+    Object? tags = null,
     Object? color = null,
+    Object? icon = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -278,10 +285,18 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
           ? _value.fields
           : fields // ignore: cast_nullable_to_non_nullable
               as ObjectField,
+      tags: null == tags
+          ? _value.tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
               as Color,
+      icon: null == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
+              as IconData,
     ) as $Val);
   }
 }
@@ -298,7 +313,9 @@ abstract class _$$_EntryBlueprintCopyWith<$Res>
       {String name,
       String description,
       ObjectField fields,
-      @ColorConverter() Color color});
+      List<String> tags,
+      @ColorConverter() Color color,
+      @IconConverter() IconData icon});
 }
 
 /// @nodoc
@@ -315,7 +332,9 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
     Object? name = null,
     Object? description = null,
     Object? fields = null,
+    Object? tags = null,
     Object? color = null,
+    Object? icon = null,
   }) {
     return _then(_$_EntryBlueprint(
       name: null == name
@@ -330,10 +349,18 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
           ? _value.fields
           : fields // ignore: cast_nullable_to_non_nullable
               as ObjectField,
+      tags: null == tags
+          ? _value._tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
               as Color,
+      icon: null == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
+              as IconData,
     ));
   }
 }
@@ -345,7 +372,10 @@ class _$_EntryBlueprint implements _EntryBlueprint {
       {required this.name,
       required this.description,
       required this.fields,
-      @ColorConverter() this.color = Colors.grey});
+      final List<String> tags = const <String>[],
+      @ColorConverter() this.color = Colors.grey,
+      @IconConverter() this.icon = Icons.help})
+      : _tags = tags;
 
   factory _$_EntryBlueprint.fromJson(Map<String, dynamic> json) =>
       _$$_EntryBlueprintFromJson(json);
@@ -356,14 +386,26 @@ class _$_EntryBlueprint implements _EntryBlueprint {
   final String description;
   @override
   final ObjectField fields;
+  final List<String> _tags;
+  @override
+  @JsonKey()
+  List<String> get tags {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tags);
+  }
+
   @override
   @JsonKey()
   @ColorConverter()
   final Color color;
+  @override
+  @JsonKey()
+  @IconConverter()
+  final IconData icon;
 
   @override
   String toString() {
-    return 'EntryBlueprint(name: $name, description: $description, fields: $fields, color: $color)';
+    return 'EntryBlueprint(name: $name, description: $description, fields: $fields, tags: $tags, color: $color, icon: $icon)';
   }
 
   @override
@@ -375,13 +417,15 @@ class _$_EntryBlueprint implements _EntryBlueprint {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.fields, fields) || other.fields == fields) &&
-            (identical(other.color, color) || other.color == color));
+            const DeepCollectionEquality().equals(other._tags, _tags) &&
+            (identical(other.color, color) || other.color == color) &&
+            (identical(other.icon, icon) || other.icon == icon));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, description, fields, color);
+  int get hashCode => Object.hash(runtimeType, name, description, fields,
+      const DeepCollectionEquality().hash(_tags), color, icon);
 
   @JsonKey(ignore: true)
   @override
@@ -402,7 +446,9 @@ abstract class _EntryBlueprint implements EntryBlueprint {
       {required final String name,
       required final String description,
       required final ObjectField fields,
-      @ColorConverter() final Color color}) = _$_EntryBlueprint;
+      final List<String> tags,
+      @ColorConverter() final Color color,
+      @IconConverter() final IconData icon}) = _$_EntryBlueprint;
 
   factory _EntryBlueprint.fromJson(Map<String, dynamic> json) =
       _$_EntryBlueprint.fromJson;
@@ -414,8 +460,13 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   @override
   ObjectField get fields;
   @override
+  List<String> get tags;
+  @override
   @ColorConverter()
   Color get color;
+  @override
+  @IconConverter()
+  IconData get icon;
   @override
   @JsonKey(ignore: true)
   _$$_EntryBlueprintCopyWith<_$_EntryBlueprint> get copyWith =>

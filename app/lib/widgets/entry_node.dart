@@ -23,7 +23,7 @@ class EntryNode extends HookConsumerWidget {
       backgroundColor: adapterEntry.color,
       foregroundColor: Colors.white,
       name: entry.name.formatted,
-      icon: const Icon(Icons.info),
+      icon: Icon(adapterEntry.icon, size: 18),
     );
   }
 }

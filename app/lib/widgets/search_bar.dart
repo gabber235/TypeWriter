@@ -7,6 +7,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:ktx/ktx.dart';
 import "package:material_floating_search_bar/material_floating_search_bar.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
@@ -117,25 +118,57 @@ List<_Action> _actions(_ActionsRef ref) {
 
   final addResults = ref.watch(_fuzzyAddEntriesProvider).search(query).map((e) => e.item).toList();
 
-  return addResults.map(_AddEntryAction.new).whereType<_Action>().toList() +
-      results.map(_EntryAction.new).whereType<_Action>().toList();
+  return results
+          .mapNotNull((entry) {
+            final blueprint = ref.watch(entryBlueprintProvider(entry.type));
+            if (blueprint == null) return null;
+            return _EntryAction(entry, blueprint);
+          })
+          .whereType<_Action>()
+          .toList() +
+      addResults.map(_AddEntryAction.new).whereType<_Action>().toList();
 }
 
 /// Finds actions for a given operator.
 /// If a query contains a ":" it means that its prefix will be the operator
 List<_Action>? _findActionsForOperator(String query, List<EntryBlueprint> blueprints, List<Entry> results) {
-  if (query.toLowerCase().startsWith("add:")) {
+  final prefix = query.split(":").first.toLowerCase();
+
+  // If it starts with "add" we want to add a new entry.
+  if (prefix == "add") {
     return blueprints.map(_AddEntryAction.new).toList();
   }
 
+  // If it starts with a type we want to filter the results by that type.
   final type = blueprints.firstWhereOrNull(
-    (print) => query.toLowerCase().startsWith("${print.name}:"),
+    (print) => print.name == prefix,
   );
   if (type != null) {
-    return results.where((e) => e.type == type.name).map<_Action>(_EntryAction.new).toList() + [_AddEntryAction(type)];
+    return results.where((e) => e.type == type.name).mapNotNull<_Action>((entry) {
+          final blueprint = blueprints.firstWhereOrNull((e) => e.name == entry.type);
+          if (blueprint == null) return null;
+          return _EntryAction(entry, blueprint);
+        }).toList() +
+        [_AddEntryAction(type)];
   }
 
-  return null;
+  // If it starts with a tag we want to filter the results & blueprints by that tag.
+  final entryTags =
+      results.where((e) => _getTagsForEntryWithBlueprints(e, blueprints).contains(prefix)).mapNotNull<_Action>((entry) {
+    final blueprint = blueprints.firstWhereOrNull((e) => e.name == entry.type);
+    if (blueprint == null) return null;
+    return _EntryAction(entry, blueprint);
+  }).toList();
+  final blueprintTags = blueprints.where((e) => e.tags.contains(prefix)).map(_AddEntryAction.new).toList();
+
+  return entryTags + blueprintTags;
+}
+
+List<String> _getTagsForEntryWithBlueprints(Entry entry, List<EntryBlueprint> blueprints) {
+  final blueprint = blueprints.firstWhereOrNull((e) => e.name == entry.type);
+  if (blueprint == null) return [];
+
+  return blueprint.tags;
 }
 
 abstract class _Action {
@@ -154,14 +187,15 @@ abstract class _Action {
 
 /// Action for selecting an existing entry.
 class _EntryAction extends _Action {
-  _EntryAction(this.entry);
+  _EntryAction(this.entry, this.blueprint);
   final Entry entry;
+  final EntryBlueprint blueprint;
 
   @override
-  Color color(BuildContext context) => Colors.grey;
+  Color color(BuildContext context) => blueprint.color;
 
   @override
-  Widget icon(BuildContext context) => const Icon(Icons.question_mark);
+  Widget icon(BuildContext context) => Icon(blueprint.icon);
 
   @override
   Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.upRightFromSquare);
@@ -182,6 +216,7 @@ class _EntryAction extends _Action {
     }
 
     ref.read(selectedEntryIdProvider.notifier).state = entry.id;
+    ref.read(entriesViewProvider.notifier).navigateToViewForEntry(entry);
   }
 }
 
@@ -193,7 +228,7 @@ class _AddEntryAction extends _Action {
   Color color(BuildContext context) => blueprint.color;
 
   @override
-  Widget icon(BuildContext context) => const Icon(FontAwesomeIcons.fileImport);
+  Widget icon(BuildContext context) => Icon(blueprint.icon);
 
   @override
   Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.plus);
@@ -219,6 +254,7 @@ class _AddEntryAction extends _Action {
     final e = Entry.fromBlueprint(id: _getRandomString(15), blueprint: blueprint);
     ref.read(currentPageProvider)?.insertEntry(ref, e);
     ref.read(selectedEntryIdProvider.notifier).state = e.id;
+    ref.read(entriesViewProvider.notifier).navigateToViewForEntry(e);
   }
 }
 

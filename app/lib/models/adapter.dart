@@ -4,6 +4,7 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:theme_json_converter/theme_json_converter.dart";
 import "package:typewriter/models/book.dart";
+import 'package:typewriter/widgets/icons.dart';
 import "package:typewriter/widgets/inspector/editors/object.dart";
 
 part "adapter.freezed.dart";
@@ -22,6 +23,9 @@ List<EntryBlueprint> entryBlueprints(EntryBlueprintsRef ref) =>
 @riverpod
 EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String name) =>
     ref.watch(entryBlueprintsProvider).firstWhereOrNull((e) => e.name == name);
+
+@riverpod
+List<String> entryTags(EntryTagsRef ref, String name) => ref.watch(entryBlueprintProvider(name))?.tags ?? [];
 
 @riverpod
 Map<String, Modifier> fieldModifiers(FieldModifiersRef ref, String blueprint, String name) {
@@ -53,7 +57,9 @@ class EntryBlueprint with _$EntryBlueprint {
     required String name,
     required String description,
     required ObjectField fields,
+    @Default(<String>[]) List<String> tags,
     @ColorConverter() @Default(Colors.grey) Color color,
+    @IconConverter() @Default(Icons.help) IconData icon,
   }) = _EntryBlueprint;
 
   factory EntryBlueprint.fromJson(Map<String, dynamic> json) => _$EntryBlueprintFromJson(json);
@@ -188,4 +194,19 @@ enum PrimitiveFieldType {
 
   /// The default value for this field type.
   final dynamic defaultValue;
+}
+
+class IconConverter extends JsonConverter<IconData, String> {
+  const IconConverter();
+
+  @override
+  IconData fromJson(String json) {
+    return icons[json] ?? Icons.question_mark;
+  }
+
+  // This should not be used.
+  @override
+  String toJson(IconData object) {
+    throw Exception("Icon data cannot be converted to JSON");
+  }
 }

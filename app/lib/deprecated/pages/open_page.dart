@@ -36,10 +36,15 @@ class OpenPage extends HookConsumerWidget {
             flex: 2,
             child: RiveAnimation.asset("assets/game_character.riv"),
           ),
-          Text("Your journey starts here",
-              style: GoogleFonts.jetBrainsMono(
-                  textStyle: const TextStyle(
-                      fontSize: 40, fontWeight: FontWeight.bold,),),),
+          Text(
+            "Your journey starts here",
+            style: GoogleFonts.jetBrainsMono(
+              textStyle: const TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           const SizedBox(height: 24),
           TextButton(
             onPressed: () {
@@ -66,9 +71,8 @@ class OpenPage extends HookConsumerWidget {
               if (bytes == null) return;
               final text = String.fromCharCodes(bytes);
               final model = pageModelFromJson(text);
-              ref.read(pageProvider.notifier).setModel(model);
-              ref.read(fileNameProvider.notifier).state =
-                  result.files.first.name;
+              ref.read(pageProvider.notifier).model = model;
+              ref.read(fileNameProvider.notifier).state = result.files.first.name;
             },
             child: Row(
               mainAxisSize: MainAxisSize.min,

@@ -1,14 +1,16 @@
 package me.gabber235.typewriter.entries.fact
 
+import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.DurationParser
+import me.gabber235.typewriter.utils.Icons
 import java.time.Duration
 import java.time.LocalDateTime
 import kotlin.time.toJavaDuration
 
-@Entry("timed_fact", "Saved for a specified duration, like 20 minutes")
+@Entry("timed_fact", "Saved for a specified duration, like 20 minutes", Colors.PURPLE, Icons.STOPWATCH)
 data class TimedFactEntry(
 	override val id: String = "",
 	override val name: String = "",

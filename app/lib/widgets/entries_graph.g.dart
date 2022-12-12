@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $graphableEntriesHash() => r'68b1991d5e2b6a1da63980ea666199152df7a4c0';
+String $graphableEntriesHash() => r'4ca3712feee7d5ce0a1fc89332a04a993a2fed2f';
 
 /// See also [graphableEntries].
 final graphableEntriesProvider = AutoDisposeProvider<List<Entry>>(

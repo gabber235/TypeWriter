@@ -1,8 +1,10 @@
 package me.gabber235.typewriter.entry.entries
 
+import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.entry.TriggerEntry
 import org.bukkit.entity.Player
 
+@Tags("event")
 interface EventEntry : TriggerEntry
 
 open class Event(val id: String, val player: Player) {

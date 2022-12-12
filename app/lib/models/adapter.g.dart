@@ -28,9 +28,15 @@ _$_EntryBlueprint _$$_EntryBlueprintFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       description: json['description'] as String,
       fields: ObjectField.fromJson(json['fields'] as Map<String, dynamic>),
+      tags:
+          (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const <String>[],
       color: json['color'] == null
           ? Colors.grey
           : const ColorConverter().fromJson(json['color'] as String),
+      icon: json['icon'] == null
+          ? Icons.help
+          : const IconConverter().fromJson(json['icon'] as String),
     );
 
 Map<String, dynamic> _$$_EntryBlueprintToJson(_$_EntryBlueprint instance) =>
@@ -38,7 +44,9 @@ Map<String, dynamic> _$$_EntryBlueprintToJson(_$_EntryBlueprint instance) =>
       'name': instance.name,
       'description': instance.description,
       'fields': instance.fields,
+      'tags': instance.tags,
       'color': const ColorConverter().toJson(instance.color),
+      'icon': const IconConverter().toJson(instance.icon),
     };
 
 _$_FieldType _$$_FieldTypeFromJson(Map<String, dynamic> json) => _$_FieldType(
@@ -284,6 +292,76 @@ class EntryBlueprintFamily extends Family<EntryBlueprint?> {
 
   @override
   String? get name => r'entryBlueprintProvider';
+}
+
+String $entryTagsHash() => r'41b7964e296b646f18ac537db2579bf0dce7ab2a';
+
+/// See also [entryTags].
+class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
+  EntryTagsProvider(
+    this.name,
+  ) : super(
+          (ref) => entryTags(
+            ref,
+            name,
+          ),
+          from: entryTagsProvider,
+          name: r'entryTagsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : $entryTagsHash,
+        );
+
+  final String name;
+
+  @override
+  bool operator ==(Object other) {
+    return other is EntryTagsProvider && other.name == name;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, name.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef EntryTagsRef = AutoDisposeProviderRef<List<String>>;
+
+/// See also [entryTags].
+final entryTagsProvider = EntryTagsFamily();
+
+class EntryTagsFamily extends Family<List<String>> {
+  EntryTagsFamily();
+
+  EntryTagsProvider call(
+    String name,
+  ) {
+    return EntryTagsProvider(
+      name,
+    );
+  }
+
+  @override
+  AutoDisposeProvider<List<String>> getProviderOverride(
+    covariant EntryTagsProvider provider,
+  ) {
+    return call(
+      provider.name,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'entryTagsProvider';
 }
 
 String $fieldModifiersHash() => r'ad6700316538a1e9a2dfba24f4f124f68cf845c6';

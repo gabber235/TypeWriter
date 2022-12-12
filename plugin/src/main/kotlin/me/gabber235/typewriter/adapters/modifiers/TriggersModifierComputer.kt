@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.adapters.modifiers
 
 import me.gabber235.typewriter.adapters.*
+import me.gabber235.typewriter.adapters.FieldModifier.DynamicModifier
 import me.gabber235.typewriter.adapters.FieldModifier.InnerListModifier
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
@@ -13,6 +14,6 @@ object TriggersModifierComputer : StaticModifierComputer<Triggers> {
 		if (info !is ListField) return null
 		if (info.type !is PrimitiveField) return null
 		if (info.type.type != PrimitiveFieldType.STRING) return null
-		return InnerListModifier(FieldModifier.DynamicModifier("trigger", annotation.isReceiver))
+		return InnerListModifier(DynamicModifier("trigger", annotation.isReceiver))
 	}
 }

@@ -6,8 +6,7 @@ import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.entries.DialogueEntry
-import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import me.gabber235.typewriter.utils.get
+import me.gabber235.typewriter.utils.*
 import java.io.File
 import java.net.URLClassLoader
 import java.util.jar.JarEntry
@@ -99,6 +98,9 @@ object AdapterLoader {
 					entryAnnotation.name,
 					entryAnnotation.description,
 					ObjectField.fromTypeToken(TypeToken.get(entryClass)),
+					entryAnnotation.color,
+					entryAnnotation.icon.id,
+					getTags(entryClass),
 					entryClass,
 				)
 			}
@@ -179,6 +181,8 @@ annotation class Adapter(
 annotation class Entry(
 	val name: String,
 	val description: String,
+	val color: String, // Hex color
+	val icon: Icons, // Font awesome icon
 )
 
 @Target(AnnotationTarget.CLASS)

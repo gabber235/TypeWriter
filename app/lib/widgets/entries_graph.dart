@@ -1,16 +1,14 @@
 import "package:flutter/material.dart";
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:graphview/GraphView.dart';
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:graphview/GraphView.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import 'package:rive/rive.dart';
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import 'package:typewriter/models/adapter.dart';
+import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
-import 'package:typewriter/widgets/entry_node.dart';
-import 'package:typewriter/widgets/filled_button.dart';
-import 'package:typewriter/widgets/search_bar.dart';
+import "package:typewriter/widgets/empty_screen.dart";
+import "package:typewriter/widgets/entry_node.dart";
+import "package:typewriter/widgets/search_bar.dart";
 
 part "entries_graph.g.dart";
 
@@ -20,8 +18,8 @@ List<Entry> graphableEntries(GraphableEntriesRef ref) {
   if (page == null) return [];
 
   return page.entries.where((entry) {
-    final paths = ref.watch(modifierPathsProvider(entry.type, "trigger"));
-    return paths.isNotEmpty;
+    final tags = ref.watch(entryTagsProvider(entry.type));
+    return tags.contains("trigger");
   }).toList();
 }
 
@@ -74,7 +72,13 @@ class EntriesGraph extends HookConsumerWidget {
         ..orientation = SugiyamaConfiguration.ORIENTATION_LEFT_RIGHT,
     );
 
-    if (entries.isEmpty) return const _EmptyScreen();
+    if (entries.isEmpty) {
+      return EmptyScreen(
+        title: "There are no graphable entries on this page.",
+        buttonText: "Add Entry",
+        onButtonPressed: () => ref.read(searchingProvider.notifier).startSearch(),
+      );
+    }
 
     return InteractiveViewer(
       constrained: false,
@@ -100,38 +104,6 @@ class EntriesGraph extends HookConsumerWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class _EmptyScreen extends HookConsumerWidget {
-  const _EmptyScreen({super.key}) : super();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      children: [
-        const Spacer(),
-        const Expanded(
-          flex: 2,
-          child: RiveAnimation.asset(
-            "assets/cute_robot.riv",
-            stateMachines: ["Motion"],
-          ),
-        ),
-        const Text(
-          "There are no graphable entries in this page.",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 24),
-        FilledButton.icon(
-          label: const Text("Add Entry"),
-          onPressed: () => ref.read(searchingProvider.notifier).startSearch(),
-          icon: const Icon(FontAwesomeIcons.plus),
-        ),
-        const Spacer(),
-      ],
     );
   }
 }

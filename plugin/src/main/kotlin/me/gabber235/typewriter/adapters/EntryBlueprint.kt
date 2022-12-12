@@ -12,6 +12,9 @@ data class EntryBlueprint(
 	val name: String,
 	val description: String,
 	val fields: FieldInfo,
+	val color: String, // Hex color
+	val icon: String, // Font Awesome icon from [Icons]
+	val tags: List<String>,
 	@Transient
 	val clazz: Class<out Entry>,
 )
@@ -20,6 +23,7 @@ sealed class FieldInfo {
 	val modifiers: MutableList<JsonObject> = mutableListOf()
 
 	companion object {
+
 		fun fromTypeToken(token: TypeToken<*>): FieldInfo {
 			val primitive = PrimitiveFieldType.fromTokenType(token)
 			if (primitive != null) {

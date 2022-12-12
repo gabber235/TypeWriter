@@ -42,7 +42,7 @@ packages:
       name: auto_route
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.2"
+    version: "5.0.4"
   auto_route_generator:
     dependency: "direct dev"
     description:
@@ -203,7 +203,7 @@ packages:
       name: dropdown_search
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.3"
+    version: "5.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -231,7 +231,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.2"
+    version: "5.2.3"
   fixnum:
     dependency: transitive
     description:
@@ -295,7 +295,7 @@ packages:
       name: font_awesome_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "10.2.1"
+    version: "10.3.0"
   freezed:
     dependency: "direct dev"
     description:
@@ -429,6 +429,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.5.4"
+  ktx:
+    dependency: "direct main"
+    description:
+      name: ktx
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.6"
   latinize:
     dependency: transitive
     description:
