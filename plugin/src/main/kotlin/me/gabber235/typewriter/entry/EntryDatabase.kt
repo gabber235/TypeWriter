@@ -6,7 +6,6 @@ import com.google.gson.stream.JsonReader
 import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.event.entries.IslandCreateEventEntry
 import me.gabber235.typewriter.entry.event.entries.NpcEventEntry
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
@@ -14,10 +13,13 @@ import me.gabber235.typewriter.utils.get
 import kotlin.reflect.KClass
 
 object EntryDatabase {
+	private var entries: List<Entry> = emptyList()
+
 	var facts = listOf<FactEntry>()
 		private set
 	private var entities = listOf<EntityEntry>()
-	private var events = listOf<EventEntry>()
+	var events = listOf<EventEntry>()
+		private set
 	private var dialogue = listOf<DialogueEntry>()
 	private var actions = listOf<ActionEntry>()
 
@@ -40,6 +42,10 @@ object EntryDatabase {
 		this.dialogue = pages?.flatMap { it.entries.filterIsInstance<DialogueEntry>() } ?: listOf()
 		this.actions = pages?.flatMap { it.entries.filterIsInstance<ActionEntry>() } ?: listOf()
 
+		this.entries = pages?.flatMap { it.entries } ?: listOf()
+
+		EntryListeners.register()
+
 		println("Loaded ${facts.size} fact, ${entities.size} entities, ${events.size} event, ${dialogue.size} dialogue and ${actions.size} action entries")
 	}
 
@@ -47,7 +53,6 @@ object EntryDatabase {
 		val entryFactory = RuntimeTypeAdapterFactory.of(Entry::class.java)
 			// TODO: Remove hardcoded classes
 			.registerSubtype(NpcEventEntry::class.java, "npc_interact")
-			.registerSubtype(IslandCreateEventEntry::class.java, "island_create")
 
 		AdapterLoader.getAdapterData().flatMap { it.entries }.forEach {
 			// TODO: Remove debug println
@@ -58,6 +63,10 @@ object EntryDatabase {
 		return GsonBuilder()
 			.registerTypeAdapterFactory(entryFactory)
 			.create()
+	}
+
+	fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
+		return entries.filterIsInstance(klass.java).filter(predicate)
 	}
 
 	fun <T : EventEntry> findEventEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {

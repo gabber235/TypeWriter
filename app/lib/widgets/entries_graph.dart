@@ -76,7 +76,7 @@ class EntriesGraph extends HookConsumerWidget {
       return EmptyScreen(
         title: "There are no graphable entries on this page.",
         buttonText: "Add Entry",
-        onButtonPressed: () => ref.read(searchingProvider.notifier).startSearch(),
+        onButtonPressed: () => ref.read(searchingProvider.notifier).startSearch("trigger:"),
       );
     }
 

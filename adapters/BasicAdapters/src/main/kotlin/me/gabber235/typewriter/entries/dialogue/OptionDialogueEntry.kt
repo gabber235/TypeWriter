@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.dialogue
 
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.SnakeCase
 import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
@@ -27,5 +28,6 @@ data class Option(
 	val criteria: List<Criteria> = emptyList(),
 	val modifiers: List<Modifier> = emptyList(),
 	@field:Triggers
+	@field:SnakeCase
 	val triggers: List<String> = emptyList()
 )

@@ -1,8 +1,7 @@
 package me.gabber235.typewriter.adapters
 
 import com.google.gson.JsonObject
-import me.gabber235.typewriter.adapters.modifiers.FactModifierComputer
-import me.gabber235.typewriter.adapters.modifiers.TriggersModifierComputer
+import me.gabber235.typewriter.adapters.modifiers.*
 import java.lang.reflect.Field
 
 
@@ -71,7 +70,8 @@ interface ModifierComputer {
 private val computers: List<ModifierComputer> by lazy {
 	listOf(
 		TriggersModifierComputer,
-		FactModifierComputer,
+		StaticSelectorModifierComputer,
+		SnakeCaseModifierComputer,
 	)
 }
 

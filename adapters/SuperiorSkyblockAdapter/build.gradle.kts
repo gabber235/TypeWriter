@@ -17,7 +17,7 @@ repositories {
 	maven("https://libraries.minecraft.net/")
 	maven("https://repo.codemc.io/repository/maven-snapshots/")
 	maven("https://repo.opencollab.dev/maven-snapshots/")
-
+	maven("https://repo.bg-software.com/repository/api/")
 }
 
 dependencies {
@@ -33,7 +33,7 @@ dependencies {
 	compileOnly("com.mojang:brigadier:1.0.18")
 
 	// External dependencies
-	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
+	compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.11.1")
 
 	testImplementation(kotlin("test"))
 }

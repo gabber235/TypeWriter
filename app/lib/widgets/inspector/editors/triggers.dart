@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import 'package:typewriter/utils/extensions.dart';
 import "package:typewriter/widgets/auto_complete.dart";
 import "package:typewriter/widgets/entries_graph.dart";
 import "package:typewriter/widgets/inspector.dart";
@@ -50,6 +51,9 @@ class TriggerEditor extends HookConsumerWidget {
       text: value,
       hintText: "Enter a trigger",
       icon: isReceiver ? FontAwesomeIcons.bolt : FontAwesomeIcons.towerBroadcast,
+      inputFormatters: [
+        if (field.hasModifier("snake_case")) snakeCaseFormatter(),
+      ],
       onQuery: (_) => ref.read(triggersProvider),
       onChanged: (value) => ref.read(entryDefinitionProvider)?.updateField(ref, path, value),
     );

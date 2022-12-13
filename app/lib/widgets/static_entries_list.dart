@@ -32,7 +32,7 @@ class StaticEntriesList extends HookConsumerWidget {
       return EmptyScreen(
         title: "There are no static entries on this page.",
         buttonText: "Add Entry",
-        onButtonPressed: () => ref.read(searchingProvider.notifier).startSearch(),
+        onButtonPressed: () => ref.read(searchingProvider.notifier).startSearch("static:"),
       );
     }
 

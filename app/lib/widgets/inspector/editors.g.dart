@@ -108,7 +108,7 @@ class FieldValueFamily extends Family<dynamic> {
   String? get name => r'fieldValueProvider';
 }
 
-String $editorFiltersHash() => r'880e51b80753aed03ac51cfb18dbd0f75da3ad11';
+String $editorFiltersHash() => r'7ae0428beea0fd01535dacc5dd26708d219e05ba';
 
 /// See also [editorFilters].
 final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>(

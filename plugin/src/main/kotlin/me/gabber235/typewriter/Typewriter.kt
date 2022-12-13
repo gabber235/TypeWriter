@@ -7,7 +7,6 @@ import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.npc.NpcHandler
 import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
-import me.gabber235.typewriter.extensions.superiorisland.SuperiorIslandExtension
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
@@ -55,10 +54,6 @@ class Typewriter : KotlinPlugin() {
 
 		if (server.pluginManager.isPluginEnabled("Citizens")) {
 			NpcHandler.init()
-		}
-
-		if (server.pluginManager.isPluginEnabled("SuperiorSkyblock2")) {
-			SuperiorIslandExtension.init()
 		}
 	}
 

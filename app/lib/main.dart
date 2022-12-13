@@ -36,14 +36,17 @@ class TypeWriterApp extends HookConsumerWidget {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
-        fillColor: brightness == Brightness.light
-            ? Colors.black.withOpacity(0.05)
-            : Colors.black.withOpacity(0.2),
+        fillColor: brightness == Brightness.light ? Colors.black.withOpacity(0.05) : Colors.black.withOpacity(0.2),
         filled: true,
         hoverColor: Colors.black.withOpacity(0.1),
         errorStyle: const TextStyle(
           color: Colors.redAccent,
           fontSize: 12,
+        ),
+        hintStyle: GoogleFonts.jetBrainsMono(
+          color: const Color(0x99FFFFFF),
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

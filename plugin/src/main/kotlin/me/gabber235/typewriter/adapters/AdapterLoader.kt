@@ -61,10 +61,11 @@ object AdapterLoader {
 		val messengerClasses = classes.filter { it.hasAnnotation(Messenger::class) }
 
 
-		return constructAdapter(adapterClass, entryClasses, messengerClasses)
+		return constructAdapter(classes, adapterClass, entryClasses, messengerClasses)
 	}
 
 	private fun constructAdapter(
+		classes: List<Class<*>>,
 		adapterClass: Class<*>,
 		entryClasses: List<Class<*>>,
 		messengerClasses: List<Class<*>>
@@ -77,6 +78,8 @@ object AdapterLoader {
 		// Messengers info
 		val messengers = constructMessengers(messengerClasses)
 
+		val adapterListeners = AdapterListeners.constructAdapterListeners(classes)
+
 		// Create the adapter data
 		return AdapterData(
 			adapterAnnotation?.name ?: "",
@@ -84,6 +87,7 @@ object AdapterLoader {
 			adapterAnnotation?.version ?: "",
 			blueprints,
 			messengers,
+			adapterListeners,
 			adapterClass,
 		)
 	}
@@ -164,6 +168,8 @@ data class AdapterData(
 	val entries: List<EntryBlueprint>,
 	@Transient
 	val messengers: List<MessengerData>,
+	@Transient
+	val eventListeners: List<AdapterListener>,
 	@Transient
 	val clazz: Class<*>,
 )

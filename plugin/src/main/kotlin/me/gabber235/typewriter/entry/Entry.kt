@@ -2,7 +2,8 @@ package me.gabber235.typewriter.entry
 
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Tags
-import me.gabber235.typewriter.adapters.modifiers.Triggers
+import me.gabber235.typewriter.adapters.modifiers.*
+import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.facts.Fact
 
 interface Entry {
@@ -16,6 +17,7 @@ interface StaticEntry : Entry
 @Tags("trigger")
 interface TriggerEntry : Entry {
 	@Triggers
+	@SnakeCase
 	val triggers: List<String>
 }
 
@@ -25,6 +27,7 @@ interface RuleEntry : TriggerEntry {
 	val modifiers: List<Modifier>
 
 	@Triggers(isReceiver = true)
+	@SnakeCase
 	val triggeredBy: List<String>
 }
 
@@ -46,7 +49,7 @@ enum class CriteriaOperator {
 }
 
 data class Criteria(
-	@field:me.gabber235.typewriter.adapters.modifiers.Fact
+	@field:StaticEntryIdentifier(FactEntry::class)
 	val fact: String,
 	val operator: CriteriaOperator,
 	val value: Int,
@@ -72,7 +75,7 @@ enum class ModifierOperator {
 }
 
 data class Modifier(
-	@field:me.gabber235.typewriter.adapters.modifiers.Fact
+	@field:StaticEntryIdentifier(FactEntry::class)
 	val fact: String,
 	val operator: ModifierOperator,
 	val value: Int,

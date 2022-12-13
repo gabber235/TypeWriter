@@ -7,7 +7,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import 'package:ktx/ktx.dart';
+import "package:ktx/ktx.dart";
 import "package:material_floating_search_bar/material_floating_search_bar.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
@@ -30,9 +30,10 @@ class SearchingNotifier extends StateNotifier<bool> {
   SearchingNotifier(this.ref) : super(false);
   final StateNotifierProviderRef<SearchingNotifier, bool> ref;
 
-  void startSearch() {
+  void startSearch([String? query]) {
     if (state == true) return;
     state = true;
+    ref.read(_queryProvider.notifier).state = query ?? "";
   }
 
   Future<void> endSearch() async {
@@ -322,6 +323,14 @@ class SearchBar extends HookConsumerWidget {
         }
       },
       runEveryBuild: true,
+    );
+
+    useEffect(
+      () {
+        controller.query = ref.read(_queryProvider);
+        return null;
+      },
+      [],
     );
 
     return Stack(

@@ -48,7 +48,11 @@ class ListableHeader extends HookConsumerWidget {
         const Spacer(),
         IconButton(
           icon: const Icon(FontAwesomeIcons.plus, size: 16),
-          onPressed: onAdd,
+          onPressed: () {
+            onAdd();
+            // If we add a new item, we probably want to edit it.
+            expanded.value = true;
+          },
         ),
       ],
     );
