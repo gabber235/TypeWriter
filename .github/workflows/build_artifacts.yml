@@ -21,10 +21,9 @@ jobs:
         run: flutter build linux --release
       - name: Upload AppImage
         uses: actions/upload-artifact@v2
-        working-directory: ./app
         with:
           name: Typewriter.AppImage
-          path: build/linux/release/bundle/*.AppImage
+          path: ./app/build/linux/release/bundle/*.AppImage
 
   build-app-windows:
     runs-on: windows-latest
@@ -41,10 +40,9 @@ jobs:
         run: flutter build windows --release
       - name: Upload Windows
         uses: actions/upload-artifact@v2
-        working-directory: ./app
         with:
           name: Typewriter.exe
-          path: build/windows/runner/Release/*.exe
+          path: ./app/build/windows/release/runner/*.exe
 
   build-app-macos:
     runs-on: macos-latest
@@ -61,7 +59,6 @@ jobs:
         run: flutter build macos --release
       - name: Upload MacOS
         uses: actions/upload-artifact@v2
-        working-directory: ./app
         with:
           name: Typewriter.app
-          path: build/macos/Build/Products/Release/*.app
+          path: ./app/build/macos/Build/Products/Release/*.app
