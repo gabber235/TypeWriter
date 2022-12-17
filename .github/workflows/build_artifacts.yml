@@ -2,8 +2,8 @@ name: Build Artifacts
 
 on:
   push:
-#    branches:
-#      - master
+    branches:
+      - main
 
 jobs:
   build-app-linux:
@@ -60,8 +60,25 @@ jobs:
       - name: Build MacOS
         working-directory: ./app
         run: flutter build macos --release
+      - name: Bundle MacOS
+        working-directory: ./app/build/macos/Build/Products/Release
+        run: |
+          brew install create-dmg -y
+          
+          create-dmg \
+            --volname "Typewriter" \
+            --window-pos 200 120 \
+            --window-size 800 529 \
+            --icon-size 130 \
+            --text-size 14 \
+            --icon "typewriter.app" 260 250 \
+            --hide-extension "typewriter.app" \
+            --app-drop-link 540 250 \
+            --hdiutil-quiet \
+            "Typewriter.dmg" \
+            "typewriter.app"
       - name: Upload MacOS
         uses: actions/upload-artifact@v2
         with:
-          name: Typewriter.app
-          path: ./app/build/macos/Build/Products/Release/*.app
+          name: Typewriter.dmg
+          path: ./app/build/macos/Build/Products/Release/*.dmg
