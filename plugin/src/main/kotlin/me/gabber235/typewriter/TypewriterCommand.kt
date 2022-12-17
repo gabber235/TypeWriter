@@ -2,24 +2,22 @@ package me.gabber235.typewriter
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.IntegerArgumentType.integer
-import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import lirand.api.dsl.command.builders.LiteralDSLBuilder
 import lirand.api.dsl.command.builders.command
 import lirand.api.dsl.command.types.PlayerType
 import lirand.api.dsl.command.types.WordType
 import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
-import me.gabber235.typewriter.extensions.npc.TypeWriterTrait
+import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.facts.*
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.utils.msg
 import me.gabber235.typewriter.utils.sendMini
-import net.citizensnpcs.api.CitizensAPI
-import net.citizensnpcs.api.npc.NPC
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -30,6 +28,16 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 	requiresPermissions("typewriter.use")
 	alias("tw")
 
+	reloadCommands()
+
+	factsCommands()
+
+	eventsCommands()
+
+	clearChatCommand()
+}
+
+private fun LiteralDSLBuilder.reloadCommands() {
 	literal("reload") {
 		executes {
 			source.msg("Reloading configuration...")
@@ -37,7 +45,9 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			source.msg("Configuration reloaded!")
 		}
 	}
+}
 
+private fun LiteralDSLBuilder.factsCommands() {
 	literal("facts") {
 		fun Player.listFacts(source: CommandSender) {
 			val facts = facts
@@ -66,13 +76,13 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 		}
 
 
-		argument("player", PlayerType.Instance) { player ->
+		argument("player", PlayerType) { player ->
 			executes {
 				player.get().listFacts(source)
 			}
 
 			literal("set") {
-				argument("fact", FactType.Instance) { fact ->
+				argument("fact", FactType) { fact ->
 					argument("value", integer(0)) { value ->
 						executes {
 							FactDatabase.modify(player.get().uniqueId) {
@@ -101,7 +111,7 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			source.listFacts(source)
 		}
 		literal("set") {
-			argument("fact", FactType.Instance) { fact ->
+			argument("fact", FactType) { fact ->
 				argument("value", integer(0)) { value ->
 					executesPlayer {
 						FactDatabase.modify(source.uniqueId) {
@@ -124,7 +134,9 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			}
 		}
 	}
+}
 
+private fun LiteralDSLBuilder.eventsCommands() {
 	literal("event") {
 		literal("run") {
 			argument("event", EventType) { event ->
@@ -135,45 +147,14 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 			}
 		}
 	}
+}
 
+private fun LiteralDSLBuilder.clearChatCommand() {
 	literal("clearChat") {
 		executesPlayer {
 			source.chatHistory.let {
 				it.clear()
 				it.resendMessages(source)
-			}
-		}
-	}
-
-	if (server.pluginManager.isPluginEnabled("Citizens")) {
-		literal("npc") {
-			literal("identifier") {
-				argument("name", string()) { name ->
-					fun NPC?.setIdentifier(source: CommandSender, name: String) {
-						if (this == null) {
-							source.msg("No NPC selected!")
-							return
-						}
-
-						val trait = this.getOrAddTrait(TypeWriterTrait::class.java)
-						trait.identifier = name
-
-						source.msg("Identifier set to $name")
-					}
-
-					executesPlayer {
-						val npc = CitizensAPI.getDefaultNPCSelector().getSelected(source)
-						npc.setIdentifier(source, name.get())
-					}
-
-
-					argument("target", PlayerType.Instance) { player ->
-						executes {
-							val npc = CitizensAPI.getDefaultNPCSelector().getSelected(player.get())
-							npc.setIdentifier(source, name.get())
-						}
-					}
-				}
 			}
 		}
 	}
@@ -206,7 +187,7 @@ open class FactType(
 
 }
 
-open class EventType() : WordType<String> {
+open class EventType : WordType<String> {
 	companion object Instance : EventType()
 
 	override fun parse(reader: StringReader): String = reader.readUnquoted()

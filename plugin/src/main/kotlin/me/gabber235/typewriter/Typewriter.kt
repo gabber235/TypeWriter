@@ -1,11 +1,13 @@
 package me.gabber235.typewriter
 
 import com.comphenix.protocol.ProtocolLibrary
+import com.github.shynixn.mccoroutine.launch
+import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
+import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.entry.EntryDatabase
-import me.gabber235.typewriter.extensions.npc.NpcHandler
+import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
-import me.gabber235.typewriter.extensions.superiorisland.SuperiorIslandExtension
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
@@ -23,19 +25,25 @@ class Typewriter : KotlinPlugin() {
 		plugin = this
 	}
 
+	override fun onLoad() {
+		super.onLoad()
+		AdapterLoader.loadAdapters()
+	}
+
 	override fun onEnable() {
 		adventure = BukkitAudiences.create(this)
 		typeWriterCommand()
 
 		if (!server.pluginManager.isPluginEnabled("ProtocolLib")) {
 			logger.warning("ProtocolLib is not enabled, Typewriter will not work without it. Shutting down...")
-			isEnabled = false
+			server.pluginManager.disablePlugin(this)
 			return
 		}
 
 		EntryDatabase.loadEntries()
 		InteractionHandler.init()
 		FactDatabase.init()
+		MessengerFinder.init()
 
 
 		ProtocolLibrary.getProtocolManager()
@@ -45,12 +53,11 @@ class Typewriter : KotlinPlugin() {
 			TypewriteExpansion.register()
 		}
 
-		if (server.pluginManager.isPluginEnabled("Citizens")) {
-			NpcHandler.init()
-		}
-
-		if (server.pluginManager.isPluginEnabled("SuperiorSkyblock2")) {
-			SuperiorIslandExtension.init()
+		// We want to initialize all the adapters after all the plugins have been enabled to make sure
+		// that all the plugins are loaded.
+		plugin.launch {
+			delay(1)
+			AdapterLoader.initializeAdapters()
 		}
 	}
 

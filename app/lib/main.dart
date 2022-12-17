@@ -1,61 +1,63 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:typewriter/pages/graph.dart';
+import "package:flutter/material.dart";
+import "package:google_fonts/google_fonts.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/app_router.dart";
 
 void main() {
   runApp(const ProviderScope(child: TypeWriterApp()));
 }
 
-class TypeWriterApp extends StatelessWidget {
-  const TypeWriterApp({Key? key}) : super(key: key);
+final appRouter = Provider<AppRouter>((ref) => AppRouter());
+
+class TypeWriterApp extends HookConsumerWidget {
+  const TypeWriterApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'TypeWriter',
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouter);
+    return MaterialApp.router(
+      title: "TypeWriter",
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
       debugShowCheckedModeBanner: false,
-      home: const PageGraph(),
+      routerDelegate: router.delegate(),
+      routeInformationParser: router.defaultRouteParser(),
     );
   }
 
   ThemeData _buildTheme(Brightness brightness) {
-    var baseTheme = ThemeData(brightness: brightness);
+    final baseTheme = ThemeData(brightness: brightness);
 
     return baseTheme.copyWith(
       textTheme: GoogleFonts.jetBrainsMonoTextTheme(baseTheme.textTheme),
       inputDecorationTheme: InputDecorationTheme(
-        contentPadding: const EdgeInsets.only(left: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
-        fillColor: brightness == Brightness.light
-            ? Colors.black.withOpacity(0.05)
-            : Colors.white.withOpacity(0.05),
+        fillColor: brightness == Brightness.light ? Colors.black.withOpacity(0.05) : Colors.black.withOpacity(0.2),
         filled: true,
+        hoverColor: Colors.black.withOpacity(0.1),
+        errorStyle: const TextStyle(
+          color: Colors.redAccent,
+          fontSize: 12,
+        ),
+        hintStyle: GoogleFonts.jetBrainsMono(
+          color: const Color(0x99FFFFFF),
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.redAccent.shade200, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
       ),
+      errorColor: Colors.red,
     );
-  }
-}
-
-extension BuildContextExtension on BuildContext {
-  bool get isDark => Theme.of(this).brightness == Brightness.dark;
-}
-
-extension StringExtension on String {
-  String get capitalize {
-    if (isEmpty) {
-      return this;
-    }
-    return "${this[0].toUpperCase()}${substring(1)}";
-  }
-}
-
-extension ObjectExtension on Object? {
-  T? cast<T>() {
-    return this is T ? this as T : null;
   }
 }

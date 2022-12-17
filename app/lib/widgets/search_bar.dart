@@ -1,32 +1,45 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fuzzy/fuzzy.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:typewriter/hooks/delayed_execution.dart';
-import 'package:typewriter/hooks/search_bar_controller.dart';
-import 'package:typewriter/main.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/graph.dart';
+import "dart:math";
+
+import "package:auto_size_text/auto_size_text.dart";
+import "package:collection/collection.dart";
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:fuzzy/fuzzy.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:ktx/ktx.dart";
+import "package:material_floating_search_bar/material_floating_search_bar.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/app_router.dart";
+import "package:typewriter/hooks/delayed_execution.dart";
+import "package:typewriter/hooks/search_bar_controller.dart";
+import "package:typewriter/main.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/page.dart";
+import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/inspector.dart";
+
+part "search_bar.g.dart";
 
 /// When the user wants to search for nodes.
 class SearchIntent extends Intent {}
 
+/// A notifier to indicate of the searchbar needs to be visible.
 class SearchingNotifier extends StateNotifier<bool> {
+  SearchingNotifier(this.ref) : super(false);
   final StateNotifierProviderRef<SearchingNotifier, bool> ref;
 
-  SearchingNotifier(this.ref) : super(false);
-
-  void startSearch() {
+  void startSearch([String? query]) {
     if (state == true) return;
     state = true;
+    ref.read(_queryProvider.notifier).state = query ?? "";
   }
 
-  void endSearch() async {
+  Future<void> endSearch() async {
     if (state == false) return;
+    // If we end the search but there are actions visible we want to animate them out
+    // Before we hide the searchbar.
     if (ref.read(_actionsProvider).isNotEmpty) {
       ref.read(_closingProvider.notifier).state = true;
       await Future.delayed(const Duration(milliseconds: 300));
@@ -38,94 +51,131 @@ class SearchingNotifier extends StateNotifier<bool> {
   }
 }
 
-final searchingProvider = StateNotifierProvider<SearchingNotifier, bool>(
-    (ref) => SearchingNotifier(ref));
+final searchingProvider = StateNotifierProvider<SearchingNotifier, bool>(SearchingNotifier.new);
 
 final _closingProvider = StateProvider<bool>((ref) => false);
 
 final _queryProvider = StateProvider<String>((ref) => "");
 
-final _entriesFuzzyProvider = Provider<Fuzzy<Entry>>((ref) {
+@riverpod
+Fuzzy<Entry> _fuzzyEntries(_FuzzyEntriesRef ref) {
+  final pages = ref.watch(pagesProvider);
+
   return Fuzzy(
-    ref.watch(pageProvider).entries,
+    pages.expand((p) => p.entries).toList(),
     options: FuzzyOptions(
       threshold: 0.4,
-      sortFn: (a, b) => a.matches
-          .map((e) => e.score)
-          .sum
-          .compareTo(b.matches.map((e) => e.score).sum),
+      sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
       keys: [
-        WeightedKey(name: 'id', getter: (sn) => sn.id, weight: 0.05),
+        WeightedKey(name: "id", getter: (sn) => sn.id, weight: 0.05),
+        // The names of entries are like "test.some_entry".
+        // We want to give the last part more priority since it is more specific.
         WeightedKey(
-            name: 'name-suffix',
-            getter: (sn) => sn.name.split(".").last,
-            weight: 0.4),
+          name: "name-suffix",
+          getter: (sn) => sn.name.split(".").last,
+          weight: 0.4,
+        ),
         WeightedKey(
-            name: 'name-full', getter: (sn) => sn.formattedName, weight: 0.15),
-        WeightedKey(
-            name: 'type',
-            getter: (sn) =>
-                EntryType.findTypes(sn).map((e) => e.name).join(" "),
-            weight: 0.4)
+          name: "name-full",
+          getter: (sn) => sn.formattedName,
+          weight: 0.15,
+        ),
+        WeightedKey(name: "type", getter: (sn) => sn.type, weight: 0.4)
       ],
     ),
   );
-});
+}
 
-final _addEntriesFuzzyProvider = Provider<Fuzzy<EntryType>>((ref) {
+@riverpod
+Fuzzy<EntryBlueprint> _fuzzyAddEntries(_FuzzyAddEntriesRef ref) {
+  final blueprints = ref.watch(entryBlueprintsProvider);
+
   return Fuzzy(
-    EntryType.values.where((type) => type.factory != null).toList(),
+    blueprints,
     options: FuzzyOptions(
       threshold: 0.1,
-      sortFn: (a, b) => a.matches
-          .map((e) => e.score)
-          .sum
-          .compareTo(b.matches.map((e) => e.score).sum),
+      sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
       keys: [
-        WeightedKey(name: 'name', getter: (sn) => "Add ${sn.name}", weight: 1),
+        WeightedKey(name: "name", getter: (sn) => "Add ${sn.name.formatted}", weight: 1),
       ],
     ),
   );
-});
+}
 
-final _actionsProvider = Provider<List<Action>>((ref) {
+@riverpod
+List<_Action> _actions(_ActionsRef ref) {
   final query = ref.watch(_queryProvider);
-  final fuzzy = ref.watch(_entriesFuzzyProvider);
+  final fuzzy = ref.watch(_fuzzyEntriesProvider);
+  final blueprints = ref.watch(entryBlueprintsProvider);
 
   if (query.isEmpty) return [];
   final results = fuzzy.search(query).map((e) => e.item).toList();
 
+  // If the query contains a ":" we want to refine our search.
   if (query.contains(":")) {
-    if (query.toLowerCase().startsWith("add:")) {
-      return EntryType.values
-          .where((type) => type.factory != null)
-          .map((e) => AddEntryAction(e))
-          .toList();
-    }
-
-    final type = EntryType.values.firstWhereOrNull((type) =>
-        query.toLowerCase().startsWith("${type.name.toLowerCase()}:"));
-    if (type != null) {
-      return results
-              .where((e) => EntryType.findTypes(e).contains(type))
-              .map((e) => EntryAction(e))
-              .whereType<Action>()
-              .toList() +
-          [AddEntryAction(type)];
-    }
+    final operatorFindings = _findActionsForOperator(query, blueprints, results);
+    if (operatorFindings != null) return operatorFindings;
   }
 
-  final addResults = ref
-      .watch(_addEntriesFuzzyProvider)
-      .search(query)
-      .map((e) => e.item)
-      .toList();
+  final addResults = ref.watch(_fuzzyAddEntriesProvider).search(query).map((e) => e.item).toList();
 
-  return addResults.map((e) => AddEntryAction(e)).whereType<Action>().toList() +
-      results.map((e) => EntryAction(e)).whereType<Action>().toList();
-});
+  return addResults.map(_AddEntryAction.new).whereType<_Action>().toList() +
+      results
+          .mapNotNull((entry) {
+            final blueprint = ref.watch(entryBlueprintProvider(entry.type));
+            if (blueprint == null) return null;
+            return _EntryAction(entry, blueprint);
+          })
+          .whereType<_Action>()
+          .toList();
+}
 
-abstract class Action<T> {
+/// Finds actions for a given operator.
+/// If a query contains a ":" it means that its prefix will be the operator
+List<_Action>? _findActionsForOperator(String query, List<EntryBlueprint> blueprints, List<Entry> results) {
+  final prefix = query.split(":").first.toLowerCase();
+
+  // If it starts with "add" we want to add a new entry.
+  if (prefix == "add") {
+    return blueprints
+        .where((b) => b.name.toLowerCase().contains(query.split(":").last.toLowerCase()))
+        .map(_AddEntryAction.new)
+        .toList();
+  }
+
+  // If it starts with a type we want to filter the results by that type.
+  final type = blueprints.firstWhereOrNull(
+    (print) => print.name == prefix,
+  );
+  if (type != null) {
+    return results.where((e) => e.type == type.name).mapNotNull<_Action>((entry) {
+          final blueprint = blueprints.firstWhereOrNull((e) => e.name == entry.type);
+          if (blueprint == null) return null;
+          return _EntryAction(entry, blueprint);
+        }).toList() +
+        [_AddEntryAction(type)];
+  }
+
+  // If it starts with a tag we want to filter the results & blueprints by that tag.
+  final entryTags =
+      results.where((e) => _getTagsForEntryWithBlueprints(e, blueprints).contains(prefix)).mapNotNull<_Action>((entry) {
+    final blueprint = blueprints.firstWhereOrNull((e) => e.name == entry.type);
+    if (blueprint == null) return null;
+    return _EntryAction(entry, blueprint);
+  }).toList();
+  final blueprintTags = blueprints.where((e) => e.tags.contains(prefix)).map<_Action>(_AddEntryAction.new).toList();
+
+  return blueprintTags + entryTags;
+}
+
+List<String> _getTagsForEntryWithBlueprints(Entry entry, List<EntryBlueprint> blueprints) {
+  final blueprint = blueprints.firstWhereOrNull((e) => e.name == entry.type);
+  if (blueprint == null) return [];
+
+  return blueprint.tags;
+}
+
+abstract class _Action {
   Color color(BuildContext context);
 
   Widget icon(BuildContext context);
@@ -134,87 +184,129 @@ abstract class Action<T> {
 
   String title(BuildContext context);
 
+  String description(BuildContext context);
+
   void activate(BuildContext context, WidgetRef ref);
 }
 
 /// Action for selecting an existing entry.
-class EntryAction extends Action<Entry> {
+class _EntryAction extends _Action {
+  _EntryAction(this.entry, this.blueprint);
   final Entry entry;
-
-  EntryAction(this.entry);
-
-  @override
-  Color color(BuildContext context) => entry.backgroundColor(context);
+  final EntryBlueprint blueprint;
 
   @override
-  Widget icon(BuildContext context) => entry.icon(context);
+  Color color(BuildContext context) => blueprint.color;
 
   @override
-  Widget suffixIcon(BuildContext context) =>
-      const Icon(FontAwesomeIcons.upRightFromSquare);
+  Widget icon(BuildContext context) => Icon(blueprint.icon);
+
+  @override
+  Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.upRightFromSquare);
 
   @override
   String title(BuildContext context) => entry.formattedName;
 
   @override
-  void activate(BuildContext context, WidgetRef ref) {
-    ref.read(selectedProvider.notifier).state = entry.id;
+  String description(BuildContext context) => entry.id;
+
+  @override
+  Future<void> activate(BuildContext context, WidgetRef ref) async {
+    if (ref.read(currentPageProvider)?.entries.any((e) => e.id == entry.id) != true) {
+      final page = ref.read(pagesProvider).firstWhereOrNull((p) => p.entries.any((e) => e.id == entry.id));
+      if (page != null) {
+        await ref.read(appRouter).push(PageEditorRoute(id: page.name));
+      }
+    }
+
+    ref.read(selectedEntryIdProvider.notifier).state = entry.id;
+    ref.read(entriesViewProvider.notifier).navigateToViewForEntry(entry);
   }
 }
 
-class AddEntryAction extends Action<EntryType<Entry>> {
-  final EntryType<Entry> type;
-
-  AddEntryAction(this.type);
-
-  @override
-  Color color(BuildContext context) => type.backgroundColor(context);
+class _AddEntryAction extends _Action {
+  _AddEntryAction(this.blueprint);
+  final EntryBlueprint blueprint;
 
   @override
-  Widget icon(BuildContext context) =>
-      type.getIcon(null, !context.isDark) ?? const SizedBox();
+  Color color(BuildContext context) => blueprint.color;
+
+  @override
+  Widget icon(BuildContext context) => Icon(blueprint.icon);
 
   @override
   Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.plus);
 
   @override
-  String title(BuildContext context) => "Add ${type.name}";
+  String title(BuildContext context) => "Add ${blueprint.name.formatted}";
+
+  @override
+  String description(BuildContext context) => blueprint.description;
+
+  static const _chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
+  static final Random _random = Random();
+
+  String _getRandomString(int length) => String.fromCharCodes(
+        Iterable.generate(
+          length,
+          (_) => _chars.codeUnitAt(_random.nextInt(_chars.length)),
+        ),
+      );
 
   @override
   void activate(BuildContext context, WidgetRef ref) {
-    final entry = ref.read(pageProvider.notifier).addEntry(type);
-    ref.read(selectedProvider.notifier).state = entry?.id ?? "";
+    final e = Entry.fromBlueprint(id: _getRandomString(15), blueprint: blueprint);
+    ref.read(currentPageProvider)?.insertEntry(ref, e);
+    ref.read(selectedEntryIdProvider.notifier).state = e.id;
+    ref.read(entriesViewProvider.notifier).navigateToViewForEntry(e);
   }
 }
 
 class SearchBar extends HookConsumerWidget {
   const SearchBar({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
-  void activateItem(
-      List<Action> actions, int index, BuildContext context, WidgetRef ref) {
+  void _activateItem(
+    List<_Action> actions,
+    int index,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     if (index >= actions.length) return;
     if (index < 0) return;
-    final action = actions[index];
-    action.activate(context, ref);
+    actions[index].activate(context, ref);
     ref.read(searchingProvider.notifier).endSearch();
   }
 
   /// Change focus to the next/previous search result.
-  void changeFocus(
-      BuildContext context, List<FocusNode> focusNodes, List<GlobalKey> keys,
-      {bool up = false}) {
-    var index = focusNodes.indexWhere((n) => n.hasFocus);
-    if (index == -1 && up) index = 0;
-
-    index = up
-        ? (index - 1 + focusNodes.length) % focusNodes.length
-        : (index + 1) % focusNodes.length;
-
+  void _changeFocus(
+    BuildContext context,
+    List<FocusNode> focusNodes,
+    List<GlobalKey> keys,
+    int index,
+  ) {
     FocusScope.of(context).requestFocus(focusNodes[index]);
-    Scrollable.ensureVisible(keys[index].currentContext!,
-        alignment: 0.5, duration: const Duration(milliseconds: 300));
+    Scrollable.ensureVisible(
+      keys[index].currentContext!,
+      alignment: 0.5,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  void _changeFocusUp(BuildContext context, List<FocusNode> focusNodes, List<GlobalKey> keys) {
+    var index = focusNodes.indexWhere((n) => n.hasFocus);
+    if (index == -1) index = 0;
+
+    index = (index - 1 + focusNodes.length) % focusNodes.length;
+    _changeFocus(context, focusNodes, keys, index);
+  }
+
+  void _changeFocusDown(BuildContext context, List<FocusNode> focusNodes, List<GlobalKey> keys) {
+    var index = focusNodes.indexWhere((n) => n.hasFocus);
+
+    index = (index + 1) % focusNodes.length;
+    _changeFocus(context, focusNodes, keys, index);
   }
 
   @override
@@ -225,13 +317,24 @@ class SearchBar extends HookConsumerWidget {
     final focusNodes = List.generate(actions.length, (index) => FocusNode());
     final globalKeys = List.generate(actions.length, (index) => GlobalKey());
 
-    useDelayedExecution(() {
-      if (!closing) {
-        controller.open();
-      } else {
-        controller.close();
-      }
-    }, runEveryBuild: true);
+    useDelayedExecution(
+      () {
+        if (!closing) {
+          controller.open();
+        } else {
+          controller.close();
+        }
+      },
+      runEveryBuild: true,
+    );
+
+    useEffect(
+      () {
+        controller.query = ref.read(_queryProvider);
+        return null;
+      },
+      [],
+    );
 
     return Stack(
       children: [
@@ -247,24 +350,34 @@ class SearchBar extends HookConsumerWidget {
         Actions(
           actions: {
             DirectionalFocusIntent: CallbackAction<DirectionalFocusIntent>(
-              onInvoke: (intent) => changeFocus(context, focusNodes, globalKeys,
-                  up: intent.direction == TraversalDirection.up),
+              onInvoke: (intent) => intent.direction == TraversalDirection.up
+                  ? _changeFocusUp(
+                      context,
+                      focusNodes,
+                      globalKeys,
+                    )
+                  : _changeFocusDown(
+                      context,
+                      focusNodes,
+                      globalKeys,
+                    ),
             ),
             NextFocusIntent: CallbackAction<NextFocusIntent>(
-              onInvoke: (intent) =>
-                  changeFocus(context, focusNodes, globalKeys),
+              onInvoke: (intent) => _changeFocusDown(context, focusNodes, globalKeys),
             ),
             PreviousFocusIntent: CallbackAction<PreviousFocusIntent>(
-              onInvoke: (intent) =>
-                  changeFocus(context, focusNodes, globalKeys, up: true),
+              onInvoke: (intent) => _changeFocusUp(context, focusNodes, globalKeys),
             ),
             DismissIntent: CallbackAction<DismissIntent>(
-              onInvoke: (intent) =>
-                  ref.read(searchingProvider.notifier).endSearch(),
+              onInvoke: (intent) => ref.read(searchingProvider.notifier).endSearch(),
             ),
             ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (intent) => activateItem(actions,
-                  focusNodes.indexWhere((n) => n.hasFocus), context, ref),
+              onInvoke: (intent) => _activateItem(
+                actions,
+                focusNodes.indexWhere((n) => n.hasFocus),
+                context,
+                ref,
+              ),
             ),
           },
           child: Center(
@@ -272,7 +385,7 @@ class SearchBar extends HookConsumerWidget {
               constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
               child: FloatingSearchBar(
                 controller: controller,
-                hint: 'Search node...',
+                hint: "Search node...",
                 scrollPadding: const EdgeInsets.only(top: 16, bottom: 16),
                 transitionDuration: const Duration(milliseconds: 300),
                 transitionCurve: Curves.easeIn,
@@ -281,41 +394,38 @@ class SearchBar extends HookConsumerWidget {
                 clearQueryOnClose: false,
                 closeOnBackdropTap: true,
                 backdropColor: Colors.transparent,
-                onQueryChanged: (query) =>
-                    ref.read(_queryProvider.notifier).state = query,
+                onQueryChanged: (query) => ref.read(_queryProvider.notifier).state = query,
                 onFocusChanged: (hasFocus) {
                   if (!hasFocus) {
                     ref.read(searchingProvider.notifier).endSearch();
                   }
                 },
-                builder: (BuildContext context, Animation<double> transition) {
-                  return Material(
-                    elevation: 3.0,
-                    color: Theme.of(context).cardColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                builder: (context, transition) => Material(
+                  elevation: 3.0,
+                  color: Theme.of(context).cardColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (var i = 0; i < actions.length; i++)
+                          _ResultTile(
+                            key: globalKeys[i],
+                            onPressed: () => _activateItem(actions, i, context, ref),
+                            focusNode: focusNodes[i],
+                            color: actions[i].color(context),
+                            title: actions[i].title(context),
+                            description: actions[i].description(context),
+                            icon: actions[i].icon(context),
+                            suffixIcon: actions[i].suffixIcon(context),
+                          ),
+                      ],
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          for (var i = 0; i < actions.length; i++)
-                            _ResultTile(
-                              key: globalKeys[i],
-                              onPressed: () =>
-                                  activateItem(actions, i, context, ref),
-                              focusNode: focusNodes[i],
-                              color: actions[i].color(context),
-                              title: actions[i].title(context),
-                              icon: actions[i].icon(context),
-                              suffixIcon: actions[i].suffixIcon(context),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+                  ),
+                ),
               ),
             ),
           ),
@@ -326,6 +436,16 @@ class SearchBar extends HookConsumerWidget {
 }
 
 class _ResultTile extends HookWidget {
+  const _ResultTile({
+    required this.focusNode,
+    required this.onPressed,
+    this.color = Colors.white,
+    this.icon = const Icon(Icons.search),
+    this.suffixIcon = const Icon(Icons.arrow_forward_ios),
+    this.title = "",
+    this.description = "",
+    super.key,
+  });
   final FocusNode focusNode;
   final VoidCallback onPressed;
 
@@ -333,16 +453,7 @@ class _ResultTile extends HookWidget {
   final Widget icon;
   final Widget suffixIcon;
   final String title;
-
-  const _ResultTile({
-    Key? key,
-    required this.focusNode,
-    required this.onPressed,
-    this.color = Colors.white,
-    this.icon = const Icon(Icons.search),
-    this.suffixIcon = const Icon(Icons.arrow_forward_ios),
-    this.title = '',
-  }) : super(key: key);
+  final String description;
 
   @override
   Widget build(BuildContext context) {
@@ -376,20 +487,37 @@ class _ResultTile extends HookWidget {
               ),
               const SizedBox(width: 20),
               Expanded(
-                child: AutoSizeText(
-                  maxLines: 1,
-                  title,
-                  style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                        color: focused.value ? Colors.white : null,
-                        fontWeight: focused.value ? FontWeight.bold : null,
-                      ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AutoSizeText(
+                      maxLines: 1,
+                      title,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                            color: focused.value ? Colors.white : null,
+                            fontWeight: focused.value ? FontWeight.bold : null,
+                          ),
+                    ),
+                    AutoSizeText(
+                      maxLines: 1,
+                      description,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.caption?.copyWith(
+                            color: focused.value ? Colors.white : null,
+                            fontWeight: focused.value ? FontWeight.bold : null,
+                          ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
               IconTheme(
                 data: IconThemeData(
-                    size: 14,
-                    color: focused.value ? Colors.white : Colors.grey),
+                  size: 14,
+                  color: focused.value ? Colors.white : Colors.grey,
+                ),
                 child: suffixIcon,
               ),
               const SizedBox(width: 16),

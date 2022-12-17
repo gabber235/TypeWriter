@@ -1,6 +1,9 @@
 package me.gabber235.typewriter.entry
 
 import com.google.gson.annotations.SerializedName
+import me.gabber235.typewriter.adapters.Tags
+import me.gabber235.typewriter.adapters.modifiers.*
+import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.facts.Fact
 
 interface Entry {
@@ -8,14 +11,24 @@ interface Entry {
 	val name: String
 }
 
+@Tags("static")
+interface StaticEntry : Entry
+
+@Tags("trigger")
 interface TriggerEntry : Entry {
+	@Triggers
+	@SnakeCase
 	val triggers: List<String>
 }
 
+@Tags("rule")
 interface RuleEntry : TriggerEntry {
 	val criteria: List<Criteria>
 	val modifiers: List<Modifier>
-	val triggerdBy: List<String>
+
+	@Triggers(isReceiver = true)
+	@SnakeCase
+	val triggeredBy: List<String>
 }
 
 enum class CriteriaOperator {
@@ -29,13 +42,14 @@ enum class CriteriaOperator {
 	GREATER_THAN,
 
 	@SerializedName("<=")
-	LER_THAN_OR_EQUAL,
+	LESS_THAN_OR_EQUALS,
 
 	@SerializedName(">=")
 	GREATER_THAN_OR_EQUAL,
 }
 
 data class Criteria(
+	@field:StaticEntryIdentifier(FactEntry::class)
 	val fact: String,
 	val operator: CriteriaOperator,
 	val value: Int,
@@ -46,7 +60,7 @@ data class Criteria(
 			CriteriaOperator.EQUALS                -> value == this.value
 			CriteriaOperator.LESS_THAN             -> value < this.value
 			CriteriaOperator.GREATER_THAN          -> value > this.value
-			CriteriaOperator.LER_THAN_OR_EQUAL     -> value <= this.value
+			CriteriaOperator.LESS_THAN_OR_EQUALS   -> value <= this.value
 			CriteriaOperator.GREATER_THAN_OR_EQUAL -> value >= this.value
 		}
 	}
@@ -61,6 +75,7 @@ enum class ModifierOperator {
 }
 
 data class Modifier(
+	@field:StaticEntryIdentifier(FactEntry::class)
 	val fact: String,
 	val operator: ModifierOperator,
 	val value: Int,

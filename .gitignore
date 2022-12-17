@@ -118,3 +118,7 @@ run/
 !gradle-wrapper.jar
 
 server
+.DS_Store
+
+# Rust
+target/
