@@ -2,8 +2,8 @@ name: Build Artifacts
 
 on:
   push:
-    branches:
-      - main
+#    branches:
+#      - main
 
 jobs:
   build-app-linux:
@@ -25,7 +25,7 @@ jobs:
       - name: Upload AppImage
         uses: actions/upload-artifact@v2
         with:
-          path: ./app/build/linux/release/bundle/
+          path: ./app/build/linux/x64/release/bundle
 
   build-app-windows:
     runs-on: windows-latest
@@ -43,7 +43,7 @@ jobs:
       - name: Upload Windows
         uses: actions/upload-artifact@v2
         with:
-          path: ./app/build/windows/release/runner/
+          path: ./app/build/windows/runner/Release
 
   build-app-macos:
     runs-on: macos-latest
@@ -78,4 +78,4 @@ jobs:
       - name: Upload MacOS
         uses: actions/upload-artifact@v2
         with:
-          path: ./app/build/macos/Build/Products/Release/
+          path: ./app/build/macos/Build/Products/Release
