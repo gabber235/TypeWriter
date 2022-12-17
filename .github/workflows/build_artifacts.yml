@@ -1,0 +1,58 @@
+name: Build Artifacts
+
+on:
+  push:
+#    branches:
+#      - master
+
+jobs:
+  build-app-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build AppImage
+        run: flutter build linux --release
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v2
+        with:
+          name: Typewriter.AppImage
+          path: build/linux/release/bundle/*.AppImage
+
+  build-app-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build Windows
+        run: flutter build windows --release
+      - name: Upload Windows
+        uses: actions/upload-artifact@v2
+        with:
+          name: Typewriter.exe
+          path: build/windows/runner/Release/*.exe
+
+  build-app-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build MacOS
+        run: flutter build macos --release
+      - name: Upload MacOS
+        uses: actions/upload-artifact@v2
+        with:
+          name: Typewriter.app
+          path: build/macos/Build/Products/Release/*.app
