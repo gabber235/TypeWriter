@@ -12,8 +12,7 @@ import java.net.URLClassLoader
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import kotlin.reflect.KClass
-import kotlin.reflect.full.companionObject
-import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.*
 
 private val gson =
 	GsonBuilder().registerTypeAdapterFactory(
@@ -47,6 +46,14 @@ object AdapterLoader {
 		}
 
 		file.writeText(jsonArray.toString())
+	}
+
+	fun initializeAdapters() {
+		adapters.forEach {
+			if (TypewriteAdapter::class.isSuperclassOf(it.clazz.kotlin)) {
+				TypewriteAdapter::class.cast(it.clazz.kotlin.objectInstance).initialize()
+			}
+		}
 	}
 
 	private val ignorePrefixes = listOf("kotlin", "java", "META-INF", "org/bukkit", "org/intellij", "org/jetbrains")

@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/app_router.dart";
+import 'package:typewriter/models/book.dart';
 
 class BookPage extends HookConsumerWidget {
   const BookPage({super.key});
@@ -45,6 +46,9 @@ class _SideRail extends HookConsumerWidget {
           ),
           const SizedBox(height: 10),
           _RailButton(index++, icon: FontAwesomeIcons.filePen),
+          const Spacer(),
+          const _ReloadBookButton(),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -78,6 +82,18 @@ class _RailButton extends HookConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ReloadBookButton extends HookConsumerWidget {
+  const _ReloadBookButton({super.key}) : super();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      icon: const Icon(Icons.refresh),
+      onPressed: () => ref.read(bookProvider.notifier).reload(),
     );
   }
 }

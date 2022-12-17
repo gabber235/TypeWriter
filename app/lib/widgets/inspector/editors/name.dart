@@ -4,8 +4,8 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/inspector/formatted_text_field.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
-import "package:typewriter/widgets/inspector/single_line_text_field.dart";
 
 class NameField extends HookConsumerWidget {
   const NameField({super.key}) : super();
@@ -18,7 +18,7 @@ class NameField extends HookConsumerWidget {
       children: [
         const SectionTitle(title: "Name"),
         const SizedBox(height: 1),
-        SingleLineTextField(
+        FormattedTextField(
           text: def?.entry.name,
           onChanged: (value) {
             def?.updateField(ref, "name", value);

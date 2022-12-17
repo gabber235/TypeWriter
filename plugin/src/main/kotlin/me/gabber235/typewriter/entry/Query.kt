@@ -34,11 +34,36 @@ class Query<E : Entry>(private val klass: KClass<E>) {
 		return EntryDatabase.findEntries(klass, filter)
 	}
 
+	/**
+	 * Find the first entry that matches the given a filter
+	 * @see findWhere
+	 */
+	infix fun firstWhere(filter: (E) -> Boolean): E? {
+		return EntryDatabase.findEntry(klass, filter)
+	}
+
 
 	/**
 	 * Find all the entries for the given class.
+	 *
+	 * Example:
+	 * ```kotlin
+	 * val query: Query<SomeEntry> = ...
+	 * query.find()
+	 * ```
 	 */
 	fun find() = findWhere { true }
+
+	/**
+	 * Find entry by [name].
+	 *
+	 * Example:
+	 * ```kotlin
+	 * val query: Query<SomeEntry> = ...
+	 * query findByName "someName"
+	 * ```
+	 */
+	infix fun findByName(name: String) = firstWhere { it.name == name }
 }
 
 /**
@@ -55,4 +80,23 @@ class Query<E : Entry>(private val klass: KClass<E>) {
 infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
 	val triggers = this.flatMap { it.triggers }
 	InteractionHandler.startInteractionAndTrigger(player, triggers)
+}
+
+/**
+ * If the player is not in an interaction, trigger all triggers for all entries in a list.
+ * If the player is in an interaction, only trigger the [continueTrigger].
+ *
+ * This can be useful for actions that should not be triggered again if the player is already in an interaction.
+ * Like clicking on a npc to start a conversation. As we don't want to start the conversation again
+ * if the player is already in an interaction.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: List<SomeEntry> = ...
+ * entries.startInteractionWithOrTrigger(player, continueTrigger)
+ * ```
+ */
+fun <E : TriggerEntry> List<E>.startInteractionWithOrTrigger(player: Player, continueTrigger: String) {
+	val triggers = this.flatMap { it.triggers }
+	InteractionHandler.startInteractionWithOrTriggerEvent(player, triggers, continueTrigger)
 }

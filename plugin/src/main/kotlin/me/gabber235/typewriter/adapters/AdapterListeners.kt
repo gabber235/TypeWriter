@@ -40,9 +40,9 @@ sealed interface ParameterGenerator {
 	}
 
 	companion object {
-		val generators = listOf(EventParameterGenerator, QueryParameterGenerator)
+		private val generators = listOf(EventParameterGenerator, QueryParameterGenerator)
 
-		fun getGenerator(parameter: Parameter): ParameterGenerator? {
+		private fun getGenerator(parameter: Parameter): ParameterGenerator? {
 			return generators.firstOrNull { it.isApplicable(parameter) }
 		}
 

@@ -10,6 +10,7 @@ group = "me.gabber235"
 version = "0.0.1"
 
 repositories {
+	// Required
 	maven("https://jitpack.io")
 	mavenCentral()
 	maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
@@ -17,6 +18,8 @@ repositories {
 	maven("https://libraries.minecraft.net/")
 	maven("https://repo.codemc.io/repository/maven-snapshots/")
 	maven("https://repo.opencollab.dev/maven-snapshots/")
+
+	// Adapter Specific
 	maven("https://repo.bg-software.com/repository/api/")
 }
 

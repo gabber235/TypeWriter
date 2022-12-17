@@ -4,9 +4,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
 import me.gabber235.typewriter.Typewriter
+import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.event.entries.NpcEventEntry
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
 import me.gabber235.typewriter.utils.get
@@ -24,7 +24,7 @@ object EntryDatabase {
 	private var actions = listOf<ActionEntry>()
 
 	fun loadEntries() {
-		val dir = Typewriter.plugin.dataFolder["pages"]
+		val dir = plugin.dataFolder["pages"]
 		if (!dir.exists()) {
 			dir.mkdirs()
 		}
@@ -51,12 +51,14 @@ object EntryDatabase {
 
 	fun gson(): Gson {
 		val entryFactory = RuntimeTypeAdapterFactory.of(Entry::class.java)
-			// TODO: Remove hardcoded classes
-			.registerSubtype(NpcEventEntry::class.java, "npc_interact")
 
-		AdapterLoader.getAdapterData().flatMap { it.entries }.forEach {
-			// TODO: Remove debug println
-			println("Registering entry ${it.name}")
+		val entries = AdapterLoader.getAdapterData().flatMap { it.entries }
+
+		entries.groupingBy { it.name }.eachCount().filter { it.value > 1 }.forEach { (name, count) ->
+			plugin.logger.warning("WARNING: Found $count entries with the name '$name'")
+		}
+
+		entries.forEach {
 			entryFactory.registerSubtype(it.clazz, it.name)
 		}
 
@@ -65,31 +67,40 @@ object EntryDatabase {
 			.create()
 	}
 
-	fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
+
+	internal fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
 		return entries.filterIsInstance(klass.java).filter(predicate)
 	}
 
+	internal fun <T : Entry> findEntry(klass: KClass<T>, predicate: (T) -> Boolean): T? {
+		return entries.filterIsInstance(klass.java).firstOrNull(predicate)
+	}
+
+	@Deprecated("Old Api, use Query", ReplaceWith("Query(klass) findWhere predicate"))
 	fun <T : EventEntry> findEventEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
 		return events.filterIsInstance(klass.java).filter(predicate)
 	}
 
-	fun findDialogue(trigger: String, facts: Set<Fact>): DialogueEntry? {
+	internal fun findDialogue(trigger: String, facts: Set<Fact>): DialogueEntry? {
 		val rules = dialogue.filter { trigger in it.triggeredBy }.sortedByDescending { it.criteria.size }
 		return rules.find { rule -> rule.criteria.matches(facts) }
 	}
 
-	fun findActions(trigger: String, facts: Set<Fact>): List<ActionEntry> {
+	internal fun findActions(trigger: String, facts: Set<Fact>): List<ActionEntry> {
 		return actions.filter { trigger in it.triggeredBy }.filter { rule -> rule.criteria.matches(facts) }
 	}
 
-	fun getEntity(id: String) = entities.firstOrNull { it.id == id }
+	internal fun getEntity(id: String) = entities.firstOrNull { it.id == id }
 
 	@JvmName("getEntityWithType")
-	inline fun <reified E : EntityEntry> getEntity(id: String) = getEntity(id) as? E
+	internal inline fun <reified E : EntityEntry> getEntity(id: String) = getEntity(id) as? E
+
+	@Deprecated("Old Api, use Query", ReplaceWith("Query(klass) findByName name"))
 	fun findEntityByName(name: String) = entities.firstOrNull { it.name == name }
 
 	@JvmName("findEntityByNameWithType")
-	inline fun <reified E : EntityEntry> findEntityByName(name: String) = findEntityByName(name) as? E
+	@Deprecated("Old Api, use Query", ReplaceWith("Query(E::class) findByName name"))
+	inline fun <reified E : EntityEntry> findEntityByName(name: String) = (Query(E::class) findByName name)
 
 	fun getFact(id: String) = facts.firstOrNull { it.id == id }
 	fun findFactByName(name: String) = facts.firstOrNull { it.name == name }

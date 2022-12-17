@@ -2,11 +2,11 @@ import "package:collapsible/collapsible.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/deprecated/pages/inspection_menu.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import 'package:typewriter/widgets/inspector/section_title.dart';
 
 class ObjectEditorFilter extends EditorFilter {
   @override

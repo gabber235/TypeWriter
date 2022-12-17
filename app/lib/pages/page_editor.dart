@@ -131,7 +131,9 @@ class _AppBar extends HookConsumerWidget {
             const _ViewModeButtons(),
             const SizedBox(width: 20),
             const _SearchBar(),
-            const SizedBox(width: 20),
+            const SizedBox(width: 5),
+            const _AddEntryButton(),
+            const SizedBox(width: 10),
           ],
         ),
       );
@@ -201,6 +203,20 @@ class _SearchBar extends HookConsumerWidget {
           ),
         ),
       );
+}
+
+class _AddEntryButton extends HookConsumerWidget {
+  const _AddEntryButton({super.key}) : super();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      iconSize: 16,
+      padding: EdgeInsets.zero,
+      icon: const Icon(FontAwesomeIcons.plus),
+      onPressed: () => ref.read(searchingProvider.notifier).startSearch("add:"),
+    );
+  }
 }
 
 enum EntriesView {

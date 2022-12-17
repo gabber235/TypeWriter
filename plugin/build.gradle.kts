@@ -11,7 +11,6 @@ group = "me.gabber235"
 version = "0.1.0"
 
 repositories {
-	maven("https://repo.citizensnpcs.co/")
 	maven("https://jitpack.io")
 	mavenCentral()
 	maven("https://repo.dmulloy2.net/repository/public/")
@@ -38,7 +37,6 @@ dependencies {
 	implementation("net.kyori:adventure-platform-bukkit:4.1.2")
 	compileOnly("com.mojang:brigadier:1.0.18")
 	compileOnly("me.clip:placeholderapi:2.11.2")
-	compileOnly("net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT")
 	compileOnly("com.google.code.gson:gson:2.10")
 	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")

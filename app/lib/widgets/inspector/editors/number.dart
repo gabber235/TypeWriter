@@ -5,7 +5,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/inspector/single_line_text_field.dart";
+import "package:typewriter/widgets/inspector/formatted_text_field.dart";
 
 class NumberEditorFilter extends EditorFilter {
   @override
@@ -28,7 +28,7 @@ class IntegerEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(fieldValueProvider(path, ""));
-    return SingleLineTextField(
+    return FormattedTextField(
       icon: FontAwesomeIcons.hashtag,
       hintText: "Enter a ${field.type.name}",
       text: "$value",

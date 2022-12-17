@@ -119,15 +119,15 @@ List<_Action> _actions(_ActionsRef ref) {
 
   final addResults = ref.watch(_fuzzyAddEntriesProvider).search(query).map((e) => e.item).toList();
 
-  return results
+  return addResults.map(_AddEntryAction.new).whereType<_Action>().toList() +
+      results
           .mapNotNull((entry) {
             final blueprint = ref.watch(entryBlueprintProvider(entry.type));
             if (blueprint == null) return null;
             return _EntryAction(entry, blueprint);
           })
           .whereType<_Action>()
-          .toList() +
-      addResults.map(_AddEntryAction.new).whereType<_Action>().toList();
+          .toList();
 }
 
 /// Finds actions for a given operator.
@@ -137,7 +137,10 @@ List<_Action>? _findActionsForOperator(String query, List<EntryBlueprint> bluepr
 
   // If it starts with "add" we want to add a new entry.
   if (prefix == "add") {
-    return blueprints.map(_AddEntryAction.new).toList();
+    return blueprints
+        .where((b) => b.name.toLowerCase().contains(query.split(":").last.toLowerCase()))
+        .map(_AddEntryAction.new)
+        .toList();
   }
 
   // If it starts with a type we want to filter the results by that type.
@@ -160,9 +163,9 @@ List<_Action>? _findActionsForOperator(String query, List<EntryBlueprint> bluepr
     if (blueprint == null) return null;
     return _EntryAction(entry, blueprint);
   }).toList();
-  final blueprintTags = blueprints.where((e) => e.tags.contains(prefix)).map(_AddEntryAction.new).toList();
+  final blueprintTags = blueprints.where((e) => e.tags.contains(prefix)).map<_Action>(_AddEntryAction.new).toList();
 
-  return entryTags + blueprintTags;
+  return blueprintTags + entryTags;
 }
 
 List<String> _getTagsForEntryWithBlueprints(Entry entry, List<EntryBlueprint> blueprints) {

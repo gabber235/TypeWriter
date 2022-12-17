@@ -49,6 +49,8 @@ Graph graph(GraphRef ref) {
           entries.where((e) => ref.watch(triggerPathsProvider(e.type, true)).expand(e.getAll).contains(trigger));
 
       for (final receiver in receivers) {
+        if (receiver.id == entry.id) continue; // Don't connect to self
+
         graph.addEdge(Node.Id(entry.id), Node.Id(receiver.id), paint: Paint()..color = color);
       }
     }
