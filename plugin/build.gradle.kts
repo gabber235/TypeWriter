@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "me.gabber235"
-version = "0.1.0"
+version = "1.0.0"
 
 repositories {
 	maven("https://jitpack.io")
