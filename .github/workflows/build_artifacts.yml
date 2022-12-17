@@ -14,11 +14,14 @@ jobs:
         with:
           channel: 'stable'
       - name: Install dependencies
+        working-directory: ./app
         run: flutter pub get
       - name: Build AppImage
+        working-directory: ./app
         run: flutter build linux --release
       - name: Upload AppImage
         uses: actions/upload-artifact@v2
+        working-directory: ./app
         with:
           name: Typewriter.AppImage
           path: build/linux/release/bundle/*.AppImage
@@ -31,11 +34,14 @@ jobs:
         with:
           channel: 'stable'
       - name: Install dependencies
+        working-directory: ./app
         run: flutter pub get
       - name: Build Windows
+        working-directory: ./app
         run: flutter build windows --release
       - name: Upload Windows
         uses: actions/upload-artifact@v2
+        working-directory: ./app
         with:
           name: Typewriter.exe
           path: build/windows/runner/Release/*.exe
@@ -48,11 +54,14 @@ jobs:
         with:
           channel: 'stable'
       - name: Install dependencies
+        working-directory: ./app
         run: flutter pub get
       - name: Build MacOS
+        working-directory: ./app
         run: flutter build macos --release
       - name: Upload MacOS
         uses: actions/upload-artifact@v2
+        working-directory: ./app
         with:
           name: Typewriter.app
           path: build/macos/Build/Products/Release/*.app
