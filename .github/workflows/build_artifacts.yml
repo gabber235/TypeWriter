@@ -15,7 +15,10 @@ jobs:
           channel: 'stable'
       - name: Install dependencies
         working-directory: ./app
-        run: flutter pub get
+        run: |
+          flutter pub get
+          sudo apt install clang ninja-build libgtk-3-dev -y
+
       - name: Build AppImage
         working-directory: ./app
         run: flutter build linux --release
