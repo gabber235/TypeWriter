@@ -20,8 +20,8 @@ dependencies:
   google_fonts: ^3.0.1
   font_awesome_flutter: ^10.3.0
   icon_forest: ^1.1.8
-  file_picker: ^5.2.3
-  rive: ^0.9.1
+  file_picker: ^5.2.4
+  rive: ^0.10.0
   dropdown_search: ^5.0.5
   dotted_border: ^2.0.0+3
   tuple: ^2.0.1
