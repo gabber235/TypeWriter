@@ -22,10 +22,16 @@ jobs:
       - name: Build AppImage
         working-directory: ./app
         run: flutter build linux --release
+      - name: Package Release files
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: linux.zip
+          directory: ./app/build/linux/x64/release/bundle
       - name: Upload AppImage
         uses: actions/upload-artifact@v2
         with:
-          path: ./app/build/linux/x64/release/bundle
+          path: ./app/build/linux/x64/release/bundle/linux.zip
 
   build-app-windows:
     runs-on: windows-latest
@@ -40,10 +46,16 @@ jobs:
       - name: Build Windows
         working-directory: ./app
         run: flutter build windows --release
+      - name: Package Release files
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: windows.zip
+          directory: ./app/build/windows/runner/Release
       - name: Upload Windows
         uses: actions/upload-artifact@v2
         with:
-          path: ./app/build/windows/runner/Release
+          path: ./app/build/windows/runner/Release/windows.zip
 
   build-app-macos:
     runs-on: macos-latest
@@ -78,4 +90,4 @@ jobs:
       - name: Upload MacOS
         uses: actions/upload-artifact@v2
         with:
-          path: ./app/build/macos/Build/Products/Release
+          path: ./app/build/macos/Build/Products/Release/Typewriter.dmg
