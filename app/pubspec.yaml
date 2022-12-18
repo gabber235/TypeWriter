@@ -37,12 +37,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
-  build_runner: ^2.3.2
-  freezed: ^2.2.1
+  build_runner: ^2.3.3
+  freezed: ^2.3.2
   json_serializable: ^6.5.4
-  icons_launcher: ^2.0.5
+  icons_launcher: ^2.0.6
   auto_route_generator: ^5.0.3
   riverpod_generator: ^1.0.6
+  msix: ^3.7.0
 
 icons_launcher:
   image_path: "assets/Typewriter.png"
@@ -57,6 +58,14 @@ icons_launcher:
       enable: true
     linux:
       enable: true
+
+msix_config:
+  display_name: "Typewriter"
+  publisher_display_name: "gabber235"
+  identity_name: "com.gabber235.typewriter"
+  msix_version: 1.0.0.0
+  logo_path: "assets/Typewriter.png"
+  capabilities: internetClient
 
 flutter:
   uses-material-design: true

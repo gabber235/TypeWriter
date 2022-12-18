@@ -8,6 +8,7 @@ on:
 jobs:
   build-app-linux:
     runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v1
@@ -17,16 +18,22 @@ jobs:
         working-directory: ./app
         run: |
           flutter pub get
-          sudo apt install clang ninja-build libgtk-3-dev -y
+          sudo apt install clang ninja-build libgtk-3-dev libblkid1 liblzma5 ruby-dev build-essential -y
+          sudo gem install fpm
 
-      - name: Build AppImage
+      - name: Build Linux
         working-directory: ./app
         run: flutter build linux --release
+      - name: Package Release files
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: linux.zip
+          directory: ./app/build/linux/x64/release/bundle
       - name: Upload AppImage
         uses: actions/upload-artifact@v2
         with:
-          name: Typewriter
-          path: ./app/build/linux/x64/release/bundle/typewriter
+          path: ./app/build/linux/x64/release/bundle/linux.zip
 
   build-app-windows:
     runs-on: windows-latest
@@ -40,15 +47,21 @@ jobs:
         run: flutter pub get
       - name: Build Windows
         working-directory: ./app
-        run: flutter build windows --release
+        run: flutter pub run msix:create
+      - name: Package Release files
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: windows.zip
+          directory: ./app/build/windows/runner/Release
       - name: Upload Windows
         uses: actions/upload-artifact@v2
         with:
-          name: Typewriter.exe
-          path: ./app/build/windows/runner/Release/typewriter.exe
+          path: ./app/build/windows/runner/Release/windows.zip
 
   build-app-macos:
     runs-on: macos-latest
+    if: false # TODO: Re-enable when the other platforms are working
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v2
