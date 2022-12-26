@@ -4,7 +4,7 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:theme_json_converter/theme_json_converter.dart";
 import "package:typewriter/models/book.dart";
-import 'package:typewriter/widgets/icons.dart';
+import 'package:typewriter/models/icons.dart';
 import "package:typewriter/widgets/inspector/editors/object.dart";
 
 part "adapter.freezed.dart";
@@ -106,6 +106,12 @@ class FieldInfo with _$FieldInfo {
     @Default([]) List<Modifier> modifiers,
   }) = ObjectField;
 
+  /// Custom field type, where a custom editor is used.
+  const factory FieldInfo.custom({
+    required String editor,
+    @Default([]) List<Modifier> modifiers,
+  }) = CustomField;
+
   factory FieldInfo.fromJson(Map<String, dynamic> json) => _$FieldInfoFromJson(json);
 }
 
@@ -153,6 +159,7 @@ extension FieldTypeExtension on FieldInfo {
         list: (type, _) => [],
         map: (key, value, _) => {},
         object: (fields, _) => fields.map((key, value) => MapEntry(key, value.defaultValue)),
+        custom: (editor, _) => null,
       );
 
   /// If the [ObjectEditor] needs to show a default layout or if a field declares a custom layout.

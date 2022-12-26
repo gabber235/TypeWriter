@@ -23,12 +23,12 @@ interface TriggerEntry : Entry {
 
 @Tags("rule")
 interface RuleEntry : TriggerEntry {
-	val criteria: List<Criteria>
-	val modifiers: List<Modifier>
-
 	@Triggers(isReceiver = true)
 	@SnakeCase
 	val triggeredBy: List<String>
+
+	val criteria: List<Criteria>
+	val modifiers: List<Modifier>
 }
 
 enum class CriteriaOperator {
@@ -49,7 +49,7 @@ enum class CriteriaOperator {
 }
 
 data class Criteria(
-	@field:StaticEntryIdentifier(FactEntry::class)
+	@StaticEntryIdentifier(FactEntry::class)
 	val fact: String,
 	val operator: CriteriaOperator,
 	val value: Int,
@@ -75,7 +75,7 @@ enum class ModifierOperator {
 }
 
 data class Modifier(
-	@field:StaticEntryIdentifier(FactEntry::class)
+	@StaticEntryIdentifier(FactEntry::class)
 	val fact: String,
 	val operator: ModifierOperator,
 	val value: Int,

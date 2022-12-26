@@ -6,8 +6,8 @@ import me.gabber235.typewriter.adapters.FieldModifier.InnerListModifier
 import me.gabber235.typewriter.adapters.FieldModifier.StaticModifier
 
 
-@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
-annotation class SnakeCase()
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
+annotation class SnakeCase
 
 object SnakeCaseModifierComputer : StaticModifierComputer<SnakeCase> {
 	override val annotationClass: Class<SnakeCase> = SnakeCase::class.java

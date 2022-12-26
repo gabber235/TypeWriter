@@ -119,7 +119,7 @@ class TriggerPathsFamily extends Family<List<String>> {
   String? get name => r'triggerPathsProvider';
 }
 
-String $graphHash() => r'7157f428dd428ec78e90d051b83fa1b317ed8999';
+String $graphHash() => r'a99712df689e8750a5cd4c1bf512e0284e2063bd';
 
 /// See also [graph].
 final graphProvider = AutoDisposeProvider<Graph>(

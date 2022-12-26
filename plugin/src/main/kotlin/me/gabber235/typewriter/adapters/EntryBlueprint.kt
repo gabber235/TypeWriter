@@ -25,6 +25,11 @@ sealed class FieldInfo {
 	companion object {
 
 		fun fromTypeToken(token: TypeToken<*>): FieldInfo {
+			val customEditor = computeCustomEditor(token)
+			if (customEditor != null) {
+				return CustomField(customEditor.name)
+			}
+
 			val primitive = PrimitiveFieldType.fromTokenType(token)
 			if (primitive != null) {
 				return PrimitiveField(primitive)
@@ -147,5 +152,9 @@ class ObjectField(val fields: Map<String, FieldInfo>) : FieldInfo() {
 		}
 	}
 }
+
+// If a custom editor takes over a field, this is the type of the object.
+// The custom editor will be responsible for displaying the field.
+class CustomField(val editor: String) : FieldInfo()
 
 

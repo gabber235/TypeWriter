@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/pages/book_page.dart";
+import "package:typewriter/pages/connect_page.dart";
 import "package:typewriter/pages/home_page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/pages/pages_list.dart";
@@ -13,6 +14,14 @@ part "app_router.gr.dart";
   replaceInRouteName: "Page,Route",
   routes: [
     AutoRoute(page: HomePage, initial: true),
+    AutoRoute(
+      path: "/connect",
+      page: ConnectPage,
+    ),
+    AutoRoute(
+      path: "/error",
+      page: ErrorConnectPage,
+    ),
     AutoRoute(
       path: "/book",
       page: BookPage,

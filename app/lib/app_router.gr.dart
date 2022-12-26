@@ -25,6 +25,26 @@ class _$AppRouter extends RootStackRouter {
           opaque: true,
           barrierDismissible: false);
     },
+    ConnectRoute.name: (routeData) {
+      final args = routeData.argsAs<ConnectRouteArgs>();
+      return CustomPage<dynamic>(
+          routeData: routeData,
+          child: ConnectPage(
+              hostname: args.hostname, port: args.port, key: args.key),
+          transitionsBuilder: TransitionsBuilders.noTransition,
+          opaque: true,
+          barrierDismissible: false);
+    },
+    ErrorConnectRoute.name: (routeData) {
+      final args = routeData.argsAs<ErrorConnectRouteArgs>();
+      return CustomPage<dynamic>(
+          routeData: routeData,
+          child: ErrorConnectPage(
+              hostname: args.hostname, port: args.port, key: args.key),
+          transitionsBuilder: TransitionsBuilders.noTransition,
+          opaque: true,
+          barrierDismissible: false);
+    },
     BookRoute.name: (routeData) {
       return CustomPage<dynamic>(
           routeData: routeData,
@@ -65,6 +85,8 @@ class _$AppRouter extends RootStackRouter {
   @override
   List<RouteConfig> get routes => [
         RouteConfig(HomeRoute.name, path: '/'),
+        RouteConfig(ConnectRoute.name, path: '/connect'),
+        RouteConfig(ErrorConnectRoute.name, path: '/error'),
         RouteConfig(BookRoute.name, path: '/book', children: [
           RouteConfig('#redirect',
               path: '',
@@ -90,6 +112,61 @@ class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute() : super(HomeRoute.name, path: '/');
 
   static const String name = 'HomeRoute';
+}
+
+/// generated route for
+/// [ConnectPage]
+class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
+  ConnectRoute({required String hostname, required int port, Key? key})
+      : super(ConnectRoute.name,
+            path: '/connect',
+            args: ConnectRouteArgs(hostname: hostname, port: port, key: key));
+
+  static const String name = 'ConnectRoute';
+}
+
+class ConnectRouteArgs {
+  const ConnectRouteArgs(
+      {required this.hostname, required this.port, this.key});
+
+  final String hostname;
+
+  final int port;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ConnectRouteArgs{hostname: $hostname, port: $port, key: $key}';
+  }
+}
+
+/// generated route for
+/// [ErrorConnectPage]
+class ErrorConnectRoute extends PageRouteInfo<ErrorConnectRouteArgs> {
+  ErrorConnectRoute({required String hostname, required int port, Key? key})
+      : super(ErrorConnectRoute.name,
+            path: '/error',
+            args: ErrorConnectRouteArgs(
+                hostname: hostname, port: port, key: key));
+
+  static const String name = 'ErrorConnectRoute';
+}
+
+class ErrorConnectRouteArgs {
+  const ErrorConnectRouteArgs(
+      {required this.hostname, required this.port, this.key});
+
+  final String hostname;
+
+  final int port;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ErrorConnectRouteArgs{hostname: $hostname, port: $port, key: $key}';
+  }
 }
 
 /// generated route for

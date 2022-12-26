@@ -23,7 +23,7 @@ class DelayedActionEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	@SerializedName("triggers")
-	@field:Triggers
+	@Triggers
 	val nextTriggers: List<String> = emptyList(),
 	private val duration: Long = 0, // Number of milliseconds
 ) : ActionEntry {

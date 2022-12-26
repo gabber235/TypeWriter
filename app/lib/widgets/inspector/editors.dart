@@ -7,11 +7,12 @@ import "package:typewriter/widgets/inspector/editors/boolean.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
 import "package:typewriter/widgets/inspector/editors/map.dart";
+import "package:typewriter/widgets/inspector/editors/material.dart";
 import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
-import 'package:typewriter/widgets/inspector/editors/static_entry_selector.dart';
+import "package:typewriter/widgets/inspector/editors/static_entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
-import 'package:typewriter/widgets/inspector/editors/triggers.dart';
+import "package:typewriter/widgets/inspector/editors/triggers.dart";
 
 part "editors.g.dart";
 
@@ -25,6 +26,9 @@ dynamic fieldValue(FieldValueRef ref, String path, [dynamic defaultValue]) {
 List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       TriggerEditorFilter(),
       StaticEntrySelectorEditorFilter(),
+
+      // Custom Editors
+      MaterialSelectorEditorFilter(),
 
       // Default filters
       StringEditorFilter(),

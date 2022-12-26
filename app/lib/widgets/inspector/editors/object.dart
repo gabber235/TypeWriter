@@ -6,14 +6,14 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
-import 'package:typewriter/widgets/inspector/section_title.dart';
+import "package:typewriter/widgets/inspector/section_title.dart";
 
 class ObjectEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo type) => type is ObjectField;
+  bool canEdit(FieldInfo info) => info is ObjectField;
 
   @override
-  Widget build(String path, FieldInfo type) => ObjectEditor(path: path, object: type as ObjectField);
+  Widget build(String path, FieldInfo info) => ObjectEditor(path: path, object: info as ObjectField);
 }
 
 class ObjectEditor extends HookConsumerWidget {

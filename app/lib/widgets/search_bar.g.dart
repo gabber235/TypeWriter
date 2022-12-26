@@ -50,7 +50,7 @@ final _fuzzyAddEntriesProvider = AutoDisposeProvider<Fuzzy<EntryBlueprint>>(
       : $_fuzzyAddEntriesHash,
 );
 typedef _FuzzyAddEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryBlueprint>>;
-String $_actionsHash() => r'8ea03db5fb04b2edba5391af62eb25cd18ea32d3';
+String $_actionsHash() => r'fdde63d7d6bd1472dabce1fb3b13c63046776002';
 
 /// See also [_actions].
 final _actionsProvider = AutoDisposeProvider<List<_Action>>(

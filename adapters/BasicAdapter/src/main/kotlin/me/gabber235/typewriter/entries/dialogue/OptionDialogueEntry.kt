@@ -27,7 +27,7 @@ data class Option(
 	val text: String = "",
 	val criteria: List<Criteria> = emptyList(),
 	val modifiers: List<Modifier> = emptyList(),
-	@field:Triggers
-	@field:SnakeCase
+	@Triggers
+	@SnakeCase
 	val triggers: List<String> = emptyList()
 )

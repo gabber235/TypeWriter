@@ -11,6 +11,7 @@ import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
+import me.gabber235.typewriter.ui.CommunicationHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 
 class Typewriter : KotlinPlugin() {
@@ -58,6 +59,7 @@ class Typewriter : KotlinPlugin() {
 		plugin.launch {
 			delay(1)
 			AdapterLoader.initializeAdapters()
+			CommunicationHandler.initialize()
 		}
 	}
 
@@ -66,6 +68,7 @@ class Typewriter : KotlinPlugin() {
 	}
 
 	override fun onDisable() {
+		CommunicationHandler.shutdown()
 		InteractionHandler.shutdown()
 		FactDatabase.shutdown()
 		adventure.close()

@@ -1,24 +1,85 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
-import "package:typewriter/models/file_path.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:socket_io_client/socket_io_client.dart" as IO;
+import "package:typewriter/app_router.dart";
+import "package:typewriter/main.dart";
+import "package:typewriter/widgets/copyable_text.dart";
+
+part "home_page.g.dart";
+
+@riverpod
+LocalhostChecker localhostChecker(LocalhostCheckerRef ref) {
+  final checker = LocalhostChecker(ref);
+  ref.onDispose(checker.dispose);
+  checker.initialCheck();
+  return checker;
+}
+
+class LocalhostChecker {
+  LocalhostChecker(this.ref);
+  Timer? _timer;
+  final LocalhostCheckerRef ref;
+
+  Future<void> initialCheck() async {
+    await _handleResult();
+  }
+
+  void _startCheck() {
+    _timer?.cancel();
+    _timer = Timer(const Duration(seconds: 3), _handleResult);
+  }
+
+  Future<void> _handleResult() async {
+    final localhostOpen = await check();
+    if (localhostOpen) {
+      await ref.read(appRouter).replace(ConnectRoute(hostname: "localhost", port: 9092));
+    } else {
+      _startCheck();
+    }
+  }
+
+  Future<bool> check() async {
+    final completer = Completer<bool>();
+    try {
+      final socket = IO.io(
+        "http://localhost:9092",
+        IO.OptionBuilder().setTransports(["websocket"]).disableAutoConnect().disableReconnection().build(),
+      );
+      socket
+        ..onConnect((_) {
+          if (!completer.isCompleted) completer.complete(true);
+          socket.dispose();
+        })
+        ..onConnectError((data) {
+          socket.dispose();
+          if (!completer.isCompleted) completer.complete(false);
+        })
+        ..onConnectTimeout((data) {
+          if (!completer.isCompleted) completer.complete(false);
+        })
+        ..connect();
+    } on Error catch (_) {
+      if (!completer.isCompleted) completer.complete(false);
+    }
+    return completer.future;
+  }
+
+  void dispose() {
+    _timer?.cancel();
+  }
+}
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
 
-  Future<void> _openSelector(WidgetRef ref, ValueNotifier<bool> openedSelector) async {
-    if (openedSelector.value) return;
-    openedSelector.value = true;
-    await pickAndLoadBook(ref);
-    openedSelector.value = false;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final openedSelector = useState(false);
+    ref.watch(localhostCheckerProvider);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -32,12 +93,12 @@ class HomePage extends HookConsumerWidget {
             "Your journey starts here",
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 24),
-          FilledButton.icon(
-            onPressed: () => _openSelector(ref, openedSelector),
-            label: const Text("Open Typewriter Directory"),
-            icon: const Icon(FontAwesomeIcons.folderOpen),
+          Text(
+            "Run the following command on your server to start editing",
+            style: GoogleFonts.jetBrainsMono(fontSize: 20, fontWeight: FontWeight.w100, color: Colors.grey),
           ),
+          const SizedBox(height: 24),
+          const CopyableText(text: "/typewriter connect"),
           const Spacer(),
         ],
       ),

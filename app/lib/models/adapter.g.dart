@@ -157,6 +157,23 @@ Map<String, dynamic> _$$ObjectFieldToJson(_$ObjectField instance) =>
       'kind': instance.$type,
     };
 
+_$CustomField _$$CustomFieldFromJson(Map<String, dynamic> json) =>
+    _$CustomField(
+      editor: json['editor'] as String,
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      $type: json['kind'] as String?,
+    );
+
+Map<String, dynamic> _$$CustomFieldToJson(_$CustomField instance) =>
+    <String, dynamic>{
+      'editor': instance.editor,
+      'modifiers': instance.modifiers,
+      'kind': instance.$type,
+    };
+
 _$_Modifier _$$_ModifierFromJson(Map<String, dynamic> json) => _$_Modifier(
       name: json['name'] as String,
       data: json['data'],
