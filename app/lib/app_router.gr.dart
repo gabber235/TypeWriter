@@ -32,7 +32,18 @@ class _$AppRouter extends RootStackRouter {
       );
     },
     ConnectRoute.name: (routeData) {
-      final args = routeData.argsAs<ConnectRouteArgs>();
+      final queryParams = routeData.queryParams;
+      final args = routeData.argsAs<ConnectRouteArgs>(
+          orElse: () => ConnectRouteArgs(
+                hostname: queryParams.getString(
+                  'host',
+                  "",
+                ),
+                port: queryParams.getInt(
+                  'port',
+                  9092,
+                ),
+              ));
       return CustomPage<dynamic>(
         routeData: routeData,
         child: ConnectPage(
@@ -167,8 +178,8 @@ class HomeRoute extends PageRouteInfo<void> {
 /// [ConnectPage]
 class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
   ConnectRoute({
-    required String hostname,
-    required int port,
+    String hostname = "",
+    int port = 9092,
     Key? key,
   }) : super(
           ConnectRoute.name,
@@ -178,6 +189,10 @@ class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
             port: port,
             key: key,
           ),
+          rawQueryParams: {
+            'host': hostname,
+            'port': port,
+          },
         );
 
   static const String name = 'ConnectRoute';
@@ -185,8 +200,8 @@ class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
 
 class ConnectRouteArgs {
   const ConnectRouteArgs({
-    required this.hostname,
-    required this.port,
+    this.hostname = "",
+    this.port = 9092,
     this.key,
   });
 

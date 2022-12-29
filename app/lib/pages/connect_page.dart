@@ -1,3 +1,4 @@
+import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart" hide Page;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -6,19 +7,25 @@ import "package:rive/rive.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/main.dart";
-import 'package:typewriter/models/communicator.dart';
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/widgets/filled_button.dart";
 import "package:typewriter/widgets/text_scroller.dart";
 
 class ConnectPage extends HookConsumerWidget {
-  const ConnectPage({required this.hostname, required this.port, super.key});
+  const ConnectPage({@QueryParam("host") this.hostname = "", @QueryParam() this.port = 9092, super.key});
 
   final String hostname;
   final int port;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    useDelayedExecution(() => ref.read(socketProvider.notifier).init(hostname, port));
+    useDelayedExecution(() {
+      if (hostname.isEmpty) {
+        ref.read(appRouter).replaceAll([const HomeRoute()]);
+        return;
+      }
+      ref.read(socketProvider.notifier).init(hostname, port);
+    });
 
     return Scaffold(
       body: Column(
