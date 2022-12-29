@@ -15,6 +15,7 @@ import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/hooks/search_bar_controller.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/adapter.dart";
+import 'package:typewriter/models/communicator.dart';
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -256,9 +257,12 @@ class _AddEntryAction extends _Action {
   @override
   void activate(BuildContext context, WidgetRef ref) {
     final e = Entry.fromBlueprint(id: _getRandomString(15), blueprint: blueprint);
-    ref.read(currentPageProvider)?.insertEntry(ref, e);
+    final page = ref.read(currentPageProvider);
+    if (page == null) return;
+    page.insertEntry(ref, e);
     ref.read(selectedEntryIdProvider.notifier).state = e.id;
     ref.read(entriesViewProvider.notifier).navigateToViewForEntry(e);
+    ref.read(communicatorProvider).createEntry(page.name, e);
   }
 }
 

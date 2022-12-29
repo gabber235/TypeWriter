@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import 'package:typewriter/models/communicator.dart';
 import "package:typewriter/models/page.dart";
-import 'package:typewriter/pages/connect_page.dart';
-import 'package:typewriter/utils/socket_extensions.dart';
 
 part "book.freezed.dart";
 
@@ -26,23 +23,7 @@ class BookNotifier extends StateNotifier<Book> {
   BookNotifier(super.state, {required this.ref});
   final Ref<Book> ref;
 
-  Future<void> fetchBook() async {
-    final socket = ref.read(socketProvider);
-    if (socket == null || !socket.connected) {
-      return;
-    }
-
-    final String rawPages = await socket.emitWithAckAsync("fetch", "pages");
-    final String rawAdapters = await socket.emitWithAckAsync("fetch", "adapters");
-
-    final jsonPages = jsonDecode(rawPages) as List;
-    final jsonAdapters = jsonDecode(rawAdapters) as List;
-
-    final pages = jsonPages.map((e) => Page.fromJson(e)).toList();
-    final adapters = jsonAdapters.map((e) => Adapter.fromJson(e)).toList();
-
-    state = Book(name: "Typewriter", adapters: adapters, pages: pages);
-  }
+  set book(Book book) => state = book;
 
   /// Inserts a page. If the page already exists, it will be replaced.
   void insertPage(Page page) {
@@ -56,14 +37,8 @@ class BookNotifier extends StateNotifier<Book> {
     state = state.copyWith(pages: state.pages.where((p) => p != page).toList());
   }
 
-  // Saves the book to disk.
-
-  Future<void> save() async {
-    // TODO: Implement
-  }
-
   /// Reloads the book from the server.
   Future<void> reload() async {
-    return fetchBook();
+    return ref.read(communicatorProvider).fetchBook();
   }
 }

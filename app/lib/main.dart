@@ -2,12 +2,17 @@ import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/app_router.dart";
+import "package:typewriter/guard/connected_guard.dart";
 
 void main() {
   runApp(const ProviderScope(child: TypeWriterApp()));
 }
 
-final appRouter = Provider<AppRouter>((ref) => AppRouter());
+final appRouter = Provider<AppRouter>(
+  (ref) => AppRouter(
+    connectedGuard: ConnectedGuard(ref),
+  ),
+);
 
 class TypeWriterApp extends HookConsumerWidget {
   const TypeWriterApp({super.key});

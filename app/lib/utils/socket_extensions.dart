@@ -11,7 +11,7 @@ extension SocketExt on Socket {
       data,
       binary: binary,
       ack: (data) {
-        completer.complete(data);
+        if (!completer.isCompleted) completer.complete(data);
       },
     );
     return completer.future;

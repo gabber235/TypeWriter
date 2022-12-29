@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/widgets/inspector/editors/name.dart";
@@ -12,7 +13,7 @@ import "package:typewriter/widgets/inspector/operations.dart";
 
 part "inspector.g.dart";
 
-final selectedEntryIdProvider = StateProvider.autoDispose<String>((ref) => "");
+final selectedEntryIdProvider = StateProvider<String>((ref) => "");
 
 @riverpod
 Entry? selectedEntry(SelectedEntryRef ref) {
@@ -45,17 +46,20 @@ class _EmptyInspector extends HookConsumerWidget {
   const _EmptyInspector();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("Inspector"),
-          const SizedBox(height: 12),
-          Text(
-            "Select an entry to edit it's properties",
-            style: Theme.of(context).textTheme.caption,
-          ),
-        ],
-      );
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text("Inspector"),
+        const SizedBox(height: 12),
+        Text(
+          "Select an entry to edit it's properties",
+          style: Theme.of(context).textTheme.caption,
+        ),
+        const SizedBox(height: 40),
+      ],
+    );
+  }
 }
 
 @riverpod
@@ -84,6 +88,11 @@ class EntryDefinition {
   void updateField(WidgetRef ref, String field, dynamic value) {
     final entry = this.entry.copyWith(field, value);
     updateEntry(ref, entry);
+
+    // Update the communicator so it can synchronize the changes.
+    final page = ref.read(currentPageProvider);
+    if (page == null) return;
+    ref.read(communicatorProvider).updateEntry(page.name, entry.id, field, value);
   }
 }
 

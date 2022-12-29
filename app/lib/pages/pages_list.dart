@@ -8,11 +8,13 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/book.dart";
+import 'package:typewriter/models/communicator.dart';
 import "package:typewriter/models/page.dart" as model;
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
-import 'package:typewriter/widgets/empty_screen.dart';
+import "package:typewriter/widgets/empty_screen.dart";
 import "package:typewriter/widgets/filled_button.dart";
+import 'package:typewriter/widgets/writers.dart';
 
 part "pages_list.g.dart";
 
@@ -71,40 +73,48 @@ class _PageTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = ref.watch(currentPageIdProvider.select((id) => id == name));
+    final isSelected = ref.watch(currentPageIdProvider.select((e) => e == name));
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
-      child: Material(
-        color: isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-        child: InkWell(
-          onTap: () {
-            if (!isSelected) {
-              context.router.push(PageEditorRoute(id: name));
-            }
-          },
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    name.formatted,
-                    style: Theme.of(context).textTheme.caption?.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
+    return WritersIndicator(
+      filter: (writer) => writer.pageId.hasValue && writer.pageId == name && !isSelected,
+      shift: (amount) => amount > 0 ? const Offset(4, 30) : Offset.zero,
+      builder: (amount) {
+        return AnimatedPadding(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          padding: EdgeInsets.only(left: 2.0, right: 2.0, top: amount > 0 ? 30 : 0),
+          child: Material(
+            color: isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            child: InkWell(
+              onTap: () {
+                if (!isSelected) {
+                  context.router.push(PageEditorRoute(id: name));
+                }
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        name.formatted,
+                        style: Theme.of(context).textTheme.caption?.copyWith(
+                              color: Colors.white,
+                            ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.chevron_right, size: 16),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                const Icon(Icons.chevron_right, size: 16),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -174,9 +184,10 @@ class _AddPageButton extends HookConsumerWidget {
 class _AddPageDialogue extends HookConsumerWidget {
   const _AddPageDialogue();
 
-  void _addPage(WidgetRef ref, String name) {
+  Future<void> _addPage(WidgetRef ref, String name) async {
+    await ref.read(communicatorProvider).createPage(name);
     ref.read(bookProvider.notifier).insertPage(model.Page(name: name));
-    ref.read(appRouter).push(PageEditorRoute(id: name));
+    await ref.read(appRouter).push(PageEditorRoute(id: name));
   }
 
   /// Validates the proposed name for a page.

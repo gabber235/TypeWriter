@@ -29,17 +29,18 @@ class _SystemHash {
   }
 }
 
-String $_fuzzyEntriesHash() => r'34ffff98f1b2c262ecb01421d24a7034f77cb3ff';
+String _$_fuzzyEntriesHash() => r'34ffff98f1b2c262ecb01421d24a7034f77cb3ff';
 
 /// See also [_fuzzyEntries].
 final _fuzzyEntriesProvider = AutoDisposeProvider<Fuzzy<Entry>>(
   _fuzzyEntries,
   name: r'_fuzzyEntriesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_fuzzyEntriesHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$_fuzzyEntriesHash,
 );
 typedef _FuzzyEntriesRef = AutoDisposeProviderRef<Fuzzy<Entry>>;
-String $_fuzzyAddEntriesHash() => r'68074cdb6afb1954d9991dbc7bd39d4e098742dd';
+String _$_fuzzyAddEntriesHash() => r'68074cdb6afb1954d9991dbc7bd39d4e098742dd';
 
 /// See also [_fuzzyAddEntries].
 final _fuzzyAddEntriesProvider = AutoDisposeProvider<Fuzzy<EntryBlueprint>>(
@@ -47,16 +48,16 @@ final _fuzzyAddEntriesProvider = AutoDisposeProvider<Fuzzy<EntryBlueprint>>(
   name: r'_fuzzyAddEntriesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $_fuzzyAddEntriesHash,
+      : _$_fuzzyAddEntriesHash,
 );
 typedef _FuzzyAddEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryBlueprint>>;
-String $_actionsHash() => r'fdde63d7d6bd1472dabce1fb3b13c63046776002';
+String _$_actionsHash() => r'fdde63d7d6bd1472dabce1fb3b13c63046776002';
 
 /// See also [_actions].
 final _actionsProvider = AutoDisposeProvider<List<_Action>>(
   _actions,
   name: r'_actionsProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_actionsHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$_actionsHash,
 );
 typedef _ActionsRef = AutoDisposeProviderRef<List<_Action>>;

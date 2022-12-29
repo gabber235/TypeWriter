@@ -1,7 +1,7 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:dropdown_search/dropdown_search.dart";
 import "package:flutter/material.dart";
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:ktx/ktx.dart";
@@ -12,6 +12,7 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/empty_screen.dart";
 import "package:typewriter/widgets/inspector.dart";
+import 'package:typewriter/widgets/inspector/current_editing_field.dart';
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/search_bar.dart";
 
@@ -79,9 +80,16 @@ class FactEditor extends HookConsumerWidget {
           maxLines: 1,
         );
       },
+      onBeforePopupOpening: (entry) async {
+        ref.read(currentEditingFieldProvider.notifier).path = path;
+        return true;
+      },
       popupProps: PopupProps.menu(
         itemBuilder: (context, entry, isSelected) => buildListTile(entry, isSelected),
         emptyBuilder: (context, entry) => buildEmpty(ref, globalKey, tag),
+        onDismissed: () {
+          ref.read(currentEditingFieldProvider.notifier).clearIfSame(path);
+        },
         showSearchBox: true,
         title: Padding(
           padding: const EdgeInsets.only(left: 16.0, top: 8),

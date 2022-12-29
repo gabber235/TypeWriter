@@ -7,6 +7,7 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/materials.dart";
 import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 
 part "material.g.dart";
@@ -71,12 +72,19 @@ class MaterialSelectorEditor extends HookConsumerWidget {
 
         return _MaterialItem(id: entry.key, material: entry.value);
       },
+      onBeforePopupOpening: (entry) async {
+        ref.read(currentEditingFieldProvider.notifier).path = path;
+        return true;
+      },
       popupProps: PopupProps.menu(
         itemBuilder: (context, entry, isSelected) => _MaterialItem(
           id: entry.key,
           material: entry.value,
           isSelected: isSelected,
         ),
+        onDismissed: () {
+          ref.read(currentEditingFieldProvider.notifier).clearIfSame(path);
+        },
         showSearchBox: true,
         title: Padding(
           padding: const EdgeInsets.only(left: 16.0, top: 8),

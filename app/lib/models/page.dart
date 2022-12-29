@@ -1,10 +1,12 @@
 import "dart:convert";
 
+import 'package:collection/collection.dart';
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
+import 'package:typewriter/models/communicator.dart';
 import "package:typewriter/utils/extensions.dart";
 
 part "page.freezed.dart";
@@ -13,6 +15,16 @@ part "page.g.dart";
 @riverpod
 List<Page> pages(PagesRef ref) {
   return ref.watch(bookProvider).pages;
+}
+
+@riverpod
+Page? page(PageRef ref, String name) {
+  return ref.watch(pagesProvider).firstWhereOrNull((page) => page.name == name);
+}
+
+@riverpod
+Entry? entry(EntryRef ref, String pageId, String entryId) {
+  return ref.watch(pageProvider(pageId))?.entries.firstWhereOrNull((entry) => entry.id == entryId);
 }
 
 @freezed
@@ -34,33 +46,47 @@ extension PageExtension on Page {
   void insertEntry(WidgetRef ref, Entry entry) {
     updatePage(
       ref,
-      (page) {
-        // If the entry already exists, replace it at the same index.
-        final index = page.entries.indexWhere((e) => e.id == entry.id);
-        if (index != -1) {
-          return page.copyWith(
-            entries: [
-              ...page.entries.sublist(0, index),
-              entry,
-              ...page.entries.sublist(index + 1),
-            ],
-          );
-        }
-        // Otherwise, just add it to the end.
-        return page.copyWith(
-          entries: [...page.entries, entry],
-        );
-      },
+      (page) => _insertEntry(page, entry),
+    );
+  }
+
+  /// This should only be used to sync the entry from the server.
+  void syncInsertEntry(Ref<dynamic> ref, Entry entry) {
+    final newPage = _insertEntry(this, entry);
+    ref.read(bookProvider.notifier).insertPage(newPage);
+  }
+
+  Page _insertEntry(Page page, Entry entry) {
+    // If the entry already exists, replace it at the same index.
+    final index = page.entries.indexWhere((e) => e.id == entry.id);
+    if (index != -1) {
+      return page.copyWith(
+        entries: [...page.entries]..[index] = entry,
+      );
+    }
+    // Otherwise, just add it to the end.
+    return page.copyWith(
+      entries: [...page.entries, entry],
     );
   }
 
   void deleteEntry(WidgetRef ref, Entry entry) {
+    ref.read(communicatorProvider).deleteEntry(name, entry.id);
     updatePage(
       ref,
       (page) => page.copyWith(
         entries: [...page.entries.where((e) => e.id != entry.id)],
       ),
     );
+  }
+
+  /// This should only be used to sync the entry from the server.
+  void syncDeleteEntry(Ref<dynamic> ref, String entryId) {
+    ref.read(bookProvider.notifier).insertPage(
+          copyWith(
+            entries: [...entries.where((e) => e.id != entryId)],
+          ),
+        );
   }
 }
 
@@ -188,4 +214,10 @@ class Entry {
   String get formattedName => name.formatted;
 
   String get type => data["type"] as String;
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is Entry && data == other.data;
+
+  @override
+  int get hashCode => data.hashCode;
 }

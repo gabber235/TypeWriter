@@ -4,7 +4,8 @@ import "package:flutter_hooks/flutter_hooks.dart";
 
 class FormattedTextField extends HookWidget {
   const FormattedTextField({
-    super.key,
+    required this.focus,
+    this.controller,
     this.text,
     this.onChanged,
     this.inputFormatters,
@@ -12,7 +13,10 @@ class FormattedTextField extends HookWidget {
     this.hintText,
     this.icon,
     this.singleLine = true,
+    super.key,
   }) : super();
+  final TextEditingController? controller;
+  final FocusNode focus;
   final String? text;
   final Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
@@ -23,8 +27,23 @@ class FormattedTextField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = useTextEditingController(text: text);
+    final controller = this.controller ?? useTextEditingController(text: text);
+
+    // When we are not focused, we want to update the controller with the latest.
+    // Since other people may update the text and we want that reflected.
+    // However, when we are focused, we don't want to update the controller as this causes the cursor to jump.
+    useEffect(
+      () {
+        if (!focus.hasFocus) {
+          controller.text = text ?? "";
+        }
+        return null;
+      },
+      [text],
+    );
+
     return TextField(
+      focusNode: focus,
       controller: controller,
       onEditingComplete: () => onChanged?.call(controller.text),
       onSubmitted: onChanged,

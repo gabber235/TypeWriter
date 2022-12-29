@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $staticEntriesFromTagHash() =>
+String _$staticEntriesFromTagHash() =>
     r'989565778ece8018abccd6a7a8c7168c84cb166d';
 
 /// See also [staticEntriesFromTag].
@@ -47,7 +47,7 @@ class StaticEntriesFromTagProvider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $staticEntriesFromTagHash,
+                  : _$staticEntriesFromTagHash,
         );
 
   final String tag;

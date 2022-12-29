@@ -15,7 +15,7 @@ dependencies:
   json_annotation: ^4.7.0
   graphview: ^1.1.1
   flutter_hooks: ^0.18.5+1
-  hooks_riverpod: ^2.1.1
+  hooks_riverpod: ^2.1.3
   auto_size_text: ^3.0.0
   google_fonts: ^3.0.1
   font_awesome_flutter: ^10.3.0
@@ -28,10 +28,15 @@ dependencies:
   auto_route: ^5.0.4
   theme_json_converter: ^0.1.0
   collapsible: ^1.0.0
-  riverpod_annotation: ^1.0.6
+  riverpod_annotation: ^1.1.1
   ktx: ^1.1.6
-  socket_io_client: ^1.0.2
+  # Keep this as the older one since we use SocketIO v2 on the server.
+  socket_io_client: 1.0.2
   clipboard: ^0.1.3
+  dotted_border: ^2.0.0+3
+  flutter_svg: ^1.1.6
+  color: ^3.0.0
+
 
 dev_dependencies:
   flutter_test:
@@ -42,8 +47,7 @@ dev_dependencies:
   json_serializable: ^6.5.4
   icons_launcher: ^2.0.6
   auto_route_generator: ^5.0.3
-  riverpod_generator: ^1.0.6
-  msix: ^3.7.0
+  riverpod_generator: ^1.1.1
 
 icons_launcher:
   image_path: "assets/Typewriter.png"
@@ -58,14 +62,6 @@ icons_launcher:
       enable: true
     linux:
       enable: true
-
-msix_config:
-  display_name: "Typewriter"
-  publisher_display_name: "gabber235"
-  identity_name: "com.gabber235.typewriter"
-  msix_version: 1.0.0.0
-  logo_path: "assets/Typewriter.png"
-  capabilities: internetClient
 
 flutter:
   uses-material-design: true

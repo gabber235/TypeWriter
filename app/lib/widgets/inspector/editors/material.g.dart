@@ -29,7 +29,8 @@ class _SystemHash {
   }
 }
 
-String $materialPropertiesHash() => r'2537760a0cb4dc55f7fb40e4e045184959705bc2';
+String _$materialPropertiesHash() =>
+    r'2537760a0cb4dc55f7fb40e4e045184959705bc2';
 
 /// See also [materialProperties].
 class MaterialPropertiesProvider
@@ -46,7 +47,7 @@ class MaterialPropertiesProvider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $materialPropertiesHash,
+                  : _$materialPropertiesHash,
         );
 
   final String meta;
@@ -100,7 +101,7 @@ class MaterialPropertiesFamily extends Family<List<MaterialProperty>> {
   String? get name => r'materialPropertiesProvider';
 }
 
-String $computeMaterialsWithPropertiesHash() =>
+String _$computeMaterialsWithPropertiesHash() =>
     r'9cfb893280638ae591bc1071732bc08a66abd4c8';
 
 /// See also [computeMaterialsWithProperties].
@@ -118,7 +119,7 @@ class ComputeMaterialsWithPropertiesProvider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $computeMaterialsWithPropertiesHash,
+                  : _$computeMaterialsWithPropertiesHash,
         );
 
   final String? meta;

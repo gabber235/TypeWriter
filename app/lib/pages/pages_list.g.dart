@@ -29,13 +29,13 @@ class _SystemHash {
   }
 }
 
-String $_pageNamesHash() => r'c3dc5aefd2cf87079dd7d91a0e23b72a7eb4bd8e';
+String _$_pageNamesHash() => r'c3dc5aefd2cf87079dd7d91a0e23b72a7eb4bd8e';
 
 /// See also [_pageNames].
 final _pageNamesProvider = AutoDisposeProvider<List<String>>(
   _pageNames,
   name: r'_pageNamesProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_pageNamesHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$_pageNamesHash,
 );
 typedef _PageNamesRef = AutoDisposeProviderRef<List<String>>;

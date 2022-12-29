@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_page.dart';
+part of 'communicator.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -29,14 +29,13 @@ class _SystemHash {
   }
 }
 
-String $localhostCheckerHash() => r'8d6b8bb3f8354b4028e2f80a02db24826f384efd';
+String _$communicatorHash() => r'9085b5b631ddf5d09d571a34e6d1de239259e08f';
 
-/// See also [localhostChecker].
-final localhostCheckerProvider = AutoDisposeProvider<LocalhostChecker>(
-  localhostChecker,
-  name: r'localhostCheckerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : $localhostCheckerHash,
+/// See also [communicator].
+final communicatorProvider = Provider<Communicator>(
+  communicator,
+  name: r'communicatorProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$communicatorHash,
 );
-typedef LocalhostCheckerRef = AutoDisposeProviderRef<LocalhostChecker>;
+typedef CommunicatorRef = ProviderRef<Communicator>;

@@ -13,3 +13,10 @@ val Player.isFloodgate: Boolean
 		return FloodgateApi.getInstance().isFloodgatePlayer(this.uniqueId)
 	}
 
+
+fun <T> T?.logErrorIfNull(message: String): T? {
+	if (this == null) Typewriter.plugin.logger.severe(message)
+	return this
+}
+
+infix fun <T> Boolean.then(t: T): T? = if (this) t else null

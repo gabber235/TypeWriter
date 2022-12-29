@@ -3,70 +3,12 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
-import "package:socket_io_client/socket_io_client.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/main.dart";
-import "package:typewriter/models/book.dart";
+import 'package:typewriter/models/communicator.dart';
 import "package:typewriter/widgets/filled_button.dart";
 import "package:typewriter/widgets/text_scroller.dart";
-
-final socketProvider = StateNotifierProvider<SocketNotifier, Socket?>(SocketNotifier.new);
-
-class SocketNotifier extends StateNotifier<Socket?> {
-  SocketNotifier(this.ref) : super(null);
-
-  final StateNotifierProviderRef<SocketNotifier, Socket?> ref;
-
-  void init(String hostname, int port) {
-    if (state != null) return;
-    debugPrint("Initializing socket");
-    final socket =
-        io("http://$hostname:$port", OptionBuilder().setTransports(["websocket"]).disableAutoConnect().build());
-
-    socket
-      ..onConnect((_) {
-        debugPrint("connected");
-        state = socket;
-        setup(socket);
-      })
-      ..onConnectError((data) {
-        debugPrint("connect error $data");
-        if (state?.connected ?? false) state?.dispose();
-        state = null;
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port)]);
-      })
-      ..onConnectTimeout((data) {
-        debugPrint("connect timeout $data");
-        if (state?.connected ?? false) state?.dispose();
-        state = null;
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port)]);
-      })
-      ..onError((data) {
-        debugPrint("error $data");
-        if (state?.connected ?? false) state?.dispose();
-        state = null;
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port)]);
-      })
-      ..onDisconnect((_) {
-        debugPrint("disconnected");
-        state = null;
-        ref.read(appRouter).replaceAll([const HomeRoute()]);
-      })
-      ..connect();
-  }
-
-  Future<void> setup(Socket socket) async {
-    await ref.read(bookProvider.notifier).fetchBook();
-    await ref.read(appRouter).push(const BookRoute());
-  }
-
-  @override
-  void dispose() {
-    state?.dispose();
-    super.dispose();
-  }
-}
 
 class ConnectPage extends HookConsumerWidget {
   const ConnectPage({required this.hostname, required this.port, super.key});

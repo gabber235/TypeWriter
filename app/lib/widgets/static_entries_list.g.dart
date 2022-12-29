@@ -29,13 +29,14 @@ class _SystemHash {
   }
 }
 
-String $staticEntriesHash() => r'3a31046c9e39e401e27eb1d2242983c30948ebc7';
+String _$staticEntriesHash() => r'3a31046c9e39e401e27eb1d2242983c30948ebc7';
 
 /// See also [staticEntries].
 final staticEntriesProvider = AutoDisposeProvider<List<Entry>>(
   staticEntries,
   name: r'staticEntriesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $staticEntriesHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$staticEntriesHash,
 );
 typedef StaticEntriesRef = AutoDisposeProviderRef<List<Entry>>;

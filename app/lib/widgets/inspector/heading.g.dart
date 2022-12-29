@@ -29,13 +29,13 @@ class _SystemHash {
   }
 }
 
-String $_entryColorHash() => r'96b722d9a3a503c1c9161463f5584bdbc8f0e841';
+String _$_entryColorHash() => r'96b722d9a3a503c1c9161463f5584bdbc8f0e841';
 
 /// See also [_entryColor].
 final _entryColorProvider = AutoDisposeProvider<Color>(
   _entryColor,
   name: r'_entryColorProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_entryColorHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$_entryColorHash,
 );
 typedef _EntryColorRef = AutoDisposeProviderRef<Color>;
