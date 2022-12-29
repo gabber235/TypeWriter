@@ -92,7 +92,7 @@ class _ReloadBookButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
-      icon: const Icon(Icons.refresh),
+      icon: const Icon(Icons.refresh, color: Colors.white70),
       onPressed: () => ref.read(bookProvider.notifier).reload(),
     );
   }

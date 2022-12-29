@@ -24,7 +24,7 @@ class EntryNode extends HookConsumerWidget {
       backgroundColor: adapterEntry.color,
       foregroundColor: Colors.white,
       name: entry.name.formatted,
-      icon: Icon(adapterEntry.icon, size: 18),
+      icon: Icon(adapterEntry.icon, size: 18, color: Colors.white),
     );
   }
 }
@@ -35,7 +35,7 @@ class _EntryNode extends HookConsumerWidget {
     this.backgroundColor = Colors.grey,
     this.foregroundColor = Colors.black,
     this.name = "",
-    this.icon = const Icon(Icons.book),
+    this.icon = const Icon(Icons.book, color: Colors.white),
   });
   final String id;
   final Color backgroundColor;

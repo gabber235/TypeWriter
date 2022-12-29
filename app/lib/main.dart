@@ -49,7 +49,7 @@ class TypeWriterApp extends HookConsumerWidget {
           fontSize: 12,
         ),
         hintStyle: GoogleFonts.jetBrainsMono(
-          color: const Color(0x99FFFFFF),
+          color: brightness == Brightness.light ? const Color(0x99000000) : const Color(0x99FFFFFF),
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
