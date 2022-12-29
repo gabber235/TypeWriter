@@ -16,9 +16,15 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-      - run: flutter pub get
-      - run: flutter test
-      - run: flutter build web --release
+      - name: Get Flutter dependencies
+        run: flutter pub get
+        working-directory: ./app
+      - name: Run tests
+        run: flutter test
+        working-directory: ./app
+      - name: Build web app
+        run: flutter build web --release
+        working-directory: ./app
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
