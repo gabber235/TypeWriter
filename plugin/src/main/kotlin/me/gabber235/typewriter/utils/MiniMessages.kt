@@ -14,7 +14,7 @@ fun String.asMini() = mm.deserialize(this)
 fun CommandSender.sendMessage(message: Component) = adventure.sender(this).sendMessage(message)
 fun CommandSender.sendMini(message: String) = adventure.sender(this).sendMessage(message.asMini())
 
-fun CommandSender.msg(message: String) = sendMini("<red><bold>Gerald »<reset><white> $message")
+fun CommandSender.msg(message: String) = sendMini("<red><bold>Typewriter »<reset><white> $message")
 
 fun Component.plainText(): String = PlainTextComponentSerializer.plainText().serialize(this)
 

@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $fieldValueHash() => r'74267bea390ffc370885f1217c090cf51ac7879b';
+String _$fieldValueHash() => r'74267bea390ffc370885f1217c090cf51ac7879b';
 
 /// See also [fieldValue].
 class FieldValueProvider extends AutoDisposeProvider<dynamic> {
@@ -47,7 +47,7 @@ class FieldValueProvider extends AutoDisposeProvider<dynamic> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $fieldValueHash,
+                  : _$fieldValueHash,
         );
 
   final String path;
@@ -108,17 +108,18 @@ class FieldValueFamily extends Family<dynamic> {
   String? get name => r'fieldValueProvider';
 }
 
-String $editorFiltersHash() => r'7ae0428beea0fd01535dacc5dd26708d219e05ba';
+String _$editorFiltersHash() => r'6a0f68fcc7f0e041ad733eaf75469d6965678df5';
 
 /// See also [editorFilters].
 final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>(
   editorFilters,
   name: r'editorFiltersProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $editorFiltersHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$editorFiltersHash,
 );
 typedef EditorFiltersRef = AutoDisposeProviderRef<List<EditorFilter>>;
-String $pathDisplayNameHash() => r'5a1d7d01eff96745145d531682d9ac4f119f1fff';
+String _$pathDisplayNameHash() => r'5a1d7d01eff96745145d531682d9ac4f119f1fff';
 
 /// See also [pathDisplayName].
 class PathDisplayNameProvider extends AutoDisposeProvider<String> {
@@ -136,7 +137,7 @@ class PathDisplayNameProvider extends AutoDisposeProvider<String> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $pathDisplayNameHash,
+                  : _$pathDisplayNameHash,
         );
 
   final String path;

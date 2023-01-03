@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'adapter.dart';
 
@@ -153,6 +153,7 @@ class _$_Adapter implements _Adapter {
   final List<EntryBlueprint> _entries;
   @override
   List<EntryBlueprint> get entries {
+    if (_entries is EqualUnmodifiableListView) return _entries;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_entries);
   }
@@ -390,6 +391,7 @@ class _$_EntryBlueprint implements _EntryBlueprint {
   @override
   @JsonKey()
   List<String> get tags {
+    if (_tags is EqualUnmodifiableListView) return _tags;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_tags);
   }
@@ -487,6 +489,8 @@ FieldInfo _$FieldInfoFromJson(Map<String, dynamic> json) {
       return MapField.fromJson(json);
     case 'object':
       return ObjectField.fromJson(json);
+    case 'custom':
+      return CustomField.fromJson(json);
 
     default:
       throw CheckedFromJsonException(
@@ -511,6 +515,7 @@ mixin _$FieldInfo {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
+    required TResult Function(String editor, List<Modifier> modifiers) custom,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -524,6 +529,7 @@ mixin _$FieldInfo {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult? Function(String editor, List<Modifier> modifiers)? custom,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -537,6 +543,7 @@ mixin _$FieldInfo {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult Function(String editor, List<Modifier> modifiers)? custom,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -548,6 +555,7 @@ mixin _$FieldInfo {
     required TResult Function(ListField value) list,
     required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
+    required TResult Function(CustomField value) custom,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -558,6 +566,7 @@ mixin _$FieldInfo {
     TResult? Function(ListField value)? list,
     TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
+    TResult? Function(CustomField value)? custom,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -568,6 +577,7 @@ mixin _$FieldInfo {
     TResult Function(ListField value)? list,
     TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
+    TResult Function(CustomField value)? custom,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -656,6 +666,7 @@ class _$_FieldType implements _FieldType {
   @override
   @JsonKey()
   List<Modifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_modifiers);
   }
@@ -703,6 +714,7 @@ class _$_FieldType implements _FieldType {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
+    required TResult Function(String editor, List<Modifier> modifiers) custom,
   }) {
     return $default(modifiers);
   }
@@ -719,6 +731,7 @@ class _$_FieldType implements _FieldType {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult? Function(String editor, List<Modifier> modifiers)? custom,
   }) {
     return $default?.call(modifiers);
   }
@@ -735,6 +748,7 @@ class _$_FieldType implements _FieldType {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult Function(String editor, List<Modifier> modifiers)? custom,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -752,6 +766,7 @@ class _$_FieldType implements _FieldType {
     required TResult Function(ListField value) list,
     required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
+    required TResult Function(CustomField value) custom,
   }) {
     return $default(this);
   }
@@ -765,6 +780,7 @@ class _$_FieldType implements _FieldType {
     TResult? Function(ListField value)? list,
     TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
+    TResult? Function(CustomField value)? custom,
   }) {
     return $default?.call(this);
   }
@@ -778,6 +794,7 @@ class _$_FieldType implements _FieldType {
     TResult Function(ListField value)? list,
     TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
+    TResult Function(CustomField value)? custom,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -865,6 +882,7 @@ class _$PrimitiveField implements PrimitiveField {
   @override
   @JsonKey()
   List<Modifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_modifiers);
   }
@@ -913,6 +931,7 @@ class _$PrimitiveField implements PrimitiveField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
+    required TResult Function(String editor, List<Modifier> modifiers) custom,
   }) {
     return primitive(type, modifiers);
   }
@@ -929,6 +948,7 @@ class _$PrimitiveField implements PrimitiveField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult? Function(String editor, List<Modifier> modifiers)? custom,
   }) {
     return primitive?.call(type, modifiers);
   }
@@ -945,6 +965,7 @@ class _$PrimitiveField implements PrimitiveField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult Function(String editor, List<Modifier> modifiers)? custom,
     required TResult orElse(),
   }) {
     if (primitive != null) {
@@ -962,6 +983,7 @@ class _$PrimitiveField implements PrimitiveField {
     required TResult Function(ListField value) list,
     required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
+    required TResult Function(CustomField value) custom,
   }) {
     return primitive(this);
   }
@@ -975,6 +997,7 @@ class _$PrimitiveField implements PrimitiveField {
     TResult? Function(ListField value)? list,
     TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
+    TResult? Function(CustomField value)? custom,
   }) {
     return primitive?.call(this);
   }
@@ -988,6 +1011,7 @@ class _$PrimitiveField implements PrimitiveField {
     TResult Function(ListField value)? list,
     TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
+    TResult Function(CustomField value)? custom,
     required TResult orElse(),
   }) {
     if (primitive != null) {
@@ -1075,6 +1099,7 @@ class _$EnumField implements EnumField {
   final List<String> _values;
   @override
   List<String> get values {
+    if (_values is EqualUnmodifiableListView) return _values;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_values);
   }
@@ -1083,6 +1108,7 @@ class _$EnumField implements EnumField {
   @override
   @JsonKey()
   List<Modifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_modifiers);
   }
@@ -1133,6 +1159,7 @@ class _$EnumField implements EnumField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
+    required TResult Function(String editor, List<Modifier> modifiers) custom,
   }) {
     return enumField(values, modifiers);
   }
@@ -1149,6 +1176,7 @@ class _$EnumField implements EnumField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult? Function(String editor, List<Modifier> modifiers)? custom,
   }) {
     return enumField?.call(values, modifiers);
   }
@@ -1165,6 +1193,7 @@ class _$EnumField implements EnumField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult Function(String editor, List<Modifier> modifiers)? custom,
     required TResult orElse(),
   }) {
     if (enumField != null) {
@@ -1182,6 +1211,7 @@ class _$EnumField implements EnumField {
     required TResult Function(ListField value) list,
     required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
+    required TResult Function(CustomField value) custom,
   }) {
     return enumField(this);
   }
@@ -1195,6 +1225,7 @@ class _$EnumField implements EnumField {
     TResult? Function(ListField value)? list,
     TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
+    TResult? Function(CustomField value)? custom,
   }) {
     return enumField?.call(this);
   }
@@ -1208,6 +1239,7 @@ class _$EnumField implements EnumField {
     TResult Function(ListField value)? list,
     TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
+    TResult Function(CustomField value)? custom,
     required TResult orElse(),
   }) {
     if (enumField != null) {
@@ -1306,6 +1338,7 @@ class _$ListField implements ListField {
   @override
   @JsonKey()
   List<Modifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_modifiers);
   }
@@ -1354,6 +1387,7 @@ class _$ListField implements ListField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
+    required TResult Function(String editor, List<Modifier> modifiers) custom,
   }) {
     return list(type, modifiers);
   }
@@ -1370,6 +1404,7 @@ class _$ListField implements ListField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult? Function(String editor, List<Modifier> modifiers)? custom,
   }) {
     return list?.call(type, modifiers);
   }
@@ -1386,6 +1421,7 @@ class _$ListField implements ListField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult Function(String editor, List<Modifier> modifiers)? custom,
     required TResult orElse(),
   }) {
     if (list != null) {
@@ -1403,6 +1439,7 @@ class _$ListField implements ListField {
     required TResult Function(ListField value) list,
     required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
+    required TResult Function(CustomField value) custom,
   }) {
     return list(this);
   }
@@ -1416,6 +1453,7 @@ class _$ListField implements ListField {
     TResult? Function(ListField value)? list,
     TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
+    TResult? Function(CustomField value)? custom,
   }) {
     return list?.call(this);
   }
@@ -1429,6 +1467,7 @@ class _$ListField implements ListField {
     TResult Function(ListField value)? list,
     TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
+    TResult Function(CustomField value)? custom,
     required TResult orElse(),
   }) {
     if (list != null) {
@@ -1543,6 +1582,7 @@ class _$MapField implements MapField {
   @override
   @JsonKey()
   List<Modifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_modifiers);
   }
@@ -1592,6 +1632,7 @@ class _$MapField implements MapField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
+    required TResult Function(String editor, List<Modifier> modifiers) custom,
   }) {
     return map(key, value, modifiers);
   }
@@ -1608,6 +1649,7 @@ class _$MapField implements MapField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult? Function(String editor, List<Modifier> modifiers)? custom,
   }) {
     return map?.call(key, value, modifiers);
   }
@@ -1624,6 +1666,7 @@ class _$MapField implements MapField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult Function(String editor, List<Modifier> modifiers)? custom,
     required TResult orElse(),
   }) {
     if (map != null) {
@@ -1641,6 +1684,7 @@ class _$MapField implements MapField {
     required TResult Function(ListField value) list,
     required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
+    required TResult Function(CustomField value) custom,
   }) {
     return map(this);
   }
@@ -1654,6 +1698,7 @@ class _$MapField implements MapField {
     TResult? Function(ListField value)? list,
     TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
+    TResult? Function(CustomField value)? custom,
   }) {
     return map?.call(this);
   }
@@ -1667,6 +1712,7 @@ class _$MapField implements MapField {
     TResult Function(ListField value)? list,
     TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
+    TResult Function(CustomField value)? custom,
     required TResult orElse(),
   }) {
     if (map != null) {
@@ -1756,6 +1802,7 @@ class _$ObjectField implements ObjectField {
   final Map<String, FieldInfo> _fields;
   @override
   Map<String, FieldInfo> get fields {
+    if (_fields is EqualUnmodifiableMapView) return _fields;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_fields);
   }
@@ -1764,6 +1811,7 @@ class _$ObjectField implements ObjectField {
   @override
   @JsonKey()
   List<Modifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_modifiers);
   }
@@ -1814,6 +1862,7 @@ class _$ObjectField implements ObjectField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
+    required TResult Function(String editor, List<Modifier> modifiers) custom,
   }) {
     return object(fields, modifiers);
   }
@@ -1830,6 +1879,7 @@ class _$ObjectField implements ObjectField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult? Function(String editor, List<Modifier> modifiers)? custom,
   }) {
     return object?.call(fields, modifiers);
   }
@@ -1846,6 +1896,7 @@ class _$ObjectField implements ObjectField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
+    TResult Function(String editor, List<Modifier> modifiers)? custom,
     required TResult orElse(),
   }) {
     if (object != null) {
@@ -1863,6 +1914,7 @@ class _$ObjectField implements ObjectField {
     required TResult Function(ListField value) list,
     required TResult Function(MapField value) map,
     required TResult Function(ObjectField value) object,
+    required TResult Function(CustomField value) custom,
   }) {
     return object(this);
   }
@@ -1876,6 +1928,7 @@ class _$ObjectField implements ObjectField {
     TResult? Function(ListField value)? list,
     TResult? Function(MapField value)? map,
     TResult? Function(ObjectField value)? object,
+    TResult? Function(CustomField value)? custom,
   }) {
     return object?.call(this);
   }
@@ -1889,6 +1942,7 @@ class _$ObjectField implements ObjectField {
     TResult Function(ListField value)? list,
     TResult Function(MapField value)? map,
     TResult Function(ObjectField value)? object,
+    TResult Function(CustomField value)? custom,
     required TResult orElse(),
   }) {
     if (object != null) {
@@ -1919,6 +1973,226 @@ abstract class ObjectField implements FieldInfo {
   @override
   @JsonKey(ignore: true)
   _$$ObjectFieldCopyWith<_$ObjectField> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$CustomFieldCopyWith<$Res>
+    implements $FieldInfoCopyWith<$Res> {
+  factory _$$CustomFieldCopyWith(
+          _$CustomField value, $Res Function(_$CustomField) then) =
+      __$$CustomFieldCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String editor, List<Modifier> modifiers});
+}
+
+/// @nodoc
+class __$$CustomFieldCopyWithImpl<$Res>
+    extends _$FieldInfoCopyWithImpl<$Res, _$CustomField>
+    implements _$$CustomFieldCopyWith<$Res> {
+  __$$CustomFieldCopyWithImpl(
+      _$CustomField _value, $Res Function(_$CustomField) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? editor = null,
+    Object? modifiers = null,
+  }) {
+    return _then(_$CustomField(
+      editor: null == editor
+          ? _value.editor
+          : editor // ignore: cast_nullable_to_non_nullable
+              as String,
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$CustomField implements CustomField {
+  const _$CustomField(
+      {required this.editor,
+      final List<Modifier> modifiers = const [],
+      final String? $type})
+      : _modifiers = modifiers,
+        $type = $type ?? 'custom';
+
+  factory _$CustomField.fromJson(Map<String, dynamic> json) =>
+      _$$CustomFieldFromJson(json);
+
+  @override
+  final String editor;
+  final List<Modifier> _modifiers;
+  @override
+  @JsonKey()
+  List<Modifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
+
+  @JsonKey(name: 'kind')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'FieldInfo.custom(editor: $editor, modifiers: $modifiers)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$CustomField &&
+            (identical(other.editor, editor) || other.editor == editor) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, editor, const DeepCollectionEquality().hash(_modifiers));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CustomFieldCopyWith<_$CustomField> get copyWith =>
+      __$$CustomFieldCopyWithImpl<_$CustomField>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(List<Modifier> modifiers) $default, {
+    required TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)
+        primitive,
+    required TResult Function(List<String> values, List<Modifier> modifiers)
+        enumField,
+    required TResult Function(FieldInfo type, List<Modifier> modifiers) list,
+    required TResult Function(
+            FieldInfo key, FieldInfo value, List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, FieldInfo> fields, List<Modifier> modifiers)
+        object,
+    required TResult Function(String editor, List<Modifier> modifiers) custom,
+  }) {
+    return custom(editor, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(List<Modifier> modifiers)? $default, {
+    TResult? Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult? Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult? Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
+    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+  }) {
+    return custom?.call(editor, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(List<Modifier> modifiers)? $default, {
+    TResult Function(PrimitiveFieldType type, List<Modifier> modifiers)?
+        primitive,
+    TResult Function(List<String> values, List<Modifier> modifiers)? enumField,
+    TResult Function(FieldInfo type, List<Modifier> modifiers)? list,
+    TResult Function(FieldInfo key, FieldInfo value, List<Modifier> modifiers)?
+        map,
+    TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
+        object,
+    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    required TResult orElse(),
+  }) {
+    if (custom != null) {
+      return custom(editor, modifiers);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_FieldType value) $default, {
+    required TResult Function(PrimitiveField value) primitive,
+    required TResult Function(EnumField value) enumField,
+    required TResult Function(ListField value) list,
+    required TResult Function(MapField value) map,
+    required TResult Function(ObjectField value) object,
+    required TResult Function(CustomField value) custom,
+  }) {
+    return custom(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_FieldType value)? $default, {
+    TResult? Function(PrimitiveField value)? primitive,
+    TResult? Function(EnumField value)? enumField,
+    TResult? Function(ListField value)? list,
+    TResult? Function(MapField value)? map,
+    TResult? Function(ObjectField value)? object,
+    TResult? Function(CustomField value)? custom,
+  }) {
+    return custom?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_FieldType value)? $default, {
+    TResult Function(PrimitiveField value)? primitive,
+    TResult Function(EnumField value)? enumField,
+    TResult Function(ListField value)? list,
+    TResult Function(MapField value)? map,
+    TResult Function(ObjectField value)? object,
+    TResult Function(CustomField value)? custom,
+    required TResult orElse(),
+  }) {
+    if (custom != null) {
+      return custom(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$CustomFieldToJson(
+      this,
+    );
+  }
+}
+
+abstract class CustomField implements FieldInfo {
+  const factory CustomField(
+      {required final String editor,
+      final List<Modifier> modifiers}) = _$CustomField;
+
+  factory CustomField.fromJson(Map<String, dynamic> json) =
+      _$CustomField.fromJson;
+
+  String get editor;
+  @override
+  List<Modifier> get modifiers;
+  @override
+  @JsonKey(ignore: true)
+  _$$CustomFieldCopyWith<_$CustomField> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1959,14 +2233,14 @@ class _$ModifierCopyWithImpl<$Res, $Val extends Modifier>
   @override
   $Res call({
     Object? name = null,
-    Object? data = null,
+    Object? data = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      data: null == data
+      data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as dynamic,
@@ -1996,14 +2270,14 @@ class __$$_ModifierCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = null,
-    Object? data = null,
+    Object? data = freezed,
   }) {
     return _then(_$_Modifier(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      data: null == data
+      data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as dynamic,

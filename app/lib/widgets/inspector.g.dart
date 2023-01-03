@@ -29,17 +29,18 @@ class _SystemHash {
   }
 }
 
-String $selectedEntryHash() => r'c9bab242f9d119edd93f0a3994a5fe81bbe5f3e8';
+String _$selectedEntryHash() => r'c9bab242f9d119edd93f0a3994a5fe81bbe5f3e8';
 
 /// See also [selectedEntry].
 final selectedEntryProvider = AutoDisposeProvider<Entry?>(
   selectedEntry,
   name: r'selectedEntryProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $selectedEntryHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$selectedEntryHash,
 );
 typedef SelectedEntryRef = AutoDisposeProviderRef<Entry?>;
-String $entryDefinitionHash() => r'be97bb1135227dd2591eed39856d37a27abedd7a';
+String _$entryDefinitionHash() => r'be97bb1135227dd2591eed39856d37a27abedd7a';
 
 /// See also [entryDefinition].
 final entryDefinitionProvider = AutoDisposeProvider<EntryDefinition?>(
@@ -47,6 +48,6 @@ final entryDefinitionProvider = AutoDisposeProvider<EntryDefinition?>(
   name: r'entryDefinitionProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $entryDefinitionHash,
+      : _$entryDefinitionHash,
 );
 typedef EntryDefinitionRef = AutoDisposeProviderRef<EntryDefinition?>;

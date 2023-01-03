@@ -18,7 +18,7 @@ class NpcInteractEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
-	@field:StaticEntryIdentifier(Npc::class)
+	@StaticEntryIdentifier(Npc::class)
 	val identifier: String = "",
 ) : EventEntry
 

@@ -11,8 +11,8 @@ group = "me.gabber235"
 version = "0.0.1"
 
 repositories {
-	maven("https://jitpack.io")
 	mavenCentral()
+	maven("https://jitpack.io")
 	maven("https://repo.dmulloy2.net/repository/public/")
 	maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 	maven("https://oss.sonatype.org/content/groups/public/")
@@ -20,12 +20,13 @@ repositories {
 	maven("https://repo.codemc.io/repository/maven-snapshots/")
 	maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 	maven("https://repo.opencollab.dev/maven-snapshots/")
+	maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
 }
 
 dependencies {
 	implementation(kotlin("stdlib"))
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.20")
-	compileOnly("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
+	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 	implementation("com.github.dyam0:LirandAPI:26f60a4baa")
@@ -40,6 +41,9 @@ dependencies {
 	compileOnly("com.google.code.gson:gson:2.10")
 	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
+
+	// Client communication
+	implementation("com.corundumstudio.socketio:netty-socketio:1.7.19")
 
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
@@ -64,7 +68,7 @@ tasks.processResources {
 }
 
 task<ShadowJar>("buildAndMove") {
-	dependsOn("clean", "shadowJar")
+	dependsOn("shadowJar")
 
 	group = "build"
 	description = "Builds the jar and moves it to the server folder"

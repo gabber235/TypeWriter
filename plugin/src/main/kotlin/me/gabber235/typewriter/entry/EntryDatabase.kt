@@ -126,7 +126,7 @@ object EntryDatabase {
 private fun JsonReader.parsePage(gson: Gson): Page =
 	gson.fromJson(this, Page::class.java)
 
-private class Page(
+class Page(
 	val entries: List<Entry>,
 )
 

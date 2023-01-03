@@ -2,7 +2,10 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import 'package:typewriter/utils/extensions.dart';
+import 'package:typewriter/widgets/inspector.dart';
 import "package:typewriter/widgets/inspector/editors.dart";
+import 'package:typewriter/widgets/writers.dart';
 
 class FieldEditor extends HookConsumerWidget {
   const FieldEditor({
@@ -15,11 +18,21 @@ class FieldEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedEntryId = ref.watch(selectedEntryIdProvider);
     final filters = ref.watch(editorFiltersProvider);
 
     final editor = filters.firstWhereOrNull((filter) => filter.canEdit(type))?.build(path, type);
 
-    return editor ?? _NoEditorFound(path: path);
+    return WritersIndicator(
+      filter: (writer) {
+        if (writer.entryId.isNullOrEmpty) return false;
+        if (writer.entryId != selectedEntryId) return false;
+        if (writer.field.isNullOrEmpty) return false;
+        return writer.field == path;
+      },
+      shift: (_) => const Offset(15, 0),
+      child: editor ?? _NoEditorFound(path: path),
+    );
   }
 }
 

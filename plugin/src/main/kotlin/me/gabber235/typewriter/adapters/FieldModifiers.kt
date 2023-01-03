@@ -73,6 +73,7 @@ private val computers: List<ModifierComputer> by lazy {
 		StaticSelectorModifierComputer,
 		SnakeCaseModifierComputer,
 		MultiLineModifierComputer,
+		MaterialPropertiesModifierComputer,
 	)
 }
 

@@ -1,9 +1,11 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import 'package:flutter_hooks/flutter_hooks.dart';
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/widgets/inspector.dart";
+import 'package:typewriter/widgets/inspector/current_editing_field.dart';
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/formatted_text_field.dart";
 
@@ -27,8 +29,11 @@ class IntegerEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final focus = useFocusNode();
+    useFocusedBasedCurrentEditingField(focus, ref, path);
     final value = ref.watch(fieldValueProvider(path, ""));
     return FormattedTextField(
+      focus: focus,
       icon: FontAwesomeIcons.hashtag,
       hintText: "Enter a ${field.type.name}",
       text: "$value",

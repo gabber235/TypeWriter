@@ -16,8 +16,9 @@ import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.facts.*
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.interaction.chatHistory
-import me.gabber235.typewriter.utils.msg
-import me.gabber235.typewriter.utils.sendMini
+import me.gabber235.typewriter.ui.CommunicationHandler
+import me.gabber235.typewriter.utils.*
+import net.kyori.adventure.inventory.Book
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -25,7 +26,6 @@ import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
 
 fun Plugin.typeWriterCommand() = command("typewriter") {
-	requiresPermissions("typewriter.use")
 	alias("tw")
 
 	reloadCommands()
@@ -35,10 +35,13 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 	eventsCommands()
 
 	clearChatCommand()
+
+	connectCommand()
 }
 
 private fun LiteralDSLBuilder.reloadCommands() {
 	literal("reload") {
+		requiresPermissions("typewriter.reload")
 		executes {
 			source.msg("Reloading configuration...")
 			EntryDatabase.loadEntries()
@@ -49,6 +52,7 @@ private fun LiteralDSLBuilder.reloadCommands() {
 
 private fun LiteralDSLBuilder.factsCommands() {
 	literal("facts") {
+		requiresPermissions("typewriter.facts")
 		fun Player.listFacts(source: CommandSender) {
 			val facts = facts
 			if (facts.isEmpty()) {
@@ -138,6 +142,7 @@ private fun LiteralDSLBuilder.factsCommands() {
 
 private fun LiteralDSLBuilder.eventsCommands() {
 	literal("event") {
+		requiresPermissions("typewriter.event")
 		literal("run") {
 			argument("event", EventType) { event ->
 				executes {
@@ -151,11 +156,41 @@ private fun LiteralDSLBuilder.eventsCommands() {
 
 private fun LiteralDSLBuilder.clearChatCommand() {
 	literal("clearChat") {
+		requiresPermissions("typewriter.clearChat")
 		executesPlayer {
 			source.chatHistory.let {
 				it.clear()
 				it.resendMessages(source)
 			}
+		}
+	}
+}
+
+private fun LiteralDSLBuilder.connectCommand() {
+	literal("connect") {
+		requiresPermissions("typewriter.connect")
+		executesConsole {
+			val url = CommunicationHandler.generateUrl(playerId = null)
+			source.msg("Connect to<blue> $url </blue>to start the connection.")
+		}
+		executesPlayer {
+			val url = CommunicationHandler.generateUrl(source.uniqueId)
+
+			val bookTitle = "<blue>Connect to the server</blue>".asMini()
+			val bookAuthor = "<blue>Typewriter</blue>".asMini()
+
+			val bookPage = """
+				|<blue><bold>Connect to Panel</bold></blue>
+				|
+				|<#3e4975>Click on the link below to connect to the panel. Once you are connected, you can start writing.</#3e4975>
+				|
+				|<hover:show_text:'<gray>Click to open the link'><click:open_url:'$url'><blue>[Link]</blue></click></hover>
+				|
+				|<gray><i>Because of security reasons, this link will expire in 5 minutes.</i></gray>
+			""".trimMargin().asMini()
+
+			val book = Book.book(bookTitle, bookAuthor, bookPage)
+			source.openBook(book)
 		}
 	}
 }

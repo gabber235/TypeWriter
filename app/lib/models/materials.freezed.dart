@@ -1,0 +1,199 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'materials.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+
+MinecraftMaterial _$MinecraftMaterialFromJson(Map<String, dynamic> json) {
+  return _MinecraftMaterial.fromJson(json);
+}
+
+/// @nodoc
+mixin _$MinecraftMaterial {
+  String get name => throw _privateConstructorUsedError;
+  List<MaterialProperty> get properties => throw _privateConstructorUsedError;
+  String get icon => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $MinecraftMaterialCopyWith<MinecraftMaterial> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $MinecraftMaterialCopyWith<$Res> {
+  factory $MinecraftMaterialCopyWith(
+          MinecraftMaterial value, $Res Function(MinecraftMaterial) then) =
+      _$MinecraftMaterialCopyWithImpl<$Res, MinecraftMaterial>;
+  @useResult
+  $Res call({String name, List<MaterialProperty> properties, String icon});
+}
+
+/// @nodoc
+class _$MinecraftMaterialCopyWithImpl<$Res, $Val extends MinecraftMaterial>
+    implements $MinecraftMaterialCopyWith<$Res> {
+  _$MinecraftMaterialCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? properties = null,
+    Object? icon = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      properties: null == properties
+          ? _value.properties
+          : properties // ignore: cast_nullable_to_non_nullable
+              as List<MaterialProperty>,
+      icon: null == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_MinecraftMaterialCopyWith<$Res>
+    implements $MinecraftMaterialCopyWith<$Res> {
+  factory _$$_MinecraftMaterialCopyWith(_$_MinecraftMaterial value,
+          $Res Function(_$_MinecraftMaterial) then) =
+      __$$_MinecraftMaterialCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, List<MaterialProperty> properties, String icon});
+}
+
+/// @nodoc
+class __$$_MinecraftMaterialCopyWithImpl<$Res>
+    extends _$MinecraftMaterialCopyWithImpl<$Res, _$_MinecraftMaterial>
+    implements _$$_MinecraftMaterialCopyWith<$Res> {
+  __$$_MinecraftMaterialCopyWithImpl(
+      _$_MinecraftMaterial _value, $Res Function(_$_MinecraftMaterial) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? properties = null,
+    Object? icon = null,
+  }) {
+    return _then(_$_MinecraftMaterial(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      properties: null == properties
+          ? _value._properties
+          : properties // ignore: cast_nullable_to_non_nullable
+              as List<MaterialProperty>,
+      icon: null == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_MinecraftMaterial implements _MinecraftMaterial {
+  const _$_MinecraftMaterial(
+      {required this.name,
+      required final List<MaterialProperty> properties,
+      required this.icon})
+      : _properties = properties;
+
+  factory _$_MinecraftMaterial.fromJson(Map<String, dynamic> json) =>
+      _$$_MinecraftMaterialFromJson(json);
+
+  @override
+  final String name;
+  final List<MaterialProperty> _properties;
+  @override
+  List<MaterialProperty> get properties {
+    if (_properties is EqualUnmodifiableListView) return _properties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_properties);
+  }
+
+  @override
+  final String icon;
+
+  @override
+  String toString() {
+    return 'MinecraftMaterial(name: $name, properties: $properties, icon: $icon)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_MinecraftMaterial &&
+            (identical(other.name, name) || other.name == name) &&
+            const DeepCollectionEquality()
+                .equals(other._properties, _properties) &&
+            (identical(other.icon, icon) || other.icon == icon));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, name,
+      const DeepCollectionEquality().hash(_properties), icon);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_MinecraftMaterialCopyWith<_$_MinecraftMaterial> get copyWith =>
+      __$$_MinecraftMaterialCopyWithImpl<_$_MinecraftMaterial>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_MinecraftMaterialToJson(
+      this,
+    );
+  }
+}
+
+abstract class _MinecraftMaterial implements MinecraftMaterial {
+  const factory _MinecraftMaterial(
+      {required final String name,
+      required final List<MaterialProperty> properties,
+      required final String icon}) = _$_MinecraftMaterial;
+
+  factory _MinecraftMaterial.fromJson(Map<String, dynamic> json) =
+      _$_MinecraftMaterial.fromJson;
+
+  @override
+  String get name;
+  @override
+  List<MaterialProperty> get properties;
+  @override
+  String get icon;
+  @override
+  @JsonKey(ignore: true)
+  _$$_MinecraftMaterialCopyWith<_$_MinecraftMaterial> get copyWith =>
+      throw _privateConstructorUsedError;
+}

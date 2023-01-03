@@ -1,5 +1,6 @@
-import "dart:io" show Platform;
+import "dart:math";
 
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
@@ -31,7 +32,7 @@ TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
       (oldValue, newValue) => newValue.copyWith(text: newValue.text.toLowerCase().replaceAll(" ", "_")),
     );
 
-bool get isApple => Platform.isIOS || Platform.isMacOS;
+bool get isApple => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS;
 
 /// A [SingleActivator] that automatically maps the [control] key to the [meta] key for apple platforms.
 class SmartSingleActivator extends SingleActivator {
@@ -42,4 +43,23 @@ class SmartSingleActivator extends SingleActivator {
     super.shift,
     super.includeRepeats,
   }) : super(control: control && !isApple, meta: control && isApple);
+}
+
+extension RandomColor on String {
+  Color get randomColor {
+    final random = Random(hashCode);
+
+    // Let the hue range from 0 to 360 degrees, with a fixed saturation and value.
+    final hue = random.nextInt(360);
+    final saturation = 0.5 + random.nextDouble() * 0.25;
+    final value = 0.8 + random.nextDouble() * 0.2;
+
+    final hsv = HSVColor.fromAHSV(1.0, hue.toDouble(), saturation, value);
+    return hsv.toColor();
+  }
+}
+
+extension StringExt on String? {
+  bool get isNullOrEmpty => this?.isEmpty ?? true;
+  bool get hasValue => !isNullOrEmpty;
 }

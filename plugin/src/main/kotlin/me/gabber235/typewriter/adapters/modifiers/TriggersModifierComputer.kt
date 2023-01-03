@@ -5,7 +5,7 @@ import me.gabber235.typewriter.adapters.*
 import me.gabber235.typewriter.adapters.FieldModifier.DynamicModifier
 import me.gabber235.typewriter.adapters.FieldModifier.InnerListModifier
 
-@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 annotation class Triggers(val isReceiver: Boolean = false)
 
 object TriggersModifierComputer : StaticModifierComputer<Triggers> {
@@ -24,7 +24,7 @@ object TriggersModifierComputer : StaticModifierComputer<Triggers> {
 			plugin.logger.warning("Triggers annotation can only be used on lists of strings")
 			return null
 		}
-		
+
 		return InnerListModifier(DynamicModifier("trigger", annotation.isReceiver))
 	}
 }

@@ -22,6 +22,7 @@ private val gson =
 			.registerSubtype(ListField::class.java, "list")
 			.registerSubtype(MapField::class.java, "map")
 			.registerSubtype(ObjectField::class.java, "object")
+			.registerSubtype(CustomField::class.java, "custom")
 	).enableComplexMapKeySerialization()
 		.create()
 

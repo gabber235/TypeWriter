@@ -157,6 +157,23 @@ Map<String, dynamic> _$$ObjectFieldToJson(_$ObjectField instance) =>
       'kind': instance.$type,
     };
 
+_$CustomField _$$CustomFieldFromJson(Map<String, dynamic> json) =>
+    _$CustomField(
+      editor: json['editor'] as String,
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      $type: json['kind'] as String?,
+    );
+
+Map<String, dynamic> _$$CustomFieldToJson(_$CustomField instance) =>
+    <String, dynamic>{
+      'editor': instance.editor,
+      'modifiers': instance.modifiers,
+      'kind': instance.$type,
+    };
+
 _$_Modifier _$$_ModifierFromJson(Map<String, dynamic> json) => _$_Modifier(
       name: json['name'] as String,
       data: json['data'],
@@ -195,7 +212,7 @@ class _SystemHash {
   }
 }
 
-String $adaptersHash() => r'b55e4dd5d1802c4e21359d057a765443bb896bd3';
+String _$adaptersHash() => r'b55e4dd5d1802c4e21359d057a765443bb896bd3';
 
 /// A generated provider to fetch and cache a list of [Adapter]s.
 ///
@@ -204,10 +221,10 @@ final adaptersProvider = AutoDisposeProvider<List<Adapter>>(
   adapters,
   name: r'adaptersProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $adaptersHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$adaptersHash,
 );
 typedef AdaptersRef = AutoDisposeProviderRef<List<Adapter>>;
-String $entryBlueprintsHash() => r'0e9019f7b17aa6dbeaed59a83c58fa1f1c0a52f6';
+String _$entryBlueprintsHash() => r'0e9019f7b17aa6dbeaed59a83c58fa1f1c0a52f6';
 
 /// A generated provider to fetch and cache a list of all the [EntryBlueprint]s.
 ///
@@ -217,10 +234,10 @@ final entryBlueprintsProvider = AutoDisposeProvider<List<EntryBlueprint>>(
   name: r'entryBlueprintsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $entryBlueprintsHash,
+      : _$entryBlueprintsHash,
 );
 typedef EntryBlueprintsRef = AutoDisposeProviderRef<List<EntryBlueprint>>;
-String $entryBlueprintHash() => r'd49a1e5e458e22493e802271db7ba55fffb887bc';
+String _$entryBlueprintHash() => r'd49a1e5e458e22493e802271db7ba55fffb887bc';
 
 /// A generated provider to fetch and cache a specific [EntryBlueprint] by its [name].
 ///
@@ -238,7 +255,7 @@ class EntryBlueprintProvider extends AutoDisposeProvider<EntryBlueprint?> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $entryBlueprintHash,
+                  : _$entryBlueprintHash,
         );
 
   final String name;
@@ -294,7 +311,7 @@ class EntryBlueprintFamily extends Family<EntryBlueprint?> {
   String? get name => r'entryBlueprintProvider';
 }
 
-String $entryTagsHash() => r'41b7964e296b646f18ac537db2579bf0dce7ab2a';
+String _$entryTagsHash() => r'41b7964e296b646f18ac537db2579bf0dce7ab2a';
 
 /// See also [entryTags].
 class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
@@ -310,7 +327,7 @@ class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $entryTagsHash,
+                  : _$entryTagsHash,
         );
 
   final String name;
@@ -364,7 +381,7 @@ class EntryTagsFamily extends Family<List<String>> {
   String? get name => r'entryTagsProvider';
 }
 
-String $fieldModifiersHash() => r'ad6700316538a1e9a2dfba24f4f124f68cf845c6';
+String _$fieldModifiersHash() => r'ad6700316538a1e9a2dfba24f4f124f68cf845c6';
 
 /// See also [fieldModifiers].
 class FieldModifiersProvider
@@ -383,7 +400,7 @@ class FieldModifiersProvider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $fieldModifiersHash,
+                  : _$fieldModifiersHash,
         );
 
   final String blueprint;
@@ -444,7 +461,7 @@ class FieldModifiersFamily extends Family<Map<String, Modifier>> {
   String? get name => r'fieldModifiersProvider';
 }
 
-String $modifierPathsHash() => r'da7347b63deeccd651514c7b338113d7d56424a5';
+String _$modifierPathsHash() => r'da7347b63deeccd651514c7b338113d7d56424a5';
 
 /// See also [modifierPaths].
 class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
@@ -462,7 +479,7 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $modifierPathsHash,
+                  : _$modifierPathsHash,
         );
 
   final String blueprint;

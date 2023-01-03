@@ -1,24 +1,25 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
-import "package:typewriter/models/file_path.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import "package:typewriter/app_router.dart";
+import "package:typewriter/hooks/delayed_execution.dart";
+import "package:typewriter/main.dart";
+import "package:typewriter/widgets/copyable_text.dart";
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
 
-  Future<void> _openSelector(WidgetRef ref, ValueNotifier<bool> openedSelector) async {
-    if (openedSelector.value) return;
-    openedSelector.value = true;
-    await pickAndLoadBook(ref);
-    openedSelector.value = false;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final openedSelector = useState(false);
+    // If we are in debug mode we cant use the server command as we debug in the application rather than the web version
+    // Hence we assume that we want to connect to localhost if we are in debug mode.
+    // Normally we should never use an if statement before a hook. Only this will get compiled out in release mode.
+    if (kDebugMode) {
+      useDelayedExecution(() => ref.read(appRouter).replaceAll([ConnectRoute(hostname: "localhost", port: 9092)]));
+    }
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -32,12 +33,12 @@ class HomePage extends HookConsumerWidget {
             "Your journey starts here",
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 24),
-          FilledButton.icon(
-            onPressed: () => _openSelector(ref, openedSelector),
-            label: const Text("Open Typewriter Directory"),
-            icon: const Icon(FontAwesomeIcons.folderOpen),
+          Text(
+            "Run the following command on your server to start editing",
+            style: GoogleFonts.jetBrainsMono(fontSize: 20, fontWeight: FontWeight.w100, color: Colors.grey),
           ),
+          const SizedBox(height: 24),
+          const CopyableText(text: "/typewriter connect"),
           const Spacer(),
         ],
       ),

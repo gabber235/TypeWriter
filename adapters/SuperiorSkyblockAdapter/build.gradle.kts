@@ -16,6 +16,7 @@ repositories {
 	maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 	maven("https://oss.sonatype.org/content/groups/public/")
 	maven("https://libraries.minecraft.net/")
+	maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
 	maven("https://repo.codemc.io/repository/maven-snapshots/")
 	maven("https://repo.opencollab.dev/maven-snapshots/")
 
@@ -24,7 +25,7 @@ repositories {
 }
 
 dependencies {
-	compileOnly("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
+	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
 	compileOnly("me.gabber235:typewriter:0.0.1")
 
@@ -50,7 +51,7 @@ tasks.withType<KotlinCompile> {
 }
 
 task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildAndMove") {
-	dependsOn("clean", "shadowJar")
+	dependsOn("shadowJar")
 
 	group = "build"
 	description = "Builds the jar and moves it to the server folder"

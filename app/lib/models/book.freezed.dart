@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'book.dart';
 
@@ -17,7 +17,6 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$Book {
   String get name => throw _privateConstructorUsedError;
-  String get path => throw _privateConstructorUsedError;
   List<Adapter> get adapters => throw _privateConstructorUsedError;
   List<Page> get pages => throw _privateConstructorUsedError;
 
@@ -30,8 +29,7 @@ abstract class $BookCopyWith<$Res> {
   factory $BookCopyWith(Book value, $Res Function(Book) then) =
       _$BookCopyWithImpl<$Res, Book>;
   @useResult
-  $Res call(
-      {String name, String path, List<Adapter> adapters, List<Page> pages});
+  $Res call({String name, List<Adapter> adapters, List<Page> pages});
 }
 
 /// @nodoc
@@ -48,7 +46,6 @@ class _$BookCopyWithImpl<$Res, $Val extends Book>
   @override
   $Res call({
     Object? name = null,
-    Object? path = null,
     Object? adapters = null,
     Object? pages = null,
   }) {
@@ -56,10 +53,6 @@ class _$BookCopyWithImpl<$Res, $Val extends Book>
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      path: null == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
               as String,
       adapters: null == adapters
           ? _value.adapters
@@ -79,8 +72,7 @@ abstract class _$$_BookCopyWith<$Res> implements $BookCopyWith<$Res> {
       __$$_BookCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String name, String path, List<Adapter> adapters, List<Page> pages});
+  $Res call({String name, List<Adapter> adapters, List<Page> pages});
 }
 
 /// @nodoc
@@ -93,7 +85,6 @@ class __$$_BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res, _$_Book>
   @override
   $Res call({
     Object? name = null,
-    Object? path = null,
     Object? adapters = null,
     Object? pages = null,
   }) {
@@ -101,10 +92,6 @@ class __$$_BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res, _$_Book>
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      path: null == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
               as String,
       adapters: null == adapters
           ? _value._adapters
@@ -123,7 +110,6 @@ class __$$_BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res, _$_Book>
 class _$_Book implements _Book {
   const _$_Book(
       {required this.name,
-      required this.path,
       required final List<Adapter> adapters,
       required final List<Page> pages})
       : _adapters = adapters,
@@ -131,11 +117,10 @@ class _$_Book implements _Book {
 
   @override
   final String name;
-  @override
-  final String path;
   final List<Adapter> _adapters;
   @override
   List<Adapter> get adapters {
+    if (_adapters is EqualUnmodifiableListView) return _adapters;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_adapters);
   }
@@ -143,13 +128,14 @@ class _$_Book implements _Book {
   final List<Page> _pages;
   @override
   List<Page> get pages {
+    if (_pages is EqualUnmodifiableListView) return _pages;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_pages);
   }
 
   @override
   String toString() {
-    return 'Book(name: $name, path: $path, adapters: $adapters, pages: $pages)';
+    return 'Book(name: $name, adapters: $adapters, pages: $pages)';
   }
 
   @override
@@ -158,7 +144,6 @@ class _$_Book implements _Book {
         (other.runtimeType == runtimeType &&
             other is _$_Book &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.path, path) || other.path == path) &&
             const DeepCollectionEquality().equals(other._adapters, _adapters) &&
             const DeepCollectionEquality().equals(other._pages, _pages));
   }
@@ -167,7 +152,6 @@ class _$_Book implements _Book {
   int get hashCode => Object.hash(
       runtimeType,
       name,
-      path,
       const DeepCollectionEquality().hash(_adapters),
       const DeepCollectionEquality().hash(_pages));
 
@@ -181,14 +165,11 @@ class _$_Book implements _Book {
 abstract class _Book implements Book {
   const factory _Book(
       {required final String name,
-      required final String path,
       required final List<Adapter> adapters,
       required final List<Page> pages}) = _$_Book;
 
   @override
   String get name;
-  @override
-  String get path;
   @override
   List<Adapter> get adapters;
   @override

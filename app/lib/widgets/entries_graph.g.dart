@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $graphableEntriesHash() => r'4ca3712feee7d5ce0a1fc89332a04a993a2fed2f';
+String _$graphableEntriesHash() => r'4ca3712feee7d5ce0a1fc89332a04a993a2fed2f';
 
 /// See also [graphableEntries].
 final graphableEntriesProvider = AutoDisposeProvider<List<Entry>>(
@@ -37,10 +37,10 @@ final graphableEntriesProvider = AutoDisposeProvider<List<Entry>>(
   name: r'graphableEntriesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $graphableEntriesHash,
+      : _$graphableEntriesHash,
 );
 typedef GraphableEntriesRef = AutoDisposeProviderRef<List<Entry>>;
-String $triggerPathsHash() => r'fe9fc27eaf50cce29fb0c25957206160dd9f66d0';
+String _$triggerPathsHash() => r'fe9fc27eaf50cce29fb0c25957206160dd9f66d0';
 
 /// See also [triggerPaths].
 class TriggerPathsProvider extends AutoDisposeProvider<List<String>> {
@@ -58,7 +58,7 @@ class TriggerPathsProvider extends AutoDisposeProvider<List<String>> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $triggerPathsHash,
+                  : _$triggerPathsHash,
         );
 
   final String type;
@@ -119,13 +119,13 @@ class TriggerPathsFamily extends Family<List<String>> {
   String? get name => r'triggerPathsProvider';
 }
 
-String $graphHash() => r'7157f428dd428ec78e90d051b83fa1b317ed8999';
+String _$graphHash() => r'a99712df689e8750a5cd4c1bf512e0284e2063bd';
 
 /// See also [graph].
 final graphProvider = AutoDisposeProvider<Graph>(
   graph,
   name: r'graphProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $graphHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$graphHash,
 );
 typedef GraphRef = AutoDisposeProviderRef<Graph>;

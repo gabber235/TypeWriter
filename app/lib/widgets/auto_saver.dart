@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
-import "package:typewriter/models/auto_saver.dart";
 
 class AutoSaver extends HookConsumerWidget {
   const AutoSaver({
@@ -11,16 +10,7 @@ class AutoSaver extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final saver = ref.watch(autoSaverProvider);
-
-    return saver.when(
-      saving: _Saving.new,
-      error: (error) => Text(
-        "Unable to save: $error",
-        style: const TextStyle(color: Colors.red),
-      ),
-      saved: (time) => _Success(time: time),
-    );
+    return Container();
   }
 }
 

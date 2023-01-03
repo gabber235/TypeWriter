@@ -29,13 +29,13 @@ class _SystemHash {
   }
 }
 
-String $triggersHash() => r'13a89517bd751509f0237b28c849a015e8fc48b2';
+String _$triggersHash() => r'13a89517bd751509f0237b28c849a015e8fc48b2';
 
 /// See also [triggers].
 final triggersProvider = AutoDisposeProvider<List<String>>(
   triggers,
   name: r'triggersProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $triggersHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$triggersHash,
 );
 typedef TriggersRef = AutoDisposeProviderRef<List<String>>;

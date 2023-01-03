@@ -1,9 +1,9 @@
 import "package:flutter/cupertino.dart";
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
-import 'package:typewriter/utils/extensions.dart';
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/auto_complete.dart";
 import "package:typewriter/widgets/entries_graph.dart";
 import "package:typewriter/widgets/inspector.dart";
@@ -48,6 +48,7 @@ class TriggerEditor extends HookConsumerWidget {
     final isReceiver = modifier?.data == true;
 
     return AutoCompleteField(
+      path: path,
       text: value,
       hintText: "Enter a trigger",
       icon: isReceiver ? FontAwesomeIcons.bolt : FontAwesomeIcons.towerBroadcast,

@@ -1,8 +1,10 @@
 import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/guard/connected_guard.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/pages/book_page.dart";
+import "package:typewriter/pages/connect_page.dart";
 import "package:typewriter/pages/home_page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/pages/pages_list.dart";
@@ -14,8 +16,17 @@ part "app_router.gr.dart";
   routes: [
     AutoRoute(page: HomePage, initial: true),
     AutoRoute(
+      path: "/connect",
+      page: ConnectPage,
+    ),
+    AutoRoute(
+      path: "/error",
+      page: ErrorConnectPage,
+    ),
+    AutoRoute(
       path: "/book",
       page: BookPage,
+      guards: [ConnectedGuard],
       children: [
         AutoRoute(
           path: "pages",
@@ -41,7 +52,9 @@ part "app_router.gr.dart";
   ],
   transitionsBuilder: TransitionsBuilders.noTransition,
 )
-class AppRouter extends _$AppRouter {}
+class AppRouter extends _$AppRouter {
+  AppRouter({required super.connectedGuard});
+}
 
 Widget slideLeftWithFade(
   BuildContext context,
@@ -67,7 +80,7 @@ RouteData? _fetchCurrentRouteData(String name, RoutingController controller) {
 }
 
 /// Provides the current route data for the given [name].
-final currentRouteDataProvider = Provider.family.autoDispose<RouteData?, String>((ref, name) {
+final currentRouteDataProvider = Provider.family<RouteData?, String>((ref, name) {
   final router = ref.watch(appRouter);
   void invalidator() => ref.invalidateSelf();
   router.addListener(invalidator);

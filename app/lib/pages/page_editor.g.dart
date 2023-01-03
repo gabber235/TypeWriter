@@ -29,17 +29,18 @@ class _SystemHash {
   }
 }
 
-String $currentPageIdHash() => r'571974ea9917592aa36a30958783a1be0406e796';
+String _$currentPageIdHash() => r'129e6ddb01a02d157dec946020e529c65e901b85';
 
 /// See also [currentPageId].
-final currentPageIdProvider = AutoDisposeProvider<String?>(
+final currentPageIdProvider = Provider<String?>(
   currentPageId,
   name: r'currentPageIdProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $currentPageIdHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentPageIdHash,
 );
-typedef CurrentPageIdRef = AutoDisposeProviderRef<String?>;
-String $currentPageLabelHash() => r'3a0685c6033a322a1538a72ce9f77abd6add0ab9';
+typedef CurrentPageIdRef = ProviderRef<String?>;
+String _$currentPageLabelHash() => r'3a0685c6033a322a1538a72ce9f77abd6add0ab9';
 
 /// See also [currentPageLabel].
 final currentPageLabelProvider = AutoDisposeProvider<String>(
@@ -47,16 +48,16 @@ final currentPageLabelProvider = AutoDisposeProvider<String>(
   name: r'currentPageLabelProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $currentPageLabelHash,
+      : _$currentPageLabelHash,
 );
 typedef CurrentPageLabelRef = AutoDisposeProviderRef<String>;
-String $currentPageHash() => r'019404b1e80234d7a6d9ed18030acc589ce2d700';
+String _$currentPageHash() => r'019404b1e80234d7a6d9ed18030acc589ce2d700';
 
 /// See also [currentPage].
 final currentPageProvider = AutoDisposeProvider<Page?>(
   currentPage,
   name: r'currentPageProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $currentPageHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$currentPageHash,
 );
 typedef CurrentPageRef = AutoDisposeProviderRef<Page?>;

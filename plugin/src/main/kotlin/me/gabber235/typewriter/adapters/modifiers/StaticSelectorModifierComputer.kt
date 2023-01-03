@@ -6,7 +6,7 @@ import me.gabber235.typewriter.adapters.FieldModifier.DynamicModifier
 import me.gabber235.typewriter.entry.StaticEntry
 import kotlin.reflect.KClass
 
-@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
 annotation class StaticEntryIdentifier(val entry: KClass<out StaticEntry>)
 
 

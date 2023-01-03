@@ -1,5 +1,5 @@
 import "package:auto_route/auto_route.dart";
-import 'package:collection/collection.dart';
+import "package:collection/collection.dart";
 import "package:flutter/cupertino.dart" hide Page;
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
@@ -13,16 +13,17 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/always_focused.dart";
-import "package:typewriter/widgets/auto_saver.dart";
 import "package:typewriter/widgets/entries_graph.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/search_bar.dart";
 import "package:typewriter/widgets/shortcut_label.dart";
+import "package:typewriter/widgets/staging.dart";
 import "package:typewriter/widgets/static_entries_list.dart";
+import "package:typewriter/widgets/writers.dart";
 
 part "page_editor.g.dart";
 
-@riverpod
+@Riverpod(keepAlive: true)
 String? currentPageId(CurrentPageIdRef ref) {
   final routeData = ref.watch(currentRouteDataProvider(PageEditorRoute.name));
   return routeData?.pathParams.getString("id");
@@ -91,7 +92,7 @@ class _Content extends HookConsumerWidget {
       children: [
         Column(
           children: [
-            const _AppBar(),
+            const _AppBar(key: Key("appBar")),
             const Divider(),
             Expanded(
               child: Row(
@@ -114,29 +115,34 @@ class _Content extends HookConsumerWidget {
 }
 
 class _AppBar extends HookConsumerWidget {
-  const _AppBar() : super();
+  const _AppBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Row(
-          children: [
-            const SizedBox(width: 20),
-            const Icon(FontAwesomeIcons.solidFile, size: 16),
-            const SizedBox(width: 5),
-            Text(ref.watch(currentPageLabelProvider)),
-            const Spacer(),
-            const AutoSaver(),
-            const SizedBox(width: 20),
-            const _ViewModeButtons(),
-            const SizedBox(width: 20),
-            const _SearchBar(),
-            const SizedBox(width: 5),
-            const _AddEntryButton(),
-            const SizedBox(width: 10),
-          ],
-        ),
-      );
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Row(
+        children: [
+          const SizedBox(width: 20),
+          const Icon(FontAwesomeIcons.solidFile, size: 16),
+          const SizedBox(width: 5),
+          Text(ref.watch(currentPageLabelProvider)),
+          const SizedBox(width: 5),
+          const Spacer(),
+          const Flexible(child: GlobalWriters()),
+          const SizedBox(width: 20),
+          const StagingIndicator(key: Key("staging-indicator")),
+          const SizedBox(width: 20),
+          const _ViewModeButtons(),
+          const SizedBox(width: 20),
+          const _SearchBar(),
+          const SizedBox(width: 5),
+          const _AddEntryButton(),
+          const SizedBox(width: 10),
+        ],
+      ),
+    );
+  }
 }
 
 class _ViewModeButtons extends HookConsumerWidget {
