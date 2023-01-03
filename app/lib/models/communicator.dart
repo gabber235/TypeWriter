@@ -15,6 +15,8 @@ import "package:typewriter/utils/socket_extensions.dart";
 
 part "communicator.g.dart";
 
+final uuidRegex = RegExp(r"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$");
+
 enum ConnectionState {
   none,
   connecting,
@@ -34,15 +36,34 @@ class SocketNotifier extends StateNotifier<Socket?> {
     return !state.disconnected && state.connected;
   }
 
+  bool get isDisconnected {
+    final state = this.state;
+    if (state == null) return true;
+    return state.disconnected;
+  }
+
   ConnectionState _connectionState = ConnectionState.none;
 
-  void init(String hostname, int port) {
+  void init(String hostname, int port, [String? token]) {
     if (state != null) return;
     if (_connectionState != ConnectionState.none) return;
     _connectionState = ConnectionState.connecting;
+
+    // If a token is provided but is not a valid UUID, we will not connect for security reasons.
+    if (token != null && !uuidRegex.hasMatch(token)) {
+      _connectionState = ConnectionState.none;
+      ref.read(appRouter).replaceAll([const HomeRoute()]);
+      return;
+    }
+
+    var url = "http://$hostname:$port";
+    if (token != null) url += "?token=$token";
+
     debugPrint("Initializing socket");
-    final socket = io("http://$hostname:$port",
-        OptionBuilder().setTransports(["websocket"]).disableAutoConnect().enableForceNew().build());
+    final socket = io(
+      url,
+      OptionBuilder().setTransports(["websocket"]).disableAutoConnect().disableReconnection().enableForceNew().build(),
+    );
 
     socket
       ..onConnect((_) {
@@ -55,31 +76,32 @@ class SocketNotifier extends StateNotifier<Socket?> {
         if (_connectionState == ConnectionState.none) return;
         _connectionState = ConnectionState.none;
         debugPrint("connect error $data");
-        if (isConnected) state?.dispose();
+        state?.dispose();
         state = null;
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port)]);
+
+        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
       })
       ..onConnectTimeout((data) {
         if (_connectionState == ConnectionState.none) return;
         _connectionState = ConnectionState.none;
         debugPrint("connect timeout $data");
-        if (isConnected) state?.dispose();
+        state?.dispose();
         state = null;
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port)]);
+        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
       })
       ..onError((data) {
         if (_connectionState == ConnectionState.none) return;
         _connectionState = ConnectionState.none;
         debugPrint("error $data");
-        if (isConnected) state?.dispose();
+        state?.dispose();
         state = null;
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port)]);
+        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
       })
       ..onDisconnect((_) {
         if (_connectionState == ConnectionState.none) return;
         _connectionState = ConnectionState.none;
         debugPrint("disconnected");
-        if (isConnected) state?.dispose();
+        state?.dispose(); // Make sure to dispose the socket
         state = null;
         ref.read(appRouter).replaceAll([const HomeRoute()]);
       })

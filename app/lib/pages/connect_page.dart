@@ -8,14 +8,21 @@ import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/communicator.dart";
+import 'package:typewriter/widgets/copyable_text.dart';
 import "package:typewriter/widgets/filled_button.dart";
 import "package:typewriter/widgets/text_scroller.dart";
 
 class ConnectPage extends HookConsumerWidget {
-  const ConnectPage({@QueryParam("host") this.hostname = "", @QueryParam() this.port = 9092, super.key});
+  const ConnectPage({
+    @QueryParam("host") this.hostname = "",
+    @QueryParam() this.port = 9092,
+    @QueryParam() this.token = "",
+    super.key,
+  });
 
   final String hostname;
   final int port;
+  final String token;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +31,7 @@ class ConnectPage extends HookConsumerWidget {
         ref.read(appRouter).replaceAll([const HomeRoute()]);
         return;
       }
-      ref.read(socketProvider.notifier).init(hostname, port);
+      ref.read(socketProvider.notifier).init(hostname, port, token.isEmpty ? null : token);
     });
 
     return Scaffold(
@@ -97,10 +104,11 @@ class ConnectPage extends HookConsumerWidget {
 }
 
 class ErrorConnectPage extends HookConsumerWidget {
-  const ErrorConnectPage({required this.hostname, required this.port, super.key});
+  const ErrorConnectPage({required this.hostname, required this.port, this.token, super.key});
 
   final String hostname;
   final int port;
+  final String? token;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -130,13 +138,15 @@ class ErrorConnectPage extends HookConsumerWidget {
             style: GoogleFonts.jetBrainsMono(fontSize: 20, color: Colors.grey),
           ),
           const SizedBox(height: 24),
-          FilledButton.icon(
-            icon: const Icon(FontAwesomeIcons.repeat),
-            label: const Text("Reconnect"),
-            onPressed: () {
-              ref.read(appRouter).replaceAll([ConnectRoute(hostname: hostname, port: port)]);
-            },
-          ),
+          if (token == null)
+            FilledButton.icon(
+              icon: const Icon(FontAwesomeIcons.repeat),
+              label: const Text("Reconnect"),
+              onPressed: () {
+                ref.read(appRouter).replaceAll([ConnectRoute(hostname: hostname, port: port, token: "")]);
+              },
+            ),
+          if (token != null) const CopyableText(text: "/typewriter connect"),
           const SizedBox(height: 24),
           const Spacer(),
         ],

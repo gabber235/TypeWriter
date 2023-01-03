@@ -69,6 +69,10 @@ data class Writer(
 			}
 		}
 
+		fun dispose() {
+			writers = listOf()
+		}
+
 		fun serialize(): String {
 			return Gson().toJson(writers)
 		}

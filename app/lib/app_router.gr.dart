@@ -43,12 +43,17 @@ class _$AppRouter extends RootStackRouter {
                   'port',
                   9092,
                 ),
+                token: queryParams.getString(
+                  'token',
+                  "",
+                ),
               ));
       return CustomPage<dynamic>(
         routeData: routeData,
         child: ConnectPage(
           hostname: args.hostname,
           port: args.port,
+          token: args.token,
           key: args.key,
         ),
         transitionsBuilder: TransitionsBuilders.noTransition,
@@ -63,6 +68,7 @@ class _$AppRouter extends RootStackRouter {
         child: ErrorConnectPage(
           hostname: args.hostname,
           port: args.port,
+          token: args.token,
           key: args.key,
         ),
         transitionsBuilder: TransitionsBuilders.noTransition,
@@ -180,6 +186,7 @@ class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
   ConnectRoute({
     String hostname = "",
     int port = 9092,
+    String token = "",
     Key? key,
   }) : super(
           ConnectRoute.name,
@@ -187,11 +194,13 @@ class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
           args: ConnectRouteArgs(
             hostname: hostname,
             port: port,
+            token: token,
             key: key,
           ),
           rawQueryParams: {
             'host': hostname,
             'port': port,
+            'token': token,
           },
         );
 
@@ -202,6 +211,7 @@ class ConnectRouteArgs {
   const ConnectRouteArgs({
     this.hostname = "",
     this.port = 9092,
+    this.token = "",
     this.key,
   });
 
@@ -209,11 +219,13 @@ class ConnectRouteArgs {
 
   final int port;
 
+  final String token;
+
   final Key? key;
 
   @override
   String toString() {
-    return 'ConnectRouteArgs{hostname: $hostname, port: $port, key: $key}';
+    return 'ConnectRouteArgs{hostname: $hostname, port: $port, token: $token, key: $key}';
   }
 }
 
@@ -223,6 +235,7 @@ class ErrorConnectRoute extends PageRouteInfo<ErrorConnectRouteArgs> {
   ErrorConnectRoute({
     required String hostname,
     required int port,
+    String? token,
     Key? key,
   }) : super(
           ErrorConnectRoute.name,
@@ -230,6 +243,7 @@ class ErrorConnectRoute extends PageRouteInfo<ErrorConnectRouteArgs> {
           args: ErrorConnectRouteArgs(
             hostname: hostname,
             port: port,
+            token: token,
             key: key,
           ),
         );
@@ -241,6 +255,7 @@ class ErrorConnectRouteArgs {
   const ErrorConnectRouteArgs({
     required this.hostname,
     required this.port,
+    this.token,
     this.key,
   });
 
@@ -248,11 +263,13 @@ class ErrorConnectRouteArgs {
 
   final int port;
 
+  final String? token;
+
   final Key? key;
 
   @override
   String toString() {
-    return 'ErrorConnectRouteArgs{hostname: $hostname, port: $port, key: $key}';
+    return 'ErrorConnectRouteArgs{hostname: $hostname, port: $port, token: $token, key: $key}';
   }
 }
 
