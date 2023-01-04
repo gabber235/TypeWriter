@@ -56,7 +56,7 @@ class SocketNotifier extends StateNotifier<Socket?> {
       return;
     }
 
-    var url = "http://$hostname:$port";
+    var url = "https://$hostname:$port";
     if (token != null) url += "?token=$token";
 
     debugPrint("Initializing socket");

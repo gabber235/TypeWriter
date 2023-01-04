@@ -43,7 +43,7 @@ dependencies {
 	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
 	// Client communication
-	implementation("com.corundumstudio.socketio:netty-socketio:1.7.19")
+	implementation("com.corundumstudio.socketio:netty-socketio:1.7.22")
 
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }

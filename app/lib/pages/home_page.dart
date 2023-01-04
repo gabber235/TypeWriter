@@ -17,7 +17,7 @@ class HomePage extends HookConsumerWidget {
     // Hence we assume that we want to connect to localhost if we are in debug mode.
     // Normally we should never use an if statement before a hook. Only this will get compiled out in release mode.
     if (kDebugMode) {
-      useDelayedExecution(() => ref.read(appRouter).replaceAll([ConnectRoute(hostname: "localhost", port: 9092)]));
+      useDelayedExecution(() => ref.read(appRouter).replaceAll([ConnectRoute(hostname: "127.0.0.1", port: 9092)]));
     }
 
     return Scaffold(

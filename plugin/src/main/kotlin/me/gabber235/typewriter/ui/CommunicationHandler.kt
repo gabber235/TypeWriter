@@ -4,17 +4,18 @@ import com.corundumstudio.socketio.*
 import com.github.shynixn.mccoroutine.launch
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.utils.config
+import me.gabber235.typewriter.utils.*
 import org.bukkit.event.inventory.InventoryCloseEvent
 import java.time.Instant
 import java.util.*
+import kotlin.collections.set
 
 
 object CommunicationHandler {
-	private const val BASE_URL = "https://typewriter-mc.web.app"
+	private const val BASE_URL = "https://typewriter-mc.web.app/#"
 	private val hostName: String by config("hostname", "localhost")
-	private val port: Int by config("port", 9092)
-	private val auth: String by config("auth", "session") // Possible values: none, session
+	private val port: Int by config("websocket.port", 9092)
+	private val auth: String by config("websocket.auth", "session") // Possible values: none, session
 
 	// UUID session tokens with a timestamp of when they were created.
 	// This is used to expire tokens after 5 minutes or when they are used.
@@ -26,9 +27,12 @@ object CommunicationHandler {
 	fun initialize() {
 		ClientSynchronizer.initialize()
 		val config = Configuration().apply {
-			hostname = hostName
+			hostname = "127.0.0.1"
 			port = this@CommunicationHandler.port
 			setAuthorizationListener(this@CommunicationHandler::authenticate)
+
+			keyStorePassword = "123456"
+			keyStore = plugin.dataFolder["keystore.jks"].inputStream()
 		}
 
 		server = SocketIOServer(config)
@@ -64,7 +68,8 @@ object CommunicationHandler {
 	private fun authenticate(data: HandshakeData): Boolean {
 		if (auth == "none") return true
 		if (auth == "session") {
-			val token = data.getSingleUrlParam("token") ?: return false
+			val token = data.getSingleUrlParam("token")
+				.logErrorIfNull("${data.address} tried to connect to the socket without token!") ?: return false
 			val uuid = UUID.fromString(token)
 			val session = sessionTokens.remove(uuid) ?: return false
 			session.closePopup()
