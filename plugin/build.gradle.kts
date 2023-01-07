@@ -43,7 +43,7 @@ dependencies {
 	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
 	// Client communication
-	implementation("com.corundumstudio.socketio:netty-socketio:1.7.22")
+	implementation("com.corundumstudio.socketio:netty-socketio:1.7.19") // Keep this on a lower version as the newer version breaks the ping
 	implementation("io.ktor:ktor-server-core:2.2.2")
 	implementation("io.ktor:ktor-server-netty:2.2.2")
 

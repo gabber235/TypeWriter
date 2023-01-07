@@ -3,8 +3,10 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
-import 'package:typewriter/app_router.dart';
+import "package:typewriter/app_router.dart";
+import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/main.dart";
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/widgets/copyable_text.dart";
 import "package:typewriter/widgets/filled_button.dart";
 
@@ -17,6 +19,11 @@ class ErrorConnectPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    useDelayedExecution(() {
+      // Make sure the socket gets cleaned up
+      ref.invalidate(socketProvider);
+    });
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

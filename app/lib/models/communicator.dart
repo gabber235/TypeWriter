@@ -40,18 +40,6 @@ class SocketNotifier extends StateNotifier<Socket?> {
   /// Only if this fails within a certain time, we want consider the connection lost.
   Timer? _disconnectTimer;
 
-  bool get isConnected {
-    final state = this.state;
-    if (state == null) return false;
-    return !state.disconnected && state.connected;
-  }
-
-  bool get isDisconnected {
-    final state = this.state;
-    if (state == null) return true;
-    return state.disconnected;
-  }
-
   ConnectionState get _connectionState {
     return ref.read(connectionStateProvider);
   }
