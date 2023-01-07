@@ -133,7 +133,7 @@ packages:
       name: checked_yaml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   clipboard:
     dependency: "direct main"
     description:
@@ -265,13 +265,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  flutter_randomcolor:
-    dependency: "direct main"
-    description:
-      name: flutter_randomcolor
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.14"
   flutter_riverpod:
     dependency: transitive
     description:
@@ -387,13 +380,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
-  icon_forest:
-    dependency: "direct main"
-    description:
-      name: icon_forest
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.8"
   icons_launcher:
     dependency: "direct dev"
     description:
@@ -407,7 +393,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.2"
+    version: "3.3.0"
   io:
     dependency: transitive
     description:
@@ -784,13 +770,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  tuple:
-    dependency: "direct main"
-    description:
-      name: tuple
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   typed_data:
     dependency: transitive
     description:
@@ -805,62 +784,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.4"
-  url_launcher:
-    dependency: transitive
-    description:
-      name: url_launcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.1.7"
-  url_launcher_android:
-    dependency: transitive
-    description:
-      name: url_launcher_android
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.0.22"
-  url_launcher_ios:
-    dependency: transitive
-    description:
-      name: url_launcher_ios
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.0.17"
-  url_launcher_linux:
-    dependency: transitive
-    description:
-      name: url_launcher_linux
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
-  url_launcher_macos:
-    dependency: transitive
-    description:
-      name: url_launcher_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
-  url_launcher_platform_interface:
-    dependency: transitive
-    description:
-      name: url_launcher_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
-  url_launcher_web:
-    dependency: transitive
-    description:
-      name: url_launcher_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.13"
-  url_launcher_windows:
-    dependency: transitive
-    description:
-      name: url_launcher_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
   vector_math:
     dependency: transitive
     description:

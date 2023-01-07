@@ -1,16 +1,28 @@
 package me.gabber235.typewriter.adapters
 
+import com.google.gson.*
 import com.google.gson.reflect.TypeToken
-import me.gabber235.typewriter.adapters.editors.material
+import me.gabber235.typewriter.adapters.editors.*
+import org.bukkit.Location
+import org.bukkit.Material
+import java.lang.reflect.Type
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.findAnnotation
 
+typealias GsonDeserializer<T> = (JsonElement, Type, JsonDeserializationContext) -> T
+
+typealias FieInfoGenerator = (TypeToken<*>) -> FieldInfo
+
+typealias DefaultGenerator = (TypeToken<*>) -> JsonElement
+
 @Target(AnnotationTarget.FUNCTION)
 annotation class CustomEditor(val klass: KClass<*>)
 
-class ObjectEditor(val klass: KClass<*>, val name: String) {
+
+class ObjectEditor<T : Any>(val klass: KClass<T>, val name: String) {
 
 	/**
 	 * If the custom editor is implemented inside the visual interface. We will use this to indicate it.
@@ -18,22 +30,127 @@ class ObjectEditor(val klass: KClass<*>, val name: String) {
 	 * Example:
 	 * ```kotlin
 	 * @CustomEditor(SomeClass::class)
-	 * fun ObjectEditor.some() = reference()
+	 * fun ObjectEditor.some() = reference {
+	 *    // ...
+	 * }
 	 * ```
 	 * In this case, the editor name that will be used is `some`.
 	 */
-	fun reference() {}
+	fun reference(editor: ObjectEditor<T>.() -> Unit) = editor()
+
+	/**
+	 * The deserializer used to convert a JSON string into an instance of the class represented by this editor.
+	 * NOTE: This field is used internally and should not be accessed directly.
+	 */
+	internal var deserializer: JsonDeserializer<T>? = null
+		private set
+
+	/**
+	 * If the default deserialization is not enough, you can use this method to provide a custom deserializer for this editor.
+	 *
+	 * Example:
+	 * ```kotlin
+	 * @CustomEditor(SomeClass::class)
+	 * fun ObjectEditor.some() = reference {
+	 *   deserializer = JsonDeserializer { element, type, context ->
+	 *      // ...
+	 *   }
+	 *   // ...
+	 * }
+	 * ```
+	 *
+	 * @param deserializer The deserializer to use.
+	 */
+	fun jsonDeserialize(deserializer: GsonDeserializer<T>) {
+		this.deserializer =
+			JsonDeserializer<T> { json, typeOfT, context -> deserializer(json, typeOfT, context) }
+	}
+
+
+	/**
+	 * Save the field info generator for this editor.
+	 * NOTE: This field is used internally and should not be accessed directly.
+	 */
+	private var fieldInfoGenerator: FieInfoGenerator? = null
+
+	/**
+	 * If a custom editor needs to have some information about the specific field it is editing, it can use this method to
+	 * provide a function that will generate the information.
+	 *
+	 * Example:
+	 * ```kotlin
+	 * @CustomEditor(SomeClass::class)
+	 * fun ObjectEditor.some() = reference {
+	 *  fieldInfo { klass ->
+	 *      // ...
+	 *  }
+	 *  // ...
+	 * }
+	 * ```
+	 *
+	 * @param generator The function that will generate the information.
+	 */
+	fun fieldInfo(generator: FieInfoGenerator) {
+		this.fieldInfoGenerator = generator
+	}
+
+
+	/**
+	 * Generates the field info for this editor.
+	 * NOTE: This method is used internally and should not be accessed directly.
+	 * @param token The type token of the class represented by this editor.
+	 */
+	internal fun generateFieldInfo(token: TypeToken<*>): FieldInfo? {
+		return fieldInfoGenerator?.invoke(token)
+	}
+
+	/**
+	 * Save the default generator for this editor.
+	 * NOTE: This field is used internally and should not be accessed directly.
+	 */
+	private var defaultGenerator: DefaultGenerator? = null
+
+	/**
+	 * Custom editors need a default value to be able to create new instances of the class they are editing.
+	 *
+	 * Example:
+	 * ```kotlin
+	 * @CustomEditor(SomeClass::class)
+	 * fun ObjectEditor.some() = reference {
+	 *  default { token ->
+	 *      // ...
+	 *  }
+	 *  // ...
+	 * }
+	 * ```
+	 *
+	 * @param generator The function that will generate the information.
+	 */
+	fun default(generator: DefaultGenerator) {
+		this.defaultGenerator = generator
+	}
+
+	/**
+	 * Generates the default value for this editor.
+	 * NOTE: This method is used internally and should not be accessed directly.
+	 * @param token The type token of the class represented by this editor.
+	 */
+	internal fun generateDefault(token: TypeToken<*>): JsonElement {
+		return defaultGenerator?.invoke(token) ?: JsonNull.INSTANCE
+	}
 }
 
-private val customEditors by lazy {
+internal val customEditors by lazy {
 	listOf(
-		ObjectEditor::material
+		ObjectEditor<Material>::material,
+		ObjectEditor<Optional<*>>::optional,
+		ObjectEditor<Location>::location,
 	)
 		.mapNotNull(::objectEditorFromFunction)
 		.associateBy { it.klass }
 }
 
-private fun objectEditorFromFunction(function: KFunction<*>): ObjectEditor? {
+private fun objectEditorFromFunction(function: KFunction<*>): ObjectEditor<*>? {
 	val annotation = function.findAnnotation<CustomEditor>() ?: return null
 	val extension = function.extensionReceiverParameter ?: return null
 	if (extension.type.classifier != ObjectEditor::class) return null
@@ -43,6 +160,6 @@ private fun objectEditorFromFunction(function: KFunction<*>): ObjectEditor? {
 }
 
 
-fun computeCustomEditor(token: TypeToken<*>): ObjectEditor? {
+fun computeCustomEditor(token: TypeToken<*>): ObjectEditor<*>? {
 	return customEditors[token.rawType.kotlin]
 }

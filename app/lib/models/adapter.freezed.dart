@@ -515,7 +515,12 @@ mixin _$FieldInfo {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
-    required TResult Function(String editor, List<Modifier> modifiers) custom,
+    required TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)
+        custom,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -529,7 +534,12 @@ mixin _$FieldInfo {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+    TResult? Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -543,7 +553,12 @@ mixin _$FieldInfo {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -714,7 +729,12 @@ class _$_FieldType implements _FieldType {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
-    required TResult Function(String editor, List<Modifier> modifiers) custom,
+    required TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)
+        custom,
   }) {
     return $default(modifiers);
   }
@@ -731,7 +751,12 @@ class _$_FieldType implements _FieldType {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+    TResult? Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
   }) {
     return $default?.call(modifiers);
   }
@@ -748,7 +773,12 @@ class _$_FieldType implements _FieldType {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -931,7 +961,12 @@ class _$PrimitiveField implements PrimitiveField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
-    required TResult Function(String editor, List<Modifier> modifiers) custom,
+    required TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)
+        custom,
   }) {
     return primitive(type, modifiers);
   }
@@ -948,7 +983,12 @@ class _$PrimitiveField implements PrimitiveField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+    TResult? Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
   }) {
     return primitive?.call(type, modifiers);
   }
@@ -965,7 +1005,12 @@ class _$PrimitiveField implements PrimitiveField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
     required TResult orElse(),
   }) {
     if (primitive != null) {
@@ -1159,7 +1204,12 @@ class _$EnumField implements EnumField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
-    required TResult Function(String editor, List<Modifier> modifiers) custom,
+    required TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)
+        custom,
   }) {
     return enumField(values, modifiers);
   }
@@ -1176,7 +1226,12 @@ class _$EnumField implements EnumField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+    TResult? Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
   }) {
     return enumField?.call(values, modifiers);
   }
@@ -1193,7 +1248,12 @@ class _$EnumField implements EnumField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
     required TResult orElse(),
   }) {
     if (enumField != null) {
@@ -1387,7 +1447,12 @@ class _$ListField implements ListField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
-    required TResult Function(String editor, List<Modifier> modifiers) custom,
+    required TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)
+        custom,
   }) {
     return list(type, modifiers);
   }
@@ -1404,7 +1469,12 @@ class _$ListField implements ListField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+    TResult? Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
   }) {
     return list?.call(type, modifiers);
   }
@@ -1421,7 +1491,12 @@ class _$ListField implements ListField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
     required TResult orElse(),
   }) {
     if (list != null) {
@@ -1632,7 +1707,12 @@ class _$MapField implements MapField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
-    required TResult Function(String editor, List<Modifier> modifiers) custom,
+    required TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)
+        custom,
   }) {
     return map(key, value, modifiers);
   }
@@ -1649,7 +1729,12 @@ class _$MapField implements MapField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+    TResult? Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
   }) {
     return map?.call(key, value, modifiers);
   }
@@ -1666,7 +1751,12 @@ class _$MapField implements MapField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
     required TResult orElse(),
   }) {
     if (map != null) {
@@ -1862,7 +1952,12 @@ class _$ObjectField implements ObjectField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
-    required TResult Function(String editor, List<Modifier> modifiers) custom,
+    required TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)
+        custom,
   }) {
     return object(fields, modifiers);
   }
@@ -1879,7 +1974,12 @@ class _$ObjectField implements ObjectField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+    TResult? Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
   }) {
     return object?.call(fields, modifiers);
   }
@@ -1896,7 +1996,12 @@ class _$ObjectField implements ObjectField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
     required TResult orElse(),
   }) {
     if (object != null) {
@@ -1984,7 +2089,13 @@ abstract class _$$CustomFieldCopyWith<$Res>
       __$$CustomFieldCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String editor, List<Modifier> modifiers});
+  $Res call(
+      {String editor,
+      @JsonKey(name: "default") dynamic defaultValue,
+      FieldInfo? fieldInfo,
+      List<Modifier> modifiers});
+
+  $FieldInfoCopyWith<$Res>? get fieldInfo;
 }
 
 /// @nodoc
@@ -1999,6 +2110,8 @@ class __$$CustomFieldCopyWithImpl<$Res>
   @override
   $Res call({
     Object? editor = null,
+    Object? defaultValue = freezed,
+    Object? fieldInfo = freezed,
     Object? modifiers = null,
   }) {
     return _then(_$CustomField(
@@ -2006,11 +2119,31 @@ class __$$CustomFieldCopyWithImpl<$Res>
           ? _value.editor
           : editor // ignore: cast_nullable_to_non_nullable
               as String,
+      defaultValue: freezed == defaultValue
+          ? _value.defaultValue
+          : defaultValue // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      fieldInfo: freezed == fieldInfo
+          ? _value.fieldInfo
+          : fieldInfo // ignore: cast_nullable_to_non_nullable
+              as FieldInfo?,
       modifiers: null == modifiers
           ? _value._modifiers
           : modifiers // ignore: cast_nullable_to_non_nullable
               as List<Modifier>,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $FieldInfoCopyWith<$Res>? get fieldInfo {
+    if (_value.fieldInfo == null) {
+      return null;
+    }
+
+    return $FieldInfoCopyWith<$Res>(_value.fieldInfo!, (value) {
+      return _then(_value.copyWith(fieldInfo: value));
+    });
   }
 }
 
@@ -2019,6 +2152,8 @@ class __$$CustomFieldCopyWithImpl<$Res>
 class _$CustomField implements CustomField {
   const _$CustomField(
       {required this.editor,
+      @JsonKey(name: "default") this.defaultValue,
+      this.fieldInfo,
       final List<Modifier> modifiers = const [],
       final String? $type})
       : _modifiers = modifiers,
@@ -2029,6 +2164,11 @@ class _$CustomField implements CustomField {
 
   @override
   final String editor;
+  @override
+  @JsonKey(name: "default")
+  final dynamic defaultValue;
+  @override
+  final FieldInfo? fieldInfo;
   final List<Modifier> _modifiers;
   @override
   @JsonKey()
@@ -2043,7 +2183,7 @@ class _$CustomField implements CustomField {
 
   @override
   String toString() {
-    return 'FieldInfo.custom(editor: $editor, modifiers: $modifiers)';
+    return 'FieldInfo.custom(editor: $editor, defaultValue: $defaultValue, fieldInfo: $fieldInfo, modifiers: $modifiers)';
   }
 
   @override
@@ -2053,13 +2193,21 @@ class _$CustomField implements CustomField {
             other is _$CustomField &&
             (identical(other.editor, editor) || other.editor == editor) &&
             const DeepCollectionEquality()
+                .equals(other.defaultValue, defaultValue) &&
+            (identical(other.fieldInfo, fieldInfo) ||
+                other.fieldInfo == fieldInfo) &&
+            const DeepCollectionEquality()
                 .equals(other._modifiers, _modifiers));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, editor, const DeepCollectionEquality().hash(_modifiers));
+      runtimeType,
+      editor,
+      const DeepCollectionEquality().hash(defaultValue),
+      fieldInfo,
+      const DeepCollectionEquality().hash(_modifiers));
 
   @JsonKey(ignore: true)
   @override
@@ -2082,9 +2230,14 @@ class _$CustomField implements CustomField {
     required TResult Function(
             Map<String, FieldInfo> fields, List<Modifier> modifiers)
         object,
-    required TResult Function(String editor, List<Modifier> modifiers) custom,
+    required TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)
+        custom,
   }) {
-    return custom(editor, modifiers);
+    return custom(editor, defaultValue, fieldInfo, modifiers);
   }
 
   @override
@@ -2099,9 +2252,14 @@ class _$CustomField implements CustomField {
         map,
     TResult? Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult? Function(String editor, List<Modifier> modifiers)? custom,
+    TResult? Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
   }) {
-    return custom?.call(editor, modifiers);
+    return custom?.call(editor, defaultValue, fieldInfo, modifiers);
   }
 
   @override
@@ -2116,11 +2274,16 @@ class _$CustomField implements CustomField {
         map,
     TResult Function(Map<String, FieldInfo> fields, List<Modifier> modifiers)?
         object,
-    TResult Function(String editor, List<Modifier> modifiers)? custom,
+    TResult Function(
+            String editor,
+            @JsonKey(name: "default") dynamic defaultValue,
+            FieldInfo? fieldInfo,
+            List<Modifier> modifiers)?
+        custom,
     required TResult orElse(),
   }) {
     if (custom != null) {
-      return custom(editor, modifiers);
+      return custom(editor, defaultValue, fieldInfo, modifiers);
     }
     return orElse();
   }
@@ -2182,12 +2345,17 @@ class _$CustomField implements CustomField {
 abstract class CustomField implements FieldInfo {
   const factory CustomField(
       {required final String editor,
+      @JsonKey(name: "default") final dynamic defaultValue,
+      final FieldInfo? fieldInfo,
       final List<Modifier> modifiers}) = _$CustomField;
 
   factory CustomField.fromJson(Map<String, dynamic> json) =
       _$CustomField.fromJson;
 
   String get editor;
+  @JsonKey(name: "default")
+  dynamic get defaultValue;
+  FieldInfo? get fieldInfo;
   @override
   List<Modifier> get modifiers;
   @override

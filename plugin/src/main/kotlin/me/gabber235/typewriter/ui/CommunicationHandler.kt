@@ -4,7 +4,8 @@ import com.corundumstudio.socketio.*
 import com.github.shynixn.mccoroutine.launch
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.config
+import me.gabber235.typewriter.utils.logErrorIfNull
 import org.bukkit.event.inventory.InventoryCloseEvent
 import java.time.Instant
 import java.util.*
@@ -12,27 +13,29 @@ import kotlin.collections.set
 
 
 object CommunicationHandler {
-	private const val BASE_URL = "https://typewriter-mc.web.app/#"
 	private val hostName: String by config("hostname", "localhost")
+	private val panelPort: Int by config("panel.port", 8080)
+	private val BASE_URL get() = "http://${hostName}:${panelPort}/#"
+	private val enabled: Boolean by config("enabled", false)
 	private val port: Int by config("websocket.port", 9092)
 	private val auth: String by config("websocket.auth", "session") // Possible values: none, session
 
-	// UUID session tokens with a timestamp of when they were created.
-	// This is used to expire tokens after 5 minutes or when they are used.
 	private val sessionTokens: MutableMap<UUID, SessionData> = mutableMapOf()
 
 	var server: SocketIOServer? = null
 		private set
 
 	fun initialize() {
+		if (!enabled) return
+		plugin.logger.warning("Websocket server is enabled. This is not recommended for production servers.")
 		ClientSynchronizer.initialize()
+		PanelHost.initialize()
 		val config = Configuration().apply {
-			hostname = "127.0.0.1"
+			hostname = "0.0.0.0"
 			port = this@CommunicationHandler.port
 			setAuthorizationListener(this@CommunicationHandler::authenticate)
 
-			keyStorePassword = "123456"
-			keyStore = plugin.dataFolder["keystore.jks"].inputStream()
+
 		}
 
 		server = SocketIOServer(config)
@@ -49,6 +52,7 @@ object CommunicationHandler {
 		server?.addEventListener("updateWriter", String::class.java, ClientSynchronizer::handleUpdateWriter)
 
 		server?.addConnectListener {
+			plugin.logger.info("Client connected: ${it.remoteAddress}")
 			it.sendEvent("stagingState", ClientSynchronizer.stagingState.name.lowercase())
 
 			Writer.addWriter(it.sessionId.toString())
@@ -56,6 +60,7 @@ object CommunicationHandler {
 		}
 
 		server?.addDisconnectListener {
+			plugin.logger.info("Client disconnected: ${it.remoteAddress}")
 			server?.broadcastOperations?.sendEvent("disconnectWriter", it, it.sessionId.toString())
 
 			Writer.removeWriter(it.sessionId.toString())
@@ -71,7 +76,7 @@ object CommunicationHandler {
 			val token = data.getSingleUrlParam("token")
 				.logErrorIfNull("${data.address} tried to connect to the socket without token!") ?: return false
 			val uuid = UUID.fromString(token)
-			val session = sessionTokens.remove(uuid) ?: return false
+			val session = sessionTokens[uuid] ?: return false
 			session.closePopup()
 			return session.isValid
 		}
@@ -79,6 +84,11 @@ object CommunicationHandler {
 	}
 
 	private fun generateSessionToken(playerId: UUID?): UUID {
+		// If there already is a token for this player, use that one.
+		val existingToken = sessionTokens.filter { it.value.playerId == playerId }.keys.firstOrNull()
+		if (existingToken != null) return existingToken
+
+		// Otherwise, create a new token.
 		val token = UUID.randomUUID()
 		sessionTokens[token] = SessionData.create(playerId)
 		return token
@@ -94,7 +104,9 @@ object CommunicationHandler {
 	}
 
 	fun shutdown() {
+		if (!enabled) return
 		server?.stop()
+		PanelHost.dispose()
 		ClientSynchronizer.dispose()
 		Writer.dispose()
 	}
@@ -110,25 +122,25 @@ data class SessionData(
 
 	/**
 	 * Check if the session is still valid.
-	 * A session is valid for 5 minutes after it was created.
-	 * And if the player is still online.
+	 *
+	 * A session is valid if the player is still online.
 	 *
 	 * @return true if the session is still valid, false otherwise.
 	 */
 	val isValid: Boolean
-		get() = created.plusSeconds(300)
-			.isAfter(Instant.now()) && playerId?.let { server?.getPlayer(it) != null } ?: true
+		get() = playerId?.let { server?.getPlayer(it) != null } ?: true
 
 	/**
 	 * For players, we open a book with the link.
-	 * Only after they connect to the panel the session is invalidated.
-	 * Hence, we want to close the book so the player can not click the link again.
 	 *
 	 * We assume that the player has the book still open after clicking the link and connecting as this happens in a split second.
 	 */
 	fun closePopup() {
 		val uuid = playerId ?: return
 		val player = plugin.server.getPlayer(uuid) ?: return
+		// We only close it if the player opened the book in the last minute.
+		if (created.isBefore(Instant.now().minusSeconds(60))) return
+
 		plugin.launch {
 			player.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
 		}

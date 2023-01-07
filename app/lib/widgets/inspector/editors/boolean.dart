@@ -1,9 +1,8 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-
-import "../../inspector.dart";
 
 class BooleanEditorFilter extends EditorFilter {
   @override

@@ -15,7 +15,7 @@ import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/hooks/search_bar_controller.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/adapter.dart";
-import 'package:typewriter/models/communicator.dart';
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -107,6 +107,7 @@ Fuzzy<EntryBlueprint> _fuzzyAddEntries(_FuzzyAddEntriesRef ref) {
 List<_Action> _actions(_ActionsRef ref) {
   final query = ref.watch(_queryProvider);
   final fuzzy = ref.watch(_fuzzyEntriesProvider);
+  final fuzzyAddEntries = ref.watch(_fuzzyAddEntriesProvider);
   final blueprints = ref.watch(entryBlueprintsProvider);
 
   if (query.isEmpty) return [];
@@ -114,11 +115,11 @@ List<_Action> _actions(_ActionsRef ref) {
 
   // If the query contains a ":" we want to refine our search.
   if (query.contains(":")) {
-    final operatorFindings = _findActionsForOperator(query, blueprints, results);
+    final operatorFindings = _findActionsForOperator(query, blueprints, fuzzy, fuzzyAddEntries);
     if (operatorFindings != null) return operatorFindings;
   }
 
-  final addResults = ref.watch(_fuzzyAddEntriesProvider).search(query).map((e) => e.item).toList();
+  final addResults = fuzzyAddEntries.search(query).map((e) => e.item).toList();
 
   return addResults.map(_AddEntryAction.new).whereType<_Action>().toList() +
       results
@@ -133,15 +134,14 @@ List<_Action> _actions(_ActionsRef ref) {
 
 /// Finds actions for a given operator.
 /// If a query contains a ":" it means that its prefix will be the operator
-List<_Action>? _findActionsForOperator(String query, List<EntryBlueprint> blueprints, List<Entry> results) {
+List<_Action>? _findActionsForOperator(
+    String query, List<EntryBlueprint> blueprints, Fuzzy<Entry> fuzzy, Fuzzy<EntryBlueprint> fuzzyAddEntries) {
   final prefix = query.split(":").first.toLowerCase();
+  final suffix = query.split(":").last.toLowerCase().trim();
 
   // If it starts with "add" we want to add a new entry.
   if (prefix == "add") {
-    return blueprints
-        .where((b) => b.name.toLowerCase().contains(query.split(":").last.toLowerCase()))
-        .map(_AddEntryAction.new)
-        .toList();
+    return blueprints.where((b) => b.name.toLowerCase().contains(suffix)).map(_AddEntryAction.new).toList();
   }
 
   // If it starts with a type we want to filter the results by that type.
@@ -149,7 +149,7 @@ List<_Action>? _findActionsForOperator(String query, List<EntryBlueprint> bluepr
     (print) => print.name == prefix,
   );
   if (type != null) {
-    return results.where((e) => e.type == type.name).mapNotNull<_Action>((entry) {
+    return fuzzy.search(suffix).map((e) => e.item).where((e) => e.type == type.name).mapNotNull<_Action>((entry) {
           final blueprint = blueprints.firstWhereOrNull((e) => e.name == entry.type);
           if (blueprint == null) return null;
           return _EntryAction(entry, blueprint);
@@ -158,13 +158,21 @@ List<_Action>? _findActionsForOperator(String query, List<EntryBlueprint> bluepr
   }
 
   // If it starts with a tag we want to filter the results & blueprints by that tag.
-  final entryTags =
-      results.where((e) => _getTagsForEntryWithBlueprints(e, blueprints).contains(prefix)).mapNotNull<_Action>((entry) {
+  final entryTags = fuzzy
+      .search(suffix)
+      .map((e) => e.item)
+      .where((e) => _getTagsForEntryWithBlueprints(e, blueprints).contains(prefix))
+      .mapNotNull<_Action>((entry) {
     final blueprint = blueprints.firstWhereOrNull((e) => e.name == entry.type);
     if (blueprint == null) return null;
     return _EntryAction(entry, blueprint);
   }).toList();
-  final blueprintTags = blueprints.where((e) => e.tags.contains(prefix)).map<_Action>(_AddEntryAction.new).toList();
+  final blueprintTags = fuzzyAddEntries
+      .search(suffix)
+      .map((e) => e.item)
+      .where((e) => e.tags.contains(prefix))
+      .map<_Action>(_AddEntryAction.new)
+      .toList();
 
   return blueprintTags + entryTags;
 }

@@ -19,10 +19,8 @@ dependencies:
   auto_size_text: ^3.0.0
   google_fonts: ^3.0.1
   font_awesome_flutter: ^10.3.0
-  icon_forest: ^1.1.8
   rive: ^0.10.0
   dropdown_search: ^5.0.5
-  tuple: ^2.0.1
   material_floating_search_bar: ^0.3.7
   fuzzy: ^0.4.0-nullsafety.0
   auto_route: ^5.0.4
