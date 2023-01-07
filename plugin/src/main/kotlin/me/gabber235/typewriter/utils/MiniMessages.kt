@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
 
 private val mm = MiniMessage.miniMessage()
@@ -16,7 +17,7 @@ fun CommandSender.sendMini(message: String) = adventure.sender(this).sendMessage
 
 fun CommandSender.msg(message: String) = sendMini("<red><bold>Typewriter »<reset><white> $message")
 
-fun Component.plainText(): String = PlainTextComponentSerializer.plainText().serialize(this)
+fun Component.plainText(): String = ChatColor.stripColor(PlainTextComponentSerializer.plainText().serialize(this)) ?: ""
 
 fun Component.legacy(): String = LegacyComponentSerializer.legacy('§').serialize(this)
 

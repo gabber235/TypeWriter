@@ -34,8 +34,6 @@ object CommunicationHandler {
 			hostname = "0.0.0.0"
 			port = this@CommunicationHandler.port
 			setAuthorizationListener(this@CommunicationHandler::authenticate)
-
-
 		}
 
 		server = SocketIOServer(config)
