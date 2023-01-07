@@ -40,10 +40,10 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
 	if (event.hand != org.bukkit.inventory.EquipmentSlot.HAND) return // Disable off-hand interactions
 	query findWhere { entry ->
 		// Check if the player clicked on the correct location
-		if (!entry.location.map { it == event.clickedBlock!!.location }.orElse(false)) return@findWhere false
+		if (!entry.location.map { it == event.clickedBlock!!.location }.orElse(true)) return@findWhere false
 
 		// Check if the player is holding the correct item
-		if (!entry.itemInHand.map { hasMaterialInHand(event.player, it) }.orElse(false)) return@findWhere false
+		if (!entry.itemInHand.map { hasMaterialInHand(event.player, it) }.orElse(true)) return@findWhere false
 
 		entry.block == event.clickedBlock!!.type
 	} triggerAllFor event.player
