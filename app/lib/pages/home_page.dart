@@ -1,25 +1,19 @@
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
-import "package:typewriter/app_router.dart";
-import "package:typewriter/hooks/delayed_execution.dart";
+import 'package:typewriter/app_router.dart';
 import "package:typewriter/main.dart";
 import "package:typewriter/widgets/copyable_text.dart";
+import "package:typewriter/widgets/filled_button.dart";
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // If we are in debug mode we cant use the server command as we debug in the application rather than the web version
-    // Hence we assume that we want to connect to localhost if we are in debug mode.
-    // Normally we should never use an if statement before a hook. Only this will get compiled out in release mode.
-    if (kDebugMode) {
-      useDelayedExecution(() => ref.read(appRouter).replaceAll([ConnectRoute(hostname: "localhost", port: 9092)]));
-    }
-
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -39,9 +33,86 @@ class HomePage extends HookConsumerWidget {
           ),
           const SizedBox(height: 24),
           const CopyableText(text: "/typewriter connect"),
+          if (kDebugMode) ...[
+            const SizedBox(height: 24),
+            const DebugConnectButton(),
+          ],
           const Spacer(),
         ],
       ),
+    );
+  }
+}
+
+class DebugConnectButton extends HookConsumerWidget {
+  const DebugConnectButton({super.key});
+
+  void connectTo(WidgetRef ref, String hostname, int port, [String token = ""]) {
+    ref.read(appRouter).replaceAll([ConnectRoute(hostname: hostname, port: port, token: token)]);
+  }
+
+  Future<void> customConnectToPopup(BuildContext context, WidgetRef ref) async {
+    final controller = TextEditingController();
+    final url = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Connect to"),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: "Fill in the url to connect to",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel"),
+            ),
+            FilledButton.icon(
+              icon: const FaIcon(FontAwesomeIcons.link),
+              label: const Text("Connect"),
+              onPressed: () => Navigator.of(context).pop(controller.text),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (url == null) return;
+
+    final uri = Uri.parse(url);
+    // Get the hostname and port and token from the url query parameters
+    // The token is optional and the hostname can be "hostname" or "host"
+    final hostname = uri.queryParameters["hostname"] ?? uri.queryParameters["host"];
+    final port = int.tryParse(uri.queryParameters["port"] ?? "9092") ?? 9092;
+    final token = uri.queryParameters["token"] ?? "";
+
+    if (hostname == null) {
+      return;
+    }
+
+    connectTo(ref, hostname, port, token);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FilledButton.icon(
+          color: Colors.green,
+          icon: const Icon(FontAwesomeIcons.house),
+          label: const Text("Connect Home"),
+          onPressed: () => connectTo(ref, "localhost", 9092),
+        ),
+        const SizedBox(width: 24),
+        FilledButton.icon(
+          icon: const Icon(FontAwesomeIcons.connectdevelop),
+          label: const Text("Connect Custom"),
+          onPressed: () => customConnectToPopup(context, ref),
+        ),
+      ],
     );
   }
 }

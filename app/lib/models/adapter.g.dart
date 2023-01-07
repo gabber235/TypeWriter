@@ -160,6 +160,10 @@ Map<String, dynamic> _$$ObjectFieldToJson(_$ObjectField instance) =>
 _$CustomField _$$CustomFieldFromJson(Map<String, dynamic> json) =>
     _$CustomField(
       editor: json['editor'] as String,
+      defaultValue: json['default'],
+      fieldInfo: json['fieldInfo'] == null
+          ? null
+          : FieldInfo.fromJson(json['fieldInfo'] as Map<String, dynamic>),
       modifiers: (json['modifiers'] as List<dynamic>?)
               ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -170,6 +174,8 @@ _$CustomField _$$CustomFieldFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$CustomFieldToJson(_$CustomField instance) =>
     <String, dynamic>{
       'editor': instance.editor,
+      'default': instance.defaultValue,
+      'fieldInfo': instance.fieldInfo,
       'modifiers': instance.modifiers,
       'kind': instance.$type,
     };

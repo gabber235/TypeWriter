@@ -1,32 +1,99 @@
 import "package:auto_route/auto_route.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide ConnectionState;
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/app_router.dart";
-import 'package:typewriter/models/book.dart';
+import 'package:typewriter/hooks/delayed_execution.dart';
+import "package:typewriter/models/book.dart";
+import "package:typewriter/models/communicator.dart";
+import "package:typewriter/pages/connect_page.dart";
 
 class BookPage extends HookConsumerWidget {
   const BookPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => AutoTabsRouter(
-        routes: const [
-          PagesListRoute(),
-        ],
-        builder: (context, child, animation) => Scaffold(
-          body: Row(
-            children: [
-              const _SideRail(),
-              Expanded(
-                child: FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final connectionState = ref.watch(connectionStateProvider);
+
+    return AutoTabsRouter(
+      routes: const [
+        PagesListRoute(),
+      ],
+      builder: (context, child, animation) {
+        return Stack(
+          children: [
+            Scaffold(
+              body: Row(
+                children: [
+                  const _SideRail(),
+                  Expanded(
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
+            if (connectionState == ConnectionState.disconnected) ...[
+              const ModalBarrier(
+                dismissible: false,
+                color: Colors.black54,
+              ),
+              const _ReconnectOverlay(),
+            ]
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _ReconnectOverlay extends HookConsumerWidget {
+  const _ReconnectOverlay({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useAnimationController(
+      duration: const Duration(seconds: 30),
+    )..forward();
+
+    useAnimation(controller);
+
+    useDelayedExecution(() {
+      // When this widget is mounted, we want to close all the popups
+      while (ModalRoute.of(context)?.isCurrent != true) {
+        Navigator.of(context).pop();
+      }
+    });
+
+    return Dialog(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 420,
+            child: LinearProgressIndicator(value: 1 - controller.value),
           ),
-        ),
-      );
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Connection lost, Reconnecting...", style: Theme.of(context).textTheme.headline6),
+                const SizedBox(height: 8),
+                const ConnectionScroller(
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _SideRail extends HookConsumerWidget {

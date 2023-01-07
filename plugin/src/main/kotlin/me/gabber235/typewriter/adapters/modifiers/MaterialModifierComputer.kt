@@ -29,6 +29,9 @@ object MaterialPropertiesModifierComputer : StaticModifierComputer<MaterialPrope
 	override val annotationClass: Class<MaterialProperties> = MaterialProperties::class.java
 
 	override fun computeModifier(annotation: MaterialProperties, info: FieldInfo): FieldModifier? {
+		// If the field is wrapped in a list or other container we try if the inner type can be modified
+		innerCompute(annotation, info)?.let { return it }
+
 		if (info !is CustomField) {
 			Typewriter.plugin.logger.warning("MaterialProperties annotation can only be used on custom fields")
 			return null

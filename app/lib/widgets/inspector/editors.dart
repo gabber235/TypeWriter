@@ -6,10 +6,12 @@ import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors/boolean.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
+import 'package:typewriter/widgets/inspector/editors/location.dart';
 import "package:typewriter/widgets/inspector/editors/map.dart";
 import "package:typewriter/widgets/inspector/editors/material.dart";
 import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
+import 'package:typewriter/widgets/inspector/editors/optional.dart';
 import "package:typewriter/widgets/inspector/editors/static_entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/editors/triggers.dart";
@@ -29,6 +31,8 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
 
       // Custom Editors
       MaterialSelectorEditorFilter(),
+      OptionalEditorFilter(),
+      LocationEditorFilter(),
 
       // Default filters
       StringEditorFilter(),

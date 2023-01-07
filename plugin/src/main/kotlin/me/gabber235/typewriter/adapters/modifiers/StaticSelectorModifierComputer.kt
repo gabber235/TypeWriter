@@ -14,6 +14,9 @@ object StaticSelectorModifierComputer : StaticModifierComputer<StaticEntryIdenti
 	override val annotationClass: Class<StaticEntryIdentifier> = StaticEntryIdentifier::class.java
 
 	override fun computeModifier(annotation: StaticEntryIdentifier, info: FieldInfo): FieldModifier? {
+		// If the field is wrapped in a list or other container we try if the inner type can be modified
+		innerCompute(annotation, info)?.let { return it }
+
 		if (info !is PrimitiveField) {
 			plugin.logger.warning("StaticEntryIdentifier can only be used on a string field")
 			return null

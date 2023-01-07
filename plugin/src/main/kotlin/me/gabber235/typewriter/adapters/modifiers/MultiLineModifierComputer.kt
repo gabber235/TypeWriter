@@ -11,6 +11,9 @@ object MultiLineModifierComputer : StaticModifierComputer<MultiLine> {
 	override val annotationClass: Class<MultiLine> = MultiLine::class.java
 
 	override fun computeModifier(annotation: MultiLine, info: FieldInfo): FieldModifier? {
+		// If the field is wrapped in a list or other container we try if the inner type can be modified
+		innerCompute(annotation, info)?.let { return it }
+
 		if (info !is PrimitiveField) {
 			plugin.logger.warning("MultiLine annotation can only be used on strings")
 			return null

@@ -170,10 +170,20 @@ private fun LiteralDSLBuilder.connectCommand() {
 	literal("connect") {
 		requiresPermissions("typewriter.connect")
 		executesConsole {
+			if (CommunicationHandler.server == null) {
+				source.msg("The server is not hosting the websocket. Try and enable it in the config.")
+				return@executesConsole
+			}
+
 			val url = CommunicationHandler.generateUrl(playerId = null)
 			source.msg("Connect to<blue> $url </blue>to start the connection.")
 		}
 		executesPlayer {
+			if (CommunicationHandler.server == null) {
+				source.msg("The server is not hosting the websocket. Try and enable it in the config.")
+				return@executesPlayer
+			}
+
 			val url = CommunicationHandler.generateUrl(source.uniqueId)
 
 			val bookTitle = "<blue>Connect to the server</blue>".asMini()

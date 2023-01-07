@@ -5,6 +5,7 @@ import "package:typewriter/guard/connected_guard.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/pages/book_page.dart";
 import "package:typewriter/pages/connect_page.dart";
+import "package:typewriter/pages/error_connect_page.dart";
 import "package:typewriter/pages/home_page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/pages/pages_list.dart";

@@ -22,7 +22,9 @@ List<MaterialProperty> materialProperties(MaterialPropertiesRef ref, String meta
 
 @riverpod
 List<MapEntry<String, MinecraftMaterial>> computeMaterialsWithProperties(
-    ComputeMaterialsWithPropertiesRef ref, String? meta) {
+  ComputeMaterialsWithPropertiesRef ref,
+  String? meta,
+) {
   final properties = meta != null ? ref.watch(materialPropertiesProvider(meta)) : [];
   return materials.entries
       .where((element) => properties.every((property) => element.value.properties.contains(property)))

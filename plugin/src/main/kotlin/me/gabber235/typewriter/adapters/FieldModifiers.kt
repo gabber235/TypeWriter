@@ -65,6 +65,54 @@ sealed interface FieldModifier {
 
 interface ModifierComputer {
 	fun compute(field: Field, info: FieldInfo): FieldModifier?
+
+	/**
+	 * Checks if the given field is a list and tries to compute the modifier for the list's type.
+	 * This can be called inside the [compute] method.
+	 *
+	 * @param field The field to check
+	 * @param info The info of the field
+	 */
+	fun innerComputeForList(field: Field, info: FieldInfo): FieldModifier? {
+		if (info !is ListField) return null
+		return compute(field, info.type)
+	}
+
+	/**
+	 * Checks if the given field is a map and tries to compute the modifier for the map's key and value.
+	 * This can be called inside the [compute] method.
+	 *
+	 * @param field The field to check
+	 * @param info The info of the field
+	 */
+	fun innerComputeForMap(field: Field, info: FieldInfo): FieldModifier? {
+		if (info !is MapField) return null
+		return FieldModifier.InnerMapModifier(compute(field, info.key), compute(field, info.value))
+	}
+
+	/**
+	 * Checks if the given field is a custom field and tries to compute the modifier for the custom field's type.
+	 * This can be called inside the [compute] method.
+	 *
+	 * @param field The field to check
+	 * @param info The info of the field
+	 */
+	fun innerComputeForCustom(field: Field, info: FieldInfo): FieldModifier? {
+		if (info !is CustomField) return null
+		val customInfo = info.fieldInfo ?: return null
+		return compute(field, customInfo)
+	}
+
+	/**
+	 * Checks if the given field is a list, map or custom field and tries to compute the modifier for the field's type.
+	 * This can be called inside the [compute] method.
+	 *
+	 * @param field The field to check
+	 * @param info The info of the field
+	 */
+	fun innerCompute(field: Field, info: FieldInfo): FieldModifier? {
+		return innerComputeForList(field, info) ?: innerComputeForMap(field, info) ?: innerComputeForCustom(field, info)
+	}
 }
 
 private val computers: List<ModifierComputer> by lazy {
@@ -74,6 +122,7 @@ private val computers: List<ModifierComputer> by lazy {
 		SnakeCaseModifierComputer,
 		MultiLineModifierComputer,
 		MaterialPropertiesModifierComputer,
+		WithRotationModifierComputer,
 	)
 }
 

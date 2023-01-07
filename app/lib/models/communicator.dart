@@ -1,3 +1,4 @@
+import 'dart:async';
 import "dart:convert";
 
 import "package:flutter/material.dart" hide Page;
@@ -21,7 +22,10 @@ enum ConnectionState {
   none,
   connecting,
   connected,
+  disconnected,
 }
+
+final connectionStateProvider = StateProvider<ConnectionState>((ref) => ConnectionState.none);
 
 final socketProvider = StateNotifierProvider<SocketNotifier, Socket?>(SocketNotifier.new);
 
@@ -29,20 +33,26 @@ class SocketNotifier extends StateNotifier<Socket?> {
   SocketNotifier(this.ref) : super(null);
 
   final StateNotifierProviderRef<SocketNotifier, Socket?> ref;
+  bool _disposed = false;
 
-  bool get isConnected {
-    final state = this.state;
-    if (state == null) return false;
-    return !state.disconnected && state.connected;
+  /// When a socket gets disconnected, we want to try to reconnect it.
+  /// Socket.io will try to reconnect automatically.
+  /// Only if this fails within a certain time, we want consider the connection lost.
+  Timer? _disconnectTimer;
+
+  ConnectionState get _connectionState {
+    return ref.read(connectionStateProvider);
   }
 
-  bool get isDisconnected {
-    final state = this.state;
-    if (state == null) return true;
-    return state.disconnected;
+  set _connectionState(ConnectionState state) {
+    if (_disposed) return;
+    ref.read(connectionStateProvider.notifier).state = state;
   }
 
-  ConnectionState _connectionState = ConnectionState.none;
+  bool get _canError {
+    final state = _connectionState;
+    return state == ConnectionState.connecting || state == ConnectionState.connected;
+  }
 
   void init(String hostname, int port, [String? token]) {
     if (state != null) return;
@@ -62,18 +72,28 @@ class SocketNotifier extends StateNotifier<Socket?> {
     debugPrint("Initializing socket");
     final socket = io(
       url,
-      OptionBuilder().setTransports(["websocket"]).disableAutoConnect().disableReconnection().enableForceNew().build(),
+      OptionBuilder().setTransports(["websocket"]).disableAutoConnect().build(),
     );
 
     socket
-      ..onConnect((_) {
-        debugPrint("connected");
+      ..onConnect((data) {
+        if (_disposed) {
+          debugPrint("The socket was disposed so a connect should not be possible. This is a bug.");
+          return;
+        }
+        debugPrint("connected: $data");
+        _disconnectTimer?.cancel();
         state = socket;
+        final shouldSetup = _connectionState == ConnectionState.connecting;
         _connectionState = ConnectionState.connected;
-        setup(socket);
+        if (shouldSetup) setup(socket);
       })
       ..onConnectError((data) {
-        if (_connectionState == ConnectionState.none) return;
+        if (_disposed) {
+          debugPrint("The socket was disposed so a connection error should not be possible. This is a bug.");
+          return;
+        }
+        if (_canError) return;
         _connectionState = ConnectionState.none;
         debugPrint("connect error $data");
         state?.dispose();
@@ -82,7 +102,11 @@ class SocketNotifier extends StateNotifier<Socket?> {
         ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
       })
       ..onConnectTimeout((data) {
-        if (_connectionState == ConnectionState.none) return;
+        if (_disposed) {
+          debugPrint("The socket was disposed so a connection timeout should not be possible. This is a bug.");
+          return;
+        }
+        if (_canError) return;
         _connectionState = ConnectionState.none;
         debugPrint("connect timeout $data");
         state?.dispose();
@@ -90,20 +114,35 @@ class SocketNotifier extends StateNotifier<Socket?> {
         ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
       })
       ..onError((data) {
-        if (_connectionState == ConnectionState.none) return;
+        if (_disposed) {
+          debugPrint("The socket was disposed so an error should not be possible. This is a bug.");
+          return;
+        }
+        if (_canError) return;
         _connectionState = ConnectionState.none;
+
         debugPrint("error $data");
         state?.dispose();
         state = null;
         ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
       })
-      ..onDisconnect((_) {
-        if (_connectionState == ConnectionState.none) return;
-        _connectionState = ConnectionState.none;
-        debugPrint("disconnected");
-        state?.dispose(); // Make sure to dispose the socket
-        state = null;
-        ref.read(appRouter).replaceAll([const HomeRoute()]);
+      ..onDisconnect((data) {
+        if (_disposed) {
+          debugPrint("The socket was disposed so a disconnect should not be possible. This is a bug.");
+          return;
+        }
+        if (_connectionState != ConnectionState.connected) return;
+        _connectionState = ConnectionState.disconnected;
+        debugPrint("disconnected: $data");
+
+        _disconnectTimer = Timer(const Duration(seconds: 30), () {
+          if (_disposed) return;
+          if (_connectionState != ConnectionState.disconnected) return;
+          _connectionState = ConnectionState.none;
+          state?.dispose();
+          state = null;
+          ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
+        });
       })
       ..connect();
   }
@@ -123,6 +162,9 @@ class SocketNotifier extends StateNotifier<Socket?> {
 
   @override
   void dispose() {
+    debugPrint("Disposing socket");
+    _disposed = true;
+    _disconnectTimer?.cancel();
     state?.dispose();
     super.dispose();
   }

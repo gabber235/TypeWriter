@@ -1,6 +1,6 @@
 package me.gabber235.typewriter.adapters
 
-import com.google.gson.JsonObject
+import com.google.gson.*
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import lirand.api.utilities.allFields
@@ -27,7 +27,11 @@ sealed class FieldInfo {
 		fun fromTypeToken(token: TypeToken<*>): FieldInfo {
 			val customEditor = computeCustomEditor(token)
 			if (customEditor != null) {
-				return CustomField(customEditor.name)
+				return CustomField(
+					editor = customEditor.name,
+					fieldInfo = customEditor.generateFieldInfo(token),
+					default = customEditor.generateDefault(token),
+				)
 			}
 
 			val primitive = PrimitiveFieldType.fromTokenType(token)
@@ -62,9 +66,13 @@ sealed class FieldInfo {
 			}
 		}
 	}
+
+	abstract fun default(): JsonElement
 }
 
-class PrimitiveField(val type: PrimitiveFieldType) : FieldInfo()
+class PrimitiveField(val type: PrimitiveFieldType) : FieldInfo() {
+	override fun default(): JsonElement = type.default
+}
 
 
 enum class PrimitiveFieldType {
@@ -80,6 +88,14 @@ enum class PrimitiveFieldType {
 	@SerializedName("string")
 	STRING,
 	;
+
+	val default: JsonElement
+		get() = when (this) {
+			BOOLEAN -> JsonPrimitive(false)
+			DOUBLE  -> JsonPrimitive(0.0)
+			INTEGER -> JsonPrimitive(0)
+			STRING  -> JsonPrimitive("")
+		}
 
 	companion object {
 		fun fromTokenType(token: TypeToken<*>): PrimitiveFieldType? {
@@ -116,16 +132,30 @@ class EnumField(val values: List<String>) : FieldInfo() {
 			return EnumField(values)
 		}
 	}
+
+	override fun default(): JsonElement = JsonPrimitive(values.first())
 }
 
 // If the field is a list, this is the type of the list
-class ListField(val type: FieldInfo) : FieldInfo()
+class ListField(val type: FieldInfo) : FieldInfo() {
+	override fun default(): JsonElement = JsonArray()
+}
 
 // If the field is a map, this is the type of the map
-class MapField(val key: FieldInfo, val value: FieldInfo) : FieldInfo()
+class MapField(val key: FieldInfo, val value: FieldInfo) : FieldInfo() {
+	override fun default(): JsonElement = JsonObject()
+}
 
 // If the field is an object, this is the type of the object
 class ObjectField(val fields: Map<String, FieldInfo>) : FieldInfo() {
+	override fun default(): JsonElement {
+		val obj = JsonObject()
+		fields.forEach { (name, field) ->
+			obj.add(name, field.default())
+		}
+		return obj
+	}
+
 	companion object {
 		fun fromTypeToken(token: TypeToken<*>): ObjectField {
 			val fields = mutableMapOf<String, FieldInfo>()
@@ -150,11 +180,18 @@ class ObjectField(val fields: Map<String, FieldInfo>) : FieldInfo() {
 
 			return ObjectField(fields)
 		}
+
 	}
 }
 
 // If a custom editor takes over a field, this is the type of the object.
 // The custom editor will be responsible for displaying the field.
-class CustomField(val editor: String) : FieldInfo()
+class CustomField(
+	val editor: String,
+	val fieldInfo: FieldInfo? = null,
+	val default: JsonElement = JsonNull.INSTANCE,
+) : FieldInfo() {
+	override fun default(): JsonElement = default
+}
 
 

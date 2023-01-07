@@ -1,21 +1,21 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/widgets/inspector.dart";
-import 'package:typewriter/widgets/inspector/current_editing_field.dart';
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/formatted_text_field.dart";
 
 class NumberEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo type) =>
-      type is PrimitiveField && (type.type == PrimitiveFieldType.integer || type.type == PrimitiveFieldType.double);
+  bool canEdit(FieldInfo info) =>
+      info is PrimitiveField && (info.type == PrimitiveFieldType.integer || info.type == PrimitiveFieldType.double);
 
   @override
-  Widget build(String path, FieldInfo type) => IntegerEditor(path: path, field: type as PrimitiveField);
+  Widget build(String path, FieldInfo info) => IntegerEditor(path: path, field: info as PrimitiveField);
 }
 
 class IntegerEditor extends HookConsumerWidget {

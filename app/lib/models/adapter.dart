@@ -109,6 +109,8 @@ class FieldInfo with _$FieldInfo {
   /// Custom field type, where a custom editor is used.
   const factory FieldInfo.custom({
     required String editor,
+    @JsonKey(name: "default") dynamic defaultValue,
+    FieldInfo? fieldInfo,
     @Default([]) List<Modifier> modifiers,
   }) = CustomField;
 
@@ -159,7 +161,7 @@ extension FieldTypeExtension on FieldInfo {
         list: (type, _) => [],
         map: (key, value, _) => {},
         object: (fields, _) => fields.map((key, value) => MapEntry(key, value.defaultValue)),
-        custom: (editor, _) => null,
+        custom: (_, defaultValue, __, ___) => defaultValue,
       );
 
   /// If the [ObjectEditor] needs to show a default layout or if a field declares a custom layout.

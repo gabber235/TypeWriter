@@ -12,7 +12,7 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/empty_screen.dart";
 import "package:typewriter/widgets/inspector.dart";
-import 'package:typewriter/widgets/inspector/current_editing_field.dart';
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/search_bar.dart";
 

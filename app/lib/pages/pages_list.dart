@@ -185,6 +185,7 @@ class _AddPageDialogue extends HookConsumerWidget {
   const _AddPageDialogue();
 
   Future<void> _addPage(WidgetRef ref, String name) async {
+    debugPrint("Adding page $name");
     await ref.read(communicatorProvider).createPage(name);
     ref.read(bookProvider.notifier).insertPage(model.Page(name: name));
     await ref.read(appRouter).push(PageEditorRoute(id: name));
@@ -246,10 +247,11 @@ class _AddPageDialogue extends HookConsumerWidget {
           hintText: "Page name",
           errorText: error.value.isEmpty ? null : error.value,
         ),
-        onSubmitted: (value) {
+        onSubmitted: (value) async {
           if (!disabled) {
-            _addPage(ref, value);
-            Navigator.of(context).pop(controller.text);
+            final navigator = Navigator.of(context);
+            await _addPage(ref, value);
+            navigator.pop();
           }
         },
       ),

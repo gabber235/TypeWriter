@@ -2,7 +2,6 @@ package me.gabber235.typewriter.adapters.modifiers
 
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.*
-import me.gabber235.typewriter.adapters.FieldModifier.InnerListModifier
 import me.gabber235.typewriter.adapters.FieldModifier.StaticModifier
 
 
@@ -13,17 +12,15 @@ object SnakeCaseModifierComputer : StaticModifierComputer<SnakeCase> {
 	override val annotationClass: Class<SnakeCase> = SnakeCase::class.java
 
 	override fun computeModifier(annotation: SnakeCase, info: FieldInfo): FieldModifier? {
-		// If the field is a list, we try if its child fits.
-		if (info is ListField) {
-			val modifier = computeModifier(annotation, info.type)
-			return modifier?.let { InnerListModifier(it) }
-		}
+		// If the field is wrapped in a list or other container we try if the inner type can be modified
+		innerCompute(annotation, info)?.let { return it }
+
 		if (info !is PrimitiveField) {
-			plugin.logger.warning("SnakeCase annotation can only be used on strings or lists of strings")
+			plugin.logger.warning("SnakeCase annotation can only be used on strings (including in lists or maps)!")
 			return null
 		}
 		if (info.type != PrimitiveFieldType.STRING) {
-			plugin.logger.warning("SnakeCase annotation can only be used on strings or lists of strings")
+			plugin.logger.warning("SnakeCase annotation can only be used on strings (including in lists or maps)!")
 			return null
 		}
 

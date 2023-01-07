@@ -43,7 +43,9 @@ dependencies {
 	compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
 	// Client communication
-	implementation("com.corundumstudio.socketio:netty-socketio:1.7.19")
+	implementation("com.corundumstudio.socketio:netty-socketio:1.7.19") // Keep this on a lower version as the newer version breaks the ping
+	implementation("io.ktor:ktor-server-core:2.2.2")
+	implementation("io.ktor:ktor-server-netty:2.2.2")
 
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
@@ -78,5 +80,32 @@ task<ShadowJar>("buildAndMove") {
 		val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
 		val server = file("server/plugins/%s.jar".format(project.name.capitalizeAsciiOnly()))
 		jar.copyTo(server, overwrite = true)
+	}
+}
+
+task("copyFlutterWebFiles") {
+	group = "build"
+	description = "Copies the flutter web files to the resources folder"
+
+	doLast {
+		val flutterWeb = file("../app/build/web")
+		val flutterWebDest = file("src/main/resources/web")
+		flutterWeb.copyRecursively(flutterWebDest, overwrite = true)
+	}
+}
+
+task<ShadowJar>("buildRelease") {
+	dependsOn("copyFlutterWebFiles", "shadowJar")
+	group = "build"
+	description = "Builds the jar including the flutter web panel"
+
+	doLast {
+		// Remove the flutter web folder
+		val flutterWebDest = file("src/main/resources/web")
+		flutterWebDest.deleteRecursively()
+
+		// Rename the jar to remove the version and -all
+		val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+		jar.renameTo(file("build/libs/%s.jar".format(project.name)))
 	}
 }

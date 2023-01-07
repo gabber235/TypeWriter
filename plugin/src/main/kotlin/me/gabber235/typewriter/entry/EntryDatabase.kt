@@ -3,9 +3,9 @@ package me.gabber235.typewriter.entry
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
-import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.AdapterLoader
+import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
@@ -62,8 +62,14 @@ object EntryDatabase {
 			entryFactory.registerSubtype(it.clazz, it.name)
 		}
 
-		return GsonBuilder()
+		var builder = GsonBuilder()
 			.registerTypeAdapterFactory(entryFactory)
+
+		customEditors.mapValues { it.value.deserializer }.filterValues { it != null }.forEach {
+			builder = builder.registerTypeAdapter(it.key.java, it.value)
+		}
+
+		return builder
 			.create()
 	}
 
