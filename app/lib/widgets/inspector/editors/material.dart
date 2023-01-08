@@ -6,6 +6,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/materials.dart";
+import 'package:typewriter/utils/passing_reference.dart';
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -63,11 +64,11 @@ class MaterialSelectorEditor extends HookConsumerWidget {
       selectedItem: MapEntry(current, materials[current]!),
       onChanged: (entry) {
         if (entry == null) return;
-        ref.read(entryDefinitionProvider)?.updateField(ref, path, entry.key.toUpperCase());
+        ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, entry.key.toUpperCase());
       },
       onSaved: (entry) {
         if (entry == null) return;
-        ref.read(entryDefinitionProvider)?.updateField(ref, path, entry.key.toUpperCase());
+        ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, entry.key.toUpperCase());
       },
       dropdownBuilder: (context, entry) {
         if (entry == null) return Text("Select a material", style: Theme.of(context).inputDecorationTheme.hintStyle);

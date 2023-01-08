@@ -19,6 +19,7 @@ import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import 'package:typewriter/utils/passing_reference.dart';
 import "package:typewriter/widgets/inspector.dart";
 
 part "search_bar.g.dart";
@@ -267,7 +268,7 @@ class _AddEntryAction extends _Action {
     final e = Entry.fromBlueprint(id: _getRandomString(15), blueprint: blueprint);
     final page = ref.read(currentPageProvider);
     if (page == null) return;
-    page.insertEntry(ref, e);
+    page.insertEntry(ref.passing, e);
     ref.read(selectedEntryIdProvider.notifier).state = e.id;
     ref.read(entriesViewProvider.notifier).navigateToViewForEntry(e);
     ref.read(communicatorProvider).createEntry(page.name, e);

@@ -16,6 +16,7 @@ import "package:typewriter/widgets/always_focused.dart";
 import "package:typewriter/widgets/entries_graph.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/search_bar.dart";
+import 'package:typewriter/widgets/select_entries.dart';
 import "package:typewriter/widgets/shortcut_label.dart";
 import "package:typewriter/widgets/staging.dart";
 import "package:typewriter/widgets/static_entries_list.dart";
@@ -129,16 +130,30 @@ class _AppBar extends HookConsumerWidget {
           Text(ref.watch(currentPageLabelProvider)),
           const SizedBox(width: 5),
           const Spacer(),
-          const Flexible(child: GlobalWriters()),
-          const SizedBox(width: 20),
-          const StagingIndicator(key: Key("staging-indicator")),
-          const SizedBox(width: 20),
+          // When selecting entries, we want to disable these interactions
+          SelectingEntriesBlocker(
+            child: Row(
+              children: const [
+                GlobalWriters(),
+                SizedBox(width: 20),
+                StagingIndicator(key: Key("staging-indicator")),
+                SizedBox(width: 20),
+              ],
+            ),
+          ),
           const _ViewModeButtons(),
-          const SizedBox(width: 20),
-          const _SearchBar(),
-          const SizedBox(width: 5),
-          const _AddEntryButton(),
-          const SizedBox(width: 10),
+          // When selecting entries, we want to disable these interactions
+          SelectingEntriesBlocker(
+            child: Row(
+              children: const [
+                SizedBox(width: 20),
+                _SearchBar(),
+                SizedBox(width: 5),
+                _AddEntryButton(),
+                SizedBox(width: 10),
+              ],
+            ),
+          )
         ],
       ),
     );

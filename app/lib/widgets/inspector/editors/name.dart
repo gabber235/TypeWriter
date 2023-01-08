@@ -4,6 +4,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/utils/extensions.dart";
+import 'package:typewriter/utils/passing_reference.dart';
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/formatted_text_field.dart";
@@ -36,7 +37,7 @@ class NameField extends HookConsumerWidget {
             focus: focus,
             text: def?.entry.name,
             onChanged: (value) {
-              def?.updateField(ref, "name", value);
+              def?.updateField(ref.passing, "name", value);
             },
             inputFormatters: [
               snakeCaseFormatter(),

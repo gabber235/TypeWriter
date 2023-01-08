@@ -4,17 +4,16 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors/boolean.dart";
+import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
-import 'package:typewriter/widgets/inspector/editors/location.dart';
+import "package:typewriter/widgets/inspector/editors/location.dart";
 import "package:typewriter/widgets/inspector/editors/map.dart";
 import "package:typewriter/widgets/inspector/editors/material.dart";
 import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
-import 'package:typewriter/widgets/inspector/editors/optional.dart';
-import "package:typewriter/widgets/inspector/editors/static_entry_selector.dart";
+import "package:typewriter/widgets/inspector/editors/optional.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
-import "package:typewriter/widgets/inspector/editors/triggers.dart";
 
 part "editors.g.dart";
 
@@ -26,8 +25,7 @@ dynamic fieldValue(FieldValueRef ref, String path, [dynamic defaultValue]) {
 
 @riverpod
 List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
-      TriggerEditorFilter(),
-      StaticEntrySelectorEditorFilter(),
+      EntrySelectorEditorFilter(),
 
       // Custom Editors
       MaterialSelectorEditorFilter(),

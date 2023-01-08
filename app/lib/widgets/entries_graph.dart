@@ -24,12 +24,6 @@ List<Entry> graphableEntries(GraphableEntriesRef ref) {
 }
 
 @riverpod
-List<String> triggerPaths(TriggerPathsRef ref, String type, bool isReceiver) {
-  final modifiers = ref.watch(fieldModifiersProvider(type, "trigger"));
-  return modifiers.entries.where((entry) => entry.value.data == isReceiver).map((entry) => entry.key).toList();
-}
-
-@riverpod
 Graph graph(GraphRef ref) {
   final entries = ref.watch(graphableEntriesProvider);
   final graph = Graph();
@@ -40,19 +34,14 @@ Graph graph(GraphRef ref) {
   }
 
   for (final entry in entries) {
-    final triggers = ref.watch(triggerPathsProvider(entry.type, false)).expand(entry.getAll);
+    final modifiers = ref.watch(fieldModifiersProvider(entry.type, "trigger"));
+    final triggeredEntryIds =
+        modifiers.entries.map((e) => e.key).expand(entry.getAll).where((id) => id.isNotEmpty).toSet();
 
     final color = ref.watch(entryBlueprintProvider(entry.type))?.color ?? Colors.grey;
 
-    for (final trigger in triggers) {
-      final receivers =
-          entries.where((e) => ref.watch(triggerPathsProvider(e.type, true)).expand(e.getAll).contains(trigger));
-
-      for (final receiver in receivers) {
-        if (receiver.id == entry.id) continue; // Don't connect to self
-
-        graph.addEdge(Node.Id(entry.id), Node.Id(receiver.id), paint: Paint()..color = color);
-      }
+    for (final triggeredEntryId in triggeredEntryIds) {
+      graph.addEdge(Node.Id(entry.id), Node.Id(triggeredEntryId), paint: Paint()..color = color);
     }
   }
 

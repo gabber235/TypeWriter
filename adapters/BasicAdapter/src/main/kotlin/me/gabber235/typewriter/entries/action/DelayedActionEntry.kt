@@ -6,10 +6,11 @@ import kotlinx.coroutines.delay
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Triggers
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
+import me.gabber235.typewriter.entry.entries.EntryTrigger
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
@@ -18,12 +19,11 @@ import org.bukkit.entity.Player
 class DelayedActionEntry(
 	override val id: String = "",
 	override val name: String = "",
-	@SerializedName("triggered_by")
-	override val triggeredBy: List<String> = emptyList(),
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	@SerializedName("triggers")
 	@Triggers
+	@EntryIdentifier(TriggerableEntry::class)
 	val nextTriggers: List<String> = emptyList(),
 	private val duration: Long = 0, // Number of milliseconds
 ) : ActionEntry {
@@ -35,7 +35,7 @@ class DelayedActionEntry(
 		plugin.launch {
 			delay(duration)
 			super.execute(player)
-			InteractionHandler.startInteractionAndTrigger(player, nextTriggers)
+			InteractionHandler.startInteractionAndTrigger(player, nextTriggers.map { EntryTrigger(it) })
 		}
 	}
 }
