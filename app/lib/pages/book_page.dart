@@ -8,6 +8,7 @@ import 'package:typewriter/hooks/delayed_execution.dart';
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
+import 'package:typewriter/widgets/select_entries.dart';
 
 class BookPage extends HookConsumerWidget {
   const BookPage({super.key});
@@ -112,9 +113,18 @@ class _SideRail extends HookConsumerWidget {
             child: Image.asset("assets/typewriter-icon.png"),
           ),
           const SizedBox(height: 10),
-          _RailButton(index++, icon: FontAwesomeIcons.filePen),
-          const Spacer(),
-          const _ReloadBookButton(),
+          Flexible(
+            // When selecting entries we don't want to go to some other page
+            child: SelectingEntriesBlocker(
+              child: Column(
+                children: [
+                  _RailButton(index++, icon: FontAwesomeIcons.filePen),
+                  const Spacer(),
+                  const _ReloadBookButton(),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 10),
         ],
       ),

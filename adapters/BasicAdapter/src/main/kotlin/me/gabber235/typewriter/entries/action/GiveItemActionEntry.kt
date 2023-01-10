@@ -18,7 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta
 class GiveItemActionEntry(
 	override val id: String = "",
 	override val name: String = "",
-	override val triggeredBy: List<String>,
 	override val criteria: List<Criteria>,
 	override val modifiers: List<Modifier>,
 	override val triggers: List<String> = emptyList(),

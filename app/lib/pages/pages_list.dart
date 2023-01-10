@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
@@ -8,13 +10,14 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/book.dart";
-import 'package:typewriter/models/communicator.dart';
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart" as model;
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/empty_screen.dart";
 import "package:typewriter/widgets/filled_button.dart";
-import 'package:typewriter/widgets/writers.dart';
+import 'package:typewriter/widgets/select_entries.dart';
+import "package:typewriter/widgets/writers.dart";
 
 part "pages_list.g.dart";
 
@@ -49,16 +52,19 @@ class _PagesSelector extends HookConsumerWidget {
       width: 170,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 12),
-            Text("Pages", style: Theme.of(context).textTheme.subtitle1?.copyWith(color: Colors.white)),
-            const SizedBox(height: 12),
-            for (final name in pageNames) _PageTile(name: name),
-            const SizedBox(height: 12),
-            const _AddPageButton(),
-          ],
+        // When selecting entries we don't want to be able to switch pages or add new ones
+        child: SelectingEntriesBlocker(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
+              Text("Pages", style: Theme.of(context).textTheme.subtitle1?.copyWith(color: Colors.white)),
+              const SizedBox(height: 12),
+              for (final name in pageNames) _PageTile(name: name),
+              const SizedBox(height: 12),
+              const _AddPageButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -188,7 +194,7 @@ class _AddPageDialogue extends HookConsumerWidget {
     debugPrint("Adding page $name");
     await ref.read(communicatorProvider).createPage(name);
     ref.read(bookProvider.notifier).insertPage(model.Page(name: name));
-    await ref.read(appRouter).push(PageEditorRoute(id: name));
+    unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));
   }
 
   /// Validates the proposed name for a page.
@@ -263,8 +269,10 @@ class _AddPageDialogue extends HookConsumerWidget {
         FilledButton.icon(
           onPressed: disabled
               ? null
-              : () {
-                  Navigator.of(context).pop(controller.text);
+              : () async {
+                  final navigator = Navigator.of(context);
+                  await _addPage(ref, controller.text);
+                  navigator.pop();
                 },
           label: const Text("Add"),
           icon: const Icon(FontAwesomeIcons.plus),

@@ -82,51 +82,13 @@ object EntryDatabase {
 		return entries.filterIsInstance(klass.java).firstOrNull(predicate)
 	}
 
-	@Deprecated("Old Api, use Query", ReplaceWith("Query(klass) findWhere predicate"))
-	fun <T : EventEntry> findEventEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
-		return events.filterIsInstance(klass.java).filter(predicate)
-	}
-
-	internal fun findDialogue(trigger: String, facts: Set<Fact>): DialogueEntry? {
-		val rules = dialogue.filter { trigger in it.triggeredBy }.sortedByDescending { it.criteria.size }
-		return rules.find { rule -> rule.criteria.matches(facts) }
-	}
-
-	internal fun findActions(trigger: String, facts: Set<Fact>): List<ActionEntry> {
-		return actions.filter { trigger in it.triggeredBy }.filter { rule -> rule.criteria.matches(facts) }
-	}
-
 	internal fun getEntity(id: String) = entities.firstOrNull { it.id == id }
 
 	@JvmName("getEntityWithType")
 	internal inline fun <reified E : EntityEntry> getEntity(id: String) = getEntity(id) as? E
 
-	@Deprecated("Old Api, use Query", ReplaceWith("Query(klass) findByName name"))
-	fun findEntityByName(name: String) = entities.firstOrNull { it.name == name }
-
-	@JvmName("findEntityByNameWithType")
-	@Deprecated("Old Api, use Query", ReplaceWith("Query(E::class) findByName name"))
-	inline fun <reified E : EntityEntry> findEntityByName(name: String) = (Query(E::class) findByName name)
-
-	fun getFact(id: String) = facts.firstOrNull { it.id == id }
-	fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
-
-	fun getAllTriggers() = listOf(
-		*events.toTypedArray(),
-		*dialogue.toTypedArray(),
-		*actions.toTypedArray()
-	).flatMap { entry ->
-		val triggers = entry.triggers.toMutableList()
-		if (entry is RuleEntry) {
-			triggers += entry.triggeredBy
-		}
-		// TODO Fix this in a better way, such that Adapters can change this.
-//		if (entry is OptionDialogueEntry) {
-//			triggers += entry.options.flatMap { it.triggers }
-//		}
-
-		triggers
-	}
+	internal fun getFact(id: String) = facts.firstOrNull { it.id == id }
+	internal fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
 }
 
 private fun JsonReader.parsePage(gson: Gson): Page =

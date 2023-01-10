@@ -3,6 +3,8 @@ package me.gabber235.typewriter.entry.dialogue
 import lirand.api.extensions.world.playSound
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.Event
+import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
+import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.InteractionHandler
 import org.bukkit.*
@@ -44,10 +46,10 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 
 		if (currentMessenger.state == MessengerState.FINISHED) {
 			isActive = false
-			InteractionHandler.triggerEvent(Event("system.dialogue.next", player))
+			InteractionHandler.triggerEvent(Event(player, DIALOGUE_NEXT))
 		} else if (currentMessenger.state == MessengerState.CANCELLED) {
 			isActive = false
-			InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
+			InteractionHandler.triggerEvent(Event(player, DIALOGUE_END))
 		}
 	}
 

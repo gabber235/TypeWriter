@@ -2,11 +2,11 @@ package me.gabber235.typewriter.adapters.modifiers
 
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.*
-import me.gabber235.typewriter.adapters.FieldModifier.DynamicModifier
 import me.gabber235.typewriter.adapters.FieldModifier.InnerListModifier
+import me.gabber235.typewriter.adapters.FieldModifier.StaticModifier
 
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
-annotation class Triggers(val isReceiver: Boolean = false)
+annotation class Triggers
 
 object TriggersModifierComputer : StaticModifierComputer<Triggers> {
 	override val annotationClass: Class<Triggers> = Triggers::class.java
@@ -25,6 +25,6 @@ object TriggersModifierComputer : StaticModifierComputer<Triggers> {
 			return null
 		}
 
-		return InnerListModifier(DynamicModifier("trigger", annotation.isReceiver))
+		return InnerListModifier(StaticModifier("trigger"))
 	}
 }

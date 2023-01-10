@@ -5,6 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.facts.FactDatabase
 import org.bukkit.entity.Player
@@ -23,7 +24,7 @@ object TypewriteExpansion : PlaceholderExpansion() {
 		if (params.startsWith("speaker_")) {
 			val speakerName = params.substring(8)
 			val speaker =
-				EntryDatabase.findEntityByName<SpeakerEntry>(speakerName) ?: EntryDatabase.getEntity<SpeakerEntry>(
+				Query.findByName(speakerName) ?: EntryDatabase.getEntity<SpeakerEntry>(
 					speakerName
 				)
 				?: return null

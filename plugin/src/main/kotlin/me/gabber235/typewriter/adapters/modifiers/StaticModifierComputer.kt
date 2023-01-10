@@ -38,7 +38,7 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
 	 */
 	fun innerComputeForList(annotation: A, info: FieldInfo): FieldModifier? {
 		if (info !is ListField) return null
-		return computeModifier(annotation, info.type)
+		return computeModifier(annotation, info.type)?.let { FieldModifier.InnerListModifier(it) }
 	}
 
 	/**
@@ -50,10 +50,11 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
 	 */
 	fun innerComputeForMap(annotation: A, info: FieldInfo): FieldModifier? {
 		if (info !is MapField) return null
-		return FieldModifier.InnerMapModifier(
-			computeModifier(annotation, info.key),
-			computeModifier(annotation, info.value)
-		)
+		val keyModifier = computeModifier(annotation, info.key)
+		val valueModifier = computeModifier(annotation, info.value)
+
+		if (keyModifier == null && valueModifier == null) return null
+		return FieldModifier.InnerMapModifier(keyModifier, valueModifier)
 	}
 
 	/**
@@ -66,7 +67,7 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
 	fun innerComputeForCustom(annotation: A, info: FieldInfo): FieldModifier? {
 		if (info !is CustomField) return null
 		val customInfo = info.fieldInfo ?: return null
-		return computeModifier(annotation, customInfo)
+		return computeModifier(annotation, customInfo)?.let { FieldModifier.InnerCustomModifier(it) }
 	}
 
 	/**

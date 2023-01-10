@@ -40,18 +40,18 @@ final _fuzzyEntriesProvider = AutoDisposeProvider<Fuzzy<Entry>>(
       : _$_fuzzyEntriesHash,
 );
 typedef _FuzzyEntriesRef = AutoDisposeProviderRef<Fuzzy<Entry>>;
-String _$_fuzzyAddEntriesHash() => r'68074cdb6afb1954d9991dbc7bd39d4e098742dd';
+String _$_fuzzyBlueprintsHash() => r'4f3deb485417dd7aa708887da6bafa06a4e42798';
 
-/// See also [_fuzzyAddEntries].
-final _fuzzyAddEntriesProvider = AutoDisposeProvider<Fuzzy<EntryBlueprint>>(
-  _fuzzyAddEntries,
-  name: r'_fuzzyAddEntriesProvider',
+/// See also [_fuzzyBlueprints].
+final _fuzzyBlueprintsProvider = AutoDisposeProvider<Fuzzy<EntryBlueprint>>(
+  _fuzzyBlueprints,
+  name: r'_fuzzyBlueprintsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$_fuzzyAddEntriesHash,
+      : _$_fuzzyBlueprintsHash,
 );
-typedef _FuzzyAddEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryBlueprint>>;
-String _$_actionsHash() => r'413eba634e478b1cc7163b4711b3a73cf1871d59';
+typedef _FuzzyBlueprintsRef = AutoDisposeProviderRef<Fuzzy<EntryBlueprint>>;
+String _$_actionsHash() => r'1196b42fa9a321108ae320068529110d64cffb0b';
 
 /// See also [_actions].
 final _actionsProvider = AutoDisposeProvider<List<_Action>>(

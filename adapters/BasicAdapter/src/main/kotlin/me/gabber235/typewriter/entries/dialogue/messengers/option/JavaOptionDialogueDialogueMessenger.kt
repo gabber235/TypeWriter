@@ -12,7 +12,6 @@ import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.facts.facts
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.utils.asMini
-import me.gabber235.typewriter.utils.sendMessage
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
@@ -70,7 +69,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 	override fun tick(cycle: Int) {
 		val message = """
 			|<gray><st>${" ".repeat(60)}</st>
-			|<white> ${speakerDisplayName}: ${entry.text}
+			|<white> ${speakerDisplayName}<reset>: ${entry.text}
 			|
 			|${formatOptions()}
 			|<#5d6c78>[ <grey><white>Scroll</white> to change option and press<white> <key:key.swapOffhand> </white>to select <#5d6c78>]</#5d6c78>

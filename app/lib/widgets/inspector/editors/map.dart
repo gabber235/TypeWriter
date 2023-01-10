@@ -5,6 +5,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import 'package:typewriter/utils/passing_reference.dart';
 import "package:typewriter/widgets/filled_button.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -37,7 +38,7 @@ class MapEditor extends HookConsumerWidget {
     if (key == null) return;
     final val = field.value.defaultValue;
     ref.read(entryDefinitionProvider)?.updateField(
-      ref,
+      ref.passing,
       path,
       {
         ...value.map(MapEntry.new),
@@ -119,7 +120,7 @@ class _MapEntry extends HookConsumerWidget {
 
   void _changeKeyField(WidgetRef ref, String key) {
     ref.read(entryDefinitionProvider)?.updateField(
-      ref,
+      ref.passing,
       path,
       {
         ...map.map(MapEntry.new)..removeWhere((key, value) => key == entry.key),
@@ -169,7 +170,7 @@ class _MapEntry extends HookConsumerWidget {
     };
 
     ref.read(entryDefinitionProvider)?.updateField(
-          ref,
+          ref.passing,
           path,
           newValue,
         );

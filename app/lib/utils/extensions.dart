@@ -10,17 +10,19 @@ extension BuildContextExtension on BuildContext {
 
 extension StringExtension on String {
   String get capitalize {
-    if (isEmpty) {
-      return this;
-    }
+    if (isEmpty) return this;
     return "${this[0].toUpperCase()}${substring(1)}";
   }
 
   String get formatted {
-    if (isEmpty) {
-      return this;
-    }
+    if (isEmpty) return this;
     return split(".").map((e) => e.capitalize).join(" | ").split("_").map((e) => e.capitalize).join(" ");
+  }
+
+  String get singular {
+    if (isEmpty) return this;
+    if (!endsWith("s")) return this;
+    return substring(0, length - 1);
   }
 }
 

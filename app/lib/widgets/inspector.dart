@@ -6,10 +6,12 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
+import 'package:typewriter/utils/passing_reference.dart';
 import "package:typewriter/widgets/inspector/editors/name.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/heading.dart";
 import "package:typewriter/widgets/inspector/operations.dart";
+import 'package:typewriter/widgets/select_entries.dart';
 
 part "inspector.g.dart";
 
@@ -30,6 +32,13 @@ class Inspector extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedEntry = ref.watch(selectedEntryProvider);
+    final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
+
+    // When we are selecting entries, we want a special inspector that allows
+    // us to select entries.
+    if (isSelectingEntries) {
+      return const EntriesSelectorInspector();
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -80,12 +89,12 @@ class EntryDefinition {
   final Entry entry;
   final EntryBlueprint adapterEntry;
 
-  void updateEntry(WidgetRef ref, Entry entry) {
+  void updateEntry(PassingRef ref, Entry entry) {
     final page = ref.read(currentPageProvider);
     page?.insertEntry(ref, entry);
   }
 
-  void updateField(WidgetRef ref, String field, dynamic value) {
+  void updateField(PassingRef ref, String field, dynamic value) {
     final entry = this.entry.copyWith(field, value);
     updateEntry(ref, entry);
 

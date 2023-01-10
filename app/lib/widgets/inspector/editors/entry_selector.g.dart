@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'static_entry_selector.dart';
+part of 'entry_selector.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -29,32 +29,30 @@ class _SystemHash {
   }
 }
 
-String _$staticEntriesFromTagHash() =>
-    r'989565778ece8018abccd6a7a8c7168c84cb166d';
+String _$entriesFromTagHash() => r'33a9868fdd798563abb49d7ff3c7a5acfe123a30';
 
-/// See also [staticEntriesFromTag].
-class StaticEntriesFromTagProvider
-    extends AutoDisposeProvider<Map<String, Entry>> {
-  StaticEntriesFromTagProvider(
+/// See also [entriesFromTag].
+class EntriesFromTagProvider extends AutoDisposeProvider<Map<String, Entry>> {
+  EntriesFromTagProvider(
     this.tag,
   ) : super(
-          (ref) => staticEntriesFromTag(
+          (ref) => entriesFromTag(
             ref,
             tag,
           ),
-          from: staticEntriesFromTagProvider,
-          name: r'staticEntriesFromTagProvider',
+          from: entriesFromTagProvider,
+          name: r'entriesFromTagProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$staticEntriesFromTagHash,
+                  : _$entriesFromTagHash,
         );
 
   final String tag;
 
   @override
   bool operator ==(Object other) {
-    return other is StaticEntriesFromTagProvider && other.tag == tag;
+    return other is EntriesFromTagProvider && other.tag == tag;
   }
 
   @override
@@ -66,25 +64,25 @@ class StaticEntriesFromTagProvider
   }
 }
 
-typedef StaticEntriesFromTagRef = AutoDisposeProviderRef<Map<String, Entry>>;
+typedef EntriesFromTagRef = AutoDisposeProviderRef<Map<String, Entry>>;
 
-/// See also [staticEntriesFromTag].
-final staticEntriesFromTagProvider = StaticEntriesFromTagFamily();
+/// See also [entriesFromTag].
+final entriesFromTagProvider = EntriesFromTagFamily();
 
-class StaticEntriesFromTagFamily extends Family<Map<String, Entry>> {
-  StaticEntriesFromTagFamily();
+class EntriesFromTagFamily extends Family<Map<String, Entry>> {
+  EntriesFromTagFamily();
 
-  StaticEntriesFromTagProvider call(
+  EntriesFromTagProvider call(
     String tag,
   ) {
-    return StaticEntriesFromTagProvider(
+    return EntriesFromTagProvider(
       tag,
     );
   }
 
   @override
   AutoDisposeProvider<Map<String, Entry>> getProviderOverride(
-    covariant StaticEntriesFromTagProvider provider,
+    covariant EntriesFromTagProvider provider,
   ) {
     return call(
       provider.tag,
@@ -98,5 +96,5 @@ class StaticEntriesFromTagFamily extends Family<Map<String, Entry>> {
   List<ProviderOrFamily>? get dependencies => null;
 
   @override
-  String? get name => r'staticEntriesFromTagProvider';
+  String? get name => r'entriesFromTagProvider';
 }

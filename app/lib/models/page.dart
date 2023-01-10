@@ -8,6 +8,7 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
 import 'package:typewriter/models/communicator.dart';
 import "package:typewriter/utils/extensions.dart";
+import 'package:typewriter/utils/passing_reference.dart';
 
 part "page.freezed.dart";
 part "page.g.dart";
@@ -38,12 +39,12 @@ class Page with _$Page {
 }
 
 extension PageExtension on Page {
-  void updatePage(WidgetRef ref, Page Function(Page) update) {
+  void updatePage(PassingRef ref, Page Function(Page) update) {
     final newPage = update(this);
     ref.read(bookProvider.notifier).insertPage(newPage);
   }
 
-  void insertEntry(WidgetRef ref, Entry entry) {
+  void insertEntry(PassingRef ref, Entry entry) {
     updatePage(
       ref,
       (page) => _insertEntry(page, entry),
@@ -70,7 +71,7 @@ extension PageExtension on Page {
     );
   }
 
-  void deleteEntry(WidgetRef ref, Entry entry) {
+  void deleteEntry(PassingRef ref, Entry entry) {
     ref.read(communicatorProvider).deleteEntry(name, entry.id);
     updatePage(
       ref,
@@ -81,7 +82,7 @@ extension PageExtension on Page {
   }
 
   /// This should only be used to sync the entry from the server.
-  void syncDeleteEntry(Ref<dynamic> ref, String entryId) {
+  void syncDeleteEntry(PassingRef ref, String entryId) {
     ref.read(bookProvider.notifier).insertPage(
           copyWith(
             entries: [...entries.where((e) => e.id != entryId)],

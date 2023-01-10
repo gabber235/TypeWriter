@@ -3,11 +3,12 @@ package me.gabber235.typewriter.citizens.entries.events
 import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.StaticEntryIdentifier
+import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.citizens.TypewriterTrait
 import me.gabber235.typewriter.citizens.entries.entities.Npc
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
+import me.gabber235.typewriter.entry.entries.SystemTrigger
 import me.gabber235.typewriter.utils.Icons
 import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
@@ -18,7 +19,7 @@ class NpcInteractEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
-	@StaticEntryIdentifier(Npc::class)
+	@EntryIdentifier(Npc::class)
 	val identifier: String = "",
 ) : EventEntry
 
@@ -30,7 +31,7 @@ private fun onNpcInteract(player: Player, identifier: String, query: Query<NpcIn
 	}
 	query.findWhere {
 		it.identifier == speaker.id
-	}.startInteractionWithOrTrigger(player, "system.dialogue.next")
+	}.startInteractionWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
 }
 
 @EntryListener(NpcInteractEventEntry::class)

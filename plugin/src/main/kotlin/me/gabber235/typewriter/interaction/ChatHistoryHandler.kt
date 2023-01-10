@@ -3,7 +3,8 @@ package me.gabber235.typewriter.interaction
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.*
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.asMini
+import me.gabber235.typewriter.utils.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
@@ -21,11 +22,7 @@ object ChatHistoryHandler :
 		if (event.packetType == PacketType.Play.Server.SYSTEM_CHAT) {
 			val handle = event.packet.handle
 			val method = handle::class.java.getMethod("content")
-			val content = method.invoke(handle) as? String
-			if (content == null) {
-				plugin.logger.warning("Could not get content from packet")
-				return
-			}
+			val content = method.invoke(handle) as? String ?: return
 			val component = GsonComponentSerializer.gson().deserialize(content)
 			// If the message is a broadcast of previous messages.
 			// We don't want to add this to the history.

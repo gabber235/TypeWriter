@@ -1,11 +1,9 @@
 package me.gabber235.typewriter.entries.dialogue
 
-import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.SnakeCase
+import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Triggers
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.utils.Icons
 
@@ -13,8 +11,6 @@ import me.gabber235.typewriter.utils.Icons
 data class OptionDialogueEntry(
 	override val id: String = "",
 	override val name: String = "",
-	@SerializedName("triggered_by")
-	override val triggeredBy: List<String> = emptyList(),
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
@@ -28,6 +24,6 @@ data class Option(
 	val criteria: List<Criteria> = emptyList(),
 	val modifiers: List<Modifier> = emptyList(),
 	@Triggers
-	@SnakeCase
+	@EntryIdentifier(TriggerableEntry::class)
 	val triggers: List<String> = emptyList()
 )

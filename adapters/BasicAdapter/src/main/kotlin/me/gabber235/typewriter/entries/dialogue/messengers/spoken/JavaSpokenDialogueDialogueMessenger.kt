@@ -45,7 +45,7 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
 		val message = """
 				|<gray><st>${" ".repeat(60)}</st>
 				|
-				|<gray>    [ <bold>$speakerDisplayName</bold> ]
+				|<gray>    [ <bold>$speakerDisplayName</bold><reset><gray> ]
 				|
 				|<white>
 			""".trimMargin()

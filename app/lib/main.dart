@@ -27,6 +27,7 @@ class TypeWriterApp extends HookConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerDelegate: router.delegate(),
       routeInformationParser: router.defaultRouteParser(),
+      shortcuts: WidgetsApp.defaultShortcuts,
     );
   }
 

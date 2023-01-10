@@ -3,6 +3,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
+import 'package:typewriter/utils/passing_reference.dart';
 import "package:typewriter/widgets/filled_button.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
@@ -52,7 +53,7 @@ class _DeleteEntry extends HookConsumerWidget {
 
   void _deleteEntry(WidgetRef ref, Entry entry) {
     ref.read(selectedEntryIdProvider.notifier).state = "";
-    ref.read(currentPageProvider)?.deleteEntry(ref, entry);
+    ref.read(currentPageProvider)?.deleteEntry(ref.passing, entry);
   }
 
   Future<void> _confirmDeleteAndDelete(

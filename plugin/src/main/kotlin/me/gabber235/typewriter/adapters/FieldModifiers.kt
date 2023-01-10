@@ -61,6 +61,14 @@ sealed interface FieldModifier {
 			modifiers.forEach { it.appendModifier(info) }
 		}
 	}
+
+	class InnerCustomModifier(val modifier: FieldModifier) : FieldModifier {
+		override fun appendModifier(info: FieldInfo) {
+			if (info !is CustomField) return
+			val customInfo = info.fieldInfo ?: return
+			modifier.appendModifier(customInfo)
+		}
+	}
 }
 
 interface ModifierComputer {
@@ -75,7 +83,7 @@ interface ModifierComputer {
 	 */
 	fun innerComputeForList(field: Field, info: FieldInfo): FieldModifier? {
 		if (info !is ListField) return null
-		return compute(field, info.type)
+		return compute(field, info.type)?.let { FieldModifier.InnerListModifier(it) }
 	}
 
 	/**
@@ -87,7 +95,11 @@ interface ModifierComputer {
 	 */
 	fun innerComputeForMap(field: Field, info: FieldInfo): FieldModifier? {
 		if (info !is MapField) return null
-		return FieldModifier.InnerMapModifier(compute(field, info.key), compute(field, info.value))
+		val keyModifier = compute(field, info.key)
+		val valueModifier = compute(field, info.value)
+
+		if (keyModifier == null && valueModifier == null) return null
+		return FieldModifier.InnerMapModifier(keyModifier, valueModifier)
 	}
 
 	/**
@@ -100,7 +112,7 @@ interface ModifierComputer {
 	fun innerComputeForCustom(field: Field, info: FieldInfo): FieldModifier? {
 		if (info !is CustomField) return null
 		val customInfo = info.fieldInfo ?: return null
-		return compute(field, customInfo)
+		return compute(field, customInfo)?.let { FieldModifier.InnerCustomModifier(it) }
 	}
 
 	/**
@@ -118,7 +130,7 @@ interface ModifierComputer {
 private val computers: List<ModifierComputer> by lazy {
 	listOf(
 		TriggersModifierComputer,
-		StaticSelectorModifierComputer,
+		EntrySelectorModifierComputer,
 		SnakeCaseModifierComputer,
 		MultiLineModifierComputer,
 		MaterialPropertiesModifierComputer,

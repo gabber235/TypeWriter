@@ -12,6 +12,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
+import 'package:typewriter/utils/passing_reference.dart';
 import "package:typewriter/utils/socket_extensions.dart";
 
 part "communicator.g.dart";
@@ -311,7 +312,7 @@ class Communicator {
     final entryId = json["entryId"] as String;
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
-    page.syncDeleteEntry(ref, entryId);
+    page.syncDeleteEntry(ref.passing, entryId);
   }
 
   void handleUpdateWriters(dynamic data) {
