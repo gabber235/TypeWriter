@@ -7,6 +7,7 @@ import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.BLOCK
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.ITEM
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
+import me.gabber235.typewriter.entry.entries.SystemTrigger
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.Material
@@ -38,7 +39,7 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
 	// The even triggers twice. Both for the main hand and offhand.
 	// We only want to trigger once.
 	if (event.hand != org.bukkit.inventory.EquipmentSlot.HAND) return // Disable off-hand interactions
-	query findWhere { entry ->
+	query.findWhere { entry ->
 		// Check if the player clicked on the correct location
 		if (!entry.location.map { it == event.clickedBlock!!.location }.orElse(true)) return@findWhere false
 
@@ -46,5 +47,5 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
 		if (!entry.itemInHand.map { hasMaterialInHand(event.player, it) }.orElse(true)) return@findWhere false
 
 		entry.block == event.clickedBlock!!.type
-	} triggerAllFor event.player
+	}.startInteractionWithOrTrigger(event.player, SystemTrigger.DIALOGUE_NEXT)
 }

@@ -89,7 +89,7 @@ Fuzzy<Entry> _fuzzyEntries(_FuzzyEntriesRef ref) {
 }
 
 @riverpod
-Fuzzy<EntryBlueprint> _fuzzyAddEntries(_FuzzyAddEntriesRef ref) {
+Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
   final blueprints = ref.watch(entryBlueprintsProvider);
 
   return Fuzzy(
@@ -108,7 +108,7 @@ Fuzzy<EntryBlueprint> _fuzzyAddEntries(_FuzzyAddEntriesRef ref) {
 List<_Action> _actions(_ActionsRef ref) {
   final query = ref.watch(_queryProvider);
   final fuzzy = ref.watch(_fuzzyEntriesProvider);
-  final fuzzyAddEntries = ref.watch(_fuzzyAddEntriesProvider);
+  final fuzzyBlueprints = ref.watch(_fuzzyBlueprintsProvider);
   final blueprints = ref.watch(entryBlueprintsProvider);
 
   if (query.isEmpty) return [];
@@ -116,11 +116,11 @@ List<_Action> _actions(_ActionsRef ref) {
 
   // If the query contains a ":" we want to refine our search.
   if (query.contains(":")) {
-    final operatorFindings = _findActionsForOperator(query, blueprints, fuzzy, fuzzyAddEntries);
+    final operatorFindings = _findActionsForOperator(query, blueprints, fuzzy, fuzzyBlueprints);
     if (operatorFindings != null) return operatorFindings;
   }
 
-  final addResults = fuzzyAddEntries.search(query).map((e) => e.item).toList();
+  final addResults = fuzzyBlueprints.search(query).map((e) => e.item).toList();
 
   return addResults.map(_AddEntryAction.new).whereType<_Action>().toList() +
       results
@@ -136,13 +136,17 @@ List<_Action> _actions(_ActionsRef ref) {
 /// Finds actions for a given operator.
 /// If a query contains a ":" it means that its prefix will be the operator
 List<_Action>? _findActionsForOperator(
-    String query, List<EntryBlueprint> blueprints, Fuzzy<Entry> fuzzy, Fuzzy<EntryBlueprint> fuzzyAddEntries) {
+  String query,
+  List<EntryBlueprint> blueprints,
+  Fuzzy<Entry> fuzzy,
+  Fuzzy<EntryBlueprint> fuzzyBlueprints,
+) {
   final prefix = query.split(":").first.toLowerCase();
   final suffix = query.split(":").last.toLowerCase().trim();
 
   // If it starts with "add" we want to add a new entry.
   if (prefix == "add") {
-    return blueprints.where((b) => b.name.toLowerCase().contains(suffix)).map(_AddEntryAction.new).toList();
+    return fuzzyBlueprints.search(suffix).map((e) => e.item).map(_AddEntryAction.new).whereType<_Action>().toList();
   }
 
   // If it starts with a type we want to filter the results by that type.
@@ -168,7 +172,7 @@ List<_Action>? _findActionsForOperator(
     if (blueprint == null) return null;
     return _EntryAction(entry, blueprint);
   }).toList();
-  final blueprintTags = fuzzyAddEntries
+  final blueprintTags = fuzzyBlueprints
       .search(suffix)
       .map((e) => e.item)
       .where((e) => e.tags.contains(prefix))

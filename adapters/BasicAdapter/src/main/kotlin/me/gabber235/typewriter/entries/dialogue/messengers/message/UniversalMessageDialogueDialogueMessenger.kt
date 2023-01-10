@@ -21,7 +21,7 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
 		super.tick(cycle)
 		if (cycle == 0) {
 			player.sendMini(
-				"\n<gray> [ <bold>${entry.speakerDisplayName}</bold> ]\n<reset><white> ${
+				"\n<gray> [ <bold>${entry.speakerDisplayName}</bold><reset><gray> ]\n<reset><white> ${
 					entry.text.parsePlaceholders(
 						player
 					)
