@@ -100,9 +100,39 @@ void main() {
     expect(newEntry.get("complex_map.key2.inner_list.1.name"), "new_name");
   });
 
-  test("When a entry is updated, expect the original entry to be unchanged", () {
+  test("When an entry is updated, expect the original entry to be unchanged", () {
     final entry = Entry(rawDynamicEntry);
     entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
     expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
+  });
+
+  test("When an entry copied with a mapped value, the new value is returned", () {
+    final entry = Entry(rawDynamicEntry);
+    final newEntry = entry.copyMapped((data) {
+      if (data == "test2") {
+        return "new_name";
+      }
+      return data;
+    });
+
+    expect(newEntry.get("complex_list.1.name"), "new_name");
+    expect(newEntry.get("complex_map.key1.inner_list.1.name"), "new_name");
+    expect(newEntry.get("complex_map.key2.name"), "new_name");
+    expect(newEntry.get("complex_map.key2.inner_list.1.name"), "test_b");
+  });
+
+  test("When a entry copied while the mapping is given null, the value is removed from the entry", () {
+    final entry = Entry(rawDynamicEntry);
+    final newEntry = entry.copyMapped((data) {
+      if (data == "test2") {
+        return null;
+      }
+      return data;
+    });
+
+    expect(newEntry.get("complex_list.1.name"), null);
+    expect(newEntry.get("complex_map.key1.inner_list.1.name"), null);
+    expect(newEntry.get("complex_map.key2.name"), null);
+    expect(newEntry.get("complex_map.key2.inner_list.1.name"), "test_b");
   });
 }

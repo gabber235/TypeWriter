@@ -191,7 +191,6 @@ class _AddPageDialogue extends HookConsumerWidget {
   const _AddPageDialogue();
 
   Future<void> _addPage(WidgetRef ref, String name) async {
-    debugPrint("Adding page $name");
     await ref.read(communicatorProvider).createPage(name);
     ref.read(bookProvider.notifier).insertPage(model.Page(name: name));
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));

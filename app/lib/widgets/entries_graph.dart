@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:graphview/GraphView.dart";
@@ -88,7 +89,8 @@ class EntriesGraph extends HookConsumerWidget {
           ..style = PaintingStyle.stroke,
         builder: (node) {
           final id = node.key!.value as String?;
-          final entry = entries.firstWhere((entry) => entry.id == id);
+          final entry = entries.firstWhereOrNull((entry) => entry.id == id);
+          if (entry == null) return const SizedBox();
           return EntryNode(
             entry: entry,
             key: ValueKey(entry.id),

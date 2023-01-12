@@ -62,12 +62,8 @@ class Dropdown<T> extends HookWidget {
                   )
                   .toList(),
               onChanged: (value) {
-                debugPrint("Dropdown: $value");
                 if (value == null) return;
                 onChanged(value);
-              },
-              onTap: () {
-                debugPrint("DropdownButton onTap");
               },
             ),
           ),

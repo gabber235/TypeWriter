@@ -76,9 +76,17 @@ extension PageExtension on Page {
     updatePage(
       ref,
       (page) => page.copyWith(
-        entries: [...page.entries.where((e) => e.id != entry.id)],
+        entries: [...page.entries.where((e) => e.id != entry.id).map((e) => _fixEntry(ref, e, entry))],
       ),
     );
+  }
+
+  /// When an entry is delete all references in other entries need to be removed.
+  Entry _fixEntry(PassingRef ref, Entry entry, Entry deleting) {
+    return entry.copyMapped((data) {
+      if (data != deleting.id) return data;
+      return null; // Remove the reference.
+    });
   }
 
   /// This should only be used to sync the entry from the server.
@@ -202,6 +210,53 @@ class Entry {
       current[int.parse(last)] = value;
     }
 
+    return Entry(data);
+  }
+
+  /// Returns a new copy of this entry with all values being mapped.
+  /// All possible fields are check and mapped to a new value. If the new value is null, the field is removed from the map or list.
+  /// If the new value is a map or list, the old value is replaced with the new one.
+  /// If the new value is a primitive, the old value is replaced with the new one.
+  Entry copyMapped(dynamic Function(dynamic) mapper) {
+    final data = jsonDecode(jsonEncode(this.data));
+    final current = <dynamic>[data];
+    final next = <dynamic>[];
+    while (current.isNotEmpty) {
+      for (final item in current) {
+        if (item is Map) {
+          for (final key in item.keys.toList()) {
+            final value = item[key];
+            final newValue = mapper(value);
+            if (newValue == null) {
+              item.remove(key);
+            } else if (newValue is Map || newValue is List) {
+              item[key] = newValue;
+              next.add(newValue);
+            } else {
+              item[key] = newValue;
+            }
+          }
+        }
+        if (item is List) {
+          for (final index in item.indices) {
+            final value = item[index];
+            final newValue = mapper(value);
+            if (newValue == null) {
+              item.removeAt(index);
+            } else if (newValue is Map || newValue is List) {
+              item[index] = newValue;
+              next.add(newValue);
+            } else {
+              item[index] = newValue;
+            }
+          }
+        }
+      }
+      current
+        ..clear()
+        ..addAll(next);
+      next.clear();
+    }
     return Entry(data);
   }
 

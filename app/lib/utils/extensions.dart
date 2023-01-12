@@ -30,6 +30,10 @@ extension ObjectExtension on Object? {
   T? cast<T>() => this is T ? this as T : null;
 }
 
+extension ListExtensions on List<dynamic> {
+  List<int> get indices => List.generate(length, (index) => index);
+}
+
 TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
       (oldValue, newValue) => newValue.copyWith(text: newValue.text.toLowerCase().replaceAll(" ", "_")),
     );
