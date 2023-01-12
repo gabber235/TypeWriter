@@ -128,7 +128,7 @@ object InteractionHandler {
 		}
 
 		// When a player tries to execute a command, we need to end the dialogue.
-		plugin.listen<PlayerCommandPreprocessEvent>(priority = EventPriority.MONITOR, ignoreCancelled = true) { event ->
+		plugin.listen<PlayerCommandPreprocessEvent>(priority = EventPriority.LOWEST, ignoreCancelled = true) { event ->
 			triggerEvent(Event(event.player, DIALOGUE_END))
 		}
 	}
