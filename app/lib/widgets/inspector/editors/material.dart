@@ -6,7 +6,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/materials.dart";
-import 'package:typewriter/utils/passing_reference.dart';
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";

@@ -1,4 +1,4 @@
-import 'dart:async';
+import "dart:async";
 import "dart:convert";
 
 import "package:flutter/material.dart" hide Page;
@@ -12,7 +12,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
-import 'package:typewriter/utils/passing_reference.dart';
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/socket_extensions.dart";
 
 part "communicator.g.dart";

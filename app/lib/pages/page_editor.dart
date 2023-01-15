@@ -16,7 +16,7 @@ import "package:typewriter/widgets/always_focused.dart";
 import "package:typewriter/widgets/entries_graph.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/search_bar.dart";
-import 'package:typewriter/widgets/select_entries.dart';
+import "package:typewriter/widgets/select_entries.dart";
 import "package:typewriter/widgets/shortcut_label.dart";
 import "package:typewriter/widgets/staging.dart";
 import "package:typewriter/widgets/static_entries_list.dart";
@@ -288,7 +288,7 @@ class PreviousEntriesViewIntent extends Intent {}
 
 class NextEntriesViewIntent extends Intent {}
 
-final entriesViewProvider = StateNotifierProvider<EntriesViewProvider, EntriesView>((ref) => EntriesViewProvider(ref));
+final entriesViewProvider = StateNotifierProvider<EntriesViewProvider, EntriesView>(EntriesViewProvider.new);
 
 class _PageContent extends HookConsumerWidget {
   const _PageContent();

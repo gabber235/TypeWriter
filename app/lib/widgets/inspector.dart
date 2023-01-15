@@ -6,12 +6,12 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
-import 'package:typewriter/utils/passing_reference.dart';
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector/editors/name.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/heading.dart";
 import "package:typewriter/widgets/inspector/operations.dart";
-import 'package:typewriter/widgets/select_entries.dart';
+import "package:typewriter/widgets/select_entries.dart";
 
 part "inspector.g.dart";
 
@@ -63,7 +63,7 @@ class _EmptyInspector extends HookConsumerWidget {
         const SizedBox(height: 12),
         Text(
           "Select an entry to edit it's properties",
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 40),
       ],

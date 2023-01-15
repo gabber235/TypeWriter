@@ -1,16 +1,16 @@
 import "package:collapsible/collapsible.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
-import 'package:typewriter/utils/passing_reference.dart';
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/filled_button.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/listable_header.dart";
-import 'package:typewriter/widgets/select_entries.dart';
+import "package:typewriter/widgets/select_entries.dart";
 
 class ListEditorFilter extends EditorFilter {
   @override
@@ -157,7 +157,7 @@ class _ListItem extends HookConsumerWidget {
             onPressed: () => Navigator.of(context).pop(true),
             icon: const Icon(FontAwesomeIcons.trash),
             label: const Text("Remove"),
-            color: Theme.of(context).errorColor,
+            color: Theme.of(context).colorScheme.error,
           ),
         ],
       ),
@@ -185,11 +185,11 @@ class _ListItem extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(name, style: Theme.of(context).textTheme.caption),
+              Text(name, style: Theme.of(context).textTheme.bodySmall),
               const Spacer(),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.trash, size: 12),
-                color: Theme.of(context).errorColor,
+                color: Theme.of(context).colorScheme.error,
                 onPressed: () => _checkRemove(context, ref, value, index),
               ),
             ],

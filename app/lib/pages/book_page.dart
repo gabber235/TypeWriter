@@ -4,11 +4,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/app_router.dart";
-import 'package:typewriter/hooks/delayed_execution.dart';
+import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
-import 'package:typewriter/widgets/select_entries.dart';
+import "package:typewriter/widgets/select_entries.dart";
 
 class BookPage extends HookConsumerWidget {
   const BookPage({super.key});
@@ -83,7 +83,7 @@ class _ReconnectOverlay extends HookConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Connection lost, Reconnecting...", style: Theme.of(context).textTheme.headline6),
+                Text("Connection lost, Reconnecting...", style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 8),
                 const ConnectionScroller(
                   style: TextStyle(color: Colors.grey, fontSize: 16),

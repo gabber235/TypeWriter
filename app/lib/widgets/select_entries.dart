@@ -1,5 +1,5 @@
 import "package:collection/collection.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide FilledButton;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -47,8 +47,11 @@ class EntriesSelectionNotifier extends StateNotifier<EntriesSelection?> {
 
   final Ref<dynamic> ref;
 
-  void startSelection(String tag,
-      [List<String> selectedEntries = const [], Function(Ref<dynamic>, List<String>)? onSelectionChanged]) {
+  void startSelection(
+    String tag, [
+    List<String> selectedEntries = const [],
+    Function(Ref<dynamic>, List<String>)? onSelectionChanged,
+  ]) {
     if (state != null) {
       throw StateError("Already selecting entries");
     }
@@ -104,11 +107,6 @@ class EntriesSelectionNotifier extends StateNotifier<EntriesSelection?> {
 
   void setTag(String tag) {
     _modifySelection((selection) => selection.copyWith(tag: tag));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 
@@ -166,11 +164,11 @@ class EntriesSelectorInspector extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              Text("Selected $tag", style: Theme.of(context).textTheme.headline6),
+              Text("Selected $tag", style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 12),
               Text(
                 "Click on any $tag in the editor to (un)select it.\n\nHere you can see the list of selected ${tag}s:",
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
               const Expanded(child: _EntriesSelectorList()),

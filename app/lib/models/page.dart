@@ -1,14 +1,14 @@
 import "dart:convert";
 
-import 'package:collection/collection.dart';
+import "package:collection/collection.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
-import 'package:typewriter/models/communicator.dart';
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/utils/extensions.dart";
-import 'package:typewriter/utils/passing_reference.dart';
+import "package:typewriter/utils/passing_reference.dart";
 
 part "page.freezed.dart";
 part "page.g.dart";

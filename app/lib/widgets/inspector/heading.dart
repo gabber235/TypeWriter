@@ -54,9 +54,12 @@ class Title extends StatelessWidget {
 }
 
 class Identifier extends StatelessWidget {
-  const Identifier({super.key, required this.id});
+  const Identifier({
+    required this.id,
+    super.key,
+  });
   final String id;
 
   @override
-  Widget build(BuildContext context) => SelectableText(id, style: Theme.of(context).textTheme.caption);
+  Widget build(BuildContext context) => SelectableText(id, style: Theme.of(context).textTheme.bodySmall);
 }

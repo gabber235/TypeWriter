@@ -2,10 +2,10 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
-import 'package:typewriter/utils/extensions.dart';
-import 'package:typewriter/widgets/inspector.dart';
+import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import 'package:typewriter/widgets/writers.dart';
+import "package:typewriter/widgets/writers.dart";
 
 class FieldEditor extends HookConsumerWidget {
   const FieldEditor({
@@ -53,7 +53,7 @@ class _NoEditorFound extends StatelessWidget {
       ),
       child: Text(
         "Could not find a editor for $path",
-        style: Theme.of(context).textTheme.caption,
+        style: Theme.of(context).textTheme.bodySmall,
       ),
     );
   }

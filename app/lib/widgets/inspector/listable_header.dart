@@ -57,7 +57,7 @@ class ListableHeader extends HookConsumerWidget {
                     const SizedBox(width: 8),
                     Text(
                       "($length)",
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(width: 8),
                   ],

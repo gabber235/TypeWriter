@@ -1,7 +1,7 @@
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
-import 'package:typewriter/models/communicator.dart';
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
 
 part "book.freezed.dart";

@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector.dart";
-import 'package:typewriter/widgets/select_entries.dart';
-import 'package:typewriter/widgets/writers.dart';
+import "package:typewriter/widgets/select_entries.dart";
+import "package:typewriter/widgets/writers.dart";
 
 class EntryNode extends HookConsumerWidget {
   const EntryNode({

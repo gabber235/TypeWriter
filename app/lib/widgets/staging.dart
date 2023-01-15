@@ -5,7 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/hooks/rive_statemachines.dart";
-import 'package:typewriter/models/communicator.dart';
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/staging.dart";
 
 class StagingIndicator extends HookConsumerWidget {

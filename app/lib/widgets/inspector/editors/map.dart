@@ -1,11 +1,11 @@
 import "package:collapsible/collapsible.dart";
 import "package:collection/collection.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
-import 'package:typewriter/utils/passing_reference.dart';
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/filled_button.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -16,10 +16,10 @@ import "package:typewriter/widgets/inspector/listable_header.dart";
 
 class MapEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo type) => type is MapField;
+  bool canEdit(FieldInfo info) => info is MapField;
 
   @override
-  Widget build(String path, FieldInfo type) => MapEditor(path: path, field: type as MapField);
+  Widget build(String path, FieldInfo info) => MapEditor(path: path, field: info as MapField);
 }
 
 class MapEditor extends HookConsumerWidget {
@@ -148,7 +148,7 @@ class _MapEntry extends HookConsumerWidget {
                 onPressed: () => Navigator.of(context).pop(true),
                 icon: const Icon(FontAwesomeIcons.triangleExclamation),
                 label: const Text("Override"),
-                color: Theme.of(context).errorColor,
+                color: Theme.of(context).colorScheme.error,
               ),
             ],
           ),
@@ -215,7 +215,7 @@ class _MapEntry extends HookConsumerWidget {
               _keyEditor(context, ref, name),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.trash, size: 12),
-                color: Theme.of(context).errorColor,
+                color: Theme.of(context).colorScheme.error,
                 onPressed: () => _delete(ref, map, entry.key),
               ),
             ],

@@ -19,7 +19,7 @@ import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
-import 'package:typewriter/utils/passing_reference.dart';
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector.dart";
 
 part "search_bar.g.dart";
@@ -512,7 +512,7 @@ class _ResultTile extends HookWidget {
                       maxLines: 1,
                       title,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: focused.value ? Colors.white : null,
                             fontWeight: focused.value ? FontWeight.bold : null,
                           ),
@@ -521,7 +521,7 @@ class _ResultTile extends HookWidget {
                       maxLines: 1,
                       description,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.caption?.copyWith(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: focused.value ? Colors.white : null,
                             fontWeight: focused.value ? FontWeight.bold : null,
                           ),
