@@ -32,9 +32,23 @@ class BookNotifier extends StateNotifier<Book> {
     );
   }
 
-  /// Removes a page.
-  void removePage(Page page) {
-    state = state.copyWith(pages: state.pages.where((p) => p != page).toList());
+  /// Rename a page.
+  /// If the page does not exist, it will be added.
+  void renamePage(String old, String newName) {
+    final page = state.pages.firstWhere((p) => p.name == old, orElse: () => Page(name: old));
+    state = state.copyWith(
+      pages: [
+        ...state.pages.where((p) => p.name != old),
+        page.copyWith(name: newName),
+      ],
+    );
+  }
+
+  /// Deletes a page.
+  void deletePage(String name) {
+    state = state.copyWith(
+      pages: state.pages.where((p) => p.name != name).toList(),
+    );
   }
 
   /// Reloads the book from the server.

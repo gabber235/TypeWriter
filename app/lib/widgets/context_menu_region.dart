@@ -143,7 +143,7 @@ class ContextMenuTile {
 
   factory ContextMenuTile.button({
     required String title,
-    VoidCallback? onPressed,
+    VoidCallback? onTap,
     IconData? icon,
     Color? color,
   }) = ContextMenuButton;
@@ -154,13 +154,13 @@ class ContextMenuTile {
 class ContextMenuButton extends ContextMenuTile {
   const ContextMenuButton({
     required this.title,
-    this.onPressed,
+    this.onTap,
     this.icon,
     this.color,
   });
 
   final String title;
-  final VoidCallback? onPressed;
+  final VoidCallback? onTap;
   final IconData? icon;
   final Color? color;
 }
@@ -240,7 +240,7 @@ class _ContextMenuButton extends StatelessWidget {
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
-        onTap: tile.onPressed,
+        onTap: tile.onTap,
         hoverColor: tile.color?.withOpacity(0.15),
         highlightColor: tile.color?.withOpacity(0.2),
         splashColor: tile.color?.withOpacity(0.3),

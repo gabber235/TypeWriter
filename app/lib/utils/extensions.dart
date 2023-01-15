@@ -35,7 +35,8 @@ extension ListExtensions on List<dynamic> {
 }
 
 TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
-      (oldValue, newValue) => newValue.copyWith(text: newValue.text.toLowerCase().replaceAll(" ", "_")),
+      (oldValue, newValue) =>
+          newValue.copyWith(text: newValue.text.toLowerCase().replaceAll(" ", "_").replaceAll("-", "_")),
     );
 
 bool get isApple => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS;

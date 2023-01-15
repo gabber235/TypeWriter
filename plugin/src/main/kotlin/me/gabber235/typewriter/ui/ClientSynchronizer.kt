@@ -68,6 +68,18 @@ object ClientSynchronizer {
 		autoSaver()
 	}
 
+	fun handleRenamePage(client: SocketIOClient, data: String, ackRequest: AckRequest) {
+		val json = gson.fromJson(data, PageRename::class.java)
+		val page = pages[json.old] ?: return
+		page.addProperty("name", json.new)
+		pages.remove(json.old)
+		pages[json.new] = page
+
+		ackRequest.sendAckData("Page renamed")
+		CommunicationHandler.server?.broadcastOperations?.sendEvent("renamePage", client, data)
+		autoSaver()
+	}
+
 	fun handleDeletePage(client: SocketIOClient, name: String, ack: AckRequest) {
 		if (!pages.containsKey(name)) {
 			ack.sendAckData("Page does not exist")
@@ -89,6 +101,7 @@ object ClientSynchronizer {
 		CommunicationHandler.server?.broadcastOperations?.sendEvent("createEntry", client, data)
 		autoSaver()
 	}
+
 
 	fun handleEntryUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
 		val update = gson.fromJson(data, EntryUpdate::class.java)
@@ -132,14 +145,13 @@ object ClientSynchronizer {
 		autoSaver()
 	}
 
-
 	fun saveStaging() {
-		if (!plugin.dataFolder["staging"].exists()) {
-			plugin.dataFolder["staging"].mkdir()
-		}
+		val dir = plugin.dataFolder["staging"]
+		dir.deleteRecursively()
+		dir.mkdirs()
 
 		pages.forEach { (name, page) ->
-			plugin.dataFolder["staging/$name.json"].writeText(page.toString())
+			dir["$name.json"].writeText(page.toString())
 		}
 
 		stagingState = STAGING
@@ -192,6 +204,8 @@ enum class StagingState {
 	STAGING,
 	PUBLISHED
 }
+
+data class PageRename(val old: String, val new: String)
 
 data class EntryUpdate(
 	val pageId: String,

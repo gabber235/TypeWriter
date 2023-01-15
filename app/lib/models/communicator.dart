@@ -152,6 +152,8 @@ class SocketNotifier extends StateNotifier<Socket?> {
     socket
       ..on("stagingState", (data) => ref.read(communicatorProvider).handleStagingState(data))
       ..on("createPage", (data) => ref.read(communicatorProvider).handleCreatePage(data))
+      ..on("renamePage", (data) => ref.read(communicatorProvider).handleRenamePage(data))
+      ..on("deletePage", (data) => ref.read(communicatorProvider).handleDeletePage(data))
       ..on("createEntry", (data) => ref.read(communicatorProvider).handleCreateEntry(data))
       ..on("updateEntry", (data) => ref.read(communicatorProvider).handleUpdateEntry(data))
       ..on("deleteEntry", (data) => ref.read(communicatorProvider).handleDeleteEntry(data))
@@ -206,6 +208,29 @@ class Communicator {
     }
 
     await socket.emitWithAckAsync("createPage", name);
+  }
+
+  Future<void> renamePage(String old, String newName) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "old": old,
+      "new": newName,
+    };
+
+    await socket.emitWithAckAsync("renamePage", jsonEncode(data));
+  }
+
+  Future<void> deletePage(String name) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    await socket.emitWithAckAsync("deletePage", name);
   }
 
   Future<void> createEntry(String page, Entry entry) async {
@@ -281,6 +306,18 @@ class Communicator {
   void handleCreatePage(dynamic data) {
     final name = data as String;
     ref.read(bookProvider.notifier).insertPage(Page(name: name));
+  }
+
+  void handleRenamePage(dynamic data) {
+    final json = data as Map<String, dynamic>;
+    final old = json["old"] as String;
+    final newName = json["new"] as String;
+    ref.read(bookProvider.notifier).renamePage(old, newName);
+  }
+
+  void handleDeletePage(dynamic data) {
+    final name = data as String;
+    ref.read(bookProvider.notifier).deletePage(name);
   }
 
   void handleCreateEntry(dynamic data) {

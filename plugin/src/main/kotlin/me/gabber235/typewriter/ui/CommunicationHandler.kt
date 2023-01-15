@@ -40,6 +40,7 @@ object CommunicationHandler {
 
 		server?.addEventListener("fetch", String::class.java, ClientSynchronizer::handleFetchRequest)
 		server?.addEventListener("createPage", String::class.java, ClientSynchronizer::handleCreatePage)
+		server?.addEventListener("renamePage", String::class.java, ClientSynchronizer::handleRenamePage)
 		server?.addEventListener("deletePage", String::class.java, ClientSynchronizer::handleDeletePage)
 		server?.addEventListener("createEntry", String::class.java, ClientSynchronizer::handleCreateEntry)
 		server?.addEventListener("updateEntry", String::class.java, ClientSynchronizer::handleEntryUpdate)
