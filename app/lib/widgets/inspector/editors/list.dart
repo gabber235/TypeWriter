@@ -5,7 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import 'package:typewriter/utils/popups.dart';
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
@@ -137,37 +137,6 @@ class _ListItem extends HookConsumerWidget {
         );
   }
 
-  Future<void> _checkRemove(
-    BuildContext context,
-    WidgetRef ref,
-    List<dynamic> value,
-    int index,
-  ) async {
-    final bool remove = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Remove item?"),
-        content: const Text("Are you sure you want to remove this item?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("Cancel"),
-          ),
-          FilledButton.icon(
-            onPressed: () => Navigator.of(context).pop(true),
-            icon: const Icon(FontAwesomeIcons.trash),
-            label: const Text("Remove"),
-            color: Theme.of(context).colorScheme.error,
-          ),
-        ],
-      ),
-    );
-
-    if (remove) {
-      _remove(ref, value, index);
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final name = ref.watch(pathDisplayNameProvider("$path.$index"));
@@ -190,7 +159,12 @@ class _ListItem extends HookConsumerWidget {
               IconButton(
                 icon: const Icon(FontAwesomeIcons.trash, size: 12),
                 color: Theme.of(context).colorScheme.error,
-                onPressed: () => _checkRemove(context, ref, value, index),
+                onPressed: () => showConfirmationDialogue(
+                  context: context,
+                  title: "Remove item?",
+                  content: "Are you sure you want to remove this item?",
+                  onConfirm: () => _remove(ref, value, index),
+                ),
               ),
             ],
           ),

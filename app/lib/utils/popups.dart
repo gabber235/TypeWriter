@@ -7,15 +7,15 @@ import "package:typewriter/widgets/filled_button.dart";
 
 class ConfirmationDialogue extends HookWidget {
   const ConfirmationDialogue({
+    required this.title,
+    required this.content,
+    required this.confirmText,
+    required this.confirmIcon,
+    required this.confirmColor,
+    required this.delayConfirm,
+    required this.cancelText,
+    required this.cancelIcon,
     required this.onConfirm,
-    this.title = "Are you sure?",
-    this.content = "This action cannot be undone.",
-    this.confirmText = "Confirm",
-    this.confirmIcon = Icons.check,
-    this.confirmColor = Colors.redAccent,
-    this.delayConfirm = Duration.zero,
-    this.cancelText = "Cancel",
-    this.cancelIcon = FontAwesomeIcons.xmark,
     this.onCancel,
     super.key,
   });
@@ -111,11 +111,11 @@ void showConfirmationDialogue({
   String title = "Are you sure?",
   String content = "This action cannot be undone.",
   String confirmText = "Confirm",
-  IconData confirmIcon = Icons.check,
+  IconData confirmIcon = FontAwesomeIcons.trash,
   Color confirmColor = Colors.redAccent,
   Duration delayConfirm = Duration.zero,
   String cancelText = "Cancel",
-  IconData cancelIcon = Icons.close,
+  IconData cancelIcon = FontAwesomeIcons.xmark,
   Function? onCancel,
 }) {
   showDialog(
