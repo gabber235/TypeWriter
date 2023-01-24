@@ -1,6 +1,7 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:typewriter/widgets/filled_button.dart";
@@ -118,6 +119,14 @@ void showConfirmationDialogue({
   IconData cancelIcon = FontAwesomeIcons.xmark,
   Function? onCancel,
 }) {
+  // If the user has its shift key pressed, we skip the confirmation dialogue.
+  // But only if the delay is 0.
+  final hasShiftDown = RawKeyboard.instance.keysPressed.contains(LogicalKeyboardKey.shiftLeft);
+  if (hasShiftDown && delayConfirm.inSeconds == 0) {
+    onConfirm();
+    return;
+  }
+
   showDialog(
     context: context,
     builder: (context) => ConfirmationDialogue(

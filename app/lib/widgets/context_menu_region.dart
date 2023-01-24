@@ -1,6 +1,9 @@
+import 'package:collection/collection.dart';
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
+import 'package:google_fonts/google_fonts.dart';
+import 'package:typewriter/hooks/text_size.dart';
 
 typedef ContextMenuBuilder = List<ContextMenuTile> Function(BuildContext);
 
@@ -149,6 +152,8 @@ class ContextMenuTile {
   }) = ContextMenuButton;
 
   factory ContextMenuTile.divider() = ContextMenuDivider;
+
+  String get largestText => "";
 }
 
 class ContextMenuButton extends ContextMenuTile {
@@ -163,6 +168,9 @@ class ContextMenuButton extends ContextMenuTile {
   final VoidCallback? onTap;
   final IconData? icon;
   final Color? color;
+
+  @override
+  String get largestText => title;
 }
 
 class ContextMenuDivider extends ContextMenuTile {}
@@ -185,6 +193,11 @@ class _ContextMenu extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+    final largestText = maxBy(tiles.map((e) => e.largestText), (text) => text.length) ?? "";
+    final textSize = useTextSize(context, largestText, GoogleFonts.jetBrainsMono(fontSize: 13));
+    final maxWidth = textSize.width + 74;
+
     return Positioned(
       left: quadrant == Quadrant.topLeft || quadrant == Quadrant.bottomLeft ? position.dx : null,
       right: quadrant == Quadrant.topRight || quadrant == Quadrant.bottomRight ? size.width - position.dx : null,
@@ -198,7 +211,7 @@ class _ContextMenu extends HookWidget {
             maxHeight: quadrant == Quadrant.topLeft || quadrant == Quadrant.topRight
                 ? size.height - position.dy - 10
                 : position.dy - 10,
-            maxWidth: 220,
+            maxWidth: maxWidth,
           ),
           child: Material(
             borderRadius: BorderRadius.circular(8),
@@ -251,7 +264,7 @@ class _ContextMenuButton extends StatelessWidget {
             children: [
               Icon(tile.icon, color: tile.color, size: 16),
               const SizedBox(width: 10),
-              Text(tile.title, style: TextStyle(color: tile.color, fontSize: 13)),
+              Text(tile.title, style: GoogleFonts.jetBrainsMono(fontSize: 13, color: tile.color)),
             ],
           ),
         ),

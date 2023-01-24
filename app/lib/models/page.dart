@@ -83,10 +83,21 @@ extension PageExtension on Page {
 
   /// When an entry is delete all references in other entries need to be removed.
   Entry _fixEntry(PassingRef ref, Entry entry, Entry deleting) {
-    return entry.copyMapped((data) {
-      if (data != deleting.id) return data;
-      return null; // Remove the reference.
-    });
+    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
+
+    final triggers = triggerPaths.expand((path) => entry.getAll(path)).whereType<String>().toList();
+    if (!triggers.contains(deleting.id)) {
+      return entry;
+    }
+
+    final newEntry = triggerPaths.fold(
+      entry,
+      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == deleting.id ? null : value),
+    );
+
+    ref.read(communicatorProvider).updateCompleteEntry(name, newEntry);
+
+    return newEntry;
   }
 
   /// This should only be used to sync the entry from the server.
@@ -213,50 +224,92 @@ class Entry {
     return Entry(data);
   }
 
-  /// Returns a new copy of this entry with all values being mapped.
+  /// Returns a new copy of this entry with all values of a given path updated.
   /// All possible fields are check and mapped to a new value. If the new value is null, the field is removed from the map or list.
   /// If the new value is a map or list, the old value is replaced with the new one.
   /// If the new value is a primitive, the old value is replaced with the new one.
-  Entry copyMapped(dynamic Function(dynamic) mapper) {
+  /// This may look similar to [copyWith], but it updates all values of a given path.
+  /// Hence wildcards are supported, like "data.*.value", "data.*.1.value", etc.
+  Entry copyMapped(String path, dynamic Function(dynamic) mapper) {
+    final parts = path.split(".");
+    final last = parts.removeLast();
+    // Make a deep copy of the data. To avoid modifying the original data.
     final data = jsonDecode(jsonEncode(this.data));
+
+    // Traverse the data to find the field to update.
     final current = <dynamic>[data];
-    final next = <dynamic>[];
-    while (current.isNotEmpty) {
-      for (final item in current) {
-        if (item is Map) {
-          for (final key in item.keys.toList()) {
-            final value = item[key];
-            final newValue = mapper(value);
-            if (newValue == null) {
-              item.remove(key);
-            } else if (newValue is Map || newValue is List) {
-              item[key] = newValue;
-              next.add(newValue);
-            } else {
-              item[key] = newValue;
-            }
+    for (final part in parts) {
+      // If the current fields is a map, we try to find the next field in it.
+      if (part == "*") {
+        final next = <dynamic>[];
+        for (final item in current) {
+          if (item is Map) {
+            next.addAll(item.values);
+          }
+          if (item is List) {
+            next.addAll(item);
           }
         }
-        if (item is List) {
-          for (final index in item.indices) {
-            final value = item[index];
-            final newValue = mapper(value);
-            if (newValue == null) {
-              item.removeAt(index);
-            } else if (newValue is Map || newValue is List) {
-              item[index] = newValue;
-              next.add(newValue);
-            } else {
-              item[index] = newValue;
-            }
-          }
+        current
+          ..clear()
+          ..addAll(next);
+        continue;
+      }
+      final next = <dynamic>[];
+      for (final item in current) {
+        if (item is Map && item.containsKey(part)) {
+          next.add(item[part]);
+        }
+        if (item is List && int.tryParse(part) != null && item.length > int.parse(part)) {
+          next.add(item[int.parse(part)]);
         }
       }
       current
         ..clear()
         ..addAll(next);
-      next.clear();
     }
+
+    // Update the field.
+    // If the mapper returns null, the field is removed.
+    // Otherwise the field is updated with the new value.
+
+    if (last == "*") {
+      for (final item in current) {
+        if (item is Map) {
+          for (final key in item.keys.toList()) {
+            final value = mapper(item[key]);
+            if (value == null) {
+              item.remove(key);
+            } else {
+              item[key] = value;
+            }
+          }
+        }
+        if (item is List) {
+          item.replaceRange(0, item.length, item.map(mapper).whereNotNull());
+        }
+      }
+    } else {
+      for (final item in current) {
+        if (item is Map && item.containsKey(last)) {
+          final value = mapper(item[last]);
+          if (value == null) {
+            item.remove(last);
+          } else {
+            item[last] = value;
+          }
+        }
+        if (item is List && int.tryParse(last) != null && item.length > int.parse(last)) {
+          final value = mapper(item[int.parse(last)]);
+          if (value == null) {
+            item.removeAt(int.parse(last));
+          } else {
+            item[int.parse(last)] = value;
+          }
+        }
+      }
+    }
+
     return Entry(data);
   }
 

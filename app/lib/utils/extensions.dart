@@ -70,3 +70,13 @@ extension StringExt on String? {
   bool get isNullOrEmpty => this?.isEmpty ?? true;
   bool get hasValue => !isNullOrEmpty;
 }
+
+const _chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
+final Random _random = Random();
+
+String getRandomString([int length = 15]) => String.fromCharCodes(
+      Iterable.generate(
+        length,
+        (_) => _chars.codeUnitAt(_random.nextInt(_chars.length)),
+      ),
+    );

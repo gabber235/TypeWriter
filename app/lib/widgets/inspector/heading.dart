@@ -48,7 +48,7 @@ class Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AutoSizeText(
         title,
-        style: TextStyle(color: color, fontSize: 40, fontWeight: FontWeight.w900),
+        style: TextStyle(color: color, fontSize: 40, fontWeight: FontWeight.bold),
         maxLines: 1,
       );
 }

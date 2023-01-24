@@ -106,33 +106,75 @@ void main() {
     expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
   });
 
-  test("When an entry copied with a mapped value, the new value is returned", () {
-    final entry = Entry(rawDynamicEntry);
-    final newEntry = entry.copyMapped((data) {
-      if (data == "test2") {
-        return "new_name";
-      }
-      return data;
+  group("Copy Mapped", () {
+    test("When copying while modifying simple static field expect the field to change", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyMapped("simple_list.1", (value) => value + 1);
+
+      expect(newEntry.get("simple_list.0"), 1, reason: "simple_list.0 should not have changed");
+      expect(newEntry.get("simple_list.1"), 3, reason: "simple_list.1 should have changed");
+      expect(newEntry.get("simple_list.2"), 3, reason: "simple_list.2 should not have changed");
     });
 
-    expect(newEntry.get("complex_list.1.name"), "new_name");
-    expect(newEntry.get("complex_map.key1.inner_list.1.name"), "new_name");
-    expect(newEntry.get("complex_map.key2.name"), "new_name");
-    expect(newEntry.get("complex_map.key2.inner_list.1.name"), "test_b");
-  });
+    test("When copying while modifying complex static field expect the field to change", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyMapped("complex_list.1.name", (value) => value + "_new");
 
-  test("When a entry copied while the mapping is given null, the value is removed from the entry", () {
-    final entry = Entry(rawDynamicEntry);
-    final newEntry = entry.copyMapped((data) {
-      if (data == "test2") {
-        return null;
-      }
-      return data;
+      expect(newEntry.get("complex_list.0.name"), "test1", reason: "complex_list.0.name should not have changed");
+      expect(newEntry.get("complex_list.1.name"), "test2_new", reason: "complex_list.1.name should have changed");
+      expect(newEntry.get("complex_list.2.name"), "test3", reason: "complex_list.2.name should not have changed");
     });
 
-    expect(newEntry.get("complex_list.1.name"), null);
-    expect(newEntry.get("complex_map.key1.inner_list.1.name"), null);
-    expect(newEntry.get("complex_map.key2.name"), null);
-    expect(newEntry.get("complex_map.key2.inner_list.1.name"), "test_b");
+    test("When copying while modifying simple dynamic field expect the field to change", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyMapped("simple_map.*", (value) => value + "_new");
+
+      expect(newEntry.get("simple_map.key1"), "value1_new", reason: "simple_map.key1 should have changed");
+      expect(newEntry.get("simple_map.key2"), "value2_new", reason: "simple_map.key2 should have changed");
+    });
+
+    test("When copying while modifying complex dynamic field expect the field to change", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyMapped("complex_map.*.name", (value) => value + "_new");
+
+      expect(newEntry.get("complex_map.key1.name"), "test1_new", reason: "complex_map.key1.name should have changed");
+      expect(newEntry.get("complex_map.key2.name"), "test2_new", reason: "complex_map.key2.name should have changed");
+    });
+
+    test("When copying while modifying fields with multiple *'s and a final field expect the fields to change", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyMapped("complex_map.*.inner_list.*.name", (value) => value + "_new");
+
+      expect(newEntry.get("complex_map.key1.inner_list.0.name"), "test1_new");
+      expect(newEntry.get("complex_map.key1.inner_list.1.name"), "test2_new");
+      expect(newEntry.get("complex_map.key1.inner_list.2.name"), "test3_new");
+      expect(newEntry.get("complex_map.key2.inner_list.0.name"), "test_a_new");
+      expect(newEntry.get("complex_map.key2.inner_list.1.name"), "test_b_new");
+      expect(newEntry.get("complex_map.key2.inner_list.2.name"), "test_c_new");
+    });
+
+    test("When copying while modifying simple dynamic field to null expect the field to be removed", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyMapped("simple_list.*", (value) => value == 2 ? null : value);
+
+      expect(newEntry.get("simple_list"), [1, 3], reason: "Should have removed the value of 2");
+    });
+
+    test("When copying while modifying complex dynamic field to null expect the field to be removed", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyMapped(
+        "complex_map.*.inner_list.*",
+        (value) => ["test1", "test2"].contains(value["name"]) ? null : value,
+      );
+
+      expect(newEntry.get("complex_map.key1.inner_list"), [
+        {"id": "3", "name": "test3"}
+      ]);
+      expect(newEntry.get("complex_map.key2.inner_list"), [
+        {"id": "1", "name": "test_a"},
+        {"id": "2", "name": "test_b"},
+        {"id": "3", "name": "test_c"}
+      ]);
+    });
   });
 }

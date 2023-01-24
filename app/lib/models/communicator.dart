@@ -156,6 +156,7 @@ class SocketNotifier extends StateNotifier<Socket?> {
       ..on("deletePage", (data) => ref.read(communicatorProvider).handleDeletePage(data))
       ..on("createEntry", (data) => ref.read(communicatorProvider).handleCreateEntry(data))
       ..on("updateEntry", (data) => ref.read(communicatorProvider).handleUpdateEntry(data))
+      ..on("updateCompleteEntry", (data) => ref.read(communicatorProvider).handleUpdateCompleteEntry(data))
       ..on("deleteEntry", (data) => ref.read(communicatorProvider).handleDeleteEntry(data))
       ..on("updateWriters", (data) => ref.read(communicatorProvider).handleUpdateWriters(data));
 
@@ -247,7 +248,7 @@ class Communicator {
     return socket.emitWithAckAsync("createEntry", jsonEncode(data));
   }
 
-  Future<void> updateEntry(String pageId, String entryId, String path, dynamic value) async {
+  void updateEntry(String pageId, String entryId, String path, dynamic value) {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -261,6 +262,20 @@ class Communicator {
     };
 
     socket.emit("updateEntry", jsonEncode(data));
+  }
+
+  void updateCompleteEntry(String pageId, Entry entry) {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "pageId": pageId,
+      "entry": entry.toJson(),
+    };
+
+    socket.emit("updateCompleteEntry", jsonEncode(data));
   }
 
   Future<void> deleteEntry(String pageId, String entryId) async {
@@ -341,6 +356,15 @@ class Communicator {
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
     page.syncInsertEntry(ref, newEntry);
+  }
+
+  void handleUpdateCompleteEntry(dynamic data) {
+    final json = jsonDecode(data as String) as Map<String, dynamic>;
+    final pageId = json["pageId"] as String;
+    final entry = Entry.fromJson(json["entry"] as Map<String, dynamic>);
+    final page = ref.read(pageProvider(pageId));
+    if (page == null) return;
+    page.syncInsertEntry(ref, entry);
   }
 
   void handleDeleteEntry(dynamic data) {

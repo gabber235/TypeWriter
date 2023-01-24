@@ -27,11 +27,13 @@ EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String name) =>
 @riverpod
 List<String> entryTags(EntryTagsRef ref, String name) => ref.watch(entryBlueprintProvider(name))?.tags ?? [];
 
+/// Gets all the modifiers with a given name.
 @riverpod
 Map<String, Modifier> fieldModifiers(FieldModifiersRef ref, String blueprint, String name) {
   return ref.watch(entryBlueprintProvider(blueprint))?.fieldsWithModifier(name) ?? {};
 }
 
+/// Gets all the paths from fields with a given modifier.
 @riverpod
 List<String> modifierPaths(ModifierPathsRef ref, String blueprint, String name) {
   return ref.watch(fieldModifiersProvider(blueprint, name)).keys.toList();

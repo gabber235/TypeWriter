@@ -1,9 +1,14 @@
 import "package:flutter/material.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import 'package:typewriter/models/communicator.dart';
 import "package:typewriter/models/page.dart";
+import 'package:typewriter/pages/page_editor.dart';
 import "package:typewriter/utils/extensions.dart";
+import 'package:typewriter/utils/passing_reference.dart';
+import 'package:typewriter/utils/popups.dart';
+import 'package:typewriter/widgets/context_menu_region.dart';
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/select_entries.dart";
 import "package:typewriter/widgets/writers.dart";
@@ -30,6 +35,7 @@ class EntryNode extends HookConsumerWidget {
 
     return _EntryNode(
       id: entry.id,
+      type: entry.type,
       backgroundColor: blueprint.color,
       foregroundColor: Colors.white,
       name: entry.name.formatted,
@@ -40,9 +46,10 @@ class EntryNode extends HookConsumerWidget {
   }
 }
 
-class _EntryNode extends HookWidget {
+class _EntryNode extends HookConsumerWidget {
   const _EntryNode({
     required this.id,
+    required this.type,
     this.backgroundColor = Colors.grey,
     this.foregroundColor = Colors.black,
     this.name = "",
@@ -53,6 +60,7 @@ class _EntryNode extends HookWidget {
     super.key,
   });
   final String id;
+  final String type;
   final Color backgroundColor;
   final Color foregroundColor;
   final String name;
@@ -62,8 +70,55 @@ class _EntryNode extends HookWidget {
 
   final VoidCallback? onTap;
 
+  void _extendsWithDuplicate(WidgetRef ref) {
+    final pageId = ref.read(currentPageIdProvider);
+    if (pageId == null) return;
+    final entry = ref.read(entryProvider(pageId, id));
+    if (entry == null) return;
+    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
+    if (!triggerPaths.contains("triggers.*")) {
+      debugPrint("Cannot duplicate entry with no triggers.*");
+      return;
+    }
+
+    final newEntry = triggerPaths.fold(
+      entry.copyWith("id", getRandomString()),
+      (previousEntry, path) => previousEntry.copyMapped(path, (_) => null), // Remove all triggers
+    );
+    ref.read(currentPageProvider)?.insertEntry(ref.passing, newEntry);
+    ref.read(communicatorProvider).createEntry(pageId, newEntry);
+
+    final currentTriggers = entry.get("triggers");
+    if (currentTriggers == null || currentTriggers is! List) return;
+    final newTriggers = currentTriggers + [newEntry.id];
+    final modifiedEntry = entry.copyWith("triggers", newTriggers);
+    ref.read(currentPageProvider)?.insertEntry(ref.passing, modifiedEntry);
+    ref.read(communicatorProvider).updateEntry(pageId, modifiedEntry.id, "triggers", newTriggers);
+  }
+
+  void _deleteEntry(BuildContext context, WidgetRef ref) {
+    showConfirmationDialogue(
+      context: context,
+      title: "Delete Entry",
+      content: "Are you sure you want to delete this entry?",
+      confirmText: "Delete",
+      onConfirm: () {
+        final pageId = ref.read(currentPageIdProvider);
+        if (pageId == null) return;
+        final entry = ref.read(entryProvider(pageId, id));
+        if (entry == null) return;
+        ref.read(currentPageProvider)?.deleteEntry(ref.passing, entry);
+        if (ref.read(selectedEntryIdProvider) == id) {
+          ref.read(selectedEntryIdProvider.notifier).state = "";
+        }
+      },
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final triggerPaths = ref.read(modifierPathsProvider(type, "trigger"));
+
     return WritersIndicator(
       filter: (writer) {
         if (writer.entryId.isNullOrEmpty) return false;
@@ -73,39 +128,57 @@ class _EntryNode extends HookWidget {
         // Otherwise we will only show them if we are not inspecting this entry
         return !isSelected;
       },
-      child: GestureDetector(
-        onTap: onTap,
-        child: Material(
-          borderRadius: BorderRadius.circular(4),
-          color: backgroundColor,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeOutCirc,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(
-                  color: isSelected ? Theme.of(context).scaffoldBackgroundColor : backgroundColor,
-                  width: 3,
-                ),
+      child: ContextMenuRegion(
+        builder: (context) {
+          return [
+            if (triggerPaths.contains("triggers.*"))
+              ContextMenuTile.button(
+                title: "Extend with Duplicate",
+                icon: FontAwesomeIcons.copy,
+                onTap: () => _extendsWithDuplicate(ref),
               ),
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
+            ContextMenuTile.button(
+              title: "Delete",
+              icon: FontAwesomeIcons.trash,
+              color: Colors.redAccent,
+              onTap: () => _deleteEntry(context, ref),
+            ),
+          ];
+        },
+        child: GestureDetector(
+          onTap: onTap,
+          child: Material(
+            borderRadius: BorderRadius.circular(4),
+            color: backgroundColor,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
                 curve: Curves.easeOutCirc,
-                opacity: opacity,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      icon,
-                      const SizedBox(width: 12),
-                      Text(
-                        name,
-                        style: TextStyle(fontSize: 13, color: foregroundColor),
-                      ),
-                    ],
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: isSelected ? Theme.of(context).scaffoldBackgroundColor : backgroundColor,
+                    width: 3,
+                  ),
+                ),
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOutCirc,
+                  opacity: opacity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        icon,
+                        const SizedBox(width: 12),
+                        Text(
+                          name,
+                          style: TextStyle(fontSize: 13, color: foregroundColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -137,6 +210,7 @@ class _SelectingEntryNode extends HookConsumerWidget {
           : SystemMouseCursors.forbidden,
       child: _EntryNode(
         id: entry.id,
+        type: entry.type,
         backgroundColor: blueprint.color,
         foregroundColor: Colors.white,
         name: entry.name.formatted,

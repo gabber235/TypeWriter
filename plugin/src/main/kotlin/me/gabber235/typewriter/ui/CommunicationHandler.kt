@@ -44,6 +44,11 @@ object CommunicationHandler {
 		server?.addEventListener("deletePage", String::class.java, ClientSynchronizer::handleDeletePage)
 		server?.addEventListener("createEntry", String::class.java, ClientSynchronizer::handleCreateEntry)
 		server?.addEventListener("updateEntry", String::class.java, ClientSynchronizer::handleEntryUpdate)
+		server?.addEventListener(
+			"updateCompleteEntry",
+			String::class.java,
+			ClientSynchronizer::handleCompleteEntryUpdate
+		)
 		server?.addEventListener("deleteEntry", String::class.java, ClientSynchronizer::handleDeleteEntry)
 
 		server?.addEventListener("publish", String::class.java, ClientSynchronizer::handlePublish)

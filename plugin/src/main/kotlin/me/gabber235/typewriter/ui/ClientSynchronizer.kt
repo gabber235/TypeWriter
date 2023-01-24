@@ -134,6 +134,22 @@ object ClientSynchronizer {
 		autoSaver()
 	}
 
+	fun handleCompleteEntryUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
+		val update = gson.fromJson(data, CompleteEntryUpdate::class.java)
+		val entryId = update.entry["id"].asString
+
+		// Update the page
+		val page =
+			pages[update.pageId].logErrorIfNull("A client tried to update a page which does not exists") ?: return
+
+		val entries = page["entries"].asJsonArray
+		entries.removeAll { entry -> entry.asJsonObject["id"].asString == entryId }
+		entries.add(update.entry)
+
+		CommunicationHandler.server?.broadcastOperations?.sendEvent("updateCompleteEntry", client, data)
+		autoSaver()
+	}
+
 
 	fun handleDeleteEntry(client: SocketIOClient, data: String, ack: AckRequest) {
 		val json = gson.fromJson(data, EntryDelete::class.java)
@@ -212,6 +228,11 @@ data class EntryUpdate(
 	val entryId: String,
 	val path: String,
 	val value: JsonElement
+)
+
+data class CompleteEntryUpdate(
+	val pageId: String,
+	val entry: JsonObject,
 )
 
 data class EntryCreate(

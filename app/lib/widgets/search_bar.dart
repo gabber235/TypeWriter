@@ -1,5 +1,3 @@
-import "dart:math";
-
 import "package:auto_size_text/auto_size_text.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
@@ -257,19 +255,9 @@ class _AddEntryAction extends _Action {
   @override
   String description(BuildContext context) => blueprint.description;
 
-  static const _chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
-  static final Random _random = Random();
-
-  String _getRandomString(int length) => String.fromCharCodes(
-        Iterable.generate(
-          length,
-          (_) => _chars.codeUnitAt(_random.nextInt(_chars.length)),
-        ),
-      );
-
   @override
   void activate(BuildContext context, WidgetRef ref) {
-    final e = Entry.fromBlueprint(id: _getRandomString(15), blueprint: blueprint);
+    final e = Entry.fromBlueprint(id: getRandomString(), blueprint: blueprint);
     final page = ref.read(currentPageProvider);
     if (page == null) return;
     page.insertEntry(ref.passing, e);

@@ -4,7 +4,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import 'package:typewriter/utils/popups.dart';
+import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/filled_button.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
@@ -22,6 +22,7 @@ class Operations extends HookConsumerWidget {
         SectionTitle(title: "Operations"),
         SizedBox(height: 8),
         _DeleteEntry(),
+        SizedBox(height: 8),
       ],
     );
   }
@@ -41,6 +42,7 @@ class _DeleteEntry extends HookConsumerWidget {
           context: context,
           title: "Delete Entry",
           content: "Are you sure you want to delete this entry?",
+          confirmText: "Delete",
           onConfirm: () {
             final entry = ref.read(selectedEntryProvider);
             if (entry != null) _deleteEntry(ref, entry);
