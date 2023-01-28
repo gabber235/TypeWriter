@@ -34,7 +34,13 @@ class DurationEditor extends HookConsumerWidget {
       icon: FontAwesomeIcons.stopwatch,
       deserialize: (value) {
         final parsedValue = value.milliseconds;
-        return prettyDuration(parsedValue, abbreviated: true, delimiter: " ", spacer: "");
+        return prettyDuration(
+          parsedValue,
+          abbreviated: true,
+          delimiter: " ",
+          spacer: "",
+          tersity: DurationTersity.millisecond,
+        );
       },
       serialize: (value) {
         final parsedValue = parseDuration(value, separator: " ");
@@ -42,7 +48,7 @@ class DurationEditor extends HookConsumerWidget {
       },
       formatted: (value) {
         final parsedValue = value.milliseconds;
-        return prettyDuration(parsedValue, abbreviated: false);
+        return prettyDuration(parsedValue, abbreviated: false, tersity: DurationTersity.millisecond);
       },
     );
   }
