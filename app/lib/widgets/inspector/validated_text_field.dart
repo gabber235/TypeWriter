@@ -1,7 +1,5 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter/src/widgets/framework.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -42,7 +40,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
   T? _parse(String value) {
     try {
       return serialize(value);
-    } on FormatException catch (e) {
+    } on FormatException catch (_) {
       return null;
     }
   }

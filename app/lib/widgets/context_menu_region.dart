@@ -1,9 +1,9 @@
-import 'package:collection/collection.dart';
+import "package:collection/collection.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import 'package:google_fonts/google_fonts.dart';
-import 'package:typewriter/hooks/text_size.dart';
+import "package:google_fonts/google_fonts.dart";
+import "package:typewriter/hooks/text_size.dart";
 
 typedef ContextMenuBuilder = List<ContextMenuTile> Function(BuildContext);
 
@@ -338,7 +338,7 @@ class ContextMenuController {
         );
       },
     );
-    overlayState?.insert(_menuOverlayEntry!);
+    overlayState.insert(_menuOverlayEntry!);
     _shownInstance = this;
   }
 

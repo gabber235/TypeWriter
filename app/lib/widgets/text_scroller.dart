@@ -1,8 +1,8 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:typewriter/hooks/text_size.dart';
-import 'package:typewriter/hooks/timer.dart';
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:typewriter/hooks/text_size.dart";
+import "package:typewriter/hooks/timer.dart";
 
 /// Switches between the given texts in a loop.
 class TextScroller extends HookWidget {
