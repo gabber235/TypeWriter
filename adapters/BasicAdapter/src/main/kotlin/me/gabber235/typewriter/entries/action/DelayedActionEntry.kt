@@ -14,6 +14,7 @@ import me.gabber235.typewriter.entry.entries.EntryTrigger
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
+import java.time.Duration
 
 @Entry("delayed_action", "Delay an action for a certain amount of time", Colors.RED, Icons.SOLID_HOURGLASS_HALF)
 class DelayedActionEntry(
@@ -25,7 +26,7 @@ class DelayedActionEntry(
 	@Triggers
 	@EntryIdentifier(TriggerableEntry::class)
 	val nextTriggers: List<String> = emptyList(),
-	private val duration: Long = 0, // Number of milliseconds
+	private val duration: Duration = Duration.ZERO, // Number of milliseconds
 ) : ActionEntry {
 	// Disable the normal triggers. So that the action can manually trigger the next actions.
 	override val triggers: List<String>
@@ -33,7 +34,7 @@ class DelayedActionEntry(
 
 	override fun execute(player: Player) {
 		plugin.launch {
-			delay(duration)
+			delay(duration.toMillis())
 			super.execute(player)
 			InteractionHandler.startInteractionAndTrigger(player, nextTriggers.map { EntryTrigger(it) })
 		}

@@ -40,20 +40,30 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
   }
 }
 
-void useFocusedBasedCurrentEditingField(FocusNode focus, WidgetRef ref, String path) {
+void useFocusedChange(FocusNode focus, Function(bool) onChange, [List<Object?>? keys]) {
   useEffect(
     () {
       void onFocusChange() {
-        if (focus.hasFocus) {
-          ref.read(currentEditingFieldProvider.notifier).path = path;
-        } else {
-          ref.read(currentEditingFieldProvider.notifier).clearIfSame(path);
-        }
+        onChange(focus.hasFocus);
       }
 
       focus.addListener(onFocusChange);
       return () => focus.removeListener(onFocusChange);
     },
-    [focus, path],
+    [focus, ...?keys],
+  );
+}
+
+void useFocusedBasedCurrentEditingField(FocusNode focus, WidgetRef ref, String path) {
+  useFocusedChange(
+    focus,
+    (hasFocus) {
+      if (hasFocus) {
+        ref.read(currentEditingFieldProvider.notifier).path = path;
+      } else {
+        ref.read(currentEditingFieldProvider.notifier).clearIfSame(path);
+      }
+    },
+    [path],
   );
 }

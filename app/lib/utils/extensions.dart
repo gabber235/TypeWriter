@@ -24,6 +24,23 @@ extension StringExtension on String {
     if (!endsWith("s")) return this;
     return substring(0, length - 1);
   }
+
+  String get plural {
+    if (isEmpty) return this;
+    if (endsWith("s")) return this;
+    return "${this}s";
+  }
+}
+
+extension IntExt on int {
+  String get ordinal {
+    if (this == 1) return "1st";
+    if (this == 2) return "2nd";
+    if (this == 3) return "3rd";
+    return "${this}th";
+  }
+
+  String pluralize(String singular, [String? plural]) => this == 1 ? singular : plural ?? singular.plural;
 }
 
 extension ObjectExtension on Object? {
@@ -69,6 +86,10 @@ extension RandomColor on String {
 extension StringExt on String? {
   bool get isNullOrEmpty => this?.isEmpty ?? true;
   bool get hasValue => !isNullOrEmpty;
+}
+
+extension IteratorExt<E> on Iterator<E> {
+  E? get nextOrNull => moveNext() ? current : null;
 }
 
 const _chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";

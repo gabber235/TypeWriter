@@ -36,24 +36,13 @@ class StaticEntriesList extends HookConsumerWidget {
       );
     }
 
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final entry = entries[index];
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: EntryNode(
-                  entry: entry,
-                  key: ValueKey(entry.id),
-                ),
-              );
-            },
-            childCount: entries.length,
-          ),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 16,
+        children: entries.map((entry) => EntryNode(entry: entry)).toList(),
+      ),
     );
   }
 }

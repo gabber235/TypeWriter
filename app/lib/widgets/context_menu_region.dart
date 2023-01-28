@@ -190,13 +190,15 @@ class _ContextMenu extends HookWidget {
   final Offset position;
   final List<ContextMenuTile> tiles;
 
+  static const _spacingWidth = 74;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
     final largestText = maxBy(tiles.map((e) => e.largestText), (text) => text.length) ?? "";
     final textSize = useTextSize(context, largestText, GoogleFonts.jetBrainsMono(fontSize: 13));
-    final maxWidth = textSize.width + 74;
+    final maxWidth = textSize.width + _spacingWidth;
 
     return Positioned(
       left: quadrant == Quadrant.topLeft || quadrant == Quadrant.bottomLeft ? position.dx : null,

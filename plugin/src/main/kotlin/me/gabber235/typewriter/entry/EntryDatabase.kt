@@ -68,6 +68,9 @@ object EntryDatabase {
 		customEditors.mapValues { it.value.deserializer }.filterValues { it != null }.forEach {
 			builder = builder.registerTypeAdapter(it.key.java, it.value)
 		}
+		customEditors.mapValues { it.value.serializer }.filterValues { it != null }.forEach {
+			builder = builder.registerTypeAdapter(it.key.java, it.value)
+		}
 
 		return builder
 			.create()

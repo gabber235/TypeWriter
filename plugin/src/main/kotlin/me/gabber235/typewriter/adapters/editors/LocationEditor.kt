@@ -35,4 +35,16 @@ fun ObjectEditor<Location>.location() = reference {
 				?: server.worlds.firstOrNull()
 		Location(bukkitWorld, x, y, z, yaw, pitch)
 	}
+
+	jsonSerialize { src, _, _ ->
+		val obj = JsonObject()
+		obj.addProperty("world", src.world.name)
+		obj.addProperty("x", src.x)
+		obj.addProperty("y", src.y)
+		obj.addProperty("z", src.z)
+		obj.addProperty("yaw", src.yaw)
+		obj.addProperty("pitch", src.pitch)
+
+		obj
+	}
 }

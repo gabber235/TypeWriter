@@ -4,6 +4,8 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors/boolean.dart";
+import 'package:typewriter/widgets/inspector/editors/cron.dart';
+import 'package:typewriter/widgets/inspector/editors/duration.dart';
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
@@ -31,6 +33,8 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       MaterialSelectorEditorFilter(),
       OptionalEditorFilter(),
       LocationEditorFilter(),
+      DurationEditorFilter(),
+      CronEditorFilter(),
 
       // Default filters
       StringEditorFilter(),

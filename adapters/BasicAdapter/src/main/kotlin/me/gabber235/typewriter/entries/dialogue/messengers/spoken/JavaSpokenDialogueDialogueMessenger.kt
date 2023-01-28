@@ -34,11 +34,11 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
 	}
 
 	override fun tick(cycle: Int) {
-		val duration = entry.duration
+		val durationInTicks = entry.duration.toTicks()
 
-		val percentage = (cycle / duration.toDouble())
+		val percentage = (cycle / durationInTicks.toDouble())
 
-		val nextColor = if (cycle > duration * 2.5 && (cycle / 6) % 3 == 0) "red" else "gray"
+		val nextColor = if (cycle > durationInTicks * 2.5 && (cycle / 6) % 3 == 0) "red" else "gray"
 
 		val continueOrFinish = if (triggers.isEmpty()) "finish" else "continue"
 

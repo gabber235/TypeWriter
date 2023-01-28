@@ -14,7 +14,7 @@ fun ObjectEditor<Optional<*>>.optional() = reference {
 		val obj = JsonObject()
 
 		obj.addProperty("enabled", false)
-		
+
 		val default = generateFieldInfo(it)?.default() ?: JsonNull.INSTANCE
 		obj.add("value", default)
 
@@ -30,6 +30,20 @@ fun ObjectEditor<Optional<*>>.optional() = reference {
 
 		val value: Any? = context.deserialize(valueElement, (type as ParameterizedType).actualTypeArguments[0])
 		Optional.ofNullable(value)
+	}
+
+	jsonSerialize { src, _, context ->
+		val obj = JsonObject()
+
+		obj.addProperty("enabled", src.isPresent)
+
+		if (src.isPresent) {
+			val value = src.get()
+			val valueElement = context.serialize(value)
+			obj.add("value", valueElement)
+		}
+
+		obj
 	}
 
 	fieldInfo {

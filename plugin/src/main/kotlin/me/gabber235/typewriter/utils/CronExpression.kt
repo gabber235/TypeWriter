@@ -106,7 +106,7 @@ import java.util.regex.Pattern
  * Day-of-week field &quot;FRI-MON&quot; is invalid,but &quot;FRI-SUN,MON&quot; is valid
  *
 </P> */
-class CronExpression @JvmOverloads constructor(expr: String?, withSeconds: Boolean = true) {
+class CronExpression @JvmOverloads constructor(val expression: String, withSeconds: Boolean = true) {
 	internal enum class CronFieldType(val from: Int, val to: Int, val names: List<String>?) {
 		SECOND(0, 59, null) {
 			override fun getValue(dateTime: ZonedDateTime): Int {
@@ -213,7 +213,6 @@ class CronExpression @JvmOverloads constructor(expr: String?, withSeconds: Boole
 		abstract fun overflow(dateTime: ZonedDateTime): ZonedDateTime
 	}
 
-	private val expr: String
 	private val secondField: SimpleField
 	private val minuteField: SimpleField
 	private val hourField: SimpleField
@@ -222,17 +221,13 @@ class CronExpression @JvmOverloads constructor(expr: String?, withSeconds: Boole
 	private val dayOfMonthField: DayOfMonthField
 
 	init {
-		if (expr == null) {
-			throw IllegalArgumentException("expr is null") //$NON-NLS-1$
-		}
-		this.expr = expr
 		val expectedParts = if (withSeconds) 6 else 5
-		val parts = expr.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray() //$NON-NLS-1$
+		val parts = expression.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray() //$NON-NLS-1$
 		if (parts.size != expectedParts) {
 			throw IllegalArgumentException(
 				String.format(
 					"Invalid cron expression [%s], expected %s field, got %s",
-					expr,
+					expression,
 					expectedParts,
 					parts.size
 				)
@@ -311,7 +306,7 @@ class CronExpression @JvmOverloads constructor(expr: String?, withSeconds: Boole
 	}
 
 	override fun toString(): String {
-		return javaClass.simpleName + "<" + expr + ">"
+		return javaClass.simpleName + "<" + expression + ">"
 	}
 
 	internal class FieldPart : Comparable<FieldPart> {
@@ -516,9 +511,9 @@ class CronExpression @JvmOverloads constructor(expr: String?, withSeconds: Boole
 		}
 
 		override fun validatePart(part: FieldPart) {
-			if (part.modifier != null && Arrays.asList("L", "?").indexOf(part.modifier) == -1) {
+			if (part.modifier != null && listOf("L", "?").indexOf(part.modifier) == -1) {
 				throw IllegalArgumentException(String.format("Invalid modifier [%s]", part.modifier))
-			} else if (part.incrementModifier != null && Arrays.asList("/", "#")
+			} else if (part.incrementModifier != null && listOf("/", "#")
 					.indexOf(part.incrementModifier) == -1
 			) {
 				throw IllegalArgumentException(String.format("Invalid increment modifier [%s]", part.incrementModifier))
@@ -551,7 +546,7 @@ class CronExpression @JvmOverloads constructor(expr: String?, withSeconds: Boole
 		}
 
 		override fun validatePart(part: FieldPart) {
-			if (part.modifier != null && Arrays.asList("L", "W", "?").indexOf(part.modifier) == -1) {
+			if (part.modifier != null && listOf("L", "W", "?").indexOf(part.modifier) == -1) {
 				throw IllegalArgumentException(String.format("Invalid modifier [%s]", part.modifier))
 			} else if (part.incrementModifier != null && "/" != part.incrementModifier) {
 				throw IllegalArgumentException(String.format("Invalid increment modifier [%s]", part.incrementModifier))
@@ -564,18 +559,20 @@ class CronExpression @JvmOverloads constructor(expr: String?, withSeconds: Boole
 	}
 
 	companion object {
-		fun create(expr: String?): CronExpression {
+		fun create(expr: String): CronExpression {
 			return CronExpression(expr, true)
 		}
 
-		fun createWithoutSeconds(expr: String?): CronExpression {
+		fun createWithoutSeconds(expr: String): CronExpression {
 			return CronExpression(expr, false)
 		}
 
 		// Detects if to use with or without seconds
-		fun createDynamic(expr: String?): CronExpression {
-			return CronExpression(expr, expr?.trim()?.count { it == ' ' } == 5)
+		fun createDynamic(expr: String): CronExpression {
+			return CronExpression(expr, expr.trim().count { it == ' ' } == 5)
 		}
+
+		fun default() = create("0 0 0 1 1 *")
 
 		private fun checkIfDateTimeBarrierIsReached(nextTime: ZonedDateTime, dateTimeBarrier: ZonedDateTime) {
 			if (nextTime.isAfter(dateTimeBarrier)) {
