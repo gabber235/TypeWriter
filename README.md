@@ -27,7 +27,7 @@ The web panel for Typewriter, where you can create quests, NPCs, and more.
 
 ## Getting started
 
-To get started with Typewriter, simply download the [plugin]() and configure it accordingly. 
+To get started with Typewriter, simply download the [plugin](https://github.com/gabber235/TypeWriter/releases) and configure it accordingly. 
 See [Installation Guide](https://github.com/gabber235/TypeWriter/wiki/Installation-guide) for more information.
 Then, use the app to configure your custom interactions as desired.
 
