@@ -1,4 +1,3 @@
-import "package:auto_size_text/auto_size_text.dart";
 import "package:dropdown_search/dropdown_search.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -9,17 +8,18 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
-import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/empty_screen.dart";
+import "package:typewriter/widgets/entry_node.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/search_bar.dart";
 
-part "static_entry_selector.g.dart";
+part "entry_selector.g.dart";
 
 @riverpod
-Map<String, Entry> staticEntriesFromTag(StaticEntriesFromTagRef ref, String tag) {
+Map<String, Entry> entriesFromTag(EntriesFromTagRef ref, String tag) {
   final page = ref.watch(currentPageProvider);
   if (page == null) return {};
 
@@ -28,10 +28,10 @@ Map<String, Entry> staticEntriesFromTag(StaticEntriesFromTagRef ref, String tag)
       .associateBy((entry) => entry.id);
 }
 
-class StaticEntrySelectorEditorFilter extends EditorFilter {
+class EntrySelectorEditorFilter extends EditorFilter {
   @override
   bool canEdit(FieldInfo info) =>
-      info is PrimitiveField && info.type == PrimitiveFieldType.string && info.hasModifier("static");
+      info is PrimitiveField && info.type == PrimitiveFieldType.string && info.hasModifier("entry");
 
   @override
   Widget build(String path, FieldInfo info) => FactEditor(path: path, field: info as PrimitiveField);
@@ -49,16 +49,17 @@ class FactEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tag = field.getModifier("static")!.data;
+    final selectedEntryId = ref.watch(selectedEntryIdProvider);
+    final tag = field.getModifier("entry")!.data;
     final value = ref.watch(fieldValueProvider(path, ""));
-    final entries = ref.watch(staticEntriesFromTagProvider(tag));
+    final entries = ref.watch(entriesFromTagProvider(tag));
 
     final globalKey = useMemoized(GlobalKey<DropdownSearchState<Entry>>.new);
 
     return DropdownSearch<Entry>(
       key: globalKey,
       itemAsString: (entry) => entry.id,
-      items: entries.values.toList(),
+      items: entries.values.where((entry) => entry.id != selectedEntryId).toList(),
       selectedItem: entries[value],
       filterFn: (entry, string) {
         return entry.formattedName.toLowerCase().contains(string.toLowerCase()) ||
@@ -66,18 +67,18 @@ class FactEditor extends HookConsumerWidget {
       },
       onChanged: (entry) {
         if (entry == null) return;
-        ref.read(entryDefinitionProvider)?.updateField(ref, path, entry.id);
+        ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, entry.id);
       },
       onSaved: (entry) {
         if (entry == null) return;
-        ref.read(entryDefinitionProvider)?.updateField(ref, path, entry.id);
+        ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, entry.id);
       },
       dropdownBuilder: (context, entry) {
         if (entry == null) return Text("Select a $tag", style: Theme.of(context).inputDecorationTheme.hintStyle);
 
-        return AutoSizeText(
-          entry.formattedName,
-          maxLines: 1,
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: FakeEntryNode(entry: entry),
         );
       },
       onBeforePopupOpening: (entry) async {
@@ -85,7 +86,10 @@ class FactEditor extends HookConsumerWidget {
         return true;
       },
       popupProps: PopupProps.menu(
-        itemBuilder: (context, entry, isSelected) => buildListTile(entry, isSelected),
+        itemBuilder: (context, entry, _) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+          child: FakeEntryNode(entry: entry),
+        ),
         emptyBuilder: (context, entry) => buildEmpty(ref, globalKey, tag),
         onDismissed: () {
           ref.read(currentEditingFieldProvider.notifier).clearIfSame(path);
@@ -118,14 +122,6 @@ class FactEditor extends HookConsumerWidget {
           prefixIcon: const Icon(FontAwesomeIcons.database, size: 18),
         ),
       ),
-    );
-  }
-
-  Widget buildListTile(Entry entry, bool isSelected) {
-    return ListTile(
-      title: AutoSizeText(entry.formattedName, maxLines: 1),
-      subtitle: Text(entry.type.formatted),
-      selected: isSelected,
     );
   }
 

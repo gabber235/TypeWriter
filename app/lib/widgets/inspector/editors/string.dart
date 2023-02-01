@@ -1,11 +1,12 @@
 import "package:flutter/material.dart";
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector.dart";
-import 'package:typewriter/widgets/inspector/current_editing_field.dart';
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/formatted_text_field.dart";
 
@@ -53,7 +54,7 @@ class StringEditor extends HookConsumerWidget {
       inputFormatters: [
         if (field.hasModifier("snake_case")) snakeCaseFormatter(),
       ],
-      onChanged: onChanged ?? (value) => ref.read(entryDefinitionProvider)?.updateField(ref, path, value),
+      onChanged: onChanged ?? (value) => ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, value),
     );
   }
 }

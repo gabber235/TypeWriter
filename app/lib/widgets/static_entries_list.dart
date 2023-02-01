@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:typewriter/models/adapter.dart';
-import 'package:typewriter/models/page.dart';
-import 'package:typewriter/pages/page_editor.dart';
-import 'package:typewriter/widgets/empty_screen.dart';
-import 'package:typewriter/widgets/entry_node.dart';
-import 'package:typewriter/widgets/search_bar.dart';
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/page.dart";
+import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/widgets/empty_screen.dart";
+import "package:typewriter/widgets/entry_node.dart";
+import "package:typewriter/widgets/search_bar.dart";
 
 part "static_entries_list.g.dart";
 
@@ -36,24 +36,13 @@ class StaticEntriesList extends HookConsumerWidget {
       );
     }
 
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final entry = entries[index];
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: EntryNode(
-                  entry: entry,
-                  key: ValueKey(entry.id),
-                ),
-              );
-            },
-            childCount: entries.length,
-          ),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 16,
+        children: entries.map((entry) => EntryNode(entry: entry)).toList(),
+      ),
     );
   }
 }

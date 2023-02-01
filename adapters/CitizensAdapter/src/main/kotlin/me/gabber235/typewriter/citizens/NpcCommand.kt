@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.plugin.Plugin
 
 fun Plugin.npcCommand() = command("typewriternpc") {
-	requiresPermissions("typewriter.use", "typewriter.npc")
+	requiresPermissions("typewriter.npc")
 
 	alias("twnpc")
 

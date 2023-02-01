@@ -10,26 +10,50 @@ extension BuildContextExtension on BuildContext {
 
 extension StringExtension on String {
   String get capitalize {
-    if (isEmpty) {
-      return this;
-    }
+    if (isEmpty) return this;
     return "${this[0].toUpperCase()}${substring(1)}";
   }
 
   String get formatted {
-    if (isEmpty) {
-      return this;
-    }
+    if (isEmpty) return this;
     return split(".").map((e) => e.capitalize).join(" | ").split("_").map((e) => e.capitalize).join(" ");
   }
+
+  String get singular {
+    if (isEmpty) return this;
+    if (!endsWith("s")) return this;
+    return substring(0, length - 1);
+  }
+
+  String get plural {
+    if (isEmpty) return this;
+    if (endsWith("s")) return this;
+    return "${this}s";
+  }
+}
+
+extension IntExt on int {
+  String get ordinal {
+    if (this == 1) return "1st";
+    if (this == 2) return "2nd";
+    if (this == 3) return "3rd";
+    return "${this}th";
+  }
+
+  String pluralize(String singular, [String? plural]) => this == 1 ? singular : plural ?? singular.plural;
 }
 
 extension ObjectExtension on Object? {
   T? cast<T>() => this is T ? this as T : null;
 }
 
+extension ListExtensions on List<dynamic> {
+  List<int> get indices => List.generate(length, (index) => index);
+}
+
 TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
-      (oldValue, newValue) => newValue.copyWith(text: newValue.text.toLowerCase().replaceAll(" ", "_")),
+      (oldValue, newValue) =>
+          newValue.copyWith(text: newValue.text.toLowerCase().replaceAll(" ", "_").replaceAll("-", "_")),
     );
 
 bool get isApple => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS;
@@ -63,3 +87,17 @@ extension StringExt on String? {
   bool get isNullOrEmpty => this?.isEmpty ?? true;
   bool get hasValue => !isNullOrEmpty;
 }
+
+extension IteratorExt<E> on Iterator<E> {
+  E? get nextOrNull => moveNext() ? current : null;
+}
+
+const _chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
+final Random _random = Random();
+
+String getRandomString([int length = 15]) => String.fromCharCodes(
+      Iterable.generate(
+        length,
+        (_) => _chars.codeUnitAt(_random.nextInt(_chars.length)),
+      ),
+    );

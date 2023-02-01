@@ -1,8 +1,11 @@
 package me.gabber235.typewriter.interaction
 
-import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.dialogue.DialogueSequence
-import me.gabber235.typewriter.entry.entries.Event
+import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
+import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
+import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.facts.facts
 import org.bukkit.entity.Player
 
@@ -17,14 +20,14 @@ class Interaction(val player: Player) {
 
 	/**
 	 * Handles an event.
-	 * All events that start with "system." are handled by the plugin itself.
+	 * All [SystemTrigger]'s are handled by the plugin itself.
 	 */
 	fun onEvent(event: Event) {
-		if (event.id == "system.dialogue.next") {
+		if (DIALOGUE_NEXT in event) {
 			onDialogueNext()
 			return
 		}
-		if (event.id == "system.dialogue.end") {
+		if (DIALOGUE_END in event) {
 			dialogue?.end()
 			dialogue = null
 			return
@@ -40,7 +43,11 @@ class Interaction(val player: Player) {
 	 */
 	private fun tryTriggerNextDialogue(event: Event) {
 		val facts = player.facts
-		val nextDialogue = EntryDatabase.findDialogue(event.id, facts)
+
+		val nextDialogue = Query.findWhere<DialogueEntry> { it in event }
+			.sortedByDescending { it.criteria.size }
+			.firstOrNull { it.criteria.matches(facts) }
+
 		if (nextDialogue != null) {
 			// If there is no sequence yet, start a new one
 			if (dialogue == null) {
@@ -52,7 +59,7 @@ class Interaction(val player: Player) {
 			}
 		} else if (dialogue?.isActive == false) {
 			// If there is no next dialogue and the sequence isn't active anymore, we can end the sequence
-			InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
+			InteractionHandler.triggerEvent(Event(player, DIALOGUE_END))
 		}
 	}
 
@@ -63,12 +70,11 @@ class Interaction(val player: Player) {
 	private fun onDialogueNext() {
 		val dialog = dialogue ?: return
 		if (dialog.triggers.isEmpty()) {
-			InteractionHandler.triggerEvent(Event("system.dialogue.end", player))
+			InteractionHandler.triggerEvent(Event(player, DIALOGUE_END))
 			return
 		}
-		dialog.triggers.forEach {
-			InteractionHandler.triggerEvent(Event(it, player))
-		}
+		val triggers = dialog.triggers.map { EntryTrigger(it) }
+		InteractionHandler.triggerEvent(Event(player, triggers))
 		return
 	}
 

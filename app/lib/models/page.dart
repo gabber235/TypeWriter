@@ -1,13 +1,14 @@
 import "dart:convert";
 
-import 'package:collection/collection.dart';
+import "package:collection/collection.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
-import 'package:typewriter/models/communicator.dart';
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/passing_reference.dart";
 
 part "page.freezed.dart";
 part "page.g.dart";
@@ -38,12 +39,12 @@ class Page with _$Page {
 }
 
 extension PageExtension on Page {
-  void updatePage(WidgetRef ref, Page Function(Page) update) {
+  void updatePage(PassingRef ref, Page Function(Page) update) {
     final newPage = update(this);
     ref.read(bookProvider.notifier).insertPage(newPage);
   }
 
-  void insertEntry(WidgetRef ref, Entry entry) {
+  void insertEntry(PassingRef ref, Entry entry) {
     updatePage(
       ref,
       (page) => _insertEntry(page, entry),
@@ -70,18 +71,37 @@ extension PageExtension on Page {
     );
   }
 
-  void deleteEntry(WidgetRef ref, Entry entry) {
+  void deleteEntry(PassingRef ref, Entry entry) {
     ref.read(communicatorProvider).deleteEntry(name, entry.id);
     updatePage(
       ref,
       (page) => page.copyWith(
-        entries: [...page.entries.where((e) => e.id != entry.id)],
+        entries: [...page.entries.where((e) => e.id != entry.id).map((e) => _fixEntry(ref, e, entry))],
       ),
     );
   }
 
+  /// When an entry is delete all references in other entries need to be removed.
+  Entry _fixEntry(PassingRef ref, Entry entry, Entry deleting) {
+    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
+
+    final triggers = triggerPaths.expand((path) => entry.getAll(path)).whereType<String>().toList();
+    if (!triggers.contains(deleting.id)) {
+      return entry;
+    }
+
+    final newEntry = triggerPaths.fold(
+      entry,
+      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == deleting.id ? null : value),
+    );
+
+    ref.read(communicatorProvider).updateCompleteEntry(name, newEntry);
+
+    return newEntry;
+  }
+
   /// This should only be used to sync the entry from the server.
-  void syncDeleteEntry(Ref<dynamic> ref, String entryId) {
+  void syncDeleteEntry(PassingRef ref, String entryId) {
     ref.read(bookProvider.notifier).insertPage(
           copyWith(
             entries: [...entries.where((e) => e.id != entryId)],
@@ -199,6 +219,95 @@ class Entry {
     }
     if (current is List && int.tryParse(last) != null) {
       current[int.parse(last)] = value;
+    }
+
+    return Entry(data);
+  }
+
+  /// Returns a new copy of this entry with all values of a given path updated.
+  /// All possible fields are check and mapped to a new value. If the new value is null, the field is removed from the map or list.
+  /// If the new value is a map or list, the old value is replaced with the new one.
+  /// If the new value is a primitive, the old value is replaced with the new one.
+  /// This may look similar to [copyWith], but it updates all values of a given path.
+  /// Hence wildcards are supported, like "data.*.value", "data.*.1.value", etc.
+  Entry copyMapped(String path, dynamic Function(dynamic) mapper) {
+    final parts = path.split(".");
+    final last = parts.removeLast();
+    // Make a deep copy of the data. To avoid modifying the original data.
+    final data = jsonDecode(jsonEncode(this.data));
+
+    // Traverse the data to find the field to update.
+    final current = <dynamic>[data];
+    for (final part in parts) {
+      // If the current fields is a map, we try to find the next field in it.
+      if (part == "*") {
+        final next = <dynamic>[];
+        for (final item in current) {
+          if (item is Map) {
+            next.addAll(item.values);
+          }
+          if (item is List) {
+            next.addAll(item);
+          }
+        }
+        current
+          ..clear()
+          ..addAll(next);
+        continue;
+      }
+      final next = <dynamic>[];
+      for (final item in current) {
+        if (item is Map && item.containsKey(part)) {
+          next.add(item[part]);
+        }
+        if (item is List && int.tryParse(part) != null && item.length > int.parse(part)) {
+          next.add(item[int.parse(part)]);
+        }
+      }
+      current
+        ..clear()
+        ..addAll(next);
+    }
+
+    // Update the field.
+    // If the mapper returns null, the field is removed.
+    // Otherwise the field is updated with the new value.
+
+    if (last == "*") {
+      for (final item in current) {
+        if (item is Map) {
+          for (final key in item.keys.toList()) {
+            final value = mapper(item[key]);
+            if (value == null) {
+              item.remove(key);
+            } else {
+              item[key] = value;
+            }
+          }
+        }
+        if (item is List) {
+          item.replaceRange(0, item.length, item.map(mapper).whereNotNull());
+        }
+      }
+    } else {
+      for (final item in current) {
+        if (item is Map && item.containsKey(last)) {
+          final value = mapper(item[last]);
+          if (value == null) {
+            item.remove(last);
+          } else {
+            item[last] = value;
+          }
+        }
+        if (item is List && int.tryParse(last) != null && item.length > int.parse(last)) {
+          final value = mapper(item[int.parse(last)]);
+          if (value == null) {
+            item.removeAt(int.parse(last));
+          } else {
+            item[int.parse(last)] = value;
+          }
+        }
+      }
     }
 
     return Entry(data);

@@ -1,4 +1,4 @@
-import 'dart:async';
+import "dart:async";
 import "dart:convert";
 
 import "package:flutter/material.dart" hide Page;
@@ -12,6 +12,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/socket_extensions.dart";
 
 part "communicator.g.dart";
@@ -151,8 +152,11 @@ class SocketNotifier extends StateNotifier<Socket?> {
     socket
       ..on("stagingState", (data) => ref.read(communicatorProvider).handleStagingState(data))
       ..on("createPage", (data) => ref.read(communicatorProvider).handleCreatePage(data))
+      ..on("renamePage", (data) => ref.read(communicatorProvider).handleRenamePage(data))
+      ..on("deletePage", (data) => ref.read(communicatorProvider).handleDeletePage(data))
       ..on("createEntry", (data) => ref.read(communicatorProvider).handleCreateEntry(data))
       ..on("updateEntry", (data) => ref.read(communicatorProvider).handleUpdateEntry(data))
+      ..on("updateCompleteEntry", (data) => ref.read(communicatorProvider).handleUpdateCompleteEntry(data))
       ..on("deleteEntry", (data) => ref.read(communicatorProvider).handleDeleteEntry(data))
       ..on("updateWriters", (data) => ref.read(communicatorProvider).handleUpdateWriters(data));
 
@@ -207,6 +211,29 @@ class Communicator {
     await socket.emitWithAckAsync("createPage", name);
   }
 
+  Future<void> renamePage(String old, String newName) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "old": old,
+      "new": newName,
+    };
+
+    await socket.emitWithAckAsync("renamePage", jsonEncode(data));
+  }
+
+  Future<void> deletePage(String name) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    await socket.emitWithAckAsync("deletePage", name);
+  }
+
   Future<void> createEntry(String page, Entry entry) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
@@ -221,7 +248,7 @@ class Communicator {
     return socket.emitWithAckAsync("createEntry", jsonEncode(data));
   }
 
-  Future<void> updateEntry(String pageId, String entryId, String path, dynamic value) async {
+  void updateEntry(String pageId, String entryId, String path, dynamic value) {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -235,6 +262,20 @@ class Communicator {
     };
 
     socket.emit("updateEntry", jsonEncode(data));
+  }
+
+  void updateCompleteEntry(String pageId, Entry entry) {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "pageId": pageId,
+      "entry": entry.toJson(),
+    };
+
+    socket.emit("updateCompleteEntry", jsonEncode(data));
   }
 
   Future<void> deleteEntry(String pageId, String entryId) async {
@@ -282,6 +323,18 @@ class Communicator {
     ref.read(bookProvider.notifier).insertPage(Page(name: name));
   }
 
+  void handleRenamePage(dynamic data) {
+    final json = data as Map<String, dynamic>;
+    final old = json["old"] as String;
+    final newName = json["new"] as String;
+    ref.read(bookProvider.notifier).renamePage(old, newName);
+  }
+
+  void handleDeletePage(dynamic data) {
+    final name = data as String;
+    ref.read(bookProvider.notifier).deletePage(name);
+  }
+
   void handleCreateEntry(dynamic data) {
     final json = jsonDecode(data as String) as Map<String, dynamic>;
     final pageId = json["pageId"] as String;
@@ -305,13 +358,22 @@ class Communicator {
     page.syncInsertEntry(ref, newEntry);
   }
 
+  void handleUpdateCompleteEntry(dynamic data) {
+    final json = jsonDecode(data as String) as Map<String, dynamic>;
+    final pageId = json["pageId"] as String;
+    final entry = Entry.fromJson(json["entry"] as Map<String, dynamic>);
+    final page = ref.read(pageProvider(pageId));
+    if (page == null) return;
+    page.syncInsertEntry(ref, entry);
+  }
+
   void handleDeleteEntry(dynamic data) {
     final json = jsonDecode(data as String) as Map<String, dynamic>;
     final pageId = json["pageId"] as String;
     final entryId = json["entryId"] as String;
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
-    page.syncDeleteEntry(ref, entryId);
+    page.syncDeleteEntry(ref.passing, entryId);
   }
 
   void handleUpdateWriters(dynamic data) {

@@ -1,11 +1,12 @@
 import "package:collapsible/collapsible.dart";
 import "package:collection/collection.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
@@ -15,10 +16,10 @@ import "package:typewriter/widgets/inspector/listable_header.dart";
 
 class MapEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo type) => type is MapField;
+  bool canEdit(FieldInfo info) => info is MapField;
 
   @override
-  Widget build(String path, FieldInfo type) => MapEditor(path: path, field: type as MapField);
+  Widget build(String path, FieldInfo info) => MapEditor(path: path, field: info as MapField);
 }
 
 class MapEditor extends HookConsumerWidget {
@@ -37,7 +38,7 @@ class MapEditor extends HookConsumerWidget {
     if (key == null) return;
     final val = field.value.defaultValue;
     ref.read(entryDefinitionProvider)?.updateField(
-      ref,
+      ref.passing,
       path,
       {
         ...value.map(MapEntry.new),
@@ -119,7 +120,7 @@ class _MapEntry extends HookConsumerWidget {
 
   void _changeKeyField(WidgetRef ref, String key) {
     ref.read(entryDefinitionProvider)?.updateField(
-      ref,
+      ref.passing,
       path,
       {
         ...map.map(MapEntry.new)..removeWhere((key, value) => key == entry.key),
@@ -130,35 +131,16 @@ class _MapEntry extends HookConsumerWidget {
 
   bool _alreadyContainsKey(String key) => map.containsKey(key) && key != entry.key;
 
-  Future<bool> _showOverrideConfirmation(BuildContext context, String key) async {
-    return await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Override key?"),
-            content: Text(
-              "The key '$key' already exists.\nThis will delete all the data from the existing key.",
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("Cancel"),
-              ),
-              FilledButton.icon(
-                onPressed: () => Navigator.of(context).pop(true),
-                icon: const Icon(FontAwesomeIcons.triangleExclamation),
-                label: const Text("Override"),
-                color: Theme.of(context).errorColor,
-              ),
-            ],
-          ),
-        ) ??
-        false;
-  }
-
   Future<void> _changeKey(BuildContext context, WidgetRef ref, String key) async {
     if (_alreadyContainsKey(key)) {
-      final override = await _showOverrideConfirmation(context, key);
-      if (!override) return;
+      showConfirmationDialogue(
+        context: context,
+        title: "Override key?",
+        content: "The key '$key' already exists.\nThis will delete all the data from the existing key.",
+        confirmIcon: FontAwesomeIcons.triangleExclamation,
+        onConfirm: () => _changeKeyField(ref, key),
+      );
+      return;
     }
     _changeKeyField(ref, key);
   }
@@ -169,7 +151,7 @@ class _MapEntry extends HookConsumerWidget {
     };
 
     ref.read(entryDefinitionProvider)?.updateField(
-          ref,
+          ref.passing,
           path,
           newValue,
         );
@@ -214,7 +196,7 @@ class _MapEntry extends HookConsumerWidget {
               _keyEditor(context, ref, name),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.trash, size: 12),
-                color: Theme.of(context).errorColor,
+                color: Theme.of(context).colorScheme.error,
                 onPressed: () => _delete(ref, map, entry.key),
               ),
             ],

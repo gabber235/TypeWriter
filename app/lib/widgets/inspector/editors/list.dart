@@ -1,14 +1,16 @@
 import "package:collapsible/collapsible.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/listable_header.dart";
+import "package:typewriter/widgets/select_entries.dart";
 
 class ListEditorFilter extends EditorFilter {
   @override
@@ -29,7 +31,7 @@ class ListEditor extends HookConsumerWidget {
 
   void _addNew(WidgetRef ref, List<dynamic> value) {
     ref.read(entryDefinitionProvider)?.updateField(
-      ref,
+      ref.passing,
       path,
       [...value, field.type.defaultValue],
     );
@@ -54,7 +56,7 @@ class ListEditor extends HookConsumerWidget {
     _reorderList(newValue, oldIndex, newIndex);
 
     ref.read(entryDefinitionProvider)?.updateField(
-          ref,
+          ref.passing,
           path,
           newValue,
         );
@@ -71,6 +73,9 @@ class ListEditor extends HookConsumerWidget {
       ),
       [value.length],
     );
+
+    final isEntryList = field.hasModifier("entry-list");
+
     return Column(
       children: [
         ListableHeader(
@@ -78,6 +83,9 @@ class ListEditor extends HookConsumerWidget {
           length: value.length,
           expanded: expanded,
           onAdd: () => _addNew(ref, value),
+          actions: [
+            if (isEntryList) _EntriesSelectorButton(path: path, tag: field.getModifier("entry-list")?.data ?? ""),
+          ],
         ),
         Collapsible(
           collapsed: !expanded.value,
@@ -123,41 +131,10 @@ class _ListItem extends HookConsumerWidget {
 
   void _remove(WidgetRef ref, List<dynamic> value, int index) {
     ref.read(entryDefinitionProvider)?.updateField(
-          ref,
+          ref.passing,
           path,
           [...value]..removeAt(index),
         );
-  }
-
-  Future<void> _checkRemove(
-    BuildContext context,
-    WidgetRef ref,
-    List<dynamic> value,
-    int index,
-  ) async {
-    final bool remove = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Remove item?"),
-        content: const Text("Are you sure you want to remove this item?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("Cancel"),
-          ),
-          FilledButton.icon(
-            onPressed: () => Navigator.of(context).pop(true),
-            icon: const Icon(FontAwesomeIcons.trash),
-            label: const Text("Remove"),
-            color: Theme.of(context).errorColor,
-          ),
-        ],
-      ),
-    );
-
-    if (remove) {
-      _remove(ref, value, index);
-    }
   }
 
   @override
@@ -177,12 +154,17 @@ class _ListItem extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(name, style: Theme.of(context).textTheme.caption),
+              Text(name, style: Theme.of(context).textTheme.bodySmall),
               const Spacer(),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.trash, size: 12),
-                color: Theme.of(context).errorColor,
-                onPressed: () => _checkRemove(context, ref, value, index),
+                color: Theme.of(context).colorScheme.error,
+                onPressed: () => showConfirmationDialogue(
+                  context: context,
+                  title: "Remove item?",
+                  content: "Are you sure you want to remove this item?",
+                  onConfirm: () => _remove(ref, value, index),
+                ),
               ),
             ],
           ),
@@ -191,6 +173,48 @@ class _ListItem extends HookConsumerWidget {
             type: field.type,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _EntriesSelectorButton extends HookConsumerWidget {
+  const _EntriesSelectorButton({required this.path, required this.tag, super.key});
+
+  final String path;
+  final String tag;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Tooltip(
+      message: "Select multiple entries",
+      child: Material(
+        borderRadius: BorderRadius.circular(4),
+        color: Colors.deepPurple,
+        child: InkWell(
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          onTap: () async {
+            final currentEntries = ref.watch(fieldValueProvider(path, [])) as List<dynamic>;
+            final entryDefinition = ref.watch(entryDefinitionProvider);
+            if (entryDefinition == null) return;
+
+            ref.read(entrySelectionProvider.notifier).startSelection(
+              tag,
+              currentEntries.map((e) => e as String).toList(),
+              (ref, selectedEntries) {
+                ref.read(entryDefinitionProvider)?.updateField(
+                      ref.passing,
+                      path,
+                      selectedEntries,
+                    );
+              },
+            );
+          },
+          child: const Padding(
+            padding: EdgeInsets.all(6.0),
+            child: FaIcon(FontAwesomeIcons.objectGroup, size: 16),
+          ),
+        ),
       ),
     );
   }

@@ -14,7 +14,6 @@ import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.facts.*
-import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.ui.CommunicationHandler
 import me.gabber235.typewriter.utils.*
@@ -31,8 +30,6 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 	reloadCommands()
 
 	factsCommands()
-
-	eventsCommands()
 
 	clearChatCommand()
 
@@ -140,20 +137,6 @@ private fun LiteralDSLBuilder.factsCommands() {
 	}
 }
 
-private fun LiteralDSLBuilder.eventsCommands() {
-	literal("event") {
-		requiresPermissions("typewriter.event")
-		literal("run") {
-			argument("event", EventType) { event ->
-				executes {
-					source.msg("Running event <yellow>${event.get()}</yellow>...")
-					InteractionHandler.startInteractionAndTrigger(source as Player, listOf(event.get()))
-				}
-			}
-		}
-	}
-}
-
 private fun LiteralDSLBuilder.clearChatCommand() {
 	literal("clearChat") {
 		requiresPermissions("typewriter.clearChat")
@@ -229,27 +212,5 @@ open class FactType(
 	}
 
 	override fun getExamples(): Collection<String> = listOf("test.fact", "key.some_fact")
-
-}
-
-open class EventType : WordType<String> {
-	companion object Instance : EventType()
-
-	override fun parse(reader: StringReader): String = reader.readUnquoted()
-
-
-	override fun <S> listSuggestions(
-		context: CommandContext<S>,
-		builder: SuggestionsBuilder
-	): CompletableFuture<Suggestions> {
-
-		EntryDatabase.getAllTriggers().filter { it.startsWith(builder.remaining, true) }.forEach {
-			builder.suggest(it)
-		}
-
-		return builder.buildFuture()
-	}
-
-	override fun getExamples(): Collection<String> = listOf("test.fact", "key.some_event")
 
 }

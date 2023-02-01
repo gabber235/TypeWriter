@@ -1,10 +1,10 @@
 import "package:flutter/foundation.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide FilledButton;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
-import 'package:typewriter/app_router.dart';
+import "package:typewriter/app_router.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/widgets/copyable_text.dart";
 import "package:typewriter/widgets/filled_button.dart";
@@ -53,7 +53,7 @@ class DebugConnectButton extends HookConsumerWidget {
 
   Future<void> customConnectToPopup(BuildContext context, WidgetRef ref) async {
     final controller = TextEditingController();
-    final url = await showDialog(
+    final url = await showDialog<String?>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -81,12 +81,14 @@ class DebugConnectButton extends HookConsumerWidget {
 
     if (url == null) return;
 
-    final uri = Uri.parse(url);
+    final uri = Uri.parse(url.replaceAll("#/", ""));
     // Get the hostname and port and token from the url query parameters
     // The token is optional and the hostname can be "hostname" or "host"
-    final hostname = uri.queryParameters["hostname"] ?? uri.queryParameters["host"];
+    final hostname = uri.queryParameters["host"] ?? uri.queryParameters["hostname"];
     final port = int.tryParse(uri.queryParameters["port"] ?? "9092") ?? 9092;
     final token = uri.queryParameters["token"] ?? "";
+
+    debugPrint("Connecting to $hostname:$port with token $token");
 
     if (hostname == null) {
       return;

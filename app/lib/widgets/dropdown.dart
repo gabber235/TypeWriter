@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:google_fonts/google_fonts.dart";
 
@@ -48,7 +48,7 @@ class Dropdown<T> extends HookWidget {
               alignment: alignment ?? AlignmentDirectional.centerStart,
               style: GoogleFonts.jetBrainsMono(
                 textStyle: TextStyle(
-                  color: Theme.of(context).textTheme.bodyText1!.color,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
               ),
               borderRadius: borderRadius ?? BorderRadius.circular(8),
@@ -62,12 +62,8 @@ class Dropdown<T> extends HookWidget {
                   )
                   .toList(),
               onChanged: (value) {
-                debugPrint("Dropdown: $value");
                 if (value == null) return;
                 onChanged(value);
-              },
-              onTap: () {
-                debugPrint("DropdownButton onTap");
               },
             ),
           ),

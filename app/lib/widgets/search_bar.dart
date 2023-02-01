@@ -1,5 +1,3 @@
-import "dart:math";
-
 import "package:auto_size_text/auto_size_text.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
@@ -19,6 +17,7 @@ import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector.dart";
 
 part "search_bar.g.dart";
@@ -88,7 +87,7 @@ Fuzzy<Entry> _fuzzyEntries(_FuzzyEntriesRef ref) {
 }
 
 @riverpod
-Fuzzy<EntryBlueprint> _fuzzyAddEntries(_FuzzyAddEntriesRef ref) {
+Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
   final blueprints = ref.watch(entryBlueprintsProvider);
 
   return Fuzzy(
@@ -107,7 +106,7 @@ Fuzzy<EntryBlueprint> _fuzzyAddEntries(_FuzzyAddEntriesRef ref) {
 List<_Action> _actions(_ActionsRef ref) {
   final query = ref.watch(_queryProvider);
   final fuzzy = ref.watch(_fuzzyEntriesProvider);
-  final fuzzyAddEntries = ref.watch(_fuzzyAddEntriesProvider);
+  final fuzzyBlueprints = ref.watch(_fuzzyBlueprintsProvider);
   final blueprints = ref.watch(entryBlueprintsProvider);
 
   if (query.isEmpty) return [];
@@ -115,11 +114,11 @@ List<_Action> _actions(_ActionsRef ref) {
 
   // If the query contains a ":" we want to refine our search.
   if (query.contains(":")) {
-    final operatorFindings = _findActionsForOperator(query, blueprints, fuzzy, fuzzyAddEntries);
+    final operatorFindings = _findActionsForOperator(query, blueprints, fuzzy, fuzzyBlueprints);
     if (operatorFindings != null) return operatorFindings;
   }
 
-  final addResults = fuzzyAddEntries.search(query).map((e) => e.item).toList();
+  final addResults = fuzzyBlueprints.search(query).map((e) => e.item).toList();
 
   return addResults.map(_AddEntryAction.new).whereType<_Action>().toList() +
       results
@@ -135,13 +134,17 @@ List<_Action> _actions(_ActionsRef ref) {
 /// Finds actions for a given operator.
 /// If a query contains a ":" it means that its prefix will be the operator
 List<_Action>? _findActionsForOperator(
-    String query, List<EntryBlueprint> blueprints, Fuzzy<Entry> fuzzy, Fuzzy<EntryBlueprint> fuzzyAddEntries) {
+  String query,
+  List<EntryBlueprint> blueprints,
+  Fuzzy<Entry> fuzzy,
+  Fuzzy<EntryBlueprint> fuzzyBlueprints,
+) {
   final prefix = query.split(":").first.toLowerCase();
   final suffix = query.split(":").last.toLowerCase().trim();
 
   // If it starts with "add" we want to add a new entry.
   if (prefix == "add") {
-    return blueprints.where((b) => b.name.toLowerCase().contains(suffix)).map(_AddEntryAction.new).toList();
+    return fuzzyBlueprints.search(suffix).map((e) => e.item).map(_AddEntryAction.new).whereType<_Action>().toList();
   }
 
   // If it starts with a type we want to filter the results by that type.
@@ -167,7 +170,7 @@ List<_Action>? _findActionsForOperator(
     if (blueprint == null) return null;
     return _EntryAction(entry, blueprint);
   }).toList();
-  final blueprintTags = fuzzyAddEntries
+  final blueprintTags = fuzzyBlueprints
       .search(suffix)
       .map((e) => e.item)
       .where((e) => e.tags.contains(prefix))
@@ -252,22 +255,12 @@ class _AddEntryAction extends _Action {
   @override
   String description(BuildContext context) => blueprint.description;
 
-  static const _chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
-  static final Random _random = Random();
-
-  String _getRandomString(int length) => String.fromCharCodes(
-        Iterable.generate(
-          length,
-          (_) => _chars.codeUnitAt(_random.nextInt(_chars.length)),
-        ),
-      );
-
   @override
   void activate(BuildContext context, WidgetRef ref) {
-    final e = Entry.fromBlueprint(id: _getRandomString(15), blueprint: blueprint);
+    final e = Entry.fromBlueprint(id: getRandomString(), blueprint: blueprint);
     final page = ref.read(currentPageProvider);
     if (page == null) return;
-    page.insertEntry(ref, e);
+    page.insertEntry(ref.passing, e);
     ref.read(selectedEntryIdProvider.notifier).state = e.id;
     ref.read(entriesViewProvider.notifier).navigateToViewForEntry(e);
     ref.read(communicatorProvider).createEntry(page.name, e);
@@ -507,7 +500,7 @@ class _ResultTile extends HookWidget {
                       maxLines: 1,
                       title,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: focused.value ? Colors.white : null,
                             fontWeight: focused.value ? FontWeight.bold : null,
                           ),
@@ -516,7 +509,7 @@ class _ResultTile extends HookWidget {
                       maxLines: 1,
                       description,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.caption?.copyWith(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: focused.value ? Colors.white : null,
                             fontWeight: focused.value ? FontWeight.bold : null,
                           ),

@@ -3,9 +3,11 @@ package me.gabber235.typewriter.adapters
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.editors.*
+import me.gabber235.typewriter.utils.CronExpression
 import org.bukkit.Location
 import org.bukkit.Material
 import java.lang.reflect.Type
+import java.time.Duration
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -13,6 +15,7 @@ import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.findAnnotation
 
 typealias GsonDeserializer<T> = (JsonElement, Type, JsonDeserializationContext) -> T
+typealias GsonSerializer<T> = (T, Type, JsonSerializationContext) -> JsonElement
 
 typealias FieInfoGenerator = (TypeToken<*>) -> FieldInfo
 
@@ -64,6 +67,30 @@ class ObjectEditor<T : Any>(val klass: KClass<T>, val name: String) {
 	fun jsonDeserialize(deserializer: GsonDeserializer<T>) {
 		this.deserializer =
 			JsonDeserializer<T> { json, typeOfT, context -> deserializer(json, typeOfT, context) }
+	}
+
+	/**
+	 * The serializer used to convert an instance of the class represented by this editor into a JSON string.
+	 * NOTE: This field is used internally and should not be accessed directly.
+	 */
+	internal var serializer: JsonSerializer<T>? = null
+		private set
+
+	/**
+	 * If the default serialization is not enough, you can use this method to provide a custom serializer for this editor.
+	 * Example:
+	 * ```kotlin
+	 * @CustomEditor(SomeClass::class)
+	 * fun ObjectEditor.some() = reference {
+	 *  serializer = JsonSerializer { element, type, context ->
+	 *    // ...
+	 *  }
+	 *  // ...
+	 * }
+	 */
+	fun jsonSerialize(serializer: GsonSerializer<T>) {
+		this.serializer =
+			JsonSerializer<T> { src, typeOfSrc, context -> serializer(src, typeOfSrc, context) }
 	}
 
 
@@ -145,6 +172,8 @@ internal val customEditors by lazy {
 		ObjectEditor<Material>::material,
 		ObjectEditor<Optional<*>>::optional,
 		ObjectEditor<Location>::location,
+		ObjectEditor<Duration>::duration,
+		ObjectEditor<CronExpression>::cron,
 	)
 		.mapNotNull(::objectEditorFromFunction)
 		.associateBy { it.klass }

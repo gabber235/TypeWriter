@@ -5,10 +5,10 @@ import "package:flutter_hooks/flutter_hooks.dart";
 ///
 /// By default this is only ran on initialization.
 /// But this can be changed to run every build.
-void useDelayedExecution(Function function, {bool runEveryBuild = false}) => use(_DelayedExecutionHook(function, runEveryBuild: runEveryBuild));
+void useDelayedExecution(Function function, {bool runEveryBuild = false}) =>
+    use(_DelayedExecutionHook(function, runEveryBuild: runEveryBuild));
 
 class _DelayedExecutionHook extends Hook<void> {
-
   const _DelayedExecutionHook(this.function, {required this.runEveryBuild});
   final Function function;
   final bool runEveryBuild;
@@ -17,9 +17,8 @@ class _DelayedExecutionHook extends Hook<void> {
   _DelayedExecutionHookState createState() => _DelayedExecutionHookState();
 }
 
-class _DelayedExecutionHookState
-    extends HookState<void, _DelayedExecutionHook> {
-  _run() {
+class _DelayedExecutionHookState extends HookState<void, _DelayedExecutionHook> {
+  void _run() {
     WidgetsBinding.instance.addPostFrameCallback((_) => hook.function());
   }
 

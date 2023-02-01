@@ -5,8 +5,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.entry.EntryDatabase
-import me.gabber235.typewriter.entry.entries.Event
+import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.entries.SystemTrigger.*
+import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.facts.facts
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
@@ -29,18 +31,15 @@ object InteractionHandler {
 	 */
 	fun startInteractionWithOrTriggerEvent(
 		player: Player,
-		initialTriggers: List<String>,
-		continueTrigger: String? = null
+		initialTriggers: List<EventTrigger>,
+		continueTrigger: EventTrigger? = null
 	) {
 		if (interactions.containsKey(player.uniqueId)) {
 			if (continueTrigger != null) {
-				triggerEvent(Event(continueTrigger, player))
+				triggerEvent(Event(player, continueTrigger))
 			}
 		} else {
-			triggerEvent(Event("system.interaction.start", player))
-			for (trigger in initialTriggers) {
-				triggerEvent(Event(trigger, player))
-			}
+			triggerEvent(Event(player, listOf(INTERACTION_START) + initialTriggers))
 		}
 	}
 
@@ -50,13 +49,12 @@ object InteractionHandler {
 	 * @param player The player who interacted
 	 * @param triggers A list of triggers that should be fired.
 	 */
-	fun startInteractionAndTrigger(player: Player, triggers: List<String>) {
+	fun startInteractionAndTrigger(player: Player, triggers: List<EventTrigger>) {
+		var triggers = triggers
 		if (!interactions.containsKey(player.uniqueId)) {
-			triggerEvent(Event("system.interaction.start", player))
+			triggers = listOf(INTERACTION_START) + triggers
 		}
-		for (trigger in triggers) {
-			triggerEvent(Event(trigger, player))
-		}
+		triggerEvent(Event(player, triggers))
 	}
 
 
@@ -69,14 +67,14 @@ object InteractionHandler {
 	 */
 	fun triggerEvent(event: Event) {
 		val interaction = interactions[event.player.uniqueId]
-		if (event.id == "system.interaction.start") {
+		if (INTERACTION_START in event) {
 			if (interaction != null) return
 			interactions[event.player.uniqueId] = Interaction(event.player)
 			interactions[event.player.uniqueId]?.onEvent(event)
 			return
 		}
 
-		if (event.id == "system.interaction.end") {
+		if (INTERACTION_END in event) {
 			if (interaction == null) return
 			if (interaction.isActive) return
 			interaction.end()
@@ -96,15 +94,17 @@ object InteractionHandler {
 	 */
 	private fun triggerActions(event: Event) {
 		// Trigger all actions
-		val actions = EntryDatabase.findActions(event.id, event.player.facts)
+		val facts = event.player.facts
+		val actions = Query.findWhere<ActionEntry> { it in event && it.criteria.matches(facts) }
 		actions.forEach { action ->
 			action.execute(event.player)
 		}
-		actions.flatMap { it.triggers }
-			.filter { it != event.id } // Stops infinite loops
-			.forEach { trigger ->
-				triggerEvent(Event(trigger, event.player))
-			}
+		val newTriggers = actions.flatMap { it.triggers }
+			.map { EntryTrigger(it) }
+			.filter { it !in event } // Stops infinite loops
+		if (newTriggers.isNotEmpty()) {
+			triggerEvent(Event(event.player, newTriggers))
+		}
 	}
 
 	fun init() {
@@ -115,7 +115,7 @@ object InteractionHandler {
 				interactions.forEach { (_, interaction) ->
 					interaction.tick()
 					if (!interaction.isActive) {
-						triggerEvent(Event("system.interaction.end", interaction.player))
+						triggerEvent(Event(interaction.player, INTERACTION_END))
 					}
 				}
 			}
@@ -127,19 +127,9 @@ object InteractionHandler {
 			event.player.chatHistory.clear()
 		}
 
-		// When a player tries to execute a command, we need to end the interaction.
-		plugin.listen<PlayerCommandPreprocessEvent>(priority = EventPriority.MONITOR, ignoreCancelled = true) { event ->
-			triggerEvent(Event("system.dialogue.end", event.player))
-
-			// TODO: Move this to the BasicAdapter
-//			val message = event.message.removePrefix("/")
-//
-//			val triggers = EntryDatabase.findEventEntries(RunCommandEventEntry::class) {
-//				Regex(it.command).matches(message)
-//			}
-//				.flatMap { it.triggers }
-//			if (triggers.isEmpty()) return@listen
-//			startInteractionAndTrigger(event.player, triggers)
+		// When a player tries to execute a command, we need to end the dialogue.
+		plugin.listen<PlayerCommandPreprocessEvent>(priority = EventPriority.LOWEST, ignoreCancelled = true) { event ->
+			triggerEvent(Event(event.player, DIALOGUE_END))
 		}
 	}
 

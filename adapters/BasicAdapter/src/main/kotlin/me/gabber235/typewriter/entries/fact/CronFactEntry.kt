@@ -13,18 +13,10 @@ data class CronFactEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val comment: String = "",
-	val data: String = "",
+	val cron: CronExpression = CronExpression.default()
 ) : FactEntry {
-	@delegate:Transient
-	private val cache: CronExpression? by lazy {
-		try {
-			CronExpression.createDynamic(data)
-		} catch (e: Exception) {
-			null
-		}
-	}
 
 	override fun hasExpired(fact: Fact): Boolean {
-		return cache?.nextLocalDateTimeAfter(fact.lastUpdate)?.isBefore(LocalDateTime.now()) == true
+		return cron.nextLocalDateTimeAfter(fact.lastUpdate).isBefore(LocalDateTime.now())
 	}
 }

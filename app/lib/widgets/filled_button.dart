@@ -35,7 +35,7 @@ class FilledButton extends HookConsumerWidget {
         style: TextButton.styleFrom(
           backgroundColor: color ?? Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          disabledBackgroundColor: color?.withOpacity(0.3) ?? Theme.of(context).colorScheme.primary.withOpacity(0.3),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -75,8 +75,6 @@ class _FilledButtonWithIconChild extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Flexible(child: label),
-        SizedBox(width: gap),
         IconTheme(
           data: IconThemeData(
             size: 18,
@@ -84,6 +82,8 @@ class _FilledButtonWithIconChild extends StatelessWidget {
           ),
           child: icon,
         ),
+        SizedBox(width: gap),
+        Flexible(child: label),
       ],
     );
   }

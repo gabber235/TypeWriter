@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 
@@ -30,7 +31,7 @@ class BooleanEditor extends HookConsumerWidget {
         Checkbox(
           value: value,
           onChanged: (value) {
-            ref.read(entryDefinitionProvider)?.updateField(ref, path, value ?? false);
+            ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, value ?? false);
           },
         ),
         if (value)

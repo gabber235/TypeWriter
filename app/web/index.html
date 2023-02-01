@@ -54,5 +54,12 @@
       });
     });
   </script>
+
+  <!-- Disable right-clicking as it is handled by flutter itself. -->
+  <script>
+    document.body.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
+  </script>
 </body>
 </html>

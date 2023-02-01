@@ -157,7 +157,7 @@ class CronExpressionTest {
 	@Test
 	fun check_invalid_input() {
 		assertThrows<IllegalArgumentException> {
-			CronExpression(null)
+			CronExpression("")
 		}
 	}
 
