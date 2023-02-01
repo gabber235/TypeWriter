@@ -2,6 +2,10 @@
 
 ###### The next generation of questing in minecraft.
 
+![Discord](https://img.shields.io/discord/1054708062520360960?label=discord&logo=discord&logoColor=white)
+![Release](https://img.shields.io/github/v/release/gabber235/Typewriter?include_prereleases&logo=github)
+![License](https://img.shields.io/github/license/gabber235/Typewriter?logo=github)
+
 Typewriter is a plugin for spigot Minecraft servers that allows for custom player interactions such as Quests,
 NPC chat, Create branching story with ease, and more. It is easily configurable using the web panel specifically
 designed for this plugin.
