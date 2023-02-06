@@ -27,17 +27,16 @@ object VaultAdapter : TypewriteAdapter() {
 	override fun initialize() {
 		if (!server.pluginManager.isPluginEnabled("Vault")) {
 			plugin.logger.warning("Vault plugin not found, try installing it or disabling the Vault adapter")
+			return
 		}
 
 		loadVault()
-
-		println("VaultAdapter initialized")
 	}
 
 	private fun loadVault() {
-		println("${setupEconomy()} economy")
-		println("${setupPermissions()} permissions")
-		println("${setupChat()} chat")
+		setupEconomy()
+		setupPermissions()
+		setupChat()
 	}
 
 

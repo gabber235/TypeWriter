@@ -34,18 +34,10 @@ class HasPermissionConditionEntry(
         get() = emptyList()
 
     override fun execute(player: Player) {
-
-        println("Executing Vault Has Permission Condition Entry")
-
-
         val permissionHandler: Permission = VaultAdapter.permissions ?: return
 
         if(permissionHandler.has(player, permission)) {
-            println("Has permission")
             super.execute(player)
-
-            //nextTriggers triggerAllFor player
-
             InteractionHandler.startInteractionAndTrigger(player, nextTriggers.map { EntryTrigger(it) })
         }
 
