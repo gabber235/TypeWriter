@@ -1,10 +1,10 @@
-import "dart:async";
-
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter/services.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import "package:typewriter/hooks/timer.dart";
+import 'package:typewriter/widgets/components/general/filled_button.dart';
 
 class ConfirmationDialogue extends HookWidget {
   const ConfirmationDialogue({
@@ -55,22 +55,16 @@ class ConfirmationDialogue extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final secondsLeft = useState(delayConfirm.inSeconds);
+    final canConfirm = secondsLeft.value == 0;
 
-    useEffect(
-      () {
-        if (delayConfirm.inSeconds == 0) return null;
-        final timer = Timer.periodic(
-          const Duration(seconds: 1),
-          (timer) {
-            secondsLeft.value--;
-            if (secondsLeft.value == 0) {
-              timer.cancel();
-            }
-          },
-        );
-        return timer.cancel;
+    useTimer(
+      1.seconds,
+      (timer) {
+        secondsLeft.value--;
+        if (secondsLeft.value == 0) {
+          timer.cancel();
+        }
       },
-      [delayConfirm],
     );
 
     return AlertDialog(
@@ -91,10 +85,10 @@ class ConfirmationDialogue extends HookWidget {
         FilledButton.icon(
           icon: Icon(confirmIcon),
           label: Text(
-            secondsLeft.value == 0 ? confirmText : "$confirmText (${secondsLeft.value})",
+            canConfirm ? confirmText : "$confirmText (${secondsLeft.value})",
           ),
           color: confirmColor,
-          onPressed: secondsLeft.value == 0
+          onPressed: canConfirm
               ? () {
                   Navigator.of(context).pop();
                   onConfirm();

@@ -6,11 +6,11 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
-import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
+import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/listable_header.dart";
-import "package:typewriter/widgets/select_entries.dart";
 
 class ListEditorFilter extends EditorFilter {
   @override
@@ -30,7 +30,7 @@ class ListEditor extends HookConsumerWidget {
   final ListField field;
 
   void _addNew(WidgetRef ref, List<dynamic> value) {
-    ref.read(entryDefinitionProvider)?.updateField(
+    ref.read(inspectingEntryDefinitionProvider)?.updateField(
       ref.passing,
       path,
       [...value, field.type.defaultValue],
@@ -55,7 +55,7 @@ class ListEditor extends HookConsumerWidget {
     final newValue = [...value];
     _reorderList(newValue, oldIndex, newIndex);
 
-    ref.read(entryDefinitionProvider)?.updateField(
+    ref.read(inspectingEntryDefinitionProvider)?.updateField(
           ref.passing,
           path,
           newValue,
@@ -84,7 +84,7 @@ class ListEditor extends HookConsumerWidget {
           expanded: expanded,
           onAdd: () => _addNew(ref, value),
           actions: [
-            if (isEntryList) _EntriesSelectorButton(path: path, tag: field.getModifier("entry-list")?.data ?? ""),
+            if (isEntryList) EntriesSelectorButton(path: path, tag: field.getModifier("entry-list")?.data ?? ""),
           ],
         ),
         Collapsible(
@@ -130,7 +130,7 @@ class _ListItem extends HookConsumerWidget {
   final ListField field;
 
   void _remove(WidgetRef ref, List<dynamic> value, int index) {
-    ref.read(entryDefinitionProvider)?.updateField(
+    ref.read(inspectingEntryDefinitionProvider)?.updateField(
           ref.passing,
           path,
           [...value]..removeAt(index),
@@ -173,48 +173,6 @@ class _ListItem extends HookConsumerWidget {
             type: field.type,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _EntriesSelectorButton extends HookConsumerWidget {
-  const _EntriesSelectorButton({required this.path, required this.tag, super.key});
-
-  final String path;
-  final String tag;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Tooltip(
-      message: "Select multiple entries",
-      child: Material(
-        borderRadius: BorderRadius.circular(4),
-        color: Colors.deepPurple,
-        child: InkWell(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
-          onTap: () async {
-            final currentEntries = ref.watch(fieldValueProvider(path, [])) as List<dynamic>;
-            final entryDefinition = ref.watch(entryDefinitionProvider);
-            if (entryDefinition == null) return;
-
-            ref.read(entrySelectionProvider.notifier).startSelection(
-              tag,
-              currentEntries.map((e) => e as String).toList(),
-              (ref, selectedEntries) {
-                ref.read(entryDefinitionProvider)?.updateField(
-                      ref.passing,
-                      path,
-                      selectedEntries,
-                    );
-              },
-            );
-          },
-          child: const Padding(
-            padding: EdgeInsets.all(6.0),
-            child: FaIcon(FontAwesomeIcons.objectGroup, size: 16),
-          ),
-        ),
       ),
     );
   }

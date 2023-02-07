@@ -7,8 +7,8 @@ import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/communicator.dart";
-import "package:typewriter/widgets/copyable_text.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import "package:typewriter/widgets/components/general/copyable_text.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
 
 class ErrorConnectPage extends HookConsumerWidget {
   const ErrorConnectPage({required this.hostname, required this.port, this.token, super.key});

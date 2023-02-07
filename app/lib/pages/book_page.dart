@@ -1,5 +1,6 @@
 import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart" hide ConnectionState;
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -8,7 +9,8 @@ import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
-import "package:typewriter/widgets/select_entries.dart";
+import 'package:typewriter/widgets/components/app/select_entries.dart';
+import "package:url_launcher/url_launcher.dart";
 
 class BookPage extends HookConsumerWidget {
   const BookPage({super.key});
@@ -52,13 +54,22 @@ class BookPage extends HookConsumerWidget {
 }
 
 class _ReconnectOverlay extends HookConsumerWidget {
-  const _ReconnectOverlay({super.key});
+  const _ReconnectOverlay();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useAnimationController(
-      duration: const Duration(seconds: 30),
+      duration: 30.seconds,
     )..forward();
+
+    // We want to animate the color of the progress bar, blue -> red, starting at 0.5
+    final colorTween = ColorTween(
+      begin: Colors.blue,
+      end: Colors.red,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: const Interval(0.5, 1),
+    ));
 
     useAnimation(controller);
 
@@ -76,7 +87,10 @@ class _ReconnectOverlay extends HookConsumerWidget {
         children: [
           SizedBox(
             width: 420,
-            child: LinearProgressIndicator(value: 1 - controller.value),
+            child: LinearProgressIndicator(
+              value: 1 - controller.value,
+              valueColor: colorTween,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(16),
@@ -120,6 +134,8 @@ class _SideRail extends HookConsumerWidget {
                 children: [
                   _RailButton(index++, icon: FontAwesomeIcons.filePen),
                   const Spacer(),
+                  const _DiscordButton(),
+                  const SizedBox(height: 5),
                   const _ReloadBookButton(),
                 ],
               ),
@@ -163,14 +179,57 @@ class _RailButton extends HookConsumerWidget {
   }
 }
 
-class _ReloadBookButton extends HookConsumerWidget {
-  const _ReloadBookButton({super.key}) : super();
+class _DiscordButton extends HookConsumerWidget {
+  const _DiscordButton();
+
+  void _launchDiscord() {
+    launchUrl(
+      Uri.parse("https://discord.gg/gs5QYhfv9x"),
+      webOnlyWindowName: "_blank",
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(
-      icon: const Icon(Icons.refresh, color: Colors.white70),
-      onPressed: () => ref.read(bookProvider.notifier).reload(),
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        onTap: _launchDiscord,
+        borderRadius: BorderRadius.circular(8),
+        child: const Padding(
+          padding: EdgeInsets.all(12.0),
+          child: FaIcon(
+            FontAwesomeIcons.discord,
+            color: Colors.white54,
+            size: 20,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ReloadBookButton extends HookConsumerWidget {
+  const _ReloadBookButton() : super();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        onTap: () => ref.read(bookProvider.notifier).reload(),
+        borderRadius: BorderRadius.circular(8),
+        child: const Padding(
+          padding: EdgeInsets.all(12.0),
+          child: FaIcon(
+            FontAwesomeIcons.arrowsRotate,
+            color: Colors.white54,
+            size: 20,
+          ),
+        ),
+      ),
     );
   }
 }

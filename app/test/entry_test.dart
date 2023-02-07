@@ -1,5 +1,5 @@
 import "package:flutter_test/flutter_test.dart";
-import "package:typewriter/models/page.dart";
+import "package:typewriter/models/entry.dart";
 
 void main() {
   final rawDynamicEntry = {
@@ -35,75 +35,94 @@ void main() {
     }
   };
 
-  test("When a entry is parsed expect its fields to be able to be fetched", () {
-    final entry = Entry(rawDynamicEntry);
+  group("Get field from entry", () {
+    test("When a entry is parsed expect its fields to be able to be fetched", () {
+      final entry = Entry(rawDynamicEntry);
 
-    expect(entry.id, "1");
-    expect(entry.name, "test");
-    expect(entry.type, "test_type");
+      expect(entry.id, "1");
+      expect(entry.name, "test");
+      expect(entry.type, "test_type");
 
-    expect(entry.get("simple_list"), [1, 2, 3]);
-    expect(entry.get("simple_list.1"), 2);
+      expect(entry.get("simple_list"), [1, 2, 3]);
+      expect(entry.get("simple_list.1"), 2);
 
-    expect(entry.get("complex_list"), [
-      {"id": "1", "name": "test1"},
-      {"id": "2", "name": "test2"},
-      {"id": "3", "name": "test3"}
-    ]);
-    expect(entry.get("complex_list.1.name"), "test2");
+      expect(entry.get("complex_list"), [
+        {"id": "1", "name": "test1"},
+        {"id": "2", "name": "test2"},
+        {"id": "3", "name": "test3"}
+      ]);
+      expect(entry.get("complex_list.1.name"), "test2");
 
-    expect(entry.get("simple_map"), {"key1": "value1", "key2": "value2"});
-    expect(entry.get("simple_map.key1"), "value1");
+      expect(entry.get("simple_map"), {"key1": "value1", "key2": "value2"});
+      expect(entry.get("simple_map.key1"), "value1");
 
-    expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
+      expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
+    });
+
+    test("When a key is not found, null is returned", () {
+      final entry = Entry(rawDynamicEntry);
+      expect(entry.get("not_found"), null);
+      expect(entry.get("simple_list.4"), null);
+      expect(entry.get("complex_list.4.name"), null);
+      expect(entry.get("complex_list.1.not_found"), null);
+      expect(entry.get("simple_map.key3"), null);
+    });
+
+    test("When a key is not found, a default value is returned", () {
+      final entry = Entry(rawDynamicEntry);
+      expect(entry.get("not_found", "default"), "default");
+      expect(entry.get("simple_list.4", "default"), "default");
+      expect(entry.get("complex_list.4.name", "default"), "default");
+      expect(entry.get("complex_list.1.not_found", "default"), "default");
+      expect(entry.get("simple_map.key3", "default"), "default");
+    });
   });
 
-  test("When a key is not found, null is returned", () {
-    final entry = Entry(rawDynamicEntry);
-    expect(entry.get("not_found"), null);
-    expect(entry.get("simple_list.4"), null);
-    expect(entry.get("complex_list.4.name"), null);
-    expect(entry.get("complex_list.1.not_found"), null);
-    expect(entry.get("simple_map.key3"), null);
+  group("Get all fields from entry", () {
+    test("When a path is fetched, all values should be returned", () {
+      final entry = Entry(rawDynamicEntry);
+      expect(entry.getAll("simple_list.*"), [1, 2, 3]);
+      expect(entry.getAll("simple_map.*"), ["value1", "value2"]);
+      expect(entry.getAll("complex_map.*.name"), ["test1", "test2"]);
+      expect(
+          entry.getAll("complex_map.*.inner_list.*.name"), ["test1", "test2", "test3", "test_a", "test_b", "test_c"]);
+      expect(entry.getAll("complex_map.key2.inner_list.*.name"), ["test_a", "test_b", "test_c"]);
+    });
   });
 
-  test("When a key is not found, a default value is returned", () {
-    final entry = Entry(rawDynamicEntry);
-    expect(entry.get("not_found", "default"), "default");
-    expect(entry.get("simple_list.4", "default"), "default");
-    expect(entry.get("complex_list.4.name", "default"), "default");
-    expect(entry.get("complex_list.1.not_found", "default"), "default");
-    expect(entry.get("simple_map.key3", "default"), "default");
-  });
+  group("Copy entry with new value", () {
+    test("When a dynamic entry is updated, the new value is returned", () {
+      final entry = Entry(rawDynamicEntry);
+      var newEntry = entry.copyWith("simple_list.1", 4);
+      expect(newEntry.get("simple_list.1"), 4);
 
-  test("When a path is fetched, all values should be returned", () {
-    final entry = Entry(rawDynamicEntry);
-    expect(entry.getAll("simple_list.*"), [1, 2, 3]);
-    expect(entry.getAll("simple_map.*"), ["value1", "value2"]);
-    expect(entry.getAll("complex_map.*.name"), ["test1", "test2"]);
-    expect(entry.getAll("complex_map.*.inner_list.*.name"), ["test1", "test2", "test3", "test_a", "test_b", "test_c"]);
-    expect(entry.getAll("complex_map.key2.inner_list.*.name"), ["test_a", "test_b", "test_c"]);
-  });
+      newEntry = entry.copyWith("complex_list.1.name", "new_name");
+      expect(newEntry.get("complex_list.1.name"), "new_name");
 
-  test("When a dynamic entry is updated, the new value is returned", () {
-    final entry = Entry(rawDynamicEntry);
-    var newEntry = entry.copyWith("simple_list.1", 4);
-    expect(newEntry.get("simple_list.1"), 4);
+      newEntry = entry.copyWith("simple_map.key1", "new_value");
+      expect(newEntry.get("simple_map.key1"), "new_value");
 
-    newEntry = entry.copyWith("complex_list.1.name", "new_name");
-    expect(newEntry.get("complex_list.1.name"), "new_name");
+      newEntry = entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
+      expect(newEntry.get("complex_map.key2.inner_list.1.name"), "new_name");
+    });
 
-    newEntry = entry.copyWith("simple_map.key1", "new_value");
-    expect(newEntry.get("simple_map.key1"), "new_value");
+    test("When an list is updated, expect the new list to be returned", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyWith("simple_list", [4, 5, 6]);
+      expect(newEntry.get("simple_list"), [4, 5, 6]);
+    });
 
-    newEntry = entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
-    expect(newEntry.get("complex_map.key2.inner_list.1.name"), "new_name");
-  });
+    test("When an map is updated, expect the new map to be returned", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyWith("simple_map", {"key1": "new_value", "key2": "new_value"});
+      expect(newEntry.get("simple_map"), {"key1": "new_value", "key2": "new_value"});
+    });
 
-  test("When an entry is updated, expect the original entry to be unchanged", () {
-    final entry = Entry(rawDynamicEntry);
-    entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
-    expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
+    test("When an entry is updated, expect the original entry to be unchanged", () {
+      final entry = Entry(rawDynamicEntry);
+      entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
+      expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
+    });
   });
 
   group("Copy Mapped", () {

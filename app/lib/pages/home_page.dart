@@ -5,9 +5,8 @@ import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/app_router.dart";
-import "package:typewriter/main.dart";
-import "package:typewriter/widgets/copyable_text.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import 'package:typewriter/widgets/components/general/copyable_text.dart';
+import 'package:typewriter/widgets/components/general/filled_button.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -21,21 +20,26 @@ class HomePage extends HookConsumerWidget {
           const Spacer(),
           const Expanded(
             flex: 2,
-            child: RiveAnimation.asset("assets/game_character.riv"),
+            child: RiveAnimation.asset(
+              "assets/game_character.riv",
+              stateMachines: ["State Machine"],
+            ),
           ),
           const Text(
             "Your journey starts here",
+            textAlign: TextAlign.center,
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
           ),
           Text(
             "Run the following command on your server to start editing",
+            textAlign: TextAlign.center,
             style: GoogleFonts.jetBrainsMono(fontSize: 20, fontWeight: FontWeight.w100, color: Colors.grey),
           ),
           const SizedBox(height: 24),
           const CopyableText(text: "/typewriter connect"),
-          if (kDebugMode) ...[
+          if (kDebugMode || kProfileMode) ...[
             const SizedBox(height: 24),
-            const DebugConnectButton(),
+            const _DebugConnectButton(),
           ],
           const Spacer(),
         ],
@@ -44,8 +48,10 @@ class HomePage extends HookConsumerWidget {
   }
 }
 
-class DebugConnectButton extends HookConsumerWidget {
-  const DebugConnectButton({super.key});
+/// This is a debug widget that allows you to connect quickly to a server.
+/// It is only visible in debug mode.
+class _DebugConnectButton extends HookConsumerWidget {
+  const _DebugConnectButton({super.key});
 
   void connectTo(WidgetRef ref, String hostname, int port, [String token = ""]) {
     ref.read(appRouter).replaceAll([ConnectRoute(hostname: hostname, port: port, token: token)]);

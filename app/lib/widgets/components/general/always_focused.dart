@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/hooks/delayed_execution.dart";
 
 /// For shortcuts to work there must be a focused widget.
 /// This widget is a hack to ensure that there is always a focused widget.
@@ -14,19 +15,20 @@ class AlwaysFocused extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final focus = useFocusNode();
-    final currentFocus = FocusScope.of(context).focusedChild;
+    useDelayedExecution(() {
+      void onFocusChange() {
+        final currentFocus = FocusScope.of(context).focusedChild;
 
-    useEffect(
-      () {
         // For shortcuts to work, a widget must be focused.
         // So if nothing is focused, request focus for a placeholder focus.
         if (currentFocus == null) {
           focus.requestFocus();
         }
-        return null;
-      },
-      [currentFocus],
-    );
+      }
+
+      FocusScope.of(context).addListener(onFocusChange);
+      return () => FocusScope.of(context).removeListener(onFocusChange);
+    });
 
     return Focus(
       focusNode: focus,

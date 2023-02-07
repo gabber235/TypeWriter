@@ -179,8 +179,6 @@ infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
 	InteractionHandler.startInteractionAndTrigger(player, triggers)
 }
 
-
-
 /**
  * Trigger all triggers for an entry.
  *
@@ -199,7 +197,7 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
 
 /**
  * Trigger all triggers for all entries in a list.
- * This is a convenience method for [triggerAllFor] that takes a list of strings.
+ * This is a convenience method for [triggerEntriesFor] that takes a list of strings.
  *
  * Example:
  * ```kotlin
@@ -209,7 +207,7 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
  *
  * @param player The player to trigger the triggers for.
  */
-infix fun List<String>.triggerAllFor(player: Player) {
+infix fun List<String>.triggerEntriesFor(player: Player) {
 	val triggers = this.map { EntryTrigger(it) }
 	InteractionHandler.startInteractionAndTrigger(player, triggers)
 }
