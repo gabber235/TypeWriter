@@ -9,7 +9,8 @@ import me.gabber235.typewriter.entry.TriggerableEntry
 interface DialogueEntry : TriggerableEntry {
 	@EntryIdentifier(SpeakerEntry::class)
 	val speaker: String
-	val text: String
+	//val text: String
+
 
 	val speakerDisplayName: String
 		get() = speakerEntry?.displayName ?: ""

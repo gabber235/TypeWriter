@@ -36,9 +36,13 @@ fun onPlayerMove(event: PlayerMoveEvent, query: Query<PlayerMoveEventEntry>) {
 		// Check if the player moved to a new block
 		if(entry.fullBlock && event.to.blockX == event.from.blockX && event.to.blockY == event.from.blockY && event.to.blockZ == event.from.blockZ) return@findWhere false
 
-		// Check if the player clicked on the correct location
-		if (!entry.location.map { it == event.to }.orElse(true)) return@findWhere false
+		if(entry.location.isPresent) {
+			if (!entry.location.map { it == event.to }.orElse(true)) return@findWhere false
+			if(entry.distance.isPresent) {
+				if(entry.distance.get() >= event.to.distance(event.from)) return@findWhere false
+			}
+		}
 
-		entry.distance.map { it <= event.to.distance(event.from) }.orElse(true)
+		return@findWhere true
 	}.startInteractionWithOrTrigger(event.player, SystemTrigger.DIALOGUE_NEXT)
 }

@@ -20,11 +20,17 @@ class ChatContainsTextEventEntry(
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
 	val text: String = "",
+	val exactSame: Boolean = false
 ) : EventEntry
 
 
 @EntryListener(ChatContainsTextEventEntry::class)
 fun onChat(event: AsyncChatEvent, query: Query<ChatContainsTextEventEntry>) {
 	val message = event.message().plainText()
-	query findWhere { Regex(it.text).matches(message) } triggerAllFor event.player
+	query findWhere {
+		if(it.exactSame)
+			Regex(it.text).matches(message)
+		else
+			Regex(it.text).containsMatchIn(message)
+	} triggerAllFor event.player
 }
