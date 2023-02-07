@@ -5,21 +5,21 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
+import "package:typewriter/widgets/components/general/formatted_text_field.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
-import "package:typewriter/widgets/inspector/formatted_text_field.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
-import "package:typewriter/widgets/writers.dart";
 
 class NameField extends HookConsumerWidget {
   const NameField({super.key}) : super();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedEntryId = ref.watch(selectedEntryIdProvider);
+    final selectedEntryId = ref.watch(inspectingEntryIdProvider);
     final focus = useFocusNode();
     useFocusedBasedCurrentEditingField(focus, ref, "name");
-    final def = ref.watch(entryDefinitionProvider);
+    final def = ref.watch(inspectingEntryDefinitionProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

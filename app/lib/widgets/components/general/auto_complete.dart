@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:typewriter/widgets/components/general/formatted_text_field.dart';
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
-import "package:typewriter/widgets/inspector/formatted_text_field.dart";
 
 class AutoCompleteField extends StatelessWidget {
   const AutoCompleteField({

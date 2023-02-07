@@ -1,5 +1,6 @@
 import "package:dotted_border/dotted_border.dart";
 import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -14,15 +15,6 @@ class StagingIndicator extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(stagingStateProvider);
-    final stateMachine = useRiveStateMachine("status");
-
-    useEffect(
-      () {
-        stateMachine.setNumber("state", state.index.toDouble());
-        return null;
-      },
-      [state, stateMachine.hasController],
-    );
 
     return Stack(
       children: [
@@ -36,14 +28,7 @@ class StagingIndicator extends HookConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                height: 24,
-                width: 24,
-                child: RiveAnimation.asset(
-                  "assets/status.riv",
-                  onInit: stateMachine.init,
-                ),
-              ),
+              _Icon(),
               const SizedBox(width: 8),
               Text(
                 state.label,
@@ -61,6 +46,33 @@ class StagingIndicator extends HookConsumerWidget {
   }
 }
 
+class _Icon extends HookConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(stagingStateProvider);
+    final stateMachine = useRiveStateMachine("status");
+
+    useEffect(
+      () {
+        stateMachine.setNumber("state", state.index.toDouble());
+        return null;
+      },
+      [state, stateMachine.hasController],
+    );
+
+    return SizedBox(
+      height: 24,
+      width: 24,
+      child: RepaintBoundary(
+        child: RiveAnimation.asset(
+          "assets/status.riv",
+          onInit: stateMachine.init,
+        ),
+      ),
+    );
+  }
+}
+
 class _PublishButton extends HookConsumerWidget {
   const _PublishButton({super.key});
 
@@ -74,7 +86,7 @@ class _PublishButton extends HookConsumerWidget {
         scale: 1.07,
         child: ClipRRect(
           child: AnimatedSlide(
-            duration: Duration(milliseconds: hovering.value ? 300 : 100),
+            duration: hovering.value ? 300.ms : 100.ms,
             curve: hovering.value ? Curves.easeOutExpo : Curves.easeOut,
             offset: hovering.value ? Offset.zero : const Offset(0, -1),
             child: Material(
@@ -83,12 +95,12 @@ class _PublishButton extends HookConsumerWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () => ref.read(communicatorProvider).publish(),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
+                    children: [
                       Icon(
                         FontAwesomeIcons.cloudArrowUp,
                         size: 16,

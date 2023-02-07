@@ -6,6 +6,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.citizens.TypewriterTrait
 import me.gabber235.typewriter.citizens.entries.entities.Npc
+import me.gabber235.typewriter.citizens.entries.entities.ReferenceNpcEntry
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger
@@ -34,14 +35,35 @@ private fun onNpcInteract(player: Player, identifier: String, query: Query<NpcIn
 	}.startInteractionWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
 }
 
+private fun onReferenceNpcInteract(player: Player, npcId: Int, query: Query<NpcInteractEventEntry>) {
+	val references = Query.findWhere<ReferenceNpcEntry> { it.npcId == npcId }
+	val identifiers = references.map { it.id }
+
+	query.findWhere {
+		it.identifier in identifiers
+	}.startInteractionWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
+}
+
 @EntryListener(NpcInteractEventEntry::class)
 fun onNpcRightClick(event: NPCRightClickEvent, query: Query<NpcInteractEventEntry>) {
-	val identifier = event.npc.getTraitNullable(TypewriterTrait::class.java)?.identifier ?: return
+	val identifier = event.npc.getTraitNullable(TypewriterTrait::class.java)?.identifier
+
+	if (identifier == null) {
+		onReferenceNpcInteract(event.clicker, event.npc.id, query)
+		return
+	}
+
 	onNpcInteract(event.clicker, identifier, query)
 }
 
 @EntryListener(NpcInteractEventEntry::class)
 fun onNpcLeftClick(event: NPCLeftClickEvent, query: Query<NpcInteractEventEntry>) {
-	val identifier = event.npc.getTraitNullable(TypewriterTrait::class.java)?.identifier ?: return
+	val identifier = event.npc.getTraitNullable(TypewriterTrait::class.java)?.identifier
+
+	if (identifier == null) {
+		onReferenceNpcInteract(event.clicker, event.npc.id, query)
+		return
+	}
+
 	onNpcInteract(event.clicker, identifier, query)
 }

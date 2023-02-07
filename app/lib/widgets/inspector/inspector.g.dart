@@ -29,25 +29,26 @@ class _SystemHash {
   }
 }
 
-String _$selectedEntryHash() => r'c9bab242f9d119edd93f0a3994a5fe81bbe5f3e8';
+String _$inspectingEntryHash() => r'84ccfbfca0da9b171e8f509e02c225094ff4636c';
 
-/// See also [selectedEntry].
-final selectedEntryProvider = AutoDisposeProvider<Entry?>(
-  selectedEntry,
-  name: r'selectedEntryProvider',
+/// See also [inspectingEntry].
+final inspectingEntryProvider = AutoDisposeProvider<Entry?>(
+  inspectingEntry,
+  name: r'inspectingEntryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$selectedEntryHash,
+      : _$inspectingEntryHash,
 );
-typedef SelectedEntryRef = AutoDisposeProviderRef<Entry?>;
-String _$entryDefinitionHash() => r'be97bb1135227dd2591eed39856d37a27abedd7a';
+typedef InspectingEntryRef = AutoDisposeProviderRef<Entry?>;
+String _$inspectingEntryDefinitionHash() =>
+    r'a3c771a509fe14061f2fe969813f1851afb458c6';
 
-/// See also [entryDefinition].
-final entryDefinitionProvider = AutoDisposeProvider<EntryDefinition?>(
-  entryDefinition,
-  name: r'entryDefinitionProvider',
+/// See also [inspectingEntryDefinition].
+final inspectingEntryDefinitionProvider = AutoDisposeProvider<EntryDefinition?>(
+  inspectingEntryDefinition,
+  name: r'inspectingEntryDefinitionProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$entryDefinitionHash,
+      : _$inspectingEntryDefinitionHash,
 );
-typedef EntryDefinitionRef = AutoDisposeProviderRef<EntryDefinition?>;
+typedef InspectingEntryDefinitionRef = AutoDisposeProviderRef<EntryDefinition?>;

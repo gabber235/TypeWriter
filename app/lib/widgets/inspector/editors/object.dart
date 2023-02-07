@@ -4,11 +4,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
-import "package:typewriter/widgets/writers.dart";
 
 class ObjectEditorFilter extends EditorFilter {
   @override
@@ -33,7 +33,7 @@ class ObjectEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedEntryId = ref.watch(selectedEntryIdProvider);
+    final selectedEntryId = ref.watch(inspectingEntryIdProvider);
     final expanded = useState(defaultExpanded);
     return Column(
       mainAxisSize: MainAxisSize.min,

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -76,14 +77,12 @@ class Writers extends HookConsumerWidget {
           children: [
             for (var i = 0; i < writers.length; i++) ...[
               AnimatedPositioned(
-                duration: const Duration(milliseconds: 1000),
+                duration: 1.seconds,
                 curve: Curves.elasticOut,
                 right: i * (hovering.value ? 37 : 15.0),
-                child: AnimatedAppear(
-                  duration: const Duration(milliseconds: 1000),
-                  curve: Curves.elasticOut,
-                  child: WriterIcon(id: writers[i].id),
-                ),
+                child: WriterIcon(writer: writers[i])
+                    .animate()
+                    .scale(end: const Offset(1, 1), duration: 1.seconds, curve: Curves.elasticOut),
               ),
             ],
           ],
@@ -93,38 +92,28 @@ class Writers extends HookConsumerWidget {
   }
 }
 
-class AnimatedAppear extends HookWidget {
-  const AnimatedAppear({
-    required this.child,
-    this.duration = const Duration(milliseconds: 200),
-    this.curve,
-    super.key,
-  });
-
-  final Widget child;
-  final Duration duration;
-  final Curve? curve;
-
-  @override
-  Widget build(BuildContext context) {
-    final animation = useAnimationController(duration: duration);
-    final tween =
-        Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: animation, curve: curve ?? Curves.easeOut));
-
-    animation.forward();
-
-    return ScaleTransition(scale: tween, child: child);
-  }
-}
-
 class WriterIcon extends HookWidget {
-  const WriterIcon({required this.id, super.key});
+  const WriterIcon({required this.writer, super.key});
 
-  final String id;
+  final Writer writer;
+
+  Widget _icon(Color color) {
+    if (writer.iconUrl == null) {
+      return SvgPicture.network(
+        "https://avatars.dicebear.com/api/adventurer-neutral/${writer.id}.svg?b=%23${color.value.toRadixString(16)}",
+        height: 25,
+      );
+    }
+
+    return Image.network(
+      writer.iconUrl!,
+      height: 25,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final color = useMemoized(() => id.randomColor, [id]);
+    final color = useMemoized(() => writer.id.randomColor, [writer.id]);
 
     return Container(
       decoration: BoxDecoration(
@@ -134,11 +123,7 @@ class WriterIcon extends HookWidget {
       ),
       padding: const EdgeInsets.all(2),
       child: ClipOval(
-        child: SvgPicture.network(
-          "https://avatars.dicebear.com/api/adventurer-neutral/$id.svg?b=%23${color.value.toRadixString(16)}",
-          // color: color,
-          height: 25,
-        ),
+        child: _icon(color),
       ),
     );
   }

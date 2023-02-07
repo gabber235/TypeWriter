@@ -1,9 +1,9 @@
-import "dart:async";
-
 import "package:flutter/cupertino.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/utils/debouncer.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 final currentEditingFieldProvider =
     StateNotifierProvider<CurrentEditingFieldNotifier, String>(CurrentEditingFieldNotifier.new);
@@ -12,13 +12,13 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
   CurrentEditingFieldNotifier(this.ref) : super("") {
     // Always reset the state when another entry is selected
     ref.listen(
-      selectedEntryIdProvider,
+      inspectingEntryIdProvider,
       (_, __) => state = "",
     );
   }
   final Ref<dynamic> ref;
 
-  Timer? _debounceTimer;
+  final Debouncer _debouncer = Debouncer(duration: 100.ms);
 
   set path(String path) {
     state = path;
@@ -26,7 +26,7 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
 
   void clearIfSame(String value) {
     // We need to debounce the clear to avoid clearing the field when the user has selected a new field
-    _debounceTimer = Timer(const Duration(milliseconds: 100), () {
+    _debouncer.run(() {
       if (state == value) {
         state = "";
       }
@@ -35,7 +35,7 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
 
   @override
   void dispose() {
-    _debounceTimer?.cancel();
+    _debouncer.cancel();
     super.dispose();
   }
 }

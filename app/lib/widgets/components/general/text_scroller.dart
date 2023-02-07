@@ -24,7 +24,7 @@ class TextScroller extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final controller = usePageController(initialPage: 1);
-    useTimer(duration, () {
+    useTimer(duration, (_) {
       if (controller.page == texts.length) {
         controller.jumpToPage(0);
       }

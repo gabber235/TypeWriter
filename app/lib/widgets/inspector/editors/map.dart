@@ -7,11 +7,11 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
-import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/listable_header.dart";
 
 class MapEditorFilter extends EditorFilter {
@@ -37,7 +37,7 @@ class MapEditor extends HookConsumerWidget {
         : field.key.defaultValue;
     if (key == null) return;
     final val = field.value.defaultValue;
-    ref.read(entryDefinitionProvider)?.updateField(
+    ref.read(inspectingEntryDefinitionProvider)?.updateField(
       ref.passing,
       path,
       {
@@ -119,7 +119,7 @@ class _MapEntry extends HookConsumerWidget {
   final MapField field;
 
   void _changeKeyField(WidgetRef ref, String key) {
-    ref.read(entryDefinitionProvider)?.updateField(
+    ref.read(inspectingEntryDefinitionProvider)?.updateField(
       ref.passing,
       path,
       {
@@ -150,7 +150,7 @@ class _MapEntry extends HookConsumerWidget {
       ...value.map(MapEntry.new)..removeWhere((key, value) => key == entry.key),
     };
 
-    ref.read(entryDefinitionProvider)?.updateField(
+    ref.read(inspectingEntryDefinitionProvider)?.updateField(
           ref.passing,
           path,
           newValue,
@@ -229,14 +229,16 @@ class _StringKey extends HookConsumerWidget {
   final Function(String) onChanged;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => StringEditor(
-        path: path,
-        field: field,
-        forcedValue: value,
-        icon: FontAwesomeIcons.key,
-        hint: "Enter a key",
-        onChanged: onChanged,
-      );
+  Widget build(BuildContext context, WidgetRef ref) {
+    return StringEditor(
+      path: path,
+      field: field,
+      forcedValue: value,
+      icon: FontAwesomeIcons.key,
+      hint: "Enter a key",
+      onChanged: onChanged,
+    );
+  }
 }
 
 class _EnumKey extends HookConsumerWidget {
@@ -252,11 +254,13 @@ class _EnumKey extends HookConsumerWidget {
   final Function(String) onChanged;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => EnumEditor(
-        path: path,
-        field: field,
-        forcedValue: value,
-        icon: FontAwesomeIcons.key,
-        onChanged: onChanged,
-      );
+  Widget build(BuildContext context, WidgetRef ref) {
+    return EnumEditor(
+      path: path,
+      field: field,
+      forcedValue: value,
+      icon: FontAwesomeIcons.key,
+      onChanged: onChanged,
+    );
+  }
 }

@@ -1,13 +1,14 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide FilledButton;
+import "package:flutter_animate/flutter_animate.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/widgets/entry_node.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import "package:typewriter/widgets/components/app/entry_node.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
 
 part "select_entries.freezed.dart";
 part "select_entries.g.dart";
@@ -123,7 +124,7 @@ class SelectingEntriesBlocker extends HookConsumerWidget {
     final isSelecting = ref.watch(isSelectingEntriesProvider);
     return AnimatedOpacity(
       opacity: isSelecting ? 0.6 : 1,
-      duration: const Duration(milliseconds: 200),
+      duration: 200.ms,
       curve: Curves.easeOut,
       child: MouseRegion(
         cursor: isSelecting ? SystemMouseCursors.forbidden : MouseCursor.defer,

@@ -5,11 +5,12 @@ import "package:graphview/GraphView.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
-import "package:typewriter/widgets/empty_screen.dart";
-import "package:typewriter/widgets/entry_node.dart";
-import "package:typewriter/widgets/search_bar.dart";
+import "package:typewriter/widgets/components/app/empty_screen.dart";
+import "package:typewriter/widgets/components/app/entry_node.dart";
+import "package:typewriter/widgets/components/app/search_bar.dart";
 
 part "entries_graph.g.dart";
 
@@ -68,7 +69,10 @@ class EntriesGraph extends HookConsumerWidget {
       return EmptyScreen(
         title: "There are no graphable entries on this page.",
         buttonText: "Add Entry",
-        onButtonPressed: () => ref.read(searchingProvider.notifier).startSearch("trigger:"),
+        onButtonPressed: () => ref.read(searchProvider.notifier).asBuilder()
+          ..fetchNewEntry()
+          ..tag("trigger")
+          ..start(),
       );
     }
 
@@ -90,7 +94,14 @@ class EntriesGraph extends HookConsumerWidget {
         builder: (node) {
           final id = node.key!.value as String?;
           final entry = entries.firstWhereOrNull((entry) => entry.id == id);
-          if (entry == null) return const SizedBox();
+          if (entry == null) {
+            final globalEntryWithPage = ref.watch(globalEntryWithPageProvider(id!));
+            if (globalEntryWithPage == null) {
+              return const InvalidEntry();
+            }
+
+            return ExternalEntryNode(pageId: globalEntryWithPage.key, entry: globalEntryWithPage.value);
+          }
           return EntryNode(
             entry: entry,
             key: ValueKey(entry.id),

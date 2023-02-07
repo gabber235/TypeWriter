@@ -2,7 +2,7 @@ import "package:flutter/material.dart" hide FilledButton;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
-import "package:typewriter/widgets/filled_button.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
 
 class EmptyScreen extends HookConsumerWidget {
   const EmptyScreen({

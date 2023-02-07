@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'entry_selector.dart';
+part of 'app_router.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -29,63 +29,67 @@ class _SystemHash {
   }
 }
 
-String _$entriesFromTagHash() => r'33a9868fdd798563abb49d7ff3c7a5acfe123a30';
+String _$currentRouteDataHash() => r'26e8ab76dc65802a22863a447292ee0d7c4e3b0d';
 
-/// See also [entriesFromTag].
-class EntriesFromTagProvider extends AutoDisposeProvider<Map<String, Entry>> {
-  EntriesFromTagProvider(
-    this.tag,
+/// Provides the current route data for the given [name].
+///
+/// Copied from [currentRouteData].
+class CurrentRouteDataProvider extends Provider<RouteData?> {
+  CurrentRouteDataProvider(
+    this.name,
   ) : super(
-          (ref) => entriesFromTag(
+          (ref) => currentRouteData(
             ref,
-            tag,
+            name,
           ),
-          from: entriesFromTagProvider,
-          name: r'entriesFromTagProvider',
+          from: currentRouteDataProvider,
+          name: r'currentRouteDataProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$entriesFromTagHash,
+                  : _$currentRouteDataHash,
         );
 
-  final String tag;
+  final String name;
 
   @override
   bool operator ==(Object other) {
-    return other is EntriesFromTagProvider && other.tag == tag;
+    return other is CurrentRouteDataProvider && other.name == name;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tag.hashCode);
+    hash = _SystemHash.combine(hash, name.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-typedef EntriesFromTagRef = AutoDisposeProviderRef<Map<String, Entry>>;
+typedef CurrentRouteDataRef = ProviderRef<RouteData?>;
 
-/// See also [entriesFromTag].
-final entriesFromTagProvider = EntriesFromTagFamily();
+/// Provides the current route data for the given [name].
+///
+/// Copied from [currentRouteData].
+final currentRouteDataProvider = CurrentRouteDataFamily();
 
-class EntriesFromTagFamily extends Family<Map<String, Entry>> {
-  EntriesFromTagFamily();
+class CurrentRouteDataFamily extends Family<RouteData?> {
+  CurrentRouteDataFamily();
 
-  EntriesFromTagProvider call(
-    String tag,
+  CurrentRouteDataProvider call(
+    String name,
   ) {
-    return EntriesFromTagProvider(
-      tag,
+    return CurrentRouteDataProvider(
+      name,
     );
   }
 
   @override
-  AutoDisposeProvider<Map<String, Entry>> getProviderOverride(
-    covariant EntriesFromTagProvider provider,
+  Provider<RouteData?> getProviderOverride(
+    covariant CurrentRouteDataProvider provider,
   ) {
     return call(
-      provider.tag,
+      provider.name,
     );
   }
 
@@ -96,5 +100,5 @@ class EntriesFromTagFamily extends Family<Map<String, Entry>> {
   List<ProviderOrFamily>? get dependencies => null;
 
   @override
-  String? get name => r'entriesFromTagProvider';
+  String? get name => r'currentRouteDataProvider';
 }

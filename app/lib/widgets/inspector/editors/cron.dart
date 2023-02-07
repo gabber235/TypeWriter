@@ -26,7 +26,7 @@ class CronEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ValidatedTextField<String>(
+    return ValidatedInspectorTextField<String>(
       path: path,
       defaultValue: "0 0 1 1 *",
       icon: FontAwesomeIcons.solidClock,
@@ -47,7 +47,11 @@ class CronEditor extends HookConsumerWidget {
         return value;
       },
       formatted: (value) {
-        return CronExpression.parse(value)?.toHumanReadableString() ?? "Invalid cron expression";
+        final cron = CronExpression.parse(value);
+        if (cron == null) {
+          return "Invalid cron expression";
+        }
+        return "Valid Cron: ${cron.toHumanReadableString()}";
       },
     );
   }

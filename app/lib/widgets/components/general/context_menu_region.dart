@@ -11,11 +11,13 @@ class ContextMenuRegion extends StatefulWidget {
   const ContextMenuRegion({
     required this.child,
     required this.builder,
+    this.enabled = true,
     super.key,
   });
 
   final Widget child;
   final ContextMenuBuilder builder;
+  final bool enabled;
 
   @override
   State<ContextMenuRegion> createState() => _ContextMenuRegionState();
@@ -123,6 +125,9 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.enabled) {
+      return widget.child;
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onSecondaryTapUp: _onSecondaryTapUp,

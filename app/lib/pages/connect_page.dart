@@ -2,15 +2,15 @@ import "dart:async";
 
 import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart" hide Page;
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
-import "package:typewriter/main.dart";
 import "package:typewriter/models/communicator.dart";
-import "package:typewriter/widgets/text_scroller.dart";
+import "package:typewriter/widgets/components/general/text_scroller.dart";
 
 class ConnectPage extends HookConsumerWidget {
   const ConnectPage({
@@ -26,6 +26,7 @@ class ConnectPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // If the hostname is empty, we want to go back to the home page.
     useDelayedExecution(() {
       if (hostname.isEmpty) {
         ref.read(appRouter).replaceAll([const HomeRoute()]);
@@ -37,7 +38,7 @@ class ConnectPage extends HookConsumerWidget {
     // This is to give the user a chance to read the text.
     useEffect(
       () {
-        final timer = Timer(const Duration(seconds: 1), () {
+        final timer = Timer(1.seconds, () {
           ref.read(socketProvider.notifier).init(hostname, port, token.isEmpty ? null : token);
         });
         return timer.cancel;

@@ -21,6 +21,7 @@ Writer _$WriterFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Writer {
   String get id => throw _privateConstructorUsedError;
+  String? get iconUrl => throw _privateConstructorUsedError;
   String? get pageId => throw _privateConstructorUsedError;
   String? get entryId => throw _privateConstructorUsedError;
   String? get field => throw _privateConstructorUsedError;
@@ -35,7 +36,12 @@ abstract class $WriterCopyWith<$Res> {
   factory $WriterCopyWith(Writer value, $Res Function(Writer) then) =
       _$WriterCopyWithImpl<$Res, Writer>;
   @useResult
-  $Res call({String id, String? pageId, String? entryId, String? field});
+  $Res call(
+      {String id,
+      String? iconUrl,
+      String? pageId,
+      String? entryId,
+      String? field});
 }
 
 /// @nodoc
@@ -52,6 +58,7 @@ class _$WriterCopyWithImpl<$Res, $Val extends Writer>
   @override
   $Res call({
     Object? id = null,
+    Object? iconUrl = freezed,
     Object? pageId = freezed,
     Object? entryId = freezed,
     Object? field = freezed,
@@ -61,6 +68,10 @@ class _$WriterCopyWithImpl<$Res, $Val extends Writer>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      iconUrl: freezed == iconUrl
+          ? _value.iconUrl
+          : iconUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
       pageId: freezed == pageId
           ? _value.pageId
           : pageId // ignore: cast_nullable_to_non_nullable
@@ -83,7 +94,12 @@ abstract class _$$_WriterCopyWith<$Res> implements $WriterCopyWith<$Res> {
       __$$_WriterCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String? pageId, String? entryId, String? field});
+  $Res call(
+      {String id,
+      String? iconUrl,
+      String? pageId,
+      String? entryId,
+      String? field});
 }
 
 /// @nodoc
@@ -97,6 +113,7 @@ class __$$_WriterCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? iconUrl = freezed,
     Object? pageId = freezed,
     Object? entryId = freezed,
     Object? field = freezed,
@@ -106,6 +123,10 @@ class __$$_WriterCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      iconUrl: freezed == iconUrl
+          ? _value.iconUrl
+          : iconUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
       pageId: freezed == pageId
           ? _value.pageId
           : pageId // ignore: cast_nullable_to_non_nullable
@@ -125,13 +146,16 @@ class __$$_WriterCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_Writer implements _Writer {
-  const _$_Writer({required this.id, this.pageId, this.entryId, this.field});
+  const _$_Writer(
+      {required this.id, this.iconUrl, this.pageId, this.entryId, this.field});
 
   factory _$_Writer.fromJson(Map<String, dynamic> json) =>
       _$$_WriterFromJson(json);
 
   @override
   final String id;
+  @override
+  final String? iconUrl;
   @override
   final String? pageId;
   @override
@@ -141,7 +165,7 @@ class _$_Writer implements _Writer {
 
   @override
   String toString() {
-    return 'Writer(id: $id, pageId: $pageId, entryId: $entryId, field: $field)';
+    return 'Writer(id: $id, iconUrl: $iconUrl, pageId: $pageId, entryId: $entryId, field: $field)';
   }
 
   @override
@@ -150,6 +174,7 @@ class _$_Writer implements _Writer {
         (other.runtimeType == runtimeType &&
             other is _$_Writer &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.iconUrl, iconUrl) || other.iconUrl == iconUrl) &&
             (identical(other.pageId, pageId) || other.pageId == pageId) &&
             (identical(other.entryId, entryId) || other.entryId == entryId) &&
             (identical(other.field, field) || other.field == field));
@@ -157,7 +182,8 @@ class _$_Writer implements _Writer {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, pageId, entryId, field);
+  int get hashCode =>
+      Object.hash(runtimeType, id, iconUrl, pageId, entryId, field);
 
   @JsonKey(ignore: true)
   @override
@@ -176,6 +202,7 @@ class _$_Writer implements _Writer {
 abstract class _Writer implements Writer {
   const factory _Writer(
       {required final String id,
+      final String? iconUrl,
       final String? pageId,
       final String? entryId,
       final String? field}) = _$_Writer;
@@ -184,6 +211,8 @@ abstract class _Writer implements Writer {
 
   @override
   String get id;
+  @override
+  String? get iconUrl;
   @override
   String? get pageId;
   @override

@@ -2,12 +2,12 @@ import "dart:async";
 
 import "package:flutter_hooks/flutter_hooks.dart";
 
-void useTimer(Duration duration, Function runner, {bool repeat = true}) {
+void useTimer(Duration duration, Function(Timer) runner, {bool repeat = true}) {
   useEffect(
     () {
       Timer timer;
       void callback(Timer timer) {
-        runner();
+        runner(timer);
         if (!repeat) {
           timer.cancel();
         }

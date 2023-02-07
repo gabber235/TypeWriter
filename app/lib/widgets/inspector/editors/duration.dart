@@ -25,7 +25,7 @@ class DurationEditor extends HookConsumerWidget {
   final CustomField field;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ValidatedTextField<int>(
+    return ValidatedInspectorTextField<int>(
       path: path,
       defaultValue: 0,
       inputFormatters: [
