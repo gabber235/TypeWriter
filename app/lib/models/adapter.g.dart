@@ -389,7 +389,9 @@ class EntryTagsFamily extends Family<List<String>> {
 
 String _$fieldModifiersHash() => r'ad6700316538a1e9a2dfba24f4f124f68cf845c6';
 
-/// See also [fieldModifiers].
+/// Gets all the modifiers with a given name.
+///
+/// Copied from [fieldModifiers].
 class FieldModifiersProvider
     extends AutoDisposeProvider<Map<String, Modifier>> {
   FieldModifiersProvider(
@@ -431,7 +433,9 @@ class FieldModifiersProvider
 
 typedef FieldModifiersRef = AutoDisposeProviderRef<Map<String, Modifier>>;
 
-/// See also [fieldModifiers].
+/// Gets all the modifiers with a given name.
+///
+/// Copied from [fieldModifiers].
 final fieldModifiersProvider = FieldModifiersFamily();
 
 class FieldModifiersFamily extends Family<Map<String, Modifier>> {
@@ -469,7 +473,9 @@ class FieldModifiersFamily extends Family<Map<String, Modifier>> {
 
 String _$modifierPathsHash() => r'da7347b63deeccd651514c7b338113d7d56424a5';
 
-/// See also [modifierPaths].
+/// Gets all the paths from fields with a given modifier.
+///
+/// Copied from [modifierPaths].
 class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
   ModifierPathsProvider(
     this.blueprint,
@@ -510,7 +516,9 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
 
 typedef ModifierPathsRef = AutoDisposeProviderRef<List<String>>;
 
-/// See also [modifierPaths].
+/// Gets all the paths from fields with a given modifier.
+///
+/// Copied from [modifierPaths].
 final modifierPathsProvider = ModifierPathsFamily();
 
 class ModifierPathsFamily extends Family<List<String>> {

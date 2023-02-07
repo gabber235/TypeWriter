@@ -5,10 +5,10 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/inspector.dart";
+import 'package:typewriter/widgets/components/general/formatted_text_field.dart';
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/inspector/formatted_text_field.dart";
+import 'package:typewriter/widgets/inspector/inspector.dart';
 
 class StringEditorFilter extends EditorFilter {
   @override
@@ -54,7 +54,8 @@ class StringEditor extends HookConsumerWidget {
       inputFormatters: [
         if (field.hasModifier("snake_case")) snakeCaseFormatter(),
       ],
-      onChanged: onChanged ?? (value) => ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, value),
+      onChanged:
+          onChanged ?? (value) => ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, value),
     );
   }
 }

@@ -14,7 +14,7 @@ data class OptionDialogueEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
-	override val text: String = "",
+	val text: String = "",
 	override val speaker: String = "",
 	val options: List<Option> = emptyList(),
 ) : DialogueEntry

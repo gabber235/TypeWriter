@@ -2,13 +2,14 @@ import "dart:async";
 import "dart:convert";
 
 import "package:flutter/material.dart" hide Page;
+import "package:flutter_animate/flutter_animate.dart" hide Adapter;
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:socket_io_client/socket_io_client.dart";
 import "package:typewriter/app_router.dart";
-import "package:typewriter/main.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
@@ -136,7 +137,7 @@ class SocketNotifier extends StateNotifier<Socket?> {
         _connectionState = ConnectionState.disconnected;
         debugPrint("disconnected: $data");
 
-        _disconnectTimer = Timer(const Duration(seconds: 30), () {
+        _disconnectTimer = Timer(30.seconds, () {
           if (_disposed) return;
           if (_connectionState != ConnectionState.disconnected) return;
           _connectionState = ConnectionState.none;
@@ -264,7 +265,7 @@ class Communicator {
     socket.emit("updateEntry", jsonEncode(data));
   }
 
-  void updateCompleteEntry(String pageId, Entry entry) {
+  void updateEntireEntry(String pageId, Entry entry) {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -341,7 +342,7 @@ class Communicator {
     final entry = Entry.fromJson(json["entry"] as Map<String, dynamic>);
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
-    page.syncInsertEntry(ref, entry);
+    page.syncInsertEntry(ref.passing, entry);
   }
 
   void handleUpdateEntry(dynamic data) {
@@ -355,7 +356,7 @@ class Communicator {
     final newEntry = entry.copyWith(path, value);
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
-    page.syncInsertEntry(ref, newEntry);
+    page.syncInsertEntry(ref.passing, newEntry);
   }
 
   void handleUpdateCompleteEntry(dynamic data) {
@@ -364,7 +365,7 @@ class Communicator {
     final entry = Entry.fromJson(json["entry"] as Map<String, dynamic>);
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
-    page.syncInsertEntry(ref, entry);
+    page.syncInsertEntry(ref.passing, entry);
   }
 
   void handleDeleteEntry(dynamic data) {
@@ -377,6 +378,6 @@ class Communicator {
   }
 
   void handleUpdateWriters(dynamic data) {
-    ref.read(writersProvider.notifier).update(data);
+    ref.read(writersProvider.notifier).syncWriters(data);
   }
 }

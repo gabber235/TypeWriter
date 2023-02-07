@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String _$_entryColorHash() => r'96b722d9a3a503c1c9161463f5584bdbc8f0e841';
+String _$_entryColorHash() => r'7bdd0ca948f969fd17f3b33c020f20585847b543';
 
 /// See also [_entryColor].
 final _entryColorProvider = AutoDisposeProvider<Color>(

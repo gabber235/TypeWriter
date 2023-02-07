@@ -15,6 +15,6 @@ data class MessageDialogueEntry(
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
 	@MultiLine
-	override val text: String = "",
+	val text: String = "",
 	override val speaker: String = "",
 ) : DialogueEntry

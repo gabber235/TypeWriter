@@ -6,7 +6,7 @@
 [![Release](https://img.shields.io/github/v/release/gabber235/Typewriter?include_prereleases&logo=github)](https://github.com/gabber235/TypeWriter/releases)
 ![License](https://img.shields.io/github/license/gabber235/Typewriter?logo=github)
 
-Typewriter is a plugin for spigot Minecraft servers that allows for custom player interactions such as Quests,
+Typewriter is a plugin for **Paper** Minecraft servers that allows for custom player interactions such as Quests,
 NPC chat, Create branching story with ease, and more. It is easily configurable using the web panel specifically
 designed for this plugin.
 The plugin can also be extended using adapters, which are [pre-made](https://github.com/gabber235/TypeWriter/wiki/pre-made-adapters) or can be custom-made by developers.

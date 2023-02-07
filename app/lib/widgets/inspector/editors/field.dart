@@ -3,9 +3,9 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/writers.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 class FieldEditor extends HookConsumerWidget {
   const FieldEditor({
@@ -18,7 +18,7 @@ class FieldEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedEntryId = ref.watch(selectedEntryIdProvider);
+    final selectedEntryId = ref.watch(inspectingEntryIdProvider);
     final filters = ref.watch(editorFiltersProvider);
 
     final editor = filters.firstWhereOrNull((filter) => filter.canEdit(type))?.build(path, type);

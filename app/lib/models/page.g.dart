@@ -124,6 +124,76 @@ class PageFamily extends Family<Page?> {
   String? get name => r'pageProvider';
 }
 
+String _$entriesPageHash() => r'722059484c7e53a0839547133217a6615f37bc6d';
+
+/// See also [entriesPage].
+class EntriesPageProvider extends AutoDisposeProvider<String?> {
+  EntriesPageProvider(
+    this.entryId,
+  ) : super(
+          (ref) => entriesPage(
+            ref,
+            entryId,
+          ),
+          from: entriesPageProvider,
+          name: r'entriesPageProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$entriesPageHash,
+        );
+
+  final String entryId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is EntriesPageProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef EntriesPageRef = AutoDisposeProviderRef<String?>;
+
+/// See also [entriesPage].
+final entriesPageProvider = EntriesPageFamily();
+
+class EntriesPageFamily extends Family<String?> {
+  EntriesPageFamily();
+
+  EntriesPageProvider call(
+    String entryId,
+  ) {
+    return EntriesPageProvider(
+      entryId,
+    );
+  }
+
+  @override
+  AutoDisposeProvider<String?> getProviderOverride(
+    covariant EntriesPageProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'entriesPageProvider';
+}
+
 String _$entryHash() => r'f1e00a6ad6ab8e50c1e2178680c8004c98dea055';
 
 /// See also [entry].
@@ -201,4 +271,147 @@ class EntryFamily extends Family<Entry?> {
 
   @override
   String? get name => r'entryProvider';
+}
+
+String _$globalEntryHash() => r'9aa2e0f379f22d9d87dee900fe3122f81698fac3';
+
+/// See also [globalEntry].
+class GlobalEntryProvider extends AutoDisposeProvider<Entry?> {
+  GlobalEntryProvider(
+    this.entryId,
+  ) : super(
+          (ref) => globalEntry(
+            ref,
+            entryId,
+          ),
+          from: globalEntryProvider,
+          name: r'globalEntryProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$globalEntryHash,
+        );
+
+  final String entryId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is GlobalEntryProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef GlobalEntryRef = AutoDisposeProviderRef<Entry?>;
+
+/// See also [globalEntry].
+final globalEntryProvider = GlobalEntryFamily();
+
+class GlobalEntryFamily extends Family<Entry?> {
+  GlobalEntryFamily();
+
+  GlobalEntryProvider call(
+    String entryId,
+  ) {
+    return GlobalEntryProvider(
+      entryId,
+    );
+  }
+
+  @override
+  AutoDisposeProvider<Entry?> getProviderOverride(
+    covariant GlobalEntryProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'globalEntryProvider';
+}
+
+String _$globalEntryWithPageHash() =>
+    r'250ed7d1b0146d138e1237d22c12a53e00a7b0b9';
+
+/// See also [globalEntryWithPage].
+class GlobalEntryWithPageProvider
+    extends AutoDisposeProvider<MapEntry<String, Entry>?> {
+  GlobalEntryWithPageProvider(
+    this.entryId,
+  ) : super(
+          (ref) => globalEntryWithPage(
+            ref,
+            entryId,
+          ),
+          from: globalEntryWithPageProvider,
+          name: r'globalEntryWithPageProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$globalEntryWithPageHash,
+        );
+
+  final String entryId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is GlobalEntryWithPageProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+typedef GlobalEntryWithPageRef
+    = AutoDisposeProviderRef<MapEntry<String, Entry>?>;
+
+/// See also [globalEntryWithPage].
+final globalEntryWithPageProvider = GlobalEntryWithPageFamily();
+
+class GlobalEntryWithPageFamily extends Family<MapEntry<String, Entry>?> {
+  GlobalEntryWithPageFamily();
+
+  GlobalEntryWithPageProvider call(
+    String entryId,
+  ) {
+    return GlobalEntryWithPageProvider(
+      entryId,
+    );
+  }
+
+  @override
+  AutoDisposeProvider<MapEntry<String, Entry>?> getProviderOverride(
+    covariant GlobalEntryWithPageProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'globalEntryWithPageProvider';
 }

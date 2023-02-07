@@ -101,79 +101,16 @@ class MaterialPropertiesFamily extends Family<List<MaterialProperty>> {
   String? get name => r'materialPropertiesProvider';
 }
 
-String _$computeMaterialsWithPropertiesHash() =>
-    r'9cfb893280638ae591bc1071732bc08a66abd4c8';
+String _$_fuzzyMaterialsHash() => r'bfaa303c86894a2592b383e46588f82a7a8b7e6d';
 
-/// See also [computeMaterialsWithProperties].
-class ComputeMaterialsWithPropertiesProvider
-    extends AutoDisposeProvider<List<MapEntry<String, MinecraftMaterial>>> {
-  ComputeMaterialsWithPropertiesProvider(
-    this.meta,
-  ) : super(
-          (ref) => computeMaterialsWithProperties(
-            ref,
-            meta,
-          ),
-          from: computeMaterialsWithPropertiesProvider,
-          name: r'computeMaterialsWithPropertiesProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$computeMaterialsWithPropertiesHash,
-        );
-
-  final String? meta;
-
-  @override
-  bool operator ==(Object other) {
-    return other is ComputeMaterialsWithPropertiesProvider &&
-        other.meta == meta;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, meta.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-typedef ComputeMaterialsWithPropertiesRef
-    = AutoDisposeProviderRef<List<MapEntry<String, MinecraftMaterial>>>;
-
-/// See also [computeMaterialsWithProperties].
-final computeMaterialsWithPropertiesProvider =
-    ComputeMaterialsWithPropertiesFamily();
-
-class ComputeMaterialsWithPropertiesFamily
-    extends Family<List<MapEntry<String, MinecraftMaterial>>> {
-  ComputeMaterialsWithPropertiesFamily();
-
-  ComputeMaterialsWithPropertiesProvider call(
-    String? meta,
-  ) {
-    return ComputeMaterialsWithPropertiesProvider(
-      meta,
-    );
-  }
-
-  @override
-  AutoDisposeProvider<List<MapEntry<String, MinecraftMaterial>>>
-      getProviderOverride(
-    covariant ComputeMaterialsWithPropertiesProvider provider,
-  ) {
-    return call(
-      provider.meta,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'computeMaterialsWithPropertiesProvider';
-}
+/// See also [_fuzzyMaterials].
+final _fuzzyMaterialsProvider =
+    AutoDisposeProvider<Fuzzy<MapEntry<String, MinecraftMaterial>>>(
+  _fuzzyMaterials,
+  name: r'_fuzzyMaterialsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$_fuzzyMaterialsHash,
+);
+typedef _FuzzyMaterialsRef
+    = AutoDisposeProviderRef<Fuzzy<MapEntry<String, MinecraftMaterial>>>;

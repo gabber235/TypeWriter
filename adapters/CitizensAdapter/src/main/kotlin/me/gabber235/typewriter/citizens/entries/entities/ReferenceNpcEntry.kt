@@ -10,4 +10,5 @@ class ReferenceNpcEntry(
 	override val name: String = "",
 	override val displayName: String = "",
 	override val sound: String = "",
+	val npcId: Int = 0,
 ) : Npc
