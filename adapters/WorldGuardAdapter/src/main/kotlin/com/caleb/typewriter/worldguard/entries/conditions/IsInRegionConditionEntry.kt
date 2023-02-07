@@ -26,7 +26,8 @@ class IsInRegionConditionEntry(
     val nextTriggers: List<String> = emptyList(),
     override val criteria: List<Criteria>,
     override val modifiers: List<Modifier>,
-    private var region: String = ""
+    private var region: String = "",
+    private var isInRegion: Boolean = true
 
 ) : ActionEntry {
 
@@ -39,7 +40,11 @@ class IsInRegionConditionEntry(
         val regionManager = regionContainer.get(BukkitAdapter.adapt(player.world))
         val regions = regionManager?.getApplicableRegions(BukkitAdapter.asBlockVector(player.location)) ?: return
 
-        if(region in regions.map { it.id }) {
+        if(isInRegion && region in regions.map { it.id }) {
+            super.execute(player)
+            InteractionHandler.startInteractionAndTrigger(player, nextTriggers.map { EntryTrigger(it) })
+        }
+        else if(!isInRegion && region !in regions.map { it.id }) {
             super.execute(player)
             InteractionHandler.startInteractionAndTrigger(player, nextTriggers.map { EntryTrigger(it) })
         }
