@@ -26,10 +26,7 @@ data class PlayerCommandActionEntry(
      */
     override fun execute(player: Player) {
         super.execute(player)
-        if (command.startsWith("/"))
-            player.dispatchCommand(command.replace("%player%", player.name).substring(1))
-        else
-            player.dispatchCommand(command.replace("%player%", player.name))
+        player.dispatchCommand(command.replace("%player%", player.name).removePrefix("/"))
     }
 
 

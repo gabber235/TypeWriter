@@ -27,10 +27,7 @@ data class ConsoleCommandActionEntry(
      */
     override fun execute(player: Player) {
         super.execute(player)
-        if (command.startsWith("/"))
-            Bukkit.getConsoleSender().dispatchCommand(command.replace("%player%", player.name).substring(1))
-        else
-            Bukkit.getConsoleSender().dispatchCommand(command.replace("%player%", player.name))
+        Bukkit.getConsoleSender().dispatchCommand(command.replace("%player%", player.name).removePrefix("/"))
     }
 
 
