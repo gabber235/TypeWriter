@@ -90,6 +90,17 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 		val lines = mutableListOf<String>()
 
 		for (i in 0..3) {
+			var prefix = ""
+			if(i == 0) {
+				//add character icon as first line
+				if(entry.speakerIcon.isPresent) {
+					prefix += entry.speakerIcon.get()
+					prefix += if (entry.messageOffset.isPresent && entry.messageOffset.get().length > 1) entry.messageOffset.get().substring(1) else ""
+				}
+			} else {
+				prefix += if (entry.messageOffset.isPresent) entry.messageOffset.get() else ""
+			}
+
 			if (i >= around.size) {
 				lines.add("\n")
 				continue
@@ -97,7 +108,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 			val option = around[i]
 			val selected = selected == option
 
-			val prefix = if (selected) "<#78ff85>>>"
+			prefix += if (selected) "<#78ff85>>>"
 			else if (i == 0 && selectedIndex > 1 && usableOptions.size > 4) "<white> ↑"
 			else if (i == 3 && selectedIndex < usableOptions.size - 3 && usableOptions.size > 4) "<white> ↓"
 			else "  "

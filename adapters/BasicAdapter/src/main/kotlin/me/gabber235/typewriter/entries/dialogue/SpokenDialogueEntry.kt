@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.utils.Icons
 import java.time.Duration
+import java.util.Optional
 
 @Entry("spoken", "Display a animated message to the player", "#1E88E5", Icons.MESSAGE)
 data class SpokenDialogueEntry(

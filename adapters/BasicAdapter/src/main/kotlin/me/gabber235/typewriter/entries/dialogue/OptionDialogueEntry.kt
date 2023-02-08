@@ -6,6 +6,7 @@ import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.utils.Icons
+import java.util.*
 
 @Entry("option", "Display a list of options to the player", "#4CAF50", Icons.LIST_UL)
 data class OptionDialogueEntry(
@@ -17,7 +18,9 @@ data class OptionDialogueEntry(
 	val text: String = "",
 	override val speaker: String = "",
 	val options: List<Option> = emptyList(),
-) : DialogueEntry
+	val messageOffset: Optional<String> = Optional.empty(),
+	val speakerIcon: Optional<String> = Optional.empty(),
+	) : DialogueEntry
 
 data class Option(
 	val text: String = "",
