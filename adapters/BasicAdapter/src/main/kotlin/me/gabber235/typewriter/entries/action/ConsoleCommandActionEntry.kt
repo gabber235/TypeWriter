@@ -23,10 +23,14 @@ data class ConsoleCommandActionEntry(
 
     /**
      * %player% will be replaced with the player's name
+     * If the command starts with a "/" it will be removed
      */
     override fun execute(player: Player) {
         super.execute(player)
-        Bukkit.getConsoleSender().dispatchCommand(command.replace("%player%", player.name))
+        if (command.startsWith("/"))
+            Bukkit.getConsoleSender().dispatchCommand(command.replace("%player%", player.name).substring(1))
+        else
+            Bukkit.getConsoleSender().dispatchCommand(command.replace("%player%", player.name))
     }
 
 

@@ -22,10 +22,14 @@ data class PlayerCommandActionEntry(
 
     /**
      * %player% will be replaced with the player's name
+     * If the command starts with a "/" it will be removed
      */
     override fun execute(player: Player) {
         super.execute(player)
-        player.dispatchCommand(command.replace("%player%", player.name))
+        if (command.startsWith("/"))
+            player.dispatchCommand(command.replace("%player%", player.name).substring(1))
+        else
+            player.dispatchCommand(command.replace("%player%", player.name))
     }
 
 

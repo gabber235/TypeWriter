@@ -19,5 +19,5 @@ class RunCommandEventEntry(
 fun onRunCommand(event: PlayerCommandPreprocessEvent, query: Query<RunCommandEventEntry>) {
 	val message = event.message.removePrefix("/")
 
-	query findWhere { Regex(it.command).matches(message) } triggerAllFor event.player
+	query findWhere { Regex(it.command.removePrefix("/")).matches(message) } triggerAllFor event.player
 }
