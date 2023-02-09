@@ -33,8 +33,8 @@ class DropItemActionEntry(
 	override fun execute(player: Player) {
 		super.execute(player)
 		val item = ItemStack(material, amount).meta<ItemMeta> {
-			displayName(this@DropItemActionEntry.displayName.asMini())
-			lore(this@DropItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
+			if (this@DropItemActionEntry.displayName != "") displayName(this@DropItemActionEntry.displayName.asMini())
+			if (this@DropItemActionEntry.lore != "") lore(this@DropItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
 		}
 		if(location.isPresent) {
 			location.get().world.dropItem(location.get(), item)

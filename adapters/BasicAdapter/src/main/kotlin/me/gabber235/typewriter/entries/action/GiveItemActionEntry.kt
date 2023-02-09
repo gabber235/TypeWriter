@@ -30,21 +30,9 @@ class GiveItemActionEntry(
 	override fun execute(player: Player) {
 		super.execute(player)
 
-		val item = ItemStack(material, amount)
-
-		if (this@GiveItemActionEntry.displayName == "" && this@GiveItemActionEntry.lore != "") {
-			item.meta<ItemMeta> {
-				lore(this@GiveItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
-			}
-		} else if (this@GiveItemActionEntry.displayName != "" && this@GiveItemActionEntry.lore == "") {
-			item.meta<ItemMeta> {
-				displayName(this@GiveItemActionEntry.displayName.asMini())
-			}
-		} else if (this@GiveItemActionEntry.displayName != "" && this@GiveItemActionEntry.lore != "") {
-			item.meta<ItemMeta> {
-				displayName(this@GiveItemActionEntry.displayName.asMini())
-				lore(this@GiveItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
-			}
+		val item = ItemStack(material, amount).meta<ItemMeta> {
+			if (this@GiveItemActionEntry.displayName != "") displayName(this@GiveItemActionEntry.displayName.asMini())
+			if (this@GiveItemActionEntry.lore != "") lore(this@GiveItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
 		}
 
 		player.inventory.addItem(item)
