@@ -1,5 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm") version "1.7.20"
@@ -50,8 +49,11 @@ tasks.test {
 	useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "1.8"
+val targetJavaVersion = 17
+java {
+	val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
 }
 
 task<ShadowJar>("buildAndMove") {
@@ -69,7 +71,7 @@ task<ShadowJar>("buildAndMove") {
 	}
 }
 
-task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildRelease") {
+task<ShadowJar>("buildRelease") {
 	dependsOn("shadowJar")
 	group = "build"
 	description = "Builds the jar and renames it"

@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
@@ -46,8 +45,11 @@ tasks.test {
 	useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "1.8"
+val targetJavaVersion = 17
+java {
+	val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
 }
 
 task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildAndMove") {

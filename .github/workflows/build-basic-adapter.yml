@@ -19,13 +19,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Test Plugin
+      - name: Test Adapter
         run: ./gradlew test
         working-directory: ./adapters/BasicAdapter
-      - name: Build Plugin
+      - name: Build Adapter
         run: ./gradlew buildRelease
         working-directory: ./adapters/BasicAdapter
-      - name: Upload Plugin
+      - name: Upload Adapter
         uses: actions/upload-artifact@v2
         with:
           name: BasicAdapter.jar
