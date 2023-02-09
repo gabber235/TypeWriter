@@ -4,7 +4,6 @@ import lirand.api.extensions.server.server
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import me.gabber235.typewriter.Typewriter
-import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.facts.FactDatabase
@@ -23,11 +22,7 @@ object TypewriteExpansion : PlaceholderExpansion() {
 
 		if (params.startsWith("speaker_")) {
 			val speakerName = params.substring(8)
-			val speaker =
-				Query.findByName(speakerName) ?: EntryDatabase.getEntity<SpeakerEntry>(
-					speakerName
-				)
-				?: return null
+			val speaker: SpeakerEntry = Query.findByName(speakerName) ?: Query.findById(speakerName) ?: return null
 			return speaker.displayName
 		}
 
