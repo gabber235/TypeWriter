@@ -4,13 +4,13 @@ on:
       - main
       - dev
     paths:
-      - "adapters/BasicAdapter/**"
+      - "adapters/CitizensAdapter/**"
   pull_request:
     branches:
       - main
       - dev
     paths:
-      - "adapters/BasicAdapter/**"
+      - "adapters/CitizensAdapter/**"
 
 jobs:
   build:
@@ -21,12 +21,12 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Test Adapter
         run: ./gradlew test --scan
-        working-directory: ./adapters/BasicAdapter
+        working-directory: ./adapters/CitizensAdapter
       - name: Build Adapter
         run: ./gradlew buildRelease --scan
-        working-directory: ./adapters/BasicAdapter
+        working-directory: ./adapters/CitizensAdapter
       - name: Upload Adapter
         uses: actions/upload-artifact@v2
         with:
-          name: BasicAdapter.jar
-          path: adapters/BasicAdapter/build/libs/BasicAdapter.jar
+          name: CitizensAdapter.jar
+          path: adapters/CitizensAdapter/build/libs/CitizensAdapter.jar

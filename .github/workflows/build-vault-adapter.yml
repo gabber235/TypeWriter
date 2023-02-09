@@ -4,13 +4,13 @@ on:
       - main
       - dev
     paths:
-      - "adapters/BasicAdapter/**"
+      - "adapters/VaultAdapter/**"
   pull_request:
     branches:
       - main
       - dev
     paths:
-      - "adapters/BasicAdapter/**"
+      - "adapters/VaultAdapter/**"
 
 jobs:
   build:
@@ -21,12 +21,12 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Test Adapter
         run: ./gradlew test --scan
-        working-directory: ./adapters/BasicAdapter
+        working-directory: ./adapters/VaultAdapter
       - name: Build Adapter
         run: ./gradlew buildRelease --scan
-        working-directory: ./adapters/BasicAdapter
+        working-directory: ./adapters/VaultAdapter
       - name: Upload Adapter
         uses: actions/upload-artifact@v2
         with:
-          name: BasicAdapter.jar
-          path: adapters/BasicAdapter/build/libs/BasicAdapter.jar
+          name: VaultAdapter.jar
+          path: adapters/VaultAdapter/build/libs/VaultAdapter.jar
