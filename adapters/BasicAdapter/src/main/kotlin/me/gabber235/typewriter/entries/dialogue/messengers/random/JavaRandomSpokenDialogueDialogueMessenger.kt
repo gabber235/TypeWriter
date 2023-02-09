@@ -3,7 +3,6 @@ package me.gabber235.typewriter.entries.dialogue.messengers.random
 import me.gabber235.typewriter.adapters.Messenger
 import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entries.dialogue.RandomSpokenDialogueEntry
-import me.gabber235.typewriter.entries.dialogue.SpokenDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
@@ -28,7 +27,7 @@ class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpo
 	override fun init() {
 		super.init()
 		speakerDisplayName = entry.speakerDisplayName
-		text = entry.messages.shuffled().first()
+		text = entry.messages.randomOrNull() ?: ""
 
 		listen<PlayerSwapHandItemsEvent> { event ->
 			if (event.player.uniqueId != player.uniqueId) return@listen

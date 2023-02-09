@@ -6,29 +6,21 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
 @Entry("player_run_command", "Make player run command", Colors.RED, Icons.TERMINAL)
 data class PlayerCommandActionEntry(
-    override val id: String = "",
-    override val name: String = "",
-    override val criteria: List<Criteria> = emptyList(),
-    override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
-    private val command: String = "",
-
+	override val id: String = "",
+	override val name: String = "",
+	override val criteria: List<Criteria> = emptyList(),
+	override val modifiers: List<Modifier> = emptyList(),
+	override val triggers: List<String> = emptyList(),
+	private val command: String = "",
 ) : ActionEntry {
-
-    /**
-     * %player% will be replaced with the player's name
-     */
-    override fun execute(player: Player) {
-        super.execute(player)
-        player.dispatchCommand(command.replace("%player%", player.name))
-    }
-
-
-
-
+	override fun execute(player: Player) {
+		super.execute(player)
+		player.dispatchCommand(command.parsePlaceholders(player))
+	}
 }

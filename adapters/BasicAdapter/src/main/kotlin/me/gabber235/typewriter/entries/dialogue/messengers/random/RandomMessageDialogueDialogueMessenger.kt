@@ -2,7 +2,6 @@ package me.gabber235.typewriter.entries.dialogue.messengers.random
 
 import me.gabber235.typewriter.adapters.Messenger
 import me.gabber235.typewriter.adapters.MessengerFilter
-import me.gabber235.typewriter.entries.dialogue.MessageDialogueEntry
 import me.gabber235.typewriter.entries.dialogue.RandomMessageDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
@@ -21,12 +20,9 @@ class RandomMessageDialogueDialogueMessenger(player: Player, entry: RandomMessag
 	override fun tick(cycle: Int) {
 		super.tick(cycle)
 		if (cycle == 0) {
+			val message = entry.messages.randomOrNull()?.parsePlaceholders(player) ?: return
 			player.sendMini(
-				"\n<gray> [ <bold>${entry.speakerDisplayName}</bold><reset><gray> ]\n<reset><white> ${
-					entry.messages.shuffled().first().parsePlaceholders(
-						player
-					)
-				}\n"
+				"\n<gray> [ <bold>${entry.speakerDisplayName}</bold><reset><gray> ]\n<reset><white> ${message}\n"
 			)
 			state = MessengerState.FINISHED
 		}

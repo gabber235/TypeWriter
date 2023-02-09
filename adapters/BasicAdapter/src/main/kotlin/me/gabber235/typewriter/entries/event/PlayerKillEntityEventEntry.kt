@@ -1,15 +1,11 @@
 package me.gabber235.typewriter.entries.event
 
-import io.papermc.paper.event.player.AsyncChatEvent
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
-import me.gabber235.typewriter.utils.plainText
 import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
-import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import java.util.*
 
@@ -24,11 +20,7 @@ class PlayerKillEntityEventEntry(
 
 @EntryListener(PlayerKillEntityEventEntry::class)
 fun onKill(event: EntityDeathEvent, query: Query<PlayerKillEntityEventEntry>) {
+	val killer = event.entity.killer ?: return
 
-	event.entity.killer ?: return
-	if(event.entity.killer !is Player) return
-
-	val player = event.entity.killer as Player
-
-	query findWhere { it.entityType == event.entityType } triggerAllFor player
+	query findWhere { it.entityType == event.entityType } triggerAllFor killer
 }

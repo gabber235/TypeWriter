@@ -14,7 +14,7 @@ data class RandomSpokenDialogueEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
-	val messages: List<String> = emptyList(),
 	override val speaker: String = "",
+	val messages: List<String> = emptyList(),
 	val duration: Duration = Duration.ZERO,
 ) : DialogueEntry

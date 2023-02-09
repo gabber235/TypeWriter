@@ -85,10 +85,7 @@ object EntryDatabase {
 		return entries.filterIsInstance(klass.java).firstOrNull(predicate)
 	}
 
-	internal fun getEntity(id: String) = entities.firstOrNull { it.id == id }
-
-	@JvmName("getEntityWithType")
-	internal inline fun <reified E : EntityEntry> getEntity(id: String) = getEntity(id) as? E
+	internal fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
 
 	internal fun getFact(id: String) = facts.firstOrNull { it.id == id }
 	internal fun findFactByName(name: String) = facts.firstOrNull { it.name == name }

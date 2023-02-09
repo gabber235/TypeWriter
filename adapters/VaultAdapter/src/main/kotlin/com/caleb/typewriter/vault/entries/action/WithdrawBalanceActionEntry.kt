@@ -12,21 +12,18 @@ import org.bukkit.entity.Player
 
 @Entry("vault_withdraw_balance", "[Vault] Withdraw Balance", Colors.RED, Icons.MONEY_BILL)
 data class WithdrawBalanceActionEntry(
-    override val id: String = "",
-    override val name: String = "",
-    override val criteria: List<Criteria> = emptyList(),
-    override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
-    private val amount: Double = 0.0,
-
+	override val id: String = "",
+	override val name: String = "",
+	override val criteria: List<Criteria> = emptyList(),
+	override val modifiers: List<Modifier> = emptyList(),
+	override val triggers: List<String> = emptyList(),
+	private val amount: Double = 0.0,
 ) : ActionEntry {
+	override fun execute(player: Player) {
+		super.execute(player)
 
-    override fun execute(player: Player) {
-        super.execute(player)
+		val economy: Economy = VaultAdapter.economy ?: return
 
-        val economy: Economy = VaultAdapter.economy ?: return
-
-        economy.withdrawPlayer(player, amount)
-    }
-
+		economy.withdrawPlayer(player, amount)
+	}
 }

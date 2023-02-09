@@ -39,13 +39,8 @@ interface EventTrigger {
 data class EntryTrigger(override val id: String) : EventTrigger
 
 enum class SystemTrigger : EventTrigger {
-	INTERACTION_START,
-	INTERACTION_END,
-
-	DIALOGUE_START,
 	DIALOGUE_NEXT,
 	DIALOGUE_END,
-
 	;
 
 	override val id: String

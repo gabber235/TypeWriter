@@ -9,7 +9,6 @@ import me.gabber235.typewriter.citizens.entries.entities.Npc
 import me.gabber235.typewriter.citizens.entries.entities.ReferenceNpcEntry
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.entries.SystemTrigger
 import me.gabber235.typewriter.utils.Icons
 import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
@@ -25,23 +24,23 @@ class NpcInteractEventEntry(
 ) : EventEntry
 
 private fun onNpcInteract(player: Player, identifier: String, query: Query<NpcInteractEventEntry>) {
-	val speaker = Query(Npc::class) findByName identifier
+	val speaker: Npc? = Query findByName identifier
 	if (speaker == null) {
 		Typewriter.plugin.logger.warning("Could not find a speaker with name $identifier.")
 		return
 	}
-	query.findWhere {
+	query findWhere {
 		it.identifier == speaker.id
-	}.startInteractionWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
+	} startDialogueWithOrNextDialogue player
 }
 
 private fun onReferenceNpcInteract(player: Player, npcId: Int, query: Query<NpcInteractEventEntry>) {
-	val references = Query.findWhere<ReferenceNpcEntry> { it.npcId == npcId }
+	val references: List<ReferenceNpcEntry> = Query findWhere { it.npcId == npcId }
 	val identifiers = references.map { it.id }
 
 	query.findWhere {
 		it.identifier in identifiers
-	}.startInteractionWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
+	} startDialogueWithOrNextDialogue player
 }
 
 @EntryListener(NpcInteractEventEntry::class)

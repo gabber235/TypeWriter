@@ -11,8 +11,8 @@ import org.bukkit.entity.Player
 
 class Interaction(val player: Player) {
 	private var dialogue: DialogueSequence? = null
-
-	val isActive get() = dialogue != null
+	val hasDialogue: Boolean
+		get() = dialogue != null
 
 	fun tick() {
 		dialogue?.tick()
@@ -23,6 +23,8 @@ class Interaction(val player: Player) {
 	 * All [SystemTrigger]'s are handled by the plugin itself.
 	 */
 	fun onEvent(event: Event) {
+		triggerActions(event)
+
 		if (DIALOGUE_NEXT in event) {
 			onDialogueNext()
 			return
@@ -36,6 +38,27 @@ class Interaction(val player: Player) {
 		// Try to trigger new/next dialogue
 		tryTriggerNextDialogue(event)
 	}
+
+	/**
+	 * Triggers all actions that are registered for the given event.
+	 *
+	 * @param event The event that should be triggered
+	 */
+	private fun triggerActions(event: Event) {
+		// Trigger all actions
+		val facts = event.player.facts
+		val actions = Query.findWhere<ActionEntry> { it in event && it.criteria.matches(facts) }
+		actions.forEach { action ->
+			action.execute(event.player)
+		}
+		val newTriggers = actions.flatMap { it.triggers }
+			.map { EntryTrigger(it) }
+			.filter { it !in event } // Stops infinite loops
+		if (newTriggers.isNotEmpty()) {
+			InteractionHandler.triggerEvent(Event(event.player, newTriggers))
+		}
+	}
+
 
 	/**
 	 * Tries to trigger a new dialogue.

@@ -27,16 +27,18 @@ class DropItemActionEntry(
 	private val amount: Int = 1,
 	private val displayName: String = "",
 	@MultiLine
-	val lore: String,
-	val location: Optional<Location> = Optional.empty(),
-	) : ActionEntry {
+	private val lore: String,
+	private val location: Optional<Location> = Optional.empty(),
+) : ActionEntry {
 	override fun execute(player: Player) {
 		super.execute(player)
 		val item = ItemStack(material, amount).meta<ItemMeta> {
-			if (this@DropItemActionEntry.displayName != "") displayName(this@DropItemActionEntry.displayName.asMini())
-			if (this@DropItemActionEntry.lore != "") lore(this@DropItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
+			if (this@DropItemActionEntry.displayName.isNotBlank()) displayName(this@DropItemActionEntry.displayName.asMini())
+			if (this@DropItemActionEntry.lore.isNotBlank()) {
+				lore(this@DropItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
+			}
 		}
-		if(location.isPresent) {
+		if (location.isPresent) {
 			location.get().world.dropItem(location.get(), item)
 		} else {
 			player.location.world.dropItem(player.location, item)

@@ -12,21 +12,18 @@ import org.bukkit.entity.Player
 
 @Entry("vault_set_prefix", "[Vault] Set Prefix", Colors.RED, Icons.USER_TAG)
 data class SetPrefixActionEntry(
-    override val id: String = "",
-    override val name: String = "",
-    override val criteria: List<Criteria> = emptyList(),
-    override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
-    private val prefix: String = "",
-
+	override val id: String = "",
+	override val name: String = "",
+	override val criteria: List<Criteria> = emptyList(),
+	override val modifiers: List<Modifier> = emptyList(),
+	override val triggers: List<String> = emptyList(),
+	private val prefix: String = "",
 ) : ActionEntry {
+	override fun execute(player: Player) {
+		super.execute(player)
 
-    override fun execute(player: Player) {
-        super.execute(player)
+		val chat: Chat = VaultAdapter.chat ?: return
 
-        val chat: Chat = VaultAdapter.chat ?: return
-
-        chat.setPlayerPrefix(player, prefix)
-    }
-    
+		chat.setPlayerPrefix(player, prefix)
+	}
 }

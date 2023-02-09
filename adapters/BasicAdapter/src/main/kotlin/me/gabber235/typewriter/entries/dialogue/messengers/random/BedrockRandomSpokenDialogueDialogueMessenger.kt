@@ -3,8 +3,8 @@ package me.gabber235.typewriter.entries.dialogue.messengers.random
 import me.gabber235.typewriter.adapters.Messenger
 import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entries.dialogue.RandomSpokenDialogueEntry
-import me.gabber235.typewriter.entries.dialogue.SpokenDialogueEntry
-import me.gabber235.typewriter.entry.dialogue.*
+import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
+import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.isFloodgate
@@ -23,11 +23,12 @@ class BedrockRandomSpokenDialogueDialogueMessenger(player: Player, entry: Random
 
 	override fun init() {
 		super.init()
+		val message = entry.messages.randomOrNull() ?: return
 		FloodgateApi.getInstance().sendForm(
 			player.uniqueId,
 			SimpleForm.builder()
 				.title("<bold>${entry.speakerDisplayName}</bold>".legacy())
-				.content("${entry.messages.shuffled().first().parsePlaceholders(player).legacy()}\n\n")
+				.content("${message.parsePlaceholders(player).legacy()}\n\n")
 				.button("Continue")
 				.closedOrInvalidResultHandler { _, _ ->
 					state = MessengerState.CANCELLED

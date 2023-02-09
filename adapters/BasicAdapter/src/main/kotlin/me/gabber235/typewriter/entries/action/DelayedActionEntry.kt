@@ -10,8 +10,6 @@ import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.entry.entries.EntryTrigger
-import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -36,7 +34,7 @@ class DelayedActionEntry(
 		plugin.launch {
 			delay(duration.toMillis())
 			super.execute(player)
-			InteractionHandler.startInteractionAndTrigger(player, nextTriggers.map { EntryTrigger(it) })
+			nextTriggers triggerEntriesFor player
 		}
 	}
 }
