@@ -203,13 +203,10 @@ object ClientSynchronizer {
 			return
 		}
 
-		ackRequest.sendAckData("Published")
-		if (stagingState != STAGING) return
-		stagingState = PUBLISHING
-
 		plugin.launchAsync {
 			publish()
 		}
+		ackRequest.sendAckData("Published")
 	}
 
 	fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest) {
