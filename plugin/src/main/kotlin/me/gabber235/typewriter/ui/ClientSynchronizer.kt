@@ -150,9 +150,10 @@ object ClientSynchronizer {
 					current.asJsonArray[Integer.parseInt(key)] = update.value
 				}
 			} else if (current.isJsonObject) {
-				current = current.asJsonObject[key]
+				current = current.asJsonObject[key] ?: JsonObject().also { current.asJsonObject.add(key, it) }
 			} else if (current.isJsonArray) {
-				current = current.asJsonArray[Integer.parseInt(key)]
+				current =
+					current.asJsonArray[Integer.parseInt(key)] ?: JsonObject().also { current.asJsonArray.add(it) }
 			}
 		}
 
