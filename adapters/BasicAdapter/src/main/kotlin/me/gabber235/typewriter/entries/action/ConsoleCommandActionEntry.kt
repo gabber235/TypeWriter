@@ -5,6 +5,7 @@ import lirand.api.extensions.server.commands.dispatchCommand
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
@@ -20,6 +21,7 @@ data class ConsoleCommandActionEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
+	@Help("The command to run. (Use %player_name% for the player's name)")
 	private val command: String = "",
 ) : ActionEntry {
 

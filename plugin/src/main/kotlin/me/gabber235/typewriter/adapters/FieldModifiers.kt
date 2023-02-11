@@ -129,6 +129,7 @@ interface ModifierComputer {
 
 private val computers: List<ModifierComputer> by lazy {
 	listOf(
+		HelpModifierComputer,
 		TriggersModifierComputer,
 		EntrySelectorModifierComputer,
 		SnakeCaseModifierComputer,
