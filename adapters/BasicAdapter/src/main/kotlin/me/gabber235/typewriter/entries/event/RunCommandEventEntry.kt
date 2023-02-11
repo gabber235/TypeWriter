@@ -12,7 +12,7 @@ class RunCommandEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
-	val command: String = "",
+	override val command: String = "",
 ) : EventEntry
 
 @EntryListener(RunCommandEventEntry::class)

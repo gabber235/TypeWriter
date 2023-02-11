@@ -6,7 +6,11 @@ import me.gabber235.typewriter.entry.TriggerEntry
 import org.bukkit.entity.Player
 
 @Tags("event")
-interface EventEntry : TriggerEntry
+interface EventEntry : TriggerEntry {
+	// make a command val that does not need to be overridden
+	val command: String
+		get() = ""
+}
 
 class Event(val player: Player, val triggers: List<EventTrigger>) {
 	constructor(player: Player, vararg triggers: EventTrigger) : this(player, triggers.toList())
