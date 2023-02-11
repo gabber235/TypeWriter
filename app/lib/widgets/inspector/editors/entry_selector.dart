@@ -78,8 +78,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
                 },
               ),
               ContextMenuTile.button(
-                title: "Remove entry",
-                icon: FontAwesomeIcons.trash,
+                title: "Remove reference",
+                icon: FontAwesomeIcons.solidSquareMinus,
                 color: Colors.redAccent,
                 onTap: () {
                   ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, null);
