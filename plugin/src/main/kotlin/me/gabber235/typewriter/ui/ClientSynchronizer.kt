@@ -191,7 +191,12 @@ object ClientSynchronizer {
 		val dir = stagingDir
 
 		pages.forEach { (name, page) ->
-			dir["$name.json"].writeText(page.toString())
+			val file = dir["$name.json"]
+			if (!file.exists()) {
+				file.parentFile.mkdirs()
+				file.createNewFile()
+			}
+			file.writeText(page.toString())
 		}
 
 		stagingState = STAGING
