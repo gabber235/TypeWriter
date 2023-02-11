@@ -72,7 +72,7 @@ class EntriesGraph extends HookConsumerWidget {
         onButtonPressed: () => ref.read(searchProvider.notifier).asBuilder()
           ..fetchNewEntry()
           ..tag("trigger")
-          ..start(),
+          ..open(),
       );
     }
 

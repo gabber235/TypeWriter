@@ -52,7 +52,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
       ..tag(tag, canRemove: false)
       ..fetchEntry(onSelect: (entry) => _update(ref, entry))
       ..fetchNewEntry(onAdd: (blueprint) => _create(ref, blueprint))
-      ..start();
+      ..open();
   }
 
   @override

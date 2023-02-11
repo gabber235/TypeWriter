@@ -101,7 +101,6 @@ class ObjectEditor extends HookConsumerWidget {
 class _SimpleHeader extends HookConsumerWidget {
   const _SimpleHeader({
     required this.field,
-    super.key,
   });
 
   final MapEntry<String, FieldInfo> field;

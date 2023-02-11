@@ -136,6 +136,7 @@ private val computers: List<ModifierComputer> by lazy {
 		MultiLineModifierComputer,
 		MaterialPropertiesModifierComputer,
 		WithRotationModifierComputer,
+		SoundModifierComputer,
 	)
 }
 
