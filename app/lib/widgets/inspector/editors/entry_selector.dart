@@ -10,6 +10,7 @@ import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -65,39 +66,71 @@ class EntrySelectorEditor extends HookConsumerWidget {
     return Material(
       color: Theme.of(context).inputDecorationTheme.fillColor,
       borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: () {
-          if (hasOverrideDown && hasEntry) {
-            ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry.id);
-            return;
-          }
-          _select(ref, tag);
+      child: ContextMenuRegion(
+        builder: (context) {
+          return [
+            if (hasEntry) ...[
+              ContextMenuTile.button(
+                title: "Navigate to entry",
+                icon: FontAwesomeIcons.pencil,
+                onTap: () {
+                  ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry!.id);
+                },
+              ),
+              ContextMenuTile.button(
+                title: "Remove entry",
+                icon: FontAwesomeIcons.trash,
+                color: Colors.redAccent,
+                onTap: () {
+                  ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, null);
+                },
+              ),
+            ],
+            if (!hasEntry) ...[
+              ContextMenuTile.button(
+                title: "Select entry",
+                icon: FontAwesomeIcons.magnifyingGlass,
+                onTap: () {
+                  _select(ref, tag);
+                },
+              ),
+            ],
+          ];
         },
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding:
-              EdgeInsets.only(left: hasEntry ? 4 : 12, right: 16, top: hasEntry ? 4 : 12, bottom: hasEntry ? 4 : 12),
-          child: Row(
-            children: [
-              if (!hasEntry) ...[
+        child: InkWell(
+          onTap: () {
+            if (hasOverrideDown && hasEntry) {
+              ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry.id);
+              return;
+            }
+            _select(ref, tag);
+          },
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding:
+                EdgeInsets.only(left: hasEntry ? 4 : 12, right: 16, top: hasEntry ? 4 : 12, bottom: hasEntry ? 4 : 12),
+            child: Row(
+              children: [
+                if (!hasEntry) ...[
+                  FaIcon(
+                    FontAwesomeIcons.database,
+                    size: 16,
+                    color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                if (hasEntry)
+                  Expanded(child: FakeEntryNode(entry: entry))
+                else
+                  Expanded(child: Text("Select a $tag", style: Theme.of(context).inputDecorationTheme.hintStyle)),
+                const SizedBox(width: 12),
                 FaIcon(
-                  FontAwesomeIcons.database,
+                  FontAwesomeIcons.caretDown,
                   size: 16,
                   color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
                 ),
-                const SizedBox(width: 12),
               ],
-              if (hasEntry)
-                Expanded(child: FakeEntryNode(entry: entry))
-              else
-                Expanded(child: Text("Select a $tag", style: Theme.of(context).inputDecorationTheme.hintStyle)),
-              const SizedBox(width: 12),
-              FaIcon(
-                FontAwesomeIcons.caretDown,
-                size: 16,
-                color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
-              ),
-            ],
+            ),
           ),
         ),
       ),
