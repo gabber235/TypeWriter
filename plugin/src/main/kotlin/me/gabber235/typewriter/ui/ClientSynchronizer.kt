@@ -2,11 +2,13 @@ package me.gabber235.typewriter.ui
 
 import com.corundumstudio.socketio.AckRequest
 import com.corundumstudio.socketio.SocketIOClient
+import com.github.shynixn.mccoroutine.launchAsync
 import com.google.gson.*
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.ui.StagingState.*
 import me.gabber235.typewriter.utils.*
+import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
 object ClientSynchronizer {
@@ -15,7 +17,13 @@ object ClientSynchronizer {
 
 	private lateinit var gson: Gson
 
-	private val autoSaver = Cooldown(3.seconds, ClientSynchronizer::saveStaging)
+	private val autoSaver = Timeout(3.seconds, ClientSynchronizer::saveStaging)
+
+	private val stagingDir
+		get() = plugin.dataFolder["staging"]
+
+	private val publishedDir
+		get() = plugin.dataFolder["pages"]
 
 	var stagingState = PUBLISHED
 		private set(value) {
@@ -25,17 +33,30 @@ object ClientSynchronizer {
 
 	fun initialize() {
 		gson = EntryDatabase.gson()
-		stagingState = plugin.dataFolder["staging"].exists() then STAGING ?: PUBLISHED
+
+		stagingState = if (stagingDir.exists()) {
+			val stagingPages = fetchPages(stagingDir)
+			val publishedPages = fetchPages(publishedDir)
+
+			if (stagingPages == publishedPages) PUBLISHED else STAGING
+		} else PUBLISHED
+
 		// Read the pages from the file
 		val dir =
-			if (stagingState == STAGING) plugin.dataFolder["staging"] else plugin.dataFolder["pages"]
+			if (stagingState == STAGING) stagingDir else publishedDir
+		pages.putAll(fetchPages(dir))
+
+		// Read the adapters from the file
+		adapters = gson.fromJson(plugin.dataFolder["adapters.json"].readText(), JsonElement::class.java)
+	}
+
+	private fun fetchPages(dir: File): Map<String, JsonObject> {
+		val pages = mutableMapOf<String, JsonObject>()
 		dir.listFiles { file -> file.name.endsWith(".json") }?.forEach { file ->
 			val page = file.readText()
 			pages[file.nameWithoutExtension] = gson.fromJson(page, JsonObject::class.java)
 		}
-
-		// Read the adapters from the file
-		adapters = gson.fromJson(plugin.dataFolder["adapters.json"].readText(), JsonElement::class.java)
+		return pages
 	}
 
 	fun handleFetchRequest(client: SocketIOClient, data: String, ack: AckRequest) {
@@ -87,6 +108,11 @@ object ClientSynchronizer {
 		}
 
 		pages.remove(name)
+		// Delete the file
+		val file = stagingDir["$name.json"]
+		if (file.exists()) {
+			file.delete()
+		}
 		ack.sendAckData("Page deleted")
 		CommunicationHandler.server?.broadcastOperations?.sendEvent("deletePage", client, name)
 		autoSaver()
@@ -161,10 +187,8 @@ object ClientSynchronizer {
 		autoSaver()
 	}
 
-	fun saveStaging() {
-		val dir = plugin.dataFolder["staging"]
-		dir.deleteRecursively()
-		dir.mkdirs()
+	private fun saveStaging() {
+		val dir = stagingDir
 
 		pages.forEach { (name, page) ->
 			dir["$name.json"].writeText(page.toString())
@@ -179,8 +203,13 @@ object ClientSynchronizer {
 			return
 		}
 
-		publish()
 		ackRequest.sendAckData("Published")
+		if (stagingState != STAGING) return
+		stagingState = PUBLISHING
+
+		plugin.launchAsync {
+			publish()
+		}
 	}
 
 	fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest) {
@@ -189,18 +218,23 @@ object ClientSynchronizer {
 	}
 
 	// Save the page to the file
-	fun publish() {
+	private fun publish() {
 		if (stagingState != STAGING) return
 		stagingState = PUBLISHING
 
 		stagingState = try {
 			pages.forEach { (name, page) ->
-				val file = plugin.dataFolder["pages/$name.json"]
+				val file = publishedDir["$name.json"]
 				file.writeText(page.toString())
 			}
 
+			// Check if there are any pages which are no longer in staging. If so, delete them
+			val stagingFiles = stagingDir.listFiles()?.map { it.name } ?: emptyList()
+			val pagesFiles = publishedDir.listFiles()?.map { it.name } ?: emptyList()
+			pagesFiles.filter { it !in stagingFiles }.forEach { plugin.dataFolder["pages/$it"].delete() }
+
 			// Delete the staging folder
-			plugin.dataFolder["staging"].deleteRecursively()
+			stagingDir.deleteRecursively()
 			EntryDatabase.loadEntries()
 			plugin.logger.info("Published the staging state")
 			PUBLISHED
