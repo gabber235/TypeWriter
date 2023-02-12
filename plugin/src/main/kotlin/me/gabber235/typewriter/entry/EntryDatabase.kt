@@ -10,10 +10,6 @@ import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
 import me.gabber235.typewriter.utils.get
-import org.bukkit.Bukkit
-import org.bukkit.command.CommandMap
-import org.bukkit.command.CommandSender
-import org.bukkit.command.defaults.BukkitCommand
 import kotlin.reflect.KClass
 
 object EntryDatabase {
@@ -26,8 +22,8 @@ object EntryDatabase {
 		private set
 	private var dialogue = listOf<DialogueEntry>()
 	private var actions = listOf<ActionEntry>()
-	// used for registering commands
-	private var commandEvents = listOf<EventEntry>()
+	private var commandEvents = listOf<CustomCommandEntry>()
+	private var registeredCommands = listOf<CustomCommandEntry>()
 
 	fun loadEntries() {
 		val dir = plugin.dataFolder["pages"]
@@ -50,53 +46,20 @@ object EntryDatabase {
 
 		this.entries = pages?.flatMap { it.entries } ?: listOf()
 
-		this.commandEvents = this.events.filter {
-			it::class.simpleName == "RunCommandEventEntry"
+		this.commandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
+
+		registeredCommands.forEach { command ->
+			plugin.server.commandMap.getCommand(command.name)?.unregister(plugin.server.commandMap)
+		}
+		registeredCommands = commandEvents
+		registeredCommands.forEach { command ->
+			command.register()
 		}
 
-		registerCommands()
-		EntryListeners.register()
+		plugin.logger.info("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
+
 
 		println("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
-	}
-
-	private fun registerCommands() {
-		// https://www.spigotmc.org/threads/tutorial-how-to-register-unregister-custom-commands-at-runtime.493956/
-		commandEvents.forEach { event ->
-			val aliases = mutableListOf<String>()
-			aliases.add(event.command)
-
-			val usage = "/${event.command}"
-			val description = "description" // TODO: add description to entry
-
-			val command = object : BukkitCommand(event.command, description, usage, aliases) {
-				override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>?): Boolean {
-					// executes on its own
-					return true
-				}
-			}
-
-			plugin.getCommand(event.command)?.unregister(getCommandMap())
-			getCommandMap().register(plugin.name, command)
-
-			println("Registered command ${event.command} for ${event.name} (${event.id})")
-		}
-	}
-
-	private fun getCommandMap(): CommandMap {
-		var map: CommandMap = Bukkit.getServer().commandMap
-
-		try {
-			val server = Bukkit.getServer()
-			val serverClass = server.javaClass
-			val commandMapField = serverClass.getDeclaredField("commandMap")
-			commandMapField.isAccessible = true
-			map = commandMapField.get(server) as CommandMap
-		} catch (e: Exception) {
-			e.printStackTrace()
-		}
-
-		return map
 	}
 
 	fun gson(): Gson {

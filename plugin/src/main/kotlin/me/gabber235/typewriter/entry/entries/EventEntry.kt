@@ -1,15 +1,31 @@
 package me.gabber235.typewriter.entry.entries
 
+import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.entry.Entry
 import me.gabber235.typewriter.entry.TriggerEntry
+import me.gabber235.typewriter.entry.triggerAllFor
+import org.bukkit.command.CommandSender
+import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
 
 @Tags("event")
-interface EventEntry : TriggerEntry {
-	// make a command val that does not need to be overridden
+interface EventEntry : TriggerEntry
+
+interface CustomCommandEntry : EventEntry {
 	val command: String
-		get() = ""
+
+	fun register() {
+		val result = plugin.getCommandMap().register(command, object : BukkitCommand(command) {
+			override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
+				triggerAllFor(sender as Player)
+				println("Triggered command $command for $name (${id})")
+				return true
+			}
+		})
+
+		println("Registered command $command for $name (${id}) Success: $result")
+	}
 }
 
 class Event(val player: Player, val triggers: List<EventTrigger>) {

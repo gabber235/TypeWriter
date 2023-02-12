@@ -13,6 +13,9 @@ import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.ui.CommunicationHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
+import org.bukkit.Bukkit
+import org.bukkit.command.CommandMap
+import java.lang.reflect.Field
 
 class Typewriter : KotlinPlugin() {
 	companion object {
@@ -72,5 +75,21 @@ class Typewriter : KotlinPlugin() {
 		InteractionHandler.shutdown()
 		FactDatabase.shutdown()
 		adventure.close()
+	}
+
+	fun getCommandMap(): CommandMap {
+		var commandMap: CommandMap? = null
+
+		try {
+			val f: Field = Bukkit.getServer().javaClass.getDeclaredField("commandMap")
+			f.isAccessible = true
+			commandMap = f.get(Bukkit.getServer()) as CommandMap
+		} catch (e: NoSuchFieldException) {
+			e.printStackTrace()
+		} catch (e: IllegalAccessException) {
+			e.printStackTrace()
+		}
+
+		return commandMap?: throw IllegalStateException("Could not get command map")
 	}
 }
