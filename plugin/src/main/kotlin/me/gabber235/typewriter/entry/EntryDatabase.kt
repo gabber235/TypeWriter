@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
 import me.gabber235.typewriter.utils.get
+import me.gabber235.typewriter.utils.commandMap
 import kotlin.reflect.KClass
 
 object EntryDatabase {
@@ -49,15 +50,12 @@ object EntryDatabase {
 		this.commandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
 
 		registeredCommands.forEach { command ->
-			plugin.server.commandMap.getCommand(command.name)?.unregister(plugin.server.commandMap)
+			commandMap.getCommand(command.name)?.unregister(commandMap)
 		}
 		registeredCommands = commandEvents
 		registeredCommands.forEach { command ->
 			command.register()
 		}
-
-		plugin.logger.info("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
-
 
 		println("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
 	}
