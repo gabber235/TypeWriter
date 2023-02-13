@@ -18,7 +18,7 @@ dependencies:
   hooks_riverpod: ^2.1.3
   auto_size_text: ^3.0.0
   google_fonts: ^4.0.3
-  font_awesome_flutter: ^10.3.0
+  font_awesome_flutter: ^10.4.0
   rive: ^0.10.1
   fuzzy: ^0.4.0-nullsafety.0
   auto_route: ^5.0.4
@@ -35,6 +35,8 @@ dependencies:
   flutter_animate: ^3.1.0
   text_scroll: ^0.1.2
   url_launcher: ^6.1.9
+  http: ^0.13.5
+  audioplayers: ^3.0.1
 
 
 

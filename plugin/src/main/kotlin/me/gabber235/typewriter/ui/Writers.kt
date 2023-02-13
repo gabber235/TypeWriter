@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken
 
 data class Writer(
 	val id: String = "",
+	val iconUrl: String? = null,
 	val pageId: String? = null,
 	val entryId: String? = null,
 	val field: String? = null,
@@ -19,8 +20,8 @@ data class Writer(
 			writers = writers + writer
 		}
 
-		fun addWriter(id: String) {
-			addWriter(Writer(id))
+		fun addWriter(id: String, iconUrl: String? = null) {
+			addWriter(Writer(id, iconUrl))
 		}
 
 		private fun updateWriter(writer: Writer) {

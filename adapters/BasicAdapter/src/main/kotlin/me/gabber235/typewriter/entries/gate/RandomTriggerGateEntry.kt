@@ -3,12 +3,8 @@ package me.gabber235.typewriter.entries.gate
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
-import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.entry.entries.EntryTrigger
-import me.gabber235.typewriter.interaction.InteractionHandler
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
@@ -17,31 +13,23 @@ class RandomTriggerGateEntry(
 	override val id: String,
 	override val name: String,
 	@SerializedName("triggers")
-	@Triggers
-	@EntryIdentifier(TriggerableEntry::class)
-	val nextTriggers: List<String> = emptyList(),
+	override val customTriggers: List<String> = emptyList(),
 	override val criteria: List<Criteria>,
 	override val modifiers: List<Modifier>,
 	private val amount: Int = 1,
-
-	) : ActionEntry {
-
-	override val triggers: List<String>
-		get() = emptyList()
+) : CustomTriggeringActionEntry {
 
 	override fun execute(player: Player) {
-
 		val selectedTriggers = mutableListOf<String>()
 
-		if (nextTriggers.isNotEmpty()) {
-			val randomIndices = (nextTriggers.indices).shuffled().take(amount)
+		if (customTriggers.isNotEmpty()) {
+			val randomIndices = (customTriggers.indices).shuffled().take(amount)
 			for (index in randomIndices) {
-				selectedTriggers.add(nextTriggers[index])
+				selectedTriggers.add(customTriggers[index])
 			}
 		}
 
 		super.execute(player)
-		InteractionHandler.triggerActions(player, selectedTriggers.map { EntryTrigger(it) })
-
+		selectedTriggers triggerEntriesFor player
 	}
 }

@@ -1,6 +1,8 @@
 package me.gabber235.typewriter.entries.action
 
+import com.github.shynixn.mccoroutine.launch
 import lirand.api.extensions.server.commands.dispatchCommand
+import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Criteria
@@ -21,6 +23,9 @@ data class PlayerCommandActionEntry(
 ) : ActionEntry {
 	override fun execute(player: Player) {
 		super.execute(player)
-		player.dispatchCommand(command.parsePlaceholders(player))
+		// Run in main thread
+		plugin.launch {
+			player.dispatchCommand(command.parsePlaceholders(player))
+		}
 	}
 }

@@ -1,12 +1,10 @@
 package me.gabber235.typewriter.ui
 
 import com.corundumstudio.socketio.*
-import com.github.shynixn.mccoroutine.launch
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.utils.config
 import me.gabber235.typewriter.utils.logErrorIfNull
-import org.bukkit.event.inventory.InventoryCloseEvent
 import java.time.Instant
 import java.util.*
 import kotlin.collections.set
@@ -55,11 +53,22 @@ object CommunicationHandler {
 
 		server?.addEventListener("updateWriter", String::class.java, ClientSynchronizer::handleUpdateWriter)
 
-		server?.addConnectListener {
-			plugin.logger.info("Client connected: ${it.remoteAddress}")
-			it.sendEvent("stagingState", ClientSynchronizer.stagingState.name.lowercase())
+		server?.addConnectListener { socket ->
+			plugin.logger.info("Client connected: ${socket.remoteAddress}")
+			socket.sendEvent("stagingState", ClientSynchronizer.stagingState.name.lowercase())
 
-			Writer.addWriter(it.sessionId.toString())
+			val token = getSessionToken(socket.handshakeData)
+			if (token != null) {
+				sessionTokens.computeIfPresent(token) { _, session ->
+					session.copy(lastConnectionId = socket.sessionId)
+				}
+			}
+
+			val iconUrl = sessionTokens[token]?.playerId?.let {
+				"https://crafatar.com/avatars/$it?size=32&overlay"
+			}
+
+			Writer.addWriter(socket.sessionId.toString(), iconUrl)
 			server.broadcastWriters()
 		}
 
@@ -77,14 +86,21 @@ object CommunicationHandler {
 	private fun authenticate(data: HandshakeData): Boolean {
 		if (auth == "none") return true
 		if (auth == "session") {
-			val token = data.getSingleUrlParam("token")
+			val token = getSessionToken(data)
 				.logErrorIfNull("${data.address} tried to connect to the socket without token!") ?: return false
-			val uuid = UUID.fromString(token)
-			val session = sessionTokens[uuid] ?: return false
-			session.closePopup()
+			val session = sessionTokens[token] ?: return false
 			return session.isValid
 		}
 		return false
+	}
+
+	private fun getSessionToken(data: HandshakeData): UUID? {
+		if (auth == "none") return null
+		if (auth == "session") {
+			val token = data.getSingleUrlParam("token") ?: return null
+			return UUID.fromString(token)
+		}
+		return null
 	}
 
 	private fun generateSessionToken(playerId: UUID?): UUID {
@@ -119,6 +135,7 @@ object CommunicationHandler {
 data class SessionData(
 	val playerId: UUID?,
 	val created: Instant,
+	val lastConnectionId: UUID? = null,
 ) {
 	companion object {
 		fun create(playerId: UUID?) = SessionData(playerId, Instant.now())
@@ -132,21 +149,5 @@ data class SessionData(
 	 * @return true if the session is still valid, false otherwise.
 	 */
 	val isValid: Boolean
-		get() = playerId?.let { server?.getPlayer(it) != null } ?: true
-
-	/**
-	 * For players, we open a book with the link.
-	 *
-	 * We assume that the player has the book still open after clicking the link and connecting as this happens in a split second.
-	 */
-	fun closePopup() {
-		val uuid = playerId ?: return
-		val player = plugin.server.getPlayer(uuid) ?: return
-		// We only close it if the player opened the book in the last minute.
-		if (created.isBefore(Instant.now().minusSeconds(60))) return
-
-		plugin.launch {
-			player.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
-		}
-	}
+		get() = playerId?.let { server.getPlayer(it) != null } ?: true
 }

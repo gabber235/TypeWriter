@@ -240,7 +240,7 @@ extension PageX on Page {
           await _wireEntryToOtherEntry(ref, entry, selectedEntry);
         },
       )
-      ..start();
+      ..open();
   }
 
   void deleteEntryWithConfirmation(BuildContext context, PassingRef ref, String entryId) {
