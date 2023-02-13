@@ -8,9 +8,7 @@ import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.facts.Fact
-import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import me.gabber235.typewriter.utils.get
-import me.gabber235.typewriter.utils.commandMap
+import me.gabber235.typewriter.utils.*
 import kotlin.reflect.KClass
 
 object EntryDatabase {
@@ -24,7 +22,6 @@ object EntryDatabase {
 	private var dialogue = listOf<DialogueEntry>()
 	private var actions = listOf<ActionEntry>()
 	private var commandEvents = listOf<CustomCommandEntry>()
-	private var registeredCommands = listOf<CustomCommandEntry>()
 
 	fun loadEntries() {
 		val dir = plugin.dataFolder["pages"]
@@ -47,15 +44,12 @@ object EntryDatabase {
 
 		this.entries = pages?.flatMap { it.entries } ?: listOf()
 
-		this.commandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
-
-		registeredCommands.forEach { command ->
+		commandEvents.forEach { command ->
 			commandMap.getCommand(command.name)?.unregister(commandMap)
 		}
-		registeredCommands = commandEvents
-		registeredCommands.forEach { command ->
-			command.register()
-		}
+
+		commandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
+		commandEvents.forEach { it.register() }
 
 		println("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
 	}

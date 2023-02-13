@@ -3,10 +3,6 @@ package me.gabber235.typewriter.entry.entries
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.entry.Entry
 import me.gabber235.typewriter.entry.TriggerEntry
-import me.gabber235.typewriter.entry.triggerAllFor
-import me.gabber235.typewriter.utils.commandMap
-import org.bukkit.command.CommandSender
-import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
 
 @Tags("event")
@@ -14,18 +10,6 @@ interface EventEntry : TriggerEntry
 
 interface CustomCommandEntry : EventEntry {
 	val command: String
-
-	fun register() {
-		val result = commandMap.register(command, object : BukkitCommand(command) {
-			override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
-				triggerAllFor(sender as Player)
-				println("Triggered command $command for $name (${id})")
-				return true
-			}
-		})
-
-		println("Registered command $command for $name (${id}) Success: $result")
-	}
 }
 
 class Event(val player: Player, val triggers: List<EventTrigger>) {
