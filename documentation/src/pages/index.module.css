@@ -8,7 +8,8 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(30deg, var(--ifm-color-primary-darkest), var(--ifm-color-primary-dark));
+  color: var(--ifm-color-white);
+  background-image: linear-gradient(30deg, var(--ifm-color-primary-darkest), var(--ifm-color-primary));
 }
 
 @media screen and (max-width: 996px) {
