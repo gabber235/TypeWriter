@@ -128,6 +128,9 @@ const config = {
                 darkTheme: darkCodeTheme,
             },
         }),
+    plugins: [
+        "rive-loader"
+    ]
 };
 
 module.exports = config;
