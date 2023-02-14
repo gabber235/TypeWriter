@@ -21,7 +21,8 @@ object EntryDatabase {
 		private set
 	private var dialogue = listOf<DialogueEntry>()
 	private var actions = listOf<ActionEntry>()
-	private var commandEvents = listOf<CustomCommandEntry>()
+	internal var commandEvents = listOf<CustomCommandEntry>()
+		private set
 
 	fun loadEntries() {
 		val dir = plugin.dataFolder["pages"]
@@ -44,12 +45,7 @@ object EntryDatabase {
 
 		this.entries = pages?.flatMap { it.entries } ?: listOf()
 
-		commandEvents.forEach { command ->
-			commandMap.getCommand(command.name)?.unregister(commandMap)
-		}
-
-		commandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
-		commandEvents.forEach { it.register() }
+		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll()
 
 		println("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
 	}

@@ -250,9 +250,7 @@ fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, contin
  * entries startDialogueWithOrTrigger player
  * ```
  */
-infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player) {
-	val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
-	InteractionHandler.startDialogueWithOrTriggerEvent(player, triggers, SystemTrigger.DIALOGUE_NEXT)
-}
+infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player) =
+	startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
 
 
