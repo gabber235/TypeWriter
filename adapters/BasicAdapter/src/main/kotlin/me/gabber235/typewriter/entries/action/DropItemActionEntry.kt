@@ -1,6 +1,8 @@
 package me.gabber235.typewriter.entries.action
 
+import com.github.shynixn.mccoroutine.launch
 import lirand.api.extensions.inventory.meta
+import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.MultiLine
@@ -38,10 +40,13 @@ class DropItemActionEntry(
 				lore(this@DropItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
 			}
 		}
-		if (location.isPresent) {
-			location.get().world.dropItem(location.get(), item)
-		} else {
-			player.location.world.dropItem(player.location, item)
+		// Run on main thread
+		plugin.launch {
+			if (location.isPresent) {
+				location.get().world.dropItem(location.get(), item)
+			} else {
+				player.location.world.dropItem(player.location, item)
+			}
 		}
 	}
 }

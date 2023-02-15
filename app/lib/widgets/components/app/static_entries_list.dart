@@ -35,7 +35,7 @@ class StaticEntriesList extends HookConsumerWidget {
         onButtonPressed: () => ref.read(searchProvider.notifier).asBuilder()
           ..fetchNewEntry()
           ..tag("static", canRemove: false)
-          ..start(),
+          ..open(),
       );
     }
 

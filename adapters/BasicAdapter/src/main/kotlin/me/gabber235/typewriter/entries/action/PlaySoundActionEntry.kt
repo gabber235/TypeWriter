@@ -2,12 +2,12 @@ package me.gabber235.typewriter.entries.action
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Sound
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
-import org.bukkit.Sound
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -19,7 +19,8 @@ data class PlaySoundActionEntry(
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
 	val location: Optional<Location> = Optional.empty(),
-	val sound: Sound = Sound.ENTITY_VILLAGER_YES,
+	@Sound
+	val sound: String = "",
 	val volume: Float = 1.0f,
 	val pitch: Float = 1.0f,
 ) : ActionEntry {

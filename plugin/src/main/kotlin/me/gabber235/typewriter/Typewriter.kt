@@ -1,6 +1,5 @@
 package me.gabber235.typewriter
 
-import com.comphenix.protocol.ProtocolLibrary
 import com.github.shynixn.mccoroutine.launch
 import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
@@ -45,10 +44,7 @@ class Typewriter : KotlinPlugin() {
 		InteractionHandler.init()
 		FactDatabase.init()
 		MessengerFinder.init()
-
-
-		ProtocolLibrary.getProtocolManager()
-			.addPacketListener(ChatHistoryHandler)
+		ChatHistoryHandler.init()
 
 		if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
 			TypewriteExpansion.register()
@@ -68,6 +64,7 @@ class Typewriter : KotlinPlugin() {
 	}
 
 	override fun onDisable() {
+		ChatHistoryHandler.shutdown()
 		CommunicationHandler.shutdown()
 		InteractionHandler.shutdown()
 		FactDatabase.shutdown()

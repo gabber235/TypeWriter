@@ -46,6 +46,8 @@ object AdapterLoader {
 		// Write the adapters to a file
 		val file = plugin.dataFolder["adapters.json"]
 		if (!file.exists()) {
+			// Make sure the parent directory exists
+			file.parentFile.mkdirs()
 			file.createNewFile()
 		}
 
