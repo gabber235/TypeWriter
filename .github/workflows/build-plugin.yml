@@ -6,13 +6,6 @@ on:
     paths:
       - "app/**"
       - "plugin/**"
-  pull_request:
-    branches:
-      - main
-      - develop
-    paths:
-      - "app/**"
-      - "plugin/**"
 
 jobs:
   build:

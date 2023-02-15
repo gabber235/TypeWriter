@@ -5,12 +5,6 @@ on:
       - develop
     paths:
       - "adapters/SuperiorSkyblockAdapter/**"
-  pull_request:
-    branches:
-      - main
-      - develop
-    paths:
-      - "adapters/SuperiorSkyblockAdapter/**"
 
 jobs:
   build:
