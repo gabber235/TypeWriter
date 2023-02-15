@@ -3,7 +3,6 @@ module.exports = function (context, options) {
         name: "rive-loader",
         configureWebpack(config, isServer, utils) {
             // Add for .riv files a url-loader
-            console.log("Adding rive-loader")
             return {
                 module: {
                     rules: [

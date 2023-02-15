@@ -1,10 +1,10 @@
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Rive from '@rive-app/react-canvas';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Layout from '@theme/Layout';
 import clsx from 'clsx';
 import React from 'react';
-import Rive from '@rive-app/react-canvas';
 
 import styles from './index.module.css';
 
@@ -20,7 +20,7 @@ function HomepageHeader() {
                 <div className={styles.buttons}>
                     <Link
                         className={clsx('button button--secondary button--lg', styles.startButton)}
-                        to="/docs/intro">
+                        to="/docs/home">
                         Get Started →
                     </Link>
                 </div>
