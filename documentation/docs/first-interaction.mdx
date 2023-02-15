@@ -1,3 +1,9 @@
+import ReactPlayer from 'react-player'
+import game1Video from './assets/first-interaction/game-1.webm'
+import game2Video from './assets/first-interaction/game-2.webm'
+import game3Video from './assets/first-interaction/game-3.webm'
+import game4Video from './assets/first-interaction/game-4.webm'
+
 # First interaction
 
 In this guide we will create our first interaction. If you haven't installed Typewriter yet, please follow the [Installation Guide](Installation-guide) first.
@@ -10,13 +16,13 @@ Let's create our first interaction. Our example interaction will look like this:
 
 1. The player clicks on a flower.
 2. A chat dialogue is opened, and the player is given three options.
- - Looking at the flower
- - Smelling the flower
- - And touching the flower
+    - Looking at the flower
+    - Smelling the flower
+    - And touching the flower
 3. All options lead to some dialogue. But some behavior changes depending on the option.
- - Looking at the flower will have different dialogue the second time.
- - Smelling the flower will have simple dialogue.
- - Touching the flower will give the player a flower one time.
+    - Looking at the flower will have different dialogue the second time.
+    - Smelling the flower will have simple dialogue.
+    - Touching the flower will give the player a flower one time.
 
 If at any point you get stuck, feel free to ask for help on our [Discord](https://discord.gg/HtbKyuDDBw).
 
@@ -142,7 +148,7 @@ We do **not** have to restart the server. Publishing changes is instant and will
 
 If we now go in-game we will see the following when we click on a red tulip it will show us the three options:
 
-![game-1](./assets/first-interaction/game-1.gif)
+<ReactPlayer url={game1Video} playing loop width="100%" height="100%" />
 
 ## Looking at flower
 
@@ -161,7 +167,7 @@ global triggers.
 
 When you publish the changes. In the game it should look something like this:
 
-![game-2](./assets/first-interaction/game-2.gif)
+<ReactPlayer url={game2Video} playing loop width="100%" height="100%" />
 
 ### Adding a conditional dialogue
 
@@ -216,7 +222,7 @@ The UI should look something like this:
 
 When you publish the changes. In the game it should look something like this:
 
-![game-3](./assets/first-interaction/game-3.gif)
+<ReactPlayer url={game3Video} playing loop width="100%" height="100%" />
 
 ## Adding additional dialogue
 
@@ -240,7 +246,7 @@ Finally, the UI should look something like this:
 
 When you publish the changes. In the game it should look something like this:
 
-![game-4](./assets/first-interaction/game-4.gif)
+<ReactPlayer url={game4Video} playing loop width="100%" height="100%" />
 
 ## Next steps
 
