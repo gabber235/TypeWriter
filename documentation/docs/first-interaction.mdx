@@ -1,8 +1,4 @@
 import ReactPlayer from 'react-player'
-import game1Video from './assets/first-interaction/game-1.webm'
-import game2Video from './assets/first-interaction/game-2.webm'
-import game3Video from './assets/first-interaction/game-3.webm'
-import game4Video from './assets/first-interaction/game-4.webm'
 
 # First interaction
 
@@ -48,7 +44,7 @@ Let's create a page. To do this, click on the `Add Page` button. This will open 
 page. Pages need a name which is used to identify the page and must be unique. We will call our page `flower`.
 Page names are written in `snake_case`, just like any other identifier in Typewriter.
 
-![add-page](./assets/first-interaction/add-page.gif)
+<ReactPlayer url={require("./assets/first-interaction/add-page.webm").default} playing loop width="100%" height="100%" />
 
 ## Panel layout
 
@@ -85,7 +81,7 @@ search bar. The search bar is smart and can filter for specific actions. To crea
 interact with block`. This will show you a list of entries that you can create. Click on the `Add On Interact
 With Block` entry. This will create a new `event` entry.
 
-![create-event](./assets/first-interaction/create-event.gif)
+<ReactPlayer url={require("./assets/first-interaction/create-event.webm").default} playing loop width="100%" height="100%" />
 
 As you can see, the inspector auto selected the entry that we just created. In the inspector, there are several
 things that we can change. Let's change the name of the entry to `on_flower_click`. We can also change the block
@@ -116,7 +112,7 @@ After that, we still need to select it in
 the inspector. To do this, click on the `Speaker` field. This will open a modal where you can select a speaker.
 Select the `flower` speaker. It should look like this:
 
-![add-speaker](./assets/first-interaction/create-speaker.gif)
+<ReactPlayer url={require("./assets/first-interaction/create-speaker.webm").default} playing loop width="100%" height="100%" />
 
 Now we only need to put in the different options that we want the player to be able to use. Click on the `+`
 next to the options drop down to add a new option. Then change the text of the option to `Look at the flower`,
@@ -132,7 +128,7 @@ clicking on the purple selection next to the triggers field. This will put in a 
 the entries that you want to trigger. When you are done you can click finish to connect them up. It should look
 something like:
 
-![connect-entries](./assets/first-interaction/connect-entries.gif)
+<ReactPlayer url={require("./assets/first-interaction/connect-entries.webm").default} playing loop width="100%" height="100%" />
 
 ## Testing the interaction
 
@@ -148,14 +144,14 @@ We do **not** have to restart the server. Publishing changes is instant and will
 
 If we now go in-game we will see the following when we click on a red tulip it will show us the three options:
 
-<ReactPlayer url={game1Video} playing loop width="100%" height="100%" />
+<ReactPlayer url={require("./assets/first-interaction/game-1.webm").default} playing loop width="100%" height="100%" />
 
 ## Looking at flower
 
 ### Adding dialogue
 When the player wants to look at the flower we want to display some dialogue. Try to add a `spoken` dialogue
 entry. Rename it to `look_at_flower_initialy`, add the text `That flower looks <red><bold>Beautiful</bold></red>`
-select our `flower` speaker we created earlier, and finally specify a duration of `20` ticks that the
+select our `flower` speaker we created earlier, and finally specify a duration of `1s` for one second that the
 message will be animated. Finally, connect the `look_at_flower_initialy` entry to the `inspect_flower` entry.
 
 :::caution
@@ -167,7 +163,7 @@ global triggers.
 
 When you publish the changes. In the game it should look something like this:
 
-<ReactPlayer url={game2Video} playing loop width="100%" height="100%" />
+<ReactPlayer url={require("./assets/first-interaction/game-2.webm").default} playing loop width="100%" height="100%" />
 
 ### Adding a conditional dialogue
 
@@ -209,9 +205,9 @@ duration of `1s` that the message will be animated. Connect it to the `inspect_f
 the `look at the flower` option.
 
 :::tip
-We actually don't need to set any criteria on this second dialogue entry. Typewriter picks the next
-dialogue to be the dialogue with the most criteria, which all must be met. In this case
-`look_at_flower_initialy` has one criterion, and `look_at_flower_second_time` has none.
+We actually don't need to set any criteria on the `look_at_flower_second_time` dialogue entry. Typewriter picks the next
+dialogue to be the dialogue by sorting all the next dialogue entries from most amount of criteria to least. Then picking the first one which has all the criteria met.
+In this case `look_at_flower_initialy` has one criterion, and `look_at_flower_second_time` has none.
 
 So `look_at_flower_initialy` will be picked when the player has not looked at the flower.
 :::
@@ -222,7 +218,7 @@ The UI should look something like this:
 
 When you publish the changes. In the game it should look something like this:
 
-<ReactPlayer url={game3Video} playing loop width="100%" height="100%" />
+<ReactPlayer url={require("./assets/first-interaction/game-3.webm").default} playing loop width="100%" height="100%" />
 
 ## Adding additional dialogue
 
@@ -246,7 +242,7 @@ Finally, the UI should look something like this:
 
 When you publish the changes. In the game it should look something like this:
 
-<ReactPlayer url={game4Video} playing loop width="100%" height="100%" />
+<ReactPlayer url={require("./assets/first-interaction/game-4.webm").default} playing loop width="100%" height="100%" />
 
 ## Next steps
 
