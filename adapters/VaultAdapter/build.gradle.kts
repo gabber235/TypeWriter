@@ -5,8 +5,8 @@ plugins {
 	id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
-group = "me.caleb"
-version = "0.0.1"
+group = "com.caleb"
+version = file("../../version.txt").readText().trim()
 
 repositories {
 	// Required
@@ -28,7 +28,7 @@ dependencies {
 	compileOnly(kotlin("stdlib"))
 	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
-	compileOnly("me.gabber235:typewriter:0.0.1")
+	compileOnly("me.gabber235:typewriter:$version")
 
 	// Already included in the TypeWriter plugin
 	compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
