@@ -3,44 +3,46 @@ import "dart:async";
 import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter/services.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
-import "package:typewriter/main.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
-import "package:typewriter/models/page.dart" as model;
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/popups.dart";
-import "package:typewriter/widgets/context_menu_region.dart";
-import "package:typewriter/widgets/empty_screen.dart";
-import "package:typewriter/widgets/filled_button.dart";
-import "package:typewriter/widgets/select_entries.dart";
-import "package:typewriter/widgets/writers.dart";
+import "package:typewriter/widgets/components/app/empty_screen.dart";
+import "package:typewriter/widgets/components/app/select_entries.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/validated_text_field.dart";
 
 part "pages_list.g.dart";
+
+@riverpod
+List<String> _pageNames(_PageNamesRef ref) {
+  return ref.watch(bookProvider).pages.map((e) => e.name).toList();
+}
 
 class PagesList extends StatelessWidget {
   const PagesList({super.key});
 
   @override
-  Widget build(BuildContext context) => SizedBox.expand(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            _PagesSelector(),
-            Expanded(child: AutoRouter()),
-          ],
-        ),
-      );
-}
-
-@riverpod
-List<String> _pageNames(_PageNamesRef ref) {
-  return ref.watch(bookProvider).pages.map((e) => e.name).toList();
+  Widget build(BuildContext context) {
+    return const SizedBox.expand(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _PagesSelector(),
+          Expanded(child: AutoRouter()),
+        ],
+      ),
+    );
+  }
 }
 
 class _PagesSelector extends HookConsumerWidget {
@@ -55,18 +57,18 @@ class _PagesSelector extends HookConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         // When selecting entries we don't want to be able to switch pages or add new ones
-        child: SelectingEntriesBlocker(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 12),
-              Text("Pages", style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white)),
-              const SizedBox(height: 12),
-              for (var i = 0; i < pageNames.length; i++) _PageTile(index: i, name: pageNames[i]),
-              const SizedBox(height: 12),
-              const _AddPageButton(),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 12),
+            Text("Pages", style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white)),
+            const SizedBox(height: 12),
+            for (var i = 0; i < pageNames.length; i++) _PageTile(index: i, pageId: pageNames[i]),
+            const SizedBox(height: 12),
+            const SelectingEntriesBlocker(
+              child: _AddPageButton(),
+            ),
+          ],
         ),
       ),
     );
@@ -76,11 +78,11 @@ class _PagesSelector extends HookConsumerWidget {
 class _PageTile extends HookConsumerWidget {
   const _PageTile({
     required this.index,
-    required this.name,
+    required this.pageId,
     super.key,
   });
   final int index;
-  final String name;
+  final String pageId;
 
   bool _needsShift(int amount) {
     // If the amount of writer is 0, we never need to shift
@@ -90,57 +92,56 @@ class _PageTile extends HookConsumerWidget {
     return true;
   }
 
+  List<ContextMenuTile> _contextMenuItems(BuildContext context, WidgetRef ref, bool isSelected) {
+    return [
+      ContextMenuTile.button(
+        title: "Rename",
+        icon: FontAwesomeIcons.pen,
+        onTap: () => showDialog(context: context, builder: (_) => _RenamePageDialogue(old: pageId)),
+      ),
+      ContextMenuTile.divider(),
+      ContextMenuTile.button(
+        title: "Delete",
+        icon: FontAwesomeIcons.trash,
+        color: Colors.redAccent,
+        onTap: () => showConfirmationDialogue(
+          context: context,
+          title: "Delete ${pageId.formatted}?",
+          content: "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
+          delayConfirm: 3.seconds,
+          confirmText: "Delete",
+          confirmIcon: FontAwesomeIcons.trash,
+          onConfirm: () async {
+            await ref.read(bookProvider.notifier).deletePage(pageId);
+            if (!isSelected) return;
+            unawaited(ref.read(appRouter).replace(const EmptyPageEditorRoute()));
+          },
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = ref.watch(currentPageIdProvider.select((e) => e == name));
+    final isSelected = ref.watch(currentPageIdProvider.select((e) => e == pageId));
 
     return WritersIndicator(
-      filter: (writer) => writer.pageId.hasValue && writer.pageId == name && !isSelected,
+      filter: (writer) => writer.pageId.hasValue && writer.pageId == pageId && !isSelected,
       shift: (amount) => _needsShift(amount) ? const Offset(4, 30) : Offset.zero,
       builder: (amount) {
         return AnimatedPadding(
-          duration: const Duration(milliseconds: 200),
+          duration: 200.ms,
           curve: Curves.easeInOut,
           padding: EdgeInsets.only(left: 2.0, right: 2.0, top: _needsShift(amount) ? 30 : 0),
           child: Material(
             color: isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             child: ContextMenuRegion(
-              builder: (context) {
-                return [
-                  ContextMenuTile.button(
-                    title: "Rename",
-                    icon: FontAwesomeIcons.pen,
-                    onTap: () => showDialog(context: context, builder: (_) => _RenamePageDialogue(old: name)),
-                  ),
-                  ContextMenuTile.divider(),
-                  ContextMenuTile.button(
-                    title: "Delete",
-                    icon: FontAwesomeIcons.trash,
-                    color: Colors.redAccent,
-                    onTap: () => showConfirmationDialogue(
-                      context: context,
-                      title: "Delete ${name.formatted}?",
-                      content: "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
-                      delayConfirm: const Duration(seconds: 3),
-                      confirmText: "Delete",
-                      confirmIcon: FontAwesomeIcons.trash,
-                      onConfirm: () async {
-                        await ref.read(communicatorProvider).deletePage(name);
-                        ref.read(bookProvider.notifier).deletePage(name);
-                        if (isSelected) {
-                          unawaited(ref.read(appRouter).replace(const EmptyPageEditorRoute()));
-                        }
-                      },
-                    ),
-                  ),
-                ];
-              },
+              builder: (context) => _contextMenuItems(context, ref, isSelected),
               child: InkWell(
                 onTap: () {
-                  if (!isSelected) {
-                    context.router.push(PageEditorRoute(id: name));
-                  }
+                  if (isSelected) return;
+                  ref.read(appRouter).push(PageEditorRoute(id: pageId));
                 },
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
@@ -150,7 +151,7 @@ class _PageTile extends HookConsumerWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          name.formatted,
+                          pageId.formatted,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.white,
                               ),
@@ -236,73 +237,51 @@ class _AddPageDialogue extends HookConsumerWidget {
   const _AddPageDialogue();
 
   Future<void> _addPage(WidgetRef ref, String name) async {
-    await ref.read(communicatorProvider).createPage(name);
-    ref.read(bookProvider.notifier).insertPage(model.Page(name: name));
+    await ref.read(bookProvider.notifier).createPage(name);
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));
   }
 
   /// Validates the proposed name for a page.
   /// A name is invalid if it is empty or if it already exists.
-  void _validateName(
-    TextEditingController controller,
-    ValueNotifier<bool> hasTyped,
+  String? _validateName(
+    String text,
     List<String> pagesNames,
-    ValueNotifier<String> error,
   ) {
-    var errorText = "";
-
-    if (controller.text.isNotEmpty) {
-      hasTyped.value = true;
+    if (text.isEmpty) {
+      return "Name cannot be empty";
     }
-
-    // We don't want to scare the user with an error message if they haven't typed anything yet.
-    if (controller.text.isEmpty && hasTyped.value) {
-      errorText = "Name cannot be empty";
-    } else if (pagesNames.contains(controller.text)) {
-      errorText = "Page already exists";
+    if (pagesNames.contains(text)) {
+      return "Page already exists";
     }
-
-    error.value = errorText;
+    return null;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pagesNames = ref.watch(_pageNamesProvider);
     final controller = useTextEditingController();
-    final hasTyped = useState(false);
-    final error = useState("");
-
-    final disabled = error.value.isNotEmpty || controller.text.isEmpty;
-
-    useEffect(
-      () {
-        void validator() => _validateName(controller, hasTyped, pagesNames, error);
-        controller.addListener(validator);
-        return () => controller.removeListener(validator);
-      },
-      [controller, pagesNames],
-    );
+    final isNameValid = useState(false);
 
     return AlertDialog(
       title: const Text("Add a new page"),
-      content: TextField(
+      content: ValidatedTextField<String>(
+        value: "",
         controller: controller,
-        autofocus: true,
+        name: "Page name",
+        icon: FontAwesomeIcons.book,
+        validator: (value) => _validateName(value, pagesNames),
         inputFormatters: [
           snakeCaseFormatter(),
           FilteringTextInputFormatter.singleLineFormatter,
           FilteringTextInputFormatter.allow(RegExp("[a-z0-9_]")),
         ],
-        decoration: InputDecoration(
-          hintText: "Page name",
-          errorText: error.value.isEmpty ? null : error.value,
-        ),
+        onChanged: (value) {
+          isNameValid.value = _validateName(value, pagesNames) == null;
+        },
         onSubmitted: (value) async {
-          if (!disabled) {
-            final navigator = Navigator.of(context);
-            await _addPage(ref, value);
-            navigator.pop();
-          }
+          final navigator = Navigator.of(context);
+          await _addPage(ref, value);
+          navigator.pop();
         },
       ),
       actions: [
@@ -315,7 +294,7 @@ class _AddPageDialogue extends HookConsumerWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         FilledButton.icon(
-          onPressed: disabled
+          onPressed: !isNameValid.value
               ? null
               : () async {
                   final navigator = Navigator.of(context);
@@ -346,68 +325,47 @@ class _RenamePageDialogue extends HookConsumerWidget {
 
   /// Validates the proposed name for a page.
   /// A name is invalid if it is empty or if it already exists.
-  void _validateName(
-    TextEditingController controller,
-    ValueNotifier<bool> hasTyped,
+  String? _validateName(
+    String text,
     List<String> pagesNames,
-    ValueNotifier<String> error,
   ) {
-    var errorText = "";
-
-    if (controller.text.isNotEmpty) {
-      hasTyped.value = true;
+    if (text.isEmpty) {
+      return "Name cannot be empty";
     }
 
-    // We don't want to scare the user with an error message if they haven't typed anything yet.
-    if (controller.text.isEmpty && hasTyped.value) {
-      errorText = "Name cannot be empty";
-    } else if (controller.text == old) {
-      errorText = "Name cannot be the same";
-    } else if (pagesNames.contains(controller.text)) {
-      errorText = "Page already exists";
+    if (text == old) {
+      return "Name cannot be the same";
     }
 
-    error.value = errorText;
+    if (pagesNames.contains(text)) {
+      return "Page already exists";
+    }
+
+    return null;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pagesNames = ref.watch(_pageNamesProvider);
     final controller = useTextEditingController(text: old);
-    final hasTyped = useState(false);
-    final error = useState("");
-
-    final disabled = error.value.isNotEmpty || controller.text.isEmpty;
-
-    useEffect(
-      () {
-        void validator() => _validateName(controller, hasTyped, pagesNames, error);
-        controller.addListener(validator);
-        return () => controller.removeListener(validator);
-      },
-      [controller, pagesNames],
-    );
 
     return AlertDialog(
       title: Text("Rename ${old.formatted}"),
-      content: TextField(
+      content: ValidatedTextField<String>(
+        value: old,
         controller: controller,
-        autofocus: true,
+        name: "Page name",
+        icon: FontAwesomeIcons.book,
         inputFormatters: [
           snakeCaseFormatter(),
           FilteringTextInputFormatter.singleLineFormatter,
           FilteringTextInputFormatter.allow(RegExp("[a-z0-9_]")),
         ],
-        decoration: InputDecoration(
-          hintText: "Rename ${old.formatted}",
-          errorText: error.value.isEmpty ? null : error.value,
-        ),
+        validator: (value) => _validateName(value, pagesNames),
         onSubmitted: (value) async {
-          if (!disabled) {
-            final navigator = Navigator.of(context);
-            await _renamePage(ref, value);
-            navigator.pop();
-          }
+          final navigator = Navigator.of(context);
+          await _renamePage(ref, value);
+          navigator.pop();
         },
       ),
       actions: [
@@ -420,7 +378,7 @@ class _RenamePageDialogue extends HookConsumerWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         FilledButton.icon(
-          onPressed: disabled
+          onPressed: _validateName(controller.text, pagesNames) != null
               ? null
               : () async {
                   final navigator = Navigator.of(context);

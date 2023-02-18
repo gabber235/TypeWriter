@@ -1,10 +1,11 @@
 import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/inspector.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 class OptionalEditorFilter extends EditorFilter {
   @override
@@ -48,13 +49,13 @@ class OptionalEditor extends HookConsumerWidget {
         Checkbox(
           value: enabled,
           onChanged: (value) {
-            ref.read(entryDefinitionProvider)?.updateField(ref.passing, "$path.enabled", value ?? false);
+            ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, "$path.enabled", value ?? false);
           },
         ),
         Expanded(
           child: AnimatedOpacity(
             opacity: enabled ? 1 : 0.6,
-            duration: const Duration(milliseconds: 200),
+            duration: 200.ms,
             curve: Curves.easeOut,
             child: MouseRegion(
               cursor: enabled ? MouseCursor.defer : SystemMouseCursors.forbidden,

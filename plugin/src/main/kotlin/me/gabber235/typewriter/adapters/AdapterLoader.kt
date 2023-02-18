@@ -29,14 +29,25 @@ private val gson =
 object AdapterLoader {
 	private var adapters = listOf<AdapterData>()
 	fun loadAdapters() {
-		adapters = plugin.dataFolder["adapters"].listFiles()?.filter { it.extension == "jar" }?.map {
+		adapters = plugin.dataFolder["adapters"].listFiles()?.filter { it.extension == "jar" }?.mapNotNull {
 			plugin.logger.info("Loading adapter ${it.nameWithoutExtension}")
-			loadAdapter(it)
+			try {
+				loadAdapter(it)
+			} catch (e: ClassNotFoundException) {
+				plugin.logger.warning("Failed to load adapter ${it.nameWithoutExtension}. Error: ${e.message}. This is likely due to a missing dependency. Skipping...")
+				null
+			} catch (e: Exception) {
+				plugin.logger.warning("Failed to load adapter ${it.nameWithoutExtension}. Skipping...")
+				e.printStackTrace()
+				null
+			}
 		} ?: listOf()
 
 		// Write the adapters to a file
 		val file = plugin.dataFolder["adapters.json"]
 		if (!file.exists()) {
+			// Make sure the parent directory exists
+			file.parentFile.mkdirs()
 			file.createNewFile()
 		}
 

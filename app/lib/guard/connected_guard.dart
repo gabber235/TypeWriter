@@ -10,11 +10,11 @@ class ConnectedGuard extends AutoRouteGuard {
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
     final hasConnection = ref.read(socketProvider) != null;
-    if (hasConnection) {
-      resolver.next();
-    } else {
+    if (!hasConnection) {
       resolver.next(false);
       router.replaceAll([const HomeRoute()]);
+      return;
     }
+    resolver.next();
   }
 }

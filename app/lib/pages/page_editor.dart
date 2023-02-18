@@ -3,6 +3,7 @@ import "package:collection/collection.dart";
 import "package:flutter/cupertino.dart" hide Page;
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -10,17 +11,19 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/widgets/always_focused.dart";
-import "package:typewriter/widgets/entries_graph.dart";
-import "package:typewriter/widgets/inspector.dart";
-import "package:typewriter/widgets/search_bar.dart";
-import "package:typewriter/widgets/select_entries.dart";
-import "package:typewriter/widgets/shortcut_label.dart";
-import "package:typewriter/widgets/staging.dart";
-import "package:typewriter/widgets/static_entries_list.dart";
-import "package:typewriter/widgets/writers.dart";
+import "package:typewriter/utils/smart_single_activator.dart";
+import "package:typewriter/widgets/components/app/entries_graph.dart";
+import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/app/select_entries.dart";
+import "package:typewriter/widgets/components/app/staging.dart";
+import "package:typewriter/widgets/components/app/static_entries_list.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
+import "package:typewriter/widgets/components/general/always_focused.dart";
+import "package:typewriter/widgets/components/general/shortcut_label.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "page_editor.g.dart";
 
@@ -57,13 +60,13 @@ class PageEditor extends HookConsumerWidget {
       key: Key(id),
       shortcuts: {
         SmartSingleActivator(LogicalKeyboardKey.keyK, control: true): SearchIntent(),
-        SmartSingleActivator(LogicalKeyboardKey.arrowLeft, control: true): PreviousEntriesViewIntent(),
-        SmartSingleActivator(LogicalKeyboardKey.arrowRight, control: true): NextEntriesViewIntent(),
+        const SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true): PreviousEntriesViewIntent(),
+        const SingleActivator(LogicalKeyboardKey.arrowRight, meta: true): NextEntriesViewIntent(),
       },
       child: Actions(
         actions: {
           SearchIntent: CallbackAction<SearchIntent>(
-            onInvoke: (intent) => ref.read(searchingProvider.notifier).startSearch(),
+            onInvoke: (intent) => ref.read(searchProvider.notifier).startGlobalSearch(),
           ),
           PreviousEntriesViewIntent: CallbackAction<PreviousEntriesViewIntent>(
             onInvoke: (intent) => ref.read(entriesViewProvider.notifier).previous(),
@@ -88,17 +91,16 @@ class _Content extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searching = ref.watch(searchingProvider);
-    return Stack(
+    return const Stack(
       children: [
         Column(
           children: [
-            const _AppBar(key: Key("appBar")),
-            const Divider(),
+            _AppBar(key: Key("appBar")),
+            Divider(),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Expanded(
                     child: _PageContent(),
                   ),
@@ -109,7 +111,7 @@ class _Content extends HookConsumerWidget {
             ),
           ],
         ),
-        if (searching) const SearchBar(),
+        SearchBar(),
       ],
     );
   }
@@ -131,9 +133,9 @@ class _AppBar extends HookConsumerWidget {
           const SizedBox(width: 5),
           const Spacer(),
           // When selecting entries, we want to disable these interactions
-          SelectingEntriesBlocker(
+          const SelectingEntriesBlocker(
             child: Row(
-              children: const [
+              children: [
                 GlobalWriters(),
                 SizedBox(width: 20),
                 StagingIndicator(key: Key("staging-indicator")),
@@ -143,9 +145,9 @@ class _AppBar extends HookConsumerWidget {
           ),
           const _ViewModeButtons(),
           // When selecting entries, we want to disable these interactions
-          SelectingEntriesBlocker(
+          const SelectingEntriesBlocker(
             child: Row(
-              children: const [
+              children: [
                 SizedBox(width: 20),
                 _SearchBar(),
                 SizedBox(width: 5),
@@ -235,7 +237,7 @@ class _AddEntryButton extends HookConsumerWidget {
       iconSize: 16,
       padding: EdgeInsets.zero,
       icon: const Icon(FontAwesomeIcons.plus),
-      onPressed: () => ref.read(searchingProvider.notifier).startSearch("add:"),
+      onPressed: () => ref.read(searchProvider.notifier).startAddSearch(),
     );
   }
 }
@@ -282,6 +284,12 @@ class EntriesViewProvider extends StateNotifier<EntriesView> {
       view = EntriesView.list;
     }
   }
+
+  void navigateToViewFor(String entryId) {
+    final entry = ref.read(globalEntryProvider(entryId));
+    if (entry == null) return;
+    navigateToViewForEntry(entry);
+  }
 }
 
 class PreviousEntriesViewIntent extends Intent {}
@@ -301,7 +309,7 @@ class _PageContent extends HookConsumerWidget {
     useEffect(
       () {
         if (!controller.hasClients) return;
-        controller.animateToPage(mode.index, duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
+        controller.animateToPage(mode.index, duration: 250.ms, curve: Curves.easeInOut);
         return null;
       },
       [mode],

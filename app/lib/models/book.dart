@@ -25,10 +25,18 @@ class BookNotifier extends StateNotifier<Book> {
 
   set book(Book book) => state = book;
 
+  /// Creates a new page.
+  Future<void> createPage(String name) async {
+    await ref.read(communicatorProvider).createPage(name);
+    state = state.copyWith(
+      pages: [...state.pages, Page(name: name)],
+    );
+  }
+
   /// Inserts a page. If the page already exists, it will be replaced.
   void insertPage(Page page) {
     state = state.copyWith(
-      pages: [...state.pages.where((p) => p.name != page.name), page],
+      pages: state.pages.map((p) => p.name == page.name ? page : p).toList(),
     );
   }
 
@@ -45,7 +53,8 @@ class BookNotifier extends StateNotifier<Book> {
   }
 
   /// Deletes a page.
-  void deletePage(String name) {
+  Future<void> deletePage(String name) async {
+    await ref.read(communicatorProvider).deletePage(name);
     state = state.copyWith(
       pages: state.pages.where((p) => p.name != name).toList(),
     );

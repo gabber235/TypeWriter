@@ -5,11 +5,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.entry.Query
-import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.entries.SystemTrigger.*
-import me.gabber235.typewriter.entry.matches
-import me.gabber235.typewriter.facts.facts
+import me.gabber235.typewriter.entry.entries.Event
+import me.gabber235.typewriter.entry.entries.EventTrigger
+import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
@@ -21,39 +19,39 @@ object InteractionHandler {
 	private val interactions = ConcurrentHashMap<UUID, Interaction>()
 	private var job: Job? = null
 
+	private val Player.interaction: Interaction
+		get() = interactions.getOrPut(uniqueId) { Interaction(this) }
 
-	/** Some triggers start an interaction. Though we don't want to trigger the starting of an interaction multiple times,
-	 * we need to check if the player is already in an interaction.
+
+	/** Some triggers start dialogue. Though we don't want to trigger the starting of dialogue multiple times,
+	 * we need to check if the player is already in a dialogue.
 	 *
 	 * @param player The player who interacted
 	 * @param initialTriggers The trigger that should be fired after the interaction started
 	 * @param continueTrigger The trigger that should be fired if the interaction is already active
 	 */
-	fun startInteractionWithOrTriggerEvent(
+	fun startDialogueWithOrTriggerEvent(
 		player: Player,
 		initialTriggers: List<EventTrigger>,
 		continueTrigger: EventTrigger? = null
 	) {
-		if (interactions.containsKey(player.uniqueId)) {
+		val interaction = player.interaction
+		if (interaction.hasDialogue) {
 			if (continueTrigger != null) {
 				triggerEvent(Event(player, continueTrigger))
 			}
 		} else {
-			triggerEvent(Event(player, listOf(INTERACTION_START) + initialTriggers))
+			triggerEvent(Event(player, initialTriggers))
 		}
 	}
 
-	/** Some triggers start an interaction. Though we don't want to trigger the starting of an interaction multiple times,
-	 * we need to check if the player is already in an interaction.
+	/**
+	 * Triggers a list of actions.
 	 *
 	 * @param player The player who interacted
 	 * @param triggers A list of triggers that should be fired.
 	 */
-	fun startInteractionAndTrigger(player: Player, triggers: List<EventTrigger>) {
-		var triggers = triggers
-		if (!interactions.containsKey(player.uniqueId)) {
-			triggers = listOf(INTERACTION_START) + triggers
-		}
+	fun triggerActions(player: Player, triggers: List<EventTrigger>) {
 		triggerEvent(Event(player, triggers))
 	}
 
@@ -66,57 +64,15 @@ object InteractionHandler {
 	 * @param event The event to trigger
 	 */
 	fun triggerEvent(event: Event) {
-		val interaction = interactions[event.player.uniqueId]
-		if (INTERACTION_START in event) {
-			if (interaction != null) return
-			interactions[event.player.uniqueId] = Interaction(event.player)
-			interactions[event.player.uniqueId]?.onEvent(event)
-			return
-		}
-
-		if (INTERACTION_END in event) {
-			if (interaction == null) return
-			if (interaction.isActive) return
-			interaction.end()
-			interactions.remove(event.player.uniqueId)
-			return
-		}
-
-		interaction?.onEvent(event)
-
-		triggerActions(event)
-	}
-
-	/**
-	 * Triggers all actions that are registered for the given event.
-	 *
-	 * @param event The event that should be triggered
-	 */
-	private fun triggerActions(event: Event) {
-		// Trigger all actions
-		val facts = event.player.facts
-		val actions = Query.findWhere<ActionEntry> { it in event && it.criteria.matches(facts) }
-		actions.forEach { action ->
-			action.execute(event.player)
-		}
-		val newTriggers = actions.flatMap { it.triggers }
-			.map { EntryTrigger(it) }
-			.filter { it !in event } // Stops infinite loops
-		if (newTriggers.isNotEmpty()) {
-			triggerEvent(Event(event.player, newTriggers))
-		}
+		event.player.interaction.onEvent(event)
 	}
 
 	fun init() {
-		// We want interactions to end if the interaction is not active.
 		job = plugin.launch {
 			while (plugin.isEnabled) {
 				delay(50)
 				interactions.forEach { (_, interaction) ->
 					interaction.tick()
-					if (!interaction.isActive) {
-						triggerEvent(Event(interaction.player, INTERACTION_END))
-					}
 				}
 			}
 		}

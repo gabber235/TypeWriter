@@ -3,14 +3,14 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "heading.g.dart";
 
 @riverpod
 Color _entryColor(_EntryColorRef ref) {
-  final def = ref.watch(entryDefinitionProvider);
-  return def?.adapterEntry.color ?? Colors.grey;
+  final def = ref.watch(inspectingEntryDefinitionProvider);
+  return def?.blueprint.color ?? Colors.grey;
 }
 
 class Heading extends HookConsumerWidget {
@@ -20,27 +20,36 @@ class Heading extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final def = ref.watch(entryDefinitionProvider);
+    final def = ref.watch(inspectingEntryDefinitionProvider);
     final color = ref.watch(_entryColorProvider);
+
+    if (def == null) {
+      return const SizedBox();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Title(
+        _Title(
           color: color,
-          title: def?.entry.name.formatted ?? "",
+          title: def.entry.formattedName,
         ),
-        Identifier(id: def?.entry.id ?? ""),
+        Row(
+          children: [
+            _Type(type: def.blueprint.name, color: color),
+            const SizedBox(width: 8),
+            _Identifier(id: def.entry.id ?? ""),
+          ],
+        ),
       ],
     );
   }
 }
 
-class Title extends StatelessWidget {
-  const Title({
+class _Title extends StatelessWidget {
+  const _Title({
     required this.title,
     required this.color,
-    super.key,
   });
   final String title;
   final Color color;
@@ -53,13 +62,33 @@ class Title extends StatelessWidget {
       );
 }
 
-class Identifier extends StatelessWidget {
-  const Identifier({
+class _Identifier extends StatelessWidget {
+  const _Identifier({
     required this.id,
     super.key,
   });
   final String id;
 
   @override
-  Widget build(BuildContext context) => SelectableText(id, style: Theme.of(context).textTheme.bodySmall);
+  Widget build(BuildContext context) {
+    return SelectableText(id, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey));
+  }
+}
+
+class _Type extends StatelessWidget {
+  const _Type({
+    required this.type,
+    required this.color,
+    super.key,
+  });
+  final String type;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SelectableText(
+      type.formatted,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color.withOpacity(0.9)),
+    );
+  }
 }

@@ -1,12 +1,31 @@
 package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
-import me.gabber235.typewriter.entry.Entry
-import me.gabber235.typewriter.entry.TriggerEntry
+import me.gabber235.typewriter.entry.*
 import org.bukkit.entity.Player
 
 @Tags("event")
 interface EventEntry : TriggerEntry
+
+interface CustomCommandEntry : EventEntry {
+	val command: String
+
+	fun filter(player: Player, commandLabel: String, args: Array<out String>): CommandFilterResult =
+		CommandFilterResult.Success
+
+	fun execute(player: Player, commandLabel: String, args: Array<out String>) {
+		triggerAllFor(player)
+	}
+
+	sealed interface CommandFilterResult {
+		object Success : CommandFilterResult
+		object Failure : CommandFilterResult
+		object FailureWithDefaultMessage : CommandFilterResult
+		data class FailureWithMessage(val message: String) : CommandFilterResult
+	}
+
+	companion object
+}
 
 class Event(val player: Player, val triggers: List<EventTrigger>) {
 	constructor(player: Player, vararg triggers: EventTrigger) : this(player, triggers.toList())
@@ -39,13 +58,8 @@ interface EventTrigger {
 data class EntryTrigger(override val id: String) : EventTrigger
 
 enum class SystemTrigger : EventTrigger {
-	INTERACTION_START,
-	INTERACTION_END,
-
-	DIALOGUE_START,
 	DIALOGUE_NEXT,
 	DIALOGUE_END,
-
 	;
 
 	override val id: String

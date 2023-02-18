@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
@@ -7,7 +6,7 @@ plugins {
 }
 
 group = "me.gabber235"
-version = "0.0.1"
+version = file("../../version.txt").readText().trim()
 
 repositories {
 	// Required
@@ -27,7 +26,7 @@ repositories {
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
-	compileOnly("me.gabber235:typewriter:0.0.1")
+	compileOnly("me.gabber235:typewriter:$version")
 
 	// Already included in the TypeWriter plugin
 	compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
@@ -46,8 +45,11 @@ tasks.test {
 	useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "1.8"
+val targetJavaVersion = 17
+java {
+	val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
 }
 
 task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildAndMove") {
@@ -62,5 +64,17 @@ task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildAndMove")
 		val server =
 			file("../../plugin/server/plugins/Typewriter/adapters/%s.jar".format(project.name.capitalizeAsciiOnly()))
 		jar.copyTo(server, overwrite = true)
+	}
+}
+
+task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildRelease") {
+	dependsOn("shadowJar")
+	group = "build"
+	description = "Builds the jar and renames it"
+
+	doLast {
+		// Rename the jar to remove the version and -all
+		val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+		jar.renameTo(file("build/libs/%s.jar".format(project.name)))
 	}
 }

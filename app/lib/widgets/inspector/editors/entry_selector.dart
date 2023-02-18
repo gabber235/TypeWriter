@@ -1,32 +1,18 @@
-import "package:dropdown_search/dropdown_search.dart";
 import "package:flutter/material.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:ktx/ktx.dart";
-import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/empty_screen.dart";
-import "package:typewriter/widgets/entry_node.dart";
-import "package:typewriter/widgets/inspector.dart";
-import "package:typewriter/widgets/inspector/current_editing_field.dart";
+import "package:typewriter/utils/smart_single_activator.dart";
+import "package:typewriter/widgets/components/app/entry_node.dart";
+import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/app/select_entries.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/search_bar.dart";
-
-part "entry_selector.g.dart";
-
-@riverpod
-Map<String, Entry> entriesFromTag(EntriesFromTagRef ref, String tag) {
-  final page = ref.watch(currentPageProvider);
-  if (page == null) return {};
-
-  return page.entries
-      .where((entry) => ref.watch(entryTagsProvider(entry.type)).contains(tag))
-      .associateBy((entry) => entry.id);
-}
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 class EntrySelectorEditorFilter extends EditorFilter {
   @override
@@ -34,11 +20,11 @@ class EntrySelectorEditorFilter extends EditorFilter {
       info is PrimitiveField && info.type == PrimitiveFieldType.string && info.hasModifier("entry");
 
   @override
-  Widget build(String path, FieldInfo info) => FactEditor(path: path, field: info as PrimitiveField);
+  Widget build(String path, FieldInfo info) => EntrySelectorEditor(path: path, field: info as PrimitiveField);
 }
 
-class FactEditor extends HookConsumerWidget {
-  const FactEditor({
+class EntrySelectorEditor extends HookConsumerWidget {
+  const EntrySelectorEditor({
     required this.path,
     required this.field,
     super.key,
@@ -47,101 +33,150 @@ class FactEditor extends HookConsumerWidget {
   final String path;
   final PrimitiveField field;
 
+  void _update(WidgetRef ref, Entry? entry) {
+    if (entry == null) return;
+    ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, entry.id);
+  }
+
+  Future<void> _create(WidgetRef ref, EntryBlueprint blueprint) async {
+    final page = ref.read(currentPageProvider);
+    if (page == null) return;
+    final entry = await page.createEntryFromBlueprint(ref.passing, blueprint);
+    _update(ref, entry);
+
+    await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry.id);
+  }
+
+  void _select(WidgetRef ref, String tag) {
+    ref.read(searchProvider.notifier).asBuilder()
+      ..tag(tag, canRemove: false)
+      ..fetchEntry(onSelect: (entry) => _update(ref, entry))
+      ..fetchNewEntry(onAdd: (blueprint) => _create(ref, blueprint))
+      ..open();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedEntryId = ref.watch(selectedEntryIdProvider);
     final tag = field.getModifier("entry")!.data;
     final value = ref.watch(fieldValueProvider(path, ""));
-    final entries = ref.watch(entriesFromTagProvider(tag));
 
-    final globalKey = useMemoized(GlobalKey<DropdownSearchState<Entry>>.new);
+    final entry = ref.watch(globalEntryProvider(value as String));
+    final hasEntry = entry != null;
 
-    return DropdownSearch<Entry>(
-      key: globalKey,
-      itemAsString: (entry) => entry.id,
-      items: entries.values.where((entry) => entry.id != selectedEntryId).toList(),
-      selectedItem: entries[value],
-      filterFn: (entry, string) {
-        return entry.formattedName.toLowerCase().contains(string.toLowerCase()) ||
-            entry.name.toLowerCase().contains(string.toLowerCase());
-      },
-      onChanged: (entry) {
-        if (entry == null) return;
-        ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, entry.id);
-      },
-      onSaved: (entry) {
-        if (entry == null) return;
-        ref.read(entryDefinitionProvider)?.updateField(ref.passing, path, entry.id);
-      },
-      dropdownBuilder: (context, entry) {
-        if (entry == null) return Text("Select a $tag", style: Theme.of(context).inputDecorationTheme.hintStyle);
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: FakeEntryNode(entry: entry),
-        );
-      },
-      onBeforePopupOpening: (entry) async {
-        ref.read(currentEditingFieldProvider.notifier).path = path;
-        return true;
-      },
-      popupProps: PopupProps.menu(
-        itemBuilder: (context, entry, _) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
-          child: FakeEntryNode(entry: entry),
-        ),
-        emptyBuilder: (context, entry) => buildEmpty(ref, globalKey, tag),
-        onDismissed: () {
-          ref.read(currentEditingFieldProvider.notifier).clearIfSame(path);
+    return Material(
+      color: Theme.of(context).inputDecorationTheme.fillColor,
+      borderRadius: BorderRadius.circular(8),
+      child: ContextMenuRegion(
+        builder: (context) {
+          return [
+            if (hasEntry) ...[
+              ContextMenuTile.button(
+                title: "Navigate to entry",
+                icon: FontAwesomeIcons.pencil,
+                onTap: () {
+                  ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry!.id);
+                },
+              ),
+              ContextMenuTile.button(
+                title: "Remove reference",
+                icon: FontAwesomeIcons.solidSquareMinus,
+                color: Colors.redAccent,
+                onTap: () {
+                  ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, null);
+                },
+              ),
+            ],
+            if (!hasEntry) ...[
+              ContextMenuTile.button(
+                title: "Select entry",
+                icon: FontAwesomeIcons.magnifyingGlass,
+                onTap: () {
+                  _select(ref, tag);
+                },
+              ),
+            ],
+          ];
         },
-        showSearchBox: true,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 16.0, top: 8),
-          child: Text(
-            "Select a $tag",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        searchFieldProps: const TextFieldProps(
-          decoration: InputDecoration(
-            hintText: "Search...",
-            prefixIcon: Icon(Icons.search),
-          ),
-        ),
-        menuProps: MenuProps(
+        child: InkWell(
+          onTap: () {
+            if (hasOverrideDown && hasEntry) {
+              ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry.id);
+              return;
+            }
+            _select(ref, tag);
+          },
           borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      dropdownButtonProps: const DropdownButtonProps(
-        icon: Icon(FontAwesomeIcons.caretDown, size: 18),
-      ),
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-          hintText: "Select a $tag",
-          prefixIcon: const Icon(FontAwesomeIcons.database, size: 18),
+          child: Padding(
+            padding:
+                EdgeInsets.only(left: hasEntry ? 4 : 12, right: 16, top: hasEntry ? 4 : 12, bottom: hasEntry ? 4 : 12),
+            child: Row(
+              children: [
+                if (!hasEntry) ...[
+                  FaIcon(
+                    FontAwesomeIcons.database,
+                    size: 16,
+                    color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                if (hasEntry)
+                  Expanded(child: FakeEntryNode(entry: entry))
+                else
+                  Expanded(child: Text("Select a $tag", style: Theme.of(context).inputDecorationTheme.hintStyle)),
+                const SizedBox(width: 12),
+                FaIcon(
+                  FontAwesomeIcons.caretDown,
+                  size: 16,
+                  color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
+}
 
-  Widget buildEmpty(WidgetRef ref, GlobalKey<DropdownSearchState<Entry>> globalKey, String tag) {
-    return SizedBox.expand(
-      child: Column(
-        children: [
-          Flexible(
-            child: EmptyScreen(
-              small: true,
-              title: "No $tag found",
-              onButtonPressed: () {
-                globalKey.currentState?.closeDropDownSearch();
-                ref.read(searchingProvider.notifier).startSearch("$tag:");
+/// The button on a list of entries that allows to select multiple entries at once.
+/// See [ListField] for more information.
+class EntriesSelectorButton extends HookConsumerWidget {
+  const EntriesSelectorButton({required this.path, required this.tag, super.key});
+
+  final String path;
+  final String tag;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Tooltip(
+      message: "Select multiple entries",
+      child: Material(
+        borderRadius: BorderRadius.circular(4),
+        color: Colors.deepPurple,
+        child: InkWell(
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          onTap: () async {
+            final currentEntries = ref.watch(fieldValueProvider(path, [])) as List<dynamic>;
+            final entryDefinition = ref.watch(inspectingEntryDefinitionProvider);
+            if (entryDefinition == null) return;
+
+            ref.read(entrySelectionProvider.notifier).startSelection(
+              tag,
+              currentEntries.map((e) => e as String).toList(),
+              (ref, selectedEntries) {
+                ref.read(inspectingEntryDefinitionProvider)?.updateField(
+                      ref.passing,
+                      path,
+                      selectedEntries,
+                    );
               },
-              buttonText: "Create a $tag",
-            ),
+            );
+          },
+          child: const Padding(
+            padding: EdgeInsets.all(6.0),
+            child: FaIcon(FontAwesomeIcons.objectGroup, size: 16),
           ),
-          const SizedBox(height: 30),
-        ],
+        ),
       ),
     );
   }

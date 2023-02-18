@@ -25,14 +25,20 @@ class GiveItemActionEntry(
 	private val amount: Int = 1,
 	private val displayName: String = "",
 	@MultiLine
-	val lore: String,
+	private val lore: String,
 ) : ActionEntry {
 	override fun execute(player: Player) {
 		super.execute(player)
+
 		val item = ItemStack(material, amount).meta<ItemMeta> {
-			displayName(this@GiveItemActionEntry.displayName.asMini())
-			lore(this@GiveItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
+			if (this@GiveItemActionEntry.displayName.isNotBlank()) displayName(this@GiveItemActionEntry.displayName.asMini())
+			if (this@GiveItemActionEntry.lore.isNotBlank()) {
+				lore(
+					this@GiveItemActionEntry.lore.split("\n").map { "<gray>$it".asMini() })
+
+			}
 		}
+
 		player.inventory.addItem(item)
 	}
 }

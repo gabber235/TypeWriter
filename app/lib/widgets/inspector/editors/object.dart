@@ -4,11 +4,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
-import "package:typewriter/widgets/writers.dart";
 
 class ObjectEditorFilter extends EditorFilter {
   @override
@@ -33,7 +33,7 @@ class ObjectEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedEntryId = ref.watch(selectedEntryIdProvider);
+    final selectedEntryId = ref.watch(inspectingEntryIdProvider);
     final expanded = useState(defaultExpanded);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -78,7 +78,7 @@ class ObjectEditor extends HookConsumerWidget {
                   if (!ignoreFields.contains(field.key)) ...[
                     const SizedBox(height: 12),
                     if (!field.value.hasCustomLayout) ...[
-                      SectionTitle(title: field.key.formatted),
+                      _SimpleHeader(field: field),
                       const SizedBox(height: 8),
                     ],
                     FieldEditor(
@@ -93,6 +93,39 @@ class ObjectEditor extends HookConsumerWidget {
             ),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _SimpleHeader extends HookConsumerWidget {
+  const _SimpleHeader({
+    required this.field,
+  });
+
+  final MapEntry<String, FieldInfo> field;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final help = field.value.getModifier("help");
+    final helpText = help?.data as String?;
+
+    return Row(
+      children: [
+        SectionTitle(
+          title: field.key.formatted,
+        ),
+        if (helpText != null) ...[
+          const SizedBox(width: 4),
+          Tooltip(
+            message: helpText,
+            child: Icon(
+              Icons.help_outline,
+              size: 16,
+              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+            ),
+          ),
+        ],
       ],
     );
   }

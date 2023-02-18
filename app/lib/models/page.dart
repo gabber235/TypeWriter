@@ -1,14 +1,16 @@
-import "dart:convert";
-
 import "package:collection/collection.dart";
+import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/popups.dart";
+import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "page.freezed.dart";
 part "page.g.dart";
@@ -24,8 +26,35 @@ Page? page(PageRef ref, String name) {
 }
 
 @riverpod
+String? entriesPage(EntriesPageRef ref, String entryId) {
+  return ref.watch(pagesProvider).firstWhereOrNull((page) => page.entries.any((entry) => entry.id == entryId))?.name;
+}
+
+@riverpod
 Entry? entry(EntryRef ref, String pageId, String entryId) {
   return ref.watch(pageProvider(pageId))?.entries.firstWhereOrNull((entry) => entry.id == entryId);
+}
+
+@riverpod
+Entry? globalEntry(GlobalEntryRef ref, String entryId) {
+  final page = ref.watch(entriesPageProvider(entryId));
+  if (page == null) {
+    return null;
+  }
+  return ref.watch(entryProvider(page, entryId));
+}
+
+@riverpod
+MapEntry<String, Entry>? globalEntryWithPage(GlobalEntryWithPageRef ref, String entryId) {
+  final page = ref.watch(entriesPageProvider(entryId));
+  if (page == null) {
+    return null;
+  }
+  final entry = ref.watch(entryProvider(page, entryId));
+  if (entry == null) {
+    return null;
+  }
+  return MapEntry(page, entry);
 }
 
 @freezed
@@ -40,31 +69,53 @@ class Page with _$Page {
 
 extension PageExtension on Page {
   void updatePage(PassingRef ref, Page Function(Page) update) {
-    final newPage = update(this);
+    // If multiple updates are done at the same time, `this` might be outdated. So we need to get the latest version.
+    final currentPage = ref.read(pageProvider(name));
+    if (currentPage == null) {
+      return;
+    }
+    final newPage = update(currentPage);
     ref.read(bookProvider.notifier).insertPage(newPage);
   }
 
-  void insertEntry(PassingRef ref, Entry entry) {
+  Future<void> createEntry(PassingRef ref, Entry entry) async {
     updatePage(
       ref,
       (page) => _insertEntry(page, entry),
     );
+    await ref.read(communicatorProvider).createEntry(name, entry);
+  }
+
+  Future<void> updateEntireEntry(PassingRef ref, Entry entry) async {
+    updatePage(
+      ref,
+      (page) => _insertEntry(page, entry),
+    );
+    ref.read(communicatorProvider).updateEntireEntry(name, entry);
+  }
+
+  void updateEntryValue(PassingRef ref, Entry entry, String path, dynamic value) {
+    updatePage(
+      ref,
+      (page) => _insertEntry(page, entry.copyWith(path, value)),
+    );
+    ref.read(communicatorProvider).updateEntry(name, entry.id, path, value);
   }
 
   /// This should only be used to sync the entry from the server.
-  void syncInsertEntry(Ref<dynamic> ref, Entry entry) {
-    final newPage = _insertEntry(this, entry);
-    ref.read(bookProvider.notifier).insertPage(newPage);
+  void syncInsertEntry(PassingRef ref, Entry entry) {
+    updatePage(ref, (page) => _insertEntry(page, entry));
   }
 
   Page _insertEntry(Page page, Entry entry) {
-    // If the entry already exists, replace it at the same index.
-    final index = page.entries.indexWhere((e) => e.id == entry.id);
-    if (index != -1) {
+    // If the entry already exists, replace it.
+    final entryExists = page.entries.any((e) => e.id == entry.id);
+    if (entryExists) {
       return page.copyWith(
-        entries: [...page.entries]..[index] = entry,
+        entries: page.entries.map((e) => e.id == entry.id ? entry : e).toList(),
       );
     }
+
     // Otherwise, just add it to the end.
     return page.copyWith(
       entries: [...page.entries, entry],
@@ -76,26 +127,46 @@ extension PageExtension on Page {
     updatePage(
       ref,
       (page) => page.copyWith(
-        entries: [...page.entries.where((e) => e.id != entry.id).map((e) => _fixEntry(ref, e, entry))],
+        entries: [
+          ...page.entries.where((e) => e.id != entry.id).map((e) => _removedReferencesFromEntry(ref, e, entry.id))
+        ],
+      ),
+    );
+    // Also delete all references to this entry from other pages.
+    ref.read(bookProvider).pages.where((page) => page.name != name).forEach((page) {
+      page.removeReferencesTo(ref, entry.id);
+    });
+
+    // If the entry is selected, deselect it.
+    if (ref.read(inspectingEntryIdProvider) == entry.id) {
+      ref.read(inspectingEntryIdProvider.notifier).clearSelection();
+    }
+  }
+
+  void removeReferencesTo(PassingRef ref, String entryId) {
+    updatePage(
+      ref,
+      (page) => page.copyWith(
+        entries: [...page.entries.map((e) => _removedReferencesFromEntry(ref, e, entryId))],
       ),
     );
   }
 
   /// When an entry is delete all references in other entries need to be removed.
-  Entry _fixEntry(PassingRef ref, Entry entry, Entry deleting) {
-    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
+  Entry _removedReferencesFromEntry(PassingRef ref, Entry entry, String targeId) {
+    final referenceEntryPaths = ref.read(modifierPathsProvider(entry.type, "entry"));
 
-    final triggers = triggerPaths.expand((path) => entry.getAll(path)).whereType<String>().toList();
-    if (!triggers.contains(deleting.id)) {
+    final referenceEntryIds = referenceEntryPaths.expand((path) => entry.getAll(path)).whereType<String>().toList();
+    if (!referenceEntryIds.contains(targeId)) {
       return entry;
     }
 
-    final newEntry = triggerPaths.fold(
+    final newEntry = referenceEntryPaths.fold(
       entry,
-      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == deleting.id ? null : value),
+      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == targeId ? null : value),
     );
 
-    ref.read(communicatorProvider).updateCompleteEntry(name, newEntry);
+    ref.read(communicatorProvider).updateEntireEntry(name, newEntry);
 
     return newEntry;
   }
@@ -110,223 +181,79 @@ extension PageExtension on Page {
   }
 }
 
-class Entry {
-  Entry(this.data);
-
-  Entry.fromBlueprint({required String id, required EntryBlueprint blueprint})
-      : data = {
-          ...blueprint.fields.defaultValue,
-          "id": id,
-          "name": "new_${blueprint.name}",
-          "type": blueprint.name,
-        };
-
-  factory Entry.fromJson(Map<String, dynamic> json) => Entry(json);
-  final Map<String, dynamic> data;
-
-  Map<String, dynamic> toJson() => data;
-
-  /// Returns a inner field of this entry.
-  /// These fields can be nested using dot notation, like "data.value", "data.1.value", etc.
-  /// If the field is not found, a given default value is returned.
-  dynamic get(String field, [dynamic defaultValue]) {
-    final parts = field.split(".");
-    dynamic current = data;
-    for (final part in parts) {
-      if (current is Map && current.containsKey(part)) {
-        current = current[part];
-        continue;
-      }
-      if (current is List && int.tryParse(part) != null && current.length > int.parse(part)) {
-        current = current[int.parse(part)];
-        continue;
-      }
-      return defaultValue;
-    }
-    return current;
+/// These are specialized shortcuts for common operations.
+extension PageX on Page {
+  Future<Entry> createEntryFromBlueprint(PassingRef ref, EntryBlueprint blueprint) async {
+    final entry = Entry.fromBlueprint(id: getRandomString(), blueprint: blueprint);
+    await createEntry(ref, entry);
+    return entry;
   }
 
-  /// Returns all values of a given path.
-  /// This may look similar to [get], but it returns all values of a given path.
-  /// Hence wildcards are supported, like "data.*.value", "data.*.1.value", etc.
-  List<dynamic> getAll(String path) {
-    final parts = path.split(".");
-    final values = <dynamic>[];
-    final current = <dynamic>[data];
-    for (final part in parts) {
-      if (part == "*") {
-        final next = <dynamic>[];
-        for (final item in current) {
-          if (item is Map) {
-            next.addAll(item.values);
-          }
-          if (item is List) {
-            next.addAll(item);
-          }
-        }
-        current
-          ..clear()
-          ..addAll(next);
-        continue;
-      }
-      final next = <dynamic>[];
-      for (final item in current) {
-        if (item is Map && item.containsKey(part)) {
-          next.add(item[part]);
-        }
-        if (item is List && int.tryParse(part) != null && item.length > int.parse(part)) {
-          next.add(item[int.parse(part)]);
-        }
-      }
-      current
-        ..clear()
-        ..addAll(next);
-    }
-    values.addAll(current);
-    return values;
+  Future<void> _wireEntryToOtherEntry(PassingRef ref, Entry originalEntry, Entry newEntry) async {
+    final currentTriggers = originalEntry.get("triggers");
+    if (currentTriggers == null || currentTriggers is! List) return;
+    final newTriggers = currentTriggers + [newEntry.id];
+    final modifiedOriginalEntry = originalEntry.copyWith("triggers", newTriggers);
+    await updateEntireEntry(ref, modifiedOriginalEntry);
   }
 
-  /// Returns a new copy of this entry with the given field updated.
-  /// these fields can be nested using dot notation, like "data.value", "data.1.value", etc.
-  Entry copyWith(String field, dynamic value) {
-    final parts = field.split(".");
-    final last = parts.removeLast();
-    // Make a deep copy of the data. To avoid modifying the original data.
-    final data = jsonDecode(jsonEncode(this.data));
-
-    // Traverse the data to find the field to update.
-    dynamic current = data;
-    for (final part in parts) {
-      // If the current fields is a map, we try to find the next field in it.
-      if (current is Map && current.containsKey(part)) {
-        current = current[part];
-        continue;
-      }
-
-      // If the current field is a list, we try to find the next index in it.
-      if (current is List && int.tryParse(part) != null && current.length > int.parse(part)) {
-        current = current[int.parse(part)];
-        continue;
-      }
-
-      // If the field could not be found, we don't update anything and return the original entry.
-      return this;
+  Future<void> extendsWithDuplicate(PassingRef ref, String entryId) async {
+    final entry = ref.read(entryProvider(name, entryId));
+    if (entry == null) return;
+    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
+    if (!triggerPaths.contains("triggers.*")) {
+      debugPrint("Cannot duplicate entry with no triggers.*");
+      return;
     }
 
-    // Update the field.
-    if (current is Map) {
-      current[last] = value;
-    }
-    if (current is List && int.tryParse(last) != null) {
-      current[int.parse(last)] = value;
-    }
+    final newEntry = triggerPaths
+        .fold(
+          entry.copyWith("id", getRandomString()),
+          (previousEntry, path) => previousEntry.copyMapped(path, (_) => null), // Remove all triggers
+        )
+        .copyWith("name", entry.name.incrementedName);
+    await createEntry(ref, newEntry);
 
-    return Entry(data);
+    await _wireEntryToOtherEntry(ref, entry, newEntry);
   }
 
-  /// Returns a new copy of this entry with all values of a given path updated.
-  /// All possible fields are check and mapped to a new value. If the new value is null, the field is removed from the map or list.
-  /// If the new value is a map or list, the old value is replaced with the new one.
-  /// If the new value is a primitive, the old value is replaced with the new one.
-  /// This may look similar to [copyWith], but it updates all values of a given path.
-  /// Hence wildcards are supported, like "data.*.value", "data.*.1.value", etc.
-  Entry copyMapped(String path, dynamic Function(dynamic) mapper) {
-    final parts = path.split(".");
-    final last = parts.removeLast();
-    // Make a deep copy of the data. To avoid modifying the original data.
-    final data = jsonDecode(jsonEncode(this.data));
-
-    // Traverse the data to find the field to update.
-    final current = <dynamic>[data];
-    for (final part in parts) {
-      // If the current fields is a map, we try to find the next field in it.
-      if (part == "*") {
-        final next = <dynamic>[];
-        for (final item in current) {
-          if (item is Map) {
-            next.addAll(item.values);
-          }
-          if (item is List) {
-            next.addAll(item);
-          }
-        }
-        current
-          ..clear()
-          ..addAll(next);
-        continue;
-      }
-      final next = <dynamic>[];
-      for (final item in current) {
-        if (item is Map && item.containsKey(part)) {
-          next.add(item[part]);
-        }
-        if (item is List && int.tryParse(part) != null && item.length > int.parse(part)) {
-          next.add(item[int.parse(part)]);
-        }
-      }
-      current
-        ..clear()
-        ..addAll(next);
+  void extendsWith(PassingRef ref, String entryId) {
+    final entry = ref.read(entryProvider(name, entryId));
+    if (entry == null) return;
+    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
+    if (!triggerPaths.contains("triggers.*")) {
+      debugPrint("Cannot extend entry with no triggers.*");
+      return;
     }
 
-    // Update the field.
-    // If the mapper returns null, the field is removed.
-    // Otherwise the field is updated with the new value.
-
-    if (last == "*") {
-      for (final item in current) {
-        if (item is Map) {
-          for (final key in item.keys.toList()) {
-            final value = mapper(item[key]);
-            if (value == null) {
-              item.remove(key);
-            } else {
-              item[key] = value;
-            }
-          }
-        }
-        if (item is List) {
-          item.replaceRange(0, item.length, item.map(mapper).whereNotNull());
-        }
-      }
-    } else {
-      for (final item in current) {
-        if (item is Map && item.containsKey(last)) {
-          final value = mapper(item[last]);
-          if (value == null) {
-            item.remove(last);
-          } else {
-            item[last] = value;
-          }
-        }
-        if (item is List && int.tryParse(last) != null && item.length > int.parse(last)) {
-          final value = mapper(item[int.parse(last)]);
-          if (value == null) {
-            item.removeAt(int.parse(last));
-          } else {
-            item[int.parse(last)] = value;
-          }
-        }
-      }
-    }
-
-    return Entry(data);
+    ref.read(searchProvider.notifier).asBuilder()
+      ..tag("triggerable", canRemove: false)
+      ..fetchNewEntry(
+        onAdd: (blueprint) async {
+          final newEntry = await createEntryFromBlueprint(ref, blueprint);
+          await _wireEntryToOtherEntry(ref, entry, newEntry);
+          await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref, newEntry.id);
+        },
+      )
+      ..fetchEntry(
+        onSelect: (selectedEntry) async {
+          await _wireEntryToOtherEntry(ref, entry, selectedEntry);
+        },
+      )
+      ..open();
   }
 
-  @override
-  String toString() => "DynamicEntry{data: $data}";
-
-  String get id => data["id"] as String;
-
-  String get name => data["name"] as String;
-
-  String get formattedName => name.formatted;
-
-  String get type => data["type"] as String;
-
-  @override
-  bool operator ==(Object other) => identical(this, other) || other is Entry && data == other.data;
-
-  @override
-  int get hashCode => data.hashCode;
+  void deleteEntryWithConfirmation(BuildContext context, PassingRef ref, String entryId) {
+    showConfirmationDialogue(
+      context: context,
+      title: "Delete Entry",
+      content: "Are you sure you want to delete this entry?",
+      confirmText: "Delete",
+      onConfirm: () {
+        final entry = ref.read(entryProvider(name, entryId));
+        if (entry == null) return;
+        deleteEntry(ref, entry);
+      },
+    );
+  }
 }

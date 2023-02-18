@@ -2,10 +2,10 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/widgets/inspector.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
-import "package:typewriter/widgets/writers.dart";
 
 class ListableHeader extends HookConsumerWidget {
   const ListableHeader({
@@ -26,7 +26,7 @@ class ListableHeader extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedEntryId = ref.watch(selectedEntryIdProvider);
+    final selectedEntryId = ref.watch(inspectingEntryIdProvider);
     return WritersIndicator(
       filter: (writer) {
         // Only show when a writer is selecting a subfield while this is collapsed

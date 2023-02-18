@@ -8,8 +8,7 @@ import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.facts.Fact
-import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import me.gabber235.typewriter.utils.get
+import me.gabber235.typewriter.utils.*
 import kotlin.reflect.KClass
 
 object EntryDatabase {
@@ -22,6 +21,8 @@ object EntryDatabase {
 		private set
 	private var dialogue = listOf<DialogueEntry>()
 	private var actions = listOf<ActionEntry>()
+	internal var commandEvents = listOf<CustomCommandEntry>()
+		private set
 
 	fun loadEntries() {
 		val dir = plugin.dataFolder["pages"]
@@ -41,12 +42,13 @@ object EntryDatabase {
 		this.events = pages?.flatMap { it.entries.filterIsInstance<EventEntry>() } ?: listOf()
 		this.dialogue = pages?.flatMap { it.entries.filterIsInstance<DialogueEntry>() } ?: listOf()
 		this.actions = pages?.flatMap { it.entries.filterIsInstance<ActionEntry>() } ?: listOf()
+		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll()
 
 		this.entries = pages?.flatMap { it.entries } ?: listOf()
 
 		EntryListeners.register()
 
-		println("Loaded ${facts.size} fact, ${entities.size} entities, ${events.size} event, ${dialogue.size} dialogue and ${actions.size} action entries")
+		println("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
 	}
 
 	fun gson(): Gson {
@@ -85,10 +87,7 @@ object EntryDatabase {
 		return entries.filterIsInstance(klass.java).firstOrNull(predicate)
 	}
 
-	internal fun getEntity(id: String) = entities.firstOrNull { it.id == id }
-
-	@JvmName("getEntityWithType")
-	internal inline fun <reified E : EntityEntry> getEntity(id: String) = getEntity(id) as? E
+	internal fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
 
 	internal fun getFact(id: String) = facts.firstOrNull { it.id == id }
 	internal fun findFactByName(name: String) = facts.firstOrNull { it.name == name }

@@ -1,6 +1,5 @@
 import "dart:math";
 
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
@@ -30,6 +29,27 @@ extension StringExtension on String {
     if (endsWith("s")) return this;
     return "${this}s";
   }
+
+  String get incrementedName {
+    if (isEmpty) return "1";
+    final number = asInt;
+    if (number != null) return "${number + 1}";
+
+    if (contains("_")) {
+      final parts = split("_");
+      final last = parts.removeLast();
+      final number = last.asInt;
+      if (number != null) return "${parts.join("_")}_${number + 1}";
+    }
+    return "${this}_2";
+  }
+
+  int? get asInt => int.tryParse(this);
+}
+
+extension StringExt on String? {
+  bool get isNullOrEmpty => this?.isEmpty ?? true;
+  bool get hasValue => !isNullOrEmpty;
 }
 
 extension IntExt on int {
@@ -56,19 +76,6 @@ TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
           newValue.copyWith(text: newValue.text.toLowerCase().replaceAll(" ", "_").replaceAll("-", "_")),
     );
 
-bool get isApple => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS;
-
-/// A [SingleActivator] that automatically maps the [control] key to the [meta] key for apple platforms.
-class SmartSingleActivator extends SingleActivator {
-  SmartSingleActivator(
-    super.trigger, {
-    bool control = false,
-    super.alt,
-    super.shift,
-    super.includeRepeats,
-  }) : super(control: control && !isApple, meta: control && isApple);
-}
-
 extension RandomColor on String {
   Color get randomColor {
     final random = Random(hashCode);
@@ -81,11 +88,6 @@ extension RandomColor on String {
     final hsv = HSVColor.fromAHSV(1.0, hue.toDouble(), saturation, value);
     return hsv.toColor();
   }
-}
-
-extension StringExt on String? {
-  bool get isNullOrEmpty => this?.isEmpty ?? true;
-  bool get hasValue => !isNullOrEmpty;
 }
 
 extension IteratorExt<E> on Iterator<E> {

@@ -2,9 +2,9 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:theme_json_converter/theme_json_converter.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/icons.dart";
+import "package:typewriter/utils/color_converter.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 
 part "adapter.freezed.dart";
