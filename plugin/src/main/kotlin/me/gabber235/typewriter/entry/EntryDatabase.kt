@@ -42,9 +42,10 @@ object EntryDatabase {
 		this.events = pages?.flatMap { it.entries.filterIsInstance<EventEntry>() } ?: listOf()
 		this.dialogue = pages?.flatMap { it.entries.filterIsInstance<DialogueEntry>() } ?: listOf()
 		this.actions = pages?.flatMap { it.entries.filterIsInstance<ActionEntry>() } ?: listOf()
-		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll()
 
 		this.entries = pages?.flatMap { it.entries } ?: listOf()
+
+		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll()
 
 		EntryListeners.register()
 
