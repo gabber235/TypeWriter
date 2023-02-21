@@ -27,16 +27,16 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 	}
 
 	private var selectedIndex = 0
-	private val selected get() = usableOptions[selectedIndex]
+	private val selected get() = usableOptions.getOrNull(selectedIndex)
 
 	private var usableOptions: List<Option> = emptyList()
 	private var speakerDisplayName = ""
 
 	override val triggers: List<String>
-		get() = entry.triggers + selected.triggers
+		get() = entry.triggers + (selected?.triggers ?: emptyList())
 
 	override val modifiers: List<Modifier>
-		get() = entry.modifiers + selected.modifiers
+		get() = entry.modifiers + (selected?.modifiers ?: emptyList())
 
 	override fun init() {
 		super.init()
