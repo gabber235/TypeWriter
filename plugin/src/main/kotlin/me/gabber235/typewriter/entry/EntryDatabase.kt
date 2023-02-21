@@ -45,6 +45,7 @@ object EntryDatabase {
 
 		this.entries = pages?.flatMap { it.entries } ?: listOf()
 
+		// Needs to be done after all entries are loaded as it queries the database
 		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll()
 
 		EntryListeners.register()
