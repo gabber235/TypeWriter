@@ -13,7 +13,8 @@ import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.entries.FactEntry
-import me.gabber235.typewriter.facts.*
+import me.gabber235.typewriter.facts.FactDatabase
+import me.gabber235.typewriter.facts.formattedName
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.ui.CommunicationHandler
 import me.gabber235.typewriter.utils.*
@@ -50,8 +51,8 @@ private fun LiteralDSLBuilder.reloadCommands() {
 private fun LiteralDSLBuilder.factsCommands() {
 	literal("facts") {
 		requiresPermissions("typewriter.facts")
-		fun Player.listFacts(source: CommandSender) {
-			val facts = facts
+		fun Player.listCachedFacts(source: CommandSender) {
+			val facts = FactDatabase.listCachedFacts(uniqueId)
 			if (facts.isEmpty()) {
 				source.msg("$name has no facts.")
 			} else {
@@ -60,6 +61,7 @@ private fun LiteralDSLBuilder.factsCommands() {
 				source.msg("$name has the following facts:\n")
 				facts.map { it to EntryDatabase.getFact(it.id) }.forEach { (fact, entry) ->
 					if (entry == null) return@forEach
+
 					source.sendMini(
 						"<hover:show_text:'${
 							entry.comment.replace(
@@ -79,7 +81,7 @@ private fun LiteralDSLBuilder.factsCommands() {
 
 		argument("player", PlayerType) { player ->
 			executes {
-				player.get().listFacts(source)
+				player.get().listCachedFacts(source)
 			}
 
 			literal("set") {
@@ -99,7 +101,7 @@ private fun LiteralDSLBuilder.factsCommands() {
 				executes {
 					val p = player.get()
 					FactDatabase.modify(p.uniqueId) {
-						p.facts.forEach { (id, _) ->
+						FactDatabase.listCachedFacts(p.uniqueId).forEach { (id, _) ->
 							set(id, 0)
 						}
 					}
@@ -109,7 +111,7 @@ private fun LiteralDSLBuilder.factsCommands() {
 		}
 
 		executesPlayer {
-			source.listFacts(source)
+			source.listCachedFacts(source)
 		}
 		literal("set") {
 			argument("fact", FactType) { fact ->
@@ -127,7 +129,7 @@ private fun LiteralDSLBuilder.factsCommands() {
 		literal("reset") {
 			executesPlayer {
 				FactDatabase.modify(source.uniqueId) {
-					source.facts.forEach { (id, _) ->
+					FactDatabase.listCachedFacts(source.uniqueId).forEach { (id, _) ->
 						set(id, 0)
 					}
 				}

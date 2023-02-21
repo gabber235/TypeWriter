@@ -3,7 +3,7 @@ package me.gabber235.typewriter.entry
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.*
-import me.gabber235.typewriter.entry.entries.FactEntry
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.facts.Fact
 
 interface Entry {
@@ -46,15 +46,15 @@ enum class CriteriaOperator {
 
 data class Criteria(
 	@Help("The fact to check before triggering the entry")
-	@EntryIdentifier(FactEntry::class)
+	@EntryIdentifier(ReadableFactEntry::class)
 	val fact: String,
 	@Help("The operator to use when comparing the fact value to the criteria value")
 	val operator: CriteriaOperator,
 	@Help("The value to compare the fact value to")
 	val value: Int,
 ) {
-	fun isValid(facts: Set<Fact>): Boolean {
-		val value = facts.find { it.id == this.fact }?.value ?: 0
+	fun isValid(fact: Fact?): Boolean {
+		val value = fact?.value ?: 0
 		return when (operator) {
 			CriteriaOperator.EQUALS                -> value == this.value
 			CriteriaOperator.LESS_THAN             -> value < this.value
@@ -75,7 +75,7 @@ enum class ModifierOperator {
 
 data class Modifier(
 	@Help("The fact to modify when the entry is triggered")
-	@EntryIdentifier(FactEntry::class)
+	@EntryIdentifier(WritableFactEntry::class)
 	val fact: String,
 	@Help("The operator to use when modifying the fact value")
 	val operator: ModifierOperator,

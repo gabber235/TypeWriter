@@ -10,7 +10,6 @@ import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.facts.facts
 import me.gabber235.typewriter.utils.isFloodgate
 import me.gabber235.typewriter.utils.legacy
 import org.bukkit.entity.Player
@@ -39,8 +38,7 @@ class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialog
 
 	override fun init() {
 		super.init()
-		val facts = player.facts
-		usableOptions = entry.options.filter { it.criteria.matches(facts) }
+		usableOptions = entry.options.filter { it.criteria.matches(player.uniqueId) }
 		FloodgateApi.getInstance().sendForm(
 			player.uniqueId,
 			CustomForm.builder()

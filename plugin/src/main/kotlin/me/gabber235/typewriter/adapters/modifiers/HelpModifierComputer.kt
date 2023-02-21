@@ -10,7 +10,7 @@ annotation class Help(val text: String)
 object HelpModifierComputer : StaticModifierComputer<Help> {
 	override val annotationClass: Class<Help> = Help::class.java
 
-	override fun computeModifier(annotation: Help, info: FieldInfo): FieldModifier? {
+	override fun computeModifier(annotation: Help, info: FieldInfo): FieldModifier {
 		// If the field is wrapped in a list or other container we try if the inner type can be modified
 		innerCompute(annotation, info)?.let { return it }
 

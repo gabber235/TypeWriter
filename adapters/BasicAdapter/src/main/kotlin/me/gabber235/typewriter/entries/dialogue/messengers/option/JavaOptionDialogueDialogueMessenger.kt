@@ -9,7 +9,6 @@ import me.gabber235.typewriter.entry.dialogue.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.facts.facts
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.utils.asMini
 import org.bukkit.entity.Player
@@ -40,8 +39,8 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
 	override fun init() {
 		super.init()
-		val facts = player.facts
-		usableOptions = entry.options.filter { it.criteria.matches(facts) }.sortedByDescending { it.criteria.size }
+		usableOptions =
+			entry.options.filter { it.criteria.matches(player.uniqueId) }.sortedByDescending { it.criteria.size }
 
 		speakerDisplayName = entry.speakerDisplayName
 
