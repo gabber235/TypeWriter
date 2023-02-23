@@ -7,7 +7,7 @@ sidebar_position: 6
 Facts are essentially variables. They store information that can be modified by other entries. All facts are numbers, and are treated as so. 
 
 :::info
-Facts are stored per player, not for the server or world, unless otherwise specified.
+Facts are stored per player, not for the server or world.
 :::
 
 The [Basic Adapter](basic-adapter) has a few types of facts to use. 
@@ -30,16 +30,18 @@ Press the + on either of them to create an instance of that field.
 
 The criteria field allows you to set a condition for an action before it is run. If the condition is false, the action will not be run.
 
-![Criteria Fields](./assets/facts/criteria.png)
+![Criterion Fields](./assets/facts/criteria.png)
 
 Select your fact and choose an operator and number to check the value of the fact with. If the condition is met, then the action will run.
 
-### Modfiers
+### Modifiers
 
-The modifiers field allows you to modify facts.
+The modifiers' field allows you to modify facts.
 
 :::caution
-If the entry has criteria on it, and the condition is false, no modifier will run.
+Modifying facts will only run if the entry is run. If the entry is not run, the fact will not be modified. 
+
+Hence, if the entry has criteria, and the criteria is false, the fact will not be modified.
 ::: 
 
 ![Modifier Fields](./assets/facts/modifier.png)
