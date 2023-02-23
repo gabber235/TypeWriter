@@ -5,7 +5,7 @@ sidebar_position: 2
 # Installation Guide
 
 :::danger
-Typewrite only works on **Paper** Spigot servers. It will not work on Spigot or Bukkit servers.
+Typewriter only works on **Paper** Spigot servers. It will not work on Spigot or Bukkit servers.
 :::
 
 :::caution
