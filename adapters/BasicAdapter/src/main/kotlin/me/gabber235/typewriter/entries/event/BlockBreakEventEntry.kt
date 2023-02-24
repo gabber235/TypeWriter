@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty
 import me.gabber235.typewriter.entry.*
@@ -18,10 +19,13 @@ class BlockBreakEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
+	@Help("The location of the block that was broken.")
 	val location: Optional<Location> = Optional.empty(),
 	@MaterialProperties(MaterialProperty.ITEM)
+	@Help("The item the player is holding when the block is broken.")
 	val itemInHand: Optional<Material> = Optional.empty(),
 	@MaterialProperties(MaterialProperty.BLOCK)
+	@Help("The block that was broken.")
 	val block: Optional<Material> = Optional.empty(),
 ) : EventEntry
 

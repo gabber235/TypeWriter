@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.BLOCK
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.ITEM
@@ -20,10 +21,13 @@ class InteractBlockEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
+	@Help("The location of the block that was interacted with.")
 	val location: Optional<Location> = Optional.empty(),
 	@MaterialProperties(ITEM)
+	@Help("The item the player is holding when the block is interacted with.")
 	val itemInHand: Optional<Material> = Optional.empty(),
 	@MaterialProperties(BLOCK)
+	@Help("The block that was interacted with.")
 	val block: Material = Material.AIR,
 ) : EventEntry
 

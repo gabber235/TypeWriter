@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entries.event
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
@@ -18,6 +19,7 @@ class PlayerKillPlayerEventEntry(
 	override val triggers: List<String> = emptyList(),
 	@Triggers
 	@EntryIdentifier(TriggerableEntry::class)
+	@Help("The triggers to be executed for the target player.")
 	val targetTriggers: List<String> = emptyList(),
 ) : EventEntry
 

@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entries.dialogue
 
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.DialogueEntry
@@ -15,6 +16,8 @@ data class RandomSpokenDialogueEntry(
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
 	override val speaker: String = "",
+	@Help("The text to display to the player. One will be picked at random.")
 	val messages: List<String> = emptyList(),
+	@Help("The duration between each character being displayed.")
 	val duration: Duration = Duration.ZERO,
 ) : DialogueEntry

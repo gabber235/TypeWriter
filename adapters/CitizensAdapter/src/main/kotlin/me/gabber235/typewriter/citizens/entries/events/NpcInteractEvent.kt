@@ -4,6 +4,7 @@ import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.citizens.TypewriterTrait
 import me.gabber235.typewriter.citizens.entries.entities.Npc
 import me.gabber235.typewriter.citizens.entries.entities.ReferenceNpcEntry
@@ -20,6 +21,7 @@ class NpcInteractEventEntry(
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
 	@EntryIdentifier(Npc::class)
+	@Help("The identifier of the NPC.")
 	val identifier: String = "",
 ) : EventEntry
 

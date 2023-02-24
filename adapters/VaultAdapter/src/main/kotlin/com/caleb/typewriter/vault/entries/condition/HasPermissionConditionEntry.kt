@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
@@ -19,9 +20,11 @@ class HasPermissionConditionEntry(
 	@SerializedName("triggers")
 	@Triggers
 	@EntryIdentifier(TriggerableEntry::class)
+	@Help("The triggers to execute if the player has the permission.")
 	val nextTriggers: List<String> = emptyList(),
 	override val criteria: List<Criteria>,
 	override val modifiers: List<Modifier>,
+	@Help("The permission to check for.")
 	private var permission: String = ""
 
 ) : ActionEntry {

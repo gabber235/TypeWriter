@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entries.ExpirableFactEntry
 import me.gabber235.typewriter.entry.entries.PersistableFactEntry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.CronExpression
 import me.gabber235.typewriter.utils.Icons
@@ -14,6 +15,7 @@ data class CronFactEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val comment: String = "",
+	@Help("The cron expression to use.")
 	val cron: CronExpression = CronExpression.default()
 ) : ExpirableFactEntry, PersistableFactEntry {
 
