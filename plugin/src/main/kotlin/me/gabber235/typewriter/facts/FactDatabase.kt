@@ -80,8 +80,13 @@ object FactDatabase {
 	private suspend fun storeFactsInPersistentStorage(playerId: UUID) {
 		val facts =
 			cache[playerId]?.filter {
-				Query.findById<PersistableFactEntry>(it.id)?.canPersist(it) == true &&
-						Query.findById<ExpirableFactEntry>(it.id)?.hasExpired(it) != true
+				val entry = Query.findById<PersistableFactEntry>(it.id) ?: return@filter false
+
+				// If the fact is not persistable, or it has expired, don't store it.
+				if (!entry.canPersist(it)) return@filter false
+				if (entry is ExpirableFactEntry && entry.hasExpired(it)) return@filter false
+
+				true
 			}?.toSet()
 				?: return
 		storage?.storeFacts(playerId, facts)
@@ -93,12 +98,14 @@ object FactDatabase {
 				val entry = Query.findById<ExpirableFactEntry>(it.id) ?: return@filter true
 				!entry.hasExpired(it)
 			}.toSet()
+
 			if (newFacts.size < facts.size) {
 				val needsFlush = playerId !in flush && facts.filter { it !in newFacts }.any { fact ->
 					Query.findById<PersistableFactEntry>(fact.id) != null
 				}
 				if (needsFlush) flush.add(playerId)
 			}
+			
 			newFacts
 		}
 	}
