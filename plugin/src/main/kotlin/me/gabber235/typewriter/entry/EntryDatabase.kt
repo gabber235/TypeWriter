@@ -42,11 +42,12 @@ object EntryDatabase {
 		this.events = pages?.flatMap { it.entries.filterIsInstance<EventEntry>() } ?: listOf()
 		this.dialogue = pages?.flatMap { it.entries.filterIsInstance<DialogueEntry>() } ?: listOf()
 		this.actions = pages?.flatMap { it.entries.filterIsInstance<ActionEntry>() } ?: listOf()
+		
+		val newCommandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
+		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
 
 		this.entries = pages?.flatMap { it.entries } ?: listOf()
 
-		// Needs to be done after all entries are loaded as it queries the database
-		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll()
 
 		EntryListeners.register()
 
