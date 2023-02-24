@@ -75,7 +75,7 @@ object EntryListeners {
 	/**
 	 * Unregisters all the entry listeners.
 	 */
-	private fun unregister() {
+	fun unregister() {
 		listener.unregister()
 	}
 }

@@ -8,6 +8,7 @@ import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.facts.storage.FileFactStorage
+import me.gabber235.typewriter.utils.logErrorIfNull
 import org.bukkit.entity.Player
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -105,7 +106,7 @@ object FactDatabase {
 				}
 				if (needsFlush) flush.add(playerId)
 			}
-			
+
 			newFacts
 		}
 	}
@@ -164,7 +165,10 @@ class FactsModifier(private val uuid: UUID) {
 	private val modifications = mutableMapOf<String, Int>()
 
 	fun modify(id: String, modifier: (Int) -> Int) {
-		val oldValue = modifications[id] ?: FactDatabase.getFact(uuid, id)?.value ?: return
+		val oldValue = modifications[id] ?: FactDatabase.getFact(
+			uuid,
+			id
+		)?.value?.logErrorIfNull("Could not read fact: $id. Please report! Using 0 as default value.") ?: 0
 		modifications[id] = modifier(oldValue)
 	}
 

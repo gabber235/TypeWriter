@@ -5,6 +5,7 @@ import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.entry.EntryListeners
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
 import me.gabber235.typewriter.facts.FactDatabase
@@ -67,6 +68,7 @@ class Typewriter : KotlinPlugin() {
 		ChatHistoryHandler.shutdown()
 		CommunicationHandler.shutdown()
 		InteractionHandler.shutdown()
+		EntryListeners.unregister()
 		FactDatabase.shutdown()
 		adventure.close()
 	}
