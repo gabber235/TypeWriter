@@ -7,8 +7,8 @@ import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.*
+import java.util.*
 import kotlin.reflect.KClass
 
 object EntryDatabase {
@@ -102,4 +102,8 @@ class Page(
 	val entries: List<Entry>,
 )
 
-fun Iterable<Criteria>.matches(facts: Set<Fact>): Boolean = all { it.isValid(facts) }
+fun Iterable<Criteria>.matches(playerUUID: UUID): Boolean = all {
+	val entry = Query.findById<ReadableFactEntry>(it.fact)
+	val fact = entry?.read(playerUUID)
+	it.isValid(fact)
+}

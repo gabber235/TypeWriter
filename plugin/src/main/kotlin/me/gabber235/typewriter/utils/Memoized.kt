@@ -11,7 +11,7 @@ class Memoized<in T, out R>(val block: (T) -> R) {
 	}
 }
 
-class MemoizedDelegate<in T, out R>(val block: (T) -> R) : ReadOnlyProperty<Any?, Memoized<T, R>> {
+class MemoizedDelegate<in T, out R>(private val block: (T) -> R) : ReadOnlyProperty<Any?, Memoized<T, R>> {
 	private var memoized: Memoized<T, R>? = null
 
 	override fun getValue(thisRef: Any?, property: KProperty<*>): Memoized<T, R> {

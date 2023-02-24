@@ -6,7 +6,6 @@ import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
 import me.gabber235.typewriter.entry.matches
-import me.gabber235.typewriter.facts.facts
 import org.bukkit.entity.Player
 
 class Interaction(val player: Player) {
@@ -46,8 +45,7 @@ class Interaction(val player: Player) {
 	 */
 	private fun triggerActions(event: Event) {
 		// Trigger all actions
-		val facts = event.player.facts
-		val actions = Query.findWhere<ActionEntry> { it in event && it.criteria.matches(facts) }
+		val actions = Query.findWhere<ActionEntry> { it in event && it.criteria.matches(event.player.uniqueId) }
 		actions.forEach { action ->
 			action.execute(event.player)
 		}
@@ -65,11 +63,9 @@ class Interaction(val player: Player) {
 	 * If no dialogue can be found, it will end the dialogue sequence.
 	 */
 	private fun tryTriggerNextDialogue(event: Event) {
-		val facts = player.facts
-
 		val nextDialogue = Query.findWhere<DialogueEntry> { it in event }
 			.sortedByDescending { it.criteria.size }
-			.firstOrNull { it.criteria.matches(facts) }
+			.firstOrNull { it.criteria.matches(event.player.uniqueId) }
 
 		if (nextDialogue != null) {
 			// If there is no sequence yet, start a new one
