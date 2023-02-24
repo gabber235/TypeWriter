@@ -32,7 +32,7 @@ object EntryDatabase {
 
 		val gson = gson()
 
-		val pages = dir.listFiles { file -> file.name.endsWith(".json") }?.map { file ->
+		val pages = dir.listFiles { file -> file.name.endsWith(".json") }?.mapNotNull { file ->
 			val dialogueReader = JsonReader(file.reader())
 			dialogueReader.parsePage(gson)
 		}
@@ -95,11 +95,64 @@ object EntryDatabase {
 	internal fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
 }
 
-private fun JsonReader.parsePage(gson: Gson): Page =
-	gson.fromJson(this, Page::class.java)
+private fun JsonReader.parsePage(gson: Gson): Page? {
+	return try {
 
-class Page(
-	val entries: List<Entry>,
+		var page = Page()
+
+		beginObject()
+		while (hasNext()) {
+			when (nextName()) {
+				"entries" -> page = page.copy(entries = parseEntries(gson))
+				else      -> skipValue()
+			}
+		}
+
+		page
+	} catch (e: Exception) {
+		plugin.logger.warning("Failed to parse page: ${e.message}")
+		null
+	}
+}
+
+private fun JsonReader.parseEntries(gson: Gson): List<Entry> {
+	val entries = mutableListOf<Entry>()
+
+	beginArray()
+	while (hasNext()) {
+		val entry = parseEntry(gson) ?: continue
+		entries.add(entry)
+	}
+	endArray()
+
+	return entries
+}
+
+private fun JsonReader.parseEntry(gson: Gson): Entry? {
+	return try {
+		gson.fromJson(this, Entry::class.java)
+	} catch (e: NonExistentSubtypeException) {
+		val subtypeName = e.subtypeName
+		plugin.logger.warning(
+			"""
+			|--------------------------------------------------------------------------
+			|Failed to parse entry: $subtypeName is not a valid entry type. (skipping)
+			|
+			|This is either because an adapter is missing or due to having an outdated page entry. 
+			|
+			|Please report this on the TypeWriter Discord!
+			|--------------------------------------------------------------------------
+		""".trimMargin()
+		)
+		null
+	} catch (e: Exception) {
+		plugin.logger.warning("Failed to parse entry: ${e.message}")
+		null
+	}
+}
+
+data class Page(
+	val entries: List<Entry> = emptyList(),
 )
 
 fun Iterable<Criteria>.matches(playerUUID: UUID): Boolean = all {
