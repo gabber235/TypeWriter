@@ -5,17 +5,17 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause
 import org.bukkit.event.entity.EntityDeathEvent
-import java.util.*
+import java.util.Optional
 
 @Entry("on_player_death", "When a player dies", Colors.YELLOW, Icons.SKULL_CROSSBONES)
 class PlayerDeathEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
-	val entityType: EntityType = EntityType.PLAYER,
+	val deathCause: Optional<DamageCause> = Optional.empty()
 ) : EventEntry
 
 
@@ -25,5 +25,7 @@ fun onDeath(event: EntityDeathEvent, query: Query<PlayerDeathEventEntry>) {
 
 	val player = event.entity as Player
 
-	query.find() triggerAllFor player
+	query findWhere {
+		it.deathCause.map { it == event.entity.lastDamageCause?.cause }.orElse(true)
+	} triggerAllFor player
 }
