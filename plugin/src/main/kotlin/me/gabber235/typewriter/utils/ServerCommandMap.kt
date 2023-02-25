@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.utils
 
 import lirand.api.extensions.server.server
+import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry.CommandFilterResult.*
@@ -55,7 +56,7 @@ fun CustomCommandEntry.register() {
 		}
 	})
 
-	println("Registered command $command for $name (${id}) Success: $result")
+	plugin.logger.info("Registered command $command for $name (${id}) Success: $result")
 }
 
 fun CustomCommandEntry.unregister() {

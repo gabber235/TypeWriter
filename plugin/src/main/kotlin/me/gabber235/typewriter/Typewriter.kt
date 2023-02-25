@@ -41,7 +41,7 @@ class Typewriter : KotlinPlugin() {
 			return
 		}
 
-		EntryDatabase.loadEntries()
+		EntryDatabase.init()
 		InteractionHandler.init()
 		FactDatabase.init()
 		MessengerFinder.init()

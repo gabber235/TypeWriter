@@ -3,10 +3,12 @@ package me.gabber235.typewriter.entry
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
+import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.utils.*
 import java.util.*
 import kotlin.reflect.KClass
@@ -23,6 +25,11 @@ object EntryDatabase {
 	private var actions = listOf<ActionEntry>()
 	internal var commandEvents = listOf<CustomCommandEntry>()
 		private set
+
+	fun init() {
+		plugin.listen<TypewriterReloadEvent> { loadEntries() }
+		loadEntries()
+	}
 
 	fun loadEntries() {
 		val dir = plugin.dataFolder["pages"]
@@ -42,7 +49,7 @@ object EntryDatabase {
 		this.events = pages?.flatMap { it.entries.filterIsInstance<EventEntry>() } ?: listOf()
 		this.dialogue = pages?.flatMap { it.entries.filterIsInstance<DialogueEntry>() } ?: listOf()
 		this.actions = pages?.flatMap { it.entries.filterIsInstance<ActionEntry>() } ?: listOf()
-		
+
 		val newCommandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
 		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
 
@@ -51,7 +58,7 @@ object EntryDatabase {
 
 		EntryListeners.register()
 
-		println("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
+		plugin.logger.info("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
 	}
 
 	fun gson(): Gson {

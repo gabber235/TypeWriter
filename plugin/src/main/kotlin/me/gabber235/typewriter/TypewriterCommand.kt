@@ -13,6 +13,7 @@ import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.entries.FactEntry
+import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.formattedName
 import me.gabber235.typewriter.interaction.chatHistory
@@ -42,7 +43,7 @@ private fun LiteralDSLBuilder.reloadCommands() {
 		requiresPermissions("typewriter.reload")
 		executes {
 			source.msg("Reloading configuration...")
-			EntryDatabase.loadEntries()
+			TypewriterReloadEvent().callEvent()
 			source.msg("Configuration reloaded!")
 		}
 	}
