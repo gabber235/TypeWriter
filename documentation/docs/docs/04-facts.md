@@ -1,7 +1,3 @@
----
-sidebar_position: 6
----
-
 # Facts
 
 Facts are essentially variables. They store information that can be modified by other entries. All facts are numbers, and are treated as so. 
