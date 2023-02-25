@@ -17,7 +17,7 @@ class RandomTriggerGateEntry(
 	override val customTriggers: List<String> = emptyList(),
 	override val criteria: List<Criteria>,
 	override val modifiers: List<Modifier>,
-	@Help("The amount of triggers to select.")
+	@Help("The amount of triggers to fire.")
 	private val amount: Int = 1,
 ) : CustomTriggeringActionEntry {
 

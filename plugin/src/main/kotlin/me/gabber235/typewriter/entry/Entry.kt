@@ -18,12 +18,16 @@ interface StaticEntry : Entry
 interface TriggerEntry : Entry {
 	@Triggers
 	@EntryIdentifier(TriggerableEntry::class)
+	@Help("The entries that will be fired after this entry.")
 	val triggers: List<String>
 }
 
 @Tags("triggerable")
 interface TriggerableEntry : TriggerEntry {
+	@Help("The criteria that must be met before this entry is triggered")
 	val criteria: List<Criteria>
+
+	@Help("The modifiers that will be applied when this entry is triggered")
 	val modifiers: List<Modifier>
 }
 

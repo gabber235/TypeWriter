@@ -16,7 +16,7 @@ class PlayerKillEntityEventEntry(
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
 	@Help("The type of entity that was killed.")
-	val entityType: EntityType = EntityType.PLAYER,
+	val entityType: Optional<EntityType> = Optional.empty(),
 ) : EventEntry
 
 
@@ -24,5 +24,7 @@ class PlayerKillEntityEventEntry(
 fun onKill(event: EntityDeathEvent, query: Query<PlayerKillEntityEventEntry>) {
 	val killer = event.entity.killer ?: return
 
-	query findWhere { it.entityType == event.entityType } triggerAllFor killer
+	query findWhere { entry ->
+		entry.entityType.map { it == event.entityType }.orElse(true)
+	} triggerAllFor killer
 }

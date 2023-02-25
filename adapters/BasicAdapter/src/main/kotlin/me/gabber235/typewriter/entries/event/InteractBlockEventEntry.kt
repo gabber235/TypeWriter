@@ -24,7 +24,7 @@ class InteractBlockEventEntry(
 	@Help("The location of the block that was interacted with.")
 	val location: Optional<Location> = Optional.empty(),
 	@MaterialProperties(ITEM)
-	@Help("The item the player is holding when the block is interacted with.")
+	@Help("The item the player must be holding when the block is interacted with.")
 	val itemInHand: Optional<Material> = Optional.empty(),
 	@MaterialProperties(BLOCK)
 	@Help("The block that was interacted with.")

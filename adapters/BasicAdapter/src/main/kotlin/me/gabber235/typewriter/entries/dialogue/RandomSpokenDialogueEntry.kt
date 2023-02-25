@@ -18,6 +18,6 @@ data class RandomSpokenDialogueEntry(
 	override val speaker: String = "",
 	@Help("The text to display to the player. One will be picked at random.")
 	val messages: List<String> = emptyList(),
-	@Help("The duration between each character being displayed.")
+	@Help("The duration it takes to type out the message.")
 	val duration: Duration = Duration.ZERO,
 ) : DialogueEntry

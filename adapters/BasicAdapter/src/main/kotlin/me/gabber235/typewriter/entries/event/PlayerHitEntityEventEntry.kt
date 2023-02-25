@@ -17,7 +17,7 @@ class PlayerHitEntityEventEntry(
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
 	@Help("The type of entity that was hit.")
-	val entityType: EntityType = EntityType.PLAYER,
+	val entityType: Optional<EntityType> = Optional.empty(),
 ) : EventEntry
 
 
@@ -27,5 +27,7 @@ fun onHit(event: EntityDamageByEntityEvent, query: Query<PlayerHitEntityEventEnt
 
 	val player = event.damager as Player
 
-	query findWhere { it.entityType == event.entityType } triggerAllFor player
+	query findWhere { entry ->
+		entry.entityType.map { it == event.entityType }.orElse(true)
+	} triggerAllFor player
 }
