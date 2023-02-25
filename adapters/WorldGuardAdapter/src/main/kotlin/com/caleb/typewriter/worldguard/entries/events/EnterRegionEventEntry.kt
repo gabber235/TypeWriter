@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
 import java.util.*
 
-@Entry("on_enter_region", "[WorldGuard] When a player enters a region", Colors.YELLOW, Icons.SQUARE_CHECK)
+@Entry("on_enter_region", "[WorldGuard] When a player enters a region", Colors.YELLOW, Icons.DOOR_OPEN)
 class EnterRegionEventEntry (
 	override val id: String = "",
 	override val name: String = "",

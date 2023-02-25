@@ -19,14 +19,15 @@ repositories {
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.opencollab.dev/maven-snapshots/")
-    maven("https://repo.bg-software.com/repository/api/")
-
     // Adapter Specific
+
+    maven ("https://nexus.sirblobman.xyz/repository/public/")
 
 }
 
 dependencies {
     compileOnly(kotlin("stdlib"))
+
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
     compileOnly("me.gabber235:typewriter:0.0.1")
@@ -37,8 +38,9 @@ dependencies {
     compileOnly("net.kyori:adventure-api:4.12.0")
     compileOnly("net.kyori:adventure-text-minimessage:4.12.0")
     compileOnly("com.mojang:brigadier:1.0.18")
-    compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2022.9")
 
+    compileOnly("com.github.sirblobman.api:core:2.6-SNAPSHOT")
+    compileOnly("com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT")
 
     // External dependencies
     //compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.11.1")
