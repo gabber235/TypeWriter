@@ -1,0 +1,15 @@
+# PlayerHitEntityEvent
+
+The `PlayerHitEntityEventEntry` is a event that fires when a player hits an entity. This entry provides you with the ability to trigger actions when a player hits an entity. An optional [`Entity Type`](#entityType) can be specified to only trigger the event when the entity is of the specified type.
+
+## How could this be used?
+
+This entry can be useful in a variety of situations. You can use it to create custom interactions when a player attacks a specific type of entity, like triggering a special sound effect or spawning a particle effect. You can also use it to track player progress, such as counting the number of cows a player has punched in your cow-punching mini-game. The possibilities are endless!
+
+## Fields
+
+These are the custom fields for this entry:
+
+### Entity Type (optional)
+
+This field allows you to specify the type of entity that the player must hit in order for the event to trigger. If this field is left blank, the event will trigger whenever the player hits any entity.

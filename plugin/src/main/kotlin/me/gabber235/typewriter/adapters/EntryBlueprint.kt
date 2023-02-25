@@ -117,7 +117,7 @@ enum class PrimitiveFieldType {
 }
 
 // If the field is an enum, the values will be the enum constants
-class EnumField(val values: List<String>) : FieldInfo() {
+class EnumField(private val values: List<String>) : FieldInfo() {
 	companion object {
 		fun fromTypeToken(token: TypeToken<*>): EnumField {
 			/// If the enum fields have an @SerializedName annotation, use that as the value
@@ -147,7 +147,7 @@ class MapField(val key: FieldInfo, val value: FieldInfo) : FieldInfo() {
 }
 
 // If the field is an object, this is the type of the object
-class ObjectField(val fields: Map<String, FieldInfo>) : FieldInfo() {
+class ObjectField(private val fields: Map<String, FieldInfo>) : FieldInfo() {
 	override fun default(): JsonElement {
 		val obj = JsonObject()
 		fields.forEach { (name, field) ->

@@ -6,12 +6,9 @@ import kotlinx.coroutines.delay
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
-import me.gabber235.typewriter.adapters.modifiers.Triggers
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.entry.entries.EntryTrigger
-import me.gabber235.typewriter.interaction.InteractionHandler
+import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -23,20 +20,16 @@ class DelayedActionEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	@SerializedName("triggers")
-	@Triggers
-	@EntryIdentifier(TriggerableEntry::class)
-	val nextTriggers: List<String> = emptyList(),
+	override val customTriggers: List<String> = emptyList(),
+	@Help("The time to delay the action for.")
 	private val duration: Duration = Duration.ZERO, // Number of milliseconds
-) : ActionEntry {
-	// Disable the normal triggers. So that the action can manually trigger the next actions.
-	override val triggers: List<String>
-		get() = emptyList()
+) : CustomTriggeringActionEntry {
 
 	override fun execute(player: Player) {
 		plugin.launch {
 			delay(duration.toMillis())
 			super.execute(player)
-			InteractionHandler.startInteractionAndTrigger(player, nextTriggers.map { EntryTrigger(it) })
+			player.triggerCustomTriggers()
 		}
 	}
 }

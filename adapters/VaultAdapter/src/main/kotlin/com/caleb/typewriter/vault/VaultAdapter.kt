@@ -13,15 +13,14 @@ import org.bukkit.plugin.RegisteredServiceProvider
 
 @Adapter("vault", "For Vault", "0.0.1")
 object VaultAdapter : TypewriteAdapter() {
-
 	var economy: Economy? = null
-	private set
+		private set
 
 	var permissions: Permission? = null
-	private set
+		private set
 
 	var chat: Chat? = null
-	private set
+		private set
 
 
 	override fun initialize() {
@@ -39,7 +38,6 @@ object VaultAdapter : TypewriteAdapter() {
 		setupChat()
 	}
 
-
 	private fun setupEconomy(): Boolean {
 		if (getServer().pluginManager.getPlugin("Vault") == null) {
 			return false
@@ -52,20 +50,18 @@ object VaultAdapter : TypewriteAdapter() {
 	}
 
 	private fun setupPermissions(): Boolean {
-		val rsp: RegisteredServiceProvider<Permission> = getServer().servicesManager.getRegistration(
+		val rsp = getServer().servicesManager.getRegistration(
 			Permission::class.java
-		) as RegisteredServiceProvider<Permission>
+		) as? RegisteredServiceProvider<Permission> ?: return false
 		permissions = rsp.provider
 		return true
 	}
 
 	private fun setupChat(): Boolean {
-		val rsp: RegisteredServiceProvider<Chat> = getServer().servicesManager.getRegistration(
+		val rsp = getServer().servicesManager.getRegistration(
 			Chat::class.java
-		) as RegisteredServiceProvider<Chat>
+		) as? RegisteredServiceProvider<Chat> ?: return false
 		chat = rsp.provider
 		return true
 	}
-
-
 }

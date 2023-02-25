@@ -1,0 +1,70 @@
+---
+sidebar_position: 1
+---
+
+# Basic Adapter
+
+The Basic Adapter contains all the essential entries for Typewriter. In most cases, it should be installed with Typewriter. If you haven't installed Typewriter or the adapter yet, please follow the [Installation Guide](../docs/installation-guide) first.
+
+## Entries
+
+All entries have a `triggers` field which is what entries will be triggered after the current entry is finished. This field can be a single entry or a list of entries.
+
+### Events
+
+When something happens. The player that triggers the event is passed through all other triggers connected to it.
+
+| Entry Name               | Description                                                                                              | 
+| ------------------------ | -------------------------------------------------------------------------------------------------------- | 
+| On Player Hit Entity     | Triggered when a player hits an entity.                                                                  | 
+| On Player Death          | Triggered when a player dies.                                                                            | 
+| On Player Kill Entity    | Triggered when a player kills and entity.                                                                | 
+| On Place Block           | Triggered when a user places a block.                                                                    | 
+| On Item Pickup           | Triggered when an item is picked up.                                                                     | 
+| On Player Join           | Triggered when a player joins.                                                                           | 
+| On Run Command           | Triggered when a user runs a command. This command will be registered to the server.                     | 
+| On Detect Command Ran    | Triggered when an already existing command is run. The command must already be registered to the server. | 
+| On Message Contains Text | Triggered when a chat message from a player contains a certain message.                                  | 
+| On Interact With Block   | Triggered when a player interacts (Right-Click) with a block.                                            | 
+| On Block Break           | Triggers when a player breaks a block.                                                                   | 
+| On Player Kill Player    | Triggered when a player kills another player.                                                            | 
+
+### Actions
+
+To make things happen. All actions come with a `criteria` and `modifier` field. The `criteria` field makes the action only run if the condition(s) are met. The `modifier` field is used to modify a [fact](../docs/facts) when the action successfully runs.
+
+| Entry Name          |                 Description                  | 
+| ------------------- | -------------------------------------------- | 
+| Random Trigger      |   Triggers one of it's triggers randomly.    | 
+| Console Run Command |       Run a command from the console.        | 
+| Player Run Command  |        Run a command from the player.        | 
+| Play Sound          |           Plays a Minecraft sound.           | 
+| Spawn Particles     |              Spawns particles.               | 
+| Simple Action       | An action to modify a [fact](../docs/facts)'s value. | 
+| Give Item           |          Gives the player an item.           | 
+| Drop Item           |         Drops an item to the player.         | 
+| Delayed Action      |           Delays the next trigger.           | 
+
+### Dialogue
+
+Text that is shown to the player.
+
+| Entry Name     | Description                                                   | 
+| -------------- | ------------------------------------------------------------- | 
+| Message        | Displays a single message to the player.                      | 
+| Random Message | Displays a random message from a list to the player.          | 
+| Spoken         | Displays an animated message to the player.                   | 
+| Random Spoken  | Displays a random animated message from a list to the player. | 
+| Option         | Displays a list of options to the player.                     | 
+
+### Static
+
+Static entries are for holding data. They are used as parameters for other entries. All static entries contain a field called `comment`. It does nothing, and serves as a tool for you to remember what the entry is for.
+
+| Entry Name     | Description                                               | 
+| -------------- | --------------------------------------------------------- | 
+| Permanent Fact | A [fact](../docs/facts) that never gets reset.                    | 
+| Session Fact   | A [fact](../docs/facts) that is saved until the player logs out.  | 
+| Cron Fact      | A [fact](../docs/facts) that is saved until a specific date.      | 
+| Timed Fact     | A [fact](../docs/facts) that is saved for the specified duration. | 
+| Simple Speaker | A basic speaker. Used in any `speaker` parameter.         | 

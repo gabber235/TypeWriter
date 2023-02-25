@@ -2,12 +2,12 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.BLOCK
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.ITEM
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.entries.SystemTrigger
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.Material
@@ -21,10 +21,13 @@ class InteractBlockEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
+	@Help("The location of the block that was interacted with.")
 	val location: Optional<Location> = Optional.empty(),
 	@MaterialProperties(ITEM)
+	@Help("The item the player must be holding when the block is interacted with.")
 	val itemInHand: Optional<Material> = Optional.empty(),
 	@MaterialProperties(BLOCK)
+	@Help("The block that was interacted with.")
 	val block: Material = Material.AIR,
 ) : EventEntry
 
@@ -39,7 +42,7 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
 	// The even triggers twice. Both for the main hand and offhand.
 	// We only want to trigger once.
 	if (event.hand != org.bukkit.inventory.EquipmentSlot.HAND) return // Disable off-hand interactions
-	query.findWhere { entry ->
+	query findWhere { entry ->
 		// Check if the player clicked on the correct location
 		if (!entry.location.map { it == event.clickedBlock!!.location }.orElse(true)) return@findWhere false
 
@@ -47,5 +50,5 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
 		if (!entry.itemInHand.map { hasMaterialInHand(event.player, it) }.orElse(true)) return@findWhere false
 
 		entry.block == event.clickedBlock!!.type
-	}.startInteractionWithOrTrigger(event.player, SystemTrigger.DIALOGUE_NEXT)
+	} startDialogueWithOrNextDialogue event.player
 }

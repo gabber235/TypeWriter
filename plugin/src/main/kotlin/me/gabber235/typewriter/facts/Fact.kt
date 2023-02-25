@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.facts
 
-import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.entries.FactEntry
 import java.time.LocalDateTime
 import java.util.*
@@ -24,10 +23,3 @@ data class Fact(val id: String, val value: Int, val lastUpdate: LocalDateTime = 
 
 	override fun hashCode(): Int = id.hashCode()
 }
-
-val Fact.hasExpired: Boolean
-	get() {
-		// If the fact is not in the database, we want to remove it anyway.
-		val entry = EntryDatabase.getFact(id) ?: return true
-		return entry.hasExpired(this)
-	}

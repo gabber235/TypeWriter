@@ -6,13 +6,12 @@ import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
 import me.gabber235.typewriter.entry.matches
-import me.gabber235.typewriter.facts.facts
 import org.bukkit.entity.Player
 
 class Interaction(val player: Player) {
 	private var dialogue: DialogueSequence? = null
-
-	val isActive get() = dialogue != null
+	val hasDialogue: Boolean
+		get() = dialogue != null
 
 	fun tick() {
 		dialogue?.tick()
@@ -23,6 +22,8 @@ class Interaction(val player: Player) {
 	 * All [SystemTrigger]'s are handled by the plugin itself.
 	 */
 	fun onEvent(event: Event) {
+		triggerActions(event)
+
 		if (DIALOGUE_NEXT in event) {
 			onDialogueNext()
 			return
@@ -38,15 +39,33 @@ class Interaction(val player: Player) {
 	}
 
 	/**
+	 * Triggers all actions that are registered for the given event.
+	 *
+	 * @param event The event that should be triggered
+	 */
+	private fun triggerActions(event: Event) {
+		// Trigger all actions
+		val actions = Query.findWhere<ActionEntry> { it in event && it.criteria.matches(event.player.uniqueId) }
+		actions.forEach { action ->
+			action.execute(event.player)
+		}
+		val newTriggers = actions.flatMap { it.triggers }
+			.map { EntryTrigger(it) }
+			.filter { it !in event } // Stops infinite loops
+		if (newTriggers.isNotEmpty()) {
+			InteractionHandler.triggerEvent(Event(event.player, newTriggers))
+		}
+	}
+
+
+	/**
 	 * Tries to trigger a new dialogue.
 	 * If no dialogue can be found, it will end the dialogue sequence.
 	 */
 	private fun tryTriggerNextDialogue(event: Event) {
-		val facts = player.facts
-
 		val nextDialogue = Query.findWhere<DialogueEntry> { it in event }
 			.sortedByDescending { it.criteria.size }
-			.firstOrNull { it.criteria.matches(facts) }
+			.firstOrNull { it.criteria.matches(event.player.uniqueId) }
 
 		if (nextDialogue != null) {
 			// If there is no sequence yet, start a new one

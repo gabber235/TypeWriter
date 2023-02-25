@@ -15,8 +15,6 @@ object CitizensAdapter : TypewriteAdapter() {
 		}
 
 		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TypewriterTrait::class.java))
-
-		plugin.npcCommand()
 	}
 
 	override fun shutdown() {

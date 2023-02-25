@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "me.gabber235"
-version = "0.0.1"
+version = file("../version.txt").readText().trim()
 
 repositories {
 	mavenCentral()

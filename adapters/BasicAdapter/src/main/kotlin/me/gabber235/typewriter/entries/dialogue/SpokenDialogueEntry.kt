@@ -1,12 +1,12 @@
 package me.gabber235.typewriter.entries.dialogue
 
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.utils.Icons
 import java.time.Duration
-import java.util.Optional
 
 @Entry("spoken", "Display a animated message to the player", "#1E88E5", Icons.MESSAGE)
 data class SpokenDialogueEntry(
@@ -15,7 +15,9 @@ data class SpokenDialogueEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
-	val text: String = "",
 	override val speaker: String = "",
+	@Help("The text to display to the player.")
+	val text: String = "",
+	@Help("The duration it takes to type out the message.")
 	val duration: Duration = Duration.ZERO,
 ) : DialogueEntry

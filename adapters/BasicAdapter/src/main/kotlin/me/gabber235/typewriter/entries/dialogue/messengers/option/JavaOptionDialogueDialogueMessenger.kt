@@ -9,14 +9,43 @@ import me.gabber235.typewriter.entry.dialogue.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.facts.facts
 import me.gabber235.typewriter.interaction.chatHistory
+import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.asMini
+import me.gabber235.typewriter.utils.asMiniWithResolvers
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.JoinConfiguration
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import kotlin.math.max
 import kotlin.math.min
+
+val optionFormat: String by snippet(
+	"dialogue.option.format", """
+			|<gray><st>${" ".repeat(60)}</st>
+			|<white> <speaker><reset>: <text>
+			|
+			|<options>
+			|<#5d6c78>[ <grey><white>Scroll</white> to change option and press<white> <key:key.swapOffhand> </white>to select <#5d6c78>]</#5d6c78>
+			|<gray><st>${" ".repeat(60)}</st>
+		""".trimMargin()
+)
+
+private val selectedPrefix: String by snippet("dialogue.option.prefix.selected", "<#78ff85>>>")
+private val upPrefix: String by snippet("dialogue.option.prefix.up", "<white> ↑")
+private val downPrefix: String by snippet("dialogue.option.prefix.down", "<white> ↓")
+private val unselectedPrefix: String by snippet("dialogue.option.prefix.unselected", "  ")
+
+private val selectedOption: String by snippet(
+	"dialogue.option.selected",
+	" <prefix> <#5d6c78>[ <white><option_text> <#5d6c78>]\n"
+)
+private val unselectedOption: String by snippet(
+	"dialogue.option.unselected",
+	" <prefix> <#5d6c78>[ <grey><option_text> <#5d6c78>]\n"
+)
 
 @Messenger(OptionDialogueEntry::class)
 class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
@@ -27,21 +56,21 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 	}
 
 	private var selectedIndex = 0
-	private val selected get() = usableOptions[selectedIndex]
+	private val selected get() = usableOptions.getOrNull(selectedIndex)
 
 	private var usableOptions: List<Option> = emptyList()
 	private var speakerDisplayName = ""
 
 	override val triggers: List<String>
-		get() = entry.triggers + selected.triggers
+		get() = entry.triggers + (selected?.triggers ?: emptyList())
 
 	override val modifiers: List<Modifier>
-		get() = entry.modifiers + selected.modifiers
+		get() = entry.modifiers + (selected?.modifiers ?: emptyList())
 
 	override fun init() {
 		super.init()
-		val facts = player.facts
-		usableOptions = entry.options.filter { it.criteria.matches(facts) }.sortedByDescending { it.criteria.size }
+		usableOptions =
+			entry.options.filter { it.criteria.matches(player.uniqueId) }.sortedByDescending { it.criteria.size }
 
 		speakerDisplayName = entry.speakerDisplayName
 
@@ -67,14 +96,11 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 	}
 
 	override fun tick(cycle: Int) {
-		val message = """
-			|<gray><st>${" ".repeat(60)}</st>
-			|<white> ${speakerDisplayName}<reset>: ${entry.text}
-			|
-			|${formatOptions()}
-			|<#5d6c78>[ <grey><white>Scroll</white> to change option and press<white> <key:key.swapOffhand> </white>to select <#5d6c78>]</#5d6c78>
-			|<gray><st>${" ".repeat(60)}</st>
-		""".trimMargin().asMini()
+		val message = optionFormat.asMiniWithResolvers(
+			Placeholder.parsed("speaker", speakerDisplayName),
+			Placeholder.parsed("text", entry.text),
+			Placeholder.component("options", formatOptions()),
+		)
 
 		val component = player.chatHistory.composeDarkMessage(message)
 		player.sendMessage(component)
@@ -84,43 +110,32 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 		player.chatHistory.resendMessages(player)
 	}
 
-	private fun formatOptions(): String {
+	private fun formatOptions(): Component {
 		val around = usableOptions.around(selectedIndex, 1, 2)
 
-		val lines = mutableListOf<String>()
+		val lines = mutableListOf<Component>()
 
 		for (i in 0..3) {
-			var prefix = ""
-			if(i == 0) {
-				//add character icon as first line
-				if(entry.speakerIcon.isPresent) {
-					prefix += entry.speakerIcon.get()
-					prefix += if (entry.messageOffset.isPresent && entry.messageOffset.get().length > 1) entry.messageOffset.get().substring(1) else ""
-				}
-			} else {
-				prefix += if (entry.messageOffset.isPresent) entry.messageOffset.get() else ""
-			}
-
 			if (i >= around.size) {
-				lines.add("\n")
+				lines.add("\n".asMini())
 				continue
 			}
 			val option = around[i]
-			val selected = selected == option
+			val isSelected = selected == option
 
-			prefix += if (selected) "<#78ff85>>>"
-			else if (i == 0 && selectedIndex > 1 && usableOptions.size > 4) "<white> ↑"
-			else if (i == 3 && selectedIndex < usableOptions.size - 3 && usableOptions.size > 4) "<white> ↓"
-			else "  "
+			val prefix = if (isSelected) selectedPrefix
+			else if (i == 0 && selectedIndex > 1 && usableOptions.size > 4) upPrefix
+			else if (i == 3 && selectedIndex < usableOptions.size - 3 && usableOptions.size > 4) downPrefix
+			else unselectedPrefix
 
-			lines += if (selected) {
-				" $prefix <#5d6c78>[ <white>${option.text.parsePlaceholders(player)} <#5d6c78>]\n"
-			} else {
-				" $prefix <#5d6c78>[ <grey>${option.text.parsePlaceholders(player)} <#5d6c78>]\n"
-			}
+			val format = if (isSelected) selectedOption else unselectedOption
+			lines += format.asMiniWithResolvers(
+				Placeholder.parsed("prefix", prefix),
+				Placeholder.parsed("option_text", option.text.parsePlaceholders(player))
+			)
 		}
 
-		return lines.joinToString("")
+		return Component.join(JoinConfiguration.noSeparators(), lines)
 	}
 
 

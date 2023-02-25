@@ -4,12 +4,13 @@
 
 [![Discord](https://img.shields.io/discord/1054708062520360960?label=discord&logo=discord&logoColor=white)](https://discord.gg/HtbKyuDDBw)
 [![Release](https://img.shields.io/github/v/release/gabber235/Typewriter?include_prereleases&logo=github)](https://github.com/gabber235/TypeWriter/releases)
-![License](https://img.shields.io/github/license/gabber235/Typewriter?logo=github)
+[![License](https://img.shields.io/github/license/gabber235/Typewriter?logo=github)](LICENSE)
 
 Typewriter is a plugin for **Paper** Minecraft servers that allows for custom player interactions such as Quests,
 NPC chat, Create branching story with ease, and more. It is easily configurable using the web panel specifically
 designed for this plugin.
-The plugin can also be extended using adapters, which are [pre-made](https://github.com/gabber235/TypeWriter/wiki/pre-made-adapters) or can be custom-made by developers.
+
+The plugin can also be extended using adapters, which are [pre-made](https://gabber235.github.io/TypeWriter/docs/pre-made-adapters) or can be custom-made by developers.
 
 To get started with Typewriter, see the [Getting Started](#getting-started) section.
 
@@ -26,23 +27,26 @@ The web panel for Typewriter, where you can create quests, NPCs, and more.
 - Create custom player interactions, including quests and NPC chat, branching story, and more...
 - Configure interactions using a custom written visual interface
 - Extend the plugin using adapters
-  - [Pre-made adapters](https://github.com/gabber235/TypeWriter/wiki/pre-made-adapters) available for Citizens, and more coming soon
+  - [Pre-made adapters](https://gabber235.github.io/TypeWriter/docs/pre-made-adapters) available for Citizens, and more coming soon
   - Custom adapters can be made by developers
 
 ## Getting started
 
 To get started with Typewriter, simply download the [plugin](https://github.com/gabber235/TypeWriter/releases) and configure it accordingly. 
-See [Installation Guide](https://github.com/gabber235/TypeWriter/wiki/Installation-guide) for more information.
+See [Installation Guide](https://gabber235.github.io/TypeWriter/docs/installation-guide) for more information.
+
+Also be sure to download ProtocolLib from [here](https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/) (Click on `ProtocolLib.jar`).
+
 Then, use the app to configure your custom interactions as desired.
 
-You can also utilize the [pre-made adapters](https://github.com/gabber235/TypeWriter/wiki/pre-made-adapters) or create your own custom adapters to extend the
-capabilities of the plugin. See [First Interaction](https://github.com/gabber235/TypeWriter/wiki/first-interaction) for more information.
+You can also utilize the [pre-made adapters](https://gabber235.github.io/TypeWriter/docs/pre-made-adapters) or create your own custom adapters to extend the
+capabilities of the plugin. See [First Interaction](https://gabber235.github.io/TypeWriter/docs/first-interaction) for more information.
 
 ## For administrators
 
 As an administrator, you can easily configure Typewriter using the custom web panel. 
 Simply input your desired interactions and let the plugin handle the rest. 
-You can also take advantage of the [pre-made adapters](https://github.com/gabber235/TypeWriter/wiki/pre-made-adapters) or create your own custom
+You can also take advantage of the [pre-made adapters](https://gabber235.github.io/TypeWriter/docs/pre-made-adapters) or create your own custom
 adapters to further customize the plugin for your server.
 
 ## For developers
@@ -59,4 +63,4 @@ See [LICENSE](LICENSE) to see the full text.
 
 # Credits
 
-- [Aarthificial](https://www.youtube.com/channel/UCZ1XWgQK8YkZp5ZwXKdVqjw) For the inspiration on the base logic.
+- [Aarthificial](https://www.youtube.com/@aarthificial) For the inspiration on the base logic.

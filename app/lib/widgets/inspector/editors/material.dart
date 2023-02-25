@@ -174,8 +174,7 @@ class MaterialSelectorEditor extends HookConsumerWidget {
   final String path;
   final CustomField field;
 
-  void _update(WidgetRef ref, String? value) {
-    if (value == null) return;
+  void _update(WidgetRef ref, String value) {
     ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, value.toUpperCase());
   }
 
@@ -183,7 +182,7 @@ class MaterialSelectorEditor extends HookConsumerWidget {
     ref.read(searchProvider.notifier).asBuilder()
       ..properties(properties)
       ..fetchMaterials(onSelect: (material) => _update(ref, material.key))
-      ..start();
+      ..open();
   }
 
   @override

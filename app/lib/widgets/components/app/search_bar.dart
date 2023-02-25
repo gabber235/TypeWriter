@@ -17,6 +17,7 @@ import "package:typewriter/utils/debouncer.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
+import "package:typewriter/widgets/components/general/focused_notifier.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "search_bar.freezed.dart";
@@ -183,17 +184,17 @@ class SearchNotifier extends StateNotifier<Search?> {
   void startGlobalSearch() => asBuilder()
     ..fetchNewEntry()
     ..fetchEntry()
-    ..start();
+    ..open();
 
   void startAddSearch({List<SearchFilter> filters = const [], Function(EntryBlueprint)? onAdd}) => asBuilder()
     ..fetchNewEntry(onAdd: onAdd)
     ..filters(filters)
-    ..start();
+    ..open();
 
   void startSelectSearch({List<SearchFilter> filters = const [], Function(Entry)? onSelect}) => asBuilder()
     ..fetchEntry(onSelect: onSelect)
     ..filters(filters)
-    ..start();
+    ..open();
 
   void endSearch() {
     state?.onEnd?.call();
@@ -266,7 +267,7 @@ class SearchBuilder {
     fetch(EntryFetcher(onSelect: onSelect));
   }
 
-  void start() {
+  void open() {
     notifier.start(_currentSearch);
   }
 }
@@ -883,73 +884,76 @@ class _ResultTile extends HookWidget {
               focusNode: focusNode,
               canRequestFocus: true,
               onFocusChange: (f) => focused.value = f,
-              child: InkWell(
-                canRequestFocus: false,
-                onTap: onPressed,
-                onHover: (h) => hover.value = h,
-                child: Row(
-                  children: [
-                    Container(
-                      height: double.infinity,
-                      color: color.withOpacity(color.opacity.clamp(0, 0.8)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: IconTheme(
-                          data: const IconThemeData(color: Colors.white),
-                          child: icon,
+              child: FocusedNotifier(
+                focusNode: focusNode,
+                child: InkWell(
+                  canRequestFocus: false,
+                  onTap: onPressed,
+                  onHover: (h) => hover.value = h,
+                  child: Row(
+                    children: [
+                      Container(
+                        height: double.infinity,
+                        color: color.withOpacity(color.opacity.clamp(0, 0.8)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: IconTheme(
+                            data: const IconThemeData(color: Colors.white),
+                            child: icon,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AutoSizeText(
-                            maxLines: 1,
-                            title,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: focused.value ? Colors.white : null,
-                                  fontWeight: focused.value ? FontWeight.bold : null,
-                                ),
-                          ),
-                          if (focused.value || hover.value)
-                            TextScroll(
-                              description,
-                              delayBefore: 1.seconds,
-                              pauseBetween: 3.seconds,
-                              intervalSpaces: 5,
-                              velocity: const Velocity(pixelsPerSecond: Offset(30, 0)),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: focused.value ? Colors.white : null,
-                                    fontWeight: focused.value ? FontWeight.bold : null,
-                                  ),
-                            )
-                          else
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             AutoSizeText(
                               maxLines: 1,
-                              description,
+                              title,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                     color: focused.value ? Colors.white : null,
                                     fontWeight: focused.value ? FontWeight.bold : null,
                                   ),
                             ),
-                        ],
+                            if (focused.value || hover.value)
+                              TextScroll(
+                                description,
+                                delayBefore: 1.seconds,
+                                pauseBetween: 3.seconds,
+                                intervalSpaces: 5,
+                                velocity: const Velocity(pixelsPerSecond: Offset(30, 0)),
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: focused.value ? Colors.white : null,
+                                      fontWeight: focused.value ? FontWeight.bold : null,
+                                    ),
+                              )
+                            else
+                              AutoSizeText(
+                                maxLines: 1,
+                                description,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: focused.value ? Colors.white : null,
+                                      fontWeight: focused.value ? FontWeight.bold : null,
+                                    ),
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconTheme(
-                      data: IconThemeData(
-                        size: 14,
-                        color: focused.value ? Colors.white : Colors.grey,
+                      const SizedBox(width: 8),
+                      IconTheme(
+                        data: IconThemeData(
+                          size: 14,
+                          color: focused.value ? Colors.white : Colors.grey,
+                        ),
+                        child: suffixIcon,
                       ),
-                      child: suffixIcon,
-                    ),
-                    const SizedBox(width: 16),
-                  ],
+                      const SizedBox(width: 16),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -55,13 +55,13 @@ class ConfirmationDialogue extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final secondsLeft = useState(delayConfirm.inSeconds);
-    final canConfirm = secondsLeft.value == 0;
+    final canConfirm = secondsLeft.value <= 0;
 
     useTimer(
       1.seconds,
       (timer) {
         secondsLeft.value--;
-        if (secondsLeft.value == 0) {
+        if (secondsLeft.value <= 0) {
           timer.cancel();
         }
       },

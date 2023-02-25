@@ -1,7 +1,6 @@
 package me.gabber235.typewriter.entry
 
-import me.gabber235.typewriter.entry.entries.EntryTrigger
-import me.gabber235.typewriter.entry.entries.EventTrigger
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.interaction.InteractionHandler
 import org.bukkit.entity.Player
 import kotlin.reflect.KClass
@@ -62,6 +61,8 @@ class Query<E : Entry>(private val klass: KClass<E>) {
 	 * ```
 	 */
 	infix fun findByName(name: String) = firstWhere { it.name == name }
+
+	infix fun findById(id: String): E? = findById(klass, id)
 
 	companion object {
 		/**
@@ -160,6 +161,10 @@ class Query<E : Entry>(private val klass: KClass<E>) {
 		 * ```
 		 */
 		fun <E : Entry> findByName(klass: KClass<E>, name: String) = firstWhere(klass) { it.name == name }
+
+		inline infix fun <reified E : Entry> findById(id: String): E? = findById(E::class, id)
+
+		fun <E : Entry> findById(klass: KClass<E>, id: String): E? = EntryDatabase.findEntryById(klass, id)
 	}
 }
 
@@ -176,7 +181,7 @@ class Query<E : Entry>(private val klass: KClass<E>) {
  */
 infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
 	val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
-	InteractionHandler.startInteractionAndTrigger(player, triggers)
+	InteractionHandler.triggerActions(player, triggers)
 }
 
 /**
@@ -192,12 +197,12 @@ infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
  */
 infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
 	val triggers = this.triggers.map { EntryTrigger(it) }
-	InteractionHandler.startInteractionAndTrigger(player, triggers)
+	InteractionHandler.triggerActions(player, triggers)
 }
 
 /**
  * Trigger all triggers for all entries in a list.
- * This is a convenience method for [triggerEntriesFor] that takes a list of strings.
+ * This is a convenience method for [triggerAllFor] that takes a list of strings.
  *
  * Example:
  * ```kotlin
@@ -209,26 +214,43 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
  */
 infix fun List<String>.triggerEntriesFor(player: Player) {
 	val triggers = this.map { EntryTrigger(it) }
-	InteractionHandler.startInteractionAndTrigger(player, triggers)
+	InteractionHandler.triggerActions(player, triggers)
 }
 
 /**
- * If the player is not in an interaction, trigger all triggers for all entries in a list.
- * If the player is in an interaction, only trigger the [continueTrigger].
+ * If the player is not in a dialogue, trigger all triggers for all entries in a list.
+ * If the player is in a dialogue, only trigger the [continueTrigger].
  *
- * This can be useful for actions that should not be triggered again if the player is already in an interaction.
+ * This can be useful for actions that should not be triggered again if the player is already in a dialogue.
  * Like clicking on a npc to start a conversation. As we don't want to start the conversation again
- * if the player is already in an interaction.
+ * if the player is already in a dialogue.
  *
  * Example:
  * ```kotlin
  * val entries: List<SomeEntry> = ...
- * entries.startInteractionWithOrTrigger(player, continueTrigger)
+ * entries.startDialogueWithOrTrigger(player, continueTrigger)
  * ```
  */
-fun <E : TriggerEntry> List<E>.startInteractionWithOrTrigger(player: Player, continueTrigger: EventTrigger) {
+fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, continueTrigger: EventTrigger) {
 	val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
-	InteractionHandler.startInteractionWithOrTriggerEvent(player, triggers, continueTrigger)
+	InteractionHandler.startDialogueWithOrTriggerEvent(player, triggers, continueTrigger)
 }
+
+/**
+ * If the player is not in a dialogue, trigger all triggers for all entries in a list.
+ * If the player is in a dialogue, it will trigger the next dialogue.
+ *
+ * This can be useful for actions that should not be triggered again if the player is already in a dialogue.
+ * Like clicking on a npc to start a conversation. As we don't want to start the conversation again
+ * if the player is already in a dialogue.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: List<SomeEntry> = ...
+ * entries startDialogueWithOrTrigger player
+ * ```
+ */
+infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player) =
+	startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
 
 
