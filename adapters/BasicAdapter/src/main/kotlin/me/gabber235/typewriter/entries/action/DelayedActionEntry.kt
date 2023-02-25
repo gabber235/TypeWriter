@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
 import me.gabber235.typewriter.utils.Icons
@@ -20,6 +21,7 @@ class DelayedActionEntry(
 	override val modifiers: List<Modifier> = emptyList(),
 	@SerializedName("triggers")
 	override val customTriggers: List<String> = emptyList(),
+	@Help("The time to delay the action for.")
 	private val duration: Duration = Duration.ZERO, // Number of milliseconds
 ) : CustomTriggeringActionEntry {
 

@@ -3,6 +3,7 @@ package com.caleb.typewriter.vault.entries.action
 import com.caleb.typewriter.vault.VaultAdapter
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
@@ -17,6 +18,7 @@ data class SetPrefixActionEntry(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
+	@Help("The prefix to set.")
 	private val prefix: String = "",
 ) : ActionEntry {
 	override fun execute(player: Player) {

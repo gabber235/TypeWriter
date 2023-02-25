@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entries.gate
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.utils.Icons
@@ -16,6 +17,7 @@ class RandomTriggerGateEntry(
 	override val customTriggers: List<String> = emptyList(),
 	override val criteria: List<Criteria>,
 	override val modifiers: List<Modifier>,
+	@Help("The amount of triggers to fire.")
 	private val amount: Int = 1,
 ) : CustomTriggeringActionEntry {
 

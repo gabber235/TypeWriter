@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldguard.WorldGuard
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
@@ -16,12 +17,12 @@ class LeaveRegionEventEntry (
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
+	@Help("The region to check for.")
 	val region: String = "",
 ) : EventEntry
 
 @EntryListener(LeaveRegionEventEntry::class)
 fun onMove(event: PlayerMoveEvent, query: Query<LeaveRegionEventEntry>) {
-
 	val player: Player = event.player
 
 	val regionContainer = WorldGuard.getInstance().platform.regionContainer
@@ -31,6 +32,5 @@ fun onMove(event: PlayerMoveEvent, query: Query<LeaveRegionEventEntry>) {
 
 	//region is in regionsFrom but not in regionsTo
 	(query findWhere { it.region in regionsFrom.map { it.id } && it.region !in regionsTo.map { it.id } }) triggerAllFor player
-
 }
 

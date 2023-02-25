@@ -6,6 +6,7 @@ import com.sk89q.worldguard.WorldGuard
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
@@ -23,10 +24,13 @@ class IsInRegionConditionEntry(
     @SerializedName("triggers")
     @Triggers
     @EntryIdentifier(TriggerableEntry::class)
+    @Help("The triggers to execute if the player is in the region.")
     val nextTriggers: List<String> = emptyList(),
     override val criteria: List<Criteria>,
     override val modifiers: List<Modifier>,
+    @Help("The region to check for.")
     private var region: String = "",
+    @Help("Whether the player should be in the region or not.")
     private var isInRegion: Boolean = true
 
 ) : ActionEntry {

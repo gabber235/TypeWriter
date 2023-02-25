@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.ITEM
 import me.gabber235.typewriter.entry.*
@@ -18,6 +19,7 @@ class PickupItemEventEntry(
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
 	@MaterialProperties(ITEM)
+	@Help("The item that was picked up.")
 	val material: Material = Material.STONE,
 ) : EventEntry
 
