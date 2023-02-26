@@ -6,7 +6,7 @@ Facts are essentially variables. They store information that can be modified by 
 Facts are stored per player, not for the server or world, unless otherwise specified.
 :::
 
-The [Basic Adapter](../adapters/basic-adapter) has a few types of facts to use.
+The [Basic Adapter](../adapters/BasicAdapter) has a few types of facts to use.
 
 ## Use
 

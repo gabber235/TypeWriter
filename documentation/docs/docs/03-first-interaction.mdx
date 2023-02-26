@@ -1,11 +1,11 @@
-import ReactPlayer from 'react-player'
+import ReactPlayer from "react-player";
 
 # First interaction
 
 In this guide we will create our first interaction. If you haven't installed Typewriter yet, please follow the [Installation Guide](Installation-guide) first.
 
 :::info
-This guide uses the [Basic Adapter](../adapters/basic-adapter), hence it must be installed before following this guide.
+This guide uses the [Basic Adapter](../adapters/BasicAdapter), hence it must be installed before following this guide.
 :::
 
 Let's create our first interaction. Our example interaction will look like this:
@@ -23,6 +23,7 @@ Let's create our first interaction. Our example interaction will look like this:
 If at any point you get stuck, feel free to ask for help on our [Discord](https://discord.gg/HtbKyuDDBw).
 
 ## Opening the Web Panel
+
 Before we begin creating our interaction, we need to open the web panel.
 To do this, run `/typewriter connect` in game. Then clicking the link that is given to you.
 
@@ -53,22 +54,23 @@ Let's have a look at everything that is on the panel.
 ![panel-layout](./assets/first-interaction/panel-layout.png)
 
 1. **The page lists**: This is where you can see all the pages that you have created. You can also create new
-pages here.
+   pages here.
 2. **The graph editor**: This is where you can create the flow of your interaction. You can drag & zoom the
-graph editor to make it easier to work with.
+   graph editor to make it easier to work with.
 3. **The inspector**: This is where you can edit the properties of the selected node. This is where the magic
-happens.
+   happens.
 4. **The app bar**: There are multiple actions that we can click on. Let's check them out from left to right
- - **Staging indicator**: This indicates whether you have staging changes. If the indicator is orange, it means
-that you have changes that are not active on the server. When green, it means that the changes are active on the
-server. We will learn more about this [Here](#testing-the-interaction).
- - **View mode**: This is where you can switch between the different view modes. There are two view modes,
-triggers and static. These refer to the different types of entries. We will learn more about this
-[Here](#adding-a-speaker).
- - **Search bar**: This is where you can search for entries or create new ones. We will learn more about this
-[Here](#creating-first-entry).
- - **Add button**: This is where you can add new entries. This opens the search bar where you can create new
-entries.
+
+-   **Staging indicator**: This indicates whether you have staging changes. If the indicator is orange, it means
+    that you have changes that are not active on the server. When green, it means that the changes are active on the
+    server. We will learn more about this [Here](#testing-the-interaction).
+-   **View mode**: This is where you can switch between the different view modes. There are two view modes,
+    triggers and static. These refer to the different types of entries. We will learn more about this
+    [Here](#adding-a-speaker).
+-   **Search bar**: This is where you can search for entries or create new ones. We will learn more about this
+    [Here](#creating-first-entry).
+-   **Add button**: This is where you can add new entries. This opens the search bar where you can create new
+    entries.
 
 ## Creating first entry
 
@@ -103,6 +105,7 @@ to do?`. After this the inspector should look like this:
 ![inspector-2](./assets/first-interaction/inspector-2.png)
 
 ### Adding a speaker
+
 Every dialogue needs a speaker. Speakers have a display name and can play a Minecraft sound when they talk.
 Speakers are something called `static` entries. `Static` entries are entries that are not triggered by anything.
 They are always active, and can be used to reference things. Let's create a `simple_speaker` which is the most
@@ -149,6 +152,7 @@ If we now go in-game we will see the following when we click on a red tulip it w
 ## Looking at flower
 
 ### Adding dialogue
+
 When the player wants to look at the flower we want to display some dialogue. Try to add a `spoken` dialogue
 entry. Rename it to `look_at_flower_initialy`, add the text `That flower looks <red><bold>Beautiful</bold></red>`
 select our `flower` speaker we created earlier, and finally specify a duration of `1s` for one second that the
@@ -171,6 +175,7 @@ Currently, every time we pick the `Look at the flower` option, we will get the s
 boring very quickly. Let's fix it by introducing a new concept called `Facts`.
 
 #### What are facts?
+
 Facts are a way to store information for each player. Every fact is a separate entry and can only store one
 integer per player. When an entry gets triggered we can check if a player meets a certain condition for a given
 fact. Only if the player meets the condition, will the entry get triggered. Then an entry can modify any facts
@@ -181,6 +186,7 @@ logs out, after a certain amount of time, or never. When a player forgets a fact
 reset to the default value 0.
 
 #### Creating a fact
+
 To create a fact, click on the `+` button in the app bar, and add a `permanent_fact` entry. Then change the name
 of the entry to `looked_at_flower`. We can add a comment describing the fact and how it is used. After this the
 inspector should look like this:
@@ -225,13 +231,12 @@ When you publish the changes. In the game it should look something like this:
 Now that we have added the first two dialogue entries, we can add the rest of the dialogue. We can add the
 following dialogue entries:
 
-- `smell_flower` - `You smell the flower. It smells <blue><bold>Fragrant</bold></blue>`
-- `touch_flower` - `You touch the flower. It feels <yellow><bold>Soft</bold></yellow>`
+-   `smell_flower` - `You smell the flower. It smells <blue><bold>Fragrant</bold></blue>`
+-   `touch_flower` - `You touch the flower. It feels <yellow><bold>Soft</bold></yellow>`
 
 With the `touch_flower` you can add a `give_item` entry after it, which gives the player a `red_tulip`.
 If you add another `fact` named `given_flower` and add a criterion & modifier to the `give_item` entry, you can
 make it so that the player can only get the flower once.
-
 
 If you are not able to make it work, try reading parts again or go to our
 [Discord](https://discord.gg/HtbKyuDDBw) and ask for help.
@@ -249,4 +254,3 @@ When you publish the changes. In the game it should look something like this:
 Now that you have completed the first interaction, try to create a new interaction. Think of a story you want to
 tell, and try to create it in Typewriter. If you are stuck, you can always ask for help on our
 [Discord](https://discord.gg/HtbKyuDDBw). Or if you have any suggestions feel free to reach out!
-

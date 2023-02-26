@@ -35,7 +35,7 @@ To install the basic adapter (or any for that matter), follow these steps:
 #### Pre-Made Adapters
 
 In addition to the basic adapter, Typewriter also offers several pre-made adapters that can be easily installed and
-configured. For a list of available adapters and instructions on how to install them, see [here](pre-made-adapters).
+configured. For a list of available adapters and instructions on how to install them, see [here](adapters).
 
 ## Configuring the Web Panel
 
@@ -63,17 +63,17 @@ enabled: true
 hostname: localhost
 # The panel uses web sockets to sync changes to the server and it allows you to work with multiple people at the same time.
 websocket:
-  # The port of the websocket server. Make sure this port is open.
-  port: 9092
-  # The authentication that is used. Leave unchanged if you don't know what you are doing.
-  auth: session
+    # The port of the websocket server. Make sure this port is open.
+    port: 9092
+    # The authentication that is used. Leave unchanged if you don't know what you are doing.
+    auth: session
 
 panel:
-  # The panel can be disabled while the sockets are still open. Only disable this if you know what you are doing.
-  # If the web sockets are disabled then the panel wil always be disabled.
-  enabled: true
-  # The port of the web panel. Make sure this port is open.
-  port: 8080
+    # The panel can be disabled while the sockets are still open. Only disable this if you know what you are doing.
+    # If the web sockets are disabled then the panel wil always be disabled.
+    enabled: true
+    # The port of the web panel. Make sure this port is open.
+    port: 8080
 ```
 
 3. Restart your server to complete the installation.

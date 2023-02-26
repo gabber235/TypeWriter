@@ -240,7 +240,8 @@ def main():
                             elif yn.lower() == "all":
                                 skipFileExistsCheck = True
                             elif yn.lower() == "":
-                                pass
+                                print("Skipping file")
+                                continue
                             else:
                                 print("Skipping file")
                                 continue
