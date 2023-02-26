@@ -1,4 +1,4 @@
-import {ActionsField, ColorInfo, EntryField, PlaceholderInfo} from '@site/src/components/EntryField';
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
 
 # Drop Item Action
 
@@ -10,7 +10,7 @@ This action can be useful in a variety of situations. You can use it to create t
 
 ## Fields
 
-<ActionsField/>
+<ActionsField />
 <EntryField name="Material" required>
     The Minecraft material of the item to drop.
 </EntryField>
@@ -20,18 +20,13 @@ This action can be useful in a variety of situations. You can use it to create t
 </EntryField>
 
 <EntryField name="Display Name" optional colored placeholders>
-    The display name of the item to drop.
-    <ColorInfo/>
-    <PlaceholderInfo/>
+    The display name of the item to drop. If not specified, the item will have it's default display name.
 </EntryField>
 
 <EntryField name="Lore" optional colored placeholders>
-    The lore of the item to drop.
-    <ColorInfo/>
-    <PlaceholderInfo/>
+    The lore of the item to drop. If not specified, the item will have it's default lore.
 </EntryField>
 
 <EntryField name="Location" optional>
-    The location to drop the item at. If this field is left blank, the item will be dropped at the location of the
-    player triggering the action.
+    The location to drop the item at. If this field is left blank, the item will be dropped at the location of the player triggering the action.
 </EntryField>

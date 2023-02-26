@@ -1,4 +1,4 @@
-import {ActionsField, ColorInfo, DurationInfo, EntryField, PlaceholderInfo} from '@site/src/components/EntryField';
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
 
 # Spoken Dialogue Action
 
@@ -10,7 +10,7 @@ This action can be useful in a variety of situations. You can use it to create s
 
 ## Fields
 
-<ActionsField/>
+<ActionsField />
 
 <EntryField name="Speaker" required>
     The speaker of the message to display.
@@ -18,11 +18,8 @@ This action can be useful in a variety of situations. You can use it to create s
 
 <EntryField name="Text" required colored placeholders>
     The text to display in the message.
-    <ColorInfo/>
-    <PlaceholderInfo/>
 </EntryField>
 
-<EntryField name="Duration" required>
+<EntryField name="Duration" required duration>
     The duration it takes for the typing animation to play.
-    <DurationInfo/>
 </EntryField>

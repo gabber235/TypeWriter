@@ -1,4 +1,4 @@
-import {ActionsField, ColorInfo, EntryField, PlaceholderInfo} from '@site/src/components/EntryField';
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
 
 # Random Message Dialogue Action
 
@@ -10,12 +10,10 @@ This action can be useful in a variety of situations. You can use it to create r
 
 ## Fields
 
-<ActionsField/>
+<ActionsField />
 
-<EntryField name="Messages" required colored placeholders>
+<EntryField name="Messages" required colored placeholders multiple>
     A list of possible messages, one of which will be chosen at random to display to the player.
-    <ColorInfo/>
-    <PlaceholderInfo/>
 </EntryField>
 
 <EntryField name="Speaker" required>

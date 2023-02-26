@@ -1,0 +1,17 @@
+import {FactsField, EntryField} from "@site/src/components/EntryField";
+
+# Cron Fact
+
+A [fact](/docs/facts) that is saved until a specified date, like (0 0 \* \* 1).
+
+## How could this be used?
+
+This fact could be used to save a date when a user should be reminded of something.
+
+## Fields
+
+<FactsField />
+
+<EntryField name="Cron" required>
+    The cron expression when the fact expires.
+</EntryField>

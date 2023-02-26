@@ -1,4 +1,4 @@
-import {ActionsField, ColorInfo, EntryField, PlaceholderInfo} from '@site/src/components/EntryField';
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
 
 # Give Item Action
 
@@ -10,7 +10,7 @@ This action can be useful in a variety of situations. You can use it to give pla
 
 ## Fields
 
-<ActionsField/>
+<ActionsField />
 <EntryField name="Material" required>
     The Minecraft material of the item to give.
 </EntryField>
@@ -20,13 +20,9 @@ This action can be useful in a variety of situations. You can use it to give pla
 </EntryField>
 
 <EntryField name="Display Name" optional colored placeholders>
-    The display name of the item to give.
-    <ColorInfo/>
-    <PlaceholderInfo/>
+    The display name of the item to give. If not specified, the item will have it's default display name.
 </EntryField>
 
 <EntryField name="Lore" optional colored placeholders>
-    The lore of the item to give.
-    <ColorInfo/>
-    <PlaceholderInfo/>
+    The lore of the item to give. If not specified, the item will have it's default lore.
 </EntryField>

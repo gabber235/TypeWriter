@@ -1,0 +1,21 @@
+import {EventsField, EntryField} from "@site/src/components/EntryField";
+
+# Detect Command Ran Event
+
+The `Detect Command Ran Event` event is triggered when an **already existing** command is ran.
+
+:::caution
+This event only works if the command already exists. If you are trying to make a new command that does not exist already, use the [`Run Command Event`](RunCommandEvent) instead.
+:::
+
+## How could this be used?
+
+This event could be used to trigger a response when a specific command is ran. For example, you could have a command that sends a message to a channel when a command is ran, which could be used as an audit log for your admins.
+
+## Fields
+
+<EventsField />
+
+<EntryField name="Command" required regex>
+    The command that was ran. Can be a regular expression.
+</EntryField>

@@ -1,0 +1,17 @@
+import {FactsField, EntryField} from "@site/src/components/EntryField";
+
+# Timed Fact
+
+This fact is stored for a certain amount of time. After that time, it is reset.
+
+## How could this be used?
+
+This fact could serve as a timer, and when the fact runs out, it could be used to trigger an action.
+
+## Fields
+
+<FactsField />
+
+<EntryField name="Duration" required duration>
+    The duration after which the fact expires.
+</EntryField>

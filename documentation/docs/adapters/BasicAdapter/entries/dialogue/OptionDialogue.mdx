@@ -1,4 +1,4 @@
-import {ActionsField, ColorInfo, EntryField, PlaceholderInfo} from '@site/src/components/EntryField';
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
 
 # Option Dialogue
 
@@ -10,7 +10,7 @@ This action can be useful in a variety of situations, such as presenting the pla
 
 ## Fields
 
-<ActionsField/>
+<ActionsField />
 
 <EntryField name="Speaker" required>
     The name of the character who is speaking the dialogue.
@@ -18,8 +18,6 @@ This action can be useful in a variety of situations, such as presenting the pla
 
 <EntryField name="Text" required colored placeholders>
     The text of the dialogue, which can contain placeholders to be filled in dynamically.
-    <ColorInfo/>
-    <PlaceholderInfo/>
 </EntryField>
 
 <EntryField name="Options" required>

@@ -113,22 +113,21 @@ def getField(data, line, i):
         field["description"] = desc.split('"')[1]
     else:
         if "Trigger" in field["name"]:
-            field["description"] = "The entries that will be fired after this entry."
+            return None
         elif "Criteria" in field["name"]:
-            field["description"] = "The criteria that must be met before this entry is triggered."
+            return None
         elif "Modifiers" in field["name"]:
-            field["description"] = "The modifiers that will be applied when this entry is triggered."
+            return None
         elif "Display Name" in field["name"]:
-            field[
-                "description"] = "The name of the entity that will be displayed in the chat (e.g. 'Steve' or 'Alex')."
+            return None
         elif "Speaker" in field["name"]:
             field["description"] = "The speaker of the dialogue"
         elif "Sound" in field["name"] and field["description"] == "":
-            field["description"] = "The sound that will be played when the entity speaks."
+            return None
         elif "Command" in field["name"] and field["description"] == "":
             field["description"] = "The command to register. Do not include the leading slash."
         elif "Comment" in field["name"] and field["description"] == "":
-            field["description"] = "A comment to keep track of what this fact is used for."
+            return None
         elif field["description"] == "":
             field["description"] = "No description provided"
             print("No description found for field in " + line.split(" ")
@@ -142,21 +141,25 @@ def createMarkdown(data, root, file):
     if not entryData:
         print("No entry data found")
         return None
-    markdown = f"""# {entryData['name']}
+    markdown = f"""import {{{entryData['section']}sField, EntryField}} from "@site/src/components/EntryField";
+
+# {entryData['name']}
 
 {entryData['description']}.
 
+## How could this be used?
+
+
+
 ## Fields
 
+<{"Action" if "Dialogue" in entryData["section"] else entryData["section"]}sField />
 """
     for field in entryData["fields"]:
         markdown += f"""
-### {field['name']}
-{field['description']}
-
-Type: `{field['type']}`
-
-{field['optional'] and "Optional" or "Required"}
+<EntryField name="{field["name"]}"{" optional" if field["optional"] else " required"}>
+    {field["description"]}
+</EntryField>
 """
     return markdown
 
@@ -189,7 +192,7 @@ def main():
             outputPath = root.replace(entryPath, outPathBase + r"\entries").replace(
                 "entities", "speaker").replace("gate", "action")
             outputFile = os.path.join(outputPath, file.replace(
-                ".kt", ".md").replace("Entry", ""))
+                ".kt", ".mdx").replace("Entry", ""))
 
             if not os.path.exists(outputPath):
                 os.makedirs(outputPath)
@@ -203,7 +206,7 @@ def main():
                     print(f"Failed to parse {file} ({e})")
                     continue
                 if markdown:
-                    with open(os.path.join(outPathBase, adapterName.replace(" ", "") + ".md"), "w") as f:
+                    with open(os.path.join(outPathBase, adapterName.replace(" ", "") + ".mdx"), "w") as f:
                         entry = getEntryData(data, root, file)
 
                         with open(os.path.join(outputPath, "_category_.yml"), "w") as f:
@@ -246,7 +249,7 @@ def main():
                     except Exception as e:
                         print(
                             f"Error writing {file}, putting at base directory ({e})")
-                        with open(os.path.join(outPathBase, file.replace(".kt", ".md").replace("Entry", "")), "w") as f:
+                        with open(os.path.join(outPathBase, file.replace(".kt", ".mdx").replace("Entry", "")), "w") as f:
                             f.write(markdown)
                         continue
                     print("")

@@ -1,0 +1,17 @@
+import {EventsField, EntryField} from "@site/src/components/EntryField";
+
+# Player Death Event
+
+The `Player Death Event` is fired when any player dies. This event allows you to select the cause of death if you wish. If you want to detect when another player kills a player, use the [`Player Kill Player Event`](PlayerKillPlayerEvent).
+
+## How could this be used?
+
+You can create custom death messages for certain types of deaths, such as falling, drowning, or being killed by another player.
+
+## Fields
+
+<EventsField />
+
+<EntryField name="Death Cause" optional>
+    The cause of the death.
+</EntryField>
