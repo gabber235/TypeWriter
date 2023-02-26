@@ -14,11 +14,11 @@ class DetectCommandRanEventEntry(
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
 	@Help("The command that was ran. Can be a regular expression.")
-	private val command: String = "",
+	val command: String = "",
 ) : EventEntry
 
 @EntryListener(DetectCommandRanEventEntry::class)
-fun onRunCommand(event: PlayerCommandPreprocessEvent, query: Query<RunCommandEventEntry>) {
+fun onRunCommand(event: PlayerCommandPreprocessEvent, query: Query<DetectCommandRanEventEntry>) {
 	val message = event.message.removePrefix("/")
 
 	query findWhere { Regex(it.command).matches(message) } triggerAllFor event.player
