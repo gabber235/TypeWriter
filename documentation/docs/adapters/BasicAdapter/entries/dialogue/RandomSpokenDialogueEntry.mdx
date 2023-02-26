@@ -1,0 +1,25 @@
+import {ActionsField, ColorInfo, DurationInfo, EntryField, PlaceholderInfo} from '@site/src/components/EntryField';
+
+# Random Spoken Dialogue
+
+The `Random Spoken Dialogue` action displays a randomly selected animated message to the player.
+
+## How could this be used?
+Let's say you have an NPC in your game who tells jokes to the player. You could use the Random Spoken Dialogue action to randomly select a joke from a list of possible jokes and have the NPC "tell" it to the player using an animated message.
+
+## Fields
+<ActionsField/>
+<EntryField name="Speaker" required>
+    The speaker of the dialogue.
+</EntryField>
+
+<EntryField name="Messages" required colored placeholders>
+    A list of messages to display to the player. One will be picked randomly.
+    <ColorInfo/>
+    <PlaceholderInfo/>
+</EntryField>
+
+<EntryField name="Duration" required>
+    The duration it takes for the typing animation to play.
+    <DurationInfo/>
+</EntryField>

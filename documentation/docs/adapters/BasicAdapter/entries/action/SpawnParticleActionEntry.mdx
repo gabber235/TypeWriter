@@ -1,0 +1,39 @@
+import {ActionsField, EntryField} from '@site/src/components/EntryField';
+
+# Spawn Particle Action
+
+The `Spawn Particle Action` is an action that spawns a specific particle at a given location. This action provides you with the ability to spawn particles with a specified type, count, and location.
+
+## How could this be used?
+
+This action can be useful in a variety of situations. You can use it to create visual effects in response to specific events, such as explosions or magical spells. The possibilities are endless!
+
+## Fields
+
+<ActionsField/>
+
+<EntryField name="Particle" required>
+    The particle to spawn.
+</EntryField>
+
+<EntryField name="Location" optional>
+    The location to spawn the particle at. If this field is left blank, the particle will be spawned at the location of
+    the
+    player triggering the action.
+</EntryField>
+
+<EntryField name="Count" required>
+    The number of particles to spawn.
+</EntryField>
+
+<EntryField name="Offset X" required>
+    The X offset of the particle spawn location.
+</EntryField>
+
+<EntryField name="Offset Y" required>
+    The Y offset of the particle spawn location.
+</EntryField>
+
+<EntryField name="Offset Z" required>
+    The Z offset of the particle spawn location.
+</EntryField>
