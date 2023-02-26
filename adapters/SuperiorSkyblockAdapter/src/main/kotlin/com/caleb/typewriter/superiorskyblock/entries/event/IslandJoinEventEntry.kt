@@ -8,7 +8,6 @@ import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
-import java.util.*
 
 @Entry("on_join_island", "When a player joins a Skyblock island", Colors.YELLOW, Icons.ENVELOPE_OPEN)
 class IslandJoinEventEntry(
@@ -24,6 +23,6 @@ fun onJoinIsland(event: IslandJoinEvent, query: Query<IslandJoinEventEntry>) {
 
 	if (sPlayer.island == null) return
 
-	query.find() triggerAllFor player
+    query.find() triggerAllFor player
 }
 

@@ -25,9 +25,9 @@ fun onInvite(event: IslandInviteEvent, query: Query<IslandInviteEventEntry>) {
 	val player = event.player?.asPlayer() ?: return
 	val target = event.target?.asPlayer()
 
-	val entries = query.find()
+    val entries = query.find()
 
-	entries triggerAllFor player
+    entries triggerAllFor player
 
 	if (target?.isOnline == true) {
 		entries.flatMap { it.inviteeTriggers } triggerEntriesFor target
