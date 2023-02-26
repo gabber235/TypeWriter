@@ -5,16 +5,11 @@ import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Triggers
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Modifier
-import me.gabber235.typewriter.entry.TriggerableEntry
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.entry.entries.EntryTrigger
-import me.gabber235.typewriter.entry.triggerAllFor
-import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.utils.Icons
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 @Entry("superiorskyblock_is_island_level_condition", "[SuperiorSkyblock] Continues if a player's island meets level criteria", Colors.PINK, Icons.FILTER)
@@ -27,7 +22,9 @@ class IsIslandLevelConditionEntry(
     val nextTriggers: List<String> = emptyList(),
     override val criteria: List<Criteria>,
     override val modifiers: List<Modifier>,
+    @Help("The level above which the island must be")
     private var aboveLevel: Int = 0,
+    @Help("The level below which the island must be")
     private var belowLevel: Int = 0
 
 ) : ActionEntry {
@@ -37,26 +34,22 @@ class IsIslandLevelConditionEntry(
 
     override fun execute(player: Player) {
 
-        var sPlayer = SuperiorSkyblockAPI.getPlayer(player)
-        var island = sPlayer.getIsland()
+        val sPlayer = SuperiorSkyblockAPI.getPlayer(player)
+        val island = sPlayer.island ?: return
 
-        if(island == null) {
-            return
-        }
+        val islandLevel = island.islandLevel.toInt()
 
-        var islandLevel = island.getIslandLevel().toInt()
-
-        if(belowLevel == 0) {
+        if (belowLevel == 0) {
             belowLevel = islandLevel
         }
 
-        if(aboveLevel == 0) {
+        if (aboveLevel == 0) {
             aboveLevel = islandLevel
         }
 
-        if(islandLevel in aboveLevel..belowLevel) {
+        if (islandLevel in aboveLevel..belowLevel) {
             super.execute(player)
-            InteractionHandler.startInteractionAndTrigger(player, nextTriggers.map { EntryTrigger(it) })
+            nextTriggers.triggerEntriesFor(player)
         }
 
     }

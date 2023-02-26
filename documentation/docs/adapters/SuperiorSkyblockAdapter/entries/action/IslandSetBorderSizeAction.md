@@ -27,7 +27,7 @@ Type: `Trigger`
 Required
 
 ### Size
-No description provided
+The size to set the island's border to
 
 Type: `Int`
 

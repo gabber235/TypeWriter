@@ -1,9 +1,9 @@
 package com.caleb.typewriter.superiorskyblock.entries.action
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI
-import com.caleb.typewriter.superiorskyblock.SuperiorSkyblockAdapter
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
@@ -18,6 +18,7 @@ data class IslandSetBiomeActionEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<String> = emptyList(),
+    @Help("The biome to set the island to")
     val biome: Biome = Biome.PLAINS
 
 ) : ActionEntry {

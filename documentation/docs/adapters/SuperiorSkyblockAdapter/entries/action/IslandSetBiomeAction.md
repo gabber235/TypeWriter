@@ -27,7 +27,7 @@ Type: `Trigger`
 Required
 
 ### Biome
-No description provided
+The biome to set the island to
 
 Type: `Biome`
 

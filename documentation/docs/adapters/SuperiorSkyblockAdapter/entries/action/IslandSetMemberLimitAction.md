@@ -27,7 +27,7 @@ Type: `Trigger`
 Required
 
 ### Size
-No description provided
+The new limit to set the island's member limit to
 
 Type: `Int`
 

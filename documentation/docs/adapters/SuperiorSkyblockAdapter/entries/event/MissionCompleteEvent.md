@@ -13,7 +13,7 @@ Type: `Trigger`
 Required
 
 ### Mission Name
-No description provided
+The name of the mission to trigger on
 
 Type: `String`
 
