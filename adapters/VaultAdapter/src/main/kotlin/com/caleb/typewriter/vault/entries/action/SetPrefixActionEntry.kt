@@ -11,7 +11,7 @@ import me.gabber235.typewriter.utils.Icons
 import net.milkbowl.vault.chat.Chat
 import org.bukkit.entity.Player
 
-@Entry("vault_set_prefix", "[Vault] Set Prefix", Colors.RED, Icons.USER_TAG)
+@Entry("set_prefix", "Set Prefix", Colors.RED, Icons.USER_TAG)
 data class SetPrefixActionEntry(
 	override val id: String = "",
 	override val name: String = "",

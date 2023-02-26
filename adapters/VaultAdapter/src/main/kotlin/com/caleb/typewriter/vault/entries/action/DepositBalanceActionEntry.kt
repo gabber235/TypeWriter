@@ -11,7 +11,7 @@ import me.gabber235.typewriter.utils.Icons
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.entity.Player
 
-@Entry("vault_deposit_balance", "[Vault] Deposit Balance", Colors.RED, Icons.MONEY_BILL)
+@Entry("deposit_balance", "Deposit Balance", Colors.RED, Icons.MONEY_BILL)
 data class DepositBalanceActionEntry(
 	override val id: String = "",
 	override val name: String = "",

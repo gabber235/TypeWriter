@@ -1,6 +1,5 @@
 package com.caleb.typewriter.superiorskyblock.entries.event
 
-import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI
 import com.bgsoftware.superiorskyblock.api.events.IslandJoinEvent
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer
 import me.gabber235.typewriter.adapters.Colors
@@ -10,22 +9,19 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("on_join_island", "[SuperiorSkyblock] When a player joins a Skyblock island", Colors.YELLOW, Icons.ENVELOPE_OPEN)
+@Entry("on_join_island", "When a player joins a Skyblock island", Colors.YELLOW, Icons.ENVELOPE_OPEN)
 class IslandJoinEventEntry(
-    override val id: String = "",
-    override val name: String = "",
-    override val triggers: List<String> = emptyList()
+	override val id: String = "",
+	override val name: String = "",
+	override val triggers: List<String> = emptyList()
 ) : EventEntry
 
 @EntryListener(IslandJoinEventEntry::class)
 fun onJoinIsland(event: IslandJoinEvent, query: Query<IslandJoinEventEntry>) {
+	val sPlayer: SuperiorPlayer = event.player ?: return
+	val player: Player = sPlayer.asPlayer() ?: return
 
-    val player: Player = event.player?.asPlayer() ?: return
-    val sPlayer: SuperiorPlayer = SuperiorSkyblockAPI.getPlayer(player)
-
-    if (sPlayer.island == null) return
-
-
+	if (sPlayer.island == null) return
 
     query.find() triggerAllFor player
 }

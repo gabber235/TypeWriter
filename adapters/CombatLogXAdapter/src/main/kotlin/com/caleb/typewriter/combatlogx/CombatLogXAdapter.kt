@@ -21,9 +21,6 @@ object CombatLogXAdapter : TypewriteAdapter() {
 	fun getAPI(): ICombatLogX? {
 		val pluginManager = Bukkit.getPluginManager()
 		val plugin = pluginManager.getPlugin("CombatLogX")
-		return plugin as ICombatLogX?
+		return plugin as? ICombatLogX
 	}
-
-
-
 }

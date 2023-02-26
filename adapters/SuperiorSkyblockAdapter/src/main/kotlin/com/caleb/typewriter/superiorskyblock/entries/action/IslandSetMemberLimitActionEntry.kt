@@ -10,7 +10,7 @@ import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("superiorskyblock_island_set_member_limit", "[SuperiorSkyblock] Set a player's island's member limit", Colors.RED, Icons.PEOPLE_GROUP)
+@Entry("island_set_member_limit", "Set a player's island's member limit", Colors.RED, Icons.PEOPLE_GROUP)
 data class IslandSetMemberLimitActionEntry(
     override val id: String = "",
     override val name: String = "",
@@ -19,7 +19,6 @@ data class IslandSetMemberLimitActionEntry(
     override val triggers: List<String> = emptyList(),
     @Help("The new limit to set the island's member limit to")
     val size: Int = 0
-
 ) : ActionEntry {
 
     override fun execute(player: Player) {
@@ -28,7 +27,5 @@ data class IslandSetMemberLimitActionEntry(
         val sPlayer = SuperiorSkyblockAPI.getPlayer(player)
         val island = sPlayer.island
         island?.teamLimit = size
-
     }
-
 }

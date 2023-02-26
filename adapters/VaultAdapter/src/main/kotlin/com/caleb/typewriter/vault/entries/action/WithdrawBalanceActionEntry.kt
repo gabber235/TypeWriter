@@ -11,7 +11,7 @@ import me.gabber235.typewriter.utils.Icons
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.entity.Player
 
-@Entry("vault_withdraw_balance", "[Vault] Withdraw Balance", Colors.RED, Icons.MONEY_BILL)
+@Entry("withdraw_balance", "Withdraw Balance", Colors.RED, Icons.MONEY_BILL)
 data class WithdrawBalanceActionEntry(
 	override val id: String = "",
 	override val name: String = "",

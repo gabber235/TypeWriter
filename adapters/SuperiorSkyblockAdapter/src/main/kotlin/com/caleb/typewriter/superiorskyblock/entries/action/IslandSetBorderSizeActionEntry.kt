@@ -10,7 +10,7 @@ import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("superiorskyblock_island_set_border_size", "[SuperiorSkyblock] Set a player's island's border size", Colors.RED, Icons.BORDER_ALL)
+@Entry("island_set_border_size", "Set a player's island's border size", Colors.RED, Icons.BORDER_ALL)
 data class IslandSetBorderSizeActionEntry(
     override val id: String = "",
     override val name: String = "",
@@ -19,7 +19,6 @@ data class IslandSetBorderSizeActionEntry(
     override val triggers: List<String> = emptyList(),
     @Help("The size to set the island's border to")
     val size: Int = 0
-
 ) : ActionEntry {
 
     override fun execute(player: Player) {
@@ -28,7 +27,5 @@ data class IslandSetBorderSizeActionEntry(
         val sPlayer = SuperiorSkyblockAPI.getPlayer(player)
         val island = sPlayer.island
         island?.islandSize = size
-
     }
-
 }
