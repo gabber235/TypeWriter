@@ -9,7 +9,7 @@ the [Installation Guide](/docs/Installation-Guide) first.
 ### Action
 
 | Name                                                                       | Description                                  |
-| -------------------------------------------------------------------------- | -------------------------------------------- |
+|----------------------------------------------------------------------------|----------------------------------------------|
 | [Console Command Action](BasicAdapter/entries/action/ConsoleCommandAction) | Run command from console                     |
 | [Delayed Action](BasicAdapter/entries/action/DelayedAction)                | Delay an action for a certain amount of time |
 | [Drop Item Action](BasicAdapter/entries/action/DropItemAction)             | Drop an item at location, or on player       |
@@ -22,7 +22,7 @@ the [Installation Guide](/docs/Installation-Guide) first.
 ### Dialogue
 
 | Name                                                                           | Description                                              |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------- |
+|--------------------------------------------------------------------------------|----------------------------------------------------------|
 | [Message Dialogue](BasicAdapter/entries/dialogue/MessageDialogue)              | Display a single message to the player                   |
 | [Option Dialogue](BasicAdapter/entries/dialogue/OptionDialogue)                | Display a list of options to the player                  |
 | [Random Message Dialogue](BasicAdapter/entries/dialogue/RandomMessageDialogue) | Display a random message from a list to a player         |
@@ -32,13 +32,13 @@ the [Installation Guide](/docs/Installation-Guide) first.
 ### Speaker
 
 | Name                                                         | Description            |
-| ------------------------------------------------------------ | ---------------------- |
+|--------------------------------------------------------------|------------------------|
 | [Simple Speaker](BasicAdapter/entries/speaker/SimpleSpeaker) | The most basic speaker |
 
 ### Event
 
 | Name                                                                         | Description                            |
-| ---------------------------------------------------------------------------- | -------------------------------------- |
+|------------------------------------------------------------------------------|----------------------------------------|
 | [Block Break Event](BasicAdapter/entries/event/BlockBreakEvent)              | When the player breaks a block         |
 | [Block Place Event](BasicAdapter/entries/event/BlockPlaceEvent)              | When the player places a block         |
 | [Detect Command Ran Event](BasicAdapter/entries/event/DetectCommandRanEvent) | When a player runs an existing command |
@@ -53,11 +53,12 @@ the [Installation Guide](/docs/Installation-Guide) first.
 
 ### Fact
 
-| Name                                                                         | Description                                      |
-| ---------------------------------------------------------------------------- | ------------------------------------------------ |
-| [Cron Fact](BasicAdapter/entries/fact/CronFact)                              | Saved until a specified date, like (0 0 \* \* 1) |
-| [Permanent Fact](BasicAdapter/entries/fact/PermanentFact)                    | Saved permanently, it never gets removed         |
-| [Placeholder Fact Entries](BasicAdapter/entries/fact/PlaceholderFactEntries) | Computed Fact for a placeholder number           |
-| [Session Fact](BasicAdapter/entries/fact/SessionFact)                        | Saved until a player logouts of the server       |
-| [Timed Fact](BasicAdapter/entries/fact/TimedFact)                            | Saved for a specified duration, like 20 minutes  |
-| [Random Trigger Gate](BasicAdapter/entries/action/RandomTriggerGate)         | Randomly selects its connected triggers          |
+| Name                                                                       | Description                                       |
+|----------------------------------------------------------------------------|---------------------------------------------------|
+| [Cron Fact](BasicAdapter/entries/fact/CronFact)                            | Saved until a specified date, like (0 0 \* \* 1)  |
+| [Permanent Fact](BasicAdapter/entries/fact/PermanentFact)                  | Saved permanently, it never gets removed          |
+| [Number Placeholder Fact](BasicAdapter/entries/fact/NumberPlaceholderFact) | Computed fact for placeholders returning a number |
+| [Value Placeholder Fact](BasicAdapter/entries/fact/ValuePlaceholderFact)   | Computed fact for placeholders returning anything |
+| [Session Fact](BasicAdapter/entries/fact/SessionFact)                      | Saved until a player logouts of the server        |
+| [Timed Fact](BasicAdapter/entries/fact/TimedFact)                          | Saved for a specified duration, like 20 minutes   |
+| [Random Trigger Gate](BasicAdapter/entries/action/RandomTriggerGate)       | Randomly selects its connected triggers           |
