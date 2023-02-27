@@ -45,15 +45,6 @@ private fun onReferenceNpcInteract(player: Player, npcId: Int, query: Query<NpcI
 	} startDialogueWithOrNextDialogue player
 }
 
-private fun onReferenceNpcInteract(player: Player, npcId: Int, query: Query<NpcInteractEventEntry>) {
-	val references = Query.findWhere<ReferenceNpcEntry> { it.npcId == npcId }
-	val identifiers = references.map { it.id }
-
-	query.findWhere {
-		it.identifier in identifiers
-	}.startInteractionWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
-}
-
 @EntryListener(NpcInteractEventEntry::class)
 fun onNpcRightClick(event: NPCRightClickEvent, query: Query<NpcInteractEventEntry>) {
 	val identifier = event.npc.getTraitNullable(TypewriterTrait::class.java)?.identifier
