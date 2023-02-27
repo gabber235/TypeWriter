@@ -6,7 +6,9 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.asMini
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import org.bukkit.entity.Player
@@ -34,8 +36,8 @@ data class ShowTitleActionEntry(
 
 		if(durations.isPresent) {
 			adventureTitle = Title.title(
-			Component.text(title),
-			Component.text(subtitle),
+			title.parsePlaceholders(player).asMini(),
+			subtitle.parsePlaceholders(player).asMini(),
 			Title.Times.times(
 				Duration.ofMillis(durations.get().fadeIn),
 				Duration.ofMillis(durations.get().stay),
@@ -44,8 +46,8 @@ data class ShowTitleActionEntry(
 			)
 		} else {
 			adventureTitle = Title.title(
-			Component.text(title),
-			Component.text(subtitle)
+			title.parsePlaceholders(player).asMini(),
+			subtitle.parsePlaceholders(player).asMini(),
 			)
 		}
 

@@ -8,8 +8,8 @@ the [Installation Guide](/docs/Installation-Guide) first.
 
 ### Action
 
-| Name                                                                          | Description                                  |
-|-------------------------------------------------------------------------------|----------------------------------------------|
+| Name                                                                       | Description                                  |
+| -------------------------------------------------------------------------- | -------------------------------------------- |
 | [Console Command Action](BasicAdapter/entries/action/ConsoleRunCommandAction) | Run command from console                     |
 | [Delayed Action](BasicAdapter/entries/action/DelayedAction)                   | Delay an action for a certain amount of time |
 | [Drop Item Action](BasicAdapter/entries/action/DropItemAction)                | Drop an item at location, or on player       |
@@ -18,12 +18,13 @@ the [Installation Guide](/docs/Installation-Guide) first.
 | [Play Sound Action](BasicAdapter/entries/action/PlaySoundAction)              | Play sound at player, or location            |
 | [Simple Action](BasicAdapter/entries/action/SimpleAction)                     | Simple action to modify facts                |
 | [Spawn Particle Action](BasicAdapter/entries/action/SpawnParticlesAction)     | Spawn particles at location                  |
+| [Show Title Action](BasicAdapter/entries/action/ShowTitleAction)     | Dsiplay a title to a player                  |
 | [Random Trigger Gate](BasicAdapter/entries/action/RandomTriggerAction)        | Randomly selects its connected triggers      |
 
 ### Dialogue
 
-| Name                                                                           | Description                                              |
-|--------------------------------------------------------------------------------|----------------------------------------------------------|
+| Name                                                                        | Description                                              |
+| --------------------------------------------------------------------------- | -------------------------------------------------------- |
 | [Message Dialogue](BasicAdapter/entries/dialogue/MessageDialogue)              | Display a single message to the player                   |
 | [Option Dialogue](BasicAdapter/entries/dialogue/OptionDialogue)                | Display a list of options to the player                  |
 | [Random Message Dialogue](BasicAdapter/entries/dialogue/RandomMessageDialogue) | Display a random message from a list to a player         |
@@ -32,8 +33,8 @@ the [Installation Guide](/docs/Installation-Guide) first.
 
 ### Event
 
-| Name                                                                         | Description                            |
-|------------------------------------------------------------------------------|----------------------------------------|
+| Name                                                                      | Description                            |
+| ------------------------------------------------------------------------- | -------------------------------------- |
 | [Block Break Event](BasicAdapter/entries/event/BlockBreakEvent)              | When the player breaks a block         |
 | [Block Place Event](BasicAdapter/entries/event/PlaceBlockEvent)              | When the player places a block         |
 | [Detect Command Ran Event](BasicAdapter/entries/event/DetectCommandRanEvent) | When a player runs an existing command |
@@ -48,9 +49,9 @@ the [Installation Guide](/docs/Installation-Guide) first.
 
 ### Fact
 
-| Name                                                                       | Description                                       |
-|----------------------------------------------------------------------------|---------------------------------------------------|
-| [Cron Fact](BasicAdapter/entries/fact/CronFact)                            | Saved until a specified date, like (0 0 \* \* 1)  |
+| Name                                                                    | Description                                       |
+| ----------------------------------------------------------------------- | ------------------------------------------------- |
+| [Cron Fact](BasicAdapter/entries/fact/CronFact)                            | Saved until a specified date, like (0 0\* \* 1)   |
 | [Permanent Fact](BasicAdapter/entries/fact/PermanentFact)                  | Saved permanently, it never gets removed          |
 | [Number Placeholder Fact](BasicAdapter/entries/fact/NumberPlaceholderFact) | Computed fact for placeholders returning a number |
 | [Value Placeholder Fact](BasicAdapter/entries/fact/ValuePlaceholderFact)   | Computed fact for placeholders returning anything |
@@ -59,6 +60,6 @@ the [Installation Guide](/docs/Installation-Guide) first.
 
 ### Speaker
 
-| Name                                                         | Description            |
-|--------------------------------------------------------------|------------------------|
+| Name                                                      | Description            |
+| --------------------------------------------------------- | ---------------------- |
 | [Simple Speaker](BasicAdapter/entries/speaker/SimpleSpeaker) | The most basic speaker |

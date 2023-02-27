@@ -1,0 +1,26 @@
+import {ActionsField, EntryField} from '@site/src/components/EntryField';
+
+# Show Title Action
+
+The `Show Title Action` is an action that shows a title to a player. You can specify the subtitle, and durations if needed.
+
+## How could this be used?
+
+This action can be useful in a variety of situations. You can use it to create text effects in response to specific events, such as completing questions or anything else. The possibilities are endless!
+
+## Fields
+
+<ActionsField/>
+
+<EntryField name="Title" required colored placeholders>
+    The title text to display
+</EntryField>
+
+<EntryField name="Subtitle" required colored placeholders>
+    The subtitle text to display
+</EntryField>
+
+<EntryField name="Durations" optional>
+    The duration of the title:
+    Fade in, stay visible, and fade out.
+</EntryField>
