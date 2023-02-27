@@ -58,6 +58,7 @@ class EntryBlueprint with _$EntryBlueprint {
   const factory EntryBlueprint({
     required String name,
     required String description,
+    required String adapter,
     required ObjectField fields,
     @Default(<String>[]) List<String> tags,
     @ColorConverter() @Default(Colors.grey) Color color,

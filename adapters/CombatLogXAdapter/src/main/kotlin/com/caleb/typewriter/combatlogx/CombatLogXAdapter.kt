@@ -8,7 +8,7 @@ import me.gabber235.typewriter.adapters.TypewriteAdapter
 import org.bukkit.Bukkit
 
 
-@Adapter("combatlogx", "For Using CombatLogX", "0.0.1")
+@Adapter("CombatLogX", "For Using CombatLogX", "0.0.1")
 object CombatLogXAdapter : TypewriteAdapter() {
 
 	override fun initialize() {

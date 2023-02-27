@@ -6,7 +6,7 @@ part of 'app_router.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$currentRouteDataHash() => r'26e8ab76dc65802a22863a447292ee0d7c4e3b0d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,15 +29,68 @@ class _SystemHash {
   }
 }
 
-String _$currentRouteDataHash() => r'26e8ab76dc65802a22863a447292ee0d7c4e3b0d';
+typedef CurrentRouteDataRef = ProviderRef<RouteData?>;
+
+/// Provides the current route data for the given [name].
+///
+/// Copied from [currentRouteData].
+@ProviderFor(currentRouteData)
+const currentRouteDataProvider = CurrentRouteDataFamily();
+
+/// Provides the current route data for the given [name].
+///
+/// Copied from [currentRouteData].
+class CurrentRouteDataFamily extends Family<RouteData?> {
+  /// Provides the current route data for the given [name].
+  ///
+  /// Copied from [currentRouteData].
+  const CurrentRouteDataFamily();
+
+  /// Provides the current route data for the given [name].
+  ///
+  /// Copied from [currentRouteData].
+  CurrentRouteDataProvider call(
+    String name,
+  ) {
+    return CurrentRouteDataProvider(
+      name,
+    );
+  }
+
+  @override
+  CurrentRouteDataProvider getProviderOverride(
+    covariant CurrentRouteDataProvider provider,
+  ) {
+    return call(
+      provider.name,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'currentRouteDataProvider';
+}
 
 /// Provides the current route data for the given [name].
 ///
 /// Copied from [currentRouteData].
 class CurrentRouteDataProvider extends Provider<RouteData?> {
+  /// Provides the current route data for the given [name].
+  ///
+  /// Copied from [currentRouteData].
   CurrentRouteDataProvider(
     this.name,
-  ) : super(
+  ) : super.internal(
           (ref) => currentRouteData(
             ref,
             name,
@@ -48,6 +101,9 @@ class CurrentRouteDataProvider extends Provider<RouteData?> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$currentRouteDataHash,
+          dependencies: CurrentRouteDataFamily._dependencies,
+          allTransitiveDependencies:
+              CurrentRouteDataFamily._allTransitiveDependencies,
         );
 
   final String name;
@@ -65,40 +121,4 @@ class CurrentRouteDataProvider extends Provider<RouteData?> {
     return _SystemHash.finish(hash);
   }
 }
-
-typedef CurrentRouteDataRef = ProviderRef<RouteData?>;
-
-/// Provides the current route data for the given [name].
-///
-/// Copied from [currentRouteData].
-final currentRouteDataProvider = CurrentRouteDataFamily();
-
-class CurrentRouteDataFamily extends Family<RouteData?> {
-  CurrentRouteDataFamily();
-
-  CurrentRouteDataProvider call(
-    String name,
-  ) {
-    return CurrentRouteDataProvider(
-      name,
-    );
-  }
-
-  @override
-  Provider<RouteData?> getProviderOverride(
-    covariant CurrentRouteDataProvider provider,
-  ) {
-    return call(
-      provider.name,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'currentRouteDataProvider';
-}
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

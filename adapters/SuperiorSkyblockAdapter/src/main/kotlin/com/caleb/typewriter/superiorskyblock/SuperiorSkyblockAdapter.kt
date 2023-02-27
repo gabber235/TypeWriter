@@ -4,11 +4,9 @@ import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
-import org.bukkit.Bukkit.getServer
-import org.bukkit.plugin.RegisteredServiceProvider
 
 
-@Adapter("superiorskyblock2", "For SuperiorSkyblock2, made by Caleb (Sniper)", "0.0.1")
+@Adapter("SuperiorSkyblock", "For SuperiorSkyblock2, made by Caleb (Sniper)", "0.0.1")
 object SuperiorSkyblockAdapter : TypewriteAdapter() {
 
 
@@ -18,7 +16,6 @@ object SuperiorSkyblockAdapter : TypewriteAdapter() {
 		}
 
 	}
-
 
 
 }

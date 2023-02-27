@@ -11,6 +11,7 @@ import java.lang.reflect.ParameterizedType
 data class EntryBlueprint(
 	val name: String,
 	val description: String,
+	val adapter: String,
 	val fields: FieldInfo,
 	val color: String, // Hex color
 	val icon: String, // Font Awesome icon from [Icons]

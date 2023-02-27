@@ -92,7 +92,7 @@ object AdapterLoader {
 		val adapterAnnotation = adapterClass.getAnnotation(Adapter::class.java)
 
 		// Entries info
-		val blueprints = constructEntryBlueprints(entryClasses)
+		val blueprints = constructEntryBlueprints(adapterAnnotation, entryClasses)
 
 		// Messengers info
 		val messengers = constructMessengers(messengerClasses)
@@ -111,7 +111,7 @@ object AdapterLoader {
 		)
 	}
 
-	private fun constructEntryBlueprints(entryClasses: List<Class<*>>) =
+	private fun constructEntryBlueprints(adapter: Adapter, entryClasses: List<Class<*>>) =
 		entryClasses.filter { me.gabber235.typewriter.entry.Entry::class.java.isAssignableFrom(it) }
 			.map { it as Class<out me.gabber235.typewriter.entry.Entry> }
 			.map { entryClass ->
@@ -120,6 +120,7 @@ object AdapterLoader {
 				EntryBlueprint(
 					entryAnnotation.name,
 					entryAnnotation.description,
+					adapter.name,
 					ObjectField.fromTypeToken(TypeToken.get(entryClass)),
 					entryAnnotation.color,
 					entryAnnotation.icon.id,

@@ -23,7 +23,23 @@ Map<String, dynamic> _$$_SoundDataToJson(_$_SoundData instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$minecraftSoundsHash() => r'057ac7e0ea33c9ed26f63e57a67091721811fd50';
+
+/// See also [minecraftSounds].
+@ProviderFor(minecraftSounds)
+final minecraftSoundsProvider =
+    FutureProvider<Map<String, List<SoundData>>>.internal(
+  minecraftSounds,
+  name: r'minecraftSoundsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$minecraftSoundsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef MinecraftSoundsRef = FutureProviderRef<Map<String, List<SoundData>>>;
+String _$minecraftSoundHash() => r'3a6806c1a0d534e49af8e067f895dfa0912868ee';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -46,25 +62,59 @@ class _SystemHash {
   }
 }
 
-String _$minecraftSoundsHash() => r'057ac7e0ea33c9ed26f63e57a67091721811fd50';
+typedef MinecraftSoundRef
+    = AutoDisposeFutureProviderRef<MapEntry<String, List<SoundData>>?>;
 
-/// See also [minecraftSounds].
-final minecraftSoundsProvider = FutureProvider<Map<String, List<SoundData>>>(
-  minecraftSounds,
-  name: r'minecraftSoundsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$minecraftSoundsHash,
-);
-typedef MinecraftSoundsRef = FutureProviderRef<Map<String, List<SoundData>>>;
-String _$minecraftSoundHash() => r'3a6806c1a0d534e49af8e067f895dfa0912868ee';
+/// See also [minecraftSound].
+@ProviderFor(minecraftSound)
+const minecraftSoundProvider = MinecraftSoundFamily();
+
+/// See also [minecraftSound].
+class MinecraftSoundFamily
+    extends Family<AsyncValue<MapEntry<String, List<SoundData>>?>> {
+  /// See also [minecraftSound].
+  const MinecraftSoundFamily();
+
+  /// See also [minecraftSound].
+  MinecraftSoundProvider call(
+    String id,
+  ) {
+    return MinecraftSoundProvider(
+      id,
+    );
+  }
+
+  @override
+  MinecraftSoundProvider getProviderOverride(
+    covariant MinecraftSoundProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'minecraftSoundProvider';
+}
 
 /// See also [minecraftSound].
 class MinecraftSoundProvider
     extends AutoDisposeFutureProvider<MapEntry<String, List<SoundData>>?> {
+  /// See also [minecraftSound].
   MinecraftSoundProvider(
     this.id,
-  ) : super(
+  ) : super.internal(
           (ref) => minecraftSound(
             ref,
             id,
@@ -75,6 +125,9 @@ class MinecraftSoundProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$minecraftSoundHash,
+          dependencies: MinecraftSoundFamily._dependencies,
+          allTransitiveDependencies:
+              MinecraftSoundFamily._allTransitiveDependencies,
         );
 
   final String id;
@@ -92,41 +145,4 @@ class MinecraftSoundProvider
     return _SystemHash.finish(hash);
   }
 }
-
-typedef MinecraftSoundRef
-    = AutoDisposeFutureProviderRef<MapEntry<String, List<SoundData>>?>;
-
-/// See also [minecraftSound].
-final minecraftSoundProvider = MinecraftSoundFamily();
-
-class MinecraftSoundFamily
-    extends Family<AsyncValue<MapEntry<String, List<SoundData>>?>> {
-  MinecraftSoundFamily();
-
-  MinecraftSoundProvider call(
-    String id,
-  ) {
-    return MinecraftSoundProvider(
-      id,
-    );
-  }
-
-  @override
-  AutoDisposeFutureProvider<MapEntry<String, List<SoundData>>?>
-      getProviderOverride(
-    covariant MinecraftSoundProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'minecraftSoundProvider';
-}
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

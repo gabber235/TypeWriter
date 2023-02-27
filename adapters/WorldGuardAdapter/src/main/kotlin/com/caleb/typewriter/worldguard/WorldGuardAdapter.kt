@@ -7,7 +7,7 @@ import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
 
 
-@Adapter("worldguard", "For Using WorldGuard", "0.1.0")
+@Adapter("WorldGuard", "For Using WorldGuard", "0.1.0")
 object WorldGuardAdapter : TypewriteAdapter() {
 
 	override fun initialize() {

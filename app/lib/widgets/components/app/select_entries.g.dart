@@ -6,7 +6,24 @@ part of 'select_entries.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$isSelectingEntriesHash() =>
+    r'7dbeb22f747ea2196261c6c276fb6c0985d291a8';
+
+/// See also [isSelectingEntries].
+@ProviderFor(isSelectingEntries)
+final isSelectingEntriesProvider = AutoDisposeProvider<bool>.internal(
+  isSelectingEntries,
+  name: r'isSelectingEntriesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$isSelectingEntriesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef IsSelectingEntriesRef = AutoDisposeProviderRef<bool>;
+String _$hasEntryInSelectionHash() =>
+    r'37d3f99d551b6c262d5482dab88037f89f214ce1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,26 +46,56 @@ class _SystemHash {
   }
 }
 
-String _$isSelectingEntriesHash() =>
-    r'7dbeb22f747ea2196261c6c276fb6c0985d291a8';
+typedef HasEntryInSelectionRef = AutoDisposeProviderRef<bool>;
 
-/// See also [isSelectingEntries].
-final isSelectingEntriesProvider = AutoDisposeProvider<bool>(
-  isSelectingEntries,
-  name: r'isSelectingEntriesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$isSelectingEntriesHash,
-);
-typedef IsSelectingEntriesRef = AutoDisposeProviderRef<bool>;
-String _$hasEntryInSelectionHash() =>
-    r'37d3f99d551b6c262d5482dab88037f89f214ce1';
+/// See also [hasEntryInSelection].
+@ProviderFor(hasEntryInSelection)
+const hasEntryInSelectionProvider = HasEntryInSelectionFamily();
+
+/// See also [hasEntryInSelection].
+class HasEntryInSelectionFamily extends Family<bool> {
+  /// See also [hasEntryInSelection].
+  const HasEntryInSelectionFamily();
+
+  /// See also [hasEntryInSelection].
+  HasEntryInSelectionProvider call(
+    String id,
+  ) {
+    return HasEntryInSelectionProvider(
+      id,
+    );
+  }
+
+  @override
+  HasEntryInSelectionProvider getProviderOverride(
+    covariant HasEntryInSelectionProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'hasEntryInSelectionProvider';
+}
 
 /// See also [hasEntryInSelection].
 class HasEntryInSelectionProvider extends AutoDisposeProvider<bool> {
+  /// See also [hasEntryInSelection].
   HasEntryInSelectionProvider(
     this.id,
-  ) : super(
+  ) : super.internal(
           (ref) => hasEntryInSelection(
             ref,
             id,
@@ -59,6 +106,9 @@ class HasEntryInSelectionProvider extends AutoDisposeProvider<bool> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$hasEntryInSelectionHash,
+          dependencies: HasEntryInSelectionFamily._dependencies,
+          allTransitiveDependencies:
+              HasEntryInSelectionFamily._allTransitiveDependencies,
         );
 
   final String id;
@@ -77,48 +127,18 @@ class HasEntryInSelectionProvider extends AutoDisposeProvider<bool> {
   }
 }
 
-typedef HasEntryInSelectionRef = AutoDisposeProviderRef<bool>;
-
-/// See also [hasEntryInSelection].
-final hasEntryInSelectionProvider = HasEntryInSelectionFamily();
-
-class HasEntryInSelectionFamily extends Family<bool> {
-  HasEntryInSelectionFamily();
-
-  HasEntryInSelectionProvider call(
-    String id,
-  ) {
-    return HasEntryInSelectionProvider(
-      id,
-    );
-  }
-
-  @override
-  AutoDisposeProvider<bool> getProviderOverride(
-    covariant HasEntryInSelectionProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'hasEntryInSelectionProvider';
-}
-
 String _$selectingTagHash() => r'e22363af393fbc3ddb3ad07ab830c863da440dfa';
 
 /// See also [selectingTag].
-final selectingTagProvider = AutoDisposeProvider<String>(
+@ProviderFor(selectingTag)
+final selectingTagProvider = AutoDisposeProvider<String>.internal(
   selectingTag,
   name: r'selectingTagProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$selectingTagHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
+
 typedef SelectingTagRef = AutoDisposeProviderRef<String>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

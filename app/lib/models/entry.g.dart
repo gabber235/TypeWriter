@@ -6,7 +6,7 @@ part of 'entry.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$entryDefinitionHash() => r'5cd9fa81725650c8aedfcf39f5cb1f767433e4f1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,14 +29,60 @@ class _SystemHash {
   }
 }
 
-String _$entryDefinitionHash() => r'5cd9fa81725650c8aedfcf39f5cb1f767433e4f1';
+typedef EntryDefinitionRef = AutoDisposeProviderRef<EntryDefinition?>;
+
+/// See also [entryDefinition].
+@ProviderFor(entryDefinition)
+const entryDefinitionProvider = EntryDefinitionFamily();
+
+/// See also [entryDefinition].
+class EntryDefinitionFamily extends Family<EntryDefinition?> {
+  /// See also [entryDefinition].
+  const EntryDefinitionFamily();
+
+  /// See also [entryDefinition].
+  EntryDefinitionProvider call(
+    String pageId,
+    String entryId,
+  ) {
+    return EntryDefinitionProvider(
+      pageId,
+      entryId,
+    );
+  }
+
+  @override
+  EntryDefinitionProvider getProviderOverride(
+    covariant EntryDefinitionProvider provider,
+  ) {
+    return call(
+      provider.pageId,
+      provider.entryId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entryDefinitionProvider';
+}
 
 /// See also [entryDefinition].
 class EntryDefinitionProvider extends AutoDisposeProvider<EntryDefinition?> {
+  /// See also [entryDefinition].
   EntryDefinitionProvider(
     this.pageId,
     this.entryId,
-  ) : super(
+  ) : super.internal(
           (ref) => entryDefinition(
             ref,
             pageId,
@@ -48,6 +94,9 @@ class EntryDefinitionProvider extends AutoDisposeProvider<EntryDefinition?> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$entryDefinitionHash,
+          dependencies: EntryDefinitionFamily._dependencies,
+          allTransitiveDependencies:
+              EntryDefinitionFamily._allTransitiveDependencies,
         );
 
   final String pageId;
@@ -69,41 +118,4 @@ class EntryDefinitionProvider extends AutoDisposeProvider<EntryDefinition?> {
     return _SystemHash.finish(hash);
   }
 }
-
-typedef EntryDefinitionRef = AutoDisposeProviderRef<EntryDefinition?>;
-
-/// See also [entryDefinition].
-final entryDefinitionProvider = EntryDefinitionFamily();
-
-class EntryDefinitionFamily extends Family<EntryDefinition?> {
-  EntryDefinitionFamily();
-
-  EntryDefinitionProvider call(
-    String pageId,
-    String entryId,
-  ) {
-    return EntryDefinitionProvider(
-      pageId,
-      entryId,
-    );
-  }
-
-  @override
-  AutoDisposeProvider<EntryDefinition?> getProviderOverride(
-    covariant EntryDefinitionProvider provider,
-  ) {
-    return call(
-      provider.pageId,
-      provider.entryId,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'entryDefinitionProvider';
-}
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
