@@ -1,4 +1,4 @@
-import {EventsField, EntryField} from "@site/src/components/EntryField";
+import {EntryField, EventsField} from "@site/src/components/EntryField";
 
 # Player Kill Player Event
 
@@ -10,8 +10,8 @@ This could be used to create a bounty system, where someone places a bounty on a
 
 ## Fields
 
-<EventsField />
+<EventsField/>
 
-<EntryField name="Target Triggers" required>
+<EntryField name="Target Triggers" required multiple>
     The triggers to be executed for the player who was killed.
 </EntryField>

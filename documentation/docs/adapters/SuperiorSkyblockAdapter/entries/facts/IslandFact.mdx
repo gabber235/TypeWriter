@@ -1,17 +1,19 @@
-import {FactsField, EntryField} from "@site/src/components/EntryField";
+import {EntryField, FactsField, ReadonlyFactInfo} from "@site/src/components/EntryField";
 
 # Island Fact
 
-A [fact](/docs/facts) that stores various information about an island.
+A [fact](/docs/facts) that can retrieve various information about an island.
+
+<ReadonlyFactInfo/>
 
 ## How could this be used?
 
-This could be used to access additional information about an island without the use of commands.
+This fact could be used to get the island's level and only allow some actions if the island is a certain level.
 
 ## Fields
 
-<FactsField />
+<FactsField/>
 
 <EntryField name="Fact" required>
-    The fact to get
+    The specific piece of information to retrieve about the island.
 </EntryField>

@@ -1,16 +1,16 @@
-import {SpeakersField, EntryField} from "@site/src/components/EntryField";
+import {EntryField, SpeakersField} from "@site/src/components/EntryField";
 
 # Reference Npc
 
-A [fact](/docs/facts) that references an NPC in the Citizens plugin.
+An identifier that references an NPC in the Citizens plugin. But does not manage the NPC.
 
 ## How could this be used?
 
-This fact could be used to reference an NPC in the Citizens plugin. This could be used to create a quest that requires the player to talk to an NPC.
+This can be used to reference an NPC which is already in the world. This could be used to create a quest that requires the player to talk to an NPC.
 
 ## Fields
 
-<SpeakersField />
+<SpeakersField/>
 
 <EntryField name="Npc Id" required>
     The id of the NPC in the Citizens plugin.

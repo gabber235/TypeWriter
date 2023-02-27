@@ -1,0 +1,18 @@
+import {EntryField, FactsField, ReadonlyFactInfo} from "@site/src/components/EntryField";
+
+# Number Placeholder Fact
+
+A [fact](/docs/facts) that is computed from a placeholder. This placeholder is evaluated when the fact is read and must return a number or boolean.
+<ReadonlyFactInfo/>
+
+## How could this be used?
+
+Make sure the player has a high enough level. Then allow them to start a quest or enter a dungeon.
+
+## Fields
+
+<FactsField/>
+
+<EntryField name="Placeholder" required placeholder>
+    Placeholder to use for the fact. The placeholder must return a number or boolean.
+</EntryField>

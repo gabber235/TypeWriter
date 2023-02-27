@@ -1,4 +1,4 @@
-import {EventsField, EntryField} from "@site/src/components/EntryField";
+import {EntryField, EventsField} from "@site/src/components/EntryField";
 
 # Block Place Event
 
@@ -10,12 +10,12 @@ This event could be used to create a custom block that has special properties wh
 
 ## Fields
 
-<EventsField />
+<EventsField/>
 
 <EntryField name="Location" optional>
-    The location of the block that was placed.
+    A location where the block must be placed.
 </EntryField>
 
 <EntryField name="Block" required>
-    The block that is placed.
+    The type of block that must be placed.
 </EntryField>

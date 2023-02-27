@@ -13,7 +13,7 @@
 .header {
     display: flex;
     flex-direction: row;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -27,4 +27,10 @@ span:first-of-type {
 
 span:last-of-type {
     margin-right: 0;
+}
+
+br {
+    content: "";
+    display: block;
+    margin: 10px 0;
 }

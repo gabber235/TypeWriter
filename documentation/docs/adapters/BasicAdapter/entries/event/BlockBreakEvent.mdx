@@ -1,4 +1,4 @@
-import {EventsField, EntryField} from "@site/src/components/EntryField";
+import {EntryField, EventsField} from "@site/src/components/EntryField";
 
 # Block Break Event
 
@@ -6,14 +6,14 @@ The `Block Break Event` is triggered when a player breaks a block.
 
 ## How could this be used?
 
-This could allow you to make custom ores with custom drops, or make custom blocks that can only be broken with a specific item.
+This could allow you to make custom ores with custom drops, give the player a reward after breaking a certain amount of blocks.
 
 ## Fields
 
-<EventsField />
+<EventsField/>
 
 <EntryField name="Location" optional>
-    The location of the block that was broken.
+    Specify a location for which the block must be broken.
 </EntryField>
 
 <EntryField name="Item In Hand" optional>
@@ -21,5 +21,5 @@ This could allow you to make custom ores with custom drops, or make custom block
 </EntryField>
 
 <EntryField name="Block" optional>
-    The block that was broken.
+    The block type that must be broken.
 </EntryField>
