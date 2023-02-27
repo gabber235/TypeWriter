@@ -15,10 +15,10 @@ The Superior Skyblock Adapter allows you to use the Superior Skyblock plugin wit
 
 ### Bank
 
-| Name                                                                                         | Description                          |
-| -------------------------------------------------------------------------------------------- | ------------------------------------ |
-| [Island Bank Deposit Action](SuperiorSkyblockAdapter/entries/bank/IslandBankDepositAction)   | Deposit into a player's Island bank  |
-| [Island Bank Withdraw Action](SuperiorSkyblockAdapter/entries/bank/IslandBankWithdrawAction) | Withdraw into a player's Island bank |
+| Name                                                                                                | Description                          |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| [Island Bank Deposit Action](SuperiorSkyblockAdapter/entries/action/bank/IslandBankDepositAction)   | Deposit into a player's Island bank  |
+| [Island Bank Withdraw Action](SuperiorSkyblockAdapter/entries/action/bank/IslandBankWithdrawAction) | Withdraw into a player's Island bank |
 
 ### Event
 
