@@ -1,6 +1,7 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -16,8 +17,11 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/debouncer.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/smart_single_activator.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/focused_notifier.dart";
+import "package:typewriter/widgets/components/general/shortcut_label.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "search_bar.freezed.dart";
@@ -25,6 +29,12 @@ part "search_bar.g.dart";
 
 /// When the user wants to search for nodes.
 class SearchIntent extends Intent {}
+
+class ActivateActionIntent extends Intent {
+  const ActivateActionIntent(this.shortcut);
+
+  final ShortcutActivator shortcut;
+}
 
 @freezed
 class Search with _$Search {
@@ -34,137 +44,6 @@ class Search with _$Search {
     @Default([]) List<SearchFilter> filters,
     Function()? onEnd,
   }) = _Search;
-}
-
-abstract class SearchFilter {
-  const SearchFilter();
-
-  bool get canRemove;
-  String get title;
-  Color get color;
-  IconData get icon;
-
-  bool filter(SearchAction action) {
-    return true;
-  }
-}
-
-class TagFilter extends SearchFilter {
-  const TagFilter(this.tag, {this.canRemove = true});
-
-  final String tag;
-  @override
-  final bool canRemove;
-
-  @override
-  String get title => tag;
-  @override
-  Color get color => Colors.deepOrangeAccent;
-  @override
-  IconData get icon => FontAwesomeIcons.hashtag;
-
-  @override
-  bool filter(SearchAction action) {
-    if (action is SearchEntryAction) {
-      return action.blueprint.tags.contains(tag);
-    }
-    if (action is SearchAddEntryAction) {
-      return action.blueprint.tags.contains(tag);
-    }
-    return false;
-  }
-}
-
-abstract class SearchFetcher {
-  const SearchFetcher();
-
-  bool get disabled;
-  String get title;
-  IconData get icon => FontAwesomeIcons.magnifyingGlass;
-  Color get color => Colors.blueAccent;
-
-  List<SearchAction> fetch(PassingRef ref) {
-    return [];
-  }
-
-  SearchFetcher copyWith({
-    bool? disabled,
-  });
-}
-
-class NewEntryFetcher extends SearchFetcher {
-  const NewEntryFetcher({
-    this.onAdd,
-    this.disabled = false,
-  });
-
-  final Function(EntryBlueprint)? onAdd;
-
-  @override
-  final bool disabled;
-
-  @override
-  String get title => "New Entries";
-
-  @override
-  List<SearchAction> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
-    final fuzzy = ref.read(_fuzzyBlueprintsProvider);
-
-    final results = fuzzy.search(search.query);
-
-    return results.map((result) => SearchAddEntryAction(result.item, onAdd: onAdd)).toList();
-  }
-
-  @override
-  SearchFetcher copyWith({
-    bool? disabled,
-  }) {
-    return NewEntryFetcher(
-      onAdd: onAdd,
-      disabled: disabled ?? this.disabled,
-    );
-  }
-}
-
-class EntryFetcher extends SearchFetcher {
-  const EntryFetcher({
-    this.onSelect,
-    this.disabled = false,
-  });
-
-  final Function(Entry)? onSelect;
-
-  @override
-  final bool disabled;
-
-  @override
-  String get title => "Entries";
-
-  @override
-  List<SearchAction> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
-    final fuzzy = ref.read(_fuzzyEntriesProvider);
-
-    final results = fuzzy.search(search.query);
-
-    return results.map((result) {
-      final definition = result.item;
-      return SearchEntryAction(definition, onSelect: onSelect);
-    }).toList();
-  }
-
-  @override
-  SearchFetcher copyWith({
-    bool? disabled,
-  }) {
-    return EntryFetcher(
-      onSelect: onSelect,
-      disabled: disabled ?? this.disabled,
-    );
-  }
 }
 
 class SearchNotifier extends StateNotifier<Search?> {
@@ -231,6 +110,137 @@ class SearchNotifier extends StateNotifier<Search?> {
   }
 }
 
+abstract class SearchFilter {
+  const SearchFilter();
+
+  bool get canRemove;
+  String get title;
+  Color get color;
+  IconData get icon;
+
+  bool filter(SearchElement action) {
+    return true;
+  }
+}
+
+class TagFilter extends SearchFilter {
+  const TagFilter(this.tag, {this.canRemove = true});
+
+  final String tag;
+  @override
+  final bool canRemove;
+
+  @override
+  String get title => tag;
+  @override
+  Color get color => Colors.deepOrangeAccent;
+  @override
+  IconData get icon => FontAwesomeIcons.hashtag;
+
+  @override
+  bool filter(SearchElement action) {
+    if (action is EntrySearchElement) {
+      return action.blueprint.tags.contains(tag);
+    }
+    if (action is AddEntrySearchElement) {
+      return action.blueprint.tags.contains(tag);
+    }
+    return false;
+  }
+}
+
+abstract class SearchFetcher {
+  const SearchFetcher();
+
+  bool get disabled;
+  String get title;
+  IconData get icon => FontAwesomeIcons.magnifyingGlass;
+  Color get color => Colors.blueAccent;
+
+  List<SearchElement> fetch(PassingRef ref) {
+    return [];
+  }
+
+  SearchFetcher copyWith({
+    bool? disabled,
+  });
+}
+
+class NewEntryFetcher extends SearchFetcher {
+  const NewEntryFetcher({
+    this.onAdd,
+    this.disabled = false,
+  });
+
+  final Function(EntryBlueprint)? onAdd;
+
+  @override
+  final bool disabled;
+
+  @override
+  String get title => "New Entries";
+
+  @override
+  List<SearchElement> fetch(PassingRef ref) {
+    final search = ref.read(searchProvider);
+    if (search == null) return [];
+    final fuzzy = ref.read(_fuzzyBlueprintsProvider);
+
+    final results = fuzzy.search(search.query);
+
+    return results.map((result) => AddEntrySearchElement(result.item, onAdd: onAdd)).toList();
+  }
+
+  @override
+  SearchFetcher copyWith({
+    bool? disabled,
+  }) {
+    return NewEntryFetcher(
+      onAdd: onAdd,
+      disabled: disabled ?? this.disabled,
+    );
+  }
+}
+
+class EntryFetcher extends SearchFetcher {
+  const EntryFetcher({
+    this.onSelect,
+    this.disabled = false,
+  });
+
+  final Function(Entry)? onSelect;
+
+  @override
+  final bool disabled;
+
+  @override
+  String get title => "Entries";
+
+  @override
+  List<SearchElement> fetch(PassingRef ref) {
+    final search = ref.read(searchProvider);
+    if (search == null) return [];
+    final fuzzy = ref.read(_fuzzyEntriesProvider);
+
+    final results = fuzzy.search(search.query);
+
+    return results.map((result) {
+      final definition = result.item;
+      return EntrySearchElement(definition, onSelect: onSelect);
+    }).toList();
+  }
+
+  @override
+  SearchFetcher copyWith({
+    bool? disabled,
+  }) {
+    return EntryFetcher(
+      onSelect: onSelect,
+      disabled: disabled ?? this.disabled,
+    );
+  }
+}
+
 final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(SearchNotifier.new);
 
 class SearchBuilder {
@@ -287,7 +297,7 @@ List<SearchFilter> searchFilters(SearchFiltersRef ref) {
 }
 
 @riverpod
-List<SearchAction> searchActions(SearchActionsRef ref) {
+List<SearchElement> searchElements(SearchElementsRef ref) {
   final search = ref.watch(searchProvider);
   if (search == null) return [];
   if (search.query.isEmpty && search.filters.isEmpty) return [];
@@ -301,13 +311,13 @@ List<SearchAction> searchActions(SearchActionsRef ref) {
 
 @riverpod
 List<GlobalKey> searchGlobalKeys(SearchGlobalKeysRef ref) {
-  final actionsCount = ref.watch(searchActionsProvider.select((value) => value.length));
+  final actionsCount = ref.watch(searchElementsProvider.select((value) => value.length));
   return List.generate(actionsCount, (_) => GlobalKey());
 }
 
 @riverpod
 List<FocusNode> searchFocusNodes(SearchFocusNodesRef ref) {
-  final actionsCount = ref.watch(searchActionsProvider.select((value) => value.length));
+  final actionsCount = ref.watch(searchElementsProvider.select((value) => value.length));
   return List.generate(actionsCount, (_) => FocusNode());
 }
 
@@ -329,7 +339,7 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
   return Fuzzy(
     definitions,
     options: FuzzyOptions(
-      threshold: 0.3,
+      threshold: 0.4,
       sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
       // tokenize: true,
       // verbose: true,
@@ -356,6 +366,11 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
           getter: (definition) => definition.blueprint.tags.join(" "),
           weight: 0.3,
         ),
+        WeightedKey(
+          name: "adapter",
+          getter: (definition) => definition.blueprint.adapter,
+          weight: 0.1,
+        ),
       ],
     ),
   );
@@ -368,7 +383,7 @@ Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
   return Fuzzy(
     blueprints,
     options: FuzzyOptions(
-      threshold: 0.1,
+      threshold: 0.3,
       sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
       keys: [
         WeightedKey(
@@ -384,15 +399,48 @@ Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
         WeightedKey(
           name: "description",
           getter: (blueprint) => blueprint.description,
-          weight: 0.3,
+          weight: 0.4,
+        ),
+        WeightedKey(
+          name: "adapter",
+          getter: (blueprint) => blueprint.adapter,
+          weight: 0.2,
         ),
       ],
     ),
   );
 }
 
-abstract class SearchAction {
-  const SearchAction();
+@riverpod
+SearchElement? _focusedElement(_FocusedElementRef ref) {
+  final elements = ref.watch(searchElementsProvider);
+  final focusNodes = ref.watch(searchFocusNodesProvider);
+
+  final focusedIndex = focusNodes.indexWhere((node) => node.hasFocus);
+  if (focusedIndex == -1) return null;
+
+  return elements[focusedIndex];
+}
+
+@riverpod
+Set<ShortcutActivator> _searchActionShortcuts(_SearchActionShortcutsRef ref) {
+  final elements = ref.watch(searchElementsProvider);
+  final activators =
+      elements.expand((e) => e.actions(ref.passing)).where((a) => a.onTrigger != null).map((a) => a.shortcut).toSet();
+  return activators;
+}
+
+class SearchAction {
+  const SearchAction(this.name, this.icon, this.shortcut, {this.onTrigger});
+
+  final String name;
+  final IconData icon;
+  final ShortcutActivator shortcut;
+  final Function(BuildContext, PassingRef ref)? onTrigger;
+}
+
+abstract class SearchElement {
+  const SearchElement();
   Color color(BuildContext context);
 
   Widget icon(BuildContext context);
@@ -403,12 +451,14 @@ abstract class SearchAction {
 
   String description(BuildContext context);
 
+  List<SearchAction> actions(PassingRef ref);
+
   void activate(BuildContext context, PassingRef ref);
 }
 
 /// Action for selecting an existing entry.
-class SearchEntryAction extends SearchAction {
-  const SearchEntryAction(this.definition, {this.onSelect});
+class EntrySearchElement extends SearchElement {
+  const EntrySearchElement(this.definition, {this.onSelect});
   final EntryDefinition definition;
   final Function(Entry)? onSelect;
 
@@ -431,6 +481,23 @@ class SearchEntryAction extends SearchAction {
   String description(BuildContext context) => definition.pageId.formatted;
 
   @override
+  List<SearchAction> actions(PassingRef ref) {
+    return [
+      const SearchAction(
+        "Open",
+        FontAwesomeIcons.upRightFromSquare,
+        SingleActivator(LogicalKeyboardKey.enter),
+      ),
+      SearchAction(
+        "Open Wiki",
+        FontAwesomeIcons.book,
+        SmartSingleActivator(LogicalKeyboardKey.keyO, control: true),
+        onTrigger: (_, __) => blueprint.openWiki(),
+      ),
+    ];
+  }
+
+  @override
   Future<void> activate(BuildContext context, PassingRef ref) async {
     if (onSelect != null) {
       onSelect?.call(entry);
@@ -441,8 +508,8 @@ class SearchEntryAction extends SearchAction {
   }
 }
 
-class SearchAddEntryAction extends SearchAction {
-  const SearchAddEntryAction(this.blueprint, {this.onAdd});
+class AddEntrySearchElement extends SearchElement {
+  const AddEntrySearchElement(this.blueprint, {this.onAdd});
   final EntryBlueprint blueprint;
   final Function(EntryBlueprint)? onAdd;
 
@@ -460,6 +527,23 @@ class SearchAddEntryAction extends SearchAction {
 
   @override
   String description(BuildContext context) => blueprint.description;
+
+  @override
+  List<SearchAction> actions(PassingRef ref) {
+    return [
+      const SearchAction(
+        "Add",
+        FontAwesomeIcons.plus,
+        SingleActivator(LogicalKeyboardKey.enter),
+      ),
+      SearchAction(
+        "Open Wiki",
+        FontAwesomeIcons.book,
+        SmartSingleActivator(LogicalKeyboardKey.keyO, control: true),
+        onTrigger: (_, __) => blueprint.openWiki(),
+      ),
+    ];
+  }
 
   @override
   Future<void> activate(BuildContext context, PassingRef ref) async {
@@ -480,7 +564,7 @@ class SearchBar extends HookConsumerWidget {
   });
 
   void _activateItem(
-    List<SearchAction> actions,
+    List<SearchElement> actions,
     int index,
     BuildContext context,
     WidgetRef ref,
@@ -494,11 +578,14 @@ class SearchBar extends HookConsumerWidget {
   /// Change focus to the next/previous search result.
   void _changeFocus(
     BuildContext context,
-    List<FocusNode> focusNodes,
-    List<GlobalKey> keys,
+    PassingRef ref,
     int index,
   ) {
+    final focusNodes = ref.read(searchFocusNodesProvider);
+    final keys = ref.read(searchGlobalKeysProvider);
     FocusScope.of(context).requestFocus(focusNodes[index]);
+    ref.invalidate(_focusedElementProvider);
+
     final indexContext = keys[index].currentContext;
     if (indexContext == null) return;
     Scrollable.ensureVisible(
@@ -508,70 +595,71 @@ class SearchBar extends HookConsumerWidget {
     );
   }
 
-  void _changeFocusUp(BuildContext context, List<FocusNode> focusNodes, List<GlobalKey> keys) {
+  void _changeFocusUp(BuildContext context, PassingRef ref) {
+    final focusNodes = ref.read(searchFocusNodesProvider);
     var index = focusNodes.indexWhere((n) => n.hasFocus);
     if (index == -1) index = 0;
 
     index = (index - 1 + focusNodes.length) % focusNodes.length;
-    _changeFocus(context, focusNodes, keys, index);
+    _changeFocus(context, ref, index);
   }
 
-  void _changeFocusDown(BuildContext context, List<FocusNode> focusNodes, List<GlobalKey> keys) {
+  void _changeFocusDown(BuildContext context, PassingRef ref) {
+    final focusNodes = ref.read(searchFocusNodesProvider);
     var index = focusNodes.indexWhere((n) => n.hasFocus);
 
     index = (index + 1) % focusNodes.length;
-    _changeFocus(context, focusNodes, keys, index);
+    _changeFocus(context, ref, index);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final focusNodes = ref.watch(searchFocusNodesProvider);
-    final globalKeys = ref.watch(searchGlobalKeysProvider);
+    final shortcuts = ref.watch(_searchActionShortcutsProvider);
 
-    return Stack(
-      children: [
-        const _Barrier(),
-        Actions(
-          actions: {
-            DirectionalFocusIntent: CallbackAction<DirectionalFocusIntent>(
-              onInvoke: (intent) => intent.direction == TraversalDirection.up
-                  ? _changeFocusUp(
-                      context,
-                      focusNodes,
-                      globalKeys,
-                    )
-                  : _changeFocusDown(
-                      context,
-                      focusNodes,
-                      globalKeys,
-                    ),
-            ),
-            NextFocusIntent: CallbackAction<NextFocusIntent>(
-              onInvoke: (intent) => _changeFocusDown(context, focusNodes, globalKeys),
-            ),
-            PreviousFocusIntent: CallbackAction<PreviousFocusIntent>(
-              onInvoke: (intent) => _changeFocusUp(context, focusNodes, globalKeys),
-            ),
-            DismissIntent: CallbackAction<DismissIntent>(
-              onInvoke: (intent) => ref.read(searchProvider.notifier).endSearch(),
-            ),
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (intent) => _activateItem(
-                ref.watch(searchActionsProvider),
-                focusNodes.indexWhere((n) => n.hasFocus),
-                context,
-                ref,
+    return Shortcuts(
+      shortcuts: {
+        for (final shortcut in shortcuts) shortcut: ActivateActionIntent(shortcut),
+      },
+      child: Stack(
+        children: [
+          const _Barrier(),
+          Actions(
+            actions: {
+              DirectionalFocusIntent: CallbackAction<DirectionalFocusIntent>(
+                onInvoke: (intent) => intent.direction == TraversalDirection.up
+                    ? _changeFocusUp(
+                        context,
+                        ref.passing,
+                      )
+                    : _changeFocusDown(
+                        context,
+                        ref.passing,
+                      ),
               ),
-            ),
-          },
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
-              child: const _Modal(),
+              NextFocusIntent: CallbackAction<NextFocusIntent>(
+                onInvoke: (intent) => _changeFocusDown(context, ref.passing),
+              ),
+              PreviousFocusIntent: CallbackAction<PreviousFocusIntent>(
+                onInvoke: (intent) => _changeFocusUp(context, ref.passing),
+              ),
+              DismissIntent: CallbackAction<DismissIntent>(
+                onInvoke: (intent) => ref.read(searchProvider.notifier).endSearch(),
+              ),
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (intent) => _activateItem(
+                  ref.read(searchElementsProvider),
+                  ref.read(searchFocusNodesProvider).indexWhere((n) => n.hasFocus),
+                  context,
+                  ref,
+                ),
+              ),
+            },
+            child: const Center(
+              child: _Modal(),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -606,21 +694,35 @@ class _Modal extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isSearching = ref.watch(searchProvider.select((value) => value != null));
 
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _SearchFilters(),
-        SizedBox(height: 12),
-        _SearchBar(),
-        SizedBox(height: 12),
-        _SearchResults(),
-      ],
-    )
-        .animate(target: isSearching ? 1 : 0)
-        .visibility(end: true, maintain: false, duration: 1.ms)
-        .then()
-        .scaleXY(duration: 200.ms, begin: 0.9, curve: Curves.easeOut)
-        .fadeIn();
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 400),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 500),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _SearchFilters(),
+                SizedBox(height: 12),
+                _SearchBar(),
+                SizedBox(height: 12),
+                _SearchResults(),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          const _SearchActions(),
+        ],
+      )
+          .animate(target: isSearching ? 1 : 0)
+          .visibility(end: true, maintain: false, duration: 1.ms)
+          .then()
+          .scaleXY(duration: 200.ms, begin: 0.9, curve: Curves.easeOut)
+          .fadeIn(),
+    );
   }
 }
 
@@ -726,7 +828,13 @@ class _SearchBar extends HookConsumerWidget {
     useEffect(
       () {
         focusNode.requestFocus();
-        return null;
+
+        void listener() {
+          ref.invalidate(_focusedElementProvider);
+        }
+
+        focusNode.addListener(listener);
+        return () => focusNode.removeListener(listener);
       },
       [focusNode],
     );
@@ -773,7 +881,7 @@ class _SearchResults extends HookConsumerWidget {
   const _SearchResults();
 
   void _activateItem(
-    List<SearchAction> actions,
+    List<SearchElement> actions,
     int index,
     BuildContext context,
     WidgetRef ref,
@@ -786,7 +894,7 @@ class _SearchResults extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final actions = ref.watch(searchActionsProvider);
+    final elements = ref.watch(searchElementsProvider);
     final focusNodes = ref.watch(searchFocusNodesProvider);
     final globalKeys = ref.watch(searchGlobalKeysProvider);
 
@@ -796,17 +904,19 @@ class _SearchResults extends HookConsumerWidget {
         child: SingleChildScrollView(
           clipBehavior: Clip.none,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              for (var i = 0; i < actions.length; i++)
+              for (var i = 0; i < elements.length; i++)
                 _ResultTile(
                   key: globalKeys[i],
-                  onPressed: () => _activateItem(actions, i, context, ref),
+                  onPressed: () => _activateItem(elements, i, context, ref),
                   focusNode: focusNodes[i],
-                  color: actions[i].color(context),
-                  title: actions[i].title(context),
-                  description: actions[i].description(context),
-                  icon: actions[i].icon(context),
-                  suffixIcon: actions[i].suffixIcon(context),
+                  color: elements[i].color(context),
+                  title: elements[i].title(context),
+                  description: elements[i].description(context),
+                  icon: elements[i].icon(context),
+                  suffixIcon: elements[i].suffixIcon(context),
+                  actions: elements[i].actions(ref.passing),
                 ),
             ]
                 .animate(interval: 50.ms)
@@ -843,7 +953,7 @@ class VerticalClipper extends CustomClipper<Path> {
   }
 }
 
-class _ResultTile extends HookWidget {
+class _ResultTile extends HookConsumerWidget {
   const _ResultTile({
     required this.focusNode,
     required this.onPressed,
@@ -852,6 +962,7 @@ class _ResultTile extends HookWidget {
     this.suffixIcon = const Icon(Icons.arrow_forward_ios),
     this.title = "",
     this.description = "",
+    this.actions = const [],
     super.key,
   });
   final FocusNode focusNode;
@@ -862,101 +973,203 @@ class _ResultTile extends HookWidget {
   final Widget suffixIcon;
   final String title;
   final String description;
+  final List<SearchAction> actions;
+
+  void _invokeAction(BuildContext context, PassingRef ref, ActivateActionIntent intent) {
+    final action = actions.firstWhereOrNull((action) => action.shortcut == intent.shortcut);
+    if (action == null) return;
+    action.onTrigger?.call(context, ref);
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final focused = useState(false);
     final hover = useState(false);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: Material(
-          color: Theme.of(context).cardColor,
-          elevation: 2,
-          child: AnimatedContainer(
-            duration: 200.ms,
-            curve: Curves.fastLinearToSlowEaseIn,
-            height: 56.0,
-            width: 400,
-            color: focused.value ? color.withOpacity(0.6) : Colors.transparent,
-            child: Focus(
-              focusNode: focusNode,
-              canRequestFocus: true,
-              onFocusChange: (f) => focused.value = f,
-              child: FocusedNotifier(
-                focusNode: focusNode,
-                child: InkWell(
-                  canRequestFocus: false,
-                  onTap: onPressed,
-                  onHover: (h) => hover.value = h,
-                  child: Row(
-                    children: [
-                      Container(
-                        height: double.infinity,
-                        color: color.withOpacity(color.opacity.clamp(0, 0.8)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: IconTheme(
-                            data: const IconThemeData(color: Colors.white),
-                            child: icon,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AutoSizeText(
-                              maxLines: 1,
-                              title,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: focused.value ? Colors.white : null,
-                                    fontWeight: focused.value ? FontWeight.bold : null,
-                                  ),
-                            ),
-                            if (focused.value || hover.value)
-                              TextScroll(
-                                description,
-                                delayBefore: 1.seconds,
-                                pauseBetween: 3.seconds,
-                                intervalSpaces: 5,
-                                velocity: const Velocity(pixelsPerSecond: Offset(30, 0)),
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: focused.value ? Colors.white : null,
-                                      fontWeight: focused.value ? FontWeight.bold : null,
-                                    ),
-                              )
-                            else
-                              AutoSizeText(
-                                maxLines: 1,
-                                description,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: focused.value ? Colors.white : null,
-                                      fontWeight: focused.value ? FontWeight.bold : null,
-                                    ),
+    return ContextMenuRegion(
+      builder: (context) {
+        return [
+          for (final action in actions.where((action) => action.onTrigger != null))
+            ContextMenuTile.button(
+              title: action.name,
+              icon: action.icon,
+              onTap: () => action.onTrigger!(context, ref.passing),
+            )
+        ];
+      },
+      child: Actions(
+        actions: {
+          ActivateActionIntent:
+              CallbackAction<ActivateActionIntent>(onInvoke: (intent) => _invokeAction(context, ref.passing, intent)),
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Material(
+              color: Theme.of(context).cardColor,
+              elevation: 2,
+              child: AnimatedContainer(
+                duration: 200.ms,
+                curve: Curves.fastLinearToSlowEaseIn,
+                height: 56.0,
+                width: 400,
+                color: focused.value ? color.withOpacity(0.6) : Colors.transparent,
+                child: Focus(
+                  focusNode: focusNode,
+                  autofocus: true,
+                  canRequestFocus: true,
+                  onFocusChange: (f) => focused.value = f,
+                  child: FocusedNotifier(
+                    focusNode: focusNode,
+                    child: InkWell(
+                      canRequestFocus: false,
+                      onTap: onPressed,
+                      onHover: (h) => hover.value = h,
+                      child: Row(
+                        children: [
+                          Container(
+                            height: double.infinity,
+                            color: color.withOpacity(color.opacity.clamp(0, 0.8)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: IconTheme(
+                                data: const IconThemeData(color: Colors.white),
+                                child: icon,
                               ),
-                          ],
-                        ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AutoSizeText(
+                                  maxLines: 1,
+                                  title,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                        color: focused.value ? Colors.white : null,
+                                        fontWeight: focused.value ? FontWeight.bold : null,
+                                      ),
+                                ),
+                                if (focused.value || hover.value)
+                                  TextScroll(
+                                    description,
+                                    delayBefore: 1.seconds,
+                                    pauseBetween: 3.seconds,
+                                    intervalSpaces: 5,
+                                    velocity: const Velocity(pixelsPerSecond: Offset(30, 0)),
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: focused.value ? Colors.white : null,
+                                          fontWeight: focused.value ? FontWeight.bold : null,
+                                        ),
+                                  )
+                                else
+                                  AutoSizeText(
+                                    maxLines: 1,
+                                    description,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: focused.value ? Colors.white : null,
+                                          fontWeight: focused.value ? FontWeight.bold : null,
+                                        ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          IconTheme(
+                            data: IconThemeData(
+                              size: 14,
+                              color: focused.value ? Colors.white : Colors.grey,
+                            ),
+                            child: suffixIcon,
+                          ),
+                          const SizedBox(width: 16),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      IconTheme(
-                        data: IconThemeData(
-                          size: 14,
-                          color: focused.value ? Colors.white : Colors.grey,
-                        ),
-                        child: suffixIcon,
-                      ),
-                      const SizedBox(width: 16),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+@riverpod
+List<SearchAction> _searchActions(_SearchActionsRef ref) {
+  final focusedElement = ref.watch(_focusedElementProvider);
+
+  return focusedElement?.actions(ref.passing) ?? [];
+}
+
+class _SearchActions extends HookConsumerWidget {
+  const _SearchActions();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final actions = ref.watch(_searchActionsProvider);
+
+    if (actions.isEmpty) {
+      return const SizedBox(height: 50);
+    }
+
+    return Material(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: [
+            Text("Actions", style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+            const Spacer(),
+            for (final action in actions) ...[
+              _SearchBarAction(action: action),
+              const SizedBox(width: 8),
+            ],
+            const Spacer(),
+          ],
+        ),
+      ),
+    ).animate().scaleXY(duration: 500.ms, begin: 0.95, end: 1, curve: Curves.elasticOut);
+  }
+}
+
+class _SearchBarAction extends HookConsumerWidget {
+  const _SearchBarAction({required this.action});
+
+  final SearchAction action;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Material(
+      elevation: 0,
+      color: Theme.of(context).cardColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(
+          color: Theme.of(context).dividerColor,
+          width: 1,
+        ),
+      ),
+      child: InkWell(
+        onTap: action.onTrigger != null ? () => action.onTrigger!(context, ref.passing) : null,
+        borderRadius: BorderRadius.circular(4),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(action.name),
+              const SizedBox(width: 6),
+              ShortcutLabel(activator: action.shortcut),
+            ],
           ),
         ),
       ),

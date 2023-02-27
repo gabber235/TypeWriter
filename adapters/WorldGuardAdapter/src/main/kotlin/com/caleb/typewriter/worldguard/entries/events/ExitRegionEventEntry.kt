@@ -10,8 +10,8 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
-@Entry("on_leave_region", "When a player leaves a WorldGuard region", Colors.YELLOW, Icons.SQUARE_XMARK)
-class LeaveRegionEventEntry(
+@Entry("on_exit_region", "When a player exits a WorldGuard region", Colors.YELLOW, Icons.SQUARE_XMARK)
+class ExitRegionEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
@@ -19,8 +19,8 @@ class LeaveRegionEventEntry(
 	val region: String = "",
 ) : EventEntry
 
-@EntryListener(LeaveRegionEventEntry::class)
-fun onExitRegions(event: RegionsExitEvent, query: Query<LeaveRegionEventEntry>) {
+@EntryListener(ExitRegionEventEntry::class)
+fun onExitRegions(event: RegionsExitEvent, query: Query<ExitRegionEventEntry>) {
 	val player = server.getPlayer(event.player.uniqueId) ?: return
 	query findWhere { it.region in event } triggerAllFor player
 }

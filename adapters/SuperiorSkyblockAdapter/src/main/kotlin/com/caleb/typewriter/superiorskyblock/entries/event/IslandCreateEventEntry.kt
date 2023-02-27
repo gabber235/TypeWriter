@@ -8,7 +8,7 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("on_create_island", "When a player creates an Island", Colors.YELLOW, Icons.GLOBE)
+@Entry("on_island_create", "When a player creates an Island", Colors.YELLOW, Icons.GLOBE)
 class IslandCreateEventEntry(
 	override val id: String = "",
 	override val name: String = "",
@@ -19,5 +19,5 @@ class IslandCreateEventEntry(
 fun onInvite(event: IslandCreateEvent, query: Query<IslandCreateEventEntry>) {
 	val player: Player = event.player.asPlayer() ?: return
 
-    query.find() triggerAllFor player
+	query.find() triggerAllFor player
 }

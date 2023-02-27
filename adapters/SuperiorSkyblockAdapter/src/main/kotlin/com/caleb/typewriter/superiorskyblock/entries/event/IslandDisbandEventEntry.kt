@@ -8,7 +8,7 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("on_disband_island", "When a player disbands an Island", Colors.YELLOW, Icons.GLOBE)
+@Entry("on_island_disband", "When a player disbands an Island", Colors.YELLOW, Icons.GLOBE)
 class IslandDisbandEventEntry(
 	override val id: String = "",
 	override val name: String = "",
@@ -19,5 +19,5 @@ class IslandDisbandEventEntry(
 fun onDisbandIsland(event: IslandDisbandEvent, query: Query<MissionCompleteEventEntry>) {
 	val player: Player = event.player.asPlayer() ?: return
 
-    query.find() triggerAllFor player
+	query.find() triggerAllFor player
 }

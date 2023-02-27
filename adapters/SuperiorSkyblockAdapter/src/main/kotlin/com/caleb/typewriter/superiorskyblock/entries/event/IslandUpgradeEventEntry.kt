@@ -9,7 +9,7 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("on_upgrade_island", "When a player upgrades their Skyblock island", Colors.YELLOW, Icons.ARROW_UP)
+@Entry("on_island_upgrade", "When a player upgrades their Skyblock island", Colors.YELLOW, Icons.ARROW_UP)
 class IslandUpgradeEventEntry(
 	override val id: String = "",
 	override val name: String = "",
@@ -23,5 +23,5 @@ fun onUpgradeCommand(event: IslandUpgradeEvent, query: Query<IslandUpgradeEventE
 
 	if (sPlayer.island == null) return
 
-    query.find() triggerAllFor player
+	query.find() triggerAllFor player
 }

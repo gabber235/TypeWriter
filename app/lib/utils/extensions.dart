@@ -45,6 +45,11 @@ extension StringExtension on String {
   }
 
   int? get asInt => int.tryParse(this);
+
+  String replacePrefix(Pattern prefix, String replacement) {
+    if (startsWith(prefix)) return replacement + substring(prefix.toString().length);
+    return this;
+  }
 }
 
 extension StringExt on String? {

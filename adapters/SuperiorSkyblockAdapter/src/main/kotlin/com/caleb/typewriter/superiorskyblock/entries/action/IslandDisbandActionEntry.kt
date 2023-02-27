@@ -9,7 +9,7 @@ import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("disband_island", "Disbands player's island", Colors.RED, Icons.TRASH)
+@Entry("island_disband", "Disbands player's island", Colors.RED, Icons.TRASH)
 data class IslandDisbandActionEntry(
 	override val id: String = "",
 	override val name: String = "",

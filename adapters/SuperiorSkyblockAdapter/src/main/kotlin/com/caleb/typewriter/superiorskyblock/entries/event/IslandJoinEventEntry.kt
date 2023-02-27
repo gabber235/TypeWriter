@@ -9,7 +9,7 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("on_join_island", "When a player joins a Skyblock island", Colors.YELLOW, Icons.ENVELOPE_OPEN)
+@Entry("on_island_join", "When a player joins a Skyblock island", Colors.YELLOW, Icons.ENVELOPE_OPEN)
 class IslandJoinEventEntry(
 	override val id: String = "",
 	override val name: String = "",
@@ -23,6 +23,6 @@ fun onJoinIsland(event: IslandJoinEvent, query: Query<IslandJoinEventEntry>) {
 
 	if (sPlayer.island == null) return
 
-    query.find() triggerAllFor player
+	query.find() triggerAllFor player
 }
 
