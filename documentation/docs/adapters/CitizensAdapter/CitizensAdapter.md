@@ -1,5 +1,5 @@
 # Citizens Adapter
-The CombatLogX Adapter allows you to create entries that are triggered when a player enters or leaves combat.
+The Citizens adapter allows you to create custom interactions with NPCs.
 
 ## Entries
 

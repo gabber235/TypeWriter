@@ -3,14 +3,14 @@ The CombatLogX Adapter allows you to create entries that are triggered when a pl
 
 ## Entries
 
-### Conditions
-
-| Name | Description |
-| ---- | ----------- |
-| [Is Tagged Condition](CombatLogXAdapter/entries/conditions/IsTaggedCondition) | Continues if a player meets tag requirement |
 ### Events
 
 | Name | Description |
 | ---- | ----------- |
-| [Player Tag Event](CombatLogXAdapter/entries/events/PlayerTagEvent) | When a player gets tagged |
-| [Player Untag Event](CombatLogXAdapter/entries/events/PlayerUntagEvent) | When a player is no longer tagged |
+| [Player Enter Combat Event](CombatLogXAdapter/entries/events/PlayerEnterCombatEvent) | When a player enters combat |
+| [Player Exit Combat Event](CombatLogXAdapter/entries/events/PlayerExitCombatEvent) | When a player is no longer in combat |
+### Facts
+
+| Name | Description |
+| ---- | ----------- |
+| [Combat Fact](CombatLogXAdapter/entries/facts/CombatFact) | If the player is in combat |

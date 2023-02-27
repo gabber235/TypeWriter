@@ -15,16 +15,10 @@ The Superior Skyblock Adapter allows you to use the Superior Skyblock plugin wit
 
 ### Bank
 
-| Name                                                                                                | Description                          |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| [Island Bank Deposit Action](SuperiorSkyblockAdapter/entries/action/bank/IslandBankDepositAction)   | Deposit into a player's Island bank  |
-| [Island Bank Withdraw Action](SuperiorSkyblockAdapter/entries/action/bank/IslandBankWithdrawAction) | Withdraw into a player's Island bank |
-
-### Condition
-
-| Name                                                                                          | Description                                         |
-| --------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| [Is Island Level Condition](SuperiorSkyblockAdapter/entries/condition/IsIslandLevelCondition) | Continues if a player's island meets level criteria |
+| Name                                                                                         | Description                          |
+| -------------------------------------------------------------------------------------------- | ------------------------------------ |
+| [Island Bank Deposit Action](SuperiorSkyblockAdapter/entries/bank/IslandBankDepositAction)   | Deposit into a player's Island bank  |
+| [Island Bank Withdraw Action](SuperiorSkyblockAdapter/entries/bank/IslandBankWithdrawAction) | Withdraw into a player's Island bank |
 
 ### Event
 
@@ -36,3 +30,9 @@ The Superior Skyblock Adapter allows you to use the Superior Skyblock plugin wit
 | [Island Join Event](SuperiorSkyblockAdapter/entries/event/IslandJoinEvent)           | When a player joins a Skyblock island         |
 | [Island Upgrade Event](SuperiorSkyblockAdapter/entries/event/IslandUpgradeEvent)     | When a player upgrades their Skyblock island  |
 | [Mission Complete Event](SuperiorSkyblockAdapter/entries/event/MissionCompleteEvent) | When a player completes a mission             |
+
+### Facts
+
+| Name                                                            | Description                           |
+| --------------------------------------------------------------- | ------------------------------------- |
+| [Island Fact](SuperiorSkyblockAdapter/entries/facts/IslandFact) | Various facts about a player's island |

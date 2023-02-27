@@ -141,7 +141,7 @@ def createMarkdown(data, root, file):
     if not entryData:
         print("No entry data found")
         return None
-    markdown = f"""import {{{entryData['section']}sField, EntryField}} from "@site/src/components/EntryField";
+    markdown = f"""import {{{plural(entryData['section'])}Field, EntryField}} from "@site/src/components/EntryField";
 
 # {entryData['name']}
 
@@ -153,7 +153,7 @@ def createMarkdown(data, root, file):
 
 ## Fields
 
-<{"Action" if "Dialogue" in entryData["section"] else entryData["section"]}sField />
+<{plural("Action" if "Dialogue" in entryData["section"] else entryData["section"])}Field />
 """
     for field in entryData["fields"]:
         markdown += f"""
@@ -206,7 +206,7 @@ def main():
                     print(f"Failed to parse {file} ({e})")
                     continue
                 if markdown:
-                    with open(os.path.join(outPathBase, adapterName.replace(" ", "") + ".mdx"), "w") as f:
+                    with open(os.path.join(outPathBase, adapterName.replace(" ", "") + ".md"), "w") as f:
                         entry = getEntryData(data, root, file)
 
                         with open(os.path.join(outputPath, "_category_.yml"), "w") as f:
