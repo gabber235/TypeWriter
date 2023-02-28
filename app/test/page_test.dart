@@ -79,7 +79,12 @@ void main() {
     expect(page, isNotNull, reason: "The page has not been created");
     expect(page!.entries.length, 0);
 
-    const entry = EntryBlueprint(name: "test_type", description: "Some test", fields: entryBlueprintFields);
+    const entry = EntryBlueprint(
+      name: "test_type",
+      description: "Some test",
+      adapter: "test_adapter",
+      fields: entryBlueprintFields,
+    );
 
     await page.createEntryFromBlueprint(container.passing, entry);
 
