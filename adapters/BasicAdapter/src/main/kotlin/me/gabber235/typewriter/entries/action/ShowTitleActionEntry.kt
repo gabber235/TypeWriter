@@ -9,7 +9,6 @@ import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMini
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -32,35 +31,33 @@ data class ShowTitleActionEntry(
 	override fun execute(player: Player) {
 		super.execute(player)
 
-		val adventureTitle: Title
+		val adventureTitle: Title = durations.map { durations ->
+			Title.title(
+				title.parsePlaceholders(player).asMini(),
+				subtitle.parsePlaceholders(player).asMini(),
 
-		if(durations.isPresent) {
-			adventureTitle = Title.title(
-			title.parsePlaceholders(player).asMini(),
-			subtitle.parsePlaceholders(player).asMini(),
-			Title.Times.times(
-				Duration.ofMillis(durations.get().fadeIn),
-				Duration.ofMillis(durations.get().stay),
-				Duration.ofMillis(durations.get().fadeOut)
+				Title.Times.times(
+					Duration.ofMillis(durations.fadeIn.toMillis()),
+					Duration.ofMillis(durations.stay.toMillis()),
+					Duration.ofMillis(durations.fadeOut.toMillis())
+				)
 			)
-			)
-		} else {
-			adventureTitle = Title.title(
-			title.parsePlaceholders(player).asMini(),
-			subtitle.parsePlaceholders(player).asMini(),
+		}.orElseGet {
+			Title.title(
+				title.parsePlaceholders(player).asMini(),
+				subtitle.parsePlaceholders(player).asMini(),
 			)
 		}
 
 		player.showTitle(adventureTitle)
-
 	}
 }
 
 data class TitleDurations(
-	@Help("The duration of the fade in effect. (In milliseconds)")
-	val fadeIn: Long,
-	@Help("The duration that it stays. (In milliseconds)")
-	val stay: Long,
-	@Help("The duration of the fade out effect. (In milliseconds)")
-	val fadeOut: Long
+	@Help("The duration of the fade in effect.")
+	val fadeIn: Duration,
+	@Help("The duration that it stays.")
+	val stay: Duration,
+	@Help("The duration of the fade out effect.")
+	val fadeOut: Duration
 )
