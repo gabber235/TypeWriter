@@ -132,7 +132,7 @@ class Modifier with _$Modifier {
   factory Modifier.fromJson(Map<String, dynamic> json) => _$ModifierFromJson(json);
 }
 
-const wikiUrl = kDebugMode ? "http://localhost:3000/TypeWriter" : "https://gabber235.github.io/TypeWriter";
+const wikiBaseUrl = kDebugMode ? "http://localhost:3000/TypeWriter" : "https://gabber235.github.io/TypeWriter";
 
 extension EntryBlueprintExt on EntryBlueprint {
   Map<String, Modifier> fieldsWithModifier(String name) => _fieldsWithModifier(name, "", fields);
@@ -162,10 +162,10 @@ extension EntryBlueprintExt on EntryBlueprint {
     final category = tags.firstWhereOrNull((tag) => _wikiCategories.contains(tag));
 
     if (category == null) {
-      return "$wikiUrl/adapters/${adapter}Adapter";
+      return "$wikiBaseUrl/adapters/${adapter}Adapter";
     }
 
-    return "$wikiUrl/adapters/${adapter}Adapter/entries/$category/$name";
+    return "$wikiBaseUrl/adapters/${adapter}Adapter/entries/$category/$name";
   }
 
   Future<void> openWiki() async {
