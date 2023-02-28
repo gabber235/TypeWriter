@@ -58,4 +58,8 @@ class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialog
 				}
 		)
 	}
+
+	override fun end() {
+		// Do nothing as we don't need to resend the messages.
+	}
 }

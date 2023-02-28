@@ -3,7 +3,8 @@ package me.gabber235.typewriter.entries.dialogue.messengers.spoken
 import me.gabber235.typewriter.adapters.Messenger
 import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entries.dialogue.SpokenDialogueEntry
-import me.gabber235.typewriter.entry.dialogue.*
+import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
+import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.isFloodgate
@@ -35,5 +36,9 @@ class BedrockSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialog
 					state = MessengerState.FINISHED
 				}
 		)
+	}
+
+	override fun end() {
+		// Do nothing as we don't need to resend the messages.
 	}
 }
