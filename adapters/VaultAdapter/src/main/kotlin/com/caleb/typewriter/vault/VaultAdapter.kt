@@ -11,7 +11,7 @@ import org.bukkit.Bukkit.getServer
 import org.bukkit.plugin.RegisteredServiceProvider
 
 
-@Adapter("Vault", "For Vault", "0.0.1")
+@Adapter("Vault", "For Vault", "0.2.0")
 object VaultAdapter : TypewriteAdapter() {
 	var economy: Economy? = null
 		private set

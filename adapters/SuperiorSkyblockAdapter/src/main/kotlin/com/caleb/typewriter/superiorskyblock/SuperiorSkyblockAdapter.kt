@@ -6,7 +6,7 @@ import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
 
 
-@Adapter("SuperiorSkyblock", "For SuperiorSkyblock2, made by Caleb (Sniper)", "0.0.1")
+@Adapter("SuperiorSkyblock", "For SuperiorSkyblock2, made by Caleb (Sniper)", "0.2.0")
 object SuperiorSkyblockAdapter : TypewriteAdapter() {
 
 

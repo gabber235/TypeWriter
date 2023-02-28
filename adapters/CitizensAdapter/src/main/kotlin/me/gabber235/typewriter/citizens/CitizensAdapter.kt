@@ -6,7 +6,7 @@ import me.gabber235.typewriter.adapters.TypewriteAdapter
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.trait.TraitInfo
 
-@Adapter("Citizens", "For the Citizens plugin", "0.1.0")
+@Adapter("Citizens", "For the Citizens plugin", "0.2.0")
 object CitizensAdapter : TypewriteAdapter() {
 	override fun initialize() {
 		if (!plugin.server.pluginManager.isPluginEnabled("Citizens")) {
