@@ -1,20 +1,28 @@
 # This file is used for parsing TypeWriter adapter's source code and generating markdown files for the documentation website.
 # Please note that this code is not perfect and may require some manual editing to get the markdown files to look right.
-# Edit the variables below to use this script.
+# This file should not need to be run directly or modified. It is run by the `generate_docs.bat` file inside each adapter folder.
 # (Not to mention this code is a rat's nest. Optimize at your own risk.)
 
 import os
 import re
+import sys
 
-# Change these variables to match your setup
+adapterName = ""
+adapterDesc = ""  # Allows markdown
+outPathBase = ""
+entryPath = ""
 
-adapterName = "[adapter name]"
-adapterDesc = "[adapter description]"  # Allows markdown
-
-outPathBase = r"path\to\docs\adapters\[adapter name]"
-entryPath = r"path\to\TypeWriter\adapters\[adapter name]\src\...\entries]"
-
-# End of variables
+if len(sys.argv) == 5:
+    adapterName = sys.argv[1]
+    adapterDesc = sys.argv[2]
+    outPathBase = os.path.abspath(sys.argv[3])
+    entryPath = os.path.abspath(sys.argv[4])
+    print(outPathBase)
+    print(entryPath)
+else:
+    print(
+        "Usage: python parse.py [adapter name] [adapter description] [out path] [entry path]")
+    exit()
 
 
 def titleCase(str):
@@ -52,6 +60,7 @@ def getEntryData(data, root, file):
         if line.startswith("@Entry("):
             entryData["name"] = titleCaseSpaced(
                 file).replace(".kt", "").replace(" Entry", "")
+            entryData["fileName"] = line.split('"')[1]
             entryData["description"] = line.split('"')[3].replace(
                 f"[{adapterName.replace(' ', '').replace('Adapter', '')}] ", "")
 
@@ -166,6 +175,7 @@ def createMarkdown(data, root, file):
 
 def main():
     skipFileExistsCheck = False
+    noFileReplace = False
 
     if not os.path.exists(outPathBase):
         os.makedirs(outPathBase)
@@ -189,10 +199,9 @@ def main():
         if "messengers" in root:
             continue
         for file in files:
+            print("--------------------------------------")
             outputPath = root.replace(entryPath, outPathBase + r"\entries").replace(
                 "entities", "speaker").replace("gate", "action")
-            outputFile = os.path.join(outputPath, file.replace(
-                ".kt", ".mdx").replace("Entry", ""))
 
             if not os.path.exists(outputPath):
                 os.makedirs(outputPath)
@@ -208,6 +217,9 @@ def main():
                 if markdown:
                     with open(os.path.join(outPathBase, adapterName.replace(" ", "") + ".md"), "w") as f:
                         entry = getEntryData(data, root, file)
+
+                        outputFile = os.path.join(
+                            outputPath, entry["fileName"] + ".mdx")
 
                         with open(os.path.join(outputPath, "_category_.yml"), "w") as f:
                             f.write(
@@ -225,20 +237,36 @@ def main():
 | [{entry["name"]}]({adapterName.replace(" ", "")}/entries/{entry["section"].lower()}/{entry["name"].replace(" ", "")}) | {entry["description"]} |"""
                     try:
                         if not os.path.exists(outputFile):
+                            # if os.path.exists(os.path.join(outputPath, file.replace(".kt", ".mdx").replace("Entry", ""))):
+                            #     print(
+                            #         f'auto renaming file ({os.path.join(outputPath, file.replace(".kt", ".mdx").replace("Entry", ""))} -> {outputFile})')
+                            #     os.rename(os.path.join(outputPath, file.replace(
+                            #         ".kt", ".mdx").replace("Entry", "")), outputFile)
+                            #     continue
+                            # ^^ This was a hacky way to quickly rename the files. Just keeping this in case something goes wrong
                             with open(outputFile, "w") as f:
                                 f.write(markdown)
                         else:
-                            if (not skipFileExistsCheck):
+                            if not skipFileExistsCheck and not noFileReplace:
                                 yn = input(
-                                    f"File already exists: {file}. Replace? (Y/n/all) ")
-                            else:
+                                    f"File already exists: {file.replace('.kt', '.mdx')}. Replace? (y/N/all/none) ")
+                            elif skipFileExistsCheck:
                                 yn = "y"
                                 print(
-                                    f"File already exists: {file}, replacing")
+                                    f"File already exists: {file.replace('.kt', '.mdx')}, replacing")
+                            elif noFileReplace:
+                                yn = "n"
+                                print(
+                                    f"File already exists: {file.replace('.kt', '.mdx')}, skipping")
                             if yn.lower() == "y":
+                                print("Replacing file")
                                 pass
                             elif yn.lower() == "all":
                                 skipFileExistsCheck = True
+                            elif yn.lower() == "none":
+                                noFileReplace = True
+                                print("Skipping file")
+                                continue
                             elif yn.lower() == "":
                                 print("Skipping file")
                                 continue
@@ -253,7 +281,6 @@ def main():
                         with open(os.path.join(outPathBase, file.replace(".kt", ".mdx").replace("Entry", "")), "w") as f:
                             f.write(markdown)
                         continue
-                    print("")
     with open(os.path.join(outPathBase, adapterName.replace(" ", "") + ".md"), "w") as f:
         f.write(text)
 

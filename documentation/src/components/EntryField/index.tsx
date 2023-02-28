@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./styles.module.css";
 import Badge from "@site/src/components/Badges";
-import Link from '@docusaurus/Link';
+import Link from "@docusaurus/Link";
 
 interface EntryFieldProps {
     name: string;
@@ -17,35 +17,35 @@ interface EntryFieldProps {
     duration?: boolean;
 }
 
-export const RequiredBadge = () => <Badge name="Required" color="#ff3838"/>;
-export const InheritedBadge = () => <Badge name="Inherited" color="#a83dff"/>;
-export const OptionalBadge = () => <Badge name="Optional" color="#3191f7"/>;
-export const MultipleBadge = () => <Badge name="List" color="#20bf7c"/>;
-export const DeprecatedBadge = () => <Badge name="Deprecated" color="#fa9d2a"/>;
-export const ColoredBadge = () => <Badge name="Colored" color="#ff8e42"/>;
-export const RegexBadge = () => <Badge name="Regex" color="#f731d6"/>;
-export const PlaceholdersBadge = () => <Badge name="Placeholders" color="#00b300"/>;
+export const RequiredBadge = () => <Badge name="Required" color="#ff3838" />;
+export const InheritedBadge = () => <Badge name="Inherited" color="#a83dff" />;
+export const OptionalBadge = () => <Badge name="Optional" color="#3191f7" />;
+export const MultipleBadge = () => <Badge name="List" color="#20bf7c" />;
+export const DeprecatedBadge = () => <Badge name="Deprecated" color="#fa9d2a" />;
+export const ColoredBadge = () => <Badge name="Colored" color="#ff8e42" />;
+export const RegexBadge = () => <Badge name="Regex" color="#f731d6" />;
+export const PlaceholdersBadge = () => <Badge name="Placeholders" color="#00b300" />;
 
 export const EntryField = (props: EntryFieldProps) => {
     return (
         <div className={styles.entryField}>
             <div className={styles.header}>
                 <h2 className={styles.name}>{props.name}</h2>
-                {props.required && <RequiredBadge/>}
-                {props.inherited && <InheritedBadge/>}
-                {props.optional && <OptionalBadge/>}
-                {props.multiple && <MultipleBadge/>}
-                {props.deprecated && <DeprecatedBadge/>}
-                {props.colored && <ColoredBadge/>}
-                {props.regex && <RegexBadge/>}
-                {props.placeholders && <PlaceholdersBadge/>}
+                {props.required && <RequiredBadge />}
+                {props.inherited && <InheritedBadge />}
+                {props.optional && <OptionalBadge />}
+                {props.multiple && <MultipleBadge />}
+                {props.deprecated && <DeprecatedBadge />}
+                {props.colored && <ColoredBadge />}
+                {props.regex && <RegexBadge />}
+                {props.placeholders && <PlaceholdersBadge />}
             </div>
             <div className="">
                 {props.children}
-                {props.colored && <ColorInfo/>}
-                {props.regex && <RegexInfo/>}
-                {props.placeholders && <PlaceholderInfo/>}
-                {props.duration && <DurationInfo/>}
+                {props.colored && <ColorInfo />}
+                {props.regex && <RegexInfo />}
+                {props.placeholders && <PlaceholderInfo />}
+                {props.duration && <DurationInfo />}
             </div>
         </div>
     );
@@ -77,9 +77,9 @@ export const TriggersField = () => {
 export const ActionsField = () => {
     return (
         <div>
-            <CriteriaField/>
-            <ModifiersField/>
-            <TriggersField/>
+            <CriteriaField />
+            <ModifiersField />
+            <TriggersField />
         </div>
     );
 };
@@ -97,7 +97,7 @@ export const FactsField = () => {
 export const EventsField = () => {
     return (
         <div>
-            <TriggersField/>
+            <TriggersField />
         </div>
     );
 };
@@ -118,7 +118,7 @@ export const SpeakersField = () => {
 export const ColorInfo = () => {
     return (
         <div>
-            <br/>
+            <br />
             Colors and formatting from the{" "}
             <Link to="https://docs.advntr.dev/minimessage/format.html">
                 <code>MiniMessage Adventure Api</code>
@@ -131,13 +131,12 @@ export const ColorInfo = () => {
 export const PlaceholderInfo = () => {
     return (
         <div>
-            <br/>
+            <br />
             Placeholders from the{" "}
             <Link to="https://github.com/PlaceholderAPI/PlaceholderAPI/wiki">
                 <code>PlaceholderApi</code>
             </Link>{" "}
-            can be used. So for example, you can
-            use <code>%player_name%</code> for the player name.
+            can be used. So for example, you can use <code>%player_name%</code> for the player name.
         </div>
     );
 };
@@ -145,9 +144,8 @@ export const PlaceholderInfo = () => {
 export const DurationInfo = () => {
     return (
         <div>
-            <br/>
-            Durations can be specified in the following format: <code>1d 2h 3m 4s</code>. The following units are
-            supported: <code>d</code> for days, <code>h</code> for hours,
+            <br />
+            Durations can be specified in the following format: <code>1d 2h 3m 4s</code>. The following units are supported: <code>d</code> for days, <code>h</code> for hours,
             <code>m</code> for minutes and <code>s</code> for seconds.
         </div>
     );
@@ -156,7 +154,7 @@ export const DurationInfo = () => {
 export const RegexInfo = () => {
     return (
         <div>
-            <br/>
+            <br />
             <Link to="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions">
                 <code>Regular expressions</code>
             </Link>{" "}
@@ -168,7 +166,7 @@ export const RegexInfo = () => {
 export const ReadonlyFactInfo = () => {
     return (
         <div>
-            <br/>
+            <br />
             This fact can only be <b>read</b>, not written to. Hence, it is only suitable for criteria.
         </div>
     );
