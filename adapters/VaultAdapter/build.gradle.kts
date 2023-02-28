@@ -21,7 +21,6 @@ repositories {
 	maven("https://jitpack.io/")
 
 	// Adapter Specific
-
 }
 
 dependencies {
@@ -41,7 +40,6 @@ dependencies {
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7")
 
 	testImplementation(kotlin("test"))
-
 }
 
 tasks.test {

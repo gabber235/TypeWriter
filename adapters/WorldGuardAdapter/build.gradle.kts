@@ -21,12 +21,10 @@ repositories {
 	// Adapter Specific
 
 	maven("https://maven.enginehub.org/repo/")
-
 }
 
 dependencies {
 	compileOnly(kotlin("stdlib"))
-
 	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
 	compileOnly("me.gabber235:typewriter:$version")
@@ -37,7 +35,6 @@ dependencies {
 	compileOnly("net.kyori:adventure-api:4.12.0")
 	compileOnly("net.kyori:adventure-text-minimessage:4.12.0")
 	compileOnly("com.mojang:brigadier:1.0.18")
-
 
 	// External dependencies
 	compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.6-SNAPSHOT")

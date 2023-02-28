@@ -22,12 +22,10 @@ repositories {
 	// Adapter Specific
 
 	maven("https://nexus.sirblobman.xyz/repository/public/")
-
 }
 
 dependencies {
 	compileOnly(kotlin("stdlib"))
-
 	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
 	compileOnly("me.gabber235:typewriter:$version")
@@ -39,13 +37,11 @@ dependencies {
 	compileOnly("net.kyori:adventure-text-minimessage:4.12.0")
 	compileOnly("com.mojang:brigadier:1.0.18")
 
-
 	// External dependencies
 	compileOnly("com.github.sirblobman.api:core:2.6-SNAPSHOT")
 	compileOnly("com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT")
 
 	testImplementation(kotlin("test"))
-
 }
 
 tasks.test {
