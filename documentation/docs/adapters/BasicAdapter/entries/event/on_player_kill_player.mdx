@@ -2,7 +2,7 @@ import {EntryField, EventsField} from "@site/src/components/EntryField";
 
 # Player Kill Player Event
 
-The `Player Kill Player Event` is triggered when a player kills another player. If you want to detect when a player kills some thing else, use the [`Player Kill Entity Event`](PlayerKillEntityEvent) instead.
+The `Player Kill Player Event` is triggered when a player kills another player. If you want to detect when a player kills some thing else, use the [`Player Kill Entity Event`](on_player_kill_entity) instead.
 
 ## How could this be used?
 
@@ -10,7 +10,7 @@ This could be used to create a bounty system, where someone places a bounty on a
 
 ## Fields
 
-<EventsField/>
+<EventsField />
 
 <EntryField name="Target Triggers" required multiple>
     The triggers to be executed for the player who was killed.

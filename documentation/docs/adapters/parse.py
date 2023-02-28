@@ -234,7 +234,7 @@ def main():
                             sectionsWritten.append(entry["section"])
 
                         text += f"""
-| [{entry["name"]}]({adapterName.replace(" ", "")}/entries/{entry["section"].lower()}/{entry["name"].replace(" ", "")}) | {entry["description"]} |"""
+| [{entry["name"]}]({adapterName.replace(" ", "")}/entries/{entry["section"].lower()}/{entry["fileName"]}) | {entry["description"]} |"""
                     try:
                         if not os.path.exists(outputFile):
                             # if os.path.exists(os.path.join(outputPath, file.replace(".kt", ".mdx").replace("Entry", ""))):

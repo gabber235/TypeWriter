@@ -7,10 +7,10 @@ The WorldGuard Adapter allows you to create dialogue that is triggered by WorldG
 
 | Name | Description |
 | ---- | ----------- |
-| [Enter Region Event](WorldGuardAdapter/entries/events/EnterRegionEvent) | When a player enters a WorldGuard region |
-| [Exit Region Event](WorldGuardAdapter/entries/events/ExitRegionEvent) | When a player exits a WorldGuard region |
+| [Enter Region Event](WorldGuardAdapter/entries/events/on_enter_region) | When a player enters a WorldGuard region |
+| [Exit Region Event](WorldGuardAdapter/entries/events/on_exit_region) | When a player exits a WorldGuard region |
 ### Facts
 
 | Name | Description |
 | ---- | ----------- |
-| [In Region Fact](WorldGuardAdapter/entries/facts/InRegionFact) | If the player is in a region |
+| [In Region Fact](WorldGuardAdapter/entries/facts/in_region_fact) | If the player is in a region |
