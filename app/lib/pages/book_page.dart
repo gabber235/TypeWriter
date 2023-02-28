@@ -266,7 +266,7 @@ class _WikiButton extends HookConsumerWidget {
 
   void _launchWiki() {
     launchUrl(
-      Uri.parse(wikiUrl),
+      Uri.parse(wikiBaseUrl),
       webOnlyWindowName: "_blank",
     );
   }
