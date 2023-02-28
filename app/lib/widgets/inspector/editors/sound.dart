@@ -1,6 +1,7 @@
 import "package:audioplayers/audioplayers.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -63,7 +64,7 @@ class SoundsFetcher extends SearchFetcher {
   String get title => "Sounds";
 
   @override
-  List<SearchAction> fetch(PassingRef ref) {
+  List<SearchElement> fetch(PassingRef ref) {
     final search = ref.read(searchProvider);
     if (search == null) return [];
     final fuzzy = ref.read(_fuzzySoundsProvider);
@@ -72,7 +73,7 @@ class SoundsFetcher extends SearchFetcher {
 
     return results
         .map(
-          (result) => SearchSoundAction(sound: result.item, onSelect: onSelect),
+          (result) => SoundSearchElement(sound: result.item, onSelect: onSelect),
         )
         .toList();
   }
@@ -88,8 +89,8 @@ class SoundsFetcher extends SearchFetcher {
   }
 }
 
-class SearchSoundAction extends SearchAction {
-  const SearchSoundAction({
+class SoundSearchElement extends SearchElement {
+  const SoundSearchElement({
     required this.sound,
     required this.onSelect,
   });
@@ -143,6 +144,17 @@ class SearchSoundAction extends SearchAction {
     } else {
       return sound.category.formatted;
     }
+  }
+
+  @override
+  List<SearchAction> actions(PassingRef ref) {
+    return [
+      const SearchAction(
+        "Select",
+        FontAwesomeIcons.check,
+        SingleActivator(LogicalKeyboardKey.enter),
+      ),
+    ];
   }
 
   @override

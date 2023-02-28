@@ -1,0 +1,21 @@
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
+
+# Random Message Dialogue
+
+The `Random Message Dialogue` action displays a random message from a list to the player. This action provides you with the ability to create interactive dialogues with randomized responses.
+
+## How could this be used?
+
+This action can be useful in a variety of situations. You can use it to create randomized NPC dialogue, quests with multiple randomized outcomes, or to add a level of unpredictability to your game. The possibilities are endless!
+
+## Fields
+
+<ActionsField/>
+
+<EntryField name="Messages" required colored placeholders multiple>
+    A list of possible messages, one of which will be chosen at random to display to the player.
+</EntryField>
+
+<EntryField name="Speaker" required>
+    The name of the speaker who is delivering the message.
+</EntryField>

@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import org.bukkit.entity.Player
 
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player
 interface EventEntry : TriggerEntry
 
 interface CustomCommandEntry : EventEntry {
+	@Help("The command to register. Do not include the leading slash.")
 	val command: String
 
 	fun filter(player: Player, commandLabel: String, args: Array<out String>): CommandFilterResult =

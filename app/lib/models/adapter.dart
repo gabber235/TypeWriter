@@ -1,4 +1,5 @@
 import "package:collection/collection.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -6,6 +7,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/icons.dart";
 import "package:typewriter/utils/color_converter.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
+import "package:url_launcher/url_launcher_string.dart";
 
 part "adapter.freezed.dart";
 part "adapter.g.dart";
@@ -58,6 +60,7 @@ class EntryBlueprint with _$EntryBlueprint {
   const factory EntryBlueprint({
     required String name,
     required String description,
+    required String adapter,
     required ObjectField fields,
     @Default(<String>[]) List<String> tags,
     @ColorConverter() @Default(Colors.grey) Color color,
@@ -129,6 +132,8 @@ class Modifier with _$Modifier {
   factory Modifier.fromJson(Map<String, dynamic> json) => _$ModifierFromJson(json);
 }
 
+const wikiUrl = kDebugMode ? "http://localhost:3000/TypeWriter" : "https://gabber235.github.io/TypeWriter";
+
 extension EntryBlueprintExt on EntryBlueprint {
   Map<String, Modifier> fieldsWithModifier(String name) => _fieldsWithModifier(name, "", fields);
 
@@ -150,6 +155,24 @@ extension EntryBlueprintExt on EntryBlueprint {
     }
 
     return fields;
+  }
+
+  static const _wikiCategories = ["action", "dialogue", "event", "fact", "speaker"];
+  String get wikiUrl {
+    final category = tags.firstWhereOrNull((tag) => _wikiCategories.contains(tag));
+
+    if (category == null) {
+      return "$wikiUrl/adapters/${adapter}Adapter";
+    }
+
+    return "$wikiUrl/adapters/${adapter}Adapter/entries/$category/$name";
+  }
+
+  Future<void> openWiki() async {
+    final url = wikiUrl;
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
+    }
   }
 }
 

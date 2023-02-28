@@ -1,0 +1,28 @@
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
+
+# Give Item Action
+
+The `Give Item Action` is an action that gives a player an item. This action provides you with the ability to give an item with a specified Minecraft material, amount, display name, and lore.
+
+## How could this be used?
+
+This action can be useful in a variety of situations. You can use it to give players rewards for completing quests, unlockables for reaching certain milestones, or any other custom items you want to give players. The possibilities are endless!
+
+## Fields
+
+<ActionsField />
+<EntryField name="Material" required>
+    The Minecraft material of the item to give.
+</EntryField>
+
+<EntryField name="Amount" required>
+    The amount of the item to give.
+</EntryField>
+
+<EntryField name="Display Name" optional colored placeholders>
+    The display name of the item to give. If not specified, the item will have it's default display name.
+</EntryField>
+
+<EntryField name="Lore" optional colored placeholders>
+    The lore of the item to give. If not specified, the item will have it's default lore.
+</EntryField>

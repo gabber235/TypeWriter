@@ -2,8 +2,7 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
-import me.gabber235.typewriter.adapters.modifiers.Triggers
+import me.gabber235.typewriter.adapters.modifiers.*
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
@@ -18,7 +17,8 @@ class PlayerKillPlayerEventEntry(
 	override val triggers: List<String> = emptyList(),
 	@Triggers
 	@EntryIdentifier(TriggerableEntry::class)
-	val targetTriggers: List<String> = emptyList(),
+	@Help("The triggers to be executed for the player who was killed.")
+	val killedTriggers: List<String> = emptyList(),
 ) : EventEntry
 
 
@@ -32,5 +32,5 @@ fun onKill(event: EntityDeathEvent, query: Query<PlayerKillPlayerEventEntry>) {
 	val entries = query.find()
 
 	entries triggerAllFor killer
-	entries.flatMap { it.targetTriggers } triggerEntriesFor target
+	entries.flatMap { it.killedTriggers } triggerEntriesFor target
 }

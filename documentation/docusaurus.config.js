@@ -40,15 +40,12 @@ const config = {
             ({
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
-                    // Please change this to your repo.
-                    // Remove this to remove the "edit this page" links.
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
+                    routeBasePath: '/',
                 },
                 blog: {
                     showReadingTime: true,
-                    // Please change this to your repo.
-                    // Remove this to remove the "edit this page" links.
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
                 },
@@ -60,7 +57,7 @@ const config = {
     ],
 
     themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+        /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
             // Replace with your project's social card
             image: 'img/typewriter.png',
@@ -73,13 +70,25 @@ const config = {
                 items: [
                     {
                         type: 'doc',
-                        docId: 'home',
+                        docId: 'docs/home',
                         position: 'left',
                         label: 'Documentation',
                     },
-                    {to: '/blog', label: 'Blog', position: 'left'},
                     {
-                        href: 'https://github.com/facebook/docusaurus',
+                        type: 'docSidebar',
+                        sidebarId: 'adapters',
+                        position: 'left',
+                        label: 'Adapters',
+                    },
+                    {
+                        type: 'docSidebar',
+                        sidebarId: 'develop',
+                        position: 'left',
+                        label: 'Develop',
+                    },
+                    { to: '/blog', label: 'Blog', position: 'left' },
+                    {
+                        href: 'https://github.com/gabber235/TypeWriter',
                         label: 'GitHub',
                         position: 'right',
                     },
@@ -126,10 +135,22 @@ const config = {
             prism: {
                 theme: lightCodeTheme,
                 darkTheme: darkCodeTheme,
+                additionalLanguages: ['kotlin', 'yaml']
             },
         }),
     plugins: [
-        "rive-loader"
+        "rive-loader",
+        // [
+        //     '@docusaurus/plugin-content-docs',
+        //     {
+        //         id: 'adapters',
+        //         path: 'adapters',
+        //         routeBasePath: 'adapters',
+        //         sidebarPath: require.resolve('./sidebars.js'),
+        //         editUrl:
+        //             'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
+        //     },
+        // ]
     ]
 };
 

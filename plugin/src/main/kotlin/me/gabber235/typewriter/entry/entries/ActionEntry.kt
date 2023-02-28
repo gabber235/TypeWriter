@@ -1,8 +1,7 @@
 package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
-import me.gabber235.typewriter.adapters.modifiers.Triggers
+import me.gabber235.typewriter.adapters.modifiers.*
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.triggerEntriesFor
 import me.gabber235.typewriter.facts.FactDatabase
@@ -23,6 +22,7 @@ interface CustomTriggeringActionEntry : ActionEntry {
 
 	@Triggers
 	@EntryIdentifier(TriggerableEntry::class)
+	@Help("The entries that will be fired after this entry.")
 	val customTriggers: List<String>
 
 	fun Player.triggerCustomTriggers() {

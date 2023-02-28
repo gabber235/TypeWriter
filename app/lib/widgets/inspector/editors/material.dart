@@ -1,5 +1,6 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -66,7 +67,7 @@ class MaterialsFetcher extends SearchFetcher {
   String get title => "Materials";
 
   @override
-  List<SearchAction> fetch(PassingRef ref) {
+  List<SearchElement> fetch(PassingRef ref) {
     final search = ref.read(searchProvider);
     if (search == null) return [];
     final fuzzy = ref.read(_fuzzyMaterialsProvider);
@@ -75,7 +76,7 @@ class MaterialsFetcher extends SearchFetcher {
 
     return results.map((result) {
       final material = result.item;
-      return SearchMaterialAction(material, onSelect: onSelect);
+      return MaterialSearchElement(material, onSelect: onSelect);
     }).toList();
   }
 
@@ -90,8 +91,8 @@ class MaterialsFetcher extends SearchFetcher {
   }
 }
 
-class SearchMaterialAction extends SearchAction {
-  const SearchMaterialAction(this.material, {this.onSelect});
+class MaterialSearchElement extends SearchElement {
+  const MaterialSearchElement(this.material, {this.onSelect});
 
   final CombinedMaterial material;
   final Function(CombinedMaterial)? onSelect;
@@ -118,6 +119,17 @@ class SearchMaterialAction extends SearchAction {
 
   @override
   String description(BuildContext context) => material.key;
+
+  @override
+  List<SearchAction> actions(PassingRef ref) {
+    return [
+      const SearchAction(
+        "Select",
+        FontAwesomeIcons.check,
+        SingleActivator(LogicalKeyboardKey.enter),
+      ),
+    ];
+  }
 
   @override
   void activate(BuildContext context, PassingRef ref) {

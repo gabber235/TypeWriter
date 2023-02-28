@@ -21,4 +21,18 @@ class SmartSingleActivator extends SingleActivator {
     super.shift,
     super.includeRepeats,
   }) : super(control: control && !isApple, meta: control && isApple);
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! SingleActivator) return false;
+    return trigger == other.trigger &&
+        control == other.control &&
+        meta == other.meta &&
+        alt == other.alt &&
+        shift == other.shift &&
+        includeRepeats == other.includeRepeats;
+  }
+
+  @override
+  int get hashCode => Object.hash(trigger, control, meta, alt, shift, includeRepeats);
 }

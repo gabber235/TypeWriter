@@ -56,7 +56,7 @@ object EntryListeners {
 		unregister()
 
 		val entryListeners = AdapterLoader.getAdapterData().flatMap { it.eventListeners }
-		
+
 		EntryDatabase.events.map { it::class }.distinct().mapNotNull { klass ->
 			entryListeners.firstOrNull { it.entry.isSuperclassOf(klass) }
 		}.forEach {

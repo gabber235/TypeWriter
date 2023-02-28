@@ -23,7 +23,21 @@ Map<String, dynamic> _$$_PageToJson(_$_Page instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$pagesHash() => r'ea54e231325c749b3affb60c0d7c761cce4f78c6';
+
+/// See also [pages].
+@ProviderFor(pages)
+final pagesProvider = AutoDisposeProvider<List<Page>>.internal(
+  pages,
+  name: r'pagesProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$pagesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef PagesRef = AutoDisposeProviderRef<List<Page>>;
+String _$pageHash() => r'cac5f933a02820136d00b486570ced2b2a399fcd';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -46,23 +60,56 @@ class _SystemHash {
   }
 }
 
-String _$pagesHash() => r'ea54e231325c749b3affb60c0d7c761cce4f78c6';
+typedef PageRef = AutoDisposeProviderRef<Page?>;
 
-/// See also [pages].
-final pagesProvider = AutoDisposeProvider<List<Page>>(
-  pages,
-  name: r'pagesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$pagesHash,
-);
-typedef PagesRef = AutoDisposeProviderRef<List<Page>>;
-String _$pageHash() => r'cac5f933a02820136d00b486570ced2b2a399fcd';
+/// See also [page].
+@ProviderFor(page)
+const pageProvider = PageFamily();
+
+/// See also [page].
+class PageFamily extends Family<Page?> {
+  /// See also [page].
+  const PageFamily();
+
+  /// See also [page].
+  PageProvider call(
+    String name,
+  ) {
+    return PageProvider(
+      name,
+    );
+  }
+
+  @override
+  PageProvider getProviderOverride(
+    covariant PageProvider provider,
+  ) {
+    return call(
+      provider.name,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'pageProvider';
+}
 
 /// See also [page].
 class PageProvider extends AutoDisposeProvider<Page?> {
+  /// See also [page].
   PageProvider(
     this.name,
-  ) : super(
+  ) : super.internal(
           (ref) => page(
             ref,
             name,
@@ -71,6 +118,8 @@ class PageProvider extends AutoDisposeProvider<Page?> {
           name: r'pageProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product') ? null : _$pageHash,
+          dependencies: PageFamily._dependencies,
+          allTransitiveDependencies: PageFamily._allTransitiveDependencies,
         );
 
   final String name;
@@ -89,48 +138,57 @@ class PageProvider extends AutoDisposeProvider<Page?> {
   }
 }
 
-typedef PageRef = AutoDisposeProviderRef<Page?>;
+String _$entriesPageHash() => r'722059484c7e53a0839547133217a6615f37bc6d';
+typedef EntriesPageRef = AutoDisposeProviderRef<String?>;
 
-/// See also [page].
-final pageProvider = PageFamily();
+/// See also [entriesPage].
+@ProviderFor(entriesPage)
+const entriesPageProvider = EntriesPageFamily();
 
-class PageFamily extends Family<Page?> {
-  PageFamily();
+/// See also [entriesPage].
+class EntriesPageFamily extends Family<String?> {
+  /// See also [entriesPage].
+  const EntriesPageFamily();
 
-  PageProvider call(
-    String name,
+  /// See also [entriesPage].
+  EntriesPageProvider call(
+    String entryId,
   ) {
-    return PageProvider(
-      name,
+    return EntriesPageProvider(
+      entryId,
     );
   }
 
   @override
-  AutoDisposeProvider<Page?> getProviderOverride(
-    covariant PageProvider provider,
+  EntriesPageProvider getProviderOverride(
+    covariant EntriesPageProvider provider,
   ) {
     return call(
-      provider.name,
+      provider.entryId,
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  String? get name => r'pageProvider';
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entriesPageProvider';
 }
-
-String _$entriesPageHash() => r'722059484c7e53a0839547133217a6615f37bc6d';
 
 /// See also [entriesPage].
 class EntriesPageProvider extends AutoDisposeProvider<String?> {
+  /// See also [entriesPage].
   EntriesPageProvider(
     this.entryId,
-  ) : super(
+  ) : super.internal(
           (ref) => entriesPage(
             ref,
             entryId,
@@ -141,6 +199,9 @@ class EntriesPageProvider extends AutoDisposeProvider<String?> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$entriesPageHash,
+          dependencies: EntriesPageFamily._dependencies,
+          allTransitiveDependencies:
+              EntriesPageFamily._allTransitiveDependencies,
         );
 
   final String entryId;
@@ -159,49 +220,61 @@ class EntriesPageProvider extends AutoDisposeProvider<String?> {
   }
 }
 
-typedef EntriesPageRef = AutoDisposeProviderRef<String?>;
+String _$entryHash() => r'f1e00a6ad6ab8e50c1e2178680c8004c98dea055';
+typedef EntryRef = AutoDisposeProviderRef<Entry?>;
 
-/// See also [entriesPage].
-final entriesPageProvider = EntriesPageFamily();
+/// See also [entry].
+@ProviderFor(entry)
+const entryProvider = EntryFamily();
 
-class EntriesPageFamily extends Family<String?> {
-  EntriesPageFamily();
+/// See also [entry].
+class EntryFamily extends Family<Entry?> {
+  /// See also [entry].
+  const EntryFamily();
 
-  EntriesPageProvider call(
+  /// See also [entry].
+  EntryProvider call(
+    String pageId,
     String entryId,
   ) {
-    return EntriesPageProvider(
+    return EntryProvider(
+      pageId,
       entryId,
     );
   }
 
   @override
-  AutoDisposeProvider<String?> getProviderOverride(
-    covariant EntriesPageProvider provider,
+  EntryProvider getProviderOverride(
+    covariant EntryProvider provider,
   ) {
     return call(
+      provider.pageId,
       provider.entryId,
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  String? get name => r'entriesPageProvider';
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entryProvider';
 }
-
-String _$entryHash() => r'f1e00a6ad6ab8e50c1e2178680c8004c98dea055';
 
 /// See also [entry].
 class EntryProvider extends AutoDisposeProvider<Entry?> {
+  /// See also [entry].
   EntryProvider(
     this.pageId,
     this.entryId,
-  ) : super(
+  ) : super.internal(
           (ref) => entry(
             ref,
             pageId,
@@ -213,6 +286,8 @@ class EntryProvider extends AutoDisposeProvider<Entry?> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$entryHash,
+          dependencies: EntryFamily._dependencies,
+          allTransitiveDependencies: EntryFamily._allTransitiveDependencies,
         );
 
   final String pageId;
@@ -235,51 +310,57 @@ class EntryProvider extends AutoDisposeProvider<Entry?> {
   }
 }
 
-typedef EntryRef = AutoDisposeProviderRef<Entry?>;
+String _$globalEntryHash() => r'9aa2e0f379f22d9d87dee900fe3122f81698fac3';
+typedef GlobalEntryRef = AutoDisposeProviderRef<Entry?>;
 
-/// See also [entry].
-final entryProvider = EntryFamily();
+/// See also [globalEntry].
+@ProviderFor(globalEntry)
+const globalEntryProvider = GlobalEntryFamily();
 
-class EntryFamily extends Family<Entry?> {
-  EntryFamily();
+/// See also [globalEntry].
+class GlobalEntryFamily extends Family<Entry?> {
+  /// See also [globalEntry].
+  const GlobalEntryFamily();
 
-  EntryProvider call(
-    String pageId,
+  /// See also [globalEntry].
+  GlobalEntryProvider call(
     String entryId,
   ) {
-    return EntryProvider(
-      pageId,
+    return GlobalEntryProvider(
       entryId,
     );
   }
 
   @override
-  AutoDisposeProvider<Entry?> getProviderOverride(
-    covariant EntryProvider provider,
+  GlobalEntryProvider getProviderOverride(
+    covariant GlobalEntryProvider provider,
   ) {
     return call(
-      provider.pageId,
       provider.entryId,
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  String? get name => r'entryProvider';
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'globalEntryProvider';
 }
-
-String _$globalEntryHash() => r'9aa2e0f379f22d9d87dee900fe3122f81698fac3';
 
 /// See also [globalEntry].
 class GlobalEntryProvider extends AutoDisposeProvider<Entry?> {
+  /// See also [globalEntry].
   GlobalEntryProvider(
     this.entryId,
-  ) : super(
+  ) : super.internal(
           (ref) => globalEntry(
             ref,
             entryId,
@@ -290,6 +371,9 @@ class GlobalEntryProvider extends AutoDisposeProvider<Entry?> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$globalEntryHash,
+          dependencies: GlobalEntryFamily._dependencies,
+          allTransitiveDependencies:
+              GlobalEntryFamily._allTransitiveDependencies,
         );
 
   final String entryId;
@@ -308,50 +392,60 @@ class GlobalEntryProvider extends AutoDisposeProvider<Entry?> {
   }
 }
 
-typedef GlobalEntryRef = AutoDisposeProviderRef<Entry?>;
+String _$globalEntryWithPageHash() =>
+    r'250ed7d1b0146d138e1237d22c12a53e00a7b0b9';
+typedef GlobalEntryWithPageRef
+    = AutoDisposeProviderRef<MapEntry<String, Entry>?>;
 
-/// See also [globalEntry].
-final globalEntryProvider = GlobalEntryFamily();
+/// See also [globalEntryWithPage].
+@ProviderFor(globalEntryWithPage)
+const globalEntryWithPageProvider = GlobalEntryWithPageFamily();
 
-class GlobalEntryFamily extends Family<Entry?> {
-  GlobalEntryFamily();
+/// See also [globalEntryWithPage].
+class GlobalEntryWithPageFamily extends Family<MapEntry<String, Entry>?> {
+  /// See also [globalEntryWithPage].
+  const GlobalEntryWithPageFamily();
 
-  GlobalEntryProvider call(
+  /// See also [globalEntryWithPage].
+  GlobalEntryWithPageProvider call(
     String entryId,
   ) {
-    return GlobalEntryProvider(
+    return GlobalEntryWithPageProvider(
       entryId,
     );
   }
 
   @override
-  AutoDisposeProvider<Entry?> getProviderOverride(
-    covariant GlobalEntryProvider provider,
+  GlobalEntryWithPageProvider getProviderOverride(
+    covariant GlobalEntryWithPageProvider provider,
   ) {
     return call(
       provider.entryId,
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  String? get name => r'globalEntryProvider';
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'globalEntryWithPageProvider';
 }
-
-String _$globalEntryWithPageHash() =>
-    r'250ed7d1b0146d138e1237d22c12a53e00a7b0b9';
 
 /// See also [globalEntryWithPage].
 class GlobalEntryWithPageProvider
     extends AutoDisposeProvider<MapEntry<String, Entry>?> {
+  /// See also [globalEntryWithPage].
   GlobalEntryWithPageProvider(
     this.entryId,
-  ) : super(
+  ) : super.internal(
           (ref) => globalEntryWithPage(
             ref,
             entryId,
@@ -362,6 +456,9 @@ class GlobalEntryWithPageProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$globalEntryWithPageHash,
+          dependencies: GlobalEntryWithPageFamily._dependencies,
+          allTransitiveDependencies:
+              GlobalEntryWithPageFamily._allTransitiveDependencies,
         );
 
   final String entryId;
@@ -379,39 +476,4 @@ class GlobalEntryWithPageProvider
     return _SystemHash.finish(hash);
   }
 }
-
-typedef GlobalEntryWithPageRef
-    = AutoDisposeProviderRef<MapEntry<String, Entry>?>;
-
-/// See also [globalEntryWithPage].
-final globalEntryWithPageProvider = GlobalEntryWithPageFamily();
-
-class GlobalEntryWithPageFamily extends Family<MapEntry<String, Entry>?> {
-  GlobalEntryWithPageFamily();
-
-  GlobalEntryWithPageProvider call(
-    String entryId,
-  ) {
-    return GlobalEntryWithPageProvider(
-      entryId,
-    );
-  }
-
-  @override
-  AutoDisposeProvider<MapEntry<String, Entry>?> getProviderOverride(
-    covariant GlobalEntryWithPageProvider provider,
-  ) {
-    return call(
-      provider.entryId,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'globalEntryWithPageProvider';
-}
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

@@ -122,3 +122,4 @@ server
 
 # Rust
 target/
+adapters/TeraCoreAdapter/

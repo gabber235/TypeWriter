@@ -1,0 +1,19 @@
+import {EventsField, EntryField} from "@site/src/components/EntryField";
+
+# Run Command Event
+
+The `Run Command Event` event is triggered when a command is run. This event can be used to add custom commands to the server.
+
+:::caution
+This event is used for commands that **do not** already exist. If you are trying to detect when a player uses an already existing command, use the [`Detect Command Ran Event`](on_detect_command_ran) instead.
+:::
+
+## How could this be used?
+
+## Fields
+
+<EventsField />
+
+<EntryField name="Command" required placeholders>
+    The command to register. Do not include the leading slash.
+</EntryField>

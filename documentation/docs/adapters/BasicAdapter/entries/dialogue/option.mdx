@@ -1,0 +1,25 @@
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
+
+# Option Dialogue
+
+The `Option Dialogue` action displays a list of options to the player to choose from. This action provides you with the ability to give players choices that affect the outcome of the game.
+
+## How could this be used?
+
+This action can be useful in a variety of situations, such as presenting the player with dialogue choices that determine the course of a story or offering the player a choice of rewards for completing a quest.
+
+## Fields
+
+<ActionsField />
+
+<EntryField name="Speaker" required>
+    The name of the character who is speaking the dialogue.
+</EntryField>
+
+<EntryField name="Text" required colored placeholders>
+    The text of the dialogue, which can contain placeholders to be filled in dynamically.
+</EntryField>
+
+<EntryField name="Options" required>
+    The list of options to present to the player, along with the value to be returned if that option is chosen.
+</EntryField>

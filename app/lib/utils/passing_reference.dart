@@ -23,6 +23,16 @@ class PassingRef {
       return container!.read(provider);
     }
   }
+
+  void invalidate(ProviderOrFamily provider) {
+    if (providerRef != null) {
+      providerRef!.invalidate(provider);
+    } else if (widgetRef != null) {
+      widgetRef!.invalidate(provider);
+    } else {
+      container!.invalidate(provider);
+    }
+  }
 }
 
 extension RefX on Ref<dynamic> {

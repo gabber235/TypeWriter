@@ -6,7 +6,8 @@ part of 'material.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$materialPropertiesHash() =>
+    r'2537760a0cb4dc55f7fb40e4e045184959705bc2';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,15 +30,57 @@ class _SystemHash {
   }
 }
 
-String _$materialPropertiesHash() =>
-    r'2537760a0cb4dc55f7fb40e4e045184959705bc2';
+typedef MaterialPropertiesRef = AutoDisposeProviderRef<List<MaterialProperty>>;
+
+/// See also [materialProperties].
+@ProviderFor(materialProperties)
+const materialPropertiesProvider = MaterialPropertiesFamily();
+
+/// See also [materialProperties].
+class MaterialPropertiesFamily extends Family<List<MaterialProperty>> {
+  /// See also [materialProperties].
+  const MaterialPropertiesFamily();
+
+  /// See also [materialProperties].
+  MaterialPropertiesProvider call(
+    String meta,
+  ) {
+    return MaterialPropertiesProvider(
+      meta,
+    );
+  }
+
+  @override
+  MaterialPropertiesProvider getProviderOverride(
+    covariant MaterialPropertiesProvider provider,
+  ) {
+    return call(
+      provider.meta,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'materialPropertiesProvider';
+}
 
 /// See also [materialProperties].
 class MaterialPropertiesProvider
     extends AutoDisposeProvider<List<MaterialProperty>> {
+  /// See also [materialProperties].
   MaterialPropertiesProvider(
     this.meta,
-  ) : super(
+  ) : super.internal(
           (ref) => materialProperties(
             ref,
             meta,
@@ -48,6 +91,9 @@ class MaterialPropertiesProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$materialPropertiesHash,
+          dependencies: MaterialPropertiesFamily._dependencies,
+          allTransitiveDependencies:
+              MaterialPropertiesFamily._allTransitiveDependencies,
         );
 
   final String meta;
@@ -66,51 +112,21 @@ class MaterialPropertiesProvider
   }
 }
 
-typedef MaterialPropertiesRef = AutoDisposeProviderRef<List<MaterialProperty>>;
-
-/// See also [materialProperties].
-final materialPropertiesProvider = MaterialPropertiesFamily();
-
-class MaterialPropertiesFamily extends Family<List<MaterialProperty>> {
-  MaterialPropertiesFamily();
-
-  MaterialPropertiesProvider call(
-    String meta,
-  ) {
-    return MaterialPropertiesProvider(
-      meta,
-    );
-  }
-
-  @override
-  AutoDisposeProvider<List<MaterialProperty>> getProviderOverride(
-    covariant MaterialPropertiesProvider provider,
-  ) {
-    return call(
-      provider.meta,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'materialPropertiesProvider';
-}
-
-String _$_fuzzyMaterialsHash() => r'bfaa303c86894a2592b383e46588f82a7a8b7e6d';
+String _$fuzzyMaterialsHash() => r'bfaa303c86894a2592b383e46588f82a7a8b7e6d';
 
 /// See also [_fuzzyMaterials].
+@ProviderFor(_fuzzyMaterials)
 final _fuzzyMaterialsProvider =
-    AutoDisposeProvider<Fuzzy<MapEntry<String, MinecraftMaterial>>>(
+    AutoDisposeProvider<Fuzzy<MapEntry<String, MinecraftMaterial>>>.internal(
   _fuzzyMaterials,
   name: r'_fuzzyMaterialsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$_fuzzyMaterialsHash,
+      : _$fuzzyMaterialsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
+
 typedef _FuzzyMaterialsRef
     = AutoDisposeProviderRef<Fuzzy<MapEntry<String, MinecraftMaterial>>>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

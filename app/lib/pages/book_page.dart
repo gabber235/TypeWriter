@@ -6,6 +6,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
+import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
@@ -136,6 +137,8 @@ class _SideRail extends HookConsumerWidget {
                   const Spacer(),
                   const _DiscordButton(),
                   const SizedBox(height: 5),
+                  const _WikiButton(),
+                  const SizedBox(height: 5),
                   const _ReloadBookButton(),
                 ],
               ),
@@ -179,6 +182,65 @@ class _RailButton extends HookConsumerWidget {
   }
 }
 
+class _SimpleButton extends HookConsumerWidget {
+  const _SimpleButton({
+    required this.tooltip,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useAnimationController(duration: 2.seconds);
+
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        onTap: onTap,
+        onHover: (hover) {
+          if (hover) {
+            controller.forward(from: 0);
+          } else {
+            controller.reset();
+          }
+        },
+        borderRadius: BorderRadius.circular(8),
+        child: Tooltip(
+          message: tooltip,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: FaIcon(
+              icon,
+              color: Colors.white54,
+              size: 20,
+            ),
+          )
+              .animate(controller: controller)
+              .scaleXY(
+                begin: 1,
+                end: 1.1,
+                curve: Curves.easeInOutCubicEmphasized,
+                duration: 500.ms,
+              )
+              .shake(delay: 300.ms, duration: 700.ms)
+              .scaleXY(
+                begin: 1.1,
+                end: 1,
+                curve: Curves.easeInOut,
+                delay: 700.ms,
+                duration: 500.ms,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
 class _DiscordButton extends HookConsumerWidget {
   const _DiscordButton();
 
@@ -191,21 +253,30 @@ class _DiscordButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: _launchDiscord,
-        borderRadius: BorderRadius.circular(8),
-        child: const Padding(
-          padding: EdgeInsets.all(12.0),
-          child: FaIcon(
-            FontAwesomeIcons.discord,
-            color: Colors.white54,
-            size: 20,
-          ),
-        ),
-      ),
+    return _SimpleButton(
+      tooltip: "Join Discord",
+      icon: FontAwesomeIcons.discord,
+      onTap: _launchDiscord,
+    );
+  }
+}
+
+class _WikiButton extends HookConsumerWidget {
+  const _WikiButton();
+
+  void _launchWiki() {
+    launchUrl(
+      Uri.parse(wikiUrl),
+      webOnlyWindowName: "_blank",
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _SimpleButton(
+      tooltip: "Open Wiki",
+      icon: FontAwesomeIcons.book,
+      onTap: _launchWiki,
     );
   }
 }
@@ -215,21 +286,10 @@ class _ReloadBookButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: () => ref.read(bookProvider.notifier).reload(),
-        borderRadius: BorderRadius.circular(8),
-        child: const Padding(
-          padding: EdgeInsets.all(12.0),
-          child: FaIcon(
-            FontAwesomeIcons.arrowsRotate,
-            color: Colors.white54,
-            size: 20,
-          ),
-        ),
-      ),
+    return _SimpleButton(
+      tooltip: "Reload Data",
+      icon: FontAwesomeIcons.arrowsRotate,
+      onTap: () => ref.read(bookProvider.notifier).reload(),
     );
   }
 }

@@ -1,0 +1,24 @@
+import {EntryField, FactsField, ReadonlyFactInfo} from "@site/src/components/EntryField";
+
+# Value Placeholder Fact
+
+A [fact](/docs/facts) that is computed from a placeholder.
+This placeholder is evaluated when the fact is read and can return anything. The value will be computed based on the `values` specified.
+<ReadonlyFactInfo/>
+
+## How could this be used?
+
+If you only want to run certain actions if the player is in creative mode. Or depending on the weather, change the dialogue of an NPC.
+
+## Fields
+
+<FactsField/>
+
+<EntryField name="Placeholder" required placeholder>
+    Placeholder to use for the fact. The placeholder must return a number or boolean.
+</EntryField>
+
+<EntryField name="Values" required multiple regex>
+    Values to use for the placeholder. The placeholder will be evaluated with these values. And the value of the
+    fact will be the value of the first entry that matches.
+</EntryField>

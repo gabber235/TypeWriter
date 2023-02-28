@@ -225,6 +225,7 @@ EntryBlueprint _$EntryBlueprintFromJson(Map<String, dynamic> json) {
 mixin _$EntryBlueprint {
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
+  String get adapter => throw _privateConstructorUsedError;
   ObjectField get fields => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
   @ColorConverter()
@@ -247,6 +248,7 @@ abstract class $EntryBlueprintCopyWith<$Res> {
   $Res call(
       {String name,
       String description,
+      String adapter,
       ObjectField fields,
       List<String> tags,
       @ColorConverter() Color color,
@@ -268,6 +270,7 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
   $Res call({
     Object? name = null,
     Object? description = null,
+    Object? adapter = null,
     Object? fields = null,
     Object? tags = null,
     Object? color = null,
@@ -281,6 +284,10 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      adapter: null == adapter
+          ? _value.adapter
+          : adapter // ignore: cast_nullable_to_non_nullable
               as String,
       fields: null == fields
           ? _value.fields
@@ -313,6 +320,7 @@ abstract class _$$_EntryBlueprintCopyWith<$Res>
   $Res call(
       {String name,
       String description,
+      String adapter,
       ObjectField fields,
       List<String> tags,
       @ColorConverter() Color color,
@@ -332,6 +340,7 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
   $Res call({
     Object? name = null,
     Object? description = null,
+    Object? adapter = null,
     Object? fields = null,
     Object? tags = null,
     Object? color = null,
@@ -345,6 +354,10 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      adapter: null == adapter
+          ? _value.adapter
+          : adapter // ignore: cast_nullable_to_non_nullable
               as String,
       fields: null == fields
           ? _value.fields
@@ -372,6 +385,7 @@ class _$_EntryBlueprint implements _EntryBlueprint {
   const _$_EntryBlueprint(
       {required this.name,
       required this.description,
+      required this.adapter,
       required this.fields,
       final List<String> tags = const <String>[],
       @ColorConverter() this.color = Colors.grey,
@@ -385,6 +399,8 @@ class _$_EntryBlueprint implements _EntryBlueprint {
   final String name;
   @override
   final String description;
+  @override
+  final String adapter;
   @override
   final ObjectField fields;
   final List<String> _tags;
@@ -407,7 +423,7 @@ class _$_EntryBlueprint implements _EntryBlueprint {
 
   @override
   String toString() {
-    return 'EntryBlueprint(name: $name, description: $description, fields: $fields, tags: $tags, color: $color, icon: $icon)';
+    return 'EntryBlueprint(name: $name, description: $description, adapter: $adapter, fields: $fields, tags: $tags, color: $color, icon: $icon)';
   }
 
   @override
@@ -418,6 +434,7 @@ class _$_EntryBlueprint implements _EntryBlueprint {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
+            (identical(other.adapter, adapter) || other.adapter == adapter) &&
             (identical(other.fields, fields) || other.fields == fields) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.color, color) || other.color == color) &&
@@ -426,8 +443,8 @@ class _$_EntryBlueprint implements _EntryBlueprint {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, fields,
-      const DeepCollectionEquality().hash(_tags), color, icon);
+  int get hashCode => Object.hash(runtimeType, name, description, adapter,
+      fields, const DeepCollectionEquality().hash(_tags), color, icon);
 
   @JsonKey(ignore: true)
   @override
@@ -447,6 +464,7 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   const factory _EntryBlueprint(
       {required final String name,
       required final String description,
+      required final String adapter,
       required final ObjectField fields,
       final List<String> tags,
       @ColorConverter() final Color color,
@@ -459,6 +477,8 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   String get name;
   @override
   String get description;
+  @override
+  String get adapter;
   @override
   ObjectField get fields;
   @override

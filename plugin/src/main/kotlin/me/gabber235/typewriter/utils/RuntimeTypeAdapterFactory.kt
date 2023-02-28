@@ -109,8 +109,7 @@ class RuntimeTypeAdapterFactory<T : Any> private constructor(
 	private val subtypeToLabel: MutableMap<Class<*>, String> = LinkedHashMap()
 	private val maintainType: Boolean
 	/**
-	 * Registers `type` identified by `label`. Labels are case
-	 * sensitive.
+	 * Registers `type` identified by `label`. Labels are case-sensitive.
 	 *
 	 * @throws IllegalArgumentException if either `type` or `label`
 	 * have already been registered on this type adapter.
@@ -155,16 +154,15 @@ class RuntimeTypeAdapterFactory<T : Any> private constructor(
 				}
 				if (labelJsonElement == null) {
 					throw JsonParseException(
-						"cannot deserialize " + baseType
-								+ " because it does not define a field named " + typeFieldName
+						"cannot deserialize $baseType because it does not define a field named $typeFieldName"
 					)
 				}
 				val label = labelJsonElement.asString
 				val delegate// registration requires that subtype extends T
-						= labelToDelegate[label] as TypeAdapter<R>?
-					?: throw JsonParseException(
-						"cannot deserialize " + baseType + " subtype named "
-								+ label + "; did you forget to register a subtype?"
+						= labelToDelegate[label] as? TypeAdapter<R>?
+					?: throw NonExistentSubtypeException(
+						label,
+						"cannot deserialize $baseType subtype named $label; did you forget to register a subtype?"
 					)
 				return delegate.fromJsonTree(jsonElement)
 			}
@@ -175,9 +173,9 @@ class RuntimeTypeAdapterFactory<T : Any> private constructor(
 				val label = subtypeToLabel[srcType]
 				val delegate// registration requires that subtype extends T
 						= subtypeToDelegate[srcType] as TypeAdapter<R>?
-					?: throw JsonParseException(
-						"cannot serialize " + srcType.name
-								+ "; did you forget to register a subtype?"
+					?: throw NonExistentSubtypeException(
+						srcType.name,
+						"cannot serialize ${srcType.name}; did you forget to register a subtype?"
 					)
 				val jsonObject = delegate.toJsonTree(value).asJsonObject
 				if (maintainType) {
@@ -187,8 +185,7 @@ class RuntimeTypeAdapterFactory<T : Any> private constructor(
 				val clone = JsonObject()
 				if (jsonObject.has(typeFieldName)) {
 					throw JsonParseException(
-						"cannot serialize " + srcType.name
-								+ " because it already defines a field named " + typeFieldName
+						"cannot serialize ${srcType.name} because it already defines a field named $typeFieldName"
 					)
 				}
 				clone.add(typeFieldName, JsonPrimitive(label))
@@ -238,3 +235,6 @@ class RuntimeTypeAdapterFactory<T : Any> private constructor(
 		this.maintainType = maintainType
 	}
 }
+
+data class NonExistentSubtypeException(val subtypeName: String, override val message: String) :
+	JsonParseException(message)
