@@ -1,11 +1,11 @@
 import "package:collection/collection.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/icons.dart";
 import "package:typewriter/utils/color_converter.dart";
-import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
@@ -155,8 +155,9 @@ extension EntryBlueprintExt on EntryBlueprint {
     return fields;
   }
 
-  // static const _wikiUrl = "https://gabber235.github.io/TypeWriter/adapters";
-  static const _wikiUrl = "http://localhost:3000/TypeWriter/adapters";
+  static const _wikiUrl =
+      kDebugMode ? "http://localhost:3000/TypeWriter/adapters" : "https://gabber235.github.io/TypeWriter/adapters";
+
   static const _wikiCategories = ["action", "dialogue", "event", "fact", "speaker"];
   String get wikiUrl {
     final category = tags.firstWhereOrNull((tag) => _wikiCategories.contains(tag));
@@ -165,11 +166,7 @@ extension EntryBlueprintExt on EntryBlueprint {
       return "$_wikiUrl/${adapter}Adapter";
     }
 
-    final formattedName = name.formatted.replaceAll(" ", "").replacePrefix("On", "");
-    final wikiName =
-        formattedName.toLowerCase().endsWith(category) ? formattedName : "$formattedName${category.capitalize}";
-
-    return "$_wikiUrl/${adapter}Adapter/entries/$category/$wikiName";
+    return "$_wikiUrl/${adapter}Adapter/entries/$category/$name";
   }
 
   Future<void> openWiki() async {
