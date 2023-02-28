@@ -22,15 +22,13 @@ repositories {
 	// Adapter Specific
 
 	maven("https://nexus.sirblobman.xyz/repository/public/")
-
 }
 
 dependencies {
 	compileOnly(kotlin("stdlib"))
-
 	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
-	compileOnly("me.gabber235:typewriter:0.0.1")
+	compileOnly("me.gabber235:typewriter:$version")
 
 	// Already included in the TypeWriter plugin
 	compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
@@ -39,14 +37,11 @@ dependencies {
 	compileOnly("net.kyori:adventure-text-minimessage:4.12.0")
 	compileOnly("com.mojang:brigadier:1.0.18")
 
+	// External dependencies
 	compileOnly("com.github.sirblobman.api:core:2.6-SNAPSHOT")
 	compileOnly("com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT")
 
-	// External dependencies
-	//compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.11.1")
-
 	testImplementation(kotlin("test"))
-
 }
 
 tasks.test {

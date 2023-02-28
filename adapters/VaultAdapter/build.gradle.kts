@@ -21,7 +21,6 @@ repositories {
 	maven("https://jitpack.io/")
 
 	// Adapter Specific
-
 }
 
 dependencies {
@@ -36,13 +35,11 @@ dependencies {
 	compileOnly("net.kyori:adventure-api:4.12.0")
 	compileOnly("net.kyori:adventure-text-minimessage:4.12.0")
 	compileOnly("com.mojang:brigadier:1.0.18")
-	compileOnly("com.github.MilkBowl:VaultAPI:1.7")
 
 	// External dependencies
-	//compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.11.1")
+	compileOnly("com.github.MilkBowl:VaultAPI:1.7")
 
 	testImplementation(kotlin("test"))
-
 }
 
 tasks.test {

@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+	compileOnly(kotlin("stdlib"))
 	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
 	compileOnly("me.gabber235:typewriter:$version")

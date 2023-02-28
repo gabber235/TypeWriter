@@ -9,6 +9,7 @@ group = "me.gabber235"
 version = file("../../version.txt").readText().trim()
 
 repositories {
+	// Required
 	maven("https://jitpack.io")
 	mavenCentral()
 	maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
@@ -17,10 +18,10 @@ repositories {
 	maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
 	maven("https://repo.codemc.io/repository/maven-snapshots/")
 	maven("https://repo.opencollab.dev/maven-snapshots/")
-
 }
 
 dependencies {
+	compileOnly(kotlin("stdlib"))
 	compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
 	compileOnly("me.gabber235:typewriter:$version")
