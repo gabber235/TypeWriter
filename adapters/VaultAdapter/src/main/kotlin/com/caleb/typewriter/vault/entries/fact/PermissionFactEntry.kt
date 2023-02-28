@@ -1,4 +1,4 @@
-package com.caleb.typewriter.vault.entries.facts
+package com.caleb.typewriter.vault.entries.fact
 
 import com.caleb.typewriter.vault.VaultAdapter
 import lirand.api.extensions.server.server

@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.citizens.entries.events
+package me.gabber235.typewriter.citizens.entries.event
 
 import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.adapters.Colors
@@ -6,8 +6,8 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.citizens.TypewriterTrait
-import me.gabber235.typewriter.citizens.entries.entities.Npc
-import me.gabber235.typewriter.citizens.entries.entities.ReferenceNpcEntry
+import me.gabber235.typewriter.citizens.entries.entity.Npc
+import me.gabber235.typewriter.citizens.entries.entity.ReferenceNpcEntry
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons

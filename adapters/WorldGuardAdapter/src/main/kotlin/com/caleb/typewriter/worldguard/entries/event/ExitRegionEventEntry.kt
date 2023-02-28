@@ -1,4 +1,4 @@
-package com.caleb.typewriter.worldguard.entries.events
+package com.caleb.typewriter.worldguard.entries.event
 
 import com.caleb.typewriter.worldguard.RegionsExitEvent
 import lirand.api.extensions.server.server

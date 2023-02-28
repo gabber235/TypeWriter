@@ -1,4 +1,4 @@
-package com.caleb.typewriter.combatlogx.entries.events
+package com.caleb.typewriter.combatlogx.entries.event
 
 import com.github.sirblobman.combatlogx.api.event.PlayerTagEvent
 import me.gabber235.typewriter.adapters.Colors

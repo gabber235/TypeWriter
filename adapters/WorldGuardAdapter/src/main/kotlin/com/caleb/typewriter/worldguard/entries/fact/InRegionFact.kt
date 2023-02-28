@@ -1,4 +1,4 @@
-package com.caleb.typewriter.worldguard.entries.facts
+package com.caleb.typewriter.worldguard.entries.fact
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldguard.WorldGuard

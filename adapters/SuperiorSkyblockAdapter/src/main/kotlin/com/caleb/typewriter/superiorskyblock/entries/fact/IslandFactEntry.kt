@@ -1,4 +1,4 @@
-package com.caleb.typewriter.superiorskyblock.entries.facts
+package com.caleb.typewriter.superiorskyblock.entries.fact
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI
 import com.bgsoftware.superiorskyblock.api.island.Island
