@@ -6,7 +6,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/inspector/validated_text_field.dart";
+import "package:typewriter/widgets/inspector/validated_inspector_text_field.dart";
 
 class DurationEditorFilter extends EditorFilter {
   @override
@@ -48,7 +48,8 @@ class DurationEditor extends HookConsumerWidget {
       },
       formatted: (value) {
         final parsedValue = value.milliseconds;
-        return prettyDuration(parsedValue, abbreviated: false, tersity: DurationTersity.millisecond);
+        final formatted = prettyDuration(parsedValue, abbreviated: false, tersity: DurationTersity.millisecond);
+        return "Valid Duration: $formatted";
       },
     );
   }

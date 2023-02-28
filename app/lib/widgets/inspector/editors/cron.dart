@@ -5,7 +5,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/cron.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/inspector/validated_text_field.dart";
+import "package:typewriter/widgets/inspector/validated_inspector_text_field.dart";
 
 class CronEditorFilter extends EditorFilter {
   @override
