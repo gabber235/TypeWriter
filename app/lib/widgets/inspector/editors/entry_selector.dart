@@ -146,6 +146,24 @@ class EntriesSelectorButton extends HookConsumerWidget {
   final String path;
   final String tag;
 
+  void _startSelection(PassingRef ref) {
+    final currentEntries = ref.read(fieldValueProvider(path, []));
+    final entryDefinition = ref.read(inspectingEntryDefinitionProvider);
+    if (entryDefinition == null) return;
+
+    ref.read(entrySelectionProvider.notifier).startSelection(
+      tag,
+      currentEntries.map((e) => e as String).toList(),
+      (ref, selectedEntries) {
+        ref.read(inspectingEntryDefinitionProvider)?.updateField(
+              ref.passing,
+              path,
+              selectedEntries,
+            );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Tooltip(
@@ -155,26 +173,10 @@ class EntriesSelectorButton extends HookConsumerWidget {
         color: Colors.deepPurple,
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(4)),
-          onTap: () async {
-            final currentEntries = ref.watch(fieldValueProvider(path, [])) as List<dynamic>;
-            final entryDefinition = ref.watch(inspectingEntryDefinitionProvider);
-            if (entryDefinition == null) return;
-
-            ref.read(entrySelectionProvider.notifier).startSelection(
-              tag,
-              currentEntries.map((e) => e as String).toList(),
-              (ref, selectedEntries) {
-                ref.read(inspectingEntryDefinitionProvider)?.updateField(
-                      ref.passing,
-                      path,
-                      selectedEntries,
-                    );
-              },
-            );
-          },
+          onTap: () => _startSelection(ref.passing),
           child: const Padding(
             padding: EdgeInsets.all(6.0),
-            child: FaIcon(FontAwesomeIcons.objectGroup, size: 16),
+            child: FaIcon(FontAwesomeIcons.objectGroup, size: 16, color: Colors.white),
           ),
         ),
       ),
