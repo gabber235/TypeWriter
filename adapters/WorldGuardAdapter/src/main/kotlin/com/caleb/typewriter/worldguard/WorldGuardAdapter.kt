@@ -1,13 +1,13 @@
 package com.caleb.typewriter.worldguard
 
+import App
 import com.sk89q.worldguard.WorldGuard
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
 
-
-@Adapter("WorldGuard", "For Using WorldGuard", "0.2.0")
+@Adapter("WorldGuard", "For Using WorldGuard", App.VERSION)
 object WorldGuardAdapter : TypewriteAdapter() {
 
 	override fun initialize() {

@@ -50,6 +50,21 @@ java {
 	targetCompatibility = javaVersion
 }
 
+val copyTemplates by tasks.registering(Copy::class) {
+	filteringCharset = "UTF-8"
+	from(projectDir.resolve("src/main/templates")) {
+		expand("version" to version)
+	}
+	into(buildDir.resolve("generated-sources/templates/kotlin/main"))
+}
+
+sourceSets {
+	main {
+		java.srcDirs(copyTemplates)
+	}
+}
+
+
 task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildAndMove") {
 	dependsOn("shadowJar")
 
@@ -69,6 +84,8 @@ task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildRelease")
 	dependsOn("shadowJar")
 	group = "build"
 	description = "Builds the jar and renames it"
+
+
 
 	doLast {
 		// Rename the jar to remove the version and -all

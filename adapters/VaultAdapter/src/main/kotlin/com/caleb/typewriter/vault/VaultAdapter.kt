@@ -1,5 +1,6 @@
 package com.caleb.typewriter.vault
 
+import App
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Adapter
@@ -10,8 +11,7 @@ import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit.getServer
 import org.bukkit.plugin.RegisteredServiceProvider
 
-
-@Adapter("Vault", "For Vault", "0.2.0")
+@Adapter("Vault", "For Vault", App.VERSION)
 object VaultAdapter : TypewriteAdapter() {
 	var economy: Economy? = null
 		private set

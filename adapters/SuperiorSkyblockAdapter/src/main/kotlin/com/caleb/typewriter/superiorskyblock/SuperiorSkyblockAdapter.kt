@@ -1,12 +1,12 @@
 package com.caleb.typewriter.superiorskyblock
 
+import App
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
 
-
-@Adapter("SuperiorSkyblock", "For SuperiorSkyblock2, made by Caleb (Sniper)", "0.2.0")
+@Adapter("SuperiorSkyblock", "For SuperiorSkyblock2, made by Caleb (Sniper)", App.VERSION)
 object SuperiorSkyblockAdapter : TypewriteAdapter() {
 
 

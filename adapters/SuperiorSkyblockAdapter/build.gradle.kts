@@ -53,6 +53,20 @@ java {
 	targetCompatibility = javaVersion
 }
 
+val copyTemplates by tasks.registering(Copy::class) {
+	filteringCharset = "UTF-8"
+	from(projectDir.resolve("src/main/templates")) {
+		expand("version" to version)
+	}
+	into(buildDir.resolve("generated-sources/templates/kotlin/main"))
+}
+
+sourceSets {
+	main {
+		java.srcDirs(copyTemplates)
+	}
+}
+
 task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildAndMove") {
 	dependsOn("shadowJar")
 
