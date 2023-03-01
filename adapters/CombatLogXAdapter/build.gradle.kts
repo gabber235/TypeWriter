@@ -1,5 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm") version "1.7.20"
@@ -48,8 +47,25 @@ tasks.test {
 	useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "1.8"
+val targetJavaVersion = 17
+java {
+	val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
+}
+
+val copyTemplates by tasks.registering(Copy::class) {
+	filteringCharset = "UTF-8"
+	from(projectDir.resolve("src/main/templates")) {
+		expand("version" to version)
+	}
+	into(buildDir.resolve("generated-sources/templates/kotlin/main"))
+}
+
+sourceSets {
+	main {
+		java.srcDirs(copyTemplates)
+	}
 }
 
 task<ShadowJar>("buildAndMove") {
@@ -64,5 +80,17 @@ task<ShadowJar>("buildAndMove") {
 		val server =
 			file("../../plugin/server/plugins/Typewriter/adapters/%s.jar".format(project.name))
 		jar.copyTo(server, overwrite = true)
+	}
+}
+
+task<ShadowJar>("buildRelease") {
+	dependsOn("shadowJar")
+	group = "build"
+	description = "Builds the jar and renames it"
+
+	doLast {
+		// Rename the jar to remove the version and -all
+		val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+		jar.renameTo(file("build/libs/%s.jar".format(project.name)))
 	}
 }

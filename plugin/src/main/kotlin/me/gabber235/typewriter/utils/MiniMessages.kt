@@ -53,7 +53,7 @@ fun String.asPartialFormattedMini(
 fun Component.minimalLines(minLines: Int = 3): Component {
 	val message = this.plainText()
 	val lineCount = message.count { it == '\n' } + 1
-	val missingLines = minLines - lineCount
+	val missingLines = (minLines - lineCount).coerceAtLeast(0)
 	val missingLinesString = "\n".repeat(missingLines)
 	return this.append(Component.text(missingLinesString))
 }
@@ -110,7 +110,7 @@ fun Component.noChildren() = this.children(mutableListOf())
  */
 private fun String.minimalLines(minLines: Int = 3): String {
 	val lineCount = count { it == '\n' } + 1
-	val missingLines = minLines - lineCount
+	val missingLines = (minLines - lineCount).coerceAtLeast(0)
 	val missingLinesString = "\n".repeat(missingLines)
 	return "$this$missingLinesString"
 }
