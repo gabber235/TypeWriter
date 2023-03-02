@@ -4,7 +4,6 @@ import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 
 @Tags("dialogue")
 interface DialogueEntry : TriggerableEntry {
@@ -15,7 +14,7 @@ interface DialogueEntry : TriggerableEntry {
 
 
 	val speakerDisplayName: String
-		get() = speakerEntry?.displayName?.parsePlaceholders(null) ?: ""
+		get() = speakerEntry?.displayName ?: ""
 
 	val speakerEntry: SpeakerEntry?
 		get() = Query.findById(speaker)
