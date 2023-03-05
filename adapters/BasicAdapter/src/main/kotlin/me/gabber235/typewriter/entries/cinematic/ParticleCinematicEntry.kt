@@ -3,22 +3,31 @@ package me.gabber235.typewriter.entries.cinematic
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Modifier
-import me.gabber235.typewriter.entry.entries.CinematicAction
-import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.Player
-import java.time.Duration
 
 @Entry("particle_cinematic", "Spawn particles for a cinematic", Colors.CYAN, Icons.FIRE_FLAME_SIMPLE)
 data class ParticleCinematicEntry(
 	override val id: String = "",
 	override val name: String = "",
-	override val triggers: List<String> = emptyList(),
 	override val criteria: List<Criteria> = emptyList(),
-	override val modifiers: List<Modifier> = emptyList(),
+	override val segments: List<ParticleSegment> = emptyList(),
+) : CinematicEntry<ParticleSegment> {
+	override fun create(player: Player): CinematicAction {
+		return ParticleCinematicAction(
+			player,
+			this,
+		)
+	}
+}
+
+
+data class ParticleSegment(
+	override val startFrame: Int = 0,
+	override val endFrame: Int = 0,
 	val location: Location = Location(null, 0.0, 0.0, 0.0),
 	val particle: Particle = Particle.FLAME,
 	val offsetX: Double = 0.0,
@@ -26,51 +35,29 @@ data class ParticleCinematicEntry(
 	val offsetZ: Double = 0.0,
 	val speed: Double = 0.0,
 	val spawnCountPerTick: Int = 0,
-	val duration: Duration = Duration.ZERO,
-) : CinematicEntry {
-	override fun create(player: Player): CinematicAction {
-		return ParticleCinematicAction(
-			player,
-			location,
-			particle,
-			offsetX,
-			offsetY,
-			offsetZ,
-			speed,
-			spawnCountPerTick,
-			duration
-		)
-	}
-}
+) : Segment
 
 class ParticleCinematicAction(
 	private val player: Player,
-	private val location: Location,
-	private val particle: Particle,
-	private val offsetX: Double,
-	private val offsetY: Double,
-	private val offsetZ: Double,
-	private val speed: Double,
-	private val spawnCountPerTick: Int,
-	private val duration: Duration,
+	private val entry: ParticleCinematicEntry,
 ) : CinematicAction {
-	private var elapsed = Duration.ZERO
-	
-	override fun tick(delta: Duration) {
-		elapsed += delta
+	override fun tick(frame: Int) {
+		val segments = entry activeSegmentsAt frame
 
-		player.spawnParticle(
-			particle,
-			location,
-			spawnCountPerTick,
-			offsetX,
-			offsetY,
-			offsetZ,
-			speed
-		)
-		super.tick(delta)
+		segments.forEach { segment ->
+			player.spawnParticle(
+				segment.particle,
+				segment.location,
+				segment.spawnCountPerTick,
+				segment.offsetX,
+				segment.offsetY,
+				segment.offsetZ,
+				segment.speed
+			)
+		}
+
+		super.tick(frame)
 	}
 
-	override val canFinish: Boolean
-		get() = elapsed >= duration
+	override fun canFinish(frame: Int): Boolean = entry canFinishAt frame
 }

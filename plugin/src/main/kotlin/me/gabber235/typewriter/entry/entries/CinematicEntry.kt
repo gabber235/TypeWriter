@@ -1,24 +1,41 @@
 package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import org.bukkit.entity.Player
-import java.time.Duration
 
 @Tags("cinematic")
-interface CinematicEntry : TriggerableEntry {
+interface CinematicEntry<S : Segment> : Entry {
+	@Help("The criteria that must be met before this entry is shown")
+	val criteria: List<Criteria>
+
+	@Help("The segments that define the action")
+	val segments: List<S>
+
 	fun create(player: Player): CinematicAction
 }
 
-interface CinematicAction {
-	fun setup() {}
-	fun tick(delta: Duration) {}
-	fun teardown(): Revertible? = null
+infix fun <S : Segment> CinematicEntry<S>.activeSegmentsAt(frame: Int) = segments.filter { it isActiveAt frame }
 
-	val canFinish: Boolean
-		get() = true
+interface Segment {
+	val startFrame: Int
+	val endFrame: Int
 }
 
-interface Revertible {
-	fun revert()
+infix fun Segment.isActiveAt(frame: Int): Boolean = frame in startFrame..endFrame
+
+interface CinematicAction {
+	fun setup() {}
+	fun tick(frame: Int) {}
+	fun teardown() {}
+
+	fun canFinish(frame: Int): Boolean
+}
+
+val CinematicEntry<*>.duration: Int
+	get() = segments.maxOf { it.endFrame }
+
+infix fun CinematicEntry<*>.canFinishAt(frame: Int): Boolean {
+	return frame >= duration
 }

@@ -62,7 +62,22 @@ class Query<E : Entry>(private val klass: KClass<E>) {
 	 */
 	infix fun findByName(name: String) = firstWhere { it.name == name }
 
+	/**
+	 * Find entry by [id].
+	 *
+	 * Example:
+	 * ```kotlin
+	 * val query: Query<SomeEntry> = ...
+	 * query findById "someId"
+	 * ```
+	 */
 	infix fun findById(id: String): E? = findById(klass, id)
+
+	/**
+	 * Find entry all entries that are on the given page [pageId] with the given [filter].
+	 * @see findWhere
+	 */
+	fun findWhereFromPage(pageId: String, filter: (E) -> Boolean): List<E> = findWhereFromPage(klass, pageId, filter)
 
 	companion object {
 		/**
@@ -164,7 +179,27 @@ class Query<E : Entry>(private val klass: KClass<E>) {
 
 		inline infix fun <reified E : Entry> findById(id: String): E? = findById(E::class, id)
 
+		/**
+		 * Find entry by [id].
+		 * @see findByName
+		 */
 		fun <E : Entry> findById(klass: KClass<E>, id: String): E? = EntryDatabase.findEntryById(klass, id)
+
+		/**
+		 * Find entry all entries that are on the given page [pageId] with the given [filter].
+		 * @see findWhere
+		 */
+		inline fun <reified E : Entry> findWhereFromPage(pageId: String, noinline filter: (E) -> Boolean): List<E> {
+			return findWhereFromPage(E::class, pageId, filter)
+		}
+
+		/**
+		 * Find entry all entries that are on the given page [pageId] with the given [filter].
+		 * @see findWhere
+		 */
+		fun <E : Entry> findWhereFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E> {
+			return EntryDatabase.findEntriesFromPage(klass, pageId, filter)
+		}
 	}
 }
 
@@ -215,6 +250,21 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
 infix fun List<String>.triggerEntriesFor(player: Player) {
 	val triggers = this.map { EntryTrigger(it) }
 	InteractionHandler.triggerActions(player, triggers)
+}
+
+/**
+ * Trigger a specific trigger for a player.
+ *
+ * Example:
+ * ```kotlin
+ * val trigger: EventTrigger = ...
+ * trigger triggerFor player
+ * ```
+ *
+ * @param player The player to trigger the trigger for.
+ */
+infix fun EventTrigger.triggerFor(player: Player) {
+	InteractionHandler.triggerActions(player, listOf(this))
 }
 
 /**

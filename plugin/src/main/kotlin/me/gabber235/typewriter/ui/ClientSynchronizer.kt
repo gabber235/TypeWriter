@@ -73,19 +73,19 @@ object ClientSynchronizer {
 		ack.sendAckData("No data found")
 	}
 
-	fun handleCreatePage(client: SocketIOClient, name: String, ack: AckRequest) {
-		if (pages.containsKey(name)) {
+	fun handleCreatePage(client: SocketIOClient, data: String, ack: AckRequest) {
+		val json = gson.fromJson(data, PageCreate::class.java)
+		if (pages.containsKey(json.name)) {
 			ack.sendAckData("Page already exists")
 			return
 		}
 
-		val page = JsonObject()
-		page.addProperty("name", name)
-		page.add("entries", JsonArray())
-		pages[name] = page
+
+		val page = gson.fromJson(data, JsonObject::class.java)
+		pages[json.name] = page
 
 		ack.sendAckData("Page created")
-		CommunicationHandler.server?.broadcastOperations?.sendEvent("createPage", client, name)
+		CommunicationHandler.server?.broadcastOperations?.sendEvent("createPage", client, data)
 		autoSaver()
 	}
 
@@ -257,6 +257,8 @@ enum class StagingState {
 	STAGING,
 	PUBLISHED
 }
+
+data class PageCreate(val name: String)
 
 data class PageRename(val old: String, val new: String)
 

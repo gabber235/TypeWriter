@@ -14,6 +14,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 object EntryDatabase {
+	private var pages: List<Page> = emptyList()
 	private var entries: List<Entry> = emptyList()
 
 	var facts = listOf<FactEntry>()
@@ -40,21 +41,22 @@ object EntryDatabase {
 		val gson = gson()
 
 		val pages = dir.listFiles { file -> file.name.endsWith(".json") }?.mapNotNull { file ->
+			val id = file.nameWithoutExtension
 			val dialogueReader = JsonReader(file.reader())
-			dialogueReader.parsePage(gson)
-		}
+			dialogueReader.parsePage(id, gson)
+		} ?: emptyList()
 
-		this.facts = pages?.flatMap { it.entries.filterIsInstance<FactEntry>() } ?: listOf()
-		this.entities = pages?.flatMap { it.entries.filterIsInstance<EntityEntry>() } ?: listOf()
-		this.events = pages?.flatMap { it.entries.filterIsInstance<EventEntry>() } ?: listOf()
-		this.dialogue = pages?.flatMap { it.entries.filterIsInstance<DialogueEntry>() } ?: listOf()
-		this.actions = pages?.flatMap { it.entries.filterIsInstance<ActionEntry>() } ?: listOf()
+		this.facts = pages.flatMap { it.entries.filterIsInstance<FactEntry>() }
+		this.entities = pages.flatMap { it.entries.filterIsInstance<EntityEntry>() }
+		this.events = pages.flatMap { it.entries.filterIsInstance<EventEntry>() }
+		this.dialogue = pages.flatMap { it.entries.filterIsInstance<DialogueEntry>() }
+		this.actions = pages.flatMap { it.entries.filterIsInstance<ActionEntry>() }
 
-		val newCommandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
+		val newCommandEvents = pages.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() }
 		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
 
-		this.entries = pages?.flatMap { it.entries } ?: listOf()
-
+		this.entries = pages.flatMap { it.entries }
+		this.pages = pages
 
 		EntryListeners.register()
 
@@ -90,23 +92,28 @@ object EntryDatabase {
 
 
 	internal fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
-		return entries.filterIsInstance(klass.java).filter(predicate)
+		return entries.asSequence().filterIsInstance(klass.java).filter(predicate).toList()
+	}
+
+	fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E> {
+		return pages.firstOrNull { it.id == pageId }?.entries?.asSequence()?.filterIsInstance(klass.java)
+			?.filter(filter)?.toList()
+			?: emptyList()
 	}
 
 	internal fun <T : Entry> findEntry(klass: KClass<T>, predicate: (T) -> Boolean): T? {
-		return entries.filterIsInstance(klass.java).firstOrNull(predicate)
+		return entries.asSequence().filterIsInstance(klass.java).firstOrNull(predicate)
 	}
 
 	internal fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
-
 	internal fun getFact(id: String) = facts.firstOrNull { it.id == id }
 	internal fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
 }
 
-private fun JsonReader.parsePage(gson: Gson): Page? {
+private fun JsonReader.parsePage(id: String, gson: Gson): Page? {
 	return try {
 
-		var page = Page()
+		var page = Page(id)
 
 		beginObject()
 		while (hasNext()) {
@@ -160,6 +167,7 @@ private fun JsonReader.parseEntry(gson: Gson): Entry? {
 }
 
 data class Page(
+	val id: String = "",
 	val entries: List<Entry> = emptyList(),
 )
 

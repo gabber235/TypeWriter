@@ -8,11 +8,11 @@ import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.entries.Event
 import me.gabber235.typewriter.entry.entries.EventTrigger
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
+import me.gabber235.typewriter.entry.triggerFor
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import java.time.Duration
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -71,11 +71,9 @@ object InteractionHandler {
 	fun init() {
 		job = plugin.launch {
 			while (plugin.isEnabled) {
-				val start = System.currentTimeMillis()
 				delay(50)
-				val delta = System.currentTimeMillis() - start
 				interactions.forEach { (_, interaction) ->
-					interaction.tick(Duration.ofMillis(delta))
+					interaction.tick()
 				}
 			}
 		}
@@ -88,7 +86,7 @@ object InteractionHandler {
 
 		// When a player tries to execute a command, we need to end the dialogue.
 		plugin.listen<PlayerCommandPreprocessEvent>(priority = EventPriority.LOWEST, ignoreCancelled = true) { event ->
-			triggerEvent(Event(event.player, DIALOGUE_END))
+			DIALOGUE_END triggerFor event.player
 		}
 	}
 
