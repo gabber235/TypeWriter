@@ -5,7 +5,7 @@ import "package:stack_trace/stack_trace.dart" as stack_trace;
 import "package:typewriter/app_router.dart";
 
 void main() async {
-  FlutterError.demangleStackTrace = (StackTrace stack) {
+  FlutterError.demangleStackTrace = (stack) {
     if (stack is stack_trace.Trace) return stack.vmTrace;
     if (stack is stack_trace.Chain) return stack.toTrace().vmTrace;
     return stack;

@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
@@ -26,10 +27,11 @@ class BookNotifier extends StateNotifier<Book> {
   set book(Book book) => state = book;
 
   /// Creates a new page.
-  Future<void> createPage(String name) async {
-    await ref.read(communicatorProvider).createPage(name);
+  Future<void> createPage(String name, PageType type) async {
+    final page = Page(name: name, type: type);
+    await ref.read(communicatorProvider).createPage(page);
     state = state.copyWith(
-      pages: [...state.pages, Page(name: name)],
+      pages: [...state.pages, page],
     );
   }
 
@@ -42,8 +44,28 @@ class BookNotifier extends StateNotifier<Book> {
 
   /// Rename a page.
   /// If the page does not exist, it will be added.
-  void renamePage(String old, String newName) {
-    final page = state.pages.firstWhere((p) => p.name == old, orElse: () => Page(name: old));
+  Future<void> renamePage(String old, String newName) async {
+    final page = state.pages.firstWhereOrNull((p) => p.name == old);
+    if (page == null) return;
+    await ref.read(communicatorProvider).renamePage(old, newName);
+    syncRenamePage(old, newName);
+  }
+
+  /// Deletes a page.
+  Future<void> deletePage(String name) async {
+    await ref.read(communicatorProvider).deletePage(name);
+    syncDeletePage(name);
+  }
+
+  /// Reloads the book from the server.
+  Future<void> reload() async {
+    return ref.read(communicatorProvider).fetchBook();
+  }
+
+  /// Only for internal use.
+  void syncRenamePage(String old, String newName) {
+    final page = state.pages.firstWhereOrNull((p) => p.name == old);
+    if (page == null) return;
     state = state.copyWith(
       pages: [
         ...state.pages.where((p) => p.name != old),
@@ -52,16 +74,10 @@ class BookNotifier extends StateNotifier<Book> {
     );
   }
 
-  /// Deletes a page.
-  Future<void> deletePage(String name) async {
-    await ref.read(communicatorProvider).deletePage(name);
+  /// Only for internal use.
+  void syncDeletePage(String name) {
     state = state.copyWith(
       pages: state.pages.where((p) => p.name != name).toList(),
     );
-  }
-
-  /// Reloads the book from the server.
-  Future<void> reload() async {
-    return ref.read(communicatorProvider).fetchBook();
   }
 }

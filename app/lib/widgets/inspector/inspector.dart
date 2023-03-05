@@ -8,7 +8,6 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/inspector/editors/name.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/heading.dart";
@@ -51,21 +50,14 @@ Entry? inspectingEntry(InspectingEntryRef ref) {
   return page?.entries.firstWhereOrNull((e) => e.id == selectedEntryId);
 }
 
-class Inspector extends HookConsumerWidget {
-  const Inspector({
+class EntryInspector extends HookConsumerWidget {
+  const EntryInspector({
     super.key,
   }) : super();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inspectingEntry = ref.watch(inspectingEntryProvider);
-    final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
-
-    // When we are selecting entries, we want a special inspector that allows
-    // us to select entries.
-    if (isSelectingEntries) {
-      return const EntriesSelectorInspector();
-    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),

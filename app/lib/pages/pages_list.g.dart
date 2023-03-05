@@ -6,7 +6,21 @@ part of 'pages_list.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$pageNamesHash() => r'c3dc5aefd2cf87079dd7d91a0e23b72a7eb4bd8e';
+String _$pagesDataHash() => r'9907c05e4d5a4641c759f10afee98c130c47cf48';
+
+/// See also [_pagesData].
+@ProviderFor(_pagesData)
+final _pagesDataProvider = AutoDisposeProvider<List<_PageData>>.internal(
+  _pagesData,
+  name: r'_pagesDataProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$pagesDataHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _PagesDataRef = AutoDisposeProviderRef<List<_PageData>>;
+String _$pageNamesHash() => r'd834681c3a622b64fd2562eb17db3434db172946';
 
 /// See also [_pageNames].
 @ProviderFor(_pageNames)

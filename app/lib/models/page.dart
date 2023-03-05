@@ -1,5 +1,6 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
@@ -57,10 +58,28 @@ MapEntry<String, Entry>? globalEntryWithPage(GlobalEntryWithPageRef ref, String 
   return MapEntry(page, entry);
 }
 
+@riverpod
+bool entryExists(EntryExistsRef ref, String entryId) {
+  return ref.watch(entriesPageProvider(entryId)) != null;
+}
+
+enum PageType {
+  sequence("trigger", FontAwesomeIcons.diagramProject),
+  static("static", FontAwesomeIcons.bars),
+  cinematic("cinematic", FontAwesomeIcons.video),
+  ;
+
+  const PageType(this.tag, this.icon);
+
+  final String tag;
+  final IconData icon;
+}
+
 @freezed
 class Page with _$Page {
   const factory Page({
     required String name,
+    required PageType type,
     @Default([]) List<Entry> entries,
   }) = _Page;
 

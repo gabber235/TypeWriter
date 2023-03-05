@@ -48,8 +48,10 @@ class EntrySelectorEditor extends HookConsumerWidget {
   }
 
   void _select(WidgetRef ref, String tag) {
+    final selectedEntryId = ref.read(inspectingEntryIdProvider);
     ref.read(searchProvider.notifier).asBuilder()
       ..tag(tag, canRemove: false)
+      ..excludeEntry(selectedEntryId ?? "", canRemove: false)
       ..fetchEntry(onSelect: (entry) => _update(ref, entry))
       ..fetchNewEntry(onAdd: (blueprint) => _create(ref, blueprint))
       ..open();
@@ -58,10 +60,9 @@ class EntrySelectorEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = field.getModifier("entry")!.data;
-    final value = ref.watch(fieldValueProvider(path, ""));
+    final id = ref.watch(fieldValueProvider(path, "")) as String;
 
-    final entry = ref.watch(globalEntryProvider(value as String));
-    final hasEntry = entry != null;
+    final hasEntry = ref.watch(entryExistsProvider(id));
 
     return Material(
       color: Theme.of(context).inputDecorationTheme.fillColor,
@@ -74,7 +75,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                 title: "Navigate to entry",
                 icon: FontAwesomeIcons.pencil,
                 onTap: () {
-                  ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry!.id);
+                  ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, id);
                 },
               ),
               ContextMenuTile.button(
@@ -100,7 +101,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
         child: InkWell(
           onTap: () {
             if (hasOverrideDown && hasEntry) {
-              ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry.id);
+              ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, id);
               return;
             }
             _select(ref, tag);
@@ -120,7 +121,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                   const SizedBox(width: 12),
                 ],
                 if (hasEntry)
-                  Expanded(child: FakeEntryNode(entry: entry))
+                  Expanded(child: FakeEntryNode(entryId: id))
                 else
                   Expanded(child: Text("Select a $tag", style: Theme.of(context).inputDecorationTheme.hintStyle)),
                 const SizedBox(width: 12),
@@ -147,14 +148,15 @@ class EntriesSelectorButton extends HookConsumerWidget {
   final String tag;
 
   void _startSelection(PassingRef ref) {
-    final currentEntries = ref.read(fieldValueProvider(path, []));
-    final entryDefinition = ref.read(inspectingEntryDefinitionProvider);
-    if (entryDefinition == null) return;
+    final currentEntries = ref.read(fieldValueProvider(path, [])) as List<dynamic>;
+    final inspectingEntryId = ref.read(inspectingEntryIdProvider);
+    if (inspectingEntryId == null) return;
 
     ref.read(entrySelectionProvider.notifier).startSelection(
       tag,
-      currentEntries.map((e) => e as String).toList(),
-      (ref, selectedEntries) {
+      selectedEntries: currentEntries.map((e) => e as String).toList(),
+      excludedEntries: [inspectingEntryId],
+      onSelectionChanged: (ref, selectedEntries) {
         ref.read(inspectingEntryDefinitionProvider)?.updateField(
               ref.passing,
               path,

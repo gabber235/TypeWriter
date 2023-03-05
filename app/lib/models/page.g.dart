@@ -8,6 +8,7 @@ part of 'page.dart';
 
 _$_Page _$$_PageFromJson(Map<String, dynamic> json) => _$_Page(
       name: json['name'] as String,
+      type: $enumDecode(_$PageTypeEnumMap, json['type']),
       entries: (json['entries'] as List<dynamic>?)
               ?.map((e) => Entry.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -16,8 +17,15 @@ _$_Page _$$_PageFromJson(Map<String, dynamic> json) => _$_Page(
 
 Map<String, dynamic> _$$_PageToJson(_$_Page instance) => <String, dynamic>{
       'name': instance.name,
+      'type': _$PageTypeEnumMap[instance.type]!,
       'entries': instance.entries,
     };
+
+const _$PageTypeEnumMap = {
+  PageType.sequence: 'sequence',
+  PageType.static: 'static',
+  PageType.cinematic: 'cinematic',
+};
 
 // **************************************************************************
 // RiverpodGenerator
@@ -466,6 +474,88 @@ class GlobalEntryWithPageProvider
   @override
   bool operator ==(Object other) {
     return other is GlobalEntryWithPageProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$entryExistsHash() => r'7e7ddbceb9b0efb860e5cd01f53c509eb6009bf9';
+typedef EntryExistsRef = AutoDisposeProviderRef<bool>;
+
+/// See also [entryExists].
+@ProviderFor(entryExists)
+const entryExistsProvider = EntryExistsFamily();
+
+/// See also [entryExists].
+class EntryExistsFamily extends Family<bool> {
+  /// See also [entryExists].
+  const EntryExistsFamily();
+
+  /// See also [entryExists].
+  EntryExistsProvider call(
+    String entryId,
+  ) {
+    return EntryExistsProvider(
+      entryId,
+    );
+  }
+
+  @override
+  EntryExistsProvider getProviderOverride(
+    covariant EntryExistsProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entryExistsProvider';
+}
+
+/// See also [entryExists].
+class EntryExistsProvider extends AutoDisposeProvider<bool> {
+  /// See also [entryExists].
+  EntryExistsProvider(
+    this.entryId,
+  ) : super.internal(
+          (ref) => entryExists(
+            ref,
+            entryId,
+          ),
+          from: entryExistsProvider,
+          name: r'entryExistsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$entryExistsHash,
+          dependencies: EntryExistsFamily._dependencies,
+          allTransitiveDependencies:
+              EntryExistsFamily._allTransitiveDependencies,
+        );
+
+  final String entryId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is EntryExistsProvider && other.entryId == entryId;
   }
 
   @override

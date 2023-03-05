@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$EntriesSelection {
   String get tag => throw _privateConstructorUsedError;
   List<String> get selectedEntries => throw _privateConstructorUsedError;
+  List<String> get excludedEntries => throw _privateConstructorUsedError;
   dynamic Function(Ref<dynamic>, List<String>)? get onSelectionChanged =>
       throw _privateConstructorUsedError;
 
@@ -35,6 +36,7 @@ abstract class $EntriesSelectionCopyWith<$Res> {
   $Res call(
       {String tag,
       List<String> selectedEntries,
+      List<String> excludedEntries,
       dynamic Function(Ref<dynamic>, List<String>)? onSelectionChanged});
 }
 
@@ -53,6 +55,7 @@ class _$EntriesSelectionCopyWithImpl<$Res, $Val extends EntriesSelection>
   $Res call({
     Object? tag = null,
     Object? selectedEntries = null,
+    Object? excludedEntries = null,
     Object? onSelectionChanged = freezed,
   }) {
     return _then(_value.copyWith(
@@ -63,6 +66,10 @@ class _$EntriesSelectionCopyWithImpl<$Res, $Val extends EntriesSelection>
       selectedEntries: null == selectedEntries
           ? _value.selectedEntries
           : selectedEntries // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      excludedEntries: null == excludedEntries
+          ? _value.excludedEntries
+          : excludedEntries // ignore: cast_nullable_to_non_nullable
               as List<String>,
       onSelectionChanged: freezed == onSelectionChanged
           ? _value.onSelectionChanged
@@ -83,6 +90,7 @@ abstract class _$$_EntriesSelectionCopyWith<$Res>
   $Res call(
       {String tag,
       List<String> selectedEntries,
+      List<String> excludedEntries,
       dynamic Function(Ref<dynamic>, List<String>)? onSelectionChanged});
 }
 
@@ -99,6 +107,7 @@ class __$$_EntriesSelectionCopyWithImpl<$Res>
   $Res call({
     Object? tag = null,
     Object? selectedEntries = null,
+    Object? excludedEntries = null,
     Object? onSelectionChanged = freezed,
   }) {
     return _then(_$_EntriesSelection(
@@ -109,6 +118,10 @@ class __$$_EntriesSelectionCopyWithImpl<$Res>
       selectedEntries: null == selectedEntries
           ? _value._selectedEntries
           : selectedEntries // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      excludedEntries: null == excludedEntries
+          ? _value._excludedEntries
+          : excludedEntries // ignore: cast_nullable_to_non_nullable
               as List<String>,
       onSelectionChanged: freezed == onSelectionChanged
           ? _value.onSelectionChanged
@@ -124,8 +137,10 @@ class _$_EntriesSelection implements _EntriesSelection {
   const _$_EntriesSelection(
       {required this.tag,
       required final List<String> selectedEntries,
+      final List<String> excludedEntries = const [],
       this.onSelectionChanged})
-      : _selectedEntries = selectedEntries;
+      : _selectedEntries = selectedEntries,
+        _excludedEntries = excludedEntries;
 
   @override
   final String tag;
@@ -137,12 +152,21 @@ class _$_EntriesSelection implements _EntriesSelection {
     return EqualUnmodifiableListView(_selectedEntries);
   }
 
+  final List<String> _excludedEntries;
+  @override
+  @JsonKey()
+  List<String> get excludedEntries {
+    if (_excludedEntries is EqualUnmodifiableListView) return _excludedEntries;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_excludedEntries);
+  }
+
   @override
   final dynamic Function(Ref<dynamic>, List<String>)? onSelectionChanged;
 
   @override
   String toString() {
-    return 'EntriesSelection(tag: $tag, selectedEntries: $selectedEntries, onSelectionChanged: $onSelectionChanged)';
+    return 'EntriesSelection(tag: $tag, selectedEntries: $selectedEntries, excludedEntries: $excludedEntries, onSelectionChanged: $onSelectionChanged)';
   }
 
   @override
@@ -153,6 +177,8 @@ class _$_EntriesSelection implements _EntriesSelection {
             (identical(other.tag, tag) || other.tag == tag) &&
             const DeepCollectionEquality()
                 .equals(other._selectedEntries, _selectedEntries) &&
+            const DeepCollectionEquality()
+                .equals(other._excludedEntries, _excludedEntries) &&
             (identical(other.onSelectionChanged, onSelectionChanged) ||
                 other.onSelectionChanged == onSelectionChanged));
   }
@@ -162,6 +188,7 @@ class _$_EntriesSelection implements _EntriesSelection {
       runtimeType,
       tag,
       const DeepCollectionEquality().hash(_selectedEntries),
+      const DeepCollectionEquality().hash(_excludedEntries),
       onSelectionChanged);
 
   @JsonKey(ignore: true)
@@ -175,6 +202,7 @@ abstract class _EntriesSelection implements EntriesSelection {
   const factory _EntriesSelection(
       {required final String tag,
       required final List<String> selectedEntries,
+      final List<String> excludedEntries,
       final dynamic Function(Ref<dynamic>, List<String>)?
           onSelectionChanged}) = _$_EntriesSelection;
 
@@ -182,6 +210,8 @@ abstract class _EntriesSelection implements EntriesSelection {
   String get tag;
   @override
   List<String> get selectedEntries;
+  @override
+  List<String> get excludedEntries;
   @override
   dynamic Function(Ref<dynamic>, List<String>)? get onSelectionChanged;
   @override

@@ -203,13 +203,13 @@ class Communicator {
     ref.read(bookProvider.notifier).book = book;
   }
 
-  Future<void> createPage(String name) async {
+  Future<void> createPage(Page page) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
     }
 
-    await socket.emitWithAckAsync("createPage", name);
+    await socket.emitWithAckAsync("createPage", jsonEncode(page.toJson()));
   }
 
   Future<void> renamePage(String old, String newName) async {
@@ -320,20 +320,21 @@ class Communicator {
   }
 
   void handleCreatePage(dynamic data) {
-    final name = data as String;
-    ref.read(bookProvider.notifier).insertPage(Page(name: name));
+    final json = jsonDecode(data as String) as Map<String, dynamic>;
+    final page = Page.fromJson(json);
+    ref.read(bookProvider.notifier).insertPage(page);
   }
 
   void handleRenamePage(dynamic data) {
-    final json = data as Map<String, dynamic>;
+    final json = jsonDecode(data as String) as Map<String, dynamic>;
     final old = json["old"] as String;
     final newName = json["new"] as String;
-    ref.read(bookProvider.notifier).renamePage(old, newName);
+    ref.read(bookProvider.notifier).syncRenamePage(old, newName);
   }
 
   void handleDeletePage(dynamic data) {
     final name = data as String;
-    ref.read(bookProvider.notifier).deletePage(name);
+    ref.read(bookProvider.notifier).syncDeletePage(name);
   }
 
   void handleCreateEntry(dynamic data) {

@@ -111,7 +111,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
               size: 18,
               color: state.value is _Invalid ? Colors.redAccent : null,
             ),
-            hintText: "Enter a $name: $formattedValue",
+            hintText: "Enter a $name",
             errorText: state.value.cast<_Invalid>()?.message,
           ),
           onChanged: (value) {

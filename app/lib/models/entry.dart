@@ -19,6 +19,18 @@ EntryDefinition? entryDefinition(EntryDefinitionRef ref, String pageId, String e
   return EntryDefinition(pageId: pageId, entry: entry, blueprint: adapterEntry);
 }
 
+@riverpod
+String? entryName(EntryNameRef ref, String entryId) {
+  final entry = ref.watch(globalEntryProvider(entryId));
+  return entry?.formattedName;
+}
+
+@riverpod
+String? entryType(EntryTypeRef ref, String entryId) {
+  final entry = ref.watch(globalEntryProvider(entryId));
+  return entry?.type;
+}
+
 class EntryDefinition {
   EntryDefinition({
     required this.pageId,

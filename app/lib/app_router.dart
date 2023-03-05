@@ -116,7 +116,6 @@ extension AppRouterX on AppRouter {
       }
     }
 
-    ref.read(entriesViewProvider.notifier).navigateToViewFor(entryId);
     return changedPage;
   }
 }

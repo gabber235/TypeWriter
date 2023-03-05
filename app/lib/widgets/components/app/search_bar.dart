@@ -60,19 +60,15 @@ class SearchNotifier extends StateNotifier<Search?> {
     return SearchBuilder(this);
   }
 
-  void startGlobalSearch() => asBuilder()
+  void startGlobalSearch(String addTag) => asBuilder()
     ..fetchNewEntry()
     ..fetchEntry()
+    ..addOnlyTag(addTag, canRemove: false)
     ..open();
 
-  void startAddSearch({List<SearchFilter> filters = const [], Function(EntryBlueprint)? onAdd}) => asBuilder()
-    ..fetchNewEntry(onAdd: onAdd)
-    ..filters(filters)
-    ..open();
-
-  void startSelectSearch({List<SearchFilter> filters = const [], Function(Entry)? onSelect}) => asBuilder()
-    ..fetchEntry(onSelect: onSelect)
-    ..filters(filters)
+  void startAddSearch(String addTag) => asBuilder()
+    ..fetchNewEntry()
+    ..addOnlyTag(addTag, canRemove: false)
     ..open();
 
   void endSearch() {
@@ -146,6 +142,43 @@ class TagFilter extends SearchFilter {
       return action.blueprint.tags.contains(tag);
     }
     return false;
+  }
+}
+
+class AddOnlyTagFilter extends TagFilter {
+  const AddOnlyTagFilter(super.tag, {super.canRemove = true});
+
+  @override
+  bool filter(SearchElement action) {
+    if (action is AddEntrySearchElement) {
+      return action.blueprint.tags.contains(tag);
+    }
+    return true;
+  }
+}
+
+class ExcludeEntryFilter extends SearchFilter {
+  const ExcludeEntryFilter(this.entryId, {this.canRemove = true});
+
+  final String entryId;
+  @override
+  final bool canRemove;
+
+  @override
+  String get title => "Exclude Entry";
+
+  @override
+  Color get color => Colors.orange;
+
+  @override
+  IconData get icon => FontAwesomeIcons.solidFileLines;
+
+  @override
+  bool filter(SearchElement action) {
+    if (action is EntrySearchElement) {
+      return action.entry.id != entryId;
+    }
+    return true;
   }
 }
 
@@ -263,6 +296,14 @@ class SearchBuilder {
 
   void tag(String tag, {bool canRemove = true}) {
     filter(TagFilter(tag, canRemove: canRemove));
+  }
+
+  void addOnlyTag(String tag, {bool canRemove = true}) {
+    filter(AddOnlyTagFilter(tag, canRemove: canRemove));
+  }
+
+  void excludeEntry(String entryId, {bool canRemove = true}) {
+    filter(ExcludeEntryFilter(entryId, canRemove: canRemove));
   }
 
   void fetch(SearchFetcher fetcher) {

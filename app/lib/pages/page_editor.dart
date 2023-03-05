@@ -1,20 +1,16 @@
 import "package:auto_route/auto_route.dart";
 import "package:collection/collection.dart";
-import "package:flutter/cupertino.dart" hide Page;
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
-import "package:flutter_animate/flutter_animate.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
-import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
+import "package:typewriter/widgets/components/app/cinematic_view.dart";
 import "package:typewriter/widgets/components/app/entries_graph.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
@@ -46,6 +42,11 @@ Page? currentPage(CurrentPageRef ref) {
   return book.pages.firstWhereOrNull((element) => element.name == id);
 }
 
+@riverpod
+PageType? currentPageType(CurrentPageTypeRef ref) {
+  return ref.watch(currentPageProvider.select((page) => page?.type));
+}
+
 class PageEditor extends HookConsumerWidget {
   const PageEditor({
     @PathParam("id") required this.id,
@@ -60,19 +61,15 @@ class PageEditor extends HookConsumerWidget {
       key: Key(id),
       shortcuts: {
         SmartSingleActivator(LogicalKeyboardKey.keyK, control: true): SearchIntent(),
-        const SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true): PreviousEntriesViewIntent(),
-        const SingleActivator(LogicalKeyboardKey.arrowRight, meta: true): NextEntriesViewIntent(),
       },
       child: Actions(
         actions: {
           SearchIntent: CallbackAction<SearchIntent>(
-            onInvoke: (intent) => ref.read(searchProvider.notifier).startGlobalSearch(),
-          ),
-          PreviousEntriesViewIntent: CallbackAction<PreviousEntriesViewIntent>(
-            onInvoke: (intent) => ref.read(entriesViewProvider.notifier).previous(),
-          ),
-          NextEntriesViewIntent: CallbackAction<NextEntriesViewIntent>(
-            onInvoke: (intent) => ref.read(entriesViewProvider.notifier).next(),
+            onInvoke: (intent) {
+              final tag = ref.read(currentPageTypeProvider)?.tag;
+              if (tag == null) return;
+              ref.read(searchProvider.notifier).startGlobalSearch(tag);
+            },
           ),
         },
         child: AlwaysFocused(
@@ -105,7 +102,7 @@ class _Content extends HookConsumerWidget {
                     child: _PageContent(),
                   ),
                   VerticalDivider(),
-                  Inspector(),
+                  _Inspector(),
                 ],
               ),
             ),
@@ -122,13 +119,14 @@ class _AppBar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pageType = ref.watch(currentPageTypeProvider);
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Row(
         children: [
           const SizedBox(width: 20),
-          const Icon(FontAwesomeIcons.solidFile, size: 16),
-          const SizedBox(width: 5),
+          FaIcon(pageType?.icon, size: 16),
+          const SizedBox(width: 8),
           Text(ref.watch(currentPageLabelProvider)),
           const SizedBox(width: 5),
           const Spacer(),
@@ -140,57 +138,17 @@ class _AppBar extends HookConsumerWidget {
                 SizedBox(width: 20),
                 StagingIndicator(key: Key("staging-indicator")),
                 SizedBox(width: 20),
-              ],
-            ),
-          ),
-          const _ViewModeButtons(),
-          // When selecting entries, we want to disable these interactions
-          const SelectingEntriesBlocker(
-            child: Row(
-              children: [
-                SizedBox(width: 20),
                 _SearchBar(),
                 SizedBox(width: 5),
                 _AddEntryButton(),
                 SizedBox(width: 10),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
-}
-
-class _ViewModeButtons extends HookConsumerWidget {
-  const _ViewModeButtons();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final mode = ref.watch(entriesViewProvider);
-    return CupertinoSlidingSegmentedControl<EntriesView>(
-      backgroundColor: Theme.of(context).inputDecorationTheme.fillColor ?? Colors.white,
-      groupValue: mode,
-      children: {
-        EntriesView.graph: _buildIcon(FontAwesomeIcons.diagramProject, "Triggers"),
-        EntriesView.list: _buildIcon(FontAwesomeIcons.list, "Static"),
-      },
-      onValueChanged: (value) {
-        if (value != null) {
-          ref.read(entriesViewProvider.notifier).view = value;
-        }
-      },
-    );
-  }
-
-  Widget _buildIcon(IconData icon, String title) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16),
-          const SizedBox(width: 10),
-          Text(title),
-        ],
-      );
 }
 
 class _SearchBar extends HookConsumerWidget {
@@ -233,95 +191,59 @@ class _AddEntryButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tag = ref.watch(currentPageTypeProvider.select((type) => type?.tag));
+    if (tag == null) {
+      return const SizedBox();
+    }
     return IconButton(
       iconSize: 16,
       padding: EdgeInsets.zero,
       icon: const Icon(FontAwesomeIcons.plus),
-      onPressed: () => ref.read(searchProvider.notifier).startAddSearch(),
+      onPressed: () => ref.read(searchProvider.notifier).startAddSearch(tag),
     );
   }
 }
 
-enum EntriesView {
-  graph,
-  list,
-  ;
-}
+class _Inspector extends HookConsumerWidget {
+  const _Inspector();
 
-class EntriesViewProvider extends StateNotifier<EntriesView> {
-  EntriesViewProvider(this.ref) : super(EntriesView.graph);
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
 
-  final Ref<EntriesView> ref;
-
-  EntriesView get view => super.state;
-  set view(EntriesView value) => super.state = value;
-
-  void previous() {
-    final index = view.index;
-    if (index > 0) {
-      view = EntriesView.values[index - 1];
+    // When we are selecting entries, we want a special inspector that allows
+    // us to select entries.
+    if (isSelectingEntries) {
+      return const EntriesSelectorInspector();
     }
-  }
 
-  void next() {
-    final index = view.index;
-    if (index < EntriesView.values.length - 1) {
-      view = EntriesView.values[index + 1];
+    final pageType = ref.watch(currentPageTypeProvider);
+    if (pageType == null) {
+      return const SizedBox();
     }
-  }
 
-  void navigateToViewForEntry(Entry entry) {
-    // We need to check the blueprint for this entry type to get the tags.
-    // If the tags contain "trigger" then we should switch to the graph view.
-    // If the tags contain "static" then we should switch to the list view.
-
-    final blueprint = ref.read(entryBlueprintProvider(entry.type));
-    final tags = blueprint?.tags ?? [];
-
-    if (tags.contains("trigger")) {
-      view = EntriesView.graph;
-    } else if (tags.contains("static")) {
-      view = EntriesView.list;
+    switch (pageType) {
+      case PageType.sequence: return const EntryInspector();
+      case PageType.static: return const EntryInspector();
+      case PageType.cinematic: return const EntryInspector();
     }
-  }
-
-  void navigateToViewFor(String entryId) {
-    final entry = ref.read(globalEntryProvider(entryId));
-    if (entry == null) return;
-    navigateToViewForEntry(entry);
   }
 }
-
-class PreviousEntriesViewIntent extends Intent {}
-
-class NextEntriesViewIntent extends Intent {}
-
-final entriesViewProvider = StateNotifierProvider<EntriesViewProvider, EntriesView>(EntriesViewProvider.new);
 
 class _PageContent extends HookConsumerWidget {
   const _PageContent();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mode = ref.watch(entriesViewProvider);
-    final controller = usePageController(initialPage: mode.index);
+    final pageType = ref.watch(currentPageTypeProvider);
+    if (pageType == null) {
+      return const SizedBox();
+    }
 
-    useEffect(
-      () {
-        if (!controller.hasClients) return;
-        controller.animateToPage(mode.index, duration: 250.ms, curve: Curves.easeInOut);
-        return null;
-      },
-      [mode],
-    );
-
-    return PageView(
-      controller: controller,
-      physics: const NeverScrollableScrollPhysics(),
-      children: const [
-        EntriesGraph(),
-        StaticEntriesList(),
-      ],
-    );
+    switch (pageType) {
+      case PageType.sequence: return const EntriesGraph();
+      case PageType.static: return const StaticEntriesList();
+      case PageType.cinematic: return const CinematicView();
+    }
   }
 }

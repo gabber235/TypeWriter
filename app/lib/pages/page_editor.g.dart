@@ -50,4 +50,19 @@ final currentPageProvider = AutoDisposeProvider<Page?>.internal(
 );
 
 typedef CurrentPageRef = AutoDisposeProviderRef<Page?>;
+String _$currentPageTypeHash() => r'821ebef02de6cd3330c8c4fb1426d72a1d9d9586';
+
+/// See also [currentPageType].
+@ProviderFor(currentPageType)
+final currentPageTypeProvider = AutoDisposeProvider<PageType?>.internal(
+  currentPageType,
+  name: r'currentPageTypeProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentPageTypeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CurrentPageTypeRef = AutoDisposeProviderRef<PageType?>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
