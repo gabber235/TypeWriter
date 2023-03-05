@@ -27,7 +27,7 @@ class BedrockRandomSpokenDialogueDialogueMessenger(player: Player, entry: Random
 		FloodgateApi.getInstance().sendForm(
 			player.uniqueId,
 			SimpleForm.builder()
-				.title("<bold>${entry.speakerDisplayName}</bold>".legacy())
+				.title("<bold>${entry.speakerDisplayName.parsePlaceholders(player)}</bold>".legacy())
 				.content("${message.parsePlaceholders(player).legacy()}\n\n")
 				.button("Continue")
 				.closedOrInvalidResultHandler { _, _ ->

@@ -27,7 +27,7 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
 	override fun tick(cycle: Int) {
 		super.tick(cycle)
 		if (cycle == 0) {
-			player.sendMessageDialogue(entry.text, entry.speakerDisplayName)
+			player.sendMessageDialogue(entry.text, entry.speakerDisplayName.parsePlaceholders(player))
 			state = MessengerState.FINISHED
 		}
 	}

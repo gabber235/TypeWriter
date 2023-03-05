@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entries.dialogue.RandomMessageDialogueEntry
 import me.gabber235.typewriter.entries.dialogue.messengers.message.sendMessageDialogue
 import me.gabber235.typewriter.entry.dialogue.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import org.bukkit.entity.Player
 
 @Messenger(RandomMessageDialogueEntry::class)
@@ -20,7 +21,7 @@ class RandomMessageDialogueDialogueMessenger(player: Player, entry: RandomMessag
 		super.tick(cycle)
 		if (cycle == 0) {
 			val message = entry.messages.randomOrNull() ?: return
-			player.sendMessageDialogue(message, entry.speakerDisplayName)
+			player.sendMessageDialogue(message, entry.speakerDisplayName.parsePlaceholders(player))
 			state = MessengerState.FINISHED
 		}
 	}

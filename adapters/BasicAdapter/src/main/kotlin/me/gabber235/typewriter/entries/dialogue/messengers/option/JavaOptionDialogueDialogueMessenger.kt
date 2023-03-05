@@ -72,7 +72,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 		usableOptions =
 			entry.options.filter { it.criteria.matches(player.uniqueId) }.sortedByDescending { it.criteria.size }
 
-		speakerDisplayName = entry.speakerDisplayName
+		speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
 
 		listen<PlayerSwapHandItemsEvent> { event ->
 			if (event.player.uniqueId != player.uniqueId) return@listen
