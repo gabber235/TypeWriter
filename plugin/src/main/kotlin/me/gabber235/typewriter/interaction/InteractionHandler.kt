@@ -1,8 +1,5 @@
 package me.gabber235.typewriter.interaction
 
-import com.github.shynixn.mccoroutine.launch
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.entries.Event
@@ -13,12 +10,14 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 object InteractionHandler {
 	private val interactions = ConcurrentHashMap<UUID, Interaction>()
-	private var job: Job? = null
+	private var runnable: BukkitTask? = null
 
 	private val Player.interaction: Interaction
 		get() = interactions.getOrPut(uniqueId) { Interaction(this) }
@@ -69,14 +68,11 @@ object InteractionHandler {
 	}
 
 	fun init() {
-		job = plugin.launch {
-			while (plugin.isEnabled) {
-				delay(50)
-				interactions.forEach { (_, interaction) ->
-					interaction.tick()
-				}
+		runnable = object : BukkitRunnable() {
+			override fun run() {
+				tick()
 			}
-		}
+		}.runTaskTimer(plugin, 0, 1)
 
 		// When a player leaves the server, we need to end the interaction and clear its chat history.
 		plugin.listen<PlayerQuitEvent> { event ->
@@ -90,8 +86,18 @@ object InteractionHandler {
 		}
 	}
 
+	fun tick() {
+		interactions.forEach { (_, interaction) ->
+			interaction.tick()
+		}
+	}
+
 	fun shutdown() {
-		job?.cancel()
-		job = null
+		runnable?.cancel()
+		runnable = null
+		interactions.forEach { (_, interaction) ->
+			interaction.end()
+		}
+		interactions.clear()
 	}
 }
