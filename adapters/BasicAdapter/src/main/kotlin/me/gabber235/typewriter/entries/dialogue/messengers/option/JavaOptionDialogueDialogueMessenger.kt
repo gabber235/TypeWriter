@@ -98,7 +98,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 	override fun tick(cycle: Int) {
 		val message = optionFormat.asMiniWithResolvers(
 			Placeholder.parsed("speaker", speakerDisplayName),
-			Placeholder.parsed("text", entry.text),
+			Placeholder.parsed("text", entry.text.parsePlaceholders(player)),
 			Placeholder.component("options", formatOptions()),
 		)
 
@@ -130,7 +130,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
 			val format = if (isSelected) selectedOption else unselectedOption
 			lines += format.asMiniWithResolvers(
-				Placeholder.parsed("prefix", prefix),
+				Placeholder.parsed("prefix", prefix.parsePlaceholders(player)),
 				Placeholder.parsed("option_text", option.text.parsePlaceholders(player))
 			)
 		}

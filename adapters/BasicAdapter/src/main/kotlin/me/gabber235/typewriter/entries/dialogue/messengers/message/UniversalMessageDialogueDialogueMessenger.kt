@@ -27,7 +27,7 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
 	override fun tick(cycle: Int) {
 		super.tick(cycle)
 		if (cycle == 0) {
-			player.sendMessageDialogue(entry.text, entry.speakerDisplayName.parsePlaceholders(player))
+			player.sendMessageDialogue(entry.text, entry.speakerDisplayName)
 			state = MessengerState.FINISHED
 		}
 	}
@@ -36,7 +36,7 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
 fun Player.sendMessageDialogue(text: String, speakerDisplayName: String) {
 	sendMiniWithResolvers(
 		messageFormat,
-		Placeholder.parsed("speaker", speakerDisplayName),
+		Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(player)),
 		Placeholder.parsed("message", text.parsePlaceholders(player).replace("\n", "\n "))
 	)
 }
