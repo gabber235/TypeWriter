@@ -3,18 +3,24 @@ package me.gabber235.typewriter.interaction
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.dialogue.DialogueSequence
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
-import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
+import me.gabber235.typewriter.entry.entries.SystemTrigger.*
+import me.gabber235.typewriter.entry.entries.cinematic.CinematicSequence
 import me.gabber235.typewriter.entry.matches
 import org.bukkit.entity.Player
+import java.time.Duration
 
 class Interaction(val player: Player) {
 	private var dialogue: DialogueSequence? = null
+	private var cinematic: CinematicSequence? = null
 	val hasDialogue: Boolean
 		get() = dialogue != null
 
-	fun tick() {
+	val hasCinematic: Boolean
+		get() = cinematic != null
+
+	fun tick(delta: Duration) {
 		dialogue?.tick()
+		cinematic?.tick(delta)
 	}
 
 	/**
@@ -23,19 +29,8 @@ class Interaction(val player: Player) {
 	 */
 	fun onEvent(event: Event) {
 		triggerActions(event)
-
-		if (DIALOGUE_NEXT in event) {
-			onDialogueNext()
-			return
-		}
-		if (DIALOGUE_END in event) {
-			dialogue?.end()
-			dialogue = null
-			return
-		}
-
-		// Try to trigger new/next dialogue
-		tryTriggerNextDialogue(event)
+		handleDialogue(event)
+		handleCinematic(event)
 	}
 
 	/**
@@ -55,6 +50,21 @@ class Interaction(val player: Player) {
 		if (newTriggers.isNotEmpty()) {
 			InteractionHandler.triggerEvent(Event(event.player, newTriggers))
 		}
+	}
+
+	private fun handleDialogue(event: Event) {
+		if (DIALOGUE_NEXT in event) {
+			onDialogueNext()
+			return
+		}
+		if (DIALOGUE_END in event) {
+			dialogue?.end()
+			dialogue = null
+			return
+		}
+
+		// Try to trigger new/next dialogue
+		tryTriggerNextDialogue(event)
 	}
 
 
@@ -97,7 +107,24 @@ class Interaction(val player: Player) {
 		return
 	}
 
+	private fun handleCinematic(event: Event) {
+		if (CINEMATIC_END in event) {
+			cinematic?.end()
+			cinematic = null
+			return
+		}
+
+		val entries = Query.findWhere<CinematicEntry> { it in event && it.criteria.matches(event.player.uniqueId) }
+		if (entries.isNotEmpty() && !hasCinematic) {
+			cinematic = CinematicSequence(player)
+		}
+		entries.forEach { entry ->
+			cinematic?.add(entry)
+		}
+	}
+
 	fun end() {
 		dialogue?.end()
+		cinematic?.end()
 	}
 }

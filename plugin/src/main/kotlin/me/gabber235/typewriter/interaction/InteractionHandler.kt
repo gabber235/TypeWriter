@@ -12,6 +12,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import java.time.Duration
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -70,9 +71,11 @@ object InteractionHandler {
 	fun init() {
 		job = plugin.launch {
 			while (plugin.isEnabled) {
+				val start = System.currentTimeMillis()
 				delay(50)
+				val delta = System.currentTimeMillis() - start
 				interactions.forEach { (_, interaction) ->
-					interaction.tick()
+					interaction.tick(Duration.ofMillis(delta))
 				}
 			}
 		}

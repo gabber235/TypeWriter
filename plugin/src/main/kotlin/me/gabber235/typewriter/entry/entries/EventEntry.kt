@@ -62,6 +62,7 @@ data class EntryTrigger(override val id: String) : EventTrigger
 enum class SystemTrigger : EventTrigger {
 	DIALOGUE_NEXT,
 	DIALOGUE_END,
+	CINEMATIC_END,
 	;
 
 	override val id: String
