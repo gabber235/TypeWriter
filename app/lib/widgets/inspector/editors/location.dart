@@ -49,9 +49,9 @@ class LocationEditor extends HookConsumerWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              _LocationPropertyEditor(path: "$path.pitch", label: "Pitch", color: Colors.amberAccent),
-              const SizedBox(width: 8),
               _LocationPropertyEditor(path: "$path.yaw", label: "Yaw", color: Colors.deepPurpleAccent),
+              const SizedBox(width: 8),
+              _LocationPropertyEditor(path: "$path.pitch", label: "Pitch", color: Colors.amberAccent),
             ],
           )
         ],

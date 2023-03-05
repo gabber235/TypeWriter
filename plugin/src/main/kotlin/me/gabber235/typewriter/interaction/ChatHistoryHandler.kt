@@ -70,7 +70,7 @@ class ChatHistory {
 
 	fun addMessage(message: Component) {
 		messages.add(message)
-		while (messages.size > 80) {
+		while (messages.size > 100) {
 			messages.poll()
 		}
 	}
@@ -79,7 +79,7 @@ class ChatHistory {
 		messages.clear()
 	}
 
-	private fun clearMessage() = "\n".repeat(80 - messages.size)
+	private fun clearMessage() = "\n".repeat(100 - messages.size)
 
 	fun resendMessages(player: Player, clear: Boolean = true) {
 		// Start with "no-index" to prevent the server from adding the message to the history

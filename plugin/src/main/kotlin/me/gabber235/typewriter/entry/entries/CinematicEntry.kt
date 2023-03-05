@@ -24,13 +24,14 @@ interface Segment {
 }
 
 infix fun Segment.isActiveAt(frame: Int): Boolean = frame in startFrame..endFrame
+infix fun Segment.canFinishAt(frame: Int): Boolean = frame >= endFrame
 
 interface CinematicAction {
 	fun setup() {}
 	fun tick(frame: Int) {}
 	fun teardown() {}
 
-	fun canFinish(frame: Int): Boolean
+	infix fun canFinish(frame: Int): Boolean
 }
 
 val CinematicEntry<*>.duration: Int

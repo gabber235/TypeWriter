@@ -66,7 +66,7 @@ bool entryExists(EntryExistsRef ref, String entryId) {
 enum PageType {
   sequence("trigger", FontAwesomeIcons.diagramProject),
   static("static", FontAwesomeIcons.bars),
-  cinematic("cinematic", FontAwesomeIcons.video),
+  cinematic("cinematic", FontAwesomeIcons.film),
   ;
 
   const PageType(this.tag, this.icon);
