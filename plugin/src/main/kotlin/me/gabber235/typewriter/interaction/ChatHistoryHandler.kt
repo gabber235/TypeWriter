@@ -70,7 +70,7 @@ class ChatHistory {
 
 	fun addMessage(message: Component) {
 		messages.add(message)
-		while (messages.size > 80) {
+		while (messages.size > 100) {
 			messages.poll()
 		}
 	}
@@ -79,12 +79,12 @@ class ChatHistory {
 		messages.clear()
 	}
 
-	private fun clearMessage() = "\n".repeat(80 - messages.size)
+	private fun clearMessage() = "\n".repeat(100 - messages.size)
 
 	fun resendMessages(player: Player, clear: Boolean = true) {
 		// Start with "no-index" to prevent the server from adding the message to the history
 		var msg = Component.text("no-index")
-		if (clear) msg = msg.append(clearMessage().asMini())
+		if (clear) msg = msg.append(Component.text(clearMessage()))
 		messages.forEach { msg = msg.append(Component.text("\n")).append(it) }
 		player.sendMessage(msg)
 	}
@@ -92,7 +92,7 @@ class ChatHistory {
 	fun composeDarkMessage(message: Component, clear: Boolean = true): Component {
 		// Start with "no-index" to prevent the server from adding the message to the history
 		var msg = Component.text("no-index")
-		if (clear) msg = msg.append(clearMessage().asMini())
+		if (clear) msg = msg.append(Component.text(clearMessage()))
 		messages.forEach {
 			msg = msg.append("<#7d8085>${it.plainText()}</#7d8085>\n".asMini())
 		}
