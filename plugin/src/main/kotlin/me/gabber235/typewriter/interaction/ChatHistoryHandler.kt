@@ -4,9 +4,11 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.*
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.memoized
+import me.gabber235.typewriter.utils.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.entity.Player
 import java.lang.reflect.Method
@@ -66,10 +68,10 @@ val Player.chatHistory: ChatHistory
 	get() = ChatHistoryHandler.getHistory(this)
 
 class ChatHistory {
-	private val messages = ConcurrentLinkedQueue<Component>()
+	private val messages = ConcurrentLinkedQueue<OldMessage>()
 
 	fun addMessage(message: Component) {
-		messages.add(message)
+		messages.add(OldMessage(message))
 		while (messages.size > 100) {
 			messages.poll()
 		}
@@ -85,7 +87,7 @@ class ChatHistory {
 		// Start with "no-index" to prevent the server from adding the message to the history
 		var msg = Component.text("no-index")
 		if (clear) msg = msg.append(Component.text(clearMessage()))
-		messages.forEach { msg = msg.append(Component.text("\n")).append(it) }
+		messages.forEach { msg = msg.append(Component.text("\n")).append(it.message) }
 		player.sendMessage(msg)
 	}
 
@@ -94,8 +96,14 @@ class ChatHistory {
 		var msg = Component.text("no-index")
 		if (clear) msg = msg.append(Component.text(clearMessage()))
 		messages.forEach {
-			msg = msg.append("<#7d8085>${it.plainText()}</#7d8085>\n".asMini())
+			msg = msg.append(it.darkenMessage)
 		}
 		return msg.append(message)
+	}
+}
+
+data class OldMessage(val message: Component) {
+	val darkenMessage: Component by lazy(LazyThreadSafetyMode.NONE) {
+		Component.text("${message.plainText()}\n").color(TextColor.color(0x7d8085))
 	}
 }

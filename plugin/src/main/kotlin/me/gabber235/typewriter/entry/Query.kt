@@ -218,6 +218,21 @@ infix fun List<String>.triggerEntriesFor(player: Player) {
 }
 
 /**
+ * Trigger a specific trigger for a player.
+ *
+ * Example:
+ * ```kotlin
+ * val trigger: EventTrigger = ...
+ * trigger triggerFor player
+ * ```
+ *
+ * @param player The player to trigger the trigger for.
+ */
+infix fun EventTrigger.triggerFor(player: Player) {
+	InteractionHandler.triggerActions(player, listOf(this))
+}
+
+/**
  * If the player is not in a dialogue, trigger all triggers for all entries in a list.
  * If the player is in a dialogue, only trigger the [continueTrigger].
  *
