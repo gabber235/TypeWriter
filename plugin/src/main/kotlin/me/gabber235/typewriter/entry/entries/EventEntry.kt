@@ -69,7 +69,7 @@ enum class SystemTrigger : EventTrigger {
 		get() = "system.${name.lowercase().replace('_', '.')}"
 }
 
-class CinematicStartTrigger(val pageId: String, val triggers: List<String>) : EventTrigger {
+class CinematicStartTrigger(val pageId: String, val triggers: List<String>, val override: Boolean) : EventTrigger {
 	override val id: String
 		get() = "system.cinematic.start.$pageId"
 }

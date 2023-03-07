@@ -13,6 +13,8 @@ import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.entries.FactEntry
+import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
+import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.formattedName
@@ -36,6 +38,8 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
 	clearChatCommand()
 
 	connectCommand()
+
+	cinematicCommand()
 }
 
 private fun LiteralDSLBuilder.reloadCommands() {
@@ -190,6 +194,22 @@ private fun LiteralDSLBuilder.connectCommand() {
 		}
 	}
 }
+
+private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
+	literal("stop") {
+		requiresPermissions("typewriter.cinematic.stop")
+		executesPlayer {
+			CINEMATIC_END triggerFor source
+		}
+
+		argument("player", PlayerType) { player ->
+			executes {
+				CINEMATIC_END triggerFor player.get()
+			}
+		}
+	}
+}
+
 
 open class FactType(
 	open val notFoundExceptionType: ChatCommandExceptionType = PlayerType.notFoundExceptionType

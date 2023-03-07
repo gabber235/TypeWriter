@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entries.cinematic
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.CinematicStartTrigger
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
@@ -19,10 +20,12 @@ data class Cinematic(
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	val pageId: String = "",
+	@Help("If the player is already in a cinematic, should the cinematic be replaced?")
+	val override: Boolean = false
 ) : CustomTriggeringActionEntry {
 	override fun execute(player: Player) {
 		super.execute(player)
 
-		CinematicStartTrigger(pageId, customTriggers) triggerFor player
+		CinematicStartTrigger(pageId, customTriggers, override) triggerFor player
 	}
 }

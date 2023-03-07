@@ -72,7 +72,7 @@ object InteractionHandler {
 			override fun run() {
 				tick()
 			}
-		}.runTaskTimer(plugin, 0, 1)
+		}.runTaskTimerAsynchronously(plugin, 0, 1)
 
 		// When a player leaves the server, we need to end the interaction and clear its chat history.
 		plugin.listen<PlayerQuitEvent> { event ->

@@ -112,12 +112,15 @@ class Interaction(val player: Player) {
 		}
 
 		val trigger = event.triggers.filterIsInstance<CinematicStartTrigger>().firstOrNull() ?: return
-		if (cinematic != null) {
-			cinematic?.end()
-		}
+		if (cinematic != null && !trigger.override) return
+
+		cinematic?.end()
+		cinematic = null
 
 		val entries =
 			Query.findWhereFromPage<CinematicEntry<*>>(trigger.pageId) { it.criteria.matches(event.player.uniqueId) }
+
+		if (entries.isEmpty()) return
 
 		cinematic = CinematicSequence(player, entries, trigger.triggers)
 	}

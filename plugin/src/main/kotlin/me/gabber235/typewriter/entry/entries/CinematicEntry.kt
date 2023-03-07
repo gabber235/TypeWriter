@@ -24,7 +24,7 @@ interface Segment {
 }
 
 infix fun Segment.isActiveAt(frame: Int): Boolean = frame in startFrame..endFrame
-infix fun Segment.canFinishAt(frame: Int): Boolean = frame >= endFrame
+infix fun Segment.canFinishAt(frame: Int): Boolean = frame > endFrame
 
 interface CinematicAction {
 	fun setup() {}
@@ -38,5 +38,5 @@ val CinematicEntry<*>.duration: Int
 	get() = segments.maxOf { it.endFrame }
 
 infix fun CinematicEntry<*>.canFinishAt(frame: Int): Boolean {
-	return frame >= duration
+	return frame > duration
 }

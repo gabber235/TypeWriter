@@ -1,11 +1,13 @@
 package me.gabber235.typewriter.entries.cinematic
 
+import com.github.shynixn.mccoroutine.launch
+import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.extensions.placeholderapi.*
+import me.gabber235.typewriter.extensions.protocollib.*
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
@@ -43,7 +45,7 @@ private data class PlayerState(
 
 private val Player.state: PlayerState
 	get() = PlayerState(
-		location,
+		location.clone(),
 	)
 
 private fun Player.restore(state: PlayerState) {
@@ -70,6 +72,10 @@ class CameraCinematicAction(
 
 	override fun tick(frame: Int) {
 		super.tick(frame)
+
+		segments.filter { it.canPrepare(frame) }.forEach {
+			it.prepare()
+		}
 
 
 		if (currentSegmentAction?.isActiveAt(frame) == false) {
@@ -99,7 +105,11 @@ class CameraCinematicAction(
 		segments.forEach { it.teardown() }
 		segments = emptyList()
 
-		originalState?.let { player.restore(it) }
+		originalState?.let {
+			plugin.launch {
+				player.restore(it)
+			}
+		}
 	}
 
 	override fun canFinish(frame: Int): Boolean = entry canFinishAt frame
@@ -109,31 +119,44 @@ private class CameraSegmentAction(
 	private val player: Player,
 	private val segment: CameraSegment,
 ) {
-	private val entityId = (Math.random() * 1000000).toInt()
-	private val firstPoint = segment.path.first()
+	private val farAwayLocation = Location(player.world, 0.0, 500.0, 0.0)
+	private val firstLocation = segment.path.first().location
+	private val initializationLocation: Location
+		get() = if (segment.startFrame > 10) farAwayLocation else firstLocation
+	private val entity = ClientEntity(initializationLocation, EntityType.BOAT)
 
 	fun setup() {
-		player.spawnClientSideEntity(entityId, entityType = EntityType.BOAT, location = firstPoint.location)
+		entity.addViewer(player)
+	}
+
+	fun prepare() {
+		entity.move(firstLocation)
+	}
+
+	fun canPrepare(frame: Int): Boolean {
+		return segment.startFrame - 10 == frame
 	}
 
 	fun start() {
-		player.teleport(firstPoint.location)
-		player.spectateEntity(entityId)
+		plugin.launch {
+			player.teleport(firstLocation)
+			player.spectateEntity(entity)
+		}
 	}
 
 	fun tick(frame: Int) {
 		val percentage = percentage(frame)
 		val location = segment.path.interpolate(percentage)
-//		player.teleport(location)
-		player.teleportEntity(entityId, location)
+		entity.move(location)
 	}
 
 	fun stop() {
-		player.spectateEntity(null)
+		player.stopSpectatingEntity()
+		entity.removeViewer(player)
 	}
 
 	fun teardown() {
-		player.despawnClientSideEntity(entityId)
+		entity.removeViewer(player)
 	}
 
 	private fun percentage(frame: Int): Double {
@@ -193,11 +216,15 @@ fun interpolatePoints(
 		percentage,
 	)
 
+	val previousYaw = previousPoint.yaw.toDouble()
+	val currentYaw = correctYaw(previousYaw, currentPoint.yaw.toDouble())
+	val nextYaw = correctYaw(currentYaw, nextPoint.yaw.toDouble())
+	val nextNextYaw = correctYaw(nextYaw, nextNextPoint.yaw.toDouble())
 	val yaw = interpolatePoints(
-		previousPoint.yaw.toDouble(),
-		currentPoint.yaw.toDouble(),
-		nextPoint.yaw.toDouble(),
-		nextNextPoint.yaw.toDouble(),
+		previousYaw,
+		currentYaw,
+		nextYaw,
+		nextNextYaw,
 		percentage,
 	)
 
@@ -239,3 +266,18 @@ fun interpolatePoints(
 					(-previousPoint + 3 * currentPoint - 3 * nextPoint + nextNextPoint) * cube
 			)
 }
+
+/**
+ * Correct the yaw rotation so that it correctly interpolates between -180 and 180.
+ */
+fun correctYaw(currentYaw: Double, nextYaw: Double): Double {
+	val difference = nextYaw - currentYaw
+	return if (difference > 180) {
+		nextYaw - 360
+	} else if (difference < -180) {
+		nextYaw + 360
+	} else {
+		nextYaw
+	}
+}
+

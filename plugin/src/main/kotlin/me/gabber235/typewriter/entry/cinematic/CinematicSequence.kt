@@ -16,7 +16,7 @@ class CinematicSequence(
 	private var actions = emptyList<CinematicAction>()
 
 	fun start() {
-		if (frame != -1) return
+		if (frame > -1) return
 		actions = entries.map { it.create(player) }
 		actions.forEach {
 			try {
@@ -29,6 +29,7 @@ class CinematicSequence(
 
 	fun tick() {
 		if (frame == -1) {
+			println("Starting cinematic sequence: $frame")
 			start()
 		}
 
@@ -56,7 +57,6 @@ class CinematicSequence(
 				e.printStackTrace()
 			}
 		}
-		frame = -1
 
 		triggers triggerEntriesFor player
 	}
