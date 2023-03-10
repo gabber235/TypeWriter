@@ -158,6 +158,7 @@ class SocketNotifier extends StateNotifier<Socket?> {
       ..on("createEntry", (data) => ref.read(communicatorProvider).handleCreateEntry(data))
       ..on("updateEntry", (data) => ref.read(communicatorProvider).handleUpdateEntry(data))
       ..on("updateCompleteEntry", (data) => ref.read(communicatorProvider).handleUpdateCompleteEntry(data))
+      ..on("reorderEntry", (data) => ref.read(communicatorProvider).handleReorderEntry(data))
       ..on("deleteEntry", (data) => ref.read(communicatorProvider).handleDeleteEntry(data))
       ..on("updateWriters", (data) => ref.read(communicatorProvider).handleUpdateWriters(data));
 
@@ -279,6 +280,21 @@ class Communicator {
     socket.emit("updateCompleteEntry", jsonEncode(data));
   }
 
+  void reorderEntry(String pageId, String entryId, int newIndex) {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "pageId": pageId,
+      "entryId": entryId,
+      "newIndex": newIndex,
+    };
+
+    socket.emit("reorderEntry", jsonEncode(data));
+  }
+
   Future<void> deleteEntry(String pageId, String entryId) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
@@ -367,6 +383,16 @@ class Communicator {
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
     page.syncInsertEntry(ref.passing, entry);
+  }
+
+  void handleReorderEntry(dynamic data) {
+    final json = jsonDecode(data as String) as Map<String, dynamic>;
+    final pageId = json["pageId"] as String;
+    final entryId = json["entryId"] as String;
+    final newIndex = json["newIndex"] as int;
+    final page = ref.read(pageProvider(pageId));
+    if (page == null) return;
+    page.syncReorderEntry(ref.passing, entryId, newIndex);
   }
 
   void handleDeleteEntry(dynamic data) {

@@ -177,6 +177,36 @@ object ClientSynchronizer {
 		autoSaver()
 	}
 
+	fun handleReorderEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+		val update = gson.fromJson(data, ReorderEntry::class.java)
+		val page = pages[update.pageId] ?: return ack.sendAckData("Page does not exist")
+		val entries = page["entries"].asJsonArray
+		val oldIndex = entries.indexOfFirst { it.asJsonObject["id"].asString == update.entryId }
+
+		if (oldIndex == -1) {
+			ack.sendAckData("Entry does not exist")
+			return
+		}
+
+		var newIndex = update.newIndex
+
+		if (oldIndex == newIndex) {
+			ack.sendAckData("Entry is already at the correct index")
+			return
+		}
+
+		if (oldIndex < newIndex) {
+			newIndex--
+		}
+
+		val entryAtNewIndex = entries[newIndex]
+		entries[newIndex] = entries[oldIndex]
+		entries[oldIndex] = entryAtNewIndex
+
+		CommunicationHandler.server?.broadcastOperations?.sendEvent("reorderEntry", client, data)
+		autoSaver()
+	}
+
 
 	fun handleDeleteEntry(client: SocketIOClient, data: String, ack: AckRequest) {
 		val json = gson.fromJson(data, EntryDelete::class.java)
@@ -262,6 +292,11 @@ data class PageCreate(val name: String)
 
 data class PageRename(val old: String, val new: String)
 
+data class EntryCreate(
+	val pageId: String,
+	val entry: JsonObject,
+)
+
 data class EntryUpdate(
 	val pageId: String,
 	val entryId: String,
@@ -274,9 +309,10 @@ data class CompleteEntryUpdate(
 	val entry: JsonObject,
 )
 
-data class EntryCreate(
+data class ReorderEntry(
 	val pageId: String,
-	val entry: JsonObject,
+	val entryId: String,
+	val newIndex: Int,
 )
 
 data class EntryDelete(

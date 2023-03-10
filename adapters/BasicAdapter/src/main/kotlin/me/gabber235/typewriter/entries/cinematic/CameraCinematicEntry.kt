@@ -4,22 +4,28 @@ import com.github.shynixn.mccoroutine.launch
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.protocollib.*
-import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
 import org.bukkit.Location
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import java.util.*
 
 @Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, Icons.VIDEO)
 data class CameraCinematicEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val criteria: List<Criteria> = emptyList(),
-	override val segments: List<CameraSegment> = emptyList(),
-) : CinematicEntry<CameraSegment> {
+	@Segments(icon = Icons.STACKPATH)
+	val segments: List<CameraSegment> = emptyList(),
+) : CinematicEntry {
 	override fun create(player: Player): CinematicAction {
 		return CameraCinematicAction(
 			player,
@@ -31,6 +37,7 @@ data class CameraCinematicEntry(
 data class CameraSegment(
 	override val startFrame: Int = 0,
 	override val endFrame: Int = 0,
+	val zoom: Optional<Double> = Optional.empty(),
 	val path: List<PathPoint> = emptyList(),
 ) : Segment
 
@@ -38,19 +45,6 @@ data class PathPoint(
 	@WithRotation
 	val location: Location,
 )
-
-private data class PlayerState(
-	val location: Location,
-)
-
-private val Player.state: PlayerState
-	get() = PlayerState(
-		location.clone(),
-	)
-
-private fun Player.restore(state: PlayerState) {
-	teleport(state.location)
-}
 
 class CameraCinematicAction(
 	private val player: Player,
@@ -67,7 +61,7 @@ class CameraCinematicAction(
 		segments = entry.segments.map { CameraSegmentAction(player, it) }
 		segments.forEach { it.setup() }
 
-		originalState = player.state
+		originalState = player.state(LOCATION)
 	}
 
 	override fun tick(frame: Int) {
@@ -112,13 +106,20 @@ class CameraCinematicAction(
 		}
 	}
 
-	override fun canFinish(frame: Int): Boolean = entry canFinishAt frame
+	override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
 }
 
 private class CameraSegmentAction(
 	private val player: Player,
 	private val segment: CameraSegment,
 ) {
+	private val attributeModifier = AttributeModifier(
+		UUID.randomUUID(),
+		"camera_zoom",
+		segment.zoom.orElse(1.0),
+		AttributeModifier.Operation.MULTIPLY_SCALAR_1,
+	)
+
 	private val farAwayLocation = Location(player.world, 0.0, 500.0, 0.0)
 	private val firstLocation = segment.path.first().location
 	private val initializationLocation: Location
@@ -141,6 +142,14 @@ private class CameraSegmentAction(
 		plugin.launch {
 			player.teleport(firstLocation)
 			player.spectateEntity(entity)
+			player.getAttribute(Attribute.GENERIC_FLYING_SPEED)?.addModifier(attributeModifier)
+			println(
+				"Setting speed to ${player.getAttribute(Attribute.GENERIC_FLYING_SPEED)?.value}, modifiers: ${
+					player.getAttribute(
+						Attribute.GENERIC_FLYING_SPEED
+					)?.modifiers
+				}"
+			)
 		}
 	}
 
@@ -153,6 +162,7 @@ private class CameraSegmentAction(
 	fun stop() {
 		player.stopSpectatingEntity()
 		entity.removeViewer(player)
+		player.getAttribute(Attribute.GENERIC_FLYING_SPEED)?.removeModifier(attributeModifier)
 	}
 
 	fun teardown() {

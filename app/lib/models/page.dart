@@ -121,6 +121,35 @@ extension PageExtension on Page {
     ref.read(communicatorProvider).updateEntry(name, entry.id, path, value);
   }
 
+  void reorderEntry(PassingRef ref, String entryId, int newIndex) {
+    syncReorderEntry(ref, entryId, newIndex);
+    ref.read(communicatorProvider).reorderEntry(name, entryId, newIndex);
+  }
+
+  void syncReorderEntry(PassingRef ref, String entryId, int newIndex) {
+    updatePage(
+      ref,
+      (page) {
+        final entries = [...page.entries];
+
+        final oldIndex = entries.indexWhere((entry) => entry.id == entryId);
+        if (oldIndex == -1) {
+          return page;
+        }
+
+        final entry = entries.removeAt(oldIndex);
+
+        if (newIndex > oldIndex) {
+          entries.insert(newIndex - 1, entry);
+        } else {
+          entries.insert(newIndex, entry);
+        }
+
+        return page.copyWith(entries: entries);
+      },
+    );
+  }
+
   /// This should only be used to sync the entry from the server.
   void syncInsertEntry(PassingRef ref, Entry entry) {
     updatePage(ref, (page) => _insertEntry(page, entry));

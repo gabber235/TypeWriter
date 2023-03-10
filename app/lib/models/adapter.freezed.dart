@@ -282,7 +282,7 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
     Object? name = null,
     Object? description = null,
     Object? adapter = null,
-    Object? fields = null,
+    Object? fields = freezed,
     Object? tags = null,
     Object? color = null,
     Object? icon = null,
@@ -300,7 +300,7 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
           ? _value.adapter
           : adapter // ignore: cast_nullable_to_non_nullable
               as String,
-      fields: null == fields
+      fields: freezed == fields
           ? _value.fields
           : fields // ignore: cast_nullable_to_non_nullable
               as ObjectField,
@@ -352,7 +352,7 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
     Object? name = null,
     Object? description = null,
     Object? adapter = null,
-    Object? fields = null,
+    Object? fields = freezed,
     Object? tags = null,
     Object? color = null,
     Object? icon = null,
@@ -370,7 +370,7 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
           ? _value.adapter
           : adapter // ignore: cast_nullable_to_non_nullable
               as String,
-      fields: null == fields
+      fields: freezed == fields
           ? _value.fields
           : fields // ignore: cast_nullable_to_non_nullable
               as ObjectField,
@@ -462,7 +462,7 @@ class _$_EntryBlueprint
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.adapter, adapter) || other.adapter == adapter) &&
-            (identical(other.fields, fields) || other.fields == fields) &&
+            const DeepCollectionEquality().equals(other.fields, fields) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.color, color) || other.color == color) &&
             (identical(other.icon, icon) || other.icon == icon));
@@ -470,8 +470,15 @@ class _$_EntryBlueprint
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, adapter,
-      fields, const DeepCollectionEquality().hash(_tags), color, icon);
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      description,
+      adapter,
+      const DeepCollectionEquality().hash(fields),
+      const DeepCollectionEquality().hash(_tags),
+      color,
+      icon);
 
   @JsonKey(ignore: true)
   @override

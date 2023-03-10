@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 
 class CinematicSequence(
 	private val player: Player,
-	private val entries: List<CinematicEntry<*>>,
+	private val entries: List<CinematicEntry>,
 	private val triggers: List<String>
 ) {
 	private var frame = -1

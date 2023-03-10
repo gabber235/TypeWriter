@@ -118,7 +118,7 @@ class Interaction(val player: Player) {
 		cinematic = null
 
 		val entries =
-			Query.findWhereFromPage<CinematicEntry<*>>(trigger.pageId) { it.criteria.matches(event.player.uniqueId) }
+			Query.findWhereFromPage<CinematicEntry>(trigger.pageId) { it.criteria.matches(event.player.uniqueId) }
 
 		if (entries.isEmpty()) return
 

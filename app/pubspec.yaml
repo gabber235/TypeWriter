@@ -15,7 +15,7 @@ dependencies:
   json_annotation: ^4.8.0
   graphview: ^1.1.1
   flutter_hooks: ^0.18.6
-  hooks_riverpod: ^2.2.0
+  hooks_riverpod: ^2.3.0
   auto_size_text: ^3.0.0
   google_fonts: ^4.0.3
   font_awesome_flutter: ^10.4.0
@@ -23,7 +23,7 @@ dependencies:
   fuzzy: ^0.4.0-nullsafety.0
   auto_route: ^5.0.4
   collapsible: ^1.0.0
-  riverpod_annotation: ^1.2.1
+  riverpod_annotation: ^2.0.0
   ktx: ^1.1.6
   # Keep this as the older one since we use SocketIO v2 on the server.
   socket_io_client: 1.0.2
@@ -37,6 +37,7 @@ dependencies:
   url_launcher: ^6.1.10
   http: ^0.13.5
   audioplayers: ^3.0.1
+  collection_ext: ^1.0.0
 
 
 
@@ -49,7 +50,9 @@ dev_dependencies:
   json_serializable: ^6.6.1
   icons_launcher: ^2.1.0
   auto_route_generator: ^5.0.3
-  riverpod_generator: ^1.2.0
+  riverpod_generator: ^2.0.0
+  custom_lint:
+  riverpod_lint: ^1.1.2
 
 icons_launcher:
   image_path: "assets/Typewriter.png"

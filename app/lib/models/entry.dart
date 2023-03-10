@@ -156,7 +156,6 @@ class Entry {
   /// For example:
   ///   - if you want to update the field "bar" in the first item of a list at the key "foo",
   ///     use the field "foo.0.bar".
-  ///   - if you want to update all the keys in a map, use ".*".
   ///
   /// Returns the original entry if the field is not found.
   Entry copyWith(String field, dynamic value) {
@@ -165,9 +164,14 @@ class Entry {
     // Make a deep copy of the data. To avoid modifying the original data.
     final data = jsonDecode(jsonEncode(this.data));
 
-    final current = _crawl(parts.join("."), data).firstOrNull;
+    var current = _crawl(parts.join("."), data).firstOrNull;
     if (current == null) {
-      // The field does not exist. Return the original entry.
+      // The field does not exist. Try to create the path.
+      _createPath(field, data);
+      current = _crawl(parts.join("."), data).firstOrNull;
+    }
+    if (current == null) {
+      // The field still does not exist. Return the original entry.
       return this;
     }
 
@@ -180,6 +184,42 @@ class Entry {
     }
 
     return Entry(data);
+  }
+
+  void _createPath(String path, Map<String, dynamic> data) {
+    if (path.contains("*")) return;
+    final parts = path.split(".");
+
+    dynamic putIfAbsent(dynamic current, String path, dynamic value) {
+      if (current is List && int.tryParse(path) != null) {
+        final index = int.parse(path);
+        if (current.length > index) {
+          return current[index];
+        } else {
+          current.addAll(List.filled(index - current.length + 1, null));
+          current[index] = value;
+          return value;
+        }
+      } else {
+        if (current[path] != null) {
+          return current[path];
+        } else {
+          return current[path] = value;
+        }
+      }
+    }
+
+    dynamic current = data;
+
+    for (var i = 0; i < parts.length - 1; i++) {
+      final part = parts[i];
+      final next = parts[i + 1];
+      if (int.tryParse(next) != null) {
+        current = putIfAbsent(current, part, []);
+      } else {
+        current = putIfAbsent(current, part, {});
+      }
+    }
   }
 
   /// Returns a new copy of this entry with all values of a given path updated.

@@ -47,6 +47,7 @@ object CommunicationHandler {
 			String::class.java,
 			ClientSynchronizer::handleCompleteEntryUpdate
 		)
+		server?.addEventListener("reorderEntry", String::class.java, ClientSynchronizer::handleReorderEntry)
 		server?.addEventListener("deleteEntry", String::class.java, ClientSynchronizer::handleDeleteEntry)
 
 		server?.addEventListener("publish", String::class.java, ClientSynchronizer::handlePublish)
