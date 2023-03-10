@@ -770,4 +770,86 @@ class _FrameStartOffsetProvider extends AutoDisposeProvider<double> {
     return _SystemHash.finish(hash);
   }
 }
+
+String _$frameEndOffsetHash() => r'715d35a025f9c8a0ca6766e4bbd47467cce69bce';
+typedef _FrameEndOffsetRef = AutoDisposeProviderRef<double>;
+
+/// See also [_frameEndOffset].
+@ProviderFor(_frameEndOffset)
+const _frameEndOffsetProvider = _FrameEndOffsetFamily();
+
+/// See also [_frameEndOffset].
+class _FrameEndOffsetFamily extends Family<double> {
+  /// See also [_frameEndOffset].
+  const _FrameEndOffsetFamily();
+
+  /// See also [_frameEndOffset].
+  _FrameEndOffsetProvider call(
+    int frame,
+  ) {
+    return _FrameEndOffsetProvider(
+      frame,
+    );
+  }
+
+  @override
+  _FrameEndOffsetProvider getProviderOverride(
+    covariant _FrameEndOffsetProvider provider,
+  ) {
+    return call(
+      provider.frame,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'_frameEndOffsetProvider';
+}
+
+/// See also [_frameEndOffset].
+class _FrameEndOffsetProvider extends AutoDisposeProvider<double> {
+  /// See also [_frameEndOffset].
+  _FrameEndOffsetProvider(
+    this.frame,
+  ) : super.internal(
+          (ref) => _frameEndOffset(
+            ref,
+            frame,
+          ),
+          from: _frameEndOffsetProvider,
+          name: r'_frameEndOffsetProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$frameEndOffsetHash,
+          dependencies: _FrameEndOffsetFamily._dependencies,
+          allTransitiveDependencies:
+              _FrameEndOffsetFamily._allTransitiveDependencies,
+        );
+
+  final int frame;
+
+  @override
+  bool operator ==(Object other) {
+    return other is _FrameEndOffsetProvider && other.frame == frame;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, frame.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

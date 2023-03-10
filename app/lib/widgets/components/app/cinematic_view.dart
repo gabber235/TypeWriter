@@ -9,7 +9,6 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/hooks/global_key.dart";
 import "package:typewriter/hooks/text_size.dart";
 import "package:typewriter/models/adapter.dart";
@@ -297,9 +296,14 @@ class _TrackStateProvider extends StateNotifier<_TrackState> {
     state = state.copyWith(start: newStart, end: newEnd);
   }
 
+  Future<void> delayedWidthChanged(double width) async {
+    if (width == state.width) return;
+    await Future.delayed(const Duration(milliseconds: 100));
+    widthChanged(width);
+  }
+
   void widthChanged(double width) {
     if (width == state.width) return;
-    print("width changed: $width");
     state = state.copyWith(width: width, start: 0, end: 1);
   }
 }
@@ -349,35 +353,33 @@ class _TrackSliderTrack extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final outerKey = useGlobalKey();
-    MediaQuery.of(context); // force rebuild on size change
-    useDelayedExecution(
-      () {
-        ref.read(_trackStateProvider.notifier).widthChanged(context.size!.width);
-      },
-      runEveryBuild: true,
-    );
 
-    return SizedBox(
-      height: 16,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned(
-            key: outerKey,
-            height: 16,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 16,
-              decoration: BoxDecoration(
-                color: Theme.of(context).inputDecorationTheme.fillColor,
-                borderRadius: BorderRadius.circular(8),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        ref.watch(_trackStateProvider.notifier).delayedWidthChanged(constraints.maxWidth);
+        return SizedBox(
+          height: 16,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                key: outerKey,
+                height: 16,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).inputDecorationTheme.fillColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
-            ),
+              _TrackSlider(outerKey: outerKey),
+            ],
           ),
-          _TrackSlider(outerKey: outerKey),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -636,8 +638,7 @@ class _TrackBackground extends HookConsumerWidget {
             bottom: 0,
             child: Container(
               width: 1,
-              color:
-                  frame % fractions == 0 ? Theme.of(context).hintColor : Theme.of(context).hintColor.withOpacity(0.2),
+              color: frame % fractions == 0 ? Colors.grey.shade700 : Colors.grey.shade700.withOpacity(0.5),
             ),
           ),
       ],
@@ -649,6 +650,13 @@ class _TrackBackground extends HookConsumerWidget {
 double _frameStartOffset(_FrameStartOffsetRef ref, int frame) {
   final frameSpacing = ref.watch(_frameSpacingProvider);
   return frame * frameSpacing;
+}
+
+@riverpod
+double _frameEndOffset(_FrameEndOffsetRef ref, int frame) {
+  final trackSize = ref.watch(_trackSizeProvider);
+  final frameSpacing = ref.watch(_frameSpacingProvider);
+  return trackSize - frame * frameSpacing;
 }
 
 class _SegmentsTrack extends HookConsumerWidget {
@@ -666,10 +674,42 @@ class _SegmentsTrack extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final segments = ref.watch(_segmentsProvider(entryId, path));
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
       children: [
-        SizedBox(width: ref.watch(_trackSizeProvider)),
+        SizedBox(width: ref.watch(_trackSizeProvider), height: 64),
+        for (final segment in segments) _SegmentPosition(segment: segment, child: segmentBuilder(context, segment)),
       ],
+    );
+  }
+}
+
+class _SegmentPosition extends HookConsumerWidget {
+  const _SegmentPosition({
+    required this.segment,
+    required this.child,
+  });
+
+  final Segment segment;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final startOffset = ref.watch(_frameStartOffsetProvider(segment.startFrame));
+    final endOffset = ref.watch(_frameEndOffsetProvider(segment.endFrame));
+
+    if (segment.startFrame == segment.endFrame) {
+      final frameSpacing = ref.watch(_frameSpacingProvider);
+      return Positioned(
+        left: startOffset - frameSpacing / 2,
+        right: endOffset - frameSpacing / 2,
+        child: child,
+      );
+    }
+
+    return Positioned(
+      left: startOffset,
+      right: endOffset,
+      child: child,
     );
   }
 }
@@ -686,11 +726,8 @@ class _SegmentWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final duration = max(1, segment.endFrame - segment.startFrame) + 1;
-    final frameSpacing = ref.watch(_frameSpacingProvider);
     return Container(
-      height: 20,
-      width: duration * frameSpacing,
+      height: 12,
       decoration: BoxDecoration(
         color: segment.color,
         borderRadius: BorderRadius.circular(12),
