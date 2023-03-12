@@ -1,6 +1,6 @@
-package com.caleb.typewriter.worldguard.entries.event
+package com.caleb.typewriter.griefdefender.entries.event
 
-import com.caleb.typewriter.worldguard.RegionsExitEvent
+import com.caleb.typewriter.griefdefender.GriefDefenderAdapter
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -10,7 +10,7 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
-@Entry("on_exit_wg_region", "When a player exits a WorldGuard region", Colors.YELLOW, Icons.SQUARE_XMARK)
+@Entry("on_exit_gd_region", "When a player exits a GriefDefender region", Colors.YELLOW, Icons.SQUARE_XMARK)
 class ExitRegionEventEntry(
 	override val id: String = "",
 	override val name: String = "",
@@ -19,9 +19,12 @@ class ExitRegionEventEntry(
 	val region: String = "",
 ) : EventEntry
 
+
+
 @EntryListener(ExitRegionEventEntry::class)
-fun onExitRegions(event: RegionsExitEvent, query: Query<ExitRegionEventEntry>) {
-	val player = server.getPlayer(event.player.uniqueId) ?: return
-	query findWhere { it.region in event } triggerAllFor player
+fun onExitRegions(event: GriefDefenderAdapter.RegionExitEvent, query: Query<ExitRegionEventEntry>) {
+	val player = server.getPlayer(event.getPlayerUUID()) ?: return
+	query findWhere { it.region == event.getClaim().uniqueId.toString() } startDialogueWithOrNextDialogue player
 }
+
 

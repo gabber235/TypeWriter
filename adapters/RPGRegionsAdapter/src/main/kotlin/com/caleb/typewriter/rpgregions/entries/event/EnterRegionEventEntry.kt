@@ -1,6 +1,6 @@
-package com.caleb.typewriter.worldguard.entries.event
+package com.caleb.typewriter.rpgregions.entries.event
 
-import com.caleb.typewriter.worldguard.RegionsExitEvent
+import net.islandearth.rpgregions.api.events.RegionsEnterEvent
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -10,8 +10,9 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
-@Entry("on_exit_wg_region", "When a player exits a WorldGuard region", Colors.YELLOW, Icons.SQUARE_XMARK)
-class ExitRegionEventEntry(
+
+@Entry("on_enter_RPGRegions", "When a player enters a RPGRegions region", Colors.YELLOW, Icons.SQUARE_CHECK)
+class EnterRegionEventEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val triggers: List<String> = emptyList(),
@@ -19,9 +20,14 @@ class ExitRegionEventEntry(
 	val region: String = "",
 ) : EventEntry
 
-@EntryListener(ExitRegionEventEntry::class)
-fun onExitRegions(event: RegionsExitEvent, query: Query<ExitRegionEventEntry>) {
+
+@EntryListener(EnterRegionEventEntry::class)
+fun onEnterRegions(event: RegionsEnterEvent, query: Query<EnterRegionEventEntry>) {
 	val player = server.getPlayer(event.player.uniqueId) ?: return
-	query findWhere { it.region in event } triggerAllFor player
+	query findWhere { it.region in event.regions } triggerAllFor player
 }
+
+
+
+
 
