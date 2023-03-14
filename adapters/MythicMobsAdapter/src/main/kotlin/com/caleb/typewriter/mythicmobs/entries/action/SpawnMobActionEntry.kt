@@ -33,7 +33,7 @@ class SpawnMobActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        if (usePlayerLocation) spawnLocation = player.getLocation().add(location)
+        if (usePlayerLocation) spawnLocation = player.getLocation().add(spawnLocation.toVector())
 
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mob) ?: return
         mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level)
