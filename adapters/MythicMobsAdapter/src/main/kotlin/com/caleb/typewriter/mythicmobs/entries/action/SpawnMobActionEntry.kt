@@ -27,15 +27,21 @@ class SpawnMobActionEntry(
     private val level: Double = 1.0,
     @Help("Use player's location")
     private val usePlayerLocation: Boolean = true,
-    @Help("SpawnLocation")
-    private var spawnLocation: Location,
+    @Help("Relative Location")
+    private var relativeLocation: Location,
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
-        if (usePlayerLocation) spawnLocation = player.getLocation().add(spawnLocation.toVector())
-
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mob) ?: return
+        val spawnLocation : Location;
+
+        if (usePlayerLocation) {
+            spawnLocation = player.location
+            relativeLocation = relativeLocation.toLocation(player.location.world)
+            spawnLocation.add(relativeLocation)
+        } else spawnLocation = relativeLocation
+
         mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level)
     }
 }

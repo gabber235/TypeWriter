@@ -1,0 +1,29 @@
+import {ActionsField, EntryField} from "@site/src/components/EntryField";
+
+# Spawn Mob Action
+
+The `Spawn Mob Action` action spawn MythicMobs's mob to the world.
+
+## How could this be used?
+
+Mix it up with something else to bring out the Mob.
+
+## Fields
+
+<ActionsField/>
+
+<EntryField name="Mob" required>
+    The mob's name.
+</EntryField>
+
+<EntryField name="Level" required>
+    The mob's level.
+</EntryField>
+
+<EntryField name="UsePlayerLocation" required>
+    Whether or not to use the player's position as the center when summoning.
+</EntryField>
+
+<EntryField name="RelativeLocation" required>
+    If `UsePlayerLocation` is false, then it will be spawn location.
+</EntryField>
