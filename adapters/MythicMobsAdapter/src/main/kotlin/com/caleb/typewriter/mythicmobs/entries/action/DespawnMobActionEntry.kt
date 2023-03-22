@@ -26,12 +26,9 @@ class DespawnMobActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        val optionalMob = MythicBukkit.inst().mobManager.getMythicMob(mob)
-        if (optionalMob.isPresent) {
-            val mob = optionalMob.get()
-            for (activeMob in MythicBukkit.inst().mobManager.activeMobs) {
-                if (activeMob.name.equals(mob)) activeMob.despawn();
-            }
-        }
+        val mob = MythicBukkit.inst().mobManager.getMythicMob(mob)
+        if (!mob.isPresent) return
+
+        MythicBukkit.inst().mobManager.activeMobs.removeIf { it.type == mob }
     }
 }

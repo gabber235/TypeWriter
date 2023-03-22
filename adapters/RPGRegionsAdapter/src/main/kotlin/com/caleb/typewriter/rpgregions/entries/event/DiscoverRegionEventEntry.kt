@@ -19,8 +19,6 @@ class DiscoverRegionEventEntry(
 	val region: String = "",
 ) : EventEntry
 
-
-
 @EntryListener(DiscoverRegionEventEntry::class)
 fun onDiscoverRegions(event: RegionDiscoverEvent, query: Query<DiscoverRegionEventEntry>) {
 	val player = server.getPlayer(event.player.uniqueId) ?: return

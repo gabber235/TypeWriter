@@ -8,7 +8,6 @@ import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.Icons
 import net.islandearth.rpgregions.api.RPGRegionsAPI
-import org.bukkit.util.Vector
 import java.util.*
 
 @Entry("in_RPGRegion_fact", "If the player is in a RPGRegions region", Colors.PURPLE, Icons.ROAD_BARRIER)
@@ -25,14 +24,10 @@ data class InRegionFact(
 		val region = RPGRegionsAPI.getAPI().managers.regionsCache.getConfiguredRegion(region)
 			?: return Fact(id, 0)
 
-		if (player.getLocation().world !== region.get().location.world
-			|| region.get().boundingBox.isNullOrEmpty()) return Fact(id, 0)
+		val standingRegion = RPGRegionsAPI.getAPI().managers.integrationManager
+			.getPrioritisedRegion(player.location) ?: return Fact(id, 0)
 
-		val boundingBox = region.get().boundingBox
-		val minVector = Vector.getMinimum(boundingBox?.get(0)!!.toVector(), boundingBox[1]!!.toVector())
-		val maxVector = Vector.getMaximum(region.get().boundingBox?.get(0)!!.toVector(), boundingBox[1]!!.toVector())
-
-		val value = if (player.location.toVector().isInAABB(minVector, maxVector)) 1 else 0
+		val value = if (standingRegion == region) 1 else 0
 		return Fact(id, value)
 	}
 }

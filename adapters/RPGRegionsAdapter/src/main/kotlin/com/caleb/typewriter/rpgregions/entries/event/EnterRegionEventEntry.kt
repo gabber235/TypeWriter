@@ -20,7 +20,6 @@ class EnterRegionEventEntry(
 	val region: String = "",
 ) : EventEntry
 
-
 @EntryListener(EnterRegionEventEntry::class)
 fun onEnterRegions(event: RegionsEnterEvent, query: Query<EnterRegionEventEntry>) {
 	val player = server.getPlayer(event.player.uniqueId) ?: return

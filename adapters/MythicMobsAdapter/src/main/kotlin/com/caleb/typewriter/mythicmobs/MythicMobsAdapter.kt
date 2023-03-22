@@ -15,4 +15,5 @@ object MythicMobsAdapter : TypewriteAdapter() {
 			return
 		}
 	}
+
 }

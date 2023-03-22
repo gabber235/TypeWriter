@@ -1,5 +1,7 @@
 package com.caleb.typewriter.mythicmobs.entries.event
 
+import io.lumine.mythic.api.mobs.MythicMob
+import io.lumine.mythic.bukkit.MythicBukkit
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
@@ -20,12 +22,8 @@ class MythicMobDeathEventEntry(
     val mobName: String = "",
 ) : EventEntry
 
-
 @EntryListener(MythicMobDeathEventEntry::class)
 fun onMobDeath(event: MythicMobDeathEvent, query: Query<MythicMobDeathEventEntry>) {
     val player = server.getPlayer(event.killer.name) ?: return
-    if (mobName.isPresent && mobName.get() != event.mob.name) {
-        return
-    }
-    query.triggerAllFor(player)
+    query findWhere { it.mobName == event.mob.name } triggerAllFor player
 }
