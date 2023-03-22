@@ -10,7 +10,7 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
-@Entry("on_enter_wg_region", "When a player enters a WorldGuard region", Colors.YELLOW, Icons.SQUARE_CHECK)
+@Entry("on_enter_region", "When a player enters a WorldGuard region", Colors.YELLOW, Icons.SQUARE_CHECK)
 class EnterRegionEventEntry(
 	override val id: String = "",
 	override val name: String = "",

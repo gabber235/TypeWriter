@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 
-@Entry("spawn_mythicmobs_mob", "Spawn a mob from mythicmobs", Colors.ORANGE, Icons.HANDSHAKE)
+@Entry("spawn_mythicmobs_mob", "Spawn a mob from MythicMobs", Colors.ORANGE, Icons.DRAGON)
 class SpawnMobActionEntry(
     override val id: String = "",
     override val name: String = "",
@@ -28,13 +28,13 @@ class SpawnMobActionEntry(
     @Help("Use player's location")
     private val usePlayerLocation: Boolean = true,
     @Help("Relative Location")
-    private var relativeLocation: Location,
+    private var relativeLocation: Optional<Location> = Optional.empty(),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mob) ?: return
-        val spawnLocation : Location;
+        val spawnLocation: Location;
 
         if (usePlayerLocation) {
             spawnLocation = player.location

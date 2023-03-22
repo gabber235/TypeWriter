@@ -11,7 +11,7 @@ import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
 
-@Entry("on_enter_RPGRegions", "When a player enters a RPGRegions region", Colors.YELLOW, Icons.SQUARE_CHECK)
+@Entry("on_enter_rpg_region", "When a player enters a RPGRegions region", Colors.YELLOW, Icons.DOOR_OPEN)
 class EnterRegionEventEntry(
 	override val id: String = "",
 	override val name: String = "",
@@ -26,8 +26,3 @@ fun onEnterRegions(event: RegionsEnterEvent, query: Query<EnterRegionEventEntry>
 	val player = server.getPlayer(event.player.uniqueId) ?: return
 	query findWhere { it.region in event.regions } triggerAllFor player
 }
-
-
-
-
-
