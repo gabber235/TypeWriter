@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 
-@Entry("despawn_mythicmobs_mob", "Despawn a mob from mythicmobs", Colors.ORANGE, Icons.HANDSHAKE)
+@Entry("despawn_mythicmobs_mob", "Despawn a mob from MythicMobs", Colors.ORANGE, Icons.TRASH)
 class DespawnMobActionEntry(
     override val id: String = "",
     override val name: String = "",
@@ -26,9 +26,12 @@ class DespawnMobActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        val mob = MythicBukkit.inst().mobManager.getMythicMob(mob) ?: return
-        for (activeMob in MythicBukkit.inst().mobManager.activeMobs) {
-            if (activeMob.name.equals(mob)) activeMob.despawn();
+        val optionalMob = MythicBukkit.inst().mobManager.getMythicMob(mob)
+        if (optionalMob.isPresent) {
+            val mob = optionalMob.get()
+            for (activeMob in MythicBukkit.inst().mobManager.activeMobs) {
+                if (activeMob.name.equals(mob)) activeMob.despawn();
+            }
         }
     }
 }

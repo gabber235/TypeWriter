@@ -11,23 +11,21 @@ import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
 
-@Entry("on_mob_die", "When a player kill a MythicMobs mob.", Colors.YELLOW, Icons.SQUARE_CHECK)
+@Entry("on_mob_die", "When a player kill a MythicMobs mob.", Colors.YELLOW, Icons.SKULL)
 class MythicMobDeathEventEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val triggers: List<String> = emptyList(),
-	@Help("The mob's name use to check.")
-	val mobName: String = "",
+    override val id: String = "",
+    override val name: String = "",
+    override val triggers: List<String> = emptyList(),
+    @Help("Only trigger when a specific mob dies.")
+    val mobName: String = "",
 ) : EventEntry
 
 
 @EntryListener(MythicMobDeathEventEntry::class)
 fun onMobDeath(event: MythicMobDeathEvent, query: Query<MythicMobDeathEventEntry>) {
-	val player = server.getPlayer(event.killer.name) ?: return
-	query findWhere { it.mobName == event.mob.name } triggerAllFor player
+    val player = server.getPlayer(event.killer.name) ?: return
+    if (mobName.isPresent && mobName.get() != event.mob.name) {
+        return
+    }
+    query.triggerAllFor(player)
 }
-
-
-
-
-

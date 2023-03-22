@@ -11,7 +11,7 @@ import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
-@Entry("in_wg_region_fact", "If the player is in a WorldGuard region", Colors.PURPLE, Icons.ROAD_BARRIER)
+@Entry("in_region_fact", "If the player is in a WorldGuard region", Colors.PURPLE, Icons.ROAD_BARRIER)
 data class InRegionFact(
 	override val id: String = "",
 	override val name: String = "",

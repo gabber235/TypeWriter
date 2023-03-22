@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-@Entry("discover_region", "Create a discover for a RPGRegions region", Colors.RED, Icons.ADDRESS_BOOK)
+@Entry("discover_rpg_region", "Create a discover for an RPGRegions region", Colors.RED, Icons.ADDRESS_BOOK)
 class DiscoverRegionActionEntry(
     override val id: String = "",
     override val name: String = "",

@@ -10,7 +10,7 @@ import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
-@Entry("on_discover_RPGRegion", "When a player discover a RPGRegions region", Colors.YELLOW, Icons.SQUARE_XMARK)
+@Entry("on_discover_rpg_region", "When a player discovers an RPGRegions region", Colors.YELLOW, Icons.LOCATION_ARROW)
 class DiscoverRegionEventEntry(
 	override val id: String = "",
 	override val name: String = "",
@@ -26,5 +26,3 @@ fun onDiscoverRegions(event: RegionDiscoverEvent, query: Query<DiscoverRegionEve
 	val player = server.getPlayer(event.player.uniqueId) ?: return
 	query findWhere { it.region == event.region } triggerAllFor player
 }
-
-
