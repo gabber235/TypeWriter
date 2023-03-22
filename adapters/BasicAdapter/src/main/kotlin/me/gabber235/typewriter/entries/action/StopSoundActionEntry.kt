@@ -12,30 +12,24 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 
-@Entry("play_sound", "Play sound at player, or location", Colors.RED, Icons.MUSIC)
-data class PlaySoundActionEntry(
+@Entry("stop_sound", "Stop a or all sounds for a player", Colors.RED, Icons.MUSIC)
+data class StopSoundActionEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
 	override val triggers: List<String> = emptyList(),
-	@Help("The location to play the sound from. (Defaults to player's location)")
-	val location: Optional<Location> = Optional.empty(),
 	@Sound
-	@Help("The sound to play.")
-	val sound: String = "",
-	@Help("The volume of the sound.")
-	val volume: Float = 1.0f,
-	@Help("The pitch of the sound.")
-	val pitch: Float = 1.0f,
+	@Help("The sound to stop.")
+	val sound: Optional<String> = Optional.empty(),
 ) : ActionEntry {
 	override fun execute(player: Player) {
 		super.execute(player)
 
-		if (location.isPresent) {
-			location.get().world?.playSound(location.get(), sound, volume, pitch)
+		if (sound.isPresent) {
+			player.stopSound(sound.get())
 		} else {
-			player.playSound(player.location, sound, volume, pitch)
+			player.stopAllSounds()
 		}
 	}
 }
