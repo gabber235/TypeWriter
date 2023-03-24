@@ -22,7 +22,7 @@ class SpawnMobActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<String> = emptyList(),
     @Help("The mob's name")
-    private val mob: String = "",
+    private val mobName: String = "",
     @Help("The mob's level")
     private val level: Double = 1.0,
     @Help("Spawn Location")
@@ -31,11 +31,8 @@ class SpawnMobActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        val mob = MythicBukkit.inst().mobManager.getMythicMob(mob)
+        val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName)
         if (!mob.isPresent) return
-
-        // If the return is Location, there will be no ~ in it
-
 
         mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level)
     }

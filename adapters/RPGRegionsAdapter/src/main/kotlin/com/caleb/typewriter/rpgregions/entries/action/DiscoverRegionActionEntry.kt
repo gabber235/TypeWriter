@@ -26,8 +26,9 @@ class DiscoverRegionActionEntry(
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
-        val region = RPGRegionsAPI.getAPI().managers.regionsCache.getConfiguredRegion(region) ?: return
-        val user = RPGRegionsAPI.getAPI().managers.storageManager.getAccount(player.uniqueId) ?: return
+        val region = RPGRegionsAPI.getAPI().managers.regionsCache.getConfiguredRegion(region)
+        if (!region.isPresent) return
+        val user = RPGRegionsAPI.getAPI().managers.storageManager.getAccount(player.uniqueId)
         val date: LocalDateTime = LocalDateTime.now()
         val format: DateTimeFormatter =
             DateTimeFormatter.ofPattern(RPGRegionsAPI.getAPI().config.getString("settings.server.discoveries.date.format"))

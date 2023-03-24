@@ -22,12 +22,13 @@ data class InRegionFact(
 		val player = server.getPlayer(playerId) ?: return Fact(id, 0)
 
 		val region = RPGRegionsAPI.getAPI().managers.regionsCache.getConfiguredRegion(region)
-			?: return Fact(id, 0)
+		if (!region.isPresent) return Fact(id, 0)
 
 		val standingRegion = RPGRegionsAPI.getAPI().managers.integrationManager
-			.getPrioritisedRegion(player.location) ?: return Fact(id, 0)
+			.getPrioritisedRegion(player.location)
+		if (!standingRegion.isPresent) return Fact(id, 0)
 
-		val value = if (standingRegion == region) 1 else 0
+		val value = if (standingRegion.get() == region.get()) 1 else 0
 		return Fact(id, value)
 	}
 }

@@ -21,14 +21,14 @@ class DespawnMobActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<String> = emptyList(),
     @Help("The mob's name")
-    private val mob: String = "",
+    private val mobName: String = "",
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
-        val mob = MythicBukkit.inst().mobManager.getMythicMob(mob)
+        val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName)
         if (!mob.isPresent) return
 
-        MythicBukkit.inst().mobManager.activeMobs.removeIf { it.type == mob }
+        MythicBukkit.inst().mobManager.activeMobs.removeIf { it.type == mob.get() }
     }
 }

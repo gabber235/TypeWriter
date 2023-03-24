@@ -15,14 +15,15 @@ data class MobCountFact(
 	override val name: String = "",
 	override val comment: String = "",
 	@Help("The id of the mob to count")
-	val mob: String = "",
+	val mobName: String = "",
 ) : ReadableFactEntry {
 	override fun read(playerId: UUID): Fact {
-		val mob = MythicBukkit.inst().mobManager.getMythicMob(mob)
+		val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName)
 		if (!mob.isPresent) return Fact(id, 0)
+
 		var count = 0
 		for (activeMob in MythicBukkit.inst().mobManager.activeMobs) {
-			if (activeMob.name.equals(mob)) {
+			if (activeMob.type == mob.get()) {
                 count++
             }
 		}

@@ -1,0 +1,19 @@
+import {FactsField, ReadonlyFactInfo} from "@site/src/components/EntryField";
+
+# Mob Count Fact
+
+A [fact](/docs/facts) that represents how many specific MythicMobs mob are in the world.
+
+<ReadonlyFactInfo />
+
+## How could this be used?
+
+This fact could be used to change dialogue sent by an NPC or mob when a boss exists. It could also be used in conjunction with the Spawn Mob action to spawn specific mobs if one or more mobs exist/doesn't exist.
+
+## Fields
+
+<FactsField />
+
+<EntryField name="MobName" required>
+    The mob's name used to check.
+</EntryField>
