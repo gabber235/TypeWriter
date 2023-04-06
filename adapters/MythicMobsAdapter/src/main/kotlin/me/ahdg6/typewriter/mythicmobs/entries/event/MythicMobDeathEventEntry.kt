@@ -1,4 +1,4 @@
-package com.caleb.typewriter.mythicmobs.entries.event
+package me.ahdg6.typewriter.mythicmobs.entries.event
 
 import io.lumine.mythic.api.mobs.MythicMob
 import io.lumine.mythic.bukkit.MythicBukkit
@@ -10,10 +10,11 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
+import org.bukkit.entity.Player
 import java.util.*
 
 
-@Entry("on_mob_die", "When a player kill a MythicMobs mob.", Colors.YELLOW, Icons.SKULL)
+@Entry("on_mythic_mob_die", "When a player kill a MythicMobs mob.", Colors.YELLOW, Icons.SKULL)
 class MythicMobDeathEventEntry(
     override val id: String = "",
     override val name: String = "",
@@ -24,6 +25,6 @@ class MythicMobDeathEventEntry(
 
 @EntryListener(MythicMobDeathEventEntry::class)
 fun onMobDeath(event: MythicMobDeathEvent, query: Query<MythicMobDeathEventEntry>) {
-    val player = server.getPlayer(event.killer.name) ?: return
+    val player = event.killer as? Player ?: return
     query findWhere { it.mobName == event.mob.name } triggerAllFor player
 }

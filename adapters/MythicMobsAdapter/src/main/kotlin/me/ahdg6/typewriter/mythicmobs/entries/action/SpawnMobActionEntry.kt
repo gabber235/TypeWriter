@@ -1,4 +1,4 @@
-package com.caleb.typewriter.mythicmobs.entries.action
+package me.ahdg6.typewriter.mythicmobs.entries.action
 
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
@@ -9,12 +9,13 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Icons
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 
 
-@Entry("despawn_mythicmobs_mob", "Despawn a mob from MythicMobs", Colors.ORANGE, Icons.TRASH)
-class DespawnMobActionEntry(
+@Entry("spawn_mythicmobs_mob", "Spawn a mob from MythicMobs", Colors.ORANGE, Icons.DRAGON)
+class SpawnMobActionEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
@@ -22,6 +23,10 @@ class DespawnMobActionEntry(
     override val triggers: List<String> = emptyList(),
     @Help("The mob's name")
     private val mobName: String = "",
+    @Help("The mob's level")
+    private val level: Double = 1.0,
+    @Help("Spawn Location")
+    private var spawnLocation: Location,
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
@@ -29,6 +34,6 @@ class DespawnMobActionEntry(
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName)
         if (!mob.isPresent) return
 
-        MythicBukkit.inst().mobManager.activeMobs.removeIf { it.type == mob.get() }
+        mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level)
     }
 }

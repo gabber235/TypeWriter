@@ -1,4 +1,4 @@
-package com.caleb.typewriter.rpgregions.entries.fact
+package me.ahdg6.typewriter.rpgregions.entries.fact
 
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
@@ -10,7 +10,7 @@ import me.gabber235.typewriter.utils.Icons
 import net.islandearth.rpgregions.api.RPGRegionsAPI
 import java.util.*
 
-@Entry("in_RPGRegion_fact", "If the player is in a RPGRegions region", Colors.PURPLE, Icons.ROAD_BARRIER)
+@Entry("in_rpg_region_fact", "If the player is in a RPGRegions region", Colors.PURPLE, Icons.ROAD_BARRIER)
 data class InRegionFact(
 	override val id: String = "",
 	override val name: String = "",

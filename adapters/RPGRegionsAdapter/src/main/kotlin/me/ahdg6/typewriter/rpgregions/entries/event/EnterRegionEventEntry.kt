@@ -1,4 +1,4 @@
-package com.caleb.typewriter.rpgregions.entries.event
+package me.ahdg6.typewriter.rpgregions.entries.event
 
 import net.islandearth.rpgregions.api.events.RegionsEnterEvent
 import lirand.api.extensions.server.server

@@ -5,7 +5,7 @@ plugins {
 	id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
-group = "me.caleb"
+group = "me.ahdg6.typewriter"
 version = file("../../version.txt").readText().trim()
 
 repositories {

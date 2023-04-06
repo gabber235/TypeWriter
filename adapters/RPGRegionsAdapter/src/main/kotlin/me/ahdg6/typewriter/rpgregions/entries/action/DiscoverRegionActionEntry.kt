@@ -1,4 +1,4 @@
-package com.caleb.typewriter.griefdefender.entries.action
+package me.ahdg6.typewriter.rpgregions.entries.action
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -28,6 +28,7 @@ class DiscoverRegionActionEntry(
         super.execute(player)
         val region = RPGRegionsAPI.getAPI().managers.regionsCache.getConfiguredRegion(region)
         if (!region.isPresent) return
+
         val user = RPGRegionsAPI.getAPI().managers.storageManager.getAccount(player.uniqueId)
         val date: LocalDateTime = LocalDateTime.now()
         val format: DateTimeFormatter =

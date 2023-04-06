@@ -1,4 +1,4 @@
-package com.caleb.typewriter.mythicmobs.entries.fact
+package me.ahdg6.typewriter.mythicmobs.entries.fact
 
 import io.lumine.mythic.bukkit.MythicBukkit
 import me.gabber235.typewriter.adapters.Colors
@@ -9,7 +9,7 @@ import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
-@Entry("mob_count_fact", "Count the number of active Mythic Mobs of the specified type", Colors.PURPLE, Icons.PLACE_OF_WORSHIP)
+@Entry("mythic_mob_count_fact", "Count the number of active Mythic Mobs of the specified type", Colors.PURPLE, Icons.PLACE_OF_WORSHIP)
 data class MobCountFact(
 	override val id: String = "",
 	override val name: String = "",

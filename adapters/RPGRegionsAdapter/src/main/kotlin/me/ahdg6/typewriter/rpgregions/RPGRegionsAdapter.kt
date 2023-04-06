@@ -1,4 +1,4 @@
-package com.caleb.typewriter.rpgregions
+package me.ahdg6.typewriter.rpgregions
 
 import App
 import lirand.api.extensions.server.server

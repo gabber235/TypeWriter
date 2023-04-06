@@ -1,4 +1,4 @@
-package com.caleb.typewriter.mythicmobs
+package me.ahdg6.typewriter.mythicmobs
 
 import App
 import lirand.api.extensions.server.server
