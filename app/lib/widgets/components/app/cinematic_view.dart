@@ -440,8 +440,7 @@ class _TrackSlider extends HookConsumerWidget {
       height: 16,
       left: start,
       right: end,
-      child: Container(
-        height: 16,
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: Colors.blue,
           borderRadius: BorderRadius.circular(8),
@@ -449,7 +448,7 @@ class _TrackSlider extends HookConsumerWidget {
         child: Row(
           children: [
             const SizedBox(width: 3),
-            _buildThumb(
+            _Thumb(
               onDragUpdate: (details) {
                 final percentage = _percentage(outerKey, details, innerMargin: 10);
                 ref.read(_trackStateProvider.notifier).updateStart(percentage);
@@ -469,7 +468,7 @@ class _TrackSlider extends HookConsumerWidget {
                 ),
               ),
             ),
-            _buildThumb(
+            _Thumb(
               onDragUpdate: (details) {
                 final percentage = _percentage(outerKey, details, innerMargin: -10);
                 ref.read(_trackStateProvider.notifier).updateEnd(percentage);
@@ -481,14 +480,26 @@ class _TrackSlider extends HookConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildThumb({required Function(DragUpdateDetails) onDragUpdate}) {
+class _Thumb extends HookConsumerWidget {
+  const _Thumb({
+    required this.onDragUpdate,
+    this.onDragStart,
+    this.onDragEnd,
+  });
+  final Function(DragStartDetails)? onDragStart;
+  final Function(DragUpdateDetails) onDragUpdate;
+  final Function(DragEndDetails)? onDragEnd;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return MouseRegion(
       cursor: SystemMouseCursors.resizeColumn,
       child: GestureDetector(
-        onHorizontalDragUpdate: (details) {
-          onDragUpdate(details);
-        },
+        onHorizontalDragStart: onDragStart,
+        onHorizontalDragUpdate: onDragUpdate,
+        onHorizontalDragEnd: onDragEnd,
         child: Container(
           height: 10,
           width: 10,
@@ -567,6 +578,7 @@ class _EntryTrack extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final parentKey = useGlobalKey();
     final paths = ref.watch(_segmentPathsProvider(entryId));
     if (paths.isEmpty) return const SizedBox.shrink();
 
@@ -586,15 +598,16 @@ class _EntryTrack extends HookConsumerWidget {
       children: [
         const Positioned.fill(child: _TrackBackground()),
         SingleChildScrollView(
+          key: parentKey,
           scrollDirection: Axis.horizontal,
           controller: controller,
-          child: _child(paths),
+          child: _child(paths, parentKey),
         ),
       ],
     );
   }
 
-  Widget _child(Map<String, Modifier> paths) {
+  Widget _child(Map<String, Modifier> paths, GlobalKey parentKey) {
     if (paths.length == 1) {
       return _SegmentsTrack(
         entryId: entryId,
@@ -602,6 +615,7 @@ class _EntryTrack extends HookConsumerWidget {
         segmentBuilder: (context, segment) {
           return _SegmentWidget(
             key: Key(segment.truePath),
+            parentKey: parentKey,
             entryId: entryId,
             segment: segment,
           );
@@ -757,23 +771,152 @@ class _SegmentPosition extends HookConsumerWidget {
   }
 }
 
+const _minThumbSpacing = 10 * 2 + 20;
+
+@riverpod
+bool _showThumbs(_ShowThumbsRef ref, int startFrame, int endFrame) {
+  if (startFrame == endFrame) return false;
+  final startOffset = ref.watch(_frameStartOffsetProvider(startFrame));
+  // We want to use the start offset provider here as we want the offset from the start of the track to the end of the frame.
+  final endOffset = ref.watch(_frameStartOffsetProvider(endFrame));
+
+  return endOffset - startOffset > _minThumbSpacing;
+}
+
+@freezed
+class _MoveState with _$_MoveState {
+  const factory _MoveState({
+    required Segment? previousSegment,
+    required Segment? nextSegment,
+  }) = _$__MoveState;
+}
+
+class _MoveNotifier extends StateNotifier<_MoveState?> {
+  _MoveNotifier({
+    required this.ref,
+  }) : super(null);
+
+  final Ref ref;
+
+  void start(String entryId, Segment segment) {
+    final segments = ref.read(_segmentsProvider(entryId, segment.path));
+
+    final previousSegment = segments.where((s) => s.endFrame < segment.startFrame).maxBy((_, s) => s.endFrame);
+    final nextSegment = segments.where((s) => s.startFrame > segment.endFrame).minBy((_, s) => s.startFrame);
+
+    state = _MoveState(previousSegment: previousSegment, nextSegment: nextSegment);
+  }
+
+  void end() {
+    state = null;
+  }
+
+  void updateSegmentStart(String entryId, Segment segment, double percent) {
+    final frame = _getFrameFromPercent(percent);
+    if (frame == segment.startFrame) return;
+    if (frame > segment.endFrame) return;
+
+    final previousSegment = state?.previousSegment;
+    if (previousSegment != null && frame < previousSegment.endFrame) return;
+
+    final showThumbs = ref.read(_showThumbsProvider(frame, segment.endFrame));
+    if (!showThumbs) return;
+
+    final path = "${segment.truePath}.startFrame";
+    _updateEntry(entryId, path, frame);
+  }
+
+  void updateSegmentEnd(String entryId, Segment segment, double percent) {
+    final frame = _getFrameFromPercent(percent);
+    if (frame == segment.endFrame) return;
+    if (frame < segment.startFrame) return;
+
+    final nextSegment = state?.nextSegment;
+    if (nextSegment != null && frame > nextSegment.startFrame) return;
+
+    final showThumbs = ref.read(_showThumbsProvider(segment.startFrame, frame));
+    if (!showThumbs) return;
+
+    final path = "${segment.truePath}.endFrame";
+    _updateEntry(entryId, path, frame);
+  }
+
+  void _updateEntry(String entryId, String path, dynamic value) {
+    final page = ref.read(currentPageProvider);
+    if (page == null) return;
+    final entry = ref.read(entryProvider(page.name, entryId));
+    if (entry == null) return;
+    page.updateEntryValue(ref.passing, entry, path, value);
+  }
+
+  int _getFrameFromPercent(double percent) {
+    final startFrame = ref.read(_trackStateProvider.select((state) => state.startFrame));
+    final endFrame = ref.read(_trackStateProvider.select((state) => state.endFrame));
+
+    final frameCount = endFrame - startFrame;
+    final frame = (frameCount * percent).round();
+    return frame + startFrame;
+  }
+}
+
+final _moveNotifierProvider = StateNotifierProvider<_MoveNotifier, _MoveState?>((ref) => _MoveNotifier(ref: ref));
+
 class _SegmentWidget extends HookConsumerWidget {
   const _SegmentWidget({
     required this.entryId,
     required this.segment,
+    required this.parentKey,
     super.key,
   });
 
   final String entryId;
   final Segment segment;
+  final GlobalKey parentKey;
+
+  double _getPercentFromDragUpdate(DragUpdateDetails details, double shift) {
+    final renderBox = parentKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return 0;
+
+    final localPosition = renderBox.globalToLocal(details.globalPosition);
+    final percent = (localPosition.dx + shift) / renderBox.size.width;
+    return percent.clamp(0, 1);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final showThumbs = ref.watch(_showThumbsProvider(segment.startFrame, segment.endFrame));
     return Container(
-      height: 12,
+      height: 16,
       decoration: BoxDecoration(
         color: segment.color,
         borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          if (showThumbs) ...[
+            const SizedBox(width: 3),
+            _Thumb(
+              onDragStart: (_) => ref.read(_moveNotifierProvider.notifier).start(entryId, segment),
+              onDragUpdate: (update) {
+                final percent = _getPercentFromDragUpdate(update, -5);
+                ref.read(_moveNotifierProvider.notifier).updateSegmentStart(entryId, segment, percent);
+              },
+              onDragEnd: (_) => ref.read(_moveNotifierProvider.notifier).end(),
+            ),
+          ],
+          Expanded(child: Container()),
+          if (showThumbs) ...[
+            _Thumb(
+              onDragStart: (_) => ref.read(_moveNotifierProvider.notifier).start(entryId, segment),
+              onDragUpdate: (update) {
+                final percent = _getPercentFromDragUpdate(update, 13);
+                ref.read(_moveNotifierProvider.notifier).updateSegmentEnd(entryId, segment, percent);
+              },
+              onDragEnd: (_) => ref.read(_moveNotifierProvider.notifier).end(),
+            ),
+            const SizedBox(width: 3),
+          ],
+        ],
       ),
     );
   }

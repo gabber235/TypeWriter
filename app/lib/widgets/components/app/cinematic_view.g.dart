@@ -869,4 +869,95 @@ class _FrameEndOffsetProvider extends AutoDisposeProvider<double> {
     return _SystemHash.finish(hash);
   }
 }
+
+String _$showThumbsHash() => r'54d29c90b44317760879cbb63656a53fd73cced4';
+typedef _ShowThumbsRef = AutoDisposeProviderRef<bool>;
+
+/// See also [_showThumbs].
+@ProviderFor(_showThumbs)
+const _showThumbsProvider = _ShowThumbsFamily();
+
+/// See also [_showThumbs].
+class _ShowThumbsFamily extends Family<bool> {
+  /// See also [_showThumbs].
+  const _ShowThumbsFamily();
+
+  /// See also [_showThumbs].
+  _ShowThumbsProvider call(
+    int startFrame,
+    int endFrame,
+  ) {
+    return _ShowThumbsProvider(
+      startFrame,
+      endFrame,
+    );
+  }
+
+  @override
+  _ShowThumbsProvider getProviderOverride(
+    covariant _ShowThumbsProvider provider,
+  ) {
+    return call(
+      provider.startFrame,
+      provider.endFrame,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'_showThumbsProvider';
+}
+
+/// See also [_showThumbs].
+class _ShowThumbsProvider extends AutoDisposeProvider<bool> {
+  /// See also [_showThumbs].
+  _ShowThumbsProvider(
+    this.startFrame,
+    this.endFrame,
+  ) : super.internal(
+          (ref) => _showThumbs(
+            ref,
+            startFrame,
+            endFrame,
+          ),
+          from: _showThumbsProvider,
+          name: r'_showThumbsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$showThumbsHash,
+          dependencies: _ShowThumbsFamily._dependencies,
+          allTransitiveDependencies:
+              _ShowThumbsFamily._allTransitiveDependencies,
+        );
+
+  final int startFrame;
+  final int endFrame;
+
+  @override
+  bool operator ==(Object other) {
+    return other is _ShowThumbsProvider &&
+        other.startFrame == startFrame &&
+        other.endFrame == endFrame;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, startFrame.hashCode);
+    hash = _SystemHash.combine(hash, endFrame.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

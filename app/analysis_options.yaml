@@ -89,7 +89,6 @@ analyzer:
 custom_lint:
   rules:
     - missing_provider_scope
-    - provider_dependencies
     - scoped_providers_should_specify_dependencies
     - provider_parameters
     - unsupported_provider_value

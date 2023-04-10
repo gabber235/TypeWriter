@@ -341,3 +341,173 @@ abstract class _$__FrameLine implements _FrameLine {
   _$$_$__FrameLineCopyWith<_$_$__FrameLine> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+mixin _$_MoveState {
+  Segment? get previousSegment => throw _privateConstructorUsedError;
+  Segment? get nextSegment => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  _$MoveStateCopyWith<_MoveState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$MoveStateCopyWith<$Res> {
+  factory _$MoveStateCopyWith(
+          _MoveState value, $Res Function(_MoveState) then) =
+      __$MoveStateCopyWithImpl<$Res, _MoveState>;
+  @useResult
+  $Res call({Segment? previousSegment, Segment? nextSegment});
+
+  $SegmentCopyWith<$Res>? get previousSegment;
+  $SegmentCopyWith<$Res>? get nextSegment;
+}
+
+/// @nodoc
+class __$MoveStateCopyWithImpl<$Res, $Val extends _MoveState>
+    implements _$MoveStateCopyWith<$Res> {
+  __$MoveStateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? previousSegment = freezed,
+    Object? nextSegment = freezed,
+  }) {
+    return _then(_value.copyWith(
+      previousSegment: freezed == previousSegment
+          ? _value.previousSegment
+          : previousSegment // ignore: cast_nullable_to_non_nullable
+              as Segment?,
+      nextSegment: freezed == nextSegment
+          ? _value.nextSegment
+          : nextSegment // ignore: cast_nullable_to_non_nullable
+              as Segment?,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SegmentCopyWith<$Res>? get previousSegment {
+    if (_value.previousSegment == null) {
+      return null;
+    }
+
+    return $SegmentCopyWith<$Res>(_value.previousSegment!, (value) {
+      return _then(_value.copyWith(previousSegment: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SegmentCopyWith<$Res>? get nextSegment {
+    if (_value.nextSegment == null) {
+      return null;
+    }
+
+    return $SegmentCopyWith<$Res>(_value.nextSegment!, (value) {
+      return _then(_value.copyWith(nextSegment: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$_$__MoveStateCopyWith<$Res>
+    implements _$MoveStateCopyWith<$Res> {
+  factory _$$_$__MoveStateCopyWith(
+          _$_$__MoveState value, $Res Function(_$_$__MoveState) then) =
+      __$$_$__MoveStateCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({Segment? previousSegment, Segment? nextSegment});
+
+  @override
+  $SegmentCopyWith<$Res>? get previousSegment;
+  @override
+  $SegmentCopyWith<$Res>? get nextSegment;
+}
+
+/// @nodoc
+class __$$_$__MoveStateCopyWithImpl<$Res>
+    extends __$MoveStateCopyWithImpl<$Res, _$_$__MoveState>
+    implements _$$_$__MoveStateCopyWith<$Res> {
+  __$$_$__MoveStateCopyWithImpl(
+      _$_$__MoveState _value, $Res Function(_$_$__MoveState) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? previousSegment = freezed,
+    Object? nextSegment = freezed,
+  }) {
+    return _then(_$_$__MoveState(
+      previousSegment: freezed == previousSegment
+          ? _value.previousSegment
+          : previousSegment // ignore: cast_nullable_to_non_nullable
+              as Segment?,
+      nextSegment: freezed == nextSegment
+          ? _value.nextSegment
+          : nextSegment // ignore: cast_nullable_to_non_nullable
+              as Segment?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_$__MoveState implements _$__MoveState {
+  const _$_$__MoveState(
+      {required this.previousSegment, required this.nextSegment});
+
+  @override
+  final Segment? previousSegment;
+  @override
+  final Segment? nextSegment;
+
+  @override
+  String toString() {
+    return '_MoveState(previousSegment: $previousSegment, nextSegment: $nextSegment)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_$__MoveState &&
+            (identical(other.previousSegment, previousSegment) ||
+                other.previousSegment == previousSegment) &&
+            (identical(other.nextSegment, nextSegment) ||
+                other.nextSegment == nextSegment));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, previousSegment, nextSegment);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_$__MoveStateCopyWith<_$_$__MoveState> get copyWith =>
+      __$$_$__MoveStateCopyWithImpl<_$_$__MoveState>(this, _$identity);
+}
+
+abstract class _$__MoveState implements _MoveState {
+  const factory _$__MoveState(
+      {required final Segment? previousSegment,
+      required final Segment? nextSegment}) = _$_$__MoveState;
+
+  @override
+  Segment? get previousSegment;
+  @override
+  Segment? get nextSegment;
+  @override
+  @JsonKey(ignore: true)
+  _$$_$__MoveStateCopyWith<_$_$__MoveState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
