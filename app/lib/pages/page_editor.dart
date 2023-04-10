@@ -1,6 +1,6 @@
 import "package:auto_route/auto_route.dart";
 import "package:collection/collection.dart";
-import "package:flutter/material.dart" hide Page;
+import "package:flutter/material.dart" hide Page, SearchBar;
 import "package:flutter/services.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -47,6 +47,7 @@ PageType? currentPageType(CurrentPageTypeRef ref) {
   return ref.watch(currentPageProvider.select((page) => page?.type));
 }
 
+@RoutePage(name: "PageEditorRoute")
 class PageEditor extends HookConsumerWidget {
   const PageEditor({
     @PathParam("id") required this.id,
@@ -69,6 +70,7 @@ class PageEditor extends HookConsumerWidget {
               final tag = ref.read(currentPageTypeProvider)?.tag;
               if (tag == null) return;
               ref.read(searchProvider.notifier).startGlobalSearch(tag);
+              return null;
             },
           ),
         },
@@ -187,7 +189,7 @@ class _SearchBar extends HookConsumerWidget {
 }
 
 class _AddEntryButton extends HookConsumerWidget {
-  const _AddEntryButton({super.key}) : super();
+  const _AddEntryButton() : super();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -223,9 +225,12 @@ class _Inspector extends HookConsumerWidget {
     }
 
     switch (pageType) {
-      case PageType.sequence: return const EntryInspector();
-      case PageType.static: return const EntryInspector();
-      case PageType.cinematic: return const EntryInspector();
+      case PageType.sequence:
+        return const EntryInspector();
+      case PageType.static:
+        return const EntryInspector();
+      case PageType.cinematic:
+        return const EntryInspector();
     }
   }
 }
@@ -241,9 +246,12 @@ class _PageContent extends HookConsumerWidget {
     }
 
     switch (pageType) {
-      case PageType.sequence: return const EntriesGraph();
-      case PageType.static: return const StaticEntriesList();
-      case PageType.cinematic: return const CinematicView();
+      case PageType.sequence:
+        return const EntriesGraph();
+      case PageType.static:
+        return const StaticEntriesList();
+      case PageType.cinematic:
+        return const CinematicView();
     }
   }
 }

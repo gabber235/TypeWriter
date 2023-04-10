@@ -1,3 +1,4 @@
+import "package:auto_route/auto_route.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -5,9 +6,10 @@ import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/app_router.dart";
-import 'package:typewriter/widgets/components/general/copyable_text.dart';
-import 'package:typewriter/widgets/components/general/filled_button.dart';
+import "package:typewriter/widgets/components/general/copyable_text.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
 
+@RoutePage()
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
 

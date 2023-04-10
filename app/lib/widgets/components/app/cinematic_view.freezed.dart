@@ -188,3 +188,156 @@ abstract class _$__TrackState implements _TrackState {
   _$$_$__TrackStateCopyWith<_$_$__TrackState> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+mixin _$_FrameLine {
+  int get frame => throw _privateConstructorUsedError;
+  double get offset => throw _privateConstructorUsedError;
+  bool get primary => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  _$FrameLineCopyWith<_FrameLine> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$FrameLineCopyWith<$Res> {
+  factory _$FrameLineCopyWith(
+          _FrameLine value, $Res Function(_FrameLine) then) =
+      __$FrameLineCopyWithImpl<$Res, _FrameLine>;
+  @useResult
+  $Res call({int frame, double offset, bool primary});
+}
+
+/// @nodoc
+class __$FrameLineCopyWithImpl<$Res, $Val extends _FrameLine>
+    implements _$FrameLineCopyWith<$Res> {
+  __$FrameLineCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? frame = null,
+    Object? offset = null,
+    Object? primary = null,
+  }) {
+    return _then(_value.copyWith(
+      frame: null == frame
+          ? _value.frame
+          : frame // ignore: cast_nullable_to_non_nullable
+              as int,
+      offset: null == offset
+          ? _value.offset
+          : offset // ignore: cast_nullable_to_non_nullable
+              as double,
+      primary: null == primary
+          ? _value.primary
+          : primary // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_$__FrameLineCopyWith<$Res>
+    implements _$FrameLineCopyWith<$Res> {
+  factory _$$_$__FrameLineCopyWith(
+          _$_$__FrameLine value, $Res Function(_$_$__FrameLine) then) =
+      __$$_$__FrameLineCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int frame, double offset, bool primary});
+}
+
+/// @nodoc
+class __$$_$__FrameLineCopyWithImpl<$Res>
+    extends __$FrameLineCopyWithImpl<$Res, _$_$__FrameLine>
+    implements _$$_$__FrameLineCopyWith<$Res> {
+  __$$_$__FrameLineCopyWithImpl(
+      _$_$__FrameLine _value, $Res Function(_$_$__FrameLine) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? frame = null,
+    Object? offset = null,
+    Object? primary = null,
+  }) {
+    return _then(_$_$__FrameLine(
+      frame: null == frame
+          ? _value.frame
+          : frame // ignore: cast_nullable_to_non_nullable
+              as int,
+      offset: null == offset
+          ? _value.offset
+          : offset // ignore: cast_nullable_to_non_nullable
+              as double,
+      primary: null == primary
+          ? _value.primary
+          : primary // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_$__FrameLine implements _$__FrameLine {
+  const _$_$__FrameLine(
+      {required this.frame, required this.offset, required this.primary});
+
+  @override
+  final int frame;
+  @override
+  final double offset;
+  @override
+  final bool primary;
+
+  @override
+  String toString() {
+    return '_FrameLine(frame: $frame, offset: $offset, primary: $primary)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_$__FrameLine &&
+            (identical(other.frame, frame) || other.frame == frame) &&
+            (identical(other.offset, offset) || other.offset == offset) &&
+            (identical(other.primary, primary) || other.primary == primary));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, frame, offset, primary);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_$__FrameLineCopyWith<_$_$__FrameLine> get copyWith =>
+      __$$_$__FrameLineCopyWithImpl<_$_$__FrameLine>(this, _$identity);
+}
+
+abstract class _$__FrameLine implements _FrameLine {
+  const factory _$__FrameLine(
+      {required final int frame,
+      required final double offset,
+      required final bool primary}) = _$_$__FrameLine;
+
+  @override
+  int get frame;
+  @override
+  double get offset;
+  @override
+  bool get primary;
+  @override
+  @JsonKey(ignore: true)
+  _$$_$__FrameLineCopyWith<_$_$__FrameLine> get copyWith =>
+      throw _privateConstructorUsedError;
+}

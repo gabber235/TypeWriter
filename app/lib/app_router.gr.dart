@@ -1,34 +1,54 @@
-// **************************************************************************
-// AutoRouteGenerator
-// **************************************************************************
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
-// AutoRouteGenerator
+// AutoRouterGenerator
 // **************************************************************************
-//
+
 // ignore_for_file: type=lint
+// coverage:ignore-file
 
 part of 'app_router.dart';
 
-class _$AppRouter extends RootStackRouter {
-  _$AppRouter({
-    GlobalKey<NavigatorState>? navigatorKey,
-    required this.connectedGuard,
-  }) : super(navigatorKey);
-
-  final ConnectedGuard connectedGuard;
+abstract class _$AppRouter extends RootStackRouter {
+  // ignore: unused_element
+  _$AppRouter({super.navigatorKey});
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    ErrorConnectRoute.name: (routeData) {
+      final args = routeData.argsAs<ErrorConnectRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ErrorConnectPage(
+          hostname: args.hostname,
+          port: args.port,
+          token: args.token,
+          key: args.key,
+        ),
+      );
+    },
+    BookRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const BookPage(),
+      );
+    },
+    PagesListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const PagesList(),
+      );
+    },
+    EmptyPageEditorRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const EmptyPageEditor(),
+      );
+    },
     HomeRoute.name: (routeData) {
-      return CustomPage<dynamic>(
+      return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const HomePage(),
-        transitionsBuilder: TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
       );
     },
     ConnectRoute.name: (routeData) {
@@ -48,7 +68,7 @@ class _$AppRouter extends RootStackRouter {
                   "",
                 ),
               ));
-      return CustomPage<dynamic>(
+      return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: ConnectPage(
           hostname: args.hostname,
@@ -56,177 +76,21 @@ class _$AppRouter extends RootStackRouter {
           token: args.token,
           key: args.key,
         ),
-        transitionsBuilder: TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
-      );
-    },
-    ErrorConnectRoute.name: (routeData) {
-      final args = routeData.argsAs<ErrorConnectRouteArgs>();
-      return CustomPage<dynamic>(
-        routeData: routeData,
-        child: ErrorConnectPage(
-          hostname: args.hostname,
-          port: args.port,
-          token: args.token,
-          key: args.key,
-        ),
-        transitionsBuilder: TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
-      );
-    },
-    BookRoute.name: (routeData) {
-      return CustomPage<dynamic>(
-        routeData: routeData,
-        child: const BookPage(),
-        transitionsBuilder: TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
-      );
-    },
-    PagesListRoute.name: (routeData) {
-      return CustomPage<dynamic>(
-        routeData: routeData,
-        child: const PagesList(),
-        transitionsBuilder: TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
-      );
-    },
-    EmptyPageEditorRoute.name: (routeData) {
-      return CustomPage<dynamic>(
-        routeData: routeData,
-        child: const EmptyPageEditor(),
-        transitionsBuilder: TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
       );
     },
     PageEditorRoute.name: (routeData) {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<PageEditorRouteArgs>(
           orElse: () => PageEditorRouteArgs(id: pathParams.getString('id')));
-      return CustomPage<dynamic>(
+      return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: PageEditor(
           id: args.id,
           key: args.key,
         ),
-        transitionsBuilder: TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
       );
     },
   };
-
-  @override
-  List<RouteConfig> get routes => [
-        RouteConfig(
-          HomeRoute.name,
-          path: '/',
-        ),
-        RouteConfig(
-          ConnectRoute.name,
-          path: '/connect',
-        ),
-        RouteConfig(
-          ErrorConnectRoute.name,
-          path: '/error',
-        ),
-        RouteConfig(
-          BookRoute.name,
-          path: '/book',
-          guards: [connectedGuard],
-          children: [
-            RouteConfig(
-              '#redirect',
-              path: '',
-              parent: BookRoute.name,
-              redirectTo: 'pages',
-              fullMatch: true,
-            ),
-            RouteConfig(
-              PagesListRoute.name,
-              path: 'pages',
-              parent: BookRoute.name,
-              children: [
-                RouteConfig(
-                  EmptyPageEditorRoute.name,
-                  path: '',
-                  parent: PagesListRoute.name,
-                ),
-                RouteConfig(
-                  PageEditorRoute.name,
-                  path: ':id',
-                  parent: PagesListRoute.name,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ];
-}
-
-/// generated route for
-/// [HomePage]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute()
-      : super(
-          HomeRoute.name,
-          path: '/',
-        );
-
-  static const String name = 'HomeRoute';
-}
-
-/// generated route for
-/// [ConnectPage]
-class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
-  ConnectRoute({
-    String hostname = "",
-    int port = 9092,
-    String token = "",
-    Key? key,
-  }) : super(
-          ConnectRoute.name,
-          path: '/connect',
-          args: ConnectRouteArgs(
-            hostname: hostname,
-            port: port,
-            token: token,
-            key: key,
-          ),
-          rawQueryParams: {
-            'host': hostname,
-            'port': port,
-            'token': token,
-          },
-        );
-
-  static const String name = 'ConnectRoute';
-}
-
-class ConnectRouteArgs {
-  const ConnectRouteArgs({
-    this.hostname = "",
-    this.port = 9092,
-    this.token = "",
-    this.key,
-  });
-
-  final String hostname;
-
-  final int port;
-
-  final String token;
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'ConnectRouteArgs{hostname: $hostname, port: $port, token: $token, key: $key}';
-  }
 }
 
 /// generated route for
@@ -237,18 +101,22 @@ class ErrorConnectRoute extends PageRouteInfo<ErrorConnectRouteArgs> {
     required int port,
     String? token,
     Key? key,
+    List<PageRouteInfo>? children,
   }) : super(
           ErrorConnectRoute.name,
-          path: '/error',
           args: ErrorConnectRouteArgs(
             hostname: hostname,
             port: port,
             token: token,
             key: key,
           ),
+          initialChildren: children,
         );
 
   static const String name = 'ErrorConnectRoute';
+
+  static const PageInfo<ErrorConnectRouteArgs> page =
+      PageInfo<ErrorConnectRouteArgs>(name);
 }
 
 class ErrorConnectRouteArgs {
@@ -279,11 +147,12 @@ class BookRoute extends PageRouteInfo<void> {
   const BookRoute({List<PageRouteInfo>? children})
       : super(
           BookRoute.name,
-          path: '/book',
           initialChildren: children,
         );
 
   static const String name = 'BookRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -292,23 +161,93 @@ class PagesListRoute extends PageRouteInfo<void> {
   const PagesListRoute({List<PageRouteInfo>? children})
       : super(
           PagesListRoute.name,
-          path: 'pages',
           initialChildren: children,
         );
 
   static const String name = 'PagesListRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
 /// [EmptyPageEditor]
 class EmptyPageEditorRoute extends PageRouteInfo<void> {
-  const EmptyPageEditorRoute()
+  const EmptyPageEditorRoute({List<PageRouteInfo>? children})
       : super(
           EmptyPageEditorRoute.name,
-          path: '',
+          initialChildren: children,
         );
 
   static const String name = 'EmptyPageEditorRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [HomePage]
+class HomeRoute extends PageRouteInfo<void> {
+  const HomeRoute({List<PageRouteInfo>? children})
+      : super(
+          HomeRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'HomeRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ConnectPage]
+class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
+  ConnectRoute({
+    String hostname = "",
+    int port = 9092,
+    String token = "",
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ConnectRoute.name,
+          args: ConnectRouteArgs(
+            hostname: hostname,
+            port: port,
+            token: token,
+            key: key,
+          ),
+          rawQueryParams: {
+            'host': hostname,
+            'port': port,
+            'token': token,
+          },
+          initialChildren: children,
+        );
+
+  static const String name = 'ConnectRoute';
+
+  static const PageInfo<ConnectRouteArgs> page =
+      PageInfo<ConnectRouteArgs>(name);
+}
+
+class ConnectRouteArgs {
+  const ConnectRouteArgs({
+    this.hostname = "",
+    this.port = 9092,
+    this.token = "",
+    this.key,
+  });
+
+  final String hostname;
+
+  final int port;
+
+  final String token;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ConnectRouteArgs{hostname: $hostname, port: $port, token: $token, key: $key}';
+  }
 }
 
 /// generated route for
@@ -317,17 +256,21 @@ class PageEditorRoute extends PageRouteInfo<PageEditorRouteArgs> {
   PageEditorRoute({
     required String id,
     Key? key,
+    List<PageRouteInfo>? children,
   }) : super(
           PageEditorRoute.name,
-          path: ':id',
           args: PageEditorRouteArgs(
             id: id,
             key: key,
           ),
           rawPathParams: {'id': id},
+          initialChildren: children,
         );
 
   static const String name = 'PageEditorRoute';
+
+  static const PageInfo<PageEditorRouteArgs> page =
+      PageInfo<PageEditorRouteArgs>(name);
 }
 
 class PageEditorRouteArgs {

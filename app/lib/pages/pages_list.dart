@@ -44,6 +44,7 @@ List<String> _pageNames(_PageNamesRef ref) {
   return ref.watch(_pagesDataProvider.select((pages) => pages.map((page) => page.name).toList()));
 }
 
+@RoutePage(name: "PagesListRoute")
 class PagesList extends StatelessWidget {
   const PagesList({super.key});
 
@@ -194,6 +195,7 @@ class _PageTile extends HookConsumerWidget {
   }
 }
 
+@RoutePage(name: "EmptyPageEditorRoute")
 class EmptyPageEditor extends HookConsumerWidget {
   const EmptyPageEditor({
     super.key,

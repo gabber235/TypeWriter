@@ -25,8 +25,7 @@ class TypeWriterApp extends HookConsumerWidget {
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
       debugShowCheckedModeBanner: false,
-      routerDelegate: router.delegate(),
-      routeInformationParser: router.defaultRouteParser(),
+      routerConfig: router.config(),
       shortcuts: WidgetsApp.defaultShortcuts,
     );
   }

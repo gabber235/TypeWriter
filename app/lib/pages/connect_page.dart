@@ -12,6 +12,7 @@ import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/widgets/components/general/text_scroller.dart";
 
+@RoutePage()
 class ConnectPage extends HookConsumerWidget {
   const ConnectPage({
     @QueryParam("host") this.hostname = "",

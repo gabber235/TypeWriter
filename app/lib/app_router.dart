@@ -15,70 +15,43 @@ import "package:typewriter/utils/passing_reference.dart";
 part "app_router.g.dart";
 part "app_router.gr.dart";
 
-final appRouter = Provider<AppRouter>(
-  (ref) => AppRouter(
-    connectedGuard: ConnectedGuard(ref),
-  ),
-);
+final appRouter = Provider<AppRouter>((ref) => AppRouter(ref: ref.passing));
 
-@CustomAutoRouter(
+@AutoRouterConfig(
   replaceInRouteName: "Page,Route",
-  routes: [
-    AutoRoute(page: HomePage, initial: true),
-    AutoRoute(
-      path: "/connect",
-      page: ConnectPage,
-    ),
-    AutoRoute(
-      path: "/error",
-      page: ErrorConnectPage,
-    ),
-    AutoRoute(
-      path: "/book",
-      page: BookPage,
-      guards: [ConnectedGuard],
-      children: [
+)
+class AppRouter extends _$AppRouter {
+  AppRouter({
+    required this.ref,
+  });
+
+  final PassingRef ref;
+
+  @override
+  RouteType get defaultRouteType => const RouteType.custom(transitionsBuilder: TransitionsBuilders.noTransition);
+
+  @override
+  List<AutoRoute> get routes => [
+        AutoRoute(page: HomeRoute.page, path: "/"),
+        AutoRoute(page: ConnectRoute.page, path: "/connect"),
+        AutoRoute(page: ErrorConnectRoute.page, path: "/error"),
         AutoRoute(
-          path: "pages",
-          page: PagesList,
-          name: "PagesListRoute",
-          initial: true,
+          page: BookRoute.page,
+          path: "/book",
+          guards: [ConnectedGuard(ref)],
           children: [
             AutoRoute(
-              path: "",
-              page: EmptyPageEditor,
-              name: "EmptyPageEditorRoute",
-              initial: true,
-            ),
-            AutoRoute(
-              path: ":id",
-              page: PageEditor,
-              name: "PageEditorRoute",
+              page: PagesListRoute.page,
+              path: "pages",
+              children: [
+                AutoRoute(page: EmptyPageEditorRoute.page, path: ""),
+                AutoRoute(page: PageEditorRoute.page, path: ":id"),
+              ],
             ),
           ],
         ),
-      ],
-    ),
-  ],
-  transitionsBuilder: TransitionsBuilders.noTransition,
-)
-class AppRouter extends _$AppRouter {
-  AppRouter({required super.connectedGuard});
+      ];
 }
-
-Widget slideLeftWithFade(
-  BuildContext context,
-  Animation<double> animation,
-  Animation<double> secondaryAnimation,
-  Widget child,
-) =>
-    SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(.5, 0.0),
-        end: Offset.zero,
-      ).animate(animation),
-      child: FadeTransition(opacity: animation, child: child),
-    );
 
 /// Fetch a nested route from the current route.
 RouteData? _fetchCurrentRouteData(String name, RoutingController controller) {

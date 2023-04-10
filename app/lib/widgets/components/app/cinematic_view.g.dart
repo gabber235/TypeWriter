@@ -689,6 +689,23 @@ final _trackBackgroundFractionModifierProvider =
 );
 
 typedef _TrackBackgroundFractionModifierRef = AutoDisposeProviderRef<double>;
+String _$trackBackgroundLinesHash() =>
+    r'20ac7bd3700f1f91bd9053fb793ae6382fe9b073';
+
+/// See also [_trackBackgroundLines].
+@ProviderFor(_trackBackgroundLines)
+final _trackBackgroundLinesProvider =
+    AutoDisposeProvider<List<_FrameLine>>.internal(
+  _trackBackgroundLines,
+  name: r'_trackBackgroundLinesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$trackBackgroundLinesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _TrackBackgroundLinesRef = AutoDisposeProviderRef<List<_FrameLine>>;
 String _$frameStartOffsetHash() => r'13381822c602dddec85110a9b1c3855a47c07172';
 typedef _FrameStartOffsetRef = AutoDisposeProviderRef<double>;
 
@@ -771,7 +788,7 @@ class _FrameStartOffsetProvider extends AutoDisposeProvider<double> {
   }
 }
 
-String _$frameEndOffsetHash() => r'715d35a025f9c8a0ca6766e4bbd47467cce69bce';
+String _$frameEndOffsetHash() => r'23292b810d25146945a92761725780a6c01c5616';
 typedef _FrameEndOffsetRef = AutoDisposeProviderRef<double>;
 
 /// See also [_frameEndOffset].
