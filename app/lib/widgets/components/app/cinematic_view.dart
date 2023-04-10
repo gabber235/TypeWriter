@@ -584,7 +584,7 @@ class _EntryTrack extends HookConsumerWidget {
 
     return Stack(
       children: [
-        const _TrackBackground(),
+        const Positioned.fill(child: _TrackBackground()),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           controller: controller,
@@ -621,28 +621,71 @@ double _trackBackgroundFractionModifier(_TrackBackgroundFractionModifierRef ref)
   return 1 / 2;
 }
 
+@freezed
+class _FrameLine with _$_FrameLine {
+  const factory _FrameLine({
+    required int frame,
+    required double offset,
+    required bool primary,
+  }) = _$__FrameLine;
+}
+
+@riverpod
+List<_FrameLine> _trackBackgroundLines(_TrackBackgroundLinesRef ref) {
+  final fractions = ref.watch(_timeFractionsProvider);
+  final fractionModifier = ref.watch(_trackBackgroundFractionModifierProvider);
+  final fractionFrames = ref.watch(_timeFractionFramesProvider(fractionModifier: fractionModifier));
+
+  final frameSpacing = ref.watch(_frameSpacingProvider);
+  final startFrame = ref.watch(_trackStateProvider.select((state) => state.startFrame));
+
+  final lines = <_FrameLine>[];
+  for (final frame in fractionFrames) {
+    final offset = frame < startFrame ? 0.0 : (frame - startFrame) * frameSpacing - 1 / 2;
+
+    lines.add(_FrameLine(frame: frame, offset: offset, primary: frame % fractions == 0));
+  }
+  return lines;
+}
+
 class _TrackBackground extends HookConsumerWidget {
   const _TrackBackground();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fractions = ref.watch(_timeFractionsProvider);
-    final fractionModifier = ref.watch(_trackBackgroundFractionModifierProvider);
-    final fractionFrames = ref.watch(_timeFractionFramesProvider(fractionModifier: fractionModifier));
-    return Stack(
-      children: [
-        for (final frame in fractionFrames)
-          Positioned(
-            left: ref.watch(_timePointOffsetProvider(frame, 1)),
-            top: 0,
-            bottom: 0,
-            child: Container(
-              width: 1,
-              color: frame % fractions == 0 ? Colors.grey.shade700 : Colors.grey.shade700.withOpacity(0.5),
-            ),
-          ),
-      ],
+    final lines = ref.watch(_trackBackgroundLinesProvider);
+    return CustomPaint(
+      painter: _BackgroundLinePainter(lines: lines),
     );
+  }
+}
+
+class _BackgroundLinePainter extends CustomPainter {
+  const _BackgroundLinePainter({
+    required this.lines,
+  });
+
+  final List<_FrameLine> lines;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final primaryPaint = Paint()
+      ..color = Colors.grey.shade700
+      ..strokeWidth = 1;
+
+    final secondaryPaint = Paint()
+      ..color = Colors.grey.shade700.withOpacity(0.5)
+      ..strokeWidth = 1;
+
+    for (final line in lines) {
+      final offset = line.offset;
+      canvas.drawLine(Offset(offset, 0), Offset(offset, size.height), line.primary ? primaryPaint : secondaryPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _BackgroundLinePainter oldDelegate) {
+    return oldDelegate.lines != lines;
   }
 }
 
