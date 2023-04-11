@@ -1,28 +1,20 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:text_scroll/text_scroll.dart";
-import "package:typewriter/models/adapter.dart";
-import "package:typewriter/models/entry.dart";
-import "package:typewriter/models/page.dart";
-import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/debouncer.dart";
-import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/utils/smart_single_activator.dart";
+import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/focused_notifier.dart";
 import "package:typewriter/widgets/components/general/shortcut_label.dart";
-import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "search_bar.freezed.dart";
 part "search_bar.g.dart";
@@ -119,69 +111,6 @@ abstract class SearchFilter {
   }
 }
 
-class TagFilter extends SearchFilter {
-  const TagFilter(this.tag, {this.canRemove = true});
-
-  final String tag;
-  @override
-  final bool canRemove;
-
-  @override
-  String get title => tag;
-  @override
-  Color get color => Colors.deepOrangeAccent;
-  @override
-  IconData get icon => FontAwesomeIcons.hashtag;
-
-  @override
-  bool filter(SearchElement action) {
-    if (action is EntrySearchElement) {
-      return action.blueprint.tags.contains(tag);
-    }
-    if (action is AddEntrySearchElement) {
-      return action.blueprint.tags.contains(tag);
-    }
-    return false;
-  }
-}
-
-class AddOnlyTagFilter extends TagFilter {
-  const AddOnlyTagFilter(super.tag, {super.canRemove = true});
-
-  @override
-  bool filter(SearchElement action) {
-    if (action is AddEntrySearchElement) {
-      return action.blueprint.tags.contains(tag);
-    }
-    return true;
-  }
-}
-
-class ExcludeEntryFilter extends SearchFilter {
-  const ExcludeEntryFilter(this.entryId, {this.canRemove = true});
-
-  final String entryId;
-  @override
-  final bool canRemove;
-
-  @override
-  String get title => "Exclude Entry";
-
-  @override
-  Color get color => Colors.orange;
-
-  @override
-  IconData get icon => FontAwesomeIcons.solidFileLines;
-
-  @override
-  bool filter(SearchElement action) {
-    if (action is EntrySearchElement) {
-      return action.entry.id != entryId;
-    }
-    return true;
-  }
-}
-
 abstract class SearchFetcher {
   const SearchFetcher();
 
@@ -197,81 +126,6 @@ abstract class SearchFetcher {
   SearchFetcher copyWith({
     bool? disabled,
   });
-}
-
-class NewEntryFetcher extends SearchFetcher {
-  const NewEntryFetcher({
-    this.onAdd,
-    this.disabled = false,
-  });
-
-  final Function(EntryBlueprint)? onAdd;
-
-  @override
-  final bool disabled;
-
-  @override
-  String get title => "New Entries";
-
-  @override
-  List<SearchElement> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
-    final fuzzy = ref.read(_fuzzyBlueprintsProvider);
-
-    final results = fuzzy.search(search.query);
-
-    return results.map((result) => AddEntrySearchElement(result.item, onAdd: onAdd)).toList();
-  }
-
-  @override
-  SearchFetcher copyWith({
-    bool? disabled,
-  }) {
-    return NewEntryFetcher(
-      onAdd: onAdd,
-      disabled: disabled ?? this.disabled,
-    );
-  }
-}
-
-class EntryFetcher extends SearchFetcher {
-  const EntryFetcher({
-    this.onSelect,
-    this.disabled = false,
-  });
-
-  final Function(Entry)? onSelect;
-
-  @override
-  final bool disabled;
-
-  @override
-  String get title => "Entries";
-
-  @override
-  List<SearchElement> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
-    final fuzzy = ref.read(_fuzzyEntriesProvider);
-
-    final results = fuzzy.search(search.query);
-
-    return results.map((result) {
-      final definition = result.item;
-      return EntrySearchElement(definition, onSelect: onSelect);
-    }).toList();
-  }
-
-  @override
-  SearchFetcher copyWith({
-    bool? disabled,
-  }) {
-    return EntryFetcher(
-      onSelect: onSelect,
-      disabled: disabled ?? this.disabled,
-    );
-  }
 }
 
 final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(SearchNotifier.new);
@@ -294,28 +148,8 @@ class SearchBuilder {
     _currentSearch = _currentSearch.copyWith(filters: [..._currentSearch.filters, filter]);
   }
 
-  void tag(String tag, {bool canRemove = true}) {
-    filter(TagFilter(tag, canRemove: canRemove));
-  }
-
-  void addOnlyTag(String tag, {bool canRemove = true}) {
-    filter(AddOnlyTagFilter(tag, canRemove: canRemove));
-  }
-
-  void excludeEntry(String entryId, {bool canRemove = true}) {
-    filter(ExcludeEntryFilter(entryId, canRemove: canRemove));
-  }
-
   void fetch(SearchFetcher fetcher) {
     _currentSearch = _currentSearch.copyWith(fetchers: [..._currentSearch.fetchers, fetcher]);
-  }
-
-  void fetchNewEntry({Function(EntryBlueprint)? onAdd}) {
-    fetch(NewEntryFetcher(onAdd: onAdd));
-  }
-
-  void fetchEntry({Function(Entry)? onSelect}) {
-    fetch(EntryFetcher(onSelect: onSelect));
   }
 
   void open() {
@@ -352,104 +186,14 @@ List<SearchElement> searchElements(SearchElementsRef ref) {
 
 @riverpod
 List<GlobalKey> searchGlobalKeys(SearchGlobalKeysRef ref) {
-  final actionsCount = ref.watch(searchElementsProvider.select((value) => value.length));
-  return List.generate(actionsCount, (_) => GlobalKey());
+  final elements = ref.watch(searchElementsProvider);
+  return elements.map((e) => GlobalKey(debugLabel: e.title)).toList();
 }
 
 @riverpod
 List<FocusNode> searchFocusNodes(SearchFocusNodesRef ref) {
   final actionsCount = ref.watch(searchElementsProvider.select((value) => value.length));
   return List.generate(actionsCount, (_) => FocusNode());
-}
-
-@riverpod
-Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
-  final pages = ref.watch(pagesProvider);
-  final definitions = pages.expand((page) {
-    return page.entries.map((entry) {
-      final blueprint = ref.watch(entryBlueprintProvider(entry.type));
-      if (blueprint == null) return null;
-      return EntryDefinition(
-        pageId: page.name,
-        blueprint: blueprint,
-        entry: entry,
-      );
-    }).whereNotNull();
-  }).toList();
-
-  return Fuzzy(
-    definitions,
-    options: FuzzyOptions(
-      threshold: 0.4,
-      sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
-      // tokenize: true,
-      // verbose: true,
-      keys: [
-        // The names of entries are like "test.some_entry".
-        // We want to give the last part more priority since it is more specific.
-        WeightedKey(
-          name: "name-suffix",
-          getter: (definition) => definition.entry.name.split(".").last,
-          weight: 0.4,
-        ),
-        WeightedKey(
-          name: "name-full",
-          getter: (definition) => definition.entry.name.formatted,
-          weight: 0.15,
-        ),
-        WeightedKey(
-          name: "type",
-          getter: (definition) => definition.entry.type,
-          weight: 0.4,
-        ),
-        WeightedKey(
-          name: "tags",
-          getter: (definition) => definition.blueprint.tags.join(" "),
-          weight: 0.3,
-        ),
-        WeightedKey(
-          name: "adapter",
-          getter: (definition) => definition.blueprint.adapter,
-          weight: 0.1,
-        ),
-      ],
-    ),
-  );
-}
-
-@riverpod
-Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
-  final blueprints = ref.watch(entryBlueprintsProvider);
-
-  return Fuzzy(
-    blueprints,
-    options: FuzzyOptions(
-      threshold: 0.3,
-      sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
-      keys: [
-        WeightedKey(
-          name: "name",
-          getter: (blueprint) => "Add ${blueprint.name.formatted}",
-          weight: 0.5,
-        ),
-        WeightedKey(
-          name: "tags",
-          getter: (blueprint) => blueprint.tags.join(" "),
-          weight: 0.2,
-        ),
-        WeightedKey(
-          name: "description",
-          getter: (blueprint) => blueprint.description,
-          weight: 0.4,
-        ),
-        WeightedKey(
-          name: "adapter",
-          getter: (blueprint) => blueprint.adapter,
-          weight: 0.2,
-        ),
-      ],
-    ),
-  );
 }
 
 @riverpod
@@ -482,121 +226,23 @@ class SearchAction {
 
 abstract class SearchElement {
   const SearchElement();
+
+  String get title;
+
   Color color(BuildContext context);
 
   Widget icon(BuildContext context);
 
   Widget suffixIcon(BuildContext context);
 
-  String title(BuildContext context);
-
   String description(BuildContext context);
 
   List<SearchAction> actions(PassingRef ref);
 
-  void activate(BuildContext context, PassingRef ref);
-}
-
-/// Action for selecting an existing entry.
-class EntrySearchElement extends SearchElement {
-  const EntrySearchElement(this.definition, {this.onSelect});
-  final EntryDefinition definition;
-  final Function(Entry)? onSelect;
-
-  EntryBlueprint get blueprint => definition.blueprint;
-  Entry get entry => definition.entry;
-
-  @override
-  Color color(BuildContext context) => blueprint.color;
-
-  @override
-  Widget icon(BuildContext context) => Icon(blueprint.icon);
-
-  @override
-  Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.upRightFromSquare);
-
-  @override
-  String title(BuildContext context) => entry.formattedName;
-
-  @override
-  String description(BuildContext context) => definition.pageId.formatted;
-
-  @override
-  List<SearchAction> actions(PassingRef ref) {
-    return [
-      const SearchAction(
-        "Open",
-        FontAwesomeIcons.upRightFromSquare,
-        SingleActivator(LogicalKeyboardKey.enter),
-      ),
-      SearchAction(
-        "Open Wiki",
-        FontAwesomeIcons.book,
-        SmartSingleActivator(LogicalKeyboardKey.keyO, control: true),
-        onTrigger: (_, __) => blueprint.openWiki(),
-      ),
-    ];
-  }
-
-  @override
-  Future<void> activate(BuildContext context, PassingRef ref) async {
-    if (onSelect != null) {
-      onSelect?.call(entry);
-      return;
-    }
-
-    await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref, entry.id);
-  }
-}
-
-class AddEntrySearchElement extends SearchElement {
-  const AddEntrySearchElement(this.blueprint, {this.onAdd});
-  final EntryBlueprint blueprint;
-  final Function(EntryBlueprint)? onAdd;
-
-  @override
-  Color color(BuildContext context) => blueprint.color;
-
-  @override
-  Widget icon(BuildContext context) => Icon(blueprint.icon);
-
-  @override
-  Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.plus);
-
-  @override
-  String title(BuildContext context) => "Add ${blueprint.name.formatted}";
-
-  @override
-  String description(BuildContext context) => blueprint.description;
-
-  @override
-  List<SearchAction> actions(PassingRef ref) {
-    return [
-      const SearchAction(
-        "Add",
-        FontAwesomeIcons.plus,
-        SingleActivator(LogicalKeyboardKey.enter),
-      ),
-      SearchAction(
-        "Open Wiki",
-        FontAwesomeIcons.book,
-        SmartSingleActivator(LogicalKeyboardKey.keyO, control: true),
-        onTrigger: (_, __) => blueprint.openWiki(),
-      ),
-    ];
-  }
-
-  @override
-  Future<void> activate(BuildContext context, PassingRef ref) async {
-    if (onAdd != null) {
-      onAdd?.call(blueprint);
-      return;
-    }
-    final page = ref.read(currentPageProvider);
-    if (page == null) return;
-    final entry = await page.createEntryFromBlueprint(ref, blueprint);
-    await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref, entry.id);
-  }
+  /// Runs when the element is activated.
+  ///
+  /// Returns true if the search should be closed.
+  Future<bool> activate(BuildContext context, PassingRef ref);
 }
 
 class SearchBar extends HookConsumerWidget {
@@ -604,16 +250,16 @@ class SearchBar extends HookConsumerWidget {
     super.key,
   });
 
-  void _activateItem(
+  Future<void> _activateItem(
     List<SearchElement> actions,
     int index,
     BuildContext context,
     WidgetRef ref,
-  ) {
+  ) async {
     if (index >= actions.length) return;
     if (index < 0) return;
-    ref.read(searchProvider.notifier).endSearch();
-    actions[index].activate(context, ref.passing);
+    final canEnd = await actions[index].activate(context, ref.passing);
+    if (canEnd) ref.read(searchProvider.notifier).endSearch();
   }
 
   /// Change focus to the next/previous search result.
@@ -650,6 +296,7 @@ class SearchBar extends HookConsumerWidget {
     var index = focusNodes.indexWhere((n) => n.hasFocus);
 
     index = (index + 1) % focusNodes.length;
+
     _changeFocus(context, ref, index);
   }
 
@@ -904,7 +551,7 @@ class _SearchBar extends HookConsumerWidget {
                 filled: false,
               ),
               onChanged: (query) => ref.read(searchProvider.notifier).updateQuery(query),
-              onDone: (query) => ref.read(searchProvider.notifier).endSearch(),
+              onSubmitted: (query) => ref.read(searchProvider.notifier).endSearch(),
             ),
           ),
           IconButton(
@@ -921,16 +568,16 @@ class _SearchBar extends HookConsumerWidget {
 class _SearchResults extends HookConsumerWidget {
   const _SearchResults();
 
-  void _activateItem(
+  Future<void> _activateItem(
     List<SearchElement> actions,
     int index,
     BuildContext context,
     WidgetRef ref,
-  ) {
+  ) async {
     if (index >= actions.length) return;
     if (index < 0) return;
-    actions[index].activate(context, ref.passing);
-    ref.read(searchProvider.notifier).endSearch();
+    final canEnd = await actions[index].activate(context, ref.passing);
+    if (canEnd) ref.read(searchProvider.notifier).endSearch();
   }
 
   @override
@@ -952,8 +599,8 @@ class _SearchResults extends HookConsumerWidget {
                   key: globalKeys[i],
                   onPressed: () => _activateItem(elements, i, context, ref),
                   focusNode: focusNodes[i],
+                  title: elements[i].title,
                   color: elements[i].color(context),
-                  title: elements[i].title(context),
                   description: elements[i].description(context),
                   icon: elements[i].icon(context),
                   suffixIcon: elements[i].suffixIcon(context),

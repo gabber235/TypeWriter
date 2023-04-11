@@ -58,7 +58,7 @@ class MaterialsFetcher extends SearchFetcher {
     this.disabled = false,
   });
 
-  final Function(CombinedMaterial)? onSelect;
+  final bool? Function(CombinedMaterial)? onSelect;
 
   @override
   final bool disabled;
@@ -95,7 +95,10 @@ class MaterialSearchElement extends SearchElement {
   const MaterialSearchElement(this.material, {this.onSelect});
 
   final CombinedMaterial material;
-  final Function(CombinedMaterial)? onSelect;
+  final bool? Function(CombinedMaterial)? onSelect;
+
+  @override
+  String get title => material.value.name;
 
   @override
   Color color(BuildContext context) {
@@ -115,9 +118,6 @@ class MaterialSearchElement extends SearchElement {
   Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.upRightFromSquare);
 
   @override
-  String title(BuildContext context) => material.value.name;
-
-  @override
   String description(BuildContext context) => material.key;
 
   @override
@@ -132,8 +132,8 @@ class MaterialSearchElement extends SearchElement {
   }
 
   @override
-  void activate(BuildContext context, PassingRef ref) {
-    onSelect?.call(material);
+  Future<bool> activate(BuildContext context, PassingRef ref) async {
+    return onSelect?.call(material) ?? true;
   }
 }
 
@@ -156,7 +156,7 @@ class MaterialPropertyFilter extends SearchFilter {
 
 extension _SearchBuilderX on SearchBuilder {
   void fetchMaterials({
-    Function(CombinedMaterial)? onSelect,
+    bool? Function(CombinedMaterial)? onSelect,
     bool disabled = false,
   }) {
     fetch(MaterialsFetcher(onSelect: onSelect, disabled: disabled));
@@ -186,8 +186,9 @@ class MaterialSelectorEditor extends HookConsumerWidget {
   final String path;
   final CustomField field;
 
-  void _update(WidgetRef ref, String value) {
+  bool? _update(WidgetRef ref, String value) {
     ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, value.toUpperCase());
+    return null;
   }
 
   void _select(WidgetRef ref, List<MaterialProperty> properties) {

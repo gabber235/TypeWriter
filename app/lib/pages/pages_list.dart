@@ -14,6 +14,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
@@ -21,6 +22,7 @@ import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/dropdown.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/components/general/validated_text_field.dart";
 
 part "pages_list.freezed.dart";
@@ -84,6 +86,12 @@ class _PagesSelector extends HookConsumerWidget {
             const SizedBox(height: 12),
             const SelectingEntriesBlocker(
               child: _AddPageButton(),
+            ),
+            FilledButton(
+              child: const Text("test"),
+              onPressed: () {
+                Toasts.showError(ref.passing, "Test error", description: "Test description");
+              },
             ),
           ],
         ),
@@ -203,7 +211,7 @@ class EmptyPageEditor extends HookConsumerWidget {
 
   Future<String?> _showAddPageDialog(BuildContext context) async => showDialog(
         context: context,
-        builder: (context) => const _AddPageDialogue(),
+        builder: (context) => const AddPageDialogue(),
       );
 
   @override
@@ -223,7 +231,7 @@ class _AddPageButton extends HookConsumerWidget {
 
   Future<String?> _showAddPageDialog(BuildContext context) async => showDialog(
         context: context,
-        builder: (context) => const _AddPageDialogue(),
+        builder: (context) => const AddPageDialogue(),
       );
 
   @override
@@ -258,11 +266,20 @@ class _AddPageButton extends HookConsumerWidget {
       );
 }
 
-class _AddPageDialogue extends HookConsumerWidget {
-  const _AddPageDialogue();
+class AddPageDialogue extends HookConsumerWidget {
+  const AddPageDialogue({
+    this.fixedType,
+    this.autoNavigate = true,
+    super.key,
+  });
+
+  final PageType? fixedType;
+  final bool autoNavigate;
 
   Future<void> _addPage(WidgetRef ref, String name, PageType type) async {
     await ref.read(bookProvider.notifier).createPage(name, type);
+
+    if (!autoNavigate) return;
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));
   }
 
@@ -286,10 +303,10 @@ class _AddPageDialogue extends HookConsumerWidget {
     final pagesNames = ref.watch(_pageNamesProvider);
     final controller = useTextEditingController();
     final isNameValid = useState(false);
-    final type = useState(PageType.sequence);
+    final type = useState(fixedType ?? PageType.sequence);
 
     return AlertDialog(
-      title: const Text("Add a new page"),
+      title: Text(fixedType != null ? "Add a new ${fixedType!.tag} page" : "Add a new page"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,22 +327,24 @@ class _AddPageDialogue extends HookConsumerWidget {
               FilteringTextInputFormatter.allow(RegExp("[a-z0-9_]")),
             ],
           ),
-          const SizedBox(height: 12),
-          Dropdown<PageType>(
-            value: type.value,
-            values: PageType.values,
-            builder: (context, value) {
-              return Row(
-                children: [
-                  Icon(value.icon, size: 18),
-                  const SizedBox(width: 8),
-                  Text(value.name.formatted),
-                ],
-              );
-            },
-            icon: null,
-            onChanged: (value) => type.value = value,
-          ),
+          if (fixedType == null) ...[
+            const SizedBox(height: 12),
+            Dropdown<PageType>(
+              value: type.value,
+              values: PageType.values,
+              builder: (context, value) {
+                return Row(
+                  children: [
+                    Icon(value.icon, size: 18),
+                    const SizedBox(width: 8),
+                    Text(value.name.formatted),
+                  ],
+                );
+              },
+              icon: null,
+              onChanged: (value) => type.value = value,
+            ),
+          ],
         ],
       ),
       actions: [
@@ -343,7 +362,7 @@ class _AddPageDialogue extends HookConsumerWidget {
               : () async {
                   final navigator = Navigator.of(context);
                   await _addPage(ref, controller.text, type.value);
-                  navigator.pop();
+                  navigator.pop(controller.text);
                 },
           label: const Text("Add"),
           icon: const Icon(FontAwesomeIcons.plus),

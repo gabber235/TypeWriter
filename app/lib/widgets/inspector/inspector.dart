@@ -1,6 +1,5 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
-import "package:flutter_animate/flutter_animate.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
@@ -28,21 +27,13 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
     }
   }
 
-  void select(Entry entry) {
-    state = entry.id;
-  }
-
   void clearSelection() {
     state = null;
   }
 
   Future<void> navigateAndSelectEntry(PassingRef ref, String entryId) async {
-    final changedPage = await ref.read(appRouter).navigateToEntry(ref, entryId);
-    if (changedPage) {
-      await Future.delayed(300.ms);
-      await WidgetsBinding.instance.endOfFrame;
-    }
-    state = entryId;
+    selectEntry(entryId);
+    await ref.read(appRouter).navigateToEntry(ref, entryId);
   }
 }
 

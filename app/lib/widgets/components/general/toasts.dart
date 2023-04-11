@@ -44,8 +44,8 @@ class Toasts extends StateNotifier<List<Toast>> {
       final shownAt = toast.shownAt ?? now;
       final duration = toast.duration;
       final difference = now.difference(shownAt);
-      if (difference > duration) {
-        state = [...state, toast];
+      if (difference < duration) {
+        state = [...state, toast.copyWith(shownAt: now)];
       }
     } else {
       state = [...state, toast];
@@ -64,6 +64,7 @@ class Toasts extends StateNotifier<List<Toast>> {
   }
 
   static void showError(PassingRef ref, String message, {String? description}) {
+    debugPrint("Toast: $message");
     ref.read(toastsProvider.notifier).show(
           Toast.temporary(
             message: message,
@@ -85,6 +86,7 @@ class Toasts extends StateNotifier<List<Toast>> {
         final shownAt = toast.shownAt ?? now;
         final duration = toast.duration;
         final difference = now.difference(shownAt);
+
         return difference > duration;
       } else {
         return false;

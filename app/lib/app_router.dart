@@ -76,19 +76,26 @@ extension AppRouterX on AppRouter {
   /// Navigate to the given [entryId] in the current page. If the entry is not in the current page, navigate to the page
   /// containing the entry and then navigate to the entry.
   /// Returns true if the page was changed.
-  Future<bool> navigateToEntry(PassingRef ref, String entryId) async {
+  Future<void> navigateToEntry(PassingRef ref, String entryId) async {
     final currentPage = ref.read(currentPageProvider);
 
-    var changedPage = false;
-
     if (currentPage != null && currentPage.entries.none((e) => e.id == entryId)) {
-      final entryPage = ref.read(pagesProvider).firstWhereOrNull((p) => p.entries.any((e) => e.id == entryId));
+      final entryPage = ref.read(globalEntryWithPageProvider(entryId))?.key;
       if (entryPage != null) {
-        await ref.read(appRouter).push(PageEditorRoute(id: entryPage.name));
-        changedPage = true;
+        await navigateToPage(ref, entryPage);
       }
     }
+  }
 
-    return changedPage;
+  /// Navigate to the given [pageId].
+  /// Returns true if the page was changed.
+  Future<void> navigateToPage(PassingRef ref, String pageId) async {
+    final currentPage = ref.read(currentPageProvider);
+
+    if (currentPage?.name != pageId) {
+      await ref
+          .read(appRouter)
+          .push(PageEditorRoute(id: pageId), onFailure: (e) => print("Failed to navigate to page $pageId: $e"));
+    }
   }
 }

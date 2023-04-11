@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide Page;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
@@ -8,9 +8,12 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
+import "package:typewriter/widgets/components/app/entry_search.dart";
+import "package:typewriter/widgets/components/app/page_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
+import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -33,21 +36,51 @@ class EntrySelectorEditor extends HookConsumerWidget {
   final String path;
   final PrimitiveField field;
 
-  void _update(WidgetRef ref, Entry? entry) {
-    if (entry == null) return;
-    ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, entry.id);
+  bool _update(PassingRef ref, Entry? entry) {
+    if (entry == null) return false;
+    ref.read(inspectingEntryDefinitionProvider)?.updateField(ref, path, entry.id);
+    return true;
   }
 
-  Future<void> _create(WidgetRef ref, EntryBlueprint blueprint) async {
+  Future<bool?> _create(PassingRef ref, EntryBlueprint blueprint) async {
     final page = ref.read(currentPageProvider);
-    if (page == null) return;
-    final entry = await page.createEntryFromBlueprint(ref.passing, blueprint);
-    _update(ref, entry);
+    if (page == null) return false;
 
-    await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry.id);
+    if (page.canHave(blueprint)) {
+      return _createAndNavigate(ref, page, blueprint);
+    }
+
+    // This page can't have the entry, so we need to select/create a new page where we can.
+
+    ref.read(searchProvider.notifier).asBuilder()
+      ..pageType(PageType.fromBlueprint(blueprint), canRemove: false)
+      ..fetchPage(onSelect: (page) => _createAndNavigate(ref, page, blueprint))
+      ..fetchAddPage(onAdded: (page) => _createAndNavigate(ref, page, blueprint))
+      ..open();
+
+    return false;
   }
 
-  void _select(WidgetRef ref, String tag) {
+  Future<bool> _createAndNavigate(PassingRef ref, Page page, EntryBlueprint blueprint) async {
+    final entry = await page.createEntryFromBlueprint(ref, blueprint);
+
+    final didUpdate = _update(ref, entry);
+    if (!didUpdate) {
+      Toasts.showError(ref, "Failed to create entry", description: "There was an error when creating the entry");
+      return false;
+    }
+
+    final notifier = ref.read(inspectingEntryIdProvider.notifier);
+
+    // Close the search bar.
+    ref.read(searchProvider.notifier).endSearch();
+
+    await notifier.navigateAndSelectEntry(ref, entry.id);
+
+    return true;
+  }
+
+  void _select(PassingRef ref, String tag) {
     final selectedEntryId = ref.read(inspectingEntryIdProvider);
     ref.read(searchProvider.notifier).asBuilder()
       ..tag(tag, canRemove: false)
@@ -92,7 +125,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                 title: "Select entry",
                 icon: FontAwesomeIcons.magnifyingGlass,
                 onTap: () {
-                  _select(ref, tag);
+                  _select(ref.passing, tag);
                 },
               ),
             ],
@@ -104,7 +137,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
               ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, id);
               return;
             }
-            _select(ref, tag);
+            _select(ref.passing, tag);
           },
           borderRadius: BorderRadius.circular(8),
           child: Padding(

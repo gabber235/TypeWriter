@@ -10,6 +10,7 @@ class DecoratedTextField extends HookWidget {
     this.text,
     this.onChanged,
     this.onDone,
+    this.onSubmitted,
     this.style,
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
@@ -22,8 +23,15 @@ class DecoratedTextField extends HookWidget {
   final TextEditingController? controller;
   final FocusNode focus;
   final String? text;
+
+  /// Called any time the text changes.
   final Function(String)? onChanged;
+
+  /// Called when the user is done editing. Either by pressing done, or by losing focus.
   final Function(String)? onDone;
+
+  /// Called when the user presses done.
+  final Function(String)? onSubmitted;
   final TextStyle? style;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType keyboardType;
@@ -61,10 +69,12 @@ class DecoratedTextField extends HookWidget {
       onEditingComplete: () {
         onDone?.call(controller.text);
         onChanged?.call(controller.text);
+        onSubmitted?.call(controller.text);
       },
       onSubmitted: (value) {
         onDone?.call(value);
         onChanged?.call(value);
+        onSubmitted?.call(value);
       },
       onChanged: onChanged,
       style: style,

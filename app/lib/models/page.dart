@@ -10,6 +10,7 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
+import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -64,15 +65,20 @@ bool entryExists(EntryExistsRef ref, String entryId) {
 }
 
 enum PageType {
-  sequence("trigger", FontAwesomeIcons.diagramProject),
-  static("static", FontAwesomeIcons.bars),
-  cinematic("cinematic", FontAwesomeIcons.film),
+  sequence("trigger", FontAwesomeIcons.diagramProject, Colors.blue),
+  static("static", FontAwesomeIcons.bars, Colors.deepPurple),
+  cinematic("cinematic", FontAwesomeIcons.film, Colors.orange),
   ;
 
-  const PageType(this.tag, this.icon);
+  const PageType(this.tag, this.icon, this.color);
 
   final String tag;
   final IconData icon;
+  final Color color;
+
+  static PageType fromBlueprint(EntryBlueprint blueprint) {
+    return values.firstWhere((type) => blueprint.tags.contains(type.tag));
+  }
 }
 
 @freezed
@@ -290,6 +296,8 @@ extension PageX on Page {
       )
       ..open();
   }
+
+  bool canHave(EntryBlueprint blueprint) => blueprint.tags.contains(type.tag);
 
   void deleteEntryWithConfirmation(BuildContext context, PassingRef ref, String entryId) {
     showConfirmationDialogue(
