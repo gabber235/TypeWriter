@@ -2,7 +2,8 @@ import "dart:math";
 
 import "package:collection/collection.dart";
 import "package:collection_ext/all.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide Title;
+import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
@@ -18,10 +19,15 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/models/segment.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/color_converter.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/general/decorated_text_field.dart";
+import "package:typewriter/widgets/inspector/editors/object.dart";
+import "package:typewriter/widgets/inspector/heading.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "cinematic_view.freezed.dart";
 part "cinematic_view.g.dart";
@@ -89,97 +95,7 @@ class CinematicView extends HookConsumerWidget {
   }
 }
 
-@riverpod
-String _longestEntryName(_LongestEntryNameRef ref) {
-  final entryIds = ref.watch(_cinematicEntryIdsProvider);
-  final names = entryIds.map((entryId) => ref.watch(entryNameProvider(entryId))).whereNotNull().toList();
-  return names.isEmpty ? "" : names.reduce((a, b) => a.length > b.length ? a : b);
-}
-
-class _Heading extends HookConsumerWidget {
-  const _Heading();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final longestName = ref.watch(_longestEntryNameProvider);
-    final longestNameSize = useTextSize(context, longestName, GoogleFonts.jetBrainsMono(fontSize: 13));
-    return SizedBox(
-      height: 36,
-      child: Row(
-        children: [
-          SizedBox(width: longestNameSize.width + 31),
-          Text("Track", style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 15)),
-          const SizedBox(width: 8),
-          VerticalDivider(color: Colors.grey.shade900, thickness: 2),
-          const Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _TrackSliderTrack(),
-                SizedBox(height: 4),
-                _TrackTimings(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _EntryRow extends HookConsumerWidget {
-  const _EntryRow({
-    required this.index,
-    required this.entryId,
-    super.key,
-  });
-  final int index;
-  final String entryId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: 64,
-      child: Row(
-        children: [
-          const SizedBox(width: 4),
-          MouseRegion(
-            cursor: SystemMouseCursors.grab,
-            child: ReorderableDragStartListener(
-              index: index,
-              child: const Icon(FontAwesomeIcons.barsStaggered, size: 12),
-            ),
-          ),
-          const SizedBox(width: 8),
-          EntryNode(entryId: entryId),
-          _SmartSpacer(entryId: entryId),
-          VerticalDivider(color: Colors.grey.shade900, thickness: 2),
-          Expanded(child: _EntryTrack(entryId: entryId)),
-        ],
-      ),
-    );
-  }
-}
-
-class _SmartSpacer extends HookConsumerWidget {
-  const _SmartSpacer({
-    required this.entryId,
-  });
-
-  final String entryId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final longestName = ref.watch(_longestEntryNameProvider);
-    final longestNameSize = useTextSize(context, longestName, GoogleFonts.jetBrainsMono(fontSize: 13));
-    final entryName = ref.watch(entryNameProvider(entryId));
-    final entryNameSize = useTextSize(context, entryName ?? "", GoogleFonts.jetBrainsMono(fontSize: 13));
-    return SizedBox(
-      width: longestNameSize.width - entryNameSize.width,
-    );
-  }
-}
-
+//<editor-fold desc="Entry & Track & Segment States">
 @riverpod
 Map<String, Modifier> _segmentPaths(_SegmentPathsRef ref, String entryId) {
   final type = ref.watch(entryTypeProvider(entryId));
@@ -192,10 +108,22 @@ Map<String, Modifier> _segmentPaths(_SegmentPathsRef ref, String entryId) {
 
 const colorConverter = NullableColorConverter();
 
+extension on Map<String, Modifier> {
+  Modifier? findModifier(String path) {
+    final pattern = RegExp(r"(\.\d+\.?)");
+    final newPath = path.replaceAllMapped(pattern, (match) {
+      if (match.group(1)?.endsWith(".") ?? false) return ".*.";
+      return ".*";
+    });
+
+    return this[newPath];
+  }
+}
+
 @riverpod
 List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
   final paths = ref.watch(_segmentPathsProvider(entryId));
-  final modifier = paths[path];
+  final modifier = paths.findModifier(path);
   if (modifier == null) return [];
 
   final entry = ref.watch(globalEntryProvider(entryId));
@@ -296,6 +224,10 @@ class _TrackStateProvider extends StateNotifier<_TrackState> {
     state = state.copyWith(start: newStart, end: newEnd);
   }
 
+  void changeTotalFrames(int totalFrames) {
+    state = state.copyWith(totalFrames: totalFrames);
+  }
+
   Future<void> delayedWidthChanged(double width) async {
     if (width == state.width) return;
     await Future.delayed(const Duration(milliseconds: 100));
@@ -346,7 +278,180 @@ double _trackOffset(_TrackOffsetRef ref) {
   final offset = trackState.startFrame * spacing;
   return offset;
 }
+//</editor-fold>
 
+//<editor-fold desc="Entry Display Prefix">
+@riverpod
+String _longestEntryName(_LongestEntryNameRef ref) {
+  final entryIds = ref.watch(_cinematicEntryIdsProvider);
+  final names = entryIds.map((entryId) => ref.watch(entryNameProvider(entryId))).whereNotNull().toList();
+  return names.isEmpty ? "" : names.reduce((a, b) => a.length > b.length ? a : b);
+}
+
+class _Heading extends HookConsumerWidget {
+  const _Heading();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final longestName = ref.watch(_longestEntryNameProvider);
+    final longestNameSize = useTextSize(context, longestName, GoogleFonts.jetBrainsMono(fontSize: 13));
+    return SizedBox(
+      height: 36,
+      child: Row(
+        children: [
+          SizedBox(
+            width: longestNameSize.width + 100,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const SizedBox(width: 8),
+                Text("Track Duration", style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 15)),
+                const SizedBox(width: 8),
+                const _DurationField(),
+                VerticalDivider(color: Colors.grey.shade900, thickness: 2),
+              ],
+            ),
+          ),
+          const Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _TrackSliderTrack(),
+                SizedBox(height: 4),
+                _TrackTimings(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DurationField extends HookConsumerWidget {
+  const _DurationField();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final focus = useFocusNode();
+    final totalFrames = ref.watch(_trackStateProvider.select((state) => state.totalFrames));
+
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: DecoratedTextField(
+          focus: focus,
+          text: totalFrames.toString(),
+          maxLines: 1,
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+          ],
+          style: GoogleFonts.jetBrainsMono(fontSize: 12),
+          decoration: InputDecoration(
+            hintText: "Duration",
+            hintStyle: GoogleFonts.jetBrainsMono(fontSize: 13),
+          ),
+          onChanged: (value) {
+            final frames = int.tryParse(value);
+            if (frames == null) return;
+            ref.read(_trackStateProvider.notifier).changeTotalFrames(frames);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _EntryRow extends HookConsumerWidget {
+  const _EntryRow({
+    required this.index,
+    required this.entryId,
+    super.key,
+  });
+  final int index;
+  final String entryId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
+      height: 64,
+      child: Row(
+        children: [
+          const SizedBox(width: 4),
+          MouseRegion(
+            cursor: SystemMouseCursors.grab,
+            child: ReorderableDragStartListener(
+              index: index,
+              child: const Icon(FontAwesomeIcons.barsStaggered, size: 12),
+            ),
+          ),
+          const SizedBox(width: 8),
+          EntryNode(entryId: entryId),
+          _SmartSpacer(entryId: entryId),
+          VerticalDivider(color: Colors.grey.shade900, thickness: 2),
+          Expanded(child: _EntryTrack(entryId: entryId)),
+        ],
+      ),
+    );
+  }
+}
+
+class _SmartSpacer extends HookConsumerWidget {
+  const _SmartSpacer({
+    required this.entryId,
+  });
+
+  final String entryId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final longestName = ref.watch(_longestEntryNameProvider);
+    final longestNameSize = useTextSize(context, longestName, GoogleFonts.jetBrainsMono(fontSize: 13));
+    final entryName = ref.watch(entryNameProvider(entryId));
+    final entryNameSize = useTextSize(context, entryName ?? "", GoogleFonts.jetBrainsMono(fontSize: 13));
+    return SizedBox(
+      width: longestNameSize.width - entryNameSize.width,
+    );
+  }
+}
+//</editor-fold>
+
+class _Thumb extends HookConsumerWidget {
+  const _Thumb({
+    required this.onDragUpdate,
+    this.onDragStart,
+    this.onDragEnd,
+    super.key,
+  });
+  final Function(DragStartDetails)? onDragStart;
+  final Function(DragUpdateDetails) onDragUpdate;
+  final Function(DragEndDetails)? onDragEnd;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.resizeColumn,
+      child: GestureDetector(
+        onHorizontalDragStart: onDragStart,
+        onHorizontalDragUpdate: onDragUpdate,
+        onHorizontalDragEnd: onDragEnd,
+        child: Container(
+          height: 10,
+          width: 10,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//<editor-fold desc="Track Slider">
 class _TrackSliderTrack extends HookConsumerWidget {
   const _TrackSliderTrack();
 
@@ -481,38 +586,9 @@ class _TrackSlider extends HookConsumerWidget {
     );
   }
 }
+//</editor-fold>
 
-class _Thumb extends HookConsumerWidget {
-  const _Thumb({
-    required this.onDragUpdate,
-    this.onDragStart,
-    this.onDragEnd,
-  });
-  final Function(DragStartDetails)? onDragStart;
-  final Function(DragUpdateDetails) onDragUpdate;
-  final Function(DragEndDetails)? onDragEnd;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.resizeColumn,
-      child: GestureDetector(
-        onHorizontalDragStart: onDragStart,
-        onHorizontalDragUpdate: onDragUpdate,
-        onHorizontalDragEnd: onDragEnd,
-        child: Container(
-          height: 10,
-          width: 10,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
+//<editor-fold desc="Track Background & Numbers">
 const _possibleFractions = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
 const _minimalFractionSize = 30.0;
 
@@ -560,70 +636,14 @@ class _TrackTimings extends HookConsumerWidget {
           for (final frame in fractionFrames)
             Positioned(
               left: ref.watch(_timePointOffsetProvider(frame, oneCharWidth * frame.toString().length)),
-              child: Text(frame.toString(),
-                  style: GoogleFonts.jetBrainsMono(fontSize: 10, color: Theme.of(context).hintColor)),
+              child: Text(
+                frame.toString(),
+                style: GoogleFonts.jetBrainsMono(fontSize: 10, color: Theme.of(context).hintColor),
+              ),
             ),
         ],
       ),
     );
-  }
-}
-
-class _EntryTrack extends HookConsumerWidget {
-  const _EntryTrack({
-    required this.entryId,
-  });
-
-  final String entryId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final parentKey = useGlobalKey();
-    final paths = ref.watch(_segmentPathsProvider(entryId));
-    if (paths.isEmpty) return const SizedBox.shrink();
-
-    final offset = ref.watch(_trackOffsetProvider);
-    final controller = useScrollController(initialScrollOffset: offset);
-
-    useEffect(
-      () {
-        if (!controller.hasClients) return;
-        controller.jumpTo(offset);
-        return null;
-      },
-      [offset],
-    );
-
-    return Stack(
-      children: [
-        const Positioned.fill(child: _TrackBackground()),
-        SingleChildScrollView(
-          key: parentKey,
-          scrollDirection: Axis.horizontal,
-          controller: controller,
-          child: _child(paths, parentKey),
-        ),
-      ],
-    );
-  }
-
-  Widget _child(Map<String, Modifier> paths, GlobalKey parentKey) {
-    if (paths.length == 1) {
-      return _SegmentsTrack(
-        entryId: entryId,
-        path: paths.keys.first,
-        segmentBuilder: (context, segment) {
-          return _SegmentWidget(
-            key: Key(segment.truePath),
-            parentKey: parentKey,
-            entryId: entryId,
-            segment: segment,
-          );
-        },
-      );
-    } else {
-      return Text(" ${paths.keys.join(", ")}");
-    }
   }
 }
 
@@ -700,6 +720,66 @@ class _BackgroundLinePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _BackgroundLinePainter oldDelegate) {
     return oldDelegate.lines != lines;
+  }
+}
+//</editor-fold>
+
+//<editor-fold desc="Segment Tracks">
+class _EntryTrack extends HookConsumerWidget {
+  const _EntryTrack({
+    required this.entryId,
+  });
+
+  final String entryId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final parentKey = useGlobalKey();
+    final paths = ref.watch(_segmentPathsProvider(entryId));
+    if (paths.isEmpty) return const SizedBox.shrink();
+
+    final offset = ref.watch(_trackOffsetProvider);
+    final controller = useScrollController(initialScrollOffset: offset);
+
+    useEffect(
+      () {
+        if (!controller.hasClients) return;
+        controller.jumpTo(offset);
+        return null;
+      },
+      [offset],
+    );
+
+    return Stack(
+      children: [
+        const Positioned.fill(child: _TrackBackground()),
+        SingleChildScrollView(
+          key: parentKey,
+          scrollDirection: Axis.horizontal,
+          controller: controller,
+          child: _child(paths, parentKey),
+        ),
+      ],
+    );
+  }
+
+  Widget _child(Map<String, Modifier> paths, GlobalKey parentKey) {
+    if (paths.length == 1) {
+      return _SegmentsTrack(
+        entryId: entryId,
+        path: paths.keys.first,
+        segmentBuilder: (context, segment) {
+          return _SegmentWidget(
+            key: Key(segment.truePath),
+            parentKey: parentKey,
+            entryId: entryId,
+            segment: segment,
+          );
+        },
+      );
+    } else {
+      return Text(" ${paths.keys.join(", ")}");
+    }
   }
 }
 
@@ -788,6 +868,7 @@ class _MoveState with _$_MoveState {
   const factory _MoveState({
     required Segment? previousSegment,
     required Segment? nextSegment,
+    @Default(0.0) double innerPercent,
   }) = _$__MoveState;
 }
 
@@ -798,13 +879,15 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
 
   final Ref ref;
 
-  void start(String entryId, Segment segment) {
+  void start(String entryId, Segment segment, [double innerPercent = 0.0]) {
     final segments = ref.read(_segmentsProvider(entryId, segment.path));
 
-    final previousSegment = segments.where((s) => s.endFrame < segment.startFrame).maxBy((_, s) => s.endFrame);
-    final nextSegment = segments.where((s) => s.startFrame > segment.endFrame).minBy((_, s) => s.startFrame);
+    final previousSegment = segments.where((s) => s.endFrame <= segment.startFrame).maxBy((_, s) => s.endFrame);
+    final nextSegment = segments.where((s) => s.startFrame >= segment.endFrame).minBy((_, s) => s.startFrame);
 
-    state = _MoveState(previousSegment: previousSegment, nextSegment: nextSegment);
+    state = _MoveState(previousSegment: previousSegment, nextSegment: nextSegment, innerPercent: innerPercent);
+
+    ref.read(inspectingSegmentIdProvider.notifier).select(entryId, segment.truePath);
   }
 
   void end() {
@@ -841,6 +924,55 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
     _updateEntry(entryId, path, frame);
   }
 
+  void moveSegment(String entryId, Segment segment, double percent) {
+    final state = this.state;
+    final innerPercent = state?.innerPercent ?? 0.0;
+    final oldStartFrame = segment.startFrame;
+    final oldEndFrame = segment.endFrame;
+
+    final newFrame = _getFrameFromPercent(percent);
+    final oldFrame = ((oldEndFrame - oldStartFrame) * innerPercent + oldStartFrame).round();
+
+    final frameDiff = newFrame - oldFrame;
+    if (frameDiff == 0) return;
+
+    final newStartFrame = oldStartFrame + frameDiff;
+    final newEndFrame = oldEndFrame + frameDiff;
+
+    if (newEndFrame < newStartFrame) return;
+    if (newStartFrame == oldStartFrame && newEndFrame == oldEndFrame) return;
+    if (newStartFrame < 0) return;
+
+    final totalFrameCount = ref.read(_totalSequenceFramesProvider);
+    if (newEndFrame > totalFrameCount) return;
+
+    final previousSegment = state?.previousSegment;
+    if (previousSegment != null && newStartFrame < previousSegment.endFrame) {
+      // We can't move the segment as it would overlap with the previous segment.
+      // If we go over the previous segment, we move the the segment and update the move state to reflect the new segment.
+
+      if (newEndFrame > previousSegment.startFrame) return;
+
+      start(entryId, segment, percent);
+    }
+
+    final nextSegment = state?.nextSegment;
+    if (nextSegment != null && newEndFrame > nextSegment.startFrame) {
+      // We can't move the segment as it would overlap with the next segment.
+      // If we go over the next segment, we move the the segment and update the move state to reflect the new segment.
+
+      if (newStartFrame < nextSegment.endFrame) return;
+
+      start(entryId, segment, percent);
+    }
+
+    final startFramePath = "${segment.truePath}.startFrame";
+    final endFramePath = "${segment.truePath}.endFrame";
+
+    _updateEntry(entryId, startFramePath, newStartFrame);
+    _updateEntry(entryId, endFramePath, newEndFrame);
+  }
+
   void _updateEntry(String entryId, String path, dynamic value) {
     final page = ref.read(currentPageProvider);
     if (page == null) return;
@@ -873,29 +1005,41 @@ class _SegmentWidget extends HookConsumerWidget {
   final Segment segment;
   final GlobalKey parentKey;
 
-  double _getPercentFromDragUpdate(DragUpdateDetails details, double shift) {
-    final renderBox = parentKey.currentContext?.findRenderObject() as RenderBox?;
+  double _getPercentFromDragUpdate(DragUpdateDetails details, [double shift = 0]) {
+    return _getPercent(parentKey, details.globalPosition, shift);
+  }
+
+  double _getPercent(GlobalKey key, [Offset offset = Offset.zero, double shift = 0]) {
+    final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) return 0;
 
-    final localPosition = renderBox.globalToLocal(details.globalPosition);
+    final localPosition = renderBox.globalToLocal(offset);
     final percent = (localPosition.dx + shift) / renderBox.size.width;
     return percent.clamp(0, 1);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localKey = useGlobalKey();
+    final grabbing = useState(false);
     final showThumbs = ref.watch(_showThumbsProvider(segment.startFrame, segment.endFrame));
+    final isPathSelected = ref.watch(inspectingSegmentIdProvider.select((id) => id == segment.truePath));
+    final isEntrySelected = ref.watch(inspectingEntryIdProvider.select((id) => id == entryId));
+    final isSelected = isPathSelected && isEntrySelected;
+
     return Container(
       height: 16,
       decoration: BoxDecoration(
         color: segment.color,
         borderRadius: BorderRadius.circular(12),
+        border: isSelected ? Border.all(color: Colors.white, width: 2) : null,
       ),
       child: Row(
         children: [
           if (showThumbs) ...[
             const SizedBox(width: 3),
             _Thumb(
+              key: ValueKey("${segment.truePath}.start"),
               onDragStart: (_) => ref.read(_moveNotifierProvider.notifier).start(entryId, segment),
               onDragUpdate: (update) {
                 final percent = _getPercentFromDragUpdate(update, -5);
@@ -904,9 +1048,36 @@ class _SegmentWidget extends HookConsumerWidget {
               onDragEnd: (_) => ref.read(_moveNotifierProvider.notifier).end(),
             ),
           ],
-          Expanded(child: Container()),
+          Expanded(
+            key: localKey,
+            child: GestureDetector(
+              onHorizontalDragStart: (details) {
+                grabbing.value = true;
+                final innerPercent = _getPercent(localKey, details.globalPosition);
+
+                ref.read(_moveNotifierProvider.notifier).start(entryId, segment, innerPercent);
+              },
+              onHorizontalDragEnd: (details) {
+                grabbing.value = false;
+                ref.read(_moveNotifierProvider.notifier).end();
+              },
+              onHorizontalDragUpdate: (details) {
+                final percent = _getPercentFromDragUpdate(details);
+
+                ref.read(_moveNotifierProvider.notifier).moveSegment(entryId, segment, percent);
+              },
+              onTap: () {
+                ref.read(inspectingSegmentIdProvider.notifier).select(entryId, segment.truePath);
+              },
+              child: MouseRegion(
+                cursor: grabbing.value ? SystemMouseCursors.grabbing : SystemMouseCursors.click,
+                child: Container(),
+              ),
+            ),
+          ),
           if (showThumbs) ...[
             _Thumb(
+              key: ValueKey("${segment.truePath}.end"),
               onDragStart: (_) => ref.read(_moveNotifierProvider.notifier).start(entryId, segment),
               onDragUpdate: (update) {
                 final percent = _getPercentFromDragUpdate(update, 13);
@@ -921,3 +1092,142 @@ class _SegmentWidget extends HookConsumerWidget {
     );
   }
 }
+//</editor-fold>
+
+//<editor-fold desc="Inspector">
+class InspectingSegmentIdNotifier extends StateNotifier<String?> {
+  InspectingSegmentIdNotifier(this.ref) : super(null);
+  final Ref ref;
+
+  void select(String entryId, String segmentPath) {
+    ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId, unSelectSegment: false);
+    state = segmentPath;
+  }
+
+  void clear() {
+    state = null;
+  }
+}
+
+final inspectingSegmentIdProvider =
+    StateNotifierProvider<InspectingSegmentIdNotifier, String?>(InspectingSegmentIdNotifier.new);
+
+@riverpod
+Segment? inspectingSegment(InspectingSegmentRef ref) {
+  final segmentId = ref.watch(inspectingSegmentIdProvider);
+  if (segmentId == null) return null;
+
+  final entryId = ref.watch(inspectingEntryIdProvider);
+  if (entryId == null) return null;
+
+  final segments = ref.watch(_segmentsProvider(entryId, segmentId));
+  return segments.firstOrNull;
+}
+
+@riverpod
+List<String> _ignoreEntryFields(_IgnoreEntryFieldsRef ref) {
+  final entryId = ref.watch(inspectingEntryIdProvider);
+  if (entryId == null) return [];
+
+  final entries = ref.watch(_segmentPathsProvider(entryId));
+  final paths = entries.keys.toList();
+
+  return paths.map((e) => e.replaceSuffix(".*", "")).toList();
+}
+
+class CinematicInspector extends HookConsumerWidget {
+  const CinematicInspector({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final inspectingEntry = ref.watch(inspectingEntryProvider);
+    final inspectingSegment = ref.watch(inspectingSegmentProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: inspectingSegment != null
+            ? _SegmentInspector(key: ValueKey(inspectingSegment.truePath))
+            : inspectingEntry != null
+                ? EntryInspector(
+                    key: ValueKey(inspectingEntry.id),
+                    ignoreFields: [
+                      ...ref.watch(_ignoreEntryFieldsProvider),
+                    ],
+                  )
+                : const EmptyInspector(),
+      ),
+    );
+  }
+}
+
+class _SegmentInspector extends HookConsumerWidget {
+  const _SegmentInspector({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _InspectorHeader(),
+          Divider(),
+          _InspectorContents(),
+          SizedBox(height: 30),
+        ],
+      ),
+    );
+  }
+}
+
+class _InspectorHeader extends HookConsumerWidget {
+  const _InspectorHeader();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final color =
+        ref.watch(inspectingSegmentProvider.select((segment) => segment?.color)) ?? Theme.of(context).primaryColor;
+    return Title(
+      title: "Segment Inspector",
+      color: color,
+    );
+  }
+}
+
+@riverpod
+ObjectField? _segmentFields(_SegmentFieldsRef ref) {
+  final blueprint = ref.watch(inspectingEntryDefinitionProvider.select((definition) => definition?.blueprint));
+  if (blueprint == null) return null;
+  final segmentId = ref.watch(inspectingSegmentIdProvider);
+  if (segmentId == null) return null;
+  final fieldInfo = blueprint.getField(segmentId);
+  if (fieldInfo is! ObjectField) return null;
+  return fieldInfo;
+}
+
+class _InspectorContents extends HookConsumerWidget {
+  const _InspectorContents();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final segmentId = ref.watch(inspectingSegmentIdProvider);
+    if (segmentId == null) return const SizedBox.shrink();
+
+    final object = ref.watch(_segmentFieldsProvider);
+    if (object == null) return const SizedBox.shrink();
+
+    return ObjectEditor(
+      path: segmentId,
+      object: object,
+      defaultExpanded: true,
+    );
+  }
+}
+
+//</editor-fold>

@@ -118,7 +118,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
             final object = _updateState(value, state);
             if (object != null) onChanged?.call(object);
           },
-          onSubmitted: (value) {
+          onDone: (value) {
             final object = _updateState(value, state);
             if (object != null) onSubmitted?.call(object);
           },

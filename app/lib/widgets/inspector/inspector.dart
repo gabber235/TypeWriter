@@ -8,6 +8,7 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/cinematic_view.dart";
 import "package:typewriter/widgets/inspector/editors/name.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/heading.dart";
@@ -16,10 +17,14 @@ import "package:typewriter/widgets/inspector/operations.dart";
 part "inspector.g.dart";
 
 class InspectingEntryNotifier extends StateNotifier<String?> {
-  InspectingEntryNotifier() : super(null);
+  InspectingEntryNotifier(this.ref) : super(null);
+  final Ref ref;
 
-  void selectEntry(String id) {
+  void selectEntry(String id, {bool unSelectSegment = true}) {
     state = id;
+    if (unSelectSegment) {
+      ref.read(inspectingSegmentIdProvider.notifier).clear();
+    }
   }
 
   void select(Entry entry) {
@@ -40,8 +45,7 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
   }
 }
 
-final inspectingEntryIdProvider =
-    StateNotifierProvider<InspectingEntryNotifier, String?>((ref) => InspectingEntryNotifier());
+final inspectingEntryIdProvider = StateNotifierProvider<InspectingEntryNotifier, String?>(InspectingEntryNotifier.new);
 
 @riverpod
 Entry? inspectingEntry(InspectingEntryRef ref) {
@@ -50,8 +54,8 @@ Entry? inspectingEntry(InspectingEntryRef ref) {
   return page?.entries.firstWhereOrNull((e) => e.id == selectedEntryId);
 }
 
-class EntryInspector extends HookConsumerWidget {
-  const EntryInspector({
+class GenericInspector extends HookConsumerWidget {
+  const GenericInspector({
     super.key,
   }) : super();
 
@@ -63,15 +67,15 @@ class EntryInspector extends HookConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
-        child: inspectingEntry != null ? _EntryInspector(key: ValueKey(inspectingEntry.id)) : const _EmptyInspector(),
+        child: inspectingEntry != null ? EntryInspector(key: ValueKey(inspectingEntry.id)) : const EmptyInspector(),
       ),
     );
   }
 }
 
 /// The content of the inspector when no entry is selected.
-class _EmptyInspector extends HookConsumerWidget {
-  const _EmptyInspector();
+class EmptyInspector extends HookConsumerWidget {
+  const EmptyInspector({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -103,10 +107,13 @@ EntryDefinition? inspectingEntryDefinition(InspectingEntryDefinitionRef ref) {
 }
 
 /// The content of the inspector when an dynamic entry is selected.
-class _EntryInspector extends HookConsumerWidget {
-  const _EntryInspector({
+class EntryInspector extends HookConsumerWidget {
+  const EntryInspector({
+    this.ignoreFields = const [],
     super.key,
   }) : super();
+
+  final List<String> ignoreFields;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -130,7 +137,7 @@ class _EntryInspector extends HookConsumerWidget {
           ObjectEditor(
             path: "",
             object: object,
-            ignoreFields: const ["id", "name"],
+            ignoreFields: ["id", "name", ...ignoreFields],
             defaultExpanded: true,
           ),
           const Divider(),

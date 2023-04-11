@@ -226,11 +226,11 @@ class _Inspector extends HookConsumerWidget {
 
     switch (pageType) {
       case PageType.sequence:
-        return const EntryInspector();
+        return const GenericInspector();
       case PageType.static:
-        return const EntryInspector();
+        return const GenericInspector();
       case PageType.cinematic:
-        return const EntryInspector();
+        return const CinematicInspector();
     }
   }
 }

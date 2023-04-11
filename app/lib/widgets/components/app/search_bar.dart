@@ -904,7 +904,7 @@ class _SearchBar extends HookConsumerWidget {
                 filled: false,
               ),
               onChanged: (query) => ref.read(searchProvider.notifier).updateQuery(query),
-              onSubmitted: (query) => ref.read(searchProvider.notifier).endSearch(),
+              onDone: (query) => ref.read(searchProvider.notifier).endSearch(),
             ),
           ),
           IconButton(

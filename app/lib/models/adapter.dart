@@ -157,6 +157,22 @@ extension EntryBlueprintExt on EntryBlueprint {
     return fields;
   }
 
+  FieldInfo? getField(String path) {
+    final parts = path.split(".");
+    FieldInfo? info = fields;
+    for (final part in parts) {
+      if (info is ObjectField) {
+        info = info.fields[part];
+      } else if (info is ListField) {
+        info = info.type;
+      } else if (info is MapField) {
+        info = info.value;
+      }
+    }
+
+    return info;
+  }
+
   static const _wikiCategories = ["action", "dialogue", "event", "fact", "speaker"];
   String get wikiUrl {
     final category = tags.firstWhereOrNull((tag) => _wikiCategories.contains(tag));

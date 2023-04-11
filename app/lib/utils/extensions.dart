@@ -50,6 +50,11 @@ extension StringExtension on String {
     if (startsWith(prefix)) return replacement + substring(prefix.toString().length);
     return this;
   }
+
+  String replaceSuffix(String suffix, String replacement) {
+    if (endsWith(suffix)) return substring(0, length - suffix.length) + replacement;
+    return this;
+  }
 }
 
 extension StringExt on String? {

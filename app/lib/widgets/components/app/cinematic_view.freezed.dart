@@ -346,6 +346,7 @@ abstract class _$__FrameLine implements _FrameLine {
 mixin _$_MoveState {
   Segment? get previousSegment => throw _privateConstructorUsedError;
   Segment? get nextSegment => throw _privateConstructorUsedError;
+  double get innerPercent => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   _$MoveStateCopyWith<_MoveState> get copyWith =>
@@ -358,7 +359,8 @@ abstract class _$MoveStateCopyWith<$Res> {
           _MoveState value, $Res Function(_MoveState) then) =
       __$MoveStateCopyWithImpl<$Res, _MoveState>;
   @useResult
-  $Res call({Segment? previousSegment, Segment? nextSegment});
+  $Res call(
+      {Segment? previousSegment, Segment? nextSegment, double innerPercent});
 
   $SegmentCopyWith<$Res>? get previousSegment;
   $SegmentCopyWith<$Res>? get nextSegment;
@@ -379,6 +381,7 @@ class __$MoveStateCopyWithImpl<$Res, $Val extends _MoveState>
   $Res call({
     Object? previousSegment = freezed,
     Object? nextSegment = freezed,
+    Object? innerPercent = null,
   }) {
     return _then(_value.copyWith(
       previousSegment: freezed == previousSegment
@@ -389,6 +392,10 @@ class __$MoveStateCopyWithImpl<$Res, $Val extends _MoveState>
           ? _value.nextSegment
           : nextSegment // ignore: cast_nullable_to_non_nullable
               as Segment?,
+      innerPercent: null == innerPercent
+          ? _value.innerPercent
+          : innerPercent // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 
@@ -425,7 +432,8 @@ abstract class _$$_$__MoveStateCopyWith<$Res>
       __$$_$__MoveStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Segment? previousSegment, Segment? nextSegment});
+  $Res call(
+      {Segment? previousSegment, Segment? nextSegment, double innerPercent});
 
   @override
   $SegmentCopyWith<$Res>? get previousSegment;
@@ -446,6 +454,7 @@ class __$$_$__MoveStateCopyWithImpl<$Res>
   $Res call({
     Object? previousSegment = freezed,
     Object? nextSegment = freezed,
+    Object? innerPercent = null,
   }) {
     return _then(_$_$__MoveState(
       previousSegment: freezed == previousSegment
@@ -456,6 +465,10 @@ class __$$_$__MoveStateCopyWithImpl<$Res>
           ? _value.nextSegment
           : nextSegment // ignore: cast_nullable_to_non_nullable
               as Segment?,
+      innerPercent: null == innerPercent
+          ? _value.innerPercent
+          : innerPercent // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -464,16 +477,21 @@ class __$$_$__MoveStateCopyWithImpl<$Res>
 
 class _$_$__MoveState implements _$__MoveState {
   const _$_$__MoveState(
-      {required this.previousSegment, required this.nextSegment});
+      {required this.previousSegment,
+      required this.nextSegment,
+      this.innerPercent = 0.0});
 
   @override
   final Segment? previousSegment;
   @override
   final Segment? nextSegment;
+  @override
+  @JsonKey()
+  final double innerPercent;
 
   @override
   String toString() {
-    return '_MoveState(previousSegment: $previousSegment, nextSegment: $nextSegment)';
+    return '_MoveState(previousSegment: $previousSegment, nextSegment: $nextSegment, innerPercent: $innerPercent)';
   }
 
   @override
@@ -484,11 +502,14 @@ class _$_$__MoveState implements _$__MoveState {
             (identical(other.previousSegment, previousSegment) ||
                 other.previousSegment == previousSegment) &&
             (identical(other.nextSegment, nextSegment) ||
-                other.nextSegment == nextSegment));
+                other.nextSegment == nextSegment) &&
+            (identical(other.innerPercent, innerPercent) ||
+                other.innerPercent == innerPercent));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, previousSegment, nextSegment);
+  int get hashCode =>
+      Object.hash(runtimeType, previousSegment, nextSegment, innerPercent);
 
   @JsonKey(ignore: true)
   @override
@@ -500,12 +521,15 @@ class _$_$__MoveState implements _$__MoveState {
 abstract class _$__MoveState implements _MoveState {
   const factory _$__MoveState(
       {required final Segment? previousSegment,
-      required final Segment? nextSegment}) = _$_$__MoveState;
+      required final Segment? nextSegment,
+      final double innerPercent}) = _$_$__MoveState;
 
   @override
   Segment? get previousSegment;
   @override
   Segment? get nextSegment;
+  @override
+  double get innerPercent;
   @override
   @JsonKey(ignore: true)
   _$$_$__MoveStateCopyWith<_$_$__MoveState> get copyWith =>

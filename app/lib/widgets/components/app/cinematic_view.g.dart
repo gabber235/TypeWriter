@@ -21,21 +21,6 @@ final _cinematicEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef _CinematicEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$longestEntryNameHash() => r'578f68acdba591e2dd1f520439a646d955714ad1';
-
-/// See also [_longestEntryName].
-@ProviderFor(_longestEntryName)
-final _longestEntryNameProvider = AutoDisposeProvider<String>.internal(
-  _longestEntryName,
-  name: r'_longestEntryNameProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$longestEntryNameHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _LongestEntryNameRef = AutoDisposeProviderRef<String>;
 String _$segmentPathsHash() => r'4456836fe10ea7d1100810e16b819ad4e2f0339c';
 
 /// Copied from Dart SDK
@@ -140,7 +125,7 @@ class _SegmentPathsProvider extends AutoDisposeProvider<Map<String, Modifier>> {
   }
 }
 
-String _$segmentsHash() => r'71c0bba2fed3f3567d620ed87c45d12bd7976875';
+String _$segmentsHash() => r'22da3fbe61d98f6f6755a4a02618b510c66a8ee7';
 typedef _SegmentsRef = AutoDisposeProviderRef<List<Segment>>;
 
 /// See also [_segments].
@@ -452,6 +437,21 @@ final _trackOffsetProvider = AutoDisposeProvider<double>.internal(
 );
 
 typedef _TrackOffsetRef = AutoDisposeProviderRef<double>;
+String _$longestEntryNameHash() => r'578f68acdba591e2dd1f520439a646d955714ad1';
+
+/// See also [_longestEntryName].
+@ProviderFor(_longestEntryName)
+final _longestEntryNameProvider = AutoDisposeProvider<String>.internal(
+  _longestEntryName,
+  name: r'_longestEntryNameProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$longestEntryNameHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _LongestEntryNameRef = AutoDisposeProviderRef<String>;
 String _$sliderStartOffsetHash() => r'cea351bd17cd435ff70e20ce48f4b6e53b370445';
 
 /// See also [_sliderStartOffset].
@@ -960,4 +960,50 @@ class _ShowThumbsProvider extends AutoDisposeProvider<bool> {
     return _SystemHash.finish(hash);
   }
 }
+
+String _$inspectingSegmentHash() => r'd7155fa87adad4c7e894d76ec98a91c9096f7632';
+
+/// See also [inspectingSegment].
+@ProviderFor(inspectingSegment)
+final inspectingSegmentProvider = AutoDisposeProvider<Segment?>.internal(
+  inspectingSegment,
+  name: r'inspectingSegmentProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$inspectingSegmentHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef InspectingSegmentRef = AutoDisposeProviderRef<Segment?>;
+String _$ignoreEntryFieldsHash() => r'602c6ed49c2d349912b9a3d448e72be350e9d4aa';
+
+/// See also [_ignoreEntryFields].
+@ProviderFor(_ignoreEntryFields)
+final _ignoreEntryFieldsProvider = AutoDisposeProvider<List<String>>.internal(
+  _ignoreEntryFields,
+  name: r'_ignoreEntryFieldsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$ignoreEntryFieldsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _IgnoreEntryFieldsRef = AutoDisposeProviderRef<List<String>>;
+String _$segmentFieldsHash() => r'd9624ef5675a14367abcf1b30ba9fbb3031734ea';
+
+/// See also [_segmentFields].
+@ProviderFor(_segmentFields)
+final _segmentFieldsProvider = AutoDisposeProvider<ObjectField?>.internal(
+  _segmentFields,
+  name: r'_segmentFieldsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$segmentFieldsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _SegmentFieldsRef = AutoDisposeProviderRef<ObjectField?>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

@@ -8,24 +8,28 @@ class DecoratedTextField extends HookWidget {
     this.controller,
     this.text,
     this.onChanged,
-    this.onSubmitted,
+    this.onDone,
+    this.style,
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
     this.decoration,
     this.maxLines = 1,
     this.autofocus = false,
+    this.textAlign = TextAlign.start,
     super.key,
   }) : super();
   final TextEditingController? controller;
   final FocusNode focus;
   final String? text;
   final Function(String)? onChanged;
-  final Function(String)? onSubmitted;
+  final Function(String)? onDone;
+  final TextStyle? style;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType keyboardType;
   final InputDecoration? decoration;
   final int? maxLines;
   final bool autofocus;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -48,16 +52,18 @@ class DecoratedTextField extends HookWidget {
       focusNode: focus,
       controller: controller,
       onEditingComplete: () {
-        onSubmitted?.call(controller.text);
+        onDone?.call(controller.text);
         onChanged?.call(controller.text);
       },
       onSubmitted: (value) {
-        onSubmitted?.call(value);
+        onDone?.call(value);
         onChanged?.call(value);
       },
       onChanged: onChanged,
+      style: style,
       textCapitalization: TextCapitalization.none,
       textInputAction: TextInputAction.done,
+      textAlign: textAlign,
       maxLines: maxLines,
       autofocus: autofocus,
       keyboardType: keyboardType,
