@@ -55,6 +55,17 @@ extension StringExtension on String {
     if (endsWith(suffix)) return substring(0, length - suffix.length) + replacement;
     return this;
   }
+
+  /// Returns a new string with all indexes replaced with wild cards
+  /// Example: "some.1.test2.5" => "some.*.test2.*"
+  String wild() {
+    final pattern = RegExp(r"(\.\d+\.?)");
+    final newPath = replaceAllMapped(pattern, (match) {
+      if (match.group(1)?.endsWith(".") ?? false) return ".*.";
+      return ".*";
+    });
+    return newPath;
+  }
 }
 
 extension StringExt on String? {

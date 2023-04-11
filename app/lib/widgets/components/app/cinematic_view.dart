@@ -2,7 +2,7 @@ import "dart:math";
 
 import "package:collection/collection.dart";
 import "package:collection_ext/all.dart";
-import "package:flutter/material.dart" hide Title;
+import "package:flutter/material.dart" hide Title, FilledButton;
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -21,14 +21,21 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/color_converter.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/toasts.dart";
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
+import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/heading.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
+import "package:typewriter/widgets/inspector/section_title.dart";
 
 part "cinematic_view.freezed.dart";
 part "cinematic_view.g.dart";
@@ -111,13 +118,7 @@ const colorConverter = NullableColorConverter();
 
 extension on Map<String, Modifier> {
   Modifier? findModifier(String path) {
-    final pattern = RegExp(r"(\.\d+\.?)");
-    final newPath = path.replaceAllMapped(pattern, (match) {
-      if (match.group(1)?.endsWith(".") ?? false) return ".*.";
-      return ".*";
-    });
-
-    return this[newPath];
+    return this[path.wild()];
   }
 }
 
@@ -142,6 +143,8 @@ List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
     final startFrame = segment["startFrame"] as int? ?? 0;
     final endFrame = segment["endFrame"] as int? ?? 0;
 
+    final data = (segment as Map<dynamic, dynamic>).map((key, value) => MapEntry(key.toString(), value));
+
     return Segment(
       path: path,
       index: index,
@@ -149,7 +152,7 @@ List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
       icon: icon,
       startFrame: startFrame,
       endFrame: startFrame > endFrame ? startFrame : endFrame,
-      data: segment,
+      data: data,
     );
   }).toList();
 }
@@ -390,7 +393,10 @@ class _EntryRow extends HookConsumerWidget {
             ),
           ),
           const SizedBox(width: 8),
-          EntryNode(entryId: entryId),
+          EntryNode(
+            entryId: entryId,
+            contextActions: ref.watch(_entryContextActionsProvider(entryId)),
+          ),
           _SmartSpacer(entryId: entryId),
           VerticalDivider(color: Colors.grey.shade900, thickness: 2),
           Expanded(child: _EntryTrack(entryId: entryId)),
@@ -1136,10 +1142,82 @@ List<String> _ignoreEntryFields(_IgnoreEntryFieldsRef ref) {
   return paths.map((e) => e.replaceSuffix(".*", "")).toList();
 }
 
+void _addSegment(PassingRef ref, String entryId, String segmentPath) {
+  final segments = ref.read(_segmentsProvider(entryId, segmentPath));
+  final page = ref.read(currentPageProvider);
+  if (page == null) return;
+  final entry = ref.read(entryProvider(page.name, entryId));
+  if (entry == null) return;
+
+  final blueprint = ref.read(entryBlueprintProvider(entry.type));
+  if (blueprint == null) return;
+  final segmentBlueprint = blueprint.getField(segmentPath);
+  if (segmentBlueprint == null) return;
+
+  print("Got to segment blueprint");
+
+  // Find the first gap in the segments that is at least 10 frames long
+  // Then find the start end end frames of that gap
+  final lastFrame = ref.read(_trackStateProvider).totalFrames;
+  var startFrame = 0;
+
+  for (var i = 0; i < segments.length; i++) {
+    final segment = segments[i];
+    final endFrame = segment.startFrame;
+
+    if (endFrame - startFrame >= 10) {
+      break;
+    }
+
+    startFrame = segment.endFrame;
+  }
+
+  final endFrame = segments.map((e) => e.startFrame).where((frame) => frame >= 10 + startFrame).minOrNull ?? lastFrame;
+
+  if (endFrame - startFrame < 10) {
+    Toasts.showError(ref, "Could not add segment.", description: "There is not enough space to add a segment.");
+    return;
+  }
+
+  final segment = segmentBlueprint.defaultValue;
+  if (segment == null) return;
+
+  final newSegment = {
+    ...segment,
+    "startFrame": startFrame,
+    "endFrame": endFrame,
+  };
+
+  final listPath = segmentPath.replaceSuffix(".*", "");
+  final list = entry.get(listPath) as List? ?? [];
+  final newList = [...list, newSegment];
+
+  page.updateEntryValue(ref, entry, listPath, newList);
+}
+
+void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
+  final page = ref.read(currentPageProvider);
+  if (page == null) return;
+  final entry = ref.read(entryProvider(page.name, entryId));
+  if (entry == null) return;
+
+  final blueprint = ref.read(entryBlueprintProvider(entry.type));
+  if (blueprint == null) return;
+  final segmentBlueprint = blueprint.getField(segmentPath);
+  if (segmentBlueprint == null) return;
+
+  final parts = segmentPath.split(".");
+  final listPath = parts.sublist(0, parts.length - 1).join(".");
+  final list = entry.get(listPath) as List? ?? [];
+
+  final index = int.tryParse(parts.last) ?? 0;
+  final newList = [...list]..removeAt(index);
+
+  page.updateEntryValue(ref, entry, listPath, newList);
+}
+
 @riverpod
-List<ContextMenuTile> _entryInspectorOperations(_EntryInspectorOperationsRef ref) {
-  final entryId = ref.watch(inspectingEntryIdProvider);
-  if (entryId == null) return [];
+List<ContextMenuTile> _entryContextActions(_EntryContextActionsRef ref, String entryId) {
   final paths = ref.watch(_segmentPathsProvider(entryId));
 
   return paths.entries.map((e) {
@@ -1154,13 +1232,12 @@ List<ContextMenuTile> _entryInspectorOperations(_EntryInspectorOperationsRef ref
     final color = colorConverter.fromJson(hexColor) ?? Colors.teal;
 
     final iconName = modifierData["icon"] as String? ?? "plus";
-    print("iconName: $iconName");
     final icon = icons[iconName] ?? FontAwesomeIcons.plus;
 
     return ContextMenuTile.button(
       title: "Add $title",
       onTap: () {
-        print("Add $title");
+        _addSegment(ref.passing, entryId, path);
       },
       icon: icon,
       color: color,
@@ -1187,7 +1264,7 @@ class CinematicInspector extends HookConsumerWidget {
             : inspectingEntry != null
                 ? EntryInspector(
                     key: ValueKey(inspectingEntry.id),
-                    actions: ref.watch(_entryInspectorOperationsProvider),
+                    actions: ref.watch(_entryContextActionsProvider(inspectingEntry.id)),
                     ignoreFields: ref.watch(_ignoreEntryFieldsProvider),
                   )
                 : const EmptyInspector(),
@@ -1210,7 +1287,13 @@ class _SegmentInspector extends HookConsumerWidget {
         children: [
           _InspectorHeader(),
           Divider(),
+          _StartFrameField(),
+          SizedBox(height: 8),
+          _EndFrameField(),
+          Divider(),
           _InspectorContents(),
+          Divider(),
+          _SegmentOperations(),
           SizedBox(height: 30),
         ],
       ),
@@ -1258,8 +1341,184 @@ class _InspectorContents extends HookConsumerWidget {
       path: segmentId,
       object: object,
       defaultExpanded: true,
+      ignoreFields: const [
+        "startFrame",
+        "endFrame",
+      ],
     );
   }
 }
 
+class _FrameField extends HookConsumerWidget {
+  const _FrameField({
+    required this.path,
+    this.title = "",
+    this.icon,
+    this.hintText = "",
+    this.onValidate,
+    super.key,
+  });
+
+  final String path;
+  final String title;
+  final IconData? icon;
+  final String hintText;
+  final bool Function(int)? onValidate;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedEntryId = ref.watch(inspectingEntryIdProvider);
+    final focus = useFocusNode();
+    final error = useState<String?>(null);
+
+    useFocusedBasedCurrentEditingField(focus, ref, path);
+
+    final value = ref.watch(fieldValueProvider(path));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionTitle(title: title.isEmpty ? path.split(".").last : title),
+        const SizedBox(height: 1),
+        WritersIndicator(
+          filter: (writer) {
+            if (writer.entryId.isNullOrEmpty) return false;
+            if (writer.entryId != selectedEntryId) return false;
+            if (writer.field.isNullOrEmpty) return false;
+            return writer.field == path;
+          },
+          shift: (_) => const Offset(15, 0),
+          child: DecoratedTextField(
+            focus: focus,
+            text: value.toString(),
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              prefixIcon: icon != null ? Icon(icon, size: 18) : null,
+              hintText: hintText,
+              errorText: error.value,
+            ),
+            onDone: (text) {
+              final newValue = int.tryParse(text);
+              if (newValue == null) return;
+              if (onValidate != null && !onValidate!(newValue)) {
+                error.value = "Invalid $title";
+                return;
+              }
+
+              error.value = null;
+              ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, newValue);
+            },
+            maxLines: 1,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StartFrameField extends HookConsumerWidget {
+  const _StartFrameField();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final segmentId = ref.watch(inspectingSegmentIdProvider);
+
+    if (segmentId == null) return const SizedBox.shrink();
+
+    return _FrameField(
+      title: "Start Frame",
+      path: "$segmentId.startFrame",
+      icon: FontAwesomeIcons.forwardStep,
+      hintText: "Enter a frame number",
+      onValidate: (frame) {
+        final entryId = ref.read(inspectingEntryIdProvider);
+        if (entryId == null) return false;
+        final segment = ref.read(inspectingSegmentProvider);
+        if (segment == null) return false;
+
+        final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
+        final previousSegment = segments.where((s) => s.endFrame <= segment.startFrame).maxBy((_, s) => s.endFrame);
+        final minimumFrame = previousSegment?.endFrame ?? 0;
+        return frame >= minimumFrame;
+      },
+    );
+  }
+}
+
+class _EndFrameField extends HookConsumerWidget {
+  const _EndFrameField();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final segmentId = ref.watch(inspectingSegmentIdProvider);
+
+    if (segmentId == null) return const SizedBox.shrink();
+
+    return _FrameField(
+      title: "End Frame",
+      path: "$segmentId.endFrame",
+      icon: FontAwesomeIcons.backwardStep,
+      hintText: "Enter a frame number",
+      onValidate: (frame) {
+        final entryId = ref.read(inspectingEntryIdProvider);
+        if (entryId == null) return false;
+        final segment = ref.read(inspectingSegmentProvider);
+        if (segment == null) return false;
+
+        final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
+        final nextSegment = segments.where((s) => s.startFrame >= segment.endFrame).minBy((_, s) => s.startFrame);
+        final maximumFrame = nextSegment?.startFrame ?? ref.read(_trackStateProvider).totalFrames;
+        return frame <= maximumFrame;
+      },
+    );
+  }
+}
+
+class _SegmentOperations extends HookConsumerWidget {
+  const _SegmentOperations();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionTitle(title: "Operations"),
+        SizedBox(height: 8),
+        _DeleteSegment(),
+      ],
+    );
+  }
+}
+
+class _DeleteSegment extends HookConsumerWidget {
+  const _DeleteSegment();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FilledButton.icon(
+      onPressed: () {
+        final segmentId = ref.read(inspectingSegmentIdProvider);
+        if (segmentId == null) return;
+        final entryId = ref.read(inspectingEntryIdProvider);
+        if (entryId == null) return;
+
+        showConfirmationDialogue(
+          context: context,
+          title: "Delete Segment",
+          content: "Are you sure you want to delete this segment?",
+          confirmText: "Delete",
+          onConfirm: () {
+            _deleteSegment(ref.passing, entryId, segmentId);
+          },
+        );
+      },
+      icon: const FaIcon(FontAwesomeIcons.trash),
+      label: const Text("Delete Segment"),
+      color: Theme.of(context).colorScheme.error,
+    );
+  }
+}
 //</editor-fold>

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
 
 class DecoratedTextField extends HookWidget {
   const DecoratedTextField({
@@ -47,6 +48,12 @@ class DecoratedTextField extends HookWidget {
       },
       [text],
     );
+
+    useFocusedChange(focus, (hasFocus) {
+      if (!hasFocus) {
+        onDone?.call(controller.text);
+      }
+    });
 
     return TextField(
       focusNode: focus,

@@ -10,15 +10,18 @@ import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
-import "package:typewriter/widgets/components/general//context_menu_region.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 class EntryNode extends HookConsumerWidget {
   const EntryNode({
     required this.entryId,
+    this.contextActions = const [],
     super.key,
   }) : super();
+
   final String entryId;
+  final List<ContextMenuTile> contextActions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,6 +49,7 @@ class EntryNode extends HookConsumerWidget {
       name: entryName.formatted,
       icon: Icon(blueprint.icon, size: 18, color: Colors.white),
       isSelected: isSelected,
+      contextActions: contextActions,
       onTap: () => ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId),
     );
   }
@@ -62,6 +66,7 @@ class _EntryNode extends HookConsumerWidget {
     this.isSelected = false,
     this.opacity = 1.0,
     this.enableContextMenu = true,
+    this.contextActions = const [],
     this.onTap,
   });
   final String id;
@@ -73,6 +78,7 @@ class _EntryNode extends HookConsumerWidget {
   final bool isSelected;
   final double opacity;
   final bool enableContextMenu;
+  final List<ContextMenuTile> contextActions;
 
   final VoidCallback? onTap;
 
@@ -113,6 +119,7 @@ class _EntryNode extends HookConsumerWidget {
         enabled: enableContextMenu,
         builder: (context) {
           return [
+            ...contextActions,
             if (canTrigger)
               ContextMenuTile.button(
                 title: "Extend with ...",

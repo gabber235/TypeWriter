@@ -991,24 +991,90 @@ final _ignoreEntryFieldsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef _IgnoreEntryFieldsRef = AutoDisposeProviderRef<List<String>>;
-String _$entryInspectorOperationsHash() =>
-    r'15b79874f99d0bb1da130731bef035d5da305e0f';
+String _$entryContextActionsHash() =>
+    r'28cdf01b3a0ee4838ebb303ef475c14c090b88c1';
+typedef _EntryContextActionsRef = AutoDisposeProviderRef<List<ContextMenuTile>>;
 
-/// See also [_entryInspectorOperations].
-@ProviderFor(_entryInspectorOperations)
-final _entryInspectorOperationsProvider =
-    AutoDisposeProvider<List<ContextMenuTile>>.internal(
-  _entryInspectorOperations,
-  name: r'_entryInspectorOperationsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$entryInspectorOperationsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+/// See also [_entryContextActions].
+@ProviderFor(_entryContextActions)
+const _entryContextActionsProvider = _EntryContextActionsFamily();
 
-typedef _EntryInspectorOperationsRef
-    = AutoDisposeProviderRef<List<ContextMenuTile>>;
+/// See also [_entryContextActions].
+class _EntryContextActionsFamily extends Family<List<ContextMenuTile>> {
+  /// See also [_entryContextActions].
+  const _EntryContextActionsFamily();
+
+  /// See also [_entryContextActions].
+  _EntryContextActionsProvider call(
+    String entryId,
+  ) {
+    return _EntryContextActionsProvider(
+      entryId,
+    );
+  }
+
+  @override
+  _EntryContextActionsProvider getProviderOverride(
+    covariant _EntryContextActionsProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'_entryContextActionsProvider';
+}
+
+/// See also [_entryContextActions].
+class _EntryContextActionsProvider
+    extends AutoDisposeProvider<List<ContextMenuTile>> {
+  /// See also [_entryContextActions].
+  _EntryContextActionsProvider(
+    this.entryId,
+  ) : super.internal(
+          (ref) => _entryContextActions(
+            ref,
+            entryId,
+          ),
+          from: _entryContextActionsProvider,
+          name: r'_entryContextActionsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$entryContextActionsHash,
+          dependencies: _EntryContextActionsFamily._dependencies,
+          allTransitiveDependencies:
+              _EntryContextActionsFamily._allTransitiveDependencies,
+        );
+
+  final String entryId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is _EntryContextActionsProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$segmentFieldsHash() => r'50de8ece747eb6fbdd3c504f30873d7546d54b50';
 
 /// See also [_segmentFields].

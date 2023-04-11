@@ -3,6 +3,7 @@ import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:stack_trace/stack_trace.dart" as stack_trace;
 import "package:typewriter/app_router.dart";
+import "package:typewriter/widgets/components/general/toasts.dart";
 
 void main() async {
   FlutterError.demangleStackTrace = (stack) {
@@ -27,6 +28,7 @@ class TypeWriterApp extends HookConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: router.config(),
       shortcuts: WidgetsApp.defaultShortcuts,
+      builder: (_, child) => ToastDisplay(child: child),
     );
   }
 

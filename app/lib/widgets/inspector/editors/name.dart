@@ -8,6 +8,7 @@ import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
+import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
 
@@ -19,7 +20,7 @@ class NameField extends HookConsumerWidget {
     final selectedEntryId = ref.watch(inspectingEntryIdProvider);
     final focus = useFocusNode();
     useFocusedBasedCurrentEditingField(focus, ref, "name");
-    final def = ref.watch(inspectingEntryDefinitionProvider);
+    final name = ref.watch(fieldValueProvider("name"));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,9 +36,9 @@ class NameField extends HookConsumerWidget {
           shift: (_) => const Offset(15, 0),
           child: FormattedTextField(
             focus: focus,
-            text: def?.entry.name,
+            text: name,
             onChanged: (value) {
-              def?.updateField(ref.passing, "name", value);
+              ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, "name", value);
             },
             inputFormatters: [
               snakeCaseFormatter(),
