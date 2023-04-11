@@ -23,7 +23,7 @@ data class CameraCinematicEntry(
 	override val id: String = "",
 	override val name: String = "",
 	override val criteria: List<Criteria> = emptyList(),
-	@Segments(icon = Icons.STACKPATH)
+	@Segments(icon = Icons.VIDEO)
 	val segments: List<CameraSegment> = emptyList(),
 ) : CinematicEntry {
 	override fun create(player: Player): CinematicAction {

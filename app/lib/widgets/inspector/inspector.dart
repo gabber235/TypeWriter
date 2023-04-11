@@ -9,6 +9,7 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/cinematic_view.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/inspector/editors/name.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/heading.dart";
@@ -110,10 +111,12 @@ EntryDefinition? inspectingEntryDefinition(InspectingEntryDefinitionRef ref) {
 class EntryInspector extends HookConsumerWidget {
   const EntryInspector({
     this.ignoreFields = const [],
+    this.actions = const [],
     super.key,
   }) : super();
 
   final List<String> ignoreFields;
+  final List<ContextMenuTile> actions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -141,7 +144,7 @@ class EntryInspector extends HookConsumerWidget {
             defaultExpanded: true,
           ),
           const Divider(),
-          const Operations(),
+          Operations(actions: actions),
           const SizedBox(height: 30),
         ],
       ),

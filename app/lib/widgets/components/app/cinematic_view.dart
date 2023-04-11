@@ -24,6 +24,7 @@ import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/heading.dart";
@@ -1135,6 +1136,38 @@ List<String> _ignoreEntryFields(_IgnoreEntryFieldsRef ref) {
   return paths.map((e) => e.replaceSuffix(".*", "")).toList();
 }
 
+@riverpod
+List<ContextMenuTile> _entryInspectorOperations(_EntryInspectorOperationsRef ref) {
+  final entryId = ref.watch(inspectingEntryIdProvider);
+  if (entryId == null) return [];
+  final paths = ref.watch(_segmentPathsProvider(entryId));
+
+  return paths.entries.map((e) {
+    final path = e.key;
+    final modifier = e.value;
+
+    final title = path.replaceSuffix(".*", "").split(".").lastOrNull?.singular.capitalize ?? path;
+
+    final modifierData = modifier.data;
+
+    final hexColor = modifierData["color"] as String? ?? "#009688";
+    final color = colorConverter.fromJson(hexColor) ?? Colors.teal;
+
+    final iconName = modifierData["icon"] as String? ?? "plus";
+    print("iconName: $iconName");
+    final icon = icons[iconName] ?? FontAwesomeIcons.plus;
+
+    return ContextMenuTile.button(
+      title: "Add $title",
+      onTap: () {
+        print("Add $title");
+      },
+      icon: icon,
+      color: color,
+    );
+  }).toList();
+}
+
 class CinematicInspector extends HookConsumerWidget {
   const CinematicInspector({
     super.key,
@@ -1154,9 +1187,8 @@ class CinematicInspector extends HookConsumerWidget {
             : inspectingEntry != null
                 ? EntryInspector(
                     key: ValueKey(inspectingEntry.id),
-                    ignoreFields: [
-                      ...ref.watch(_ignoreEntryFieldsProvider),
-                    ],
+                    actions: ref.watch(_entryInspectorOperationsProvider),
+                    ignoreFields: ref.watch(_ignoreEntryFieldsProvider),
                   )
                 : const EmptyInspector(),
       ),

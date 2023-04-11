@@ -991,7 +991,25 @@ final _ignoreEntryFieldsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef _IgnoreEntryFieldsRef = AutoDisposeProviderRef<List<String>>;
-String _$segmentFieldsHash() => r'd9624ef5675a14367abcf1b30ba9fbb3031734ea';
+String _$entryInspectorOperationsHash() =>
+    r'15b79874f99d0bb1da130731bef035d5da305e0f';
+
+/// See also [_entryInspectorOperations].
+@ProviderFor(_entryInspectorOperations)
+final _entryInspectorOperationsProvider =
+    AutoDisposeProvider<List<ContextMenuTile>>.internal(
+  _entryInspectorOperations,
+  name: r'_entryInspectorOperationsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$entryInspectorOperationsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _EntryInspectorOperationsRef
+    = AutoDisposeProviderRef<List<ContextMenuTile>>;
+String _$segmentFieldsHash() => r'50de8ece747eb6fbdd3c504f30873d7546d54b50';
 
 /// See also [_segmentFields].
 @ProviderFor(_segmentFields)
