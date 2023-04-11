@@ -1,0 +1,18 @@
+import {EntryField, EventsField} from "@site/src/components/EntryField";
+
+# Discover Region Event
+
+The `Discover Region Event` is triggered when a player discovers a region.
+
+## How could this be used?
+
+This event could be used to trigger a message to the player when they discover a region, like a welcome.
+Or when they discover a region, it could trigger a quest to start and start a dialogue or cinematic.
+
+## Fields
+
+<EventsField />
+
+<EntryField name="Region" required>
+    The region that the player must discover to trigger the event. (Region Name, Not DisplayName)
+</EntryField>
