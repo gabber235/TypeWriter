@@ -1039,7 +1039,9 @@ class _SegmentWidget extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: segment.color,
         borderRadius: BorderRadius.circular(12),
-        border: isSelected ? Border.all(color: Colors.white, width: 2) : null,
+        border: isSelected
+            ? Border.all(color: context.isDark ? Colors.white : Colors.black.withOpacity(0.4), width: 2)
+            : Border.all(color: Colors.transparent, width: 2),
       ),
       child: Row(
         children: [
@@ -1431,13 +1433,15 @@ class _StartFrameField extends HookConsumerWidget {
     return _FrameField(
       title: "Start Frame",
       path: "$segmentId.startFrame",
-      icon: FontAwesomeIcons.forwardStep,
+      icon: FontAwesomeIcons.backwardStep,
       hintText: "Enter a frame number",
       onValidate: (frame) {
         final entryId = ref.read(inspectingEntryIdProvider);
         if (entryId == null) return false;
         final segment = ref.read(inspectingSegmentProvider);
         if (segment == null) return false;
+
+        if (frame > segment.endFrame) return false;
 
         final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
         final previousSegment = segments.where((s) => s.endFrame <= segment.startFrame).maxBy((_, s) => s.endFrame);
@@ -1460,13 +1464,15 @@ class _EndFrameField extends HookConsumerWidget {
     return _FrameField(
       title: "End Frame",
       path: "$segmentId.endFrame",
-      icon: FontAwesomeIcons.backwardStep,
+      icon: FontAwesomeIcons.forwardStep,
       hintText: "Enter a frame number",
       onValidate: (frame) {
         final entryId = ref.read(inspectingEntryIdProvider);
         if (entryId == null) return false;
         final segment = ref.read(inspectingSegmentProvider);
         if (segment == null) return false;
+
+        if (frame < segment.startFrame) return false;
 
         final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
         final nextSegment = segments.where((s) => s.startFrame >= segment.endFrame).minBy((_, s) => s.startFrame);

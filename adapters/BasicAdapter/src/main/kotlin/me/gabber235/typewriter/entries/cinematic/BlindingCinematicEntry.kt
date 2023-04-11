@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.launch
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
@@ -34,7 +35,9 @@ class BlindingCinematicEntry(
 data class BlindingSegment(
 	override val startFrame: Int,
 	override val endFrame: Int,
+	@Help("Teleport the player to y 500 to prevent them from seeing the world")
 	val teleport: Boolean = false,
+	@Help("Set the player to spectator mode")
 	val spectator: Boolean = false,
 ) : Segment
 

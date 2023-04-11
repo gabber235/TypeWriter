@@ -7,6 +7,7 @@ import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/help_info.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
 
@@ -117,14 +118,7 @@ class _SimpleHeader extends HookConsumerWidget {
         ),
         if (helpText != null) ...[
           const SizedBox(width: 4),
-          Tooltip(
-            message: helpText,
-            child: Icon(
-              Icons.help_outline,
-              size: 16,
-              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
-            ),
-          ),
+          HelpInfo(helpText: helpText),
         ],
       ],
     );

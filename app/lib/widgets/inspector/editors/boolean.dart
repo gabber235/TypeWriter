@@ -3,6 +3,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
+import "package:typewriter/widgets/inspector/help_info.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 class BooleanEditorFilter extends EditorFilter {
@@ -25,6 +26,10 @@ class BooleanEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(fieldValueProvider(path, false));
+
+    final help = field.getModifier("help");
+    final helpText = help?.data as String?;
+
     return Row(
       children: [
         SelectableText(ref.watch(pathDisplayNameProvider(path))),
@@ -38,6 +43,10 @@ class BooleanEditor extends HookConsumerWidget {
           const Text("True", style: TextStyle(color: Colors.greenAccent))
         else
           const Text("False", style: TextStyle(color: Colors.grey)),
+        if (helpText != null) ...[
+          const SizedBox(width: 4),
+          HelpInfo(helpText: helpText),
+        ],
       ],
     );
   }
