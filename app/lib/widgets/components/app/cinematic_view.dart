@@ -132,13 +132,20 @@ List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return [];
 
-  final modifierData = modifier.data;
+  final blueprint = ref.watch(entryBlueprintProvider(entry.type));
+  if (blueprint == null) return [];
 
-  final hexColor = modifierData["color"] as String? ?? "#000000";
+  final segmentModifierData = modifier.data;
+
+  final hexColor = segmentModifierData["color"] as String? ?? "#000000";
   final color = colorConverter.fromJson(hexColor) ?? Colors.teal;
 
-  final iconName = modifierData["icon"] as String? ?? "star";
+  final iconName = segmentModifierData["icon"] as String? ?? "star";
   final icon = icons[iconName] ?? FontAwesomeIcons.star;
+
+  final field = blueprint.getField(path.wild());
+  final min = field?.get("min") as int?;
+  final max = field?.get("max") as int?;
 
   return entry.getAll(path).mapIndexed((index, segment) {
     final startFrame = segment["startFrame"] as int? ?? 0;
@@ -153,6 +160,8 @@ List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
       icon: icon,
       startFrame: startFrame,
       endFrame: startFrame > endFrame ? startFrame : endFrame,
+      minFrames: min,
+      maxFrames: max,
       data: data,
     );
   }).toList();
@@ -907,6 +916,9 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
     if (frame == segment.startFrame) return;
     if (frame > segment.endFrame) return;
 
+    if (segment.minFrames != null && segment.endFrame - frame < segment.minFrames!) return;
+    if (segment.maxFrames != null && segment.endFrame - frame > segment.maxFrames!) return;
+
     final previousSegment = state?.previousSegment;
     if (previousSegment != null && frame < previousSegment.endFrame) return;
 
@@ -921,6 +933,9 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
     final frame = _getFrameFromPercent(percent);
     if (frame == segment.endFrame) return;
     if (frame < segment.startFrame) return;
+
+    if (segment.minFrames != null && frame - segment.startFrame < segment.minFrames!) return;
+    if (segment.maxFrames != null && frame - segment.startFrame > segment.maxFrames!) return;
 
     final nextSegment = state?.nextSegment;
     if (nextSegment != null && frame > nextSegment.startFrame) return;
@@ -1145,6 +1160,12 @@ List<String> _ignoreEntryFields(_IgnoreEntryFieldsRef ref) {
   return paths.map((e) => e.replaceSuffix(".*", "")).toList();
 }
 
+/// Finds a segment that overlaps the given range
+/// If no segment is found, returns null
+Segment? _includesSegment(int startFrame, int endFrame, List<Segment> segments) {
+  return segments.firstWhereOrNull((segment) => segment.overlaps(startFrame, endFrame));
+}
+
 void _addSegment(PassingRef ref, String entryId, String segmentPath) {
   final segments = ref.read(_segmentsProvider(entryId, segmentPath));
   final page = ref.read(currentPageProvider);
@@ -1154,35 +1175,51 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
 
   final blueprint = ref.read(entryBlueprintProvider(entry.type));
   if (blueprint == null) return;
-  final segmentBlueprint = blueprint.getField(segmentPath);
-  if (segmentBlueprint == null) return;
+  final segmentField = blueprint.getField(segmentPath);
+  if (segmentField == null) return;
 
-  print("Got to segment blueprint");
+  final minFrames = segmentField.get<int>("min");
+  final maxFrames = segmentField.get<int>("max");
+
+  final minSpace = minFrames ?? 10;
 
   // Find the first gap in the segments that is at least 10 frames long
   // Then find the start end end frames of that gap
   final lastFrame = ref.read(_trackStateProvider).totalFrames;
   var startFrame = 0;
 
-  for (var i = 0; i < segments.length; i++) {
-    final segment = segments[i];
-    final endFrame = segment.startFrame;
+  while (startFrame < lastFrame) {
+    final segment = _includesSegment(startFrame, startFrame + minSpace, segments);
 
-    if (endFrame - startFrame >= 10) {
-      break;
+    if (segment != null) {
+      // If a segment is found, move to the end of that segment
+      startFrame = segment.endFrame;
+      continue;
     }
 
-    startFrame = segment.endFrame;
+    // If no segment is found, we have found a gap. Check if it is long enough
+    final endFrame =
+        segments.map((e) => e.startFrame).where((frame) => frame >= minSpace + startFrame).minOrNull ?? lastFrame;
+    if (endFrame - startFrame >= minSpace) {
+      break;
+    }
+    // If the gap is not long enough, move to the next segment
+    startFrame = segments.map((e) => e.endFrame).where((frame) => frame > startFrame).minOrNull ?? lastFrame;
   }
 
-  final endFrame = segments.map((e) => e.startFrame).where((frame) => frame >= 10 + startFrame).minOrNull ?? lastFrame;
+  var endFrame =
+      segments.map((e) => e.startFrame).where((frame) => frame >= minSpace + startFrame).minOrNull ?? lastFrame;
 
-  if (endFrame - startFrame < 10) {
+  if (maxFrames != null) {
+    endFrame = min(endFrame, startFrame + maxFrames);
+  }
+
+  if (endFrame - startFrame < minSpace) {
     Toasts.showError(ref, "Could not add segment", description: "There is not enough space to add a segment.");
     return;
   }
 
-  final segment = segmentBlueprint.defaultValue;
+  final segment = segmentField.defaultValue;
   if (segment == null) return;
 
   final newSegment = {
@@ -1200,14 +1237,26 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
 
 void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
   final page = ref.read(currentPageProvider);
-  if (page == null) return;
+  if (page == null) {
+    Toasts.showError(ref, "Could not delete segment", description: "No page is selected.");
+    return;
+  }
   final entry = ref.read(entryProvider(page.name, entryId));
-  if (entry == null) return;
+  if (entry == null) {
+    Toasts.showError(ref, "Could not delete segment", description: "No entry is selected.");
+    return;
+  }
 
   final blueprint = ref.read(entryBlueprintProvider(entry.type));
-  if (blueprint == null) return;
+  if (blueprint == null) {
+    Toasts.showError(ref, "Could not delete segment", description: "No blueprint is found for the selected entry.");
+    return;
+  }
   final segmentBlueprint = blueprint.getField(segmentPath);
-  if (segmentBlueprint == null) return;
+  if (segmentBlueprint == null) {
+    Toasts.showError(ref, "Could not delete segment", description: "No blueprint is found for the selected segment.");
+    return;
+  }
 
   final parts = segmentPath.split(".");
   final listPath = parts.sublist(0, parts.length - 1).join(".");
@@ -1366,7 +1415,7 @@ class _FrameField extends HookConsumerWidget {
   final String title;
   final IconData? icon;
   final String hintText;
-  final bool Function(int)? onValidate;
+  final String? Function(int)? onValidate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1406,12 +1455,12 @@ class _FrameField extends HookConsumerWidget {
             onDone: (text) {
               final newValue = int.tryParse(text);
               if (newValue == null) return;
-              if (onValidate != null && !onValidate!(newValue)) {
-                error.value = "Invalid $title";
-                return;
+              if (onValidate != null) {
+                final errorText = onValidate!(newValue);
+                error.value = errorText;
+                if (errorText != null) return;
               }
 
-              error.value = null;
               ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, newValue);
             },
             maxLines: 1,
@@ -1438,16 +1487,24 @@ class _StartFrameField extends HookConsumerWidget {
       hintText: "Enter a frame number",
       onValidate: (frame) {
         final entryId = ref.read(inspectingEntryIdProvider);
-        if (entryId == null) return false;
+        if (entryId == null) return "No entry selected";
         final segment = ref.read(inspectingSegmentProvider);
-        if (segment == null) return false;
+        if (segment == null) return "No segment selected";
 
-        if (frame > segment.endFrame) return false;
+        if (frame > segment.endFrame) return "Cannot be after end frame";
+
+        if (segment.minFrames != null && segment.endFrame - frame < segment.minFrames!) {
+          return "The segment must be at least ${segment.minFrames} frames long";
+        }
+        if (segment.maxFrames != null && segment.endFrame - frame > segment.maxFrames!) {
+          return "The segment must be at most ${segment.maxFrames} frames long";
+        }
 
         final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
         final previousSegment = segments.where((s) => s.endFrame <= segment.startFrame).maxBy((_, s) => s.endFrame);
         final minimumFrame = previousSegment?.endFrame ?? 0;
-        return frame >= minimumFrame;
+        if (frame < minimumFrame) return "Cannot overlap with previous segment";
+        return null;
       },
     );
   }
@@ -1469,16 +1526,25 @@ class _EndFrameField extends HookConsumerWidget {
       hintText: "Enter a frame number",
       onValidate: (frame) {
         final entryId = ref.read(inspectingEntryIdProvider);
-        if (entryId == null) return false;
+        if (entryId == null) return "No entry selected";
         final segment = ref.read(inspectingSegmentProvider);
-        if (segment == null) return false;
+        if (segment == null) return "No segment selected";
 
-        if (frame < segment.startFrame) return false;
+        if (frame < segment.startFrame) return "Cannot be before start frame";
+
+        if (segment.minFrames != null && frame - segment.startFrame < segment.minFrames!) {
+          return "The segment must be at least ${segment.minFrames} frames long";
+        }
+
+        if (segment.maxFrames != null && frame - segment.startFrame > segment.maxFrames!) {
+          return "The segment must be at most ${segment.maxFrames} frames long";
+        }
 
         final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
         final nextSegment = segments.where((s) => s.startFrame >= segment.endFrame).minBy((_, s) => s.startFrame);
         final maximumFrame = nextSegment?.startFrame ?? ref.read(_trackStateProvider).totalFrames;
-        return frame <= maximumFrame;
+        if (frame > maximumFrame) return "Cannot overlap with next segment";
+        return null;
       },
     );
   }

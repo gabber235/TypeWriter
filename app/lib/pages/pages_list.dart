@@ -14,7 +14,6 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
@@ -22,7 +21,6 @@ import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/dropdown.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
-import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/components/general/validated_text_field.dart";
 
 part "pages_list.freezed.dart";
@@ -86,16 +84,6 @@ class _PagesSelector extends HookConsumerWidget {
             const SizedBox(height: 12),
             const SelectingEntriesBlocker(
               child: _AddPageButton(),
-            ),
-            FilledButton(
-              child: const Text("test"),
-              onPressed: () {
-                Toasts.showError(
-                  ref.passing,
-                  "Could not add segment",
-                  description: "There is not enough space to add a segment.",
-                );
-              },
             ),
           ],
         ),

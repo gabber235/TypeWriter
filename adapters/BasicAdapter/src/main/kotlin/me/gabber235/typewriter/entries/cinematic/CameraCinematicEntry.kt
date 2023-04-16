@@ -4,8 +4,7 @@ import com.github.shynixn.mccoroutine.launch
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.Segments
-import me.gabber235.typewriter.adapters.modifiers.WithRotation
+import me.gabber235.typewriter.adapters.modifiers.*
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.protocollib.*
@@ -24,6 +23,7 @@ data class CameraCinematicEntry(
 	override val name: String = "",
 	override val criteria: List<Criteria> = emptyList(),
 	@Segments(icon = Icons.VIDEO)
+	@InnerMin(Min(10))
 	val segments: List<CameraSegment> = emptyList(),
 ) : CinematicEntry {
 	override fun create(player: Player): CinematicAction {

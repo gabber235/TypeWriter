@@ -125,7 +125,7 @@ class _SegmentPathsProvider extends AutoDisposeProvider<Map<String, Modifier>> {
   }
 }
 
-String _$segmentsHash() => r'440d101120d3a1b897dec0821320d4a06dd3ea64';
+String _$segmentsHash() => r'62448598c38a97d97a3386f8e198dff9a6c50620';
 typedef _SegmentsRef = AutoDisposeProviderRef<List<Segment>>;
 
 /// See also [_segments].

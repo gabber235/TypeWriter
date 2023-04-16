@@ -22,6 +22,8 @@ mixin _$Segment {
   IconData get icon => throw _privateConstructorUsedError;
   int get startFrame => throw _privateConstructorUsedError;
   int get endFrame => throw _privateConstructorUsedError;
+  int? get minFrames => throw _privateConstructorUsedError;
+  int? get maxFrames => throw _privateConstructorUsedError;
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -40,6 +42,8 @@ abstract class $SegmentCopyWith<$Res> {
       IconData icon,
       int startFrame,
       int endFrame,
+      int? minFrames,
+      int? maxFrames,
       Map<String, dynamic> data});
 }
 
@@ -62,6 +66,8 @@ class _$SegmentCopyWithImpl<$Res, $Val extends Segment>
     Object? icon = null,
     Object? startFrame = null,
     Object? endFrame = null,
+    Object? minFrames = freezed,
+    Object? maxFrames = freezed,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
@@ -89,6 +95,14 @@ class _$SegmentCopyWithImpl<$Res, $Val extends Segment>
           ? _value.endFrame
           : endFrame // ignore: cast_nullable_to_non_nullable
               as int,
+      minFrames: freezed == minFrames
+          ? _value.minFrames
+          : minFrames // ignore: cast_nullable_to_non_nullable
+              as int?,
+      maxFrames: freezed == maxFrames
+          ? _value.maxFrames
+          : maxFrames // ignore: cast_nullable_to_non_nullable
+              as int?,
       data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -111,6 +125,8 @@ abstract class _$$_SegmentCopyWith<$Res> implements $SegmentCopyWith<$Res> {
       IconData icon,
       int startFrame,
       int endFrame,
+      int? minFrames,
+      int? maxFrames,
       Map<String, dynamic> data});
 }
 
@@ -130,6 +146,8 @@ class __$$_SegmentCopyWithImpl<$Res>
     Object? icon = null,
     Object? startFrame = null,
     Object? endFrame = null,
+    Object? minFrames = freezed,
+    Object? maxFrames = freezed,
     Object? data = null,
   }) {
     return _then(_$_Segment(
@@ -157,6 +175,14 @@ class __$$_SegmentCopyWithImpl<$Res>
           ? _value.endFrame
           : endFrame // ignore: cast_nullable_to_non_nullable
               as int,
+      minFrames: freezed == minFrames
+          ? _value.minFrames
+          : minFrames // ignore: cast_nullable_to_non_nullable
+              as int?,
+      maxFrames: freezed == maxFrames
+          ? _value.maxFrames
+          : maxFrames // ignore: cast_nullable_to_non_nullable
+              as int?,
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
@@ -175,6 +201,8 @@ class _$_Segment implements _Segment {
       this.icon = FontAwesomeIcons.star,
       this.startFrame = 0,
       this.endFrame = 0,
+      this.minFrames,
+      this.maxFrames,
       final Map<String, dynamic> data = const {}})
       : _data = data;
 
@@ -196,6 +224,10 @@ class _$_Segment implements _Segment {
   @override
   @JsonKey()
   final int endFrame;
+  @override
+  final int? minFrames;
+  @override
+  final int? maxFrames;
   final Map<String, dynamic> _data;
   @override
   @JsonKey()
@@ -207,7 +239,7 @@ class _$_Segment implements _Segment {
 
   @override
   String toString() {
-    return 'Segment(path: $path, index: $index, color: $color, icon: $icon, startFrame: $startFrame, endFrame: $endFrame, data: $data)';
+    return 'Segment(path: $path, index: $index, color: $color, icon: $icon, startFrame: $startFrame, endFrame: $endFrame, minFrames: $minFrames, maxFrames: $maxFrames, data: $data)';
   }
 
   @override
@@ -223,12 +255,25 @@ class _$_Segment implements _Segment {
                 other.startFrame == startFrame) &&
             (identical(other.endFrame, endFrame) ||
                 other.endFrame == endFrame) &&
+            (identical(other.minFrames, minFrames) ||
+                other.minFrames == minFrames) &&
+            (identical(other.maxFrames, maxFrames) ||
+                other.maxFrames == maxFrames) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, path, index, color, icon,
-      startFrame, endFrame, const DeepCollectionEquality().hash(_data));
+  int get hashCode => Object.hash(
+      runtimeType,
+      path,
+      index,
+      color,
+      icon,
+      startFrame,
+      endFrame,
+      minFrames,
+      maxFrames,
+      const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
   @override
@@ -245,6 +290,8 @@ abstract class _Segment implements Segment {
       final IconData icon,
       final int startFrame,
       final int endFrame,
+      final int? minFrames,
+      final int? maxFrames,
       final Map<String, dynamic> data}) = _$_Segment;
 
   @override
@@ -259,6 +306,10 @@ abstract class _Segment implements Segment {
   int get startFrame;
   @override
   int get endFrame;
+  @override
+  int? get minFrames;
+  @override
+  int? get maxFrames;
   @override
   Map<String, dynamic> get data;
   @override

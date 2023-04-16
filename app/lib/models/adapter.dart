@@ -229,6 +229,11 @@ extension FieldTypeExtension on FieldInfo {
   bool hasModifier(String name) {
     return getModifier(name) != null;
   }
+
+  T? get<T>(String name) {
+    final modifier = getModifier(name);
+    return modifier?.data as T?;
+  }
 }
 
 /// A data model that represents a primitive field type.

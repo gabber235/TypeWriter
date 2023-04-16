@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entry
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
 import com.google.gson.stream.JsonReader
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
@@ -169,7 +170,19 @@ private fun JsonReader.parseEntry(gson: Gson): Entry? {
 data class Page(
 	val id: String = "",
 	val entries: List<Entry> = emptyList(),
+	val type: PageType = PageType.SEQUENCE,
 )
+
+enum class PageType(val id: String) {
+	@SerializedName("sequence")
+	SEQUENCE("sequence"),
+
+	@SerializedName("static")
+	STATIC("static"),
+
+	@SerializedName("cinematic")
+	CINEMATIC("cinematic"),
+}
 
 fun Iterable<Criteria>.matches(playerUUID: UUID): Boolean = all {
 	val entry = Query.findById<ReadableFactEntry>(it.fact)

@@ -138,6 +138,9 @@ private val computers: List<ModifierComputer> by lazy {
 		WithRotationModifierComputer,
 		SoundModifierComputer,
 		SegmentModifierComputer,
+		MinModifierComputer,
+		MaxModifierComputer,
+		PageModifierComputer,
 	)
 }
 

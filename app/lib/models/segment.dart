@@ -13,10 +13,16 @@ class Segment with _$Segment {
     @Default(FontAwesomeIcons.star) IconData icon,
     @Default(0) int startFrame,
     @Default(0) int endFrame,
+    int? minFrames,
+    int? maxFrames,
     @Default({}) Map<String, dynamic> data,
   }) = _Segment;
 }
 
 extension SegmentX on Segment {
   String get truePath => path.replaceFirst("*", index.toString());
+
+  bool contains(int frame) => frame > startFrame && frame < endFrame;
+
+  bool overlaps(int startFrame, int endFrame) => contains(startFrame) || contains(endFrame);
 }

@@ -4,29 +4,73 @@ import me.gabber235.typewriter.adapters.*
 import java.lang.reflect.Field
 import kotlin.reflect.full.*
 
+enum class InnerModifierType {
+	LIST,
+	MAP,
+	OBJECT,
+}
+
+data class InnerAnnotationFinder<BaseAnnotation : Annotation, ParentAnnotation : Annotation>(
+	val parentAnnotationClass: Class<ParentAnnotation>,
+	val transformer: (ParentAnnotation) -> BaseAnnotation,
+	val types: List<InnerModifierType> = listOf(
+		InnerModifierType.LIST,
+		InnerModifierType.MAP,
+		InnerModifierType.OBJECT
+	),
+)
 
 interface StaticModifierComputer<A : Annotation> : ModifierComputer {
 	val annotationClass: Class<A>
+	val innerAnnotationFinders: List<InnerAnnotationFinder<A, Annotation>> get() = emptyList()
+
 	fun computeModifier(annotation: A, info: FieldInfo): FieldModifier?
 
 	override fun compute(field: Field, info: FieldInfo): FieldModifier? {
+		findAnnotation(field, annotationClass)?.let { annotation ->
+			return computeModifier(annotation, info)
+		}
+
+		if (info !is ListField && info !is MapField && info !is ObjectField) {
+			return null
+		}
+
+		innerAnnotationFinders.forEach { finder ->
+			val annotation = findAnnotation(field, finder.parentAnnotationClass) ?: return@forEach
+			val innerAnnotation = finder.transformer(annotation)
+
+			if (info is ListField && finder.types.contains(InnerModifierType.LIST)) {
+				computeModifier(innerAnnotation, info.type)?.let { return FieldModifier.InnerListModifier(it) }
+			}
+			if (info is MapField && finder.types.contains(InnerModifierType.MAP)) {
+				val keyModifier = computeModifier(innerAnnotation, info.key)
+				val valueModifier = computeModifier(innerAnnotation, info.value)
+
+				return FieldModifier.InnerMapModifier(keyModifier, valueModifier)
+			}
+			if (info is ObjectField && finder.types.contains(InnerModifierType.OBJECT)) {
+				computeModifier(innerAnnotation, info)?.let { return FieldModifier.InnerCustomModifier(it) }
+			}
+		}
+		return null
+	}
+
+	fun <T : Annotation> findAnnotation(field: Field, annotationClass: Class<T>): T? {
 		val annotation = field.getAnnotation(annotationClass)
 		if (annotation != null) {
-			return computeModifier(annotation, info)
+			return annotation
 		}
 
 		// If the annotation is not present on the field, check if it is present on primary constructor parameter
 		field.declaringClass.kotlin.primaryConstructor?.findParameterByName(field.name)
 			?.findAnnotations(annotationClass.kotlin)?.firstOrNull()?.let {
-				return computeModifier(it, info)
+				return it
 			}
 
 		// We try to find the interface property and see if it has the annotation
 		return field.declaringClass.interfaces.asSequence().mapNotNull {
 			it.kotlin.memberProperties.firstOrNull { prop -> prop.name == field.name }
-		}.firstOrNull()?.findAnnotations(annotationClass.kotlin)?.firstOrNull()?.let {
-			computeModifier(it, info)
-		}
+		}.firstOrNull()?.findAnnotations(annotationClass.kotlin)?.firstOrNull()
 	}
 
 	/**
