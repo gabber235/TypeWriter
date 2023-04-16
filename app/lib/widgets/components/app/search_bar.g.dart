@@ -53,7 +53,7 @@ final searchElementsProvider =
 );
 
 typedef SearchElementsRef = AutoDisposeProviderRef<List<SearchElement>>;
-String _$searchGlobalKeysHash() => r'96d56268e2a6273865c901e032749f3e066cc535';
+String _$searchGlobalKeysHash() => r'bdabd3beff37b339bab7032a03c48a3714ac500f';
 
 /// See also [searchGlobalKeys].
 @ProviderFor(searchGlobalKeys)

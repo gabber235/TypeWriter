@@ -4,6 +4,9 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:stack_trace/stack_trace.dart" as stack_trace;
 import "package:typewriter/app_router.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
+import "package:uuid/uuid.dart";
+
+const uuid = Uuid();
 
 void main() async {
   FlutterError.demangleStackTrace = (stack) {

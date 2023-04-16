@@ -207,7 +207,7 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
         onEnter: (_) => hovering.value = true,
         onExit: (_) => hovering.value = false,
         child: Icon(showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play, size: 16)
-            .animate(controller: controller)
+            .animate(controller: controller, autoPlay: false)
             .scaleXY(duration: 300.ms, begin: 1, end: 1.2)
             .shake(delay: 100.ms, duration: 500.ms, curve: Curves.easeInOutCubicEmphasized)
             .scaleXY(delay: 600.ms, duration: 300.ms, begin: 1.2, end: 1),
@@ -406,7 +406,7 @@ class _ChosenSound extends HookConsumerWidget {
             onEnter: (_) => hovering.value = true,
             onExit: (_) => hovering.value = false,
             child: Icon(showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play, size: 16)
-                .animate(controller: controller)
+                .animate(controller: controller, autoPlay: false)
                 .scaleXY(duration: 300.ms, begin: 1, end: 1.2)
                 .shake(delay: 100.ms, duration: 500.ms, curve: Curves.easeInOutCubicEmphasized)
                 .tint(color: Colors.amber)

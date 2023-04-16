@@ -1178,7 +1178,7 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
   final endFrame = segments.map((e) => e.startFrame).where((frame) => frame >= 10 + startFrame).minOrNull ?? lastFrame;
 
   if (endFrame - startFrame < 10) {
-    Toasts.showError(ref, "Could not add segment.", description: "There is not enough space to add a segment.");
+    Toasts.showError(ref, "Could not add segment", description: "There is not enough space to add a segment.");
     return;
   }
 

@@ -90,7 +90,11 @@ class _PagesSelector extends HookConsumerWidget {
             FilledButton(
               child: const Text("test"),
               onPressed: () {
-                Toasts.showError(ref.passing, "Test error", description: "Test description");
+                Toasts.showError(
+                  ref.passing,
+                  "Could not add segment",
+                  description: "There is not enough space to add a segment.",
+                );
               },
             ),
           ],

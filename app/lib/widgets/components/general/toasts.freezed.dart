@@ -16,37 +16,39 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Toast {
+  String get id => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   Color get color => throw _privateConstructorUsedError;
   IconData get icon => throw _privateConstructorUsedError;
+  DateTime? get shownAt => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            String message, String? description, Color color, IconData icon)
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)
         $default, {
-    required TResult Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)
+    required TResult Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)
         temporary,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            String message, String? description, Color color, IconData icon)?
+    TResult? Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)?
         $default, {
-    TResult? Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)?
+    TResult? Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)?
         temporary,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            String message, String? description, Color color, IconData icon)?
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)?
         $default, {
-    TResult Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)?
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)?
         temporary,
     required TResult orElse(),
   }) =>
@@ -80,7 +82,13 @@ abstract class $ToastCopyWith<$Res> {
   factory $ToastCopyWith(Toast value, $Res Function(Toast) then) =
       _$ToastCopyWithImpl<$Res, Toast>;
   @useResult
-  $Res call({String message, String? description, Color color, IconData icon});
+  $Res call(
+      {String id,
+      String message,
+      String? description,
+      Color color,
+      IconData icon,
+      DateTime? shownAt});
 }
 
 /// @nodoc
@@ -96,12 +104,18 @@ class _$ToastCopyWithImpl<$Res, $Val extends Toast>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? message = null,
     Object? description = freezed,
     Object? color = null,
     Object? icon = null,
+    Object? shownAt = freezed,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -118,6 +132,10 @@ class _$ToastCopyWithImpl<$Res, $Val extends Toast>
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
               as IconData,
+      shownAt: freezed == shownAt
+          ? _value.shownAt
+          : shownAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -128,7 +146,13 @@ abstract class _$$_ToastCopyWith<$Res> implements $ToastCopyWith<$Res> {
       __$$_ToastCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String message, String? description, Color color, IconData icon});
+  $Res call(
+      {String id,
+      String message,
+      String? description,
+      Color color,
+      IconData icon,
+      DateTime? shownAt});
 }
 
 /// @nodoc
@@ -140,12 +164,18 @@ class __$$_ToastCopyWithImpl<$Res> extends _$ToastCopyWithImpl<$Res, _$_Toast>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? message = null,
     Object? description = freezed,
     Object? color = null,
     Object? icon = null,
+    Object? shownAt = freezed,
   }) {
     return _then(_$_Toast(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -162,6 +192,10 @@ class __$$_ToastCopyWithImpl<$Res> extends _$ToastCopyWithImpl<$Res, _$_Toast>
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
               as IconData,
+      shownAt: freezed == shownAt
+          ? _value.shownAt
+          : shownAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -170,11 +204,15 @@ class __$$_ToastCopyWithImpl<$Res> extends _$ToastCopyWithImpl<$Res, _$_Toast>
 
 class _$_Toast implements _Toast {
   const _$_Toast(
-      {required this.message,
+      {required this.id,
+      required this.message,
       this.description,
       this.color = Colors.blue,
-      this.icon = FontAwesomeIcons.exclamation});
+      this.icon = FontAwesomeIcons.exclamation,
+      this.shownAt});
 
+  @override
+  final String id;
   @override
   final String message;
   @override
@@ -185,10 +223,12 @@ class _$_Toast implements _Toast {
   @override
   @JsonKey()
   final IconData icon;
+  @override
+  final DateTime? shownAt;
 
   @override
   String toString() {
-    return 'Toast(message: $message, description: $description, color: $color, icon: $icon)';
+    return 'Toast(id: $id, message: $message, description: $description, color: $color, icon: $icon, shownAt: $shownAt)';
   }
 
   @override
@@ -196,16 +236,18 @@ class _$_Toast implements _Toast {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Toast &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.color, color) || other.color == color) &&
-            (identical(other.icon, icon) || other.icon == icon));
+            (identical(other.icon, icon) || other.icon == icon) &&
+            (identical(other.shownAt, shownAt) || other.shownAt == shownAt));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, message, description, color, icon);
+      Object.hash(runtimeType, id, message, description, color, icon, shownAt);
 
   @JsonKey(ignore: true)
   @override
@@ -216,42 +258,42 @@ class _$_Toast implements _Toast {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            String message, String? description, Color color, IconData icon)
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)
         $default, {
-    required TResult Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)
+    required TResult Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)
         temporary,
   }) {
-    return $default(message, description, color, icon);
+    return $default(id, message, description, color, icon, shownAt);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            String message, String? description, Color color, IconData icon)?
+    TResult? Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)?
         $default, {
-    TResult? Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)?
+    TResult? Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)?
         temporary,
   }) {
-    return $default?.call(message, description, color, icon);
+    return $default?.call(id, message, description, color, icon, shownAt);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            String message, String? description, Color color, IconData icon)?
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)?
         $default, {
-    TResult Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)?
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)?
         temporary,
     required TResult orElse(),
   }) {
     if ($default != null) {
-      return $default(message, description, color, icon);
+      return $default(id, message, description, color, icon, shownAt);
     }
     return orElse();
   }
@@ -290,11 +332,15 @@ class _$_Toast implements _Toast {
 
 abstract class _Toast implements Toast {
   const factory _Toast(
-      {required final String message,
+      {required final String id,
+      required final String message,
       final String? description,
       final Color color,
-      final IconData icon}) = _$_Toast;
+      final IconData icon,
+      final DateTime? shownAt}) = _$_Toast;
 
+  @override
+  String get id;
   @override
   String get message;
   @override
@@ -303,6 +349,8 @@ abstract class _Toast implements Toast {
   Color get color;
   @override
   IconData get icon;
+  @override
+  DateTime? get shownAt;
   @override
   @JsonKey(ignore: true)
   _$$_ToastCopyWith<_$_Toast> get copyWith =>
@@ -317,7 +365,8 @@ abstract class _$$TemporaryToastCopyWith<$Res> implements $ToastCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String message,
+      {String id,
+      String message,
       String? description,
       Color color,
       IconData icon,
@@ -336,6 +385,7 @@ class __$$TemporaryToastCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? message = null,
     Object? description = freezed,
     Object? color = null,
@@ -344,6 +394,10 @@ class __$$TemporaryToastCopyWithImpl<$Res>
     Object? shownAt = freezed,
   }) {
     return _then(_$TemporaryToast(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -376,13 +430,16 @@ class __$$TemporaryToastCopyWithImpl<$Res>
 
 class _$TemporaryToast implements TemporaryToast {
   const _$TemporaryToast(
-      {required this.message,
+      {required this.id,
+      required this.message,
       this.description,
       this.color = Colors.blue,
       this.icon = FontAwesomeIcons.exclamation,
-      this.duration = const Duration(seconds: 5),
+      this.duration = const Duration(seconds: 10),
       this.shownAt});
 
+  @override
+  final String id;
   @override
   final String message;
   @override
@@ -401,7 +458,7 @@ class _$TemporaryToast implements TemporaryToast {
 
   @override
   String toString() {
-    return 'Toast.temporary(message: $message, description: $description, color: $color, icon: $icon, duration: $duration, shownAt: $shownAt)';
+    return 'Toast.temporary(id: $id, message: $message, description: $description, color: $color, icon: $icon, duration: $duration, shownAt: $shownAt)';
   }
 
   @override
@@ -409,6 +466,7 @@ class _$TemporaryToast implements TemporaryToast {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TemporaryToast &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -421,7 +479,7 @@ class _$TemporaryToast implements TemporaryToast {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, message, description, color, icon, duration, shownAt);
+      runtimeType, id, message, description, color, icon, duration, shownAt);
 
   @JsonKey(ignore: true)
   @override
@@ -432,43 +490,44 @@ class _$TemporaryToast implements TemporaryToast {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            String message, String? description, Color color, IconData icon)
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)
         $default, {
-    required TResult Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)
+    required TResult Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)
         temporary,
   }) {
-    return temporary(message, description, color, icon, duration, shownAt);
+    return temporary(id, message, description, color, icon, duration, shownAt);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            String message, String? description, Color color, IconData icon)?
+    TResult? Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)?
         $default, {
-    TResult? Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)?
+    TResult? Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)?
         temporary,
   }) {
     return temporary?.call(
-        message, description, color, icon, duration, shownAt);
+        id, message, description, color, icon, duration, shownAt);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            String message, String? description, Color color, IconData icon)?
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, DateTime? shownAt)?
         $default, {
-    TResult Function(String message, String? description, Color color,
-            IconData icon, Duration duration, DateTime? shownAt)?
+    TResult Function(String id, String message, String? description,
+            Color color, IconData icon, Duration duration, DateTime? shownAt)?
         temporary,
     required TResult orElse(),
   }) {
     if (temporary != null) {
-      return temporary(message, description, color, icon, duration, shownAt);
+      return temporary(
+          id, message, description, color, icon, duration, shownAt);
     }
     return orElse();
   }
@@ -507,13 +566,16 @@ class _$TemporaryToast implements TemporaryToast {
 
 abstract class TemporaryToast implements Toast {
   const factory TemporaryToast(
-      {required final String message,
+      {required final String id,
+      required final String message,
       final String? description,
       final Color color,
       final IconData icon,
       final Duration duration,
       final DateTime? shownAt}) = _$TemporaryToast;
 
+  @override
+  String get id;
   @override
   String get message;
   @override
@@ -523,6 +585,7 @@ abstract class TemporaryToast implements Toast {
   @override
   IconData get icon;
   Duration get duration;
+  @override
   DateTime? get shownAt;
   @override
   @JsonKey(ignore: true)
