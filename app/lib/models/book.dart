@@ -1,8 +1,10 @@
 import "package:collection/collection.dart";
+import "package:collection_ext/all.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/communicator.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 
 part "book.freezed.dart";
@@ -68,8 +70,8 @@ class BookNotifier extends StateNotifier<Book> {
     if (page == null) return;
     state = state.copyWith(
       pages: [
-        ...state.pages.where((p) => p.name != old),
-        page.copyWith(name: newName),
+        ...state.pages.where((p) => p.name != old).map((p) => _fixPage(p, old, newName)),
+        _fixPage(page, old, newName).copyWith(name: newName),
       ],
     );
   }
@@ -77,7 +79,38 @@ class BookNotifier extends StateNotifier<Book> {
   /// Only for internal use.
   void syncDeletePage(String name) {
     state = state.copyWith(
-      pages: state.pages.where((p) => p.name != name).toList(),
+      pages: state.pages.where((p) => p.name != name).map((p) => _fixPage(p, name, null)).toList(),
     );
+  }
+
+  /// Fix page references. This is called for all other pages when a page is renamed or deleted.
+  Page _fixPage(Page page, String targetId, String? newId) {
+    final newEntries = page.entries.map((entry) => _removedReferencesFromEntry(page, entry, targetId, newId)).toList();
+    return page.copyWith(entries: newEntries);
+  }
+
+  /// When a page is renamed or deleted, all references to it must be updated.
+  Entry _removedReferencesFromEntry(Page page, Entry entry, String targetId, String? newId) {
+    final referenceEntryPaths = state.adapters
+            .flatMap((adapter) => adapter.entries)
+            .firstWhereOrNull((blueprint) => blueprint.name == entry.type)
+            ?.fieldsWithModifier("page")
+            .keys
+            .toList() ??
+        [];
+
+    final referenceEntryIds = referenceEntryPaths.expand((path) => entry.getAll(path)).whereType<String>().toList();
+    if (!referenceEntryIds.contains(targetId)) {
+      return entry;
+    }
+
+    final newEntry = referenceEntryPaths.fold(
+      entry,
+      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == targetId ? newId : value),
+    );
+
+    ref.read(communicatorProvider).updateEntireEntry(page.name, newEntry);
+
+    return newEntry;
   }
 }

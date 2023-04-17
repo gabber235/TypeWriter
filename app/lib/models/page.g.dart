@@ -146,6 +146,169 @@ class PageProvider extends AutoDisposeProvider<Page?> {
   }
 }
 
+String _$pageExistsHash() => r'373af781e0ba0784c10a3800d513a56a510c87e0';
+typedef PageExistsRef = AutoDisposeProviderRef<bool>;
+
+/// See also [pageExists].
+@ProviderFor(pageExists)
+const pageExistsProvider = PageExistsFamily();
+
+/// See also [pageExists].
+class PageExistsFamily extends Family<bool> {
+  /// See also [pageExists].
+  const PageExistsFamily();
+
+  /// See also [pageExists].
+  PageExistsProvider call(
+    String name,
+  ) {
+    return PageExistsProvider(
+      name,
+    );
+  }
+
+  @override
+  PageExistsProvider getProviderOverride(
+    covariant PageExistsProvider provider,
+  ) {
+    return call(
+      provider.name,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'pageExistsProvider';
+}
+
+/// See also [pageExists].
+class PageExistsProvider extends AutoDisposeProvider<bool> {
+  /// See also [pageExists].
+  PageExistsProvider(
+    this.name,
+  ) : super.internal(
+          (ref) => pageExists(
+            ref,
+            name,
+          ),
+          from: pageExistsProvider,
+          name: r'pageExistsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$pageExistsHash,
+          dependencies: PageExistsFamily._dependencies,
+          allTransitiveDependencies:
+              PageExistsFamily._allTransitiveDependencies,
+        );
+
+  final String name;
+
+  @override
+  bool operator ==(Object other) {
+    return other is PageExistsProvider && other.name == name;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, name.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$pageTypeHash() => r'ddba8e6be7b24657a449a4bdc0afcffac3ae3d61';
+typedef PageTypeRef = AutoDisposeProviderRef<PageType>;
+
+/// See also [pageType].
+@ProviderFor(pageType)
+const pageTypeProvider = PageTypeFamily();
+
+/// See also [pageType].
+class PageTypeFamily extends Family<PageType> {
+  /// See also [pageType].
+  const PageTypeFamily();
+
+  /// See also [pageType].
+  PageTypeProvider call(
+    String name,
+  ) {
+    return PageTypeProvider(
+      name,
+    );
+  }
+
+  @override
+  PageTypeProvider getProviderOverride(
+    covariant PageTypeProvider provider,
+  ) {
+    return call(
+      provider.name,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'pageTypeProvider';
+}
+
+/// See also [pageType].
+class PageTypeProvider extends AutoDisposeProvider<PageType> {
+  /// See also [pageType].
+  PageTypeProvider(
+    this.name,
+  ) : super.internal(
+          (ref) => pageType(
+            ref,
+            name,
+          ),
+          from: pageTypeProvider,
+          name: r'pageTypeProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$pageTypeHash,
+          dependencies: PageTypeFamily._dependencies,
+          allTransitiveDependencies: PageTypeFamily._allTransitiveDependencies,
+        );
+
+  final String name;
+
+  @override
+  bool operator ==(Object other) {
+    return other is PageTypeProvider && other.name == name;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, name.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$entriesPageHash() => r'722059484c7e53a0839547133217a6615f37bc6d';
 typedef EntriesPageRef = AutoDisposeProviderRef<String?>;
 

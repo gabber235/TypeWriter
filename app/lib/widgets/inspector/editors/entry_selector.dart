@@ -92,7 +92,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tag = field.getModifier("entry")!.data;
+    final tag = field.get<String>("entry") ?? "";
     final id = ref.watch(fieldValueProvider(path, "")) as String;
 
     final hasEntry = ref.watch(entryExistsProvider(id));

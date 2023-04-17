@@ -20,7 +20,7 @@ data class CinematicEntry(
 	override val customTriggers: List<String> = emptyList(),
 	override val criteria: List<Criteria> = emptyList(),
 	override val modifiers: List<Modifier> = emptyList(),
-	@SerializedName("pageId")
+	@SerializedName("page")
 	@Page(PageType.CINEMATIC)
 	val pageId: String = "",
 	@Help("If the player is already in a cinematic, should the cinematic be replaced?")

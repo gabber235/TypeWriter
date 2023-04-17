@@ -28,6 +28,16 @@ Page? page(PageRef ref, String name) {
 }
 
 @riverpod
+bool pageExists(PageExistsRef ref, String name) {
+  return ref.watch(pageProvider(name)) != null;
+}
+
+@riverpod
+PageType pageType(PageTypeRef ref, String name) {
+  return ref.watch(pageProvider(name))?.type ?? PageType.sequence;
+}
+
+@riverpod
 String? entriesPage(EntriesPageRef ref, String entryId) {
   return ref.watch(pagesProvider).firstWhereOrNull((page) => page.entries.any((entry) => entry.id == entryId))?.name;
 }
@@ -78,6 +88,10 @@ enum PageType {
 
   static PageType fromBlueprint(EntryBlueprint blueprint) {
     return values.firstWhere((type) => blueprint.tags.contains(type.tag));
+  }
+
+  static PageType fromName(String name) {
+    return values.firstWhere((type) => name.startsWith(type.tag));
   }
 }
 
@@ -207,17 +221,17 @@ extension PageExtension on Page {
   }
 
   /// When an entry is delete all references in other entries need to be removed.
-  Entry _removedReferencesFromEntry(PassingRef ref, Entry entry, String targeId) {
+  Entry _removedReferencesFromEntry(PassingRef ref, Entry entry, String targetId) {
     final referenceEntryPaths = ref.read(modifierPathsProvider(entry.type, "entry"));
 
     final referenceEntryIds = referenceEntryPaths.expand((path) => entry.getAll(path)).whereType<String>().toList();
-    if (!referenceEntryIds.contains(targeId)) {
+    if (!referenceEntryIds.contains(targetId)) {
       return entry;
     }
 
     final newEntry = referenceEntryPaths.fold(
       entry,
-      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == targeId ? null : value),
+      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == targetId ? null : value),
     );
 
     ref.read(communicatorProvider).updateEntireEntry(name, newEntry);
@@ -287,11 +301,13 @@ extension PageX on Page {
           final newEntry = await createEntryFromBlueprint(ref, blueprint);
           await _wireEntryToOtherEntry(ref, entry, newEntry);
           await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref, newEntry.id);
+          return null;
         },
       )
       ..fetchEntry(
         onSelect: (selectedEntry) async {
           await _wireEntryToOtherEntry(ref, entry, selectedEntry);
+          return null;
         },
       )
       ..open();

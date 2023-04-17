@@ -14,6 +14,7 @@ import "package:typewriter/widgets/inspector/editors/material.dart";
 import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/editors/optional.dart";
+import "package:typewriter/widgets/inspector/editors/page_selector.dart";
 import "package:typewriter/widgets/inspector/editors/sound.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -31,6 +32,7 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       // Modifier Editors
       EntrySelectorEditorFilter(),
       SoundSelectorEditorFilter(),
+      PageSelectorEditorFilter(),
 
       // Custom Editors
       MaterialSelectorEditorFilter(),

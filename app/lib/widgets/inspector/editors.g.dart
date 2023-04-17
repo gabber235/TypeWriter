@@ -119,7 +119,7 @@ class FieldValueProvider extends AutoDisposeProvider<dynamic> {
   }
 }
 
-String _$editorFiltersHash() => r'281a6a2de7583c8ae076cf781337a7da61fee612';
+String _$editorFiltersHash() => r'8c8e87f72721cbec3891e8736e4091e955b0d055';
 
 /// See also [editorFilters].
 @ProviderFor(editorFilters)
