@@ -73,7 +73,6 @@ class _PagesSelector extends HookConsumerWidget {
       width: 230,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
-        // When selecting entries we don't want to be able to switch pages or add new ones
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -82,6 +81,7 @@ class _PagesSelector extends HookConsumerWidget {
             const SizedBox(height: 12),
             for (var i = 0; i < pagesData.length; i++) _PageTile(index: i, pageData: pagesData[i]),
             const SizedBox(height: 12),
+            // When selecting entries we don't want to be able to add new pages
             const SelectingEntriesBlocker(
               child: _AddPageButton(),
             ),
