@@ -179,6 +179,10 @@ object AdapterLoader {
 	fun getAdapterData(): List<AdapterData> {
 		return adapters
 	}
+
+	fun getEntryBlueprint(type: String): EntryBlueprint? {
+		return adapters.asSequence().flatMap { it.entries }.firstOrNull { it.name == type }
+	}
 }
 
 data class AdapterData(

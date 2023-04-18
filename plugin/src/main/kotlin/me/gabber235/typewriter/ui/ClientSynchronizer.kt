@@ -5,7 +5,7 @@ import com.corundumstudio.socketio.SocketIOClient
 import com.github.shynixn.mccoroutine.launchAsync
 import com.google.gson.*
 import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.ui.StagingState.*
 import me.gabber235.typewriter.utils.*
 import java.io.File
@@ -35,6 +35,9 @@ object ClientSynchronizer {
 		gson = EntryDatabase.gson()
 
 		stagingState = if (stagingDir.exists()) {
+			// Migrate staging directory to use the new format
+			stagingDir.migrateIfNecessary()
+
 			val stagingPages = fetchPages(stagingDir)
 			val publishedPages = fetchPages(publishedDir)
 
@@ -52,7 +55,7 @@ object ClientSynchronizer {
 
 	private fun fetchPages(dir: File): Map<String, JsonObject> {
 		val pages = mutableMapOf<String, JsonObject>()
-		dir.listFiles { file -> file.name.endsWith(".json") }?.forEach { file ->
+		dir.pages().forEach { file ->
 			val page = file.readText()
 			pages[file.nameWithoutExtension] = gson.fromJson(page, JsonObject::class.java)
 		}

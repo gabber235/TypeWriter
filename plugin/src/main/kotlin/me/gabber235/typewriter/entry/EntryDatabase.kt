@@ -34,18 +34,8 @@ object EntryDatabase {
 	}
 
 	fun loadEntries() {
-		val dir = plugin.dataFolder["pages"]
-		if (!dir.exists()) {
-			dir.mkdirs()
-		}
-
 		val gson = gson()
-
-		val pages = dir.listFiles { file -> file.name.endsWith(".json") }?.mapNotNull { file ->
-			val id = file.nameWithoutExtension
-			val dialogueReader = JsonReader(file.reader())
-			dialogueReader.parsePage(id, gson)
-		} ?: emptyList()
+		val pages = readPages(gson)
 
 		this.facts = pages.flatMap { it.entries.filterIsInstance<FactEntry>() }
 		this.entities = pages.flatMap { it.entries.filterIsInstance<EntityEntry>() }
@@ -62,6 +52,21 @@ object EntryDatabase {
 		EntryListeners.register()
 
 		plugin.logger.info("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
+	}
+
+	private fun readPages(gson: Gson): List<Page> {
+		val dir = plugin.dataFolder["pages"]
+		if (!dir.exists()) {
+			dir.mkdirs()
+		}
+
+		dir.migrateIfNecessary()
+
+		return dir.pages().mapNotNull { file ->
+			val id = file.nameWithoutExtension
+			val dialogueReader = JsonReader(file.reader())
+			dialogueReader.parsePage(id, gson)
+		}
 	}
 
 	fun gson(): Gson {
