@@ -298,7 +298,8 @@ double _trackOffset(_TrackOffsetRef ref) {
 @riverpod
 String _longestEntryName(_LongestEntryNameRef ref) {
   final entryIds = ref.watch(_cinematicEntryIdsProvider);
-  final names = entryIds.map((entryId) => ref.watch(entryNameProvider(entryId))).whereNotNull().toList();
+  final names =
+      entryIds.map((entryId) => ref.watch(entryNameProvider(entryId))).whereNotNull().toList() + ["Track Duration"];
   return names.isEmpty ? "" : names.reduce((a, b) => a.length > b.length ? a : b);
 }
 
