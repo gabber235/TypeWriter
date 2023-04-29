@@ -19,7 +19,7 @@ class GlobalWriters extends HookConsumerWidget {
 
 class WritersIndicator extends HookConsumerWidget {
   const WritersIndicator({
-    required this.filter,
+    required this.writers,
     this.child,
     this.builder,
     this.shift,
@@ -28,7 +28,7 @@ class WritersIndicator extends HookConsumerWidget {
   })  : assert(child != null || builder != null),
         assert(!(shift != null && offset != null));
 
-  final bool Function(Writer) filter;
+  final List<Writer> writers;
   final Widget? child;
   final Widget Function(int)? builder;
 
@@ -37,8 +37,6 @@ class WritersIndicator extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final writers = ref.watch(writersProvider.select((list) => list.where(filter).toList()));
-
     final offset = this.offset ?? shift?.call(writers.length) ?? Offset.zero;
 
     return Stack(

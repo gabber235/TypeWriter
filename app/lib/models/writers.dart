@@ -2,13 +2,29 @@ import "dart:convert";
 
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "writers.freezed.dart";
 part "writers.g.dart";
+
+/// Get all the writers that are writhing in a specific field.
+/// [path] the given path of the field.
+@riverpod
+List<Writer> fieldWriters(FieldWritersRef ref, String path) {
+  final selectedEntryId = ref.watch(inspectingEntryIdProvider);
+
+  return ref.watch(writersProvider).where((writer) {
+    if (writer.entryId.isNullOrEmpty) return false;
+    if (writer.entryId != selectedEntryId) return false;
+    if (writer.field.isNullOrEmpty) return false;
+    return writer.field!.startsWith(path);
+  }).toList();
+}
 
 @freezed
 class Writer with _$Writer {

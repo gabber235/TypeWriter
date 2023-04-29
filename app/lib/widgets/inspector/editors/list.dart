@@ -64,7 +64,7 @@ class ListEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(fieldValueProvider(path, []));
+    final value = ref.watch(fieldValueProvider(path)) ?? [];
     final expanded = useState(false);
     final globalKeys = useMemoized(
       () => List.generate(

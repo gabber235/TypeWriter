@@ -2,9 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
@@ -12,6 +14,8 @@ import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
+
+part "entry_node.g.dart";
 
 class EntryNode extends HookConsumerWidget {
   const EntryNode({
@@ -53,6 +57,20 @@ class EntryNode extends HookConsumerWidget {
       onTap: () => ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId),
     );
   }
+}
+
+@riverpod
+List<Writer> _writers(_WritersRef ref, String id) {
+  final selectedEntryId = ref.watch(inspectingEntryIdProvider);
+
+  return ref.watch(writersProvider).where((writer) {
+    if (writer.entryId.isNullOrEmpty) return false;
+    if (writer.entryId != id) return false;
+    // If the writer has no field selected then we will always show them on the entry
+    if (writer.field.isNullOrEmpty) return true;
+    // Otherwise we will only show them if we are not inspecting this entry
+    return selectedEntryId != id;
+  }).toList();
 }
 
 class _EntryNode extends HookConsumerWidget {
@@ -107,14 +125,7 @@ class _EntryNode extends HookConsumerWidget {
         ref.watch(entryBlueprintProvider(type).select((b) => b?.tags.contains("triggerable") ?? false));
 
     return WritersIndicator(
-      filter: (writer) {
-        if (writer.entryId.isNullOrEmpty) return false;
-        if (writer.entryId != id) return false;
-        // If the writer has no field selected then we will always show them on the entry
-        if (writer.field.isNullOrEmpty) return true;
-        // Otherwise we will only show them if we are not inspecting this entry
-        return !isSelected;
-      },
+      writers: ref.watch(_writersProvider(id)),
       child: ContextMenuRegion(
         enabled: enableContextMenu,
         builder: (context) {

@@ -437,7 +437,7 @@ final _trackOffsetProvider = AutoDisposeProvider<double>.internal(
 );
 
 typedef _TrackOffsetRef = AutoDisposeProviderRef<double>;
-String _$longestEntryNameHash() => r'578f68acdba591e2dd1f520439a646d955714ad1';
+String _$longestEntryNameHash() => r'5279a4a558d828a7316e5f78a1744316d08b1d7f';
 
 /// See also [_longestEntryName].
 @ProviderFor(_longestEntryName)

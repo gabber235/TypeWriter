@@ -17,6 +17,7 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/icons.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/segment.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/color_converter.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -1409,7 +1410,6 @@ class _FrameField extends HookConsumerWidget {
     this.icon,
     this.hintText = "",
     this.onValidate,
-    super.key,
   });
 
   final String path;
@@ -1420,7 +1420,6 @@ class _FrameField extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedEntryId = ref.watch(inspectingEntryIdProvider);
     final focus = useFocusNode();
     final error = useState<String?>(null);
 
@@ -1434,12 +1433,7 @@ class _FrameField extends HookConsumerWidget {
         SectionTitle(title: title.isEmpty ? path.split(".").last : title),
         const SizedBox(height: 1),
         WritersIndicator(
-          filter: (writer) {
-            if (writer.entryId.isNullOrEmpty) return false;
-            if (writer.entryId != selectedEntryId) return false;
-            if (writer.field.isNullOrEmpty) return false;
-            return writer.field == path;
-          },
+          writers: ref.watch(fieldWritersProvider(path)),
           shift: (_) => const Offset(15, 0),
           child: DecoratedTextField(
             focus: focus,

@@ -12,6 +12,7 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/popups.dart";
@@ -92,6 +93,11 @@ class _PagesSelector extends HookConsumerWidget {
   }
 }
 
+@riverpod
+List<Writer> _writers(_WritersRef ref, String pageId) {
+  return ref.watch(writersProvider).where((writer) => writer.pageId.hasValue && writer.pageId == pageId).toList();
+}
+
 class _PageTile extends HookConsumerWidget {
   const _PageTile({
     required this.index,
@@ -144,7 +150,7 @@ class _PageTile extends HookConsumerWidget {
     final isSelected = ref.watch(currentPageIdProvider.select((e) => e == pageId));
 
     return WritersIndicator(
-      filter: (writer) => writer.pageId.hasValue && writer.pageId == pageId && !isSelected,
+      writers: isSelected ? [] : ref.watch(_writersProvider(pageId)),
       shift: (amount) => _needsShift(amount) ? const Offset(4, 30) : Offset.zero,
       builder: (amount) {
         return AnimatedPadding(

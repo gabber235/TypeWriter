@@ -95,7 +95,7 @@ extension AppRouterX on AppRouter {
     if (currentPage?.name != pageId) {
       await ref
           .read(appRouter)
-          .push(PageEditorRoute(id: pageId), onFailure: (e) => print("Failed to navigate to page $pageId: $e"));
+          .push(PageEditorRoute(id: pageId), onFailure: (e) => debugPrint("Failed to navigate to page $pageId: $e"));
     }
   }
 }

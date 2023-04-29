@@ -28,7 +28,7 @@ class StagingIndicator extends HookConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _Icon(),
+              // _Icon(),
               const SizedBox(width: 8),
               Text(
                 state.label,

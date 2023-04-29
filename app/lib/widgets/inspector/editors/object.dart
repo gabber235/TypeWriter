@@ -3,12 +3,12 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/help_info.dart";
-import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
 
 class ObjectEditorFilter extends EditorFilter {
@@ -34,7 +34,6 @@ class ObjectEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedEntryId = ref.watch(inspectingEntryIdProvider);
     final expanded = useState(defaultExpanded);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -46,14 +45,7 @@ class ObjectEditor extends HookConsumerWidget {
             borderRadius: BorderRadius.circular(4),
             onTap: () => expanded.value = !expanded.value,
             child: WritersIndicator(
-              filter: (writer) {
-                // Only show when a writer is selecting a subfield while this is collapsed
-                if (expanded.value) return false;
-                if (writer.entryId.isNullOrEmpty) return false;
-                if (writer.entryId != selectedEntryId) return false;
-                if (writer.field.isNullOrEmpty) return false;
-                return writer.field!.startsWith(path);
-              },
+              writers: expanded.value ? [] : ref.watch(fieldWritersProvider(path)),
               offset: const Offset(15, 15),
               child: Row(
                 children: [

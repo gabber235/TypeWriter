@@ -197,6 +197,7 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
           audioPlayer.stop();
           controller.reset();
         }
+        return null;
       },
       [hasFocus, hovering.value],
     );
@@ -394,6 +395,7 @@ class _ChosenSound extends HookConsumerWidget {
           audioPlayer.stop();
           controller.reset();
         }
+        return null;
       },
       [hovering.value],
     );
