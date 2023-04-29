@@ -2,6 +2,7 @@ package me.gabber235.typewriter.ui
 
 import com.corundumstudio.socketio.AckRequest
 import com.corundumstudio.socketio.SocketIOClient
+import com.github.shynixn.mccoroutine.launch
 import com.github.shynixn.mccoroutine.launchAsync
 import com.google.gson.*
 import me.gabber235.typewriter.Typewriter.Companion.plugin
@@ -276,13 +277,18 @@ object ClientSynchronizer {
 
 			// Check if there are any pages which are no longer in staging. If so, delete them
 			val stagingFiles = stagingDir.listFiles()?.map { it.name } ?: emptyList()
-			val pagesFiles = publishedDir.listFiles()?.map { it.name } ?: emptyList()
-			pagesFiles.filter { it !in stagingFiles }.forEach { plugin.dataFolder["pages/$it"].delete() }
+			val pagesFiles = publishedDir.listFiles()?.toList() ?: emptyList()
+
+			val deletedPages = pagesFiles.filter { it.name !in stagingFiles }
+			deletedPages.backup()
+			deletedPages.forEach { it.delete() }
 
 			// Delete the staging folder
 			stagingDir.deleteRecursively()
-			TypewriterReloadEvent().callEvent()
-			plugin.logger.info("Published the staging state")
+			plugin.launch {
+				TypewriterReloadEvent().callEvent()
+				plugin.logger.info("Published the staging state")
+			}
 			PUBLISHED
 		} catch (e: Exception) {
 			e.printStackTrace()

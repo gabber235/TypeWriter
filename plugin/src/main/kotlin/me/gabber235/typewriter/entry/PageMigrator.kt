@@ -51,17 +51,7 @@ fun File.migrateIfNecessary(run: Int = 0) {
 		""".trimMargin()
 		)
 
-		val date = Date()
-		val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
-
-		val backupFolder = plugin.dataFolder["backup/${dateFormat.format(date)}"]
-		backupFolder.mkdirs()
-
-		migratable.forEach {
-			val file = it.first
-			val backupFile = File(backupFolder, file.name)
-			file.copyTo(backupFile, overwrite = true)
-		}
+		migratable.map { it.first }.backup()
 	}
 
 	val lowestVersion = migratable.minBy { it.second }.second
@@ -77,6 +67,19 @@ fun File.migrateIfNecessary(run: Int = 0) {
 
 	/// Recursively call this function until all files are migrated
 	migrateIfNecessary(run + 1)
+}
+
+fun List<File>.backup() {
+	val date = Date()
+	val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
+
+	val backupFolder = plugin.dataFolder["backup/${dateFormat.format(date)}"]
+	backupFolder.mkdirs()
+	forEach {
+		val file = it
+		val backupFile = File(backupFolder, file.name)
+		file.copyTo(backupFile, overwrite = true)
+	}
 }
 
 private val migrators by lazy {

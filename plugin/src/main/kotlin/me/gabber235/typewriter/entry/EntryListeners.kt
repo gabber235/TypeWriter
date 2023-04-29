@@ -46,7 +46,12 @@ object EntryListeners {
 
 	private fun onEvent(event: Event, adapterListener: AdapterListener) {
 		val parameters = adapterListener.generators.map { it.generate(event, adapterListener) }
-		adapterListener.method.invoke(null, *parameters.toTypedArray())
+		try {
+			adapterListener.method.invoke(null, *parameters.toTypedArray())
+		} catch (e: Exception) {
+			plugin.logger.severe("Failed to invoke entry listener ${adapterListener.method.name} for event ${event::class.simpleName}")
+			e.printStackTrace()
+		}
 	}
 
 	/**
