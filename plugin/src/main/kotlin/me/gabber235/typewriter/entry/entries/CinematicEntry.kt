@@ -26,9 +26,26 @@ infix fun Segment.isActiveAt(frame: Int): Boolean = frame in startFrame..endFram
 infix fun Segment.canFinishAt(frame: Int): Boolean = frame > endFrame
 
 interface CinematicAction {
+	/**
+	 * Called when the cinematic starts
+	 */
 	fun setup() {}
+
+	/**
+	 * Called every frame
+	 */
 	fun tick(frame: Int) {}
 
+	/**
+	 * Called when the cinematic is finished
+	 */
 	fun teardown() {}
+
+	/**
+	 * Common use case
+	 * ```kotlin
+	 * override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
+	 * ```
+	 */
 	infix fun canFinish(frame: Int): Boolean
 }

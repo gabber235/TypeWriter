@@ -7,6 +7,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
+import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.GAME_MODE
@@ -44,13 +45,14 @@ data class BlindingSegment(
 class BlindingCinematicAction(
 	private val player: Player,
 	private val entry: BlindingCinematicEntry,
-) : CinematicAction {
+) : SimpleCinematicAction<BlindingSegment>() {
 
-	private var previousSegment: BlindingSegment? = null
 	private var state: PlayerState? = null
 
-	private fun setupSegment(segment: BlindingSegment) {
-		previousSegment = segment
+	override val segments: List<BlindingSegment> = entry.segments
+
+	override fun startSegment(segment: BlindingSegment) {
+		super.startSegment(segment)
 		state = player.state(LOCATION, GAME_MODE)
 
 		plugin.launch {
@@ -68,8 +70,8 @@ class BlindingCinematicAction(
 		}
 	}
 
-	private fun resetSegment() {
-		previousSegment = null
+	override fun stopSegment(segment: BlindingSegment) {
+		super.stopSegment(segment)
 		val state = state ?: return
 		this.state = null
 		plugin.launch {
@@ -78,19 +80,4 @@ class BlindingCinematicAction(
 		}
 	}
 
-	override fun tick(frame: Int) {
-		super.tick(frame)
-		val segment = entry.segments activeSegmentAt frame
-		
-		if (segment == previousSegment) return
-
-		if (previousSegment != null) {
-			resetSegment()
-		}
-		if (segment != null) {
-			setupSegment(segment)
-		}
-	}
-
-	override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
 }
