@@ -1,10 +1,12 @@
 import "dart:convert";
 
+import "package:flutter_animate/flutter_animate.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/utils/debouncer.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -39,7 +41,8 @@ class Writer with _$Writer {
   factory Writer.fromJson(Map<String, dynamic> json) => _$WriterFromJson(json);
 }
 
-final writersProvider = StateNotifierProvider<WritersNotifier, List<Writer>>(WritersNotifier.new);
+final writersProvider =
+    StateNotifierProvider<WritersNotifier, List<Writer>>(WritersNotifier.new, name: "writersProvider");
 
 class WritersNotifier extends StateNotifier<List<Writer>> {
   WritersNotifier(this.ref) : super([]) {
@@ -47,8 +50,20 @@ class WritersNotifier extends StateNotifier<List<Writer>> {
       ..listen(currentPageIdProvider, (_, next) => _handleStateChange(pageId: next))
       ..listen(inspectingEntryIdProvider, (_, next) => _handleStateChange(entryId: next))
       ..listen(currentEditingFieldProvider, (_, next) => _handleStateChange(field: next));
+
+    _debouncer = Debouncer<Map<String, dynamic>>(duration: 300.ms, callback: _flushUpdateSelf);
   }
   final Ref<dynamic> ref;
+  late Debouncer<Map<String, dynamic>> _debouncer;
+
+  @override
+  bool updateShouldNotify(List<Writer> old, List<Writer> current) {
+    if (old.length != current.length) return true;
+    for (var i = 0; i < old.length; i++) {
+      if (old[i] != current[i]) return true;
+    }
+    return false;
+  }
 
   void syncWriters(String data) {
     final self = ref.read(socketProvider)?.id;
@@ -58,6 +73,12 @@ class WritersNotifier extends StateNotifier<List<Writer>> {
   }
 
   void _updateSelf(Map<String, dynamic> data) {
+    // We use a debouncer to allow the application to render the ui as writing to the sockets blocks the ui.
+    // This is a workaround for the fact that it is not possible to create isolates in flutter web.
+    _debouncer.run(data);
+  }
+
+  void _flushUpdateSelf(Map<String, dynamic> data) {
     ref.read(communicatorProvider).updateSelfWriter(data);
   }
 

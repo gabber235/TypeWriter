@@ -11,6 +11,7 @@ part "book.freezed.dart";
 
 final bookProvider = StateNotifierProvider<BookNotifier, Book>(
   (ref) => BookNotifier(const Book(name: "", adapters: [], pages: []), ref: ref),
+  name: "bookProvider",
 );
 
 @freezed
@@ -27,6 +28,9 @@ class BookNotifier extends StateNotifier<Book> {
   final Ref<Book> ref;
 
   set book(Book book) => state = book;
+
+  @override
+  bool updateShouldNotify(Book old, Book current) => old != current;
 
   /// Creates a new page.
   Future<void> createPage(String name, [PageType type = PageType.static]) async {

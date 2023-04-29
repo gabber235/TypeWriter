@@ -255,8 +255,10 @@ class _TrackStateProvider extends StateNotifier<_TrackState> {
   }
 }
 
-final _trackStateProvider =
-    StateNotifierProvider.autoDispose<_TrackStateProvider, _TrackState>(_TrackStateProvider.new);
+final _trackStateProvider = StateNotifierProvider.autoDispose<_TrackStateProvider, _TrackState>(
+  _TrackStateProvider.new,
+  name: "_trackStateProvider",
+);
 
 @riverpod
 double _frameSpacing(_FrameSpacingRef ref) {
@@ -892,9 +894,7 @@ class _MoveState with _$_MoveState {
 }
 
 class _MoveNotifier extends StateNotifier<_MoveState?> {
-  _MoveNotifier({
-    required this.ref,
-  }) : super(null);
+  _MoveNotifier(this.ref) : super(null);
 
   final Ref ref;
 
@@ -1016,7 +1016,8 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
   }
 }
 
-final _moveNotifierProvider = StateNotifierProvider<_MoveNotifier, _MoveState?>((ref) => _MoveNotifier(ref: ref));
+final _moveNotifierProvider =
+    StateNotifierProvider<_MoveNotifier, _MoveState?>(_MoveNotifier.new, name: "_moveNotifierProvider");
 
 class _SegmentWidget extends HookConsumerWidget {
   const _SegmentWidget({
@@ -1136,8 +1137,10 @@ class InspectingSegmentIdNotifier extends StateNotifier<String?> {
   }
 }
 
-final inspectingSegmentIdProvider =
-    StateNotifierProvider<InspectingSegmentIdNotifier, String?>(InspectingSegmentIdNotifier.new);
+final inspectingSegmentIdProvider = StateNotifierProvider<InspectingSegmentIdNotifier, String?>(
+  InspectingSegmentIdNotifier.new,
+  name: "inspectingSegmentIdProvider",
+);
 
 @riverpod
 Segment? inspectingSegment(InspectingSegmentRef ref) {
@@ -1433,7 +1436,7 @@ class _FrameField extends HookConsumerWidget {
         SectionTitle(title: title.isEmpty ? path.split(".").last : title),
         const SizedBox(height: 1),
         WritersIndicator(
-          writers: ref.watch(fieldWritersProvider(path)),
+          provider: fieldWritersProvider(path),
           shift: (_) => const Offset(15, 0),
           child: DecoratedTextField(
             focus: focus,

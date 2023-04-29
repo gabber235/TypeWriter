@@ -27,7 +27,8 @@ class ListableHeader extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return WritersIndicator(
-      writers: expanded.value ? [] : ref.watch(fieldWritersProvider(path)),
+      enabled: !expanded.value,
+      provider: fieldWritersProvider(path),
       offset: const Offset(50, 25),
       child: Row(
         children: [

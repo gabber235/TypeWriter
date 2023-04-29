@@ -66,6 +66,10 @@ extension StringExtension on String {
     });
     return newPath;
   }
+
+  /// If the string is empty, returns null
+  /// Otherwise returns the string
+  String? get nullIfEmpty => isEmpty ? null : this;
 }
 
 extension StringExt on String? {

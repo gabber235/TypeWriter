@@ -125,7 +125,7 @@ class _EntryNode extends HookConsumerWidget {
         ref.watch(entryBlueprintProvider(type).select((b) => b?.tags.contains("triggerable") ?? false));
 
     return WritersIndicator(
-      writers: ref.watch(_writersProvider(id)),
+      provider: _writersProvider(id),
       child: ContextMenuRegion(
         enabled: enableContextMenu,
         builder: (context) {

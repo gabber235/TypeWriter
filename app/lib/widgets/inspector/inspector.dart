@@ -37,7 +37,10 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
   }
 }
 
-final inspectingEntryIdProvider = StateNotifierProvider<InspectingEntryNotifier, String?>(InspectingEntryNotifier.new);
+final inspectingEntryIdProvider = StateNotifierProvider<InspectingEntryNotifier, String?>(
+  InspectingEntryNotifier.new,
+  name: "inspectingEntryIdProvider",
+);
 
 @riverpod
 Entry? inspectingEntry(InspectingEntryRef ref) {

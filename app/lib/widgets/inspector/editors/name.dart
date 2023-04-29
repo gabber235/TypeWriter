@@ -27,7 +27,7 @@ class NameField extends HookConsumerWidget {
         const SectionTitle(title: "Name"),
         const SizedBox(height: 1),
         WritersIndicator(
-          writers: ref.watch(fieldWritersProvider("name")),
+          provider: fieldWritersProvider("name"),
           shift: (_) => const Offset(15, 0),
           child: FormattedTextField(
             focus: focus,

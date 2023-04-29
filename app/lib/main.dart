@@ -1,10 +1,31 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:stack_trace/stack_trace.dart" as stack_trace;
 import "package:typewriter/app_router.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
+import "package:typewriter/widgets/inspector/editors.dart";
 import "package:uuid/uuid.dart";
+
+class Logger extends ProviderObserver {
+  const Logger();
+  @override
+  void didUpdateProvider(
+    ProviderBase<Object?> provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    debugPrint('''
+{
+  "provider": "${provider.name ?? provider.runtimeType}",
+  "field": "${provider is FieldValueProvider ? provider.path : "none"}",
+  "previousValue": "$previousValue",
+  "newValue": "$newValue"
+}''');
+  }
+}
 
 const uuid = Uuid();
 
@@ -15,7 +36,10 @@ void main() async {
     return stack;
   };
 
-  runApp(const ProviderScope(child: TypeWriterApp()));
+  runApp(const ProviderScope(
+    observers: [if (kDebugMode) Logger()],
+    child: TypeWriterApp(),
+  ));
 }
 
 class TypeWriterApp extends HookConsumerWidget {

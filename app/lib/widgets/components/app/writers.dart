@@ -19,35 +19,56 @@ class GlobalWriters extends HookConsumerWidget {
 
 class WritersIndicator extends HookConsumerWidget {
   const WritersIndicator({
-    required this.writers,
+    required this.provider,
     this.child,
     this.builder,
     this.shift,
     this.offset,
+    this.enabled = true,
     super.key,
   })  : assert(child != null || builder != null),
         assert(!(shift != null && offset != null));
 
-  final List<Writer> writers;
+  final ProviderBase<List<Writer>> provider;
   final Widget? child;
   final Widget Function(int)? builder;
 
   final Offset Function(int)? shift;
   final Offset? offset;
+  final bool enabled;
+
+  bool _needsUpdate(List<Writer> previous, List<Writer> current) {
+    if (previous.length != current.length) return true;
+    for (var i = 0; i < previous.length; i++) {
+      if (previous[i] != current[i]) return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final offset = this.offset ?? shift?.call(writers.length) ?? Offset.zero;
+    final writers = useState(<Writer>[]);
+    final offset = this.offset ?? shift?.call(writers.value.length) ?? Offset.zero;
+
+    if (!enabled) {
+      return child ?? builder?.call(writers.value.length) ?? const SizedBox();
+    }
+
+    ref.listen(provider, (_, next) {
+      if (_needsUpdate(writers.value, next)) {
+        writers.value = next;
+      }
+    });
 
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        child ?? builder?.call(writers.length) ?? const SizedBox(),
-        if (writers.isNotEmpty)
+        child ?? builder?.call(writers.value.length) ?? const SizedBox(),
+        if (writers.value.isNotEmpty)
           Positioned(
             right: -15 + offset.dx,
             top: -25 + offset.dy,
-            child: Writers(writers: writers),
+            child: Writers(writers: writers.value),
           ),
       ],
     );

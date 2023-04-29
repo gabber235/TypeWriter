@@ -29,7 +29,7 @@ enum ConnectionState {
 
 final connectionStateProvider = StateProvider<ConnectionState>((ref) => ConnectionState.none);
 
-final socketProvider = StateNotifierProvider<SocketNotifier, Socket?>(SocketNotifier.new);
+final socketProvider = StateNotifierProvider<SocketNotifier, Socket?>(SocketNotifier.new, name: "socketProvider");
 
 class SocketNotifier extends StateNotifier<Socket?> {
   SocketNotifier(this.ref) : super(null);

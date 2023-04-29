@@ -26,7 +26,7 @@ Map<String, dynamic> _$$_WriterToJson(_$_Writer instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fieldWritersHash() => r'199a37f32f632f5e4b67a94a19542c4f1d3e5027';
+String _$fieldWritersHash() => r'094477ba48052e6140b00dcb4f8d5d46a5d95b25';
 
 /// Copied from Dart SDK
 class _SystemHash {

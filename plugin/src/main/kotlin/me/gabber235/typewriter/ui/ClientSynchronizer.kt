@@ -6,6 +6,7 @@ import com.github.shynixn.mccoroutine.launchAsync
 import com.google.gson.*
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.ui.StagingState.*
 import me.gabber235.typewriter.utils.*
 import java.io.File
@@ -17,7 +18,14 @@ object ClientSynchronizer {
 
 	private lateinit var gson: Gson
 
-	private val autoSaver = Timeout(3.seconds, ClientSynchronizer::saveStaging)
+	private val autoSaver =
+		Timeout(
+			3.seconds,
+			ClientSynchronizer::saveStaging,
+			immediateRunnable = {
+				// When called to save, we immediately want to update the staging state
+				if (stagingState != PUBLISHING) stagingState = STAGING
+			})
 
 	private val stagingDir
 		get() = plugin.dataFolder["staging"]
@@ -94,9 +102,8 @@ object ClientSynchronizer {
 
 	fun handleRenamePage(client: SocketIOClient, data: String, ackRequest: AckRequest) {
 		val json = gson.fromJson(data, PageRename::class.java)
-		val page = pages[json.old] ?: return
+		val page = pages.remove(json.old) ?: return
 		page.addProperty("name", json.new)
-		pages.remove(json.old)
 		pages[json.new] = page
 
 		ackRequest.sendAckData("Page renamed")
@@ -222,6 +229,8 @@ object ClientSynchronizer {
 	}
 
 	private fun saveStaging() {
+		// If we are already publishing, we don't want to save the staging
+		if (stagingState == PUBLISHING) return
 		val dir = stagingDir
 
 		pages.forEach { (name, page) ->
@@ -256,6 +265,7 @@ object ClientSynchronizer {
 	// Save the page to the file
 	private fun publish() {
 		if (stagingState != STAGING) return
+		autoSaver.cancel()
 		stagingState = PUBLISHING
 
 		stagingState = try {
@@ -271,7 +281,7 @@ object ClientSynchronizer {
 
 			// Delete the staging folder
 			stagingDir.deleteRecursively()
-			EntryDatabase.loadEntries()
+			TypewriterReloadEvent().callEvent()
 			plugin.logger.info("Published the staging state")
 			PUBLISHED
 		} catch (e: Exception) {
@@ -281,7 +291,7 @@ object ClientSynchronizer {
 	}
 
 	fun dispose() {
-		saveStaging()
+		if (stagingState == STAGING) saveStaging()
 	}
 }
 

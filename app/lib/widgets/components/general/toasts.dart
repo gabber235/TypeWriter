@@ -122,6 +122,7 @@ class Toasts extends StateNotifier<List<Toast>> {
         return false;
       }
     }).toList();
+    if (expired.isEmpty) return;
     state = state.where((toast) => !expired.contains(toast)).toList();
   }
 
@@ -132,7 +133,7 @@ class Toasts extends StateNotifier<List<Toast>> {
   }
 }
 
-final toastsProvider = StateNotifierProvider<Toasts, List<Toast>>((ref) => Toasts());
+final toastsProvider = StateNotifierProvider<Toasts, List<Toast>>((ref) => Toasts(), name: "toastsProvider");
 
 @immutable
 class ToastDisplay extends HookConsumerWidget {

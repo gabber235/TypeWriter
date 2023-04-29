@@ -22,7 +22,7 @@ class FieldEditor extends HookConsumerWidget {
     final editor = filters.firstWhereOrNull((filter) => filter.canEdit(type))?.build(path, type);
 
     return WritersIndicator(
-      writers: ref.watch(fieldWritersProvider(path)),
+      provider: fieldWritersProvider(path),
       shift: (_) => const Offset(15, 0),
       child: editor ?? _NoEditorFound(path: path),
     );

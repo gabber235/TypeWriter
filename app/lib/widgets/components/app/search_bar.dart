@@ -39,10 +39,12 @@ class Search with _$Search {
 }
 
 class SearchNotifier extends StateNotifier<Search?> {
-  SearchNotifier(this.ref) : super(null);
+  SearchNotifier(this.ref) : super(null) {
+    _debouncer = Debouncer<String>(duration: 200.ms, callback: _updateQuery);
+  }
 
   final Ref ref;
-  final Debouncer _debouncer = Debouncer(duration: 200.ms);
+  late Debouncer<String> _debouncer;
 
   void start(Search search) {
     state = search;
@@ -70,9 +72,11 @@ class SearchNotifier extends StateNotifier<Search?> {
   }
 
   void updateQuery(String query) {
-    _debouncer.run(() {
-      state = state!.copyWith(query: query);
-    });
+    _debouncer.run(query);
+  }
+
+  void _updateQuery(String query) {
+    state = state!.copyWith(query: query);
   }
 
   void toggleFetcher(SearchFetcher fetcher) {
@@ -128,7 +132,7 @@ abstract class SearchFetcher {
   });
 }
 
-final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(SearchNotifier.new);
+final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(SearchNotifier.new, name: "searchProvider");
 
 class SearchBuilder {
   SearchBuilder(this.notifier);

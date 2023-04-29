@@ -134,7 +134,7 @@ final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>.internal(
 );
 
 typedef EditorFiltersRef = AutoDisposeProviderRef<List<EditorFilter>>;
-String _$pathDisplayNameHash() => r'5a1d7d01eff96745145d531682d9ac4f119f1fff';
+String _$pathDisplayNameHash() => r'c772e17ed429169ba903826d0a5605d60b129a31';
 typedef PathDisplayNameRef = AutoDisposeProviderRef<String>;
 
 /// See also [pathDisplayName].
@@ -148,12 +148,10 @@ class PathDisplayNameFamily extends Family<String> {
 
   /// See also [pathDisplayName].
   PathDisplayNameProvider call(
-    String path, [
-    String defaultValue = "",
-  ]) {
+    String path,
+  ) {
     return PathDisplayNameProvider(
       path,
-      defaultValue,
     );
   }
 
@@ -163,7 +161,6 @@ class PathDisplayNameFamily extends Family<String> {
   ) {
     return call(
       provider.path,
-      provider.defaultValue,
     );
   }
 
@@ -186,13 +183,11 @@ class PathDisplayNameFamily extends Family<String> {
 class PathDisplayNameProvider extends AutoDisposeProvider<String> {
   /// See also [pathDisplayName].
   PathDisplayNameProvider(
-    this.path, [
-    this.defaultValue = "",
-  ]) : super.internal(
+    this.path,
+  ) : super.internal(
           (ref) => pathDisplayName(
             ref,
             path,
-            defaultValue,
           ),
           from: pathDisplayNameProvider,
           name: r'pathDisplayNameProvider',
@@ -206,20 +201,16 @@ class PathDisplayNameProvider extends AutoDisposeProvider<String> {
         );
 
   final String path;
-  final String defaultValue;
 
   @override
   bool operator ==(Object other) {
-    return other is PathDisplayNameProvider &&
-        other.path == path &&
-        other.defaultValue == defaultValue;
+    return other is PathDisplayNameProvider && other.path == path;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, path.hashCode);
-    hash = _SystemHash.combine(hash, defaultValue.hashCode);
 
     return _SystemHash.finish(hash);
   }

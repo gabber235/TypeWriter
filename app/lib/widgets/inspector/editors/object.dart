@@ -45,13 +45,14 @@ class ObjectEditor extends HookConsumerWidget {
             borderRadius: BorderRadius.circular(4),
             onTap: () => expanded.value = !expanded.value,
             child: WritersIndicator(
-              writers: expanded.value ? [] : ref.watch(fieldWritersProvider(path)),
+              enabled: !expanded.value,
+              provider: fieldWritersProvider(path),
               offset: const Offset(15, 15),
               child: Row(
                 children: [
                   Icon(expanded.value ? Icons.expand_less : Icons.expand_more),
                   SectionTitle(
-                    title: ref.watch(pathDisplayNameProvider(path, "Fields")),
+                    title: ref.watch(pathDisplayNameProvider(path)).nullIfEmpty ?? "Fields",
                   ),
                 ],
               ),
@@ -61,7 +62,6 @@ class ObjectEditor extends HookConsumerWidget {
         Collapsible(
           collapsed: !expanded.value,
           axis: CollapsibleAxis.vertical,
-          maintainAnimation: true,
           child: Padding(
             padding: const EdgeInsets.only(left: 8),
             child: Column(

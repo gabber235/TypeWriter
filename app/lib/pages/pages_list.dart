@@ -150,7 +150,8 @@ class _PageTile extends HookConsumerWidget {
     final isSelected = ref.watch(currentPageIdProvider.select((e) => e == pageId));
 
     return WritersIndicator(
-      writers: isSelected ? [] : ref.watch(_writersProvider(pageId)),
+      enabled: !isSelected,
+      provider: _writersProvider(pageId),
       shift: (amount) => _needsShift(amount) ? const Offset(4, 30) : Offset.zero,
       builder: (amount) {
         return AnimatedPadding(
