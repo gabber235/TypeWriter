@@ -3,7 +3,6 @@ package me.gabber235.typewriter.utils
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import java.util.*
 
 
 interface PlayerStateProvider {
@@ -19,6 +18,8 @@ enum class GenericPlayerStateProvider(private val store: Player.() -> Any, priva
 	PlayerStateProvider {
 	LOCATION({ location }, { teleport(it as Location) }),
 	GAME_MODE({ gameMode }, { gameMode = it as GameMode }),
+	EXP({ exp }, { exp = it as Float }),
+	LEVEL({ level }, { level = it as Int }),
 	;
 
 	override fun store(player: Player): Any = player.store()

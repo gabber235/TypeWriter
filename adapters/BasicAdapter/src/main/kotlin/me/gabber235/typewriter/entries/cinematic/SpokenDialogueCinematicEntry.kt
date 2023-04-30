@@ -3,13 +3,15 @@ package me.gabber235.typewriter.entries.cinematic
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.GenericPlayerStateProvider.EXP
+import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LEVEL
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
@@ -61,7 +63,7 @@ val spokenFormat: String by snippet(
 val spokenPadding: String by snippet("cinematic.dialogue.spoken.padding", "    ")
 val spokenMinLines: Int by snippet("cinematic.dialogue.spoken.minLines", 4)
 val spokenMaxLineLength: Int by snippet("cinematic.dialogue.spoken.maxLineLength", 40)
-val spokenPercentage: Double by snippet("cinematic.dialogue.spoken.percentage", 0.5)
+val spokenPercentage: Double by snippet("cinematic.dialogue.spoken.percentage", 0.75)
 
 class SpokenDialogueCinematicAction(
 	private val player: Player,
@@ -70,12 +72,27 @@ class SpokenDialogueCinematicAction(
 
 	private val speakerName = entry.speakerDisplayName
 	private var wasActive = false
+
+	private var state: PlayerState? = null
+
+	override fun setup() {
+		super.setup()
+		state = player.state(EXP, LEVEL)
+		player.exp = 0f
+		player.level = 0
+		// If the player is already in a dialogue, end it in favor of this one.
+		DIALOGUE_END triggerFor player
+	}
+
+
 	override fun tick(frame: Int) {
 		super.tick(frame)
 		val segment = (entry.segments activeSegmentAt frame)
 
 		if (segment == null) {
 			if (wasActive) {
+				player.exp = 0f
+				player.level = 0
 				player.chatHistory.resendMessages(player)
 				wasActive = false
 			}
@@ -85,6 +102,7 @@ class SpokenDialogueCinematicAction(
 		wasActive = true
 
 		val percentage = segment percentageAt frame
+		player.exp = 1 - percentage.toFloat()
 
 		// The percentage of the dialogue that should be displayed.
 		val displayPercentage = percentage / spokenPercentage
@@ -104,6 +122,11 @@ class SpokenDialogueCinematicAction(
 
 		val componentWithDarkMessages = player.chatHistory.composeDarkMessage(component)
 		player.sendMessage(componentWithDarkMessages)
+	}
+
+	override fun teardown() {
+		super.teardown()
+		player.restore(state)
 	}
 
 	override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
