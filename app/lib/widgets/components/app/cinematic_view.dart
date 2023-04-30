@@ -968,7 +968,7 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
     if (newStartFrame == oldStartFrame && newEndFrame == oldEndFrame) return;
     if (newStartFrame < 0) return;
 
-    final totalFrameCount = ref.read(_totalSequenceFramesProvider);
+    final totalFrameCount = ref.read(_trackStateProvider).totalFrames;
     if (newEndFrame > totalFrameCount) return;
 
     final previousSegment = state?.previousSegment;
