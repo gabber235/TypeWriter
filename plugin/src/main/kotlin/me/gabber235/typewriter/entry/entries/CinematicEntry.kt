@@ -2,7 +2,8 @@ package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.entry.Criteria
+import me.gabber235.typewriter.entry.Entry
 import org.bukkit.entity.Player
 
 @Tags("cinematic")
@@ -15,6 +16,12 @@ interface CinematicEntry : Entry {
 
 infix fun <S : Segment> List<S>.activeSegmentAt(frame: Int) = firstOrNull { it isActiveAt frame }
 infix fun <S : Segment> List<S>.canFinishAt(frame: Int): Boolean = all { it canFinishAt frame }
+
+infix fun Segment.percentageAt(frame: Int): Double {
+	val total = endFrame - startFrame
+	val current = frame - startFrame
+	return (current.toDouble() / total.toDouble()).coerceIn(0.0, 1.0)
+}
 
 interface Segment {
 	val startFrame: Int
