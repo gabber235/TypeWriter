@@ -114,6 +114,8 @@ object EntryDatabase {
 	internal fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
 	internal fun getFact(id: String) = facts.firstOrNull { it.id == id }
 	internal fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
+
+	internal fun getPageNames(): List<String> = pages.map { it.id }
 }
 
 private fun JsonReader.parsePage(id: String, gson: Gson): Page? {

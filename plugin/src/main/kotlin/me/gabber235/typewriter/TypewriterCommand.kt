@@ -12,6 +12,7 @@ import lirand.api.dsl.command.types.WordType
 import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.entry.entries.CinematicStartTrigger
 import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.triggerFor
@@ -208,6 +209,22 @@ private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
 			}
 		}
 	}
+
+	literal("start") {
+		requiresPermissions("typewriter.cinematic.start")
+
+		argument("cinematic", CinematicType) { cinematicId ->
+			executesPlayer {
+				CinematicStartTrigger(cinematicId.get(), emptyList(), override = true) triggerFor source
+			}
+
+			argument("player", PlayerType) { player ->
+				executes {
+					CinematicStartTrigger(cinematicId.get(), emptyList(), override = true) triggerFor player.get()
+				}
+			}
+		}
+	}
 }
 
 
@@ -235,5 +252,30 @@ open class FactType(
 	}
 
 	override fun getExamples(): Collection<String> = listOf("test.fact", "key.some_fact")
+}
 
+open class CinematicType(
+	open val notFoundExceptionType: ChatCommandExceptionType = PlayerType.notFoundExceptionType
+) : WordType<String> {
+	companion object Instance : CinematicType()
+
+	override fun parse(reader: StringReader): String {
+		val name = reader.readString()
+		if (name !in EntryDatabase.getPageNames()) throw notFoundExceptionType.create(name)
+		return name
+	}
+
+	override fun <S> listSuggestions(
+		context: CommandContext<S>,
+		builder: SuggestionsBuilder
+	): CompletableFuture<Suggestions> {
+
+		EntryDatabase.getPageNames().filter { it.startsWith(builder.remaining, true) }.forEach {
+			builder.suggest(it)
+		}
+
+		return builder.buildFuture()
+	}
+
+	override fun getExamples(): Collection<String> = listOf("test.cinematic", "key.some_cinematic")
 }
