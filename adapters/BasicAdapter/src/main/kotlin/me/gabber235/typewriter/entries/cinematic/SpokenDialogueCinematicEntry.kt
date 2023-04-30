@@ -63,7 +63,7 @@ val spokenFormat: String by snippet(
 val spokenPadding: String by snippet("cinematic.dialogue.spoken.padding", "    ")
 val spokenMinLines: Int by snippet("cinematic.dialogue.spoken.minLines", 4)
 val spokenMaxLineLength: Int by snippet("cinematic.dialogue.spoken.maxLineLength", 40)
-val spokenPercentage: Double by snippet("cinematic.dialogue.spoken.percentage", 0.75)
+val spokenPercentage: Double by snippet("cinematic.dialogue.spoken.percentage", 0.5)
 
 class SpokenDialogueCinematicAction(
 	private val player: Player,
