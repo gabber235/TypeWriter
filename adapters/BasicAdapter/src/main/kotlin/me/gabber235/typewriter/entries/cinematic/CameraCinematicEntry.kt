@@ -12,7 +12,6 @@ import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
 import org.bukkit.Location
 import org.bukkit.attribute.Attribute
-import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import java.util.*
@@ -37,7 +36,6 @@ data class CameraCinematicEntry(
 data class CameraSegment(
 	override val startFrame: Int = 0,
 	override val endFrame: Int = 0,
-	val zoom: Optional<Double> = Optional.empty(),
 	val path: List<PathPoint> = emptyList(),
 ) : Segment
 
@@ -113,17 +111,10 @@ private class CameraSegmentAction(
 	private val player: Player,
 	private val segment: CameraSegment,
 ) {
-	private val attributeModifier = AttributeModifier(
-		UUID.randomUUID(),
-		"camera_zoom",
-		segment.zoom.orElse(1.0),
-		AttributeModifier.Operation.MULTIPLY_SCALAR_1,
-	)
-
 	private val farAwayLocation = Location(player.world, 0.0, 500.0, 0.0)
 	private val firstLocation = segment.path.first().location
 	private val initializationLocation: Location
-		get() = if (segment.startFrame > 10) farAwayLocation else firstLocation
+		get() = if (segment.startFrame >= 10) farAwayLocation else firstLocation
 	private val entity = ClientEntity(initializationLocation, EntityType.BOAT)
 
 	fun setup() {
@@ -142,14 +133,6 @@ private class CameraSegmentAction(
 		plugin.launch {
 			player.teleport(firstLocation)
 			player.spectateEntity(entity)
-			player.getAttribute(Attribute.GENERIC_FLYING_SPEED)?.addModifier(attributeModifier)
-			println(
-				"Setting speed to ${player.getAttribute(Attribute.GENERIC_FLYING_SPEED)?.value}, modifiers: ${
-					player.getAttribute(
-						Attribute.GENERIC_FLYING_SPEED
-					)?.modifiers
-				}"
-			)
 		}
 	}
 
@@ -161,8 +144,7 @@ private class CameraSegmentAction(
 
 	fun stop() {
 		player.stopSpectatingEntity()
-		entity.removeViewer(player)
-		player.getAttribute(Attribute.GENERIC_FLYING_SPEED)?.removeModifier(attributeModifier)
+		entity.move(farAwayLocation)
 	}
 
 	fun teardown() {
