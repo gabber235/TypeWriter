@@ -7,6 +7,7 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -98,11 +99,19 @@ class _LocationPropertyEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useTextEditingController();
     final focusNode = useFocusNode();
     final value = ref.watch(fieldValueProvider(path, 0.0));
 
+    useFocusedChange(focusNode, (focused) {
+      if (!focused) return;
+      // When we focus, we want to select the whole text
+      controller.selection = TextSelection(baseOffset: 0, extentOffset: controller.text.length);
+    });
+
     return Flexible(
       child: DecoratedTextField(
+        controller: controller,
         focus: focusNode,
         text: value.toString(),
         keyboardType: TextInputType.number,
