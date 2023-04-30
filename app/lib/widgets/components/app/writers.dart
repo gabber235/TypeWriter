@@ -50,15 +50,26 @@ class WritersIndicator extends HookConsumerWidget {
     final writers = useState(<Writer>[]);
     final offset = this.offset ?? shift?.call(writers.value.length) ?? Offset.zero;
 
-    if (!enabled) {
-      return child ?? builder?.call(writers.value.length) ?? const SizedBox();
-    }
+    useEffect(
+      () {
+        if (!enabled) {
+          writers.value = [];
+        }
+        return null;
+      },
+      [enabled],
+    );
 
-    ref.listen(provider, (_, next) {
-      if (_needsUpdate(writers.value, next)) {
-        writers.value = next;
-      }
-    });
+    if (enabled) {
+      ref.listen(provider, (old, next) {
+        if (_needsUpdate(writers.value, next)) {
+          debugPrint(
+            "state: ${writers.value.map((e) => e.id)}, old: ${old?.map((e) => e.id)}, new: ${next.map((e) => e.id)}, provider: ${provider.name} (${provider is FieldWritersProvider ? (provider as FieldWritersProvider).path : ""})",
+          );
+          writers.value = next;
+        }
+      });
+    }
 
     return Stack(
       clipBehavior: Clip.none,
@@ -99,9 +110,12 @@ class Writers extends HookConsumerWidget {
                 duration: 1.seconds,
                 curve: Curves.elasticOut,
                 right: i * (hovering.value ? 37 : 15.0),
-                child: WriterIcon(writer: writers[i])
-                    .animate()
-                    .scale(end: const Offset(1, 1), duration: 1.seconds, curve: Curves.elasticOut),
+                child: WriterIcon(writer: writers[i]).animate().scale(
+                      begin: const Offset(0.8, 0.8),
+                      end: const Offset(1, 1),
+                      duration: 1.seconds,
+                      curve: Curves.elasticOut,
+                    ),
               ),
             ],
           ],

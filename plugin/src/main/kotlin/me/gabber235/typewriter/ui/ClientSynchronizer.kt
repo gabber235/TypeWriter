@@ -2,9 +2,9 @@ package me.gabber235.typewriter.ui
 
 import com.corundumstudio.socketio.AckRequest
 import com.corundumstudio.socketio.SocketIOClient
-import com.github.shynixn.mccoroutine.launch
 import com.github.shynixn.mccoroutine.launchAsync
 import com.google.gson.*
+import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.events.TypewriterReloadEvent
@@ -43,6 +43,15 @@ object ClientSynchronizer {
 	fun initialize() {
 		gson = EntryDatabase.gson()
 
+		loadState()
+
+		plugin.listen<TypewriterReloadEvent> { loadState() }
+
+		// Read the adapters from the file
+		adapters = gson.fromJson(plugin.dataFolder["adapters.json"].readText(), JsonElement::class.java)
+	}
+
+	private fun loadState() {
 		stagingState = if (stagingDir.exists()) {
 			// Migrate staging directory to use the new format
 			stagingDir.migrateIfNecessary()
@@ -57,9 +66,6 @@ object ClientSynchronizer {
 		val dir =
 			if (stagingState == STAGING) stagingDir else publishedDir
 		pages.putAll(fetchPages(dir))
-
-		// Read the adapters from the file
-		adapters = gson.fromJson(plugin.dataFolder["adapters.json"].readText(), JsonElement::class.java)
 	}
 
 	private fun fetchPages(dir: File): Map<String, JsonObject> {
@@ -275,20 +281,20 @@ object ClientSynchronizer {
 				file.writeText(page.toString())
 			}
 
-			// Check if there are any pages which are no longer in staging. If so, delete them
-			val stagingFiles = stagingDir.listFiles()?.map { it.name } ?: emptyList()
-			val pagesFiles = publishedDir.listFiles()?.toList() ?: emptyList()
+			if (stagingDir.exists()) {
+				// Check if there are any pages which are no longer in staging. If so, delete them
+				val stagingFiles = stagingDir.listFiles()?.map { it.name } ?: emptyList()
+				val pagesFiles = publishedDir.listFiles()?.toList() ?: emptyList()
 
-			val deletedPages = pagesFiles.filter { it.name !in stagingFiles }
-			deletedPages.backup()
-			deletedPages.forEach { it.delete() }
+				val deletedPages = pagesFiles.filter { it.name !in stagingFiles }
+				deletedPages.backup()
+				deletedPages.forEach { it.delete() }
+			}
 
 			// Delete the staging folder
 			stagingDir.deleteRecursively()
-			plugin.launch {
-				TypewriterReloadEvent().callEvent()
-				plugin.logger.info("Published the staging state")
-			}
+			EntryDatabase.loadEntries()
+			plugin.logger.info("Published the staging state")
 			PUBLISHED
 		} catch (e: Exception) {
 			e.printStackTrace()
