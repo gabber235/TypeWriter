@@ -22,7 +22,7 @@ class Segment with _$Segment {
 extension SegmentX on Segment {
   String get truePath => path.replaceFirst("*", index.toString());
 
-  bool contains(int frame) => frame > startFrame && frame < endFrame;
+  bool contains(int frame) => frame >= startFrame && frame < endFrame;
 
   bool overlaps(int startFrame, int endFrame) => contains(startFrame) || contains(endFrame);
 }
