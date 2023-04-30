@@ -9,19 +9,16 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.dialogue.playSpeakerSound
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
-import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.*
-import me.gabber235.typewriter.utils.GenericPlayerStateProvider.EXP
-import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LEVEL
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
-@Entry("spoken_dialogue_cinematic", "Play a spoken dialogue cinematic", Colors.CYAN, Icons.MESSAGE)
-data class SpokenDialogueCinematicEntry(
+@Entry("actionbar_dialogue_cinematic", "Show an action bar typed dialogue", Colors.CYAN, Icons.XMARKS_LINES)
+data class ActionBarDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
@@ -29,7 +26,7 @@ data class SpokenDialogueCinematicEntry(
     @EntryIdentifier(SpeakerEntry::class)
     val speaker: String = "",
     @Segments(icon = Icons.MESSAGE)
-    val segments: List<SpokenDialogueSegment> = emptyList(),
+    val segments: List<ActionBarDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     val speakerDisplayName: String
         get() = speakerEntry?.displayName ?: ""
@@ -38,57 +35,43 @@ data class SpokenDialogueCinematicEntry(
         get() = Query.findById(speaker)
 
     override fun create(player: Player): CinematicAction {
-        return SpokenDialogueCinematicAction(
+        return ActionBarDialogueCinematicAction(
             player,
             this,
         )
     }
 }
 
-data class SpokenDialogueSegment(
+data class ActionBarDialogueSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @Help("The text to display to the player.")
     val text: String = "",
 ) : Segment
 
-val spokenFormat: String by snippet(
-    "cinematic.dialogue.spoken.format",
-    """
-		|<gray><st>${" ".repeat(60)}</st>
-		|
-		|<gray><padding>[ <bold><speaker></bold><reset><gray> ]
-		|
-		|<message>
-		|
-		|<gray><st>${" ".repeat(60)}</st>
-		""".trimMargin()
+val actionBarFormat: String by snippet(
+    "cinematic.dialogue.actionbar.format",
+    "<bold><speaker></bold><reset><gray>: <white><message><padding>"
+)
+val actionBarPercentage: Double by snippet(
+    "cinematic.dialogue.actionbar.percentage",
+    0.4
 )
 
-val spokenPadding: String by snippet("cinematic.dialogue.spoken.padding", "    ")
-val spokenMinLines: Int by snippet("cinematic.dialogue.spoken.minLines", 4)
-val spokenMaxLineLength: Int by snippet("cinematic.dialogue.spoken.maxLineLength", 40)
-val spokenPercentage: Double by snippet("cinematic.dialogue.spoken.percentage", 0.5)
-
-class SpokenDialogueCinematicAction(
-    private val player: Player,
-    private val entry: SpokenDialogueCinematicEntry,
+class ActionBarDialogueCinematicAction(
+    val player: Player,
+    val entry: ActionBarDialogueCinematicEntry,
 ) : CinematicAction {
-
     private val speakerName = entry.speakerDisplayName
-    private var previousSegment: SpokenDialogueSegment? = null
-
+    private var previousSegment: ActionBarDialogueSegment? = null
     private var state: PlayerState? = null
 
     override fun setup() {
         super.setup()
-        state = player.state(EXP, LEVEL)
+        state = player.state(GenericPlayerStateProvider.EXP, GenericPlayerStateProvider.LEVEL)
         player.exp = 0f
         player.level = 0
-        // If the player is already in a dialogue, end it in favor of this one.
-        DIALOGUE_END triggerFor player
     }
-
 
     override fun tick(frame: Int) {
         super.tick(frame)
@@ -97,7 +80,8 @@ class SpokenDialogueCinematicAction(
         if (segment == null) {
             if (previousSegment != null) {
                 player.exp = 0f
-                player.chatHistory.resendMessages(player)
+                player.level = 0
+                player.sendActionBar(Component.empty())
                 previousSegment = null
             }
             return
@@ -113,23 +97,26 @@ class SpokenDialogueCinematicAction(
         player.exp = 1 - percentage.toFloat()
 
         // The percentage of the dialogue that should be displayed.
-        val displayPercentage = percentage / spokenPercentage
+        val displayPercentage = percentage / actionBarPercentage
 
-        val message = segment.text.parsePlaceholders(player).asPartialFormattedMini(
-            displayPercentage,
-            padding = spokenPadding,
-            minLines = spokenMinLines,
-            maxLineLength = spokenMaxLineLength,
-        )
+        val text = segment.text.parsePlaceholders(player)
+        val message = text.asMini()
+            .splitPercentage(displayPercentage)
+            .color(NamedTextColor.WHITE)
 
-        val component = spokenFormat.asMiniWithResolvers(
+        // Find out how much padding is needed to fill the rest of the action bar.
+        // As the action bar is centered, adding padding to the end of the message
+        // will make the message appear stationary.
+        val paddingSize = text.stripped().length - message.plainText().length
+        val padding = " ".repeat(paddingSize)
+
+        val component = actionBarFormat.asMiniWithResolvers(
             Placeholder.parsed("speaker", speakerName),
             Placeholder.component("message", message),
-            Placeholder.parsed("padding", spokenPadding),
+            Placeholder.unparsed("padding", padding),
         )
 
-        val componentWithDarkMessages = player.chatHistory.composeDarkMessage(component)
-        player.sendMessage(componentWithDarkMessages)
+        player.sendActionBar(component)
     }
 
     override fun teardown() {
@@ -139,4 +126,3 @@ class SpokenDialogueCinematicAction(
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
 }
-

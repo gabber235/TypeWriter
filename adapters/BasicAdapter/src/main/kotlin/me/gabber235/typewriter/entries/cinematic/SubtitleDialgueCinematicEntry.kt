@@ -9,19 +9,19 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.dialogue.playSpeakerSound
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
-import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.*
-import me.gabber235.typewriter.utils.GenericPlayerStateProvider.EXP
-import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LEVEL
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
+import net.kyori.adventure.title.Title
+import net.kyori.adventure.title.Title.Times
 import org.bukkit.entity.Player
+import java.time.Duration
 
-@Entry("spoken_dialogue_cinematic", "Play a spoken dialogue cinematic", Colors.CYAN, Icons.MESSAGE)
-data class SpokenDialogueCinematicEntry(
+@Entry("subtitle_dialogue_cinematic", "Show an action bar message", Colors.CYAN, Icons.DIAGRAM_NEXT)
+data class SubtitleDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
@@ -29,7 +29,7 @@ data class SpokenDialogueCinematicEntry(
     @EntryIdentifier(SpeakerEntry::class)
     val speaker: String = "",
     @Segments(icon = Icons.MESSAGE)
-    val segments: List<SpokenDialogueSegment> = emptyList(),
+    val segments: List<SubtitleDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     val speakerDisplayName: String
         get() = speakerEntry?.displayName ?: ""
@@ -38,57 +38,50 @@ data class SpokenDialogueCinematicEntry(
         get() = Query.findById(speaker)
 
     override fun create(player: Player): CinematicAction {
-        return SpokenDialogueCinematicAction(
+        return SubtitleDialogueCinematicAction(
             player,
             this,
         )
     }
 }
 
-data class SpokenDialogueSegment(
+data class SubtitleDialogueSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @Help("The text to display to the player.")
     val text: String = "",
 ) : Segment
 
-val spokenFormat: String by snippet(
-    "cinematic.dialogue.spoken.format",
-    """
-		|<gray><st>${" ".repeat(60)}</st>
-		|
-		|<gray><padding>[ <bold><speaker></bold><reset><gray> ]
-		|
-		|<message>
-		|
-		|<gray><st>${" ".repeat(60)}</st>
-		""".trimMargin()
+val subtitleFormat: String by snippet(
+    "cinematic.dialogue.subtitle.format",
+    "<white><message>"
+)
+val subtitleSpeakerFormat: String by snippet(
+    "cinematic.dialogue.subtitle.speaker.format",
+    "<gray>[ <reset><bold><speaker></bold><reset><gray> ]"
+)
+val subtitlePercentage: Double by snippet(
+    "cinematic.dialogue.subtitle.percentage",
+    0.4
 )
 
-val spokenPadding: String by snippet("cinematic.dialogue.spoken.padding", "    ")
-val spokenMinLines: Int by snippet("cinematic.dialogue.spoken.minLines", 4)
-val spokenMaxLineLength: Int by snippet("cinematic.dialogue.spoken.maxLineLength", 40)
-val spokenPercentage: Double by snippet("cinematic.dialogue.spoken.percentage", 0.5)
+private val times = Times.times(Duration.ZERO, Duration.ofDays(1), Duration.ZERO)
 
-class SpokenDialogueCinematicAction(
-    private val player: Player,
-    private val entry: SpokenDialogueCinematicEntry,
+class SubtitleDialogueCinematicAction(
+    val player: Player,
+    val entry: SubtitleDialogueCinematicEntry,
 ) : CinematicAction {
-
     private val speakerName = entry.speakerDisplayName
-    private var previousSegment: SpokenDialogueSegment? = null
+    private var previousSegment: SubtitleDialogueSegment? = null
 
     private var state: PlayerState? = null
 
     override fun setup() {
         super.setup()
-        state = player.state(EXP, LEVEL)
+        state = player.state(GenericPlayerStateProvider.EXP, GenericPlayerStateProvider.LEVEL)
         player.exp = 0f
         player.level = 0
-        // If the player is already in a dialogue, end it in favor of this one.
-        DIALOGUE_END triggerFor player
     }
-
 
     override fun tick(frame: Int) {
         super.tick(frame)
@@ -97,7 +90,8 @@ class SpokenDialogueCinematicAction(
         if (segment == null) {
             if (previousSegment != null) {
                 player.exp = 0f
-                player.chatHistory.resendMessages(player)
+                player.showTitle(Title.title(Component.empty(), Component.empty(), times))
+                player.sendActionBar(Component.empty())
                 previousSegment = null
             }
             return
@@ -109,27 +103,28 @@ class SpokenDialogueCinematicAction(
             previousSegment = segment
         }
 
+
         val percentage = segment percentageAt frame
         player.exp = 1 - percentage.toFloat()
 
         // The percentage of the dialogue that should be displayed.
-        val displayPercentage = percentage / spokenPercentage
+        val displayPercentage = percentage / subtitlePercentage
 
-        val message = segment.text.parsePlaceholders(player).asPartialFormattedMini(
-            displayPercentage,
-            padding = spokenPadding,
-            minLines = spokenMinLines,
-            maxLineLength = spokenMaxLineLength,
-        )
+        val text = segment.text.parsePlaceholders(player)
+        val message = text.asMini()
+            .splitPercentage(displayPercentage)
+            .color(NamedTextColor.WHITE)
 
-        val component = spokenFormat.asMiniWithResolvers(
-            Placeholder.parsed("speaker", speakerName),
+        val component = subtitleFormat.asMiniWithResolvers(
             Placeholder.component("message", message),
-            Placeholder.parsed("padding", spokenPadding),
         )
 
-        val componentWithDarkMessages = player.chatHistory.composeDarkMessage(component)
-        player.sendMessage(componentWithDarkMessages)
+        val actionBarComponent = subtitleSpeakerFormat.asMiniWithResolvers(
+            Placeholder.parsed("speaker", speakerName),
+        )
+
+        player.showTitle(Title.title(Component.empty(), component, times))
+        player.sendActionBar(actionBarComponent)
     }
 
     override fun teardown() {
@@ -139,4 +134,3 @@ class SpokenDialogueCinematicAction(
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
 }
-

@@ -1,275 +1,302 @@
 package me.gabber235.typewriter.entries.cinematic
 
 import com.github.shynixn.mccoroutine.launch
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.*
+import me.gabber235.typewriter.adapters.modifiers.InnerMin
+import me.gabber235.typewriter.adapters.modifiers.Min
+import me.gabber235.typewriter.adapters.modifiers.Segments
+import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.extensions.protocollib.*
-import me.gabber235.typewriter.utils.*
-import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
+import me.gabber235.typewriter.extensions.protocollib.ClientEntity
+import me.gabber235.typewriter.extensions.protocollib.spectateEntity
+import me.gabber235.typewriter.extensions.protocollib.stopSpectatingEntity
+import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
+import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.PlayerState
+import me.gabber235.typewriter.utils.restore
+import me.gabber235.typewriter.utils.state
 import org.bukkit.Location
-import org.bukkit.attribute.Attribute
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
-import java.util.*
 
 @Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, Icons.VIDEO)
 data class CameraCinematicEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val criteria: List<Criteria> = emptyList(),
-	@Segments(icon = Icons.VIDEO)
-	@InnerMin(Min(10))
-	val segments: List<CameraSegment> = emptyList(),
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
+    @Segments(icon = Icons.VIDEO)
+    @InnerMin(Min(10))
+    val segments: List<CameraSegment> = emptyList(),
 ) : CinematicEntry {
-	override fun create(player: Player): CinematicAction {
-		return CameraCinematicAction(
-			player,
-			this,
-		)
-	}
+    override fun create(player: Player): CinematicAction {
+        return CameraCinematicAction(
+            player,
+            this,
+        )
+    }
 }
 
 data class CameraSegment(
-	override val startFrame: Int = 0,
-	override val endFrame: Int = 0,
-	val path: List<PathPoint> = emptyList(),
+    override val startFrame: Int = 0,
+    override val endFrame: Int = 0,
+    val path: List<PathPoint> = emptyList(),
 ) : Segment
 
 data class PathPoint(
-	@WithRotation
-	val location: Location,
+    @WithRotation
+    val location: Location,
 )
 
 class CameraCinematicAction(
-	private val player: Player,
-	private val entry: CameraCinematicEntry,
+    private val player: Player,
+    private val entry: CameraCinematicEntry,
 ) : CinematicAction {
-	private var segments = emptyList<CameraSegmentAction>()
+    private var segments = emptyList<CameraSegmentAction>()
 
-	private var currentSegmentAction: CameraSegmentAction? = null
-	private var originalState: PlayerState? = null
+    private var currentSegmentAction: CameraSegmentAction? = null
+    private var originalState: PlayerState? = null
 
-	override fun setup() {
-		super.setup()
+    override fun setup() {
+        super.setup()
 
-		segments = entry.segments.map { CameraSegmentAction(player, it) }
-		segments.forEach { it.setup() }
+        segments = entry.segments.map { CameraSegmentAction(player, it) }
+        segments.forEach { it.setup() }
 
-		originalState = player.state(LOCATION)
-	}
+        originalState = player.state(LOCATION, ALLOW_FLIGHT, FLYING, VISIBLE_PLAYERS, SHOWING_PLAYER)
 
-	override fun tick(frame: Int) {
-		super.tick(frame)
+        player.allowFlight = true
+        player.isFlying = true
+        server.onlinePlayers.forEach {
+            it.hidePlayer(plugin, player)
+            player.hidePlayer(plugin, it)
+        }
+    }
 
-		segments.filter { it.canPrepare(frame) }.forEach {
-			it.prepare()
-		}
+    override fun tick(frame: Int) {
+        super.tick(frame)
 
-
-		if (currentSegmentAction?.isActiveAt(frame) == false) {
-			currentSegmentAction?.stop()
-			currentSegmentAction = null
-		}
-
-		if (currentSegmentAction == null) {
-			currentSegmentAction = findSegmentAction(frame)
-			currentSegmentAction?.start()
-		}
-
-		currentSegmentAction?.tick(frame)
-	}
-
-	private fun findSegmentAction(frame: Int): CameraSegmentAction? {
-		return segments.firstOrNull { it isActiveAt frame }
-	}
+        segments.filter { it.canPrepare(frame) }.forEach {
+            it.prepare()
+        }
 
 
-	override fun teardown() {
-		super.teardown()
+        if (currentSegmentAction?.isActiveAt(frame) == false) {
+            currentSegmentAction?.stop()
+            currentSegmentAction = null
+        }
 
-		currentSegmentAction?.stop()
-		currentSegmentAction = null
+        if (currentSegmentAction == null) {
+            currentSegmentAction = findSegmentAction(frame)
+            currentSegmentAction?.start()
+        }
 
-		segments.forEach { it.teardown() }
-		segments = emptyList()
+        currentSegmentAction?.tick(frame)
+    }
 
-		originalState?.let {
-			plugin.launch {
-				player.restore(it)
-			}
-		}
-	}
+    private fun findSegmentAction(frame: Int): CameraSegmentAction? {
+        return segments.firstOrNull { it isActiveAt frame }
+    }
 
-	override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
+
+    override fun teardown() {
+        super.teardown()
+
+        currentSegmentAction?.stop()
+        currentSegmentAction = null
+
+        segments.forEach { it.teardown() }
+        segments = emptyList()
+
+        originalState?.let {
+            plugin.launch {
+                player.restore(it)
+            }
+        }
+    }
+
+    override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
 }
 
 private class CameraSegmentAction(
-	private val player: Player,
-	private val segment: CameraSegment,
+    private val player: Player,
+    private val segment: CameraSegment,
 ) {
-	private val farAwayLocation = Location(player.world, 0.0, 500.0, 0.0)
-	private val firstLocation = segment.path.first().location
-	private val initializationLocation: Location
-		get() = if (segment.startFrame >= 10) farAwayLocation else firstLocation
-	private val entity = ClientEntity(initializationLocation, EntityType.BOAT)
+    private val farAwayLocation = Location(player.world, 0.0, 500.0, 0.0)
+    private val firstLocation = segment.path.first().location
 
-	fun setup() {
-		entity.addViewer(player)
-	}
+    private val entity = ClientEntity(firstLocation, EntityType.BOAT)
 
-	fun prepare() {
-		entity.move(firstLocation)
-	}
+    fun setup() {
+        entity.addViewer(player)
+    }
 
-	fun canPrepare(frame: Int): Boolean {
-		return segment.startFrame - 10 == frame
-	}
+    fun prepare() {
+        entity.move(firstLocation)
+    }
 
-	fun start() {
-		plugin.launch {
-			player.teleport(firstLocation)
-			player.spectateEntity(entity)
-		}
-	}
+    fun canPrepare(frame: Int): Boolean {
+        return segment.startFrame - 10 == frame
+    }
 
-	fun tick(frame: Int) {
-		val percentage = percentage(frame)
-		val location = segment.path.interpolate(percentage)
-		entity.move(location)
-	}
+    fun start() {
+        plugin.launch {
+            player.teleport(firstLocation)
+            player.spectateEntity(entity)
+        }
+    }
 
-	fun stop() {
-		player.stopSpectatingEntity()
-		entity.move(farAwayLocation)
-	}
+    fun tick(frame: Int) {
+        val percentage = percentage(frame)
+        val location = segment.path.interpolate(percentage)
+        entity.move(location)
 
-	fun teardown() {
-		entity.removeViewer(player)
-	}
+        // To render chunks correctly we need to teleport the player to the entity.
+        // Though to prevent lag we only do this every 10 frames or when the player is too far away.
+        if (frame % 10 == 0 || player.location.distanceSquared(location) > MAX_DISTANCE_SQUARED) plugin.launch {
+            player.teleport(location)
+        }
+    }
 
-	private fun percentage(frame: Int): Double {
-		val totalFrames = segment.endFrame - segment.startFrame
-		val currentFrame = frame - segment.startFrame
-		return currentFrame.toDouble() / totalFrames
-	}
+    fun stop() {
+        player.stopSpectatingEntity()
+        entity.move(farAwayLocation)
+    }
 
-	infix fun isActiveAt(frame: Int): Boolean = segment isActiveAt frame
+    fun teardown() {
+        entity.removeViewer(player)
+    }
+
+    private fun percentage(frame: Int): Double {
+        val totalFrames = segment.endFrame - segment.startFrame - TRAILING_FRAMES
+        val currentFrame = frame - segment.startFrame
+        return (currentFrame.toDouble() / totalFrames).coerceIn(0.0, 1.0)
+    }
+
+    infix fun isActiveAt(frame: Int): Boolean = segment isActiveAt frame
+
+    companion object {
+        // The max distance the entity can be from the player before it gets teleported.
+        private const val MAX_DISTANCE_SQUARED = 25 * 25
+
+        // As a boat is interpolated. We need the remove the last few frames to make sure the animation fully finishes.
+        private const val TRAILING_FRAMES = 10
+    }
 }
 
 /**
  * Use catmull-rom interpolation to get a point between a list of points.
  */
 fun List<PathPoint>.interpolate(percentage: Double): Location {
-	val currentPart = percentage * (size - 1)
-	val index = currentPart.toInt()
-	val subPercentage = currentPart - index
+    val currentPart = percentage * (size - 1)
+    val index = currentPart.toInt()
+    val subPercentage = currentPart - index
 
-	val previousPoint = getOrNull(index - 1)?.location ?: this[index].location
-	val currentPoint = this[index].location
-	val nextPoint = getOrNull(index + 1)?.location ?: currentPoint
-	val nextNextPoint = getOrNull(index + 2)?.location ?: nextPoint
+    val previousPoint = getOrNull(index - 1)?.location ?: this[index].location
+    val currentPoint = this[index].location
+    val nextPoint = getOrNull(index + 1)?.location ?: currentPoint
+    val nextNextPoint = getOrNull(index + 2)?.location ?: nextPoint
 
-	return interpolatePoints(previousPoint, currentPoint, nextPoint, nextNextPoint, subPercentage)
+    return interpolatePoints(previousPoint, currentPoint, nextPoint, nextNextPoint, subPercentage)
 }
 
 /**
  * Use catmull-rom interpolation to get a point between four points.
  */
 fun interpolatePoints(
-	previousPoint: Location,
-	currentPoint: Location,
-	nextPoint: Location,
-	nextNextPoint: Location,
-	percentage: Double,
+    previousPoint: Location,
+    currentPoint: Location,
+    nextPoint: Location,
+    nextNextPoint: Location,
+    percentage: Double,
 ): Location {
-	val x = interpolatePoints(
-		previousPoint.x,
-		currentPoint.x,
-		nextPoint.x,
-		nextNextPoint.x,
-		percentage,
-	)
-	val y = interpolatePoints(
-		previousPoint.y,
-		currentPoint.y,
-		nextPoint.y,
-		nextNextPoint.y,
-		percentage,
-	)
-	val z = interpolatePoints(
-		previousPoint.z,
-		currentPoint.z,
-		nextPoint.z,
-		nextNextPoint.z,
-		percentage,
-	)
+    val x = interpolatePoints(
+        previousPoint.x,
+        currentPoint.x,
+        nextPoint.x,
+        nextNextPoint.x,
+        percentage,
+    )
+    val y = interpolatePoints(
+        previousPoint.y,
+        currentPoint.y,
+        nextPoint.y,
+        nextNextPoint.y,
+        percentage,
+    )
+    val z = interpolatePoints(
+        previousPoint.z,
+        currentPoint.z,
+        nextPoint.z,
+        nextNextPoint.z,
+        percentage,
+    )
 
-	val previousYaw = previousPoint.yaw.toDouble()
-	val currentYaw = correctYaw(previousYaw, currentPoint.yaw.toDouble())
-	val nextYaw = correctYaw(currentYaw, nextPoint.yaw.toDouble())
-	val nextNextYaw = correctYaw(nextYaw, nextNextPoint.yaw.toDouble())
-	val yaw = interpolatePoints(
-		previousYaw,
-		currentYaw,
-		nextYaw,
-		nextNextYaw,
-		percentage,
-	)
+    val previousYaw = previousPoint.yaw.toDouble()
+    val currentYaw = correctYaw(previousYaw, currentPoint.yaw.toDouble())
+    val nextYaw = correctYaw(currentYaw, nextPoint.yaw.toDouble())
+    val nextNextYaw = correctYaw(nextYaw, nextNextPoint.yaw.toDouble())
+    val yaw = interpolatePoints(
+        previousYaw,
+        currentYaw,
+        nextYaw,
+        nextNextYaw,
+        percentage,
+    )
 
-	val pitch = interpolatePoints(
-		previousPoint.pitch.toDouble(),
-		currentPoint.pitch.toDouble(),
-		nextPoint.pitch.toDouble(),
-		nextNextPoint.pitch.toDouble(),
-		percentage,
-	)
+    val pitch = interpolatePoints(
+        previousPoint.pitch.toDouble(),
+        currentPoint.pitch.toDouble(),
+        nextPoint.pitch.toDouble(),
+        nextNextPoint.pitch.toDouble(),
+        percentage,
+    )
 
-	return Location(
-		currentPoint.world,
-		x,
-		y,
-		z,
-		yaw.toFloat(),
-		pitch.toFloat(),
-	)
+    return Location(
+        currentPoint.world,
+        x,
+        y,
+        z,
+        yaw.toFloat(),
+        pitch.toFloat(),
+    )
 }
 
 /**
  * Use catmull-rom interpolation to get a point between four points.
  */
 fun interpolatePoints(
-	previousPoint: Double,
-	currentPoint: Double,
-	nextPoint: Double,
-	nextNextPoint: Double,
-	percentage: Double,
+    previousPoint: Double,
+    currentPoint: Double,
+    nextPoint: Double,
+    nextNextPoint: Double,
+    percentage: Double,
 ): Double {
-	val square = percentage * percentage
-	val cube = square * percentage
+    val square = percentage * percentage
+    val cube = square * percentage
 
-	return 0.5 * (
-			(2 * currentPoint) +
-					(-previousPoint + nextPoint) * percentage +
-					(2 * previousPoint - 5 * currentPoint + 4 * nextPoint - nextNextPoint) * square +
-					(-previousPoint + 3 * currentPoint - 3 * nextPoint + nextNextPoint) * cube
-			)
+    return 0.5 * (
+            (2 * currentPoint) +
+                    (-previousPoint + nextPoint) * percentage +
+                    (2 * previousPoint - 5 * currentPoint + 4 * nextPoint - nextNextPoint) * square +
+                    (-previousPoint + 3 * currentPoint - 3 * nextPoint + nextNextPoint) * cube
+            )
 }
 
 /**
  * Correct the yaw rotation so that it correctly interpolates between -180 and 180.
  */
 fun correctYaw(currentYaw: Double, nextYaw: Double): Double {
-	val difference = nextYaw - currentYaw
-	return if (difference > 180) {
-		nextYaw - 360
-	} else if (difference < -180) {
-		nextYaw + 360
-	} else {
-		nextYaw
-	}
+    val difference = nextYaw - currentYaw
+    return if (difference > 180) {
+        nextYaw - 360
+    } else if (difference < -180) {
+        nextYaw + 360
+    } else {
+        nextYaw
+    }
 }
 
