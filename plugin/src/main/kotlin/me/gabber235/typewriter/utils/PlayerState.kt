@@ -21,8 +21,8 @@ enum class GenericPlayerStateProvider(private val store: Player.() -> Any, priva
     GAME_MODE({ gameMode }, { gameMode = it as GameMode }),
     EXP({ exp }, { exp = it as Float }),
     LEVEL({ level }, { level = it as Int }),
-    FLYING({ isFlying }, { isFlying = it as Boolean }),
     ALLOW_FLIGHT({ allowFlight }, { allowFlight = it as Boolean }),
+    FLYING({ isFlying }, { isFlying = it as Boolean }),
 
     // All Players that are visible to the player
     VISIBLE_PLAYERS({

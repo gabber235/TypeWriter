@@ -2,11 +2,12 @@ package me.gabber235.typewriter.ui
 
 import com.corundumstudio.socketio.AckRequest
 import com.corundumstudio.socketio.SocketIOClient
-import com.github.shynixn.mccoroutine.launchAsync
+import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import kotlinx.coroutines.Dispatchers
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.EntryDatabase
@@ -268,7 +269,7 @@ object ClientSynchronizer {
             return
         }
 
-        plugin.launchAsync {
+        plugin.launch(Dispatchers.IO) {
             publish()
         }
         ackRequest.sendAckData("Published")

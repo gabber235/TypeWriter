@@ -1,6 +1,6 @@
 package me.gabber235.typewriter.entries.cinematic
 
-import com.github.shynixn.mccoroutine.launch
+import com.github.shynixn.mccoroutine.bukkit.launch
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
@@ -158,6 +158,8 @@ private class CameraSegmentAction(
         // Though to prevent lag we only do this every 10 frames or when the player is too far away.
         if (frame % 10 == 0 || player.location.distanceSquared(location) > MAX_DISTANCE_SQUARED) plugin.launch {
             player.teleport(location)
+            player.allowFlight = true
+            player.isFlying = true
         }
     }
 
