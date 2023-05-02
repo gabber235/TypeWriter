@@ -68,11 +68,13 @@ class CameraCinematicAction(
 
         originalState = player.state(LOCATION, ALLOW_FLIGHT, FLYING, VISIBLE_PLAYERS, SHOWING_PLAYER)
 
-        player.allowFlight = true
-        player.isFlying = true
-        server.onlinePlayers.forEach {
-            it.hidePlayer(plugin, player)
-            player.hidePlayer(plugin, it)
+        plugin.launch {
+            player.allowFlight = true
+            player.isFlying = true
+            server.onlinePlayers.forEach {
+                it.hidePlayer(plugin, player)
+                player.hidePlayer(plugin, it)
+            }
         }
     }
 
