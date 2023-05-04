@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.MultiLine
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Query
@@ -32,6 +33,7 @@ class MessageActionEntry(
     @EntryIdentifier(SpeakerEntry::class)
     val speaker: String = "",
     @Help("The message to send")
+    @MultiLine
     val message: String = "",
 ) : ActionEntry {
     override fun execute(player: Player) {
