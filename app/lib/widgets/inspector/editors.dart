@@ -15,6 +15,7 @@ import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/editors/optional.dart";
 import "package:typewriter/widgets/inspector/editors/page_selector.dart";
+import "package:typewriter/widgets/inspector/editors/potion_effect.dart";
 import "package:typewriter/widgets/inspector/editors/sound.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -35,11 +36,12 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       PageSelectorEditorFilter(),
 
       // Custom Editors
-      MaterialSelectorEditorFilter(),
+      MaterialEditorFilter(),
       OptionalEditorFilter(),
       LocationEditorFilter(),
       DurationEditorFilter(),
       CronEditorFilter(),
+      PotionEffectEditorFilter(),
 
       // Default filters
       StringEditorFilter(),

@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.entry.dialogue
 
-import lirand.api.extensions.world.playSound
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
@@ -70,5 +69,5 @@ fun Player.playSpeakerSound(speaker: SpeakerEntry?) {
     if (soundName.isBlank()) return
     val soundNamespace = NamespacedKey.fromString(speaker.sound)
     val sound = Sound.values().firstOrNull { it.key == soundNamespace } ?: return
-    playSound(sound, SoundCategory.VOICE)
+    playSound(this, sound, SoundCategory.VOICE, 1f, 1f)
 }

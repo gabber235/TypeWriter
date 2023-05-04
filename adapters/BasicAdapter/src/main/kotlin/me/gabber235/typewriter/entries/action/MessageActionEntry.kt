@@ -8,6 +8,7 @@ import me.gabber235.typewriter.adapters.modifiers.MultiLine
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.dialogue.playSpeakerSound
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
@@ -26,9 +27,9 @@ val messageFormat: String by snippet(
 class MessageActionEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
+    override val triggers: List<String> = emptyList(),
     @Help("The speaker of the message")
     @EntryIdentifier(SpeakerEntry::class)
     val speaker: String = "",
@@ -39,22 +40,15 @@ class MessageActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        player.sendMessageAction(message, speakerDisplayName)
-    }
-
-    private fun Player.sendMessageAction(text: String, speakerDisplayName: String) {
-        sendMiniWithResolvers(
+        val speakerEntry = speakerEntry
+        player.playSpeakerSound(speakerEntry)
+        player.sendMiniWithResolvers(
             messageFormat,
-            Placeholder.parsed("speaker", speakerDisplayName),
-            Placeholder.parsed("message", text.parsePlaceholders(player).replace("\n", "\n "))
+            Placeholder.parsed("speaker", speakerEntry?.displayName ?: ""),
+            Placeholder.parsed("message", message.parsePlaceholders(player).replace("\n", "\n "))
         )
     }
 
-    val speakerDisplayName: String
-        get() = speakerEntry?.displayName ?: ""
-
-    val speakerEntry: SpeakerEntry?
+    private val speakerEntry: SpeakerEntry?
         get() = Query.findById(speaker)
-
-
 }

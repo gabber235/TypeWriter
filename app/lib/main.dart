@@ -7,26 +7,8 @@ import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:uuid/uuid.dart";
 
-class Logger extends ProviderObserver {
-  const Logger();
-  @override
-  void didUpdateProvider(
-    ProviderBase<Object?> provider,
-    Object? previousValue,
-    Object? newValue,
-    ProviderContainer container,
-  ) {
-    debugPrint('''
-{
-  "provider": "${provider.name ?? provider.runtimeType}",
-  "field": "${provider is FieldValueProvider ? provider.path : "none"}",
-  "previousValue": "$previousValue",
-  "newValue": "$newValue"
-}''');
-  }
-}
-
 const uuid = Uuid();
+const mcmetaUrl = "https://raw.githubusercontent.com/misode/mcmeta";
 
 void main() async {
   FlutterError.demangleStackTrace = (stack) {
@@ -69,7 +51,9 @@ class TypeWriterApp extends HookConsumerWidget {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
-        fillColor: brightness == Brightness.light ? Colors.black.withOpacity(0.05) : Colors.black.withOpacity(0.2),
+        fillColor: brightness == Brightness.light
+            ? Colors.black.withOpacity(0.05)
+            : Colors.black.withOpacity(0.2),
         filled: true,
         hoverColor: Colors.black.withOpacity(0.1),
         errorStyle: const TextStyle(
@@ -77,7 +61,9 @@ class TypeWriterApp extends HookConsumerWidget {
           fontSize: 12,
         ),
         hintStyle: GoogleFonts.jetBrainsMono(
-          color: brightness == Brightness.light ? const Color(0x99000000) : const Color(0x99FFFFFF),
+          color: brightness == Brightness.light
+              ? const Color(0x99000000)
+              : const Color(0x99FFFFFF),
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
@@ -93,5 +79,24 @@ class TypeWriterApp extends HookConsumerWidget {
       hoverColor: Colors.black.withOpacity(0.1),
       errorColor: Colors.red,
     );
+  }
+}
+
+class Logger extends ProviderObserver {
+  const Logger();
+  @override
+  void didUpdateProvider(
+    ProviderBase<Object?> provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    debugPrint('''
+{
+  "provider": "${provider.name ?? provider.runtimeType}",
+  "field": "${provider is FieldValueProvider ? provider.path : "none"}",
+  "previousValue": "$previousValue",
+  "newValue": "$newValue"
+}''');
   }
 }
