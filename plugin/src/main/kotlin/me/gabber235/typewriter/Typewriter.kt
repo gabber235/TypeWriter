@@ -29,7 +29,7 @@ class Typewriter : KotlinPlugin() {
         AdapterLoader.loadAdapters()
     }
 
-    override fun onEnable() {
+    override suspend fun onEnableAsync() {
         typeWriterCommand()
 
         if (!server.pluginManager.isPluginEnabled("ProtocolLib")) {
@@ -63,7 +63,7 @@ class Typewriter : KotlinPlugin() {
         plugin.server.pluginManager.isPluginEnabled("Floodgate")
     }
 
-    override fun onDisable() {
+    override suspend fun onDisableAsync() {
         ChatHistoryHandler.shutdown()
         CommunicationHandler.shutdown()
         InteractionHandler.shutdown()

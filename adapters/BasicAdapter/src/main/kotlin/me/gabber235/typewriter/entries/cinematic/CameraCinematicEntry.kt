@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import kotlinx.coroutines.withContext
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
@@ -60,7 +61,7 @@ class CameraCinematicAction(
     private var currentSegmentAction: CameraSegmentAction? = null
     private var originalState: PlayerState? = null
 
-    override fun setup() {
+    override suspend fun setup() {
         super.setup()
 
         segments = entry.segments.map { CameraSegmentAction(player, it) }
@@ -68,7 +69,7 @@ class CameraCinematicAction(
 
         originalState = player.state(LOCATION, ALLOW_FLIGHT, FLYING, VISIBLE_PLAYERS, SHOWING_PLAYER)
 
-        plugin.launch {
+        withContext(plugin.minecraftDispatcher) {
             player.allowFlight = true
             player.isFlying = true
             server.onlinePlayers.forEach {
@@ -78,7 +79,7 @@ class CameraCinematicAction(
         }
     }
 
-    override fun tick(frame: Int) {
+    override suspend fun tick(frame: Int) {
         super.tick(frame)
 
         segments.filter { it.canPrepare(frame) }.forEach {
@@ -104,7 +105,7 @@ class CameraCinematicAction(
     }
 
 
-    override fun teardown() {
+    override suspend fun teardown() {
         super.teardown()
 
         currentSegmentAction?.stop()
@@ -114,7 +115,7 @@ class CameraCinematicAction(
         segments = emptyList()
 
         originalState?.let {
-            plugin.launch {
+            withContext(plugin.minecraftDispatcher) {
                 player.restore(it)
             }
         }
@@ -144,21 +145,21 @@ private class CameraSegmentAction(
         return segment.startFrame - 10 == frame
     }
 
-    fun start() {
-        plugin.launch {
+    suspend fun start() {
+        withContext(plugin.minecraftDispatcher) {
             player.teleport(firstLocation)
             player.spectateEntity(entity)
         }
     }
 
-    fun tick(frame: Int) {
+    suspend fun tick(frame: Int) {
         val percentage = percentage(frame)
         val location = segment.path.interpolate(percentage)
         entity.move(location)
 
         // To render chunks correctly we need to teleport the player to the entity.
         // Though to prevent lag we only do this every 10 frames or when the player is too far away.
-        if (frame % 10 == 0 || player.location.distanceSquared(location) > MAX_DISTANCE_SQUARED) plugin.launch {
+        if (frame % 10 == 0 || player.location.distanceSquared(location) > MAX_DISTANCE_SQUARED) withContext(plugin.minecraftDispatcher) {
             player.teleport(location)
             player.allowFlight = true
             player.isFlying = true

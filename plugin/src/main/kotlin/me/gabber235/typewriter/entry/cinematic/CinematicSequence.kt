@@ -8,56 +8,56 @@ import me.gabber235.typewriter.entry.triggerFor
 import org.bukkit.entity.Player
 
 class CinematicSequence(
-	private val player: Player,
-	private val entries: List<CinematicEntry>,
-	private val triggers: List<String>
+    private val player: Player,
+    private val entries: List<CinematicEntry>,
+    private val triggers: List<String>
 ) {
-	private var frame = -1
-	private var actions = emptyList<CinematicAction>()
+    private var frame = -1
+    private var actions = emptyList<CinematicAction>()
 
-	fun start() {
-		if (frame > -1) return
-		actions = entries.map { it.create(player) }
-		actions.forEach {
-			try {
-				it.setup()
-			} catch (e: Exception) {
-				e.printStackTrace()
-			}
-		}
-	}
+    suspend fun start() {
+        if (frame > -1) return
+        actions = entries.map { it.create(player) }
+        actions.forEach {
+            try {
+                it.setup()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
-	fun tick() {
-		if (frame == -1) {
-			println("Starting cinematic sequence: $frame")
-			start()
-		}
+    suspend fun tick() {
+        if (frame == -1) {
+            println("Starting cinematic sequence: $frame")
+            start()
+        }
 
-		frame++
-		actions.forEach {
-			try {
-				it.tick(frame)
-			} catch (e: Exception) {
-				e.printStackTrace()
-			}
-		}
+        frame++
+        actions.forEach {
+            try {
+                it.tick(frame)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
-		if (canEnd) {
-			CINEMATIC_END triggerFor player
-		}
-	}
+        if (canEnd) {
+            CINEMATIC_END triggerFor player
+        }
+    }
 
-	private val canEnd get() = actions.all { it.canFinish(frame) }
+    private val canEnd get() = actions.all { it.canFinish(frame) }
 
-	fun end() {
-		actions.forEach {
-			try {
-				it.teardown()
-			} catch (e: Exception) {
-				e.printStackTrace()
-			}
-		}
+    suspend fun end() {
+        actions.forEach {
+            try {
+                it.teardown()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
-		triggers triggerEntriesFor player
-	}
+        triggers triggerEntriesFor player
+    }
 }

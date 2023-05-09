@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -8,10 +9,15 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
-import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.entry.entries.CinematicAction
+import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.GAME_MODE
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
+import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.PlayerState
+import me.gabber235.typewriter.utils.restore
+import me.gabber235.typewriter.utils.state
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
@@ -44,18 +50,18 @@ data class BlindingSegment(
 
 class BlindingCinematicAction(
     private val player: Player,
-    private val entry: BlindingCinematicEntry,
+    entry: BlindingCinematicEntry,
 ) : SimpleCinematicAction<BlindingSegment>() {
 
     private var state: PlayerState? = null
 
     override val segments: List<BlindingSegment> = entry.segments
 
-    override fun startSegment(segment: BlindingSegment) {
+    override suspend fun startSegment(segment: BlindingSegment) {
         super.startSegment(segment)
         state = player.state(LOCATION, GAME_MODE)
 
-        plugin.launch {
+        withContext(plugin.minecraftDispatcher) {
             player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 1000000, 1, false, false, false))
 
             if (segment.teleport) {
@@ -70,11 +76,11 @@ class BlindingCinematicAction(
         }
     }
 
-    override fun stopSegment(segment: BlindingSegment) {
+    override suspend fun stopSegment(segment: BlindingSegment) {
         super.stopSegment(segment)
         val state = state ?: return
         this.state = null
-        plugin.launch {
+        withContext(plugin.minecraftDispatcher) {
             player.removePotionEffect(PotionEffectType.BLINDNESS)
             player.restore(state)
         }

@@ -76,14 +76,14 @@ class SubtitleDialogueCinematicAction(
 
     private var state: PlayerState? = null
 
-    override fun setup() {
+    override suspend fun setup() {
         super.setup()
         state = player.state(GenericPlayerStateProvider.EXP, GenericPlayerStateProvider.LEVEL)
         player.exp = 0f
         player.level = 0
     }
 
-    override fun tick(frame: Int) {
+    override suspend fun tick(frame: Int) {
         super.tick(frame)
         val segment = (entry.segments activeSegmentAt frame)
 
@@ -127,7 +127,7 @@ class SubtitleDialogueCinematicAction(
         player.sendActionBar(actionBarComponent)
     }
 
-    override fun teardown() {
+    override suspend fun teardown() {
         super.teardown()
         player.restore(state)
     }

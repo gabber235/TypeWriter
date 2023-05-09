@@ -9,15 +9,15 @@ import java.time.Duration
 operator fun File.get(name: String): File = File(this, name)
 
 val Player.isFloodgate: Boolean
-	get() {
-		if (!Typewriter.plugin.isFloodgateInstalled) return false
-		return FloodgateApi.getInstance().isFloodgatePlayer(this.uniqueId)
-	}
+    get() {
+        if (!Typewriter.plugin.isFloodgateInstalled) return false
+        return FloodgateApi.getInstance().isFloodgatePlayer(this.uniqueId)
+    }
 
 
 fun <T> T?.logErrorIfNull(message: String): T? {
-	if (this == null) Typewriter.plugin.logger.severe(message)
-	return this
+    if (this == null) Typewriter.plugin.logger.severe(message)
+    return this
 }
 
 infix fun <T> Boolean.then(t: T): T? = if (this) t else null

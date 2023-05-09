@@ -7,7 +7,9 @@ import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.adapters.modifiers.Sound
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
-import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.entries.CinematicAction
+import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
@@ -46,12 +48,12 @@ class SoundCinematicAction(
 
     override val segments: List<SoundSegment> = entry.segments
 
-    override fun startSegment(segment: SoundSegment) {
+    override suspend fun startSegment(segment: SoundSegment) {
         super.startSegment(segment)
         player.playSound(player.location, segment.sound, segment.volume, segment.pitch)
     }
 
-    override fun stopSegment(segment: SoundSegment) {
+    override suspend fun stopSegment(segment: SoundSegment) {
         super.stopSegment(segment)
         player.stopSound(segment.sound)
     }

@@ -53,7 +53,7 @@ class TitleCinematicAction(
 
     override val segments: List<TitleSegment> = entry.segments
 
-    override fun startSegment(segment: TitleSegment) {
+    override suspend fun startSegment(segment: TitleSegment) {
         super.startSegment(segment)
 
         val totalDuration: Int = segment.endFrame - segment.startFrame
@@ -74,7 +74,7 @@ class TitleCinematicAction(
         player.showTitle(title)
     }
 
-    override fun stopSegment(segment: TitleSegment) {
+    override suspend fun stopSegment(segment: TitleSegment) {
         super.stopSegment(segment)
         player.resetTitle()
     }

@@ -80,7 +80,7 @@ class SpokenDialogueCinematicAction(
 
     private var state: PlayerState? = null
 
-    override fun setup() {
+    override suspend fun setup() {
         super.setup()
         state = player.state(EXP, LEVEL)
         player.exp = 0f
@@ -90,7 +90,7 @@ class SpokenDialogueCinematicAction(
     }
 
 
-    override fun tick(frame: Int) {
+    override suspend fun tick(frame: Int) {
         super.tick(frame)
         val segment = (entry.segments activeSegmentAt frame)
 
@@ -132,7 +132,7 @@ class SpokenDialogueCinematicAction(
         player.sendMessage(componentWithDarkMessages)
     }
 
-    override fun teardown() {
+    override suspend fun teardown() {
         super.teardown()
         player.restore(state)
     }
