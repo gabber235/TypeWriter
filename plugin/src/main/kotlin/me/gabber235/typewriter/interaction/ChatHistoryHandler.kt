@@ -4,17 +4,16 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
+import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
+import com.comphenix.protocol.reflect.StructureModifier
 import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.utils.logErrorIfNull
-import me.gabber235.typewriter.utils.memoized
 import me.gabber235.typewriter.utils.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.entity.Player
-import java.lang.reflect.Method
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -27,41 +26,29 @@ object ChatHistoryHandler :
 
     private val histories = mutableMapOf<UUID, ChatHistory>()
 
-    private val contentMethod by memoized<Class<out Any>, Method> { it.getMethod("content") }
-    private val adventureContentMethod by memoized<Class<out Any>, Method> {
-        it.getMethod("adventure\$content")
-    }
-    private val isActionBarMessageMethod by memoized<Class<out Any>, Method?> { clazz ->
-        clazz.methods.find {
-            it.returnType == Boolean::class.java && it.parameterCount == 0
-        }
-    }
-
     // When the serer sends a message to the player
     override fun onPacketSending(event: PacketEvent) {
-        plugin.logger.info("Packet sending: ${event.packetType}")
         if (event.packetType != PacketType.Play.Server.SYSTEM_CHAT) return
-        val handle = event.packet.handle
-        plugin.logger.info("Handle: $handle")
-        val isActionBarMessage = isActionBarMessageMethod(handle::class.java)?.invoke(handle) as? Boolean ?: false
-        if (isActionBarMessage) plugin.logger.info("Is action bar message")
-        if (isActionBarMessage) return
 
-        val contentValue =
-            contentMethod(handle::class.java).invoke(handle) ?: adventureContentMethod(handle::class.java).invoke(
-                handle
-            ).logErrorIfNull("Could not get chat context") ?: return
+        if (event.packet.isActionBar()) return
 
-        plugin.logger.info("Content value: $contentValue")
+        val adventureModifier: StructureModifier<Component>? = event.packet.getSpecificModifier(Component::class.java)
+        val component = adventureModifier?.readSafely(0)
+            .logErrorIfNull("Could not find adventure modifier on chat packet. Make sure you are using the latest paper version")
+            ?: return
 
-        val content =
-            (contentValue as? String).logErrorIfNull("Content value of the message was not a string but ${contentValue::class.simpleName}")
-                ?: return
-        val component = GsonComponentSerializer.gson().deserialize(content)
         // If the message is a broadcast of previous messages.
         // We don't want to add this to the history.
         if (component is TextComponent && component.content() == "no-index") return
         getHistory(event.player).addMessage(component)
+    }
+
+    private fun PacketContainer.isActionBar(): Boolean {
+        val booleans = booleans
+        if (booleans.size() > 0) {
+            return booleans.readSafely(0)
+        }
+        return integers.readSafely(0) == 2
     }
 
     fun getHistory(player: Player): ChatHistory {
