@@ -31,6 +31,7 @@ class BlindingCinematicEntry(
     @Segments(icon = Icons.SOLID_EYE_SLASH)
     val segments: List<BlindingSegment>,
 ) : CinematicEntry {
+    override fun shouldSimulate(): Boolean = false
     override fun create(player: Player): CinematicAction {
         return BlindingCinematicAction(
             player,

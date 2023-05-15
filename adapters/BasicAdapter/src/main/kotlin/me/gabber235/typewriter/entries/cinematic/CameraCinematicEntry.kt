@@ -33,6 +33,7 @@ data class CameraCinematicEntry(
     @InnerMin(Min(10))
     val segments: List<CameraSegment> = emptyList(),
 ) : CinematicEntry {
+    override fun shouldSimulate(): Boolean = false
     override fun create(player: Player): CinematicAction {
         return CameraCinematicAction(
             player,

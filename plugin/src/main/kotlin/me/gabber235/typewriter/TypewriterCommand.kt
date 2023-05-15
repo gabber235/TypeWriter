@@ -228,6 +228,32 @@ private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
             }
         }
     }
+
+    literal("simulate") {
+        requiresPermissions("typewriter.cinematic.start")
+
+        argument("cinematic", CinematicType) { cinematicId ->
+            executesPlayer {
+                CinematicStartTrigger(
+                    cinematicId.get(),
+                    emptyList(),
+                    override = true,
+                    simulate = true
+                ) triggerFor source
+            }
+
+            argument("player", PlayerType) { player ->
+                executes {
+                    CinematicStartTrigger(
+                        cinematicId.get(),
+                        emptyList(),
+                        override = true,
+                        simulate = true
+                    ) triggerFor player.get()
+                }
+            }
+        }
+    }
 }
 
 open class FactType(

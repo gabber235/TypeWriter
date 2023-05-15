@@ -11,6 +11,12 @@ interface CinematicEntry : Entry {
     @Help("The criteria that must be met before this entry is shown")
     val criteria: List<Criteria>
 
+    /**
+     * Whether this should be in simulated cinematic.
+     * If false, the entry will be ignored during simulation.
+     */
+    fun shouldSimulate(): Boolean = true
+
     fun create(player: Player): CinematicAction
 }
 

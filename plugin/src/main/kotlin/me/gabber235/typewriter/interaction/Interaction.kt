@@ -114,14 +114,23 @@ class Interaction(val player: Player) {
             return
         }
 
-        val trigger = event.triggers.filterIsInstance<CinematicStartTrigger>().firstOrNull() ?: return
+        val triggers = event.triggers.filterIsInstance<CinematicStartTrigger>()
+        if (triggers.isEmpty()) return
+        // If any of the triggers is an override, we should use that one
+        // Otherwise, we should use the first one
+        val trigger = triggers.firstOrNull { it.override } ?: triggers.first()
         if (cinematic != null && !trigger.override) return
 
         cinematic?.end()
         cinematic = null
 
-        val entries =
+        var entries =
             Query.findWhereFromPage<CinematicEntry>(trigger.pageId) { it.criteria.matches(event.player.uniqueId) }
+
+        // If the cinematic is a simulation, we filter out all the entries that should never be simulated.
+        if (trigger.simulate) {
+            entries = entries.filter { it.shouldSimulate() }
+        }
 
         if (entries.isEmpty()) return
 
