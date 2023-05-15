@@ -3,69 +3,11 @@ package me.gabber235.typewriter.extensions.protocollib
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
-import lirand.api.dsl.command.builders.command
 import org.bukkit.Location
-import org.bukkit.attribute.Attribute
-import org.bukkit.attribute.AttributeModifier
-import org.bukkit.attribute.AttributeModifier.Operation
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.util.*
-
-
-private var testEntity: ClientEntity? = null
-private var attribute: AttributeModifier? = null
-
-fun Plugin.entityTestCommand() = command("test") {
-    literal("create") {
-        executesPlayer {
-            val entity = ClientEntity(source.location, EntityType.HORSE)
-            entity.addViewer(source.uniqueId)
-            testEntity = entity
-        }
-    }
-
-    literal("move") {
-        executesPlayer {
-            testEntity?.move(source.location)
-        }
-    }
-
-    literal("glow") {
-        executesPlayer {
-            testEntity?.glowing = testEntity?.glowing != true
-        }
-    }
-
-    literal("invisible") {
-        executesPlayer {
-            testEntity?.invisible = testEntity?.invisible != true
-        }
-    }
-
-    literal("destroy") {
-        executesPlayer {
-            testEntity?.removeViewer(source.uniqueId)
-            testEntity = null
-        }
-    }
-
-    literal("zoom") {
-        executesPlayer {
-            val instance = source.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED) ?: return@executesPlayer
-            attribute = if (attribute == null) {
-                val modifier = AttributeModifier("test_zoom", 1.0, Operation.MULTIPLY_SCALAR_1)
-                instance.addModifier(modifier)
-                modifier
-            } else {
-                instance.modifiers.forEach { instance.removeModifier(it) }
-                null
-            }
-        }
-    }
-}
 
 class ClientEntity(location: Location, private val entityType: EntityType) {
     private val entityId: Int = (Math.random() * 1000000 + 1000000).toInt()

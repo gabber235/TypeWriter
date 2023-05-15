@@ -13,54 +13,54 @@ import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 private val commandMap: CommandMap by lazy {
-	val commandMapField: Field = server.javaClass.getDeclaredField("commandMap")
-	commandMapField.isAccessible = true
-	commandMapField.get(server) as CommandMap
+    val commandMapField: Field = server.javaClass.getDeclaredField("commandMap")
+    commandMapField.isAccessible = true
+    commandMapField.get(server) as CommandMap
 }
 
 private val syncCommandsMethod: Method by lazy {
-	val method = server.javaClass.getDeclaredMethod("syncCommands")
-	method.isAccessible = true
-	method
+    val method = server.javaClass.getDeclaredMethod("syncCommands")
+    method.isAccessible = true
+    method
 }
 
 
 fun CustomCommandEntry.Companion.refreshAndRegisterAll(newEntries: List<CustomCommandEntry>): List<CustomCommandEntry> {
-	EntryDatabase.commandEvents.forEach { it.unregister() }
+    EntryDatabase.commandEvents.forEach { it.unregister() }
 
-	newEntries.forEach { it.register() }
+    newEntries.forEach { it.register() }
 
-	syncCommands()
-	return newEntries
+    syncCommands()
+    return newEntries
 }
 
-private fun syncCommands() {
-	syncCommandsMethod.invoke(server)
+fun syncCommands() {
+    syncCommandsMethod.invoke(server)
 }
 
 fun CustomCommandEntry.register() {
-	val result = commandMap.register("typewriter", object : BukkitCommand(command) {
-		override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
-			if (sender !is Player) {
-				sender.msg("This command can only be executed by a player")
-				return true
-			}
-			when (val filterResult = filter(sender, commandLabel, args)) {
-				is Success                   -> this@register.execute(sender, commandLabel, args)
-				is Failure                   -> {}
-				is FailureWithDefaultMessage -> sender.msg("You can not execute this command")
-				is FailureWithMessage        -> sender.msg(filterResult.message)
-			}
+    val result = commandMap.register("typewriter_custom", object : BukkitCommand(command) {
+        override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
+            if (sender !is Player) {
+                sender.msg("This command can only be executed by a player")
+                return true
+            }
+            when (val filterResult = filter(sender, commandLabel, args)) {
+                is Success -> this@register.execute(sender, commandLabel, args)
+                is Failure -> {}
+                is FailureWithDefaultMessage -> sender.msg("You can not execute this command")
+                is FailureWithMessage -> sender.msg(filterResult.message)
+            }
 
-			return true
-		}
-	})
+            return true
+        }
+    })
 
-	plugin.logger.info("Registered command $command for $name (${id}) Success: $result")
+    plugin.logger.info("Registered command $command for $name (${id}) Success: $result")
 }
 
 fun CustomCommandEntry.unregister() {
-	val command = commandMap.getCommand(command) ?: return
-	commandMap.knownCommands.values.removeIf(command::equals)
-	command.unregister(commandMap)
+    val command = commandMap.getCommand(command) ?: return
+    commandMap.knownCommands.values.removeIf(command::equals)
+    command.unregister(commandMap)
 }

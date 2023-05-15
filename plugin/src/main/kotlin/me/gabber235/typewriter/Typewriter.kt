@@ -8,11 +8,11 @@ import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.EntryListeners
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
-import me.gabber235.typewriter.extensions.protocollib.entityTestCommand
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.ui.CommunicationHandler
+import me.gabber235.typewriter.utils.syncCommands
 
 class Typewriter : KotlinPlugin() {
     companion object {
@@ -48,6 +48,8 @@ class Typewriter : KotlinPlugin() {
             TypewriteExpansion.register()
         }
 
+        syncCommands()
+
         // We want to initialize all the adapters after all the plugins have been enabled to make sure
         // that all the plugins are loaded.
         plugin.launch {
@@ -55,8 +57,6 @@ class Typewriter : KotlinPlugin() {
             AdapterLoader.initializeAdapters()
             CommunicationHandler.initialize()
         }
-
-        entityTestCommand()
     }
 
     val isFloodgateInstalled: Boolean by lazy {

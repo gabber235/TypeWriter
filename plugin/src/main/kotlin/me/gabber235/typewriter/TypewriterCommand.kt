@@ -230,7 +230,6 @@ private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
     }
 }
 
-
 open class FactType(
     open val notFoundExceptionType: ChatCommandExceptionType = PlayerType.notFoundExceptionType
 ) : WordType<FactEntry> {

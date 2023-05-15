@@ -1,0 +1,17 @@
+package me.gabber235.typewriter.capture
+
+import org.bukkit.entity.Player
+
+sealed interface Capturer<T> {
+    val title: String
+}
+
+interface ImmediateCapturer<T> : Capturer<T> {
+    fun capture(player: Player): T
+}
+
+interface RecordedCapturer<T> : Capturer<T> {
+    fun startRecording(player: Player)
+
+    fun stopRecording(player: Player): T
+}

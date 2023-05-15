@@ -61,7 +61,8 @@ object InteractionHandler : Listener {
 
     /**
      * Triggers an event.
-     * All events that start with "system." are handled by the plugin itself.
+     * All events that start with "system."
+     * Are handled by the plugin itself.
      * All other events are handled based on the entries in the database.
      *
      * @param event The event to trigger
