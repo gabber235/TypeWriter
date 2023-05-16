@@ -12,14 +12,12 @@ import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.extensions.protocollib.BoatType
 import me.gabber235.typewriter.extensions.protocollib.ClientEntity
 import me.gabber235.typewriter.extensions.protocollib.spectateEntity
 import me.gabber235.typewriter.extensions.protocollib.stopSpectatingEntity
+import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
-import me.gabber235.typewriter.utils.Icons
-import me.gabber235.typewriter.utils.PlayerState
-import me.gabber235.typewriter.utils.restore
-import me.gabber235.typewriter.utils.state
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -65,7 +63,13 @@ class CameraCinematicAction(
     override suspend fun setup() {
         super.setup()
 
-        segments = entry.segments.map { CameraSegmentAction(player, it) }
+        segments = entry.segments.map {
+            if (player.isFloodgate) {
+                TeleportCameraSegmentAction(player, it)
+            } else {
+                BoatCameraSegmentAction(player, it)
+            }
+        }
         segments.forEach { it.setup() }
 
         originalState = player.state(LOCATION, ALLOW_FLIGHT, FLYING, VISIBLE_PLAYERS, SHOWING_PLAYER)
@@ -125,55 +129,85 @@ class CameraCinematicAction(
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
 }
 
-private class CameraSegmentAction(
-    private val player: Player,
-    private val segment: CameraSegment,
+
+private interface CameraSegmentAction {
+    val segment: CameraSegment
+    fun setup()
+    fun prepare()
+    fun canPrepare(frame: Int): Boolean
+    suspend fun start()
+    suspend fun tick(frame: Int)
+    fun stop()
+    fun teardown()
+    infix fun isActiveAt(frame: Int): Boolean = segment isActiveAt frame
+}
+
+// The max distance the entity can be from the player before it gets teleported.
+private const val MAX_DISTANCE_SQUARED = 25 * 25
+
+/**
+ * Teleports the player to the given location if needed.
+ * To render chunks correctly we need to teleport the player to the entity.
+ * Though to prevent lag we only do this every 10 frames or when the player is too far away.
+ *
+ * @param frame The current frame.
+ * @param location The location to teleport to.
+ */
+private suspend inline fun Player.teleportIfNeeded(
+    frame: Int,
+    location: Location,
 ) {
+    if (frame % 10 == 0 || location.distanceSquared(location) > MAX_DISTANCE_SQUARED) withContext(
+        plugin.minecraftDispatcher
+    ) {
+        teleport(location)
+        allowFlight = true
+        isFlying = true
+    }
+}
+
+
+private class BoatCameraSegmentAction(
+    private val player: Player,
+    override val segment: CameraSegment,
+) : CameraSegmentAction {
+    private val path = segment.path.map {
+        it.copy(
+            location = it.location.clone().apply { y += player.eyeHeight - 0.5625 }
+        )
+    }
     private val farAwayLocation = Location(player.world, 0.0, 500.0, 0.0)
-    private val firstLocation = segment.path.first().location
+    private val firstLocation = path.first().location
 
-    private val entity = ClientEntity(firstLocation, EntityType.BOAT)
+    private val entity = ClientEntity(firstLocation, EntityType.BOAT).also {
+        it.boatType = BoatType.JUNGLE
+    }
 
-    fun setup() {
+    override fun setup() {
         entity.addViewer(player)
     }
 
-    fun prepare() {
+    override fun prepare() {
         entity.move(firstLocation)
     }
 
-    fun canPrepare(frame: Int): Boolean {
+    override fun canPrepare(frame: Int): Boolean {
         return segment.startFrame - 10 == frame
     }
 
-    suspend fun start() {
+    override suspend fun start() {
         withContext(plugin.minecraftDispatcher) {
             player.teleport(firstLocation)
             player.spectateEntity(entity)
         }
     }
 
-    suspend fun tick(frame: Int) {
+    override suspend fun tick(frame: Int) {
         val percentage = percentage(frame)
-        val location = segment.path.interpolate(percentage)
+        val location = path.interpolate(percentage)
+
         entity.move(location)
-
-        // To render chunks correctly we need to teleport the player to the entity.
-        // Though to prevent lag we only do this every 10 frames or when the player is too far away.
-        if (frame % 10 == 0 || player.location.distanceSquared(location) > MAX_DISTANCE_SQUARED) withContext(plugin.minecraftDispatcher) {
-            player.teleport(location)
-            player.allowFlight = true
-            player.isFlying = true
-        }
-    }
-
-    fun stop() {
-        player.stopSpectatingEntity()
-        entity.move(farAwayLocation)
-    }
-
-    fun teardown() {
-        entity.removeViewer(player)
+        player.teleportIfNeeded(frame, location)
     }
 
     private fun percentage(frame: Int): Double {
@@ -182,14 +216,65 @@ private class CameraSegmentAction(
         return (currentFrame.toDouble() / totalFrames).coerceIn(0.0, 1.0)
     }
 
-    infix fun isActiveAt(frame: Int): Boolean = segment isActiveAt frame
+    override fun stop() {
+        player.stopSpectatingEntity()
+        entity.move(farAwayLocation)
+    }
+
+    override fun teardown() {
+        entity.removeViewer(player)
+    }
 
     companion object {
-        // The max distance the entity can be from the player before it gets teleported.
-        private const val MAX_DISTANCE_SQUARED = 25 * 25
 
         // As a boat is interpolated. We need the remove the last few frames to make sure the animation fully finishes.
         private const val TRAILING_FRAMES = 10
+    }
+}
+
+private class TeleportCameraSegmentAction(
+    private val player: Player,
+    override val segment: CameraSegment,
+) : CameraSegmentAction {
+    private val firstLocation = segment.path.first().location
+
+    override fun setup() {
+    }
+
+    override fun prepare() {
+    }
+
+    override fun canPrepare(frame: Int): Boolean {
+        return segment.startFrame - 10 == frame
+    }
+
+    override suspend fun start() {
+        withContext(plugin.minecraftDispatcher) {
+            player.teleport(firstLocation)
+        }
+    }
+
+    override suspend fun tick(frame: Int) {
+        val percentage = percentage(frame)
+        val location = segment.path.interpolate(percentage)
+        withContext(plugin.minecraftDispatcher) {
+            player.teleport(location)
+            player.allowFlight = true
+            player.isFlying = true
+        }
+    }
+
+
+    private fun percentage(frame: Int): Double {
+        val totalFrames = segment.endFrame - segment.startFrame
+        val currentFrame = frame - segment.startFrame
+        return (currentFrame.toDouble() / totalFrames).coerceIn(0.0, 1.0)
+    }
+
+    override fun stop() {
+    }
+
+    override fun teardown() {
     }
 }
 

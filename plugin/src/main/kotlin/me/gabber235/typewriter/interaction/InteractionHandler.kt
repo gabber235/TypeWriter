@@ -1,7 +1,6 @@
 package me.gabber235.typewriter.interaction
 
 import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.*
 import lirand.api.extensions.server.registerSuspendingEvents
 import me.gabber235.typewriter.Typewriter.Companion.plugin
@@ -17,6 +16,9 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+
+private const val TICK_MS = 50L
+private const val AVERAGE_SCHEDULING_DELAY_MS = 5L
 
 object InteractionHandler : Listener {
     private val interactions = ConcurrentHashMap<UUID, Interaction>()
@@ -81,8 +83,12 @@ object InteractionHandler : Listener {
     fun init() {
         job = plugin.launch(Dispatchers.IO) {
             while (plugin.isEnabled) {
+                val startTime = System.currentTimeMillis()
                 tick()
-                delay(1.ticks)
+                val endTime = System.currentTimeMillis()
+                // Wait for the remainder or the tick
+                val wait = TICK_MS - (endTime - startTime) - AVERAGE_SCHEDULING_DELAY_MS
+                if (wait > 0) delay(wait)
             }
         }
 

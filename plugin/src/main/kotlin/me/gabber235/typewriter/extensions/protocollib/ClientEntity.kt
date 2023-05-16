@@ -1,7 +1,6 @@
 package me.gabber235.typewriter.extensions.protocollib
 
 import com.comphenix.protocol.PacketType
-import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
@@ -79,6 +78,14 @@ class ClientEntity(location: Location, private val entityType: EntityType) {
             viewers.sendPacket(metaDataComponent.createEntityMetaDataPacket())
         }
 
+
+    var boatType: BoatType
+        get() = metaDataComponent.boatType
+        set(value) {
+            metaDataComponent.boatType = value
+            viewers.sendPacket(metaDataComponent.createEntityMetaDataPacket())
+        }
+
     private fun createSpawnPacket(): PacketContainer {
         val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
 
@@ -116,20 +123,3 @@ class ClientEntity(location: Location, private val entityType: EntityType) {
 fun Double.convertVelocity(): Int = (this * 8000).toInt()
 fun Float.convertRotation(): Byte = (this * 256.0f / 360.0f).toInt().toByte()
 
-fun Player.spectateEntity(entity: ClientEntity) {
-    entity.spectateThis(this)
-}
-
-fun Player.stopSpectatingEntity() {
-    val packet = PacketContainer(PacketType.Play.Server.CAMERA)
-    packet.integers.write(0, entityId)
-    ProtocolLibrary.getProtocolManager().sendServerPacket(this, packet, false)
-}
-
-fun Player.mount(entity: ClientEntity) {
-    entity.mount(this)
-}
-
-fun Player.unmount(entity: ClientEntity) {
-    entity.unmount(this)
-}
