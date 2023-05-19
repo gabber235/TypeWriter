@@ -13,6 +13,7 @@ import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.PageType.CINEMATIC
+import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.CinematicStartTrigger
 import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
@@ -29,8 +30,11 @@ import net.kyori.adventure.inventory.Book
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
+import org.koin.java.KoinJavaComponent.get
 
 fun Plugin.typeWriterCommand() = command("typewriter") {
     alias("tw")
@@ -58,17 +62,19 @@ private fun LiteralDSLBuilder.reloadCommands() {
 }
 
 private fun LiteralDSLBuilder.factsCommands() {
+    val factDatabase: FactDatabase = get(FactDatabase::class.java)
+
     literal("facts") {
         requiresPermissions("typewriter.facts")
         fun Player.listCachedFacts(source: CommandSender) {
-            val facts = FactDatabase.listCachedFacts(uniqueId)
+            val facts = factDatabase.listCachedFacts(uniqueId)
             if (facts.isEmpty()) {
                 source.msg("$name has no facts.")
             } else {
                 source.sendMini("\n\n")
                 val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
                 source.msg("$name has the following facts:\n")
-                facts.map { it to EntryDatabase.getFact(it.id) }.forEach { (fact, entry) ->
+                facts.map { it to Query.findById<FactEntry>(it.id) }.forEach { (fact, entry) ->
                     if (entry == null) return@forEach
 
                     source.sendMini(
@@ -97,7 +103,7 @@ private fun LiteralDSLBuilder.factsCommands() {
                 argument("fact", FactType) { fact ->
                     argument("value", integer(0)) { value ->
                         executes {
-                            FactDatabase.modify(player.get().uniqueId) {
+                            factDatabase.modify(player.get().uniqueId) {
                                 set(fact.get().id, value.get())
                             }
                             source.msg("Set <blue>${fact.get().formattedName}</blue> to ${value.get()} for ${player.get().name}")
@@ -109,8 +115,8 @@ private fun LiteralDSLBuilder.factsCommands() {
             literal("reset") {
                 executes {
                     val p = player.get()
-                    FactDatabase.modify(p.uniqueId) {
-                        FactDatabase.listCachedFacts(p.uniqueId).forEach { (id, _) ->
+                    factDatabase.modify(p.uniqueId) {
+                        factDatabase.listCachedFacts(p.uniqueId).forEach { (id, _) ->
                             set(id, 0)
                         }
                     }
@@ -126,7 +132,7 @@ private fun LiteralDSLBuilder.factsCommands() {
             argument("fact", FactType) { fact ->
                 argument("value", integer(0)) { value ->
                     executesPlayer {
-                        FactDatabase.modify(source.uniqueId) {
+                        factDatabase.modify(source.uniqueId) {
                             set(fact.get().id, value.get())
                         }
                         source.msg("Fact <blue>${fact.get().formattedName}</blue> set to ${value.get()}.")
@@ -137,8 +143,8 @@ private fun LiteralDSLBuilder.factsCommands() {
 
         literal("reset") {
             executesPlayer {
-                FactDatabase.modify(source.uniqueId) {
-                    FactDatabase.listCachedFacts(source.uniqueId).forEach { (id, _) ->
+                factDatabase.modify(source.uniqueId) {
+                    factDatabase.listCachedFacts(source.uniqueId).forEach { (id, _) ->
                         set(id, 0)
                     }
                 }
@@ -161,24 +167,25 @@ private fun LiteralDSLBuilder.clearChatCommand() {
 }
 
 private fun LiteralDSLBuilder.connectCommand() {
+    val communicationHandler: CommunicationHandler = get(CommunicationHandler::class.java)
     literal("connect") {
         requiresPermissions("typewriter.connect")
         executesConsole {
-            if (CommunicationHandler.server == null) {
+            if (communicationHandler.server == null) {
                 source.msg("The server is not hosting the websocket. Try and enable it in the config.")
                 return@executesConsole
             }
 
-            val url = CommunicationHandler.generateUrl(playerId = null)
+            val url = communicationHandler.generateUrl(playerId = null)
             source.msg("Connect to<blue> $url </blue>to start the connection.")
         }
         executesPlayer {
-            if (CommunicationHandler.server == null) {
+            if (communicationHandler.server == null) {
                 source.msg("The server is not hosting the websocket. Try and enable it in the config.")
                 return@executesPlayer
             }
 
-            val url = CommunicationHandler.generateUrl(source.uniqueId)
+            val url = communicationHandler.generateUrl(source.uniqueId)
 
             val bookTitle = "<blue>Connect to the server</blue>".asMini()
             val bookAuthor = "<blue>Typewriter</blue>".asMini()
@@ -258,12 +265,14 @@ private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
 
 open class FactType(
     open val notFoundExceptionType: ChatCommandExceptionType = PlayerType.notFoundExceptionType
-) : WordType<FactEntry> {
+) : WordType<FactEntry>, KoinComponent {
+    private val entryDatabase: EntryDatabase by inject()
+
     companion object Instance : FactType()
 
     override fun parse(reader: StringReader): FactEntry {
         val name = reader.readUnquoted()
-        return EntryDatabase.findFactByName(name) ?: throw notFoundExceptionType.create(name)
+        return Query.findByName<FactEntry>(name) ?: throw notFoundExceptionType.create(name)
     }
 
 
@@ -272,7 +281,7 @@ open class FactType(
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
 
-        EntryDatabase.facts.filter { it.name.startsWith(builder.remaining, true) }.forEach {
+        entryDatabase.facts.filter { it.name.startsWith(builder.remaining, true) }.forEach {
             builder.suggest(it.name)
         }
 
@@ -284,12 +293,14 @@ open class FactType(
 
 open class CinematicType(
     open val notFoundExceptionType: ChatCommandExceptionType = PlayerType.notFoundExceptionType
-) : WordType<String> {
+) : WordType<String>, KoinComponent {
+    private val entryDatabase: EntryDatabase by inject()
+
     companion object Instance : CinematicType()
 
     override fun parse(reader: StringReader): String {
         val name = reader.readString()
-        if (name !in EntryDatabase.getPageNames(CINEMATIC)) throw notFoundExceptionType.create(name)
+        if (name !in entryDatabase.getPageNames(CINEMATIC)) throw notFoundExceptionType.create(name)
         return name
     }
 
@@ -298,7 +309,7 @@ open class CinematicType(
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
 
-        EntryDatabase.getPageNames(CINEMATIC).filter { it.startsWith(builder.remaining, true) }.forEach {
+        entryDatabase.getPageNames(CINEMATIC).filter { it.startsWith(builder.remaining, true) }.forEach {
             builder.suggest(it)
         }
 

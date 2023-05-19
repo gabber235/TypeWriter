@@ -9,8 +9,12 @@ import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.entry.triggerEntriesFor
 import me.gabber235.typewriter.entry.triggerFor
 import org.bukkit.entity.Player
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class Interaction(val player: Player) {
+class Interaction(val player: Player) : KoinComponent {
+    private val interactionHandler: InteractionHandler by inject()
+
     private var dialogue: DialogueSequence? = null
     private var cinematic: CinematicSequence? = null
     val hasDialogue: Boolean
@@ -49,7 +53,7 @@ class Interaction(val player: Player) {
             .map { EntryTrigger(it) }
             .filter { it !in event } // Stops infinite loops
         if (newTriggers.isNotEmpty()) {
-            InteractionHandler.triggerEvent(Event(event.player, newTriggers))
+            interactionHandler.triggerEvent(Event(event.player, newTriggers))
         }
     }
 

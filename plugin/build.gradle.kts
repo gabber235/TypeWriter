@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.8.21"
+    kotlin("jvm") version "1.8.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -23,13 +23,27 @@ repositories {
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
 }
 
+val centralDependencies = listOf(
+    "org.jetbrains.kotlin:kotlin-stdlib:1.8.20",
+    "org.jetbrains.kotlin:kotlin-reflect:1.8.20",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1",
+    "io.ktor:ktor-server-core:2.3.0",
+//    "io.ktor:ktor-server-netty:2.3.0", // Doesn't want to load properly
+    "com.corundumstudio.socketio:netty-socketio:1.7.19", // Keep this on a lower version as the newer version breaks the ping
+)
+
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.21")
+    for (dependency in centralDependencies) {
+        compileOnly(dependency)
+    }
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
     implementation("com.github.gabber235:LirandAPI:e10bcd3a41")
+
+    // Doesn't want to load properly using the spigot api.
+    implementation("io.insert-koin:koin-core:3.4.0")
+    implementation("io.ktor:ktor-server-netty:2.3.0")
+
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
     compileOnly("net.kyori:adventure-api:4.13.1")
@@ -42,11 +56,6 @@ dependencies {
     compileOnly("com.google.code.gson:gson:2.10.1")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
-
-    // Client communication
-    implementation("com.corundumstudio.socketio:netty-socketio:1.7.19") // Keep this on a lower version as the newer version breaks the ping
-    implementation("io.ktor:ktor-server-core:2.3.0")
-    implementation("io.ktor:ktor-server-netty:2.3.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
@@ -70,7 +79,7 @@ tasks.test {
 tasks.processResources {
     filteringCharset = "UTF-8"
     filesMatching("plugin.yml") {
-        expand("version" to version)
+        expand("version" to version, "libraries" to centralDependencies)
     }
 }
 

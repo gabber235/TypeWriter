@@ -3,24 +3,26 @@ package me.gabber235.typewriter.interaction
 import com.github.shynixn.mccoroutine.bukkit.launch
 import kotlinx.coroutines.*
 import lirand.api.extensions.server.registerSuspendingEvents
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.entries.Event
 import me.gabber235.typewriter.entry.entries.EventTrigger
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.logger
+import me.gabber235.typewriter.plugin
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.koin.core.component.KoinComponent
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 private const val TICK_MS = 50L
 private const val AVERAGE_SCHEDULING_DELAY_MS = 5L
 
-object InteractionHandler : Listener {
+class InteractionHandler : Listener, KoinComponent {
     private val interactions = ConcurrentHashMap<UUID, Interaction>()
     private var job: Job? = null
 
@@ -74,13 +76,13 @@ object InteractionHandler : Listener {
             try {
                 event.player.interaction.onEvent(event)
             } catch (e: Exception) {
-                plugin.logger.severe("An error occurred while handling event ${event}: ${e.message}")
+                logger.severe("An error occurred while handling event ${event}: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
 
-    fun init() {
+    fun initialize() {
         job = plugin.launch(Dispatchers.IO) {
             while (plugin.isEnabled) {
                 val startTime = System.currentTimeMillis()
@@ -102,7 +104,7 @@ object InteractionHandler : Listener {
                     try {
                         interaction.tick()
                     } catch (e: Exception) {
-                        plugin.logger.severe("An error occurred while ticking interaction ${interaction.player.name}: ${e.message}")
+                        logger.severe("An error occurred while ticking interaction ${interaction.player.name}: ${e.message}")
                         e.printStackTrace()
                     }
                 }

@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.events.listen
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.ModifierOperator
 import me.gabber235.typewriter.entry.Query
@@ -13,17 +12,20 @@ import me.gabber235.typewriter.entry.entries.ExpirableFactEntry
 import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.entry.entries.WritableFactEntry
-import me.gabber235.typewriter.facts.storage.FileFactStorage
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.logErrorIfNull
 import org.bukkit.entity.Player
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.get
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
 
-object FactDatabase {
-    private var storage: FactStorage? = null
+class FactDatabase : KoinComponent {
+    private val storage: FactStorage by inject()
 
     // Local stored version of player facts
     private val cache = ConcurrentHashMap<UUID, Set<Fact>>()
@@ -31,9 +33,8 @@ object FactDatabase {
     // Queue of players which facts need to be saved
     private val flush = ConcurrentLinkedDeque<UUID>()
 
-    fun init() {
-        storage = FileFactStorage()
-        storage?.init()
+    fun initialize() {
+        storage.init()
 
         // Load facts for players before they join.
         // This way we can delay the loading screen.
@@ -76,11 +77,11 @@ object FactDatabase {
             }
         }
         flush.clear()
-        storage?.shutdown()
+        storage.shutdown()
     }
 
     private suspend fun loadFactsFromPersistentStorage(playerId: UUID) {
-        val facts = storage?.loadFacts(playerId) ?: return
+        val facts = storage.loadFacts(playerId)
         cache[playerId] = facts
     }
 
@@ -96,7 +97,7 @@ object FactDatabase {
                 true
             }?.toSet()
                 ?: return
-        storage?.storeFacts(playerId, facts)
+        storage.storeFacts(playerId, facts)
     }
 
     private fun removeExpiredFacts(playerId: UUID) {
@@ -171,7 +172,7 @@ class FactsModifier(private val uuid: UUID) {
     private val modifications = mutableMapOf<String, Int>()
 
     fun modify(id: String, modifier: (Int) -> Int) {
-        val oldValue = modifications[id] ?: FactDatabase.getFact(
+        val oldValue = modifications[id] ?: get<FactDatabase>(FactDatabase::class.java).getFact(
             uuid,
             id
         )?.value?.logErrorIfNull("Could not read fact: $id. Please report! Using 0 as default value.") ?: 0
@@ -185,4 +186,4 @@ class FactsModifier(private val uuid: UUID) {
     fun build(): Map<String, Int> = modifications
 }
 
-fun Player.fact(id: String) = FactDatabase.getFact(uniqueId, id)
+fun Player.fact(id: String) = get<FactDatabase>(FactDatabase::class.java).getFact(uniqueId, id)

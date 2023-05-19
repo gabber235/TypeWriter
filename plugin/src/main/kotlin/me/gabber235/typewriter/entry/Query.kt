@@ -1,8 +1,11 @@
 package me.gabber235.typewriter.entry
 
-import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.entries.EntryTrigger
+import me.gabber235.typewriter.entry.entries.EventTrigger
+import me.gabber235.typewriter.entry.entries.SystemTrigger
 import me.gabber235.typewriter.interaction.InteractionHandler
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent.get
 import kotlin.reflect.KClass
 
 /**
@@ -13,194 +16,195 @@ import kotlin.reflect.KClass
  */
 class Query<E : Entry>(private val klass: KClass<E>) {
 
-	/**
-	 * Find all entries that match the given a filter
-	 *
-	 * Example:
-	 * ```kotlin
-	 * val query: Query<SomeEntry> = ...
-	 * query findWhere { it.someValue == "hello" }
-	 * ```
-	 *
-	 * It can be used in combination with [triggerAllFor] to invoke all triggers for all entries that match the filter.
-	 * Example:
-	 * ```kotlin
-	 * val query: Query<SomeEntry> = ...
-	 * query findWhere { it.someValue == "hello" } triggerAllFor player
-	 * ```
-	 *
-	 * @param filter The filter to apply to the entries.
-	 */
-	infix fun findWhere(filter: (E) -> Boolean): List<E> = findWhere(klass, filter)
+    /**
+     * Find all entries that match the given a filter
+     *
+     * Example:
+     * ```kotlin
+     * val query: Query<SomeEntry> = ...
+     * query findWhere { it.someValue == "hello" }
+     * ```
+     *
+     * It can be used in combination with [triggerAllFor] to invoke all triggers for all entries that match the filter.
+     * Example:
+     * ```kotlin
+     * val query: Query<SomeEntry> = ...
+     * query findWhere { it.someValue == "hello" } triggerAllFor player
+     * ```
+     *
+     * @param filter The filter to apply to the entries.
+     */
+    infix fun findWhere(filter: (E) -> Boolean): List<E> = findWhere(klass, filter)
 
-	/**
-	 * Find the first entry that matches the given a filter
-	 * @see findWhere
-	 */
-	infix fun firstWhere(filter: (E) -> Boolean): E? = firstWhere(klass, filter)
-
-
-	/**
-	 * Find all the entries for the given class.
-	 *
-	 * Example:
-	 * ```kotlin
-	 * val query: Query<SomeEntry> = ...
-	 * query.find()
-	 * ```
-	 */
-	fun find() = findWhere { true }
-
-	/**
-	 * Find entry by [name].
-	 *
-	 * Example:
-	 * ```kotlin
-	 * val query: Query<SomeEntry> = ...
-	 * query findByName "someName"
-	 * ```
-	 */
-	infix fun findByName(name: String) = firstWhere { it.name == name }
-
-	/**
-	 * Find entry by [id].
-	 *
-	 * Example:
-	 * ```kotlin
-	 * val query: Query<SomeEntry> = ...
-	 * query findById "someId"
-	 * ```
-	 */
-	infix fun findById(id: String): E? = findById(klass, id)
-
-	/**
-	 * Find entry all entries that are on the given page [pageId] with the given [filter].
-	 * @see findWhere
-	 */
-	fun findWhereFromPage(pageId: String, filter: (E) -> Boolean): List<E> = findWhereFromPage(klass, pageId, filter)
-
-	companion object {
-		/**
-		 * Find all entries that match the given a filter
-		 *
-		 * Example:
-		 * ```kotlin
-		 * Query findWhere<SomeEntry> { it.someValue == "hello" }
-		 * ```
-		 *
-		 * It can be used in combination with [triggerAllFor] to invoke all triggers for all entries that match the filter.
-		 * Example:
-		 * ```kotlin
-		 * Query findWhere<SomeEntry> { it.someValue == "hello" } triggerAllFor player
-		 * ```
-		 *
-		 * @param filter The filter to apply to the entries.
-		 */
-		inline infix fun <reified E : Entry> findWhere(noinline filter: (E) -> Boolean): List<E> {
-			return findWhere(E::class, filter)
-		}
-
-		/**
-		 * Find all entries that match the given a filter
-		 *
-		 * Example:
-		 * ```kotlin
-		 * Query.findWhere<SomeEntry>(SomeEntry::class) { it.someValue == "hello" }
-		 * ```
-		 *
-		 * It can be used in combination with [triggerAllFor] to invoke all triggers for all entries that match the filter.
-		 * Example:
-		 * ```kotlin
-		 * Query.findWhere<SomeEntry>(SomeEntry::class) { it.someValue == "hello" } triggerAllFor player
-		 * ```
-		 *
-		 * @param filter The filter to apply to the entries.
-		 */
-		fun <E : Entry> findWhere(klass: KClass<E>, filter: (E) -> Boolean): List<E> {
-			return EntryDatabase.findEntries(klass, filter)
-		}
-
-		/**
-		 * Find the first entry that matches the given a filter
-		 * @see findWhere
-		 */
-		inline infix fun <reified E : Entry> firstWhere(noinline filter: (E) -> Boolean): E? {
-			return firstWhere(E::class, filter)
-		}
-
-		/**
-		 * Find the first entry that matches the given a filter
-		 * @see findWhere
-		 */
-		fun <E : Entry> firstWhere(klass: KClass<E>, filter: (E) -> Boolean): E? {
-			return EntryDatabase.findEntry(klass, filter)
-		}
+    /**
+     * Find the first entry that matches the given a filter
+     * @see findWhere
+     */
+    infix fun firstWhere(filter: (E) -> Boolean): E? = firstWhere(klass, filter)
 
 
-		/**
-		 * Find all the entries for the given class.
-		 *
-		 * Example:
-		 * ```kotlin
-		 * Query.find<SomeEntry>()
-		 * ```
-		 */
-		inline fun <reified E : Entry> find() = findWhere<E> { true }
+    /**
+     * Find all the entries for the given class.
+     *
+     * Example:
+     * ```kotlin
+     * val query: Query<SomeEntry> = ...
+     * query.find()
+     * ```
+     */
+    fun find() = findWhere { true }
 
-		/**
-		 * Find all the entries for the given class.
-		 *
-		 * Example:
-		 * ```kotlin
-		 * Query.find<SomeEntry>(SomeEntry::class)
-		 * ```
-		 */
-		fun <E : Entry> find(klass: KClass<E>) = findWhere(klass) { true }
+    /**
+     * Find entry by [name].
+     *
+     * Example:
+     * ```kotlin
+     * val query: Query<SomeEntry> = ...
+     * query findByName "someName"
+     * ```
+     */
+    infix fun findByName(name: String) = firstWhere { it.name == name }
 
-		/**
-		 * Find entry by [name].
-		 *
-		 * Example:
-		 * ```kotlin
-		 * Query findByName<SomeEntry> "someName"
-		 * ```
-		 */
-		inline infix fun <reified E : Entry> findByName(name: String) = firstWhere<E> { it.name == name }
+    /**
+     * Find entry by [id].
+     *
+     * Example:
+     * ```kotlin
+     * val query: Query<SomeEntry> = ...
+     * query findById "someId"
+     * ```
+     */
+    infix fun findById(id: String): E? = findById(klass, id)
 
-		/**
-		 * Find entry by [name].
-		 *
-		 * Example:
-		 * ```kotlin
-		 * Query.findByName<SomeEntry>(SomeEntry::class, "someName")
-		 * ```
-		 */
-		fun <E : Entry> findByName(klass: KClass<E>, name: String) = firstWhere(klass) { it.name == name }
+    /**
+     * Find entry all entries that are on the given page [pageId] with the given [filter].
+     * @see findWhere
+     */
+    fun findWhereFromPage(pageId: String, filter: (E) -> Boolean): List<E> = findWhereFromPage(klass, pageId, filter)
 
-		inline infix fun <reified E : Entry> findById(id: String): E? = findById(E::class, id)
+    companion object {
+        /**
+         * Find all entries that match the given a filter
+         *
+         * Example:
+         * ```kotlin
+         * Query findWhere<SomeEntry> { it.someValue == "hello" }
+         * ```
+         *
+         * It can be used in combination with [triggerAllFor] to invoke all triggers for all entries that match the filter.
+         * Example:
+         * ```kotlin
+         * Query findWhere<SomeEntry> { it.someValue == "hello" } triggerAllFor player
+         * ```
+         *
+         * @param filter The filter to apply to the entries.
+         */
+        inline infix fun <reified E : Entry> findWhere(noinline filter: (E) -> Boolean): List<E> {
+            return findWhere(E::class, filter)
+        }
 
-		/**
-		 * Find entry by [id].
-		 * @see findByName
-		 */
-		fun <E : Entry> findById(klass: KClass<E>, id: String): E? = EntryDatabase.findEntryById(klass, id)
+        /**
+         * Find all entries that match the given a filter
+         *
+         * Example:
+         * ```kotlin
+         * Query.findWhere<SomeEntry>(SomeEntry::class) { it.someValue == "hello" }
+         * ```
+         *
+         * It can be used in combination with [triggerAllFor] to invoke all triggers for all entries that match the filter.
+         * Example:
+         * ```kotlin
+         * Query.findWhere<SomeEntry>(SomeEntry::class) { it.someValue == "hello" } triggerAllFor player
+         * ```
+         *
+         * @param filter The filter to apply to the entries.
+         */
+        fun <E : Entry> findWhere(klass: KClass<E>, filter: (E) -> Boolean): List<E> {
+            return get<EntryDatabase>(EntryDatabase::class.java).findEntries(klass, filter)
+        }
 
-		/**
-		 * Find entry all entries that are on the given page [pageId] with the given [filter].
-		 * @see findWhere
-		 */
-		inline fun <reified E : Entry> findWhereFromPage(pageId: String, noinline filter: (E) -> Boolean): List<E> {
-			return findWhereFromPage(E::class, pageId, filter)
-		}
+        /**
+         * Find the first entry that matches the given a filter
+         * @see findWhere
+         */
+        inline infix fun <reified E : Entry> firstWhere(noinline filter: (E) -> Boolean): E? {
+            return firstWhere(E::class, filter)
+        }
 
-		/**
-		 * Find entry all entries that are on the given page [pageId] with the given [filter].
-		 * @see findWhere
-		 */
-		fun <E : Entry> findWhereFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E> {
-			return EntryDatabase.findEntriesFromPage(klass, pageId, filter)
-		}
-	}
+        /**
+         * Find the first entry that matches the given a filter
+         * @see findWhere
+         */
+        fun <E : Entry> firstWhere(klass: KClass<E>, filter: (E) -> Boolean): E? {
+            return get<EntryDatabase>(EntryDatabase::class.java).findEntry(klass, filter)
+        }
+
+
+        /**
+         * Find all the entries for the given class.
+         *
+         * Example:
+         * ```kotlin
+         * Query.find<SomeEntry>()
+         * ```
+         */
+        inline fun <reified E : Entry> find() = findWhere<E> { true }
+
+        /**
+         * Find all the entries for the given class.
+         *
+         * Example:
+         * ```kotlin
+         * Query.find<SomeEntry>(SomeEntry::class)
+         * ```
+         */
+        fun <E : Entry> find(klass: KClass<E>) = findWhere(klass) { true }
+
+        /**
+         * Find entry by [name].
+         *
+         * Example:
+         * ```kotlin
+         * Query findByName<SomeEntry> "someName"
+         * ```
+         */
+        inline infix fun <reified E : Entry> findByName(name: String) = firstWhere<E> { it.name == name }
+
+        /**
+         * Find entry by [name].
+         *
+         * Example:
+         * ```kotlin
+         * Query.findByName<SomeEntry>(SomeEntry::class, "someName")
+         * ```
+         */
+        fun <E : Entry> findByName(klass: KClass<E>, name: String) = firstWhere(klass) { it.name == name }
+
+        inline infix fun <reified E : Entry> findById(id: String): E? = findById(E::class, id)
+
+        /**
+         * Find entry by [id].
+         * @see findByName
+         */
+        fun <E : Entry> findById(klass: KClass<E>, id: String): E? =
+            get<EntryDatabase>(EntryDatabase::class.java).findEntryById(klass, id)
+
+        /**
+         * Find entry all entries that are on the given page [pageId] with the given [filter].
+         * @see findWhere
+         */
+        inline fun <reified E : Entry> findWhereFromPage(pageId: String, noinline filter: (E) -> Boolean): List<E> {
+            return findWhereFromPage(E::class, pageId, filter)
+        }
+
+        /**
+         * Find entry all entries that are on the given page [pageId] with the given [filter].
+         * @see findWhere
+         */
+        fun <E : Entry> findWhereFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E> {
+            return get<EntryDatabase>(EntryDatabase::class.java).findEntriesFromPage(klass, pageId, filter)
+        }
+    }
 }
 
 /**
@@ -215,8 +219,8 @@ class Query<E : Entry>(private val klass: KClass<E>) {
  * @param player The player to trigger the triggers for.
  */
 infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
-	val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
-	InteractionHandler.triggerActions(player, triggers)
+    val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
+    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
 }
 
 /**
@@ -231,8 +235,8 @@ infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
  * @param player The player to trigger the triggers for.
  */
 infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
-	val triggers = this.triggers.map { EntryTrigger(it) }
-	InteractionHandler.triggerActions(player, triggers)
+    val triggers = this.triggers.map { EntryTrigger(it) }
+    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
 }
 
 /**
@@ -248,8 +252,8 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
  * @param player The player to trigger the triggers for.
  */
 infix fun List<String>.triggerEntriesFor(player: Player) {
-	val triggers = this.map { EntryTrigger(it) }
-	InteractionHandler.triggerActions(player, triggers)
+    val triggers = this.map { EntryTrigger(it) }
+    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
 }
 
 /**
@@ -264,7 +268,7 @@ infix fun List<String>.triggerEntriesFor(player: Player) {
  * @param player The player to trigger the trigger for.
  */
 infix fun EventTrigger.triggerFor(player: Player) {
-	InteractionHandler.triggerActions(player, listOf(this))
+    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, listOf(this))
 }
 
 /**
@@ -282,8 +286,12 @@ infix fun EventTrigger.triggerFor(player: Player) {
  * ```
  */
 fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, continueTrigger: EventTrigger) {
-	val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
-	InteractionHandler.startDialogueWithOrTriggerEvent(player, triggers, continueTrigger)
+    val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
+    get<InteractionHandler>(InteractionHandler::class.java).startDialogueWithOrTriggerEvent(
+        player,
+        triggers,
+        continueTrigger
+    )
 }
 
 /**
@@ -301,6 +309,6 @@ fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, contin
  * ```
  */
 infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player) =
-	startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
+    startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
 
 

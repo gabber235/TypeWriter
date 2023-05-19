@@ -29,7 +29,6 @@ class CinematicSequence(
 
     suspend fun tick() {
         if (frame == -1) {
-            println("Starting cinematic sequence: $frame")
             start()
         }
 

@@ -16,26 +16,26 @@ annotation class Max(val value: Int)
 annotation class InnerMax(val annotation: Max)
 
 object MinModifierComputer : StaticModifierComputer<Min> {
-	override val annotationClass: Class<Min> = Min::class.java
+    override val annotationClass: Class<Min> = Min::class.java
 
-	override val innerAnnotationFinders: List<InnerAnnotationFinder<Min, Annotation>> = listOf(
-		InnerAnnotationFinder(InnerMin::class.java, InnerMin::annotation)
-	) as List<InnerAnnotationFinder<Min, Annotation>>
+    override val innerAnnotationFinders: List<InnerAnnotationFinder<Min, Annotation>> = listOf(
+        InnerAnnotationFinder(InnerMin::class.java, InnerMin::annotation)
+    ) as List<InnerAnnotationFinder<Min, Annotation>>
 
 
-	override fun computeModifier(annotation: Min, info: FieldInfo): FieldModifier {
-		return FieldModifier.DynamicModifier("min", annotation.value)
-	}
+    override fun computeModifier(annotation: Min, info: FieldInfo): FieldModifier {
+        return FieldModifier.DynamicModifier("min", annotation.value)
+    }
 }
 
 object MaxModifierComputer : StaticModifierComputer<Max> {
-	override val annotationClass: Class<Max> = Max::class.java
+    override val annotationClass: Class<Max> = Max::class.java
 
-	override val innerAnnotationFinders: List<InnerAnnotationFinder<Max, Annotation>> = listOf(
-		InnerAnnotationFinder(InnerMax::class.java, InnerMax::annotation)
-	) as List<InnerAnnotationFinder<Max, Annotation>>
+    override val innerAnnotationFinders: List<InnerAnnotationFinder<Max, Annotation>> = listOf(
+        InnerAnnotationFinder(InnerMax::class.java, InnerMax::annotation)
+    ) as List<InnerAnnotationFinder<Max, Annotation>>
 
-	override fun computeModifier(annotation: Max, info: FieldInfo): FieldModifier {
-		return FieldModifier.DynamicModifier("max", annotation.value)
-	}
+    override fun computeModifier(annotation: Max, info: FieldInfo): FieldModifier {
+        return FieldModifier.DynamicModifier("max", annotation.value)
+    }
 }

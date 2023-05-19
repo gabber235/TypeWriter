@@ -5,13 +5,14 @@ import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.citizens.CitizensAdapter.temporaryRegistry
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.logger
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.NPC
@@ -187,7 +188,7 @@ class NpcCinematicAction(
             // Check if the npc is close enough to the target location
             if (!segment.teleport && !isAtLocation(segment.location)) {
                 npc?.teleport(segment.location, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.PLUGIN)
-                plugin.logger.warning("NPC ${npc?.name} was teleported to ${segment.location} because it was too far away from the target location. You may want to increase the duration of the movement segment.")
+                logger.warning("NPC ${npc?.name} was teleported to ${segment.location} because it was too far away from the target location. You may want to increase the duration of the movement segment.")
             }
         }
     }

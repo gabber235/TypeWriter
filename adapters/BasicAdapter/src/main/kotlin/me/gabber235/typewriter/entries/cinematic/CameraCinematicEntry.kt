@@ -3,7 +3,6 @@ package me.gabber235.typewriter.entries.cinematic
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import kotlinx.coroutines.withContext
 import lirand.api.extensions.server.server
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.InnerMin
@@ -16,6 +15,7 @@ import me.gabber235.typewriter.extensions.protocollib.BoatType
 import me.gabber235.typewriter.extensions.protocollib.ClientEntity
 import me.gabber235.typewriter.extensions.protocollib.spectateEntity
 import me.gabber235.typewriter.extensions.protocollib.stopSpectatingEntity
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import org.bukkit.Location

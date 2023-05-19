@@ -7,20 +7,21 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.reflect.StructureModifier
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.utils.logErrorIfNull
 import me.gabber235.typewriter.utils.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
+import org.koin.java.KoinJavaComponent.get
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
-object ChatHistoryHandler :
+class ChatHistoryHandler(plugin: Plugin) :
     PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.SYSTEM_CHAT) {
 
-    fun init() {
+    fun initialize() {
         ProtocolLibrary.getProtocolManager().addPacketListener(this)
     }
 
@@ -61,7 +62,7 @@ object ChatHistoryHandler :
 }
 
 val Player.chatHistory: ChatHistory
-    get() = ChatHistoryHandler.getHistory(this)
+    get() = get<ChatHistoryHandler>(ChatHistoryHandler::class.java).getHistory(this)
 
 class ChatHistory {
     private val messages = ConcurrentLinkedQueue<OldMessage>()

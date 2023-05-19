@@ -1,14 +1,15 @@
 package me.gabber235.typewriter.utils
 
 import lirand.api.extensions.server.server
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry.CommandFilterResult.*
+import me.gabber235.typewriter.logger
 import org.bukkit.command.CommandMap
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent.get
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
@@ -26,7 +27,7 @@ private val syncCommandsMethod: Method by lazy {
 
 
 fun CustomCommandEntry.Companion.refreshAndRegisterAll(newEntries: List<CustomCommandEntry>): List<CustomCommandEntry> {
-    EntryDatabase.commandEvents.forEach { it.unregister() }
+    get<EntryDatabase>(EntryDatabase::class.java).commandEvents.forEach { it.unregister() }
 
     newEntries.forEach { it.register() }
 
@@ -56,7 +57,7 @@ fun CustomCommandEntry.register() {
         }
     })
 
-    plugin.logger.info("Registered command $command for $name (${id}) Success: $result")
+    logger.info("Registered command $command for $name (${id}) Success: $result")
 }
 
 fun CustomCommandEntry.unregister() {

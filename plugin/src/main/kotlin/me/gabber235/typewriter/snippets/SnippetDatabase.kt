@@ -1,51 +1,58 @@
 package me.gabber235.typewriter.snippets
 
-import me.gabber235.typewriter.Typewriter.Companion.plugin
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.get
 import me.gabber235.typewriter.utils.reloadable
 import org.bukkit.configuration.file.YamlConfiguration
+import org.koin.core.component.KoinComponent
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
-object SnippetDatabase {
-	private val file by lazy {
-		val file = plugin.dataFolder["snippets.yml"]
-		if (!file.exists()) {
-			file.parentFile.mkdirs()
-			file.createNewFile()
-		}
-		file
-	}
+interface SnippetDatabase {
+    fun get(path: String, default: Any): Any
+    fun <T : Any> getSnippet(path: String, klass: KClass<T>, default: T): T
+    fun registerSnippet(path: String, defaultValue: Any)
+}
 
-	private val ymlConfiguration by reloadable { YamlConfiguration.loadConfiguration(file) }
+class SnippetDatabaseImpl : SnippetDatabase, KoinComponent {
+    private val file by lazy {
+        val file = plugin.dataFolder["snippets.yml"]
+        if (!file.exists()) {
+            file.parentFile.mkdirs()
+            file.createNewFile()
+        }
+        file
+    }
 
-	fun get(path: String, default: Any): Any {
-		val value = ymlConfiguration.get(path)
+    private val ymlConfiguration by reloadable { YamlConfiguration.loadConfiguration(file) }
 
-		if (value == null) {
-			ymlConfiguration.set(path, default)
-			ymlConfiguration.save(file)
-			return default
-		}
+    override fun get(path: String, default: Any): Any {
+        val value = ymlConfiguration.get(path)
 
-		return value
-	}
+        if (value == null) {
+            ymlConfiguration.set(path, default)
+            ymlConfiguration.save(file)
+            return default
+        }
 
-	fun <T : Any> getSnippet(path: String, klass: KClass<T>, default: T): T {
-		val value = get(path, default)
+        return value
+    }
 
-		val casted = klass.safeCast(value)
+    override fun <T : Any> getSnippet(path: String, klass: KClass<T>, default: T): T {
+        val value = get(path, default)
 
-		if (casted == null) {
-			ymlConfiguration.set(path, default)
-			ymlConfiguration.save(file)
-			return default
-		}
+        val casted = klass.safeCast(value)
 
-		return casted
-	}
+        if (casted == null) {
+            ymlConfiguration.set(path, default)
+            ymlConfiguration.save(file)
+            return default
+        }
 
-	fun registerSnippet(path: String, defaultValue: Any) {
-		get(path, defaultValue)
-	}
+        return casted
+    }
+
+    override fun registerSnippet(path: String, defaultValue: Any) {
+        get(path, defaultValue)
+    }
 }

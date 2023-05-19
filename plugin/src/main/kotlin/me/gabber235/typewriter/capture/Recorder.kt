@@ -4,7 +4,7 @@ import kotlinx.coroutines.CompletableDeferred
 import lirand.api.extensions.events.SimpleListener
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.events.unregister
-import me.gabber235.typewriter.Typewriter.Companion.plugin
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.asMini
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.key.Key

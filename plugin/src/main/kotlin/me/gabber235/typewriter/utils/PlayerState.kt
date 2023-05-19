@@ -1,10 +1,9 @@
 package me.gabber235.typewriter.utils
 
-import me.gabber235.typewriter.Typewriter.Companion.plugin
+import me.gabber235.typewriter.plugin
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
-
 
 interface PlayerStateProvider {
     fun store(player: Player): Any

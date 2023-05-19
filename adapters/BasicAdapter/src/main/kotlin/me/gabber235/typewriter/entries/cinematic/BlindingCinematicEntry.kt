@@ -2,7 +2,6 @@ package me.gabber235.typewriter.entries.cinematic
 
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import kotlinx.coroutines.withContext
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -12,6 +11,7 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.GAME_MODE
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
 import me.gabber235.typewriter.utils.Icons

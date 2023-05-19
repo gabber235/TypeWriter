@@ -1,7 +1,7 @@
 package me.gabber235.typewriter.capture
 
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.capture.capturers.Tape
+import me.gabber235.typewriter.logger
 import org.bukkit.entity.Player
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -65,7 +65,6 @@ abstract class MultiTapeRecordedCapturer<T>(title: String) : MultiRecordedCaptur
 
 class MultiRecorderCapturerDelegate<T>(private val capturer: RecordedCapturer<T>) :
     ReadOnlyProperty<MultiRecordedCapturer<*>, T> {
-
     var value: T? = null
         private set
 
@@ -79,7 +78,7 @@ class MultiRecorderCapturerDelegate<T>(private val capturer: RecordedCapturer<T>
 
     override operator fun getValue(thisRef: MultiRecordedCapturer<*>, property: KProperty<*>): T {
         if (value == null) {
-            plugin.logger.severe("Capturer ${capturer.title} has not been recorded yet!")
+            logger.severe("Capturer ${capturer.title} has not been recorded yet!")
         }
         return value!!
     }

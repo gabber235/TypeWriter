@@ -4,8 +4,8 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.capture.RecordedCapturer
+import me.gabber235.typewriter.plugin
 import org.bukkit.Location
 import org.bukkit.entity.Player
 

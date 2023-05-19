@@ -8,3 +8,4 @@ softdepend:
 depend: [ ProtocolLib ]
 authors: [ gabber235 ]
 description: Minecraft's Real Quest Plugin
+libraries: ${libraries}

@@ -7,89 +7,49 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import kotlinx.coroutines.Dispatchers
-import lirand.api.extensions.events.listen
-import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.entry.EntryDatabase
-import me.gabber235.typewriter.entry.backup
-import me.gabber235.typewriter.entry.migrateIfNecessary
-import me.gabber235.typewriter.entry.pages
-import me.gabber235.typewriter.events.TypewriterReloadEvent
-import me.gabber235.typewriter.ui.StagingState.*
-import me.gabber235.typewriter.utils.Timeout
-import me.gabber235.typewriter.utils.get
-import me.gabber235.typewriter.utils.logErrorIfNull
-import java.io.File
-import kotlin.time.Duration.Companion.seconds
+import me.gabber235.typewriter.adapters.AdapterLoader
+import me.gabber235.typewriter.entry.StagingManager
+import me.gabber235.typewriter.logger
+import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.Result
+import me.gabber235.typewriter.utils.isFailure
+import me.gabber235.typewriter.utils.isSuccess
+import me.gabber235.typewriter.utils.unwrapBoth
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object ClientSynchronizer {
-    private val pages: MutableMap<String, JsonObject> = mutableMapOf()
-    private lateinit var adapters: JsonElement
+interface ClientSynchronizer {
+    fun handleFetchRequest(client: SocketIOClient, data: String, ack: AckRequest)
 
-    private lateinit var gson: Gson
+    fun handleCreatePage(client: SocketIOClient, data: String, ack: AckRequest)
 
-    private val autoSaver =
-        Timeout(
-            3.seconds,
-            ClientSynchronizer::saveStaging,
-            immediateRunnable = {
-                // When called to save, we immediately want to update the staging state
-                if (stagingState != PUBLISHING) stagingState = STAGING
-            })
+    fun handleRenamePage(client: SocketIOClient, data: String, ackRequest: AckRequest)
 
-    private val stagingDir
-        get() = plugin.dataFolder["staging"]
+    fun handleDeletePage(client: SocketIOClient, name: String, ack: AckRequest)
 
-    private val publishedDir
-        get() = plugin.dataFolder["pages"]
+    fun handleCreateEntry(client: SocketIOClient, data: String, ack: AckRequest)
 
-    var stagingState = PUBLISHED
-        private set(value) {
-            field = value
-            CommunicationHandler.server?.broadcastOperations?.sendEvent("stagingState", value.name.lowercase())
-        }
+    fun handleEntryFieldUpdate(client: SocketIOClient, data: String, ack: AckRequest)
 
-    fun initialize() {
-        gson = EntryDatabase.gson()
+    fun handleEntryUpdate(client: SocketIOClient, data: String, ack: AckRequest)
+    fun handleReorderEntry(client: SocketIOClient, data: String, ack: AckRequest)
+    fun handleDeleteEntry(client: SocketIOClient, data: String, ack: AckRequest)
+    fun handlePublish(client: SocketIOClient, data: String, ack: AckRequest)
+    fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest)
+}
 
-        loadState()
+class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
+    private val stagingManager: StagingManager by inject()
+    private val communicationHandler: CommunicationHandler by inject()
+    private val writers: Writers by inject()
+    private val adapterLoader: AdapterLoader by inject()
+    private val adapters by adapterLoader::adaptersJson
+    private val gson: Gson by inject()
 
-        plugin.listen<TypewriterReloadEvent> { loadState() }
-
-        // Read the adapters from the file
-        adapters = gson.fromJson(plugin.dataFolder["adapters.json"].readText(), JsonElement::class.java)
-    }
-
-    private fun loadState() {
-        stagingState = if (stagingDir.exists()) {
-            // Migrate staging directory to use the new format
-            stagingDir.migrateIfNecessary()
-
-            val stagingPages = fetchPages(stagingDir)
-            val publishedPages = fetchPages(publishedDir)
-
-            if (stagingPages == publishedPages) PUBLISHED else STAGING
-        } else PUBLISHED
-
-        // Read the pages from the file
-        val dir =
-            if (stagingState == STAGING) stagingDir else publishedDir
-        pages.putAll(fetchPages(dir))
-    }
-
-    private fun fetchPages(dir: File): Map<String, JsonObject> {
-        val pages = mutableMapOf<String, JsonObject>()
-        dir.pages().forEach { file ->
-            val page = file.readText()
-            pages[file.nameWithoutExtension] = gson.fromJson(page, JsonObject::class.java)
-        }
-        return pages
-    }
-
-    fun handleFetchRequest(client: SocketIOClient, data: String, ack: AckRequest) {
+    override fun handleFetchRequest(client: SocketIOClient, data: String, ack: AckRequest) {
         if (data == "pages") {
             val array = JsonArray()
-            pages.forEach { (_, page) ->
+            stagingManager.fetchPages().forEach { (_, page) ->
                 array.add(page)
             }
             ack.sendAckData(array.toString())
@@ -100,258 +60,131 @@ object ClientSynchronizer {
         ack.sendAckData("No data found")
     }
 
-    fun handleCreatePage(client: SocketIOClient, data: String, ack: AckRequest) {
-        val json = gson.fromJson(data, PageCreate::class.java)
-        if (pages.containsKey(json.name)) {
-            ack.sendAckData("Page already exists")
-            return
+    override fun handleCreatePage(client: SocketIOClient, data: String, ack: AckRequest) {
+        val json = gson.fromJson(data, JsonObject::class.java)
+        val result = stagingManager.createPage(json)
+
+        ack.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("createPage", client, data)
         }
-
-
-        val page = gson.fromJson(data, JsonObject::class.java)
-        // As it's a new page, we can assume it's the latest version
-        page.addProperty("version", plugin.pluginMeta.version)
-        pages[json.name] = page
-
-        ack.sendAckData("Page created")
-        CommunicationHandler.server?.broadcastOperations?.sendEvent("createPage", client, data)
-        autoSaver()
     }
 
-    fun handleRenamePage(client: SocketIOClient, data: String, ackRequest: AckRequest) {
+    override fun handleRenamePage(client: SocketIOClient, data: String, ackRequest: AckRequest) {
         val json = gson.fromJson(data, PageRename::class.java)
-        val page = pages.remove(json.old) ?: return
-        page.addProperty("name", json.new)
-        pages[json.new] = page
+        val result = stagingManager.renamePage(json.old, json.new)
 
-        ackRequest.sendAckData("Page renamed")
-        CommunicationHandler.server?.broadcastOperations?.sendEvent("renamePage", client, data)
-        autoSaver()
+        ackRequest.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("renamePage", client, data)
+        }
     }
 
-    fun handleDeletePage(client: SocketIOClient, name: String, ack: AckRequest) {
-        if (!pages.containsKey(name)) {
-            ack.sendAckData("Page does not exist")
-            return
+    override fun handleDeletePage(client: SocketIOClient, name: String, ack: AckRequest) {
+        val result = stagingManager.deletePage(name)
+        ack.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("deletePage", client, name)
         }
-
-        pages.remove(name)
-        // Delete the file
-        val file = stagingDir["$name.json"]
-        if (file.exists()) {
-            file.delete()
-        }
-        ack.sendAckData("Page deleted")
-        CommunicationHandler.server?.broadcastOperations?.sendEvent("deletePage", client, name)
-        autoSaver()
     }
 
-    fun handleCreateEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+    override fun handleCreateEntry(client: SocketIOClient, data: String, ack: AckRequest) {
         val json = gson.fromJson(data, EntryCreate::class.java)
-        val page = pages[json.pageId] ?: return ack.sendAckData("Page does not exist")
-        val entries = page["entries"].asJsonArray
-        entries.add(json.entry)
-        ack.sendAckData("Entry created")
-        CommunicationHandler.server?.broadcastOperations?.sendEvent("createEntry", client, data)
-        autoSaver()
+        val result = stagingManager.createEntry(json.pageId, json.entry)
+        ack.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("createEntry", client, data)
+        }
     }
 
-
-    fun handleEntryUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
+    override fun handleEntryFieldUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
         val update = gson.fromJson(data, EntryUpdate::class.java)
-
-        // Update the page
-        val page =
-            pages[update.pageId].logErrorIfNull("A client tried to update a page which does not exists") ?: return
-        val entries = page["entries"].asJsonArray
-        val entry = entries.find { it.asJsonObject["id"].asString == update.entryId }
-            .logErrorIfNull("A client tried to update an entry which does not exists") ?: return
-
-        // Update the entry
-        val path = update.path.split(".")
-        var current: JsonElement = entry.asJsonObject
-        path.forEachIndexed { index, key ->
-            if (index == path.size - 1) {
-                if (current.isJsonObject) {
-                    current.asJsonObject.add(key, update.value)
-                } else if (current.isJsonArray) {
-                    current.asJsonArray[Integer.parseInt(key)] = update.value
-                }
-            } else if (current.isJsonObject) {
-                current = current.asJsonObject[key] ?: JsonObject().also { current.asJsonObject.add(key, it) }
-            } else if (current.isJsonArray) {
-                current =
-                    current.asJsonArray[Integer.parseInt(key)] ?: JsonObject().also { current.asJsonArray.add(it) }
-            }
+        val result = stagingManager.updateEntryField(update.pageId, update.entryId, update.path, update.value)
+        ack.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("updateEntry", client, data)
         }
-
-        CommunicationHandler.server?.broadcastOperations?.sendEvent("updateEntry", client, data)
-        autoSaver()
     }
 
-    fun handleCompleteEntryUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
+    override fun handleEntryUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
         val update = gson.fromJson(data, CompleteEntryUpdate::class.java)
-        val entryId = update.entry["id"].asString
-
-        // Update the page
-        val page =
-            pages[update.pageId].logErrorIfNull("A client tried to update a page which does not exists") ?: return
-
-        val entries = page["entries"].asJsonArray
-        entries.removeAll { entry -> entry.asJsonObject["id"].asString == entryId }
-        entries.add(update.entry)
-
-        CommunicationHandler.server?.broadcastOperations?.sendEvent("updateCompleteEntry", client, data)
-        autoSaver()
+        val result = stagingManager.updateEntry(update.pageId, update.entry)
+        ack.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("updateCompleteEntry", client, data)
+        }
     }
 
-    fun handleReorderEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+    override fun handleReorderEntry(client: SocketIOClient, data: String, ack: AckRequest) {
         val update = gson.fromJson(data, ReorderEntry::class.java)
-        val page = pages[update.pageId] ?: return ack.sendAckData("Page does not exist")
-        val entries = page["entries"].asJsonArray
-        val oldIndex = entries.indexOfFirst { it.asJsonObject["id"].asString == update.entryId }
-
-        if (oldIndex == -1) {
-            ack.sendAckData("Entry does not exist")
-            return
+        val result = stagingManager.reorderEntry(update.pageId, update.entryId, update.newIndex)
+        ack.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("reorderEntry", client, data)
         }
-
-        var newIndex = update.newIndex
-
-        if (oldIndex == newIndex) {
-            ack.sendAckData("Entry is already at the correct index")
-            return
-        }
-
-        if (oldIndex < newIndex) {
-            newIndex--
-        }
-
-        val entryAtNewIndex = entries[newIndex]
-        entries[newIndex] = entries[oldIndex]
-        entries[oldIndex] = entryAtNewIndex
-
-        CommunicationHandler.server?.broadcastOperations?.sendEvent("reorderEntry", client, data)
-        autoSaver()
     }
 
 
-    fun handleDeleteEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+    override fun handleDeleteEntry(client: SocketIOClient, data: String, ack: AckRequest) {
         val json = gson.fromJson(data, EntryDelete::class.java)
-        val page = pages[json.pageId] ?: return ack.sendAckData("Page does not exist")
-        val entries = page["entries"].asJsonArray
-        entries.removeAll { entry -> entry.asJsonObject["id"].asString == json.entryId }
-        ack.sendAckData("Entry deleted")
-        CommunicationHandler.server?.broadcastOperations?.sendEvent("deleteEntry", client, data)
-        autoSaver()
-    }
-
-    private fun saveStaging() {
-        // If we are already publishing, we don't want to save the staging
-        if (stagingState == PUBLISHING) return
-        val dir = stagingDir
-
-        pages.forEach { (name, page) ->
-            val file = dir["$name.json"]
-            if (!file.exists()) {
-                file.parentFile.mkdirs()
-                file.createNewFile()
-            }
-            file.writeText(page.toString())
-        }
-
-        stagingState = STAGING
-    }
-
-    fun handlePublish(socketIOClient: SocketIOClient, data: String, ackRequest: AckRequest) {
-        if (stagingState != STAGING) {
-            ackRequest.sendAckData("No staging state found")
-            return
-        }
-
-        plugin.launch(Dispatchers.IO) {
-            publish()
-        }
-        ackRequest.sendAckData("Published")
-    }
-
-    fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest) {
-        Writer.updateWriter(client.sessionId.toString(), data)
-        CommunicationHandler.server.broadcastWriters()
-    }
-
-    // Save the page to the file
-    private fun publish() {
-        if (stagingState != STAGING) return
-        autoSaver.cancel()
-        stagingState = PUBLISHING
-
-        stagingState = try {
-            pages.forEach { (name, page) ->
-                val file = publishedDir["$name.json"]
-                file.writeText(page.toString())
-            }
-
-            if (stagingDir.exists()) {
-                // Check if there are any pages which are no longer in staging. If so, delete them
-                val stagingFiles = stagingDir.listFiles()?.map { it.name } ?: emptyList()
-                val pagesFiles = publishedDir.listFiles()?.toList() ?: emptyList()
-
-                val deletedPages = pagesFiles.filter { it.name !in stagingFiles }
-                deletedPages.backup()
-                deletedPages.forEach { it.delete() }
-            }
-
-            // Delete the staging folder
-            stagingDir.deleteRecursively()
-            EntryDatabase.loadEntries()
-            plugin.logger.info("Published the staging state")
-            PUBLISHED
-        } catch (e: Exception) {
-            e.printStackTrace()
-            STAGING
+        val result = stagingManager.deleteEntry(json.pageId, json.entryId)
+        ack.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("deleteEntry", client, data)
         }
     }
 
-    fun dispose() {
-        if (stagingState == STAGING) saveStaging()
+
+    override fun handlePublish(client: SocketIOClient, data: String, ack: AckRequest) {
+        plugin.launch {
+            val result = stagingManager.publish()
+            ack.sendResult(result)
+        }
+    }
+
+    override fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest) {
+        writers.updateWriter(client.sessionId.toString(), data)
+        communicationHandler.server.broadcastWriters(writers)
     }
 }
 
-enum class StagingState {
-    PUBLISHING,
-    STAGING,
-    PUBLISHED
+fun AckRequest.sendResult(result: Result<String, String>) {
+    val json = JsonObject()
+    json.addProperty("success", result.isSuccess())
+    json.addProperty("message", result.unwrapBoth())
+
+    sendAckData(json.toString())
+
+    if (result.isFailure()) {
+        logger.severe(result.error)
+    }
 }
 
-data class PageCreate(val name: String)
+inline fun AckRequest.sendResult(result: Result<String, String>, onSuccess: () -> Unit) {
+    sendResult(result)
+    if (result.isSuccess()) {
+        onSuccess()
+    }
+}
 
-data class PageRename(val old: String, val new: String)
+private data class PageRename(val old: String, val new: String)
 
-data class EntryCreate(
+private data class EntryCreate(
     val pageId: String,
     val entry: JsonObject,
 )
 
-data class EntryUpdate(
+private data class EntryUpdate(
     val pageId: String,
     val entryId: String,
     val path: String,
     val value: JsonElement
 )
 
-data class CompleteEntryUpdate(
+private data class CompleteEntryUpdate(
     val pageId: String,
     val entry: JsonObject,
 )
 
-data class ReorderEntry(
+private data class ReorderEntry(
     val pageId: String,
     val entryId: String,
     val newIndex: Int,
 )
 
-data class EntryDelete(
+private data class EntryDelete(
     val pageId: String,
     val entryId: String,
 )

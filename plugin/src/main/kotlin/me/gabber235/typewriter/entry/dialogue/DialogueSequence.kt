@@ -10,10 +10,15 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) {
+class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) : KoinComponent {
+    private val messengerFinder: MessengerFinder by inject()
+    private val factDatabase: FactDatabase by inject()
+
     private var currentEntry: DialogueEntry = initialEntry
-    private var currentMessenger = MessengerFinder.findMessenger(player, initialEntry)
+    private var currentMessenger = messengerFinder.findMessenger(player, initialEntry)
     private var cycle = 0
     var isActive = false
         private set
@@ -45,7 +50,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
     fun next(nextEntry: DialogueEntry): Boolean {
         cleanupEntry(false)
         currentEntry = nextEntry
-        currentMessenger = MessengerFinder.findMessenger(player, nextEntry)
+        currentMessenger = messengerFinder.findMessenger(player, nextEntry)
         init()
         return true
     }
@@ -55,7 +60,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         messenger.dispose()
         if (final) messenger.end()
 
-        FactDatabase.modify(player.uniqueId, messenger.modifiers)
+        factDatabase.modify(player.uniqueId, messenger.modifiers)
     }
 
     fun end() {

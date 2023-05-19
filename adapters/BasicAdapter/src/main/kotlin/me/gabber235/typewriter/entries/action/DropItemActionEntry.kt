@@ -2,7 +2,6 @@ package me.gabber235.typewriter.entries.action
 
 import com.github.shynixn.mccoroutine.bukkit.launch
 import lirand.api.extensions.inventory.meta
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -10,6 +9,7 @@ import me.gabber235.typewriter.adapters.modifiers.MultiLine
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMini
 import org.bukkit.Location
