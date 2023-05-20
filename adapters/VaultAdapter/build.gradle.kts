@@ -32,7 +32,7 @@ dependencies {
 
     // Already included in the TypeWriter plugin
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
-    compileOnly("com.github.gabber235:LirandAPI:e10bcd3a41")
+    compileOnly("com.github.dyam0:LirandAPI:96cc59d4fb")
     compileOnly("net.kyori:adventure-api:4.13.1")
     compileOnly("net.kyori:adventure-text-minimessage:4.13.1")
 

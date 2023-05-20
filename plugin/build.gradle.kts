@@ -28,7 +28,6 @@ val centralDependencies = listOf(
     "org.jetbrains.kotlin:kotlin-reflect:1.8.20",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1",
     "io.ktor:ktor-server-core:2.3.0",
-//    "io.ktor:ktor-server-netty:2.3.0", // Doesn't want to load properly
     "com.corundumstudio.socketio:netty-socketio:1.7.19", // Keep this on a lower version as the newer version breaks the ping
 )
 
@@ -38,7 +37,7 @@ dependencies {
     }
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
 
-    implementation("com.github.gabber235:LirandAPI:e10bcd3a41")
+    implementation("com.github.dyam0:LirandAPI:96cc59d4fb")
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.insert-koin:koin-core:3.4.0")
