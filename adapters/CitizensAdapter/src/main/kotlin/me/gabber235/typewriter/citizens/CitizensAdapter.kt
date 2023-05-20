@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.capture.CinematicRecorder
 import me.gabber235.typewriter.capture.MultiTapeRecordedCapturer
 import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.capture.capturers.*
@@ -43,7 +44,13 @@ object CitizensAdapter : TypewriteAdapter() {
             if (event.newSlot == 0) {
                 if (player.isRecording) return@listen
                 plugin.launch {
-                    val data = Recorders.record(player, TestTapeCapturer("Test Location Tape"))
+                    val recorder = CinematicRecorder(
+                        player,
+                        TestTapeCapturer("Test Location Tape"),
+                        50..200,
+                        "hotel_intro_cinematic"
+                    )
+                    val data = Recorders.record(player, recorder)
 
                     player.msg("Recorded frames: ${data.minFrame} - ${data.maxFrame} (${data.duration})")
 

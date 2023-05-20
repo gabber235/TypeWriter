@@ -1,10 +1,14 @@
 package me.gabber235.typewriter.entry.cinematic
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.triggerEntriesFor
 import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.events.AsyncCinematicEndEvent
+import me.gabber235.typewriter.events.AsyncCinematicTickEvent
 import org.bukkit.entity.Player
 
 class CinematicSequence(
@@ -36,6 +40,7 @@ class CinematicSequence(
         actions.forEach {
             try {
                 it.tick(frame)
+                AsyncCinematicTickEvent(player, frame).callEvent()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -58,5 +63,9 @@ class CinematicSequence(
         }
 
         triggers triggerEntriesFor player
+
+        withContext(Dispatchers.IO) {
+            AsyncCinematicEndEvent(player, frame).callEvent()
+        }
     }
 }

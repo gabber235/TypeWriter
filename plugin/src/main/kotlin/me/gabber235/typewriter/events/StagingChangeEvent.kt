@@ -1,9 +1,10 @@
 package me.gabber235.typewriter.events
 
+import me.gabber235.typewriter.entry.StagingState
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class TypewriterReloadEvent : Event() {
+data class StagingChangeEvent(val newState: StagingState) : Event() {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 
     companion object {

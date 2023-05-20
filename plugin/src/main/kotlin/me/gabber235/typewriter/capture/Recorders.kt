@@ -4,6 +4,10 @@ import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+interface Recorder<T> {
+    suspend fun record(): T
+}
+
 object Recorders {
     private val recorders = ConcurrentHashMap<UUID, Recorder<*>>()
 
@@ -14,17 +18,18 @@ object Recorders {
     suspend fun <T> record(player: Player, capturer: Capturer<T>): T {
         when (capturer) {
             is ImmediateCapturer -> return capturer.capture(player)
-            is RecordedCapturer -> {
-                if (recorders.containsKey(player.uniqueId)) {
-                    throw IllegalStateException("Already recording!")
-                }
-                val recorder = Recorder(player, capturer)
-                recorders[player.uniqueId] = recorder
-                val result = recorder.record()
-                recorders.remove(player.uniqueId)
-                return result
-            }
+            is RecordedCapturer -> return record(player, StaticRecorder(player, capturer))
         }
+    }
+
+    suspend fun <T> record(player: Player, recorder: Recorder<T>): T {
+        if (recorders.containsKey(player.uniqueId)) {
+            throw IllegalStateException("Already recording!")
+        }
+        recorders[player.uniqueId] = recorder
+        val result = recorder.record()
+        recorders.remove(player.uniqueId)
+        return result
     }
 }
 

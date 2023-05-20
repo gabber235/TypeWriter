@@ -8,12 +8,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.entry.StagingState.*
+import me.gabber235.typewriter.events.PublishedBookEvent
+import me.gabber235.typewriter.events.StagingChangeEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
-import org.bukkit.event.Event
-import org.bukkit.event.HandlerList
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
@@ -279,30 +279,6 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
     override fun shutdown() {
         if (stagingState == STAGING) saveStaging()
-    }
-}
-
-class PublishedBookEvent : Event() {
-    override fun getHandlers(): HandlerList = HANDLER_LIST
-
-    companion object {
-        @JvmStatic
-        val HANDLER_LIST = HandlerList()
-
-        @JvmStatic
-        fun getHandlerList(): HandlerList = HANDLER_LIST
-    }
-}
-
-data class StagingChangeEvent(val newState: StagingState) : Event() {
-    override fun getHandlers(): HandlerList = HANDLER_LIST
-
-    companion object {
-        @JvmStatic
-        val HANDLER_LIST = HandlerList()
-
-        @JvmStatic
-        fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 }
 

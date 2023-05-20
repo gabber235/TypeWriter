@@ -8,6 +8,7 @@ import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin

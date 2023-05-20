@@ -13,23 +13,24 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
-private data class RecordingData<T>(
-    val completer: CompletableDeferred<T>,
-    val bossBar: BossBar,
-    val listener: Listener,
-)
+class StaticRecorder<T>(private val player: Player, private val capturer: RecordedCapturer<T>) : Recorder<T> {
+    private enum class RecordingState {
+        WAITING_FOR_START,
+        RECORDING,
+        FINISHED,
+    }
 
-private enum class RecordingState {
-    WAITING_FOR_START,
-    RECORDING,
-    FINISHED,
-}
+    private data class RecordingData<T>(
+        val completer: CompletableDeferred<T>,
+        val bossBar: BossBar,
+        val listener: Listener,
+    )
 
-class Recorder<T>(private val player: Player, private val capturer: RecordedCapturer<T>) {
+
     private var data: RecordingData<T>? = null
     private var state = RecordingState.WAITING_FOR_START
 
-    suspend fun record(): T {
+    override suspend fun record(): T {
         if (data != null) {
             throw IllegalStateException("Already recording!")
         }

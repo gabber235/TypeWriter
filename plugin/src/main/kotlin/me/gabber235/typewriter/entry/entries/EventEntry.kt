@@ -71,8 +71,8 @@ enum class SystemTrigger : EventTrigger {
 
 class CinematicStartTrigger(
     val pageId: String,
-    val triggers: List<String>,
-    val override: Boolean,
+    val triggers: List<String> = emptyList(),
+    val override: Boolean = false,
     val simulate: Boolean = false
 ) : EventTrigger {
     override val id: String

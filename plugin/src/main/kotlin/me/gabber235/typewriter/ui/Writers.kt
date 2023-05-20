@@ -26,7 +26,7 @@ interface Writers {
     fun serialize(): String
 }
 
-class WriterImpl : Writers, KoinComponent {
+class WritersImpl : Writers, KoinComponent {
     private val communicationHandler: CommunicationHandler by inject()
     private var writers = listOf<Writer>()
     private var lastSynced = 0L

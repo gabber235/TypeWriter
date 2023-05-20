@@ -5,8 +5,8 @@ import com.corundumstudio.socketio.HandshakeData
 import com.corundumstudio.socketio.SocketIOServer
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.server.server
-import me.gabber235.typewriter.entry.StagingChangeEvent
 import me.gabber235.typewriter.entry.StagingManager
+import me.gabber235.typewriter.events.StagingChangeEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.config

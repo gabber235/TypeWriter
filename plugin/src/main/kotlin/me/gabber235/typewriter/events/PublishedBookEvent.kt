@@ -3,7 +3,7 @@ package me.gabber235.typewriter.events
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class TypewriterReloadEvent : Event() {
+class PublishedBookEvent : Event() {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 
     companion object {

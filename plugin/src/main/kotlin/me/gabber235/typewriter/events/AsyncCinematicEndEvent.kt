@@ -1,9 +1,10 @@
 package me.gabber235.typewriter.events
 
-import org.bukkit.event.Event
+import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
+import org.bukkit.event.player.PlayerEvent
 
-class TypewriterReloadEvent : Event() {
+class AsyncCinematicEndEvent(player: Player, val frame: Int) : PlayerEvent(player, true) {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 
     companion object {

@@ -16,10 +16,7 @@ import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.snippets.SnippetDatabase
 import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
-import me.gabber235.typewriter.ui.ClientSynchronizer
-import me.gabber235.typewriter.ui.ClientSynchronizerImpl
-import me.gabber235.typewriter.ui.CommunicationHandler
-import me.gabber235.typewriter.ui.PanelHost
+import me.gabber235.typewriter.ui.*
 import me.gabber235.typewriter.utils.syncCommands
 import org.bukkit.plugin.Plugin
 import org.koin.core.component.KoinComponent
@@ -54,6 +51,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<InteractionHandler>(::InteractionHandler)
             singleOf<MessengerFinder>(::MessengerFinder)
             singleOf<CommunicationHandler>(::CommunicationHandler)
+            singleOf<Writers>(::WritersImpl)
             singleOf<PanelHost>(::PanelHost)
             singleOf<SnippetDatabase>(::SnippetDatabaseImpl)
             singleOf<FactDatabase>(::FactDatabase)
