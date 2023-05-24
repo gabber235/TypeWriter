@@ -11,7 +11,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-@Entry("remove_item", "Remove an from players inventory", Colors.RED, Icons.WAND_SPARKLES)
+@Entry("remove_item", "Remove an item from the players inventory", Colors.RED, Icons.WAND_SPARKLES)
 class RemoveItemActionEntry(
     override val id: String = "",
     override val name: String = "",
