@@ -1,28 +1,17 @@
 package me.gabber235.typewriter.citizens
 
 import App
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
-import kotlinx.coroutines.delay
-import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
-import me.gabber235.typewriter.capture.CinematicRecorder
 import me.gabber235.typewriter.capture.MultiTapeRecordedCapturer
-import me.gabber235.typewriter.capture.Recorders
-import me.gabber235.typewriter.capture.capturers.*
-import me.gabber235.typewriter.capture.isRecording
+import me.gabber235.typewriter.capture.capturers.LocationTapeCapturer
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.msg
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.MemoryNPCDataStore
 import net.citizensnpcs.api.npc.NPCRegistry
 import net.citizensnpcs.api.trait.TraitInfo
 import org.bukkit.Location
-import org.bukkit.Particle
-import org.bukkit.entity.EntityType
-import org.bukkit.event.player.PlayerItemHeldEvent
 
 @Adapter("Citizens", "For the Citizens plugin", App.VERSION)
 object CitizensAdapter : TypewriteAdapter() {
@@ -38,43 +27,43 @@ object CitizensAdapter : TypewriteAdapter() {
 
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TypewriterTrait::class.java))
         tmpRegistry = CitizensAPI.createAnonymousNPCRegistry(MemoryNPCDataStore())
-
-        plugin.listen<PlayerItemHeldEvent> { event ->
-            val player = event.player
-            if (event.newSlot == 0) {
-                if (player.isRecording) return@listen
-                plugin.launch {
-                    val recorder = CinematicRecorder(
-                        player,
-                        TestTapeCapturer("Test Location Tape"),
-                        50..200,
-                        "hotel_intro_cinematic"
-                    )
-                    val data = Recorders.record(player, recorder)
-
-                    player.msg("Recorded frames: ${data.minFrame} - ${data.maxFrame} (${data.duration})")
-
-                    val firstFrame = data.firstFrame ?: return@launch
-                    val startLocation = firstFrame.location
-                    val npc = temporaryRegistry.createNPC(EntityType.PLAYER, player.name, startLocation)
-                    npc.isFlyable = true
-
-                    for (i in data.minFrame..data.maxFrame) {
-                        val frame = data[i] ?: continue
-                        val location = frame.location ?: npc.entity.location
-
-                        npc.entity.teleport(location)
-
-                        player.spawnParticle(Particle.VILLAGER_HAPPY, location, 1)
-                        player.spawnParticle(Particle.SOUL_FIRE_FLAME, npc.storedLocation, 1, 0.0, 0.0, 0.0, 0.0)
-
-                        delay(1.ticks)
-                    }
-
-                    npc.destroy()
-                }
-            }
-        }
+//
+//        plugin.listen<PlayerItemHeldEvent> { event ->
+//            val player = event.player
+//            if (event.newSlot == 0) {
+//                if (player.isRecording) return@listen
+//                plugin.launch {
+//                    val recorder = CinematicRecorder(
+//                        player,
+//                        TestTapeCapturer("Test Location Tape"),
+//                        50..200,
+//                        "hotel_intro_cinematic"
+//                    )
+//                    val data = Recorders.record(player, recorder)
+//
+//                    player.msg("Recorded frames: ${data.minFrame} - ${data.maxFrame} (${data.duration})")
+//
+//                    val firstFrame = data.firstFrame ?: return@launch
+//                    val startLocation = firstFrame.location
+//                    val npc = temporaryRegistry.createNPC(EntityType.PLAYER, player.name, startLocation)
+//                    npc.isFlyable = true
+//
+//                    for (i in data.minFrame..data.maxFrame) {
+//                        val frame = data[i] ?: continue
+//                        val location = frame.location ?: npc.entity.location
+//
+//                        npc.entity.teleport(location)
+//
+//                        player.spawnParticle(Particle.VILLAGER_HAPPY, location, 1)
+//                        player.spawnParticle(Particle.SOUL_FIRE_FLAME, npc.storedLocation, 1, 0.0, 0.0, 0.0, 0.0)
+//
+//                        delay(1.ticks)
+//                    }
+//
+//                    npc.destroy()
+//                }
+//            }
+//        }
     }
 
     override fun shutdown() {

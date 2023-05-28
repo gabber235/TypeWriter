@@ -24,10 +24,9 @@ data class ConsoleCommandActionEntry(
     @Help("The command to run. (Use %player_name% for the player's name)")
     private val command: String = "",
 ) : ActionEntry {
-
     override fun execute(player: Player) {
         super.execute(player)
-        // Run in main thread
+        // Run in the main thread
         plugin.launch {
             Bukkit.getConsoleSender().dispatchCommand(command.parsePlaceholders(player))
         }

@@ -2,6 +2,7 @@ package me.gabber235.typewriter
 
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
+import java.util.logging.Logger
 import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.adapters.AdapterLoader
@@ -31,18 +32,18 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
-import java.util.logging.Logger
 
 class Typewriter : KotlinPlugin(), KoinComponent {
 
     override fun onLoad() {
         super.onLoad()
         val modules = module {
-            single { this@Typewriter } withOptions {
-                named("plugin")
-                bind<Plugin>()
-                createdAtStart()
-            }
+            single { this@Typewriter } withOptions
+                    {
+                        named("plugin")
+                        bind<Plugin>()
+                        createdAtStart()
+                    }
 
             singleOf<AdapterLoader>(::AdapterLoaderImpl)
             singleOf<EntryDatabase>(::EntryDatabaseImpl)
@@ -72,7 +73,9 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         typeWriterCommand()
 
         if (!server.pluginManager.isPluginEnabled("ProtocolLib")) {
-            logger.warning("ProtocolLib is not enabled, Typewriter will not work without it. Shutting down...")
+            logger.warning(
+                    "ProtocolLib is not enabled, Typewriter will not work without it. Shutting down..."
+            )
             server.pluginManager.disablePlugin(this)
             return
         }
@@ -90,7 +93,8 @@ class Typewriter : KotlinPlugin(), KoinComponent {
 
         syncCommands()
 
-        // We want to initialize all the adapters after all the plugins have been enabled to make sure
+        // We want to initialize all the adapters after all the plugins have been enabled to make
+        // sure
         // that all the plugins are loaded.
         launch {
             delay(1)
@@ -99,9 +103,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         }
     }
 
-    val isFloodgateInstalled: Boolean by lazy {
-        server.pluginManager.isPluginEnabled("Floodgate")
-    }
+    val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
 
     override suspend fun onDisableAsync() {
         get<StagingManager>().shutdown()
@@ -114,7 +116,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
 }
 
 private class MinecraftLogger(private val logger: Logger) :
-    org.koin.core.logger.Logger(logger.level.convertLogger()) {
+        org.koin.core.logger.Logger(logger.level.convertLogger()) {
     override fun display(level: Level, msg: MESSAGE) {
         when (level) {
             Level.DEBUG -> logger.fine(msg)
@@ -139,10 +141,6 @@ fun java.util.logging.Level?.convertLogger(): Level {
     }
 }
 
-val logger: Logger by lazy {
-    plugin.logger
-}
+val logger: Logger by lazy { plugin.logger }
 
-val plugin: Plugin by lazy {
-    KoinJavaComponent.get(Plugin::class.java)
-}
+val plugin: Plugin by lazy { KoinJavaComponent.get(Plugin::class.java) }

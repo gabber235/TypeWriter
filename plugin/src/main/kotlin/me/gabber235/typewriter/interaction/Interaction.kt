@@ -28,10 +28,7 @@ class Interaction(val player: Player) : KoinComponent {
         cinematic?.tick()
     }
 
-    /**
-     * Handles an event.
-     * All [SystemTrigger]'s are handled by the plugin itself.
-     */
+    /** Handles an event. All [SystemTrigger]'s are handled by the plugin itself. */
     suspend fun onEvent(event: Event) {
         triggerActions(event)
         handleDialogue(event)
@@ -45,13 +42,15 @@ class Interaction(val player: Player) : KoinComponent {
      */
     private fun triggerActions(event: Event) {
         // Trigger all actions
-        val actions = Query.findWhere<ActionEntry> { it in event && it.criteria.matches(event.player.uniqueId) }
-        actions.forEach { action ->
-            action.execute(event.player)
-        }
-        val newTriggers = actions.flatMap { it.triggers }
-            .map { EntryTrigger(it) }
-            .filter { it !in event } // Stops infinite loops
+        val actions =
+                Query.findWhere<ActionEntry> {
+                    it in event && it.criteria.matches(event.player.uniqueId)
+                }
+        actions.forEach { action -> action.execute(event.player) }
+        val newTriggers =
+                actions.flatMap { it.triggers }.map { EntryTrigger(it) }.filter {
+                    it !in event
+                } // Stops infinite loops
         if (newTriggers.isNotEmpty()) {
             interactionHandler.triggerEvent(Event(event.player, newTriggers))
         }
@@ -72,15 +71,15 @@ class Interaction(val player: Player) : KoinComponent {
         tryTriggerNextDialogue(event)
     }
 
-
     /**
-     * Tries to trigger a new dialogue.
-     * If no dialogue can be found, it will end the dialogue sequence.
+     * Tries to trigger a new dialogue. If no dialogue can be found, it will end the dialogue
+     * sequence.
      */
     private fun tryTriggerNextDialogue(event: Event) {
-        val nextDialogue = Query.findWhere<DialogueEntry> { it in event }
-            .sortedByDescending { it.criteria.size }
-            .firstOrNull { it.criteria.matches(event.player.uniqueId) }
+        val nextDialogue =
+                Query.findWhere<DialogueEntry> { it in event }
+                        .sortedByDescending { it.criteria.size }
+                        .firstOrNull { it.criteria.matches(event.player.uniqueId) }
 
         if (nextDialogue != null) {
             // If there is no sequence yet, start a new one
@@ -92,14 +91,15 @@ class Interaction(val player: Player) : KoinComponent {
                 dialogue?.next(nextDialogue)
             }
         } else if (dialogue?.isActive == false) {
-            // If there is no next dialogue and the sequence isn't active anymore, we can end the sequence
+            // If there is no next dialogue and the sequence isn't active anymore, we can end the
+            // sequence
             DIALOGUE_END triggerFor player
         }
     }
 
     /**
-     * Called when the player clicks the next button.
-     * If there is no next dialogue, the sequence will be ended.
+     * Called when the player clicks the next button. If there is no next dialogue, the sequence
+     * will be ended.
      */
     private fun onDialogueNext() {
         val dialog = dialogue ?: return
@@ -129,9 +129,12 @@ class Interaction(val player: Player) : KoinComponent {
         cinematic = null
 
         var entries =
-            Query.findWhereFromPage<CinematicEntry>(trigger.pageId) { it.criteria.matches(event.player.uniqueId) }
+                Query.findWhereFromPage<CinematicEntry>(trigger.pageId) {
+                    it.criteria.matches(event.player.uniqueId)
+                }
 
-        // If the cinematic is a simulation, we filter out all the entries that should never be simulated.
+        // If the cinematic is a simulation, we filter out all the entries that should never be
+        // simulated.
         if (trigger.simulate) {
             entries = entries.filter { it.shouldSimulate() }
         }

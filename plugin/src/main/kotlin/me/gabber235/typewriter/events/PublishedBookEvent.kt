@@ -1,9 +1,10 @@
 package me.gabber235.typewriter.events
 
+import lirand.api.extensions.server.server
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class PublishedBookEvent : Event() {
+class PublishedBookEvent : Event(!server.isPrimaryThread) {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 
     companion object {

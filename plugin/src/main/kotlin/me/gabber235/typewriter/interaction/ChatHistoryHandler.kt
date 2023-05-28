@@ -7,11 +7,12 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.reflect.StructureModifier
-import me.gabber235.typewriter.utils.logErrorIfNull
+import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.koin.java.KoinJavaComponent.get
@@ -35,8 +36,9 @@ class ChatHistoryHandler(plugin: Plugin) :
 
         val adventureModifier: StructureModifier<Component>? = event.packet.getSpecificModifier(Component::class.java)
         val component = adventureModifier?.readSafely(0)
-            .logErrorIfNull("Could not find adventure modifier on chat packet. Make sure you are using the latest paper version")
-            ?: return
+            ?: event.packet.strings.readSafely(0)?.let { GsonComponentSerializer.gson().deserialize(it) }
+            ?: return logger.severe("Could not find adventure modifier on chat packet. Make sure you are using the latest paper version")
+
 
         // If the message is a broadcast of previous messages.
         // We don't want to add this to the history.
