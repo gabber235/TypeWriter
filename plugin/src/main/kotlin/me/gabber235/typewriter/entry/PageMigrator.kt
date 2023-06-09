@@ -50,7 +50,7 @@ fun File.migrateIfNecessary(run: Int = 0) {
 			| This may take a while, please wait.
 			| 
 			| If the migration fails, please report this to the developer. 
-			| Your files will be backed up to the folder "backup".
+			| Your files will be backed up to the folder "plugins/Typewriter/backup".
 			| -------------- MIGRATION --------------
 		""".trimMargin()
         )
@@ -74,6 +74,10 @@ fun File.migrateIfNecessary(run: Int = 0) {
 }
 
 fun List<File>.backup() {
+    if (isEmpty()) {
+        // Nothing to back up
+        return
+    }
     val date = Date()
     val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
 
@@ -121,6 +125,14 @@ private fun File.migrate0_3_0() {
         addProperty("type", "static")
         addProperty("version", "0.3.0")
         add("entries", Gson().toJsonTree(staticEntries))
+    }
+
+    if (entries.size() == staticEntries.size) {
+        // All entries are static, just replace the page with the static page
+        writeText(newStaticPage.apply {
+            addProperty("name", name)
+        }.toString())
+        return
     }
 
     // Remove static entries from the original page

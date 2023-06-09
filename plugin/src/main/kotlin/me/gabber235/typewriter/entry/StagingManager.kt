@@ -104,6 +104,12 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         val nameJson = data["name"]
         if (!nameJson.isJsonPrimitive || !nameJson.asJsonPrimitive.isString) return failure("Name must be a string")
         val name = nameJson.asString
+
+        if (pages.containsKey(name)) return failure("Page with that name already exists")
+
+        // Add the version of this page to track migrations
+        data.addProperty("version", plugin.pluginMeta.version)
+
         pages[name] = data
         autoSaver()
         return ok("Successfully created page with name $name")
@@ -253,12 +259,18 @@ class StagingManagerImpl : StagingManager, KoinComponent {
                     file.writeText(page.toString())
                 }
 
-                if (stagingDir.exists()) {
-                    // Check if there are any pages which are no longer in staging. If so, delete them
-                    val stagingFiles = stagingDir.listFiles()?.map { it.name } ?: emptyList()
-                    val pagesFiles = publishedDir.listFiles()?.toList() ?: emptyList()
+                val stagingPages = pages.keys
+                val publishedFiles = publishedDir.listFiles()?.toList() ?: emptyList()
 
-                    val deletedPages = pagesFiles.filter { it.name !in stagingFiles }
+                val deletedPages = publishedFiles.filter { it.nameWithoutExtension !in stagingPages }
+                if (deletedPages.isNotEmpty()) {
+                    logger.info(
+                        "Deleting ${deletedPages.size} pages, as they are no longer in staging. (${
+                            deletedPages.joinToString(
+                                ", "
+                            ) { it.nameWithoutExtension }
+                        })"
+                    )
                     deletedPages.backup()
                     deletedPages.forEach { it.delete() }
                 }
