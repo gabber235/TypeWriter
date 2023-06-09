@@ -12,16 +12,13 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.GAME_MODE
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
-import me.gabber235.typewriter.utils.Icons
-import me.gabber235.typewriter.utils.PlayerState
-import me.gabber235.typewriter.utils.restore
-import me.gabber235.typewriter.utils.state
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
+import org.bukkit.potion.PotionEffectType.BLINDNESS
 
 @Entry("blinding_cinematic", "Blind the player so the screen looks black", Colors.CYAN, Icons.SOLID_EYE_SLASH)
 class BlindingCinematicEntry(
@@ -63,12 +60,11 @@ class BlindingCinematicAction(
         state = player.state(LOCATION, GAME_MODE)
 
         withContext(plugin.minecraftDispatcher) {
-            player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 1000000, 1, false, false, false))
+            player.addPotionEffect(PotionEffect(BLINDNESS, Int.MAX_VALUE, 0, false, false, false))
 
             if (segment.teleport) {
-                /// Teleport the player to y 500 to prevent them from seeing the world
-                val location = player.location.clone()
-                location.y = 500.0
+                /// Teleport the player high up to prevent them from seeing the world
+                val location = player.location.highUpLocation
                 player.teleport(location)
             }
             if (segment.spectator) {
@@ -82,7 +78,7 @@ class BlindingCinematicAction(
         val state = state ?: return
         this.state = null
         withContext(plugin.minecraftDispatcher) {
-            player.removePotionEffect(PotionEffectType.BLINDNESS)
+            player.removePotionEffect(BLINDNESS)
             player.restore(state)
         }
     }

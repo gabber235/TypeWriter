@@ -63,11 +63,12 @@ class CameraCinematicAction(
     override suspend fun setup() {
         super.setup()
 
-        segments = entry.segments.map {
+        segments = entry.segments.map { segment ->
             if (player.isFloodgate) {
-                TeleportCameraSegmentAction(player, it)
+                TeleportCameraSegmentAction(player, segment)
             } else {
-                BoatCameraSegmentAction(player, it)
+                val hasSegmentBefore = entry.segments.any { it isActiveAt (segment.startFrame - 1) }
+                BoatCameraSegmentAction(player, segment, hasSegmentBefore)
             }
         }
         segments.forEach { it.setup() }
@@ -133,7 +134,7 @@ class CameraCinematicAction(
 private interface CameraSegmentAction {
     val segment: CameraSegment
     fun setup()
-    fun prepare()
+    suspend fun prepare()
     fun canPrepare(frame: Int): Boolean
     suspend fun start()
     suspend fun tick(frame: Int)
@@ -147,8 +148,8 @@ private const val MAX_DISTANCE_SQUARED = 25 * 25
 
 /**
  * Teleports the player to the given location if needed.
- * To render chunks correctly we need to teleport the player to the entity.
- * Though to prevent lag we only do this every 10 frames or when the player is too far away.
+ * To render chunks correctly, we need to teleport the player to the entity.
+ * Though to prevent lag, we only do this every 10 frames or when the player is too far away.
  *
  * @param frame The current frame.
  * @param location The location to teleport to.
@@ -170,16 +171,31 @@ private suspend inline fun Player.teleportIfNeeded(
 private class BoatCameraSegmentAction(
     private val player: Player,
     override val segment: CameraSegment,
+    private val hasSegmentBefore: Boolean,
 ) : CameraSegmentAction {
+    companion object {
+        // As a boat is interpolated. We need the remove the last few frames to make sure the animation fully finishes.
+        private const val TRAILING_FRAMES = 10
+
+        // The amount of ticks the boat gets to prepare before the player is teleported to it.
+        private const val PREPARE_TICKS = 10
+
+        private const val BOAT_HEIGHT = 0.5625
+    }
+
     private val path = segment.path.map {
         it.copy(
-            location = it.location.clone().apply { y += player.eyeHeight - 0.5625 }
+            location = it.location.clone().apply { y += player.eyeHeight - BOAT_HEIGHT }
         )
     }
-    private val farAwayLocation = Location(player.world, 0.0, 500.0, 0.0)
     private val firstLocation = path.first().location
 
-    private val entity = ClientEntity(firstLocation, EntityType.BOAT).also {
+    private val farAwayLocation = firstLocation.highUpLocation
+
+    private val startLocation
+        get() = if (segment.startFrame > PREPARE_TICKS && hasSegmentBefore) farAwayLocation else firstLocation
+
+    private val entity = ClientEntity(startLocation, EntityType.BOAT).also {
         it.boatType = BoatType.JUNGLE
     }
 
@@ -187,17 +203,30 @@ private class BoatCameraSegmentAction(
         entity.addViewer(player)
     }
 
-    override fun prepare() {
+    override suspend fun prepare() {
         entity.move(firstLocation)
+
+        // If the player is up in the sky, we know that they can't see land.
+        // As such, we can teleport them to the x/z of the first location.
+        if (player.isHighUp) {
+            val location = firstLocation.highUpLocation
+            withContext(plugin.minecraftDispatcher) {
+                player.teleport(location)
+            }
+        }
     }
 
     override fun canPrepare(frame: Int): Boolean {
-        return segment.startFrame - 10 == frame
+        return segment.startFrame - PREPARE_TICKS == frame
     }
 
     override suspend fun start() {
         withContext(plugin.minecraftDispatcher) {
-            player.teleport(firstLocation)
+            // Teleport the player to the first location.
+            // We need to use the unmodified location here.
+            // Otherwise, the player will be shifted when spectating.
+            val firstNormalLocation = segment.path.first().location
+            player.teleport(firstNormalLocation)
             player.spectateEntity(entity)
         }
     }
@@ -224,12 +253,6 @@ private class BoatCameraSegmentAction(
     override fun teardown() {
         entity.removeViewer(player)
     }
-
-    companion object {
-
-        // As a boat is interpolated. We need the remove the last few frames to make sure the animation fully finishes.
-        private const val TRAILING_FRAMES = 10
-    }
 }
 
 private class TeleportCameraSegmentAction(
@@ -241,7 +264,7 @@ private class TeleportCameraSegmentAction(
     override fun setup() {
     }
 
-    override fun prepare() {
+    override suspend fun prepare() {
     }
 
     override fun canPrepare(frame: Int): Boolean {

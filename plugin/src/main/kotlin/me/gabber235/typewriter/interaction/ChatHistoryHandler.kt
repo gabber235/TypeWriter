@@ -7,23 +7,29 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.reflect.StructureModifier
-import me.gabber235.typewriter.logger
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.utils.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
 import org.koin.java.KoinJavaComponent.get
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class ChatHistoryHandler(plugin: Plugin) :
-    PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.SYSTEM_CHAT) {
+    PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.SYSTEM_CHAT), Listener {
 
     fun initialize() {
         ProtocolLibrary.getProtocolManager().addPacketListener(this)
+        server.pluginManager.registerSuspendingEvents(this, plugin)
     }
 
     private val histories = mutableMapOf<UUID, ChatHistory>()
@@ -37,7 +43,7 @@ class ChatHistoryHandler(plugin: Plugin) :
         val adventureModifier: StructureModifier<Component>? = event.packet.getSpecificModifier(Component::class.java)
         val component = adventureModifier?.readSafely(0)
             ?: event.packet.strings.readSafely(0)?.let { GsonComponentSerializer.gson().deserialize(it) }
-            ?: return logger.severe("Could not find adventure modifier on chat packet. Make sure you are using the latest paper version")
+            ?: return
 
 
         // If the message is a broadcast of previous messages.
@@ -56,6 +62,11 @@ class ChatHistoryHandler(plugin: Plugin) :
 
     fun getHistory(player: Player): ChatHistory {
         return histories.getOrPut(player.uniqueId) { ChatHistory() }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onQuit(event: PlayerQuitEvent) {
+        histories.remove(event.player.uniqueId)
     }
 
     fun shutdown() {

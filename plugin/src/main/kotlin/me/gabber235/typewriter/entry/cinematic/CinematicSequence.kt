@@ -11,16 +11,19 @@ import me.gabber235.typewriter.events.AsyncCinematicEndEvent
 import me.gabber235.typewriter.events.AsyncCinematicTickEvent
 import org.bukkit.entity.Player
 
+private const val STARTING_FRAME = -1
+private const val ENDED_FRAME = -2
+
 class CinematicSequence(
     private val player: Player,
     private val entries: List<CinematicEntry>,
     private val triggers: List<String>
 ) {
-    private var frame = -1
+    private var frame = STARTING_FRAME
     private var actions = emptyList<CinematicAction>()
 
     suspend fun start() {
-        if (frame > -1) return
+        if (frame > STARTING_FRAME) return
         actions = entries.map { it.create(player) }
         actions.forEach {
             try {
@@ -32,19 +35,19 @@ class CinematicSequence(
     }
 
     suspend fun tick() {
-        if (frame == -1) {
-            start()
-        }
+        if (frame == ENDED_FRAME) return
+        if (frame == STARTING_FRAME) start()
+        if (canEnd) return
 
         frame++
         actions.forEach {
             try {
                 it.tick(frame)
-                AsyncCinematicTickEvent(player, frame).callEvent()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+        AsyncCinematicTickEvent(player, frame).callEvent()
 
         if (canEnd) {
             CINEMATIC_END triggerFor player
@@ -53,7 +56,10 @@ class CinematicSequence(
 
     private val canEnd get() = actions.all { it.canFinish(frame) }
 
-    suspend fun end() {
+    suspend fun end(force: Boolean = false) {
+        if (frame == ENDED_FRAME || frame == STARTING_FRAME) return
+        val originalFrame = frame
+        frame = ENDED_FRAME
         actions.forEach {
             try {
                 it.teardown()
@@ -62,10 +68,12 @@ class CinematicSequence(
             }
         }
 
-        triggers triggerEntriesFor player
+        if (!force) {
+            triggers triggerEntriesFor player
+        }
 
         withContext(Dispatchers.IO) {
-            AsyncCinematicEndEvent(player, frame).callEvent()
+            AsyncCinematicEndEvent(player, originalFrame).callEvent()
         }
     }
 }

@@ -17,10 +17,12 @@ void main() async {
     return stack;
   };
 
-  runApp(const ProviderScope(
-    // observers: [if (kDebugMode) Logger()],
-    child: TypeWriterApp(),
-  ));
+  runApp(
+    const ProviderScope(
+      // observers: [if (kDebugMode) Logger()],
+      child: TypeWriterApp(),
+    ),
+  );
 }
 
 class TypeWriterApp extends HookConsumerWidget {
@@ -77,7 +79,10 @@ class TypeWriterApp extends HookConsumerWidget {
         ),
       ),
       hoverColor: Colors.black.withOpacity(0.1),
-      errorColor: Colors.red,
+      colorScheme: baseTheme.colorScheme.copyWith(
+        brightness: brightness,
+        error: Colors.red,
+      ),
     );
   }
 }

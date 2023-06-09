@@ -43,16 +43,16 @@ class Interaction(val player: Player) : KoinComponent {
     private fun triggerActions(event: Event) {
         // Trigger all actions
         val actions =
-                Query.findWhere<ActionEntry> {
-                    it in event && it.criteria.matches(event.player.uniqueId)
-                }
+            Query.findWhere<ActionEntry> {
+                it in event && it.criteria.matches(event.player.uniqueId)
+            }
         actions.forEach { action -> action.execute(event.player) }
         val newTriggers =
-                actions.flatMap { it.triggers }.map { EntryTrigger(it) }.filter {
-                    it !in event
-                } // Stops infinite loops
+            actions.flatMap { it.triggers }.map { EntryTrigger(it) }.filter {
+                it !in event
+            } // Stops infinite loops
         if (newTriggers.isNotEmpty()) {
-            interactionHandler.triggerEvent(Event(event.player, newTriggers))
+            interactionHandler.triggerActions(event.player, newTriggers)
         }
     }
 
@@ -77,9 +77,9 @@ class Interaction(val player: Player) : KoinComponent {
      */
     private fun tryTriggerNextDialogue(event: Event) {
         val nextDialogue =
-                Query.findWhere<DialogueEntry> { it in event }
-                        .sortedByDescending { it.criteria.size }
-                        .firstOrNull { it.criteria.matches(event.player.uniqueId) }
+            Query.findWhere<DialogueEntry> { it in event }
+                .sortedByDescending { it.criteria.size }
+                .firstOrNull { it.criteria.matches(event.player.uniqueId) }
 
         if (nextDialogue != null) {
             // If there is no sequence yet, start a new one
@@ -129,9 +129,9 @@ class Interaction(val player: Player) : KoinComponent {
         cinematic = null
 
         var entries =
-                Query.findWhereFromPage<CinematicEntry>(trigger.pageId) {
-                    it.criteria.matches(event.player.uniqueId)
-                }
+            Query.findWhereFromPage<CinematicEntry>(trigger.pageId) {
+                it.criteria.matches(event.player.uniqueId)
+            }
 
         // If the cinematic is a simulation, we filter out all the entries that should never be
         // simulated.
@@ -146,6 +146,8 @@ class Interaction(val player: Player) : KoinComponent {
 
     suspend fun end() {
         dialogue?.end()
-        cinematic?.end()
+        cinematic?.end(force = true)
+        dialogue = null
+        cinematic = null
     }
 }

@@ -220,6 +220,7 @@ class Query<E : Entry>(private val klass: KClass<E>) {
  */
 infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
     val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
+    if (triggers.isEmpty()) return
     get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
 }
 
@@ -236,6 +237,7 @@ infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
  */
 infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
     val triggers = this.triggers.map { EntryTrigger(it) }
+    if (triggers.isEmpty()) return
     get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
 }
 
@@ -253,6 +255,7 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
  */
 infix fun List<String>.triggerEntriesFor(player: Player) {
     val triggers = this.map { EntryTrigger(it) }
+    if (triggers.isEmpty()) return
     get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
 }
 
@@ -287,6 +290,7 @@ infix fun EventTrigger.triggerFor(player: Player) {
  */
 fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, continueTrigger: EventTrigger) {
     val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
+    if (triggers.isEmpty()) return
     get<InteractionHandler>(InteractionHandler::class.java).startDialogueWithOrTriggerEvent(
         player,
         triggers,

@@ -38,6 +38,7 @@ class Event(val player: Player, val triggers: List<EventTrigger>) {
 
     operator fun contains(entry: Entry) = EntryTrigger(entry.id) in triggers
 
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Event) return false
@@ -50,6 +51,10 @@ class Event(val player: Player, val triggers: List<EventTrigger>) {
         var result = triggers.hashCode()
         result = 31 * result + player.hashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "Event(player=${player.name}, triggers=$triggers)"
     }
 }
 

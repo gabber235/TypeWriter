@@ -3,10 +3,13 @@ package me.gabber235.typewriter.interaction
 import com.github.shynixn.mccoroutine.bukkit.launch
 import kotlinx.coroutines.*
 import lirand.api.extensions.server.registerSuspendingEvents
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.entry.entries.Event
 import me.gabber235.typewriter.entry.entries.EventTrigger
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.events.PublishedBookEvent
+import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import org.bukkit.entity.Player
@@ -14,6 +17,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.koin.core.component.KoinComponent
 import java.util.*
@@ -26,8 +30,8 @@ class InteractionHandler : Listener, KoinComponent {
     private val interactions = ConcurrentHashMap<UUID, Interaction>()
     private var job: Job? = null
 
-    private val Player.interaction: Interaction
-        get() = interactions.getOrPut(uniqueId) { Interaction(this) }
+    private val Player.interaction: Interaction?
+        get() = interactions[uniqueId]
 
 
     /** Some triggers start dialogue. Though we don't want to trigger the starting of dialogue multiple times,
@@ -42,7 +46,7 @@ class InteractionHandler : Listener, KoinComponent {
         initialTriggers: List<EventTrigger>,
         continueTrigger: EventTrigger? = null
     ) {
-        val interaction = player.interaction
+        val interaction = player.interaction ?: return
         if (interaction.hasDialogue) {
             if (continueTrigger != null) {
                 triggerEvent(Event(player, continueTrigger))
@@ -63,18 +67,13 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
 
-    /**
-     * Triggers an event.
-     * All events that start with "system."
-     * Are handled by the plugin itself.
-     * All other events are handled based on the entries in the database.
-     *
-     * @param event The event to trigger
-     */
-    fun triggerEvent(event: Event) {
+    private fun triggerEvent(event: Event) {
+        // If the event is empty, we don't need to do anything
+        if (event.triggers.isEmpty()) return
+
         plugin.launch {
             try {
-                event.player.interaction.onEvent(event)
+                event.player.interaction?.onEvent(event)
             } catch (e: Exception) {
                 logger.severe("An error occurred while handling event ${event}: ${e.message}")
                 e.printStackTrace()
@@ -112,11 +111,36 @@ class InteractionHandler : Listener, KoinComponent {
         }
     }
 
-    // When a player leaves the server, we need to end the interaction and clear its chat history.
-    @EventHandler
+    // When a player joins the server, we need to create an interaction for them.
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onPlayerJoin(event: PlayerJoinEvent) {
+        interactions[event.player.uniqueId] = Interaction(event.player)
+    }
+
+    // When a player leaves the server, we need to end the interaction.
+    @EventHandler(priority = EventPriority.MONITOR)
     suspend fun onPlayerQuit(event: PlayerQuitEvent) {
         interactions.remove(event.player.uniqueId)?.end()
-        event.player.chatHistory.clear()
+    }
+
+    // When the plugin reloads, we need to end all interactions and create new ones.
+    @EventHandler(priority = EventPriority.MONITOR)
+    suspend fun onReloadTypewriter(event: TypewriterReloadEvent) {
+        resetAllInteractions()
+    }
+
+    // When a book is published, we need to end all interactions.
+    @EventHandler(priority = EventPriority.MONITOR)
+    suspend fun onPublishBook(event: PublishedBookEvent) {
+        resetAllInteractions()
+    }
+
+    private suspend fun resetAllInteractions() {
+        interactions.forEach { (_, interaction) ->
+            interaction.end()
+        }
+        interactions.clear()
+        interactions.putAll(server.onlinePlayers.map { it.uniqueId to Interaction(it) })
     }
 
     // When a player tries to execute a command, we need to end the dialogue.
