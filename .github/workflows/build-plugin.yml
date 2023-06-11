@@ -20,8 +20,8 @@ jobs:
       - name: Build web app
         run: flutter build web --release --no-tree-shake-icons
         working-directory: ./app
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+      - name: Setup Java 
+        uses: actions/setup-java@v3
         with:
           java-version: 17
       - name: Test Plugin
@@ -29,13 +29,11 @@ jobs:
         with:
           arguments: test --scan
           build-root-directory: ./plugin
-          java-version: 17
       - name: Build Plugin
         uses: gradle/gradle-build-action@v2
         with:
           arguments: buildRelease --scan
           build-root-directory: ./plugin
-          java-version: 17
       - name: Upload Plugin
         uses: actions/upload-artifact@v2
         with:
