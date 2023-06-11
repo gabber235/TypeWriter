@@ -45,8 +45,6 @@ jobs:
   build-adapter-rpg-regions:
     name: Build RPGRegions Adapter
     runs-on: ubuntu-latest
-    needs: changes
-    if: needs.changes.outputs.rpg_regions_adapter == 'true'
     steps:
       - uses: ./.github/workflows/subflows/build-adapter.yml
         with:
@@ -55,8 +53,6 @@ jobs:
   build-adapter-superior-skyblock:
     name: Build SuperiorSkyblock Adapter
     runs-on: ubuntu-latest
-    needs: changes
-    if: needs.changes.outputs.superior_skyblock_adapter == 'true'
     steps:
       - uses: ./.github/workflows/subflows/build-adapter.yml
         with:
