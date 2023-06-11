@@ -18,7 +18,7 @@ jobs:
         run: flutter test
         working-directory: ./app
       - name: Build web app
-        run: flutter build web --release
+        run: flutter build web --release --no-tree-shake-icons
         working-directory: ./app
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2

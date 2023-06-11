@@ -18,6 +18,7 @@ jobs:
       - name: Test Adapter
         run: |
           ls
+          pwd
           ./gradlew test --scan
         working-directory: ./adapters/${{ github.event.inputs.adapter }}
       - name: Build Adapter
