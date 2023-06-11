@@ -7,7 +7,7 @@ jobs:
     name: Build Typewriter Plugin
     runs-on: ubuntu-latest
     steps:
-      - uses: ./github/workflows/subflows/build-plugin.yml
+      - uses: ./.github/workflows/subflows/build-plugin.yml
 
   build-adapter-basic:
     name: Build Basic Adapter

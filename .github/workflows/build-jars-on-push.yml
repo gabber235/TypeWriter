@@ -44,7 +44,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.plugin == 'true'
     steps:
-      - uses: ./github/workflows/subflows/build-plugin.yml
+      - uses: ./.github/workflows/subflows/build-plugin.yml
 
   build-adapter-basic:
     name: Build Basic Adapter
