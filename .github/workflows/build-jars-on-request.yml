@@ -5,72 +5,54 @@ on: [workflow_dispatch]
 jobs:
   build-plugin:
     name: Build Typewriter Plugin
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-plugin
+    uses: ./.github/workflows/build-plugin.yml
 
   build-adapter-basic:
     name: Build Basic Adapter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-adapter
-        with:
-          adapter: BasicAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: BasicAdapter
 
   build-adapter-citizens:
     name: Build Citizens Adapter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-adapter
-        with:
-          adapter: CitizensAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: CitizensAdapter
 
 
   build-adapter-combat-log-x:
     name: Build CombatLogX Adapter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-adapter
-        with:
-          adapter: CombatLogXAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: CombatLogXAdapter
 
   build-adapter-mythic-mobs:
     name: Build MythicMobs Adapter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-adapter
-        with:
-          adapter: MythicMobsAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: MythicMobsAdapter
 
   build-adapter-rpg-regions:
     name: Build RPGRegions Adapter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-adapter
-        with:
-          adapter: RPGRegionsAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: RPGRegionsAdapter
 
   build-adapter-superior-skyblock:
     name: Build SuperiorSkyblock Adapter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-adapter
-        with:
-          adapter: SuperiorSkyblockAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: SuperiorSkyblockAdapter
 
   build-adapter-vault:
     name: Build Vault Adapter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-adapter
-        with:
-          adapter: VaultAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: VaultAdapter
 
   build-adapter-worldguard:
     name: Build WorldGuard Adapter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/build-adapter
-        with:
-          adapter: WorldGuardAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: WorldGuardAdapter
 
