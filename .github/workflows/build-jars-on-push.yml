@@ -44,7 +44,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.plugin == 'true'
     steps:
-      - uses: ./.github/workflows/build-plugin.yml
+      - uses: ./.github/workflows/build-plugin
 
   build-adapter-basic:
     name: Build Basic Adapter
@@ -52,7 +52,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.basic_adapter == 'true'
     steps:
-      - uses: ./.github/workflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter
         with:
           adapter: BasicAdapter
 
@@ -62,7 +62,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.citizens_adapter == 'true'
     steps:
-      - uses: ./.github/workflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter
         with:
           adapter: CitizensAdapter
 
@@ -73,7 +73,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.combat_log_x_adapter == 'true'
     steps:
-      - uses: ./.github/workflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter
         with:
           adapter: CombatLogXAdapter
 
@@ -83,7 +83,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.mythic_mobs_adapter == 'true'
     steps:
-      - uses: ./.github/workflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter
         with:
           adapter: MythicMobsAdapter
 
@@ -93,7 +93,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.rpg_regions_adapter == 'true'
     steps:
-      - uses: ./.github/workflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter
         with:
           adapter: RPGRegionsAdapter
 
@@ -103,7 +103,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.superior_skyblock_adapter == 'true'
     steps:
-      - uses: ./.github/workflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter
         with:
           adapter: SuperiorSkyblockAdapter
 
@@ -113,7 +113,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.vault_adapter == 'true'
     steps:
-      - uses: ./.github/workflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter
         with:
           adapter: VaultAdapter
 
@@ -123,7 +123,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.world_guard_adapter == 'true'
     steps:
-      - uses: ./.github/workflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter
         with:
           adapter: WorldGuardAdapter
 
