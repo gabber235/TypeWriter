@@ -7,13 +7,13 @@ jobs:
     name: Build Typewriter Plugin
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-plugin.yml
+      - uses: ./.github/workflows/build-plugin.yml
 
   build-adapter-basic:
     name: Build Basic Adapter
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter.yml
         with:
           adapter: BasicAdapter
 
@@ -21,7 +21,7 @@ jobs:
     name: Build Citizens Adapter
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter.yml
         with:
           adapter: CitizensAdapter
 
@@ -30,7 +30,7 @@ jobs:
     name: Build CombatLogX Adapter
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter.yml
         with:
           adapter: CombatLogXAdapter
 
@@ -38,7 +38,7 @@ jobs:
     name: Build MythicMobs Adapter
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter.yml
         with:
           adapter: MythicMobsAdapter
 
@@ -46,7 +46,7 @@ jobs:
     name: Build RPGRegions Adapter
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter.yml
         with:
           adapter: RPGRegionsAdapter
 
@@ -54,7 +54,7 @@ jobs:
     name: Build SuperiorSkyblock Adapter
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter.yml
         with:
           adapter: SuperiorSkyblockAdapter
 
@@ -62,7 +62,7 @@ jobs:
     name: Build Vault Adapter
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter.yml
         with:
           adapter: VaultAdapter
 
@@ -70,7 +70,7 @@ jobs:
     name: Build WorldGuard Adapter
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/subflows/build-adapter.yml
+      - uses: ./.github/workflows/build-adapter.yml
         with:
           adapter: WorldGuardAdapter
 
