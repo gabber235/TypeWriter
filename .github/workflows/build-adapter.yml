@@ -6,10 +6,11 @@ on:
       adapter:
         required: true
         type: string
+        description: The name of the adapter to build
 
 jobs:
   build-adapter:
-    name: Build ${{ github.event.inputs.adapter }} Adapter
+    name: Build ${{ inputs.adapter }} Adapter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,12 +21,12 @@ jobs:
           ls
           pwd
           ./gradlew test --scan
-        working-directory: ./adapters/${{ github.event.inputs.adapter }}
+        working-directory: ./adapters/${{ inputs.adapter }}
       - name: Build Adapter
         run: ./gradlew buildRelease --scan
-        working-directory: ./adapters/${{ github.event.inputs.adapter }}
+        working-directory: ./adapters/${{ inputs.adapter }}
       - name: Upload Adapter
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.event.inputs.adapter }}.jar
-          path: adapters/${{ github.event.inputs.adapter }}/build/libs/${{ github.event.inputs.adapter }}.jar
+          name: ${{ inputs.adapter }}.jar
+          path: adapters/${{ inputs.adapter }}/build/libs/${{ inputs.adapter }}.jar
