@@ -16,15 +16,20 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
+        with:
+          java-version: 17
       - name: Test Adapter
-        run: |
-          ls
-          pwd
-          ./gradlew test --scan
-        working-directory: ./adapters/${{ inputs.adapter }}
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test --scan
+          build-root-directory: ./adapters/${{ inputs.adapter }}
+          java-version: 17
       - name: Build Adapter
-        run: ./gradlew buildRelease --scan
-        working-directory: ./adapters/${{ inputs.adapter }}
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: buildRelease --scan
+          build-root-directory: ./adapters/${{ inputs.adapter }}
+          java-version: 17
       - name: Upload Adapter
         uses: actions/upload-artifact@v2
         with:
