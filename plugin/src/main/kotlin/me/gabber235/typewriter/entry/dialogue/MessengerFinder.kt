@@ -1,5 +1,8 @@
 package me.gabber235.typewriter.entry.dialogue
 
+import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.ticks
+import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.MessengerData
@@ -68,7 +71,14 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
     }
 
     open fun end() {
+        state = MessengerState.FINISHED
         player.chatHistory.resendMessages(player)
+
+        // Resend the chat history again after a delay to make sure that the dialogue chat is fully cleared
+        plugin.launch {
+            delay(1.ticks)
+            player.chatHistory.resendMessages(player)
+        }
     }
 
     open val triggers: List<String>

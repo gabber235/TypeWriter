@@ -36,6 +36,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
     }
 
     fun tick() {
+        if (!isActive) return
         currentMessenger.tick(cycle++)
 
         if (currentMessenger.state == MessengerState.FINISHED) {

@@ -57,13 +57,15 @@ class Interaction(val player: Player) : KoinComponent {
     }
 
     private fun handleDialogue(event: Event) {
-        if (DIALOGUE_NEXT in event) {
-            onDialogueNext()
+        if (DIALOGUE_END in event) {
+            val dialogue = dialogue ?: return
+            this.dialogue = null
+            dialogue.end()
             return
         }
-        if (DIALOGUE_END in event) {
-            dialogue?.end()
-            dialogue = null
+
+        if (DIALOGUE_NEXT in event) {
+            onDialogueNext()
             return
         }
 
@@ -113,8 +115,9 @@ class Interaction(val player: Player) : KoinComponent {
 
     private suspend fun handleCinematic(event: Event) {
         if (CINEMATIC_END in event) {
-            cinematic?.end()
-            cinematic = null
+            val cinematic = cinematic ?: return
+            this.cinematic = null
+            cinematic.end()
             return
         }
 
@@ -125,8 +128,9 @@ class Interaction(val player: Player) : KoinComponent {
         val trigger = triggers.firstOrNull { it.override } ?: triggers.first()
         if (cinematic != null && !trigger.override) return
 
+        val cinematic = cinematic
+        this.cinematic = null
         cinematic?.end()
-        cinematic = null
 
         var entries =
             Query.findWhereFromPage<CinematicEntry>(trigger.pageId) {
@@ -141,13 +145,17 @@ class Interaction(val player: Player) : KoinComponent {
 
         if (entries.isEmpty()) return
 
-        cinematic = CinematicSequence(player, entries, trigger.triggers)
+        this.cinematic = CinematicSequence(player, entries, trigger.triggers)
     }
 
     suspend fun end() {
+        val dialogue = dialogue
+        val cinematic = cinematic
+
+        this.dialogue = null
+        this.cinematic = null
+
         dialogue?.end()
         cinematic?.end(force = true)
-        dialogue = null
-        cinematic = null
     }
 }

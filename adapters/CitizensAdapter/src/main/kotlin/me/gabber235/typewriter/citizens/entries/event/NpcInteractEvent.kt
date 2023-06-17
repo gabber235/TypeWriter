@@ -7,8 +7,10 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.citizens.TypewriterTrait
 import me.gabber235.typewriter.citizens.entries.entity.Npc
 import me.gabber235.typewriter.citizens.entries.entity.ReferenceNpcEntry
-import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.entry.EntryListener
+import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.EventEntry
+import me.gabber235.typewriter.entry.startDialogueWithOrNextDialogue
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.Icons
 import net.citizensnpcs.api.event.NPCLeftClickEvent
