@@ -40,11 +40,7 @@ class ChatHistoryHandler(plugin: Plugin) :
 
         if (event.packet.isActionBar()) return
 
-        val adventureModifier: StructureModifier<Component>? = event.packet.getSpecificModifier(Component::class.java)
-        val component = adventureModifier?.readSafely(0)
-            ?: event.packet.strings.readSafely(0)?.let { GsonComponentSerializer.gson().deserialize(it) }
-            ?: return
-
+        val component = event.packet.getChatComponent() ?: return
 
         // If the message is a broadcast of previous messages.
         // We don't want to add this to the history.
@@ -52,13 +48,6 @@ class ChatHistoryHandler(plugin: Plugin) :
         getHistory(event.player).addMessage(component)
     }
 
-    private fun PacketContainer.isActionBar(): Boolean {
-        val booleans = booleans
-        if (booleans.size() > 0) {
-            return booleans.readSafely(0)
-        }
-        return integers.readSafely(0) == 2
-    }
 
     fun getHistory(player: Player): ChatHistory {
         return histories.getOrPut(player.uniqueId) { ChatHistory() }
@@ -72,6 +61,26 @@ class ChatHistoryHandler(plugin: Plugin) :
     fun shutdown() {
         ProtocolLibrary.getProtocolManager().removePacketListener(this)
     }
+}
+
+/**
+ * Returns if a SystemChat packet is sent as an action bar.
+ */
+fun PacketContainer.isActionBar(): Boolean {
+    val booleans = booleans
+    if (booleans.size() > 0) {
+        return booleans.readSafely(0)
+    }
+    return integers.readSafely(0) == 2
+}
+
+/**
+ * Returns the chat component from a SystemChat packet.
+ */
+fun PacketContainer.getChatComponent(): Component? {
+    val adventureModifier: StructureModifier<Component>? = getSpecificModifier(Component::class.java)
+    return adventureModifier?.readSafely(0)
+        ?: strings.readSafely(0)?.let { GsonComponentSerializer.gson().deserialize(it) }
 }
 
 val Player.chatHistory: ChatHistory

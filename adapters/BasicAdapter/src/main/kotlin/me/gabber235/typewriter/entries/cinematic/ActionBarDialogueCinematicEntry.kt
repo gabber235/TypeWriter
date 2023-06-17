@@ -10,6 +10,9 @@ import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.dialogue.playSpeakerSound
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
+import me.gabber235.typewriter.interaction.acceptActionBarMessage
+import me.gabber235.typewriter.interaction.startBlockingActionBar
+import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.*
 import net.kyori.adventure.text.Component
@@ -71,6 +74,7 @@ class ActionBarDialogueCinematicAction(
         state = player.state(GenericPlayerStateProvider.EXP, GenericPlayerStateProvider.LEVEL)
         player.exp = 0f
         player.level = 0
+        player.startBlockingActionBar()
     }
 
     override suspend fun tick(frame: Int) {
@@ -116,12 +120,15 @@ class ActionBarDialogueCinematicAction(
             Placeholder.unparsed("padding", padding),
         )
 
+        player.acceptActionBarMessage(component)
         player.sendActionBar(component)
     }
 
     override suspend fun teardown() {
         super.teardown()
+        player.stopBlockingActionBar()
         player.restore(state)
+        player.sendActionBar(Component.empty())
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame

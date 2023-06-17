@@ -12,6 +12,7 @@ import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.FactStorage
 import me.gabber235.typewriter.facts.storage.FileFactStorage
+import me.gabber235.typewriter.interaction.ActionBarBlockerHandler
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.snippets.SnippetDatabase
@@ -59,6 +60,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<FactStorage>(::FileFactStorage)
             singleOf<EntryListeners>(::EntryListeners)
             single { ChatHistoryHandler(get()) }
+            single { ActionBarBlockerHandler(get()) }
             factory<Gson> { createGson(get(), get()) }
         }
         startKoin {
@@ -86,6 +88,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<FactDatabase>().initialize()
         get<MessengerFinder>().initialize()
         get<ChatHistoryHandler>().initialize()
+        get<ActionBarBlockerHandler>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
             TypewriteExpansion.register()
@@ -109,6 +112,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
     override suspend fun onDisableAsync() {
         get<StagingManager>().shutdown()
         get<ChatHistoryHandler>().shutdown()
+        get<ActionBarBlockerHandler>().shutdown()
         get<CommunicationHandler>().shutdown()
         get<InteractionHandler>().shutdown()
         get<EntryListeners>().unregister()
