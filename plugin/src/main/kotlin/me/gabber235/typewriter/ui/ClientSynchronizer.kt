@@ -7,16 +7,16 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.AdapterLoader
+import me.gabber235.typewriter.capture.RecorderRequestContext
+import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.entry.StagingManager
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.Result
-import me.gabber235.typewriter.utils.isFailure
-import me.gabber235.typewriter.utils.isSuccess
-import me.gabber235.typewriter.utils.unwrapBoth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 interface ClientSynchronizer {
     fun handleFetchRequest(client: SocketIOClient, data: String, ack: AckRequest)
@@ -36,6 +36,8 @@ interface ClientSynchronizer {
     fun handleDeleteEntry(client: SocketIOClient, data: String, ack: AckRequest)
     fun handlePublish(client: SocketIOClient, data: String, ack: AckRequest)
     fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest)
+
+    fun handleCaptureRequest(client: SocketIOClient, data: String, ack: AckRequest)
 }
 
 class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
@@ -44,7 +46,8 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
     private val writers: Writers by inject()
     private val adapterLoader: AdapterLoader by inject()
     private val adapters by adapterLoader::adaptersJson
-    private val gson: Gson by inject()
+    private val gson: Gson by inject(named("bukkitDataParser"))
+    private val recorders: Recorders by inject()
 
     override fun handleFetchRequest(client: SocketIOClient, data: String, ack: AckRequest) {
         if (data == "pages") {
@@ -138,23 +141,48 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
         writers.updateWriter(client.sessionId.toString(), data)
         communicationHandler.server.broadcastWriters(writers)
     }
-}
 
-fun AckRequest.sendResult(result: Result<String, String>) {
-    val json = JsonObject()
-    json.addProperty("success", result.isSuccess())
-    json.addProperty("message", result.unwrapBoth())
+    override fun handleCaptureRequest(client: SocketIOClient, data: String, ack: AckRequest) {
+        val context = gson.fromJson(data, RecorderRequestContext::class.java)
 
-    sendAckData(json.toString())
+        var player = communicationHandler.getPlayer(client)
 
-    if (result.isFailure()) {
-        logger.severe(result.error)
+        if (player == null) {
+            val onlinePlayers = server.onlinePlayers
+            if (onlinePlayers.isEmpty()) {
+                ack.sendResult(Result.failure(Exception("No players online")))
+                return
+            }
+
+            if (onlinePlayers.size > 1) {
+                ack.sendResult(Result.failure(Exception("Could not determine player")))
+                return
+            }
+
+            player = onlinePlayers.first()
+            logger.warning("Could not determine player from session, using ${player.name}")
+        }
+
+        val result = recorders.requestRecording(player!!, context)
+        ack.sendResult(result.toResult())
     }
 }
 
-inline fun AckRequest.sendResult(result: Result<String, String>, onSuccess: () -> Unit) {
+fun AckRequest.sendResult(result: Result<String>) {
+    val json = JsonObject()
+    json.addProperty("success", result.isSuccess)
+    json.addProperty("message", result.getOrElse { it.message })
+
+    sendAckData(json.toString())
+
+    if (result.isFailure) {
+        logger.severe(result.exceptionOrNull()?.message)
+    }
+}
+
+inline fun AckRequest.sendResult(result: Result<String>, onSuccess: () -> Unit) {
     sendResult(result)
-    if (result.isSuccess()) {
+    if (result.isSuccess) {
         onSuccess()
     }
 }

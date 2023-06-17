@@ -2,6 +2,7 @@ package me.gabber235.typewriter.ui
 
 import com.corundumstudio.socketio.Configuration
 import com.corundumstudio.socketio.HandshakeData
+import com.corundumstudio.socketio.SocketIOClient
 import com.corundumstudio.socketio.SocketIOServer
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.server.server
@@ -11,6 +12,7 @@ import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.config
 import me.gabber235.typewriter.utils.logErrorIfNull
+import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.Instant
@@ -139,6 +141,12 @@ class CommunicationHandler : KoinComponent {
             return "$BASE_URL/connect?host=$hostName&port=$port&token=$token"
         }
         return ""
+    }
+
+    fun getPlayer(client: SocketIOClient): Player? {
+        val token = getSessionToken(client.handshakeData) ?: return null
+        val session = sessionTokens[token] ?: return null
+        return session.playerId?.let { plugin.server.getPlayer(it) }
     }
 
     fun shutdown() {

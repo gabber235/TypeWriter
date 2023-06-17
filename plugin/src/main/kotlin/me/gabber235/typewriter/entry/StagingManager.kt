@@ -16,6 +16,7 @@ import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
@@ -25,20 +26,20 @@ interface StagingManager {
 
     fun initialize()
     fun fetchPages(): Map<String, JsonObject>
-    fun createPage(data: JsonObject): Result<String, String>
-    fun renamePage(oldName: String, newName: String): Result<String, String>
-    fun deletePage(name: String): Result<String, String>
-    fun createEntry(pageId: String, data: JsonObject): Result<String, String>
-    fun updateEntryField(pageId: String, entryId: String, path: String, value: JsonElement): Result<String, String>
-    fun updateEntry(pageId: String, data: JsonObject): Result<String, String>
-    fun reorderEntry(pageId: String, entryId: String, newIndex: Int): Result<String, String>
-    fun deleteEntry(pageId: String, entryId: String): Result<String, String>
-    suspend fun publish(): Result<String, String>
+    fun createPage(data: JsonObject): Result<String>
+    fun renamePage(oldName: String, newName: String): Result<String>
+    fun deletePage(name: String): Result<String>
+    fun createEntry(pageId: String, data: JsonObject): Result<String>
+    fun updateEntryField(pageId: String, entryId: String, path: String, value: JsonElement): Result<String>
+    fun updateEntry(pageId: String, data: JsonObject): Result<String>
+    fun reorderEntry(pageId: String, entryId: String, newIndex: Int): Result<String>
+    fun deleteEntry(pageId: String, entryId: String): Result<String>
+    suspend fun publish(): Result<String>
     fun shutdown()
 }
 
 class StagingManagerImpl : StagingManager, KoinComponent {
-    private val gson: Gson by inject()
+    private val gson: Gson by inject(named("bukkitDataParser"))
 
     private val pages = ConcurrentHashMap<String, JsonObject>()
 
@@ -99,7 +100,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return pages
     }
 
-    override fun createPage(data: JsonObject): Result<String, String> {
+    override fun createPage(data: JsonObject): Result<String> {
         if (!data.has("name")) return failure("Name is required")
         val nameJson = data["name"]
         if (!nameJson.isJsonPrimitive || !nameJson.asJsonPrimitive.isString) return failure("Name must be a string")
@@ -115,7 +116,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully created page with name $name")
     }
 
-    override fun renamePage(oldName: String, newName: String): Result<String, String> {
+    override fun renamePage(oldName: String, newName: String): Result<String> {
         val oldPage = pages[oldName] ?: return failure("Page does not exist")
         if (pages.containsKey(newName)) return failure("Page with that name already exists")
 
@@ -126,7 +127,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully renamed page from $oldName to $newName")
     }
 
-    override fun deletePage(name: String): Result<String, String> {
+    override fun deletePage(name: String): Result<String> {
         pages.remove(name) ?: return failure("Page does not exist")
 
         // Delete from the file system
@@ -139,7 +140,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully deleted page with name $name")
     }
 
-    override fun createEntry(pageId: String, data: JsonObject): Result<String, String> {
+    override fun createEntry(pageId: String, data: JsonObject): Result<String> {
         val page = getPage(pageId) onFail { return it }
         val entries = page["entries"] as? JsonArray ?: JsonArray()
 
@@ -155,7 +156,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         entryId: String,
         path: String,
         value: JsonElement
-    ): Result<String, String> {
+    ): Result<String> {
         // Update the page
         val page = getPage(pageId) onFail { return it }
         val entries = page["entries"].asJsonArray
@@ -183,7 +184,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully updated field")
     }
 
-    override fun updateEntry(pageId: String, data: JsonObject): Result<String, String> {
+    override fun updateEntry(pageId: String, data: JsonObject): Result<String> {
         val page = getPage(pageId) onFail { return it }
         val entries = page["entries"] as? JsonArray ?: return failure("Page does not have any entries")
         val entryId = data["id"]?.asString ?: return failure("Entry does not have an id")
@@ -195,7 +196,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully updated entry with id ${data["id"]}")
     }
 
-    override fun reorderEntry(pageId: String, entryId: String, newIndex: Int): Result<String, String> {
+    override fun reorderEntry(pageId: String, entryId: String, newIndex: Int): Result<String> {
         val page = getPage(pageId) onFail { return it }
         val entries = page["entries"].asJsonArray
         val oldIndex = entries.indexOfFirst { it.asJsonObject["id"].asString == entryId }
@@ -213,7 +214,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully reordered entry")
     }
 
-    override fun deleteEntry(pageId: String, entryId: String): Result<String, String> {
+    override fun deleteEntry(pageId: String, entryId: String): Result<String> {
         val page = getPage(pageId) onFail { return it }
         val entries = page["entries"].asJsonArray
         val entry = entries.find { it.asJsonObject["id"].asString == entryId } ?: return failure("Entry does not exist")
@@ -224,7 +225,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully deleted entry with id $entryId")
     }
 
-    private fun getPage(id: String): Result<JsonObject, String> {
+    private fun getPage(id: String): Result<JsonObject> {
         val page = pages[id] ?: return failure("Page does not exist")
         return ok(page)
     }
@@ -247,7 +248,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     // Save the page to the file
-    override suspend fun publish(): Result<String, String> {
+    override suspend fun publish(): Result<String> {
         if (stagingState != STAGING) return failure("Can only publish when in staging")
         autoSaver.cancel()
         return withContext(Dispatchers.IO) {

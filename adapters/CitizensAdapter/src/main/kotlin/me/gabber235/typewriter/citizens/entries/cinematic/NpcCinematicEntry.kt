@@ -1,19 +1,24 @@
 package me.gabber235.typewriter.citizens.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import com.github.shynixn.mccoroutine.bukkit.ticks
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.Colors
+import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Capture
+import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
-import me.gabber235.typewriter.adapters.modifiers.WithRotation
+import me.gabber235.typewriter.capture.AssetCapturer
+import me.gabber235.typewriter.capture.CapturerCreator
+import me.gabber235.typewriter.capture.MultiTapeRecordedCapturer
+import me.gabber235.typewriter.capture.RecorderRequestContext
+import me.gabber235.typewriter.capture.capturers.LocationTapeCapturer
+import me.gabber235.typewriter.capture.capturers.Tape
 import me.gabber235.typewriter.citizens.CitizensAdapter.temporaryRegistry
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.onFail
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.NPC
 import net.citizensnpcs.api.trait.trait.PlayerFilter
@@ -23,28 +28,51 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 
 interface NpcCinematicEntry : CinematicEntry {
-    @Help("The location to spawn the NPC at.")
-    @WithRotation
-    val startLocation: Location
-
-    @Help("Start the NPC to move to a location or orientation.")
+    @Help("Recorded segments of the NPC's interactions")
     @Segments(Colors.PINK, Icons.PERSON_WALKING)
-    val movementSegments: List<NpcMovementSegment>
+    val recordedSegments: List<NpcRecordedSegment>
 }
 
-data class NpcMovementSegment(
+@Entry("npc_movement_artifact", "Movement data for an npc", Colors.PINK, Icons.PERSON_WALKING)
+data class NpcMovementArtifact(
+    override val id: String = "",
+    override val name: String = "",
+    override val artifactId: String = "",
+) : ArtifactEntry
+
+data class NpcRecordedSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
-
-    @Help("The location to move the NPC to.")
-    @WithRotation
-    val location: Location = Location(null, 0.0, 0.0, 0.0, 0.0f, 0.0f),
-
-    /// If set to true, the NPC will teleport to the location instead of navigating to it.
-    /// If the location is in a different world, the NPC will always teleport.
-    @Help("Does the NPC navigate to the location or teleport?")
-    val teleport: Boolean = false,
+    @Help("The artifact for the recorded interactions data")
+    @EntryIdentifier(NpcMovementArtifact::class)
+    @Capture(NpcRecordedDataCapturer::class)
+    val artifact: String = "",
 ) : Segment
+
+data class NpcFrame(
+    val location: Location?
+)
+
+class NpcRecordedDataCapturer(title: String, entry: AssetEntry) :
+    AssetCapturer<Tape<NpcFrame>>(title, entry, NpcTapeCapturer(title)) {
+    companion object : CapturerCreator<NpcRecordedDataCapturer> {
+        override fun create(context: RecorderRequestContext): Result<NpcRecordedDataCapturer> {
+            val entry = getAssetFromFieldValue(context.fieldValue) onFail { return it }
+
+            return Result.success(NpcRecordedDataCapturer(context.title, entry))
+        }
+    }
+}
+
+class NpcTapeCapturer(title: String) : MultiTapeRecordedCapturer<NpcFrame>(title) {
+    private val location by tapeCapturer(::LocationTapeCapturer)
+    override fun combineFrame(frame: Int): NpcFrame {
+        return NpcFrame(
+            location = location[frame],
+        )
+    }
+}
+
 
 interface NpcData {
     /// Create a new NPC with the data.
@@ -120,12 +148,12 @@ class NpcCinematicAction(
             npc = data.create().apply {
                 data.setup(player, this)
 
-                spawn(entry.startLocation)
+                // spawn(entry.startLocation)
             }
         }
     }
 
-    private var previousMovementSegment: NpcMovementSegment? = null
+    private var previousMovementSegment: NpcRecordedSegment? = null
 
     override suspend fun tick(frame: Int) {
         super.tick(frame)
@@ -133,7 +161,7 @@ class NpcCinematicAction(
     }
 
     private suspend fun handleMovement(frame: Int) {
-        val segment = entry.movementSegments activeSegmentAt frame
+        val segment = entry.recordedSegments activeSegmentAt frame
 
         if (segment == previousMovementSegment) return
 
@@ -142,54 +170,17 @@ class NpcCinematicAction(
         segment?.let { startMovement(it) }
     }
 
-    private suspend fun startMovement(segment: NpcMovementSegment) {
+    private suspend fun startMovement(segment: NpcRecordedSegment) {
         previousMovementSegment = segment
 
         withContext(plugin.minecraftDispatcher) {
-            if (segment.teleport || segment.location.world != npc?.entity?.world) {
-                npc?.teleport(segment.location, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.PLUGIN)
-            } else {
-                navigateToLocation(segment.location)
-            }
         }
     }
 
-    private fun navigateToLocation(location: Location) {
-        npc?.navigator?.let { navigator ->
-            navigator.localParameters.useNewPathfinder(true)
-            navigator.localParameters.pathDistanceMargin(0.2)
-            navigator.localParameters.distanceMargin(0.5)
-//            navigator.localParameters.destinationTeleportMargin(0.2)
-            navigator.localParameters.addSingleUseCallback {
-                // TODO Check if segment is still active
-                if (isAtLocation(location)) return@addSingleUseCallback
-                // If the npc is too far away from the target location, retry navigating to it
-                plugin.launch {
-                    delay(2.ticks)
-                    navigateToLocation(location)
-                }
-            }
-            navigator.setTarget(location)
-        }
-    }
 
-    private fun isAtLocation(location: Location): Boolean {
-        val maxDistance = 1.0
-        val npcLocation = npc?.entity?.location ?: return false
-        return npcLocation.distanceSquared(location) < maxDistance * maxDistance
-    }
-
-
-    private suspend fun stopMovement(segment: NpcMovementSegment) {
+    private suspend fun stopMovement(segment: NpcRecordedSegment) {
         previousMovementSegment = null
         withContext(plugin.minecraftDispatcher) {
-            npc?.navigator?.cancelNavigation()
-
-            // Check if the npc is close enough to the target location
-            if (!segment.teleport && !isAtLocation(segment.location)) {
-                npc?.teleport(segment.location, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.PLUGIN)
-                logger.warning("NPC ${npc?.name} was teleported to ${segment.location} because it was too far away from the target location. You may want to increase the duration of the movement segment.")
-            }
         }
     }
 
@@ -200,6 +191,5 @@ class NpcCinematicAction(
         }
     }
 
-    override fun canFinish(frame: Int): Boolean = entry.movementSegments canFinishAt frame
-
+    override fun canFinish(frame: Int): Boolean = entry.recordedSegments canFinishAt frame
 }

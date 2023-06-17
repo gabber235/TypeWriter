@@ -24,6 +24,7 @@ open abstract class MultiRecordedCapturer<T>(override val title: String) : Recor
         return MultiRecorderCapturerDelegate(capturer).also { capturers.add(it) }
     }
 
+
     open fun <V> capturer(capturer: (String) -> RecordedCapturer<V>): MultiRecorderCapturerDelegate<V> {
         return capturer(capturer(title))
     }

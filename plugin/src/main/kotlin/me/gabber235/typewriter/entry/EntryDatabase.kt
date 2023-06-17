@@ -16,18 +16,15 @@ import me.gabber235.typewriter.utils.NonExistentSubtypeException
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
 import me.gabber235.typewriter.utils.get
 import me.gabber235.typewriter.utils.refreshAndRegisterAll
-import org.bukkit.plugin.Plugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 import java.util.*
 import kotlin.reflect.KClass
 
 interface EntryDatabase {
-    val facts: List<FactEntry>
-    val entities: List<EntityEntry>
     val events: List<EventEntry>
-    val dialogue: List<DialogueEntry>
-    val actions: List<ActionEntry>
+    val facts: List<FactEntry>
     val commandEvents: List<CustomCommandEntry>
 
     fun initialize()
@@ -47,16 +44,13 @@ interface EntryDatabase {
 
 class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     private val entryListeners: EntryListeners by inject()
-    private val gson: Gson by inject()
+    private val gson: Gson by inject(named("bukkitDataParser"))
 
     private var pages: List<Page> = emptyList()
     private var entries: List<Entry> = emptyList()
 
-    override var facts = listOf<FactEntry>()
-    override var entities = listOf<EntityEntry>()
     override var events = listOf<EventEntry>()
-    override var dialogue = listOf<DialogueEntry>()
-    override var actions = listOf<ActionEntry>()
+    override var facts = listOf<FactEntry>()
     override var commandEvents = listOf<CustomCommandEntry>()
 
     override fun initialize() {
@@ -67,11 +61,8 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     override fun loadEntries() {
         val pages = readPages(gson)
 
-        this.facts = pages.flatMap { it.entries.filterIsInstance<FactEntry>() }
-        this.entities = pages.flatMap { it.entries.filterIsInstance<EntityEntry>() }
         this.events = pages.flatMap { it.entries.filterIsInstance<EventEntry>() }
-        this.dialogue = pages.flatMap { it.entries.filterIsInstance<DialogueEntry>() }
-        this.actions = pages.flatMap { it.entries.filterIsInstance<ActionEntry>() }
+        this.facts = pages.flatMap { it.entries.filterIsInstance<FactEntry>() }
 
         val newCommandEvents = pages.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() }
         this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
@@ -81,7 +72,7 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
 
         entryListeners.register()
 
-        logger.info("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
+        logger.info("Loaded ${entries.size} entries from ${pages.size} pages.")
     }
 
     private fun readPages(gson: Gson): List<Page> {
@@ -123,7 +114,7 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     }
 }
 
-private fun JsonReader.parsePage(id: String, gson: Gson): Page? {
+fun JsonReader.parsePage(id: String, gson: Gson): Page? {
     return try {
 
         var page = Page(id)
@@ -209,7 +200,7 @@ fun Iterable<Criteria>.matches(playerUUID: UUID): Boolean = all {
     it.isValid(fact)
 }
 
-fun createGson(plugin: Plugin, adapterLoader: AdapterLoader): Gson {
+fun createEntryParserGson(adapterLoader: AdapterLoader): Gson {
     val entryFactory = RuntimeTypeAdapterFactory.of(Entry::class.java)
 
     val entries = adapterLoader.adapters.flatMap { it.entries }

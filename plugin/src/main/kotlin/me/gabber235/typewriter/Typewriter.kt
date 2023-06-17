@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.AdapterLoaderImpl
+import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
@@ -18,6 +19,7 @@ import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.snippets.SnippetDatabase
 import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
 import me.gabber235.typewriter.ui.*
+import me.gabber235.typewriter.utils.createBukkitDataParser
 import me.gabber235.typewriter.utils.syncCommands
 import org.bukkit.plugin.Plugin
 import org.koin.core.component.KoinComponent
@@ -59,9 +61,13 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<FactDatabase>(::FactDatabase)
             singleOf<FactStorage>(::FileFactStorage)
             singleOf<EntryListeners>(::EntryListeners)
+            singleOf<Recorders>(::Recorders)
+            singleOf<AssetStorage>(::LocalAssetStorage)
+            singleOf<AssetManager>(::AssetManager)
             single { ChatHistoryHandler(get()) }
             single { ActionBarBlockerHandler(get()) }
-            factory<Gson> { createGson(get(), get()) }
+            factory<Gson>(named("entryParser")) { createEntryParserGson(get()) }
+            factory<Gson>(named("bukkitDataParser")) { createBukkitDataParser() }
         }
         startKoin {
             modules(modules)
@@ -89,6 +95,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<MessengerFinder>().initialize()
         get<ChatHistoryHandler>().initialize()
         get<ActionBarBlockerHandler>().initialize()
+        get<AssetManager>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
             TypewriteExpansion.register()
@@ -117,6 +124,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<InteractionHandler>().shutdown()
         get<EntryListeners>().unregister()
         get<FactDatabase>().shutdown()
+        get<AssetManager>().shutdown()
     }
 }
 

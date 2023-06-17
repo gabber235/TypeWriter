@@ -9,7 +9,6 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.utils.Icons
-import org.bukkit.Location
 import org.bukkit.entity.Player
 
 @Entry(
@@ -22,9 +21,7 @@ data class ReferenceNpcCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-
-    override val startLocation: Location = Location(null, 0.0, 0.0, 0.0, 0.0f, 0.0f),
-    override val movementSegments: List<NpcMovementSegment> = emptyList(),
+    override val recordedSegments: List<NpcRecordedSegment> = emptyList(),
     @Help("Reference npc to clone")
     @EntryIdentifier(ReferenceNpcEntry::class)
     val referenceNpc: String = "",
