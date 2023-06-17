@@ -99,6 +99,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         launch {
             delay(1)
             get<AdapterLoader>().initializeAdapters()
+            get<EntryDatabase>().loadEntries()
             get<CommunicationHandler>().initialize()
         }
     }

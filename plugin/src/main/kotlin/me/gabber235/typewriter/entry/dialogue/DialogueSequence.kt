@@ -57,8 +57,9 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 
     private fun cleanupEntry(final: Boolean) {
         val messenger = currentMessenger
-        messenger.dispose()
+
         if (final) messenger.end()
+        messenger.dispose()
 
         factDatabase.modify(player.uniqueId, messenger.modifiers)
     }

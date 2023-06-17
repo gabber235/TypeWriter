@@ -6,10 +6,11 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.safeCast
 
+
 inline fun <reified T : Any> config(key: String, default: T) = ConfigPropertyDelegate(key, T::class, default)
 
 class ConfigPropertyDelegate<T : Any>(private val key: String, private val klass: KClass<T>, private val default: T) {
-    operator fun getValue(thisRef: Any, property: KProperty<*>): T {
+    operator fun getValue(thisRef: Nothing?, property: KProperty<*>): T {
         val value = plugin.config.get(key)
         if (value == null) {
             plugin.config.set(key, default)
@@ -23,5 +24,6 @@ class ConfigPropertyDelegate<T : Any>(private val key: String, private val klass
         }
         return t
     }
-}
 
+    operator fun getValue(thisRef: Any, property: KProperty<*>): T = getValue(null, property)
+}

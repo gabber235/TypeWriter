@@ -161,7 +161,9 @@ private suspend inline fun Player.teleportIfNeeded(
     if (frame % 10 == 0 || location.distanceSquared(location) > MAX_DISTANCE_SQUARED) withContext(
         plugin.minecraftDispatcher
     ) {
-        teleport(location)
+        teleport(location.clone().apply {
+            y += 10
+        })
         allowFlight = true
         isFlying = true
     }

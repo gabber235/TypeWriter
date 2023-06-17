@@ -27,8 +27,11 @@ private val syncCommandsMethod: Method by lazy {
 
 
 fun CustomCommandEntry.Companion.refreshAndRegisterAll(newEntries: List<CustomCommandEntry>): List<CustomCommandEntry> {
-    get<EntryDatabase>(EntryDatabase::class.java).commandEvents.forEach { it.unregister() }
+    val oldEntries = get<EntryDatabase>(EntryDatabase::class.java).commandEvents
 
+    if (oldEntries.isEmpty() && newEntries.isEmpty()) return emptyList()
+
+    oldEntries.forEach { it.unregister() }
     newEntries.forEach { it.register() }
 
     syncCommands()

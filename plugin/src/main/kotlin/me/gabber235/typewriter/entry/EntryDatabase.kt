@@ -62,7 +62,6 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     override fun initialize() {
         plugin.listen<TypewriterReloadEvent> { loadEntries() }
         plugin.listen<PublishedBookEvent> { loadEntries() }
-        loadEntries()
     }
 
     override fun loadEntries() {
@@ -80,7 +79,6 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
         this.entries = pages.flatMap { it.entries }
         this.pages = pages
 
-        // TODO: Replace with event to decouple
         entryListeners.register()
 
         logger.info("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
