@@ -1,24 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'potion_effects.dart';
+part of 'header.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$potionEffectsHash() => r'7d4bca2a7f53566cc2fa18c241b7e0e8080da1ee';
+String _$headerActionFiltersHash() =>
+    r'572deeaa7c4e3609140c4809e452dbd6e0a0fb2b';
 
-/// See also [potionEffects].
-@ProviderFor(potionEffects)
-final potionEffectsProvider = AutoDisposeFutureProvider<List<String>>.internal(
-  potionEffects,
-  name: r'potionEffectsProvider',
+/// See also [headerActionFilters].
+@ProviderFor(headerActionFilters)
+final headerActionFiltersProvider =
+    AutoDisposeProvider<List<HeaderActionFilter>>.internal(
+  headerActionFilters,
+  name: r'headerActionFiltersProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$potionEffectsHash,
+      : _$headerActionFiltersHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef PotionEffectsRef = AutoDisposeFutureProviderRef<List<String>>;
+typedef HeaderActionFiltersRef
+    = AutoDisposeProviderRef<List<HeaderActionFilter>>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

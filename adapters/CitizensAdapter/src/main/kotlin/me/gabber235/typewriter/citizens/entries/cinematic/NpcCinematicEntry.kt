@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Capture
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -33,6 +34,7 @@ interface NpcCinematicEntry : CinematicEntry {
     val recordedSegments: List<NpcRecordedSegment>
 }
 
+@Tags("npc_movement_artifact")
 @Entry("npc_movement_artifact", "Movement data for an npc", Colors.PINK, Icons.PERSON_WALKING)
 data class NpcMovementArtifact(
     override val id: String = "",

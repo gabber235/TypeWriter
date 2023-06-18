@@ -15,7 +15,12 @@ extension StringExtension on String {
 
   String get formatted {
     if (isEmpty) return this;
-    return split(".").map((e) => e.capitalize).join(" | ").split("_").map((e) => e.capitalize).join(" ");
+    return split(".")
+        .map((e) => e.capitalize)
+        .join(" | ")
+        .split("_")
+        .map((e) => e.capitalize)
+        .join(" ");
   }
 
   String get singular {
@@ -47,12 +52,14 @@ extension StringExtension on String {
   int? get asInt => int.tryParse(this);
 
   String replacePrefix(Pattern prefix, String replacement) {
-    if (startsWith(prefix)) return replacement + substring(prefix.toString().length);
+    if (startsWith(prefix))
+      return replacement + substring(prefix.toString().length);
     return this;
   }
 
   String replaceSuffix(String suffix, String replacement) {
-    if (endsWith(suffix)) return substring(0, length - suffix.length) + replacement;
+    if (endsWith(suffix))
+      return substring(0, length - suffix.length) + replacement;
     return this;
   }
 
@@ -85,7 +92,8 @@ extension IntExt on int {
     return "${this}th";
   }
 
-  String pluralize(String singular, [String? plural]) => this == 1 ? singular : plural ?? singular.plural;
+  String pluralize(String singular, [String? plural]) =>
+      this == 1 ? singular : plural ?? singular.plural;
 }
 
 extension ObjectExtension on Object? {
@@ -97,8 +105,11 @@ extension ListExtensions on List<dynamic> {
 }
 
 TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
-      (oldValue, newValue) =>
-          newValue.copyWith(text: newValue.text.toLowerCase().replaceAll(" ", "_").replaceAll("-", "_")),
+      (oldValue, newValue) => newValue.copyWith(
+          text: newValue.text
+              .toLowerCase()
+              .replaceAll(" ", "_")
+              .replaceAll("-", "_")),
     );
 
 extension RandomColor on String {
@@ -117,6 +128,17 @@ extension RandomColor on String {
 
 extension IteratorExt<E> on Iterator<E> {
   E? get nextOrNull => moveNext() ? current : null;
+}
+
+extension ListExt<E> on List<E> {
+  List<E> joinWith(E Function() separator) {
+    final result = <E>[];
+    for (var i = 0; i < length; i++) {
+      result.add(this[i]);
+      if (i < length - 1) result.add(separator());
+    }
+    return result;
+  }
 }
 
 const _chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";

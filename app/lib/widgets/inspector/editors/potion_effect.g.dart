@@ -7,7 +7,7 @@ part of 'potion_effect.dart';
 // **************************************************************************
 
 String _$fuzzyPotionEffectsHash() =>
-    r'd5c5bf40d115e6596753136f3f078967662ca52f';
+    r'a3ca609a2ce716a8def3c34594c6bd5d0e7a5c0f';
 
 /// See also [_fuzzyPotionEffects].
 @ProviderFor(_fuzzyPotionEffects)

@@ -1,4 +1,3 @@
-import "package:collapsible/collapsible.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -6,12 +5,12 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/header.dart";
+import "package:typewriter/widgets/inspector/headers/add_action.dart";
+import "package:typewriter/widgets/inspector/headers/delete_action.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
-import "package:typewriter/widgets/inspector/listable_header.dart";
 
 part "list.g.dart";
 
@@ -20,12 +19,13 @@ class ListEditorFilter extends EditorFilter {
   bool canEdit(FieldInfo info) => info is ListField;
 
   @override
-  Widget build(String path, FieldInfo info) => ListEditor(path: path, field: info as ListField);
+  Widget build(String path, FieldInfo info) =>
+      ListEditor(path: path, field: info as ListField);
 }
 
 @riverpod
 int _listValueLength(_ListValueLengthRef ref, String path) {
-  return (ref.watch(fieldValueProvider(path)) as List<dynamic>? ?? []).length ?? 0;
+  return (ref.watch(fieldValueProvider(path)) as List<dynamic>? ?? []).length;
 }
 
 class ListEditor extends HookConsumerWidget {
@@ -85,41 +85,30 @@ class ListEditor extends HookConsumerWidget {
       [length],
     );
 
-    final isEntryList = field.hasModifier("entry-list");
-
-    return Column(
-      children: [
-        ListableHeader(
+    return FieldHeader(
+      field: field,
+      path: path,
+      canExpand: true,
+      actions: [
+        AddHeaderAction(
           path: path,
-          length: length,
-          expanded: expanded,
           onAdd: () => _addNew(ref.passing),
-          actions: [
-            if (isEntryList) EntriesSelectorButton(path: path, tag: field.getModifier("entry-list")?.data ?? ""),
-          ],
-        ),
-        Collapsible(
-          collapsed: !expanded.value,
-          axis: CollapsibleAxis.vertical,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: ReorderableList(
-              itemCount: length,
-              onReorder: (oldIndex, newIndex) {
-                _reorder(ref.passing, oldIndex, newIndex);
-                _reorderList(globalKeys, oldIndex, newIndex);
-              },
-              shrinkWrap: true,
-              itemBuilder: (context, index) => _ListItem(
-                key: globalKeys[index],
-                index: index,
-                path: path,
-                field: field,
-              ),
-            ),
-          ),
         ),
       ],
+      child: ReorderableList(
+        itemCount: length,
+        onReorder: (oldIndex, newIndex) {
+          _reorder(ref.passing, oldIndex, newIndex);
+          _reorderList(globalKeys, oldIndex, newIndex);
+        },
+        shrinkWrap: true,
+        itemBuilder: (context, index) => _ListItem(
+          key: globalKeys[index],
+          index: index,
+          path: path,
+          field: field,
+        ),
+      ),
     );
   }
 }
@@ -147,40 +136,32 @@ class _ListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final name = ref.watch(pathDisplayNameProvider("$path.$index"));
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              MouseRegion(
-                cursor: SystemMouseCursors.grab,
-                child: ReorderableDragStartListener(
-                  index: index,
-                  child: const Icon(FontAwesomeIcons.barsStaggered, size: 12),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(name, style: Theme.of(context).textTheme.bodySmall),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.trash, size: 12),
-                color: Theme.of(context).colorScheme.error,
-                onPressed: () => showConfirmationDialogue(
-                  context: context,
-                  title: "Remove item?",
-                  content: "Are you sure you want to remove this item?",
-                  onConfirm: () => _remove(ref.passing, index),
-                ),
-              ),
-            ],
+    return FieldHeader(
+      field: field,
+      path: "$path.$index",
+      canExpand: true,
+      leading: [
+        MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: ReorderableDragStartListener(
+            index: index,
+            child: const Icon(
+              FontAwesomeIcons.barsStaggered,
+              size: 12,
+              color: Colors.grey,
+            ),
           ),
-          FieldEditor(
-            path: "$path.$index",
-            type: field.type,
-          ),
-        ],
+        ),
+      ],
+      actions: [
+        RemoveHeaderAction(
+          path: "$path.$index",
+          onRemove: () => _remove(ref.passing, index),
+        ),
+      ],
+      child: FieldEditor(
+        path: "$path.$index",
+        type: field.type,
       ),
     );
   }

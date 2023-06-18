@@ -44,7 +44,7 @@ interface EntryDatabase {
 
 class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     private val entryListeners: EntryListeners by inject()
-    private val gson: Gson by inject(named("bukkitDataParser"))
+    private val gson: Gson by inject(named("entryParser"))
 
     private var pages: List<Page> = emptyList()
     private var entries: List<Entry> = emptyList()

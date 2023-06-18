@@ -1079,7 +1079,7 @@ String _$segmentFieldsHash() => r'50de8ece747eb6fbdd3c504f30873d7546d54b50';
 
 /// See also [_segmentFields].
 @ProviderFor(_segmentFields)
-final _segmentFieldsProvider = AutoDisposeProvider<ObjectField?>.internal(
+final _segmentFieldsProvider = AutoDisposeProvider<dynamic>.internal(
   _segmentFields,
   name: r'_segmentFieldsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -1089,5 +1089,5 @@ final _segmentFieldsProvider = AutoDisposeProvider<ObjectField?>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _SegmentFieldsRef = AutoDisposeProviderRef<ObjectField?>;
+typedef _SegmentFieldsRef = AutoDisposeProviderRef<dynamic>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

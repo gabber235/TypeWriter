@@ -1,4 +1,3 @@
-import "package:collapsible/collapsible.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -11,15 +10,17 @@ import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
+import "package:typewriter/widgets/inspector/header.dart";
+import "package:typewriter/widgets/inspector/headers/add_action.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
-import "package:typewriter/widgets/inspector/listable_header.dart";
 
 class MapEditorFilter extends EditorFilter {
   @override
   bool canEdit(FieldInfo info) => info is MapField;
 
   @override
-  Widget build(String path, FieldInfo info) => MapEditor(path: path, field: info as MapField);
+  Widget build(String path, FieldInfo info) =>
+      MapEditor(path: path, field: info as MapField);
 }
 
 class MapEditor extends HookConsumerWidget {
@@ -33,7 +34,9 @@ class MapEditor extends HookConsumerWidget {
 
   void _addNew(WidgetRef ref, Map<String, dynamic> value) {
     final key = field.key is EnumField
-        ? (field.key as EnumField).values.firstWhereOrNull((e) => !value.containsKey(e))
+        ? (field.key as EnumField)
+            .values
+            .firstWhereOrNull((e) => !value.containsKey(e))
         : field.key.defaultValue;
     if (key == null) return;
     final val = field.value.defaultValue;
@@ -69,36 +72,30 @@ class MapEditor extends HookConsumerWidget {
       [value.length],
     );
 
-    return Column(
-      children: [
-        ListableHeader(
-          expanded: expanded,
+    return FieldHeader(
+      field: field,
+      path: path,
+      canExpand: true,
+      actions: [
+        AddHeaderAction(
           path: path,
-          length: value.length,
           onAdd: () => _addNew(ref, value),
         ),
-        Collapsible(
-          collapsed: !expanded.value,
-          axis: CollapsibleAxis.vertical,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Column(
-              children: value.entries
-                  .mapIndexed(
-                    (index, entry) => _MapEntry(
-                      key: globalKeys[index],
-                      index: index,
-                      map: value,
-                      entry: MapEntry(entry.key, entry.value),
-                      path: path,
-                      field: field,
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ),
       ],
+      child: Column(
+        children: value.entries
+            .mapIndexed(
+              (index, entry) => _MapEntry(
+                key: globalKeys[index],
+                index: index,
+                map: value,
+                entry: MapEntry(entry.key, entry.value),
+                path: path,
+                field: field,
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 }
@@ -129,14 +126,17 @@ class _MapEntry extends HookConsumerWidget {
     );
   }
 
-  bool _alreadyContainsKey(String key) => map.containsKey(key) && key != entry.key;
+  bool _alreadyContainsKey(String key) =>
+      map.containsKey(key) && key != entry.key;
 
-  Future<void> _changeKey(BuildContext context, WidgetRef ref, String key) async {
+  Future<void> _changeKey(
+      BuildContext context, WidgetRef ref, String key) async {
     if (_alreadyContainsKey(key)) {
       showConfirmationDialogue(
         context: context,
         title: "Override key?",
-        content: "The key '$key' already exists.\nThis will delete all the data from the existing key.",
+        content:
+            "The key '$key' already exists.\nThis will delete all the data from the existing key.",
         confirmIcon: FontAwesomeIcons.triangleExclamation,
         onConfirm: () => _changeKeyField(ref, key),
       );
@@ -158,7 +158,8 @@ class _MapEntry extends HookConsumerWidget {
   }
 
   Widget _keyEditor(BuildContext context, WidgetRef ref, String name) {
-    if (field.key is PrimitiveField && (field.key as PrimitiveField).type == PrimitiveFieldType.string) {
+    if (field.key is PrimitiveField &&
+        (field.key as PrimitiveField).type == PrimitiveFieldType.string) {
       return Flexible(
         child: _StringKey(
           path: "$path.${entry.key}",

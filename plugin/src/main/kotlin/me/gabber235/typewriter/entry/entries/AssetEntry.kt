@@ -34,6 +34,10 @@ fun getAssetFromFieldValue(fieldValue: Any?): Result<AssetEntry> {
         return failure("Field value must be a string!")
     }
 
+    if (fieldValue.isBlank()) {
+        return failure("A asset must be selected.")
+    }
+
     val artifact = Query.findById<AssetEntry>(fieldValue)
         ?: return failure("Could not find artifact with id $fieldValue")
 

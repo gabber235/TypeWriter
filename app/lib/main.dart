@@ -81,7 +81,7 @@ class TypeWriterApp extends HookConsumerWidget {
       hoverColor: Colors.black.withOpacity(0.1),
       colorScheme: baseTheme.colorScheme.copyWith(
         brightness: brightness,
-        error: Colors.red,
+        error: Colors.redAccent,
       ),
     );
   }
