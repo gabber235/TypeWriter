@@ -76,7 +76,6 @@ class ListEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final length = ref.watch(_listValueLengthProvider(path));
-    final expanded = useState(false);
     final globalKeys = useMemoized(
       () => List.generate(
         length,
@@ -137,7 +136,7 @@ class _ListItem extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FieldHeader(
-      field: field,
+      field: field.type,
       path: "$path.$index",
       canExpand: true,
       leading: [

@@ -36,6 +36,12 @@ val <T> Tape<T>.duration: Int
 val <T> Tape<T>.firstFrame: T?
     get() = this[minFrame]
 
+fun <T, E> Tape<T>.firstNotNullWhere(predicate: (T) -> E?): E? {
+    return this.asSequence()
+        .map { it.value }
+        .firstNotNullOfOrNull(predicate)
+}
+
 /**
  * Get the value of the tape at the given frame.
  * If the frame is not present in the tape for the given frame,

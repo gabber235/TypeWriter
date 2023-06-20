@@ -3,15 +3,14 @@ package me.gabber235.typewriter.citizens
 import App
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
-import me.gabber235.typewriter.capture.MultiTapeRecordedCapturer
-import me.gabber235.typewriter.capture.capturers.LocationTapeCapturer
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.MemoryNPCDataStore
+import net.citizensnpcs.api.npc.NPC
+import net.citizensnpcs.api.npc.NPCDataStore
 import net.citizensnpcs.api.npc.NPCRegistry
 import net.citizensnpcs.api.trait.TraitInfo
-import org.bukkit.Location
 
 @Adapter("Citizens", "For the Citizens plugin", App.VERSION)
 object CitizensAdapter : TypewriteAdapter() {
@@ -26,44 +25,7 @@ object CitizensAdapter : TypewriteAdapter() {
         }
 
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TypewriterTrait::class.java))
-        tmpRegistry = CitizensAPI.createAnonymousNPCRegistry(MemoryNPCDataStore())
-//
-//        plugin.listen<PlayerItemHeldEvent> { event ->
-//            val player = event.player
-//            if (event.newSlot == 0) {
-//                if (player.isRecording) return@listen
-//                plugin.launch {
-//                    val recorder = CinematicRecorder(
-//                        player,
-//                        TestTapeCapturer("Test Location Tape"),
-//                        50..200,
-//                        "hotel_intro_cinematic"
-//                    )
-//                    val data = Recorders.record(player, recorder)
-//
-//                    player.msg("Recorded frames: ${data.minFrame} - ${data.maxFrame} (${data.duration})")
-//
-//                    val firstFrame = data.firstFrame ?: return@launch
-//                    val startLocation = firstFrame.location
-//                    val npc = temporaryRegistry.createNPC(EntityType.PLAYER, player.name, startLocation)
-//                    npc.isFlyable = true
-//
-//                    for (i in data.minFrame..data.maxFrame) {
-//                        val frame = data[i] ?: continue
-//                        val location = frame.location ?: npc.entity.location
-//
-//                        npc.entity.teleport(location)
-//
-//                        player.spawnParticle(Particle.VILLAGER_HAPPY, location, 1)
-//                        player.spawnParticle(Particle.SOUL_FIRE_FLAME, npc.storedLocation, 1, 0.0, 0.0, 0.0, 0.0)
-//
-//                        delay(1.ticks)
-//                    }
-//
-//                    npc.destroy()
-//                }
-//            }
-//        }
+        tmpRegistry = CitizensAPI.createAnonymousNPCRegistry(MemoryNPCDataStore(23500))
     }
 
     override fun shutdown() {
@@ -74,16 +36,16 @@ object CitizensAdapter : TypewriteAdapter() {
 }
 
 
-private data class Test(
-    val location: Location?,
-)
-
-private class TestTapeCapturer(title: String) : MultiTapeRecordedCapturer<Test>(title) {
-    private val location by tapeCapturer(::LocationTapeCapturer)
-
-    override fun combineFrame(frame: Int): Test {
-        return Test(
-            location = location[frame],
-        )
+class MemoryNPCDataStore(private var lastID: Int = 0) : NPCDataStore {
+    override fun clearData(npc: NPC) {}
+    override fun createUniqueNPCId(registry: NPCRegistry): Int {
+        return lastID++
     }
+
+    override fun loadInto(registry: NPCRegistry) {}
+    override fun saveToDisk() {}
+    override fun saveToDiskImmediate() {}
+    override fun store(npc: NPC) {}
+    override fun storeAll(registry: NPCRegistry) {}
+    override fun reloadFromSource() {}
 }

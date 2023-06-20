@@ -25,13 +25,13 @@ object CaptureModifierComputer : StaticModifierComputer<Capture> {
             return null
         }
 
-        if (capturer.companionObject != null) {
-            logger.warning("Capturer ${capturer.jvmName} needs to have a companion object which extends CapturerCreator<${capturer.simpleName}>!")
+        if (capturer.companionObject == null) {
+            logger.warning("Capturer ${capturer.jvmName} needs to have a companion object which extends CapturerCreator<${capturer.simpleName}>! It has no companion object.")
             return null
         }
 
-        if (capturer.companionObject?.isSubclassOf(CapturerCreator::class) == true) {
-            logger.warning("Capturer ${capturer.jvmName} needs to have a companion object which extends CapturerCreator<${capturer.simpleName}>!")
+        if (capturer.companionObject?.isSubclassOf(CapturerCreator::class) != true) {
+            logger.warning("Capturer ${capturer.jvmName} needs to have a companion object which extends CapturerCreator<${capturer.simpleName}>! Forgot to extend CapturerCreator?")
             return null
         }
 

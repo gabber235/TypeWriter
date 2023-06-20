@@ -1,10 +1,13 @@
 package me.gabber235.typewriter.capture
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.failure
 import me.gabber235.typewriter.utils.ok
 import org.bukkit.entity.Player
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.full.companionObject
@@ -13,7 +16,9 @@ interface Recorder<T> {
     suspend fun record(): T
 }
 
-class Recorders {
+class Recorders : KoinComponent {
+    private val adapterLoader: AdapterLoader by inject()
+
     private val recorders = ConcurrentHashMap<UUID, Recorder<*>>()
 
     fun isRecording(player: Player): Boolean {
@@ -23,17 +28,25 @@ class Recorders {
     suspend fun <T> record(
         player: Player,
         capturer: Capturer<T>,
-        cinematic: String? = null,
-        cinematicRange: IntRange?
+        cinematic: CinematicRecordingData? = null,
     ): T {
         when (capturer) {
             is ImmediateCapturer -> return capturer.capture(player)
             is RecordedCapturer -> {
-                if (cinematic == null || cinematicRange == null) {
+                if (cinematic == null) {
                     return record(player, StaticRecorder(player, capturer))
                 }
 
-                return record(player, CinematicRecorder(player, capturer, cinematicRange, cinematic))
+                return record(
+                    player,
+                    CinematicRecorder(
+                        player,
+                        capturer,
+                        cinematic.cinematic,
+                        cinematic.frames,
+                        cinematic.ignoredEntries,
+                    )
+                )
             }
         }
     }
@@ -54,16 +67,14 @@ class Recorders {
             return RecorderResponse.AlreadyRecording
         }
 
-        val recorderClass = try {
-            Class.forName(context.recorderClassPath).kotlin
-        } catch (e: ClassNotFoundException) {
-            return RecorderResponse.RecorderNotFound
-        }
+        val capturerClass = adapterLoader.getCaptureClasses().firstOrNull {
+            it.qualifiedName == context.capturerClassPath
+        } ?: return RecorderResponse.CapturerNotFound
 
-        val capturerCreator = recorderClass.companionObject?.objectInstance
+        val capturerCreator = capturerClass.companionObject?.objectInstance
 
         if (capturerCreator !is CapturerCreator<*>) {
-            return RecorderResponse.CapturerCreatorNotFound(context.recorderClassPath)
+            return RecorderResponse.CapturerCreatorNotFound(context.capturerClassPath)
         }
 
         val capturerResult = capturerCreator.create(context)
@@ -75,7 +86,7 @@ class Recorders {
         val capturer = capturerResult.getOrThrow()
 
         plugin.launch {
-            record(player, capturer, context.cinematic, context.cinematicRange)
+            record(player, capturer, context.cinematicData)
         }
 
         return RecorderResponse.RecordingStarting
@@ -87,7 +98,8 @@ interface CapturerCreator<C : Capturer<*>> {
 }
 
 data class RecorderRequestContext(
-    val recorderClassPath: String,
+    val capturerClassPath: String,
+    val entryId: String,
     val fieldPath: String,
     val fieldValue: Any?,
     val cinematic: String?,
@@ -103,6 +115,15 @@ data class RecorderRequestContext(
             }
 
             return "Recording $field"
+        }
+
+    val cinematicData: CinematicRecordingData?
+        get() {
+            if (cinematic == null || cinematicRange == null) {
+                return null
+            }
+
+            return CinematicRecordingData(cinematic, cinematicRange, listOf(entryId))
         }
 }
 
@@ -123,9 +144,9 @@ sealed interface RecorderResponse {
         override val status: RecorderResponseStatus = RecorderResponseStatus.SUCCESS
     }
 
-    object RecorderNotFound : RecorderResponse {
+    object CapturerNotFound : RecorderResponse {
         override val message: String =
-            "The recorder for this field was not found! Report to the typewriter adapter developer."
+            "The capturer for this field was not found! Report to the typewriter adapter developer."
         override val status: RecorderResponseStatus = RecorderResponseStatus.ERROR
     }
 
@@ -150,3 +171,9 @@ enum class RecorderResponseStatus {
     SUCCESS,
     ERROR
 }
+
+data class CinematicRecordingData(
+    val cinematic: String,
+    val frames: IntRange,
+    val ignoredEntries: List<String>,
+)

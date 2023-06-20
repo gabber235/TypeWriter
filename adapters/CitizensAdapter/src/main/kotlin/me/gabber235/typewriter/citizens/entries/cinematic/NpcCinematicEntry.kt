@@ -1,6 +1,8 @@
 package me.gabber235.typewriter.citizens.entries.cinematic
 
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -15,7 +17,10 @@ import me.gabber235.typewriter.capture.MultiTapeRecordedCapturer
 import me.gabber235.typewriter.capture.RecorderRequestContext
 import me.gabber235.typewriter.capture.capturers.LocationTapeCapturer
 import me.gabber235.typewriter.capture.capturers.Tape
+import me.gabber235.typewriter.capture.capturers.firstNotNullWhere
 import me.gabber235.typewriter.citizens.CitizensAdapter.temporaryRegistry
+import me.gabber235.typewriter.entry.AssetManager
+import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
@@ -23,10 +28,13 @@ import me.gabber235.typewriter.utils.onFail
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.NPC
 import net.citizensnpcs.api.trait.trait.PlayerFilter
+import net.citizensnpcs.trait.HologramTrait
 import net.citizensnpcs.trait.SkinTrait
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent.inject
 
 interface NpcCinematicEntry : CinematicEntry {
     @Help("Recorded segments of the NPC's interactions")
@@ -82,7 +90,9 @@ interface NpcData {
 
     /// Ran when the cinematic is started.
     fun setup(player: Player, npc: NPC) {
-        npc.getOrAddTrait(PlayerFilter::class.java).only(player.uniqueId)
+        val filter = npc.getOrAddTrait(PlayerFilter::class.java)
+        filter.setAllowlist()
+        filter.addPlayer(player.uniqueId)
     }
 
     /// Ran when the cinematic is stopped.
@@ -115,6 +125,21 @@ data class ReferenceNpcData(val id: Int) : NpcData {
                 .setSkinPersistent(originalSkin.skinName, originalSkin.signature, originalSkin.texture)
         }
 
+        if (original.requiresNameHologram()) {
+            npc.setAlwaysUseNameHologram(true)
+            npc.name = original.fullName
+        }
+
+        if (original.hasTrait(HologramTrait::class.java)) {
+            val originalHologram = original.getOrAddTrait(HologramTrait::class.java)
+
+            npc.getOrAddTrait(HologramTrait::class.java).apply {
+                direction = originalHologram.direction
+                lineHeight = originalHologram.lineHeight
+                originalHologram.lines.forEach { addLine(it) }
+            }
+        }
+
         return npc
     }
 
@@ -123,7 +148,9 @@ data class ReferenceNpcData(val id: Int) : NpcData {
 
         val original =
             CitizensAPI.getNPCRegistry().getById(id) ?: throw IllegalArgumentException("NPC with id $id not found.")
-        original.getOrAddTrait(PlayerFilter::class.java).hide(player.uniqueId)
+        val filter = original.getOrAddTrait(PlayerFilter::class.java)
+        filter.setDenylist()
+        original.getOrAddTrait(PlayerFilter::class.java).addPlayer(player.uniqueId)
     }
 
     override fun teardown(player: Player, npc: NPC) {
@@ -131,7 +158,7 @@ data class ReferenceNpcData(val id: Int) : NpcData {
 
         val original =
             CitizensAPI.getNPCRegistry().getById(id) ?: throw IllegalArgumentException("NPC with id $id not found.")
-        original.getOrAddTrait(PlayerFilter::class.java).unhide(player.uniqueId)
+        original.getOrAddTrait(PlayerFilter::class.java).removePlayer(player.uniqueId)
     }
 }
 
@@ -141,21 +168,37 @@ class NpcCinematicAction(
     private val data: NpcData,
 ) :
     CinematicAction {
+    private val assetManager: AssetManager by inject(AssetManager::class.java)
+    private val gson: Gson by inject(Gson::class.java, named("bukkitDataParser"))
 
     private var npc: NPC? = null
+    private var recordings: Map<String, Tape<NpcFrame>> = emptyMap()
+
     override suspend fun setup() {
         super.setup()
+
+        recordings = entry.recordedSegments
+            .associate { it.artifact to it.artifact }
+            .mapValues { Query.findById<ArtifactEntry>(it.value) }
+            .filterValues { it != null }
+            .mapValues { assetManager.fetchAsset(it.value!!) }
+            .filterValues { it != null }
+            .mapValues { gson.fromJson(it.value, object : TypeToken<Tape<NpcFrame>>() {}.type) }
+
+
+        val firstLocation =
+            entry.recordedSegments.asSequence()
+                .mapNotNull { recording -> recordings[recording.artifact]?.firstNotNullWhere { it.location } }
+                .firstOrNull() ?: player.location
 
         withContext(plugin.minecraftDispatcher) {
             npc = data.create().apply {
                 data.setup(player, this)
 
-                // spawn(entry.startLocation)
+                spawn(firstLocation)
             }
         }
     }
-
-    private var previousMovementSegment: NpcRecordedSegment? = null
 
     override suspend fun tick(frame: Int) {
         super.tick(frame)
@@ -164,25 +207,14 @@ class NpcCinematicAction(
 
     private suspend fun handleMovement(frame: Int) {
         val segment = entry.recordedSegments activeSegmentAt frame
-
-        if (segment == previousMovementSegment) return
-
-        previousMovementSegment?.let { stopMovement(it) }
-
-        segment?.let { startMovement(it) }
-    }
-
-    private suspend fun startMovement(segment: NpcRecordedSegment) {
-        previousMovementSegment = segment
+        val npcFrame = segment?.let { recordings[it.artifact]?.get(frame - segment.startFrame) } ?: return
 
         withContext(plugin.minecraftDispatcher) {
-        }
-    }
-
-
-    private suspend fun stopMovement(segment: NpcRecordedSegment) {
-        previousMovementSegment = null
-        withContext(plugin.minecraftDispatcher) {
+            npc?.let {
+                if (npcFrame.location != null) {
+                    it.entity.teleport(npcFrame.location)
+                }
+            }
         }
     }
 

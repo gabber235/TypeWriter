@@ -8,6 +8,7 @@ import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
+import "package:typewriter/widgets/inspector/headers/capture_action.dart";
 import "package:typewriter/widgets/inspector/headers/entry_selector_action.dart";
 import "package:typewriter/widgets/inspector/headers/help_action.dart";
 import "package:typewriter/widgets/inspector/headers/length_action.dart";
@@ -62,49 +63,38 @@ class FieldHeader extends HookConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Tooltip(
-            message: canExpand
-                ? expanded.value
-                    ? "Collapse"
-                    : "Expand"
-                : "Edit field $name",
-            child: Material(
+          Material(
+            borderRadius: BorderRadius.circular(4),
+            child: InkWell(
               borderRadius: BorderRadius.circular(4),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(4),
-                onTap:
-                    canExpand ? () => expanded.value = !expanded.value : null,
-                child: WritersIndicator(
-                  enabled: !canExpand || !expanded.value,
-                  provider: fieldWritersProvider(path),
-                  offset:
-                      canExpand ? const Offset(50, 25) : const Offset(15, 15),
-                  child: Row(
-                    children: [
-                      if (canExpand)
-                        Icon(
-                          expanded.value
-                              ? Icons.expand_less
-                              : Icons.expand_more,
-                        ),
-                      ...createActions(
-                        availableActions,
-                        HeaderActionLocation.leading,
+              onTap: canExpand ? () => expanded.value = !expanded.value : null,
+              child: WritersIndicator(
+                enabled: !canExpand || !expanded.value,
+                provider: fieldWritersProvider(path),
+                offset: canExpand ? const Offset(50, 25) : const Offset(15, 15),
+                child: Row(
+                  children: [
+                    if (canExpand)
+                      Icon(
+                        expanded.value ? Icons.expand_less : Icons.expand_more,
                       ),
-                      SectionTitle(
-                        title: name,
-                      ),
-                      ...createActions(
-                        availableActions,
-                        HeaderActionLocation.trailing,
-                      ),
-                      const Spacer(),
-                      ...createActions(
-                        availableActions,
-                        HeaderActionLocation.actions,
-                      ),
-                    ],
-                  ),
+                    ...createActions(
+                      availableActions,
+                      HeaderActionLocation.leading,
+                    ),
+                    SectionTitle(
+                      title: name,
+                    ),
+                    ...createActions(
+                      availableActions,
+                      HeaderActionLocation.trailing,
+                    ),
+                    const Spacer(),
+                    ...createActions(
+                      availableActions,
+                      HeaderActionLocation.actions,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -175,6 +165,7 @@ List<HeaderActionFilter> headerActionFilters(HeaderActionFiltersRef ref) => [
       HelpHeaderActionFilter(),
       LengthHeaderActionFilter(),
       EntrySelectorHeaderActionFilter(),
+      CaptureHeaderActionFilter(),
     ];
 
 abstract class HeaderActionFilter {

@@ -16,13 +16,15 @@ import net.kyori.adventure.sound.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import java.util.*
 
 
 class CinematicRecorder<T>(
     private val player: Player,
     private val capturer: RecordedCapturer<T>,
-    private val frames: IntRange,
     private val cinematic: String,
+    private val frames: IntRange,
+    private val ignoredEntries: List<String>,
 ) : Recorder<T> {
     private enum class RecordingState {
         WAITING_FOR_START,
@@ -55,7 +57,7 @@ class CinematicRecorder<T>(
         val completer = CompletableDeferred<T>()
 
         val bossBar = BossBar.bossBar(
-            "<aqua><bold>Waiting ${capturer.title}:</bold></aqua> Press <red><bold><key:key.swapOffhand></bold></red> to start recording".asMini(),
+            "Waiting <aqua>${capturer.title}</aqua>: Press <red><bold><key:key.swapOffhand></bold></red> to start recording".asMini(),
             1f,
             BossBar.Color.BLUE,
             BossBar.Overlay.PROGRESS
@@ -84,14 +86,20 @@ class CinematicRecorder<T>(
         state = RecordingState.PRE_SEGMENT
         player.playSound(Sound.sound(Key.key("block.beacon.activate"), Sound.Source.MASTER, 1f, 1f))
 
-        CinematicStartTrigger(cinematic, override = true, simulate = true) triggerFor player
+        CinematicStartTrigger(
+            cinematic,
+            override = true,
+            simulate = true,
+            ignoreEntries = ignoredEntries,
+            minEndTime = Optional.of(frames.last + 1)
+        ) triggerFor player
     }
 
     private fun onCinematicEnd(event: AsyncCinematicEndEvent) {
         // If the cinematic ends before the end of the recording, we need to stop the recording
         if (event.player.uniqueId != player.uniqueId) return
         if (data == null) return
-        if (state != RecordingState.RECORDING) return
+        if (state == RecordingState.WAITING_FOR_START || state == RecordingState.FINISHED) return
 
         stopRecording()
     }

@@ -34,9 +34,10 @@ dependencies {
     compileOnly("com.github.dyam0:LirandAPI:96cc59d4fb")
     compileOnly("net.kyori:adventure-api:4.13.1")
     compileOnly("net.kyori:adventure-text-minimessage:4.13.1")
+    compileOnly("io.insert-koin:koin-core:3.4.0")
 
     // External dependencies
-    compileOnly("net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT") {
+    compileOnly("net.citizensnpcs:citizens-main:2.0.32-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
 

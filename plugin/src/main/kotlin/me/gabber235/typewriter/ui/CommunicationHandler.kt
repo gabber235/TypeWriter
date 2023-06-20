@@ -32,6 +32,8 @@ class CommunicationHandler : KoinComponent {
     private val enabled: Boolean by config("enabled", false)
     private val port: Int by config("websocket.port", 9092)
     private val auth: String by config("websocket.auth", "session") // Possible values: none, session
+    val authenticationEnabled: Boolean
+        get() = auth == "session"
 
     private val sessionTokens: MutableMap<UUID, SessionData> = mutableMapOf()
 

@@ -3,6 +3,7 @@ import "dart:convert";
 
 import "package:flutter/material.dart" hide Page;
 import "package:flutter_animate/flutter_animate.dart" hide Adapter;
+import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:socket_io_client/socket_io_client.dart";
@@ -17,8 +18,10 @@ import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/socket_extensions.dart";
 
 part "communicator.g.dart";
+part "communicator.freezed.dart";
 
-final uuidRegex = RegExp(r"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$");
+final uuidRegex =
+    RegExp(r"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$");
 
 enum ConnectionState {
   none,
@@ -27,9 +30,13 @@ enum ConnectionState {
   disconnected,
 }
 
-final connectionStateProvider = StateProvider<ConnectionState>((ref) => ConnectionState.none);
+final connectionStateProvider =
+    StateProvider<ConnectionState>((ref) => ConnectionState.none);
 
-final socketProvider = StateNotifierProvider<SocketNotifier, Socket?>(SocketNotifier.new, name: "socketProvider");
+final socketProvider = StateNotifierProvider<SocketNotifier, Socket?>(
+  SocketNotifier.new,
+  name: "socketProvider",
+);
 
 class SocketNotifier extends StateNotifier<Socket?> {
   SocketNotifier(this.ref) : super(null);
@@ -53,7 +60,8 @@ class SocketNotifier extends StateNotifier<Socket?> {
 
   bool get _canError {
     final state = _connectionState;
-    return state == ConnectionState.connecting || state == ConnectionState.connected;
+    return state == ConnectionState.connecting ||
+        state == ConnectionState.connected;
   }
 
   void init(String hostname, int port, [String? token]) {
@@ -80,7 +88,9 @@ class SocketNotifier extends StateNotifier<Socket?> {
     socket
       ..onConnect((data) {
         if (_disposed) {
-          debugPrint("The socket was disposed so a connect should not be possible. This is a bug.");
+          debugPrint(
+            "The socket was disposed so a connect should not be possible. This is a bug.",
+          );
           return;
         }
         debugPrint("connected: $data");
@@ -92,7 +102,9 @@ class SocketNotifier extends StateNotifier<Socket?> {
       })
       ..onConnectError((data) {
         if (_disposed) {
-          debugPrint("The socket was disposed so a connection error should not be possible. This is a bug.");
+          debugPrint(
+            "The socket was disposed so a connection error should not be possible. This is a bug.",
+          );
           return;
         }
         if (_canError) return;
@@ -101,11 +113,15 @@ class SocketNotifier extends StateNotifier<Socket?> {
         state?.dispose();
         state = null;
 
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
+        ref.read(appRouter).replaceAll(
+          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
+        );
       })
       ..onConnectTimeout((data) {
         if (_disposed) {
-          debugPrint("The socket was disposed so a connection timeout should not be possible. This is a bug.");
+          debugPrint(
+            "The socket was disposed so a connection timeout should not be possible. This is a bug.",
+          );
           return;
         }
         if (_canError) return;
@@ -113,11 +129,15 @@ class SocketNotifier extends StateNotifier<Socket?> {
         debugPrint("connect timeout $data");
         state?.dispose();
         state = null;
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
+        ref.read(appRouter).replaceAll(
+          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
+        );
       })
       ..onError((data) {
         if (_disposed) {
-          debugPrint("The socket was disposed so an error should not be possible. This is a bug.");
+          debugPrint(
+            "The socket was disposed so an error should not be possible. This is a bug.",
+          );
           return;
         }
         if (_canError) return;
@@ -126,11 +146,15 @@ class SocketNotifier extends StateNotifier<Socket?> {
         debugPrint("error $data");
         state?.dispose();
         state = null;
-        ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
+        ref.read(appRouter).replaceAll(
+          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
+        );
       })
       ..onDisconnect((data) {
         if (_disposed) {
-          debugPrint("The socket was disposed so a disconnect should not be possible. This is a bug.");
+          debugPrint(
+            "The socket was disposed so a disconnect should not be possible. This is a bug.",
+          );
           return;
         }
         if (_connectionState != ConnectionState.connected) return;
@@ -143,7 +167,9 @@ class SocketNotifier extends StateNotifier<Socket?> {
           _connectionState = ConnectionState.none;
           state?.dispose();
           state = null;
-          ref.read(appRouter).replaceAll([ErrorConnectRoute(hostname: hostname, port: port, token: token)]);
+          ref.read(appRouter).replaceAll([
+            ErrorConnectRoute(hostname: hostname, port: port, token: token)
+          ]);
         });
       })
       ..connect();
@@ -151,16 +177,28 @@ class SocketNotifier extends StateNotifier<Socket?> {
 
   Future<void> setup(Socket socket) async {
     socket
-      ..on("stagingState", (data) => ref.read(communicatorProvider).handleStagingState(data))
-      ..on("createPage", (data) => ref.read(communicatorProvider).handleCreatePage(data))
-      ..on("renamePage", (data) => ref.read(communicatorProvider).handleRenamePage(data))
-      ..on("deletePage", (data) => ref.read(communicatorProvider).handleDeletePage(data))
-      ..on("createEntry", (data) => ref.read(communicatorProvider).handleCreateEntry(data))
-      ..on("updateEntry", (data) => ref.read(communicatorProvider).handleUpdateEntry(data))
-      ..on("updateCompleteEntry", (data) => ref.read(communicatorProvider).handleUpdateCompleteEntry(data))
-      ..on("reorderEntry", (data) => ref.read(communicatorProvider).handleReorderEntry(data))
-      ..on("deleteEntry", (data) => ref.read(communicatorProvider).handleDeleteEntry(data))
-      ..on("updateWriters", (data) => ref.read(communicatorProvider).handleUpdateWriters(data));
+      ..on("stagingState",
+          (data) => ref.read(communicatorProvider).handleStagingState(data))
+      ..on("createPage",
+          (data) => ref.read(communicatorProvider).handleCreatePage(data))
+      ..on("renamePage",
+          (data) => ref.read(communicatorProvider).handleRenamePage(data))
+      ..on("deletePage",
+          (data) => ref.read(communicatorProvider).handleDeletePage(data))
+      ..on("createEntry",
+          (data) => ref.read(communicatorProvider).handleCreateEntry(data))
+      ..on("updateEntry",
+          (data) => ref.read(communicatorProvider).handleUpdateEntry(data))
+      ..on(
+          "updateCompleteEntry",
+          (data) =>
+              ref.read(communicatorProvider).handleUpdateCompleteEntry(data))
+      ..on("reorderEntry",
+          (data) => ref.read(communicatorProvider).handleReorderEntry(data))
+      ..on("deleteEntry",
+          (data) => ref.read(communicatorProvider).handleDeleteEntry(data))
+      ..on("updateWriters",
+          (data) => ref.read(communicatorProvider).handleUpdateWriters(data));
 
     await ref.read(communicatorProvider).fetchBook();
     await ref.read(appRouter).push(const BookRoute());
@@ -192,7 +230,8 @@ class Communicator {
     }
 
     final String rawPages = await socket.emitWithAckAsync("fetch", "pages");
-    final String rawAdapters = await socket.emitWithAckAsync("fetch", "adapters");
+    final String rawAdapters =
+        await socket.emitWithAckAsync("fetch", "adapters");
 
     final jsonPages = jsonDecode(rawPages) as List;
     final jsonAdapters = jsonDecode(rawAdapters) as List;
@@ -309,7 +348,7 @@ class Communicator {
     socket.emit("deleteEntry", jsonEncode(data));
   }
 
-  Future<void> publish() async {
+  void publish() {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -328,10 +367,37 @@ class Communicator {
     socket.emit("updateWriter", jsonEncode(data));
   }
 
+  Future<Response> requestCapture(Map<String, dynamic> data) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return const Response(
+        success: false,
+        message: "Socket not connected",
+      );
+    }
+
+    final response = await socket.emitWithAckAsync(
+      "captureRequest",
+      jsonEncode(data),
+    ) as String?;
+
+    if (response == null) {
+      return const Response(
+        success: false,
+        message: "No response from server",
+      );
+    }
+
+    final json = jsonDecode(response) as Map<String, dynamic>;
+    return Response.fromJson(json);
+  }
+
   void handleStagingState(dynamic data) {
     final rawStaging = data as String;
-    final state =
-        StagingState.values.firstWhere((state) => state.name == rawStaging, orElse: () => StagingState.production);
+    final state = StagingState.values.firstWhere(
+      (state) => state.name == rawStaging,
+      orElse: () => StagingState.production,
+    );
     ref.read(stagingStateProvider.notifier).state = state;
   }
 
@@ -407,4 +473,15 @@ class Communicator {
   void handleUpdateWriters(dynamic data) {
     ref.read(writersProvider.notifier).syncWriters(data);
   }
+}
+
+@freezed
+class Response with _$Response {
+  const factory Response({
+    required bool success,
+    required String message,
+  }) = _Response;
+
+  factory Response.fromJson(Map<String, dynamic> json) =>
+      _$ResponseFromJson(json);
 }

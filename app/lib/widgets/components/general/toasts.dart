@@ -46,7 +46,8 @@ extension on Toast {
     return difference.inMilliseconds / 400;
   }
 
-  Color get darkenColor => TinyColor.fromColor(color).shade(50).desaturate(30).color;
+  Color get darkenColor =>
+      TinyColor.fromColor(color).shade(50).desaturate(30).color;
 }
 
 extension on TemporaryToast {
@@ -73,8 +74,30 @@ class Toasts extends StateNotifier<List<Toast>> {
     state = [...state, toast.copyWith(shownAt: now)];
   }
 
-  static void showWarning(PassingRef ref, String message,
-      {String? description, Duration duration = const Duration(seconds: 10)}) {
+  static void showSuccess(
+    PassingRef ref,
+    String message, {
+    String? description,
+    Duration duration = const Duration(seconds: 10),
+  }) {
+    ref.read(toastsProvider.notifier).show(
+          Toast.temporary(
+            id: uuid.v4(),
+            message: message,
+            description: description,
+            color: Colors.green,
+            icon: FontAwesomeIcons.circleCheck,
+            duration: duration,
+          ),
+        );
+  }
+
+  static void showWarning(
+    PassingRef ref,
+    String message, {
+    String? description,
+    Duration duration = const Duration(seconds: 10),
+  }) {
     ref.read(toastsProvider.notifier).show(
           Toast.temporary(
             id: uuid.v4(),
@@ -133,7 +156,10 @@ class Toasts extends StateNotifier<List<Toast>> {
   }
 }
 
-final toastsProvider = StateNotifierProvider<Toasts, List<Toast>>((ref) => Toasts(), name: "toastsProvider");
+final toastsProvider = StateNotifierProvider<Toasts, List<Toast>>(
+  (ref) => Toasts(),
+  name: "toastsProvider",
+);
 
 @immutable
 class ToastDisplay extends HookConsumerWidget {
@@ -191,7 +217,11 @@ class _ToastShowAnimation extends HookConsumerWidget {
     });
 
     return child
-        .animate(key: ValueKey(toast.id), controller: controller, autoPlay: false)
+        .animate(
+          key: ValueKey(toast.id),
+          controller: controller,
+          autoPlay: false,
+        )
         .scaleXY(begin: 0.7, duration: 400.ms, curve: Curves.elasticOut)
         .moveX(begin: -100, duration: 400.ms, curve: Curves.elasticOut)
         .fadeIn(duration: 200.ms, curve: Curves.easeIn);
@@ -236,7 +266,8 @@ class _TemporaryToast extends HookConsumerWidget {
           children: [
             _TemporaryToastProgress(toast: toast, width: width),
             Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 16),
+              padding:
+                  const EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 16),
               child: Row(
                 children: [
                   Icon(
@@ -260,7 +291,6 @@ class _TemporaryToast extends HookConsumerWidget {
                         if (toast.description != null) ...[
                           const SizedBox(height: 4.0),
                           AutoSizeText(
-                            maxLines: 2,
                             minFontSize: 10,
                             toast.description!,
                             style: TextStyle(
@@ -283,7 +313,11 @@ class _TemporaryToast extends HookConsumerWidget {
           autoPlay: false,
           controller: controller,
         )
-        .fadeOut(delay: toast.duration - 200.ms, duration: 200.ms, curve: Curves.easeOut);
+        .fadeOut(
+          delay: toast.duration - 200.ms,
+          duration: 200.ms,
+          curve: Curves.easeOut,
+        );
   }
 }
 
@@ -298,7 +332,8 @@ class _TemporaryToastProgress extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useAnimationController(duration: toast.duration - 200.ms);
+    final controller =
+        useAnimationController(duration: toast.duration - 200.ms);
 
     useEffect(() {
       controller.forward(from: toast.percentage);

@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entry.Entry
 import me.gabber235.typewriter.entry.TriggerEntry
 import me.gabber235.typewriter.entry.triggerAllFor
 import org.bukkit.entity.Player
+import java.util.*
 
 @Tags("event")
 interface EventEntry : TriggerEntry
@@ -78,7 +79,9 @@ class CinematicStartTrigger(
     val pageId: String,
     val triggers: List<String> = emptyList(),
     val override: Boolean = false,
-    val simulate: Boolean = false
+    val simulate: Boolean = false,
+    val ignoreEntries: List<String> = emptyList(),
+    val minEndTime: Optional<Int> = Optional.empty(),
 ) : EventTrigger {
     override val id: String
         get() = "system.cinematic.start.$pageId"

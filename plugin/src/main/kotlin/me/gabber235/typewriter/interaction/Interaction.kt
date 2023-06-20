@@ -135,6 +135,7 @@ class Interaction(val player: Player) : KoinComponent {
         var entries =
             Query.findWhereFromPage<CinematicEntry>(trigger.pageId) {
                 it.criteria.matches(event.player.uniqueId)
+                        && it.id !in trigger.ignoreEntries
             }
 
         // If the cinematic is a simulation, we filter out all the entries that should never be
@@ -143,9 +144,9 @@ class Interaction(val player: Player) : KoinComponent {
             entries = entries.filter { it.shouldSimulate() }
         }
 
-        if (entries.isEmpty()) return
+        if (entries.isEmpty() && !trigger.simulate) return
 
-        this.cinematic = CinematicSequence(player, entries, trigger.triggers)
+        this.cinematic = CinematicSequence(player, entries, trigger.triggers, trigger.minEndTime)
     }
 
     suspend fun end() {

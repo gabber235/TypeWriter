@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.events.AsyncCinematicEndEvent
 import me.gabber235.typewriter.events.AsyncCinematicTickEvent
 import org.bukkit.entity.Player
+import java.util.*
 
 private const val STARTING_FRAME = -1
 private const val ENDED_FRAME = -2
@@ -17,7 +18,8 @@ private const val ENDED_FRAME = -2
 class CinematicSequence(
     private val player: Player,
     private val entries: List<CinematicEntry>,
-    private val triggers: List<String>
+    private val triggers: List<String>,
+    private val minEndTime: Optional<Int>,
 ) {
     private var frame = STARTING_FRAME
     private var actions = emptyList<CinematicAction>()
@@ -54,7 +56,7 @@ class CinematicSequence(
         }
     }
 
-    private val canEnd get() = actions.all { it.canFinish(frame) }
+    private val canEnd get() = actions.all { it.canFinish(frame) } && minEndTime.map { frame >= it }.orElse(true)
 
     suspend fun end(force: Boolean = false) {
         if (frame == ENDED_FRAME || frame == STARTING_FRAME) return

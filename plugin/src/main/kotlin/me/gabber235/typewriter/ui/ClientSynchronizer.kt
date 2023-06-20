@@ -148,14 +148,23 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
         var player = communicationHandler.getPlayer(client)
 
         if (player == null) {
+            // If we have authentication enabled, we don't want to fallback as it could be a security issue.
+            if (communicationHandler.authenticationEnabled) {
+                ack.sendResult(Result.failure(Exception("Could not determine player")))
+                return
+            }
+
+            // If we have no authentication, we can assume that it's a local server,
+            // and we can fall back to the first player.
+
             val onlinePlayers = server.onlinePlayers
             if (onlinePlayers.isEmpty()) {
-                ack.sendResult(Result.failure(Exception("No players online")))
+                ack.sendResult(Result.failure(Exception("No players online to record")))
                 return
             }
 
             if (onlinePlayers.size > 1) {
-                ack.sendResult(Result.failure(Exception("Could not determine player")))
+                ack.sendResult(Result.failure(Exception("Could not determine player to record")))
                 return
             }
 

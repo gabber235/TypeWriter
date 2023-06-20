@@ -40,8 +40,8 @@ dependencies {
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.ktor:ktor-server-core:2.3.0")
-    implementation("io.insert-koin:koin-core:3.4.0")
     implementation("io.ktor:ktor-server-netty:2.3.0")
+    implementation("io.insert-koin:koin-core:3.4.0")
 
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
