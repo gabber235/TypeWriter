@@ -15,9 +15,7 @@ import me.gabber235.typewriter.capture.AssetCapturer
 import me.gabber235.typewriter.capture.CapturerCreator
 import me.gabber235.typewriter.capture.MultiTapeRecordedCapturer
 import me.gabber235.typewriter.capture.RecorderRequestContext
-import me.gabber235.typewriter.capture.capturers.LocationTapeCapturer
-import me.gabber235.typewriter.capture.capturers.Tape
-import me.gabber235.typewriter.capture.capturers.firstNotNullWhere
+import me.gabber235.typewriter.capture.capturers.*
 import me.gabber235.typewriter.citizens.CitizensAdapter.temporaryRegistry
 import me.gabber235.typewriter.entry.AssetManager
 import me.gabber235.typewriter.entry.Query
@@ -30,6 +28,7 @@ import net.citizensnpcs.api.npc.NPC
 import net.citizensnpcs.api.trait.trait.PlayerFilter
 import net.citizensnpcs.trait.HologramTrait
 import net.citizensnpcs.trait.SkinTrait
+import net.citizensnpcs.trait.SneakTrait
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -60,7 +59,8 @@ data class NpcRecordedSegment(
 ) : Segment
 
 data class NpcFrame(
-    val location: Location?
+    val location: Location?,
+    val sneaking: Boolean?,
 )
 
 class NpcRecordedDataCapturer(title: String, entry: AssetEntry) :
@@ -76,9 +76,11 @@ class NpcRecordedDataCapturer(title: String, entry: AssetEntry) :
 
 class NpcTapeCapturer(title: String) : MultiTapeRecordedCapturer<NpcFrame>(title) {
     private val location by tapeCapturer(::LocationTapeCapturer)
+    private val sneaking by tapeCapturer(::SneakingTapeCapturer)
     override fun combineFrame(frame: Int): NpcFrame {
         return NpcFrame(
             location = location[frame],
+            sneaking = sneaking[frame],
         )
     }
 }
@@ -202,19 +204,28 @@ class NpcCinematicAction(
 
     override suspend fun tick(frame: Int) {
         super.tick(frame)
-        handleMovement(frame)
-    }
 
-    private suspend fun handleMovement(frame: Int) {
-        val segment = entry.recordedSegments activeSegmentAt frame
-        val npcFrame = segment?.let { recordings[it.artifact]?.get(frame - segment.startFrame) } ?: return
-
+        val segment = (entry.recordedSegments activeSegmentAt frame) ?: return
+        val recording = recordings[segment.artifact] ?: return
+        val segmentFrame = frame - segment.startFrame
         withContext(plugin.minecraftDispatcher) {
             npc?.let {
-                if (npcFrame.location != null) {
-                    it.entity.teleport(npcFrame.location)
-                }
+                handleMovement(it, recording.getFrame(segmentFrame) { location })
+                handleSneaking(it, recording.getFrame(segmentFrame) { sneaking })
             }
+        }
+    }
+
+    private fun handleMovement(npc: NPC, location: Location?) {
+        if (location == null) return
+        npc.entity.teleport(location)
+    }
+
+    private fun handleSneaking(npc: NPC, sneaking: Boolean?) {
+        if (sneaking == null) return
+        val sneakingTrait = npc.getOrAddTrait(SneakTrait::class.java)
+        if (sneakingTrait.isSneaking != sneaking) {
+            sneakingTrait.isSneaking = sneaking
         }
     }
 

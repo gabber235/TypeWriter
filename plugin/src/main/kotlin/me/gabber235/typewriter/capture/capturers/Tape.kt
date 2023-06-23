@@ -57,3 +57,21 @@ fun <T> Tape<T>.getFrame(frame: Int): T? {
         .maxByOrNull { it.key }
         ?.value
 }
+
+/**
+ * Get the value inside the tape at the given frame.
+ * If the frame is not present in the tape for the given frame,
+ * The first frame before the given frame will be returned.
+ *
+ * If the frame is before the first frame, null will be returned.
+ *
+ * @param frame The frame to get the value of
+ * @param getter The property to get the value of
+ */
+fun <T, E> Tape<T>.getFrame(frame: Int, getter: T.() -> E): E? {
+    return this[frame]?.getter() ?: this.asSequence()
+        .filter { it.key <= frame && it.value.getter() != null }
+        .maxByOrNull { it.key }
+        ?.value
+        ?.getter()
+}
