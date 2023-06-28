@@ -1,46 +1,55 @@
 package me.gabber235.typewriter.utils
 
 import com.google.gson.*
-import com.google.gson.reflect.TypeToken
-import org.bukkit.configuration.serialization.ConfigurationSerializable
-import org.bukkit.configuration.serialization.ConfigurationSerialization
+import me.gabber235.typewriter.logger
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Type
+import java.util.*
 
 
 fun createBukkitDataParser(): Gson = GsonBuilder()
-    .registerTypeHierarchyAdapter(ConfigurationSerializable::class.java, ConfigurationSerializableAdapter())
+    .registerTypeAdapter(Location::class.java, LocationSerializer())
+    .registerTypeHierarchyAdapter(ItemStack::class.java, ItemStackSerializer())
     .create()
 
 
-class ConfigurationSerializableAdapter : JsonSerializer<ConfigurationSerializable>,
-    JsonDeserializer<ConfigurationSerializable> {
-    private val objectStringMapType: Type = object : TypeToken<Map<String?, Any?>?>() {}.type
-
+class ItemStackSerializer : JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
     @Throws(JsonParseException::class)
-    override fun deserialize(
-        json: JsonElement,
-        typeOfT: Type?,
-        context: JsonDeserializationContext
-    ): ConfigurationSerializable? {
-        val map: MutableMap<String, Any?> = LinkedHashMap()
-        for ((name, value) in json.asJsonObject.entrySet()) {
-            if (value.isJsonObject && value.asJsonObject.has(ConfigurationSerialization.SERIALIZED_TYPE_KEY)) {
-                map[name] = deserialize(value, value.javaClass, context)
-            } else {
-                map[name] = context.deserialize(value, Any::class.java)
-            }
-        }
-        return ConfigurationSerialization.deserializeObject(map)
+    override fun deserialize(jsonElement: JsonElement, type: Type?, context: JsonDeserializationContext?): ItemStack {
+        val data = jsonElement.asString
+        if (data.isEmpty()) return ItemStack(Material.AIR, 0)
+        return ItemStack.deserializeBytes(Base64.getDecoder().decode(data))
     }
 
-    override fun serialize(
-        src: ConfigurationSerializable,
-        typeOfSrc: Type?,
-        context: JsonSerializationContext
-    ): JsonElement {
-        val map: MutableMap<String, Any> = LinkedHashMap()
-        map[ConfigurationSerialization.SERIALIZED_TYPE_KEY] = ConfigurationSerialization.getAlias(src.javaClass)
-        map.putAll(src.serialize())
-        return context.serialize(map, objectStringMapType)
+    override fun serialize(src: ItemStack, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
+        if (src.type == Material.AIR) return JsonPrimitive("")
+        return JsonPrimitive(Base64.getEncoder().encodeToString(src.serializeAsBytes()))
+    }
+}
+
+class LocationSerializer : JsonSerializer<Location>, JsonDeserializer<Location> {
+    override fun serialize(src: Location, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
+        return JsonPrimitive("${src.world?.name},${src.x},${src.y},${src.z},${src.yaw},${src.pitch}")
+    }
+
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Location {
+        val split = json.asString.split(",")
+        return Location(
+            split[0].let { worldName ->
+                val world = Bukkit.getWorld(worldName)
+                if (world == null) {
+                    logger.severe("World $worldName not found!")
+                }
+                world
+            },
+            split[1].toDouble(),
+            split[2].toDouble(),
+            split[3].toDouble(),
+            split[4].toFloat(),
+            split[5].toFloat()
+        )
     }
 }

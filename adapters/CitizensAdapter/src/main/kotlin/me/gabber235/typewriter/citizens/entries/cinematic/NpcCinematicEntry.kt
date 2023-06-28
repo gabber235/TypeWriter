@@ -25,13 +25,19 @@ import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.onFail
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.NPC
+import net.citizensnpcs.api.trait.trait.Equipment
+import net.citizensnpcs.api.trait.trait.Equipment.EquipmentSlot.*
 import net.citizensnpcs.api.trait.trait.PlayerFilter
 import net.citizensnpcs.trait.HologramTrait
 import net.citizensnpcs.trait.SkinTrait
 import net.citizensnpcs.trait.SneakTrait
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.PlayerInventory
 import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent.inject
 
@@ -61,6 +67,14 @@ data class NpcRecordedSegment(
 data class NpcFrame(
     val location: Location?,
     val sneaking: Boolean?,
+    val swing: ArmSwing?,
+
+    val mainHand: ItemStack?,
+    val offHand: ItemStack?,
+    val helmet: ItemStack?,
+    val chestplate: ItemStack?,
+    val leggings: ItemStack?,
+    val boots: ItemStack?,
 )
 
 class NpcRecordedDataCapturer(title: String, entry: AssetEntry) :
@@ -77,10 +91,25 @@ class NpcRecordedDataCapturer(title: String, entry: AssetEntry) :
 class NpcTapeCapturer(title: String) : MultiTapeRecordedCapturer<NpcFrame>(title) {
     private val location by tapeCapturer(::LocationTapeCapturer)
     private val sneaking by tapeCapturer(::SneakingTapeCapturer)
+    private val swing by tapeCapturer(::SwingTapeCapturer)
+    private val mainHand by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getItemInMainHand))
+    private val offHand by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getItemInOffHand))
+    private val helmet by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getHelmet))
+    private val chestplate by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getChestplate))
+    private val leggings by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getLeggings))
+    private val boots by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getBoots))
     override fun combineFrame(frame: Int): NpcFrame {
         return NpcFrame(
             location = location[frame],
             sneaking = sneaking[frame],
+            swing = swing[frame],
+
+            mainHand = mainHand[frame],
+            offHand = offHand[frame],
+            helmet = helmet[frame],
+            chestplate = chestplate[frame],
+            leggings = leggings[frame],
+            boots = boots[frame],
         )
     }
 }
@@ -108,6 +137,15 @@ class PlayerNpcData(private val player: Player) : NpcData {
     override fun create(): NPC {
         val npc = temporaryRegistry.createNPC(EntityType.PLAYER, player.name)
         npc.getOrAddTrait(SkinTrait::class.java).skinName = player.name
+
+        npc.getOrAddTrait(Equipment::class.java).apply {
+            set(HELMET, player.inventory.helmet)
+            set(CHESTPLATE, player.inventory.chestplate)
+            set(LEGGINGS, player.inventory.leggings)
+            set(BOOTS, player.inventory.boots)
+        }
+
+        npc.data()[NPC.Metadata.NAMEPLATE_VISIBLE] = false
 
         return npc
     }
@@ -221,6 +259,14 @@ class NpcCinematicAction(
             npc?.let {
                 handleMovement(it, recording.getFrame(segmentFrame) { location })
                 handleSneaking(it, recording.getFrame(segmentFrame) { sneaking })
+                handlePunching(it, recording.getExactFrame(segmentFrame) { swing })
+
+                handleInventory(it, HAND, recording.getExactFrame(segmentFrame) { mainHand })
+                handleInventory(it, OFF_HAND, recording.getExactFrame(segmentFrame) { offHand })
+                handleInventory(it, HELMET, recording.getExactFrame(segmentFrame) { helmet })
+                handleInventory(it, CHESTPLATE, recording.getExactFrame(segmentFrame) { chestplate })
+                handleInventory(it, LEGGINGS, recording.getExactFrame(segmentFrame) { leggings })
+                handleInventory(it, BOOTS, recording.getExactFrame(segmentFrame) { boots })
             }
         }
     }
@@ -235,6 +281,24 @@ class NpcCinematicAction(
         val sneakingTrait = npc.getOrAddTrait(SneakTrait::class.java)
         if (sneakingTrait.isSneaking != sneaking) {
             sneakingTrait.isSneaking = sneaking
+        }
+    }
+
+    private fun handlePunching(npc: NPC, punching: ArmSwing?) {
+        if (punching == null) return
+        val entity = npc.entity
+        if (entity !is LivingEntity) return
+        if (punching.swingLeft) entity.swingOffHand()
+        if (punching.swingRight) entity.swingMainHand()
+    }
+
+    private fun handleInventory(npc: NPC, slot: Equipment.EquipmentSlot, itemStack: ItemStack?) {
+        if (itemStack == null) return
+        val equipmentTrait: Equipment = npc.getOrAddTrait(Equipment::class.java)
+        equipmentTrait.set(slot, itemStack)
+
+        if (itemStack.type == Material.DIAMOND_SWORD) {
+            println(itemStack.serialize())
         }
     }
 

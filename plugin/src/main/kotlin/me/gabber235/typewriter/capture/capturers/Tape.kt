@@ -75,3 +75,14 @@ fun <T, E> Tape<T>.getFrame(frame: Int, getter: T.() -> E): E? {
         ?.value
         ?.getter()
 }
+
+/**
+ * Get the value of the tape at the given frame.
+ * If the frame is not present in the tape for the given frame,
+ * null will be returned.
+ *
+ * @param frame The frame to get the value of
+ */
+fun <T, E> Tape<T>.getExactFrame(frame: Int, getter: T.() -> E): E? {
+    return this[frame]?.getter()
+}

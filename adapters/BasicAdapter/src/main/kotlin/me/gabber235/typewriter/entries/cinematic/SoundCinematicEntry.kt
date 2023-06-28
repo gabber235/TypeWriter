@@ -11,6 +11,8 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.utils.Icons
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.SoundStop
 import org.bukkit.entity.Player
 
 @Entry("sound_cinematic", "Play a sound during a cinematic", Colors.YELLOW, Icons.MUSIC)
@@ -20,6 +22,8 @@ class SoundCinematicEntry(
     override val criteria: List<Criteria>,
     @Segments(icon = Icons.MUSIC)
     val segments: List<SoundSegment>,
+    @Help("The channel to play the sound in")
+    val channel: net.kyori.adventure.sound.Sound.Source = net.kyori.adventure.sound.Sound.Source.MASTER,
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
         return SoundCinematicAction(
@@ -50,12 +54,20 @@ class SoundCinematicAction(
 
     override suspend fun startSegment(segment: SoundSegment) {
         super.startSegment(segment)
-        player.playSound(player.location, segment.sound, segment.volume, segment.pitch)
+        player.playSound(
+            net.kyori.adventure.sound.Sound.sound(
+                Key.key(segment.sound),
+                entry.channel,
+                segment.volume,
+                segment.pitch,
+            ),
+            net.kyori.adventure.sound.Sound.Emitter.self(),
+        )
     }
 
     override suspend fun stopSegment(segment: SoundSegment) {
         super.stopSegment(segment)
-        player.stopSound(segment.sound)
+        player.stopSound(SoundStop.named(Key.key(segment.sound)))
     }
 
 }
