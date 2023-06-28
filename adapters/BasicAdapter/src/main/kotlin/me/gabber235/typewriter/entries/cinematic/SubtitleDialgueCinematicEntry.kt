@@ -7,14 +7,17 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Query
-import me.gabber235.typewriter.entry.dialogue.playSpeakerSound
-import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
+import me.gabber235.typewriter.entry.entries.CinematicAction
+import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.asMini
+import me.gabber235.typewriter.utils.asMiniWithResolvers
+import me.gabber235.typewriter.utils.splitPercentage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
@@ -32,28 +35,58 @@ data class SubtitleDialogueCinematicEntry(
     @EntryIdentifier(SpeakerEntry::class)
     val speaker: String = "",
     @Segments(icon = Icons.MESSAGE)
-    val segments: List<SubtitleDialogueSegment> = emptyList(),
+    val segments: List<DisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
-    val speakerDisplayName: String
-        get() = speakerEntry?.displayName ?: ""
-
     val speakerEntry: SpeakerEntry?
         get() = Query.findById(speaker)
 
     override fun create(player: Player): CinematicAction {
-        return SubtitleDialogueCinematicAction(
+        return DisplayDialogueCinematicAction(
             player,
-            this,
+            speakerEntry,
+            segments,
+            subtitlePercentage,
+            setup = { startBlockingActionBar() },
+            teardown = { stopBlockingActionBar() },
+            reset = {
+                sendActionBar(Component.empty())
+                player.clearTitle()
+            },
+            display = ::displaySubTitle
         )
     }
 }
 
-data class SubtitleDialogueSegment(
-    override val startFrame: Int = 0,
-    override val endFrame: Int = 0,
-    @Help("The text to display to the player.")
-    val text: String = "",
-) : Segment
+@Entry("random_subtitle_dialogue_cinematic", "Show a random action bar message", Colors.CYAN, Icons.DIAGRAM_NEXT)
+data class RandomSubtitleDialogueCinematicEntry(
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
+    @Help("The speaker of the dialogue")
+    @EntryIdentifier(SpeakerEntry::class)
+    val speaker: String = "",
+    @Segments(icon = Icons.MESSAGE)
+    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
+) : CinematicEntry {
+    val speakerEntry: SpeakerEntry?
+        get() = Query.findById(speaker)
+
+    override fun create(player: Player): CinematicAction {
+        return DisplayDialogueCinematicAction(
+            player,
+            speakerEntry,
+            segments.toDisplaySegments(),
+            subtitlePercentage,
+            setup = { startBlockingActionBar() },
+            teardown = { stopBlockingActionBar() },
+            reset = {
+                sendActionBar(Component.empty())
+                player.clearTitle()
+            },
+            display = ::displaySubTitle
+        )
+    }
+}
 
 val subtitleFormat: String by snippet(
     "cinematic.dialogue.subtitle.format",
@@ -70,74 +103,20 @@ val subtitlePercentage: Double by snippet(
 
 private val times = Times.times(Duration.ZERO, Duration.ofDays(1), Duration.ZERO)
 
-class SubtitleDialogueCinematicAction(
-    val player: Player,
-    val entry: SubtitleDialogueCinematicEntry,
-) : CinematicAction {
-    private val speakerName = entry.speakerDisplayName
-    private var previousSegment: SubtitleDialogueSegment? = null
+private fun displaySubTitle(player: Player, speakerName: String, text: String, displayPercentage: Double) {
+    val message = text.asMini()
+        .splitPercentage(displayPercentage)
+        .color(NamedTextColor.WHITE)
 
-    private var state: PlayerState? = null
+    val component = subtitleFormat.asMiniWithResolvers(
+        Placeholder.component("message", message),
+    )
 
-    override suspend fun setup() {
-        super.setup()
-        state = player.state(GenericPlayerStateProvider.EXP, GenericPlayerStateProvider.LEVEL)
-        player.exp = 0f
-        player.level = 0
-        player.startBlockingActionBar()
-    }
+    val actionBarComponent = subtitleSpeakerFormat.asMiniWithResolvers(
+        Placeholder.parsed("speaker", speakerName),
+    )
 
-    override suspend fun tick(frame: Int) {
-        super.tick(frame)
-        val segment = (entry.segments activeSegmentAt frame)
-
-        if (segment == null) {
-            if (previousSegment != null) {
-                player.exp = 0f
-                player.showTitle(Title.title(Component.empty(), Component.empty(), times))
-                player.sendActionBar(Component.empty())
-                previousSegment = null
-            }
-            return
-        }
-
-        if (previousSegment != segment) {
-            player.exp = 1f
-            player.playSpeakerSound(entry.speakerEntry)
-            previousSegment = segment
-        }
-
-
-        val percentage = segment percentageAt frame
-        player.exp = 1 - percentage.toFloat()
-
-        // The percentage of the dialogue that should be displayed.
-        val displayPercentage = percentage / subtitlePercentage
-
-        val text = segment.text.parsePlaceholders(player)
-        val message = text.asMini()
-            .splitPercentage(displayPercentage)
-            .color(NamedTextColor.WHITE)
-
-        val component = subtitleFormat.asMiniWithResolvers(
-            Placeholder.component("message", message),
-        )
-
-        val actionBarComponent = subtitleSpeakerFormat.asMiniWithResolvers(
-            Placeholder.parsed("speaker", speakerName),
-        )
-
-        player.showTitle(Title.title(Component.empty(), component, times))
-        player.acceptActionBarMessage(actionBarComponent)
-        player.sendActionBar(actionBarComponent)
-    }
-
-    override suspend fun teardown() {
-        super.teardown()
-        player.stopBlockingActionBar()
-        player.restore(state)
-        player.sendActionBar(Component.empty())
-    }
-
-    override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
+    player.showTitle(Title.title(Component.empty(), component, times))
+    player.acceptActionBarMessage(actionBarComponent)
+    player.sendActionBar(actionBarComponent)
 }

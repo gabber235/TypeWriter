@@ -48,7 +48,7 @@ data class TitleSegment(
 
 class TitleCinematicAction(
     private val player: Player,
-    private val entry: TitleCinematicEntry,
+    entry: TitleCinematicEntry,
 ) : SimpleCinematicAction<TitleSegment>() {
 
     override val segments: List<TitleSegment> = entry.segments
@@ -78,5 +78,4 @@ class TitleCinematicAction(
         super.stopSegment(segment)
         player.resetTitle()
     }
-
 }
