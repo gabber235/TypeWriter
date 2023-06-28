@@ -151,8 +151,12 @@ data class ReferenceNpcData(val id: Int) : NpcData {
         val original =
             CitizensAPI.getNPCRegistry().getById(id) ?: throw IllegalArgumentException("NPC with id $id not found.")
         val filter = original.getOrAddTrait(PlayerFilter::class.java)
-        filter.setDenylist()
-        original.getOrAddTrait(PlayerFilter::class.java).addPlayer(player.uniqueId)
+
+        if (filter.isAllowlist) {
+            filter.removePlayer(player.uniqueId)
+        } else {
+            filter.addPlayer(player.uniqueId)
+        }
     }
 
     override fun teardown(player: Player, npc: NPC) {
@@ -160,7 +164,12 @@ data class ReferenceNpcData(val id: Int) : NpcData {
 
         val original =
             CitizensAPI.getNPCRegistry().getById(id) ?: throw IllegalArgumentException("NPC with id $id not found.")
-        original.getOrAddTrait(PlayerFilter::class.java).removePlayer(player.uniqueId)
+        val filter = original.getOrAddTrait(PlayerFilter::class.java)
+        if (filter.isAllowlist) {
+            filter.addPlayer(player.uniqueId)
+        } else {
+            filter.removePlayer(player.uniqueId)
+        }
     }
 }
 
