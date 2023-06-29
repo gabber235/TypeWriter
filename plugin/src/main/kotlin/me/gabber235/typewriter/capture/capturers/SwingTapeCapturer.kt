@@ -19,16 +19,13 @@ enum class ArmSwing {
 
 class SwingTapeCapturer(override val title: String) : RecordedCapturer<Tape<ArmSwing>> {
     private val tape = mutableTapeOf<ArmSwing>()
-    private var startTime: Long = -1
     private var listener: Listener? = null
 
-    private val tick: Int
-        get() = ((System.currentTimeMillis() - startTime) / 50).toInt()
+    private var swing: ArmSwing? = null
 
     override fun startRecording(player: Player) {
         listener = SimpleListener()
 
-        startTime = System.currentTimeMillis()
         plugin.listen<PlayerArmSwingEvent>(listener = listener!!) {
             if (it.player.uniqueId != player.uniqueId) return@listen
             addSwing(
@@ -42,14 +39,18 @@ class SwingTapeCapturer(override val title: String) : RecordedCapturer<Tape<ArmS
     }
 
     private fun addSwing(swing: ArmSwing) {
-        val currentSwing = tape[tick]
-
-        if (currentSwing != null && currentSwing != swing) {
-            tape[tick] = ArmSwing.BOTH
+        if (this.swing != null && this.swing != swing) {
+            this.swing = ArmSwing.BOTH
             return
         }
 
-        tape[tick] = swing
+        this.swing = swing
+    }
+
+    override fun captureFrame(player: Player, frame: Int) {
+        val swing = this.swing ?: return
+        tape[frame] = swing
+        this.swing = null
     }
 
     override fun stopRecording(player: Player): Tape<ArmSwing> {

@@ -14,9 +14,8 @@ open class AssetCapturer<T>(
 ) : RecordedCapturer<T> {
     private val gson: Gson by inject(Gson::class.java, named("bukkitDataParser"))
     private val assetManager: AssetManager by inject(AssetManager::class.java)
-    override fun startRecording(player: Player) {
-        capturer.startRecording(player)
-    }
+    override fun startRecording(player: Player) = capturer.startRecording(player)
+    override fun captureFrame(player: Player, frame: Int) = capturer.captureFrame(player, frame)
 
     override fun stopRecording(player: Player): T {
         val result = capturer.stopRecording(player)

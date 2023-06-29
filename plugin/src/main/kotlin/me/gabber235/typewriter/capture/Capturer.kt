@@ -13,5 +13,7 @@ interface ImmediateCapturer<T> : Capturer<T> {
 interface RecordedCapturer<T> : Capturer<T> {
     fun startRecording(player: Player)
 
+    fun captureFrame(player: Player, frame: Int)
+
     fun stopRecording(player: Player): T
 }

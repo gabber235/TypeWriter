@@ -1,6 +1,10 @@
 package me.gabber235.typewriter.capture
 
+import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import lirand.api.extensions.events.SimpleListener
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.events.unregister
@@ -29,6 +33,7 @@ class StaticRecorder<T>(private val player: Player, private val capturer: Record
 
     private var data: RecordingData<T>? = null
     private var state = RecordingState.WAITING_FOR_START
+    private var job: Job? = null
 
     override suspend fun record(): T {
         if (data != null) {
@@ -55,7 +60,14 @@ class StaticRecorder<T>(private val player: Player, private val capturer: Record
         val listener = SimpleListener()
         plugin.listen<PlayerSwapHandItemsEvent>(listener, block = this::onSwapHandItems)
 
+
         return RecordingData(completer, bossBar, listener)
+    }
+
+    private fun onTick(frame: Int) {
+        if (data == null) return
+        if (state != RecordingState.RECORDING) return
+        capturer.captureFrame(player, frame)
     }
 
     private fun onSwapHandItems(event: PlayerSwapHandItemsEvent) {
@@ -87,6 +99,15 @@ class StaticRecorder<T>(private val player: Player, private val capturer: Record
         }
         player.playSound(Sound.sound(Key.key("ui.button.click"), Sound.Source.MASTER, 1f, 1f))
         capturer.startRecording(player)
+
+        job = plugin.launch {
+            var frame = 0
+            while (state != RecordingState.FINISHED) {
+                onTick(frame++)
+                delay(1.ticks)
+            }
+        }
+
         state = RecordingState.RECORDING
     }
 
@@ -100,6 +121,8 @@ class StaticRecorder<T>(private val player: Player, private val capturer: Record
         data?.completer?.complete(result)
         data?.listener?.unregister()
         data = null
+        job?.cancel()
+        job = null
         state = RecordingState.FINISHED
     }
 }

@@ -13,6 +13,10 @@ open abstract class MultiRecordedCapturer<T>(override val title: String) : Recor
         capturers.forEach { it.startRecording(player) }
     }
 
+    override fun captureFrame(player: Player, frame: Int) {
+        capturers.forEach { it.captureFrame(player, frame) }
+    }
+
     override fun stopRecording(player: Player): T {
         capturers.forEach { it.stopRecording(player) }
         return combineCapturers()
@@ -71,6 +75,10 @@ class MultiRecorderCapturerDelegate<T>(private val capturer: RecordedCapturer<T>
 
     fun startRecording(player: Player) {
         capturer.startRecording(player)
+    }
+
+    fun captureFrame(player: Player, frame: Int) {
+        capturer.captureFrame(player, frame)
     }
 
     fun stopRecording(player: Player) {

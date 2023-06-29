@@ -1,11 +1,6 @@
 package me.gabber235.typewriter.capture.capturers
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import me.gabber235.typewriter.capture.RecordedCapturer
-import me.gabber235.typewriter.plugin
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -23,20 +18,10 @@ class InventorySlotTapeCapturer(
 ) : RecordedCapturer<Tape<ItemStack>> {
     private val tape = mutableTapeOf<ItemStack>()
     private var lastItem: ItemStack? = ItemStack(Material.AIR, 0)
-    private var lastTick = -1
-    private var job: Job? = null
 
-    override fun startRecording(player: Player) {
-        job?.cancel()
-        job = plugin.launch {
-            while (true) {
-                captureFrame(player, frame = ++lastTick)
-                delay(1.ticks)
-            }
-        }
-    }
+    override fun startRecording(player: Player) {}
 
-    private fun captureFrame(player: Player, frame: Int) {
+    override fun captureFrame(player: Player, frame: Int) {
         val item = itemGetter(player.inventory)
         if (item?.isSimilar(lastItem) == true) return
         lastItem = item
@@ -44,8 +29,5 @@ class InventorySlotTapeCapturer(
         tape[frame] = item
     }
 
-    override fun stopRecording(player: Player): Tape<ItemStack> {
-        job?.cancel()
-        return tape
-    }
+    override fun stopRecording(player: Player): Tape<ItemStack> = tape
 }

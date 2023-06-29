@@ -42,7 +42,6 @@ class CinematicRecorder<T>(
     private var data: RecordingData<T>? = null
     private var state = RecordingState.WAITING_FOR_START
 
-
     override suspend fun record(): T {
         if (data != null) {
             throw IllegalStateException("Already recording!")
@@ -161,6 +160,9 @@ class CinematicRecorder<T>(
             it.color(BossBar.Color.YELLOW)
             it.progress((frame - frames.first) / (frames.last - frames.first).toFloat())
         }
+
+        val correctedFrame = frame - frames.first
+        capturer.captureFrame(player, correctedFrame)
     }
 
     private fun startRecording() {
