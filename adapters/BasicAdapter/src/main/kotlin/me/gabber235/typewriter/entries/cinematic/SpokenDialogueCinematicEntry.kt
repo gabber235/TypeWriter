@@ -77,7 +77,10 @@ data class RandomSpokenDialogueCinematicEntry(
                 // If the player is already in a dialogue, end it in favor of this one.
                 DIALOGUE_END.triggerFor(this)
             },
-            reset = { chatHistory.resendMessages(this) },
+            reset = reset@{
+                if (isFloodgate) return@reset
+                chatHistory.resendMessages(this)
+            },
             display = ::displaySpokenDialogue,
         )
     }
