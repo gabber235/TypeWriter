@@ -45,12 +45,25 @@ class ChatHistoryHandler(plugin: Plugin) :
         // If the message is a broadcast of previous messages.
         // We don't want to add this to the history.
         if (component is TextComponent && component.content() == "no-index") return
-        getHistory(event.player).addMessage(component)
+        val history = getHistory(event.player)
+        history.addMessage(component)
+
+        if (history.isBlocking()) {
+            event.isCancelled = true
+        }
     }
 
 
     fun getHistory(player: Player): ChatHistory {
         return histories.getOrPut(player.uniqueId) { ChatHistory() }
+    }
+
+    fun blockMessages(player: Player) {
+        getHistory(player).startBlocking()
+    }
+
+    fun unblockMessages(player: Player) {
+        getHistory(player).stopBlocking()
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -86,8 +99,22 @@ fun PacketContainer.getChatComponent(): Component? {
 val Player.chatHistory: ChatHistory
     get() = get<ChatHistoryHandler>(ChatHistoryHandler::class.java).getHistory(this)
 
+fun Player.startBlockingMessages() = chatHistory.startBlocking()
+fun Player.stopBlockingMessages() = chatHistory.stopBlocking()
+
 class ChatHistory {
     private val messages = ConcurrentLinkedQueue<OldMessage>()
+    private var blocking: Boolean = false
+
+    fun startBlocking() {
+        blocking = true
+    }
+
+    fun stopBlocking() {
+        blocking = false
+    }
+
+    fun isBlocking(): Boolean = blocking
 
     fun addMessage(message: Component) {
         messages.add(OldMessage(message))
@@ -117,6 +144,13 @@ class ChatHistory {
         messages.forEach {
             msg = msg.append(it.darkenMessage)
         }
+        return msg.append(message)
+    }
+
+    fun composeEmptyMessage(message: Component, clear: Boolean = true): Component {
+        // Start with "no-index" to prevent the server from adding the message to the history
+        var msg = Component.text("no-index")
+        if (clear) msg = msg.append(Component.text(clearMessage()))
         return msg.append(message)
     }
 }

@@ -11,8 +11,6 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
-import me.gabber235.typewriter.interaction.startBlockingActionBar
-import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.*
 import net.kyori.adventure.text.Component
@@ -40,8 +38,6 @@ data class ActionBarDialogueCinematicEntry(
             speakerEntry,
             segments,
             actionBarPercentage,
-            setup = { startBlockingActionBar() },
-            teardown = { stopBlockingActionBar() },
             reset = { sendActionBar(Component.empty()) },
             display = ::displayActionBar,
         )
@@ -73,8 +69,6 @@ data class RandomActionBarDialogueCinematicEntry(
             speakerEntry,
             segments.toDisplaySegments(),
             actionBarPercentage,
-            setup = { startBlockingActionBar() },
-            teardown = { stopBlockingActionBar() },
             reset = { sendActionBar(Component.empty()) },
             display = ::displayActionBar,
         )

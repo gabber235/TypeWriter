@@ -13,11 +13,13 @@ import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
+import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMiniWithResolvers
 import me.gabber235.typewriter.utils.asPartialFormattedMini
+import me.gabber235.typewriter.utils.isFloodgate
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
@@ -101,6 +103,7 @@ val spokenMaxLineLength: Int by snippet("cinematic.dialogue.spoken.maxLineLength
 val spokenPercentage: Double by snippet("cinematic.dialogue.spoken.percentage", 0.5)
 
 private fun displaySpokenDialogue(player: Player, speakerName: String, text: String, displayPercentage: Double) {
+
     val message = text.parsePlaceholders(player).asPartialFormattedMini(
         displayPercentage,
         padding = spokenPadding,
@@ -113,6 +116,13 @@ private fun displaySpokenDialogue(player: Player, speakerName: String, text: Str
         Placeholder.component("message", message),
         Placeholder.parsed("padding", spokenPadding),
     )
+
+    // Bedrock clients don't like chat animations, but they can have multiline actionbars.
+    if (player.isFloodgate) {
+        player.acceptActionBarMessage(component)
+        player.sendActionBar(component)
+        return
+    }
 
     val componentWithDarkMessages = player.chatHistory.composeDarkMessage(component)
     player.sendMessage(componentWithDarkMessages)

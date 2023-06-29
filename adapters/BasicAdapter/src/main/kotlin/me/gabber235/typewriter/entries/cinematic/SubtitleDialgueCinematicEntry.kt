@@ -11,8 +11,6 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
-import me.gabber235.typewriter.interaction.startBlockingActionBar
-import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMini
@@ -46,8 +44,6 @@ data class SubtitleDialogueCinematicEntry(
             speakerEntry,
             segments,
             subtitlePercentage,
-            setup = { startBlockingActionBar() },
-            teardown = { stopBlockingActionBar() },
             reset = {
                 sendActionBar(Component.empty())
                 player.clearTitle()
@@ -77,8 +73,6 @@ data class RandomSubtitleDialogueCinematicEntry(
             speakerEntry,
             segments.toDisplaySegments(),
             subtitlePercentage,
-            setup = { startBlockingActionBar() },
-            teardown = { stopBlockingActionBar() },
             reset = {
                 sendActionBar(Component.empty())
                 player.clearTitle()

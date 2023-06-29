@@ -9,6 +9,10 @@ import me.gabber235.typewriter.entry.triggerEntriesFor
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.events.AsyncCinematicEndEvent
 import me.gabber235.typewriter.events.AsyncCinematicTickEvent
+import me.gabber235.typewriter.interaction.startBlockingActionBar
+import me.gabber235.typewriter.interaction.startBlockingMessages
+import me.gabber235.typewriter.interaction.stopBlockingActionBar
+import me.gabber235.typewriter.interaction.stopBlockingMessages
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -26,6 +30,10 @@ class CinematicSequence(
 
     suspend fun start() {
         if (frame > STARTING_FRAME) return
+
+        player.startBlockingMessages()
+        player.startBlockingActionBar()
+
         actions = entries.map { it.create(player) }
         actions.forEach {
             try {
@@ -62,6 +70,10 @@ class CinematicSequence(
         if (frame == ENDED_FRAME || frame == STARTING_FRAME) return
         val originalFrame = frame
         frame = ENDED_FRAME
+
+        player.stopBlockingMessages()
+        player.stopBlockingActionBar()
+
         actions.forEach {
             try {
                 it.teardown()

@@ -6,6 +6,10 @@ import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.facts.FactDatabase
+import me.gabber235.typewriter.interaction.startBlockingActionBar
+import me.gabber235.typewriter.interaction.startBlockingMessages
+import me.gabber235.typewriter.interaction.stopBlockingActionBar
+import me.gabber235.typewriter.interaction.stopBlockingMessages
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
@@ -32,6 +36,8 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         cycle = 0
         currentMessenger.init()
         player.playSpeakerSound(currentEntry.speakerEntry)
+        player.startBlockingMessages()
+        player.startBlockingActionBar()
         tick()
     }
 
@@ -59,7 +65,11 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
     private fun cleanupEntry(final: Boolean) {
         val messenger = currentMessenger
 
-        if (final) messenger.end()
+        if (final) {
+            player.stopBlockingMessages()
+            player.stopBlockingActionBar()
+            messenger.end()
+        }
         messenger.dispose()
 
         factDatabase.modify(player.uniqueId, messenger.modifiers)

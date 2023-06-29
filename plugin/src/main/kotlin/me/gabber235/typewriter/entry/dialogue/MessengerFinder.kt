@@ -63,7 +63,9 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
     open var state: MessengerState = MessengerState.RUNNING
         protected set
 
-    open fun init() {}
+    open fun init() {
+    }
+
     open fun tick(cycle: Int) {}
 
     open fun dispose() {
