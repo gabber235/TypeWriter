@@ -82,6 +82,7 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     fun initialize() {
+
         job = plugin.launch(Dispatchers.IO) {
             while (plugin.isEnabled) {
                 val startTime = System.currentTimeMillis()
@@ -112,7 +113,7 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     // When a player joins the server, we need to create an interaction for them.
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerJoin(event: PlayerJoinEvent) {
         interactions[event.player.uniqueId] = Interaction(event.player)
     }
