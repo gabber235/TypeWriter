@@ -27,6 +27,7 @@ import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.NPC
 import net.citizensnpcs.api.trait.trait.Equipment
 import net.citizensnpcs.api.trait.trait.Equipment.EquipmentSlot.*
+import net.citizensnpcs.api.trait.trait.MobType
 import net.citizensnpcs.api.trait.trait.PlayerFilter
 import net.citizensnpcs.trait.HologramTrait
 import net.citizensnpcs.trait.SkinTrait
@@ -156,13 +157,14 @@ data class ReferenceNpcData(val id: Int) : NpcData {
         val original =
             CitizensAPI.getNPCRegistry().getById(id) ?: throw IllegalArgumentException("NPC with id $id not found.")
 
-        val npc = temporaryRegistry.createNPC(original.entity.type, original.name)
+        val type = original.getOrAddTrait(MobType::class.java).type
+        val npc = temporaryRegistry.createNPC(type, original.name)
 
         if (original.hasTrait(SkinTrait::class.java)) {
             val originalSkin = original.getOrAddTrait(SkinTrait::class.java)
 
             npc.getOrAddTrait(SkinTrait::class.java)
-                .setSkinPersistent(originalSkin.skinName, originalSkin.signature, originalSkin.texture)
+                .setSkinPersistent(originalSkin.skinName ?: "", originalSkin.signature, originalSkin.texture)
         }
 
         if (original.requiresNameHologram()) {
@@ -273,7 +275,7 @@ class NpcCinematicAction(
 
     private fun handleMovement(npc: NPC, location: Location?) {
         if (location == null) return
-        npc.entity.teleport(location)
+        npc.entity?.teleport(location)
     }
 
     private fun handleSneaking(npc: NPC, sneaking: Boolean?) {
@@ -286,7 +288,7 @@ class NpcCinematicAction(
 
     private fun handlePunching(npc: NPC, punching: ArmSwing?) {
         if (punching == null) return
-        val entity = npc.entity
+        val entity = npc.entity ?: return
         if (entity !is LivingEntity) return
         if (punching.swingLeft) entity.swingOffHand()
         if (punching.swingRight) entity.swingMainHand()
