@@ -6,6 +6,7 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
 import "package:typewriter/widgets/components/general/outline_button.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -13,8 +14,11 @@ import "package:typewriter/widgets/inspector/section_title.dart";
 
 class Operations extends HookConsumerWidget {
   const Operations({
+    this.actions = const [],
     super.key,
   }) : super();
+
+  final List<ContextMenuTile> actions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,6 +34,17 @@ class Operations extends HookConsumerWidget {
       children: [
         const SectionTitle(title: "Operations"),
         const SizedBox(height: 8),
+        for (final action in actions) ...[
+          if (action is ContextMenuDivider) const Divider(),
+          if (action is ContextMenuButton)
+            OutlineButton.icon(
+              icon: FaIcon(action.icon),
+              label: Text(action.title),
+              onPressed: action.onTap,
+              color: action.color,
+            ),
+          const SizedBox(height: 8),
+        ],
         if (canTrigger) ...[
           const _ExtendWithEntry(),
           const SizedBox(height: 8),

@@ -5,3 +5,4 @@ import me.gabber235.typewriter.entry.entries.SpeakerEntry
 
 @Tags("npc")
 interface Npc : SpeakerEntry
+

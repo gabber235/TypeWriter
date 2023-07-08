@@ -1,6 +1,5 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
-import "package:flutter_animate/flutter_animate.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
@@ -8,7 +7,8 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/components/app/select_entries.dart";
+import "package:typewriter/widgets/components/app/cinematic_view.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/inspector/editors/name.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/heading.dart";
@@ -17,14 +17,14 @@ import "package:typewriter/widgets/inspector/operations.dart";
 part "inspector.g.dart";
 
 class InspectingEntryNotifier extends StateNotifier<String?> {
-  InspectingEntryNotifier() : super(null);
+  InspectingEntryNotifier(this.ref) : super(null);
+  final Ref ref;
 
-  void selectEntry(String id) {
+  void selectEntry(String id, {bool unSelectSegment = true}) {
     state = id;
-  }
-
-  void select(Entry entry) {
-    state = entry.id;
+    if (unSelectSegment) {
+      ref.read(inspectingSegmentIdProvider.notifier).clear();
+    }
   }
 
   void clearSelection() {
@@ -32,17 +32,15 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
   }
 
   Future<void> navigateAndSelectEntry(PassingRef ref, String entryId) async {
-    final changedPage = await ref.read(appRouter).navigateToEntry(ref, entryId);
-    if (changedPage) {
-      await Future.delayed(300.ms);
-      await WidgetsBinding.instance.endOfFrame;
-    }
-    state = entryId;
+    selectEntry(entryId);
+    await ref.read(appRouter).navigateToEntry(ref, entryId);
   }
 }
 
-final inspectingEntryIdProvider =
-    StateNotifierProvider<InspectingEntryNotifier, String?>((ref) => InspectingEntryNotifier());
+final inspectingEntryIdProvider = StateNotifierProvider<InspectingEntryNotifier, String?>(
+  InspectingEntryNotifier.new,
+  name: "inspectingEntryIdProvider",
+);
 
 @riverpod
 Entry? inspectingEntry(InspectingEntryRef ref) {
@@ -51,35 +49,28 @@ Entry? inspectingEntry(InspectingEntryRef ref) {
   return page?.entries.firstWhereOrNull((e) => e.id == selectedEntryId);
 }
 
-class Inspector extends HookConsumerWidget {
-  const Inspector({
+class GenericInspector extends HookConsumerWidget {
+  const GenericInspector({
     super.key,
   }) : super();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inspectingEntry = ref.watch(inspectingEntryProvider);
-    final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
-
-    // When we are selecting entries, we want a special inspector that allows
-    // us to select entries.
-    if (isSelectingEntries) {
-      return const EntriesSelectorInspector();
-    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
-        child: inspectingEntry != null ? _EntryInspector(key: ValueKey(inspectingEntry.id)) : const _EmptyInspector(),
+        child: inspectingEntry != null ? EntryInspector(key: ValueKey(inspectingEntry.id)) : const EmptyInspector(),
       ),
     );
   }
 }
 
 /// The content of the inspector when no entry is selected.
-class _EmptyInspector extends HookConsumerWidget {
-  const _EmptyInspector();
+class EmptyInspector extends HookConsumerWidget {
+  const EmptyInspector({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -111,10 +102,15 @@ EntryDefinition? inspectingEntryDefinition(InspectingEntryDefinitionRef ref) {
 }
 
 /// The content of the inspector when an dynamic entry is selected.
-class _EntryInspector extends HookConsumerWidget {
-  const _EntryInspector({
+class EntryInspector extends HookConsumerWidget {
+  const EntryInspector({
+    this.ignoreFields = const [],
+    this.actions = const [],
     super.key,
   }) : super();
+
+  final List<String> ignoreFields;
+  final List<ContextMenuTile> actions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -138,11 +134,11 @@ class _EntryInspector extends HookConsumerWidget {
           ObjectEditor(
             path: "",
             object: object,
-            ignoreFields: const ["id", "name"],
+            ignoreFields: ["id", "name", ...ignoreFields],
             defaultExpanded: true,
           ),
           const Divider(),
-          const Operations(),
+          Operations(actions: actions),
           const SizedBox(height: 30),
         ],
       ),

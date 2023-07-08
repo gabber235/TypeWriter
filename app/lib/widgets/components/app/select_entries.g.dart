@@ -141,4 +141,85 @@ final selectingTagProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef SelectingTagRef = AutoDisposeProviderRef<String>;
+String _$canSelectEntryHash() => r'071b3e46373b5397bd8d56e24e309cce442f5624';
+typedef CanSelectEntryRef = AutoDisposeProviderRef<bool>;
+
+/// See also [canSelectEntry].
+@ProviderFor(canSelectEntry)
+const canSelectEntryProvider = CanSelectEntryFamily();
+
+/// See also [canSelectEntry].
+class CanSelectEntryFamily extends Family<bool> {
+  /// See also [canSelectEntry].
+  const CanSelectEntryFamily();
+
+  /// See also [canSelectEntry].
+  CanSelectEntryProvider call(
+    String id,
+  ) {
+    return CanSelectEntryProvider(
+      id,
+    );
+  }
+
+  @override
+  CanSelectEntryProvider getProviderOverride(
+    covariant CanSelectEntryProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'canSelectEntryProvider';
+}
+
+/// See also [canSelectEntry].
+class CanSelectEntryProvider extends AutoDisposeProvider<bool> {
+  /// See also [canSelectEntry].
+  CanSelectEntryProvider(
+    this.id,
+  ) : super.internal(
+          (ref) => canSelectEntry(
+            ref,
+            id,
+          ),
+          from: canSelectEntryProvider,
+          name: r'canSelectEntryProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$canSelectEntryHash,
+          dependencies: CanSelectEntryFamily._dependencies,
+          allTransitiveDependencies:
+              CanSelectEntryFamily._allTransitiveDependencies,
+        );
+
+  final String id;
+
+  @override
+  bool operator ==(Object other) {
+    return other is CanSelectEntryProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

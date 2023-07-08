@@ -1,76 +1,90 @@
 package me.gabber235.typewriter.entry.dialogue
 
-import lirand.api.extensions.world.playSound
 import me.gabber235.typewriter.entry.entries.DialogueEntry
-import me.gabber235.typewriter.entry.entries.Event
+import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
+import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.facts.FactDatabase
-import me.gabber235.typewriter.interaction.InteractionHandler
-import org.bukkit.*
+import me.gabber235.typewriter.interaction.startBlockingActionBar
+import me.gabber235.typewriter.interaction.startBlockingMessages
+import me.gabber235.typewriter.interaction.stopBlockingActionBar
+import me.gabber235.typewriter.interaction.stopBlockingMessages
+import org.bukkit.NamespacedKey
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) {
-	private var currentEntry: DialogueEntry = initialEntry
-	private var currentMessenger = MessengerFinder.findMessenger(player, initialEntry)
-	private var cycle = 0
-	var isActive = false
-		private set
+class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) : KoinComponent {
+    private val messengerFinder: MessengerFinder by inject()
+    private val factDatabase: FactDatabase by inject()
 
-	val triggers: List<String>
-		get() = currentMessenger.triggers
+    private var currentEntry: DialogueEntry = initialEntry
+    private var currentMessenger = messengerFinder.findMessenger(player, initialEntry)
+    private var cycle = 0
+    var isActive = false
+        private set
 
-	private val speakerHasSound get() = !currentEntry.speakerEntry?.sound.isNullOrBlank()
+    val triggers: List<String>
+        get() = currentMessenger.triggers
 
-	fun init() {
-		isActive = true
-		cycle = 0
-		currentMessenger.init()
 
-		if (speakerHasSound) {
-			playSpeakerSound()
-		}
-		tick()
-	}
+    fun init() {
+        isActive = true
+        cycle = 0
+        currentMessenger.init()
+        player.playSpeakerSound(currentEntry.speakerEntry)
+        player.startBlockingMessages()
+        player.startBlockingActionBar()
+        tick()
+    }
 
-	private fun playSpeakerSound() {
-		val soundNamespace = NamespacedKey.fromString(currentEntry.speakerEntry?.sound ?: return)
-		val sound = Sound.values().firstOrNull { it.key == soundNamespace }
-		if (sound != null) {
-			player.playSound(sound, SoundCategory.VOICE)
-		}
-	}
+    fun tick() {
+        if (!isActive) return
+        currentMessenger.tick(cycle++)
 
-	fun tick() {
-		currentMessenger.tick(cycle++)
+        if (currentMessenger.state == MessengerState.FINISHED) {
+            isActive = false
+            DIALOGUE_NEXT triggerFor player
+        } else if (currentMessenger.state == MessengerState.CANCELLED) {
+            isActive = false
+            DIALOGUE_END triggerFor player
+        }
+    }
 
-		if (currentMessenger.state == MessengerState.FINISHED) {
-			isActive = false
-			InteractionHandler.triggerEvent(Event(player, DIALOGUE_NEXT))
-		} else if (currentMessenger.state == MessengerState.CANCELLED) {
-			isActive = false
-			InteractionHandler.triggerEvent(Event(player, DIALOGUE_END))
-		}
-	}
+    fun next(nextEntry: DialogueEntry): Boolean {
+        cleanupEntry(false)
+        currentEntry = nextEntry
+        currentMessenger = messengerFinder.findMessenger(player, nextEntry)
+        init()
+        return true
+    }
 
-	fun next(nextEntry: DialogueEntry): Boolean {
-		cleanupEntry(false)
-		currentEntry = nextEntry
-		currentMessenger = MessengerFinder.findMessenger(player, nextEntry)
-		init()
-		return true
-	}
+    private fun cleanupEntry(final: Boolean) {
+        val messenger = currentMessenger
 
-	private fun cleanupEntry(final: Boolean) {
-		val messenger = currentMessenger
-		messenger.dispose()
-		if (final) messenger.end()
+        if (final) {
+            player.stopBlockingMessages()
+            player.stopBlockingActionBar()
+            messenger.end()
+        }
+        messenger.dispose()
 
-		FactDatabase.modify(player.uniqueId, messenger.modifiers)
-	}
+        factDatabase.modify(player.uniqueId, messenger.modifiers)
+    }
 
-	fun end() {
-		isActive = false
-		cleanupEntry(true)
-	}
+    fun end() {
+        isActive = false
+        cleanupEntry(true)
+    }
+}
+
+fun Player.playSpeakerSound(speaker: SpeakerEntry?) {
+    val soundName = speaker?.sound ?: return
+    if (soundName.isBlank()) return
+    val soundNamespace = NamespacedKey.fromString(speaker.sound)
+    val sound = Sound.values().firstOrNull { it.key == soundNamespace } ?: return
+    playSound(this, sound, SoundCategory.VOICE, 1f, 1f)
 }

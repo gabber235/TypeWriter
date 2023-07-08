@@ -6,11 +6,13 @@ import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/book.dart";
-import "package:typewriter/models/communicator.dart";
+import "package:typewriter/models/page.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/popups.dart";
@@ -18,16 +20,32 @@ import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
+import "package:typewriter/widgets/components/general/dropdown.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
 import "package:typewriter/widgets/components/general/validated_text_field.dart";
 
+part "pages_list.freezed.dart";
 part "pages_list.g.dart";
+
+@freezed
+class _PageData with _$_PageData {
+  const factory _PageData({
+    required String name,
+    required PageType type,
+  }) = _$PageData;
+}
+
+@riverpod
+List<_PageData> _pagesData(_PagesDataRef ref) {
+  return ref.watch(bookProvider).pages.map((page) => _PageData(name: page.name, type: page.type)).toList();
+}
 
 @riverpod
 List<String> _pageNames(_PageNamesRef ref) {
-  return ref.watch(bookProvider).pages.map((e) => e.name).toList();
+  return ref.watch(_pagesDataProvider.select((pages) => pages.map((page) => page.name).toList()));
 }
 
+@RoutePage(name: "PagesListRoute")
 class PagesList extends StatelessWidget {
   const PagesList({super.key});
 
@@ -50,21 +68,21 @@ class _PagesSelector extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageNames = ref.watch(_pageNamesProvider);
+    final pagesData = ref.watch(_pagesDataProvider);
     return Container(
       color: const Color(0xFF163260),
-      width: 170,
+      width: 230,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
-        // When selecting entries we don't want to be able to switch pages or add new ones
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
             Text("Pages", style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white)),
             const SizedBox(height: 12),
-            for (var i = 0; i < pageNames.length; i++) _PageTile(index: i, pageId: pageNames[i]),
+            for (var i = 0; i < pagesData.length; i++) _PageTile(index: i, pageData: pagesData[i]),
             const SizedBox(height: 12),
+            // When selecting entries we don't want to be able to add new pages
             const SelectingEntriesBlocker(
               child: _AddPageButton(),
             ),
@@ -75,14 +93,20 @@ class _PagesSelector extends HookConsumerWidget {
   }
 }
 
+@riverpod
+List<Writer> _writers(_WritersRef ref, String pageId) {
+  return ref.watch(writersProvider).where((writer) => writer.pageId.hasValue && writer.pageId == pageId).toList();
+}
+
 class _PageTile extends HookConsumerWidget {
   const _PageTile({
     required this.index,
-    required this.pageId,
-    super.key,
+    required this.pageData,
   });
   final int index;
-  final String pageId;
+  final _PageData pageData;
+
+  String get pageId => pageData.name;
 
   bool _needsShift(int amount) {
     // If the amount of writer is 0, we never need to shift
@@ -126,7 +150,8 @@ class _PageTile extends HookConsumerWidget {
     final isSelected = ref.watch(currentPageIdProvider.select((e) => e == pageId));
 
     return WritersIndicator(
-      filter: (writer) => writer.pageId.hasValue && writer.pageId == pageId && !isSelected,
+      enabled: !isSelected,
+      provider: _writersProvider(pageId),
       shift: (amount) => _needsShift(amount) ? const Offset(4, 30) : Offset.zero,
       builder: (amount) {
         return AnimatedPadding(
@@ -148,6 +173,12 @@ class _PageTile extends HookConsumerWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
+                      const SizedBox(width: 4),
+                      Icon(
+                        pageData.type.icon,
+                        size: 11,
+                        color: Colors.white,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -171,6 +202,7 @@ class _PageTile extends HookConsumerWidget {
   }
 }
 
+@RoutePage(name: "EmptyPageEditorRoute")
 class EmptyPageEditor extends HookConsumerWidget {
   const EmptyPageEditor({
     super.key,
@@ -178,7 +210,7 @@ class EmptyPageEditor extends HookConsumerWidget {
 
   Future<String?> _showAddPageDialog(BuildContext context) async => showDialog(
         context: context,
-        builder: (context) => const _AddPageDialogue(),
+        builder: (context) => const AddPageDialogue(),
       );
 
   @override
@@ -198,7 +230,7 @@ class _AddPageButton extends HookConsumerWidget {
 
   Future<String?> _showAddPageDialog(BuildContext context) async => showDialog(
         context: context,
-        builder: (context) => const _AddPageDialogue(),
+        builder: (context) => const AddPageDialogue(),
       );
 
   @override
@@ -233,11 +265,20 @@ class _AddPageButton extends HookConsumerWidget {
       );
 }
 
-class _AddPageDialogue extends HookConsumerWidget {
-  const _AddPageDialogue();
+class AddPageDialogue extends HookConsumerWidget {
+  const AddPageDialogue({
+    this.fixedType,
+    this.autoNavigate = true,
+    super.key,
+  });
 
-  Future<void> _addPage(WidgetRef ref, String name) async {
-    await ref.read(bookProvider.notifier).createPage(name);
+  final PageType? fixedType;
+  final bool autoNavigate;
+
+  Future<void> _addPage(WidgetRef ref, String name, PageType type) async {
+    await ref.read(bookProvider.notifier).createPage(name, type);
+
+    if (!autoNavigate) return;
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));
   }
 
@@ -261,28 +302,49 @@ class _AddPageDialogue extends HookConsumerWidget {
     final pagesNames = ref.watch(_pageNamesProvider);
     final controller = useTextEditingController();
     final isNameValid = useState(false);
+    final type = useState(fixedType ?? PageType.sequence);
 
     return AlertDialog(
-      title: const Text("Add a new page"),
-      content: ValidatedTextField<String>(
-        value: "",
-        controller: controller,
-        name: "Page name",
-        icon: FontAwesomeIcons.book,
-        validator: (value) => _validateName(value, pagesNames),
-        inputFormatters: [
-          snakeCaseFormatter(),
-          FilteringTextInputFormatter.singleLineFormatter,
-          FilteringTextInputFormatter.allow(RegExp("[a-z0-9_]")),
+      title: Text(fixedType != null ? "Add a new ${fixedType!.tag} page" : "Add a new page"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ValidatedTextField<String>(
+            value: "",
+            controller: controller,
+            name: "Page Name",
+            icon: FontAwesomeIcons.book,
+            validator: (value) {
+              final validation = _validateName(value, pagesNames);
+              isNameValid.value = validation == null;
+              return validation;
+            },
+            inputFormatters: [
+              snakeCaseFormatter(),
+              FilteringTextInputFormatter.singleLineFormatter,
+              FilteringTextInputFormatter.allow(RegExp("[a-z0-9_]")),
+            ],
+          ),
+          if (fixedType == null) ...[
+            const SizedBox(height: 12),
+            Dropdown<PageType>(
+              value: type.value,
+              values: PageType.values,
+              builder: (context, value) {
+                return Row(
+                  children: [
+                    Icon(value.icon, size: 18),
+                    const SizedBox(width: 8),
+                    Text(value.name.formatted),
+                  ],
+                );
+              },
+              icon: null,
+              onChanged: (value) => type.value = value,
+            ),
+          ],
         ],
-        onChanged: (value) {
-          isNameValid.value = _validateName(value, pagesNames) == null;
-        },
-        onSubmitted: (value) async {
-          final navigator = Navigator.of(context);
-          await _addPage(ref, value);
-          navigator.pop();
-        },
       ),
       actions: [
         TextButton.icon(
@@ -298,8 +360,8 @@ class _AddPageDialogue extends HookConsumerWidget {
               ? null
               : () async {
                   final navigator = Navigator.of(context);
-                  await _addPage(ref, controller.text);
-                  navigator.pop();
+                  await _addPage(ref, controller.text, type.value);
+                  navigator.pop(controller.text);
                 },
           label: const Text("Add"),
           icon: const Icon(FontAwesomeIcons.plus),
@@ -312,14 +374,12 @@ class _AddPageDialogue extends HookConsumerWidget {
 class _RenamePageDialogue extends HookConsumerWidget {
   const _RenamePageDialogue({
     required this.old,
-    super.key,
   });
 
   final String old;
 
   Future<void> _renamePage(WidgetRef ref, String newName) async {
-    await ref.read(communicatorProvider).renamePage(old, newName);
-    ref.read(bookProvider.notifier).renamePage(old, newName);
+    await ref.read(bookProvider.notifier).renamePage(old, newName);
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: newName)));
   }
 
@@ -348,20 +408,25 @@ class _RenamePageDialogue extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pagesNames = ref.watch(_pageNamesProvider);
     final controller = useTextEditingController(text: old);
+    final isNameValid = useState(false);
 
     return AlertDialog(
       title: Text("Rename ${old.formatted}"),
       content: ValidatedTextField<String>(
         value: old,
         controller: controller,
-        name: "Page name",
+        name: "Page Name",
         icon: FontAwesomeIcons.book,
+        validator: (value) {
+          final validation = _validateName(value, pagesNames);
+          isNameValid.value = validation == null;
+          return validation;
+        },
         inputFormatters: [
           snakeCaseFormatter(),
           FilteringTextInputFormatter.singleLineFormatter,
           FilteringTextInputFormatter.allow(RegExp("[a-z0-9_]")),
         ],
-        validator: (value) => _validateName(value, pagesNames),
         onSubmitted: (value) async {
           final navigator = Navigator.of(context);
           await _renamePage(ref, value);
@@ -378,7 +443,7 @@ class _RenamePageDialogue extends HookConsumerWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         FilledButton.icon(
-          onPressed: _validateName(controller.text, pagesNames) != null
+          onPressed: !isNameValid.value
               ? null
               : () async {
                   final navigator = Navigator.of(context);

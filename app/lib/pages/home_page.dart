@@ -1,3 +1,4 @@
+import "package:auto_route/auto_route.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -5,9 +6,10 @@ import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/app_router.dart";
-import 'package:typewriter/widgets/components/general/copyable_text.dart';
-import 'package:typewriter/widgets/components/general/filled_button.dart';
+import "package:typewriter/widgets/components/general/copyable_text.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
 
+@RoutePage()
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
 
@@ -33,7 +35,8 @@ class HomePage extends HookConsumerWidget {
           Text(
             "Run the following command on your server to start editing",
             textAlign: TextAlign.center,
-            style: GoogleFonts.jetBrainsMono(fontSize: 20, fontWeight: FontWeight.w100, color: Colors.grey),
+            style: GoogleFonts.jetBrainsMono(
+                fontSize: 20, fontWeight: FontWeight.w100, color: Colors.grey),
           ),
           const SizedBox(height: 24),
           const CopyableText(text: "/typewriter connect"),
@@ -53,8 +56,10 @@ class HomePage extends HookConsumerWidget {
 class _DebugConnectButton extends HookConsumerWidget {
   const _DebugConnectButton({super.key});
 
-  void connectTo(WidgetRef ref, String hostname, int port, [String token = ""]) {
-    ref.read(appRouter).replaceAll([ConnectRoute(hostname: hostname, port: port, token: token)]);
+  void connectTo(WidgetRef ref, String hostname, int port,
+      [String token = ""]) {
+    ref.read(appRouter).replaceAll(
+        [ConnectRoute(hostname: hostname, port: port, token: token)]);
   }
 
   Future<void> customConnectToPopup(BuildContext context, WidgetRef ref) async {
@@ -90,7 +95,8 @@ class _DebugConnectButton extends HookConsumerWidget {
     final uri = Uri.parse(url.replaceAll("#/", ""));
     // Get the hostname and port and token from the url query parameters
     // The token is optional and the hostname can be "hostname" or "host"
-    final hostname = uri.queryParameters["host"] ?? uri.queryParameters["hostname"];
+    final hostname =
+        uri.queryParameters["host"] ?? uri.queryParameters["hostname"];
     final port = int.tryParse(uri.queryParameters["port"] ?? "9092") ?? 9092;
     final token = uri.queryParameters["token"] ?? "";
 

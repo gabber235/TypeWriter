@@ -19,37 +19,67 @@ class GlobalWriters extends HookConsumerWidget {
 
 class WritersIndicator extends HookConsumerWidget {
   const WritersIndicator({
-    required this.filter,
+    required this.provider,
     this.child,
     this.builder,
     this.shift,
     this.offset,
+    this.enabled = true,
     super.key,
   })  : assert(child != null || builder != null),
         assert(!(shift != null && offset != null));
 
-  final bool Function(Writer) filter;
+  final ProviderBase<List<Writer>> provider;
   final Widget? child;
   final Widget Function(int)? builder;
 
   final Offset Function(int)? shift;
   final Offset? offset;
+  final bool enabled;
+
+  bool _needsUpdate(List<Writer> previous, List<Writer> current) {
+    if (previous.length != current.length) return true;
+    for (var i = 0; i < previous.length; i++) {
+      if (previous[i] != current[i]) return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final writers = ref.watch(writersProvider.select((list) => list.where(filter).toList()));
+    final writers = useState(<Writer>[]);
+    final offset = this.offset ?? shift?.call(writers.value.length) ?? Offset.zero;
 
-    final offset = this.offset ?? shift?.call(writers.length) ?? Offset.zero;
+    useEffect(
+      () {
+        if (!enabled) {
+          writers.value = [];
+        }
+        return null;
+      },
+      [enabled],
+    );
+
+    if (enabled) {
+      ref.listen(provider, (old, next) {
+        if (_needsUpdate(writers.value, next)) {
+          debugPrint(
+            "state: ${writers.value.map((e) => e.id)}, old: ${old?.map((e) => e.id)}, new: ${next.map((e) => e.id)}, provider: ${provider.name} (${provider is FieldWritersProvider ? (provider as FieldWritersProvider).path : ""})",
+          );
+          writers.value = next;
+        }
+      });
+    }
 
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        child ?? builder?.call(writers.length) ?? const SizedBox(),
-        if (writers.isNotEmpty)
+        child ?? builder?.call(writers.value.length) ?? const SizedBox(),
+        if (writers.value.isNotEmpty)
           Positioned(
             right: -15 + offset.dx,
             top: -25 + offset.dy,
-            child: Writers(writers: writers),
+            child: Writers(writers: writers.value),
           ),
       ],
     );
@@ -80,9 +110,12 @@ class Writers extends HookConsumerWidget {
                 duration: 1.seconds,
                 curve: Curves.elasticOut,
                 right: i * (hovering.value ? 37 : 15.0),
-                child: WriterIcon(writer: writers[i])
-                    .animate()
-                    .scale(end: const Offset(1, 1), duration: 1.seconds, curve: Curves.elasticOut),
+                child: WriterIcon(writer: writers[i]).animate().scale(
+                      begin: const Offset(0.8, 0.8),
+                      end: const Offset(1, 1),
+                      duration: 1.seconds,
+                      curve: Curves.elasticOut,
+                    ),
               ),
             ],
           ],

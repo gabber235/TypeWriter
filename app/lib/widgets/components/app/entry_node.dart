@@ -2,49 +2,75 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
-import "package:typewriter/widgets/components/general//context_menu_region.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
+
+part "entry_node.g.dart";
 
 class EntryNode extends HookConsumerWidget {
   const EntryNode({
-    required this.entry,
+    required this.entryId,
+    this.contextActions = const [],
     super.key,
   }) : super();
-  final Entry entry;
+
+  final String entryId;
+  final List<ContextMenuTile> contextActions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = ref.watch(inspectingEntryIdProvider.select((e) => e == entry.id));
-    final blueprint = ref.watch(entryBlueprintProvider(entry.type));
-    if (blueprint == null) {
-      return const InvalidEntry();
-    }
+    final isSelected = ref.watch(inspectingEntryIdProvider.select((e) => e == entryId));
+    final entryType = ref.watch(entryTypeProvider(entryId));
+    if (entryType == null) return const InvalidEntry();
+
+    final entryName = ref.watch(entryNameProvider(entryId));
+    if (entryName == null) return const InvalidEntry();
+
+    final blueprint = ref.watch(entryBlueprintProvider(entryType));
+    if (blueprint == null) return const InvalidEntry();
 
     // If we are selecting entries then we will show a specialized widget to allow the user to select entries
     final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
     if (isSelectingEntries) {
-      return _SelectingEntryNode(entry, blueprint);
+      return _SelectingEntryNode(entryId, entryType, entryName, blueprint);
     }
 
     return _EntryNode(
-      id: entry.id,
-      type: entry.type,
+      id: entryId,
+      type: entryType,
       backgroundColor: blueprint.color,
       foregroundColor: Colors.white,
-      name: entry.formattedName,
+      name: entryName.formatted,
       icon: Icon(blueprint.icon, size: 18, color: Colors.white),
       isSelected: isSelected,
-      onTap: () => ref.read(inspectingEntryIdProvider.notifier).select(entry),
+      contextActions: contextActions,
+      onTap: () => ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId),
     );
   }
+}
+
+@riverpod
+List<Writer> _writers(_WritersRef ref, String id) {
+  final selectedEntryId = ref.watch(inspectingEntryIdProvider);
+
+  return ref.watch(writersProvider).where((writer) {
+    if (writer.entryId.isNullOrEmpty) return false;
+    if (writer.entryId != id) return false;
+    // If the writer has no field selected then we will always show them on the entry
+    if (writer.field.isNullOrEmpty) return true;
+    // Otherwise we will only show them if we are not inspecting this entry
+    return selectedEntryId != id;
+  }).toList();
 }
 
 class _EntryNode extends HookConsumerWidget {
@@ -58,6 +84,7 @@ class _EntryNode extends HookConsumerWidget {
     this.isSelected = false,
     this.opacity = 1.0,
     this.enableContextMenu = true,
+    this.contextActions = const [],
     this.onTap,
   });
   final String id;
@@ -69,6 +96,7 @@ class _EntryNode extends HookConsumerWidget {
   final bool isSelected;
   final double opacity;
   final bool enableContextMenu;
+  final List<ContextMenuTile> contextActions;
 
   final VoidCallback? onTap;
 
@@ -97,18 +125,12 @@ class _EntryNode extends HookConsumerWidget {
         ref.watch(entryBlueprintProvider(type).select((b) => b?.tags.contains("triggerable") ?? false));
 
     return WritersIndicator(
-      filter: (writer) {
-        if (writer.entryId.isNullOrEmpty) return false;
-        if (writer.entryId != id) return false;
-        // If the writer has no field selected then we will always show them on the entry
-        if (writer.field.isNullOrEmpty) return true;
-        // Otherwise we will only show them if we are not inspecting this entry
-        return !isSelected;
-      },
+      provider: _writersProvider(id),
       child: ContextMenuRegion(
         enabled: enableContextMenu,
         builder: (context) {
           return [
+            ...contextActions,
             if (canTrigger)
               ContextMenuTile.button(
                 title: "Extend with ...",
@@ -179,15 +201,16 @@ class _EntryNode extends HookConsumerWidget {
 
 /// When the user is selecting entries, we will show a different entry node that allows them to select the entry.
 class _SelectingEntryNode extends HookConsumerWidget {
-  const _SelectingEntryNode(this.entry, this.blueprint);
-  final Entry entry;
+  const _SelectingEntryNode(this.entryId, this.type, this.name, this.blueprint);
+  final String entryId;
+  final String type;
+  final String name;
   final EntryBlueprint blueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = ref.watch(hasEntryInSelectionProvider(entry.id));
-    final selectingTag = ref.watch(selectingTagProvider);
-    final canSelect = blueprint.tags.contains(selectingTag);
+    final isSelected = ref.watch(hasEntryInSelectionProvider(entryId));
+    final canSelect = ref.watch(canSelectEntryProvider(entryId));
 
     return MouseRegion(
       cursor: canSelect
@@ -196,37 +219,36 @@ class _SelectingEntryNode extends HookConsumerWidget {
               : SystemMouseCursors.copy
           : SystemMouseCursors.forbidden,
       child: _EntryNode(
-        id: entry.id,
-        type: entry.type,
+        id: entryId,
+        type: type,
         backgroundColor: blueprint.color,
         foregroundColor: Colors.white,
-        name: entry.formattedName,
+        name: name.formatted,
         icon: Icon(blueprint.icon, size: 18, color: Colors.white),
         isSelected: isSelected,
         opacity: canSelect ? 1 : 0.6,
         enableContextMenu: false,
-        onTap: canSelect ? () => ref.read(entrySelectionProvider.notifier).toggleEntrySelection(entry.id) : null,
+        onTap: canSelect ? () => ref.read(entrySelectionProvider.notifier).toggleEntrySelection(entryId) : null,
       ),
     );
   }
 }
 
 class FakeEntryNode extends HookConsumerWidget {
-  const FakeEntryNode({required this.entry, super.key});
+  const FakeEntryNode({required this.entryId, super.key});
 
-  final Entry entry;
+  final String entryId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final blueprint = ref.watch(entryBlueprintProvider(entry.type));
+    final type = ref.watch(entryTypeProvider(entryId));
+    if (type == null) return const InvalidEntry();
 
-    if (blueprint == null) {
-      return Material(
-        color: Colors.redAccent,
-        borderRadius: BorderRadius.circular(4),
-        child: Text("Unknown entry type ${entry.type}"),
-      );
-    }
+    final name = ref.watch(entryNameProvider(entryId));
+    if (name == null) return const InvalidEntry();
+
+    final blueprint = ref.watch(entryBlueprintProvider(type));
+    if (blueprint == null) return const InvalidEntry();
 
     return Material(
       borderRadius: BorderRadius.circular(4),
@@ -241,11 +263,11 @@ class FakeEntryNode extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  entry.formattedName,
+                  name.formatted,
                   style: const TextStyle(color: Colors.white, fontSize: 13),
                 ),
                 Text(
-                  entry.type.formatted,
+                  type.formatted,
                   style: const TextStyle(color: Colors.white70, fontSize: 11),
                 ),
               ],

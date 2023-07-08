@@ -123,6 +123,18 @@ void main() {
       entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
       expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
     });
+
+    test("When an entry is updated with a non-existent path, expect the path to be created", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyWith("new_path.1.something", "new_value");
+      expect(newEntry.get("new_path.1.something"), "new_value");
+    });
+
+    test("When an entry is updated with a non-existent path with wildcard, expect nothing to happen", () {
+      final entry = Entry(rawDynamicEntry);
+      final newEntry = entry.copyWith("new_path.*.something", "new_value");
+      expect(newEntry.get("new_path.*.something"), null);
+    });
   });
 
   group("Copy Mapped", () {

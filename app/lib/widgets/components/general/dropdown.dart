@@ -8,6 +8,7 @@ class Dropdown<T> extends HookWidget {
     required this.value,
     required this.values,
     required this.onChanged,
+    this.focusNode,
     this.filled = true,
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
     this.builder,
@@ -20,6 +21,7 @@ class Dropdown<T> extends HookWidget {
   final List<T> values;
   final Function(T value) onChanged;
 
+  final FocusNode? focusNode;
   final IconData? icon;
   final bool filled;
   final EdgeInsets padding;
@@ -30,6 +32,8 @@ class Dropdown<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final focusNode = this.focusNode ?? useFocusNode();
+
     return Container(
       padding: padding,
       decoration: BoxDecoration(
@@ -38,10 +42,13 @@ class Dropdown<T> extends HookWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: const Color(0xFFBEBEBE), size: 16),
-          const SizedBox(width: 12),
+          if (icon != null) ...[
+            Icon(icon, color: const Color(0xFFBEBEBE), size: 16),
+            const SizedBox(width: 12),
+          ],
           Expanded(
             child: DropdownButton<T>(
+              focusNode: focusNode,
               value: value,
               icon: Container(),
               underline: Container(),
@@ -51,6 +58,7 @@ class Dropdown<T> extends HookWidget {
                   color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
               ),
+              focusColor: Colors.transparent,
               borderRadius: borderRadius ?? BorderRadius.circular(8),
               items: values
                   .map(

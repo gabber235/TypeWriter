@@ -5,8 +5,10 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/utils/debouncer.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
-final currentEditingFieldProvider =
-    StateNotifierProvider<CurrentEditingFieldNotifier, String>(CurrentEditingFieldNotifier.new);
+final currentEditingFieldProvider = StateNotifierProvider<CurrentEditingFieldNotifier, String>(
+  CurrentEditingFieldNotifier.new,
+  name: "currentEditingFieldProvider",
+);
 
 class CurrentEditingFieldNotifier extends StateNotifier<String> {
   CurrentEditingFieldNotifier(this.ref) : super("") {
@@ -15,10 +17,12 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
       inspectingEntryIdProvider,
       (_, __) => state = "",
     );
+
+    _debouncer = Debouncer(duration: 100.ms, callback: _clearIfSame);
   }
   final Ref<dynamic> ref;
 
-  final Debouncer _debouncer = Debouncer(duration: 100.ms);
+  late Debouncer<String> _debouncer;
 
   set path(String path) {
     state = path;
@@ -26,11 +30,13 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
 
   void clearIfSame(String value) {
     // We need to debounce the clear to avoid clearing the field when the user has selected a new field
-    _debouncer.run(() {
-      if (state == value) {
-        state = "";
-      }
-    });
+    _debouncer.run(value);
+  }
+
+  void _clearIfSame(String value) {
+    if (state == value) {
+      state = "";
+    }
   }
 
   @override
@@ -50,7 +56,7 @@ void useFocusedChange(FocusNode focus, Function(bool) onChange, [List<Object?>? 
       focus.addListener(onFocusChange);
       return () => focus.removeListener(onFocusChange);
     },
-    [focus, ...?keys],
+    keys ?? [],
   );
 }
 

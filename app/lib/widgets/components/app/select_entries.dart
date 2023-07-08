@@ -1,10 +1,11 @@
-import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_animate/flutter_animate.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
@@ -34,11 +35,32 @@ String selectingTag(SelectingTagRef ref) {
   return selection?.tag ?? "";
 }
 
+@riverpod
+bool canSelectEntry(CanSelectEntryRef ref, String id) {
+  final selection = ref.watch(entrySelectionProvider);
+  if (selection == null) {
+    return false;
+  }
+  if (selection.excludedEntries.contains(id)) {
+    return false;
+  }
+  final entryType = ref.watch(globalEntryProvider(id).select((entry) => entry?.type));
+  if (entryType == null) {
+    return false;
+  }
+  final blueprint = ref.watch(entryBlueprintProvider(entryType));
+  if (blueprint == null) {
+    return false;
+  }
+  return blueprint.tags.contains(selection.tag);
+}
+
 @freezed
 class EntriesSelection with _$EntriesSelection {
   const factory EntriesSelection({
     required String tag,
     required List<String> selectedEntries,
+    @Default([]) List<String> excludedEntries,
     Function(Ref<dynamic>, List<String>)? onSelectionChanged,
   }) = _EntriesSelection;
 }
@@ -49,15 +71,21 @@ class EntriesSelectionNotifier extends StateNotifier<EntriesSelection?> {
   final Ref<dynamic> ref;
 
   void startSelection(
-    String tag, [
+    String tag, {
     List<String> selectedEntries = const [],
+    List<String> excludedEntries = const [],
     Function(Ref<dynamic>, List<String>)? onSelectionChanged,
-  ]) {
+  }) {
     if (state != null) {
       throw StateError("Already selecting entries");
     }
 
-    state = EntriesSelection(tag: tag, selectedEntries: selectedEntries, onSelectionChanged: onSelectionChanged);
+    state = EntriesSelection(
+      tag: tag,
+      selectedEntries: selectedEntries,
+      excludedEntries: excludedEntries,
+      onSelectionChanged: onSelectionChanged,
+    );
   }
 
   void finishSelection() {
@@ -216,17 +244,12 @@ class _EntriesSelectorList extends HookConsumerWidget {
       itemCount: selectedEntries.length,
       itemBuilder: (context, index) {
         final entryId = selectedEntries[index];
-        final entry = page.entries.firstWhereOrNull((entry) => entry.id == entryId);
-
-        if (entry == null) {
-          return const SizedBox.shrink();
-        }
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
           child: MouseRegion(
             cursor: SystemMouseCursors.disappearing,
-            child: FakeEntryNode(entry: entry),
+            child: FakeEntryNode(entryId: entryId),
           ),
         );
       },

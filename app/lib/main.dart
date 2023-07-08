@@ -3,15 +3,26 @@ import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:stack_trace/stack_trace.dart" as stack_trace;
 import "package:typewriter/app_router.dart";
+import "package:typewriter/widgets/components/general/toasts.dart";
+import "package:typewriter/widgets/inspector/editors.dart";
+import "package:uuid/uuid.dart";
+
+const uuid = Uuid();
+const mcmetaUrl = "https://raw.githubusercontent.com/misode/mcmeta";
 
 void main() async {
-  FlutterError.demangleStackTrace = (StackTrace stack) {
+  FlutterError.demangleStackTrace = (stack) {
     if (stack is stack_trace.Trace) return stack.vmTrace;
     if (stack is stack_trace.Chain) return stack.toTrace().vmTrace;
     return stack;
   };
 
-  runApp(const ProviderScope(child: TypeWriterApp()));
+  runApp(
+    const ProviderScope(
+      // observers: [if (kDebugMode) Logger()],
+      child: TypeWriterApp(),
+    ),
+  );
 }
 
 class TypeWriterApp extends HookConsumerWidget {
@@ -25,9 +36,9 @@ class TypeWriterApp extends HookConsumerWidget {
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
       debugShowCheckedModeBanner: false,
-      routerDelegate: router.delegate(),
-      routeInformationParser: router.defaultRouteParser(),
+      routerConfig: router.config(),
       shortcuts: WidgetsApp.defaultShortcuts,
+      builder: (_, child) => ToastDisplay(child: child),
     );
   }
 
@@ -42,7 +53,9 @@ class TypeWriterApp extends HookConsumerWidget {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
-        fillColor: brightness == Brightness.light ? Colors.black.withOpacity(0.05) : Colors.black.withOpacity(0.2),
+        fillColor: brightness == Brightness.light
+            ? Colors.black.withOpacity(0.05)
+            : Colors.black.withOpacity(0.2),
         filled: true,
         hoverColor: Colors.black.withOpacity(0.1),
         errorStyle: const TextStyle(
@@ -50,7 +63,9 @@ class TypeWriterApp extends HookConsumerWidget {
           fontSize: 12,
         ),
         hintStyle: GoogleFonts.jetBrainsMono(
-          color: brightness == Brightness.light ? const Color(0x99000000) : const Color(0x99FFFFFF),
+          color: brightness == Brightness.light
+              ? const Color(0x99000000)
+              : const Color(0x99FFFFFF),
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
@@ -64,7 +79,29 @@ class TypeWriterApp extends HookConsumerWidget {
         ),
       ),
       hoverColor: Colors.black.withOpacity(0.1),
-      errorColor: Colors.red,
+      colorScheme: baseTheme.colorScheme.copyWith(
+        brightness: brightness,
+        error: Colors.redAccent,
+      ),
     );
+  }
+}
+
+class Logger extends ProviderObserver {
+  const Logger();
+  @override
+  void didUpdateProvider(
+    ProviderBase<Object?> provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    debugPrint('''
+{
+  "provider": "${provider.name ?? provider.runtimeType}",
+  "field": "${provider is FieldValueProvider ? provider.path : "none"}",
+  "previousValue": "$previousValue",
+  "newValue": "$newValue"
+}''');
   }
 }

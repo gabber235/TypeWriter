@@ -2,108 +2,161 @@ package me.gabber235.typewriter.interaction
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
-import com.comphenix.protocol.events.*
-import me.gabber235.typewriter.Typewriter.Companion.plugin
-import me.gabber235.typewriter.utils.memoized
+import com.comphenix.protocol.events.ListenerPriority
+import com.comphenix.protocol.events.PacketAdapter
+import com.comphenix.protocol.events.PacketContainer
+import com.comphenix.protocol.events.PacketEvent
+import com.comphenix.protocol.reflect.StructureModifier
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.utils.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.entity.Player
-import java.lang.reflect.Method
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.plugin.Plugin
+import org.koin.java.KoinJavaComponent.get
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
-object ChatHistoryHandler :
-	PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.SYSTEM_CHAT) {
+class ChatHistoryHandler(plugin: Plugin) :
+    PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.SYSTEM_CHAT), Listener {
 
-	fun init() {
-		ProtocolLibrary.getProtocolManager().addPacketListener(this)
-	}
+    fun initialize() {
+        ProtocolLibrary.getProtocolManager().addPacketListener(this)
+        server.pluginManager.registerSuspendingEvents(this, plugin)
+    }
 
-	private val histories = mutableMapOf<UUID, ChatHistory>()
+    private val histories = mutableMapOf<UUID, ChatHistory>()
 
-	private val contentMethod by memoized<Class<out Any>, Method> { it.getMethod("content") }
-	private val adventureContentMethod by memoized<Class<out Any>, Method> {
-		it.getMethod("adventure\$content")
-	}
-	private val isActionBarMessageMethod by memoized<Class<out Any>, Method?> { clazz ->
-		clazz.methods.find {
-			it.returnType == Boolean::class.java && it.parameterCount == 0
-		}
-	}
+    // When the serer sends a message to the player
+    override fun onPacketSending(event: PacketEvent) {
+        if (event.packetType != PacketType.Play.Server.SYSTEM_CHAT) return
 
-	// When the serer sends a message to the player
-	override fun onPacketSending(event: PacketEvent) {
-		if (event.packetType == PacketType.Play.Server.SYSTEM_CHAT) {
-			val handle = event.packet.handle
-			val isActionBarMessage = isActionBarMessageMethod(handle::class.java)?.invoke(handle) as? Boolean ?: false
-			if (isActionBarMessage) return
+        if (event.packet.isActionBar()) return
 
-			val contentValue =
-				contentMethod(handle::class.java).invoke(handle) ?: adventureContentMethod(handle::class.java).invoke(
-					handle
-				) ?: return
+        val component = event.packet.getChatComponent() ?: return
 
-			val content = contentValue as? String ?: return
-			val component = GsonComponentSerializer.gson().deserialize(content)
-			// If the message is a broadcast of previous messages.
-			// We don't want to add this to the history.
-			if (component is TextComponent && component.content() == "no-index") return
-			getHistory(event.player).addMessage(component)
-		}
-	}
+        // If the message is a broadcast of previous messages.
+        // We don't want to add this to the history.
+        if (component is TextComponent && component.content() == "no-index") return
+        val history = getHistory(event.player)
+        history.addMessage(component)
 
-	fun getHistory(player: Player): ChatHistory {
-		return histories.getOrPut(player.uniqueId) { ChatHistory() }
-	}
+        if (history.isBlocking()) {
+            event.isCancelled = true
+        }
+    }
 
-	fun shutdown() {
-		ProtocolLibrary.getProtocolManager().removePacketListener(this)
-	}
+
+    fun getHistory(player: Player): ChatHistory {
+        return histories.getOrPut(player.uniqueId) { ChatHistory() }
+    }
+
+    fun blockMessages(player: Player) {
+        getHistory(player).startBlocking()
+    }
+
+    fun unblockMessages(player: Player) {
+        getHistory(player).stopBlocking()
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onQuit(event: PlayerQuitEvent) {
+        histories.remove(event.player.uniqueId)
+    }
+
+    fun shutdown() {
+        ProtocolLibrary.getProtocolManager().removePacketListener(this)
+    }
+}
+
+/**
+ * Returns if a SystemChat packet is sent as an action bar.
+ */
+fun PacketContainer.isActionBar(): Boolean {
+    val booleans = booleans
+    if (booleans.size() > 0) {
+        return booleans.readSafely(0)
+    }
+    return integers.readSafely(0) == 2
+}
+
+/**
+ * Returns the chat component from a SystemChat packet.
+ */
+fun PacketContainer.getChatComponent(): Component? {
+    val adventureModifier: StructureModifier<Component>? = getSpecificModifier(Component::class.java)
+    return adventureModifier?.readSafely(0)
+        ?: strings.readSafely(0)?.let { GsonComponentSerializer.gson().deserialize(it) }
 }
 
 val Player.chatHistory: ChatHistory
-	get() = ChatHistoryHandler.getHistory(this)
+    get() = get<ChatHistoryHandler>(ChatHistoryHandler::class.java).getHistory(this)
+
+fun Player.startBlockingMessages() = chatHistory.startBlocking()
+fun Player.stopBlockingMessages() = chatHistory.stopBlocking()
 
 class ChatHistory {
-	private val messages = ConcurrentLinkedQueue<OldMessage>()
+    private val messages = ConcurrentLinkedQueue<OldMessage>()
+    private var blocking: Boolean = false
 
-	fun addMessage(message: Component) {
-		messages.add(OldMessage(message))
-		while (messages.size > 100) {
-			messages.poll()
-		}
-	}
+    fun startBlocking() {
+        blocking = true
+    }
 
-	fun clear() {
-		messages.clear()
-	}
+    fun stopBlocking() {
+        blocking = false
+    }
 
-	private fun clearMessage() = "\n".repeat(100 - messages.size)
+    fun isBlocking(): Boolean = blocking
 
-	fun resendMessages(player: Player, clear: Boolean = true) {
-		// Start with "no-index" to prevent the server from adding the message to the history
-		var msg = Component.text("no-index")
-		if (clear) msg = msg.append(Component.text(clearMessage()))
-		messages.forEach { msg = msg.append(Component.text("\n")).append(it.message) }
-		player.sendMessage(msg)
-	}
+    fun addMessage(message: Component) {
+        messages.add(OldMessage(message))
+        while (messages.size > 100) {
+            messages.poll()
+        }
+    }
 
-	fun composeDarkMessage(message: Component, clear: Boolean = true): Component {
-		// Start with "no-index" to prevent the server from adding the message to the history
-		var msg = Component.text("no-index")
-		if (clear) msg = msg.append(Component.text(clearMessage()))
-		messages.forEach {
-			msg = msg.append(it.darkenMessage)
-		}
-		return msg.append(message)
-	}
+    fun clear() {
+        messages.clear()
+    }
+
+    private fun clearMessage() = "\n".repeat(100 - messages.size)
+
+    fun resendMessages(player: Player, clear: Boolean = true) {
+        // Start with "no-index" to prevent the server from adding the message to the history
+        var msg = Component.text("no-index")
+        if (clear) msg = msg.append(Component.text(clearMessage()))
+        messages.forEach { msg = msg.append(Component.text("\n")).append(it.message) }
+        player.sendMessage(msg)
+    }
+
+    fun composeDarkMessage(message: Component, clear: Boolean = true): Component {
+        // Start with "no-index" to prevent the server from adding the message to the history
+        var msg = Component.text("no-index")
+        if (clear) msg = msg.append(Component.text(clearMessage()))
+        messages.forEach {
+            msg = msg.append(it.darkenMessage)
+        }
+        return msg.append(message)
+    }
+
+    fun composeEmptyMessage(message: Component, clear: Boolean = true): Component {
+        // Start with "no-index" to prevent the server from adding the message to the history
+        var msg = Component.text("no-index")
+        if (clear) msg = msg.append(Component.text(clearMessage()))
+        return msg.append(message)
+    }
 }
 
 data class OldMessage(val message: Component) {
-	val darkenMessage: Component by lazy(LazyThreadSafetyMode.NONE) {
-		Component.text("${message.plainText()}\n").color(TextColor.color(0x7d8085))
-	}
+    val darkenMessage: Component by lazy(LazyThreadSafetyMode.NONE) {
+        Component.text("${message.plainText()}\n").color(TextColor.color(0x7d8085))
+    }
 }

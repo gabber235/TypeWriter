@@ -1,5 +1,6 @@
 package me.ahdg6.typewriter.mythicmobs.entries.action
 
+import com.github.shynixn.mccoroutine.bukkit.launch
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
 import me.gabber235.typewriter.adapters.Colors
@@ -8,10 +9,10 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import java.util.*
 
 
 @Entry("spawn_mythicmobs_mob", "Spawn a mob from MythicMobs", Colors.ORANGE, Icons.DRAGON)
@@ -34,6 +35,8 @@ class SpawnMobActionEntry(
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName)
         if (!mob.isPresent) return
 
-        mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level)
+        plugin.launch {
+            mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level)
+        }
     }
 }
