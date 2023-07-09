@@ -1,4 +1,5 @@
 import ReactPlayer from "react-player";
+import Player from "@site/src/components/Player";
 
 # First interaction
 
@@ -48,7 +49,8 @@ page. Pages need a name which is used to identify the page and must be unique. W
 Page names are written in `snake_case`, just like any other identifier in Typewriter.\
 For now, we will leave the page type on `Sequence`.
 
-<ReactPlayer url={require("./assets/first-interaction/add-page.webm").default} playing loop muted width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/add-page.webm").default} />
+
 
 ## Panel layout
 
@@ -85,7 +87,7 @@ This will show you a list of entries that you can create.
 Click on the `Add On Interact With Block` entry. 
 This will create a new `event` entry.
 
-<ReactPlayer url={require("./assets/first-interaction/create-event.webm").default} playing loop muted width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/create-event.webm").default} />
 
 As you can see, the inspector auto selected the entry that we just created. In the inspector, there are several
 things that we can change. Let's change the name of the entry to `on_flower_click`. We can also change the block
@@ -117,13 +119,13 @@ basic version of a speaker. Give it the name of `flower`, and let its display na
 This will make the display name of the speaker red and bold using the [Adventure Library](https://docs.adventure.kyori.net/minimessage/format.html).
 It should look like this:
 
-<ReactPlayer url={require("./assets/first-interaction/create-speaker.webm").default} playing loop muted width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/create-speaker.webm").default} />
 
 After that, we still need to go back to the `flower` page, and select the new speaker in
 the `Inspect Flower` entry. To do this, click on the `Speaker` field. This will open a modal where you can select a speaker.
 Select the `flower` speaker. It should look like this:
 
-<ReactPlayer url={require("./assets/first-interaction/select-speaker.webm").default} playing loop width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/select-speaker.webm").default} />
 
 Now we only need to put in the different options that we want the player to be able to use. Click on the `+`
 next to the options drop down to add a new option. Then change the text of the option to `Smell the flower`,
@@ -139,7 +141,7 @@ clicking on the purple selection next to the triggers field. This will put in a 
 the entries that you want to trigger. When you are done you can click finish to connect them up. It should look
 something like:
 
-<ReactPlayer url={require("./assets/first-interaction/connect-entries.webm").default} playing loop width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/connect-entries.webm").default} />
 
 ## Testing the interaction
 
@@ -155,7 +157,7 @@ We do **not** have to restart the server. Publishing changes is instant and will
 
 If we now go in-game we will see the following when we click on a red tulip it will show us the two options:
 
-<ReactPlayer url={require("./assets/first-interaction/game-1.webm").default} playing loop width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/game-1.webm").default} />
 
 ## Smelling flower
 
@@ -175,7 +177,7 @@ global triggers.
 
 When you publish the changes in the game, it should look something like this:
 
-<ReactPlayer url={require("./assets/first-interaction/game-2.webm").default} playing loop width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/game-2.webm").default} />
 
 ### Adding a conditional dialogue
 
@@ -231,7 +233,7 @@ The UI should look something like this:
 
 When you publish the changes. In the game it should look something like this:
 
-<ReactPlayer url={require("./assets/first-interaction/game-3.webm").default} playing loop width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/game-3.webm").default} />
 
 ## Adding additional dialogue
 
@@ -253,7 +255,7 @@ Finally, the UI should look something like this:
 
 When you publish the changes. In the game it should look something like this:
 
-<ReactPlayer url={require("./assets/first-interaction/game-4.webm").default} playing loop width="100%" height="100%" />
+<Player url={require("./assets/first-interaction/game-4.webm").default} />
 
 ## Next steps
 
