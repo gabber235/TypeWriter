@@ -48,7 +48,7 @@ page. Pages need a name which is used to identify the page and must be unique. W
 Page names are written in `snake_case`, just like any other identifier in Typewriter.\
 For now, we will leave the page type on `Sequence`.
 
-<ReactPlayer url={require("./assets/first-interaction/add-page.webm").default} playing loop width="100%" height="100%" />
+<ReactPlayer url={require("./assets/first-interaction/add-page.webm").default} playing loop muted width="100%" height="100%" />
 
 ## Panel layout
 
@@ -62,14 +62,13 @@ Let's have a look at everything that is on the panel.
    graph editor to make it easier to work with.
 3. **The inspector**: This is where you can edit the properties of the selected node. This is where the magic
    happens.
-4. **The app bar**: There are multiple actions that we can click on. Let's check them out from left to right
-
--   **Staging indicator**: This indicates whether you have staging changes. If the indicator is orange, it means
+4. **The action bar**: There are multiple actions that we can click on. Let's check them out from left to right
+    -   **Staging indicator**: This indicates whether you have staging changes. If the indicator is orange, it means
     that you have changes that are not active on the server. When green, it means that the changes are active on the
     server. We will learn more about this [Here](#testing-the-interaction).
--   **Search bar**: This is where you can search for entries or create new ones. We will learn more about this
+    -   **Search bar**: This is where you can search for entries or create new ones. We will learn more about this
     [Here](#creating-first-entry).
--   **Add button**: This is where you can add new entries. This opens the search bar where you can create new
+    -   **Add button**: This is where you can add new entries. This opens the search bar where you can create new
     entries.
 
 ## Creating first entry
@@ -78,12 +77,15 @@ Let's actually start working on the interaction. To do this, we need to create a
 unit of something. It can be a `dialogue`, an `event`, an `action`, or anything else.
 
 Let's create an `event` entry that will be triggered when we click on a red tulip. To do this, click on the `+`
-button in the app bar. This will open the search bar. As you can see there is already `add:` written in the
-search bar. The search bar is smart and can filter for specific actions. To create the event, type `add:
-interact with block`. This will show you a list of entries that you can create. Click on the `Add On Interact
-With Block` entry. This will create a new `event` entry.
+button in the action bar.
+This will open the search bar.
+The search bar is smart and can filter for specific actions such as creating a new entry.
+To create the event, type `on interact with block`.
+This will show you a list of entries that you can create. 
+Click on the `Add On Interact With Block` entry. 
+This will create a new `event` entry.
 
-<ReactPlayer url={require("./assets/first-interaction/create-event.webm").default} playing loop width="100%" height="100%" />
+<ReactPlayer url={require("./assets/first-interaction/create-event.webm").default} playing loop muted width="100%" height="100%" />
 
 As you can see, the inspector auto selected the entry that we just created. In the inspector, there are several
 things that we can change. Let's change the name of the entry to `on_flower_click`. We can also change the block
@@ -95,9 +97,9 @@ select a block. Let's select the red tulip. After this the inspector should look
 ## Creating an option
 
 Currently, when we click on the red tulip, nothing happens. This is because there is no entry that gets
-triggered when a player click on a red tulip. Let's change that. To do this, we need to create an option. An
-option is a choice that the player can make. Let's create an option that will be shown when we click on the red
-tulip. To do this, click on the `+` button in the app bar, and add an `option` entry.
+triggered when a player click on a red tulip. Let's change that. To do this, we need to create an `Option`. An
+`Option` is a dialogue that allows the player to make a choice. Let's create an `Option` that will be shown when we click on the red
+tulip. To do this, click on the `+` button in the action bar, and add an `option` entry.
 
 Then change the name of the entry to `inspect_flower`. Then change the text of the option to `What do you want
 to do?`. After this the inspector should look like this:
@@ -106,16 +108,16 @@ to do?`. After this the inspector should look like this:
 
 ### Adding a speaker
 
-Every dialogue needs a speaker. Speakers have a display name and can play a Minecraft sound when they talk.
+Every dialogue needs a speaker. Speakers have a display name and can play a Minecraft sound when they are triggered.
 Speakers are something called `static` entries. `Static` entries are entries that are not triggered by anything.
 They are always active, and can be used to reference things.
 
-To create static entries, we must make a special page called a `Static` page. Let's create a static page called `Flower Static`. Then, inside of it, let's create a `simple_speaker` which is the most
+To create static entries, we must make a special page called a `Static` page. Let's create a static page called `Flower Static`. Then, inside of it, create a `simple_speaker` which is the most
 basic version of a speaker. Give it the name of `flower`, and let its display name be `<red><bold>Flower`.
 This will make the display name of the speaker red and bold using the [Adventure Library](https://docs.adventure.kyori.net/minimessage/format.html).
 It should look like this:
 
-<ReactPlayer url={require("./assets/first-interaction/create-speaker.webm").default} playing loop width="100%" height="100%" />
+<ReactPlayer url={require("./assets/first-interaction/create-speaker.webm").default} playing loop muted width="100%" height="100%" />
 
 After that, we still need to go back to the `flower` page, and select the new speaker in
 the `Inspect Flower` entry. To do this, click on the `Speaker` field. This will open a modal where you can select a speaker.
@@ -138,12 +140,6 @@ the entries that you want to trigger. When you are done you can click finish to 
 something like:
 
 <ReactPlayer url={require("./assets/first-interaction/connect-entries.webm").default} playing loop width="100%" height="100%" />
-
-Another way of connecting entries is shown in the video below:
-
-<ReactPlayer url={require("./assets/first-interaction/connect-entries-alternative.webm").default} playing loop width="100%" height="100%" />
-
-This method is oftentimes quicker, as it connects entries as soon as they are created.
 
 ## Testing the interaction
 
@@ -189,17 +185,17 @@ boring very quickly. Let's fix it by introducing a new concept called `Facts`.
 #### What are facts?
 
 Facts are a way to store information for each player. Every fact is a separate entry and can only store one
-integer per player. When an entry gets triggered we can check if a player meets a certain condition for a given
-fact. Only if the player meets the condition, will the entry get triggered. Then an entry can modify any facts
-value for that player.
+number per player. When an entry gets triggered we can check if a player meets a certain criteria for a given
+fact. Only if the player meets the criteria, will the entry get triggered. Then an entry can modify the same or different facts
+for that player.
 
 There are different types of facts. Each type of fact changes when a player "forgets" a fact. Aka when a player
 logs out, after a certain amount of time, or never. When a player forgets a fact, the value of the fact will be
-reset to the default value 0.
+reset to the default value `0`.
 
 #### Creating a fact
 
-To create a fact, head over to a static page such as `Flower Static`, click on the `+` button in the app bar, and add a `permanent_fact` entry. Then change the name
+To create a fact, head over to a static page such as `Flower Static`, click on the `+` button in the action bar, and add a `permanent_fact` entry. Then change the name
 of the entry to `smelled_flower`. We can add a comment describing the fact and how it is used. After this the
 inspector should look like this:
 
@@ -216,8 +212,8 @@ inspector should look like this:
 
 ![inspector-6](./assets/first-interaction/inspector-6.png)
 
-Now we can create a new `spoken` dialogue entry that will be triggered when the player looks at the flower for
-the sequential times. Rename it to `smell_flower_second_time`, add the text `You smell the flower again. It still smells <blue><bold>fragrant</bold></blue>.`, select our `flower` speaker we created earlier, and finally specify a
+Now we can create a new `spoken` dialogue entry that will be triggered when the player smells the flower for
+subsequent times. Rename it to `smell_flower_second_time`, add the text `You smell the flower again. It still smells <blue><bold>fragrant</bold></blue>.`, select our `flower` speaker we created earlier, and finally specify a
 duration of `1s` that the message will be animated. Connect it to the `inspect_flower` entry as a trigger for
 the `smell the flower` option.
 
@@ -261,4 +257,6 @@ When you publish the changes. In the game it should look something like this:
 
 ## Next steps
 
-Now that you understand the basics of TypeWriter and have made your first interaction, it's time to spice up your interaction by adding a `cinematic`. Read the [First Interaction](First-cinematic) guide to learn more! If you have any questions, feel free to ask them in the [Discord](https://discord.gg/HtbKyuDDBw).
+Now that you understand the basics of TypeWriter and have made your first interaction, it's time to spice up your interaction by adding a `cinematic`. Read the [First Interaction](First-cinematic) guide to learn more!
+
+If you have any questions, feel free to ask them in the [Discord](https://discord.gg/HtbKyuDDBw).
