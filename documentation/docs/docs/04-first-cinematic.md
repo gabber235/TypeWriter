@@ -14,7 +14,7 @@ This guide builds upon the [First Interaction](03-first-interaction.mdx) guide.
 Cinematics are a way to have different actions happen in a precise order. This includes having the player's camera move around
 from location to location, having particles show up at different locations at different times, having NPCs move around,
 and much more!
-<br>This makes cinematics useful in a wide variety of scenarioes, with some examples being:
+<br>This makes cinematics useful in a wide variety of scenarios, with some examples being:
 - A cutscene in a quest
 - As part of a tutorial
 - Fast travel
@@ -82,7 +82,7 @@ Let's head over to the Flower page by clicking on it in the Pages sidebar. We th
 Search for `add: cinematic` when adding a new entry, and select `Add Cinematic` entry. We'll then rename this entry to
 `play_flower_cinematic`, and in the entry sidebar, click on the `Page` field. Here you should see the `Flower Cinematic` page
 that we made earlier. Select that page, and then select the `Inspect Flower` entry. Here we want to add a new option. 
-Let's call it `Look at flower`. In the new option, add a new Trigger, and select `Play Flower Cinematic` option in the searh box.
+Let's call it `Look at flower`. In the new option, add a new Trigger, and select `Play Flower Cinematic` option in the search box.
 
 ![Cinematic Example](./assets/first-cinematic/cinematic-trigger.webm)
 
@@ -98,13 +98,12 @@ We'll then rename this entry to `flower_dialogue`. Now, let's first add a speake
 After that, click `Add Segment` to add a segment to the dialogue entry, and select it.
 
 Let's change the time frame of the dialogue to start after 1 second. To do this, we can either change the Start Frame field, or drag the segment on the track
-to our desired starting point. We also have to remember that duration is in frames, not seconds, and remembering from earlier
-that 1 second equals 20 frames, change the Start Frame to 20.
+to our desired starting point. We also have to remember that duration is in frames, not seconds, and remembering from earlier, 1 second equals 20 frames, change the Start Frame to 20.
 
 We then have to add the text to be displayed. Insert `That flower looks <red><bold>stunning` to the Text field.
-<br>Aand we're done! Dialogue should now appear 1 second into the cinematic.
+<br>And we're done! Dialogue should now appear 1 second into the cinematic.
 
-There are a few different dialogue entries aswell. Here's a quick overview:
+There are a few different dialogue entries as well. Here's a quick overview:
 
 **Actionbar Dialogue Cinematic**
 <br>Will send the speaker & the message in the actionbar.
@@ -140,7 +139,7 @@ should spawn around the red tulip.
 
 ## Adding a Self NPC
 :::info
-For this step, you have to type /tw connect from in game as a player, otherwise you won't be able to record the NPC movement.
+For this step, you have to type `/tw connect` from in game as a player, otherwise you won't be able to record the NPC movement.
 :::
 
 Want players to be able to see "themselves" while in a cinematic? Well, you can! Let's add a self NPC that walks over and looks at the flower
@@ -151,8 +150,8 @@ to store the artifact in. Then, rename the artifact to `player_look_at_flower`.
 
 We then first want to `Publish`, before heading back to the cinematic page, select the player walk segment again, 
 and now we want to click on the camera button to the right of `Artifact`, and open our Minecraft. Here you'll see a bossbar telling you
-to press F to start recording. Pressing F will cause the cinematic to start playing without the Camera Entry, and all your movements during the
-cinematic will be saved and be used for the NPC movement. You'll want to move to where you want to start the NPC movement, and hit F, before
+to press `F` to start recording. Pressing `F` will cause the cinematic to start playing without the Camera Entry, and all your movements during the
+cinematic will be saved and be used for the NPC movement. You'll want to move to where you want to start the NPC movement, and hit `F`, before
 following the cinematic to add movement to it.
 
 If you now play the cinematic again, an NPC with the skin of the player watching the cinematic should appear, with all the movement you did.
