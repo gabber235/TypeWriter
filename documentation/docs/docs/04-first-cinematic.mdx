@@ -41,17 +41,17 @@ Let's rename the entry to `camera_view`. Then, click `Add Segment` to add a new 
 
 You'll now see a lot of new fields that aren't in the other pages. Let's go through those.
 
-**Track Duration (1)**
-<br/>The track duration field is where you decide the duration of the entire cinematic.
+**Track Duration (1)**<br/>
+The track duration field is where you decide the duration of the entire cinematic.
 It's important to note that the duration is in amount of frames, and not in seconds.
 You can however easily convert from seconds to frames, as 20 frames is equal to 1 second.
 
-**Segments (2)**
-<br />A segment is what the entry does in that specific time frame. Entries can have multiple segments, but an entry can't
+**Segments (2)**<br/>
+A segment is what the entry does in that specific time frame. Entries can have multiple segments, but an entry can't
 have overlapping segments. For that, create another entry.
 
-**Segments Track (3)**
-<br/>This is where the segments of entries are displayed to you. Here you can change when a segment starts and when it ends.
+**Segments Track (3)**<br/>
+This is where the segments of entries are displayed to you. Here you can change when a segment starts and when it ends.
 Keep in mind you can also do this on each segment's sidebar by modifying the `Start Frame` & `End Frame` fields.
 
 ![Cinematics Layout](./assets/first-cinematic/cinematic-layout.png)
@@ -77,6 +77,9 @@ the cinematic should start playing!
 <Player url={require("./assets/first-cinematic/cinematic-1.webm").default} />
 
 ## Triggering the Cinematic
+:::info
+I strongly recommend picking a specific red tulip and changing the cinematic paths to be around it if you havn't done so already.
+:::
 Now, you probably want the cinematic to be triggered when a player does something, and not through a command.
 Let's do that by modifying the flower example from [First Interaction](03-first-interaction) so that one of the
 options causes the cinematic to play.
@@ -89,9 +92,6 @@ Let's call it `Look at flower`. In the new option, add a new Trigger, and select
 
 <Player url={require("./assets/first-cinematic/cinematic-trigger.webm").default} />
 
-:::info
-I strongly recommend picking a specific red tulip and changing the cinematic paths to be around it.
-:::
 You should now be able to select the option `Smell the flower` when clicking a red tulip, and it'll play the cinematic.
 
 ## Adding dialogue
@@ -104,21 +104,21 @@ Let's change the time frame of the dialogue to start after 1 second. To do this,
 to our desired starting point. We also have to remember that duration is in frames, not seconds, and remembering from earlier, 1 second equals 20 frames, change the Start Frame to 20.
 
 We then have to add the text to be displayed. Insert `That flower looks &lt;red&gt;&lt;bold&gt;stunning` to the Text field.
-<br />And we're done! Dialogue should now appear 1 second into the cinematic.
 
+And we're done! Dialogue should now appear 1 second into the cinematic.
 There are a few different dialogue entries as well. Here's a quick overview:
 
-**Actionbar Dialogue Cinematic**
-<br/>Will send the speaker & the message in the actionbar.
+**Actionbar Dialogue Cinematic**<br/>
+Will send the speaker & the message in the actionbar.
 
-**Subtitle Dialogue Cinematic**
-<br/>Will send the speaker in the actionbar, and sends the message as a subtitle (middle of screen).
+**Subtitle Dialogue Cinematic**<br/>
+Will send the speaker in the actionbar, and sends the message as a subtitle (middle of screen).
 
-**Spoken Dialogue Cinematic**
-<br/>Will send the speaker & message in chat.
+**Spoken Dialogue Cinematic**<br/>
+Will send the speaker & message in chat.
 
-**Random Dialogue Cinematics**
-<br/>With the random dialogue versions of the above options, you can add several texts and the plugin will randomly pick one to send to the player.
+**Random Dialogue Cinematics**<br/>
+With the random dialogue versions of the above options, you can add several texts and the plugin will randomly pick one to send to the player.
 
 <Player url={require("./assets/first-cinematic/cinematic-2.webm").default} />
 
