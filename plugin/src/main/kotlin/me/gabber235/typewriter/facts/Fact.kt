@@ -6,20 +6,18 @@ import java.util.*
 
 
 val FactEntry.formattedName: String
-	get() = name.split(".")
-		.joinToString(" | ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
-		.split("_")
-		.joinToString(" ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+    get() = name.split(".")
+        .joinToString(" | ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+        .split("_")
+        .joinToString(" ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
 
 data class Fact(val id: String, val value: Int, val lastUpdate: LocalDateTime = LocalDateTime.now()) {
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (other !is Fact) return false
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Fact) return false
 
-		if (id != other.id) return false
+        return id == other.id
+    }
 
-		return true
-	}
-
-	override fun hashCode(): Int = id.hashCode()
+    override fun hashCode(): Int = id.hashCode()
 }

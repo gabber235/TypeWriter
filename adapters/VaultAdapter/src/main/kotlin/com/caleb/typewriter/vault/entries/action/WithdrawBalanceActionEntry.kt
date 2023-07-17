@@ -12,20 +12,27 @@ import net.milkbowl.vault.economy.Economy
 import org.bukkit.entity.Player
 
 @Entry("withdraw_balance", "Withdraw Balance", Colors.RED, Icons.MONEY_BILL)
-data class WithdrawBalanceActionEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val criteria: List<Criteria> = emptyList(),
-	override val modifiers: List<Modifier> = emptyList(),
-	override val triggers: List<String> = emptyList(),
-	@Help("The amount of money to withdraw.")
-	private val amount: Double = 0.0,
+/**
+ * The `Withdraw Balance Action` is used to withdraw money from a user's balance.
+ *
+ * ## How could this be used?
+ *
+ * This action could be used to withdraw money from a user's balance if they lose a bet, or get killed.
+ */
+class WithdrawBalanceActionEntry(
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
+    override val modifiers: List<Modifier> = emptyList(),
+    override val triggers: List<String> = emptyList(),
+    @Help("The amount of money to withdraw.")
+    private val amount: Double = 0.0,
 ) : ActionEntry {
-	override fun execute(player: Player) {
-		super.execute(player)
+    override fun execute(player: Player) {
+        super.execute(player)
 
-		val economy: Economy = VaultAdapter.economy ?: return
+        val economy: Economy = VaultAdapter.economy ?: return
 
-		economy.withdrawPlayer(player, amount)
-	}
+        economy.withdrawPlayer(player, amount)
+    }
 }

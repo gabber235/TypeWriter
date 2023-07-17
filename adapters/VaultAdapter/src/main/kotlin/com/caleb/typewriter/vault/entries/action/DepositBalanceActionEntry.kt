@@ -12,20 +12,27 @@ import net.milkbowl.vault.economy.Economy
 import org.bukkit.entity.Player
 
 @Entry("deposit_balance", "Deposit Balance", Colors.RED, Icons.MONEY_BILL)
-data class DepositBalanceActionEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val criteria: List<Criteria> = emptyList(),
-	override val modifiers: List<Modifier> = emptyList(),
-	override val triggers: List<String> = emptyList(),
-	@Help("The amount of money to deposit.")
-	private val amount: Double = 0.0,
+/**
+ * The `Deposit Balance Action` is used to deposit money into a user's balance.
+ *
+ * ## How could this be used?
+ *
+ * This action could be used to reward the player for completing a task/quest.
+ */
+class DepositBalanceActionEntry(
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
+    override val modifiers: List<Modifier> = emptyList(),
+    override val triggers: List<String> = emptyList(),
+    @Help("The amount of money to deposit.")
+    private val amount: Double = 0.0,
 ) : ActionEntry {
-	override fun execute(player: Player) {
-		super.execute(player)
+    override fun execute(player: Player) {
+        super.execute(player)
 
-		val economy: Economy = VaultAdapter.economy ?: return
+        val economy: Economy = VaultAdapter.economy ?: return
 
-		economy.depositPlayer(player, amount)
-	}
+        economy.depositPlayer(player, amount)
+    }
 }

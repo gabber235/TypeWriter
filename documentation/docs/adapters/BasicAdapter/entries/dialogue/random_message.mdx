@@ -1,6 +1,8 @@
-import {ActionsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Random Message Dialogue
+# Random Message Dialogue 
 
 The `Random Message Dialogue` action displays a random message from a list to the player. This action provides you with the ability to create interactive dialogues with randomized responses.
 
@@ -8,14 +10,13 @@ The `Random Message Dialogue` action displays a random message from a list to th
 
 This action can be useful in a variety of situations. You can use it to create randomized NPC dialogue, quests with multiple randomized outcomes, or to add a level of unpredictability to your game. The possibilities are endless!
 
+
 ## Fields
 
-<ActionsField/>
-
-<EntryField name="Messages" required colored placeholders multiple>
-    A list of possible messages, one of which will be chosen at random to display to the player.
-</EntryField>
-
-<EntryField name="Speaker" required>
-    The name of the speaker who is delivering the message.
-</EntryField>
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.SpeakerField />
+<fields.EntryField name='Messages' required multiple multiline colored placeholders>
+     The text to display to the player. One will be picked at random.
+</fields.EntryField>

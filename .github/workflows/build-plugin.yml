@@ -1,11 +1,6 @@
-on:
-  push:
-    branches:
-      - main
-      - develop
-    paths:
-      - "app/**"
-      - "plugin/**"
+name: Build Typewriter Plugin
+
+on: [workflow_call]
 
 jobs:
   build:
@@ -23,16 +18,23 @@ jobs:
         run: flutter test
         working-directory: ./app
       - name: Build web app
-        run: flutter build web --release
+        run: flutter build web --release --no-tree-shake-icons
         working-directory: ./app
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+      - name: Setup Java 
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
       - name: Test Plugin
-        run: ./gradlew test --scan
-        working-directory: ./plugin
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test --scan
+          build-root-directory: ./plugin
       - name: Build Plugin
-        run: ./gradlew buildRelease --scan
-        working-directory: ./plugin
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: buildRelease --scan
+          build-root-directory: ./plugin
       - name: Upload Plugin
         uses: actions/upload-artifact@v2
         with:

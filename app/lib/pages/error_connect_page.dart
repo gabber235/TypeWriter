@@ -1,3 +1,4 @@
+import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -6,6 +7,7 @@ import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/widgets/components/general/copyable_text.dart";
 
+@RoutePage()
 class ErrorConnectPage extends HookConsumerWidget {
   const ErrorConnectPage({required this.hostname, required this.port, this.token, super.key});
 

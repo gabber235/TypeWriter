@@ -14,6 +14,8 @@ import "package:typewriter/widgets/inspector/editors/material.dart";
 import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/editors/optional.dart";
+import "package:typewriter/widgets/inspector/editors/page_selector.dart";
+import "package:typewriter/widgets/inspector/editors/potion_effect.dart";
 import "package:typewriter/widgets/inspector/editors/sound.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -31,13 +33,15 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       // Modifier Editors
       EntrySelectorEditorFilter(),
       SoundSelectorEditorFilter(),
+      PageSelectorEditorFilter(),
 
       // Custom Editors
-      MaterialSelectorEditorFilter(),
+      MaterialEditorFilter(),
       OptionalEditorFilter(),
       LocationEditorFilter(),
       DurationEditorFilter(),
       CronEditorFilter(),
+      PotionEffectEditorFilter(),
 
       // Default filters
       StringEditorFilter(),
@@ -56,22 +60,17 @@ abstract class EditorFilter {
 }
 
 @riverpod
-String pathDisplayName(
-  PathDisplayNameRef ref,
-  String path, [
-  String defaultValue = "",
-]) {
-  String parseName(String path) {
-    final parts = path.split(".");
-    final name = parts.last;
-    if (name == "") return defaultValue;
-    if (int.tryParse(name) != null) {
-      final parent = parts.sublist(0, parts.length - 1).join(".");
-      final parentName = parseName(parent);
-      return "$parentName #${int.parse(name) + 1}";
-    }
-    return name;
+String pathDisplayName(PathDisplayNameRef ref, String path) {
+  final parts = path.split(".");
+  final name = parts.removeLast();
+
+  if (name == "") return "";
+  if (int.tryParse(name) != null) {
+    final index = int.parse(name) + 1;
+    final parent = parts.removeLast();
+    if (parent == "") return "#$index";
+    return "${parent.formatted} #$index";
   }
 
-  return parseName(path).formatted;
+  return name.formatted;
 }

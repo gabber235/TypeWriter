@@ -3,36 +3,44 @@ package com.caleb.typewriter.combatlogx.entries.event
 import com.github.sirblobman.combatlogx.api.event.PlayerTagEvent
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.*
+import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
+import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
-import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import java.util.*
 
 @Entry("on_player_enter_combat", "When a player enters combat", Colors.YELLOW, Icons.HEART_CRACK)
+/**
+ * The `Player Enter Combat Event` is triggered when a player enters combat with another player.
+ *
+ * ## How could this be used?
+ *
+ * This could be used to play a sound effect when a player enters combat with another player.
+ */
 class PlayerEnterCombatEventEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val triggers: List<String> = emptyList(),
-	@Triggers
-	@EntryIdentifier(TriggerableEntry::class)
-	@Help("The triggers for the aggressor")
-	val aggressorTriggers: List<String> = emptyList()
+    override val id: String = "",
+    override val name: String = "",
+    override val triggers: List<String> = emptyList(),
+    @Triggers
+    @EntryIdentifier(TriggerableEntry::class)
+    @Help("The triggers for the aggressor")
+    // Triggers to fire for the aggressor who made the attack.
+    val aggressorTriggers: List<String> = emptyList()
 ) : EventEntry
 
 @EntryListener(PlayerEnterCombatEventEntry::class)
 fun onEnterCombat(event: PlayerTagEvent, query: Query<PlayerEnterCombatEventEntry>) {
-	val player: Player = event.player
-	val aggressor: LivingEntity? = event.enemy
+    val player = event.player
+    val aggressor = event.enemy
 
-	val entries = query.find()
+    val entries = query.find()
 
-	entries triggerAllFor player
+    entries triggerAllFor player
 
-	if (aggressor is Player) {
-		entries.flatMap { it.aggressorTriggers } triggerEntriesFor aggressor
-	}
+    if (aggressor is Player) {
+        entries.flatMap { it.aggressorTriggers } triggerEntriesFor aggressor
+    }
 }
 

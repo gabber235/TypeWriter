@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
 
 class DecoratedTextField extends HookWidget {
   const DecoratedTextField({
@@ -8,24 +9,36 @@ class DecoratedTextField extends HookWidget {
     this.controller,
     this.text,
     this.onChanged,
+    this.onDone,
     this.onSubmitted,
+    this.style,
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
     this.decoration,
     this.maxLines = 1,
     this.autofocus = false,
+    this.textAlign = TextAlign.start,
     super.key,
   }) : super();
   final TextEditingController? controller;
   final FocusNode focus;
   final String? text;
+
+  /// Called any time the text changes.
   final Function(String)? onChanged;
+
+  /// Called when the user is done editing. Either by pressing done, or by losing focus.
+  final Function(String)? onDone;
+
+  /// Called when the user presses done.
   final Function(String)? onSubmitted;
+  final TextStyle? style;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType keyboardType;
   final InputDecoration? decoration;
   final int? maxLines;
   final bool autofocus;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +57,30 @@ class DecoratedTextField extends HookWidget {
       [text],
     );
 
+    useFocusedChange(focus, (hasFocus) {
+      if (!hasFocus) {
+        onDone?.call(controller.text);
+      }
+    });
+
     return TextField(
       focusNode: focus,
       controller: controller,
       onEditingComplete: () {
-        onSubmitted?.call(controller.text);
+        onDone?.call(controller.text);
         onChanged?.call(controller.text);
+        onSubmitted?.call(controller.text);
       },
       onSubmitted: (value) {
-        onSubmitted?.call(value);
+        onDone?.call(value);
         onChanged?.call(value);
+        onSubmitted?.call(value);
       },
       onChanged: onChanged,
+      style: style,
       textCapitalization: TextCapitalization.none,
       textInputAction: TextInputAction.done,
+      textAlign: textAlign,
       maxLines: maxLines,
       autofocus: autofocus,
       keyboardType: keyboardType,

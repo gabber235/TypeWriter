@@ -9,6 +9,7 @@ class FormattedTextField extends HookWidget {
     this.controller,
     this.text,
     this.onChanged,
+    this.onDone,
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
     this.hintText,
@@ -20,6 +21,7 @@ class FormattedTextField extends HookWidget {
   final FocusNode focus;
   final String? text;
   final Function(String)? onChanged;
+  final Function(String)? onDone;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType keyboardType;
   final String? hintText;
@@ -33,6 +35,7 @@ class FormattedTextField extends HookWidget {
       focus: focus,
       text: text,
       onChanged: onChanged,
+      onDone: onDone,
       maxLines: singleLine ? 1 : null,
       keyboardType: keyboardType,
       inputFormatters: [

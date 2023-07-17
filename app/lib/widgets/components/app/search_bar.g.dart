@@ -53,7 +53,7 @@ final searchElementsProvider =
 );
 
 typedef SearchElementsRef = AutoDisposeProviderRef<List<SearchElement>>;
-String _$searchGlobalKeysHash() => r'96d56268e2a6273865c901e032749f3e066cc535';
+String _$searchGlobalKeysHash() => r'bdabd3beff37b339bab7032a03c48a3714ac500f';
 
 /// See also [searchGlobalKeys].
 @ProviderFor(searchGlobalKeys)
@@ -85,37 +85,6 @@ final searchFocusNodesProvider = AutoDisposeProvider<List<FocusNode>>.internal(
 );
 
 typedef SearchFocusNodesRef = AutoDisposeProviderRef<List<FocusNode>>;
-String _$fuzzyEntriesHash() => r'6756227c4786a11a956591903085d93d150d5bc0';
-
-/// See also [_fuzzyEntries].
-@ProviderFor(_fuzzyEntries)
-final _fuzzyEntriesProvider =
-    AutoDisposeProvider<Fuzzy<EntryDefinition>>.internal(
-  _fuzzyEntries,
-  name: r'_fuzzyEntriesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$fuzzyEntriesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _FuzzyEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryDefinition>>;
-String _$fuzzyBlueprintsHash() => r'cd3bea161be0048b6305acf681f3ac26c16d52b9';
-
-/// See also [_fuzzyBlueprints].
-@ProviderFor(_fuzzyBlueprints)
-final _fuzzyBlueprintsProvider =
-    AutoDisposeProvider<Fuzzy<EntryBlueprint>>.internal(
-  _fuzzyBlueprints,
-  name: r'_fuzzyBlueprintsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$fuzzyBlueprintsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _FuzzyBlueprintsRef = AutoDisposeProviderRef<Fuzzy<EntryBlueprint>>;
 String _$focusedElementHash() => r'30e569a4d12a0f28f496a0e235319f5e5e44e433';
 
 /// See also [_focusedElement].

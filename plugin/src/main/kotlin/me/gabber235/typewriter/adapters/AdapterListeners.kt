@@ -4,9 +4,8 @@ import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.Entry
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
-import java.lang.reflect.Method
+import java.lang.reflect.*
 import java.lang.reflect.Modifier
-import java.lang.reflect.Parameter
 import kotlin.reflect.KClass
 
 data class AdapterListener(
@@ -15,7 +14,7 @@ data class AdapterListener(
 	val generators: List<ParameterGenerator>,
 	val priority: EventPriority,
 	val ignoreCancelled: Boolean,
-	)
+)
 
 sealed interface ParameterGenerator {
 	fun isApplicable(parameter: Parameter): Boolean
@@ -36,7 +35,7 @@ sealed interface ParameterGenerator {
 			return parameter.type.isAssignableFrom(Query::class.java)
 		}
 
-		override fun generate(event: Event, adapterListener: AdapterListener): Any 	= Query(adapterListener.entry)
+		override fun generate(event: Event, adapterListener: AdapterListener): Any = Query(adapterListener.entry)
 	}
 
 	companion object {
@@ -50,10 +49,11 @@ sealed interface ParameterGenerator {
 		 * Creates a list of ParameterGenerators for the given method.
 		 * @throws IllegalArgumentException if the parameter is not applicable to any generator
 		 */
+		@Throws(IllegalArgumentException::class)
 		fun getGenerators(parameters: Array<Parameter>): List<ParameterGenerator> {
 			return parameters.map { parameter ->
-				getGenerator(parameter) ?:
-				throw IllegalArgumentException("There is no way to create a parameter for ${parameter.name} (${parameter.type}) in ${parameter.declaringExecutable}")
+				getGenerator(parameter)
+					?: throw IllegalArgumentException("There is no way to create a parameter for ${parameter.name} (${parameter.type}) in ${parameter.declaringExecutable}")
 			}
 		}
 	}
@@ -69,6 +69,7 @@ object AdapterListeners {
 		val generators = ParameterGenerator.getGenerators(parameters)
 		return AdapterListener(method, entry, generators, annotation.priority, annotation.ignoreCancelled)
 	}
+
 	fun constructAdapterListeners(classes: List<Class<*>>): List<AdapterListener> {
 		// Go through all classes and find methods with the @EntryListener annotation
 		// Then construct an AdapterListener for each of them

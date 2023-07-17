@@ -1,6 +1,8 @@
-import {EntryField, EventsField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Npc Interact Event
+# Npc Interact Event 
 
 The `NPC Interact Event` is fired when a player interacts with an NPC.
 
@@ -8,10 +10,10 @@ The `NPC Interact Event` is fired when a player interacts with an NPC.
 
 This can be used to create a variety of interactions that can occur between an NPC and a player. For example, you could create an NPC that gives the player an item when they interact with it.
 
+
 ## Fields
 
-<EventsField/>
-
-<EntryField name="Identifier" required>
-    The npc that the player must interact with.
-</EntryField>
+<fields.TriggersField />
+<fields.EntryField name='Identifier' required>
+     The NPC that needs to be interacted with.
+</fields.EntryField>

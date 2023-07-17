@@ -1,0 +1,1781 @@
+import "dart:math";
+
+import "package:collection/collection.dart";
+import "package:collection_ext/all.dart";
+import "package:flutter/material.dart" hide Title, FilledButton;
+import "package:flutter/services.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:freezed_annotation/freezed_annotation.dart";
+import "package:google_fonts/google_fonts.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/hooks/global_key.dart";
+import "package:typewriter/hooks/text_size.dart";
+import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/icons.dart";
+import "package:typewriter/models/page.dart";
+import "package:typewriter/models/segment.dart";
+import "package:typewriter/models/writers.dart";
+import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/utils/color_converter.dart";
+import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/popups.dart";
+import "package:typewriter/widgets/components/app/empty_screen.dart";
+import "package:typewriter/widgets/components/app/entry_node.dart";
+import "package:typewriter/widgets/components/app/entry_search.dart";
+import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
+import "package:typewriter/widgets/components/general/decorated_text_field.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/toasts.dart";
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
+import "package:typewriter/widgets/inspector/editors.dart";
+import "package:typewriter/widgets/inspector/editors/object.dart";
+import "package:typewriter/widgets/inspector/heading.dart";
+import "package:typewriter/widgets/inspector/inspector.dart";
+import "package:typewriter/widgets/inspector/section_title.dart";
+
+part "cinematic_view.freezed.dart";
+part "cinematic_view.g.dart";
+
+@riverpod
+List<String> _cinematicEntryIds(_CinematicEntryIdsRef ref) {
+  final page = ref.watch(currentPageProvider);
+  if (page == null) return [];
+
+  return page.entries
+      .where((entry) {
+        final tags = ref.watch(entryTagsProvider(entry.type));
+        return tags.contains("cinematic");
+      })
+      .map((entry) => entry.id)
+      .toList();
+}
+
+class CinematicView extends HookConsumerWidget {
+  const CinematicView({super.key});
+
+  Widget _proxyDecorator(Widget child, int index, Animation<double> animation) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        return Material(
+          color: Colors.transparent,
+          child: child,
+        );
+      },
+      child: child,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entryIds = ref.watch(_cinematicEntryIdsProvider);
+
+    if (entryIds.isEmpty) {
+      return EmptyScreen(
+        title: "There are no cinematic entries on this page.",
+        buttonText: "Add Entry",
+        onButtonPressed: () => ref.read(searchProvider.notifier).asBuilder()
+          ..fetchNewEntry()
+          ..tag("cinematic", canRemove: false)
+          ..open(),
+      );
+    }
+
+    return ReorderableListView.builder(
+      itemCount: entryIds.length,
+      buildDefaultDragHandles: false,
+      proxyDecorator: _proxyDecorator,
+      header: const _Heading(),
+      itemBuilder: (context, index) {
+        final entryId = entryIds[index];
+        return _EntryRow(index: index, entryId: entryId, key: Key(entryId));
+      },
+      onReorder: (oldIndex, newIndex) {
+        final page = ref.read(currentPageProvider);
+        if (page == null) return;
+        page.reorderEntry(ref.passing, entryIds[oldIndex], newIndex);
+      },
+    );
+  }
+}
+
+//<editor-fold desc="Entry & Track & Segment States">
+@riverpod
+Map<String, Modifier> _segmentPaths(_SegmentPathsRef ref, String entryId) {
+  final type = ref.watch(entryTypeProvider(entryId));
+  if (type == null) return {};
+  final blueprint = ref.watch(entryBlueprintProvider(type));
+  if (blueprint == null) return {};
+
+  return blueprint.fieldsWithModifier("segment");
+}
+
+const colorConverter = NullableColorConverter();
+
+extension on Map<String, Modifier> {
+  Modifier? findModifier(String path) {
+    return this[path.wild()];
+  }
+}
+
+@riverpod
+List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
+  final paths = ref.watch(_segmentPathsProvider(entryId));
+  final modifier = paths.findModifier(path);
+  if (modifier == null) return [];
+
+  final entry = ref.watch(globalEntryProvider(entryId));
+  if (entry == null) return [];
+
+  final blueprint = ref.watch(entryBlueprintProvider(entry.type));
+  if (blueprint == null) return [];
+
+  final segmentModifierData = modifier.data;
+
+  final hexColor = segmentModifierData["color"] as String? ?? "#000000";
+  final color = colorConverter.fromJson(hexColor) ?? Colors.teal;
+
+  final iconName = segmentModifierData["icon"] as String? ?? "star";
+  final icon = icons[iconName] ?? FontAwesomeIcons.star;
+
+  final field = blueprint.getField(path.wild());
+  final min = field?.get("min") as int?;
+  final max = field?.get("max") as int?;
+
+  return entry.getAll(path).mapIndexed((index, segment) {
+    final startFrame = segment["startFrame"] as int? ?? 0;
+    final endFrame = segment["endFrame"] as int? ?? 0;
+
+    final data = (segment as Map<dynamic, dynamic>)
+        .map((key, value) => MapEntry(key.toString(), value));
+
+    return Segment(
+      path: path,
+      index: index,
+      color: color,
+      icon: icon,
+      startFrame: startFrame,
+      endFrame: startFrame > endFrame ? startFrame : endFrame,
+      minFrames: min,
+      maxFrames: max,
+      data: data,
+    );
+  }).toList();
+}
+
+@riverpod
+List<Segment> _allSegments(_AllSegmentsRef ref, String entryId) {
+  final paths = ref.watch(_segmentPathsProvider(entryId));
+  return paths.keys
+      .map((path) => ref.watch(_segmentsProvider(entryId, path)))
+      .whereNotNull()
+      .expand((x) => x)
+      .toList();
+}
+
+@riverpod
+int _endingFrame(_EndingFrameRef ref, String entryId) {
+  final segments = ref.watch(_allSegmentsProvider(entryId));
+  return segments.map((segment) => segment.endFrame).maxOrNull ?? 0;
+}
+
+@riverpod
+int _totalSequenceFrames(_TotalSequenceFramesRef ref) {
+  final entryIds = ref.watch(_cinematicEntryIdsProvider);
+  final frames = entryIds
+      .map((entryId) => ref.watch(_endingFrameProvider(entryId)))
+      .whereNotNull()
+      .toList();
+  return frames.map((frame) => frame).maxOrNull ?? 0;
+}
+
+@freezed
+class _TrackState with _$_TrackState {
+  const factory _TrackState({
+    @Default(0) double start,
+    @Default(1) double end,
+    @Default(0) int totalFrames,
+    @Default(0) double width,
+  }) = _$__TrackState;
+}
+
+extension on _TrackState {
+  int get startFrame => (start * totalFrames).round().clamp(0, totalFrames);
+  int get endFrame => (end * totalFrames).round().clamp(0, totalFrames);
+  int get duration => endFrame - startFrame;
+}
+
+class _TrackStateProvider extends StateNotifier<_TrackState> {
+  _TrackStateProvider(this.ref) : super(const _TrackState()) {
+    state = state.copyWith(
+        totalFrames: max(100, ref.read(_totalSequenceFramesProvider)));
+  }
+  final AutoDisposeStateNotifierProviderRef<_TrackStateProvider, _TrackState>
+      ref;
+
+  static const _minWidth = 40;
+  double calculateDelta(double delta) => delta / state.width;
+
+  void updateStart(double newStart) {
+    if (newStart < 0) return;
+    if (newStart > state.end) return;
+    final size = (state.end - newStart) * state.width;
+    if (size < _minWidth) return;
+    state = state.copyWith(start: newStart);
+  }
+
+  void updateEnd(double newEnd) {
+    if (newEnd > 1) return;
+    if (newEnd < state.start) return;
+    final size = (newEnd - state.start) * state.width;
+    if (size < _minWidth) return;
+    state = state.copyWith(end: newEnd);
+  }
+
+  void drag(DragUpdateDetails details) {
+    if (details.delta.dx == 0) return;
+
+    final widthDelta = calculateDelta(details.delta.dx);
+    final newStart = state.start + widthDelta;
+    final newEnd = state.end + widthDelta;
+    if (newStart < 0) return;
+    if (newEnd > 1) return;
+    state = state.copyWith(start: newStart, end: newEnd);
+  }
+
+  void changeTotalFrames(int totalFrames) {
+    state = state.copyWith(totalFrames: totalFrames);
+  }
+
+  Future<void> delayedWidthChanged(double width) async {
+    if (width == state.width) return;
+    await Future.delayed(const Duration(milliseconds: 100));
+    widthChanged(width);
+  }
+
+  void widthChanged(double width) {
+    if (width == state.width) return;
+    state = state.copyWith(width: width, start: 0, end: 1);
+  }
+}
+
+final _trackStateProvider =
+    StateNotifierProvider.autoDispose<_TrackStateProvider, _TrackState>(
+  _TrackStateProvider.new,
+  name: "_trackStateProvider",
+);
+
+@riverpod
+double _frameSpacing(_FrameSpacingRef ref) {
+  final trackState = ref.watch(_trackStateProvider);
+  final totalFrames = trackState.totalFrames;
+  final width = trackState.width - 16;
+
+  if (totalFrames == 0) return 0;
+  if (width <= 0) return 0;
+
+  final lookingAt = max(1, trackState.endFrame - trackState.startFrame);
+  final spacing = width / lookingAt;
+  return spacing;
+}
+
+@riverpod
+double _trackSize(_TrackSizeRef ref) {
+  final totalFrames =
+      ref.watch(_trackStateProvider.select((state) => state.totalFrames));
+  final spacing = ref.watch(_frameSpacingProvider);
+
+  if (totalFrames == 0) return 0;
+
+  return totalFrames * spacing + 16;
+}
+
+@riverpod
+double _trackOffset(_TrackOffsetRef ref) {
+  final trackState = ref.watch(_trackStateProvider);
+  final totalFrames = trackState.totalFrames;
+
+  if (totalFrames == 0) return 0;
+
+  final spacing = ref.watch(_frameSpacingProvider);
+  final offset = trackState.startFrame * spacing;
+  return offset;
+}
+//</editor-fold>
+
+//<editor-fold desc="Entry Display Prefix">
+@riverpod
+String _longestEntryName(_LongestEntryNameRef ref) {
+  final entryIds = ref.watch(_cinematicEntryIdsProvider);
+  final names = entryIds
+          .map((entryId) => ref.watch(entryNameProvider(entryId)))
+          .whereNotNull()
+          .toList() +
+      ["Track Duration"];
+  return names.isEmpty
+      ? ""
+      : names.reduce((a, b) => a.length > b.length ? a : b);
+}
+
+class _Heading extends HookConsumerWidget {
+  const _Heading();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final longestName = ref.watch(_longestEntryNameProvider);
+    final longestNameSize = useTextSize(
+      context,
+      longestName,
+      GoogleFonts.jetBrainsMono(fontSize: 13),
+    );
+    return SizedBox(
+      height: 36,
+      child: Row(
+        children: [
+          SizedBox(
+            width: longestNameSize.width + 103,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const SizedBox(width: 8),
+                Text(
+                  "Track Duration",
+                  style: GoogleFonts.jetBrainsMono(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const _DurationField(),
+                VerticalDivider(color: Colors.grey.shade900, thickness: 2),
+              ],
+            ),
+          ),
+          const Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _TrackSliderTrack(),
+                SizedBox(height: 4),
+                _TrackTimings(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DurationField extends HookConsumerWidget {
+  const _DurationField();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final focus = useFocusNode();
+    final totalFrames =
+        ref.watch(_trackStateProvider.select((state) => state.totalFrames));
+
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: DecoratedTextField(
+          focus: focus,
+          text: totalFrames.toString(),
+          maxLines: 1,
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+          ],
+          style: GoogleFonts.jetBrainsMono(fontSize: 12),
+          decoration: InputDecoration(
+            hintText: "Duration",
+            hintStyle: GoogleFonts.jetBrainsMono(fontSize: 13),
+          ),
+          onChanged: (value) {
+            final frames = int.tryParse(value);
+            if (frames == null) return;
+            ref.read(_trackStateProvider.notifier).changeTotalFrames(frames);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _EntryRow extends HookConsumerWidget {
+  const _EntryRow({
+    required this.index,
+    required this.entryId,
+    super.key,
+  });
+  final int index;
+  final String entryId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
+      height: 64,
+      child: Row(
+        children: [
+          const SizedBox(width: 4),
+          MouseRegion(
+            cursor: SystemMouseCursors.grab,
+            child: ReorderableDragStartListener(
+              index: index,
+              child: const Icon(FontAwesomeIcons.barsStaggered, size: 12),
+            ),
+          ),
+          const SizedBox(width: 8),
+          EntryNode(
+            entryId: entryId,
+            contextActions: ref.watch(_entryContextActionsProvider(entryId)),
+          ),
+          _SmartSpacer(entryId: entryId),
+          VerticalDivider(color: Colors.grey.shade900, thickness: 2),
+          Expanded(child: _EntryTrack(entryId: entryId)),
+        ],
+      ),
+    );
+  }
+}
+
+class _SmartSpacer extends HookConsumerWidget {
+  const _SmartSpacer({
+    required this.entryId,
+  });
+
+  final String entryId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final longestName = ref.watch(_longestEntryNameProvider);
+    final longestNameSize = useTextSize(
+      context,
+      longestName,
+      GoogleFonts.jetBrainsMono(fontSize: 13),
+    );
+    final entryName = ref.watch(entryNameProvider(entryId));
+    final entryNameSize = useTextSize(
+      context,
+      entryName ?? "",
+      GoogleFonts.jetBrainsMono(fontSize: 13),
+    );
+    return SizedBox(
+      width: longestNameSize.width - entryNameSize.width,
+    );
+  }
+}
+//</editor-fold>
+
+class _Thumb extends HookConsumerWidget {
+  const _Thumb({
+    required this.onDragUpdate,
+    this.onDragStart,
+    this.onDragEnd,
+    super.key,
+  });
+  final Function(DragStartDetails)? onDragStart;
+  final Function(DragUpdateDetails) onDragUpdate;
+  final Function(DragEndDetails)? onDragEnd;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.resizeColumn,
+      child: GestureDetector(
+        onHorizontalDragStart: onDragStart,
+        onHorizontalDragUpdate: onDragUpdate,
+        onHorizontalDragEnd: onDragEnd,
+        child: Container(
+          height: 10,
+          width: 10,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//<editor-fold desc="Track Slider">
+class _TrackSliderTrack extends HookConsumerWidget {
+  const _TrackSliderTrack();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final outerKey = useGlobalKey();
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        ref
+            .watch(_trackStateProvider.notifier)
+            .delayedWidthChanged(constraints.maxWidth);
+        return SizedBox(
+          height: 16,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                key: outerKey,
+                height: 16,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).inputDecorationTheme.fillColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              _TrackSlider(outerKey: outerKey),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+@riverpod
+double _sliderStartOffset(_SliderStartOffsetRef ref) {
+  final start = ref.watch(_trackStateProvider.select((state) => state.start));
+  final width = ref.watch(_trackStateProvider.select((state) => state.width));
+  return start * width;
+}
+
+@riverpod
+double _sliderEndOffset(_SliderEndOffsetRef ref) {
+  final end = ref.watch(_trackStateProvider.select((state) => state.end));
+  final width = ref.watch(_trackStateProvider.select((state) => state.width));
+  return (1 - end) * width;
+}
+
+class _TrackSlider extends HookConsumerWidget {
+  const _TrackSlider({
+    required this.outerKey,
+  });
+
+  final GlobalKey outerKey;
+
+  bool _isWithinSlider(
+    GlobalKey key,
+    DragUpdateDetails details, {
+    double innerMargin = 0,
+  }) {
+    final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return false;
+    final local = renderBox.globalToLocal(details.globalPosition);
+    return local.dx >= innerMargin &&
+        local.dx <= renderBox.size.width - innerMargin;
+  }
+
+  double _percentage(
+    GlobalKey key,
+    DragUpdateDetails details, {
+    double innerMargin = 0,
+  }) {
+    final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return 0;
+    final local = renderBox.globalToLocal(details.globalPosition);
+    final width = renderBox.size.width;
+    final percentage = (local.dx - innerMargin) / width;
+    return percentage.clamp(0, 1);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final start = ref.watch(_sliderStartOffsetProvider);
+    final end = ref.watch(_sliderEndOffsetProvider);
+
+    final grabbing = useState(false);
+
+    return Positioned(
+      height: 16,
+      left: start,
+      right: end,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 3),
+            _Thumb(
+              onDragUpdate: (details) {
+                final percentage =
+                    _percentage(outerKey, details, innerMargin: 10);
+                ref.read(_trackStateProvider.notifier).updateStart(percentage);
+              },
+            ),
+            Expanded(
+              child: GestureDetector(
+                onHorizontalDragStart: (details) => grabbing.value = true,
+                onHorizontalDragEnd: (details) => grabbing.value = false,
+                onHorizontalDragUpdate: (details) {
+                  if (!_isWithinSlider(outerKey, details, innerMargin: 20)) {
+                    return;
+                  }
+                  ref.read(_trackStateProvider.notifier).drag(details);
+                },
+                child: MouseRegion(
+                  cursor: grabbing.value
+                      ? SystemMouseCursors.grabbing
+                      : SystemMouseCursors.grab,
+                  child: Container(),
+                ),
+              ),
+            ),
+            _Thumb(
+              onDragUpdate: (details) {
+                final percentage =
+                    _percentage(outerKey, details, innerMargin: -10);
+                ref.read(_trackStateProvider.notifier).updateEnd(percentage);
+              },
+            ),
+            const SizedBox(width: 3),
+          ],
+        ),
+      ),
+    );
+  }
+}
+//</editor-fold>
+
+//<editor-fold desc="Track Background & Numbers">
+const _possibleFractions = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+const _minimalFractionSize = 30.0;
+
+@riverpod
+int _timeFractions(_TimeFractionsRef ref) {
+  final duration =
+      ref.watch(_trackStateProvider.select((state) => state.duration));
+  final width = ref.watch(_trackStateProvider.select((state) => state.width));
+  return _possibleFractions.firstWhereOrNull(
+          (fraction) => (_minimalFractionSize * duration) / fraction < width) ??
+      1000;
+}
+
+@riverpod
+List<int> _timeFractionFrames(_TimeFractionFramesRef ref,
+    {double fractionModifier = 1.0}) {
+  final startFrame =
+      ref.watch(_trackStateProvider.select((state) => state.startFrame));
+  final endFrame =
+      ref.watch(_trackStateProvider.select((state) => state.endFrame));
+  final fractions =
+      (ref.watch(_timeFractionsProvider) * fractionModifier).ceil();
+
+  final firstFractionFrame = (startFrame / fractions).ceil() * fractions;
+  return firstFractionFrame.upTo(endFrame, step: fractions).toList();
+}
+
+@riverpod
+double _timePointOffset(
+    _TimePointOffsetRef ref, int frame, double widgetWidth) {
+  final startFrame =
+      ref.watch(_trackStateProvider.select((state) => state.startFrame));
+  final frameSpacing = ref.watch(_frameSpacingProvider);
+
+  if (frame < startFrame) return 0.0;
+
+  return (frame - startFrame) * frameSpacing - widgetWidth / 2;
+}
+
+class _TrackTimings extends HookConsumerWidget {
+  const _TrackTimings();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fractionFrames = ref.watch(_timeFractionFramesProvider());
+    final oneCharWidth =
+        useTextSize(context, "0", GoogleFonts.jetBrainsMono(fontSize: 10))
+            .width;
+
+    return SizedBox(
+      height: 16,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          for (final frame in fractionFrames)
+            Positioned(
+              left: ref.watch(
+                _timePointOffsetProvider(
+                  frame,
+                  oneCharWidth * frame.toString().length,
+                ),
+              ),
+              child: Text(
+                frame.toString(),
+                style: GoogleFonts.jetBrainsMono(
+                  fontSize: 10,
+                  color: Theme.of(context).hintColor,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+@riverpod
+double _trackBackgroundFractionModifier(
+    _TrackBackgroundFractionModifierRef ref) {
+  final fractions = ref.watch(_timeFractionsProvider);
+  if (fractions == 1) return 1.0;
+  if (fractions == 5) return 1.0;
+  return 1 / 2;
+}
+
+@freezed
+class _FrameLine with _$_FrameLine {
+  const factory _FrameLine({
+    required int frame,
+    required double offset,
+    required bool primary,
+  }) = _$__FrameLine;
+}
+
+@riverpod
+List<_FrameLine> _trackBackgroundLines(_TrackBackgroundLinesRef ref) {
+  final fractions = ref.watch(_timeFractionsProvider);
+  final fractionModifier = ref.watch(_trackBackgroundFractionModifierProvider);
+  final fractionFrames = ref
+      .watch(_timeFractionFramesProvider(fractionModifier: fractionModifier));
+
+  final frameSpacing = ref.watch(_frameSpacingProvider);
+  final startFrame =
+      ref.watch(_trackStateProvider.select((state) => state.startFrame));
+
+  final lines = <_FrameLine>[];
+  for (final frame in fractionFrames) {
+    final offset =
+        frame < startFrame ? 0.0 : (frame - startFrame) * frameSpacing - 1 / 2;
+
+    lines.add(
+      _FrameLine(frame: frame, offset: offset, primary: frame % fractions == 0),
+    );
+  }
+  return lines;
+}
+
+class _TrackBackground extends HookConsumerWidget {
+  const _TrackBackground();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lines = ref.watch(_trackBackgroundLinesProvider);
+    return CustomPaint(
+      painter: _BackgroundLinePainter(lines: lines),
+    );
+  }
+}
+
+class _BackgroundLinePainter extends CustomPainter {
+  const _BackgroundLinePainter({
+    required this.lines,
+  });
+
+  final List<_FrameLine> lines;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final primaryPaint = Paint()
+      ..color = Colors.grey.shade700
+      ..strokeWidth = 1;
+
+    final secondaryPaint = Paint()
+      ..color = Colors.grey.shade700.withOpacity(0.5)
+      ..strokeWidth = 1;
+
+    for (final line in lines) {
+      final offset = line.offset;
+      canvas.drawLine(
+        Offset(offset, 0),
+        Offset(offset, size.height),
+        line.primary ? primaryPaint : secondaryPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _BackgroundLinePainter oldDelegate) {
+    return oldDelegate.lines != lines;
+  }
+}
+//</editor-fold>
+
+//<editor-fold desc="Segment Tracks">
+class _EntryTrack extends HookConsumerWidget {
+  const _EntryTrack({
+    required this.entryId,
+  });
+
+  final String entryId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final parentKey = useGlobalKey();
+    final paths = ref.watch(_segmentPathsProvider(entryId));
+    if (paths.isEmpty) return const SizedBox.shrink();
+
+    final offset = ref.watch(_trackOffsetProvider);
+    final controller = useScrollController(initialScrollOffset: offset);
+
+    useEffect(
+      () {
+        if (!controller.hasClients) return;
+        controller.jumpTo(offset);
+        return null;
+      },
+      [offset],
+    );
+
+    return Stack(
+      children: [
+        const Positioned.fill(child: _TrackBackground()),
+        SingleChildScrollView(
+          key: parentKey,
+          scrollDirection: Axis.horizontal,
+          controller: controller,
+          child: _child(paths, parentKey),
+        ),
+      ],
+    );
+  }
+
+  Widget _child(Map<String, Modifier> paths, GlobalKey parentKey) {
+    if (paths.length == 1) {
+      return _SegmentsTrack(
+        entryId: entryId,
+        path: paths.keys.first,
+        segmentBuilder: (context, segment) {
+          return _SegmentWidget(
+            key: Key(segment.truePath),
+            parentKey: parentKey,
+            entryId: entryId,
+            segment: segment,
+          );
+        },
+      );
+    } else {
+      return Text(" ${paths.keys.join(", ")}");
+    }
+  }
+}
+
+@riverpod
+double _frameStartOffset(_FrameStartOffsetRef ref, int frame) {
+  final frameSpacing = ref.watch(_frameSpacingProvider);
+  return frame * frameSpacing;
+}
+
+@riverpod
+double _frameEndOffset(_FrameEndOffsetRef ref, int frame) {
+  final trackSize = ref.watch(_trackSizeProvider);
+  final frameSpacing = ref.watch(_frameSpacingProvider);
+  return trackSize - frame * frameSpacing;
+}
+
+class _SegmentsTrack extends HookConsumerWidget {
+  const _SegmentsTrack({
+    required this.entryId,
+    required this.path,
+    required this.segmentBuilder,
+  });
+
+  final String entryId;
+  final String path;
+  final Widget Function(BuildContext, Segment) segmentBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final segments = ref.watch(_segmentsProvider(entryId, path));
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        SizedBox(width: ref.watch(_trackSizeProvider), height: 64),
+        for (final segment in segments)
+          _SegmentPosition(
+              segment: segment, child: segmentBuilder(context, segment)),
+      ],
+    );
+  }
+}
+
+class _SegmentPosition extends HookConsumerWidget {
+  const _SegmentPosition({
+    required this.segment,
+    required this.child,
+  });
+
+  final Segment segment;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final startOffset =
+        ref.watch(_frameStartOffsetProvider(segment.startFrame));
+    final endOffset = ref.watch(_frameEndOffsetProvider(segment.endFrame));
+
+    if (segment.startFrame == segment.endFrame) {
+      final frameSpacing = ref.watch(_frameSpacingProvider);
+      return Positioned(
+        left: startOffset - frameSpacing / 2,
+        right: endOffset - frameSpacing / 2,
+        child: child,
+      );
+    }
+
+    return Positioned(
+      left: startOffset,
+      right: endOffset,
+      child: child,
+    );
+  }
+}
+
+const _minThumbSpacing = 10 * 2 + 20;
+
+@riverpod
+bool _showThumbs(_ShowThumbsRef ref, int startFrame, int endFrame) {
+  if (startFrame == endFrame) return false;
+  final startOffset = ref.watch(_frameStartOffsetProvider(startFrame));
+  // We want to use the start offset provider here as we want the offset from the start of the track to the end of the frame.
+  final endOffset = ref.watch(_frameStartOffsetProvider(endFrame));
+
+  return endOffset - startOffset > _minThumbSpacing;
+}
+
+@freezed
+class _MoveState with _$_MoveState {
+  const factory _MoveState({
+    required Segment? previousSegment,
+    required Segment? nextSegment,
+    @Default(0.0) double innerPercent,
+  }) = _$__MoveState;
+}
+
+class _MoveNotifier extends StateNotifier<_MoveState?> {
+  _MoveNotifier(this.ref) : super(null);
+
+  final Ref ref;
+
+  void start(String entryId, Segment segment, [double innerPercent = 0.0]) {
+    final segments = ref.read(_segmentsProvider(entryId, segment.path));
+
+    final previousSegment = segments
+        .where((s) => s.endFrame <= segment.startFrame)
+        .maxBy((_, s) => s.endFrame);
+    final nextSegment = segments
+        .where((s) => s.startFrame >= segment.endFrame)
+        .minBy((_, s) => s.startFrame);
+
+    state = _MoveState(
+        previousSegment: previousSegment,
+        nextSegment: nextSegment,
+        innerPercent: innerPercent);
+
+    ref
+        .read(inspectingSegmentIdProvider.notifier)
+        .select(entryId, segment.truePath);
+  }
+
+  void end() {
+    state = null;
+  }
+
+  void updateSegmentStart(String entryId, Segment segment, double percent) {
+    final frame = _getFrameFromPercent(percent);
+    if (frame == segment.startFrame) return;
+    if (frame > segment.endFrame) return;
+
+    if (segment.minFrames != null &&
+        segment.endFrame - frame < segment.minFrames!) return;
+    if (segment.maxFrames != null &&
+        segment.endFrame - frame > segment.maxFrames!) return;
+
+    final previousSegment = state?.previousSegment;
+    if (previousSegment != null && frame < previousSegment.endFrame) return;
+
+    final showThumbs = ref.read(_showThumbsProvider(frame, segment.endFrame));
+    if (!showThumbs) return;
+
+    final path = "${segment.truePath}.startFrame";
+    _updateEntry(entryId, path, frame);
+  }
+
+  void updateSegmentEnd(String entryId, Segment segment, double percent) {
+    final frame = _getFrameFromPercent(percent);
+    if (frame == segment.endFrame) return;
+    if (frame < segment.startFrame) return;
+
+    if (segment.minFrames != null &&
+        frame - segment.startFrame < segment.minFrames!) return;
+    if (segment.maxFrames != null &&
+        frame - segment.startFrame > segment.maxFrames!) return;
+
+    final nextSegment = state?.nextSegment;
+    if (nextSegment != null && frame > nextSegment.startFrame) return;
+
+    final showThumbs = ref.read(_showThumbsProvider(segment.startFrame, frame));
+    if (!showThumbs) return;
+
+    final path = "${segment.truePath}.endFrame";
+    _updateEntry(entryId, path, frame);
+  }
+
+  void moveSegment(String entryId, Segment segment, double percent) {
+    final state = this.state;
+    final innerPercent = state?.innerPercent ?? 0.0;
+    final oldStartFrame = segment.startFrame;
+    final oldEndFrame = segment.endFrame;
+
+    final newFrame = _getFrameFromPercent(percent);
+    final oldFrame =
+        ((oldEndFrame - oldStartFrame) * innerPercent + oldStartFrame).round();
+
+    final frameDiff = newFrame - oldFrame;
+    if (frameDiff == 0) return;
+
+    final newStartFrame = oldStartFrame + frameDiff;
+    final newEndFrame = oldEndFrame + frameDiff;
+
+    if (newEndFrame < newStartFrame) return;
+    if (newStartFrame == oldStartFrame && newEndFrame == oldEndFrame) return;
+    if (newStartFrame < 0) return;
+
+    final totalFrameCount = ref.read(_trackStateProvider).totalFrames;
+    if (newEndFrame > totalFrameCount) return;
+
+    final previousSegment = state?.previousSegment;
+    if (previousSegment != null && newStartFrame < previousSegment.endFrame) {
+      // We can't move the segment as it would overlap with the previous segment.
+      // If we go over the previous segment, we move the the segment and update the move state to reflect the new segment.
+
+      if (newEndFrame > previousSegment.startFrame) return;
+
+      start(entryId, segment, percent);
+    }
+
+    final nextSegment = state?.nextSegment;
+    if (nextSegment != null && newEndFrame > nextSegment.startFrame) {
+      // We can't move the segment as it would overlap with the next segment.
+      // If we go over the next segment, we move the the segment and update the move state to reflect the new segment.
+
+      if (newStartFrame < nextSegment.endFrame) return;
+
+      start(entryId, segment, percent);
+    }
+
+    final startFramePath = "${segment.truePath}.startFrame";
+    final endFramePath = "${segment.truePath}.endFrame";
+
+    _updateEntry(entryId, startFramePath, newStartFrame);
+    _updateEntry(entryId, endFramePath, newEndFrame);
+  }
+
+  void _updateEntry(String entryId, String path, dynamic value) {
+    final page = ref.read(currentPageProvider);
+    if (page == null) return;
+    final entry = ref.read(entryProvider(page.name, entryId));
+    if (entry == null) return;
+    page.updateEntryValue(ref.passing, entry, path, value);
+  }
+
+  int _getFrameFromPercent(double percent) {
+    final startFrame =
+        ref.read(_trackStateProvider.select((state) => state.startFrame));
+    final endFrame =
+        ref.read(_trackStateProvider.select((state) => state.endFrame));
+
+    final frameCount = endFrame - startFrame;
+    final frame = (frameCount * percent).round();
+    return frame + startFrame;
+  }
+}
+
+final _moveNotifierProvider = StateNotifierProvider<_MoveNotifier, _MoveState?>(
+    _MoveNotifier.new,
+    name: "_moveNotifierProvider");
+
+class _SegmentWidget extends HookConsumerWidget {
+  const _SegmentWidget({
+    required this.entryId,
+    required this.segment,
+    required this.parentKey,
+    super.key,
+  });
+
+  final String entryId;
+  final Segment segment;
+  final GlobalKey parentKey;
+
+  double _getPercentFromDragUpdate(DragUpdateDetails details,
+      [double shift = 0]) {
+    return _getPercent(parentKey, details.globalPosition, shift);
+  }
+
+  double _getPercent(GlobalKey key,
+      [Offset offset = Offset.zero, double shift = 0]) {
+    final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return 0;
+
+    final localPosition = renderBox.globalToLocal(offset);
+    final percent = (localPosition.dx + shift) / renderBox.size.width;
+    return percent.clamp(0, 1);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final localKey = useGlobalKey();
+    final grabbing = useState(false);
+    final showThumbs =
+        ref.watch(_showThumbsProvider(segment.startFrame, segment.endFrame));
+    final isPathSelected = ref.watch(
+        inspectingSegmentIdProvider.select((id) => id == segment.truePath));
+    final isEntrySelected =
+        ref.watch(inspectingEntryIdProvider.select((id) => id == entryId));
+    final isSelected = isPathSelected && isEntrySelected;
+
+    return Container(
+      height: 16,
+      decoration: BoxDecoration(
+        color: segment.color,
+        borderRadius: BorderRadius.circular(12),
+        border: isSelected
+            ? Border.all(
+                color: context.isDark
+                    ? Colors.white
+                    : Colors.black.withOpacity(0.4),
+                width: 2)
+            : Border.all(color: Colors.transparent, width: 2),
+      ),
+      child: Row(
+        children: [
+          if (showThumbs) ...[
+            const SizedBox(width: 3),
+            _Thumb(
+              key: ValueKey("${segment.truePath}.start"),
+              onDragStart: (_) => ref
+                  .read(_moveNotifierProvider.notifier)
+                  .start(entryId, segment),
+              onDragUpdate: (update) {
+                final percent = _getPercentFromDragUpdate(update, -5);
+                ref
+                    .read(_moveNotifierProvider.notifier)
+                    .updateSegmentStart(entryId, segment, percent);
+              },
+              onDragEnd: (_) => ref.read(_moveNotifierProvider.notifier).end(),
+            ),
+          ],
+          Expanded(
+            key: localKey,
+            child: GestureDetector(
+              onHorizontalDragStart: (details) {
+                grabbing.value = true;
+                final innerPercent =
+                    _getPercent(localKey, details.globalPosition);
+
+                ref
+                    .read(_moveNotifierProvider.notifier)
+                    .start(entryId, segment, innerPercent);
+              },
+              onHorizontalDragEnd: (details) {
+                grabbing.value = false;
+                ref.read(_moveNotifierProvider.notifier).end();
+              },
+              onHorizontalDragUpdate: (details) {
+                final percent = _getPercentFromDragUpdate(details);
+
+                ref
+                    .read(_moveNotifierProvider.notifier)
+                    .moveSegment(entryId, segment, percent);
+              },
+              onTap: () {
+                ref
+                    .read(inspectingSegmentIdProvider.notifier)
+                    .select(entryId, segment.truePath);
+              },
+              child: MouseRegion(
+                cursor: grabbing.value
+                    ? SystemMouseCursors.grabbing
+                    : SystemMouseCursors.click,
+                child: Container(),
+              ),
+            ),
+          ),
+          if (showThumbs) ...[
+            _Thumb(
+              key: ValueKey("${segment.truePath}.end"),
+              onDragStart: (_) => ref
+                  .read(_moveNotifierProvider.notifier)
+                  .start(entryId, segment),
+              onDragUpdate: (update) {
+                final percent = _getPercentFromDragUpdate(update, 13);
+                ref
+                    .read(_moveNotifierProvider.notifier)
+                    .updateSegmentEnd(entryId, segment, percent);
+              },
+              onDragEnd: (_) => ref.read(_moveNotifierProvider.notifier).end(),
+            ),
+            const SizedBox(width: 3),
+          ],
+        ],
+      ),
+    );
+  }
+}
+//</editor-fold>
+
+//<editor-fold desc="Inspector">
+class InspectingSegmentIdNotifier extends StateNotifier<String?> {
+  InspectingSegmentIdNotifier(this.ref) : super(null);
+  final Ref ref;
+
+  void select(String entryId, String segmentPath) {
+    ref
+        .read(inspectingEntryIdProvider.notifier)
+        .selectEntry(entryId, unSelectSegment: false);
+    state = segmentPath;
+  }
+
+  void clear() {
+    state = null;
+  }
+}
+
+final inspectingSegmentIdProvider =
+    StateNotifierProvider<InspectingSegmentIdNotifier, String?>(
+  InspectingSegmentIdNotifier.new,
+  name: "inspectingSegmentIdProvider",
+);
+
+@riverpod
+Segment? inspectingSegment(InspectingSegmentRef ref) {
+  final segmentId = ref.watch(inspectingSegmentIdProvider);
+  if (segmentId == null) return null;
+
+  final entryId = ref.watch(inspectingEntryIdProvider);
+  if (entryId == null) return null;
+
+  final segments = ref.watch(_segmentsProvider(entryId, segmentId));
+  return segments.firstOrNull;
+}
+
+@riverpod
+List<String> _ignoreEntryFields(_IgnoreEntryFieldsRef ref) {
+  final entryId = ref.watch(inspectingEntryIdProvider);
+  if (entryId == null) return [];
+
+  final entries = ref.watch(_segmentPathsProvider(entryId));
+  final paths = entries.keys.toList();
+
+  return paths.map((e) => e.replaceSuffix(".*", "")).toList();
+}
+
+/// Finds a segment that overlaps the given range
+/// If no segment is found, returns null
+Segment? _includesSegment(
+    int startFrame, int endFrame, List<Segment> segments) {
+  return segments
+      .firstWhereOrNull((segment) => segment.overlaps(startFrame, endFrame));
+}
+
+void _addSegment(PassingRef ref, String entryId, String segmentPath) {
+  final segments = ref.read(_segmentsProvider(entryId, segmentPath));
+  final page = ref.read(currentPageProvider);
+  if (page == null) return;
+  final entry = ref.read(entryProvider(page.name, entryId));
+  if (entry == null) return;
+
+  final blueprint = ref.read(entryBlueprintProvider(entry.type));
+  if (blueprint == null) return;
+  final segmentField = blueprint.getField(segmentPath);
+  if (segmentField == null) return;
+
+  final minFrames = segmentField.get<int>("min");
+  final maxFrames = segmentField.get<int>("max");
+
+  final minSpace = minFrames ?? 10;
+
+  // Find the first gap in the segments that is at least 10 frames long
+  // Then find the start end end frames of that gap
+  final lastFrame = ref.read(_trackStateProvider).totalFrames;
+  var startFrame = 0;
+
+  while (startFrame < lastFrame) {
+    final segment =
+        _includesSegment(startFrame, startFrame + minSpace, segments);
+
+    if (segment != null) {
+      // If a segment is found, move to the end of that segment
+      startFrame = segment.endFrame;
+      continue;
+    }
+
+    // If no segment is found, we have found a gap. Check if it is long enough
+    final endFrame = segments
+            .map((e) => e.startFrame)
+            .where((frame) => frame >= minSpace + startFrame)
+            .minOrNull ??
+        lastFrame;
+    if (endFrame - startFrame >= minSpace) {
+      break;
+    }
+    // If the gap is not long enough, move to the next segment
+    startFrame = segments
+            .map((e) => e.endFrame)
+            .where((frame) => frame > startFrame)
+            .minOrNull ??
+        lastFrame;
+  }
+
+  var endFrame = segments
+          .map((e) => e.startFrame)
+          .where((frame) => frame >= minSpace + startFrame)
+          .minOrNull ??
+      lastFrame;
+
+  if (maxFrames != null) {
+    endFrame = min(endFrame, startFrame + maxFrames);
+  }
+
+  if (endFrame - startFrame < minSpace) {
+    Toasts.showError(ref, "Could not add segment",
+        description: "There is not enough space to add a segment.");
+    return;
+  }
+
+  final segment = segmentField.defaultValue;
+  if (segment == null) return;
+
+  final newSegment = {
+    ...segment,
+    "startFrame": startFrame,
+    "endFrame": endFrame,
+  };
+
+  final listPath = segmentPath.replaceSuffix(".*", "");
+  final list = entry.get(listPath) as List? ?? [];
+  final newList = [...list, newSegment];
+
+  page.updateEntryValue(ref, entry, listPath, newList);
+}
+
+void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
+  final page = ref.read(currentPageProvider);
+  if (page == null) {
+    Toasts.showError(ref, "Could not delete segment",
+        description: "No page is selected.");
+    return;
+  }
+  final entry = ref.read(entryProvider(page.name, entryId));
+  if (entry == null) {
+    Toasts.showError(ref, "Could not delete segment",
+        description: "No entry is selected.");
+    return;
+  }
+
+  final blueprint = ref.read(entryBlueprintProvider(entry.type));
+  if (blueprint == null) {
+    Toasts.showError(ref, "Could not delete segment",
+        description: "No blueprint is found for the selected entry.");
+    return;
+  }
+  final segmentBlueprint = blueprint.getField(segmentPath);
+  if (segmentBlueprint == null) {
+    Toasts.showError(ref, "Could not delete segment",
+        description: "No blueprint is found for the selected segment.");
+    return;
+  }
+
+  final parts = segmentPath.split(".");
+  final listPath = parts.sublist(0, parts.length - 1).join(".");
+  final list = entry.get(listPath) as List? ?? [];
+
+  final index = int.tryParse(parts.last) ?? 0;
+  final newList = [...list]..removeAt(index);
+
+  page.updateEntryValue(ref, entry, listPath, newList);
+}
+
+@riverpod
+List<ContextMenuTile> _entryContextActions(
+    _EntryContextActionsRef ref, String entryId) {
+  final paths = ref.watch(_segmentPathsProvider(entryId));
+
+  return paths.entries.map((e) {
+    final path = e.key;
+    final modifier = e.value;
+
+    final title = path
+            .replaceSuffix(".*", "")
+            .split(".")
+            .lastOrNull
+            ?.singular
+            .capitalize ??
+        path;
+
+    final modifierData = modifier.data;
+
+    final hexColor = modifierData["color"] as String? ?? "#009688";
+    final color = colorConverter.fromJson(hexColor) ?? Colors.teal;
+
+    final iconName = modifierData["icon"] as String? ?? "plus";
+    final icon = icons[iconName] ?? FontAwesomeIcons.plus;
+
+    return ContextMenuTile.button(
+      title: "Add $title",
+      onTap: () {
+        _addSegment(ref.passing, entryId, path);
+      },
+      icon: icon,
+      color: color,
+    );
+  }).toList();
+}
+
+class CinematicInspector extends HookConsumerWidget {
+  const CinematicInspector({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final inspectingEntry = ref.watch(inspectingEntryProvider);
+    final inspectingSegment = ref.watch(inspectingSegmentProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: inspectingSegment != null
+            ? _SegmentInspector(key: ValueKey(inspectingSegment.truePath))
+            : inspectingEntry != null
+                ? EntryInspector(
+                    key: ValueKey(inspectingEntry.id),
+                    actions: ref.watch(
+                        _entryContextActionsProvider(inspectingEntry.id)),
+                    ignoreFields: ref.watch(_ignoreEntryFieldsProvider),
+                  )
+                : const EmptyInspector(),
+      ),
+    );
+  }
+}
+
+class _SegmentInspector extends HookConsumerWidget {
+  const _SegmentInspector({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _InspectorHeader(),
+          Divider(),
+          _StartFrameField(),
+          SizedBox(height: 8),
+          _EndFrameField(),
+          SizedBox(height: 8),
+          _SegmentDurationDisplay(),
+          Divider(),
+          _InspectorContents(),
+          Divider(),
+          _SegmentOperations(),
+          SizedBox(height: 30),
+        ],
+      ),
+    );
+  }
+}
+
+class _InspectorHeader extends HookConsumerWidget {
+  const _InspectorHeader();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final color = ref.watch(
+          inspectingSegmentProvider.select((segment) => segment?.color),
+        ) ??
+        Theme.of(context).primaryColor;
+    return Title(
+      title: "Segment Inspector",
+      color: color,
+    );
+  }
+}
+
+@riverpod
+ObjectField? _segmentFields(_SegmentFieldsRef ref) {
+  final blueprint = ref.watch(
+    inspectingEntryDefinitionProvider
+        .select((definition) => definition?.blueprint),
+  );
+  if (blueprint == null) return null;
+  final segmentId = ref.watch(inspectingSegmentIdProvider);
+  if (segmentId == null) return null;
+  final fieldInfo = blueprint.getField(segmentId);
+  if (fieldInfo is! ObjectField) return null;
+  return fieldInfo;
+}
+
+class _InspectorContents extends HookConsumerWidget {
+  const _InspectorContents();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final segmentId = ref.watch(inspectingSegmentIdProvider);
+    if (segmentId == null) return const SizedBox.shrink();
+
+    final object = ref.watch(_segmentFieldsProvider);
+    if (object == null) return const SizedBox.shrink();
+
+    return ObjectEditor(
+      path: segmentId,
+      object: object,
+      defaultExpanded: true,
+      ignoreFields: const [
+        "startFrame",
+        "endFrame",
+      ],
+    );
+  }
+}
+
+class _FrameField extends HookConsumerWidget {
+  const _FrameField({
+    required this.path,
+    this.title = "",
+    this.icon,
+    this.hintText = "",
+    this.onValidate,
+  });
+
+  final String path;
+  final String title;
+  final IconData? icon;
+  final String hintText;
+  final String? Function(int)? onValidate;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final focus = useFocusNode();
+    final error = useState<String?>(null);
+
+    useFocusedBasedCurrentEditingField(focus, ref, path);
+
+    final value = ref.watch(fieldValueProvider(path));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionTitle(title: title.isEmpty ? path.split(".").last : title),
+        const SizedBox(height: 1),
+        WritersIndicator(
+          provider: fieldWritersProvider(path),
+          shift: (_) => const Offset(15, 0),
+          child: DecoratedTextField(
+            focus: focus,
+            text: value.toString(),
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              prefixIcon: icon != null ? Icon(icon, size: 18) : null,
+              hintText: hintText,
+              errorText: error.value,
+            ),
+            onDone: (text) {
+              final newValue = int.tryParse(text);
+              if (newValue == null) return;
+              if (onValidate != null) {
+                final errorText = onValidate!(newValue);
+                error.value = errorText;
+                if (errorText != null) return;
+              }
+
+              ref
+                  .read(inspectingEntryDefinitionProvider)
+                  ?.updateField(ref.passing, path, newValue);
+            },
+            maxLines: 1,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StartFrameField extends HookConsumerWidget {
+  const _StartFrameField();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final segmentId = ref.watch(inspectingSegmentIdProvider);
+
+    if (segmentId == null) return const SizedBox.shrink();
+
+    return _FrameField(
+      title: "Start Frame",
+      path: "$segmentId.startFrame",
+      icon: FontAwesomeIcons.backwardStep,
+      hintText: "Enter a frame number",
+      onValidate: (frame) {
+        final entryId = ref.read(inspectingEntryIdProvider);
+        if (entryId == null) return "No entry selected";
+        final segment = ref.read(inspectingSegmentProvider);
+        if (segment == null) return "No segment selected";
+
+        if (frame > segment.endFrame) return "Cannot be after end frame";
+
+        if (segment.minFrames != null &&
+            segment.endFrame - frame < segment.minFrames!) {
+          return "The segment must be at least ${segment.minFrames} frames long";
+        }
+        if (segment.maxFrames != null &&
+            segment.endFrame - frame > segment.maxFrames!) {
+          return "The segment must be at most ${segment.maxFrames} frames long";
+        }
+
+        final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
+        final previousSegment = segments
+            .where((s) => s.endFrame <= segment.startFrame)
+            .maxBy((_, s) => s.endFrame);
+        final minimumFrame = previousSegment?.endFrame ?? 0;
+        if (frame < minimumFrame) return "Cannot overlap with previous segment";
+        return null;
+      },
+    );
+  }
+}
+
+class _EndFrameField extends HookConsumerWidget {
+  const _EndFrameField();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final segmentId = ref.watch(inspectingSegmentIdProvider);
+
+    if (segmentId == null) return const SizedBox.shrink();
+
+    return _FrameField(
+      title: "End Frame",
+      path: "$segmentId.endFrame",
+      icon: FontAwesomeIcons.forwardStep,
+      hintText: "Enter a frame number",
+      onValidate: (frame) {
+        final entryId = ref.read(inspectingEntryIdProvider);
+        if (entryId == null) return "No entry selected";
+        final segment = ref.read(inspectingSegmentProvider);
+        if (segment == null) return "No segment selected";
+
+        if (frame < segment.startFrame) return "Cannot be before start frame";
+
+        if (segment.minFrames != null &&
+            frame - segment.startFrame < segment.minFrames!) {
+          return "The segment must be at least ${segment.minFrames} frames long";
+        }
+
+        if (segment.maxFrames != null &&
+            frame - segment.startFrame > segment.maxFrames!) {
+          return "The segment must be at most ${segment.maxFrames} frames long";
+        }
+
+        final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
+        final nextSegment = segments
+            .where((s) => s.startFrame >= segment.endFrame)
+            .minBy((_, s) => s.startFrame);
+        final maximumFrame = nextSegment?.startFrame ??
+            ref.read(_trackStateProvider).totalFrames;
+        if (frame > maximumFrame) return "Cannot overlap with next segment";
+        return null;
+      },
+    );
+  }
+}
+
+class _SegmentDurationDisplay extends HookConsumerWidget {
+  const _SegmentDurationDisplay();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final startTime =
+        ref.watch(inspectingSegmentProvider.select((s) => s?.startFrame)) ?? 0;
+    final endTime =
+        ref.watch(inspectingSegmentProvider.select((s) => s?.endFrame)) ??
+            startTime;
+    final totalTime = endTime - startTime;
+    final totalDuration = Duration(milliseconds: totalTime * 50);
+    final secondsWithDecimal = totalDuration.inMilliseconds / 1000;
+
+    return Text(
+      "Total Duration: $secondsWithDecimal seconds ($totalTime frames)",
+      style: Theme.of(context).textTheme.bodySmall,
+    );
+  }
+}
+
+class _SegmentOperations extends HookConsumerWidget {
+  const _SegmentOperations();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionTitle(title: "Operations"),
+        SizedBox(height: 8),
+        _DeleteSegment(),
+      ],
+    );
+  }
+}
+
+class _DeleteSegment extends HookConsumerWidget {
+  const _DeleteSegment();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FilledButton.icon(
+      onPressed: () {
+        final segmentId = ref.read(inspectingSegmentIdProvider);
+        if (segmentId == null) return;
+        final entryId = ref.read(inspectingEntryIdProvider);
+        if (entryId == null) return;
+
+        showConfirmationDialogue(
+          context: context,
+          title: "Delete Segment",
+          content: "Are you sure you want to delete this segment?",
+          confirmText: "Delete",
+          onConfirm: () {
+            _deleteSegment(ref.passing, entryId, segmentId);
+          },
+        );
+      },
+      icon: const FaIcon(FontAwesomeIcons.trash),
+      label: const Text("Delete Segment"),
+      color: Theme.of(context).colorScheme.error,
+    );
+  }
+}
+//</editor-fold>

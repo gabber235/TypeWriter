@@ -148,7 +148,7 @@ class MapField(val key: FieldInfo, val value: FieldInfo) : FieldInfo() {
 }
 
 // If the field is an object, this is the type of the object
-class ObjectField(private val fields: Map<String, FieldInfo>) : FieldInfo() {
+class ObjectField(val fields: Map<String, FieldInfo>) : FieldInfo() {
 	override fun default(): JsonElement {
 		val obj = JsonObject()
 		fields.forEach { (name, field) ->

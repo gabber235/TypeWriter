@@ -1,23 +1,31 @@
-import "package:collapsible/collapsible.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/header.dart";
+import "package:typewriter/widgets/inspector/headers/add_action.dart";
+import "package:typewriter/widgets/inspector/headers/delete_action.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
-import "package:typewriter/widgets/inspector/listable_header.dart";
+
+part "list.g.dart";
 
 class ListEditorFilter extends EditorFilter {
   @override
   bool canEdit(FieldInfo info) => info is ListField;
 
   @override
-  Widget build(String path, FieldInfo info) => ListEditor(path: path, field: info as ListField);
+  Widget build(String path, FieldInfo info) =>
+      ListEditor(path: path, field: info as ListField);
+}
+
+@riverpod
+int _listValueLength(_ListValueLengthRef ref, String path) {
+  return (ref.watch(fieldValueProvider(path)) as List<dynamic>? ?? []).length;
 }
 
 class ListEditor extends HookConsumerWidget {
@@ -29,11 +37,15 @@ class ListEditor extends HookConsumerWidget {
   final String path;
   final ListField field;
 
-  void _addNew(WidgetRef ref, List<dynamic> value) {
+  List<dynamic> _get(PassingRef ref) {
+    return ref.read(fieldValueProvider(path)) as List<dynamic>? ?? [];
+  }
+
+  void _addNew(PassingRef ref) {
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
-      ref.passing,
+      ref,
       path,
-      [...value, field.type.defaultValue],
+      [..._get(ref), field.type.defaultValue],
     );
   }
 
@@ -47,16 +59,15 @@ class ListEditor extends HookConsumerWidget {
   }
 
   void _reorder(
-    WidgetRef ref,
-    List<dynamic> value,
+    PassingRef ref,
     int oldIndex,
     int newIndex,
   ) {
-    final newValue = [...value];
+    final newValue = [..._get(ref)];
     _reorderList(newValue, oldIndex, newIndex);
 
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
-          ref.passing,
+          ref,
           path,
           newValue,
         );
@@ -64,53 +75,39 @@ class ListEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(fieldValueProvider(path, []));
-    final expanded = useState(false);
+    final length = ref.watch(_listValueLengthProvider(path));
     final globalKeys = useMemoized(
       () => List.generate(
-        value.length,
+        length,
         (index) => GlobalKey(debugLabel: "item-$index"),
       ),
-      [value.length],
+      [length],
     );
 
-    final isEntryList = field.hasModifier("entry-list");
-
-    return Column(
-      children: [
-        ListableHeader(
+    return FieldHeader(
+      field: field,
+      path: path,
+      canExpand: true,
+      actions: [
+        AddHeaderAction(
           path: path,
-          length: value.length,
-          expanded: expanded,
-          onAdd: () => _addNew(ref, value),
-          actions: [
-            if (isEntryList) EntriesSelectorButton(path: path, tag: field.getModifier("entry-list")?.data ?? ""),
-          ],
-        ),
-        Collapsible(
-          collapsed: !expanded.value,
-          axis: CollapsibleAxis.vertical,
-          maintainAnimation: true,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: ReorderableList(
-              itemCount: value.length,
-              onReorder: (oldIndex, newIndex) {
-                _reorder(ref, value, oldIndex, newIndex);
-                _reorderList(globalKeys, oldIndex, newIndex);
-              },
-              shrinkWrap: true,
-              itemBuilder: (context, index) => _ListItem(
-                key: globalKeys[index],
-                index: index,
-                value: value,
-                path: path,
-                field: field,
-              ),
-            ),
-          ),
+          onAdd: () => _addNew(ref.passing),
         ),
       ],
+      child: ReorderableList(
+        itemCount: length,
+        onReorder: (oldIndex, newIndex) {
+          _reorder(ref.passing, oldIndex, newIndex);
+          _reorderList(globalKeys, oldIndex, newIndex);
+        },
+        shrinkWrap: true,
+        itemBuilder: (context, index) => _ListItem(
+          key: globalKeys[index],
+          index: index,
+          path: path,
+          field: field,
+        ),
+      ),
     );
   }
 }
@@ -118,20 +115,19 @@ class ListEditor extends HookConsumerWidget {
 class _ListItem extends HookConsumerWidget {
   const _ListItem({
     required this.index,
-    required this.value,
     required this.path,
     required this.field,
     super.key,
   }) : super();
 
   final int index;
-  final dynamic value;
   final String path;
   final ListField field;
 
-  void _remove(WidgetRef ref, List<dynamic> value, int index) {
+  void _remove(PassingRef ref, int index) {
+    final value = ref.read(fieldValueProvider(path)) as List<dynamic>? ?? [];
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
-          ref.passing,
+          ref,
           path,
           [...value]..removeAt(index),
         );
@@ -139,40 +135,32 @@ class _ListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final name = ref.watch(pathDisplayNameProvider("$path.$index"));
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              MouseRegion(
-                cursor: SystemMouseCursors.grab,
-                child: ReorderableDragStartListener(
-                  index: index,
-                  child: const Icon(FontAwesomeIcons.barsStaggered, size: 12),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(name, style: Theme.of(context).textTheme.bodySmall),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.trash, size: 12),
-                color: Theme.of(context).colorScheme.error,
-                onPressed: () => showConfirmationDialogue(
-                  context: context,
-                  title: "Remove item?",
-                  content: "Are you sure you want to remove this item?",
-                  onConfirm: () => _remove(ref, value, index),
-                ),
-              ),
-            ],
+    return FieldHeader(
+      field: field.type,
+      path: "$path.$index",
+      canExpand: true,
+      leading: [
+        MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: ReorderableDragStartListener(
+            index: index,
+            child: const Icon(
+              FontAwesomeIcons.barsStaggered,
+              size: 12,
+              color: Colors.grey,
+            ),
           ),
-          FieldEditor(
-            path: "$path.$index",
-            type: field.type,
-          ),
-        ],
+        ),
+      ],
+      actions: [
+        RemoveHeaderAction(
+          path: "$path.$index",
+          onRemove: () => _remove(ref.passing, index),
+        ),
+      ],
+      child: FieldEditor(
+        path: "$path.$index",
+        type: field.type,
       ),
     );
   }

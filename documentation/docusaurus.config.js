@@ -57,7 +57,7 @@ const config = {
     ],
 
     themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+        /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
             // Replace with your project's social card
             image: 'img/typewriter.png',
@@ -86,7 +86,7 @@ const config = {
                         position: 'left',
                         label: 'Develop',
                     },
-                    {to: '/blog', label: 'Blog', position: 'left'},
+                    { to: '/blog', label: 'Blog', position: 'left' },
                     {
                         href: 'https://github.com/gabber235/TypeWriter',
                         label: 'GitHub',

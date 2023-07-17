@@ -1,6 +1,8 @@
-import {EventsField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Player Exit Combat Event
+# Player Exit Combat Event 
 
 The `Player Exit Combat Event` is fired when a player exits combat.
 
@@ -8,6 +10,7 @@ The `Player Exit Combat Event` is fired when a player exits combat.
 
 This could be used to trigger a message when a player exits combat. Or count the number of times a player exits combat in a certain area and change the behavior of NPCs.
 
+
 ## Fields
 
-<EventsField/>
+<fields.TriggersField />

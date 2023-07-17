@@ -1,19 +1,21 @@
-import {EntryField, FactsField, ReadonlyFactInfo} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Permission Fact
+# Permission Fact 
 
 A [fact](/docs/facts) that checks if the player has a certain permission.
 
-<ReadonlyFactInfo />
+
 
 ## How could this be used?
 
 This fact could be used to check if the player has a certain permission, for example to check if the player is an admin.
 
+
 ## Fields
 
-<FactsField />
-
-<EntryField name="Permission" required>
-    The permission to check for.
-</EntryField>
+<fields.CommentField />
+<fields.EntryField name='Permission' required>
+     The permission to check for
+</fields.EntryField>

@@ -3,6 +3,21 @@
 part of 'communicator.dart';
 
 // **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$_Response _$$_ResponseFromJson(Map<String, dynamic> json) => _$_Response(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+    );
+
+Map<String, dynamic> _$$_ResponseToJson(_$_Response instance) =>
+    <String, dynamic>{
+      'success': instance.success,
+      'message': instance.message,
+    };
+
+// **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 

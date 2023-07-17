@@ -1,6 +1,8 @@
-import {ActionsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Deposit Balance Action
+# Deposit Balance Action 
 
 The `Deposit Balance Action` is used to deposit money into a user's balance.
 
@@ -8,10 +10,12 @@ The `Deposit Balance Action` is used to deposit money into a user's balance.
 
 This action could be used to reward the player for completing a task/quest.
 
+
 ## Fields
 
-<ActionsField/>
-
-<EntryField name="Amount" required>
-    The amount of money to deposit.
-</EntryField>
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.EntryField name='Amount' required>
+     The amount of money to deposit.
+</fields.EntryField>

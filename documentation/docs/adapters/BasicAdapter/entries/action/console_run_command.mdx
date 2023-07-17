@@ -1,6 +1,8 @@
-import {ActionsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Console Command Action
+# Console Command Action 
 
 The Console Command Action is an action that sends a command to the server console. This action provides you with the ability to execute console commands on the server in response to specific events.
 
@@ -8,9 +10,12 @@ The Console Command Action is an action that sends a command to the server conso
 
 This action can be useful in a variety of situations. You can use it to perform administrative tasks, such as sending a message to all players on the server, or to automate server tasks, such as setting the time of day or weather conditions. The possibilities are endless!
 
+
 ## Fields
 
-<ActionsField />
-<EntryField name="Command" required placeholders>
-    The command to run as the console.
-</EntryField>
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.EntryField name='Command' required placeholders>
+     The command that the console will run.
+</fields.EntryField>

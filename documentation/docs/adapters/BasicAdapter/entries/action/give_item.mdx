@@ -1,6 +1,8 @@
-import {ActionsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Give Item Action
+# Give Item Action 
 
 The `Give Item Action` is an action that gives a player an item. This action provides you with the ability to give an item with a specified Minecraft material, amount, display name, and lore.
 
@@ -8,21 +10,21 @@ The `Give Item Action` is an action that gives a player an item. This action pro
 
 This action can be useful in a variety of situations. You can use it to give players rewards for completing quests, unlockables for reaching certain milestones, or any other custom items you want to give players. The possibilities are endless!
 
+
 ## Fields
 
-<ActionsField />
-<EntryField name="Material" required>
-    The Minecraft material of the item to give.
-</EntryField>
-
-<EntryField name="Amount" required>
-    The amount of the item to give.
-</EntryField>
-
-<EntryField name="Display Name" optional colored placeholders>
-    The display name of the item to give. If not specified, the item will have it's default display name.
-</EntryField>
-
-<EntryField name="Lore" optional colored placeholders>
-    The lore of the item to give. If not specified, the item will have it's default lore.
-</EntryField>
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.EntryField name='Material' required>
+     The Minecraft material of the item to give.
+</fields.EntryField>
+<fields.EntryField name='Amount' required>
+     The amount of items to give.
+</fields.EntryField>
+<fields.EntryField name='Display Name' required colored placeholders>
+     The display name of the item to give. If not specified, the item will have it's default display name.
+</fields.EntryField>
+<fields.EntryField name='Lore' required multiline colored placeholders>
+     The lore of the item to give. If not specified, the item will have it's default lore.
+</fields.EntryField>

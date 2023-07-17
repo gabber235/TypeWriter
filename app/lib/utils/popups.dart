@@ -4,7 +4,7 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:typewriter/hooks/timer.dart";
-import 'package:typewriter/widgets/components/general/filled_button.dart';
+import "package:typewriter/widgets/components/general/filled_button.dart";
 
 class ConfirmationDialogue extends HookWidget {
   const ConfirmationDialogue({

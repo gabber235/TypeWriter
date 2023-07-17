@@ -1,0 +1,111 @@
+name: Build Jars on Push
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/**
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      plugin: ${{ steps.changes.outputs.plugin }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            plugin: 
+              - plugin/**
+              - app/**
+            basic_adapter:
+              - adapters/BasicAdapter/**
+            citizens_adapter:
+              - adapters/CitizensAdapter/**
+            combat_log_x_adapter:
+              - adapters/CombatLogXAdapter/**
+            mythic_mobs_adapter:
+              - adapters/MythicMobsAdapter/**
+            rpg_regions_adapter:
+              - adapters/RPGRegionsAdapter/**
+            superior_skyblock_adapter:
+              - adapters/SuperiorSkyblockAdapter/**
+            vault_adapter:
+              - adapters/VaultAdapter/**
+            worldguard_adapter:
+              - adapters/WorldGuardAdapter/**
+
+  build-plugin:
+    name: Build Typewriter Plugin
+    needs: changes
+    if: needs.changes.outputs.plugin == 'true'
+    uses: ./.github/workflows/build-plugin.yml
+
+  build-adapter-basic:
+    name: Build Basic Adapter
+    needs: changes
+    if: needs.changes.outputs.basic_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: BasicAdapter
+
+  build-adapter-citizens:
+    name: Build Citizens Adapter
+    needs: changes
+    if: needs.changes.outputs.citizens_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: CitizensAdapter
+
+
+  build-adapter-combat-log-x:
+    name: Build CombatLogX Adapter
+    needs: changes
+    if: needs.changes.outputs.combat_log_x_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: CombatLogXAdapter
+
+  build-adapter-mythic-mobs:
+    name: Build MythicMobs Adapter
+    needs: changes
+    if: needs.changes.outputs.mythic_mobs_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: MythicMobsAdapter
+
+  build-adapter-rpg-regions:
+    name: Build RPGRegions Adapter
+    needs: changes
+    if: needs.changes.outputs.rpg_regions_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: RPGRegionsAdapter
+
+  build-adapter-superior-skyblock:
+    name: Build SuperiorSkyblock Adapter
+    needs: changes
+    if: needs.changes.outputs.superior_skyblock_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: SuperiorSkyblockAdapter
+
+  build-adapter-vault:
+    name: Build Vault Adapter
+    needs: changes
+    if: needs.changes.outputs.vault_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: VaultAdapter
+
+  build-adapter-worldguard:
+    name: Build WorldGuard Adapter
+    needs: changes
+    if: needs.changes.outputs.world_guard_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: WorldGuardAdapter
+

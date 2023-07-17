@@ -1,0 +1,58 @@
+name: Build Jars on Request
+
+on: [workflow_dispatch]
+  
+jobs:
+  build-plugin:
+    name: Build Typewriter Plugin
+    uses: ./.github/workflows/build-plugin.yml
+
+  build-adapter-basic:
+    name: Build Basic Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: BasicAdapter
+
+  build-adapter-citizens:
+    name: Build Citizens Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: CitizensAdapter
+
+
+  build-adapter-combat-log-x:
+    name: Build CombatLogX Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: CombatLogXAdapter
+
+  build-adapter-mythic-mobs:
+    name: Build MythicMobs Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: MythicMobsAdapter
+
+  build-adapter-rpg-regions:
+    name: Build RPGRegions Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: RPGRegionsAdapter
+
+  build-adapter-superior-skyblock:
+    name: Build SuperiorSkyblock Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: SuperiorSkyblockAdapter
+
+  build-adapter-vault:
+    name: Build Vault Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: VaultAdapter
+
+  build-adapter-worldguard:
+    name: Build WorldGuard Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: WorldGuardAdapter
+

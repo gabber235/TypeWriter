@@ -1,5 +1,6 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
@@ -9,6 +10,7 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
+import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -23,6 +25,16 @@ List<Page> pages(PagesRef ref) {
 @riverpod
 Page? page(PageRef ref, String name) {
   return ref.watch(pagesProvider).firstWhereOrNull((page) => page.name == name);
+}
+
+@riverpod
+bool pageExists(PageExistsRef ref, String name) {
+  return ref.watch(pageProvider(name)) != null;
+}
+
+@riverpod
+PageType pageType(PageTypeRef ref, String name) {
+  return ref.watch(pageProvider(name))?.type ?? PageType.sequence;
 }
 
 @riverpod
@@ -57,10 +69,37 @@ MapEntry<String, Entry>? globalEntryWithPage(GlobalEntryWithPageRef ref, String 
   return MapEntry(page, entry);
 }
 
+@riverpod
+bool entryExists(EntryExistsRef ref, String entryId) {
+  return ref.watch(entriesPageProvider(entryId)) != null;
+}
+
+enum PageType {
+  sequence("trigger", FontAwesomeIcons.diagramProject, Colors.blue),
+  static("static", FontAwesomeIcons.bars, Colors.deepPurple),
+  cinematic("cinematic", FontAwesomeIcons.film, Colors.orange),
+  ;
+
+  const PageType(this.tag, this.icon, this.color);
+
+  final String tag;
+  final IconData icon;
+  final Color color;
+
+  static PageType fromBlueprint(EntryBlueprint blueprint) {
+    return values.firstWhere((type) => blueprint.tags.contains(type.tag));
+  }
+
+  static PageType fromName(String name) {
+    return values.firstWhere((type) => name.startsWith(type.tag));
+  }
+}
+
 @freezed
 class Page with _$Page {
   const factory Page({
     required String name,
+    required PageType type,
     @Default([]) List<Entry> entries,
   }) = _Page;
 
@@ -100,6 +139,35 @@ extension PageExtension on Page {
       (page) => _insertEntry(page, entry.copyWith(path, value)),
     );
     ref.read(communicatorProvider).updateEntry(name, entry.id, path, value);
+  }
+
+  void reorderEntry(PassingRef ref, String entryId, int newIndex) {
+    syncReorderEntry(ref, entryId, newIndex);
+    ref.read(communicatorProvider).reorderEntry(name, entryId, newIndex);
+  }
+
+  void syncReorderEntry(PassingRef ref, String entryId, int newIndex) {
+    updatePage(
+      ref,
+      (page) {
+        final entries = [...page.entries];
+
+        final oldIndex = entries.indexWhere((entry) => entry.id == entryId);
+        if (oldIndex == -1) {
+          return page;
+        }
+
+        final entry = entries.removeAt(oldIndex);
+
+        if (newIndex > oldIndex) {
+          entries.insert(newIndex - 1, entry);
+        } else {
+          entries.insert(newIndex, entry);
+        }
+
+        return page.copyWith(entries: entries);
+      },
+    );
   }
 
   /// This should only be used to sync the entry from the server.
@@ -153,17 +221,17 @@ extension PageExtension on Page {
   }
 
   /// When an entry is delete all references in other entries need to be removed.
-  Entry _removedReferencesFromEntry(PassingRef ref, Entry entry, String targeId) {
+  Entry _removedReferencesFromEntry(PassingRef ref, Entry entry, String targetId) {
     final referenceEntryPaths = ref.read(modifierPathsProvider(entry.type, "entry"));
 
     final referenceEntryIds = referenceEntryPaths.expand((path) => entry.getAll(path)).whereType<String>().toList();
-    if (!referenceEntryIds.contains(targeId)) {
+    if (!referenceEntryIds.contains(targetId)) {
       return entry;
     }
 
     final newEntry = referenceEntryPaths.fold(
       entry,
-      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == targeId ? null : value),
+      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == targetId ? null : value),
     );
 
     ref.read(communicatorProvider).updateEntireEntry(name, newEntry);
@@ -233,15 +301,19 @@ extension PageX on Page {
           final newEntry = await createEntryFromBlueprint(ref, blueprint);
           await _wireEntryToOtherEntry(ref, entry, newEntry);
           await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref, newEntry.id);
+          return null;
         },
       )
       ..fetchEntry(
         onSelect: (selectedEntry) async {
           await _wireEntryToOtherEntry(ref, entry, selectedEntry);
+          return null;
         },
       )
       ..open();
   }
+
+  bool canHave(EntryBlueprint blueprint) => blueprint.tags.contains(type.tag);
 
   void deleteEntryWithConfirmation(BuildContext context, PassingRef ref, String entryId) {
     showConfirmationDialogue(

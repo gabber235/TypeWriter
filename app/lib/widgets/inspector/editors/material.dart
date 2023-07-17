@@ -18,10 +18,12 @@ part "material.g.dart";
 typedef CombinedMaterial = MapEntry<String, MinecraftMaterial>;
 
 @riverpod
-List<MaterialProperty> materialProperties(MaterialPropertiesRef ref, String meta) {
+List<MaterialProperty> materialProperties(
+    MaterialPropertiesRef ref, String meta) {
   return meta
       .split(";")
-      .map((property) => MaterialProperty.values.firstWhere((element) => element.name.toLowerCase() == property))
+      .map((property) => MaterialProperty.values
+          .firstWhere((element) => element.name.toLowerCase() == property))
       .toList();
 }
 
@@ -44,7 +46,8 @@ Fuzzy<CombinedMaterial> _fuzzyMaterials(_FuzzyMaterialsRef ref) {
         ),
         WeightedKey(
           name: "properties",
-          getter: (entry) => entry.value.properties.map((p) => p.name).join(" "),
+          getter: (entry) =>
+              entry.value.properties.map((p) => p.name).join(" "),
           weight: 0.2,
         ),
       ],
@@ -58,7 +61,7 @@ class MaterialsFetcher extends SearchFetcher {
     this.disabled = false,
   });
 
-  final Function(CombinedMaterial)? onSelect;
+  final bool? Function(CombinedMaterial)? onSelect;
 
   @override
   final bool disabled;
@@ -95,15 +98,20 @@ class MaterialSearchElement extends SearchElement {
   const MaterialSearchElement(this.material, {this.onSelect});
 
   final CombinedMaterial material;
-  final Function(CombinedMaterial)? onSelect;
+  final bool? Function(CombinedMaterial)? onSelect;
+
+  @override
+  String get title => material.value.name;
 
   @override
   Color color(BuildContext context) {
     final properties = material.value.properties;
     final isDark = context.isDark;
 
-    if (properties.contains(MaterialProperty.item)) return isDark ? Colors.black38 : Colors.black12;
-    if (properties.contains(MaterialProperty.block)) return isDark ? Colors.black54 : Colors.black26;
+    if (properties.contains(MaterialProperty.item))
+      return isDark ? Colors.black38 : Colors.black12;
+    if (properties.contains(MaterialProperty.block))
+      return isDark ? Colors.black54 : Colors.black26;
 
     return Colors.grey;
   }
@@ -112,10 +120,8 @@ class MaterialSearchElement extends SearchElement {
   Widget icon(BuildContext context) => Image.asset(material.value.icon);
 
   @override
-  Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.upRightFromSquare);
-
-  @override
-  String title(BuildContext context) => material.value.name;
+  Widget suffixIcon(BuildContext context) =>
+      const Icon(FontAwesomeIcons.upRightFromSquare);
 
   @override
   String description(BuildContext context) => material.key;
@@ -132,8 +138,8 @@ class MaterialSearchElement extends SearchElement {
   }
 
   @override
-  void activate(BuildContext context, PassingRef ref) {
-    onSelect?.call(material);
+  Future<bool> activate(BuildContext context, PassingRef ref) async {
+    return onSelect?.call(material) ?? true;
   }
 }
 
@@ -156,7 +162,7 @@ class MaterialPropertyFilter extends SearchFilter {
 
 extension _SearchBuilderX on SearchBuilder {
   void fetchMaterials({
-    Function(CombinedMaterial)? onSelect,
+    bool? Function(CombinedMaterial)? onSelect,
     bool disabled = false,
   }) {
     fetch(MaterialsFetcher(onSelect: onSelect, disabled: disabled));
@@ -169,15 +175,17 @@ extension _SearchBuilderX on SearchBuilder {
   }
 }
 
-class MaterialSelectorEditorFilter extends EditorFilter {
+class MaterialEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info is CustomField && info.editor == "material";
+  bool canEdit(FieldInfo info) =>
+      info is CustomField && info.editor == "material";
   @override
-  Widget build(String path, FieldInfo info) => MaterialSelectorEditor(path: path, field: info as CustomField);
+  Widget build(String path, FieldInfo info) =>
+      MaterialEditor(path: path, field: info as CustomField);
 }
 
-class MaterialSelectorEditor extends HookConsumerWidget {
-  const MaterialSelectorEditor({
+class MaterialEditor extends HookConsumerWidget {
+  const MaterialEditor({
     required this.path,
     required this.field,
     super.key,
@@ -186,8 +194,11 @@ class MaterialSelectorEditor extends HookConsumerWidget {
   final String path;
   final CustomField field;
 
-  void _update(WidgetRef ref, String value) {
-    ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, value.toUpperCase());
+  bool? _update(WidgetRef ref, String value) {
+    ref
+        .read(inspectingEntryDefinitionProvider)
+        ?.updateField(ref.passing, path, value.toUpperCase());
+    return null;
   }
 
   void _select(WidgetRef ref, List<MaterialProperty> properties) {
@@ -220,9 +231,14 @@ class MaterialSelectorEditor extends HookConsumerWidget {
           child: Row(
             children: [
               if (hasMaterial)
-                Expanded(child: _MaterialItem(id: currentValue, material: currentMaterial))
+                Expanded(
+                    child: _MaterialItem(
+                        id: currentValue, material: currentMaterial))
               else
-                Expanded(child: Text("Select a material", style: Theme.of(context).inputDecorationTheme.hintStyle)),
+                Expanded(
+                    child: Text("Select a material",
+                        style:
+                            Theme.of(context).inputDecorationTheme.hintStyle)),
               const SizedBox(width: 12),
               FaIcon(
                 FontAwesomeIcons.caretDown,

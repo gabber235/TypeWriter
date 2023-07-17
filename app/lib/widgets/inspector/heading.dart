@@ -56,7 +56,7 @@ class Heading extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Title(
+        Title(
           color: color,
           title: name,
         ),
@@ -72,10 +72,11 @@ class Heading extends HookConsumerWidget {
   }
 }
 
-class _Title extends StatelessWidget {
-  const _Title({
+class Title extends StatelessWidget {
+  const Title({
     required this.title,
     required this.color,
+    super.key,
   });
   final String title;
   final Color color;

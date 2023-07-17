@@ -10,9 +10,10 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
-import 'package:typewriter/widgets/components/app/select_entries.dart';
+import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:url_launcher/url_launcher.dart";
 
+@RoutePage()
 class BookPage extends HookConsumerWidget {
   const BookPage({super.key});
 
@@ -24,7 +25,11 @@ class BookPage extends HookConsumerWidget {
       routes: const [
         PagesListRoute(),
       ],
-      builder: (context, child, animation) {
+      transitionBuilder: (context, child, animation) => FadeTransition(
+        opacity: animation,
+        child: child,
+      ),
+      builder: (context, child) {
         return Stack(
           children: [
             Scaffold(
@@ -32,10 +37,7 @@ class BookPage extends HookConsumerWidget {
                 children: [
                   const _SideRail(),
                   Expanded(
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    ),
+                    child: child,
                   ),
                 ],
               ),
@@ -67,10 +69,12 @@ class _ReconnectOverlay extends HookConsumerWidget {
     final colorTween = ColorTween(
       begin: Colors.blue,
       end: Colors.red,
-    ).animate(CurvedAnimation(
-      parent: controller,
-      curve: const Interval(0.5, 1),
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: const Interval(0.5, 1),
+      ),
+    );
 
     useAnimation(controller);
 

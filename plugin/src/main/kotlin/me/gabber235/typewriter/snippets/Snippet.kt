@@ -1,26 +1,29 @@
 package me.gabber235.typewriter.snippets
 
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 
 inline fun <reified T : Any> snippet(path: String, defaultValue: T): ReadOnlyProperty<Nothing?, T> {
-	return snippet(path, T::class, defaultValue)
+    return snippet(path, T::class, defaultValue)
 }
 
 fun <T : Any> snippet(path: String, klass: KClass<T>, defaultValue: T): ReadOnlyProperty<Nothing?, T> {
-	return Snippet(path, klass, defaultValue)
+    return Snippet(path, klass, defaultValue)
 }
 
 class Snippet<T : Any>(private val path: String, private val klass: KClass<T>, private val defaultValue: T) :
-	ReadOnlyProperty<Nothing?, T> {
+    ReadOnlyProperty<Nothing?, T>, KoinComponent {
+    private val snippetDatabase: SnippetDatabase by inject()
 
-	init {
-		SnippetDatabase.registerSnippet(path, defaultValue)
-	}
+    init {
+        snippetDatabase.registerSnippet(path, defaultValue)
+    }
 
-	override fun getValue(thisRef: Nothing?, property: KProperty<*>): T {
-		return SnippetDatabase.getSnippet(path, klass, defaultValue)
-	}
+    override fun getValue(thisRef: Nothing?, property: KProperty<*>): T {
+        return snippetDatabase.getSnippet(path, klass, defaultValue)
+    }
 }

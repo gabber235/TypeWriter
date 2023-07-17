@@ -4,6 +4,7 @@ import "dart:math";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:http/http.dart" as http;
 import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/main.dart";
 
 part "sounds.freezed.dart";
 part "sounds.g.dart";
@@ -18,7 +19,8 @@ class SoundData with _$SoundData {
     @Default(1) double volume,
   }) = _SoundData;
 
-  factory SoundData.fromJson(Map<String, dynamic> json) => _$SoundDataFromJson(json);
+  factory SoundData.fromJson(Map<String, dynamic> json) =>
+      _$SoundDataFromJson(json);
 }
 
 SoundData _parseSoundData(dynamic data) {
@@ -44,11 +46,12 @@ Map<String, List<SoundData>> _mapData(Map<String, dynamic> json) {
   });
 }
 
-const _mcmetaUrl = "https://raw.githubusercontent.com/misode/mcmeta";
-const _minecraftSoundsUrl = "$_mcmetaUrl/summary/sounds/data.min.json";
+const _minecraftSoundsUrl = "$mcmetaUrl/summary/sounds/data.min.json";
 
 @Riverpod(keepAlive: true)
-Future<Map<String, List<SoundData>>> minecraftSounds(MinecraftSoundsRef ref) async {
+Future<Map<String, List<SoundData>>> minecraftSounds(
+  MinecraftSoundsRef ref,
+) async {
   final response = await http.get(Uri.parse(_minecraftSoundsUrl));
   if (response.statusCode != 200) {
     throw Exception("Failed to load sounds");
@@ -66,7 +69,7 @@ Future<MinecraftSound?> minecraftSound(MinecraftSoundRef ref, String id) async {
 }
 
 extension SoundDataX on SoundData {
-  String get url => "$_mcmetaUrl/assets/assets/minecraft/sounds/$name.ogg";
+  String get url => "$mcmetaUrl/assets/assets/minecraft/sounds/$name.ogg";
 }
 
 extension MinecraftSoundX on MinecraftSound {
@@ -78,7 +81,8 @@ final Random _random = Random();
 
 extension ListSoundDataX on List<SoundData> {
   String pickRandomSoundUrl() {
-    final totalWeight = fold(0, (previousValue, element) => previousValue + element.weight);
+    final totalWeight =
+        fold(0, (previousValue, element) => previousValue + element.weight);
     final random = (totalWeight * _random.nextDouble()).toInt();
     var currentWeight = 0;
     for (final sound in this) {

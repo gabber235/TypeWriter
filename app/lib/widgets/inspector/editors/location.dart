@@ -7,15 +7,18 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
+import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 class LocationEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info is CustomField && info.editor == "location";
+  bool canEdit(FieldInfo info) =>
+      info is CustomField && info.editor == "location";
 
   @override
-  Widget build(String path, FieldInfo info) => LocationEditor(path: path, field: info as CustomField);
+  Widget build(String path, FieldInfo info) =>
+      LocationEditor(path: path, field: info as CustomField);
 }
 
 class LocationEditor extends HookConsumerWidget {
@@ -38,20 +41,29 @@ class LocationEditor extends HookConsumerWidget {
         const SizedBox(height: 8),
         Row(
           children: [
-            _LocationPropertyEditor(path: "$path.x", label: "X", color: Colors.red),
+            _LocationPropertyEditor(
+                path: "$path.x", label: "X", color: Colors.red),
             const SizedBox(width: 8),
-            _LocationPropertyEditor(path: "$path.y", label: "Y", color: Colors.green),
+            _LocationPropertyEditor(
+                path: "$path.y", label: "Y", color: Colors.green),
             const SizedBox(width: 8),
-            _LocationPropertyEditor(path: "$path.z", label: "Z", color: Colors.blue),
+            _LocationPropertyEditor(
+                path: "$path.z", label: "Z", color: Colors.blue),
           ],
         ),
         if (withRotation) ...[
           const SizedBox(height: 8),
           Row(
             children: [
-              _LocationPropertyEditor(path: "$path.pitch", label: "Pitch", color: Colors.amberAccent),
+              _LocationPropertyEditor(
+                  path: "$path.yaw",
+                  label: "Yaw",
+                  color: Colors.deepPurpleAccent),
               const SizedBox(width: 8),
-              _LocationPropertyEditor(path: "$path.yaw", label: "Yaw", color: Colors.deepPurpleAccent),
+              _LocationPropertyEditor(
+                  path: "$path.pitch",
+                  label: "Pitch",
+                  color: Colors.amberAccent),
             ],
           )
         ],
@@ -79,7 +91,9 @@ class _LocationWorldEditor extends HookConsumerWidget {
       icon: FontAwesomeIcons.earthAmericas,
       hintText: "World",
       onChanged: (value) {
-        ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, value);
+        ref
+            .read(inspectingEntryDefinitionProvider)
+            ?.updateField(ref.passing, path, value);
       },
     );
   }
@@ -90,7 +104,6 @@ class _LocationPropertyEditor extends HookConsumerWidget {
     required this.path,
     required this.label,
     required this.color,
-    super.key,
   });
   final String path;
   final String label;
@@ -98,19 +111,32 @@ class _LocationPropertyEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useTextEditingController();
     final focusNode = useFocusNode();
     final value = ref.watch(fieldValueProvider(path, 0.0));
 
+    useFocusedChange(focusNode, (focused) {
+      if (!focused) return;
+      // When we focus, we want to select the whole text
+      controller.selection =
+          TextSelection(baseOffset: 0, extentOffset: controller.text.length);
+    });
+
     return Flexible(
       child: DecoratedTextField(
+        controller: controller,
         focus: focusNode,
         text: value.toString(),
         keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"^\-?\d*\.?\d*"))],
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r"^\-?\d*\.?\d*"))
+        ],
         onChanged: (value) {
           final number = double.tryParse(value);
           if (number == null) return;
-          ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, number);
+          ref
+              .read(inspectingEntryDefinitionProvider)
+              ?.updateField(ref.passing, path, number);
         },
         decoration: InputDecoration(
           prefixText: "$label: ",

@@ -5,17 +5,19 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import 'package:typewriter/widgets/components/general/formatted_text_field.dart';
+import "package:typewriter/widgets/components/general/formatted_text_field.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import 'package:typewriter/widgets/inspector/inspector.dart';
+import "package:typewriter/widgets/inspector/inspector.dart";
 
 class StringEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info is PrimitiveField && info.type == PrimitiveFieldType.string;
+  Widget build(String path, FieldInfo info) =>
+      StringEditor(path: path, field: info as PrimitiveField);
 
   @override
-  Widget build(String path, FieldInfo info) => StringEditor(path: path, field: info as PrimitiveField);
+  bool canEdit(FieldInfo info) =>
+      info is PrimitiveField && info.type == PrimitiveFieldType.string;
 }
 
 class StringEditor extends HookConsumerWidget {
@@ -28,10 +30,11 @@ class StringEditor extends HookConsumerWidget {
     this.onChanged,
     super.key,
   }) : super();
+
   final String path;
   final PrimitiveField field;
-
   final String? forcedValue;
+
   final IconData icon;
   final String hint;
   final Function(String)? onChanged;
@@ -54,8 +57,10 @@ class StringEditor extends HookConsumerWidget {
       inputFormatters: [
         if (field.hasModifier("snake_case")) snakeCaseFormatter(),
       ],
-      onChanged:
-          onChanged ?? (value) => ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, value),
+      onChanged: onChanged ??
+          (value) => ref
+              .read(inspectingEntryDefinitionProvider)
+              ?.updateField(ref.passing, path, value),
     );
   }
 }

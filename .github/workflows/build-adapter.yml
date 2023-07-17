@@ -1,0 +1,36 @@
+name: Build Specified Adapter
+
+on:
+  workflow_call:
+    inputs:
+      adapter:
+        required: true
+        type: string
+        description: The name of the adapter to build
+
+jobs:
+  build-adapter:
+    name: Build ${{ inputs.adapter }} Adapter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Java 
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Test Adapter
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test --scan
+          build-root-directory: ./adapters/${{ inputs.adapter }}
+      - name: Build Adapter
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: buildRelease --scan
+          build-root-directory: ./adapters/${{ inputs.adapter }}
+      - name: Upload Adapter
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.adapter }}.jar
+          path: adapters/${{ inputs.adapter }}/build/libs/${{ inputs.adapter }}.jar

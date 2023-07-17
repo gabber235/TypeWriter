@@ -1,6 +1,8 @@
-import {EntryField, EventsField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Block Place Event
+# Block Place Event 
 
 The `Block Place Event` is called when a block is placed in the world.
 
@@ -8,14 +10,13 @@ The `Block Place Event` is called when a block is placed in the world.
 
 This event could be used to create a custom block that has special properties when placed in the world, like particles or sounds that play. It could also be used to create a block that when placed, can turn itself into a cool structure.
 
+
 ## Fields
 
-<EventsField />
-
-<EntryField name="Location" optional>
-    A location where the block must be placed.
-</EntryField>
-
-<EntryField name="Block" required>
-    The type of block that must be placed.
-</EntryField>
+<fields.TriggersField />
+<fields.EntryField name='Location' optional>
+     The location of the block that was placed.
+</fields.EntryField>
+<fields.EntryField name='Block' required>
+     The block that is placed.
+</fields.EntryField>

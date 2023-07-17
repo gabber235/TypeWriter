@@ -3,6 +3,7 @@ import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/main.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/icons.dart";
 import "package:typewriter/utils/color_converter.dart";
@@ -27,17 +28,23 @@ EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String name) =>
     ref.watch(entryBlueprintsProvider).firstWhereOrNull((e) => e.name == name);
 
 @riverpod
-List<String> entryTags(EntryTagsRef ref, String name) => ref.watch(entryBlueprintProvider(name))?.tags ?? [];
+List<String> entryTags(EntryTagsRef ref, String name) =>
+    ref.watch(entryBlueprintProvider(name))?.tags ?? [];
 
 /// Gets all the modifiers with a given name.
 @riverpod
-Map<String, Modifier> fieldModifiers(FieldModifiersRef ref, String blueprint, String name) {
-  return ref.watch(entryBlueprintProvider(blueprint))?.fieldsWithModifier(name) ?? {};
+Map<String, Modifier> fieldModifiers(
+    FieldModifiersRef ref, String blueprint, String name) {
+  return ref
+          .watch(entryBlueprintProvider(blueprint))
+          ?.fieldsWithModifier(name) ??
+      {};
 }
 
 /// Gets all the paths from fields with a given modifier.
 @riverpod
-List<String> modifierPaths(ModifierPathsRef ref, String blueprint, String name) {
+List<String> modifierPaths(
+    ModifierPathsRef ref, String blueprint, String name) {
   return ref.watch(fieldModifiersProvider(blueprint, name)).keys.toList();
 }
 
@@ -51,7 +58,8 @@ class Adapter with _$Adapter {
     required List<EntryBlueprint> entries,
   }) = _Adapter;
 
-  factory Adapter.fromJson(Map<String, dynamic> json) => _$AdapterFromJson(json);
+  factory Adapter.fromJson(Map<String, dynamic> json) =>
+      _$AdapterFromJson(json);
 }
 
 /// A data model that represents an entry blueprint.
@@ -67,7 +75,8 @@ class EntryBlueprint with _$EntryBlueprint {
     @IconConverter() @Default(Icons.help) IconData icon,
   }) = _EntryBlueprint;
 
-  factory EntryBlueprint.fromJson(Map<String, dynamic> json) => _$EntryBlueprintFromJson(json);
+  factory EntryBlueprint.fromJson(Map<String, dynamic> json) =>
+      _$EntryBlueprintFromJson(json);
 }
 
 /// A data model for the fields of an adapter entry.
@@ -119,7 +128,8 @@ class FieldInfo with _$FieldInfo {
     @Default([]) List<Modifier> modifiers,
   }) = CustomField;
 
-  factory FieldInfo.fromJson(Map<String, dynamic> json) => _$FieldInfoFromJson(json);
+  factory FieldInfo.fromJson(Map<String, dynamic> json) =>
+      _$FieldInfoFromJson(json);
 }
 
 @freezed
@@ -129,16 +139,21 @@ class Modifier with _$Modifier {
     dynamic data,
   }) = _Modifier;
 
-  factory Modifier.fromJson(Map<String, dynamic> json) => _$ModifierFromJson(json);
+  factory Modifier.fromJson(Map<String, dynamic> json) =>
+      _$ModifierFromJson(json);
 }
 
-const wikiBaseUrl = kDebugMode ? "http://localhost:3000/TypeWriter" : "https://gabber235.github.io/TypeWriter";
+const wikiBaseUrl = kDebugMode
+    ? "http://localhost:3000/TypeWriter"
+    : "https://gabber235.github.io/TypeWriter";
 
 extension EntryBlueprintExt on EntryBlueprint {
-  Map<String, Modifier> fieldsWithModifier(String name) => _fieldsWithModifier(name, "", fields);
+  Map<String, Modifier> fieldsWithModifier(String name) =>
+      _fieldsWithModifier(name, "", fields);
 
   /// Parse through the fields of this entry and return a list of all the fields that have the given modifier with [name].
-  Map<String, Modifier> _fieldsWithModifier(String name, String path, FieldInfo info) {
+  Map<String, Modifier> _fieldsWithModifier(
+      String name, String path, FieldInfo info) {
     final fields = {
       if (info.hasModifier(name)) path: info.getModifier(name)!,
     };
@@ -146,7 +161,8 @@ extension EntryBlueprintExt on EntryBlueprint {
     final separator = path.isEmpty ? "" : ".";
     if (info is ObjectField) {
       for (final field in info.fields.entries) {
-        fields.addAll(_fieldsWithModifier(name, "$path$separator${field.key}", field.value));
+        fields.addAll(_fieldsWithModifier(
+            name, "$path$separator${field.key}", field.value));
       }
     } else if (info is ListField) {
       fields.addAll(_fieldsWithModifier(name, "$path$separator*", info.type));
@@ -157,9 +173,32 @@ extension EntryBlueprintExt on EntryBlueprint {
     return fields;
   }
 
-  static const _wikiCategories = ["action", "dialogue", "event", "fact", "speaker"];
+  FieldInfo? getField(String path) {
+    final parts = path.split(".");
+    FieldInfo? info = fields;
+    for (final part in parts) {
+      if (info is ObjectField) {
+        info = info.fields[part];
+      } else if (info is ListField) {
+        info = info.type;
+      } else if (info is MapField) {
+        info = info.value;
+      }
+    }
+
+    return info;
+  }
+
+  static const _wikiCategories = [
+    "action",
+    "dialogue",
+    "event",
+    "fact",
+    "speaker"
+  ];
   String get wikiUrl {
-    final category = tags.firstWhereOrNull((tag) => _wikiCategories.contains(tag));
+    final category =
+        tags.firstWhereOrNull((tag) => _wikiCategories.contains(tag));
 
     if (category == null) {
       return "$wikiBaseUrl/adapters/${adapter}Adapter";
@@ -181,13 +220,24 @@ extension FieldTypeExtension on FieldInfo {
   /// Get the default value for this field type.
   dynamic get defaultValue => when(
         (_) => null,
-        primitive: (type, _) => type.defaultValue,
+        primitive: (type, _) => _defaultPrimitiveValue(type),
         enumField: (values, _) => values.first,
         list: (type, _) => [],
         map: (key, value, _) => {},
-        object: (fields, _) => fields.map((key, value) => MapEntry(key, value.defaultValue)),
+        object: (fields, _) =>
+            fields.map((key, value) => MapEntry(key, value.defaultValue)),
         custom: (_, defaultValue, __, ___) => defaultValue,
       );
+
+  dynamic _defaultPrimitiveValue(PrimitiveFieldType type) {
+    if (type == PrimitiveFieldType.string) {
+      if (hasModifier("generated")) {
+        return uuid.v4();
+      }
+    }
+
+    return type.defaultValue;
+  }
 
   /// If the [ObjectEditor] needs to show a default layout or if a field declares a custom layout.
   bool get hasCustomLayout {
@@ -200,7 +250,8 @@ extension FieldTypeExtension on FieldInfo {
     if (this is MapField) {
       return true;
     }
-    if (this is PrimitiveField && (this as PrimitiveField).type == PrimitiveFieldType.boolean) {
+    if (this is PrimitiveField &&
+        (this as PrimitiveField).type == PrimitiveFieldType.boolean) {
       return true;
     }
     return false;
@@ -212,6 +263,11 @@ extension FieldTypeExtension on FieldInfo {
 
   bool hasModifier(String name) {
     return getModifier(name) != null;
+  }
+
+  T? get<T>(String name) {
+    final modifier = getModifier(name);
+    return modifier?.data as T?;
   }
 }
 

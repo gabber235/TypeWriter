@@ -4,6 +4,16 @@ import App
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
 
-
 @Adapter("Basic", "For all the most basic entries", App.VERSION)
-object BasicAdapter : TypewriteAdapter()
+/**
+ * The Basic Adapter contains all the essential entries for Typewriter.
+ * In most cases, it should be installed with Typewriter.
+ * If you haven't installed Typewriter or the adapter yet,
+ * please follow the [Installation Guide](/docs/Installation-Guide)
+ * first.
+ */
+object BasicAdapter : TypewriteAdapter() {
+    override fun initialize() {
+
+    }
+}

@@ -133,7 +133,7 @@ class __$$_AdapterCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Adapter implements _Adapter {
+class _$_Adapter with DiagnosticableTreeMixin implements _Adapter {
   const _$_Adapter(
       {required this.name,
       required this.description,
@@ -159,8 +159,19 @@ class _$_Adapter implements _Adapter {
   }
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'Adapter(name: $name, description: $description, version: $version, entries: $entries)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'Adapter'))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('description', description))
+      ..add(DiagnosticsProperty('version', version))
+      ..add(DiagnosticsProperty('entries', entries));
   }
 
   @override
@@ -271,7 +282,7 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
     Object? name = null,
     Object? description = null,
     Object? adapter = null,
-    Object? fields = null,
+    Object? fields = freezed,
     Object? tags = null,
     Object? color = null,
     Object? icon = null,
@@ -289,7 +300,7 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
           ? _value.adapter
           : adapter // ignore: cast_nullable_to_non_nullable
               as String,
-      fields: null == fields
+      fields: freezed == fields
           ? _value.fields
           : fields // ignore: cast_nullable_to_non_nullable
               as ObjectField,
@@ -341,7 +352,7 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
     Object? name = null,
     Object? description = null,
     Object? adapter = null,
-    Object? fields = null,
+    Object? fields = freezed,
     Object? tags = null,
     Object? color = null,
     Object? icon = null,
@@ -359,7 +370,7 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
           ? _value.adapter
           : adapter // ignore: cast_nullable_to_non_nullable
               as String,
-      fields: null == fields
+      fields: freezed == fields
           ? _value.fields
           : fields // ignore: cast_nullable_to_non_nullable
               as ObjectField,
@@ -381,7 +392,9 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_EntryBlueprint implements _EntryBlueprint {
+class _$_EntryBlueprint
+    with DiagnosticableTreeMixin
+    implements _EntryBlueprint {
   const _$_EntryBlueprint(
       {required this.name,
       required this.description,
@@ -422,8 +435,22 @@ class _$_EntryBlueprint implements _EntryBlueprint {
   final IconData icon;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'EntryBlueprint(name: $name, description: $description, adapter: $adapter, fields: $fields, tags: $tags, color: $color, icon: $icon)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'EntryBlueprint'))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('description', description))
+      ..add(DiagnosticsProperty('adapter', adapter))
+      ..add(DiagnosticsProperty('fields', fields))
+      ..add(DiagnosticsProperty('tags', tags))
+      ..add(DiagnosticsProperty('color', color))
+      ..add(DiagnosticsProperty('icon', icon));
   }
 
   @override
@@ -435,7 +462,7 @@ class _$_EntryBlueprint implements _EntryBlueprint {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.adapter, adapter) || other.adapter == adapter) &&
-            (identical(other.fields, fields) || other.fields == fields) &&
+            const DeepCollectionEquality().equals(other.fields, fields) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.color, color) || other.color == color) &&
             (identical(other.icon, icon) || other.icon == icon));
@@ -443,8 +470,15 @@ class _$_EntryBlueprint implements _EntryBlueprint {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, adapter,
-      fields, const DeepCollectionEquality().hash(_tags), color, icon);
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      description,
+      adapter,
+      const DeepCollectionEquality().hash(fields),
+      const DeepCollectionEquality().hash(_tags),
+      color,
+      icon);
 
   @JsonKey(ignore: true)
   @override
@@ -688,7 +722,7 @@ class __$$_FieldTypeCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_FieldType implements _FieldType {
+class _$_FieldType with DiagnosticableTreeMixin implements _FieldType {
   const _$_FieldType(
       {final List<Modifier> modifiers = const [], final String? $type})
       : _modifiers = modifiers,
@@ -710,8 +744,16 @@ class _$_FieldType implements _FieldType {
   final String $type;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'FieldInfo(modifiers: $modifiers)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FieldInfo'))
+      ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
   @override
@@ -915,7 +957,7 @@ class __$$PrimitiveFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$PrimitiveField implements PrimitiveField {
+class _$PrimitiveField with DiagnosticableTreeMixin implements PrimitiveField {
   const _$PrimitiveField(
       {required this.type,
       final List<Modifier> modifiers = const [],
@@ -941,8 +983,17 @@ class _$PrimitiveField implements PrimitiveField {
   final String $type;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'FieldInfo.primitive(type: $type, modifiers: $modifiers)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FieldInfo.primitive'))
+      ..add(DiagnosticsProperty('type', type))
+      ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
   @override
@@ -1149,7 +1200,7 @@ class __$$EnumFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EnumField implements EnumField {
+class _$EnumField with DiagnosticableTreeMixin implements EnumField {
   const _$EnumField(
       {required final List<String> values,
       final List<Modifier> modifiers = const [],
@@ -1182,8 +1233,17 @@ class _$EnumField implements EnumField {
   final String $type;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'FieldInfo.enumField(values: $values, modifiers: $modifiers)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FieldInfo.enumField'))
+      ..add(DiagnosticsProperty('values', values))
+      ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
   @override
@@ -1401,7 +1461,7 @@ class __$$ListFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ListField implements ListField {
+class _$ListField with DiagnosticableTreeMixin implements ListField {
   const _$ListField(
       {required this.type,
       final List<Modifier> modifiers = const [],
@@ -1427,8 +1487,17 @@ class _$ListField implements ListField {
   final String $type;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'FieldInfo.list(type: $type, modifiers: $modifiers)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FieldInfo.list'))
+      ..add(DiagnosticsProperty('type', type))
+      ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
   @override
@@ -1657,7 +1726,7 @@ class __$$MapFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$MapField implements MapField {
+class _$MapField with DiagnosticableTreeMixin implements MapField {
   const _$MapField(
       {required this.key,
       required this.value,
@@ -1686,8 +1755,18 @@ class _$MapField implements MapField {
   final String $type;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'FieldInfo.map(key: $key, value: $value, modifiers: $modifiers)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FieldInfo.map'))
+      ..add(DiagnosticsProperty('key', key))
+      ..add(DiagnosticsProperty('value', value))
+      ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
   @override
@@ -1897,7 +1976,7 @@ class __$$ObjectFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ObjectField implements ObjectField {
+class _$ObjectField with DiagnosticableTreeMixin implements ObjectField {
   const _$ObjectField(
       {required final Map<String, FieldInfo> fields,
       final List<Modifier> modifiers = const [],
@@ -1930,8 +2009,17 @@ class _$ObjectField implements ObjectField {
   final String $type;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'FieldInfo.object(fields: $fields, modifiers: $modifiers)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FieldInfo.object'))
+      ..add(DiagnosticsProperty('fields', fields))
+      ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
   @override
@@ -2169,7 +2257,7 @@ class __$$CustomFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$CustomField implements CustomField {
+class _$CustomField with DiagnosticableTreeMixin implements CustomField {
   const _$CustomField(
       {required this.editor,
       @JsonKey(name: "default") this.defaultValue,
@@ -2202,8 +2290,19 @@ class _$CustomField implements CustomField {
   final String $type;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'FieldInfo.custom(editor: $editor, defaultValue: $defaultValue, fieldInfo: $fieldInfo, modifiers: $modifiers)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FieldInfo.custom'))
+      ..add(DiagnosticsProperty('editor', editor))
+      ..add(DiagnosticsProperty('defaultValue', defaultValue))
+      ..add(DiagnosticsProperty('fieldInfo', fieldInfo))
+      ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
   @override
@@ -2475,7 +2574,7 @@ class __$$_ModifierCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Modifier implements _Modifier {
+class _$_Modifier with DiagnosticableTreeMixin implements _Modifier {
   const _$_Modifier({required this.name, this.data});
 
   factory _$_Modifier.fromJson(Map<String, dynamic> json) =>
@@ -2487,8 +2586,17 @@ class _$_Modifier implements _Modifier {
   final dynamic data;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'Modifier(name: $name, data: $data)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'Modifier'))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('data', data));
   }
 
   @override

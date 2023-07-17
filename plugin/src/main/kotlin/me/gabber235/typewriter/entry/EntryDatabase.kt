@@ -2,147 +2,160 @@ package me.gabber235.typewriter.entry
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
 import com.google.gson.stream.JsonReader
 import lirand.api.extensions.events.listen
-import me.gabber235.typewriter.Typewriter.Companion.plugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.logger
+import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.NonExistentSubtypeException
+import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
+import me.gabber235.typewriter.utils.get
+import me.gabber235.typewriter.utils.refreshAndRegisterAll
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 import java.util.*
 import kotlin.reflect.KClass
 
-object EntryDatabase {
-	private var entries: List<Entry> = emptyList()
+interface EntryDatabase {
+    val events: List<EventEntry>
+    val facts: List<FactEntry>
+    val commandEvents: List<CustomCommandEntry>
 
-	var facts = listOf<FactEntry>()
-		private set
-	private var entities = listOf<EntityEntry>()
-	var events = listOf<EventEntry>()
-		private set
-	private var dialogue = listOf<DialogueEntry>()
-	private var actions = listOf<ActionEntry>()
-	internal var commandEvents = listOf<CustomCommandEntry>()
-		private set
+    fun initialize()
+    fun loadEntries()
 
-	fun init() {
-		plugin.listen<TypewriterReloadEvent> { loadEntries() }
-		loadEntries()
-	}
+    fun <E : Entry> findEntries(klass: KClass<E>, predicate: (E) -> Boolean): List<E>
 
-	fun loadEntries() {
-		val dir = plugin.dataFolder["pages"]
-		if (!dir.exists()) {
-			dir.mkdirs()
-		}
+    fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E>
 
-		val gson = gson()
+    fun <E : Entry> findEntry(klass: KClass<E>, predicate: (E) -> Boolean): E?
 
-		val pages = dir.listFiles { file -> file.name.endsWith(".json") }?.mapNotNull { file ->
-			val dialogueReader = JsonReader(file.reader())
-			dialogueReader.parsePage(gson)
-		}
-
-		this.facts = pages?.flatMap { it.entries.filterIsInstance<FactEntry>() } ?: listOf()
-		this.entities = pages?.flatMap { it.entries.filterIsInstance<EntityEntry>() } ?: listOf()
-		this.events = pages?.flatMap { it.entries.filterIsInstance<EventEntry>() } ?: listOf()
-		this.dialogue = pages?.flatMap { it.entries.filterIsInstance<DialogueEntry>() } ?: listOf()
-		this.actions = pages?.flatMap { it.entries.filterIsInstance<ActionEntry>() } ?: listOf()
-
-		val newCommandEvents = pages?.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() } ?: listOf()
-		this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
-
-		this.entries = pages?.flatMap { it.entries } ?: listOf()
-
-
-		EntryListeners.register()
-
-		plugin.logger.info("Loaded ${facts.size} facts, ${entities.size} entities, ${events.size} events, ${dialogue.size} dialogues, ${actions.size} actions, and ${commandEvents.size} commands.")
-	}
-
-	fun gson(): Gson {
-		val entryFactory = RuntimeTypeAdapterFactory.of(Entry::class.java)
-
-		val entries = AdapterLoader.getAdapterData().flatMap { it.entries }
-
-		entries.groupingBy { it.name }.eachCount().filter { it.value > 1 }.forEach { (name, count) ->
-			plugin.logger.warning("WARNING: Found $count entries with the name '$name'")
-		}
-
-		entries.forEach {
-			entryFactory.registerSubtype(it.clazz, it.name)
-		}
-
-		var builder = GsonBuilder()
-			.registerTypeAdapterFactory(entryFactory)
-
-		customEditors.mapValues { it.value.deserializer }.filterValues { it != null }.forEach {
-			builder = builder.registerTypeAdapter(it.key.java, it.value)
-		}
-		customEditors.mapValues { it.value.serializer }.filterValues { it != null }.forEach {
-			builder = builder.registerTypeAdapter(it.key.java, it.value)
-		}
-
-		return builder
-			.create()
-	}
-
-
-	internal fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
-		return entries.filterIsInstance(klass.java).filter(predicate)
-	}
-
-	internal fun <T : Entry> findEntry(klass: KClass<T>, predicate: (T) -> Boolean): T? {
-		return entries.filterIsInstance(klass.java).firstOrNull(predicate)
-	}
-
-	internal fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
-
-	internal fun getFact(id: String) = facts.firstOrNull { it.id == id }
-	internal fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
+    fun <E : Entry> findEntryById(kClass: KClass<E>, id: String): E?
+    fun getFact(id: String): FactEntry?
+    fun findFactByName(name: String): FactEntry?
+    fun getPageNames(type: PageType? = null): List<String>
 }
 
-private fun JsonReader.parsePage(gson: Gson): Page? {
-	return try {
+class EntryDatabaseImpl : EntryDatabase, KoinComponent {
+    private val entryListeners: EntryListeners by inject()
+    private val gson: Gson by inject(named("entryParser"))
 
-		var page = Page()
+    private var pages: List<Page> = emptyList()
+    private var entries: List<Entry> = emptyList()
 
-		beginObject()
-		while (hasNext()) {
-			when (nextName()) {
-				"entries" -> page = page.copy(entries = parseEntries(gson))
-				else      -> skipValue()
-			}
-		}
+    override var events = listOf<EventEntry>()
+    override var facts = listOf<FactEntry>()
+    override var commandEvents = listOf<CustomCommandEntry>()
 
-		page
-	} catch (e: Exception) {
-		plugin.logger.warning("Failed to parse page: ${e.message}")
-		null
-	}
+    override fun initialize() {
+        plugin.listen<TypewriterReloadEvent> { loadEntries() }
+        plugin.listen<PublishedBookEvent> { loadEntries() }
+    }
+
+    override fun loadEntries() {
+        val pages = readPages(gson)
+
+        this.events = pages.flatMap { it.entries.filterIsInstance<EventEntry>() }
+        this.facts = pages.flatMap { it.entries.filterIsInstance<FactEntry>() }
+
+        val newCommandEvents = pages.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() }
+        this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
+
+        this.entries = pages.flatMap { it.entries }
+        this.pages = pages
+
+        entryListeners.register()
+
+        logger.info("Loaded ${entries.size} entries from ${pages.size} pages.")
+    }
+
+    private fun readPages(gson: Gson): List<Page> {
+        val dir = plugin.dataFolder["pages"]
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+
+        dir.migrateIfNecessary()
+
+        return dir.pages().mapNotNull { file ->
+            val id = file.nameWithoutExtension
+            val dialogueReader = JsonReader(file.reader())
+            dialogueReader.parsePage(id, gson)
+        }
+    }
+
+    override fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
+        return entries.asSequence().filterIsInstance(klass.java).filter(predicate).toList()
+    }
+
+    override fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E> {
+        return pages.firstOrNull { it.id == pageId }?.entries?.asSequence()?.filterIsInstance(klass.java)
+            ?.filter(filter)?.toList()
+            ?: emptyList()
+    }
+
+    override fun <T : Entry> findEntry(klass: KClass<T>, predicate: (T) -> Boolean): T? {
+        return entries.asSequence().filterIsInstance(klass.java).firstOrNull(predicate)
+    }
+
+    override fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
+    override fun getFact(id: String) = facts.firstOrNull { it.id == id }
+    override fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
+
+    override fun getPageNames(type: PageType?): List<String> {
+        return if (type == null) pages.map { it.id }
+        else pages.filter { it.type == type }.map { it.id }
+    }
+}
+
+fun JsonReader.parsePage(id: String, gson: Gson): Page? {
+    return try {
+
+        var page = Page(id)
+
+        beginObject()
+        while (hasNext()) {
+            when (nextName()) {
+                "entries" -> page = page.copy(entries = parseEntries(gson))
+                "type" -> page = page.copy(type = PageType.fromId(nextString()) ?: PageType.SEQUENCE)
+                else -> skipValue()
+            }
+        }
+
+        page
+    } catch (e: Exception) {
+        logger.warning("Failed to parse page: ${e.message}")
+        null
+    }
 }
 
 private fun JsonReader.parseEntries(gson: Gson): List<Entry> {
-	val entries = mutableListOf<Entry>()
+    val entries = mutableListOf<Entry>()
 
-	beginArray()
-	while (hasNext()) {
-		val entry = parseEntry(gson) ?: continue
-		entries.add(entry)
-	}
-	endArray()
+    beginArray()
+    while (hasNext()) {
+        val entry = parseEntry(gson) ?: continue
+        entries.add(entry)
+    }
+    endArray()
 
-	return entries
+    return entries
 }
 
 private fun JsonReader.parseEntry(gson: Gson): Entry? {
-	return try {
-		gson.fromJson(this, Entry::class.java)
-	} catch (e: NonExistentSubtypeException) {
-		val subtypeName = e.subtypeName
-		plugin.logger.warning(
-			"""
+    return try {
+        gson.fromJson(this, Entry::class.java)
+    } catch (e: NonExistentSubtypeException) {
+        val subtypeName = e.subtypeName
+
+        logger.warning(
+            """
 			|--------------------------------------------------------------------------
 			|Failed to parse entry: $subtypeName is not a valid entry type. (skipping)
 			|
@@ -151,20 +164,65 @@ private fun JsonReader.parseEntry(gson: Gson): Entry? {
 			|Please report this on the TypeWriter Discord!
 			|--------------------------------------------------------------------------
 		""".trimMargin()
-		)
-		null
-	} catch (e: Exception) {
-		plugin.logger.warning("Failed to parse entry: ${e.message}")
-		null
-	}
+        )
+        null
+    } catch (e: Exception) {
+        logger.warning("Failed to parse entry: ${e.message}")
+        null
+    }
 }
 
 data class Page(
-	val entries: List<Entry> = emptyList(),
+    val id: String = "",
+    val entries: List<Entry> = emptyList(),
+    val type: PageType = PageType.SEQUENCE,
 )
 
+enum class PageType(val id: String) {
+    @SerializedName("sequence")
+    SEQUENCE("sequence"),
+
+    @SerializedName("static")
+    STATIC("static"),
+
+    @SerializedName("cinematic")
+    CINEMATIC("cinematic"),
+    ;
+
+    companion object {
+        fun fromId(id: String) = values().firstOrNull { it.id == id }
+    }
+}
+
 fun Iterable<Criteria>.matches(playerUUID: UUID): Boolean = all {
-	val entry = Query.findById<ReadableFactEntry>(it.fact)
-	val fact = entry?.read(playerUUID)
-	it.isValid(fact)
+    val entry = Query.findById<ReadableFactEntry>(it.fact)
+    val fact = entry?.read(playerUUID)
+    it.isValid(fact)
+}
+
+fun createEntryParserGson(adapterLoader: AdapterLoader): Gson {
+    val entryFactory = RuntimeTypeAdapterFactory.of(Entry::class.java)
+
+    val entries = adapterLoader.adapters.flatMap { it.entries }
+
+    entries.groupingBy { it.name }.eachCount().filter { it.value > 1 }.forEach { (name, count) ->
+        logger.warning("WARNING: Found $count entries with the name '$name'")
+    }
+
+    entries.forEach {
+        entryFactory.registerSubtype(it.clazz, it.name)
+    }
+
+    var builder = GsonBuilder()
+        .registerTypeAdapterFactory(entryFactory)
+
+    customEditors.mapValues { it.value.deserializer }.filterValues { it != null }.forEach {
+        builder = builder.registerTypeAdapter(it.key.java, it.value)
+    }
+    customEditors.mapValues { it.value.serializer }.filterValues { it != null }.forEach {
+        builder = builder.registerTypeAdapter(it.key.java, it.value)
+    }
+
+    return builder
+        .create()
 }

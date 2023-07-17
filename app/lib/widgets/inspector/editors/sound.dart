@@ -55,7 +55,7 @@ class SoundsFetcher extends SearchFetcher {
     this.disabled = false,
   });
 
-  final Function(MinecraftSound)? onSelect;
+  final FutureOr<bool?> Function(MinecraftSound)? onSelect;
 
   @override
   final bool disabled;
@@ -96,7 +96,10 @@ class SoundSearchElement extends SearchElement {
   });
 
   final MinecraftSound sound;
-  final Function(MinecraftSound)? onSelect;
+  final FutureOr<bool?> Function(MinecraftSound)? onSelect;
+
+  @override
+  String get title => sound.name.formatted;
 
   @override
   Color color(BuildContext context) {
@@ -135,9 +138,6 @@ class SoundSearchElement extends SearchElement {
   Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.upRightFromSquare);
 
   @override
-  String title(BuildContext context) => sound.name.formatted;
-
-  @override
   String description(BuildContext context) {
     if (sound.value.length > 1) {
       return "${sound.category.formatted} (${sound.value.length} Sound ${sound.value.length.pluralize("track")})";
@@ -158,8 +158,8 @@ class SoundSearchElement extends SearchElement {
   }
 
   @override
-  void activate(BuildContext context, PassingRef ref) {
-    onSelect?.call(sound);
+  Future<bool> activate(BuildContext context, PassingRef ref) async {
+    return await onSelect?.call(sound) ?? true;
   }
 }
 
@@ -197,6 +197,7 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
           audioPlayer.stop();
           controller.reset();
         }
+        return null;
       },
       [hasFocus, hovering.value],
     );
@@ -207,7 +208,7 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
         onEnter: (_) => hovering.value = true,
         onExit: (_) => hovering.value = false,
         child: Icon(showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play, size: 16)
-            .animate(controller: controller)
+            .animate(controller: controller, autoPlay: false)
             .scaleXY(duration: 300.ms, begin: 1, end: 1.2)
             .shake(delay: 100.ms, duration: 500.ms, curve: Curves.easeInOutCubicEmphasized)
             .scaleXY(delay: 600.ms, duration: 300.ms, begin: 1.2, end: 1),
@@ -218,7 +219,7 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
 
 extension _SearchBuilderX on SearchBuilder {
   void fetchSounds({
-    Function(MinecraftSound)? onSelect,
+    FutureOr<bool?> Function(MinecraftSound)? onSelect,
     bool disabled = false,
   }) {
     fetch(SoundsFetcher(onSelect: onSelect, disabled: disabled));
@@ -244,8 +245,9 @@ class SoundSelectorEditor extends HookConsumerWidget {
   final String path;
   final PrimitiveField field;
 
-  void _update(PassingRef ref, String value) {
+  bool? _update(PassingRef ref, String value) {
     ref.read(inspectingEntryDefinitionProvider)?.updateField(ref, path, value);
+    return null;
   }
 
   void _select(PassingRef ref) {
@@ -393,6 +395,7 @@ class _ChosenSound extends HookConsumerWidget {
           audioPlayer.stop();
           controller.reset();
         }
+        return null;
       },
       [hovering.value],
     );
@@ -405,7 +408,7 @@ class _ChosenSound extends HookConsumerWidget {
             onEnter: (_) => hovering.value = true,
             onExit: (_) => hovering.value = false,
             child: Icon(showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play, size: 16)
-                .animate(controller: controller)
+                .animate(controller: controller, autoPlay: false)
                 .scaleXY(duration: 300.ms, begin: 1, end: 1.2)
                 .shake(delay: 100.ms, duration: 500.ms, curve: Curves.easeInOutCubicEmphasized)
                 .tint(color: Colors.amber)

@@ -51,11 +51,11 @@ enum class CriteriaOperator {
 data class Criteria(
 	@Help("The fact to check before triggering the entry")
 	@EntryIdentifier(ReadableFactEntry::class)
-	val fact: String,
+	val fact: String = "",
 	@Help("The operator to use when comparing the fact value to the criteria value")
-	val operator: CriteriaOperator,
+	val operator: CriteriaOperator = CriteriaOperator.EQUALS,
 	@Help("The value to compare the fact value to")
-	val value: Int,
+	val value: Int = 0,
 ) {
 	fun isValid(fact: Fact?): Boolean {
 		val value = fact?.value ?: 0
@@ -80,9 +80,9 @@ enum class ModifierOperator {
 data class Modifier(
 	@Help("The fact to modify when the entry is triggered")
 	@EntryIdentifier(WritableFactEntry::class)
-	val fact: String,
+	val fact: String = "",
 	@Help("The operator to use when modifying the fact value")
-	val operator: ModifierOperator,
+	val operator: ModifierOperator = ModifierOperator.ADD,
 	@Help("The value to modify the fact value by")
-	val value: Int,
+	val value: Int = 0,
 )

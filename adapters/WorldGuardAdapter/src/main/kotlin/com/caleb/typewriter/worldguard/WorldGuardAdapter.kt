@@ -3,25 +3,28 @@ package com.caleb.typewriter.worldguard
 import App
 import com.sk89q.worldguard.WorldGuard
 import lirand.api.extensions.server.server
-import me.gabber235.typewriter.Typewriter
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.logger
 
 @Adapter("WorldGuard", "For Using WorldGuard", App.VERSION)
+/**
+ * The WorldGuard Adapter allows you to create dialogue that is triggered by WorldGuard regions.
+ */
 object WorldGuardAdapter : TypewriteAdapter() {
 
-	override fun initialize() {
-		if (!server.pluginManager.isPluginEnabled("WorldGuard")) {
-			Typewriter.plugin.logger.warning("WorldGuard plugin not found, try installing it or disabling the WorldGuard adapter")
-			return
-		}
+    override fun initialize() {
+        if (!server.pluginManager.isPluginEnabled("WorldGuard")) {
+            logger.warning("WorldGuard plugin not found, try installing it or disabling the WorldGuard adapter")
+            return
+        }
 
-		val worldGuard = WorldGuard.getInstance()
+        val worldGuard = WorldGuard.getInstance()
 
-		val registered = worldGuard.platform.sessionManager.registerHandler(WorldGuardHandler.Factory(), null)
+        val registered = worldGuard.platform.sessionManager.registerHandler(WorldGuardHandler.Factory(), null)
 
-		if (!registered) {
-			Typewriter.plugin.logger.warning("Failed to register WorldGuardHandler. This is a bug, please report it on the Typewriter Discord.")
-		}
-	}
+        if (!registered) {
+            logger.warning("Failed to register WorldGuardHandler. This is a bug, please report it on the Typewriter Discord.")
+        }
+    }
 }

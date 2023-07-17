@@ -1,4 +1,3 @@
-import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:graphview/GraphView.dart";
@@ -10,6 +9,7 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
+import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 
 part "entries_graph.g.dart";
@@ -23,6 +23,12 @@ List<Entry> graphableEntries(GraphableEntriesRef ref) {
     final tags = ref.watch(entryTagsProvider(entry.type));
     return tags.contains("trigger");
   }).toList();
+}
+
+@riverpod
+List<String> graphableEntryIds(GraphableEntryIdsRef ref) {
+  final entries = ref.watch(graphableEntriesProvider);
+  return entries.map((entry) => entry.id).toList();
 }
 
 @riverpod
@@ -55,7 +61,7 @@ class EntriesGraph extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entries = ref.watch(graphableEntriesProvider);
+    final entryIds = ref.watch(graphableEntryIdsProvider);
     final graph = ref.watch(graphProvider);
 
     final builder = useMemoized(
@@ -65,7 +71,7 @@ class EntriesGraph extends HookConsumerWidget {
         ..orientation = SugiyamaConfiguration.ORIENTATION_LEFT_RIGHT,
     );
 
-    if (entries.isEmpty) {
+    if (entryIds.isEmpty) {
       return EmptyScreen(
         title: "There are no graphable entries on this page.",
         buttonText: "Add Entry",
@@ -92,10 +98,12 @@ class EntriesGraph extends HookConsumerWidget {
           ..strokeWidth = 1
           ..style = PaintingStyle.stroke,
         builder: (node) {
-          final id = node.key!.value as String?;
-          final entry = entries.firstWhereOrNull((entry) => entry.id == id);
-          if (entry == null) {
-            final globalEntryWithPage = ref.watch(globalEntryWithPageProvider(id!));
+          final id = node.key?.value as String?;
+          if (id == null) return const InvalidEntry();
+
+          final entryOnPage = entryIds.contains(id);
+          if (!entryOnPage) {
+            final globalEntryWithPage = ref.watch(globalEntryWithPageProvider(id));
             if (globalEntryWithPage == null) {
               return const InvalidEntry();
             }
@@ -103,8 +111,8 @@ class EntriesGraph extends HookConsumerWidget {
             return ExternalEntryNode(pageId: globalEntryWithPage.key, entry: globalEntryWithPage.value);
           }
           return EntryNode(
-            entry: entry,
-            key: ValueKey(entry.id),
+            entryId: id,
+            key: ValueKey(id),
           );
         },
       ),

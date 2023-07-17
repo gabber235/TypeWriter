@@ -1,0 +1,32 @@
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
+
+# Remove Item Action 
+
+The `Remove Item Action` is an action that removes an item from the player's inventory.
+This action provides you with the ability to remove items from the player's inventory in response to specific events.
+
+## How could this be used?
+
+This can be used when `giving` an NPC an item, and you want to remove the item from the player's inventory.
+Or when you want to remove an item from the player's inventory when they complete a quest or achievement.
+
+
+## Fields
+
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.EntryField name='Material' required>
+     The item to remove.
+</fields.EntryField>
+<fields.EntryField name='Amount' required>
+     The amount of items to remove.
+</fields.EntryField>
+<fields.EntryField name='Exact Amount' required>
+     Does the player need to have the exact amount of items?
+</fields.EntryField>
+<fields.EntryField name='Item Name' optional placeholders colored>
+     If the name is given, the item must have the same name to be removed.
+</fields.EntryField>
