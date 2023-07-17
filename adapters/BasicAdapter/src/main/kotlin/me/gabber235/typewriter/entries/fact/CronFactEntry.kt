@@ -11,15 +11,22 @@ import me.gabber235.typewriter.utils.Icons
 import java.time.LocalDateTime
 
 @Entry("cron_fact", "Saved until a specified date, like (0 0 * * 1)", Colors.PURPLE, Icons.CALENDAR_DAYS)
-data class CronFactEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val comment: String = "",
-	@Help("The cron expression when the fact expires.")
-	val cron: CronExpression = CronExpression.default()
+/**
+ * A [fact](/docs/facts) that is saved until a specified date, like (0 0 \* \* 1).
+ *
+ * ## How could this be used?
+ *
+ * This fact could be used to create weekly rewards, which are reset every week. Or to simulate the opening hours of a shop.
+ */
+class CronFactEntry(
+    override val id: String = "",
+    override val name: String = "",
+    override val comment: String = "",
+    @Help("The cron expression when the fact expires.")
+    // The <Link to="https://www.netiq.com/documentation/cloud-manager-2-5/ncm-reference/data/bexyssf.html">Cron Expression</Link> when the fact expires.
+    val cron: CronExpression = CronExpression.default()
 ) : ExpirableFactEntry, PersistableFactEntry {
-
-	override fun hasExpired(fact: Fact): Boolean {
-		return cron.nextLocalDateTimeAfter(fact.lastUpdate).isBefore(LocalDateTime.now())
-	}
+    override fun hasExpired(fact: Fact): Boolean {
+        return cron.nextLocalDateTimeAfter(fact.lastUpdate).isBefore(LocalDateTime.now())
+    }
 }

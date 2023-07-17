@@ -25,7 +25,15 @@ import org.bukkit.entity.Player
 import java.time.Duration
 
 @Entry("subtitle_dialogue_cinematic", "Show an action bar message", Colors.CYAN, Icons.DIAGRAM_NEXT)
-data class SubtitleDialogueCinematicEntry(
+/**
+ * The `Subtitle Dialogue Cinematic Entry` is a cinematic entry that displays an animated subtitle message.
+ * The speaker is displayed in the action bar, and the dialogue is displayed in the subtitle.
+ *
+ * ## How could this be used?
+ *
+ * This could be used to display a dialogue between two characters, where the speaker is displayed in the action bar, and the dialogue is displayed in the subtitle.
+ */
+class SubtitleDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),

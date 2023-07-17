@@ -18,13 +18,25 @@ import java.util.*
     Colors.PURPLE,
     Icons.BAG_SHOPPING
 )
-data class InventoryItemCountFact(
+/**
+ * The `Inventory Item Count Fact` is a fact that returns the amount of a specific item in the player's inventory.
+ *
+ * <fields.ReadonlyFactInfo />
+ *
+ * ## How could this be used?
+ *
+ * This could be used to check if the player has a specific item in their inventory, or to check if they have a specific amount of an item.
+ * Like giving the player a quest to collect 10 apples, and then checking if they have 10 apples in their inventory.
+ */
+class InventoryItemCountFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
     @Help("The material the item needs to be.")
+    // If specified, only items with this material will be counted.
     private val material: Optional<Material> = Optional.empty(),
     @Help("The name of the item.")
+    // If specified, only items with this name will be counted.
     private val itemName: Optional<String> = Optional.empty(),
 ) : ReadableFactEntry {
     private fun isValid(item: ItemStack): Boolean {

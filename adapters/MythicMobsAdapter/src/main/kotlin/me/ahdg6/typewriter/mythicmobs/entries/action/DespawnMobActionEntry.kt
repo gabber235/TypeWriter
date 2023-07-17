@@ -14,6 +14,13 @@ import org.bukkit.entity.Player
 
 
 @Entry("despawn_mythicmobs_mob", "Despawn a mob from MythicMobs", Colors.ORANGE, Icons.TRASH)
+/**
+ * The `Despawn Mob Action` action removes MythicMobs mobs from the world.
+ *
+ * ## How could this be used?
+ *
+ * This action could be used in stories or quests in various ways. For instance, if a player fails a quest to kill 10 zombies, then the zombies could be despawned to signal that the quest is no longer active. One could even use this action for a quest to kill a certain amount of mobs within a time limit!
+ */
 class DespawnMobActionEntry(
     override val id: String = "",
     override val name: String = "",

@@ -1,6 +1,8 @@
-import {ActionsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Spawn Mob Action
+# Spawn Mob Action 
 
 The `Spawn Mob Action` action spawn MythicMobs mobs to the world.
 
@@ -8,18 +10,18 @@ The `Spawn Mob Action` action spawn MythicMobs mobs to the world.
 
 This action could be used in a plethora of scenarios. From simple quests requiring you to kill some spawned mobs, to complex storylines that simulate entire battles, this action knows no bounds!
 
+
 ## Fields
 
-<ActionsField/>
-
-<EntryField name="MobName" required>
-    The mob's name.
-</EntryField>
-
-<EntryField name="Level" required>
-    The mob's level.
-</EntryField>
-
-<EntryField name="Spawn Location" required>
-    Spawn Location, can use `~` to define player's relative location.
-</EntryField>
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.EntryField name='Mob Name' required>
+     The mob's name
+</fields.EntryField>
+<fields.EntryField name='Level' required>
+     The mob's level
+</fields.EntryField>
+<fields.EntryField name='Spawn Location' required>
+     The mob's spawn location
+</fields.EntryField>

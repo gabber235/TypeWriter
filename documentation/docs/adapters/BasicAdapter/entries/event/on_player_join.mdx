@@ -1,6 +1,8 @@
-import {EventsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Player Join Event
+# Player Join Event 
 
 The `Player Join Event` event is called when a player joins the server.
 
@@ -8,6 +10,7 @@ The `Player Join Event` event is called when a player joins the server.
 
 This could be used with [facts](/docs/facts) to give a new player a welcome message, or welcome back new players. You can also use it to give new players a starting item, or to give them a starting amount of money with the [Vault adapter](/adapters/VaultAdapter).
 
+
 ## Fields
 
-<EventsField />
+<fields.TriggersField />

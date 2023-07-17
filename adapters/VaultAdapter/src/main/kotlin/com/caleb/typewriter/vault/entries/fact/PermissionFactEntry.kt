@@ -12,17 +12,26 @@ import net.milkbowl.vault.permission.Permission
 import java.util.*
 
 @Entry("permission_fact", "If the player has a permission", Colors.PURPLE, Icons.USER_SHIELD)
+/**
+ * A [fact](/docs/facts) that checks if the player has a certain permission.
+ *
+
+ *
+ * ## How could this be used?
+ *
+ * This fact could be used to check if the player has a certain permission, for example to check if the player is an admin.
+ */
 class PermissionFactEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val comment: String = "",
-	@Help("The permission to check for")
-	val permission: String = ""
+    override val id: String = "",
+    override val name: String = "",
+    override val comment: String = "",
+    @Help("The permission to check for")
+    val permission: String = ""
 ) : ReadableFactEntry {
-	override fun read(playerId: UUID): Fact {
-		val permissionHandler: Permission = VaultAdapter.permissions ?: return Fact(id, 0)
-		val player = server.getPlayer(playerId) ?: return Fact(id, 0)
-		val value = if (permissionHandler.playerHas(player, permission)) 1 else 0
-		return Fact(id, value)
-	}
+    override fun read(playerId: UUID): Fact {
+        val permissionHandler: Permission = VaultAdapter.permissions ?: return Fact(id, 0)
+        val player = server.getPlayer(playerId) ?: return Fact(id, 0)
+        val value = if (permissionHandler.playerHas(player, permission)) 1 else 0
+        return Fact(id, value)
+    }
 }

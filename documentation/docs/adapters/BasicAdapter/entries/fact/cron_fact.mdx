@@ -1,7 +1,8 @@
-import {EntryField, FactsField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
 import Link from '@docusaurus/Link';
 
-# Cron Fact
+# Cron Fact 
 
 A [fact](/docs/facts) that is saved until a specified date, like (0 0 \* \* 1).
 
@@ -9,11 +10,10 @@ A [fact](/docs/facts) that is saved until a specified date, like (0 0 \* \* 1).
 
 This fact could be used to create weekly rewards, which are reset every week. Or to simulate the opening hours of a shop.
 
+
 ## Fields
 
-<FactsField/>
-
-<EntryField name="Cron" required>
-    The <Link to="https://www.netiq.com/documentation/cloud-manager-2-5/ncm-reference/data/bexyssf.html">Cron
-    Expression</Link> when the fact expires.
-</EntryField>
+<fields.CommentField />
+<fields.EntryField name='Cron' required>
+     The <Link to="https://www.netiq.com/documentation/cloud-manager-2-5/ncm-reference/data/bexyssf.html">Cron Expression</Link> when the fact expires.
+</fields.EntryField>

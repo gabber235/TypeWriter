@@ -11,7 +11,14 @@ import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
 @Entry("island_set_border_size", "Set a player's island's border size", Colors.RED, Icons.BORDER_ALL)
-data class IslandSetBorderSizeActionEntry(
+/**
+ * The `Island Set Border Size` action is used to set a player's island's border size.
+ *
+ * ## How could this be used?
+ *
+ * It could be used to reward the player for completing a quest, or upon reaching a certain level.
+ */
+class IslandSetBorderSizeActionEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),

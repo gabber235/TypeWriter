@@ -16,6 +16,13 @@ import org.bukkit.entity.Player
 
 
 @Entry("spawn_mythicmobs_mob", "Spawn a mob from MythicMobs", Colors.ORANGE, Icons.DRAGON)
+/**
+ * The `Spawn Mob Action` action spawn MythicMobs mobs to the world.
+ *
+ * ## How could this be used?
+ *
+ * This action could be used in a plethora of scenarios. From simple quests requiring you to kill some spawned mobs, to complex storylines that simulate entire battles, this action knows no bounds!
+ */
 class SpawnMobActionEntry(
     override val id: String = "",
     override val name: String = "",
@@ -26,7 +33,7 @@ class SpawnMobActionEntry(
     private val mobName: String = "",
     @Help("The mob's level")
     private val level: Double = 1.0,
-    @Help("Spawn Location")
+    @Help("The mob's spawn location")
     private var spawnLocation: Location,
 ) : ActionEntry {
     override fun execute(player: Player) {

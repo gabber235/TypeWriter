@@ -12,6 +12,13 @@ import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
 @Entry("on_player_enter_combat", "When a player enters combat", Colors.YELLOW, Icons.HEART_CRACK)
+/**
+ * The `Player Enter Combat Event` is triggered when a player enters combat with another player.
+ *
+ * ## How could this be used?
+ *
+ * This could be used to play a sound effect when a player enters combat with another player.
+ */
 class PlayerEnterCombatEventEntry(
     override val id: String = "",
     override val name: String = "",
@@ -19,6 +26,7 @@ class PlayerEnterCombatEventEntry(
     @Triggers
     @EntryIdentifier(TriggerableEntry::class)
     @Help("The triggers for the aggressor")
+    // Triggers to fire for the aggressor who made the attack.
     val aggressorTriggers: List<String> = emptyList()
 ) : EventEntry
 

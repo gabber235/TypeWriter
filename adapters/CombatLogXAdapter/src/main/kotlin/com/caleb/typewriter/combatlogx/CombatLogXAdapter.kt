@@ -9,6 +9,9 @@ import me.gabber235.typewriter.logger
 import org.bukkit.Bukkit
 
 @Adapter("CombatLogX", "For Using CombatLogX", App.VERSION)
+/**
+ * The CombatLogX Adapter allows you to create entries that are triggered when a player enters or leaves combat.
+ */
 object CombatLogXAdapter : TypewriteAdapter() {
 
     override fun initialize() {

@@ -13,8 +13,14 @@ import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-
 @Entry("teleport", "Teleport a player", Colors.RED, Icons.STREET_VIEW)
+/**
+ * The `Teleport Action` entry is used to teleport a player to a location.
+ *
+ * ## How could this be used?
+ * This could be used to teleport a player to a location when they click a button.
+ * Or it could be used for a fast travel system where players talk to an NPC and are teleported to a location.
+ */
 class TeleportActionEntry(
     override val id: String = "",
     override val name: String = "",

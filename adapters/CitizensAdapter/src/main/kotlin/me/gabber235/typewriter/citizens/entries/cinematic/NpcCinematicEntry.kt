@@ -5,24 +5,20 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.Colors
-import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Capture
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
-import me.gabber235.typewriter.capture.AssetCapturer
-import me.gabber235.typewriter.capture.CapturerCreator
-import me.gabber235.typewriter.capture.MultiTapeRecordedCapturer
-import me.gabber235.typewriter.capture.RecorderRequestContext
 import me.gabber235.typewriter.capture.capturers.*
 import me.gabber235.typewriter.citizens.CitizensAdapter.temporaryRegistry
+import me.gabber235.typewriter.citizens.entries.artifact.NpcFrame
+import me.gabber235.typewriter.citizens.entries.artifact.NpcMovementArtifact
+import me.gabber235.typewriter.citizens.entries.artifact.NpcRecordedDataCapturer
 import me.gabber235.typewriter.entry.AssetManager
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
-import me.gabber235.typewriter.utils.onFail
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.NPC
 import net.citizensnpcs.api.trait.trait.Equipment
@@ -38,7 +34,6 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.PlayerInventory
 import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent.inject
 
@@ -48,15 +43,7 @@ interface NpcCinematicEntry : CinematicEntry {
     val recordedSegments: List<NpcRecordedSegment>
 }
 
-@Tags("npc_movement_artifact")
-@Entry("npc_movement_artifact", "Movement data for an npc", Colors.PINK, Icons.PERSON_WALKING)
-data class NpcMovementArtifact(
-    override val id: String = "",
-    override val name: String = "",
-    override val artifactId: String = "",
-) : ArtifactEntry
-
-data class NpcRecordedSegment(
+class NpcRecordedSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @Help("The artifact for the recorded interactions data")
@@ -64,56 +51,6 @@ data class NpcRecordedSegment(
     @Capture(NpcRecordedDataCapturer::class)
     val artifact: String = "",
 ) : Segment
-
-data class NpcFrame(
-    val location: Location?,
-    val sneaking: Boolean?,
-    val swing: ArmSwing?,
-
-    val mainHand: ItemStack?,
-    val offHand: ItemStack?,
-    val helmet: ItemStack?,
-    val chestplate: ItemStack?,
-    val leggings: ItemStack?,
-    val boots: ItemStack?,
-)
-
-class NpcRecordedDataCapturer(title: String, entry: AssetEntry) :
-    AssetCapturer<Tape<NpcFrame>>(title, entry, NpcTapeCapturer(title)) {
-    companion object : CapturerCreator<NpcRecordedDataCapturer> {
-        override fun create(context: RecorderRequestContext): Result<NpcRecordedDataCapturer> {
-            val entry = getAssetFromFieldValue(context.fieldValue) onFail { return it }
-
-            return Result.success(NpcRecordedDataCapturer(context.title, entry))
-        }
-    }
-}
-
-class NpcTapeCapturer(title: String) : MultiTapeRecordedCapturer<NpcFrame>(title) {
-    private val location by tapeCapturer(::LocationTapeCapturer)
-    private val sneaking by tapeCapturer(::SneakingTapeCapturer)
-    private val swing by tapeCapturer(::SwingTapeCapturer)
-    private val mainHand by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getItemInMainHand))
-    private val offHand by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getItemInOffHand))
-    private val helmet by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getHelmet))
-    private val chestplate by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getChestplate))
-    private val leggings by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getLeggings))
-    private val boots by tapeCapturer(inventorySlotTapeCapturer(PlayerInventory::getBoots))
-    override fun combineFrame(frame: Int): NpcFrame {
-        return NpcFrame(
-            location = location[frame],
-            sneaking = sneaking[frame],
-            swing = swing[frame],
-
-            mainHand = mainHand[frame],
-            offHand = offHand[frame],
-            helmet = helmet[frame],
-            chestplate = chestplate[frame],
-            leggings = leggings[frame],
-            boots = boots[frame],
-        )
-    }
-}
 
 
 interface NpcData {

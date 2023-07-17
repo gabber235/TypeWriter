@@ -12,6 +12,9 @@ import org.bukkit.Bukkit.getServer
 import org.bukkit.plugin.RegisteredServiceProvider
 
 @Adapter("Vault", "For Vault", App.VERSION)
+/**
+ * The Vault Adapter is an adapter for the Vault plugin. It allows you to use Vault's economy system in your dialogue.
+ */
 object VaultAdapter : TypewriteAdapter() {
     var economy: Economy? = null
         private set

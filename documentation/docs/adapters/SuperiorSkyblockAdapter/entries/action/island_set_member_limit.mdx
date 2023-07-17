@@ -1,6 +1,8 @@
-import {ActionsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Island Set Member Limit Action
+# Island Set Member Limit Action 
 
 The `Island Set Member Limit Action` is an action that sets the member limit of an island.
 
@@ -8,10 +10,12 @@ The `Island Set Member Limit Action` is an action that sets the member limit of 
 
 This could be used as a reward for a quest or as if they reach a certain level.
 
+
 ## Fields
 
-<ActionsField/>
-
-<EntryField name="Size" required>
-    The new limit to set the island's member limit to.
-</EntryField>
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.EntryField name='Size' required>
+     The new limit to set the island's member limit to
+</fields.EntryField>

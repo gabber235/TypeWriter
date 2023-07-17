@@ -18,6 +18,13 @@ import org.bukkit.entity.Player
 import java.time.Duration
 
 @Entry("title_cinematic", "Show a title during a cinematic", Colors.CYAN, Icons.PARAGRAPH)
+/**
+ * The `Title Cinematic` entry shows a title during a cinematic.
+ *
+ * ## How could this be used?
+ *
+ * This entry could be used to show a title during a cinematic, such as a title for a cutscene.
+ */
 class TitleCinematicEntry(
     override val id: String,
     override val name: String,

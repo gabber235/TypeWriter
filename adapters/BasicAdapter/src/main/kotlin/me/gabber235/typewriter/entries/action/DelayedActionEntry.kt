@@ -14,6 +14,14 @@ import org.bukkit.entity.Player
 import java.time.Duration
 
 @Entry("delayed_action", "Delay an action for a certain amount of time", Colors.RED, Icons.SOLID_HOURGLASS_HALF)
+/**
+ * The `Delayed Action Entry` is an entry that fires its triggers after a specified duration. This entry provides you with the ability to create time-based actions and events.
+ *
+ * ## How could this be used?
+ *
+ * This entry can be useful in a variety of situations where you need to delay an action or event.
+ * You can use it to create countdown timers, to perform actions after a certain amount of time has elapsed, or to schedule events in the future.
+ */
 class DelayedActionEntry(
     override val id: String = "",
     override val name: String = "",
@@ -22,6 +30,7 @@ class DelayedActionEntry(
     @SerializedName("triggers")
     override val customTriggers: List<String> = emptyList(),
     @Help("The time to delay the action for.")
+    // The duration before the next triggers are fired.
     private val duration: Duration = Duration.ZERO, // Number of milliseconds
 ) : CustomTriggeringActionEntry {
 

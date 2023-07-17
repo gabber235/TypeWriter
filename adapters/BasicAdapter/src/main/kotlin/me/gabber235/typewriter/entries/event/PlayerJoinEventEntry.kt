@@ -10,7 +10,14 @@ import me.gabber235.typewriter.utils.Icons
 import org.bukkit.event.player.PlayerJoinEvent
 
 @Entry("on_player_join", "When the player joins the server", Colors.YELLOW, Icons.PERSON_CIRCLE_PLUS)
-data class PlayerJoinEventEntry(
+/**
+ * The `Player Join Event` event is called when a player joins the server.
+ *
+ * ## How could this be used?
+ *
+ * This could be used with [facts](/docs/facts) to give a new player a welcome message, or welcome back new players. You can also use it to give new players a starting item, or to give them a starting amount of money with the [Vault adapter](/adapters/VaultAdapter).
+ */
+class PlayerJoinEventEntry(
     override val id: String = "",
     override val name: String = "",
     override val triggers: List<String> = emptyList(),

@@ -1,15 +1,18 @@
-import {FactsField, ReadonlyFactInfo} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Combat Fact
+# Combat Fact 
 
 A [fact](/docs/facts) that tells whether a player is in combat.
 
-<ReadonlyFactInfo/>
+<fields.ReadonlyFactInfo/>
 
 ## How could this be used?
 
 This could be used to disable certain actions when the player is in combat.
 
+
 ## Fields
 
-<FactsField/>
+<fields.CommentField />

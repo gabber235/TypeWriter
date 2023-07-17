@@ -7,6 +7,9 @@ import me.gabber235.typewriter.adapters.TypewriteAdapter
 import me.gabber235.typewriter.logger
 
 @Adapter("MythicMobs", "For Using MythicMobs", App.VERSION)
+/**
+ * The MythicMobs Adapter is an adapter for the MythicMobs plugin. It allows you handle mob-related things in TypeWriter.
+ */
 object MythicMobsAdapter : TypewriteAdapter() {
 
     override fun initialize() {

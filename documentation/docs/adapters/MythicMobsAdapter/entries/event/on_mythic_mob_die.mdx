@@ -1,6 +1,8 @@
-import {ActionsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Mob
+# Mythic Mob Death Event 
 
 The `Mob Death Event` event is triggered when a player kill a mob.
 
@@ -8,10 +10,10 @@ The `Mob Death Event` event is triggered when a player kill a mob.
 
 After killing a final boss, a dialogue or cinematic section can start. The player could also get a special reward the first time they kill a specific mob.
 
+
 ## Fields
 
-<ActionsField/>
-
-<EntryField name="MobName" required>
-    The mob's name.
-</EntryField>
+<fields.TriggersField />
+<fields.EntryField name='Mob Name' required>
+     Only trigger when a specific mob dies.
+</fields.EntryField>

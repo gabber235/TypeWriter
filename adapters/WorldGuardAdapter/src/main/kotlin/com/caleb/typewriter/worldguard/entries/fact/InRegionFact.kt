@@ -12,21 +12,30 @@ import me.gabber235.typewriter.utils.Icons
 import java.util.*
 
 @Entry("in_region_fact", "If the player is in a WorldGuard region", Colors.PURPLE, Icons.ROAD_BARRIER)
-data class InRegionFact(
-	override val id: String = "",
-	override val name: String = "",
-	override val comment: String = "",
-	@Help("The name of the region which the player must be in")
-	val region: String = "",
+/**
+ * A [fact](/docs/facts) that checks if the player is in a specific region. The value will be `0` if the player is not in the region, and `1` if the player is in the region.
+ *
+ * <fields.ReadonlyFactInfo />
+ *
+ * ## How could this be used?
+ *
+ * This fact could be used to make a quest only available in a specific region.
+ */
+class InRegionFact(
+    override val id: String = "",
+    override val name: String = "",
+    override val comment: String = "",
+    @Help("The name of the region which the player must be in.")
+    val region: String = "",
 ) : ReadableFactEntry {
-	override fun read(playerId: UUID): Fact {
-		val player = server.getPlayer(playerId) ?: return Fact(id, 0)
-		val regionContainer = WorldGuard.getInstance().platform.regionContainer
-		val regionManager = regionContainer.get(BukkitAdapter.adapt(player.world))
-		val regions = regionManager?.getApplicableRegions(BukkitAdapter.asBlockVector(player.location))
-			?: return Fact(id, 0)
+    override fun read(playerId: UUID): Fact {
+        val player = server.getPlayer(playerId) ?: return Fact(id, 0)
+        val regionContainer = WorldGuard.getInstance().platform.regionContainer
+        val regionManager = regionContainer.get(BukkitAdapter.adapt(player.world))
+        val regions = regionManager?.getApplicableRegions(BukkitAdapter.asBlockVector(player.location))
+            ?: return Fact(id, 0)
 
-		val value = if (regions.regions.any { it.id == region }) 1 else 0
-		return Fact(id, value)
-	}
+        val value = if (regions.regions.any { it.id == region }) 1 else 0
+        return Fact(id, value)
+    }
 }

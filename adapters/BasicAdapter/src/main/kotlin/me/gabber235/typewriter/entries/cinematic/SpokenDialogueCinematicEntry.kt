@@ -24,7 +24,14 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
 @Entry("spoken_dialogue_cinematic", "Play a spoken dialogue cinematic", Colors.CYAN, Icons.MESSAGE)
-data class SpokenDialogueCinematicEntry(
+/**
+ * The `Spoken Dialogue Cinematic` is a cinematic that displays an animated message in chat.
+ *
+ * ## How could this be used?
+ *
+ * When a NPC is talking to the player, this can be used to display the NPC's dialogue.
+ */
+class SpokenDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),

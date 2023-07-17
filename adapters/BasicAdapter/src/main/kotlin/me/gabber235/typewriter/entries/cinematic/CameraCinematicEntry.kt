@@ -23,7 +23,20 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 
 @Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, Icons.VIDEO)
-data class CameraCinematicEntry(
+/**
+ * The `Camera Cinematic` entry is used to create a cinematic camera path.
+ *
+ * :::tip
+ * When starting a camera, Minecraft needs `10` frames to load camera's.
+ * It is suggested to use a [Blinding Cinematic Entry](./blinding_cinematic) and wait for `10`-`20` frames.
+ * Before the first segment to get the smoothest cinematic.
+ * :::
+ *
+ * ## How could this be used?
+ * When you want to direct the player's attention to a specific object/location.
+ * Or when you want to show off a build.
+ */
+class CameraCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),

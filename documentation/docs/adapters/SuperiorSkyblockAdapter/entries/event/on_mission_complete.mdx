@@ -1,6 +1,8 @@
-import {EntryField, EventsField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Mission Complete Event
+# Mission Complete Event 
 
 The `Mission Complete` event is triggered when a player completes a mission.
 
@@ -8,10 +10,10 @@ The `Mission Complete` event is triggered when a player completes a mission.
 
 This event could be used to reward players for completing missions.
 
+
 ## Fields
 
-<EventsField/>
-
-<EntryField name="Mission Name" required>
-    The name of the mission that needs to be completed.
-</EntryField>
+<fields.TriggersField />
+<fields.EntryField name='Mission Name' required>
+     The name of the mission that needs to be completed
+</fields.EntryField>

@@ -21,6 +21,13 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType.BLINDNESS
 
 @Entry("blinding_cinematic", "Blind the player so the screen looks black", Colors.CYAN, Icons.SOLID_EYE_SLASH)
+/**
+ * The `Blinding Cinematic` entry is used to blind the player so the screen looks black.
+ *
+ * ## How could this be used?
+ * When starting a cinematic, if you have a [Camera Cinematic Entry](./camera_cinematic)
+ * where you wait for a few frames to get it loading in.
+ */
 class BlindingCinematicEntry(
     override val id: String,
     override val name: String,

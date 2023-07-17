@@ -17,7 +17,16 @@ import org.bukkit.entity.Player
     Colors.PINK,
     Icons.USER_TIE
 )
-data class ReferenceNpcCinematicEntry(
+/**
+ * The `Reference NPC Cinematic` entry that plays a recorded animation back on a reference NPC.
+ * When active, the original NPC will be hidden and a clone will be spawned in its place.
+ *
+ * ## How could this be used?
+ *
+ * This could be used to create a cinematic where the player is talking to an NPC.
+ * Like going in to a store and talking to the shopkeeper.
+ */
+class ReferenceNpcCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),

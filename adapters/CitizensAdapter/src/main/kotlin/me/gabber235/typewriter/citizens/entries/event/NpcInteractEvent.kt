@@ -18,12 +18,20 @@ import net.citizensnpcs.api.event.NPCRightClickEvent
 import org.bukkit.entity.Player
 
 @Entry("on_npc_interact", "When a player clicks on an NPC", Colors.YELLOW, Icons.PEOPLE_ROBBERY)
+/**
+ * The `NPC Interact Event` is fired when a player interacts with an NPC.
+ *
+ * ## How could this be used?
+ *
+ * This can be used to create a variety of interactions that can occur between an NPC and a player. For example, you could create an NPC that gives the player an item when they interact with it.
+ */
 class NpcInteractEventEntry(
     override val id: String = "",
     override val name: String = "",
     override val triggers: List<String> = emptyList(),
     @EntryIdentifier(Npc::class)
     @Help("The identifier of the NPC.")
+    // The NPC that needs to be interacted with.
     val identifier: String = "",
 ) : EventEntry
 

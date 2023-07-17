@@ -1,6 +1,8 @@
-import {EventsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Pickup Item Event
+# Pickup Item Event 
 
 The `Pickup Item Event` is triggered when the player picks up an item.
 
@@ -8,10 +10,10 @@ The `Pickup Item Event` is triggered when the player picks up an item.
 
 This event could be used to trigger a quest or to trigger a cutscene, when the player picks up a specific item.
 
+
 ## Fields
 
-<EventsField />
-
-<EntryField name="Material" required>
-    The item that was picked up.
-</EntryField>
+<fields.TriggersField />
+<fields.EntryField name='Material' required>
+     The item that was picked up.
+</fields.EntryField>

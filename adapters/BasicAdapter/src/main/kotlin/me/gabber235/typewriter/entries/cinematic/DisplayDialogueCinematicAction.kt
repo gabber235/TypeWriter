@@ -1,6 +1,8 @@
 package me.gabber235.typewriter.entries.cinematic
 
+import me.gabber235.typewriter.adapters.modifiers.Colored
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.dialogue.playSpeakerSound
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
@@ -13,6 +15,8 @@ import org.bukkit.entity.Player
 data class DisplayDialogueSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
+    @Placeholder
+    @Colored
     @Help("The text to display to the player.")
     val text: String = "",
 ) : Segment

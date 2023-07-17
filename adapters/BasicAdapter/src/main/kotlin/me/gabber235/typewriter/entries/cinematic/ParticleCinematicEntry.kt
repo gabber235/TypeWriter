@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.cinematic
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
@@ -11,16 +12,35 @@ import org.bukkit.Particle
 import org.bukkit.entity.Player
 
 @Entry("particle_cinematic", "Spawn particles for a cinematic", Colors.CYAN, Icons.FIRE_FLAME_SIMPLE)
-data class ParticleCinematicEntry(
+/**
+ * The `Particle Cinematic` entry is used to spawn particles for a cinematic.
+ *
+ * ## How could this be used?
+ *
+ * This can be used to add dramatic effects to a cinematic.
+ * Like, blowing up a building and spawning a bunch of particles.
+ * Or, adding focus to a certain area by spawning particles around it.
+ */
+class ParticleCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
+    @Help("The location to spawn the particles at.")
     val location: Location = Location(null, 0.0, 0.0, 0.0),
-    val particle: Particle = Particle.FLAME,
+    @Help("The particle to spawn.")
+    val particle: Particle = Particle.SMOKE_NORMAL,
+    @Help("The amount of particles to spawn.")
+    val count: Int = 1,
+    @Help("The offset from the location on the X axis.")
     val offsetX: Double = 0.0,
+    @Help("The offset from the location on the Y axis.")
     val offsetY: Double = 0.0,
+    @Help("The offset from the location on the Z axis.")
     val offsetZ: Double = 0.0,
+    @Help("The speed of the particles.")
+    // The speed of the particles. For some particles, this is the "extra" data value to control particle behavior.
     val speed: Double = 0.0,
+    @Help("The amount of particles to spawn per tick.")
     val spawnCountPerTick: Int = 0,
     @Segments(icon = Icons.FIRE_FLAME_SIMPLE)
     val segments: List<ParticleSegment> = emptyList(),

@@ -1,6 +1,8 @@
-import {ActionsField, EntryField} from '@site/src/components/EntryField';
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Show Title Action
+# Show Title Action 
 
 The `Show Title Action` is an action that shows a title to a player. You can specify the subtitle, and durations if needed.
 
@@ -8,19 +10,18 @@ The `Show Title Action` is an action that shows a title to a player. You can spe
 
 This action can be useful in a variety of situations. You can use it to create text effects in response to specific events, such as completing questions or anything else. The possibilities are endless!
 
+
 ## Fields
 
-<ActionsField/>
-
-<EntryField name="Title" required colored placeholders>
-    The title text to display
-</EntryField>
-
-<EntryField name="Subtitle" required colored placeholders>
-    The subtitle text to display
-</EntryField>
-
-<EntryField name="Durations" optional>
-    The duration of the title:
-    Fade in, stay visible, and fade out.
-</EntryField>
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.EntryField name='Title' required placeholders colored>
+     The title text to show.
+</fields.EntryField>
+<fields.EntryField name='Subtitle' required placeholders colored>
+     The subtitle text to show.
+</fields.EntryField>
+<fields.EntryField name='Durations' optional>
+     Duration of the title: Fade in, how long it stays, fade out.
+</fields.EntryField>

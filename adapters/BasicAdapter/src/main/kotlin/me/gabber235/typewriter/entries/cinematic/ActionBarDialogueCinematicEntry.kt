@@ -19,7 +19,16 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
 @Entry("actionbar_dialogue_cinematic", "Show an action bar typed dialogue", Colors.CYAN, Icons.XMARKS_LINES)
-data class ActionBarDialogueCinematicEntry(
+/**
+ * The `Action Bar Dialogue Cinematic` is a cinematic that shows a dialogue in the action bar.
+ * You can specify the speaker and the dialogue.
+ *
+ * ## How could this be used?
+ *
+ * This cinematic is useful to display dialogue in combination with a camera path.
+ * As the dialogue is displayed in the action bar, the player can still move around and look at the camera path.
+ */
+class ActionBarDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
@@ -54,8 +63,8 @@ data class RandomActionBarDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Help("The speaker of the dialogue")
     @EntryIdentifier(SpeakerEntry::class)
+    @Help("The speaker of the dialogue")
     val speaker: String = "",
     @Segments(icon = Icons.MESSAGE)
     val segments: List<RandomDisplayDialogueSegment> = emptyList(),

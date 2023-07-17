@@ -11,7 +11,15 @@ import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
 @Entry("island_set_member_limit", "Set a player's island's member limit", Colors.RED, Icons.PEOPLE_GROUP)
-data class IslandSetMemberLimitActionEntry(
+/**
+ * The `Island Set Member Limit Action` is an action that sets the member limit of an island.
+ *
+ * ## How could this be used?
+ *
+ * This could be used as a reward for a quest or as if they reach a certain level.
+ *
+ */
+class IslandSetMemberLimitActionEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),

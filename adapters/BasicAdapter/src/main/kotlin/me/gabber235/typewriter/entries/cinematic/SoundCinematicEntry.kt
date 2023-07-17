@@ -16,6 +16,13 @@ import net.kyori.adventure.sound.SoundStop
 import org.bukkit.entity.Player
 
 @Entry("sound_cinematic", "Play a sound during a cinematic", Colors.YELLOW, Icons.MUSIC)
+/**
+ * The `Sound Cinematic` entry plays a sound during a cinematic.
+ *
+ * ## How could this be used?
+ *
+ * This entry could be used to play a sound during a cinematic, such as a sound effect for a cutscene.
+ */
 class SoundCinematicEntry(
     override val id: String,
     override val name: String,

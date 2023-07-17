@@ -1,32 +1,36 @@
-import {ActionsField, EntryField} from "@site/src/components/EntryField";
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
 
-# Drop Item Action
+# Drop Item Action 
 
-The `Drop Item Action` is an action that drops an item in the world. This action provides you with the ability to drop an item with a specified Minecraft material, amount, display name, lore, and location.
+The `Drop Item Action` is an action that drops an item in the world.
+This action provides you with the ability to drop an item with a specified Minecraft material, amount, display name, lore, and location.
 
 ## How could this be used?
 
-This action can be useful in a variety of situations. You can use it to create treasure chests with randomized items, drop loot from defeated enemies, or spawn custom items in the world. The possibilities are endless!
+This action can be useful in a variety of situations.
+You can use it to create treasure chests with randomized items, drop loot from defeated enemies, or spawn custom items in the world.
+The possibilities are endless!
+
 
 ## Fields
 
-<ActionsField />
-<EntryField name="Material" required>
-    The Minecraft material of the item to drop.
-</EntryField>
-
-<EntryField name="Amount" required>
-    The amount of the item to drop.
-</EntryField>
-
-<EntryField name="Display Name" optional colored placeholders>
-    The display name of the item to drop. If not specified, the item will have it's default display name.
-</EntryField>
-
-<EntryField name="Lore" optional colored placeholders>
-    The lore of the item to drop. If not specified, the item will have it's default lore.
-</EntryField>
-
-<EntryField name="Location" optional>
-    The location to drop the item at. If this field is left blank, the item will be dropped at the location of the player triggering the action.
-</EntryField>
+<fields.CriteriaField />
+<fields.ModifiersField />
+<fields.TriggersField />
+<fields.EntryField name='Material' required>
+     The item to drop.
+</fields.EntryField>
+<fields.EntryField name='Amount' required>
+     The amount of items to drop.
+</fields.EntryField>
+<fields.EntryField name='Display Name' required colored placeholders>
+     The display name of the item to drop. If not specified, the item will have its default display name.
+</fields.EntryField>
+<fields.EntryField name='Lore' required multiline colored placeholders>
+     The lore of the item to drop. If not specified, the item will have its default lore.
+</fields.EntryField>
+<fields.EntryField name='Location' optional>
+     The location to drop the item at. If this field is left blank, the item will be dropped at the location of the player triggering the action.
+</fields.EntryField>

@@ -8,28 +8,35 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Icons
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 
 @Entry("stop_sound", "Stop a or all sounds for a player", Colors.RED, Icons.MUSIC)
-data class StopSoundActionEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val criteria: List<Criteria> = emptyList(),
-	override val modifiers: List<Modifier> = emptyList(),
-	override val triggers: List<String> = emptyList(),
-	@Sound
-	@Help("The sound to stop.")
-	val sound: Optional<String> = Optional.empty(),
+/**
+ * The `Stop Sound` action is used to stop a or all sounds for a player.
+ *
+ * ## How could this be used?
+ *
+ * This action can be useful in situations where you want to stop a sound for a player.
+ * For example, when leaving a certain area, you might want to stop the music that was playing.
+ */
+class StopSoundActionEntry(
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
+    override val modifiers: List<Modifier> = emptyList(),
+    override val triggers: List<String> = emptyList(),
+    @Sound
+    @Help("The sound to stop.")
+    val sound: Optional<String> = Optional.empty(),
 ) : ActionEntry {
-	override fun execute(player: Player) {
-		super.execute(player)
+    override fun execute(player: Player) {
+        super.execute(player)
 
-		if (sound.isPresent) {
-			player.stopSound(sound.get())
-		} else {
-			player.stopAllSounds()
-		}
-	}
+        if (sound.isPresent) {
+            player.stopSound(sound.get())
+        } else {
+            player.stopAllSounds()
+        }
+    }
 }

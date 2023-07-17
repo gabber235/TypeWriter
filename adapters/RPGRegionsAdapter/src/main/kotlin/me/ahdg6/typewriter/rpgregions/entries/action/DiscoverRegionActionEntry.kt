@@ -12,9 +12,15 @@ import net.islandearth.rpgregions.managers.data.region.WorldDiscovery
 import org.bukkit.entity.Player
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Entry("discover_rpg_region", "Create a discover for an RPGRegions region", Colors.RED, Icons.ADDRESS_BOOK)
+/**
+ * The `Discover Region Action` is used to add a discovery into a user's account.
+ *
+ * ## How could this be used?
+ *
+ * This action could be used to reward the player for completing a task/quest. For example, there could exist a quest where an NPC asks for help from the player in exchange for their knowledge of the whereabouts of some important location. This action could be used as the reward when the quest is completed.
+ */
 class DiscoverRegionActionEntry(
     override val id: String = "",
     override val name: String = "",
@@ -22,6 +28,7 @@ class DiscoverRegionActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<String> = emptyList(),
     @Help("The region to discover.")
+    // The region to discover. Make sure that this is the region ID, not the region's display name.
     private val region: String = "",
 ) : ActionEntry {
     override fun execute(player: Player) {

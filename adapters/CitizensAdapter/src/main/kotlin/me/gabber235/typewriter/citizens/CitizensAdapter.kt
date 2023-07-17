@@ -13,6 +13,9 @@ import net.citizensnpcs.api.npc.NPCRegistry
 import net.citizensnpcs.api.trait.TraitInfo
 
 @Adapter("Citizens", "For the Citizens plugin", App.VERSION)
+/**
+ * The Citizens adapter allows you to create custom interactions with NPCs.
+ */
 object CitizensAdapter : TypewriteAdapter() {
     private var tmpRegistry: NPCRegistry? = null
     val temporaryRegistry: NPCRegistry

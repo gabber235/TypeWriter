@@ -8,10 +8,18 @@ import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Icons
 
 @Entry("simple_action", "Simple action to modify facts", Colors.RED, Icons.BOLT)
+/**
+ * The `Simple Action` is an empty action that can be used to modify facts.
+ *
+ * ## How could this be used?
+ *
+ * This action can be useful in situations where you need to modify facts, or want to filter different actions based om some criteria,
+ * but don't need to perform any additional actions.
+ */
 class SimpleActionEntry(
-	override val id: String = "",
-	override val name: String = "",
-	override val criteria: List<Criteria> = emptyList(),
-	override val modifiers: List<Modifier> = emptyList(),
-	override val triggers: List<String> = emptyList(),
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
+    override val modifiers: List<Modifier> = emptyList(),
+    override val triggers: List<String> = emptyList(),
 ) : ActionEntry
