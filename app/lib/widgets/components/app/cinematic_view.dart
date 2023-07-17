@@ -2,7 +2,6 @@ import "dart:math";
 
 import "package:collection/collection.dart";
 import "package:collection_ext/all.dart";
-import "package:duration/duration.dart";
 import "package:flutter/material.dart" hide Title, FilledButton;
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -340,7 +339,7 @@ class _Heading extends HookConsumerWidget {
       child: Row(
         children: [
           SizedBox(
-            width: longestNameSize.width + 100,
+            width: longestNameSize.width + 103,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,

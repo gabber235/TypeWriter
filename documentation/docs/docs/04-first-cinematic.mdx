@@ -41,20 +41,21 @@ Let's rename the entry to `camera_view`. Then, click `Add Segment` to add a new 
 
 You'll now see a lot of new fields that aren't in the other pages. Let's go through those.
 
-**Track Duration (1)**<br/>
+![Cinematics Layout](./assets/first-cinematic/cinematic-layout.png)
+
+> #### Track Duration (1)
 The track duration field is where you decide the duration of the entire cinematic.
 It's important to note that the duration is in amount of frames, and not in seconds.
 You can however easily convert from seconds to frames, as 20 frames is equal to 1 second.
 
-**Segments (2)**<br/>
+> #### Segments (2)
 A segment is what the entry does in that specific time frame. Entries can have multiple segments, but an entry can't
 have overlapping segments. For that, create another entry.
 
-**Segments Track (3)**<br/>
+> #### Segments Track (3)
 This is where the segments of entries are displayed to you. Here you can change when a segment starts and when it ends.
 Keep in mind you can also do this on each segment's sidebar by modifying the `Start Frame` & `End Frame` fields.
 
-![Cinematics Layout](./assets/first-cinematic/cinematic-layout.png)
 
 Now that that's explained, we need to add a segment to the camera_view entry.
 Make sure you have the camera view entry selected, and then click `Add Segment` on the entry sidebar.
@@ -76,6 +77,26 @@ the cinematic should start playing!
 
 <Player url={require("./assets/first-cinematic/cinematic-1.webm").default} />
 
+As you see in the beginning of the camera path, the camera weirdly turns around. 
+This is because when starting the cinematic, Minecraft needs a few frames to set everything up.
+To make it not noticeable, we can start the cinematic a few frames later. 
+The recommended amount is `20 frames`, which is 1 second. To do this, we can either change the `Start Frame` field
+on the segment, or drag the segment on the track to our desired starting point.
+
+:::tip
+To make it really feel cinematic, you can add a black screen at the beginning of the cinematic.
+Using the [Blinding Cinematic](/adapters/BasicAdapter/entries/cinematic/blinding_cinematic) entry, you can make the screen
+go black for the first `20 frames`.
+:::
+
+Currently we only have one segment, which means the cinematic will end after the segment is done.
+We can add more segments to create different camera paths.
+
+Try adding a new segment, and then adding mutliple paths to that segment.
+If you have done everything correctly, you should now have a cinematic that looks something like this:
+
+<Player url={require("./assets/first-cinematic/cinematic-2.webm").default} />
+
 ## Triggering the Cinematic
 :::info
 I strongly recommend picking a specific red tulip and changing the cinematic paths to be around it if you havn't done so already.
@@ -92,6 +113,9 @@ Let's call it `Look at flower`. In the new option, add a new Trigger, and select
 
 <Player url={require("./assets/first-cinematic/cinematic-trigger.webm").default} />
 
+:::info
+Strongly recommended to pick a specific red tulip and changing the cinematic paths to be around it.
+:::
 You should now be able to select the option `Smell the flower` when clicking a red tulip, and it'll play the cinematic.
 
 ## Adding dialogue
@@ -103,24 +127,21 @@ After that, click `Add Segment` to add a segment to the dialogue entry, and sele
 Let's change the time frame of the dialogue to start after 1 second. To do this, we can either change the Start Frame field, or drag the segment on the track
 to our desired starting point. We also have to remember that duration is in frames, not seconds, and remembering from earlier, 1 second equals 20 frames, change the Start Frame to 20.
 
-We then have to add the text to be displayed. Insert `That flower looks &lt;red&gt;&lt;bold&gt;stunning` to the Text field.
+We then have to add the text to be displayed. Insert `That flower looks <red><bold>stunning` to the Text field.
 
 And we're done! Dialogue should now appear 1 second into the cinematic.
 There are a few different dialogue entries as well. Here's a quick overview:
 
-**Actionbar Dialogue Cinematic**<br/>
+> #### Actionbar Dialogue Cinematic
 Will send the speaker & the message in the actionbar.
 
-**Subtitle Dialogue Cinematic**<br/>
+> #### Subtitle Dialogue Cinematic
 Will send the speaker in the actionbar, and sends the message as a subtitle (middle of screen).
 
-**Spoken Dialogue Cinematic**<br/>
+> #### Spoken Dialogue Cinematic
 Will send the speaker & message in chat.
 
-**Random Dialogue Cinematics**<br/>
-With the random dialogue versions of the above options, you can add several texts and the plugin will randomly pick one to send to the player.
-
-<Player url={require("./assets/first-cinematic/cinematic-2.webm").default} />
+<Player url={require("./assets/first-cinematic/cinematic-3.webm").default} />
 
 ## Adding Particles
 You can also add particles to be displayed during the cinematic. Let's do so hearts appear around the red tulip.
@@ -132,13 +153,13 @@ you find the `HEART` particle and then select it. Then, enter the location of yo
 
 We will then define the particle offsets, speed & spawnCountPerTick. Think of the offset fields as a box around the location
 you've specified, and particles can spawn anywhere inside the box.
-We will set offsetX and offsetZ to 0.25, and leave offsetY at 0. We'll then set the speed to 0.1 as to not get a lot of
+We will set offsetX and offsetZ to `1`, and leave offsetY at `0.5`. We'll then set the speed to `0.1` as to not get a lot of
 hearts spawning at the same time, and we will set spawnCountPerTick to 1, meaning that 1 heart will spawn every tick.
 
 Now, we will add a segment to the particle entry, and we're finished! If you now play your cinematic, heart particles
 should spawn around the red tulip.
 
-<Player url={require("./assets/first-cinematic/cinematic-3.webm").default} />
+<Player url={require("./assets/first-cinematic/cinematic-4.webm").default} />
 
 ## Adding a Self NPC
 :::info
@@ -159,7 +180,7 @@ following the cinematic to add movement to it.
 
 If you now play the cinematic again, an NPC with the skin of the player watching the cinematic should appear, with all the movement you did.
 
-<Player url={require("./assets/first-cinematic/cinematic-4.webm").default} />
+<Player url={require("./assets/first-cinematic/cinematic-5.webm").default} />
 
 ## Next steps
 You should now know how to make simple cinematics, but remember, cinematics have a lot more to offer!
