@@ -6,7 +6,7 @@ part of 'cinematic_view.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$cinematicEntryIdsHash() => r'a2cd61ec3d1a8d66e273283ed93bfcf3ed2b3241';
+String _$cinematicEntryIdsHash() => r'd605052793e8cd783fa8fbb6ed8ea754ccc60023';
 
 /// See also [_cinematicEntryIds].
 @ProviderFor(_cinematicEntryIds)

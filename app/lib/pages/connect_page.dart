@@ -4,7 +4,6 @@ import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart" hide Page;
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/app_router.dart";
@@ -40,35 +39,37 @@ class ConnectPage extends HookConsumerWidget {
     useEffect(
       () {
         final timer = Timer(1.seconds, () {
-          ref.read(socketProvider.notifier).init(hostname, port, token.isEmpty ? null : token);
+          ref
+              .read(socketProvider.notifier)
+              .init(hostname, port, token.isEmpty ? null : token);
         });
         return timer.cancel;
       },
       [],
     );
 
-    return Scaffold(
+    return const Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Spacer(),
-          const Expanded(
+          Spacer(),
+          Expanded(
             flex: 8,
             child: RiveAnimation.asset(
               "assets/tour.riv",
               stateMachines: ["state_machine"],
             ),
           ),
-          const SizedBox(height: 24),
-          const Text(
+          SizedBox(height: 24),
+          Text(
             "Waiting for connection",
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
           ),
           ConnectionScroller(
-            style: GoogleFonts.jetBrainsMono(fontSize: 20, color: Colors.grey),
+            style: TextStyle(fontSize: 20, color: Colors.grey),
           ),
-          const SizedBox(height: 24),
-          const Spacer(),
+          SizedBox(height: 24),
+          Spacer(),
         ],
       ),
     );

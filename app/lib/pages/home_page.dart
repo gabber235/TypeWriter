@@ -1,11 +1,13 @@
+import "dart:async";
+
 import "package:auto_route/auto_route.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/app_router.dart";
+import "package:typewriter/utils/fonts.dart";
 import "package:typewriter/widgets/components/general/copyable_text.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
 
@@ -15,19 +17,19 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+    return const Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Spacer(),
-          const Expanded(
+          Spacer(),
+          Expanded(
             flex: 2,
             child: RiveAnimation.asset(
               "assets/game_character.riv",
               stateMachines: ["State Machine"],
             ),
           ),
-          const Text(
+          Text(
             "Your journey starts here",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
@@ -35,16 +37,20 @@ class HomePage extends HookConsumerWidget {
           Text(
             "Run the following command on your server to start editing",
             textAlign: TextAlign.center,
-            style: GoogleFonts.jetBrainsMono(
-                fontSize: 20, fontWeight: FontWeight.w100, color: Colors.grey),
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.grey,
+              fontVariations: [thinWeight],
+            ),
           ),
-          const SizedBox(height: 24),
-          const CopyableText(text: "/typewriter connect"),
+          SizedBox(height: 24),
+          CopyableText(text: "/typewriter connect"),
           if (kDebugMode || kProfileMode) ...[
-            const SizedBox(height: 24),
-            const _DebugConnectButton(),
+            SizedBox(height: 24),
+            _DebugConnectButton(),
+            SizedBox(height: 24),
           ],
-          const Spacer(),
+          Spacer(),
         ],
       ),
     );
@@ -54,12 +60,17 @@ class HomePage extends HookConsumerWidget {
 /// This is a debug widget that allows you to connect quickly to a server.
 /// It is only visible in debug mode.
 class _DebugConnectButton extends HookConsumerWidget {
-  const _DebugConnectButton({super.key});
+  const _DebugConnectButton();
 
-  void connectTo(WidgetRef ref, String hostname, int port,
-      [String token = ""]) {
+  void connectTo(
+    WidgetRef ref,
+    String hostname,
+    int port, [
+    String token = "",
+  ]) {
     ref.read(appRouter).replaceAll(
-        [ConnectRoute(hostname: hostname, port: port, token: token)]);
+      [ConnectRoute(hostname: hostname, port: port, token: token)],
+    );
   }
 
   Future<void> customConnectToPopup(BuildContext context, WidgetRef ref) async {

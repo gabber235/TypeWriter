@@ -102,19 +102,19 @@ class __$$_$__TrackStateCopyWithImpl<$Res>
     Object? width = null,
   }) {
     return _then(_$_$__TrackState(
-      start: null == start
+      null == start
           ? _value.start
           : start // ignore: cast_nullable_to_non_nullable
               as double,
-      end: null == end
+      null == end
           ? _value.end
           : end // ignore: cast_nullable_to_non_nullable
               as double,
-      totalFrames: null == totalFrames
+      null == totalFrames
           ? _value.totalFrames
           : totalFrames // ignore: cast_nullable_to_non_nullable
               as int,
-      width: null == width
+      null == width
           ? _value.width
           : width // ignore: cast_nullable_to_non_nullable
               as double,
@@ -126,7 +126,7 @@ class __$$_$__TrackStateCopyWithImpl<$Res>
 
 class _$_$__TrackState implements _$__TrackState {
   const _$_$__TrackState(
-      {this.start = 0, this.end = 1, this.totalFrames = 0, this.width = 0});
+      [this.start = 0, this.end = 1, this.totalFrames = 0, this.width = 0]);
 
   @override
   @JsonKey()
@@ -170,10 +170,10 @@ class _$_$__TrackState implements _$__TrackState {
 
 abstract class _$__TrackState implements _TrackState {
   const factory _$__TrackState(
-      {final double start,
+      [final double start,
       final double end,
       final int totalFrames,
-      final double width}) = _$_$__TrackState;
+      final double width]) = _$_$__TrackState;
 
   @override
   double get start;

@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:stack_trace/stack_trace.dart" as stack_trace;
 import "package:typewriter/app_router.dart";
+import "package:typewriter/utils/fonts.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:uuid/uuid.dart";
@@ -46,7 +46,7 @@ class TypeWriterApp extends HookConsumerWidget {
     final baseTheme = ThemeData(brightness: brightness);
 
     return baseTheme.copyWith(
-      textTheme: GoogleFonts.jetBrainsMonoTextTheme(baseTheme.textTheme),
+      textTheme: baseTheme.textTheme.apply(fontFamily: "JetBrainsMono"),
       inputDecorationTheme: InputDecorationTheme(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12),
         border: OutlineInputBorder(
@@ -62,12 +62,12 @@ class TypeWriterApp extends HookConsumerWidget {
           color: Colors.redAccent,
           fontSize: 12,
         ),
-        hintStyle: GoogleFonts.jetBrainsMono(
+        hintStyle: TextStyle(
           color: brightness == Brightness.light
               ? const Color(0x99000000)
               : const Color(0x99FFFFFF),
           fontSize: 16,
-          fontWeight: FontWeight.w400,
+          fontVariations: const [normalWeight],
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -80,6 +80,7 @@ class TypeWriterApp extends HookConsumerWidget {
       ),
       hoverColor: Colors.black.withOpacity(0.1),
       colorScheme: baseTheme.colorScheme.copyWith(
+        primary: Colors.blueAccent,
         brightness: brightness,
         error: Colors.redAccent,
       ),

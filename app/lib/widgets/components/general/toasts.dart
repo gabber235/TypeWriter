@@ -6,11 +6,11 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:tinycolor2/tinycolor2.dart";
 import "package:typewriter/hooks/text_size.dart";
 import "package:typewriter/main.dart";
+import "package:typewriter/utils/fonts.dart";
 import "package:typewriter/utils/passing_reference.dart";
 
 part "toasts.freezed.dart";
@@ -247,10 +247,10 @@ class _TemporaryToast extends HookConsumerWidget {
     final messageSize = useTextSize(
       context,
       toast.message,
-      GoogleFonts.jetBrainsMono(
+      const TextStyle(
         color: Colors.white,
         fontSize: 16.0,
-        fontWeight: FontWeight.w900,
+        fontVariations: [extraBoldWeight],
       ),
     );
 
@@ -282,10 +282,10 @@ class _TemporaryToast extends HookConsumerWidget {
                       children: [
                         Text(
                           toast.message,
-                          style: GoogleFonts.jetBrainsMono(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16.0,
-                            fontWeight: FontWeight.w900,
+                            fontVariations: [extraBoldWeight],
                           ),
                         ),
                         if (toast.description != null) ...[

@@ -7,7 +7,6 @@ import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/hooks/global_key.dart";
@@ -21,6 +20,7 @@ import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/color_converter.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/fonts.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
@@ -47,13 +47,7 @@ List<String> _cinematicEntryIds(_CinematicEntryIdsRef ref) {
   final page = ref.watch(currentPageProvider);
   if (page == null) return [];
 
-  return page.entries
-      .where((entry) {
-        final tags = ref.watch(entryTagsProvider(entry.type));
-        return tags.contains("cinematic");
-      })
-      .map((entry) => entry.id)
-      .toList();
+  return page.entries.map((entry) => entry.id).toList();
 }
 
 class CinematicView extends HookConsumerWidget {
@@ -197,12 +191,12 @@ int _totalSequenceFrames(_TotalSequenceFramesRef ref) {
 
 @freezed
 class _TrackState with _$_TrackState {
-  const factory _TrackState({
+  const factory _TrackState([
     @Default(0) double start,
     @Default(1) double end,
     @Default(0) int totalFrames,
     @Default(0) double width,
-  }) = _$__TrackState;
+  ]) = _$__TrackState;
 }
 
 extension on _TrackState {
@@ -214,7 +208,8 @@ extension on _TrackState {
 class _TrackStateProvider extends StateNotifier<_TrackState> {
   _TrackStateProvider(this.ref) : super(const _TrackState()) {
     state = state.copyWith(
-        totalFrames: max(100, ref.read(_totalSequenceFramesProvider)));
+      totalFrames: max(100, ref.read(_totalSequenceFramesProvider)),
+    );
   }
   final AutoDisposeStateNotifierProviderRef<_TrackStateProvider, _TrackState>
       ref;
@@ -332,24 +327,27 @@ class _Heading extends HookConsumerWidget {
     final longestNameSize = useTextSize(
       context,
       longestName,
-      GoogleFonts.jetBrainsMono(fontSize: 13),
+      const TextStyle(
+        fontSize: 13,
+        fontFamily: "JetBrainsMono",
+      ),
     );
     return SizedBox(
       height: 36,
       child: Row(
         children: [
           SizedBox(
-            width: longestNameSize.width + 103,
+            width: longestNameSize.width + 100,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 const SizedBox(width: 8),
-                Text(
+                const Text(
                   "Track Duration",
-                  style: GoogleFonts.jetBrainsMono(
-                    fontWeight: FontWeight.bold,
+                  style: TextStyle(
                     fontSize: 15,
+                    fontVariations: [boldWeight],
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -395,10 +393,10 @@ class _DurationField extends HookConsumerWidget {
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
           ],
-          style: GoogleFonts.jetBrainsMono(fontSize: 12),
-          decoration: InputDecoration(
+          style: const TextStyle(fontSize: 12),
+          decoration: const InputDecoration(
             hintText: "Duration",
-            hintStyle: GoogleFonts.jetBrainsMono(fontSize: 13),
+            hintStyle: TextStyle(fontSize: 13),
           ),
           onChanged: (value) {
             final frames = int.tryParse(value);
@@ -461,14 +459,15 @@ class _SmartSpacer extends HookConsumerWidget {
     final longestNameSize = useTextSize(
       context,
       longestName,
-      GoogleFonts.jetBrainsMono(fontSize: 13),
+      const TextStyle(fontSize: 13),
     );
     final entryName = ref.watch(entryNameProvider(entryId));
     final entryNameSize = useTextSize(
       context,
       entryName ?? "",
-      GoogleFonts.jetBrainsMono(fontSize: 13),
+      const TextStyle(fontSize: 13),
     );
+
     return SizedBox(
       width: longestNameSize.width - entryNameSize.width,
     );
@@ -664,13 +663,16 @@ int _timeFractions(_TimeFractionsRef ref) {
       ref.watch(_trackStateProvider.select((state) => state.duration));
   final width = ref.watch(_trackStateProvider.select((state) => state.width));
   return _possibleFractions.firstWhereOrNull(
-          (fraction) => (_minimalFractionSize * duration) / fraction < width) ??
+        (fraction) => (_minimalFractionSize * duration) / fraction < width,
+      ) ??
       1000;
 }
 
 @riverpod
-List<int> _timeFractionFrames(_TimeFractionFramesRef ref,
-    {double fractionModifier = 1.0}) {
+List<int> _timeFractionFrames(
+  _TimeFractionFramesRef ref, {
+  double fractionModifier = 1.0,
+}) {
   final startFrame =
       ref.watch(_trackStateProvider.select((state) => state.startFrame));
   final endFrame =
@@ -684,7 +686,10 @@ List<int> _timeFractionFrames(_TimeFractionFramesRef ref,
 
 @riverpod
 double _timePointOffset(
-    _TimePointOffsetRef ref, int frame, double widgetWidth) {
+  _TimePointOffsetRef ref,
+  int frame,
+  double widgetWidth,
+) {
   final startFrame =
       ref.watch(_trackStateProvider.select((state) => state.startFrame));
   final frameSpacing = ref.watch(_frameSpacingProvider);
@@ -701,8 +706,7 @@ class _TrackTimings extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final fractionFrames = ref.watch(_timeFractionFramesProvider());
     final oneCharWidth =
-        useTextSize(context, "0", GoogleFonts.jetBrainsMono(fontSize: 10))
-            .width;
+        useTextSize(context, "0", const TextStyle(fontSize: 10)).width;
 
     return SizedBox(
       height: 16,
@@ -719,7 +723,7 @@ class _TrackTimings extends HookConsumerWidget {
               ),
               child: Text(
                 frame.toString(),
-                style: GoogleFonts.jetBrainsMono(
+                style: TextStyle(
                   fontSize: 10,
                   color: Theme.of(context).hintColor,
                 ),
@@ -733,7 +737,8 @@ class _TrackTimings extends HookConsumerWidget {
 
 @riverpod
 double _trackBackgroundFractionModifier(
-    _TrackBackgroundFractionModifierRef ref) {
+  _TrackBackgroundFractionModifierRef ref,
+) {
   final fractions = ref.watch(_timeFractionsProvider);
   if (fractions == 1) return 1.0;
   if (fractions == 5) return 1.0;
@@ -910,7 +915,9 @@ class _SegmentsTrack extends HookConsumerWidget {
         SizedBox(width: ref.watch(_trackSizeProvider), height: 64),
         for (final segment in segments)
           _SegmentPosition(
-              segment: segment, child: segmentBuilder(context, segment)),
+            segment: segment,
+            child: segmentBuilder(context, segment),
+          ),
       ],
     );
   }
@@ -985,9 +992,10 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
         .minBy((_, s) => s.startFrame);
 
     state = _MoveState(
-        previousSegment: previousSegment,
-        nextSegment: nextSegment,
-        innerPercent: innerPercent);
+      previousSegment: previousSegment,
+      nextSegment: nextSegment,
+      innerPercent: innerPercent,
+    );
 
     ref
         .read(inspectingSegmentIdProvider.notifier)
@@ -1109,8 +1117,9 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
 }
 
 final _moveNotifierProvider = StateNotifierProvider<_MoveNotifier, _MoveState?>(
-    _MoveNotifier.new,
-    name: "_moveNotifierProvider");
+  _MoveNotifier.new,
+  name: "_moveNotifierProvider",
+);
 
 class _SegmentWidget extends HookConsumerWidget {
   const _SegmentWidget({
@@ -1124,13 +1133,18 @@ class _SegmentWidget extends HookConsumerWidget {
   final Segment segment;
   final GlobalKey parentKey;
 
-  double _getPercentFromDragUpdate(DragUpdateDetails details,
-      [double shift = 0]) {
+  double _getPercentFromDragUpdate(
+    DragUpdateDetails details, [
+    double shift = 0,
+  ]) {
     return _getPercent(parentKey, details.globalPosition, shift);
   }
 
-  double _getPercent(GlobalKey key,
-      [Offset offset = Offset.zero, double shift = 0]) {
+  double _getPercent(
+    GlobalKey key, [
+    Offset offset = Offset.zero,
+    double shift = 0,
+  ]) {
     final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) return 0;
 
@@ -1146,7 +1160,8 @@ class _SegmentWidget extends HookConsumerWidget {
     final showThumbs =
         ref.watch(_showThumbsProvider(segment.startFrame, segment.endFrame));
     final isPathSelected = ref.watch(
-        inspectingSegmentIdProvider.select((id) => id == segment.truePath));
+      inspectingSegmentIdProvider.select((id) => id == segment.truePath),
+    );
     final isEntrySelected =
         ref.watch(inspectingEntryIdProvider.select((id) => id == entryId));
     final isSelected = isPathSelected && isEntrySelected;
@@ -1161,7 +1176,8 @@ class _SegmentWidget extends HookConsumerWidget {
                 color: context.isDark
                     ? Colors.white
                     : Colors.black.withOpacity(0.4),
-                width: 2)
+                width: 2,
+              )
             : Border.all(color: Colors.transparent, width: 2),
       ),
       child: Row(
@@ -1290,7 +1306,10 @@ List<String> _ignoreEntryFields(_IgnoreEntryFieldsRef ref) {
 /// Finds a segment that overlaps the given range
 /// If no segment is found, returns null
 Segment? _includesSegment(
-    int startFrame, int endFrame, List<Segment> segments) {
+  int startFrame,
+  int endFrame,
+  List<Segment> segments,
+) {
   return segments
       .firstWhereOrNull((segment) => segment.overlaps(startFrame, endFrame));
 }
@@ -1355,8 +1374,11 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
   }
 
   if (endFrame - startFrame < minSpace) {
-    Toasts.showError(ref, "Could not add segment",
-        description: "There is not enough space to add a segment.");
+    Toasts.showError(
+      ref,
+      "Could not add segment",
+      description: "There is not enough space to add a segment.",
+    );
     return;
   }
 
@@ -1379,27 +1401,39 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
 void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
   final page = ref.read(currentPageProvider);
   if (page == null) {
-    Toasts.showError(ref, "Could not delete segment",
-        description: "No page is selected.");
+    Toasts.showError(
+      ref,
+      "Could not delete segment",
+      description: "No page is selected.",
+    );
     return;
   }
   final entry = ref.read(entryProvider(page.name, entryId));
   if (entry == null) {
-    Toasts.showError(ref, "Could not delete segment",
-        description: "No entry is selected.");
+    Toasts.showError(
+      ref,
+      "Could not delete segment",
+      description: "No entry is selected.",
+    );
     return;
   }
 
   final blueprint = ref.read(entryBlueprintProvider(entry.type));
   if (blueprint == null) {
-    Toasts.showError(ref, "Could not delete segment",
-        description: "No blueprint is found for the selected entry.");
+    Toasts.showError(
+      ref,
+      "Could not delete segment",
+      description: "No blueprint is found for the selected entry.",
+    );
     return;
   }
   final segmentBlueprint = blueprint.getField(segmentPath);
   if (segmentBlueprint == null) {
-    Toasts.showError(ref, "Could not delete segment",
-        description: "No blueprint is found for the selected segment.");
+    Toasts.showError(
+      ref,
+      "Could not delete segment",
+      description: "No blueprint is found for the selected segment.",
+    );
     return;
   }
 
@@ -1415,7 +1449,9 @@ void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
 
 @riverpod
 List<ContextMenuTile> _entryContextActions(
-    _EntryContextActionsRef ref, String entryId) {
+  _EntryContextActionsRef ref,
+  String entryId,
+) {
   final paths = ref.watch(_segmentPathsProvider(entryId));
 
   return paths.entries.map((e) {
@@ -1469,7 +1505,8 @@ class CinematicInspector extends HookConsumerWidget {
                 ? EntryInspector(
                     key: ValueKey(inspectingEntry.id),
                     actions: ref.watch(
-                        _entryContextActionsProvider(inspectingEntry.id)),
+                      _entryContextActionsProvider(inspectingEntry.id),
+                    ),
                     ignoreFields: ref.watch(_ignoreEntryFieldsProvider),
                   )
                 : const EmptyInspector(),

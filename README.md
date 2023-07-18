@@ -7,12 +7,18 @@
 [![License](https://img.shields.io/github/license/gabber235/Typewriter?logo=github)](LICENSE)
 
 Typewriter is a plugin for **Paper** Minecraft servers that allows for custom player interactions such as Quests,
-NPC chat, Create branching story with ease, and more. It is easily configurable using the web panel specifically
+NPC chat, Create branching story with ease, Creating Cinematic with camera paths, and more. It is easily configurable using the web panel specifically
 designed for this plugin.
 
 The plugin can also be extended using adapters, which are [pre-made](https://gabber235.github.io/TypeWriter/docs/pre-made-adapters) or can be custom-made by developers.
 
 To get started with Typewriter, see the [Getting Started](#getting-started) section.
+
+### Examples
+
+![cinematic](readme/cinematic.gif)
+
+A cinematic fully in vanilla minecraft using Typewriter. View a demo [here](https://youtu.be/1pGBtJleEuQ).
 
 ![dialogue sequence](readme/chat-messages.gif)
 
@@ -25,9 +31,10 @@ The web panel for Typewriter, where you can create quests, NPCs, and more.
 ### Features
 
 - Create custom player interactions, including quests and NPC chat, branching story, and more...
+- Create cinematic sequences with camera movements, dialogue, animated NPCs, and more...
 - Configure interactions using a custom written visual interface
 - Extend the plugin using adapters
-  - [Pre-made adapters](https://gabber235.github.io/TypeWriter/docs/pre-made-adapters) available for Citizens, and more coming soon
+  - [Pre-made adapters](https://gabber235.github.io/TypeWriter/docs/pre-made-adapters) available for popular plugins
   - Custom adapters can be made by developers
 
 ## Getting started

@@ -37,12 +37,19 @@ class _PageData with _$_PageData {
 
 @riverpod
 List<_PageData> _pagesData(_PagesDataRef ref) {
-  return ref.watch(bookProvider).pages.map((page) => _PageData(name: page.name, type: page.type)).toList();
+  return ref
+      .watch(bookProvider)
+      .pages
+      .map((page) => _PageData(name: page.name, type: page.type))
+      .toList();
 }
 
 @riverpod
 List<String> _pageNames(_PageNamesRef ref) {
-  return ref.watch(_pagesDataProvider.select((pages) => pages.map((page) => page.name).toList()));
+  return ref.watch(
+    _pagesDataProvider
+        .select((pages) => pages.map((page) => page.name).toList()),
+  );
 }
 
 @RoutePage(name: "PagesListRoute")
@@ -72,19 +79,36 @@ class _PagesSelector extends HookConsumerWidget {
     return Container(
       color: const Color(0xFF163260),
       width: 230,
+      height: double.infinity,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            Text("Pages", style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white)),
+            Text(
+              "Pages",
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: Colors.white),
+            ),
             const SizedBox(height: 12),
-            for (var i = 0; i < pagesData.length; i++) _PageTile(index: i, pageData: pagesData[i]),
-            const SizedBox(height: 12),
-            // When selecting entries we don't want to be able to add new pages
-            const SelectingEntriesBlocker(
-              child: _AddPageButton(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 0; i < pagesData.length; i++)
+                      _PageTile(index: i, pageData: pagesData[i]),
+                    const SizedBox(height: 12),
+                    // When selecting entries we don't want to be able to add new pages
+                    const SelectingEntriesBlocker(
+                      child: _AddPageButton(),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -95,7 +119,10 @@ class _PagesSelector extends HookConsumerWidget {
 
 @riverpod
 List<Writer> _writers(_WritersRef ref, String pageId) {
-  return ref.watch(writersProvider).where((writer) => writer.pageId.hasValue && writer.pageId == pageId).toList();
+  return ref
+      .watch(writersProvider)
+      .where((writer) => writer.pageId.hasValue && writer.pageId == pageId)
+      .toList();
 }
 
 class _PageTile extends HookConsumerWidget {
@@ -116,12 +143,19 @@ class _PageTile extends HookConsumerWidget {
     return true;
   }
 
-  List<ContextMenuTile> _contextMenuItems(BuildContext context, WidgetRef ref, bool isSelected) {
+  List<ContextMenuTile> _contextMenuItems(
+    BuildContext context,
+    WidgetRef ref,
+    bool isSelected,
+  ) {
     return [
       ContextMenuTile.button(
         title: "Rename",
         icon: FontAwesomeIcons.pen,
-        onTap: () => showDialog(context: context, builder: (_) => _RenamePageDialogue(old: pageId)),
+        onTap: () => showDialog(
+          context: context,
+          builder: (_) => _RenamePageDialogue(old: pageId),
+        ),
       ),
       ContextMenuTile.divider(),
       ContextMenuTile.button(
@@ -131,14 +165,17 @@ class _PageTile extends HookConsumerWidget {
         onTap: () => showConfirmationDialogue(
           context: context,
           title: "Delete ${pageId.formatted}?",
-          content: "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
+          content:
+              "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
           delayConfirm: 3.seconds,
           confirmText: "Delete",
           confirmIcon: FontAwesomeIcons.trash,
           onConfirm: () async {
             await ref.read(bookProvider.notifier).deletePage(pageId);
             if (!isSelected) return;
-            unawaited(ref.read(appRouter).replace(const EmptyPageEditorRoute()));
+            unawaited(
+              ref.read(appRouter).replace(const EmptyPageEditorRoute()),
+            );
           },
         ),
       ),
@@ -147,17 +184,23 @@ class _PageTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = ref.watch(currentPageIdProvider.select((e) => e == pageId));
+    final isSelected =
+        ref.watch(currentPageIdProvider.select((e) => e == pageId));
 
     return WritersIndicator(
       enabled: !isSelected,
       provider: _writersProvider(pageId),
-      shift: (amount) => _needsShift(amount) ? const Offset(4, 30) : Offset.zero,
+      shift: (amount) =>
+          _needsShift(amount) ? const Offset(4, 30) : Offset.zero,
       builder: (amount) {
         return AnimatedPadding(
           duration: 200.ms,
           curve: Curves.easeInOut,
-          padding: EdgeInsets.only(left: 2.0, right: 2.0, top: _needsShift(amount) ? 30 : 0),
+          padding: EdgeInsets.only(
+            left: 2.0,
+            right: 2.0,
+            top: _needsShift(amount) ? 30 : 0,
+          ),
           child: Material(
             color: isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
@@ -183,13 +226,18 @@ class _PageTile extends HookConsumerWidget {
                       Expanded(
                         child: Text(
                           pageId.formatted,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.white,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.white,
+                                  ),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Icon(Icons.chevron_right, size: 16, color: Colors.white),
+                      const Icon(
+                        Icons.chevron_right,
+                        size: 16,
+                        color: Colors.white,
+                      ),
                     ],
                   ),
                 ),
@@ -305,7 +353,11 @@ class AddPageDialogue extends HookConsumerWidget {
     final type = useState(fixedType ?? PageType.sequence);
 
     return AlertDialog(
-      title: Text(fixedType != null ? "Add a new ${fixedType!.tag} page" : "Add a new page"),
+      title: Text(
+        fixedType != null
+            ? "Add a new ${fixedType!.tag} page"
+            : "Add a new page",
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
