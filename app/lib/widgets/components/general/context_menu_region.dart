@@ -2,7 +2,6 @@ import "package:collection/collection.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:typewriter/hooks/text_size.dart";
 
 typedef ContextMenuBuilder = List<ContextMenuTile> Function(BuildContext);
@@ -95,7 +94,8 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
   Quadrant _getQuadrant(RenderBox box) {
     final boxSize = box.size;
     final boxPosition = box.localToGlobal(Offset.zero);
-    final boxCenter = boxPosition + Offset(boxSize.width / 2, boxSize.height / 2);
+    final boxCenter =
+        boxPosition + Offset(boxSize.width / 2, boxSize.height / 2);
 
     final screenSize = MediaQuery.of(context).size;
 
@@ -186,7 +186,6 @@ class _ContextMenu extends HookWidget {
     required this.quadrant,
     required this.position,
     required this.tiles,
-    super.key,
   });
 
   final ContextMenuController controller;
@@ -201,23 +200,35 @@ class _ContextMenu extends HookWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    final largestText = maxBy(tiles.map((e) => e.largestText), (text) => text.length) ?? "";
-    final textSize = useTextSize(context, largestText, GoogleFonts.jetBrainsMono(fontSize: 13));
+    final largestText =
+        maxBy(tiles.map((e) => e.largestText), (text) => text.length) ?? "";
+    final textSize =
+        useTextSize(context, largestText, const TextStyle(fontSize: 13));
     final maxWidth = textSize.width + _spacingWidth;
 
     return Positioned(
-      left: quadrant == Quadrant.topLeft || quadrant == Quadrant.bottomLeft ? position.dx : null,
-      right: quadrant == Quadrant.topRight || quadrant == Quadrant.bottomRight ? size.width - position.dx : null,
-      top: quadrant == Quadrant.topLeft || quadrant == Quadrant.topRight ? position.dy : null,
-      bottom: quadrant == Quadrant.bottomLeft || quadrant == Quadrant.bottomRight ? size.height - position.dy : null,
+      left: quadrant == Quadrant.topLeft || quadrant == Quadrant.bottomLeft
+          ? position.dx
+          : null,
+      right: quadrant == Quadrant.topRight || quadrant == Quadrant.bottomRight
+          ? size.width - position.dx
+          : null,
+      top: quadrant == Quadrant.topLeft || quadrant == Quadrant.topRight
+          ? position.dy
+          : null,
+      bottom:
+          quadrant == Quadrant.bottomLeft || quadrant == Quadrant.bottomRight
+              ? size.height - position.dy
+              : null,
       child: Listener(
         onPointerUp: (_) => controller.remove(),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             // Don't let the menu go off screen
-            maxHeight: quadrant == Quadrant.topLeft || quadrant == Quadrant.topRight
-                ? size.height - position.dy - 10
-                : position.dy - 10,
+            maxHeight:
+                quadrant == Quadrant.topLeft || quadrant == Quadrant.topRight
+                    ? size.height - position.dy - 10
+                    : position.dy - 10,
             maxWidth: maxWidth,
           ),
           child: Material(
@@ -249,7 +260,6 @@ class _ContextMenu extends HookWidget {
 class _ContextMenuButton extends StatelessWidget {
   const _ContextMenuButton({
     required this.tile,
-    super.key,
   });
 
   final ContextMenuButton tile;
@@ -271,7 +281,13 @@ class _ContextMenuButton extends StatelessWidget {
             children: [
               Icon(tile.icon, color: tile.color, size: 16),
               const SizedBox(width: 10),
-              Text(tile.title, style: GoogleFonts.jetBrainsMono(fontSize: 13, color: tile.color)),
+              Text(
+                tile.title,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: tile.color,
+                ),
+              ),
             ],
           ),
         ),

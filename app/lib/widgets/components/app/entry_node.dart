@@ -29,7 +29,8 @@ class EntryNode extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = ref.watch(inspectingEntryIdProvider.select((e) => e == entryId));
+    final isSelected =
+        ref.watch(inspectingEntryIdProvider.select((e) => e == entryId));
     final entryType = ref.watch(entryTypeProvider(entryId));
     if (entryType == null) return const InvalidEntry();
 
@@ -54,7 +55,8 @@ class EntryNode extends HookConsumerWidget {
       icon: Icon(blueprint.icon, size: 18, color: Colors.white),
       isSelected: isSelected,
       contextActions: contextActions,
-      onTap: () => ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId),
+      onTap: () =>
+          ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId),
     );
   }
 }
@@ -120,9 +122,14 @@ class _EntryNode extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final canTrigger = ref.read(modifierPathsProvider(type, "trigger").select((value) => value.contains("triggers.*")));
-    final canBeTriggered =
-        ref.watch(entryBlueprintProvider(type).select((b) => b?.tags.contains("triggerable") ?? false));
+    final canTrigger = ref.read(
+      modifierPathsProvider(type, "trigger")
+          .select((value) => value.contains("triggers.*")),
+    );
+    final canBeTriggered = ref.watch(
+      entryBlueprintProvider(type)
+          .select((b) => b?.tags.contains("triggerable") ?? false),
+    );
 
     return WritersIndicator(
       provider: _writersProvider(id),
@@ -170,7 +177,9 @@ class _EntryNode extends HookConsumerWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                        color: isSelected ? Theme.of(context).scaffoldBackgroundColor : backgroundColor,
+                        color: isSelected
+                            ? Theme.of(context).scaffoldBackgroundColor
+                            : backgroundColor,
                         width: 3,
                       ),
                     ),
@@ -183,7 +192,11 @@ class _EntryNode extends HookConsumerWidget {
                           const SizedBox(width: 12),
                           Text(
                             name,
-                            style: TextStyle(fontSize: 13, color: foregroundColor),
+                            style: TextStyle(
+                              fontFamily: "JetBrainsMono",
+                              fontSize: 13,
+                              color: foregroundColor,
+                            ),
                           ),
                         ],
                       ),
@@ -228,7 +241,11 @@ class _SelectingEntryNode extends HookConsumerWidget {
         isSelected: isSelected,
         opacity: canSelect ? 1 : 0.6,
         enableContextMenu: false,
-        onTap: canSelect ? () => ref.read(entrySelectionProvider.notifier).toggleEntrySelection(entryId) : null,
+        onTap: canSelect
+            ? () => ref
+                .read(entrySelectionProvider.notifier)
+                .toggleEntrySelection(entryId)
+            : null,
       ),
     );
   }
@@ -296,7 +313,10 @@ class InvalidEntry extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Unknown entry", style: TextStyle(color: Colors.white)),
+                const Text(
+                  "Unknown entry",
+                  style: TextStyle(color: Colors.white),
+                ),
                 Text(
                   "(this should never happen)",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -342,7 +362,9 @@ class ExternalEntryNode extends HookConsumerWidget {
             title: "Delete Reference",
             icon: Icons.delete,
             color: Colors.redAccent,
-            onTap: () => ref.read(currentPageProvider)?.removeReferencesTo(ref.passing, entry.id),
+            onTap: () => ref
+                .read(currentPageProvider)
+                ?.removeReferencesTo(ref.passing, entry.id),
           ),
         ];
       },
@@ -357,7 +379,9 @@ class ExternalEntryNode extends HookConsumerWidget {
           ),
           child: InkWell(
             mouseCursor: SystemMouseCursors.click,
-            onTap: () => ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref.passing, entry.id),
+            onTap: () => ref
+                .read(inspectingEntryIdProvider.notifier)
+                .navigateAndSelectEntry(ref.passing, entry.id),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
@@ -369,11 +393,15 @@ class ExternalEntryNode extends HookConsumerWidget {
                     children: [
                       Text(
                         entry.formattedName,
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 13),
                       ),
                       Text(
                         pageName,
-                        style: const TextStyle(color: Colors.white70, fontSize: 11),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 11,
+                        ),
                       ),
                     ],
                   ),

@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:google_fonts/google_fonts.dart";
 
 class Dropdown<T> extends HookWidget {
   const Dropdown({
@@ -53,10 +52,8 @@ class Dropdown<T> extends HookWidget {
               icon: Container(),
               underline: Container(),
               alignment: alignment ?? AlignmentDirectional.centerStart,
-              style: GoogleFonts.jetBrainsMono(
-                textStyle: TextStyle(
-                  color: Theme.of(context).textTheme.bodyLarge!.color,
-                ),
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge!.color,
               ),
               focusColor: Colors.transparent,
               borderRadius: borderRadius ?? BorderRadius.circular(8),
@@ -65,7 +62,9 @@ class Dropdown<T> extends HookWidget {
                     (e) => DropdownMenuItem(
                       alignment: alignment ?? AlignmentDirectional.centerStart,
                       value: e,
-                      child: builder != null ? builder!(context, e) : Text(e.toString()),
+                      child: builder != null
+                          ? builder!(context, e)
+                          : Text(e.toString()),
                     ),
                   )
                   .toList(),
