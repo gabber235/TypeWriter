@@ -5,10 +5,6 @@ Typewriter only works on **Paper** Spigot servers. It will not work on Spigot or
 :::
 
 :::caution
-Typewriter's web panel does **not** support external server providers such as Minehut, Aternos, or Apex. You can still Typewriter, by following [this guide](Using-tw-on-external-providers).
-:::
-
-:::caution
 Typewriter is currently in beta. This means that the plugin is still in development and may contain bugs. If you find
 any bugs, please report them [here](https://discord.gg/p7WH9VvdMQ)
 :::
@@ -42,6 +38,10 @@ In addition to the basic adapter, Typewriter also offers several pre-made adapte
 configured. For a list of available adapters and instructions on how to install them, see [here](adapters).
 
 ## Configuring the Web Panel
+
+:::caution
+Typewriter's web panel does **not** support external server providers such as Minehut, Aternos, or Apex. You can still use everthing else in Typewriter. It is possible to use the panel still by setting up a local server with Typewriter installed. For more information, please visit the [Discord](https://discord.gg/p7WH9VvdMQ).
+:::
 
 The web panel to configure your server's interactions. The web panel is preinstalled inside the plugin, though it is
 disabled by default for security and performance reasons.
