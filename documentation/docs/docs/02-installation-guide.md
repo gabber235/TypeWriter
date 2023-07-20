@@ -39,6 +39,10 @@ configured. For a list of available adapters and instructions on how to install 
 
 ## Configuring the Web Panel
 
+:::caution
+Typewriter's web panel does **not** support external server providers such as Minehut, Aternos, or Apex. You can still use everthing else in Typewriter. It is possible to use the panel still by setting up a local server with Typewriter installed. For more information, please visit the [Discord](https://discord.gg/p7WH9VvdMQ).
+:::
+
 The web panel to configure your server's interactions. The web panel is preinstalled inside the plugin, though it is
 disabled by default for security and performance reasons.
 
