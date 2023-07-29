@@ -34,7 +34,7 @@ dependencies {
     for (dependency in centralDependencies) {
         compileOnly(dependency)
     }
-    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
 
     implementation("com.github.dyam0:LirandAPI:96cc59d4fb")
 
