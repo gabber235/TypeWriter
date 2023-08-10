@@ -1,12 +1,16 @@
 package me.gabber235.typewriter.entries.cinematic
 
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.modifiers.Colored
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.dialogue.playSpeakerSound
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.utils.GenericPlayerStateProvider
+import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.GenericPlayerStateProvider.EXP
+import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LEVEL
 import me.gabber235.typewriter.utils.PlayerState
 import me.gabber235.typewriter.utils.restore
 import me.gabber235.typewriter.utils.state
@@ -52,7 +56,7 @@ class DisplayDialogueCinematicAction(
 
     override suspend fun setup() {
         super.setup()
-        state = player.state(GenericPlayerStateProvider.EXP, GenericPlayerStateProvider.LEVEL)
+        state = player.state(EXP, LEVEL)
         player.exp = 0f
         player.level = 0
         setup?.invoke(player)
@@ -91,9 +95,11 @@ class DisplayDialogueCinematicAction(
 
     override suspend fun teardown() {
         super.teardown()
-        player.restore(state)
         teardown?.invoke(player)
         reset?.invoke(player)
+        withContext(plugin.minecraftDispatcher) {
+            player.restore(state)
+        }
     }
 
     override fun canFinish(frame: Int): Boolean = segments canFinishAt frame

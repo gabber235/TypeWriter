@@ -11,7 +11,7 @@ import java.io.StringReader
 
 interface AssetStorage {
     fun storeAsset(path: String, content: String)
-    fun fetchAsset(path: String): String?
+    fun fetchAsset(path: String): Result<String>
     fun deleteAsset(path: String)
 
     fun fetchAllAssetPaths(): Set<String>
@@ -66,7 +66,12 @@ class AssetManager : KoinComponent {
     }
 
     fun fetchAsset(entry: AssetEntry): String? {
-        return storage.fetchAsset(entry.path)
+        val result = storage.fetchAsset(entry.path)
+        if (result.isFailure) {
+            plugin.logger.severe("Failed to fetch asset ${entry.path}")
+            return null
+        }
+        return result.getOrNull()
     }
 
     fun shutdown() {
@@ -81,8 +86,12 @@ class LocalAssetStorage : AssetStorage {
         file.writeText(content)
     }
 
-    override fun fetchAsset(path: String): String {
-        return plugin.dataFolder.resolve("assets/$path").readText()
+    override fun fetchAsset(path: String): Result<String> {
+        val file = plugin.dataFolder.resolve("assets/$path")
+        if (!file.exists()) {
+            return Result.failure(IllegalArgumentException("Asset $path not found."))
+        }
+        return Result.success(file.readText())
     }
 
     override fun deleteAsset(path: String) {

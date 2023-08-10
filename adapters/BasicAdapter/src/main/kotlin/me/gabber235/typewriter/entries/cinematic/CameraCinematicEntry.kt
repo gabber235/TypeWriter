@@ -21,6 +21,9 @@ import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffect.INFINITE_DURATION
+import org.bukkit.potion.PotionEffectType.INVISIBILITY
 
 @Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, Icons.VIDEO)
 /**
@@ -86,11 +89,19 @@ class CameraCinematicAction(
         }
         segments.forEach { it.setup() }
 
-        originalState = player.state(LOCATION, ALLOW_FLIGHT, FLYING, VISIBLE_PLAYERS, SHOWING_PLAYER)
+        originalState = player.state(
+            LOCATION,
+            ALLOW_FLIGHT,
+            FLYING,
+            VISIBLE_PLAYERS,
+            SHOWING_PLAYER,
+            EffectStateProvider(INVISIBILITY)
+        )
 
         withContext(plugin.minecraftDispatcher) {
             player.allowFlight = true
             player.isFlying = true
+            player.addPotionEffect(PotionEffect(INVISIBILITY, INFINITE_DURATION, 0, false, false))
             server.onlinePlayers.forEach {
                 it.hidePlayer(plugin, player)
                 player.hidePlayer(plugin, it)

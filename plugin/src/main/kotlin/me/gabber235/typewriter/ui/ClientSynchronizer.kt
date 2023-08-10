@@ -38,6 +38,8 @@ interface ClientSynchronizer {
     fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest)
 
     fun handleCaptureRequest(client: SocketIOClient, data: String, ack: AckRequest)
+
+    fun sendEntryFieldUpdate(pageId: String, entryId: String, fieldPath: String, data: JsonElement)
 }
 
 class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
@@ -174,6 +176,12 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
 
         val result = recorders.requestRecording(player!!, context)
         ack.sendResult(result.toResult())
+    }
+
+    override fun sendEntryFieldUpdate(pageId: String, entryId: String, fieldPath: String, data: JsonElement) {
+        val update = EntryUpdate(pageId, entryId, fieldPath, data)
+        val updateData = gson.toJson(update)
+        communicationHandler.server?.broadcastOperations?.sendEvent("updateEntry", updateData)
     }
 }
 

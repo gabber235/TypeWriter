@@ -182,6 +182,7 @@ class ToastDisplay extends HookConsumerWidget {
           bottom: 0,
           child: SingleChildScrollView(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 for (final toast in toasts)
                   if (toast is TemporaryToast)
@@ -259,6 +260,10 @@ class _TemporaryToast extends HookConsumerWidget {
     return Card(
       color: toast.color,
       elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      clipBehavior: Clip.antiAlias,
       child: SizedBox(
         width: width,
         child: Column(

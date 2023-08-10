@@ -10,7 +10,7 @@ import org.koin.java.KoinJavaComponent.inject
 open class AssetCapturer<T>(
     override val title: String,
     private val asset: AssetEntry,
-    private val capturer: RecordedCapturer<T>
+    private val capturer: RecordedCapturer<T>,
 ) : RecordedCapturer<T> {
     private val gson: Gson by inject(Gson::class.java, named("bukkitDataParser"))
     private val assetManager: AssetManager by inject(AssetManager::class.java)

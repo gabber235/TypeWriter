@@ -8,6 +8,7 @@ import org.geysermc.floodgate.api.FloodgateApi
 import org.koin.java.KoinJavaComponent.get
 import java.io.File
 import java.time.Duration
+import kotlin.math.round
 
 operator fun File.get(name: String): File = File(this, name)
 
@@ -39,3 +40,17 @@ val Location.highUpLocation: Location
         location.y += 200
         return location
     }
+
+fun Double.round(decimals: Int): Double {
+    var multiplier = 1.0
+    repeat(decimals) { multiplier *= 10 }
+
+    return round(this * multiplier) / multiplier
+}
+
+fun Float.round(decimals: Int): Float {
+    var multiplier = 1.0
+    repeat(decimals) { multiplier *= 10 }
+
+    return (round(this * multiplier) / multiplier).toFloat()
+}

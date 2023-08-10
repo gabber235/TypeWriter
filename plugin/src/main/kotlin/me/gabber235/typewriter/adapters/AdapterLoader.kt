@@ -3,6 +3,7 @@ package me.gabber235.typewriter.adapters
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
+import me.gabber235.typewriter.adapters.editors.LocationFieldCapturer
 import me.gabber235.typewriter.capture.Capturer
 import me.gabber235.typewriter.capture.CapturerCreator
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
@@ -34,6 +35,12 @@ private val gson =
             .registerSubtype(CustomField::class.java, "custom")
     ).enableComplexMapKeySerialization()
         .create()
+
+val staticCaptureClasses by lazy {
+    listOf(
+        LocationFieldCapturer::class,
+    )
+}
 
 interface AdapterLoader {
     val adapters: List<AdapterData>
@@ -173,7 +180,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     private fun constructCapturers(captureClasses: List<Class<*>>) =
         captureClasses.map { captureClass ->
             captureClass.kotlin as KClass<out Capturer<*>>
-        }
+        } + staticCaptureClasses
 
     //TODO: Make compatible with java.
     private fun findFilterForMessenger(messengerClass: Class<*>) =

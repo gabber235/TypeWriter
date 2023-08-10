@@ -34,6 +34,8 @@ interface StagingManager {
     fun updateEntry(pageId: String, data: JsonObject): Result<String>
     fun reorderEntry(pageId: String, entryId: String, newIndex: Int): Result<String>
     fun deleteEntry(pageId: String, entryId: String): Result<String>
+
+    fun findEntryPage(entryId: String): Result<String>
     suspend fun publish(): Result<String>
     fun shutdown()
 }
@@ -223,6 +225,14 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
         autoSaver()
         return ok("Successfully deleted entry with id $entryId")
+    }
+
+    override fun findEntryPage(entryId: String): Result<String> {
+        val page = pages.values.find { page ->
+            page["entries"].asJsonArray.any { entry -> entry.asJsonObject["id"].asString == entryId }
+        } ?: return failure("Entry does not exist")
+
+        return ok(page["name"].asString)
     }
 
     private fun getPage(id: String): Result<JsonObject> {

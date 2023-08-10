@@ -3,6 +3,7 @@ package me.gabber235.typewriter.adapters
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.editors.*
+import me.gabber235.typewriter.adapters.modifiers.StaticModifierComputer
 import me.gabber235.typewriter.utils.CronExpression
 import org.bukkit.Location
 import org.bukkit.Material
@@ -21,6 +22,7 @@ typealias GsonSerializer<T> = (T, Type, JsonSerializationContext) -> JsonElement
 typealias FieInfoGenerator = (TypeToken<*>) -> FieldInfo
 
 typealias DefaultGenerator = (TypeToken<*>) -> JsonElement
+typealias FieldModifierGenerator = (FieldInfo) -> FieldModifier?
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class CustomEditor(val klass: KClass<*>)
@@ -165,6 +167,32 @@ class ObjectEditor<T : Any>(val klass: KClass<T>, val name: String) {
      */
     internal fun generateDefault(token: TypeToken<*>): JsonElement {
         return defaultGenerator?.invoke(token) ?: JsonNull.INSTANCE
+    }
+
+    /**
+     * Save the modifiers for this editor.
+     * NOTE: This field is used internally and should not be accessed directly.
+     */
+    private val modifiers = mutableListOf<FieldModifierGenerator>()
+
+    /**
+     * Adds a modifier to this editor.
+     */
+    operator fun FieldModifier?.unaryPlus() {
+        if (this == null) return
+        modifiers.add { this }
+    }
+
+    infix fun <A : Annotation> StaticModifierComputer<A>.with(annotation: A) {
+        modifiers.add { this.computeModifier(annotation, it) }
+    }
+
+    /**
+     * Generates the modifiers for this editor.
+     * NOTE: This method is used internally and should not be accessed directly.
+     */
+    internal fun generateModifiers(info: FieldInfo): List<FieldModifier> {
+        return modifiers.mapNotNull { it(info) }
     }
 }
 

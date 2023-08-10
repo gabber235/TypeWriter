@@ -4,7 +4,14 @@ import com.google.gson.JsonObject
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.CustomEditor
 import me.gabber235.typewriter.adapters.ObjectEditor
+import me.gabber235.typewriter.adapters.modifiers.Capture
+import me.gabber235.typewriter.adapters.modifiers.CaptureModifierComputer
+import me.gabber235.typewriter.capture.CapturerCreator
+import me.gabber235.typewriter.capture.ImmediateFieldCapturer
+import me.gabber235.typewriter.capture.RecorderRequestContext
+import me.gabber235.typewriter.capture.capturers.LocationSnapshotCapturer
 import me.gabber235.typewriter.utils.logErrorIfNull
+import me.gabber235.typewriter.utils.ok
 import org.bukkit.Location
 
 @CustomEditor(Location::class)
@@ -53,5 +60,16 @@ fun ObjectEditor<Location>.location() = reference {
         obj.addProperty("pitch", src.pitch)
 
         obj
+    }
+
+    CaptureModifierComputer with Capture(LocationFieldCapturer::class)
+}
+
+class LocationFieldCapturer(title: String, entryId: String, fieldPath: String) :
+    ImmediateFieldCapturer<Location>(title, entryId, fieldPath, LocationSnapshotCapturer(title)) {
+    companion object : CapturerCreator<LocationFieldCapturer> {
+        override fun create(context: RecorderRequestContext): Result<LocationFieldCapturer> {
+            return ok(LocationFieldCapturer(context.title, context.entryId, context.fieldPath))
+        }
     }
 }
