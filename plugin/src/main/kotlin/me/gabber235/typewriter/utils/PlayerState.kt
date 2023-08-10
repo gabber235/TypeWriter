@@ -4,6 +4,8 @@ import me.gabber235.typewriter.plugin
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 
 interface PlayerStateProvider {
     fun store(player: Player): Any
@@ -27,7 +29,7 @@ enum class GenericPlayerStateProvider(private val store: Player.() -> Any, priva
     VISIBLE_PLAYERS({
         server.onlinePlayers.filter { it != this && canSee(it) }.map { it.uniqueId.toString() }.toList()
     }, { data ->
-        val visible = data as List<String>
+        val visible = data as List<*>
         server.onlinePlayers.filter { it != this && it.uniqueId.toString() in visible }
             .forEach { showPlayer(plugin, it) }
     }),
@@ -36,7 +38,7 @@ enum class GenericPlayerStateProvider(private val store: Player.() -> Any, priva
     SHOWING_PLAYER({
         server.onlinePlayers.filter { it != this && it.canSee(this) }.map { it.uniqueId.toString() }.toList()
     }, { data ->
-        val showing = data as List<String>
+        val showing = data as List<*>
         server.onlinePlayers.filter { it != this && it.uniqueId.toString() in showing }
             .forEach { it.showPlayer(plugin, this) }
     })
@@ -44,6 +46,22 @@ enum class GenericPlayerStateProvider(private val store: Player.() -> Any, priva
 
     override fun store(player: Player): Any = player.store()
     override fun restore(player: Player, value: Any) = player.restore(value)
+}
+
+class EffectStateProvider(
+    private val effect: PotionEffectType,
+) : PlayerStateProvider {
+    override fun store(player: Player): Any {
+        return player.getPotionEffect(effect) ?: return false
+    }
+
+    override fun restore(player: Player, value: Any) {
+        if (value !is PotionEffect) {
+            player.removePotionEffect(effect)
+            return
+        }
+        player.addPotionEffect(value)
+    }
 }
 
 fun Player.state(vararg keys: PlayerStateProvider): PlayerState = state(keys)

@@ -18,6 +18,7 @@ import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffect.INFINITE_DURATION
 import org.bukkit.potion.PotionEffectType.BLINDNESS
 
 @Entry("blinding_cinematic", "Blind the player so the screen looks black", Colors.CYAN, Icons.SOLID_EYE_SLASH)
@@ -64,10 +65,10 @@ class BlindingCinematicAction(
 
     override suspend fun startSegment(segment: BlindingSegment) {
         super.startSegment(segment)
-        state = player.state(LOCATION, GAME_MODE)
+        state = player.state(LOCATION, GAME_MODE, EffectStateProvider(BLINDNESS))
 
         withContext(plugin.minecraftDispatcher) {
-            player.addPotionEffect(PotionEffect(BLINDNESS, Int.MAX_VALUE, 0, false, false, false))
+            player.addPotionEffect(PotionEffect(BLINDNESS, INFINITE_DURATION, 0, false, false, false))
 
             if (segment.teleport) {
                 /// Teleport the player high up to prevent them from seeing the world
@@ -85,9 +86,7 @@ class BlindingCinematicAction(
         val state = state ?: return
         this.state = null
         withContext(plugin.minecraftDispatcher) {
-            player.removePotionEffect(BLINDNESS)
             player.restore(state)
         }
     }
-
 }
