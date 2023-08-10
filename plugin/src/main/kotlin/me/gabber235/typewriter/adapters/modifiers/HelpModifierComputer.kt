@@ -8,12 +8,9 @@ import me.gabber235.typewriter.adapters.FieldModifier.DynamicModifier
 annotation class Help(val text: String)
 
 object HelpModifierComputer : StaticModifierComputer<Help> {
-	override val annotationClass: Class<Help> = Help::class.java
+    override val annotationClass: Class<Help> = Help::class.java
 
-	override fun computeModifier(annotation: Help, info: FieldInfo): FieldModifier {
-		// If the field is wrapped in a list or other container we try if the inner type can be modified
-		innerCompute(annotation, info)?.let { return it }
-
-		return DynamicModifier("help", annotation.text)
-	}
+    override fun computeModifier(annotation: Help, info: FieldInfo): FieldModifier {
+        return DynamicModifier("help", annotation.text)
+    }
 }

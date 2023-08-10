@@ -241,6 +241,12 @@ extension FieldTypeExtension on FieldInfo {
 
   /// If the [ObjectEditor] needs to show a default layout or if a field declares a custom layout.
   bool get hasCustomLayout {
+    if (this is CustomField) {
+      final editor = (this as CustomField).editor;
+      if (editor == "optional") {
+        return true;
+      }
+    }
     if (this is ObjectField) {
       return true;
     }

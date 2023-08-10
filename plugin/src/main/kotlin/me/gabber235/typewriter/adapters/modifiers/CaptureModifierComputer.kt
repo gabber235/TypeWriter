@@ -2,8 +2,8 @@ package me.gabber235.typewriter.adapters.modifiers
 
 import me.gabber235.typewriter.adapters.FieldInfo
 import me.gabber235.typewriter.adapters.FieldModifier
+import me.gabber235.typewriter.capture.Capturer
 import me.gabber235.typewriter.capture.CapturerCreator
-import me.gabber235.typewriter.capture.RecordedCapturer
 import me.gabber235.typewriter.logger
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObject
@@ -11,7 +11,7 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.jvmName
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
-annotation class Capture(val capturer: KClass<out RecordedCapturer<*>>)
+annotation class Capture(val capturer: KClass<out Capturer<*>>)
 
 object CaptureModifierComputer : StaticModifierComputer<Capture> {
     override val annotationClass: Class<Capture> = Capture::class.java
