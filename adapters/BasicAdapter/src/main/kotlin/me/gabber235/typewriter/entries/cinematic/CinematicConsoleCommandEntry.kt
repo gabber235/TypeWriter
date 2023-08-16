@@ -38,7 +38,6 @@ class CinematicConsoleCommandEntry(
 ) : CinematicCommandEntry {
     override fun create(player: Player): CinematicAction {
         return CommandAction(
-            player,
             this
         ) { command ->
             player.server.dispatchCommand(player.server.consoleSender, command)
@@ -66,7 +65,6 @@ class CinematicPlayerCommandEntry(
 ) : CinematicCommandEntry {
     override fun create(player: Player): CinematicAction {
         return CommandAction(
-            player,
             this
         ) { command ->
             player.performCommand(command)
@@ -82,8 +80,7 @@ data class CommandSegment(
 ) : Segment
 
 class CommandAction(
-    private val player: Player,
-    private val entry: CinematicCommandEntry,
+    entry: CinematicCommandEntry,
     private val run: (String) -> Unit,
 ) : SimpleCinematicAction<CommandSegment>() {
     override val segments: List<CommandSegment> = entry.segments
