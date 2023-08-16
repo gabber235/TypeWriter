@@ -94,7 +94,7 @@ class WritersNotifier extends StateNotifier<List<Writer>> {
     // Filter out the current user as we don't want to show ourselves in the list
     state = json
         .map((e) => Writer.fromJson(e as Map<String, dynamic>))
-        // .where((writer) => writer.id != self)
+        .where((writer) => writer.id != self)
         .toList();
   }
 
