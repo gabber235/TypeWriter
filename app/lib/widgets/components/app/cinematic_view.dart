@@ -1774,7 +1774,8 @@ class _SegmentDurationDisplay extends HookConsumerWidget {
     return Text(
       "Total Duration: $secondsWithDecimal seconds ($totalTime frames)",
       style: Theme.of(context).textTheme.bodySmall?.apply(
-            color: Theme.of(context).textTheme.caption?.color?.withOpacity(0.8),
+            color:
+                Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.8),
             fontStyle: FontStyle.italic,
           ),
     );
