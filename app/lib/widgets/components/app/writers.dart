@@ -58,7 +58,7 @@ class WritersIndicator extends HookConsumerWidget {
 
     useEffect(
       () {
-        if (!enabled) {
+        if (!enabled && writers.value.isNotEmpty) {
           writers.value = [];
         }
         return null;
