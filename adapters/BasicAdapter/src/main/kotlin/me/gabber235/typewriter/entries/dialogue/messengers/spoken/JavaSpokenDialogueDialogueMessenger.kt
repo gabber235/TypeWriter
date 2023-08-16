@@ -31,9 +31,15 @@ val spokenFormat: String by snippet(
 		""".trimMargin()
 )
 
+val spokenInstructionNextText: String by snippet("dialogue.spoken.instruction.next", "continue")
+val spokenInstructionFinishText: String by snippet("dialogue.spoken.instruction.finish", "finish")
+val spokenInstructionBaseColor: String by snippet("dialogue.spoken.instruction.color.base", "<gray>")
+val spokenInstructionHighlightColor: String by snippet("dialogue.spoken.instruction.color.highlight", "<red>")
 val spokenPadding: String by snippet("dialogue.spoken.padding", "    ")
 val spokenMinLines: Int by snippet("dialogue.spoken.minLines", 3)
 val spokenMaxLineLength: Int by snippet("dialogue.spoken.maxLineLength", 40)
+val spokenInstructionTicksHighlighted: Int by snippet("dialogue.spoken.instruction.ticks.highlighted", 10)
+val spokenInstructionTicksBase: Int by snippet("dialogue.spoken.instruction.ticks.base", 30)
 
 
 @Messenger(SpokenDialogueEntry::class)
@@ -73,9 +79,20 @@ fun Player.sendSpokenDialogue(
 
     val percentage = (cycle / durationInTicks.toDouble())
 
-    val nextColor = if (cycle > durationInTicks * 2.5 && (cycle / 6) % 3 == 0) "<red>" else "<gray>"
+    val totalInstructionDuration = spokenInstructionTicksHighlighted + spokenInstructionTicksBase
+    val instructionCycle = cycle % totalInstructionDuration
+    if (percentage > 1) {
+        // Change in highlight color
+        val shouldDisplay = instructionCycle == 0 || instructionCycle == spokenInstructionTicksHighlighted
+        if (!shouldDisplay) return
+    }
 
-    val continueOrFinish = if (canFinish) "finish" else "continue"
+    val highlightStarted = cycle > durationInTicks * 2.5
+    val needsHighlight = instructionCycle < spokenInstructionTicksHighlighted
+    val nextColor =
+        if (highlightStarted && needsHighlight) spokenInstructionHighlightColor else spokenInstructionBaseColor
+
+    val continueOrFinish = if (canFinish) spokenInstructionFinishText else spokenInstructionNextText
 
     val message = text.parsePlaceholders(this).asPartialFormattedMini(
         percentage,
