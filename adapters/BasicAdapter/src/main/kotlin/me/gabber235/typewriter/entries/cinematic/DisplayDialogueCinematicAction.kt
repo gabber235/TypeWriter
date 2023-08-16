@@ -57,8 +57,6 @@ class DisplayDialogueCinematicAction(
     override suspend fun setup() {
         super.setup()
         state = player.state(EXP, LEVEL)
-        player.exp = 0f
-        player.level = 0
         setup?.invoke(player)
     }
 
@@ -67,9 +65,11 @@ class DisplayDialogueCinematicAction(
         val segment = (segments activeSegmentAt frame)
 
         if (segment == null) {
-            if (previousSegment != null) {
+            if (player.exp > 0f || player.level > 0) {
                 player.exp = 0f
                 player.level = 0
+            }
+            if (previousSegment != null) {
                 reset?.invoke(player)
                 previousSegment = null
             }
