@@ -32,7 +32,7 @@ class ValidatedInspectorTextField<T> extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final focus = useFocusNode();
-    useFocusedBasedCurrentEditingField(focus, ref, path);
+    useFocusedBasedCurrentEditingField(focus, ref.passing, path);
 
     final value = ref.watch(fieldValueProvider(path, defaultValue));
     final name = ref.watch(pathDisplayNameProvider(path));
@@ -47,7 +47,9 @@ class ValidatedInspectorTextField<T> extends HookConsumerWidget {
       icon: icon,
       inputFormatters: inputFormatters,
       keepValidVisibleWhileFocused: keepValidVisibleWhileFocused,
-      onChanged: (value) => ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, value),
+      onChanged: (value) => ref
+          .read(inspectingEntryDefinitionProvider)
+          ?.updateField(ref.passing, path, value),
     );
   }
 }

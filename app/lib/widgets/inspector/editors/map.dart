@@ -60,8 +60,6 @@ class MapEditor extends HookConsumerWidget {
       ...rawValue.map((key, value) => MapEntry(key.toString(), value)),
     };
 
-    final expanded = useState(false);
-
     // Create global keys for the different fields.
     // This is to keep the state of the fields when they are when a field is added or removed.
     final globalKeys = useMemoized(
@@ -115,9 +113,9 @@ class _MapEntry extends HookConsumerWidget {
   final String path;
   final MapField field;
 
-  void _changeKeyField(WidgetRef ref, String key) {
+  void _changeKeyField(PassingRef ref, String key) {
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
-      ref.passing,
+      ref,
       path,
       {
         ...map.map(MapEntry.new)..removeWhere((key, value) => key == entry.key),
@@ -130,7 +128,10 @@ class _MapEntry extends HookConsumerWidget {
       map.containsKey(key) && key != entry.key;
 
   Future<void> _changeKey(
-      BuildContext context, WidgetRef ref, String key) async {
+    BuildContext context,
+    PassingRef ref,
+    String key,
+  ) async {
     if (_alreadyContainsKey(key)) {
       showConfirmationDialogue(
         context: context,
@@ -145,13 +146,13 @@ class _MapEntry extends HookConsumerWidget {
     _changeKeyField(ref, key);
   }
 
-  void _delete(WidgetRef ref, Map<String, dynamic> value, String key) {
+  void _delete(PassingRef ref, Map<String, dynamic> value, String key) {
     final newValue = {
       ...value.map(MapEntry.new)..removeWhere((key, value) => key == entry.key),
     };
 
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
-          ref.passing,
+          ref,
           path,
           newValue,
         );
@@ -162,20 +163,20 @@ class _MapEntry extends HookConsumerWidget {
         (field.key as PrimitiveField).type == PrimitiveFieldType.string) {
       return Flexible(
         child: _StringKey(
-          path: "$path.${entry.key}",
+          path: path,
           field: field.key as PrimitiveField,
           value: entry.key,
-          onChanged: (value) => _changeKey(context, ref, value),
+          onChanged: (value) => _changeKey(context, ref.passing, value),
         ),
       );
     }
     if (field.key is EnumField) {
       return Flexible(
         child: _EnumKey(
-          path: "$path.${entry.key}",
+          path: path,
           field: field.key as EnumField,
           value: entry.key,
-          onChanged: (value) => _changeKey(context, ref, value),
+          onChanged: (value) => _changeKey(context, ref.passing, value),
         ),
       );
     }
@@ -198,7 +199,7 @@ class _MapEntry extends HookConsumerWidget {
               IconButton(
                 icon: const Icon(FontAwesomeIcons.trash, size: 12),
                 color: Theme.of(context).colorScheme.error,
-                onPressed: () => _delete(ref, map, entry.key),
+                onPressed: () => _delete(ref.passing, map, entry.key),
               ),
             ],
           ),

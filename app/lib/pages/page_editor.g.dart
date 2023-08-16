@@ -65,4 +65,19 @@ final currentPageTypeProvider = AutoDisposeProvider<PageType?>.internal(
 );
 
 typedef CurrentPageTypeRef = AutoDisposeProviderRef<PageType?>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+String _$writersHash() => r'90aabc0610038faeb596c5fce4ab05f1db644033';
+
+/// See also [_writers].
+@ProviderFor(_writers)
+final _writersProvider = AutoDisposeProvider<List<Writer>>.internal(
+  _writers,
+  name: r'_writersProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$writersHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _WritersRef = AutoDisposeProviderRef<List<Writer>>;
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

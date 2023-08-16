@@ -1166,91 +1166,96 @@ class _SegmentWidget extends HookConsumerWidget {
         ref.watch(inspectingEntryIdProvider.select((id) => id == entryId));
     final isSelected = isPathSelected && isEntrySelected;
 
-    return Container(
-      height: 16,
-      decoration: BoxDecoration(
-        color: segment.color,
-        borderRadius: BorderRadius.circular(12),
-        border: isSelected
-            ? Border.all(
-                color: context.isDark
-                    ? Colors.white
-                    : Colors.black.withOpacity(0.4),
-                width: 2,
-              )
-            : Border.all(color: Colors.transparent, width: 2),
-      ),
-      child: Row(
-        children: [
-          if (showThumbs) ...[
-            const SizedBox(width: 3),
-            _Thumb(
-              key: ValueKey("${segment.truePath}.start"),
-              onDragStart: (_) => ref
-                  .read(_moveNotifierProvider.notifier)
-                  .start(entryId, segment),
-              onDragUpdate: (update) {
-                final percent = _getPercentFromDragUpdate(update, -5);
-                ref
+    return WritersIndicator(
+      provider: segmentWritersProvider(entryId, segment.truePath),
+      child: Container(
+        height: 16,
+        decoration: BoxDecoration(
+          color: segment.color,
+          borderRadius: BorderRadius.circular(12),
+          border: isSelected
+              ? Border.all(
+                  color: context.isDark
+                      ? Colors.white
+                      : Colors.black.withOpacity(0.4),
+                  width: 2,
+                )
+              : Border.all(color: Colors.transparent, width: 2),
+        ),
+        child: Row(
+          children: [
+            if (showThumbs) ...[
+              const SizedBox(width: 3),
+              _Thumb(
+                key: ValueKey("${segment.truePath}.start"),
+                onDragStart: (_) => ref
                     .read(_moveNotifierProvider.notifier)
-                    .updateSegmentStart(entryId, segment, percent);
-              },
-              onDragEnd: (_) => ref.read(_moveNotifierProvider.notifier).end(),
-            ),
-          ],
-          Expanded(
-            key: localKey,
-            child: GestureDetector(
-              onHorizontalDragStart: (details) {
-                grabbing.value = true;
-                final innerPercent =
-                    _getPercent(localKey, details.globalPosition);
+                    .start(entryId, segment),
+                onDragUpdate: (update) {
+                  final percent = _getPercentFromDragUpdate(update, -5);
+                  ref
+                      .read(_moveNotifierProvider.notifier)
+                      .updateSegmentStart(entryId, segment, percent);
+                },
+                onDragEnd: (_) =>
+                    ref.read(_moveNotifierProvider.notifier).end(),
+              ),
+            ],
+            Expanded(
+              key: localKey,
+              child: GestureDetector(
+                onHorizontalDragStart: (details) {
+                  grabbing.value = true;
+                  final innerPercent =
+                      _getPercent(localKey, details.globalPosition);
 
-                ref
-                    .read(_moveNotifierProvider.notifier)
-                    .start(entryId, segment, innerPercent);
-              },
-              onHorizontalDragEnd: (details) {
-                grabbing.value = false;
-                ref.read(_moveNotifierProvider.notifier).end();
-              },
-              onHorizontalDragUpdate: (details) {
-                final percent = _getPercentFromDragUpdate(details);
+                  ref
+                      .read(_moveNotifierProvider.notifier)
+                      .start(entryId, segment, innerPercent);
+                },
+                onHorizontalDragEnd: (details) {
+                  grabbing.value = false;
+                  ref.read(_moveNotifierProvider.notifier).end();
+                },
+                onHorizontalDragUpdate: (details) {
+                  final percent = _getPercentFromDragUpdate(details);
 
-                ref
-                    .read(_moveNotifierProvider.notifier)
-                    .moveSegment(entryId, segment, percent);
-              },
-              onTap: () {
-                ref
-                    .read(inspectingSegmentIdProvider.notifier)
-                    .select(entryId, segment.truePath);
-              },
-              child: MouseRegion(
-                cursor: grabbing.value
-                    ? SystemMouseCursors.grabbing
-                    : SystemMouseCursors.click,
-                child: Container(),
+                  ref
+                      .read(_moveNotifierProvider.notifier)
+                      .moveSegment(entryId, segment, percent);
+                },
+                onTap: () {
+                  ref
+                      .read(inspectingSegmentIdProvider.notifier)
+                      .select(entryId, segment.truePath);
+                },
+                child: MouseRegion(
+                  cursor: grabbing.value
+                      ? SystemMouseCursors.grabbing
+                      : SystemMouseCursors.click,
+                  child: Container(),
+                ),
               ),
             ),
-          ),
-          if (showThumbs) ...[
-            _Thumb(
-              key: ValueKey("${segment.truePath}.end"),
-              onDragStart: (_) => ref
-                  .read(_moveNotifierProvider.notifier)
-                  .start(entryId, segment),
-              onDragUpdate: (update) {
-                final percent = _getPercentFromDragUpdate(update, 13);
-                ref
+            if (showThumbs) ...[
+              _Thumb(
+                key: ValueKey("${segment.truePath}.end"),
+                onDragStart: (_) => ref
                     .read(_moveNotifierProvider.notifier)
-                    .updateSegmentEnd(entryId, segment, percent);
-              },
-              onDragEnd: (_) => ref.read(_moveNotifierProvider.notifier).end(),
-            ),
-            const SizedBox(width: 3),
+                    .start(entryId, segment),
+                onDragUpdate: (update) {
+                  final percent = _getPercentFromDragUpdate(update, 13);
+                  ref
+                      .read(_moveNotifierProvider.notifier)
+                      .updateSegmentEnd(entryId, segment, percent);
+                },
+                onDragEnd: (_) =>
+                    ref.read(_moveNotifierProvider.notifier).end(),
+              ),
+              const SizedBox(width: 3),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -1267,9 +1272,11 @@ class InspectingSegmentIdNotifier extends StateNotifier<String?> {
         .read(inspectingEntryIdProvider.notifier)
         .selectEntry(entryId, unSelectSegment: false);
     state = segmentPath;
+    ref.read(currentEditingFieldProvider.notifier).path = segmentPath;
   }
 
   void clear() {
+    ref.read(currentEditingFieldProvider.notifier).clearIfSame(state ?? "");
     state = null;
   }
 }
@@ -1618,7 +1625,7 @@ class _FrameField extends HookConsumerWidget {
     final focus = useFocusNode();
     final error = useState<String?>(null);
 
-    useFocusedBasedCurrentEditingField(focus, ref, path);
+    useFocusedBasedCurrentEditingField(focus, ref.passing, path);
 
     final value = ref.watch(fieldValueProvider(path));
 

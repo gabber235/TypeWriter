@@ -17,14 +17,23 @@ part "writers.g.dart";
 /// Get all the writers that are writhing in a specific field.
 /// [path] the given path of the field.
 @riverpod
-List<Writer> fieldWriters(FieldWritersRef ref, String path) {
+List<Writer> fieldWriters(
+  FieldWritersRef ref,
+  String path, {
+  bool exact = false,
+}) {
   final selectedEntryId = ref.watch(inspectingEntryIdProvider);
 
   return ref.watch(writersProvider).where((writer) {
     if (writer.entryId.isNullOrEmpty) return false;
     if (writer.entryId != selectedEntryId) return false;
     if (writer.field.isNullOrEmpty) return false;
-    return writer.field!.startsWith(path);
+
+    if (exact) {
+      return writer.field == path;
+    } else {
+      return writer.field!.startsWith(path);
+    }
   }).toList();
 }
 
@@ -41,17 +50,31 @@ class Writer with _$Writer {
   factory Writer.fromJson(Map<String, dynamic> json) => _$WriterFromJson(json);
 }
 
-final writersProvider =
-    StateNotifierProvider<WritersNotifier, List<Writer>>(WritersNotifier.new, name: "writersProvider");
+final writersProvider = StateNotifierProvider<WritersNotifier, List<Writer>>(
+  WritersNotifier.new,
+  name: "writersProvider",
+);
 
 class WritersNotifier extends StateNotifier<List<Writer>> {
   WritersNotifier(this.ref) : super([]) {
     ref
-      ..listen(currentPageIdProvider, (_, next) => _handleStateChange(pageId: next))
-      ..listen(inspectingEntryIdProvider, (_, next) => _handleStateChange(entryId: next))
-      ..listen(currentEditingFieldProvider, (_, next) => _handleStateChange(field: next));
+      ..listen(
+        currentPageIdProvider,
+        (_, next) => _handleStateChange(pageId: next),
+      )
+      ..listen(
+        inspectingEntryIdProvider,
+        (_, next) => _handleStateChange(entryId: next),
+      )
+      ..listen(
+        currentEditingFieldProvider,
+        (_, next) => _handleStateChange(field: next),
+      );
 
-    _debouncer = Debouncer<Map<String, dynamic>>(duration: 300.ms, callback: _flushUpdateSelf);
+    _debouncer = Debouncer<Map<String, dynamic>>(
+      duration: 300.ms,
+      callback: _flushUpdateSelf,
+    );
   }
   final Ref<dynamic> ref;
   late Debouncer<Map<String, dynamic>> _debouncer;
@@ -69,7 +92,10 @@ class WritersNotifier extends StateNotifier<List<Writer>> {
     final self = ref.read(socketProvider)?.id;
     final json = jsonDecode(data) as List<dynamic>;
     // Filter out the current user as we don't want to show ourselves in the list
-    state = json.map((e) => Writer.fromJson(e as Map<String, dynamic>)).where((writer) => writer.id != self).toList();
+    state = json
+        .map((e) => Writer.fromJson(e as Map<String, dynamic>))
+        // .where((writer) => writer.id != self)
+        .toList();
   }
 
   void _updateSelf(Map<String, dynamic> data) {

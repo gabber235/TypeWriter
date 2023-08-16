@@ -19,7 +19,7 @@ class NameField extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final focus = useFocusNode();
-    useFocusedBasedCurrentEditingField(focus, ref, "name");
+    useFocusedBasedCurrentEditingField(focus, ref.passing, "name");
     final name = ref.watch(fieldValueProvider("name"));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +33,9 @@ class NameField extends HookConsumerWidget {
             focus: focus,
             text: name,
             onChanged: (value) {
-              ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, "name", value);
+              ref
+                  .read(inspectingEntryDefinitionProvider)
+                  ?.updateField(ref.passing, "name", value);
             },
             inputFormatters: [
               snakeCaseFormatter(),

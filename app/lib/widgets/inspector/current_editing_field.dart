@@ -3,9 +3,11 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/utils/debouncer.dart";
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
-final currentEditingFieldProvider = StateNotifierProvider<CurrentEditingFieldNotifier, String>(
+final currentEditingFieldProvider =
+    StateNotifierProvider<CurrentEditingFieldNotifier, String>(
   CurrentEditingFieldNotifier.new,
   name: "currentEditingFieldProvider",
 );
@@ -46,7 +48,11 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
   }
 }
 
-void useFocusedChange(FocusNode focus, Function(bool) onChange, [List<Object?>? keys]) {
+void useFocusedChange(
+  FocusNode focus,
+  Function(bool) onChange, [
+  List<Object?>? keys,
+]) {
   useEffect(
     () {
       void onFocusChange() {
@@ -60,7 +66,11 @@ void useFocusedChange(FocusNode focus, Function(bool) onChange, [List<Object?>? 
   );
 }
 
-void useFocusedBasedCurrentEditingField(FocusNode focus, WidgetRef ref, String path) {
+void useFocusedBasedCurrentEditingField(
+  FocusNode focus,
+  PassingRef ref,
+  String path,
+) {
   useFocusedChange(
     focus,
     (hasFocus) {

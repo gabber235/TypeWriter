@@ -11,6 +11,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
 import "package:url_launcher/url_launcher.dart";
 
 @RoutePage()
@@ -87,6 +88,9 @@ class _ReconnectOverlay extends HookConsumerWidget {
 
     return Dialog(
       clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -102,7 +106,8 @@ class _ReconnectOverlay extends HookConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Connection lost, Reconnecting...", style: Theme.of(context).textTheme.titleLarge),
+                Text("Connection lost, Reconnecting...",
+                    style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 8),
                 const ConnectionScroller(
                   style: TextStyle(color: Colors.grey, fontSize: 16),
@@ -139,6 +144,8 @@ class _SideRail extends HookConsumerWidget {
                 children: [
                   _RailButton(index++, icon: FontAwesomeIcons.filePen),
                   const Spacer(),
+                  const GlobalWriters(direction: Axis.vertical),
+                  const SizedBox(height: 5),
                   const _DiscordButton(),
                   const SizedBox(height: 5),
                   const _WikiButton(),

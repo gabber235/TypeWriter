@@ -21,10 +21,10 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
   final Ref ref;
 
   void selectEntry(String id, {bool unSelectSegment = true}) {
-    state = id;
     if (unSelectSegment) {
       ref.read(inspectingSegmentIdProvider.notifier).clear();
     }
+    state = id;
   }
 
   void clearSelection() {
@@ -37,7 +37,8 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
   }
 }
 
-final inspectingEntryIdProvider = StateNotifierProvider<InspectingEntryNotifier, String?>(
+final inspectingEntryIdProvider =
+    StateNotifierProvider<InspectingEntryNotifier, String?>(
   InspectingEntryNotifier.new,
   name: "inspectingEntryIdProvider",
 );
@@ -62,7 +63,9 @@ class GenericInspector extends HookConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
-        child: inspectingEntry != null ? EntryInspector(key: ValueKey(inspectingEntry.id)) : const EmptyInspector(),
+        child: inspectingEntry != null
+            ? EntryInspector(key: ValueKey(inspectingEntry.id))
+            : const EmptyInspector(),
       ),
     );
   }

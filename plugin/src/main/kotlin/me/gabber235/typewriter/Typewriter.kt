@@ -55,7 +55,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<InteractionHandler>(::InteractionHandler)
             singleOf<MessengerFinder>(::MessengerFinder)
             singleOf<CommunicationHandler>(::CommunicationHandler)
-            singleOf<Writers>(::WritersImpl)
+            singleOf<Writers>(::Writers)
             singleOf<PanelHost>(::PanelHost)
             singleOf<SnippetDatabase>(::SnippetDatabaseImpl)
             singleOf<FactDatabase>(::FactDatabase)

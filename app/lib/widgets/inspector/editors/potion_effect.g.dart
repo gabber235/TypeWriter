@@ -7,7 +7,7 @@ part of 'potion_effect.dart';
 // **************************************************************************
 
 String _$fuzzyPotionEffectsHash() =>
-    r'a3ca609a2ce716a8def3c34594c6bd5d0e7a5c0f';
+    r'570bdd0a31305bc22b850457bd1ac5322439ac62';
 
 /// See also [_fuzzyPotionEffects].
 @ProviderFor(_fuzzyPotionEffects)
@@ -22,4 +22,5 @@ final _fuzzyPotionEffectsProvider = AutoDisposeProvider<Fuzzy<String>>.internal(
 );
 
 typedef _FuzzyPotionEffectsRef = AutoDisposeProviderRef<Fuzzy<String>>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

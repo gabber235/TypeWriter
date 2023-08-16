@@ -14,19 +14,19 @@ data class Writer(
     val field: String? = null,
 ) {
     companion object
+
+    fun merge(writer: Writer): Writer {
+        return Writer(
+            id = writer.id,
+            iconUrl = writer.iconUrl ?: iconUrl,
+            pageId = writer.pageId,
+            entryId = writer.entryId,
+            field = writer.field,
+        )
+    }
 }
 
-interface Writers {
-    fun addWriter(id: String, iconUrl: String? = null)
-    fun removeWriter(id: String)
-    fun updateWriter(id: String, data: String)
-
-    fun dispose()
-
-    fun serialize(): String
-}
-
-class WritersImpl : Writers, KoinComponent {
+class Writers : KoinComponent {
     private val communicationHandler: CommunicationHandler by inject()
     private var writers = listOf<Writer>()
     private var lastSynced = 0L
@@ -36,21 +36,21 @@ class WritersImpl : Writers, KoinComponent {
         writers = writers + writer
     }
 
-    override fun addWriter(id: String, iconUrl: String?) {
+    fun addWriter(id: String, iconUrl: String?) {
         addWriter(Writer(id, iconUrl))
     }
 
     private fun updateWriter(writer: Writer) {
-        writers = writers.map { if (it.id == writer.id) writer else it }
+        writers = writers.map { if (it.id == writer.id) it.merge(writer) else it }
         syncWriters()
     }
 
-    override fun removeWriter(id: String) {
+    fun removeWriter(id: String) {
         writers = writers.filter { it.id != id }
         syncWriters()
     }
 
-    override fun updateWriter(id: String, data: String) {
+    fun updateWriter(id: String, data: String) {
         val map: Map<String, Any> = Gson().fromJson(data, object : TypeToken<Map<String, Any>>() {}.type)
 
         val writer = Writer(
@@ -81,16 +81,17 @@ class WritersImpl : Writers, KoinComponent {
         // If a client is not a writer, add it
         clientIds.forEach { id ->
             if (writers.none { it.id == id }) {
-                addWriter(id)
+                val iconUrl = communicationHandler.getIconUrl(id)
+                addWriter(id, iconUrl)
             }
         }
     }
 
-    override fun dispose() {
+    fun dispose() {
         writers = listOf()
     }
 
-    override fun serialize(): String {
+    fun serialize(): String {
         return Gson().toJson(writers)
     }
 }
