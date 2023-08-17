@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
@@ -38,6 +39,7 @@ class CinematicConsoleCommandEntry(
 ) : CinematicCommandEntry {
     override fun create(player: Player): CinematicAction {
         return CommandAction(
+            player,
             this
         ) { command ->
             player.server.dispatchCommand(player.server.consoleSender, command)
@@ -65,6 +67,7 @@ class CinematicPlayerCommandEntry(
 ) : CinematicCommandEntry {
     override fun create(player: Player): CinematicAction {
         return CommandAction(
+            player,
             this
         ) { command ->
             player.performCommand(command)
@@ -80,6 +83,7 @@ data class CommandSegment(
 ) : Segment
 
 class CommandAction(
+    private val player: Player,
     entry: CinematicCommandEntry,
     private val run: (String) -> Unit,
 ) : SimpleCinematicAction<CommandSegment>() {
@@ -88,7 +92,7 @@ class CommandAction(
     override suspend fun startSegment(segment: CommandSegment) {
         super.startSegment(segment)
         withContext(plugin.minecraftDispatcher) {
-            run(segment.command)
+            run(segment.command.parsePlaceholders(player))
         }
     }
 }
