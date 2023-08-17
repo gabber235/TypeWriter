@@ -202,8 +202,11 @@ class _ContextMenu extends HookWidget {
 
     final largestText =
         maxBy(tiles.map((e) => e.largestText), (text) => text.length) ?? "";
-    final textSize =
-        useTextSize(context, largestText, const TextStyle(fontSize: 13));
+    final textSize = useTextSize(
+      context,
+      largestText,
+      const TextStyle(fontSize: 13, fontFamily: "JetBrainsMono"),
+    );
     final maxWidth = textSize.width + _spacingWidth;
 
     return Positioned(

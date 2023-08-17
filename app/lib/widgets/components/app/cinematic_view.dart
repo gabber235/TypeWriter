@@ -4,6 +4,7 @@ import "package:collection/collection.dart";
 import "package:collection_ext/all.dart";
 import "package:flutter/material.dart" hide Title, FilledButton;
 import "package:flutter/services.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
@@ -150,7 +151,7 @@ List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
         .map((key, value) => MapEntry(key.toString(), value));
 
     return Segment(
-      path: path,
+      path: path.wild(),
       index: index,
       color: color,
       icon: icon,
@@ -1168,93 +1169,123 @@ class _SegmentWidget extends HookConsumerWidget {
 
     return WritersIndicator(
       provider: segmentWritersProvider(entryId, segment.truePath),
-      child: Container(
-        height: 16,
-        decoration: BoxDecoration(
-          color: segment.color,
-          borderRadius: BorderRadius.circular(12),
-          border: isSelected
-              ? Border.all(
-                  color: context.isDark
-                      ? Colors.white
-                      : Colors.black.withOpacity(0.4),
-                  width: 2,
-                )
-              : Border.all(color: Colors.transparent, width: 2),
-        ),
-        child: Row(
-          children: [
-            if (showThumbs) ...[
-              const SizedBox(width: 3),
-              _Thumb(
-                key: ValueKey("${segment.truePath}.start"),
-                onDragStart: (_) => ref
-                    .read(_moveNotifierProvider.notifier)
-                    .start(entryId, segment),
-                onDragUpdate: (update) {
-                  final percent = _getPercentFromDragUpdate(update, -5);
-                  ref
-                      .read(_moveNotifierProvider.notifier)
-                      .updateSegmentStart(entryId, segment, percent);
-                },
-                onDragEnd: (_) =>
-                    ref.read(_moveNotifierProvider.notifier).end(),
-              ),
-            ],
-            Expanded(
-              key: localKey,
-              child: GestureDetector(
-                onHorizontalDragStart: (details) {
-                  grabbing.value = true;
-                  final innerPercent =
-                      _getPercent(localKey, details.globalPosition);
+      child: ContextMenuRegion(
+        builder: (context) => [
+          ContextMenuTile.button(
+            title: "Duplicate",
+            icon: FontAwesomeIcons.clone,
+            onTap: () => _duplicateSelectedSegment(ref.passing),
+          ),
+          ContextMenuTile.button(
+            title: "Delete",
+            icon: FontAwesomeIcons.trash,
+            color: Theme.of(context).colorScheme.error,
+            onTap: () {
+              final segmentId = ref.read(inspectingSegmentIdProvider);
+              if (segmentId == null) return;
+              final entryId = ref.read(inspectingEntryIdProvider);
+              if (entryId == null) return;
 
-                  ref
+              showConfirmationDialogue(
+                context: context,
+                title: "Delete Segment",
+                content: "Are you sure you want to delete this segment?",
+                confirmText: "Delete",
+                onConfirm: () {
+                  _deleteSegment(ref.passing, entryId, segmentId);
+                },
+              );
+            },
+          ),
+        ],
+        child: Container(
+          height: 16,
+          decoration: BoxDecoration(
+            color: segment.color,
+            borderRadius: BorderRadius.circular(12),
+            border: isSelected
+                ? Border.all(
+                    color: context.isDark
+                        ? Colors.white
+                        : Colors.black.withOpacity(0.4),
+                    width: 2,
+                  )
+                : Border.all(color: Colors.transparent, width: 2),
+          ),
+          child: Row(
+            children: [
+              if (showThumbs) ...[
+                const SizedBox(width: 3),
+                _Thumb(
+                  key: ValueKey("${segment.truePath}.start"),
+                  onDragStart: (_) => ref
                       .read(_moveNotifierProvider.notifier)
-                      .start(entryId, segment, innerPercent);
-                },
-                onHorizontalDragEnd: (details) {
-                  grabbing.value = false;
-                  ref.read(_moveNotifierProvider.notifier).end();
-                },
-                onHorizontalDragUpdate: (details) {
-                  final percent = _getPercentFromDragUpdate(details);
+                      .start(entryId, segment),
+                  onDragUpdate: (update) {
+                    final percent = _getPercentFromDragUpdate(update, -5);
+                    ref
+                        .read(_moveNotifierProvider.notifier)
+                        .updateSegmentStart(entryId, segment, percent);
+                  },
+                  onDragEnd: (_) =>
+                      ref.read(_moveNotifierProvider.notifier).end(),
+                ),
+              ],
+              Expanded(
+                key: localKey,
+                child: GestureDetector(
+                  onHorizontalDragStart: (details) {
+                    grabbing.value = true;
+                    final innerPercent =
+                        _getPercent(localKey, details.globalPosition);
 
-                  ref
-                      .read(_moveNotifierProvider.notifier)
-                      .moveSegment(entryId, segment, percent);
-                },
-                onTap: () {
-                  ref
-                      .read(inspectingSegmentIdProvider.notifier)
-                      .select(entryId, segment.truePath);
-                },
-                child: MouseRegion(
-                  cursor: grabbing.value
-                      ? SystemMouseCursors.grabbing
-                      : SystemMouseCursors.click,
-                  child: Container(),
+                    ref
+                        .read(_moveNotifierProvider.notifier)
+                        .start(entryId, segment, innerPercent);
+                  },
+                  onHorizontalDragEnd: (details) {
+                    grabbing.value = false;
+                    ref.read(_moveNotifierProvider.notifier).end();
+                  },
+                  onHorizontalDragUpdate: (details) {
+                    final percent = _getPercentFromDragUpdate(details);
+
+                    ref
+                        .read(_moveNotifierProvider.notifier)
+                        .moveSegment(entryId, segment, percent);
+                  },
+                  onTap: () {
+                    ref
+                        .read(inspectingSegmentIdProvider.notifier)
+                        .select(entryId, segment.truePath);
+                  },
+                  child: MouseRegion(
+                    cursor: grabbing.value
+                        ? SystemMouseCursors.grabbing
+                        : SystemMouseCursors.click,
+                    child: Container(),
+                  ),
                 ),
               ),
-            ),
-            if (showThumbs) ...[
-              _Thumb(
-                key: ValueKey("${segment.truePath}.end"),
-                onDragStart: (_) => ref
-                    .read(_moveNotifierProvider.notifier)
-                    .start(entryId, segment),
-                onDragUpdate: (update) {
-                  final percent = _getPercentFromDragUpdate(update, 13);
-                  ref
+              if (showThumbs) ...[
+                _Thumb(
+                  key: ValueKey("${segment.truePath}.end"),
+                  onDragStart: (_) => ref
                       .read(_moveNotifierProvider.notifier)
-                      .updateSegmentEnd(entryId, segment, percent);
-                },
-                onDragEnd: (_) =>
-                    ref.read(_moveNotifierProvider.notifier).end(),
-              ),
-              const SizedBox(width: 3),
+                      .start(entryId, segment),
+                  onDragUpdate: (update) {
+                    final percent = _getPercentFromDragUpdate(update, 13);
+                    ref
+                        .read(_moveNotifierProvider.notifier)
+                        .updateSegmentEnd(entryId, segment, percent);
+                  },
+                  onDragEnd: (_) =>
+                      ref.read(_moveNotifierProvider.notifier).end(),
+                ),
+                const SizedBox(width: 3),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -1321,22 +1352,27 @@ Segment? _includesSegment(
       .firstWhereOrNull((segment) => segment.overlaps(startFrame, endFrame));
 }
 
-void _addSegment(PassingRef ref, String entryId, String segmentPath) {
+String? _addSegment(
+  PassingRef ref,
+  String entryId,
+  String segmentPath, [
+  Map<String, dynamic> data = const {},
+]) {
   final segments = ref.read(_segmentsProvider(entryId, segmentPath));
   final page = ref.read(currentPageProvider);
-  if (page == null) return;
+  if (page == null) return null;
   final entry = ref.read(entryProvider(page.name, entryId));
-  if (entry == null) return;
+  if (entry == null) return null;
 
   final blueprint = ref.read(entryBlueprintProvider(entry.type));
-  if (blueprint == null) return;
+  if (blueprint == null) return null;
   final segmentField = blueprint.getField(segmentPath);
-  if (segmentField == null) return;
+  if (segmentField == null) return null;
 
   final minFrames = segmentField.get<int>("min");
   final maxFrames = segmentField.get<int>("max");
 
-  final minSpace = minFrames ?? min(maxFrames ?? 0, 10);
+  final minSpace = minFrames ?? min(maxFrames ?? 10, 10);
 
   final timings = _findSegmentSpace(
     ref,
@@ -1351,16 +1387,17 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
       "Could not add segment",
       description: "There is not enough space to add a segment.",
     );
-    return;
+    return null;
   }
 
   final (:startFrame, :endFrame) = timings;
 
   final segment = segmentField.defaultValue;
-  if (segment == null) return;
+  if (segment == null) return null;
 
   final newSegment = {
     ...segment,
+    ...data,
     "startFrame": startFrame,
     "endFrame": endFrame,
   };
@@ -1370,6 +1407,8 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
   final newList = [...list, newSegment];
 
   page.updateEntryValue(ref, entry, listPath, newList);
+
+  return "$listPath.${newList.length - 1}";
 }
 
 ({int startFrame, int endFrame})? _findSegmentSpace(
@@ -1386,7 +1425,7 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
 
     if (segment != null) {
       // If a segment is found, move to the start of that segment
-      endFrame = segment.startFrame;
+      endFrame = segment.startFrame - 1;
       continue;
     }
 
@@ -1400,11 +1439,12 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
       break;
     }
     // If the gap is not long enough, move to the next segment
-    endFrame = segments
-            .map((e) => e.startFrame)
-            .where((frame) => frame < startFrame)
-            .maxOrNull ??
-        0;
+    endFrame = (segments
+                .map((e) => e.startFrame)
+                .where((frame) => frame < startFrame)
+                .maxOrNull ??
+            1) -
+        1;
   }
 
   final startFrame = segments
@@ -1419,6 +1459,17 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
 
   if (endFrame - startFrame < minSize) return null;
   return (startFrame: startFrame, endFrame: endFrame);
+}
+
+void _duplicateSelectedSegment(PassingRef ref) {
+  final entryId = ref.read(inspectingEntryIdProvider);
+  if (entryId == null) return;
+  final segment = ref.read(inspectingSegmentProvider);
+  if (segment == null) return;
+
+  final segmentId = _addSegment(ref, entryId, segment.path, segment.data);
+  if (segmentId == null) return;
+  ref.read(inspectingSegmentIdProvider.notifier).select(entryId, segmentId);
 }
 
 void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
@@ -1808,8 +1859,27 @@ class _SegmentOperations extends HookConsumerWidget {
       children: [
         SectionTitle(title: "Operations"),
         SizedBox(height: 8),
+        _DuplicateSegment(),
+        SizedBox(height: 8),
         _DeleteSegment(),
       ],
+    );
+  }
+}
+
+class _DuplicateSegment extends HookConsumerWidget {
+  const _DuplicateSegment();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final color =
+        ref.watch(inspectingSegmentProvider.select((s) => s?.color)) ??
+            Theme.of(context).colorScheme.primary;
+    return FilledButton.icon(
+      onPressed: () => _duplicateSelectedSegment(ref.passing),
+      icon: const FaIcon(FontAwesomeIcons.clone),
+      label: const Text("Duplicate Segment"),
+      color: color,
     );
   }
 }
