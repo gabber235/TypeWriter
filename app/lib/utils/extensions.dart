@@ -52,14 +52,16 @@ extension StringExtension on String {
   int? get asInt => int.tryParse(this);
 
   String replacePrefix(Pattern prefix, String replacement) {
-    if (startsWith(prefix))
+    if (startsWith(prefix)) {
       return replacement + substring(prefix.toString().length);
+    }
     return this;
   }
 
   String replaceSuffix(String suffix, String replacement) {
-    if (endsWith(suffix))
+    if (endsWith(suffix)) {
       return substring(0, length - suffix.length) + replacement;
+    }
     return this;
   }
 
@@ -109,7 +111,7 @@ TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
           text: newValue.text
               .toLowerCase()
               .replaceAll(" ", "_")
-              .replaceAll("-", "_")),
+              .replaceAll("-", "_"),),
     );
 
 extension RandomColor on String {

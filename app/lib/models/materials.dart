@@ -156,7 +156,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_planks.png",
   ),
@@ -169,7 +169,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_planks.png",
   ),
@@ -182,7 +182,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_planks.png",
   ),
@@ -195,7 +195,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_planks.png",
   ),
@@ -208,7 +208,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_planks.png",
   ),
@@ -221,7 +221,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_planks.png",
   ),
@@ -234,7 +234,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_planks.png",
   ),
@@ -310,7 +310,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/coal_ore.png",
   ),
@@ -321,7 +321,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/deepslate_coal_ore.png",
   ),
@@ -332,7 +332,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/iron_ore.png",
   ),
@@ -343,7 +343,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/deepslate_iron_ore.png",
   ),
@@ -354,7 +354,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/copper_ore.png",
   ),
@@ -365,7 +365,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/deepslate_copper_ore.png",
   ),
@@ -376,7 +376,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/gold_ore.png",
   ),
@@ -387,7 +387,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/deepslate_gold_ore.png",
   ),
@@ -399,7 +399,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/redstone_ore.png",
   ),
@@ -411,7 +411,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/deepslate_redstone_ore.png",
   ),
@@ -422,7 +422,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/emerald_ore.png",
   ),
@@ -433,7 +433,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/deepslate_emerald_ore.png",
   ),
@@ -444,7 +444,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/lapis_ore.png",
   ),
@@ -455,7 +455,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/deepslate_lapis_ore.png",
   ),
@@ -466,7 +466,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/diamond_ore.png",
   ),
@@ -477,7 +477,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/deepslate_diamond_ore.png",
   ),
@@ -488,7 +488,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/nether_gold_ore.png",
   ),
@@ -499,7 +499,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.ore
+      MaterialProperty.ore,
     ],
     icon: "assets/materials/nether_quartz_ore.png",
   ),
@@ -516,7 +516,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/coal_block.png",
   ),
@@ -734,7 +734,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_log.png",
   ),
@@ -747,7 +747,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_log.png",
   ),
@@ -760,7 +760,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_log.png",
   ),
@@ -773,7 +773,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_log.png",
   ),
@@ -786,7 +786,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_log.png",
   ),
@@ -799,7 +799,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_log.png",
   ),
@@ -812,7 +812,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_log.png",
   ),
@@ -825,7 +825,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_roots.png",
   ),
@@ -853,7 +853,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_oak_log.png",
   ),
@@ -866,7 +866,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_spruce_log.png",
   ),
@@ -879,7 +879,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_birch_log.png",
   ),
@@ -892,7 +892,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_jungle_log.png",
   ),
@@ -905,7 +905,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_acacia_log.png",
   ),
@@ -918,7 +918,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_dark_oak_log.png",
   ),
@@ -931,7 +931,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_mangrove_log.png",
   ),
@@ -954,7 +954,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_oak_wood.png",
   ),
@@ -967,7 +967,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_spruce_wood.png",
   ),
@@ -980,7 +980,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_birch_wood.png",
   ),
@@ -993,7 +993,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_jungle_wood.png",
   ),
@@ -1006,7 +1006,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_acacia_wood.png",
   ),
@@ -1019,7 +1019,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_dark_oak_wood.png",
   ),
@@ -1032,7 +1032,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/stripped_mangrove_wood.png",
   ),
@@ -1055,7 +1055,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_wood.png",
   ),
@@ -1068,7 +1068,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_wood.png",
   ),
@@ -1081,7 +1081,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_wood.png",
   ),
@@ -1094,7 +1094,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_wood.png",
   ),
@@ -1107,7 +1107,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_wood.png",
   ),
@@ -1120,7 +1120,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_wood.png",
   ),
@@ -1133,7 +1133,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_wood.png",
   ),
@@ -1154,7 +1154,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_leaves.png",
   ),
@@ -1165,7 +1165,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_leaves.png",
   ),
@@ -1176,7 +1176,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_leaves.png",
   ),
@@ -1187,7 +1187,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_leaves.png",
   ),
@@ -1198,7 +1198,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_leaves.png",
   ),
@@ -1209,7 +1209,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_leaves.png",
   ),
@@ -1220,7 +1220,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_leaves.png",
   ),
@@ -1231,7 +1231,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/azalea_leaves.png",
   ),
@@ -1242,7 +1242,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/flowering_azalea_leaves.png",
   ),
@@ -1298,7 +1298,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/grass.png",
   ),
@@ -1309,7 +1309,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/fern.png",
   ),
@@ -1331,7 +1331,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dead_bush.png",
   ),
@@ -1354,7 +1354,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/white_wool.png",
   ),
@@ -1367,7 +1367,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/orange_wool.png",
   ),
@@ -1380,7 +1380,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/magenta_wool.png",
   ),
@@ -1393,7 +1393,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/light_blue_wool.png",
   ),
@@ -1406,7 +1406,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/yellow_wool.png",
   ),
@@ -1419,7 +1419,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/lime_wool.png",
   ),
@@ -1432,7 +1432,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/pink_wool.png",
   ),
@@ -1445,7 +1445,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/gray_wool.png",
   ),
@@ -1458,7 +1458,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/light_gray_wool.png",
   ),
@@ -1471,7 +1471,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/cyan_wool.png",
   ),
@@ -1484,7 +1484,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/purple_wool.png",
   ),
@@ -1497,7 +1497,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/blue_wool.png",
   ),
@@ -1510,7 +1510,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/brown_wool.png",
   ),
@@ -1523,7 +1523,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/green_wool.png",
   ),
@@ -1536,7 +1536,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/red_wool.png",
   ),
@@ -1549,7 +1549,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/black_wool.png",
   ),
@@ -1559,7 +1559,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/dandelion.png",
   ),
@@ -1569,7 +1569,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/poppy.png",
   ),
@@ -1579,7 +1579,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/blue_orchid.png",
   ),
@@ -1589,7 +1589,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/allium.png",
   ),
@@ -1599,7 +1599,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/azure_bluet.png",
   ),
@@ -1609,7 +1609,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/red_tulip.png",
   ),
@@ -1619,7 +1619,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/orange_tulip.png",
   ),
@@ -1629,7 +1629,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/white_tulip.png",
   ),
@@ -1639,7 +1639,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/pink_tulip.png",
   ),
@@ -1649,7 +1649,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.transparent,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/oxeye_daisy.png",
   ),
@@ -1761,7 +1761,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/bamboo.png",
   ),
@@ -1773,7 +1773,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_slab.png",
   ),
@@ -1785,7 +1785,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_slab.png",
   ),
@@ -1797,7 +1797,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_slab.png",
   ),
@@ -1809,7 +1809,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_slab.png",
   ),
@@ -1821,7 +1821,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_slab.png",
   ),
@@ -1833,7 +1833,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_slab.png",
   ),
@@ -1845,7 +1845,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_slab.png",
   ),
@@ -1978,7 +1978,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/bookshelf.png",
   ),
@@ -2040,7 +2040,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/chest.png",
   ),
@@ -2053,7 +2053,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/crafting_table.png",
   ),
@@ -2069,7 +2069,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/furnace.png",
   ),
@@ -2117,7 +2117,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jukebox.png",
   ),
@@ -2130,7 +2130,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_fence.png",
   ),
@@ -2143,7 +2143,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_fence.png",
   ),
@@ -2156,7 +2156,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_fence.png",
   ),
@@ -2169,7 +2169,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_fence.png",
   ),
@@ -2182,7 +2182,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_fence.png",
   ),
@@ -2195,7 +2195,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_fence.png",
   ),
@@ -2208,7 +2208,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_fence.png",
   ),
@@ -2229,7 +2229,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/pumpkin.png",
   ),
@@ -2385,7 +2385,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/brown_mushroom_block.png",
   ),
@@ -2396,7 +2396,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/red_mushroom_block.png",
   ),
@@ -2407,7 +2407,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mushroom_stem.png",
   ),
@@ -2438,7 +2438,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/vine.png",
   ),
@@ -2566,7 +2566,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_stairs.png",
   ),
@@ -2579,7 +2579,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_stairs.png",
   ),
@@ -2592,7 +2592,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_stairs.png",
   ),
@@ -2605,7 +2605,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_stairs.png",
   ),
@@ -2618,7 +2618,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_stairs.png",
   ),
@@ -2631,7 +2631,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_stairs.png",
   ),
@@ -2644,7 +2644,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_stairs.png",
   ),
@@ -2665,7 +2665,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/command_block.png",
   ),
@@ -2911,7 +2911,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/barrier.png",
   ),
@@ -2927,7 +2927,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/hay_block.png",
   ),
@@ -2939,7 +2939,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/white_carpet.png",
   ),
@@ -2951,7 +2951,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/orange_carpet.png",
   ),
@@ -2963,7 +2963,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/magenta_carpet.png",
   ),
@@ -2975,7 +2975,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/light_blue_carpet.png",
   ),
@@ -2987,7 +2987,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/yellow_carpet.png",
   ),
@@ -2999,7 +2999,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/lime_carpet.png",
   ),
@@ -3011,7 +3011,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/pink_carpet.png",
   ),
@@ -3023,7 +3023,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/gray_carpet.png",
   ),
@@ -3035,7 +3035,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/light_gray_carpet.png",
   ),
@@ -3047,7 +3047,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/cyan_carpet.png",
   ),
@@ -3059,7 +3059,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/purple_carpet.png",
   ),
@@ -3071,7 +3071,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/blue_carpet.png",
   ),
@@ -3083,7 +3083,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/brown_carpet.png",
   ),
@@ -3095,7 +3095,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/green_carpet.png",
   ),
@@ -3107,7 +3107,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/red_carpet.png",
   ),
@@ -3119,7 +3119,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/black_carpet.png",
   ),
@@ -3145,7 +3145,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/sunflower.png",
   ),
@@ -3156,7 +3156,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/lilac.png",
   ),
@@ -3167,7 +3167,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/rose_bush.png",
   ),
@@ -3178,7 +3178,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/peony.png",
   ),
@@ -3189,7 +3189,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/tall_grass.png",
   ),
@@ -3200,7 +3200,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.transparent,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/large_fern.png",
   ),
@@ -3426,7 +3426,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/repeating_command_block.png",
   ),
@@ -3437,7 +3437,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/chain_command_block.png",
   ),
@@ -3478,7 +3478,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/shulker_box.png",
   ),
@@ -3489,7 +3489,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/white_shulker_box.png",
   ),
@@ -3500,7 +3500,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/orange_shulker_box.png",
   ),
@@ -3511,7 +3511,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/magenta_shulker_box.png",
   ),
@@ -3522,7 +3522,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/light_blue_shulker_box.png",
   ),
@@ -3533,7 +3533,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/yellow_shulker_box.png",
   ),
@@ -3544,7 +3544,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/lime_shulker_box.png",
   ),
@@ -3555,7 +3555,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/pink_shulker_box.png",
   ),
@@ -3566,7 +3566,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/gray_shulker_box.png",
   ),
@@ -3577,7 +3577,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/light_gray_shulker_box.png",
   ),
@@ -3588,7 +3588,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/cyan_shulker_box.png",
   ),
@@ -3599,7 +3599,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/purple_shulker_box.png",
   ),
@@ -3610,7 +3610,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/blue_shulker_box.png",
   ),
@@ -3621,7 +3621,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/brown_shulker_box.png",
   ),
@@ -3632,7 +3632,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/green_shulker_box.png",
   ),
@@ -3643,7 +3643,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/red_shulker_box.png",
   ),
@@ -3654,7 +3654,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/black_shulker_box.png",
   ),
@@ -4264,7 +4264,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/repeater.png",
   ),
@@ -4274,7 +4274,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/comparator.png",
   ),
@@ -4315,7 +4315,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/dispenser.png",
   ),
@@ -4326,7 +4326,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/dropper.png",
   ),
@@ -4339,7 +4339,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/lectern.png",
   ),
@@ -4350,7 +4350,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/target.png",
   ),
@@ -4360,7 +4360,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/lever.png",
   ),
@@ -4377,7 +4377,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/daylight_detector.png",
   ),
@@ -4399,7 +4399,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/trapped_chest.png",
   ),
@@ -4411,7 +4411,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/tnt.png",
   ),
@@ -4429,7 +4429,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/note_block.png",
   ),
@@ -4439,7 +4439,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/stone_button.png",
   ),
@@ -4455,7 +4455,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/oak_button.png",
   ),
@@ -4466,7 +4466,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/spruce_button.png",
   ),
@@ -4477,7 +4477,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/birch_button.png",
   ),
@@ -4488,7 +4488,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/jungle_button.png",
   ),
@@ -4499,7 +4499,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/acacia_button.png",
   ),
@@ -4510,7 +4510,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/dark_oak_button.png",
   ),
@@ -4556,7 +4556,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_pressure_plate.png",
   ),
@@ -4567,7 +4567,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_pressure_plate.png",
   ),
@@ -4578,7 +4578,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_pressure_plate.png",
   ),
@@ -4589,7 +4589,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_pressure_plate.png",
   ),
@@ -4600,7 +4600,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_pressure_plate.png",
   ),
@@ -4611,7 +4611,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_pressure_plate.png",
   ),
@@ -4622,7 +4622,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_pressure_plate.png",
   ),
@@ -4649,7 +4649,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_door.png",
   ),
@@ -4661,7 +4661,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_door.png",
   ),
@@ -4673,7 +4673,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_door.png",
   ),
@@ -4685,7 +4685,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_door.png",
   ),
@@ -4697,7 +4697,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_door.png",
   ),
@@ -4709,7 +4709,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_door.png",
   ),
@@ -4721,7 +4721,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_door.png",
   ),
@@ -4748,7 +4748,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_trapdoor.png",
   ),
@@ -4760,7 +4760,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_trapdoor.png",
   ),
@@ -4772,7 +4772,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_trapdoor.png",
   ),
@@ -4784,7 +4784,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_trapdoor.png",
   ),
@@ -4796,7 +4796,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_trapdoor.png",
   ),
@@ -4808,7 +4808,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_trapdoor.png",
   ),
@@ -4820,7 +4820,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_trapdoor.png",
   ),
@@ -4843,7 +4843,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_fence_gate.png",
   ),
@@ -4856,7 +4856,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_fence_gate.png",
   ),
@@ -4869,7 +4869,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_fence_gate.png",
   ),
@@ -4882,7 +4882,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_fence_gate.png",
   ),
@@ -4895,7 +4895,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_fence_gate.png",
   ),
@@ -4908,7 +4908,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_fence_gate.png",
   ),
@@ -4921,7 +4921,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_fence_gate.png",
   ),
@@ -5077,7 +5077,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/structure_block.png",
   ),
@@ -5088,7 +5088,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/jigsaw.png",
   ),
@@ -5550,7 +5550,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_sign.png",
   ),
@@ -5562,7 +5562,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_sign.png",
   ),
@@ -5574,7 +5574,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_sign.png",
   ),
@@ -5586,7 +5586,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_sign.png",
   ),
@@ -5598,7 +5598,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_sign.png",
   ),
@@ -5610,7 +5610,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_sign.png",
   ),
@@ -5622,7 +5622,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_sign.png",
   ),
@@ -5719,7 +5719,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.fuel,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.burnable
+      MaterialProperty.burnable,
     ],
     icon: "assets/materials/dried_kelp_block.png",
   ),
@@ -5930,7 +5930,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/white_bed.png",
   ),
@@ -5941,7 +5941,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/orange_bed.png",
   ),
@@ -5952,7 +5952,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/magenta_bed.png",
   ),
@@ -5963,7 +5963,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/light_blue_bed.png",
   ),
@@ -5974,7 +5974,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/yellow_bed.png",
   ),
@@ -5985,7 +5985,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/lime_bed.png",
   ),
@@ -5996,7 +5996,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/pink_bed.png",
   ),
@@ -6007,7 +6007,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/gray_bed.png",
   ),
@@ -6018,7 +6018,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/light_gray_bed.png",
   ),
@@ -6029,7 +6029,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/cyan_bed.png",
   ),
@@ -6040,7 +6040,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/purple_bed.png",
   ),
@@ -6051,7 +6051,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/blue_bed.png",
   ),
@@ -6062,7 +6062,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/brown_bed.png",
   ),
@@ -6073,7 +6073,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/green_bed.png",
   ),
@@ -6084,7 +6084,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/red_bed.png",
   ),
@@ -6095,7 +6095,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/black_bed.png",
   ),
@@ -6625,7 +6625,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.item,
       MaterialProperty.intractable,
-      MaterialProperty.transparent
+      MaterialProperty.transparent,
     ],
     icon: "assets/materials/flower_pot.png",
   ),
@@ -6811,7 +6811,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/white_banner.png",
   ),
@@ -6822,7 +6822,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/orange_banner.png",
   ),
@@ -6833,7 +6833,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/magenta_banner.png",
   ),
@@ -6844,7 +6844,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/light_blue_banner.png",
   ),
@@ -6855,7 +6855,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/yellow_banner.png",
   ),
@@ -6866,7 +6866,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/lime_banner.png",
   ),
@@ -6877,7 +6877,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/pink_banner.png",
   ),
@@ -6888,7 +6888,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/gray_banner.png",
   ),
@@ -6899,7 +6899,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/light_gray_banner.png",
   ),
@@ -6910,7 +6910,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/cyan_banner.png",
   ),
@@ -6921,7 +6921,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/purple_banner.png",
   ),
@@ -6932,7 +6932,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/blue_banner.png",
   ),
@@ -6943,7 +6943,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/brown_banner.png",
   ),
@@ -6954,7 +6954,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/green_banner.png",
   ),
@@ -6965,7 +6965,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/red_banner.png",
   ),
@@ -6976,7 +6976,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.fuel,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/black_banner.png",
   ),
@@ -7184,7 +7184,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/loom.png",
   ),
@@ -7232,7 +7232,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/composter.png",
   ),
@@ -7245,7 +7245,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/barrel.png",
   ),
@@ -7256,7 +7256,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/smoker.png",
   ),
@@ -7267,7 +7267,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/blast_furnace.png",
   ),
@@ -7280,7 +7280,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/cartography_table.png",
   ),
@@ -7293,7 +7293,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/fletching_table.png",
   ),
@@ -7311,7 +7311,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.intractable,
       MaterialProperty.occluding,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/smithing_table.png",
   ),
@@ -7352,7 +7352,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/campfire.png",
   ),
@@ -7363,7 +7363,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/soul_campfire.png",
   ),
@@ -7386,7 +7386,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/bee_nest.png",
   ),
@@ -7399,7 +7399,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.occluding,
       MaterialProperty.solid,
       MaterialProperty.burnable,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/beehive.png",
   ),
@@ -7490,7 +7490,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.item,
       MaterialProperty.intractable,
       MaterialProperty.occluding,
-      MaterialProperty.solid
+      MaterialProperty.solid,
     ],
     icon: "assets/materials/respawn_anchor.png",
   ),
@@ -7680,7 +7680,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/oak_wall_sign.png",
   ),
@@ -7690,7 +7690,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/spruce_wall_sign.png",
   ),
@@ -7700,7 +7700,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/birch_wall_sign.png",
   ),
@@ -7710,7 +7710,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/acacia_wall_sign.png",
   ),
@@ -7720,7 +7720,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/jungle_wall_sign.png",
   ),
@@ -7730,7 +7730,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/dark_oak_wall_sign.png",
   ),
@@ -7740,7 +7740,7 @@ const Map<String, MinecraftMaterial> materials = {
       MaterialProperty.block,
       MaterialProperty.intractable,
       MaterialProperty.solid,
-      MaterialProperty.flammable
+      MaterialProperty.flammable,
     ],
     icon: "assets/materials/mangrove_wall_sign.png",
   ),

@@ -14,11 +14,11 @@ const testEntryData = {
   "simpleList": ["test1", "test2"],
   "complexMap": {
     "some1": {"some1": "test1", "some2": "test2"},
-    "some2": {"some1": "test1", "some2": "test2"}
+    "some2": {"some1": "test1", "some2": "test2"},
   },
   "complexList": [
     {"some1": "test1", "some2": "test2"},
-    {"some1": "test1", "some2": "test2"}
+    {"some1": "test1", "some2": "test2"},
   ],
 };
 

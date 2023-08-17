@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import 'package:typewriter/widgets/components/general/formatted_text_field.dart';
+import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/general/formatted_text_field.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 
 class AutoCompleteField extends StatelessWidget {
@@ -32,7 +33,8 @@ class AutoCompleteField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Autocomplete<String>(
       initialValue: TextEditingValue(text: text),
-      fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+      fieldViewBuilder:
+          (context, textEditingController, focusNode, onFieldSubmitted) {
         return _TextField(
           controller: textEditingController,
           focusNode: focusNode,
@@ -47,7 +49,9 @@ class AutoCompleteField extends StatelessWidget {
       onSelected: onChanged,
       optionsBuilder: (textEditingValue) {
         if (textEditingValue.text.trim().isEmpty) return const Iterable.empty();
-        return onQuery(textEditingValue.text).where((value) => value.contains(textEditingValue.text)).toSet();
+        return onQuery(textEditingValue.text)
+            .where((value) => value.contains(textEditingValue.text))
+            .toSet();
       },
     );
   }
@@ -63,7 +67,6 @@ class _TextField extends HookConsumerWidget {
     required this.text,
     required this.hintText,
     required this.path,
-    super.key,
   });
 
   final TextEditingController controller;
@@ -79,7 +82,9 @@ class _TextField extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (path != null) useFocusedBasedCurrentEditingField(focusNode, ref, path!);
+    if (path != null) {
+      useFocusedBasedCurrentEditingField(focusNode, ref.passing, path!);
+    }
 
     return FormattedTextField(
       controller: controller,

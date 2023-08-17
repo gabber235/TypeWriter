@@ -189,7 +189,7 @@ class ToastDisplay extends HookConsumerWidget {
                     _ToastShowAnimation(
                       toast: toast,
                       child: _TemporaryToast(toast: toast),
-                    )
+                    ),
               ],
             ),
           ),

@@ -308,7 +308,7 @@ class SoundSelectorEditor extends HookConsumerWidget {
             const SizedBox(width: 8),
             Expanded(
                 child: Text("Failed to load sounds",
-                    style: Theme.of(context).inputDecorationTheme.hintStyle?.copyWith(color: Colors.redAccent))),
+                    style: Theme.of(context).inputDecorationTheme.hintStyle?.copyWith(color: Colors.redAccent),),),
             const SizedBox(width: 12),
             const FaIcon(
               FontAwesomeIcons.xmark,

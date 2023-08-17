@@ -11,10 +11,12 @@ class _RiveStateMachineHook extends Hook<RiveStateMachine> {
   final String stateMachineName;
 
   @override
-  HookState<RiveStateMachine, Hook<RiveStateMachine>> createState() => _RiveStateMachineHookState();
+  HookState<RiveStateMachine, Hook<RiveStateMachine>> createState() =>
+      _RiveStateMachineHookState();
 }
 
-class _RiveStateMachineHookState extends HookState<RiveStateMachine, _RiveStateMachineHook> {
+class _RiveStateMachineHookState
+    extends HookState<RiveStateMachine, _RiveStateMachineHook> {
   late final RiveStateMachine _riveStateMachine;
 
   @override
@@ -45,7 +47,8 @@ class RiveStateMachine extends ChangeNotifier {
   bool get hasController => _controller != null;
 
   void init(Artboard artboard) {
-    final controller = StateMachineController.fromArtboard(artboard, stateMachineName);
+    final controller =
+        StateMachineController.fromArtboard(artboard, stateMachineName);
     if (controller != null) {
       artboard.addController(controller);
     } else {

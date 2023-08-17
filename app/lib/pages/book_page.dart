@@ -49,7 +49,7 @@ class BookPage extends HookConsumerWidget {
                 color: Colors.black54,
               ),
               const _ReconnectOverlay(),
-            ]
+            ],
           ],
         );
       },
@@ -107,7 +107,7 @@ class _ReconnectOverlay extends HookConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("Connection lost, Reconnecting...",
-                    style: Theme.of(context).textTheme.titleLarge),
+                    style: Theme.of(context).textTheme.titleLarge,),
                 const SizedBox(height: 8),
                 const ConnectionScroller(
                   style: TextStyle(color: Colors.grey, fontSize: 16),

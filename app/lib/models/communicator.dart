@@ -168,7 +168,7 @@ class SocketNotifier extends StateNotifier<Socket?> {
           state?.dispose();
           state = null;
           ref.read(appRouter).replaceAll([
-            ErrorConnectRoute(hostname: hostname, port: port, token: token)
+            ErrorConnectRoute(hostname: hostname, port: port, token: token),
           ]);
         });
       })
@@ -178,27 +178,27 @@ class SocketNotifier extends StateNotifier<Socket?> {
   Future<void> setup(Socket socket) async {
     socket
       ..on("stagingState",
-          (data) => ref.read(communicatorProvider).handleStagingState(data))
+          (data) => ref.read(communicatorProvider).handleStagingState(data),)
       ..on("createPage",
-          (data) => ref.read(communicatorProvider).handleCreatePage(data))
+          (data) => ref.read(communicatorProvider).handleCreatePage(data),)
       ..on("renamePage",
-          (data) => ref.read(communicatorProvider).handleRenamePage(data))
+          (data) => ref.read(communicatorProvider).handleRenamePage(data),)
       ..on("deletePage",
-          (data) => ref.read(communicatorProvider).handleDeletePage(data))
+          (data) => ref.read(communicatorProvider).handleDeletePage(data),)
       ..on("createEntry",
-          (data) => ref.read(communicatorProvider).handleCreateEntry(data))
+          (data) => ref.read(communicatorProvider).handleCreateEntry(data),)
       ..on("updateEntry",
-          (data) => ref.read(communicatorProvider).handleUpdateEntry(data))
+          (data) => ref.read(communicatorProvider).handleUpdateEntry(data),)
       ..on(
           "updateCompleteEntry",
           (data) =>
-              ref.read(communicatorProvider).handleUpdateCompleteEntry(data))
+              ref.read(communicatorProvider).handleUpdateCompleteEntry(data),)
       ..on("reorderEntry",
-          (data) => ref.read(communicatorProvider).handleReorderEntry(data))
+          (data) => ref.read(communicatorProvider).handleReorderEntry(data),)
       ..on("deleteEntry",
-          (data) => ref.read(communicatorProvider).handleDeleteEntry(data))
+          (data) => ref.read(communicatorProvider).handleDeleteEntry(data),)
       ..on("updateWriters",
-          (data) => ref.read(communicatorProvider).handleUpdateWriters(data));
+          (data) => ref.read(communicatorProvider).handleUpdateWriters(data),);
 
     await ref.read(communicatorProvider).fetchBook();
     await ref.read(appRouter).push(const BookRoute());

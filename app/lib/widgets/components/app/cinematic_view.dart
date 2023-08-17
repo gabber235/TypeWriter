@@ -1336,51 +1336,16 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
   final minFrames = segmentField.get<int>("min");
   final maxFrames = segmentField.get<int>("max");
 
-  final minSpace = minFrames ?? 10;
+  final minSpace = minFrames ?? min(maxFrames ?? 0, 10);
 
-  // Find the first gap in the segments that is at least 10 frames long
-  // Then find the start end end frames of that gap
-  final lastFrame = ref.read(_trackStateProvider).totalFrames;
-  var startFrame = 0;
+  final timings = _findSegmentSpace(
+    ref,
+    segments,
+    minSpace,
+    maxFrames,
+  );
 
-  while (startFrame < lastFrame) {
-    final segment =
-        _includesSegment(startFrame, startFrame + minSpace, segments);
-
-    if (segment != null) {
-      // If a segment is found, move to the end of that segment
-      startFrame = segment.endFrame;
-      continue;
-    }
-
-    // If no segment is found, we have found a gap. Check if it is long enough
-    final endFrame = segments
-            .map((e) => e.startFrame)
-            .where((frame) => frame >= minSpace + startFrame)
-            .minOrNull ??
-        lastFrame;
-    if (endFrame - startFrame >= minSpace) {
-      break;
-    }
-    // If the gap is not long enough, move to the next segment
-    startFrame = segments
-            .map((e) => e.endFrame)
-            .where((frame) => frame > startFrame)
-            .minOrNull ??
-        lastFrame;
-  }
-
-  var endFrame = segments
-          .map((e) => e.startFrame)
-          .where((frame) => frame >= minSpace + startFrame)
-          .minOrNull ??
-      lastFrame;
-
-  if (maxFrames != null) {
-    endFrame = min(endFrame, startFrame + maxFrames);
-  }
-
-  if (endFrame - startFrame < minSpace) {
+  if (timings == null) {
     Toasts.showError(
       ref,
       "Could not add segment",
@@ -1388,6 +1353,8 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
     );
     return;
   }
+
+  final (:startFrame, :endFrame) = timings;
 
   final segment = segmentField.defaultValue;
   if (segment == null) return;
@@ -1403,6 +1370,55 @@ void _addSegment(PassingRef ref, String entryId, String segmentPath) {
   final newList = [...list, newSegment];
 
   page.updateEntryValue(ref, entry, listPath, newList);
+}
+
+({int startFrame, int endFrame})? _findSegmentSpace(
+  PassingRef ref,
+  List<Segment> segments,
+  int minSize,
+  int? maxSize,
+) {
+  final lastFrame = ref.read(_trackStateProvider).totalFrames;
+  var endFrame = lastFrame;
+
+  while (endFrame > 0) {
+    final segment = _includesSegment(endFrame - minSize, endFrame, segments);
+
+    if (segment != null) {
+      // If a segment is found, move to the start of that segment
+      endFrame = segment.startFrame;
+      continue;
+    }
+
+    // If no segment is found, we have found a gap. Check if it is long enough
+    final startFrame = segments
+            .map((e) => e.endFrame)
+            .where((frame) => frame <= endFrame - minSize)
+            .maxOrNull ??
+        0;
+    if (endFrame - startFrame >= minSize) {
+      break;
+    }
+    // If the gap is not long enough, move to the next segment
+    endFrame = segments
+            .map((e) => e.startFrame)
+            .where((frame) => frame < startFrame)
+            .maxOrNull ??
+        0;
+  }
+
+  final startFrame = segments
+          .map((e) => e.endFrame)
+          .where((frame) => frame <= endFrame - minSize)
+          .maxOrNull ??
+      0;
+
+  if (maxSize != null) {
+    endFrame = min(endFrame, startFrame + maxSize);
+  }
+
+  if (endFrame - startFrame < minSize) return null;
+  return (startFrame: startFrame, endFrame: endFrame);
 }
 
 void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
