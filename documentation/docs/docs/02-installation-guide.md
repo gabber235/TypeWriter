@@ -56,7 +56,7 @@ default ports are `8080` and `9092`. If you are not able to open these ports, th
 locally and copying the files in `server/plugins/Typewriter/pages` to your production server.
 
 :::caution
-You will get an error if the ports in the config are being used already. Make sure these ports are open by using `netstat -aon | find /i "[port]"`. (Windows only)
+You will get an error if the ports in the config are being used already. Make sure these ports are available by using `netstat -aon | find /i "[port]"`. (Windows only)
 :::
 
 To enable the web panel, follow these steps:
