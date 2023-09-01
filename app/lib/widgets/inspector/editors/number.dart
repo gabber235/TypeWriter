@@ -4,7 +4,9 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -13,10 +15,13 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 class NumberEditorFilter extends EditorFilter {
   @override
   bool canEdit(FieldInfo info) =>
-      info is PrimitiveField && (info.type == PrimitiveFieldType.integer || info.type == PrimitiveFieldType.double);
+      info is PrimitiveField &&
+      (info.type == PrimitiveFieldType.integer ||
+          info.type == PrimitiveFieldType.double);
 
   @override
-  Widget build(String path, FieldInfo info) => IntegerEditor(path: path, field: info as PrimitiveField);
+  Widget build(String path, FieldInfo info) =>
+      IntegerEditor(path: path, field: info as PrimitiveField);
 }
 
 class IntegerEditor extends HookConsumerWidget {
@@ -31,22 +36,32 @@ class IntegerEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final focus = useFocusNode();
-    useFocusedBasedCurrentEditingField(focus, ref, path);
+    useFocusedBasedCurrentEditingField(focus, ref.passing, path);
     final value = ref.watch(fieldValueProvider(path, ""));
-    return FormattedTextField(
-      focus: focus,
-      icon: FontAwesomeIcons.hashtag,
-      hintText: "Enter a ${field.type.name}",
-      text: "$value",
-      keyboardType: TextInputType.number,
-      inputFormatters: [
-        if (field.type == PrimitiveFieldType.integer) FilteringTextInputFormatter.digitsOnly,
-        if (field.type == PrimitiveFieldType.double) FilteringTextInputFormatter.allow(RegExp(r"^\d+\.?\d*")),
-      ],
-      onChanged: (value) {
-        final number = field.type == PrimitiveFieldType.integer ? int.tryParse(value) : double.tryParse(value);
-        ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, number ?? 0);
-      },
+    return WritersIndicator(
+      provider: fieldWritersProvider(path),
+      shift: (_) => const Offset(15, 0),
+      child: FormattedTextField(
+        focus: focus,
+        icon: FontAwesomeIcons.hashtag,
+        hintText: "Enter a ${field.type.name}",
+        text: "$value",
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          if (field.type == PrimitiveFieldType.integer)
+            FilteringTextInputFormatter.digitsOnly,
+          if (field.type == PrimitiveFieldType.double)
+            FilteringTextInputFormatter.allow(RegExp(r"^\d+\.?\d*")),
+        ],
+        onChanged: (value) {
+          final number = field.type == PrimitiveFieldType.integer
+              ? int.tryParse(value)
+              : double.tryParse(value);
+          ref
+              .read(inspectingEntryDefinitionProvider)
+              ?.updateField(ref.passing, path, number ?? 0);
+        },
+      ),
     );
   }
 }

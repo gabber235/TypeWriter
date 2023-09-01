@@ -34,7 +34,7 @@ List<String> entryTags(EntryTagsRef ref, String name) =>
 /// Gets all the modifiers with a given name.
 @riverpod
 Map<String, Modifier> fieldModifiers(
-    FieldModifiersRef ref, String blueprint, String name) {
+    FieldModifiersRef ref, String blueprint, String name,) {
   return ref
           .watch(entryBlueprintProvider(blueprint))
           ?.fieldsWithModifier(name) ??
@@ -44,7 +44,7 @@ Map<String, Modifier> fieldModifiers(
 /// Gets all the paths from fields with a given modifier.
 @riverpod
 List<String> modifierPaths(
-    ModifierPathsRef ref, String blueprint, String name) {
+    ModifierPathsRef ref, String blueprint, String name,) {
   return ref.watch(fieldModifiersProvider(blueprint, name)).keys.toList();
 }
 
@@ -153,7 +153,7 @@ extension EntryBlueprintExt on EntryBlueprint {
 
   /// Parse through the fields of this entry and return a list of all the fields that have the given modifier with [name].
   Map<String, Modifier> _fieldsWithModifier(
-      String name, String path, FieldInfo info) {
+      String name, String path, FieldInfo info,) {
     final fields = {
       if (info.hasModifier(name)) path: info.getModifier(name)!,
     };
@@ -162,7 +162,7 @@ extension EntryBlueprintExt on EntryBlueprint {
     if (info is ObjectField) {
       for (final field in info.fields.entries) {
         fields.addAll(_fieldsWithModifier(
-            name, "$path$separator${field.key}", field.value));
+            name, "$path$separator${field.key}", field.value,),);
       }
     } else if (info is ListField) {
       fields.addAll(_fieldsWithModifier(name, "$path$separator*", info.type));
@@ -194,7 +194,7 @@ extension EntryBlueprintExt on EntryBlueprint {
     "dialogue",
     "event",
     "fact",
-    "speaker"
+    "speaker",
   ];
   String get wikiUrl {
     final category =

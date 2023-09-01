@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'list.dart';
+part of 'segment.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$listValueLengthHash() => r'df97a1cf8a545d4290a4ebda9f64f91deaf9e8e9';
+String _$segmentWritersHash() => r'011eacd554b34d97ed234e8d2a30d527854c1a20';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,32 +29,35 @@ class _SystemHash {
   }
 }
 
-typedef _ListValueLengthRef = AutoDisposeProviderRef<int>;
+typedef SegmentWritersRef = AutoDisposeProviderRef<List<Writer>>;
 
-/// See also [_listValueLength].
-@ProviderFor(_listValueLength)
-const _listValueLengthProvider = _ListValueLengthFamily();
+/// See also [segmentWriters].
+@ProviderFor(segmentWriters)
+const segmentWritersProvider = SegmentWritersFamily();
 
-/// See also [_listValueLength].
-class _ListValueLengthFamily extends Family<int> {
-  /// See also [_listValueLength].
-  const _ListValueLengthFamily();
+/// See also [segmentWriters].
+class SegmentWritersFamily extends Family<List<Writer>> {
+  /// See also [segmentWriters].
+  const SegmentWritersFamily();
 
-  /// See also [_listValueLength].
-  _ListValueLengthProvider call(
-    String path,
+  /// See also [segmentWriters].
+  SegmentWritersProvider call(
+    String entryId,
+    String segmentId,
   ) {
-    return _ListValueLengthProvider(
-      path,
+    return SegmentWritersProvider(
+      entryId,
+      segmentId,
     );
   }
 
   @override
-  _ListValueLengthProvider getProviderOverride(
-    covariant _ListValueLengthProvider provider,
+  SegmentWritersProvider getProviderOverride(
+    covariant SegmentWritersProvider provider,
   ) {
     return call(
-      provider.path,
+      provider.entryId,
+      provider.segmentId,
     );
   }
 
@@ -70,41 +73,47 @@ class _ListValueLengthFamily extends Family<int> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'_listValueLengthProvider';
+  String? get name => r'segmentWritersProvider';
 }
 
-/// See also [_listValueLength].
-class _ListValueLengthProvider extends AutoDisposeProvider<int> {
-  /// See also [_listValueLength].
-  _ListValueLengthProvider(
-    this.path,
+/// See also [segmentWriters].
+class SegmentWritersProvider extends AutoDisposeProvider<List<Writer>> {
+  /// See also [segmentWriters].
+  SegmentWritersProvider(
+    this.entryId,
+    this.segmentId,
   ) : super.internal(
-          (ref) => _listValueLength(
+          (ref) => segmentWriters(
             ref,
-            path,
+            entryId,
+            segmentId,
           ),
-          from: _listValueLengthProvider,
-          name: r'_listValueLengthProvider',
+          from: segmentWritersProvider,
+          name: r'segmentWritersProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$listValueLengthHash,
-          dependencies: _ListValueLengthFamily._dependencies,
+                  : _$segmentWritersHash,
+          dependencies: SegmentWritersFamily._dependencies,
           allTransitiveDependencies:
-              _ListValueLengthFamily._allTransitiveDependencies,
+              SegmentWritersFamily._allTransitiveDependencies,
         );
 
-  final String path;
+  final String entryId;
+  final String segmentId;
 
   @override
   bool operator ==(Object other) {
-    return other is _ListValueLengthProvider && other.path == path;
+    return other is SegmentWritersProvider &&
+        other.entryId == entryId &&
+        other.segmentId == segmentId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, path.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+    hash = _SystemHash.combine(hash, segmentId.hashCode);
 
     return _SystemHash.finish(hash);
   }

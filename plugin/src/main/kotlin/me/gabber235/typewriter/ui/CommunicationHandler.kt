@@ -82,9 +82,7 @@ class CommunicationHandler : KoinComponent {
                 }
             }
 
-            val iconUrl = sessionTokens[token]?.playerId?.let {
-                "https://crafatar.com/avatars/$it?size=32&overlay"
-            }
+            val iconUrl = getIconUrl(token)
 
             writers.addWriter(socket.sessionId.toString(), iconUrl)
             server.broadcastWriters(writers)
@@ -150,6 +148,19 @@ class CommunicationHandler : KoinComponent {
         val token = getSessionToken(client.handshakeData) ?: return null
         val session = sessionTokens[token] ?: return null
         return session.playerId?.let { plugin.server.getPlayer(it) }
+    }
+
+    fun getIconUrl(sessionId: String): String? {
+        val client = server?.getClient(UUID.fromString(sessionId)) ?: return null
+        val token = getSessionToken(client.handshakeData) ?: return null
+        return getIconUrl(token)
+    }
+
+    private fun getIconUrl(token: UUID?): String? {
+        val session = sessionTokens[token] ?: return null
+        return session.playerId?.let {
+            "https://crafatar.com/avatars/$it?size=64&overlay"
+        }
     }
 
     fun shutdown() {

@@ -8,6 +8,7 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/cinematic_view.dart";
@@ -61,7 +62,8 @@ class PageEditor extends HookConsumerWidget {
     return Shortcuts(
       key: Key(id),
       shortcuts: {
-        SmartSingleActivator(LogicalKeyboardKey.keyK, control: true): SearchIntent(),
+        SmartSingleActivator(LogicalKeyboardKey.keyK, control: true):
+            SearchIntent(),
       },
       child: Actions(
         actions: {
@@ -116,6 +118,15 @@ class _Content extends HookConsumerWidget {
   }
 }
 
+@riverpod
+List<Writer> _writers(_WritersRef ref) {
+  final pageId = ref.watch(currentPageIdProvider);
+  return ref
+      .watch(writersProvider)
+      .where((writer) => writer.pageId == pageId)
+      .toList();
+}
+
 class _AppBar extends HookConsumerWidget {
   const _AppBar({super.key});
 
@@ -133,17 +144,17 @@ class _AppBar extends HookConsumerWidget {
           const SizedBox(width: 5),
           const Spacer(),
           // When selecting entries, we want to disable these interactions
-          const SelectingEntriesBlocker(
+          SelectingEntriesBlocker(
             child: Row(
               children: [
-                GlobalWriters(),
-                SizedBox(width: 20),
-                StagingIndicator(key: Key("staging-indicator")),
-                SizedBox(width: 20),
-                _SearchBar(),
-                SizedBox(width: 5),
-                _AddEntryButton(),
-                SizedBox(width: 10),
+                Writers(writers: ref.watch(_writersProvider)),
+                const SizedBox(width: 20),
+                const StagingIndicator(key: Key("staging-indicator")),
+                const SizedBox(width: 20),
+                const _SearchBar(),
+                const SizedBox(width: 5),
+                const _AddEntryButton(),
+                const SizedBox(width: 10),
               ],
             ),
           ),

@@ -196,7 +196,7 @@ extension PageExtension on Page {
       ref,
       (page) => page.copyWith(
         entries: [
-          ...page.entries.where((e) => e.id != entry.id).map((e) => _removedReferencesFromEntry(ref, e, entry.id))
+          ...page.entries.where((e) => e.id != entry.id).map((e) => _removedReferencesFromEntry(ref, e, entry.id)),
         ],
       ),
     );

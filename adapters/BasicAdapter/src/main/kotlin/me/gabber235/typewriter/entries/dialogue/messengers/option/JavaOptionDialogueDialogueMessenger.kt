@@ -99,6 +99,11 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
     override fun tick(cycle: Int) {
         if (state != MessengerState.RUNNING) return
 
+        if (cycle % 100 > 0) {
+            // Only update periodically to avoid spamming the player
+            return
+        }
+
         val message = optionFormat.asMiniWithResolvers(
             Placeholder.parsed("speaker", speakerDisplayName),
             Placeholder.parsed("text", entry.text.parsePlaceholders(player)),

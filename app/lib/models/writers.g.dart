@@ -26,7 +26,7 @@ Map<String, dynamic> _$$_WriterToJson(_$_Writer instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fieldWritersHash() => r'094477ba48052e6140b00dcb4f8d5d46a5d95b25';
+String _$fieldWritersHash() => r'1dd7121d271352fa9727b6bc811f6776c06c63d4';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -74,10 +74,12 @@ class FieldWritersFamily extends Family<List<Writer>> {
   ///
   /// Copied from [fieldWriters].
   FieldWritersProvider call(
-    String path,
-  ) {
+    String path, {
+    bool exact = false,
+  }) {
     return FieldWritersProvider(
       path,
+      exact: exact,
     );
   }
 
@@ -87,6 +89,7 @@ class FieldWritersFamily extends Family<List<Writer>> {
   ) {
     return call(
       provider.path,
+      exact: provider.exact,
     );
   }
 
@@ -115,11 +118,13 @@ class FieldWritersProvider extends AutoDisposeProvider<List<Writer>> {
   ///
   /// Copied from [fieldWriters].
   FieldWritersProvider(
-    this.path,
-  ) : super.internal(
+    this.path, {
+    this.exact = false,
+  }) : super.internal(
           (ref) => fieldWriters(
             ref,
             path,
+            exact: exact,
           ),
           from: fieldWritersProvider,
           name: r'fieldWritersProvider',
@@ -133,18 +138,23 @@ class FieldWritersProvider extends AutoDisposeProvider<List<Writer>> {
         );
 
   final String path;
+  final bool exact;
 
   @override
   bool operator ==(Object other) {
-    return other is FieldWritersProvider && other.path == path;
+    return other is FieldWritersProvider &&
+        other.path == path &&
+        other.exact == exact;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, path.hashCode);
+    hash = _SystemHash.combine(hash, exact.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

@@ -685,7 +685,7 @@ class _ResultTile extends HookConsumerWidget {
               title: action.name,
               icon: action.icon,
               onTap: () => action.onTrigger!(context, ref.passing),
-            )
+            ),
         ];
       },
       child: Actions(

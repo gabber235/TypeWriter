@@ -4,7 +4,9 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
@@ -42,13 +44,22 @@ class LocationEditor extends HookConsumerWidget {
         Row(
           children: [
             _LocationPropertyEditor(
-                path: "$path.x", label: "X", color: Colors.red),
+              path: "$path.x",
+              label: "X",
+              color: Colors.red,
+            ),
             const SizedBox(width: 8),
             _LocationPropertyEditor(
-                path: "$path.y", label: "Y", color: Colors.green),
+              path: "$path.y",
+              label: "Y",
+              color: Colors.green,
+            ),
             const SizedBox(width: 8),
             _LocationPropertyEditor(
-                path: "$path.z", label: "Z", color: Colors.blue),
+              path: "$path.z",
+              label: "Z",
+              color: Colors.blue,
+            ),
           ],
         ),
         if (withRotation) ...[
@@ -56,16 +67,18 @@ class LocationEditor extends HookConsumerWidget {
           Row(
             children: [
               _LocationPropertyEditor(
-                  path: "$path.yaw",
-                  label: "Yaw",
-                  color: Colors.deepPurpleAccent),
+                path: "$path.yaw",
+                label: "Yaw",
+                color: Colors.deepPurpleAccent,
+              ),
               const SizedBox(width: 8),
               _LocationPropertyEditor(
-                  path: "$path.pitch",
-                  label: "Pitch",
-                  color: Colors.amberAccent),
+                path: "$path.pitch",
+                label: "Pitch",
+                color: Colors.amberAccent,
+              ),
             ],
-          )
+          ),
         ],
       ],
     );
@@ -75,7 +88,6 @@ class LocationEditor extends HookConsumerWidget {
 class _LocationWorldEditor extends HookConsumerWidget {
   const _LocationWorldEditor({
     required this.path,
-    super.key,
   });
 
   final String path;
@@ -85,16 +97,22 @@ class _LocationWorldEditor extends HookConsumerWidget {
     final focus = useFocusNode();
     final value = ref.watch(fieldValueProvider(path, ""));
 
-    return FormattedTextField(
-      focus: focus,
-      text: value,
-      icon: FontAwesomeIcons.earthAmericas,
-      hintText: "World",
-      onChanged: (value) {
-        ref
-            .read(inspectingEntryDefinitionProvider)
-            ?.updateField(ref.passing, path, value);
-      },
+    useFocusedBasedCurrentEditingField(focus, ref.passing, path);
+
+    return WritersIndicator(
+      provider: fieldWritersProvider(path),
+      shift: (_) => const Offset(15, 0),
+      child: FormattedTextField(
+        focus: focus,
+        text: value,
+        icon: FontAwesomeIcons.earthAmericas,
+        hintText: "World",
+        onChanged: (value) {
+          ref
+              .read(inspectingEntryDefinitionProvider)
+              ?.updateField(ref.passing, path, value);
+        },
+      ),
     );
   }
 }
@@ -112,35 +130,41 @@ class _LocationPropertyEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useTextEditingController();
-    final focusNode = useFocusNode();
+    final focus = useFocusNode();
     final value = ref.watch(fieldValueProvider(path, 0.0));
 
-    useFocusedChange(focusNode, (focused) {
+    useFocusedChange(focus, (focused) {
       if (!focused) return;
       // When we focus, we want to select the whole text
       controller.selection =
           TextSelection(baseOffset: 0, extentOffset: controller.text.length);
     });
 
+    useFocusedBasedCurrentEditingField(focus, ref.passing, path);
+
     return Flexible(
-      child: DecoratedTextField(
-        controller: controller,
-        focus: focusNode,
-        text: value.toString(),
-        keyboardType: TextInputType.number,
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp(r"^\-?\d*\.?\d*"))
-        ],
-        onChanged: (value) {
-          final number = double.tryParse(value);
-          if (number == null) return;
-          ref
-              .read(inspectingEntryDefinitionProvider)
-              ?.updateField(ref.passing, path, number);
-        },
-        decoration: InputDecoration(
-          prefixText: "$label: ",
-          prefixStyle: TextStyle(color: color),
+      child: WritersIndicator(
+        provider: fieldWritersProvider(path, exact: true),
+        shift: (_) => const Offset(15, 0),
+        child: DecoratedTextField(
+          controller: controller,
+          focus: focus,
+          text: value.toString(),
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r"^\-?\d*\.?\d*")),
+          ],
+          onChanged: (value) {
+            final number = double.tryParse(value);
+            if (number == null) return;
+            ref
+                .read(inspectingEntryDefinitionProvider)
+                ?.updateField(ref.passing, path, number);
+          },
+          decoration: InputDecoration(
+            prefixText: "$label: ",
+            prefixStyle: TextStyle(color: color),
+          ),
         ),
       ),
     );

@@ -19,11 +19,11 @@ typedef CombinedMaterial = MapEntry<String, MinecraftMaterial>;
 
 @riverpod
 List<MaterialProperty> materialProperties(
-    MaterialPropertiesRef ref, String meta) {
+    MaterialPropertiesRef ref, String meta,) {
   return meta
       .split(";")
       .map((property) => MaterialProperty.values
-          .firstWhere((element) => element.name.toLowerCase() == property))
+          .firstWhere((element) => element.name.toLowerCase() == property),)
       .toList();
 }
 
@@ -108,10 +108,12 @@ class MaterialSearchElement extends SearchElement {
     final properties = material.value.properties;
     final isDark = context.isDark;
 
-    if (properties.contains(MaterialProperty.item))
+    if (properties.contains(MaterialProperty.item)) {
       return isDark ? Colors.black38 : Colors.black12;
-    if (properties.contains(MaterialProperty.block))
+    }
+    if (properties.contains(MaterialProperty.block)) {
       return isDark ? Colors.black54 : Colors.black26;
+    }
 
     return Colors.grey;
   }
@@ -233,12 +235,12 @@ class MaterialEditor extends HookConsumerWidget {
               if (hasMaterial)
                 Expanded(
                     child: _MaterialItem(
-                        id: currentValue, material: currentMaterial))
+                        id: currentValue, material: currentMaterial,),)
               else
                 Expanded(
                     child: Text("Select a material",
                         style:
-                            Theme.of(context).inputDecorationTheme.hintStyle)),
+                            Theme.of(context).inputDecorationTheme.hintStyle,),),
               const SizedBox(width: 12),
               FaIcon(
                 FontAwesomeIcons.caretDown,

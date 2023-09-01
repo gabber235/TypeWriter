@@ -35,7 +35,8 @@ class FilledButton extends HookConsumerWidget {
         style: TextButton.styleFrom(
           backgroundColor: color ?? Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: color?.withOpacity(0.3) ?? Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          disabledBackgroundColor: color?.withOpacity(0.3) ??
+              Theme.of(context).colorScheme.primary.withOpacity(0.3),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),

@@ -29,8 +29,6 @@ Fuzzy<String> _fuzzyPotionEffects(_FuzzyPotionEffectsRef ref) {
     error: (_) => const <String>[],
   );
 
-  print("effects: $effects, provider: $provider");
-
   return Fuzzy(
     effects,
     options: FuzzyOptions(

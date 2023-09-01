@@ -56,6 +56,7 @@ class FieldHeader extends HookConsumerWidget {
         ref.watch(pathDisplayNameProvider(path)).nullIfEmpty ?? "Fields";
 
     final expanded = useState(defaultExpanded);
+
     return Header(
       path: path,
       expanded: expanded,
@@ -65,11 +66,12 @@ class FieldHeader extends HookConsumerWidget {
         children: [
           Material(
             borderRadius: BorderRadius.circular(4),
+            clipBehavior: Clip.none,
             child: InkWell(
               borderRadius: BorderRadius.circular(4),
               onTap: canExpand ? () => expanded.value = !expanded.value : null,
               child: WritersIndicator(
-                enabled: !canExpand || !expanded.value,
+                enabled: canExpand && !expanded.value,
                 provider: fieldWritersProvider(path),
                 offset: canExpand ? const Offset(50, 25) : const Offset(15, 15),
                 child: Row(
@@ -103,6 +105,7 @@ class FieldHeader extends HookConsumerWidget {
             Collapsible(
               collapsed: !expanded.value,
               axis: CollapsibleAxis.vertical,
+              clipBehavior: Clip.none,
               child: Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: child,
@@ -112,7 +115,7 @@ class FieldHeader extends HookConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: child,
-            )
+            ),
         ],
       ),
     );

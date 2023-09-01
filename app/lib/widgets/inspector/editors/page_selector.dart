@@ -119,7 +119,7 @@ class PageSelectorEditor extends HookConsumerWidget {
                 else
                   Expanded(
                       child:
-                          Text("Select a ${type.tag} page", style: Theme.of(context).inputDecorationTheme.hintStyle)),
+                          Text("Select a ${type.tag} page", style: Theme.of(context).inputDecorationTheme.hintStyle),),
                 const SizedBox(width: 12),
                 FaIcon(
                   FontAwesomeIcons.caretDown,
@@ -145,7 +145,7 @@ class _SelectedPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pageType = ref.watch(pageTypeProvider(id));
-    final chapter = "some.chapter"; // TODO: Get chapter from page
+    const chapter = "some.chapter"; // TODO: Get chapter from page
     return Material(
       borderRadius: BorderRadius.circular(4),
       color: pageType.color,

@@ -475,7 +475,7 @@ class MonthField {
     "September",
     "October",
     "November",
-    "December"
+    "December",
   ];
 
   bool get isWildcard => parts.length == 1 && parts[0] is WildcardPart;
