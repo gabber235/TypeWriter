@@ -39,8 +39,8 @@ dependencies {
     implementation("com.github.dyam0:LirandAPI:96cc59d4fb")
 
     // Doesn't want to load properly using the spigot api.
-    implementation("io.ktor:ktor-server-core:2.3.0")
-    implementation("io.ktor:ktor-server-netty:2.3.0")
+    implementation("io.ktor:ktor-server-core-jvm:2.3.4")
+    implementation("io.ktor:ktor-server-netty-jvm:2.3.4")
     implementation("io.insert-koin:koin-core:3.4.0")
 
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")

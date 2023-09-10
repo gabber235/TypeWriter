@@ -65,7 +65,7 @@ final currentPageTypeProvider = AutoDisposeProvider<PageType?>.internal(
 );
 
 typedef CurrentPageTypeRef = AutoDisposeProviderRef<PageType?>;
-String _$writersHash() => r'90aabc0610038faeb596c5fce4ab05f1db644033';
+String _$writersHash() => r'9c6cafb1a013526500fb7518776c0d1e7a93f479';
 
 /// See also [_writers].
 @ProviderFor(_writers)

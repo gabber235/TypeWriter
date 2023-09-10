@@ -34,7 +34,10 @@ List<String> entryTags(EntryTagsRef ref, String name) =>
 /// Gets all the modifiers with a given name.
 @riverpod
 Map<String, Modifier> fieldModifiers(
-    FieldModifiersRef ref, String blueprint, String name,) {
+  FieldModifiersRef ref,
+  String blueprint,
+  String name,
+) {
   return ref
           .watch(entryBlueprintProvider(blueprint))
           ?.fieldsWithModifier(name) ??
@@ -44,7 +47,10 @@ Map<String, Modifier> fieldModifiers(
 /// Gets all the paths from fields with a given modifier.
 @riverpod
 List<String> modifierPaths(
-    ModifierPathsRef ref, String blueprint, String name,) {
+  ModifierPathsRef ref,
+  String blueprint,
+  String name,
+) {
   return ref.watch(fieldModifiersProvider(blueprint, name)).keys.toList();
 }
 
@@ -153,7 +159,10 @@ extension EntryBlueprintExt on EntryBlueprint {
 
   /// Parse through the fields of this entry and return a list of all the fields that have the given modifier with [name].
   Map<String, Modifier> _fieldsWithModifier(
-      String name, String path, FieldInfo info,) {
+    String name,
+    String path,
+    FieldInfo info,
+  ) {
     final fields = {
       if (info.hasModifier(name)) path: info.getModifier(name)!,
     };
@@ -161,8 +170,13 @@ extension EntryBlueprintExt on EntryBlueprint {
     final separator = path.isEmpty ? "" : ".";
     if (info is ObjectField) {
       for (final field in info.fields.entries) {
-        fields.addAll(_fieldsWithModifier(
-            name, "$path$separator${field.key}", field.value,),);
+        fields.addAll(
+          _fieldsWithModifier(
+            name,
+            "$path$separator${field.key}",
+            field.value,
+          ),
+        );
       }
     } else if (info is ListField) {
       fields.addAll(_fieldsWithModifier(name, "$path$separator*", info.type));
@@ -215,6 +229,8 @@ extension EntryBlueprintExt on EntryBlueprint {
   }
 }
 
+final _customEditorCustomLayout = ["optional", "item"];
+
 /// Since freezed does not support methods on data models, we have to create a separate extension class.
 extension FieldTypeExtension on FieldInfo {
   /// Get the default value for this field type.
@@ -243,7 +259,7 @@ extension FieldTypeExtension on FieldInfo {
   bool get hasCustomLayout {
     if (this is CustomField) {
       final editor = (this as CustomField).editor;
-      if (editor == "optional") {
+      if (_customEditorCustomLayout.contains(editor)) {
         return true;
       }
     }

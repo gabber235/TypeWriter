@@ -7,7 +7,7 @@ part of 'material.dart';
 // **************************************************************************
 
 String _$materialPropertiesHash() =>
-    r'2537760a0cb4dc55f7fb40e4e045184959705bc2';
+    r'ec0ce652cc3458c9e2ee4d54c4fa1f496a45f1db';
 
 /// Copied from Dart SDK
 class _SystemHash {

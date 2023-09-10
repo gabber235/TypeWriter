@@ -125,7 +125,7 @@ class _SegmentPathsProvider extends AutoDisposeProvider<Map<String, Modifier>> {
   }
 }
 
-String _$segmentsHash() => r'62448598c38a97d97a3386f8e198dff9a6c50620';
+String _$segmentsHash() => r'9a50f061be29058473384d5e95184ca25b3fc3de';
 typedef _SegmentsRef = AutoDisposeProviderRef<List<Segment>>;
 
 /// See also [_segments].
@@ -1079,7 +1079,7 @@ String _$segmentFieldsHash() => r'50de8ece747eb6fbdd3c504f30873d7546d54b50';
 
 /// See also [_segmentFields].
 @ProviderFor(_segmentFields)
-final _segmentFieldsProvider = AutoDisposeProvider<dynamic>.internal(
+final _segmentFieldsProvider = AutoDisposeProvider<ObjectField?>.internal(
   _segmentFields,
   name: r'_segmentFieldsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -1089,6 +1089,6 @@ final _segmentFieldsProvider = AutoDisposeProvider<dynamic>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _SegmentFieldsRef = AutoDisposeProviderRef<dynamic>;
+typedef _SegmentFieldsRef = AutoDisposeProviderRef<ObjectField?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

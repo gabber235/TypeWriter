@@ -7,6 +7,7 @@ import "package:typewriter/widgets/inspector/editors/cron.dart";
 import "package:typewriter/widgets/inspector/editors/duration.dart";
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
+import "package:typewriter/widgets/inspector/editors/item.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
 import "package:typewriter/widgets/inspector/editors/location.dart";
 import "package:typewriter/widgets/inspector/editors/map.dart";
@@ -42,6 +43,7 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       DurationEditorFilter(),
       CronEditorFilter(),
       PotionEffectEditorFilter(),
+      ItemEditorFilter(),
 
       // Default filters
       StringEditorFilter(),

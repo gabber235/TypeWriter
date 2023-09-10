@@ -28,7 +28,8 @@ class AppRouter extends _$AppRouter {
   final PassingRef ref;
 
   @override
-  RouteType get defaultRouteType => const RouteType.custom(transitionsBuilder: TransitionsBuilders.noTransition);
+  RouteType get defaultRouteType => const RouteType.custom(
+      transitionsBuilder: TransitionsBuilders.noTransition);
 
   @override
   List<AutoRoute> get routes => [
@@ -79,7 +80,8 @@ extension AppRouterX on AppRouter {
   Future<void> navigateToEntry(PassingRef ref, String entryId) async {
     final currentPage = ref.read(currentPageProvider);
 
-    if (currentPage != null && currentPage.entries.none((e) => e.id == entryId)) {
+    if (currentPage != null &&
+        currentPage.entries.none((e) => e.id == entryId)) {
       final entryPage = ref.read(globalEntryWithPageProvider(entryId))?.key;
       if (entryPage != null) {
         await navigateToPage(ref, entryPage);
@@ -93,9 +95,9 @@ extension AppRouterX on AppRouter {
     final currentPage = ref.read(currentPageProvider);
 
     if (currentPage?.name != pageId) {
-      await ref
-          .read(appRouter)
-          .push(PageEditorRoute(id: pageId), onFailure: (e) => debugPrint("Failed to navigate to page $pageId: $e"));
+      await ref.read(appRouter).push(PageEditorRoute(id: pageId),
+          onFailure: (e) =>
+              debugPrint("Failed to navigate to page $pageId: $e"));
     }
   }
 }

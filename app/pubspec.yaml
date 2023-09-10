@@ -51,7 +51,7 @@ dev_dependencies:
   json_serializable: ^6.7.1
   icons_launcher: ^2.1.3
   auto_route_generator: ^7.2.0
-  riverpod_generator: ^2.2.6
+  riverpod_generator: 2.2.6
   custom_lint:
   riverpod_lint: ^2.0.1
 

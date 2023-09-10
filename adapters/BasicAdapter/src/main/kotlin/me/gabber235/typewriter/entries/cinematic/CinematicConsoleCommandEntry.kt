@@ -32,7 +32,6 @@ class CinematicConsoleCommandEntry(
     override val name: String,
     override val criteria: List<Criteria>,
     @Segments(Colors.YELLOW, Icons.TERMINAL)
-    @Placeholder
     @InnerMax(Max(1))
     // Run commands on different segments
     override val segments: List<CommandSegment>,
@@ -60,7 +59,6 @@ class CinematicPlayerCommandEntry(
     override val name: String,
     override val criteria: List<Criteria>,
     @Segments(Colors.YELLOW, Icons.TERMINAL)
-    @Placeholder
     @InnerMax(Max(1))
     // Run commands on different segments
     override val segments: List<CommandSegment>,
@@ -79,6 +77,7 @@ data class CommandSegment(
     override val startFrame: Int,
     override val endFrame: Int,
     @Help("The command to run")
+    @Placeholder
     val command: String,
 ) : Segment
 

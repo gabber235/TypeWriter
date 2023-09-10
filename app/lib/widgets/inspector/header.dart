@@ -105,7 +105,6 @@ class FieldHeader extends HookConsumerWidget {
             Collapsible(
               collapsed: !expanded.value,
               axis: CollapsibleAxis.vertical,
-              clipBehavior: Clip.none,
               child: Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: child,

@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/widgets/components/general/error_box.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 
 class FieldEditor extends HookConsumerWidget {
@@ -34,16 +35,6 @@ class _NoEditorFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.redAccent,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        "Could not find a editor for $path",
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
-    );
+    return ErrorBox(message: "Could not find a editor for $path");
   }
 }
