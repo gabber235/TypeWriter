@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.Icons
@@ -115,7 +116,7 @@ private fun displaySubTitle(player: Player, speakerName: String, text: String, d
     )
 
     val actionBarComponent = subtitleSpeakerFormat.asMiniWithResolvers(
-        Placeholder.parsed("speaker", speakerName),
+        Placeholder.parsed("speaker", speakerName.parsePlaceholders(player)),
     )
 
     player.showTitle(Title.title(Component.empty(), component, times))
