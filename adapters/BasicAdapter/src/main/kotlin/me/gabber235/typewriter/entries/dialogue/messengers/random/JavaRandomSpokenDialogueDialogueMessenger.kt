@@ -7,7 +7,6 @@ import me.gabber235.typewriter.entries.dialogue.messengers.spoken.sendSpokenDial
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.entries.DialogueEntry
-import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
@@ -24,7 +23,7 @@ class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpo
 
     override fun init() {
         super.init()
-        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
+        speakerDisplayName = entry.speakerDisplayName
         text = entry.messages.randomOrNull() ?: ""
 
         listen<PlayerSwapHandItemsEvent> { event ->

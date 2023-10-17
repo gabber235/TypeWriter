@@ -55,10 +55,6 @@ The web panel needs two ports to be open. These can be changed, but it does need
 default ports are `8080` and `9092`. If you are not able to open these ports, the easiest way is to use typewriter
 locally and copying the files in `server/plugins/Typewriter/pages` to your production server.
 
-:::caution
-You will get an error if the ports in the config are being used already. Make sure these ports are available by using `netstat -aon | find /i "[port]"`. (Windows only)
-:::
-
 To enable the web panel, follow these steps:
 
 1. Open the `server/plugins/Typewriter/config.yml` file.
