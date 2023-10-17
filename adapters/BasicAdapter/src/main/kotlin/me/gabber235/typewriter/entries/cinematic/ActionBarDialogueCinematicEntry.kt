@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.*
@@ -106,7 +107,7 @@ private fun displayActionBar(player: Player, speakerName: String, text: String, 
     val padding = " ".repeat(paddingSize)
 
     val component = actionBarFormat.asMiniWithResolvers(
-        Placeholder.parsed("speaker", speakerName),
+        Placeholder.parsed("speaker", speakerName.parsePlaceholders(player)),
         Placeholder.component("message", message),
         Placeholder.unparsed("padding", padding),
     )

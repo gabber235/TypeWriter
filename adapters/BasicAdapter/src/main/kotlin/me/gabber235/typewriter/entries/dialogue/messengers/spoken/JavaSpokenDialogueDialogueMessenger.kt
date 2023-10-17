@@ -53,7 +53,7 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
     private var speakerDisplayName = ""
     override fun init() {
         super.init()
-        speakerDisplayName = entry.speakerDisplayName
+        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
 
         listen<PlayerSwapHandItemsEvent> { event ->
             if (event.player.uniqueId != player.uniqueId) return@listen

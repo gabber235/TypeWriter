@@ -122,7 +122,7 @@ private fun displaySpokenDialogue(player: Player, speakerName: String, text: Str
     )
 
     val component = spokenFormat.asMiniWithResolvers(
-        Placeholder.parsed("speaker", speakerName),
+        Placeholder.parsed("speaker", speakerName.parsePlaceholders(player)),
         Placeholder.component("message", message),
         Placeholder.parsed("padding", spokenPadding),
     )

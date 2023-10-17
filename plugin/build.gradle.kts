@@ -27,7 +27,6 @@ val centralDependencies = listOf(
     "org.jetbrains.kotlin:kotlin-stdlib:1.8.20",
     "org.jetbrains.kotlin:kotlin-reflect:1.8.20",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1",
-    "com.corundumstudio.socketio:netty-socketio:1.7.19", // Keep this on a lower version as the newer version breaks the ping
 )
 
 dependencies {
@@ -42,6 +41,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:2.3.4")
     implementation("io.ktor:ktor-server-netty-jvm:2.3.4")
     implementation("io.insert-koin:koin-core:3.4.0")
+    implementation("com.corundumstudio.socketio:netty-socketio:1.7.19") // Keep this on a lower version as the newer version breaks the ping
 
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")

@@ -105,7 +105,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         }
 
         val message = optionFormat.asMiniWithResolvers(
-            Placeholder.parsed("speaker", speakerDisplayName),
+            Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(player)),
             Placeholder.parsed("text", entry.text.parsePlaceholders(player)),
             Placeholder.component("options", formatOptions()),
         )
