@@ -1,18 +1,18 @@
 package me.gabber235.typewriter.utils
 
-import lirand.api.extensions.inventory.ItemStack
 import lirand.api.extensions.inventory.meta
 import lirand.api.nbt.NbtData
 import lirand.api.nbt.tagNbtData
 import me.gabber235.typewriter.adapters.modifiers.*
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.utils.Item.Empty.lore
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import java.util.*
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 open class Item(
     @MaterialProperties(MaterialProperty.ITEM)
@@ -79,7 +79,12 @@ open class Item(
         return item
     }
 
-    fun isSameAs(player: Player?, item: ItemStack): Boolean {
+    @OptIn(ExperimentalContracts::class)
+    fun isSameAs(player: Player?, item: ItemStack?): Boolean {
+        contract {
+            returns(true) implies (item != null)
+        }
+        if (item == null) return false
         if (material.isPresent && item.type != material.get()) return false
         if (amount.isPresent && item.amount != amount.get()) return false
         if (name.isPresent && item.itemMeta?.displayName() != name.get().parsePlaceholders(player)
@@ -97,13 +102,14 @@ open class Item(
 }
 
 fun ItemStack.toItem(): Item {
+    val nbt = tagNbtData
     return Item(
         material = Optional.ofNullable(type),
         amount = Optional.ofNullable(amount),
         name = Optional.ofNullable(itemMeta?.displayName()?.asMini()),
         lore = Optional.ofNullable(itemMeta?.lore()?.joinToString("\n") { it.asMini() }),
 //        enchantments = Optional.ofNullable(itemMeta?.enchants),
-        flags = Optional.ofNullable(itemMeta?.itemFlags?.toList()),
-        nbt = Optional.ofNullable(tagNbtData.toString()),
+        flags = if (itemMeta?.itemFlags?.isNotEmpty() == true) Optional.ofNullable(itemMeta?.itemFlags?.toList()) else Optional.empty(),
+        nbt = if (nbt.keys.isNotEmpty()) Optional.ofNullable(nbt.toString()) else Optional.empty(),
     )
 }

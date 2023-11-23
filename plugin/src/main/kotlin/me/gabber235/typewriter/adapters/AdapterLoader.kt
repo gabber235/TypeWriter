@@ -3,9 +3,12 @@ package me.gabber235.typewriter.adapters
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
+import me.gabber235.typewriter.adapters.editors.ItemFieldCapturer
 import me.gabber235.typewriter.adapters.editors.LocationFieldCapturer
 import me.gabber235.typewriter.capture.Capturer
 import me.gabber235.typewriter.capture.CapturerCreator
+import me.gabber235.typewriter.entry.EntryMigrations
+import me.gabber235.typewriter.entry.EntryMigrator
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.logger
@@ -39,6 +42,7 @@ private val gson =
 val staticCaptureClasses by lazy {
     listOf(
         LocationFieldCapturer::class,
+        ItemFieldCapturer::class,
     )
 }
 
@@ -51,6 +55,8 @@ interface AdapterLoader {
     fun getEntryBlueprint(type: String): EntryBlueprint?
 
     fun getCaptureClasses(): List<KClass<out Capturer<*>>>
+
+    fun getEntryMigrators(): List<EntryMigrator>
 }
 
 class AdapterLoaderImpl : AdapterLoader, KoinComponent {
@@ -132,6 +138,8 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
         val capturers = constructCapturers(captureClasses)
 
+        val entryMigrators = EntryMigrations.constructEntryMigrators(classes)
+
         // Create the adapter data
         return AdapterData(
             adapterAnnotation?.name ?: "",
@@ -141,6 +149,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             messengers,
             adapterListeners,
             capturers,
+            entryMigrators,
             adapterClass,
         )
     }
@@ -222,6 +231,10 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     override fun getCaptureClasses(): List<KClass<out Capturer<*>>> {
         return adapters.asSequence().flatMap { it.captureClasses }.toList()
     }
+
+    override fun getEntryMigrators(): List<EntryMigrator> {
+        return adapters.asSequence().flatMap { it.entryMigrators }.toList()
+    }
 }
 
 data class AdapterData(
@@ -236,9 +249,10 @@ data class AdapterData(
     @Transient
     val captureClasses: List<KClass<out Capturer<*>>>,
     @Transient
+    val entryMigrators: List<EntryMigrator>,
+    @Transient
     val clazz: Class<*>,
 )
-
 
 // Annotation for marking a class as an adapter
 @Target(AnnotationTarget.CLASS)

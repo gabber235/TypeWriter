@@ -42,6 +42,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:2.3.4")
     implementation("io.ktor:ktor-server-netty-jvm:2.3.4")
     implementation("io.insert-koin:koin-core:3.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
 
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")

@@ -32,6 +32,7 @@ import kotlin.reflect.full.isSuperclassOf
  * fun onEntryCreated(event: PlayerInteractEvent, query: Query<InteractEventEntry>) {
  *    // ...
  * }
+ * ```
  *
  * IMPORTANT: The function must be static.
  */

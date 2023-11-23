@@ -89,7 +89,11 @@ class Recorders : KoinComponent {
             record(player, capturer, context.cinematicData)
         }
 
-        return RecorderResponse.RecordingStarting
+        return when (capturer) {
+            is ImmediateCapturer -> RecorderResponse.CapturedRecording
+            is RecordedCapturer -> RecorderResponse.RecordingStarting
+
+        }
     }
 }
 
@@ -137,6 +141,11 @@ sealed interface RecorderResponse {
         } else {
             failure(message)
         }
+    }
+
+    object CapturedRecording : RecorderResponse {
+        override val message: String = "Captured Field!"
+        override val status: RecorderResponseStatus = RecorderResponseStatus.SUCCESS
     }
 
     object RecordingStarting : RecorderResponse {

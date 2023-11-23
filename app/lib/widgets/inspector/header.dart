@@ -9,9 +9,12 @@ import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/headers/capture_action.dart";
+import "package:typewriter/widgets/inspector/headers/colored_action.dart";
 import "package:typewriter/widgets/inspector/headers/entry_selector_action.dart";
 import "package:typewriter/widgets/inspector/headers/help_action.dart";
 import "package:typewriter/widgets/inspector/headers/length_action.dart";
+import "package:typewriter/widgets/inspector/headers/multiline_action.dart";
+import "package:typewriter/widgets/inspector/headers/placeholder_action.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
 
 part "header.g.dart";
@@ -165,6 +168,9 @@ class Header extends InheritedWidget {
 @riverpod
 List<HeaderActionFilter> headerActionFilters(HeaderActionFiltersRef ref) => [
       HelpHeaderActionFilter(),
+      ColoredHeaderActionFilter(),
+      PlaceholderHeaderActionFilter(),
+      RegexHeaderActionFilter(),
       LengthHeaderActionFilter(),
       EntrySelectorHeaderActionFilter(),
       CaptureHeaderActionFilter(),

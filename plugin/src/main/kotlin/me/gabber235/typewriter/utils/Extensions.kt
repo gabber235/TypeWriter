@@ -8,6 +8,7 @@ import org.geysermc.floodgate.api.FloodgateApi
 import org.koin.java.KoinJavaComponent.get
 import java.io.File
 import java.time.Duration
+import java.util.*
 import kotlin.math.round
 
 operator fun File.get(name: String): File = File(this, name)
@@ -54,3 +55,7 @@ fun Float.round(decimals: Int): Float {
 
     return (round(this * multiplier) / multiplier).toFloat()
 }
+
+
+val <T : Any> Optional<T>?.optional: Optional<T> get() = Optional.ofNullable(this?.orElse(null))
+val <T : Any> T?.optional: Optional<T> get() = Optional.ofNullable(this)
