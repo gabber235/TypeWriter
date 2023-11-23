@@ -39,8 +39,8 @@ dependencies {
     implementation("com.github.dyam0:LirandAPI:96cc59d4fb")
 
     // Doesn't want to load properly using the spigot api.
-    implementation("io.ktor:ktor-server-core-jvm:2.3.4")
-    implementation("io.ktor:ktor-server-netty-jvm:2.3.4")
+    implementation("io.ktor:ktor-server-core-jvm:2.3.6")
+    implementation("io.ktor:ktor-server-netty-jvm:2.3.6")
     implementation("io.insert-koin:koin-core:3.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
 
