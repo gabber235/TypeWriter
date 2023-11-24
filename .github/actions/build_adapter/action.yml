@@ -1,0 +1,22 @@
+name: "Build Adapter"
+description: "Builds the adapter and runs tests"
+
+inputs:
+  adapter: 
+    required: true
+    description: "Name of the adapter to build"
+
+runs:
+  using: "composite"
+  steps:
+      - name: Test Adapter
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test --scan
+          build-root-directory: ./adapters/${{ inputs.adapter }}
+      - name: Build Adapter
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: buildRelease --scan
+          build-root-directory: ./adapters/${{ inputs.adapter }}
+

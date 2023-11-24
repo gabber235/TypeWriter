@@ -1,0 +1,34 @@
+name: Build Plugin
+description: "Builds the plugin and runs tests"
+
+runs:
+  using: "composite"
+  steps:
+      - uses: actions/checkout@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "master"
+      - name: Get Flutter dependencies
+        run: flutter pub get
+        shell: bash
+        working-directory: ./app
+      - name: Run tests
+        run: flutter test
+        shell: bash
+        working-directory: ./app
+      - name: Build web app
+        run: flutter build web --release --no-tree-shake-icons
+        shell: bash
+        working-directory: ./app
+      - name: Test Plugin
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test --scan
+          build-root-directory: ./plugin
+      - name: Build Plugin
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: buildRelease --scan
+          build-root-directory: ./plugin
+

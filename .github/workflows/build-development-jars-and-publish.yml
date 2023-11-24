@@ -1,0 +1,55 @@
+name: Build Development Jars and Publish
+
+on: 
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'plugins/**'
+      - 'adapters/**'
+      - '.github/workflows/build-development-jars-and-publish.yml'
+  
+jobs:
+  build-publish-development:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Java 
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Build Plugin
+        uses: ./.github/actions/build-plugin
+      - name: Build Basic Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: BasicAdapter
+      - name: Build Citizens Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: CitizensAdapter
+      - name: Build CombatLogX Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: CombatLogXAdapter
+      - name: Build MythicMobs Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: MythicMobsAdapter
+      - name: Build RPGRegions Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: RPGRegionsAdapter
+      - name: Build SuperiorSkyblock Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: SuperiorSkyblockAdapter
+      - name: Build Vault Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: VaultAdapter
+      - name: Build WorldGuard Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: WorldGuardAdapter
