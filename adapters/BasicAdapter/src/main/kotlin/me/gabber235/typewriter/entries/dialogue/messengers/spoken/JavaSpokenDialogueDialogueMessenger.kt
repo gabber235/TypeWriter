@@ -102,7 +102,7 @@ fun Player.sendSpokenDialogue(
     )
 
     val component = spokenFormat.asMiniWithResolvers(
-        Placeholder.parsed("speaker", speakerDisplayName),
+        Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(this)),
         Placeholder.component("message", message),
         Placeholder.parsed("next_color", nextColor),
         Placeholder.parsed("finish_text", continueOrFinish),
