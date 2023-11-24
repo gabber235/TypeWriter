@@ -62,7 +62,7 @@ jobs:
           echo $full_version
           echo "version=$full_version" >> $GITHUB_ENV
       - name: Debug full version
-        run: echo "${{ steps.vars.outputs.version }}"
+        run: echo ${{ steps.vars.outputs.version }}
       # - name: Publish Development Jars
       #   uses: Kir-Antipov/mc-publish@v3.3
       #   id: publish
