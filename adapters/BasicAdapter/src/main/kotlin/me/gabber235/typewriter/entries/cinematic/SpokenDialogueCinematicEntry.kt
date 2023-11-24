@@ -12,7 +12,6 @@ import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.triggerFor
-import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
@@ -114,7 +113,7 @@ val spokenPercentage: Double by snippet("cinematic.dialogue.spoken.percentage", 
 
 private fun displaySpokenDialogue(player: Player, speakerName: String, text: String, displayPercentage: Double) {
 
-    val message = text.parsePlaceholders(player).asPartialFormattedMini(
+    val message = text.asPartialFormattedMini(
         displayPercentage,
         padding = spokenPadding,
         minLines = spokenMinLines,
