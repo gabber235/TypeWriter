@@ -90,5 +90,6 @@ task<ShadowJar>("buildRelease") {
         // Rename the jar to remove the version and -all
         val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
         jar.renameTo(file("build/libs/%s.jar".format(project.name)))
+        file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
     }
 }

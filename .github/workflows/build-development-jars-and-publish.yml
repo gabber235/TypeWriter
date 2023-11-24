@@ -82,7 +82,7 @@ jobs:
             purpur
           game-versions: |
             1.19.4
-            1.20.0
+            1.20
             1.20.1
             1.20.2
       - name: Notify Discord
@@ -94,5 +94,5 @@ jobs:
           description: |
             I have published a development build of Typewriter.
             Version: ${{ steps.vars.outputs.version }}
-            [Download](${{ steps.publish.outputs.modrinth-url }})
+            [Download](https://modrinth.com/mod/typewriter/versions/${{ steps.publish.outputs.modrinth-version }})
 
