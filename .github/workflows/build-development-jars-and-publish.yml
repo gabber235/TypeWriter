@@ -90,5 +90,6 @@ jobs:
           description: |
             I have published a development build of Typewriter.
             Version: ${{ steps.vars.outputs.version }}
-            [Download](https://modrinth.com/mod/typewriter/versions/${{ steps.publish.outputs.modrinth-version }})
+            [Download](https://modrinth.com/plugin/typewriter/version/${{ steps.publish.outputs.modrinth-version }})
+
 
