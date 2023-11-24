@@ -60,7 +60,7 @@ jobs:
           short_sha=$(echo $GITHUB_SHA | cut -c1-7)
           full_version="${version}-dev-${short_sha}"
           echo $full_version
-          echo "version=$full_version" >> $GITHUB_ENV
+          echo "version=$full_version" >> $GITHUB_OUTPUT
       - name: Debug full version
         run: echo ${{ steps.vars.outputs.version }}
       # - name: Publish Development Jars
