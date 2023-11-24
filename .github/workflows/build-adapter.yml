@@ -19,16 +19,10 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Test Adapter
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: test --scan
-          build-root-directory: ./adapters/${{ inputs.adapter }}
       - name: Build Adapter
-        uses: gradle/gradle-build-action@v2
+        uses: ./.github/actions/build-adapter
         with:
-          arguments: buildRelease --scan
-          build-root-directory: ./adapters/${{ inputs.adapter }}
+          adapter: ${{ inputs.adapter }}
       - name: Upload Adapter
         uses: actions/upload-artifact@v2
         with:
