@@ -3,7 +3,7 @@ name: Build Development Jars and Publish
 on: 
   pull_request:
     branches:
-      - develop
+      - main
     paths:
       - 'plugins/**'
       - 'adapters/**'
