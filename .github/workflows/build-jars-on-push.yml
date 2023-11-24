@@ -3,8 +3,6 @@ name: Build Jars on Push
 on:
   push:
     branches:
-      - main
-      - develop
       - feature/**
 
 jobs:
