@@ -60,17 +60,17 @@ To enable the web panel, follow these steps:
 1. Open the `server/plugins/Typewriter/config.yml` file.
 2. Change the settings to the following:
 
-```yml
+```yaml title="server/plugins/Typewriter/config.yml"
 # Whether the web panel and web sockets are enabled.
 enabled: true
 # The hostname of the server. CHANGE THIS to your servers ip.
-hostname: localhost
+hostname: "127.0.0.1"
 # The panel uses web sockets to sync changes to the server and it allows you to work with multiple people at the same time.
 websocket:
     # The port of the websocket server. Make sure this port is open.
     port: 9092
     # The authentication that is used. Leave unchanged if you don't know what you are doing.
-    auth: session
+    auth: "session"
 
 panel:
     # The panel can be disabled while the sockets are still open. Only disable this if you know what you are doing.
