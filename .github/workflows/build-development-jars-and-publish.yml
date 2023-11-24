@@ -55,9 +55,13 @@ jobs:
           adapter: WorldGuardAdapter
       - name: Get version
         id: vars
-        run: echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+        run: |
+          version=$(cat version.txt)
+          short_sha=${GITHUB_SHA::7}
+          full_version="${version}-dev-${short_sha}"
+          echo "version=$full_version" >> $GITHUB_ENV
       - name: Debug full version
-        run: echo "${{ steps.vars.outputs.version }}-dev-${{ github.sha }}"
+        run: echo "${{ steps.vars.outputs.version }}"
       - name: Publish Development Jars
         uses: Kir-Antipov/mc-publish@v3.3
         id: publish
@@ -66,13 +70,13 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-featured: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-tag: "v${{ steps.vars.outputs.version }}-dev-${{ github.sha }}"
+          github-tag: "v${{ steps.vars.outputs.version }}"
           github-prerelease: true
           files: |
             plugin/build/libs/typewriter.jar
             adapters/**/build/libs/*.jar
           name: "Typewriter v${{ steps.vars.outputs.version }} Development Build"
-          version: "${{ steps.vars.outputs.version }}-dev-${{ github.sha }}"
+          version: "${{ steps.vars.outputs.version }}"
           version-type: "beta"
           loaders: |
             paper
@@ -90,6 +94,6 @@ jobs:
           title: Published Development Build
           description: |
             I have published a development build of Typewriter.
-            Version: ${{ steps.vars.outputs.version }}-dev-${{ github.sha }}
+            Version: ${{ steps.vars.outputs.version }}
             [Download](${{ steps.publish.outputs.modrinth-url }})
 
