@@ -56,6 +56,8 @@ jobs:
       - name: Get version
         id: vars
         run: echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+      - name: Debug full version
+        run: echo "${{ steps.vars.outputs.version }}-dev-${{ github.sha }}"
       - name: Publish Development Jars
         uses: Kir-Antipov/mc-publish@v3.3
         id: publish
