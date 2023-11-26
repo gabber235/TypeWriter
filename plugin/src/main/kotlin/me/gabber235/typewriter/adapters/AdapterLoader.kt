@@ -64,7 +64,12 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     override var adaptersJson: JsonArray = JsonArray()
 
     override fun loadAdapters() {
-        adapters = plugin.dataFolder["adapters"].listFiles()?.filter { it.extension == "jar" }?.mapNotNull {
+        val dir = plugin.dataFolder["adapters"]
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+
+        adapters = dir.listFiles()?.filter { it.extension == "jar" }?.mapNotNull {
             logger.info("Loading adapter ${it.nameWithoutExtension}")
             try {
                 loadAdapter(it)
