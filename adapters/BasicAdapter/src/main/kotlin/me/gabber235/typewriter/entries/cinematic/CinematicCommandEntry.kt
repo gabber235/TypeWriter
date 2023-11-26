@@ -76,8 +76,10 @@ class CinematicPlayerCommandEntry(
 data class CommandSegment(
     override val startFrame: Int,
     override val endFrame: Int,
-    @Help("The command to run")
+    @Help("The command(s) to run.")
     @Placeholder
+    @MultiLine
+    // Every line is a different command. Commands should not be prefixed with <code>/</code>.
     val command: String,
 ) : Segment
 
@@ -91,7 +93,8 @@ class CommandAction(
     override suspend fun startSegment(segment: CommandSegment) {
         super.startSegment(segment)
         withContext(plugin.minecraftDispatcher) {
-            run(segment.command.parsePlaceholders(player))
+            val commands = segment.command.parsePlaceholders(player).lines()
+            commands.forEach(run)
         }
     }
 }
