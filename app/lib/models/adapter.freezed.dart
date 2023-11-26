@@ -82,10 +82,10 @@ class _$AdapterCopyWithImpl<$Res, $Val extends Adapter>
 }
 
 /// @nodoc
-abstract class _$$_AdapterCopyWith<$Res> implements $AdapterCopyWith<$Res> {
-  factory _$$_AdapterCopyWith(
-          _$_Adapter value, $Res Function(_$_Adapter) then) =
-      __$$_AdapterCopyWithImpl<$Res>;
+abstract class _$$AdapterImplCopyWith<$Res> implements $AdapterCopyWith<$Res> {
+  factory _$$AdapterImplCopyWith(
+          _$AdapterImpl value, $Res Function(_$AdapterImpl) then) =
+      __$$AdapterImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -96,10 +96,11 @@ abstract class _$$_AdapterCopyWith<$Res> implements $AdapterCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_AdapterCopyWithImpl<$Res>
-    extends _$AdapterCopyWithImpl<$Res, _$_Adapter>
-    implements _$$_AdapterCopyWith<$Res> {
-  __$$_AdapterCopyWithImpl(_$_Adapter _value, $Res Function(_$_Adapter) _then)
+class __$$AdapterImplCopyWithImpl<$Res>
+    extends _$AdapterCopyWithImpl<$Res, _$AdapterImpl>
+    implements _$$AdapterImplCopyWith<$Res> {
+  __$$AdapterImplCopyWithImpl(
+      _$AdapterImpl _value, $Res Function(_$AdapterImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -110,7 +111,7 @@ class __$$_AdapterCopyWithImpl<$Res>
     Object? version = null,
     Object? entries = null,
   }) {
-    return _then(_$_Adapter(
+    return _then(_$AdapterImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -133,16 +134,16 @@ class __$$_AdapterCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Adapter with DiagnosticableTreeMixin implements _Adapter {
-  const _$_Adapter(
+class _$AdapterImpl with DiagnosticableTreeMixin implements _Adapter {
+  const _$AdapterImpl(
       {required this.name,
       required this.description,
       required this.version,
       required final List<EntryBlueprint> entries})
       : _entries = entries;
 
-  factory _$_Adapter.fromJson(Map<String, dynamic> json) =>
-      _$$_AdapterFromJson(json);
+  factory _$AdapterImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AdapterImplFromJson(json);
 
   @override
   final String name;
@@ -178,7 +179,7 @@ class _$_Adapter with DiagnosticableTreeMixin implements _Adapter {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Adapter &&
+            other is _$AdapterImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -194,12 +195,12 @@ class _$_Adapter with DiagnosticableTreeMixin implements _Adapter {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AdapterCopyWith<_$_Adapter> get copyWith =>
-      __$$_AdapterCopyWithImpl<_$_Adapter>(this, _$identity);
+  _$$AdapterImplCopyWith<_$AdapterImpl> get copyWith =>
+      __$$AdapterImplCopyWithImpl<_$AdapterImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_AdapterToJson(
+    return _$$AdapterImplToJson(
       this,
     );
   }
@@ -210,9 +211,9 @@ abstract class _Adapter implements Adapter {
       {required final String name,
       required final String description,
       required final String version,
-      required final List<EntryBlueprint> entries}) = _$_Adapter;
+      required final List<EntryBlueprint> entries}) = _$AdapterImpl;
 
-  factory _Adapter.fromJson(Map<String, dynamic> json) = _$_Adapter.fromJson;
+  factory _Adapter.fromJson(Map<String, dynamic> json) = _$AdapterImpl.fromJson;
 
   @override
   String get name;
@@ -224,7 +225,7 @@ abstract class _Adapter implements Adapter {
   List<EntryBlueprint> get entries;
   @override
   @JsonKey(ignore: true)
-  _$$_AdapterCopyWith<_$_Adapter> get copyWith =>
+  _$$AdapterImplCopyWith<_$AdapterImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -321,11 +322,11 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
 }
 
 /// @nodoc
-abstract class _$$_EntryBlueprintCopyWith<$Res>
+abstract class _$$EntryBlueprintImplCopyWith<$Res>
     implements $EntryBlueprintCopyWith<$Res> {
-  factory _$$_EntryBlueprintCopyWith(
-          _$_EntryBlueprint value, $Res Function(_$_EntryBlueprint) then) =
-      __$$_EntryBlueprintCopyWithImpl<$Res>;
+  factory _$$EntryBlueprintImplCopyWith(_$EntryBlueprintImpl value,
+          $Res Function(_$EntryBlueprintImpl) then) =
+      __$$EntryBlueprintImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -339,11 +340,11 @@ abstract class _$$_EntryBlueprintCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_EntryBlueprintCopyWithImpl<$Res>
-    extends _$EntryBlueprintCopyWithImpl<$Res, _$_EntryBlueprint>
-    implements _$$_EntryBlueprintCopyWith<$Res> {
-  __$$_EntryBlueprintCopyWithImpl(
-      _$_EntryBlueprint _value, $Res Function(_$_EntryBlueprint) _then)
+class __$$EntryBlueprintImplCopyWithImpl<$Res>
+    extends _$EntryBlueprintCopyWithImpl<$Res, _$EntryBlueprintImpl>
+    implements _$$EntryBlueprintImplCopyWith<$Res> {
+  __$$EntryBlueprintImplCopyWithImpl(
+      _$EntryBlueprintImpl _value, $Res Function(_$EntryBlueprintImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -357,7 +358,7 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
     Object? color = null,
     Object? icon = null,
   }) {
-    return _then(_$_EntryBlueprint(
+    return _then(_$EntryBlueprintImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -392,10 +393,10 @@ class __$$_EntryBlueprintCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_EntryBlueprint
+class _$EntryBlueprintImpl
     with DiagnosticableTreeMixin
     implements _EntryBlueprint {
-  const _$_EntryBlueprint(
+  const _$EntryBlueprintImpl(
       {required this.name,
       required this.description,
       required this.adapter,
@@ -405,8 +406,8 @@ class _$_EntryBlueprint
       @IconConverter() this.icon = Icons.help})
       : _tags = tags;
 
-  factory _$_EntryBlueprint.fromJson(Map<String, dynamic> json) =>
-      _$$_EntryBlueprintFromJson(json);
+  factory _$EntryBlueprintImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EntryBlueprintImplFromJson(json);
 
   @override
   final String name;
@@ -457,7 +458,7 @@ class _$_EntryBlueprint
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EntryBlueprint &&
+            other is _$EntryBlueprintImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -483,12 +484,13 @@ class _$_EntryBlueprint
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EntryBlueprintCopyWith<_$_EntryBlueprint> get copyWith =>
-      __$$_EntryBlueprintCopyWithImpl<_$_EntryBlueprint>(this, _$identity);
+  _$$EntryBlueprintImplCopyWith<_$EntryBlueprintImpl> get copyWith =>
+      __$$EntryBlueprintImplCopyWithImpl<_$EntryBlueprintImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_EntryBlueprintToJson(
+    return _$$EntryBlueprintImplToJson(
       this,
     );
   }
@@ -502,10 +504,10 @@ abstract class _EntryBlueprint implements EntryBlueprint {
       required final ObjectField fields,
       final List<String> tags,
       @ColorConverter() final Color color,
-      @IconConverter() final IconData icon}) = _$_EntryBlueprint;
+      @IconConverter() final IconData icon}) = _$EntryBlueprintImpl;
 
   factory _EntryBlueprint.fromJson(Map<String, dynamic> json) =
-      _$_EntryBlueprint.fromJson;
+      _$EntryBlueprintImpl.fromJson;
 
   @override
   String get name;
@@ -525,7 +527,7 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   IconData get icon;
   @override
   @JsonKey(ignore: true)
-  _$$_EntryBlueprintCopyWith<_$_EntryBlueprint> get copyWith =>
+  _$$EntryBlueprintImplCopyWith<_$EntryBlueprintImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -689,21 +691,22 @@ class _$FieldInfoCopyWithImpl<$Res, $Val extends FieldInfo>
 }
 
 /// @nodoc
-abstract class _$$_FieldTypeCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
-  factory _$$_FieldTypeCopyWith(
-          _$_FieldType value, $Res Function(_$_FieldType) then) =
-      __$$_FieldTypeCopyWithImpl<$Res>;
+abstract class _$$FieldTypeImplCopyWith<$Res>
+    implements $FieldInfoCopyWith<$Res> {
+  factory _$$FieldTypeImplCopyWith(
+          _$FieldTypeImpl value, $Res Function(_$FieldTypeImpl) then) =
+      __$$FieldTypeImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<Modifier> modifiers});
 }
 
 /// @nodoc
-class __$$_FieldTypeCopyWithImpl<$Res>
-    extends _$FieldInfoCopyWithImpl<$Res, _$_FieldType>
-    implements _$$_FieldTypeCopyWith<$Res> {
-  __$$_FieldTypeCopyWithImpl(
-      _$_FieldType _value, $Res Function(_$_FieldType) _then)
+class __$$FieldTypeImplCopyWithImpl<$Res>
+    extends _$FieldInfoCopyWithImpl<$Res, _$FieldTypeImpl>
+    implements _$$FieldTypeImplCopyWith<$Res> {
+  __$$FieldTypeImplCopyWithImpl(
+      _$FieldTypeImpl _value, $Res Function(_$FieldTypeImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -711,7 +714,7 @@ class __$$_FieldTypeCopyWithImpl<$Res>
   $Res call({
     Object? modifiers = null,
   }) {
-    return _then(_$_FieldType(
+    return _then(_$FieldTypeImpl(
       modifiers: null == modifiers
           ? _value._modifiers
           : modifiers // ignore: cast_nullable_to_non_nullable
@@ -722,14 +725,14 @@ class __$$_FieldTypeCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_FieldType with DiagnosticableTreeMixin implements _FieldType {
-  const _$_FieldType(
+class _$FieldTypeImpl with DiagnosticableTreeMixin implements _FieldType {
+  const _$FieldTypeImpl(
       {final List<Modifier> modifiers = const [], final String? $type})
       : _modifiers = modifiers,
         $type = $type ?? 'default';
 
-  factory _$_FieldType.fromJson(Map<String, dynamic> json) =>
-      _$$_FieldTypeFromJson(json);
+  factory _$FieldTypeImpl.fromJson(Map<String, dynamic> json) =>
+      _$$FieldTypeImplFromJson(json);
 
   final List<Modifier> _modifiers;
   @override
@@ -760,7 +763,7 @@ class _$_FieldType with DiagnosticableTreeMixin implements _FieldType {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_FieldType &&
+            other is _$FieldTypeImpl &&
             const DeepCollectionEquality()
                 .equals(other._modifiers, _modifiers));
   }
@@ -773,8 +776,8 @@ class _$_FieldType with DiagnosticableTreeMixin implements _FieldType {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_FieldTypeCopyWith<_$_FieldType> get copyWith =>
-      __$$_FieldTypeCopyWithImpl<_$_FieldType>(this, _$identity);
+  _$$FieldTypeImplCopyWith<_$FieldTypeImpl> get copyWith =>
+      __$$FieldTypeImplCopyWithImpl<_$FieldTypeImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -897,43 +900,43 @@ class _$_FieldType with DiagnosticableTreeMixin implements _FieldType {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_FieldTypeToJson(
+    return _$$FieldTypeImplToJson(
       this,
     );
   }
 }
 
 abstract class _FieldType implements FieldInfo {
-  const factory _FieldType({final List<Modifier> modifiers}) = _$_FieldType;
+  const factory _FieldType({final List<Modifier> modifiers}) = _$FieldTypeImpl;
 
   factory _FieldType.fromJson(Map<String, dynamic> json) =
-      _$_FieldType.fromJson;
+      _$FieldTypeImpl.fromJson;
 
   @override
   List<Modifier> get modifiers;
   @override
   @JsonKey(ignore: true)
-  _$$_FieldTypeCopyWith<_$_FieldType> get copyWith =>
+  _$$FieldTypeImplCopyWith<_$FieldTypeImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$PrimitiveFieldCopyWith<$Res>
+abstract class _$$PrimitiveFieldImplCopyWith<$Res>
     implements $FieldInfoCopyWith<$Res> {
-  factory _$$PrimitiveFieldCopyWith(
-          _$PrimitiveField value, $Res Function(_$PrimitiveField) then) =
-      __$$PrimitiveFieldCopyWithImpl<$Res>;
+  factory _$$PrimitiveFieldImplCopyWith(_$PrimitiveFieldImpl value,
+          $Res Function(_$PrimitiveFieldImpl) then) =
+      __$$PrimitiveFieldImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({PrimitiveFieldType type, List<Modifier> modifiers});
 }
 
 /// @nodoc
-class __$$PrimitiveFieldCopyWithImpl<$Res>
-    extends _$FieldInfoCopyWithImpl<$Res, _$PrimitiveField>
-    implements _$$PrimitiveFieldCopyWith<$Res> {
-  __$$PrimitiveFieldCopyWithImpl(
-      _$PrimitiveField _value, $Res Function(_$PrimitiveField) _then)
+class __$$PrimitiveFieldImplCopyWithImpl<$Res>
+    extends _$FieldInfoCopyWithImpl<$Res, _$PrimitiveFieldImpl>
+    implements _$$PrimitiveFieldImplCopyWith<$Res> {
+  __$$PrimitiveFieldImplCopyWithImpl(
+      _$PrimitiveFieldImpl _value, $Res Function(_$PrimitiveFieldImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -942,7 +945,7 @@ class __$$PrimitiveFieldCopyWithImpl<$Res>
     Object? type = null,
     Object? modifiers = null,
   }) {
-    return _then(_$PrimitiveField(
+    return _then(_$PrimitiveFieldImpl(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -957,16 +960,18 @@ class __$$PrimitiveFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$PrimitiveField with DiagnosticableTreeMixin implements PrimitiveField {
-  const _$PrimitiveField(
+class _$PrimitiveFieldImpl
+    with DiagnosticableTreeMixin
+    implements PrimitiveField {
+  const _$PrimitiveFieldImpl(
       {required this.type,
       final List<Modifier> modifiers = const [],
       final String? $type})
       : _modifiers = modifiers,
         $type = $type ?? 'primitive';
 
-  factory _$PrimitiveField.fromJson(Map<String, dynamic> json) =>
-      _$$PrimitiveFieldFromJson(json);
+  factory _$PrimitiveFieldImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PrimitiveFieldImplFromJson(json);
 
   @override
   final PrimitiveFieldType type;
@@ -1000,7 +1005,7 @@ class _$PrimitiveField with DiagnosticableTreeMixin implements PrimitiveField {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PrimitiveField &&
+            other is _$PrimitiveFieldImpl &&
             (identical(other.type, type) || other.type == type) &&
             const DeepCollectionEquality()
                 .equals(other._modifiers, _modifiers));
@@ -1014,8 +1019,9 @@ class _$PrimitiveField with DiagnosticableTreeMixin implements PrimitiveField {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$PrimitiveFieldCopyWith<_$PrimitiveField> get copyWith =>
-      __$$PrimitiveFieldCopyWithImpl<_$PrimitiveField>(this, _$identity);
+  _$$PrimitiveFieldImplCopyWith<_$PrimitiveFieldImpl> get copyWith =>
+      __$$PrimitiveFieldImplCopyWithImpl<_$PrimitiveFieldImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1138,7 +1144,7 @@ class _$PrimitiveField with DiagnosticableTreeMixin implements PrimitiveField {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$PrimitiveFieldToJson(
+    return _$$PrimitiveFieldImplToJson(
       this,
     );
   }
@@ -1147,36 +1153,37 @@ class _$PrimitiveField with DiagnosticableTreeMixin implements PrimitiveField {
 abstract class PrimitiveField implements FieldInfo {
   const factory PrimitiveField(
       {required final PrimitiveFieldType type,
-      final List<Modifier> modifiers}) = _$PrimitiveField;
+      final List<Modifier> modifiers}) = _$PrimitiveFieldImpl;
 
   factory PrimitiveField.fromJson(Map<String, dynamic> json) =
-      _$PrimitiveField.fromJson;
+      _$PrimitiveFieldImpl.fromJson;
 
   PrimitiveFieldType get type;
   @override
   List<Modifier> get modifiers;
   @override
   @JsonKey(ignore: true)
-  _$$PrimitiveFieldCopyWith<_$PrimitiveField> get copyWith =>
+  _$$PrimitiveFieldImplCopyWith<_$PrimitiveFieldImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$EnumFieldCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
-  factory _$$EnumFieldCopyWith(
-          _$EnumField value, $Res Function(_$EnumField) then) =
-      __$$EnumFieldCopyWithImpl<$Res>;
+abstract class _$$EnumFieldImplCopyWith<$Res>
+    implements $FieldInfoCopyWith<$Res> {
+  factory _$$EnumFieldImplCopyWith(
+          _$EnumFieldImpl value, $Res Function(_$EnumFieldImpl) then) =
+      __$$EnumFieldImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<String> values, List<Modifier> modifiers});
 }
 
 /// @nodoc
-class __$$EnumFieldCopyWithImpl<$Res>
-    extends _$FieldInfoCopyWithImpl<$Res, _$EnumField>
-    implements _$$EnumFieldCopyWith<$Res> {
-  __$$EnumFieldCopyWithImpl(
-      _$EnumField _value, $Res Function(_$EnumField) _then)
+class __$$EnumFieldImplCopyWithImpl<$Res>
+    extends _$FieldInfoCopyWithImpl<$Res, _$EnumFieldImpl>
+    implements _$$EnumFieldImplCopyWith<$Res> {
+  __$$EnumFieldImplCopyWithImpl(
+      _$EnumFieldImpl _value, $Res Function(_$EnumFieldImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1185,7 +1192,7 @@ class __$$EnumFieldCopyWithImpl<$Res>
     Object? values = null,
     Object? modifiers = null,
   }) {
-    return _then(_$EnumField(
+    return _then(_$EnumFieldImpl(
       values: null == values
           ? _value._values
           : values // ignore: cast_nullable_to_non_nullable
@@ -1200,8 +1207,8 @@ class __$$EnumFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EnumField with DiagnosticableTreeMixin implements EnumField {
-  const _$EnumField(
+class _$EnumFieldImpl with DiagnosticableTreeMixin implements EnumField {
+  const _$EnumFieldImpl(
       {required final List<String> values,
       final List<Modifier> modifiers = const [],
       final String? $type})
@@ -1209,8 +1216,8 @@ class _$EnumField with DiagnosticableTreeMixin implements EnumField {
         _modifiers = modifiers,
         $type = $type ?? 'enum';
 
-  factory _$EnumField.fromJson(Map<String, dynamic> json) =>
-      _$$EnumFieldFromJson(json);
+  factory _$EnumFieldImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EnumFieldImplFromJson(json);
 
   final List<String> _values;
   @override
@@ -1250,7 +1257,7 @@ class _$EnumField with DiagnosticableTreeMixin implements EnumField {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EnumField &&
+            other is _$EnumFieldImpl &&
             const DeepCollectionEquality().equals(other._values, _values) &&
             const DeepCollectionEquality()
                 .equals(other._modifiers, _modifiers));
@@ -1266,8 +1273,8 @@ class _$EnumField with DiagnosticableTreeMixin implements EnumField {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$EnumFieldCopyWith<_$EnumField> get copyWith =>
-      __$$EnumFieldCopyWithImpl<_$EnumField>(this, _$identity);
+  _$$EnumFieldImplCopyWith<_$EnumFieldImpl> get copyWith =>
+      __$$EnumFieldImplCopyWithImpl<_$EnumFieldImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1390,7 +1397,7 @@ class _$EnumField with DiagnosticableTreeMixin implements EnumField {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$EnumFieldToJson(
+    return _$$EnumFieldImplToJson(
       this,
     );
   }
@@ -1399,24 +1406,26 @@ class _$EnumField with DiagnosticableTreeMixin implements EnumField {
 abstract class EnumField implements FieldInfo {
   const factory EnumField(
       {required final List<String> values,
-      final List<Modifier> modifiers}) = _$EnumField;
+      final List<Modifier> modifiers}) = _$EnumFieldImpl;
 
-  factory EnumField.fromJson(Map<String, dynamic> json) = _$EnumField.fromJson;
+  factory EnumField.fromJson(Map<String, dynamic> json) =
+      _$EnumFieldImpl.fromJson;
 
   List<String> get values;
   @override
   List<Modifier> get modifiers;
   @override
   @JsonKey(ignore: true)
-  _$$EnumFieldCopyWith<_$EnumField> get copyWith =>
+  _$$EnumFieldImplCopyWith<_$EnumFieldImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ListFieldCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
-  factory _$$ListFieldCopyWith(
-          _$ListField value, $Res Function(_$ListField) then) =
-      __$$ListFieldCopyWithImpl<$Res>;
+abstract class _$$ListFieldImplCopyWith<$Res>
+    implements $FieldInfoCopyWith<$Res> {
+  factory _$$ListFieldImplCopyWith(
+          _$ListFieldImpl value, $Res Function(_$ListFieldImpl) then) =
+      __$$ListFieldImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({FieldInfo type, List<Modifier> modifiers});
@@ -1425,11 +1434,11 @@ abstract class _$$ListFieldCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$ListFieldCopyWithImpl<$Res>
-    extends _$FieldInfoCopyWithImpl<$Res, _$ListField>
-    implements _$$ListFieldCopyWith<$Res> {
-  __$$ListFieldCopyWithImpl(
-      _$ListField _value, $Res Function(_$ListField) _then)
+class __$$ListFieldImplCopyWithImpl<$Res>
+    extends _$FieldInfoCopyWithImpl<$Res, _$ListFieldImpl>
+    implements _$$ListFieldImplCopyWith<$Res> {
+  __$$ListFieldImplCopyWithImpl(
+      _$ListFieldImpl _value, $Res Function(_$ListFieldImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1438,7 +1447,7 @@ class __$$ListFieldCopyWithImpl<$Res>
     Object? type = null,
     Object? modifiers = null,
   }) {
-    return _then(_$ListField(
+    return _then(_$ListFieldImpl(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -1461,16 +1470,16 @@ class __$$ListFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ListField with DiagnosticableTreeMixin implements ListField {
-  const _$ListField(
+class _$ListFieldImpl with DiagnosticableTreeMixin implements ListField {
+  const _$ListFieldImpl(
       {required this.type,
       final List<Modifier> modifiers = const [],
       final String? $type})
       : _modifiers = modifiers,
         $type = $type ?? 'list';
 
-  factory _$ListField.fromJson(Map<String, dynamic> json) =>
-      _$$ListFieldFromJson(json);
+  factory _$ListFieldImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ListFieldImplFromJson(json);
 
   @override
   final FieldInfo type;
@@ -1504,7 +1513,7 @@ class _$ListField with DiagnosticableTreeMixin implements ListField {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ListField &&
+            other is _$ListFieldImpl &&
             (identical(other.type, type) || other.type == type) &&
             const DeepCollectionEquality()
                 .equals(other._modifiers, _modifiers));
@@ -1518,8 +1527,8 @@ class _$ListField with DiagnosticableTreeMixin implements ListField {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ListFieldCopyWith<_$ListField> get copyWith =>
-      __$$ListFieldCopyWithImpl<_$ListField>(this, _$identity);
+  _$$ListFieldImplCopyWith<_$ListFieldImpl> get copyWith =>
+      __$$ListFieldImplCopyWithImpl<_$ListFieldImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1642,7 +1651,7 @@ class _$ListField with DiagnosticableTreeMixin implements ListField {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ListFieldToJson(
+    return _$$ListFieldImplToJson(
       this,
     );
   }
@@ -1651,24 +1660,26 @@ class _$ListField with DiagnosticableTreeMixin implements ListField {
 abstract class ListField implements FieldInfo {
   const factory ListField(
       {required final FieldInfo type,
-      final List<Modifier> modifiers}) = _$ListField;
+      final List<Modifier> modifiers}) = _$ListFieldImpl;
 
-  factory ListField.fromJson(Map<String, dynamic> json) = _$ListField.fromJson;
+  factory ListField.fromJson(Map<String, dynamic> json) =
+      _$ListFieldImpl.fromJson;
 
   FieldInfo get type;
   @override
   List<Modifier> get modifiers;
   @override
   @JsonKey(ignore: true)
-  _$$ListFieldCopyWith<_$ListField> get copyWith =>
+  _$$ListFieldImplCopyWith<_$ListFieldImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$MapFieldCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
-  factory _$$MapFieldCopyWith(
-          _$MapField value, $Res Function(_$MapField) then) =
-      __$$MapFieldCopyWithImpl<$Res>;
+abstract class _$$MapFieldImplCopyWith<$Res>
+    implements $FieldInfoCopyWith<$Res> {
+  factory _$$MapFieldImplCopyWith(
+          _$MapFieldImpl value, $Res Function(_$MapFieldImpl) then) =
+      __$$MapFieldImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({FieldInfo key, FieldInfo value, List<Modifier> modifiers});
@@ -1678,10 +1689,11 @@ abstract class _$$MapFieldCopyWith<$Res> implements $FieldInfoCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$MapFieldCopyWithImpl<$Res>
-    extends _$FieldInfoCopyWithImpl<$Res, _$MapField>
-    implements _$$MapFieldCopyWith<$Res> {
-  __$$MapFieldCopyWithImpl(_$MapField _value, $Res Function(_$MapField) _then)
+class __$$MapFieldImplCopyWithImpl<$Res>
+    extends _$FieldInfoCopyWithImpl<$Res, _$MapFieldImpl>
+    implements _$$MapFieldImplCopyWith<$Res> {
+  __$$MapFieldImplCopyWithImpl(
+      _$MapFieldImpl _value, $Res Function(_$MapFieldImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1691,7 +1703,7 @@ class __$$MapFieldCopyWithImpl<$Res>
     Object? value = null,
     Object? modifiers = null,
   }) {
-    return _then(_$MapField(
+    return _then(_$MapFieldImpl(
       key: null == key
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
@@ -1726,8 +1738,8 @@ class __$$MapFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$MapField with DiagnosticableTreeMixin implements MapField {
-  const _$MapField(
+class _$MapFieldImpl with DiagnosticableTreeMixin implements MapField {
+  const _$MapFieldImpl(
       {required this.key,
       required this.value,
       final List<Modifier> modifiers = const [],
@@ -1735,8 +1747,8 @@ class _$MapField with DiagnosticableTreeMixin implements MapField {
       : _modifiers = modifiers,
         $type = $type ?? 'map';
 
-  factory _$MapField.fromJson(Map<String, dynamic> json) =>
-      _$$MapFieldFromJson(json);
+  factory _$MapFieldImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MapFieldImplFromJson(json);
 
   @override
   final FieldInfo key;
@@ -1773,7 +1785,7 @@ class _$MapField with DiagnosticableTreeMixin implements MapField {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MapField &&
+            other is _$MapFieldImpl &&
             (identical(other.key, key) || other.key == key) &&
             (identical(other.value, value) || other.value == value) &&
             const DeepCollectionEquality()
@@ -1788,8 +1800,8 @@ class _$MapField with DiagnosticableTreeMixin implements MapField {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$MapFieldCopyWith<_$MapField> get copyWith =>
-      __$$MapFieldCopyWithImpl<_$MapField>(this, _$identity);
+  _$$MapFieldImplCopyWith<_$MapFieldImpl> get copyWith =>
+      __$$MapFieldImplCopyWithImpl<_$MapFieldImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1912,7 +1924,7 @@ class _$MapField with DiagnosticableTreeMixin implements MapField {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$MapFieldToJson(
+    return _$$MapFieldImplToJson(
       this,
     );
   }
@@ -1922,9 +1934,10 @@ abstract class MapField implements FieldInfo {
   const factory MapField(
       {required final FieldInfo key,
       required final FieldInfo value,
-      final List<Modifier> modifiers}) = _$MapField;
+      final List<Modifier> modifiers}) = _$MapFieldImpl;
 
-  factory MapField.fromJson(Map<String, dynamic> json) = _$MapField.fromJson;
+  factory MapField.fromJson(Map<String, dynamic> json) =
+      _$MapFieldImpl.fromJson;
 
   FieldInfo get key;
   FieldInfo get value;
@@ -1932,27 +1945,27 @@ abstract class MapField implements FieldInfo {
   List<Modifier> get modifiers;
   @override
   @JsonKey(ignore: true)
-  _$$MapFieldCopyWith<_$MapField> get copyWith =>
+  _$$MapFieldImplCopyWith<_$MapFieldImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ObjectFieldCopyWith<$Res>
+abstract class _$$ObjectFieldImplCopyWith<$Res>
     implements $FieldInfoCopyWith<$Res> {
-  factory _$$ObjectFieldCopyWith(
-          _$ObjectField value, $Res Function(_$ObjectField) then) =
-      __$$ObjectFieldCopyWithImpl<$Res>;
+  factory _$$ObjectFieldImplCopyWith(
+          _$ObjectFieldImpl value, $Res Function(_$ObjectFieldImpl) then) =
+      __$$ObjectFieldImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({Map<String, FieldInfo> fields, List<Modifier> modifiers});
 }
 
 /// @nodoc
-class __$$ObjectFieldCopyWithImpl<$Res>
-    extends _$FieldInfoCopyWithImpl<$Res, _$ObjectField>
-    implements _$$ObjectFieldCopyWith<$Res> {
-  __$$ObjectFieldCopyWithImpl(
-      _$ObjectField _value, $Res Function(_$ObjectField) _then)
+class __$$ObjectFieldImplCopyWithImpl<$Res>
+    extends _$FieldInfoCopyWithImpl<$Res, _$ObjectFieldImpl>
+    implements _$$ObjectFieldImplCopyWith<$Res> {
+  __$$ObjectFieldImplCopyWithImpl(
+      _$ObjectFieldImpl _value, $Res Function(_$ObjectFieldImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1961,7 +1974,7 @@ class __$$ObjectFieldCopyWithImpl<$Res>
     Object? fields = null,
     Object? modifiers = null,
   }) {
-    return _then(_$ObjectField(
+    return _then(_$ObjectFieldImpl(
       fields: null == fields
           ? _value._fields
           : fields // ignore: cast_nullable_to_non_nullable
@@ -1976,8 +1989,8 @@ class __$$ObjectFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ObjectField with DiagnosticableTreeMixin implements ObjectField {
-  const _$ObjectField(
+class _$ObjectFieldImpl with DiagnosticableTreeMixin implements ObjectField {
+  const _$ObjectFieldImpl(
       {required final Map<String, FieldInfo> fields,
       final List<Modifier> modifiers = const [],
       final String? $type})
@@ -1985,8 +1998,8 @@ class _$ObjectField with DiagnosticableTreeMixin implements ObjectField {
         _modifiers = modifiers,
         $type = $type ?? 'object';
 
-  factory _$ObjectField.fromJson(Map<String, dynamic> json) =>
-      _$$ObjectFieldFromJson(json);
+  factory _$ObjectFieldImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ObjectFieldImplFromJson(json);
 
   final Map<String, FieldInfo> _fields;
   @override
@@ -2026,7 +2039,7 @@ class _$ObjectField with DiagnosticableTreeMixin implements ObjectField {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ObjectField &&
+            other is _$ObjectFieldImpl &&
             const DeepCollectionEquality().equals(other._fields, _fields) &&
             const DeepCollectionEquality()
                 .equals(other._modifiers, _modifiers));
@@ -2042,8 +2055,8 @@ class _$ObjectField with DiagnosticableTreeMixin implements ObjectField {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ObjectFieldCopyWith<_$ObjectField> get copyWith =>
-      __$$ObjectFieldCopyWithImpl<_$ObjectField>(this, _$identity);
+  _$$ObjectFieldImplCopyWith<_$ObjectFieldImpl> get copyWith =>
+      __$$ObjectFieldImplCopyWithImpl<_$ObjectFieldImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -2166,7 +2179,7 @@ class _$ObjectField with DiagnosticableTreeMixin implements ObjectField {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ObjectFieldToJson(
+    return _$$ObjectFieldImplToJson(
       this,
     );
   }
@@ -2175,26 +2188,26 @@ class _$ObjectField with DiagnosticableTreeMixin implements ObjectField {
 abstract class ObjectField implements FieldInfo {
   const factory ObjectField(
       {required final Map<String, FieldInfo> fields,
-      final List<Modifier> modifiers}) = _$ObjectField;
+      final List<Modifier> modifiers}) = _$ObjectFieldImpl;
 
   factory ObjectField.fromJson(Map<String, dynamic> json) =
-      _$ObjectField.fromJson;
+      _$ObjectFieldImpl.fromJson;
 
   Map<String, FieldInfo> get fields;
   @override
   List<Modifier> get modifiers;
   @override
   @JsonKey(ignore: true)
-  _$$ObjectFieldCopyWith<_$ObjectField> get copyWith =>
+  _$$ObjectFieldImplCopyWith<_$ObjectFieldImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$CustomFieldCopyWith<$Res>
+abstract class _$$CustomFieldImplCopyWith<$Res>
     implements $FieldInfoCopyWith<$Res> {
-  factory _$$CustomFieldCopyWith(
-          _$CustomField value, $Res Function(_$CustomField) then) =
-      __$$CustomFieldCopyWithImpl<$Res>;
+  factory _$$CustomFieldImplCopyWith(
+          _$CustomFieldImpl value, $Res Function(_$CustomFieldImpl) then) =
+      __$$CustomFieldImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -2207,11 +2220,11 @@ abstract class _$$CustomFieldCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$CustomFieldCopyWithImpl<$Res>
-    extends _$FieldInfoCopyWithImpl<$Res, _$CustomField>
-    implements _$$CustomFieldCopyWith<$Res> {
-  __$$CustomFieldCopyWithImpl(
-      _$CustomField _value, $Res Function(_$CustomField) _then)
+class __$$CustomFieldImplCopyWithImpl<$Res>
+    extends _$FieldInfoCopyWithImpl<$Res, _$CustomFieldImpl>
+    implements _$$CustomFieldImplCopyWith<$Res> {
+  __$$CustomFieldImplCopyWithImpl(
+      _$CustomFieldImpl _value, $Res Function(_$CustomFieldImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -2222,7 +2235,7 @@ class __$$CustomFieldCopyWithImpl<$Res>
     Object? fieldInfo = freezed,
     Object? modifiers = null,
   }) {
-    return _then(_$CustomField(
+    return _then(_$CustomFieldImpl(
       editor: null == editor
           ? _value.editor
           : editor // ignore: cast_nullable_to_non_nullable
@@ -2257,8 +2270,8 @@ class __$$CustomFieldCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$CustomField with DiagnosticableTreeMixin implements CustomField {
-  const _$CustomField(
+class _$CustomFieldImpl with DiagnosticableTreeMixin implements CustomField {
+  const _$CustomFieldImpl(
       {required this.editor,
       @JsonKey(name: "default") this.defaultValue,
       this.fieldInfo,
@@ -2267,8 +2280,8 @@ class _$CustomField with DiagnosticableTreeMixin implements CustomField {
       : _modifiers = modifiers,
         $type = $type ?? 'custom';
 
-  factory _$CustomField.fromJson(Map<String, dynamic> json) =>
-      _$$CustomFieldFromJson(json);
+  factory _$CustomFieldImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CustomFieldImplFromJson(json);
 
   @override
   final String editor;
@@ -2309,7 +2322,7 @@ class _$CustomField with DiagnosticableTreeMixin implements CustomField {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CustomField &&
+            other is _$CustomFieldImpl &&
             (identical(other.editor, editor) || other.editor == editor) &&
             const DeepCollectionEquality()
                 .equals(other.defaultValue, defaultValue) &&
@@ -2331,8 +2344,8 @@ class _$CustomField with DiagnosticableTreeMixin implements CustomField {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$CustomFieldCopyWith<_$CustomField> get copyWith =>
-      __$$CustomFieldCopyWithImpl<_$CustomField>(this, _$identity);
+  _$$CustomFieldImplCopyWith<_$CustomFieldImpl> get copyWith =>
+      __$$CustomFieldImplCopyWithImpl<_$CustomFieldImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -2455,7 +2468,7 @@ class _$CustomField with DiagnosticableTreeMixin implements CustomField {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$CustomFieldToJson(
+    return _$$CustomFieldImplToJson(
       this,
     );
   }
@@ -2466,10 +2479,10 @@ abstract class CustomField implements FieldInfo {
       {required final String editor,
       @JsonKey(name: "default") final dynamic defaultValue,
       final FieldInfo? fieldInfo,
-      final List<Modifier> modifiers}) = _$CustomField;
+      final List<Modifier> modifiers}) = _$CustomFieldImpl;
 
   factory CustomField.fromJson(Map<String, dynamic> json) =
-      _$CustomField.fromJson;
+      _$CustomFieldImpl.fromJson;
 
   String get editor;
   @JsonKey(name: "default")
@@ -2479,7 +2492,7 @@ abstract class CustomField implements FieldInfo {
   List<Modifier> get modifiers;
   @override
   @JsonKey(ignore: true)
-  _$$CustomFieldCopyWith<_$CustomField> get copyWith =>
+  _$$CustomFieldImplCopyWith<_$CustomFieldImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -2536,21 +2549,22 @@ class _$ModifierCopyWithImpl<$Res, $Val extends Modifier>
 }
 
 /// @nodoc
-abstract class _$$_ModifierCopyWith<$Res> implements $ModifierCopyWith<$Res> {
-  factory _$$_ModifierCopyWith(
-          _$_Modifier value, $Res Function(_$_Modifier) then) =
-      __$$_ModifierCopyWithImpl<$Res>;
+abstract class _$$ModifierImplCopyWith<$Res>
+    implements $ModifierCopyWith<$Res> {
+  factory _$$ModifierImplCopyWith(
+          _$ModifierImpl value, $Res Function(_$ModifierImpl) then) =
+      __$$ModifierImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, dynamic data});
 }
 
 /// @nodoc
-class __$$_ModifierCopyWithImpl<$Res>
-    extends _$ModifierCopyWithImpl<$Res, _$_Modifier>
-    implements _$$_ModifierCopyWith<$Res> {
-  __$$_ModifierCopyWithImpl(
-      _$_Modifier _value, $Res Function(_$_Modifier) _then)
+class __$$ModifierImplCopyWithImpl<$Res>
+    extends _$ModifierCopyWithImpl<$Res, _$ModifierImpl>
+    implements _$$ModifierImplCopyWith<$Res> {
+  __$$ModifierImplCopyWithImpl(
+      _$ModifierImpl _value, $Res Function(_$ModifierImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -2559,7 +2573,7 @@ class __$$_ModifierCopyWithImpl<$Res>
     Object? name = null,
     Object? data = freezed,
   }) {
-    return _then(_$_Modifier(
+    return _then(_$ModifierImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -2574,11 +2588,11 @@ class __$$_ModifierCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Modifier with DiagnosticableTreeMixin implements _Modifier {
-  const _$_Modifier({required this.name, this.data});
+class _$ModifierImpl with DiagnosticableTreeMixin implements _Modifier {
+  const _$ModifierImpl({required this.name, this.data});
 
-  factory _$_Modifier.fromJson(Map<String, dynamic> json) =>
-      _$$_ModifierFromJson(json);
+  factory _$ModifierImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ModifierImplFromJson(json);
 
   @override
   final String name;
@@ -2603,7 +2617,7 @@ class _$_Modifier with DiagnosticableTreeMixin implements _Modifier {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Modifier &&
+            other is _$ModifierImpl &&
             (identical(other.name, name) || other.name == name) &&
             const DeepCollectionEquality().equals(other.data, data));
   }
@@ -2616,12 +2630,12 @@ class _$_Modifier with DiagnosticableTreeMixin implements _Modifier {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ModifierCopyWith<_$_Modifier> get copyWith =>
-      __$$_ModifierCopyWithImpl<_$_Modifier>(this, _$identity);
+  _$$ModifierImplCopyWith<_$ModifierImpl> get copyWith =>
+      __$$ModifierImplCopyWithImpl<_$ModifierImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ModifierToJson(
+    return _$$ModifierImplToJson(
       this,
     );
   }
@@ -2629,9 +2643,10 @@ class _$_Modifier with DiagnosticableTreeMixin implements _Modifier {
 
 abstract class _Modifier implements Modifier {
   const factory _Modifier({required final String name, final dynamic data}) =
-      _$_Modifier;
+      _$ModifierImpl;
 
-  factory _Modifier.fromJson(Map<String, dynamic> json) = _$_Modifier.fromJson;
+  factory _Modifier.fromJson(Map<String, dynamic> json) =
+      _$ModifierImpl.fromJson;
 
   @override
   String get name;
@@ -2639,6 +2654,6 @@ abstract class _Modifier implements Modifier {
   dynamic get data;
   @override
   @JsonKey(ignore: true)
-  _$$_ModifierCopyWith<_$_Modifier> get copyWith =>
+  _$$ModifierImplCopyWith<_$ModifierImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

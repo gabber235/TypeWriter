@@ -44,8 +44,6 @@ class _SystemHash {
   }
 }
 
-typedef _SegmentPathsRef = AutoDisposeProviderRef<Map<String, Modifier>>;
-
 /// See also [_segmentPaths].
 @ProviderFor(_segmentPaths)
 const _segmentPathsProvider = _SegmentPathsFamily();
@@ -92,10 +90,10 @@ class _SegmentPathsFamily extends Family<Map<String, Modifier>> {
 class _SegmentPathsProvider extends AutoDisposeProvider<Map<String, Modifier>> {
   /// See also [_segmentPaths].
   _SegmentPathsProvider(
-    this.entryId,
-  ) : super.internal(
+    String entryId,
+  ) : this._internal(
           (ref) => _segmentPaths(
-            ref,
+            ref as _SegmentPathsRef,
             entryId,
           ),
           from: _segmentPathsProvider,
@@ -107,9 +105,43 @@ class _SegmentPathsProvider extends AutoDisposeProvider<Map<String, Modifier>> {
           dependencies: _SegmentPathsFamily._dependencies,
           allTransitiveDependencies:
               _SegmentPathsFamily._allTransitiveDependencies,
+          entryId: entryId,
         );
 
+  _SegmentPathsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
   final String entryId;
+
+  @override
+  Override overrideWith(
+    Map<String, Modifier> Function(_SegmentPathsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _SegmentPathsProvider._internal(
+        (ref) => create(ref as _SegmentPathsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<Map<String, Modifier>> createElement() {
+    return _SegmentPathsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -125,8 +157,21 @@ class _SegmentPathsProvider extends AutoDisposeProvider<Map<String, Modifier>> {
   }
 }
 
+mixin _SegmentPathsRef on AutoDisposeProviderRef<Map<String, Modifier>> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _SegmentPathsProviderElement
+    extends AutoDisposeProviderElement<Map<String, Modifier>>
+    with _SegmentPathsRef {
+  _SegmentPathsProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as _SegmentPathsProvider).entryId;
+}
+
 String _$segmentsHash() => r'9a50f061be29058473384d5e95184ca25b3fc3de';
-typedef _SegmentsRef = AutoDisposeProviderRef<List<Segment>>;
 
 /// See also [_segments].
 @ProviderFor(_segments)
@@ -177,11 +222,11 @@ class _SegmentsFamily extends Family<List<Segment>> {
 class _SegmentsProvider extends AutoDisposeProvider<List<Segment>> {
   /// See also [_segments].
   _SegmentsProvider(
-    this.entryId,
-    this.path,
-  ) : super.internal(
+    String entryId,
+    String path,
+  ) : this._internal(
           (ref) => _segments(
-            ref,
+            ref as _SegmentsRef,
             entryId,
             path,
           ),
@@ -193,10 +238,47 @@ class _SegmentsProvider extends AutoDisposeProvider<List<Segment>> {
                   : _$segmentsHash,
           dependencies: _SegmentsFamily._dependencies,
           allTransitiveDependencies: _SegmentsFamily._allTransitiveDependencies,
+          entryId: entryId,
+          path: path,
         );
+
+  _SegmentsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+    required this.path,
+  }) : super.internal();
 
   final String entryId;
   final String path;
+
+  @override
+  Override overrideWith(
+    List<Segment> Function(_SegmentsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _SegmentsProvider._internal(
+        (ref) => create(ref as _SegmentsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+        path: path,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<Segment>> createElement() {
+    return _SegmentsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -215,8 +297,25 @@ class _SegmentsProvider extends AutoDisposeProvider<List<Segment>> {
   }
 }
 
+mixin _SegmentsRef on AutoDisposeProviderRef<List<Segment>> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+
+  /// The parameter `path` of this provider.
+  String get path;
+}
+
+class _SegmentsProviderElement extends AutoDisposeProviderElement<List<Segment>>
+    with _SegmentsRef {
+  _SegmentsProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as _SegmentsProvider).entryId;
+  @override
+  String get path => (origin as _SegmentsProvider).path;
+}
+
 String _$allSegmentsHash() => r'00ddff554f166898f9bb911168a5c18e369887ef';
-typedef _AllSegmentsRef = AutoDisposeProviderRef<List<Segment>>;
 
 /// See also [_allSegments].
 @ProviderFor(_allSegments)
@@ -264,10 +363,10 @@ class _AllSegmentsFamily extends Family<List<Segment>> {
 class _AllSegmentsProvider extends AutoDisposeProvider<List<Segment>> {
   /// See also [_allSegments].
   _AllSegmentsProvider(
-    this.entryId,
-  ) : super.internal(
+    String entryId,
+  ) : this._internal(
           (ref) => _allSegments(
-            ref,
+            ref as _AllSegmentsRef,
             entryId,
           ),
           from: _allSegmentsProvider,
@@ -279,9 +378,43 @@ class _AllSegmentsProvider extends AutoDisposeProvider<List<Segment>> {
           dependencies: _AllSegmentsFamily._dependencies,
           allTransitiveDependencies:
               _AllSegmentsFamily._allTransitiveDependencies,
+          entryId: entryId,
         );
 
+  _AllSegmentsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
   final String entryId;
+
+  @override
+  Override overrideWith(
+    List<Segment> Function(_AllSegmentsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _AllSegmentsProvider._internal(
+        (ref) => create(ref as _AllSegmentsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<Segment>> createElement() {
+    return _AllSegmentsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -297,8 +430,20 @@ class _AllSegmentsProvider extends AutoDisposeProvider<List<Segment>> {
   }
 }
 
+mixin _AllSegmentsRef on AutoDisposeProviderRef<List<Segment>> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _AllSegmentsProviderElement
+    extends AutoDisposeProviderElement<List<Segment>> with _AllSegmentsRef {
+  _AllSegmentsProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as _AllSegmentsProvider).entryId;
+}
+
 String _$endingFrameHash() => r'b1ee54645a8ea133a3e35488b84aeb79b9701544';
-typedef _EndingFrameRef = AutoDisposeProviderRef<int>;
 
 /// See also [_endingFrame].
 @ProviderFor(_endingFrame)
@@ -346,10 +491,10 @@ class _EndingFrameFamily extends Family<int> {
 class _EndingFrameProvider extends AutoDisposeProvider<int> {
   /// See also [_endingFrame].
   _EndingFrameProvider(
-    this.entryId,
-  ) : super.internal(
+    String entryId,
+  ) : this._internal(
           (ref) => _endingFrame(
-            ref,
+            ref as _EndingFrameRef,
             entryId,
           ),
           from: _endingFrameProvider,
@@ -361,9 +506,43 @@ class _EndingFrameProvider extends AutoDisposeProvider<int> {
           dependencies: _EndingFrameFamily._dependencies,
           allTransitiveDependencies:
               _EndingFrameFamily._allTransitiveDependencies,
+          entryId: entryId,
         );
 
+  _EndingFrameProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
   final String entryId;
+
+  @override
+  Override overrideWith(
+    int Function(_EndingFrameRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _EndingFrameProvider._internal(
+        (ref) => create(ref as _EndingFrameRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _EndingFrameProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -377,6 +556,19 @@ class _EndingFrameProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin _EndingFrameRef on AutoDisposeProviderRef<int> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _EndingFrameProviderElement extends AutoDisposeProviderElement<int>
+    with _EndingFrameRef {
+  _EndingFrameProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as _EndingFrameProvider).entryId;
 }
 
 String _$totalSequenceFramesHash() =>
@@ -499,7 +691,6 @@ final _timeFractionsProvider = AutoDisposeProvider<int>.internal(
 typedef _TimeFractionsRef = AutoDisposeProviderRef<int>;
 String _$timeFractionFramesHash() =>
     r'8015741ea21a16f837d627eefe543fbc6236db0f';
-typedef _TimeFractionFramesRef = AutoDisposeProviderRef<List<int>>;
 
 /// See also [_timeFractionFrames].
 @ProviderFor(_timeFractionFrames)
@@ -547,10 +738,10 @@ class _TimeFractionFramesFamily extends Family<List<int>> {
 class _TimeFractionFramesProvider extends AutoDisposeProvider<List<int>> {
   /// See also [_timeFractionFrames].
   _TimeFractionFramesProvider({
-    this.fractionModifier = 1.0,
-  }) : super.internal(
+    double fractionModifier = 1.0,
+  }) : this._internal(
           (ref) => _timeFractionFrames(
-            ref,
+            ref as _TimeFractionFramesRef,
             fractionModifier: fractionModifier,
           ),
           from: _timeFractionFramesProvider,
@@ -562,9 +753,43 @@ class _TimeFractionFramesProvider extends AutoDisposeProvider<List<int>> {
           dependencies: _TimeFractionFramesFamily._dependencies,
           allTransitiveDependencies:
               _TimeFractionFramesFamily._allTransitiveDependencies,
+          fractionModifier: fractionModifier,
         );
 
+  _TimeFractionFramesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.fractionModifier,
+  }) : super.internal();
+
   final double fractionModifier;
+
+  @override
+  Override overrideWith(
+    List<int> Function(_TimeFractionFramesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _TimeFractionFramesProvider._internal(
+        (ref) => create(ref as _TimeFractionFramesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        fractionModifier: fractionModifier,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<int>> createElement() {
+    return _TimeFractionFramesProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -581,8 +806,21 @@ class _TimeFractionFramesProvider extends AutoDisposeProvider<List<int>> {
   }
 }
 
+mixin _TimeFractionFramesRef on AutoDisposeProviderRef<List<int>> {
+  /// The parameter `fractionModifier` of this provider.
+  double get fractionModifier;
+}
+
+class _TimeFractionFramesProviderElement
+    extends AutoDisposeProviderElement<List<int>> with _TimeFractionFramesRef {
+  _TimeFractionFramesProviderElement(super.provider);
+
+  @override
+  double get fractionModifier =>
+      (origin as _TimeFractionFramesProvider).fractionModifier;
+}
+
 String _$timePointOffsetHash() => r'7498c13cafb7517b374493ac38ab8e5e3a3441d0';
-typedef _TimePointOffsetRef = AutoDisposeProviderRef<double>;
 
 /// See also [_timePointOffset].
 @ProviderFor(_timePointOffset)
@@ -633,11 +871,11 @@ class _TimePointOffsetFamily extends Family<double> {
 class _TimePointOffsetProvider extends AutoDisposeProvider<double> {
   /// See also [_timePointOffset].
   _TimePointOffsetProvider(
-    this.frame,
-    this.widgetWidth,
-  ) : super.internal(
+    int frame,
+    double widgetWidth,
+  ) : this._internal(
           (ref) => _timePointOffset(
-            ref,
+            ref as _TimePointOffsetRef,
             frame,
             widgetWidth,
           ),
@@ -650,10 +888,47 @@ class _TimePointOffsetProvider extends AutoDisposeProvider<double> {
           dependencies: _TimePointOffsetFamily._dependencies,
           allTransitiveDependencies:
               _TimePointOffsetFamily._allTransitiveDependencies,
+          frame: frame,
+          widgetWidth: widgetWidth,
         );
+
+  _TimePointOffsetProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.frame,
+    required this.widgetWidth,
+  }) : super.internal();
 
   final int frame;
   final double widgetWidth;
+
+  @override
+  Override overrideWith(
+    double Function(_TimePointOffsetRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _TimePointOffsetProvider._internal(
+        (ref) => create(ref as _TimePointOffsetRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        frame: frame,
+        widgetWidth: widgetWidth,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<double> createElement() {
+    return _TimePointOffsetProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -670,6 +945,24 @@ class _TimePointOffsetProvider extends AutoDisposeProvider<double> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin _TimePointOffsetRef on AutoDisposeProviderRef<double> {
+  /// The parameter `frame` of this provider.
+  int get frame;
+
+  /// The parameter `widgetWidth` of this provider.
+  double get widgetWidth;
+}
+
+class _TimePointOffsetProviderElement extends AutoDisposeProviderElement<double>
+    with _TimePointOffsetRef {
+  _TimePointOffsetProviderElement(super.provider);
+
+  @override
+  int get frame => (origin as _TimePointOffsetProvider).frame;
+  @override
+  double get widgetWidth => (origin as _TimePointOffsetProvider).widgetWidth;
 }
 
 String _$trackBackgroundFractionModifierHash() =>
@@ -707,7 +1000,6 @@ final _trackBackgroundLinesProvider =
 
 typedef _TrackBackgroundLinesRef = AutoDisposeProviderRef<List<_FrameLine>>;
 String _$frameStartOffsetHash() => r'13381822c602dddec85110a9b1c3855a47c07172';
-typedef _FrameStartOffsetRef = AutoDisposeProviderRef<double>;
 
 /// See also [_frameStartOffset].
 @ProviderFor(_frameStartOffset)
@@ -755,10 +1047,10 @@ class _FrameStartOffsetFamily extends Family<double> {
 class _FrameStartOffsetProvider extends AutoDisposeProvider<double> {
   /// See also [_frameStartOffset].
   _FrameStartOffsetProvider(
-    this.frame,
-  ) : super.internal(
+    int frame,
+  ) : this._internal(
           (ref) => _frameStartOffset(
-            ref,
+            ref as _FrameStartOffsetRef,
             frame,
           ),
           from: _frameStartOffsetProvider,
@@ -770,9 +1062,43 @@ class _FrameStartOffsetProvider extends AutoDisposeProvider<double> {
           dependencies: _FrameStartOffsetFamily._dependencies,
           allTransitiveDependencies:
               _FrameStartOffsetFamily._allTransitiveDependencies,
+          frame: frame,
         );
 
+  _FrameStartOffsetProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.frame,
+  }) : super.internal();
+
   final int frame;
+
+  @override
+  Override overrideWith(
+    double Function(_FrameStartOffsetRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _FrameStartOffsetProvider._internal(
+        (ref) => create(ref as _FrameStartOffsetRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        frame: frame,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<double> createElement() {
+    return _FrameStartOffsetProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -788,8 +1114,20 @@ class _FrameStartOffsetProvider extends AutoDisposeProvider<double> {
   }
 }
 
+mixin _FrameStartOffsetRef on AutoDisposeProviderRef<double> {
+  /// The parameter `frame` of this provider.
+  int get frame;
+}
+
+class _FrameStartOffsetProviderElement
+    extends AutoDisposeProviderElement<double> with _FrameStartOffsetRef {
+  _FrameStartOffsetProviderElement(super.provider);
+
+  @override
+  int get frame => (origin as _FrameStartOffsetProvider).frame;
+}
+
 String _$frameEndOffsetHash() => r'23292b810d25146945a92761725780a6c01c5616';
-typedef _FrameEndOffsetRef = AutoDisposeProviderRef<double>;
 
 /// See also [_frameEndOffset].
 @ProviderFor(_frameEndOffset)
@@ -837,10 +1175,10 @@ class _FrameEndOffsetFamily extends Family<double> {
 class _FrameEndOffsetProvider extends AutoDisposeProvider<double> {
   /// See also [_frameEndOffset].
   _FrameEndOffsetProvider(
-    this.frame,
-  ) : super.internal(
+    int frame,
+  ) : this._internal(
           (ref) => _frameEndOffset(
-            ref,
+            ref as _FrameEndOffsetRef,
             frame,
           ),
           from: _frameEndOffsetProvider,
@@ -852,9 +1190,43 @@ class _FrameEndOffsetProvider extends AutoDisposeProvider<double> {
           dependencies: _FrameEndOffsetFamily._dependencies,
           allTransitiveDependencies:
               _FrameEndOffsetFamily._allTransitiveDependencies,
+          frame: frame,
         );
 
+  _FrameEndOffsetProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.frame,
+  }) : super.internal();
+
   final int frame;
+
+  @override
+  Override overrideWith(
+    double Function(_FrameEndOffsetRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _FrameEndOffsetProvider._internal(
+        (ref) => create(ref as _FrameEndOffsetRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        frame: frame,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<double> createElement() {
+    return _FrameEndOffsetProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -870,8 +1242,20 @@ class _FrameEndOffsetProvider extends AutoDisposeProvider<double> {
   }
 }
 
+mixin _FrameEndOffsetRef on AutoDisposeProviderRef<double> {
+  /// The parameter `frame` of this provider.
+  int get frame;
+}
+
+class _FrameEndOffsetProviderElement extends AutoDisposeProviderElement<double>
+    with _FrameEndOffsetRef {
+  _FrameEndOffsetProviderElement(super.provider);
+
+  @override
+  int get frame => (origin as _FrameEndOffsetProvider).frame;
+}
+
 String _$showThumbsHash() => r'54d29c90b44317760879cbb63656a53fd73cced4';
-typedef _ShowThumbsRef = AutoDisposeProviderRef<bool>;
 
 /// See also [_showThumbs].
 @ProviderFor(_showThumbs)
@@ -922,11 +1306,11 @@ class _ShowThumbsFamily extends Family<bool> {
 class _ShowThumbsProvider extends AutoDisposeProvider<bool> {
   /// See also [_showThumbs].
   _ShowThumbsProvider(
-    this.startFrame,
-    this.endFrame,
-  ) : super.internal(
+    int startFrame,
+    int endFrame,
+  ) : this._internal(
           (ref) => _showThumbs(
-            ref,
+            ref as _ShowThumbsRef,
             startFrame,
             endFrame,
           ),
@@ -939,10 +1323,47 @@ class _ShowThumbsProvider extends AutoDisposeProvider<bool> {
           dependencies: _ShowThumbsFamily._dependencies,
           allTransitiveDependencies:
               _ShowThumbsFamily._allTransitiveDependencies,
+          startFrame: startFrame,
+          endFrame: endFrame,
         );
+
+  _ShowThumbsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.startFrame,
+    required this.endFrame,
+  }) : super.internal();
 
   final int startFrame;
   final int endFrame;
+
+  @override
+  Override overrideWith(
+    bool Function(_ShowThumbsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _ShowThumbsProvider._internal(
+        (ref) => create(ref as _ShowThumbsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        startFrame: startFrame,
+        endFrame: endFrame,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<bool> createElement() {
+    return _ShowThumbsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -959,6 +1380,24 @@ class _ShowThumbsProvider extends AutoDisposeProvider<bool> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin _ShowThumbsRef on AutoDisposeProviderRef<bool> {
+  /// The parameter `startFrame` of this provider.
+  int get startFrame;
+
+  /// The parameter `endFrame` of this provider.
+  int get endFrame;
+}
+
+class _ShowThumbsProviderElement extends AutoDisposeProviderElement<bool>
+    with _ShowThumbsRef {
+  _ShowThumbsProviderElement(super.provider);
+
+  @override
+  int get startFrame => (origin as _ShowThumbsProvider).startFrame;
+  @override
+  int get endFrame => (origin as _ShowThumbsProvider).endFrame;
 }
 
 String _$inspectingSegmentHash() => r'd7155fa87adad4c7e894d76ec98a91c9096f7632';
@@ -993,7 +1432,6 @@ final _ignoreEntryFieldsProvider = AutoDisposeProvider<List<String>>.internal(
 typedef _IgnoreEntryFieldsRef = AutoDisposeProviderRef<List<String>>;
 String _$entryContextActionsHash() =>
     r'28cdf01b3a0ee4838ebb303ef475c14c090b88c1';
-typedef _EntryContextActionsRef = AutoDisposeProviderRef<List<ContextMenuTile>>;
 
 /// See also [_entryContextActions].
 @ProviderFor(_entryContextActions)
@@ -1042,10 +1480,10 @@ class _EntryContextActionsProvider
     extends AutoDisposeProvider<List<ContextMenuTile>> {
   /// See also [_entryContextActions].
   _EntryContextActionsProvider(
-    this.entryId,
-  ) : super.internal(
+    String entryId,
+  ) : this._internal(
           (ref) => _entryContextActions(
-            ref,
+            ref as _EntryContextActionsRef,
             entryId,
           ),
           from: _entryContextActionsProvider,
@@ -1057,9 +1495,43 @@ class _EntryContextActionsProvider
           dependencies: _EntryContextActionsFamily._dependencies,
           allTransitiveDependencies:
               _EntryContextActionsFamily._allTransitiveDependencies,
+          entryId: entryId,
         );
 
+  _EntryContextActionsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
   final String entryId;
+
+  @override
+  Override overrideWith(
+    List<ContextMenuTile> Function(_EntryContextActionsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _EntryContextActionsProvider._internal(
+        (ref) => create(ref as _EntryContextActionsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<ContextMenuTile>> createElement() {
+    return _EntryContextActionsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -1073,6 +1545,20 @@ class _EntryContextActionsProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin _EntryContextActionsRef on AutoDisposeProviderRef<List<ContextMenuTile>> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _EntryContextActionsProviderElement
+    extends AutoDisposeProviderElement<List<ContextMenuTile>>
+    with _EntryContextActionsRef {
+  _EntryContextActionsProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as _EntryContextActionsProvider).entryId;
 }
 
 String _$segmentFieldsHash() => r'50de8ece747eb6fbdd3c504f30873d7546d54b50';
@@ -1091,4 +1577,4 @@ final _segmentFieldsProvider = AutoDisposeProvider<ObjectField?>.internal(
 
 typedef _SegmentFieldsRef = AutoDisposeProviderRef<ObjectField?>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -55,15 +55,9 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     ErrorConnectRoute.name: (routeData) {
-      final args = routeData.argsAs<ErrorConnectRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: ErrorConnectPage(
-          hostname: args.hostname,
-          port: args.port,
-          token: args.token,
-          key: args.key,
-        ),
+        child: const ErrorConnectPage(),
       );
     },
     HomeRoute.name: (routeData) {
@@ -176,50 +170,16 @@ class EmptyPageEditorRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [ErrorConnectPage]
-class ErrorConnectRoute extends PageRouteInfo<ErrorConnectRouteArgs> {
-  ErrorConnectRoute({
-    required String hostname,
-    required int port,
-    String? token,
-    Key? key,
-    List<PageRouteInfo>? children,
-  }) : super(
+class ErrorConnectRoute extends PageRouteInfo<void> {
+  const ErrorConnectRoute({List<PageRouteInfo>? children})
+      : super(
           ErrorConnectRoute.name,
-          args: ErrorConnectRouteArgs(
-            hostname: hostname,
-            port: port,
-            token: token,
-            key: key,
-          ),
           initialChildren: children,
         );
 
   static const String name = 'ErrorConnectRoute';
 
-  static const PageInfo<ErrorConnectRouteArgs> page =
-      PageInfo<ErrorConnectRouteArgs>(name);
-}
-
-class ErrorConnectRouteArgs {
-  const ErrorConnectRouteArgs({
-    required this.hostname,
-    required this.port,
-    this.token,
-    this.key,
-  });
-
-  final String hostname;
-
-  final int port;
-
-  final String? token;
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'ErrorConnectRouteArgs{hostname: $hostname, port: $port, token: $token, key: $key}';
-  }
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

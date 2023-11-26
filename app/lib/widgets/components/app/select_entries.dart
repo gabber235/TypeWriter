@@ -14,7 +14,8 @@ import "package:typewriter/widgets/components/general/filled_button.dart";
 part "select_entries.freezed.dart";
 part "select_entries.g.dart";
 
-final entrySelectionProvider = StateNotifierProvider.autoDispose<EntriesSelectionNotifier, EntriesSelection?>((ref) {
+final entrySelectionProvider = StateNotifierProvider.autoDispose<
+    EntriesSelectionNotifier, EntriesSelection?>((ref) {
   return EntriesSelectionNotifier(ref);
 });
 
@@ -44,7 +45,8 @@ bool canSelectEntry(CanSelectEntryRef ref, String id) {
   if (selection.excludedEntries.contains(id)) {
     return false;
   }
-  final entryType = ref.watch(globalEntryProvider(id).select((entry) => entry?.type));
+  final entryType =
+      ref.watch(globalEntryProvider(id).select((entry) => entry?.type));
   if (entryType == null) {
     return false;
   }
@@ -112,13 +114,19 @@ class EntriesSelectionNotifier extends StateNotifier<EntriesSelection?> {
   }
 
   void selectEntry(String entryId) {
-    _modifySelection((selection) => selection.copyWith(selectedEntries: [...selection.selectedEntries, entryId]));
+    _modifySelection(
+      (selection) => selection.copyWith(
+        selectedEntries: [...selection.selectedEntries, entryId],
+      ),
+    );
   }
 
   void unselectEntry(String entryId) {
     _modifySelection(
-      (selection) =>
-          selection.copyWith(selectedEntries: selection.selectedEntries.where((id) => id != entryId).toList()),
+      (selection) => selection.copyWith(
+        selectedEntries:
+            selection.selectedEntries.where((id) => id != entryId).toList(),
+      ),
     );
   }
 
@@ -182,7 +190,8 @@ class EntriesSelectorInspector extends HookConsumerWidget {
     return Actions(
       actions: {
         ActivateIntent: CallbackAction(onInvoke: (intent) => _finish(ref)),
-        ButtonActivateIntent: CallbackAction(onInvoke: (intent) => _finish(ref)),
+        ButtonActivateIntent:
+            CallbackAction(onInvoke: (intent) => _finish(ref)),
         DismissIntent: CallbackAction(onInvoke: (intent) => _cancel(ref)),
       },
       child: Padding(
@@ -193,7 +202,10 @@ class EntriesSelectorInspector extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              Text("Selected $tag", style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                "Selected $tag",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
               const SizedBox(height: 12),
               Text(
                 "Click on any $tag in the editor to (un)select it.\n\nHere you can see the list of selected ${tag}s:",
@@ -229,7 +241,7 @@ class EntriesSelectorInspector extends HookConsumerWidget {
 }
 
 class _EntriesSelectorList extends HookConsumerWidget {
-  const _EntriesSelectorList({super.key});
+  const _EntriesSelectorList();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

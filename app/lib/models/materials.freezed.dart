@@ -74,22 +74,22 @@ class _$MinecraftMaterialCopyWithImpl<$Res, $Val extends MinecraftMaterial>
 }
 
 /// @nodoc
-abstract class _$$_MinecraftMaterialCopyWith<$Res>
+abstract class _$$MinecraftMaterialImplCopyWith<$Res>
     implements $MinecraftMaterialCopyWith<$Res> {
-  factory _$$_MinecraftMaterialCopyWith(_$_MinecraftMaterial value,
-          $Res Function(_$_MinecraftMaterial) then) =
-      __$$_MinecraftMaterialCopyWithImpl<$Res>;
+  factory _$$MinecraftMaterialImplCopyWith(_$MinecraftMaterialImpl value,
+          $Res Function(_$MinecraftMaterialImpl) then) =
+      __$$MinecraftMaterialImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, List<MaterialProperty> properties, String icon});
 }
 
 /// @nodoc
-class __$$_MinecraftMaterialCopyWithImpl<$Res>
-    extends _$MinecraftMaterialCopyWithImpl<$Res, _$_MinecraftMaterial>
-    implements _$$_MinecraftMaterialCopyWith<$Res> {
-  __$$_MinecraftMaterialCopyWithImpl(
-      _$_MinecraftMaterial _value, $Res Function(_$_MinecraftMaterial) _then)
+class __$$MinecraftMaterialImplCopyWithImpl<$Res>
+    extends _$MinecraftMaterialCopyWithImpl<$Res, _$MinecraftMaterialImpl>
+    implements _$$MinecraftMaterialImplCopyWith<$Res> {
+  __$$MinecraftMaterialImplCopyWithImpl(_$MinecraftMaterialImpl _value,
+      $Res Function(_$MinecraftMaterialImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -99,7 +99,7 @@ class __$$_MinecraftMaterialCopyWithImpl<$Res>
     Object? properties = null,
     Object? icon = null,
   }) {
-    return _then(_$_MinecraftMaterial(
+    return _then(_$MinecraftMaterialImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -118,15 +118,15 @@ class __$$_MinecraftMaterialCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_MinecraftMaterial implements _MinecraftMaterial {
-  const _$_MinecraftMaterial(
+class _$MinecraftMaterialImpl implements _MinecraftMaterial {
+  const _$MinecraftMaterialImpl(
       {required this.name,
       required final List<MaterialProperty> properties,
       required this.icon})
       : _properties = properties;
 
-  factory _$_MinecraftMaterial.fromJson(Map<String, dynamic> json) =>
-      _$$_MinecraftMaterialFromJson(json);
+  factory _$MinecraftMaterialImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MinecraftMaterialImplFromJson(json);
 
   @override
   final String name;
@@ -150,7 +150,7 @@ class _$_MinecraftMaterial implements _MinecraftMaterial {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MinecraftMaterial &&
+            other is _$MinecraftMaterialImpl &&
             (identical(other.name, name) || other.name == name) &&
             const DeepCollectionEquality()
                 .equals(other._properties, _properties) &&
@@ -165,13 +165,13 @@ class _$_MinecraftMaterial implements _MinecraftMaterial {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MinecraftMaterialCopyWith<_$_MinecraftMaterial> get copyWith =>
-      __$$_MinecraftMaterialCopyWithImpl<_$_MinecraftMaterial>(
+  _$$MinecraftMaterialImplCopyWith<_$MinecraftMaterialImpl> get copyWith =>
+      __$$MinecraftMaterialImplCopyWithImpl<_$MinecraftMaterialImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_MinecraftMaterialToJson(
+    return _$$MinecraftMaterialImplToJson(
       this,
     );
   }
@@ -181,10 +181,10 @@ abstract class _MinecraftMaterial implements MinecraftMaterial {
   const factory _MinecraftMaterial(
       {required final String name,
       required final List<MaterialProperty> properties,
-      required final String icon}) = _$_MinecraftMaterial;
+      required final String icon}) = _$MinecraftMaterialImpl;
 
   factory _MinecraftMaterial.fromJson(Map<String, dynamic> json) =
-      _$_MinecraftMaterial.fromJson;
+      _$MinecraftMaterialImpl.fromJson;
 
   @override
   String get name;
@@ -194,6 +194,6 @@ abstract class _MinecraftMaterial implements MinecraftMaterial {
   String get icon;
   @override
   @JsonKey(ignore: true)
-  _$$_MinecraftMaterialCopyWith<_$_MinecraftMaterial> get copyWith =>
+  _$$MinecraftMaterialImplCopyWith<_$MinecraftMaterialImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

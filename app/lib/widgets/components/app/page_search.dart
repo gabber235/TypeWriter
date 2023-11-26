@@ -45,12 +45,15 @@ Fuzzy<Page> _fuzzyPages(_FuzzyPagesRef ref) {
     pages,
     options: FuzzyOptions(
       threshold: 0.4,
-      sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
+      sortFn: (a, b) => a.matches
+          .map((e) => e.score)
+          .sum
+          .compareTo(b.matches.map((e) => e.score).sum),
       keys: [
         WeightedKey(
           name: "name",
           weight: 0.8,
-          getter: (page) => page.name.formatted,
+          getter: (page) => page.pageName.formatted,
         ),
         WeightedKey(
           name: "type",
@@ -149,7 +152,7 @@ class PageSearchElement extends SearchElement {
   final FutureOr<bool?> Function(Page)? onSelect;
 
   @override
-  String get title => page.name.formatted;
+  String get title => page.pageName.formatted;
 
   @override
   String description(BuildContext context) => page.type.name;
@@ -180,7 +183,7 @@ class PageSearchElement extends SearchElement {
       return await onSelect?.call(page) ?? true;
     }
 
-    await ref.read(appRouter).navigateToPage(ref, page.name);
+    await ref.read(appRouter).navigateToPage(ref, page.pageName);
     return true;
   }
 }
@@ -221,7 +224,8 @@ class AddPageSearchElement extends SearchElement {
   Future<bool> activate(BuildContext context, PassingRef ref) async {
     final pageName = await showDialog<String>(
       context: context,
-      builder: (context) => AddPageDialogue(fixedType: type, autoNavigate: false),
+      builder: (context) =>
+          AddPageDialogue(fixedType: type, autoNavigate: false),
     );
 
     if (pageName == null) return false;

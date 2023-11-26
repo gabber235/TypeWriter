@@ -7,7 +7,7 @@ part of 'header.dart';
 // **************************************************************************
 
 String _$headerActionFiltersHash() =>
-    r'0290955ac2fcfeeade281d24b9fd661d2ba3c2ce';
+    r'1948745106f42d9109becc8ea5068801689ece7a';
 
 /// See also [headerActionFilters].
 @ProviderFor(headerActionFilters)
@@ -25,4 +25,4 @@ final headerActionFiltersProvider =
 typedef HeaderActionFiltersRef
     = AutoDisposeProviderRef<List<HeaderActionFilter>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$_PageData {
+mixin _$PageData {
   String get name => throw _privateConstructorUsedError;
   PageType get type => throw _privateConstructorUsedError;
 
@@ -62,21 +62,22 @@ class __$PageDataCopyWithImpl<$Res, $Val extends _PageData>
 }
 
 /// @nodoc
-abstract class _$$_$PageDataCopyWith<$Res> implements _$PageDataCopyWith<$Res> {
-  factory _$$_$PageDataCopyWith(
-          _$_$PageData value, $Res Function(_$_$PageData) then) =
-      __$$_$PageDataCopyWithImpl<$Res>;
+abstract class _$$$__PageDataImplCopyWith<$Res>
+    implements _$PageDataCopyWith<$Res> {
+  factory _$$$__PageDataImplCopyWith(
+          _$$__PageDataImpl value, $Res Function(_$$__PageDataImpl) then) =
+      __$$$__PageDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, PageType type});
 }
 
 /// @nodoc
-class __$$_$PageDataCopyWithImpl<$Res>
-    extends __$PageDataCopyWithImpl<$Res, _$_$PageData>
-    implements _$$_$PageDataCopyWith<$Res> {
-  __$$_$PageDataCopyWithImpl(
-      _$_$PageData _value, $Res Function(_$_$PageData) _then)
+class __$$$__PageDataImplCopyWithImpl<$Res>
+    extends __$PageDataCopyWithImpl<$Res, _$$__PageDataImpl>
+    implements _$$$__PageDataImplCopyWith<$Res> {
+  __$$$__PageDataImplCopyWithImpl(
+      _$$__PageDataImpl _value, $Res Function(_$$__PageDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -85,7 +86,7 @@ class __$$_$PageDataCopyWithImpl<$Res>
     Object? name = null,
     Object? type = null,
   }) {
-    return _then(_$_$PageData(
+    return _then(_$$__PageDataImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -100,8 +101,8 @@ class __$$_$PageDataCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_$PageData implements _$PageData {
-  const _$_$PageData({required this.name, required this.type});
+class _$$__PageDataImpl implements _$__PageData {
+  const _$$__PageDataImpl({required this.name, required this.type});
 
   @override
   final String name;
@@ -117,7 +118,7 @@ class _$_$PageData implements _$PageData {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_$PageData &&
+            other is _$$__PageDataImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.type, type) || other.type == type));
   }
@@ -128,14 +129,14 @@ class _$_$PageData implements _$PageData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_$PageDataCopyWith<_$_$PageData> get copyWith =>
-      __$$_$PageDataCopyWithImpl<_$_$PageData>(this, _$identity);
+  _$$$__PageDataImplCopyWith<_$$__PageDataImpl> get copyWith =>
+      __$$$__PageDataImplCopyWithImpl<_$$__PageDataImpl>(this, _$identity);
 }
 
-abstract class _$PageData implements _PageData {
-  const factory _$PageData(
+abstract class _$__PageData implements _PageData {
+  const factory _$__PageData(
       {required final String name,
-      required final PageType type}) = _$_$PageData;
+      required final PageType type}) = _$$__PageDataImpl;
 
   @override
   String get name;
@@ -143,6 +144,6 @@ abstract class _$PageData implements _PageData {
   PageType get type;
   @override
   @JsonKey(ignore: true)
-  _$$_$PageDataCopyWith<_$_$PageData> get copyWith =>
+  _$$$__PageDataImplCopyWith<_$$__PageDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -35,10 +35,12 @@ class OutlineButton extends HookConsumerWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: color ?? Theme.of(context).colorScheme.primary,
           side: BorderSide(
-            color: color?.withOpacity(0.6) ?? Theme.of(context).colorScheme.primary.withOpacity(0.6),
+            color: color?.withOpacity(0.6) ??
+                Theme.of(context).colorScheme.primary.withOpacity(0.6),
             width: 2,
           ),
-          disabledBackgroundColor: color?.withOpacity(0.3) ?? Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          disabledBackgroundColor: color?.withOpacity(0.3) ??
+              Theme.of(context).colorScheme.primary.withOpacity(0.3),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),

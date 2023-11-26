@@ -67,21 +67,22 @@ class _$ResponseCopyWithImpl<$Res, $Val extends Response>
 }
 
 /// @nodoc
-abstract class _$$_ResponseCopyWith<$Res> implements $ResponseCopyWith<$Res> {
-  factory _$$_ResponseCopyWith(
-          _$_Response value, $Res Function(_$_Response) then) =
-      __$$_ResponseCopyWithImpl<$Res>;
+abstract class _$$ResponseImplCopyWith<$Res>
+    implements $ResponseCopyWith<$Res> {
+  factory _$$ResponseImplCopyWith(
+          _$ResponseImpl value, $Res Function(_$ResponseImpl) then) =
+      __$$ResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool success, String message});
 }
 
 /// @nodoc
-class __$$_ResponseCopyWithImpl<$Res>
-    extends _$ResponseCopyWithImpl<$Res, _$_Response>
-    implements _$$_ResponseCopyWith<$Res> {
-  __$$_ResponseCopyWithImpl(
-      _$_Response _value, $Res Function(_$_Response) _then)
+class __$$ResponseImplCopyWithImpl<$Res>
+    extends _$ResponseCopyWithImpl<$Res, _$ResponseImpl>
+    implements _$$ResponseImplCopyWith<$Res> {
+  __$$ResponseImplCopyWithImpl(
+      _$ResponseImpl _value, $Res Function(_$ResponseImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -90,7 +91,7 @@ class __$$_ResponseCopyWithImpl<$Res>
     Object? success = null,
     Object? message = null,
   }) {
-    return _then(_$_Response(
+    return _then(_$ResponseImpl(
       success: null == success
           ? _value.success
           : success // ignore: cast_nullable_to_non_nullable
@@ -105,11 +106,11 @@ class __$$_ResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Response implements _Response {
-  const _$_Response({required this.success, required this.message});
+class _$ResponseImpl implements _Response {
+  const _$ResponseImpl({required this.success, required this.message});
 
-  factory _$_Response.fromJson(Map<String, dynamic> json) =>
-      _$$_ResponseFromJson(json);
+  factory _$ResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ResponseImplFromJson(json);
 
   @override
   final bool success;
@@ -125,7 +126,7 @@ class _$_Response implements _Response {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Response &&
+            other is _$ResponseImpl &&
             (identical(other.success, success) || other.success == success) &&
             (identical(other.message, message) || other.message == message));
   }
@@ -137,12 +138,12 @@ class _$_Response implements _Response {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ResponseCopyWith<_$_Response> get copyWith =>
-      __$$_ResponseCopyWithImpl<_$_Response>(this, _$identity);
+  _$$ResponseImplCopyWith<_$ResponseImpl> get copyWith =>
+      __$$ResponseImplCopyWithImpl<_$ResponseImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ResponseToJson(
+    return _$$ResponseImplToJson(
       this,
     );
   }
@@ -151,9 +152,10 @@ class _$_Response implements _Response {
 abstract class _Response implements Response {
   const factory _Response(
       {required final bool success,
-      required final String message}) = _$_Response;
+      required final String message}) = _$ResponseImpl;
 
-  factory _Response.fromJson(Map<String, dynamic> json) = _$_Response.fromJson;
+  factory _Response.fromJson(Map<String, dynamic> json) =
+      _$ResponseImpl.fromJson;
 
   @override
   bool get success;
@@ -161,6 +163,6 @@ abstract class _Response implements Response {
   String get message;
   @override
   @JsonKey(ignore: true)
-  _$$_ResponseCopyWith<_$_Response> get copyWith =>
+  _$$ResponseImplCopyWith<_$ResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

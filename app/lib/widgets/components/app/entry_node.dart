@@ -347,7 +347,7 @@ class ExternalEntryNode extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final blueprint = ref.watch(entryBlueprintProvider(entry.type));
     final page = ref.watch(pageProvider(pageId));
-    final pageName = page?.name.formatted ?? "Unknown page";
+    final pageName = page?.pageName.formatted ?? "Unknown page";
     final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
 
     if (blueprint == null) {

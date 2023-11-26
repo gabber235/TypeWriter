@@ -73,21 +73,22 @@ class _$SoundDataCopyWithImpl<$Res, $Val extends SoundData>
 }
 
 /// @nodoc
-abstract class _$$_SoundDataCopyWith<$Res> implements $SoundDataCopyWith<$Res> {
-  factory _$$_SoundDataCopyWith(
-          _$_SoundData value, $Res Function(_$_SoundData) then) =
-      __$$_SoundDataCopyWithImpl<$Res>;
+abstract class _$$SoundDataImplCopyWith<$Res>
+    implements $SoundDataCopyWith<$Res> {
+  factory _$$SoundDataImplCopyWith(
+          _$SoundDataImpl value, $Res Function(_$SoundDataImpl) then) =
+      __$$SoundDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, int weight, double volume});
 }
 
 /// @nodoc
-class __$$_SoundDataCopyWithImpl<$Res>
-    extends _$SoundDataCopyWithImpl<$Res, _$_SoundData>
-    implements _$$_SoundDataCopyWith<$Res> {
-  __$$_SoundDataCopyWithImpl(
-      _$_SoundData _value, $Res Function(_$_SoundData) _then)
+class __$$SoundDataImplCopyWithImpl<$Res>
+    extends _$SoundDataCopyWithImpl<$Res, _$SoundDataImpl>
+    implements _$$SoundDataImplCopyWith<$Res> {
+  __$$SoundDataImplCopyWithImpl(
+      _$SoundDataImpl _value, $Res Function(_$SoundDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -97,7 +98,7 @@ class __$$_SoundDataCopyWithImpl<$Res>
     Object? weight = null,
     Object? volume = null,
   }) {
-    return _then(_$_SoundData(
+    return _then(_$SoundDataImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -116,11 +117,11 @@ class __$$_SoundDataCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_SoundData implements _SoundData {
-  const _$_SoundData({this.name = "", this.weight = 1, this.volume = 1});
+class _$SoundDataImpl implements _SoundData {
+  const _$SoundDataImpl({this.name = "", this.weight = 1, this.volume = 1});
 
-  factory _$_SoundData.fromJson(Map<String, dynamic> json) =>
-      _$$_SoundDataFromJson(json);
+  factory _$SoundDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SoundDataImplFromJson(json);
 
   @override
   @JsonKey()
@@ -141,7 +142,7 @@ class _$_SoundData implements _SoundData {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SoundData &&
+            other is _$SoundDataImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.weight, weight) || other.weight == weight) &&
             (identical(other.volume, volume) || other.volume == volume));
@@ -154,12 +155,12 @@ class _$_SoundData implements _SoundData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SoundDataCopyWith<_$_SoundData> get copyWith =>
-      __$$_SoundDataCopyWithImpl<_$_SoundData>(this, _$identity);
+  _$$SoundDataImplCopyWith<_$SoundDataImpl> get copyWith =>
+      __$$SoundDataImplCopyWithImpl<_$SoundDataImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_SoundDataToJson(
+    return _$$SoundDataImplToJson(
       this,
     );
   }
@@ -169,10 +170,10 @@ abstract class _SoundData implements SoundData {
   const factory _SoundData(
       {final String name,
       final int weight,
-      final double volume}) = _$_SoundData;
+      final double volume}) = _$SoundDataImpl;
 
   factory _SoundData.fromJson(Map<String, dynamic> json) =
-      _$_SoundData.fromJson;
+      _$SoundDataImpl.fromJson;
 
   @override
   String get name;
@@ -182,6 +183,6 @@ abstract class _SoundData implements SoundData {
   double get volume;
   @override
   @JsonKey(ignore: true)
-  _$$_SoundDataCopyWith<_$_SoundData> get copyWith =>
+  _$$SoundDataImplCopyWith<_$SoundDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

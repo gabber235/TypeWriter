@@ -57,8 +57,7 @@ String _$searchGlobalKeysHash() => r'bdabd3beff37b339bab7032a03c48a3714ac500f';
 
 /// See also [searchGlobalKeys].
 @ProviderFor(searchGlobalKeys)
-final searchGlobalKeysProvider =
-    AutoDisposeProvider<List<GlobalKey<State<StatefulWidget>>>>.internal(
+final searchGlobalKeysProvider = AutoDisposeProvider<List<GlobalKey>>.internal(
   searchGlobalKeys,
   name: r'searchGlobalKeysProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -68,8 +67,7 @@ final searchGlobalKeysProvider =
   allTransitiveDependencies: null,
 );
 
-typedef SearchGlobalKeysRef
-    = AutoDisposeProviderRef<List<GlobalKey<State<StatefulWidget>>>>;
+typedef SearchGlobalKeysRef = AutoDisposeProviderRef<List<GlobalKey>>;
 String _$searchFocusNodesHash() => r'e8f229dddc824b6f24244adcd4193ae40daed175';
 
 /// See also [searchFocusNodes].
@@ -134,4 +132,4 @@ final _searchActionsProvider = AutoDisposeProvider<List<SearchAction>>.internal(
 
 typedef _SearchActionsRef = AutoDisposeProviderRef<List<SearchAction>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

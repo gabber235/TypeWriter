@@ -88,7 +88,7 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
       final blueprint = ref.watch(entryBlueprintProvider(entry.type));
       if (blueprint == null) return null;
       return EntryDefinition(
-        pageId: page.name,
+        pageId: page.pageName,
         blueprint: blueprint,
         entry: entry,
       );
@@ -99,7 +99,10 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
     definitions,
     options: FuzzyOptions(
       threshold: 0.4,
-      sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
+      sortFn: (a, b) => a.matches
+          .map((e) => e.score)
+          .sum
+          .compareTo(b.matches.map((e) => e.score).sum),
       // tokenize: true,
       // verbose: true,
       keys: [
@@ -143,7 +146,10 @@ Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
     blueprints,
     options: FuzzyOptions(
       threshold: 0.3,
-      sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
+      sortFn: (a, b) => a.matches
+          .map((e) => e.score)
+          .sum
+          .compareTo(b.matches.map((e) => e.score).sum),
       keys: [
         WeightedKey(
           name: "name",
@@ -192,7 +198,9 @@ class NewEntryFetcher extends SearchFetcher {
 
     final results = fuzzy.search(search.query);
 
-    return results.map((result) => AddEntrySearchElement(result.item, onAdd: onAdd)).toList();
+    return results
+        .map((result) => AddEntrySearchElement(result.item, onAdd: onAdd))
+        .toList();
   }
 
   @override
@@ -286,7 +294,8 @@ class EntrySearchElement extends SearchElement {
   Widget icon(BuildContext context) => Icon(blueprint.icon);
 
   @override
-  Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.upRightFromSquare);
+  Widget suffixIcon(BuildContext context) =>
+      const Icon(FontAwesomeIcons.upRightFromSquare);
 
   @override
   String description(BuildContext context) => definition.pageId.formatted;
@@ -314,7 +323,9 @@ class EntrySearchElement extends SearchElement {
       return await onSelect?.call(entry) ?? true;
     }
 
-    await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref, entry.id);
+    await ref
+        .read(inspectingEntryIdProvider.notifier)
+        .navigateAndSelectEntry(ref, entry.id);
     return true;
   }
 }
@@ -364,11 +375,17 @@ class AddEntrySearchElement extends SearchElement {
     final page = ref.read(currentPageProvider);
     if (page == null) return false;
     if (!page.canHave(blueprint)) {
-      Toasts.showError(ref, "Could not create entry!", description: "Page does not support this  of entry.");
+      Toasts.showError(
+        ref,
+        "Could not create entry!",
+        description: "Page does not support this  of entry.",
+      );
       return false;
     }
     final entry = await page.createEntryFromBlueprint(ref, blueprint);
-    await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref, entry.id);
+    await ref
+        .read(inspectingEntryIdProvider.notifier)
+        .navigateAndSelectEntry(ref, entry.id);
     return true;
   }
 }

@@ -23,28 +23,38 @@ List<Page> pages(PagesRef ref) {
 }
 
 @riverpod
-Page? page(PageRef ref, String name) {
-  return ref.watch(pagesProvider).firstWhereOrNull((page) => page.name == name);
+Page? page(PageRef ref, String pageName) {
+  return ref
+      .watch(pagesProvider)
+      .firstWhereOrNull((page) => page.pageName == pageName);
 }
 
 @riverpod
-bool pageExists(PageExistsRef ref, String name) {
-  return ref.watch(pageProvider(name)) != null;
+bool pageExists(PageExistsRef ref, String pageName) {
+  return ref.watch(pageProvider(pageName)) != null;
 }
 
 @riverpod
-PageType pageType(PageTypeRef ref, String name) {
-  return ref.watch(pageProvider(name))?.type ?? PageType.sequence;
+PageType pageType(PageTypeRef ref, String pageName) {
+  return ref.watch(pageProvider(pageName))?.type ?? PageType.sequence;
 }
 
 @riverpod
 String? entriesPage(EntriesPageRef ref, String entryId) {
-  return ref.watch(pagesProvider).firstWhereOrNull((page) => page.entries.any((entry) => entry.id == entryId))?.name;
+  return ref
+      .watch(pagesProvider)
+      .firstWhereOrNull(
+        (page) => page.entries.any((entry) => entry.id == entryId),
+      )
+      ?.pageName;
 }
 
 @riverpod
 Entry? entry(EntryRef ref, String pageId, String entryId) {
-  return ref.watch(pageProvider(pageId))?.entries.firstWhereOrNull((entry) => entry.id == entryId);
+  return ref
+      .watch(pageProvider(pageId))
+      ?.entries
+      .firstWhereOrNull((entry) => entry.id == entryId);
 }
 
 @riverpod
@@ -57,7 +67,10 @@ Entry? globalEntry(GlobalEntryRef ref, String entryId) {
 }
 
 @riverpod
-MapEntry<String, Entry>? globalEntryWithPage(GlobalEntryWithPageRef ref, String entryId) {
+MapEntry<String, Entry>? globalEntryWithPage(
+  GlobalEntryWithPageRef ref,
+  String entryId,
+) {
   final page = ref.watch(entriesPageProvider(entryId));
   if (page == null) {
     return null;
@@ -98,7 +111,7 @@ enum PageType {
 @freezed
 class Page with _$Page {
   const factory Page({
-    required String name,
+    @JsonKey(name: "name") required String pageName,
     required PageType type,
     @Default([]) List<Entry> entries,
   }) = _Page;
@@ -109,7 +122,7 @@ class Page with _$Page {
 extension PageExtension on Page {
   void updatePage(PassingRef ref, Page Function(Page) update) {
     // If multiple updates are done at the same time, `this` might be outdated. So we need to get the latest version.
-    final currentPage = ref.read(pageProvider(name));
+    final currentPage = ref.read(pageProvider(pageName));
     if (currentPage == null) {
       return;
     }
@@ -122,7 +135,7 @@ extension PageExtension on Page {
       ref,
       (page) => _insertEntry(page, entry),
     );
-    await ref.read(communicatorProvider).createEntry(name, entry);
+    await ref.read(communicatorProvider).createEntry(pageName, entry);
   }
 
   Future<void> updateEntireEntry(PassingRef ref, Entry entry) async {
@@ -130,20 +143,25 @@ extension PageExtension on Page {
       ref,
       (page) => _insertEntry(page, entry),
     );
-    ref.read(communicatorProvider).updateEntireEntry(name, entry);
+    ref.read(communicatorProvider).updateEntireEntry(pageName, entry);
   }
 
-  void updateEntryValue(PassingRef ref, Entry entry, String path, dynamic value) {
+  void updateEntryValue(
+    PassingRef ref,
+    Entry entry,
+    String path,
+    dynamic value,
+  ) {
     updatePage(
       ref,
       (page) => _insertEntry(page, entry.copyWith(path, value)),
     );
-    ref.read(communicatorProvider).updateEntry(name, entry.id, path, value);
+    ref.read(communicatorProvider).updateEntry(pageName, entry.id, path, value);
   }
 
   void reorderEntry(PassingRef ref, String entryId, int newIndex) {
     syncReorderEntry(ref, entryId, newIndex);
-    ref.read(communicatorProvider).reorderEntry(name, entryId, newIndex);
+    ref.read(communicatorProvider).reorderEntry(pageName, entryId, newIndex);
   }
 
   void syncReorderEntry(PassingRef ref, String entryId, int newIndex) {
@@ -191,17 +209,23 @@ extension PageExtension on Page {
   }
 
   void deleteEntry(PassingRef ref, Entry entry) {
-    ref.read(communicatorProvider).deleteEntry(name, entry.id);
+    ref.read(communicatorProvider).deleteEntry(pageName, entry.id);
     updatePage(
       ref,
       (page) => page.copyWith(
         entries: [
-          ...page.entries.where((e) => e.id != entry.id).map((e) => _removedReferencesFromEntry(ref, e, entry.id)),
+          ...page.entries
+              .where((e) => e.id != entry.id)
+              .map((e) => _removedReferencesFromEntry(ref, e, entry.id)),
         ],
       ),
     );
     // Also delete all references to this entry from other pages.
-    ref.read(bookProvider).pages.where((page) => page.name != name).forEach((page) {
+    ref
+        .read(bookProvider)
+        .pages
+        .where((page) => page.pageName != pageName)
+        .forEach((page) {
       page.removeReferencesTo(ref, entry.id);
     });
 
@@ -215,26 +239,40 @@ extension PageExtension on Page {
     updatePage(
       ref,
       (page) => page.copyWith(
-        entries: [...page.entries.map((e) => _removedReferencesFromEntry(ref, e, entryId))],
+        entries: [
+          ...page.entries
+              .map((e) => _removedReferencesFromEntry(ref, e, entryId)),
+        ],
       ),
     );
   }
 
   /// When an entry is delete all references in other entries need to be removed.
-  Entry _removedReferencesFromEntry(PassingRef ref, Entry entry, String targetId) {
-    final referenceEntryPaths = ref.read(modifierPathsProvider(entry.type, "entry"));
+  Entry _removedReferencesFromEntry(
+    PassingRef ref,
+    Entry entry,
+    String targetId,
+  ) {
+    final referenceEntryPaths =
+        ref.read(modifierPathsProvider(entry.type, "entry"));
 
-    final referenceEntryIds = referenceEntryPaths.expand((path) => entry.getAll(path)).whereType<String>().toList();
+    final referenceEntryIds = referenceEntryPaths
+        .expand((path) => entry.getAll(path))
+        .whereType<String>()
+        .toList();
     if (!referenceEntryIds.contains(targetId)) {
       return entry;
     }
 
     final newEntry = referenceEntryPaths.fold(
       entry,
-      (previousEntry, path) => previousEntry.copyMapped(path, (value) => value == targetId ? null : value),
+      (previousEntry, path) => previousEntry.copyMapped(
+        path,
+        (value) => value == targetId ? null : value,
+      ),
     );
 
-    ref.read(communicatorProvider).updateEntireEntry(name, newEntry);
+    ref.read(communicatorProvider).updateEntireEntry(pageName, newEntry);
 
     return newEntry;
   }
@@ -251,22 +289,31 @@ extension PageExtension on Page {
 
 /// These are specialized shortcuts for common operations.
 extension PageX on Page {
-  Future<Entry> createEntryFromBlueprint(PassingRef ref, EntryBlueprint blueprint) async {
-    final entry = Entry.fromBlueprint(id: getRandomString(), blueprint: blueprint);
+  Future<Entry> createEntryFromBlueprint(
+    PassingRef ref,
+    EntryBlueprint blueprint,
+  ) async {
+    final entry =
+        Entry.fromBlueprint(id: getRandomString(), blueprint: blueprint);
     await createEntry(ref, entry);
     return entry;
   }
 
-  Future<void> _wireEntryToOtherEntry(PassingRef ref, Entry originalEntry, Entry newEntry) async {
+  Future<void> _wireEntryToOtherEntry(
+    PassingRef ref,
+    Entry originalEntry,
+    Entry newEntry,
+  ) async {
     final currentTriggers = originalEntry.get("triggers");
     if (currentTriggers == null || currentTriggers is! List) return;
     final newTriggers = currentTriggers + [newEntry.id];
-    final modifiedOriginalEntry = originalEntry.copyWith("triggers", newTriggers);
+    final modifiedOriginalEntry =
+        originalEntry.copyWith("triggers", newTriggers);
     await updateEntireEntry(ref, modifiedOriginalEntry);
   }
 
   Future<void> extendsWithDuplicate(PassingRef ref, String entryId) async {
-    final entry = ref.read(entryProvider(name, entryId));
+    final entry = ref.read(entryProvider(pageName, entryId));
     if (entry == null) return;
     final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
     if (!triggerPaths.contains("triggers.*")) {
@@ -277,7 +324,10 @@ extension PageX on Page {
     final newEntry = triggerPaths
         .fold(
           entry.copyWith("id", getRandomString()),
-          (previousEntry, path) => previousEntry.copyMapped(path, (_) => null), // Remove all triggers
+          (previousEntry, path) => previousEntry.copyMapped(
+            path,
+            (_) => null,
+          ), // Remove all triggers
         )
         .copyWith("name", entry.name.incrementedName);
     await createEntry(ref, newEntry);
@@ -286,7 +336,7 @@ extension PageX on Page {
   }
 
   void extendsWith(PassingRef ref, String entryId) {
-    final entry = ref.read(entryProvider(name, entryId));
+    final entry = ref.read(entryProvider(pageName, entryId));
     if (entry == null) return;
     final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
     if (!triggerPaths.contains("triggers.*")) {
@@ -300,7 +350,9 @@ extension PageX on Page {
         onAdd: (blueprint) async {
           final newEntry = await createEntryFromBlueprint(ref, blueprint);
           await _wireEntryToOtherEntry(ref, entry, newEntry);
-          await ref.read(inspectingEntryIdProvider.notifier).navigateAndSelectEntry(ref, newEntry.id);
+          await ref
+              .read(inspectingEntryIdProvider.notifier)
+              .navigateAndSelectEntry(ref, newEntry.id);
           return null;
         },
       )
@@ -315,14 +367,18 @@ extension PageX on Page {
 
   bool canHave(EntryBlueprint blueprint) => blueprint.tags.contains(type.tag);
 
-  void deleteEntryWithConfirmation(BuildContext context, PassingRef ref, String entryId) {
+  void deleteEntryWithConfirmation(
+    BuildContext context,
+    PassingRef ref,
+    String entryId,
+  ) {
     showConfirmationDialogue(
       context: context,
       title: "Delete Entry",
       content: "Are you sure you want to delete this entry?",
       confirmText: "Delete",
       onConfirm: () {
-        final entry = ref.read(entryProvider(name, entryId));
+        final entry = ref.read(entryProvider(pageName, entryId));
         if (entry == null) return;
         deleteEntry(ref, entry);
       },

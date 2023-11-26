@@ -89,9 +89,10 @@ class _$WriterCopyWithImpl<$Res, $Val extends Writer>
 }
 
 /// @nodoc
-abstract class _$$_WriterCopyWith<$Res> implements $WriterCopyWith<$Res> {
-  factory _$$_WriterCopyWith(_$_Writer value, $Res Function(_$_Writer) then) =
-      __$$_WriterCopyWithImpl<$Res>;
+abstract class _$$WriterImplCopyWith<$Res> implements $WriterCopyWith<$Res> {
+  factory _$$WriterImplCopyWith(
+          _$WriterImpl value, $Res Function(_$WriterImpl) then) =
+      __$$WriterImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -103,10 +104,11 @@ abstract class _$$_WriterCopyWith<$Res> implements $WriterCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_WriterCopyWithImpl<$Res>
-    extends _$WriterCopyWithImpl<$Res, _$_Writer>
-    implements _$$_WriterCopyWith<$Res> {
-  __$$_WriterCopyWithImpl(_$_Writer _value, $Res Function(_$_Writer) _then)
+class __$$WriterImplCopyWithImpl<$Res>
+    extends _$WriterCopyWithImpl<$Res, _$WriterImpl>
+    implements _$$WriterImplCopyWith<$Res> {
+  __$$WriterImplCopyWithImpl(
+      _$WriterImpl _value, $Res Function(_$WriterImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -118,7 +120,7 @@ class __$$_WriterCopyWithImpl<$Res>
     Object? entryId = freezed,
     Object? field = freezed,
   }) {
-    return _then(_$_Writer(
+    return _then(_$WriterImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -145,12 +147,12 @@ class __$$_WriterCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Writer implements _Writer {
-  const _$_Writer(
+class _$WriterImpl implements _Writer {
+  const _$WriterImpl(
       {required this.id, this.iconUrl, this.pageId, this.entryId, this.field});
 
-  factory _$_Writer.fromJson(Map<String, dynamic> json) =>
-      _$$_WriterFromJson(json);
+  factory _$WriterImpl.fromJson(Map<String, dynamic> json) =>
+      _$$WriterImplFromJson(json);
 
   @override
   final String id;
@@ -172,7 +174,7 @@ class _$_Writer implements _Writer {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Writer &&
+            other is _$WriterImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.iconUrl, iconUrl) || other.iconUrl == iconUrl) &&
             (identical(other.pageId, pageId) || other.pageId == pageId) &&
@@ -188,12 +190,12 @@ class _$_Writer implements _Writer {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_WriterCopyWith<_$_Writer> get copyWith =>
-      __$$_WriterCopyWithImpl<_$_Writer>(this, _$identity);
+  _$$WriterImplCopyWith<_$WriterImpl> get copyWith =>
+      __$$WriterImplCopyWithImpl<_$WriterImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_WriterToJson(
+    return _$$WriterImplToJson(
       this,
     );
   }
@@ -205,9 +207,9 @@ abstract class _Writer implements Writer {
       final String? iconUrl,
       final String? pageId,
       final String? entryId,
-      final String? field}) = _$_Writer;
+      final String? field}) = _$WriterImpl;
 
-  factory _Writer.fromJson(Map<String, dynamic> json) = _$_Writer.fromJson;
+  factory _Writer.fromJson(Map<String, dynamic> json) = _$WriterImpl.fromJson;
 
   @override
   String get id;
@@ -221,6 +223,6 @@ abstract class _Writer implements Writer {
   String? get field;
   @override
   @JsonKey(ignore: true)
-  _$$_WriterCopyWith<_$_Writer> get copyWith =>
+  _$$WriterImplCopyWith<_$WriterImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

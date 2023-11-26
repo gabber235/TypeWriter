@@ -112,10 +112,10 @@ class _$SegmentCopyWithImpl<$Res, $Val extends Segment>
 }
 
 /// @nodoc
-abstract class _$$_SegmentCopyWith<$Res> implements $SegmentCopyWith<$Res> {
-  factory _$$_SegmentCopyWith(
-          _$_Segment value, $Res Function(_$_Segment) then) =
-      __$$_SegmentCopyWithImpl<$Res>;
+abstract class _$$SegmentImplCopyWith<$Res> implements $SegmentCopyWith<$Res> {
+  factory _$$SegmentImplCopyWith(
+          _$SegmentImpl value, $Res Function(_$SegmentImpl) then) =
+      __$$SegmentImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -131,10 +131,11 @@ abstract class _$$_SegmentCopyWith<$Res> implements $SegmentCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_SegmentCopyWithImpl<$Res>
-    extends _$SegmentCopyWithImpl<$Res, _$_Segment>
-    implements _$$_SegmentCopyWith<$Res> {
-  __$$_SegmentCopyWithImpl(_$_Segment _value, $Res Function(_$_Segment) _then)
+class __$$SegmentImplCopyWithImpl<$Res>
+    extends _$SegmentCopyWithImpl<$Res, _$SegmentImpl>
+    implements _$$SegmentImplCopyWith<$Res> {
+  __$$SegmentImplCopyWithImpl(
+      _$SegmentImpl _value, $Res Function(_$SegmentImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -150,7 +151,7 @@ class __$$_SegmentCopyWithImpl<$Res>
     Object? maxFrames = freezed,
     Object? data = null,
   }) {
-    return _then(_$_Segment(
+    return _then(_$SegmentImpl(
       path: null == path
           ? _value.path
           : path // ignore: cast_nullable_to_non_nullable
@@ -193,8 +194,8 @@ class __$$_SegmentCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_Segment implements _Segment {
-  const _$_Segment(
+class _$SegmentImpl implements _Segment {
+  const _$SegmentImpl(
       {this.path = "",
       this.index = 0,
       this.color = Colors.white,
@@ -246,7 +247,7 @@ class _$_Segment implements _Segment {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Segment &&
+            other is _$SegmentImpl &&
             (identical(other.path, path) || other.path == path) &&
             (identical(other.index, index) || other.index == index) &&
             (identical(other.color, color) || other.color == color) &&
@@ -278,8 +279,8 @@ class _$_Segment implements _Segment {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SegmentCopyWith<_$_Segment> get copyWith =>
-      __$$_SegmentCopyWithImpl<_$_Segment>(this, _$identity);
+  _$$SegmentImplCopyWith<_$SegmentImpl> get copyWith =>
+      __$$SegmentImplCopyWithImpl<_$SegmentImpl>(this, _$identity);
 }
 
 abstract class _Segment implements Segment {
@@ -292,7 +293,7 @@ abstract class _Segment implements Segment {
       final int endFrame,
       final int? minFrames,
       final int? maxFrames,
-      final Map<String, dynamic> data}) = _$_Segment;
+      final Map<String, dynamic> data}) = _$SegmentImpl;
 
   @override
   String get path;
@@ -314,6 +315,6 @@ abstract class _Segment implements Segment {
   Map<String, dynamic> get data;
   @override
   @JsonKey(ignore: true)
-  _$$_SegmentCopyWith<_$_Segment> get copyWith =>
+  _$$SegmentImplCopyWith<_$SegmentImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

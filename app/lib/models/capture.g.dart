@@ -6,8 +6,8 @@ part of 'capture.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_CaptureRequest _$$_CaptureRequestFromJson(Map<String, dynamic> json) =>
-    _$_CaptureRequest(
+_$CaptureRequestImpl _$$CaptureRequestImplFromJson(Map<String, dynamic> json) =>
+    _$CaptureRequestImpl(
       capturerClassPath: json['capturerClassPath'] as String,
       entryId: json['entryId'] as String,
       fieldPath: json['fieldPath'] as String,
@@ -17,7 +17,8 @@ _$_CaptureRequest _$$_CaptureRequestFromJson(Map<String, dynamic> json) =>
           const IntRangeConverter().fromJson(json['cinematicRange']),
     );
 
-Map<String, dynamic> _$$_CaptureRequestToJson(_$_CaptureRequest instance) =>
+Map<String, dynamic> _$$CaptureRequestImplToJson(
+        _$CaptureRequestImpl instance) =>
     <String, dynamic>{
       'capturerClassPath': instance.capturerClassPath,
       'entryId': instance.entryId,

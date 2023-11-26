@@ -29,7 +29,8 @@ class AppRouter extends _$AppRouter {
 
   @override
   RouteType get defaultRouteType => const RouteType.custom(
-      transitionsBuilder: TransitionsBuilders.noTransition);
+        transitionsBuilder: TransitionsBuilders.noTransition,
+      );
 
   @override
   List<AutoRoute> get routes => [
@@ -65,12 +66,12 @@ RouteData? _fetchCurrentRouteData(String name, RoutingController controller) {
 
 /// Provides the current route data for the given [name].
 @Riverpod(keepAlive: true)
-RouteData? currentRouteData(CurrentRouteDataRef ref, String name) {
+RouteData? currentRouteData(CurrentRouteDataRef ref, String path) {
   final router = ref.watch(appRouter);
   void invalidator() => ref.invalidateSelf();
   router.addListener(invalidator);
   ref.onDispose(() => router.removeListener(invalidator));
-  return _fetchCurrentRouteData(name, router);
+  return _fetchCurrentRouteData(path, router);
 }
 
 extension AppRouterX on AppRouter {
@@ -89,15 +90,17 @@ extension AppRouterX on AppRouter {
     }
   }
 
-  /// Navigate to the given [pageId].
+  /// Navigate to the given [pageName].
   /// Returns true if the page was changed.
-  Future<void> navigateToPage(PassingRef ref, String pageId) async {
+  Future<void> navigateToPage(PassingRef ref, String pageName) async {
     final currentPage = ref.read(currentPageProvider);
 
-    if (currentPage?.name != pageId) {
-      await ref.read(appRouter).push(PageEditorRoute(id: pageId),
-          onFailure: (e) =>
-              debugPrint("Failed to navigate to page $pageId: $e"));
+    if (currentPage?.pageName != pageName) {
+      await ref.read(appRouter).push(
+            PageEditorRoute(id: pageName),
+            onFailure: (e) =>
+                debugPrint("Failed to navigate to page $pageName: $e"),
+          );
     }
   }
 }

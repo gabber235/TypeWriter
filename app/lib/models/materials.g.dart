@@ -6,8 +6,9 @@ part of 'materials.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_MinecraftMaterial _$$_MinecraftMaterialFromJson(Map<String, dynamic> json) =>
-    _$_MinecraftMaterial(
+_$MinecraftMaterialImpl _$$MinecraftMaterialImplFromJson(
+        Map<String, dynamic> json) =>
+    _$MinecraftMaterialImpl(
       name: json['name'] as String,
       properties: (json['properties'] as List<dynamic>)
           .map((e) => $enumDecode(_$MaterialPropertyEnumMap, e))
@@ -15,8 +16,8 @@ _$_MinecraftMaterial _$$_MinecraftMaterialFromJson(Map<String, dynamic> json) =>
       icon: json['icon'] as String,
     );
 
-Map<String, dynamic> _$$_MinecraftMaterialToJson(
-        _$_MinecraftMaterial instance) =>
+Map<String, dynamic> _$$MinecraftMaterialImplToJson(
+        _$MinecraftMaterialImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'properties': instance.properties

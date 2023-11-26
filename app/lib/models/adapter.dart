@@ -22,25 +22,27 @@ List<Adapter> adapters(AdaptersRef ref) => ref.watch(bookProvider).adapters;
 List<EntryBlueprint> entryBlueprints(EntryBlueprintsRef ref) =>
     ref.watch(adaptersProvider).expand((e) => e.entries).toList();
 
-/// A generated provider to fetch and cache a specific [EntryBlueprint] by its [name].
+/// A generated provider to fetch and cache a specific [EntryBlueprint] by its [blueprintName].
 @riverpod
-EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String name) =>
-    ref.watch(entryBlueprintsProvider).firstWhereOrNull((e) => e.name == name);
+EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String blueprintName) =>
+    ref
+        .watch(entryBlueprintsProvider)
+        .firstWhereOrNull((e) => e.name == blueprintName);
 
 @riverpod
-List<String> entryTags(EntryTagsRef ref, String name) =>
-    ref.watch(entryBlueprintProvider(name))?.tags ?? [];
+List<String> entryTags(EntryTagsRef ref, String blueprintName) =>
+    ref.watch(entryBlueprintProvider(blueprintName))?.tags ?? [];
 
 /// Gets all the modifiers with a given name.
 @riverpod
 Map<String, Modifier> fieldModifiers(
   FieldModifiersRef ref,
-  String blueprint,
-  String name,
+  String blueprintName,
+  String modifierName,
 ) {
   return ref
-          .watch(entryBlueprintProvider(blueprint))
-          ?.fieldsWithModifier(name) ??
+          .watch(entryBlueprintProvider(blueprintName))
+          ?.fieldsWithModifier(modifierName) ??
       {};
 }
 
@@ -48,10 +50,13 @@ Map<String, Modifier> fieldModifiers(
 @riverpod
 List<String> modifierPaths(
   ModifierPathsRef ref,
-  String blueprint,
-  String name,
+  String blueprintName,
+  String modifierName,
 ) {
-  return ref.watch(fieldModifiersProvider(blueprint, name)).keys.toList();
+  return ref
+      .watch(fieldModifiersProvider(blueprintName, modifierName))
+      .keys
+      .toList();
 }
 
 /// A data model that represents an adapter.

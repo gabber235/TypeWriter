@@ -9,15 +9,8 @@ import "package:typewriter/widgets/components/general/copyable_text.dart";
 @RoutePage()
 class ErrorConnectPage extends HookConsumerWidget {
   const ErrorConnectPage({
-    required this.hostname,
-    required this.port,
-    this.token,
     super.key,
   });
-
-  final String hostname;
-  final int port;
-  final String? token;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

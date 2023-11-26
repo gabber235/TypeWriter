@@ -28,11 +28,11 @@ part "pages_list.freezed.dart";
 part "pages_list.g.dart";
 
 @freezed
-class _PageData with _$_PageData {
+class _PageData with _$PageData {
   const factory _PageData({
     required String name,
     required PageType type,
-  }) = _$PageData;
+  }) = _$__PageData;
 }
 
 @riverpod
@@ -40,7 +40,7 @@ List<_PageData> _pagesData(_PagesDataRef ref) {
   return ref
       .watch(bookProvider)
       .pages
-      .map((page) => _PageData(name: page.name, type: page.type))
+      .map((page) => _PageData(name: page.pageName, type: page.type))
       .toList();
 }
 

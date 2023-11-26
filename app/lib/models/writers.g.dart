@@ -6,7 +6,7 @@ part of 'writers.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Writer _$$_WriterFromJson(Map<String, dynamic> json) => _$_Writer(
+_$WriterImpl _$$WriterImplFromJson(Map<String, dynamic> json) => _$WriterImpl(
       id: json['id'] as String,
       iconUrl: json['iconUrl'] as String?,
       pageId: json['pageId'] as String?,
@@ -14,7 +14,8 @@ _$_Writer _$$_WriterFromJson(Map<String, dynamic> json) => _$_Writer(
       field: json['field'] as String?,
     );
 
-Map<String, dynamic> _$$_WriterToJson(_$_Writer instance) => <String, dynamic>{
+Map<String, dynamic> _$$WriterImplToJson(_$WriterImpl instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'iconUrl': instance.iconUrl,
       'pageId': instance.pageId,
@@ -48,8 +49,6 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
-
-typedef FieldWritersRef = AutoDisposeProviderRef<List<Writer>>;
 
 /// Get all the writers that are writhing in a specific field.
 /// [path] the given path of the field.
@@ -118,11 +117,11 @@ class FieldWritersProvider extends AutoDisposeProvider<List<Writer>> {
   ///
   /// Copied from [fieldWriters].
   FieldWritersProvider(
-    this.path, {
-    this.exact = false,
-  }) : super.internal(
+    String path, {
+    bool exact = false,
+  }) : this._internal(
           (ref) => fieldWriters(
-            ref,
+            ref as FieldWritersRef,
             path,
             exact: exact,
           ),
@@ -135,10 +134,47 @@ class FieldWritersProvider extends AutoDisposeProvider<List<Writer>> {
           dependencies: FieldWritersFamily._dependencies,
           allTransitiveDependencies:
               FieldWritersFamily._allTransitiveDependencies,
+          path: path,
+          exact: exact,
         );
+
+  FieldWritersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.path,
+    required this.exact,
+  }) : super.internal();
 
   final String path;
   final bool exact;
+
+  @override
+  Override overrideWith(
+    List<Writer> Function(FieldWritersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FieldWritersProvider._internal(
+        (ref) => create(ref as FieldWritersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        path: path,
+        exact: exact,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<Writer>> createElement() {
+    return _FieldWritersProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -156,5 +192,23 @@ class FieldWritersProvider extends AutoDisposeProvider<List<Writer>> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin FieldWritersRef on AutoDisposeProviderRef<List<Writer>> {
+  /// The parameter `path` of this provider.
+  String get path;
+
+  /// The parameter `exact` of this provider.
+  bool get exact;
+}
+
+class _FieldWritersProviderElement
+    extends AutoDisposeProviderElement<List<Writer>> with FieldWritersRef {
+  _FieldWritersProviderElement(super.provider);
+
+  @override
+  String get path => (origin as FieldWritersProvider).path;
+  @override
+  bool get exact => (origin as FieldWritersProvider).exact;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

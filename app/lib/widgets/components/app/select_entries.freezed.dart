@@ -80,11 +80,11 @@ class _$EntriesSelectionCopyWithImpl<$Res, $Val extends EntriesSelection>
 }
 
 /// @nodoc
-abstract class _$$_EntriesSelectionCopyWith<$Res>
+abstract class _$$EntriesSelectionImplCopyWith<$Res>
     implements $EntriesSelectionCopyWith<$Res> {
-  factory _$$_EntriesSelectionCopyWith(
-          _$_EntriesSelection value, $Res Function(_$_EntriesSelection) then) =
-      __$$_EntriesSelectionCopyWithImpl<$Res>;
+  factory _$$EntriesSelectionImplCopyWith(_$EntriesSelectionImpl value,
+          $Res Function(_$EntriesSelectionImpl) then) =
+      __$$EntriesSelectionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -95,11 +95,11 @@ abstract class _$$_EntriesSelectionCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_EntriesSelectionCopyWithImpl<$Res>
-    extends _$EntriesSelectionCopyWithImpl<$Res, _$_EntriesSelection>
-    implements _$$_EntriesSelectionCopyWith<$Res> {
-  __$$_EntriesSelectionCopyWithImpl(
-      _$_EntriesSelection _value, $Res Function(_$_EntriesSelection) _then)
+class __$$EntriesSelectionImplCopyWithImpl<$Res>
+    extends _$EntriesSelectionCopyWithImpl<$Res, _$EntriesSelectionImpl>
+    implements _$$EntriesSelectionImplCopyWith<$Res> {
+  __$$EntriesSelectionImplCopyWithImpl(_$EntriesSelectionImpl _value,
+      $Res Function(_$EntriesSelectionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -110,7 +110,7 @@ class __$$_EntriesSelectionCopyWithImpl<$Res>
     Object? excludedEntries = null,
     Object? onSelectionChanged = freezed,
   }) {
-    return _then(_$_EntriesSelection(
+    return _then(_$EntriesSelectionImpl(
       tag: null == tag
           ? _value.tag
           : tag // ignore: cast_nullable_to_non_nullable
@@ -133,8 +133,8 @@ class __$$_EntriesSelectionCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_EntriesSelection implements _EntriesSelection {
-  const _$_EntriesSelection(
+class _$EntriesSelectionImpl implements _EntriesSelection {
+  const _$EntriesSelectionImpl(
       {required this.tag,
       required final List<String> selectedEntries,
       final List<String> excludedEntries = const [],
@@ -173,7 +173,7 @@ class _$_EntriesSelection implements _EntriesSelection {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EntriesSelection &&
+            other is _$EntriesSelectionImpl &&
             (identical(other.tag, tag) || other.tag == tag) &&
             const DeepCollectionEquality()
                 .equals(other._selectedEntries, _selectedEntries) &&
@@ -194,8 +194,9 @@ class _$_EntriesSelection implements _EntriesSelection {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EntriesSelectionCopyWith<_$_EntriesSelection> get copyWith =>
-      __$$_EntriesSelectionCopyWithImpl<_$_EntriesSelection>(this, _$identity);
+  _$$EntriesSelectionImplCopyWith<_$EntriesSelectionImpl> get copyWith =>
+      __$$EntriesSelectionImplCopyWithImpl<_$EntriesSelectionImpl>(
+          this, _$identity);
 }
 
 abstract class _EntriesSelection implements EntriesSelection {
@@ -204,7 +205,7 @@ abstract class _EntriesSelection implements EntriesSelection {
       required final List<String> selectedEntries,
       final List<String> excludedEntries,
       final dynamic Function(Ref<dynamic>, List<String>)?
-          onSelectionChanged}) = _$_EntriesSelection;
+          onSelectionChanged}) = _$EntriesSelectionImpl;
 
   @override
   String get tag;
@@ -216,6 +217,6 @@ abstract class _EntriesSelection implements EntriesSelection {
   dynamic Function(Ref<dynamic>, List<String>)? get onSelectionChanged;
   @override
   @JsonKey(ignore: true)
-  _$$_EntriesSelectionCopyWith<_$_EntriesSelection> get copyWith =>
+  _$$EntriesSelectionImplCopyWith<_$EntriesSelectionImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

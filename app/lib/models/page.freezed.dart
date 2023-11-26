@@ -20,7 +20,8 @@ Page _$PageFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Page {
-  String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: "name")
+  String get pageName => throw _privateConstructorUsedError;
   PageType get type => throw _privateConstructorUsedError;
   List<Entry> get entries => throw _privateConstructorUsedError;
 
@@ -34,7 +35,10 @@ abstract class $PageCopyWith<$Res> {
   factory $PageCopyWith(Page value, $Res Function(Page) then) =
       _$PageCopyWithImpl<$Res, Page>;
   @useResult
-  $Res call({String name, PageType type, List<Entry> entries});
+  $Res call(
+      {@JsonKey(name: "name") String pageName,
+      PageType type,
+      List<Entry> entries});
 }
 
 /// @nodoc
@@ -50,14 +54,14 @@ class _$PageCopyWithImpl<$Res, $Val extends Page>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = null,
+    Object? pageName = null,
     Object? type = null,
     Object? entries = null,
   }) {
     return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      pageName: null == pageName
+          ? _value.pageName
+          : pageName // ignore: cast_nullable_to_non_nullable
               as String,
       type: null == type
           ? _value.type
@@ -72,31 +76,36 @@ class _$PageCopyWithImpl<$Res, $Val extends Page>
 }
 
 /// @nodoc
-abstract class _$$_PageCopyWith<$Res> implements $PageCopyWith<$Res> {
-  factory _$$_PageCopyWith(_$_Page value, $Res Function(_$_Page) then) =
-      __$$_PageCopyWithImpl<$Res>;
+abstract class _$$PageImplCopyWith<$Res> implements $PageCopyWith<$Res> {
+  factory _$$PageImplCopyWith(
+          _$PageImpl value, $Res Function(_$PageImpl) then) =
+      __$$PageImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, PageType type, List<Entry> entries});
+  $Res call(
+      {@JsonKey(name: "name") String pageName,
+      PageType type,
+      List<Entry> entries});
 }
 
 /// @nodoc
-class __$$_PageCopyWithImpl<$Res> extends _$PageCopyWithImpl<$Res, _$_Page>
-    implements _$$_PageCopyWith<$Res> {
-  __$$_PageCopyWithImpl(_$_Page _value, $Res Function(_$_Page) _then)
+class __$$PageImplCopyWithImpl<$Res>
+    extends _$PageCopyWithImpl<$Res, _$PageImpl>
+    implements _$$PageImplCopyWith<$Res> {
+  __$$PageImplCopyWithImpl(_$PageImpl _value, $Res Function(_$PageImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = null,
+    Object? pageName = null,
     Object? type = null,
     Object? entries = null,
   }) {
-    return _then(_$_Page(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+    return _then(_$PageImpl(
+      pageName: null == pageName
+          ? _value.pageName
+          : pageName // ignore: cast_nullable_to_non_nullable
               as String,
       type: null == type
           ? _value.type
@@ -112,17 +121,19 @@ class __$$_PageCopyWithImpl<$Res> extends _$PageCopyWithImpl<$Res, _$_Page>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Page implements _Page {
-  const _$_Page(
-      {required this.name,
+class _$PageImpl implements _Page {
+  const _$PageImpl(
+      {@JsonKey(name: "name") required this.pageName,
       required this.type,
       final List<Entry> entries = const []})
       : _entries = entries;
 
-  factory _$_Page.fromJson(Map<String, dynamic> json) => _$$_PageFromJson(json);
+  factory _$PageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PageImplFromJson(json);
 
   @override
-  final String name;
+  @JsonKey(name: "name")
+  final String pageName;
   @override
   final PageType type;
   final List<Entry> _entries;
@@ -136,33 +147,34 @@ class _$_Page implements _Page {
 
   @override
   String toString() {
-    return 'Page(name: $name, type: $type, entries: $entries)';
+    return 'Page(pageName: $pageName, type: $type, entries: $entries)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Page &&
-            (identical(other.name, name) || other.name == name) &&
+            other is _$PageImpl &&
+            (identical(other.pageName, pageName) ||
+                other.pageName == pageName) &&
             (identical(other.type, type) || other.type == type) &&
             const DeepCollectionEquality().equals(other._entries, _entries));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, name, type, const DeepCollectionEquality().hash(_entries));
+  int get hashCode => Object.hash(runtimeType, pageName, type,
+      const DeepCollectionEquality().hash(_entries));
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PageCopyWith<_$_Page> get copyWith =>
-      __$$_PageCopyWithImpl<_$_Page>(this, _$identity);
+  _$$PageImplCopyWith<_$PageImpl> get copyWith =>
+      __$$PageImplCopyWithImpl<_$PageImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PageToJson(
+    return _$$PageImplToJson(
       this,
     );
   }
@@ -170,19 +182,21 @@ class _$_Page implements _Page {
 
 abstract class _Page implements Page {
   const factory _Page(
-      {required final String name,
+      {@JsonKey(name: "name") required final String pageName,
       required final PageType type,
-      final List<Entry> entries}) = _$_Page;
+      final List<Entry> entries}) = _$PageImpl;
 
-  factory _Page.fromJson(Map<String, dynamic> json) = _$_Page.fromJson;
+  factory _Page.fromJson(Map<String, dynamic> json) = _$PageImpl.fromJson;
 
   @override
-  String get name;
+  @JsonKey(name: "name")
+  String get pageName;
   @override
   PageType get type;
   @override
   List<Entry> get entries;
   @override
   @JsonKey(ignore: true)
-  _$$_PageCopyWith<_$_Page> get copyWith => throw _privateConstructorUsedError;
+  _$$PageImplCopyWith<_$PageImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

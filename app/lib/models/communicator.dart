@@ -47,7 +47,43 @@ class SocketNotifier extends StateNotifier<Socket?> {
   /// When a socket gets disconnected, we want to try to reconnect it.
   /// Socket.io will try to reconnect automatically.
   /// Only if this fails within a certain time, we want consider the connection lost.
-  Timer? _disconnectTimer;
+  Timer? _timeoutTimer;
+
+  void _startTimeoutTimer(Socket socket) {
+    final currentConnectionState = _connectionState;
+    _timeoutTimer = Timer(30.seconds, () {
+      if (_disposed) return;
+      if (_connectionState != currentConnectionState) return;
+      _connectionState = ConnectionState.none;
+      state?.dispose();
+      state?.destroy();
+      state = null;
+      socket
+        ..dispose()
+        ..destroy();
+      ref.read(appRouter).replaceAll([
+        const ErrorConnectRoute(),
+      ]);
+    });
+  }
+
+  void _handleError(String message) {
+    if (_disposed) {
+      debugPrint(
+        "The socket was disposed so a connection error should not be possible. This is a bug.",
+      );
+      return;
+    }
+    if (_canError) return;
+    _connectionState = ConnectionState.none;
+    debugPrint(message);
+    state?.dispose();
+    state = null;
+
+    ref.read(appRouter).replaceAll(
+      [const ErrorConnectRoute()],
+    );
+  }
 
   ConnectionState get _connectionState {
     return ref.read(connectionStateProvider);
@@ -94,61 +130,20 @@ class SocketNotifier extends StateNotifier<Socket?> {
           return;
         }
         debugPrint("connected: $data");
-        _disconnectTimer?.cancel();
+        _timeoutTimer?.cancel();
         state = socket;
         final shouldSetup = _connectionState == ConnectionState.connecting;
         _connectionState = ConnectionState.connected;
         if (shouldSetup) setup(socket);
       })
       ..onConnectError((data) {
-        if (_disposed) {
-          debugPrint(
-            "The socket was disposed so a connection error should not be possible. This is a bug.",
-          );
-          return;
-        }
-        if (_canError) return;
-        _connectionState = ConnectionState.none;
-        debugPrint("connect error $data");
-        state?.dispose();
-        state = null;
-
-        ref.read(appRouter).replaceAll(
-          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
-        );
+        _handleError("connect error $data");
       })
       ..onConnectTimeout((data) {
-        if (_disposed) {
-          debugPrint(
-            "The socket was disposed so a connection timeout should not be possible. This is a bug.",
-          );
-          return;
-        }
-        if (_canError) return;
-        _connectionState = ConnectionState.none;
-        debugPrint("connect timeout $data");
-        state?.dispose();
-        state = null;
-        ref.read(appRouter).replaceAll(
-          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
-        );
+        _handleError("connect timeout $data");
       })
       ..onError((data) {
-        if (_disposed) {
-          debugPrint(
-            "The socket was disposed so an error should not be possible. This is a bug.",
-          );
-          return;
-        }
-        if (_canError) return;
-        _connectionState = ConnectionState.none;
-
-        debugPrint("error $data");
-        state?.dispose();
-        state = null;
-        ref.read(appRouter).replaceAll(
-          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
-        );
+        _handleError("error $data");
       })
       ..onDisconnect((data) {
         if (_disposed) {
@@ -160,45 +155,56 @@ class SocketNotifier extends StateNotifier<Socket?> {
         if (_connectionState != ConnectionState.connected) return;
         _connectionState = ConnectionState.disconnected;
         debugPrint("disconnected: $data");
-
-        _disconnectTimer = Timer(30.seconds, () {
-          if (_disposed) return;
-          if (_connectionState != ConnectionState.disconnected) return;
-          _connectionState = ConnectionState.none;
-          state?.dispose();
-          state = null;
-          ref.read(appRouter).replaceAll([
-            ErrorConnectRoute(hostname: hostname, port: port, token: token),
-          ]);
-        });
+        _startTimeoutTimer(socket);
       })
       ..connect();
+
+    _startTimeoutTimer(socket);
   }
 
   Future<void> setup(Socket socket) async {
     socket
-      ..on("stagingState",
-          (data) => ref.read(communicatorProvider).handleStagingState(data),)
-      ..on("createPage",
-          (data) => ref.read(communicatorProvider).handleCreatePage(data),)
-      ..on("renamePage",
-          (data) => ref.read(communicatorProvider).handleRenamePage(data),)
-      ..on("deletePage",
-          (data) => ref.read(communicatorProvider).handleDeletePage(data),)
-      ..on("createEntry",
-          (data) => ref.read(communicatorProvider).handleCreateEntry(data),)
-      ..on("updateEntry",
-          (data) => ref.read(communicatorProvider).handleUpdateEntry(data),)
       ..on(
-          "updateCompleteEntry",
-          (data) =>
-              ref.read(communicatorProvider).handleUpdateCompleteEntry(data),)
-      ..on("reorderEntry",
-          (data) => ref.read(communicatorProvider).handleReorderEntry(data),)
-      ..on("deleteEntry",
-          (data) => ref.read(communicatorProvider).handleDeleteEntry(data),)
-      ..on("updateWriters",
-          (data) => ref.read(communicatorProvider).handleUpdateWriters(data),);
+        "stagingState",
+        (data) => ref.read(communicatorProvider).handleStagingState(data),
+      )
+      ..on(
+        "createPage",
+        (data) => ref.read(communicatorProvider).handleCreatePage(data),
+      )
+      ..on(
+        "renamePage",
+        (data) => ref.read(communicatorProvider).handleRenamePage(data),
+      )
+      ..on(
+        "deletePage",
+        (data) => ref.read(communicatorProvider).handleDeletePage(data),
+      )
+      ..on(
+        "createEntry",
+        (data) => ref.read(communicatorProvider).handleCreateEntry(data),
+      )
+      ..on(
+        "updateEntry",
+        (data) => ref.read(communicatorProvider).handleUpdateEntry(data),
+      )
+      ..on(
+        "updateCompleteEntry",
+        (data) =>
+            ref.read(communicatorProvider).handleUpdateCompleteEntry(data),
+      )
+      ..on(
+        "reorderEntry",
+        (data) => ref.read(communicatorProvider).handleReorderEntry(data),
+      )
+      ..on(
+        "deleteEntry",
+        (data) => ref.read(communicatorProvider).handleDeleteEntry(data),
+      )
+      ..on(
+        "updateWriters",
+        (data) => ref.read(communicatorProvider).handleUpdateWriters(data),
+      );
 
     await ref.read(communicatorProvider).fetchBook();
     await ref.read(appRouter).push(const BookRoute());
@@ -208,8 +214,9 @@ class SocketNotifier extends StateNotifier<Socket?> {
   void dispose() {
     debugPrint("Disposing socket");
     _disposed = true;
-    _disconnectTimer?.cancel();
+    _timeoutTimer?.cancel();
     state?.dispose();
+    state?.destroy();
     super.dispose();
   }
 }
@@ -237,7 +244,7 @@ class Communicator {
     final jsonAdapters = jsonDecode(rawAdapters) as List;
 
     final pages = jsonPages.map((e) => Page.fromJson(e)).toList();
-    final adapters = jsonAdapters.map((e) => Adapter.fromJson(e)).toList();
+    final adapters = jsonAdapters.map((a) => Adapter.fromJson(a)).toList();
 
     final book = Book(name: "Typewriter", adapters: adapters, pages: pages);
     ref.read(bookProvider.notifier).book = book;

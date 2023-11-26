@@ -40,7 +40,7 @@ Page? currentPage(CurrentPageRef ref) {
   final id = ref.watch(currentPageIdProvider);
   final book = ref.watch(bookProvider);
 
-  return book.pages.firstWhereOrNull((element) => element.name == id);
+  return book.pages.firstWhereOrNull((element) => element.pageName == id);
 }
 
 @riverpod

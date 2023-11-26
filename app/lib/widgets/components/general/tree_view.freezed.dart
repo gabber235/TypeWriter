@@ -81,20 +81,20 @@ class _$TreeNodeCopyWithImpl<T, $Res, $Val extends TreeNode<T>>
 }
 
 /// @nodoc
-abstract class _$$RootTreeNodeCopyWith<T, $Res> {
-  factory _$$RootTreeNodeCopyWith(
-          _$RootTreeNode<T> value, $Res Function(_$RootTreeNode<T>) then) =
-      __$$RootTreeNodeCopyWithImpl<T, $Res>;
+abstract class _$$RootTreeNodeImplCopyWith<T, $Res> {
+  factory _$$RootTreeNodeImplCopyWith(_$RootTreeNodeImpl<T> value,
+          $Res Function(_$RootTreeNodeImpl<T>) then) =
+      __$$RootTreeNodeImplCopyWithImpl<T, $Res>;
   @useResult
   $Res call({List<TreeNode<T>> children});
 }
 
 /// @nodoc
-class __$$RootTreeNodeCopyWithImpl<T, $Res>
-    extends _$TreeNodeCopyWithImpl<T, $Res, _$RootTreeNode<T>>
-    implements _$$RootTreeNodeCopyWith<T, $Res> {
-  __$$RootTreeNodeCopyWithImpl(
-      _$RootTreeNode<T> _value, $Res Function(_$RootTreeNode<T>) _then)
+class __$$RootTreeNodeImplCopyWithImpl<T, $Res>
+    extends _$TreeNodeCopyWithImpl<T, $Res, _$RootTreeNodeImpl<T>>
+    implements _$$RootTreeNodeImplCopyWith<T, $Res> {
+  __$$RootTreeNodeImplCopyWithImpl(
+      _$RootTreeNodeImpl<T> _value, $Res Function(_$RootTreeNodeImpl<T>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -102,7 +102,7 @@ class __$$RootTreeNodeCopyWithImpl<T, $Res>
   $Res call({
     Object? children = null,
   }) {
-    return _then(_$RootTreeNode<T>(
+    return _then(_$RootTreeNodeImpl<T>(
       children: null == children
           ? _value._children
           : children // ignore: cast_nullable_to_non_nullable
@@ -113,8 +113,8 @@ class __$$RootTreeNodeCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$RootTreeNode<T> implements RootTreeNode<T> {
-  const _$RootTreeNode({required final List<TreeNode<T>> children})
+class _$RootTreeNodeImpl<T> implements RootTreeNode<T> {
+  const _$RootTreeNodeImpl({required final List<TreeNode<T>> children})
       : _children = children;
 
   final List<TreeNode<T>> _children;
@@ -134,7 +134,7 @@ class _$RootTreeNode<T> implements RootTreeNode<T> {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RootTreeNode<T> &&
+            other is _$RootTreeNodeImpl<T> &&
             const DeepCollectionEquality().equals(other._children, _children));
   }
 
@@ -145,8 +145,9 @@ class _$RootTreeNode<T> implements RootTreeNode<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$RootTreeNodeCopyWith<T, _$RootTreeNode<T>> get copyWith =>
-      __$$RootTreeNodeCopyWithImpl<T, _$RootTreeNode<T>>(this, _$identity);
+  _$$RootTreeNodeImplCopyWith<T, _$RootTreeNodeImpl<T>> get copyWith =>
+      __$$RootTreeNodeImplCopyWithImpl<T, _$RootTreeNodeImpl<T>>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -219,29 +220,29 @@ class _$RootTreeNode<T> implements RootTreeNode<T> {
 
 abstract class RootTreeNode<T> implements TreeNode<T> {
   const factory RootTreeNode({required final List<TreeNode<T>> children}) =
-      _$RootTreeNode<T>;
+      _$RootTreeNodeImpl<T>;
 
   List<TreeNode<T>> get children;
   @JsonKey(ignore: true)
-  _$$RootTreeNodeCopyWith<T, _$RootTreeNode<T>> get copyWith =>
+  _$$RootTreeNodeImplCopyWith<T, _$RootTreeNodeImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$InnerTreeNodeCopyWith<T, $Res> {
-  factory _$$InnerTreeNodeCopyWith(
-          _$InnerTreeNode<T> value, $Res Function(_$InnerTreeNode<T>) then) =
-      __$$InnerTreeNodeCopyWithImpl<T, $Res>;
+abstract class _$$InnerTreeNodeImplCopyWith<T, $Res> {
+  factory _$$InnerTreeNodeImplCopyWith(_$InnerTreeNodeImpl<T> value,
+          $Res Function(_$InnerTreeNodeImpl<T>) then) =
+      __$$InnerTreeNodeImplCopyWithImpl<T, $Res>;
   @useResult
   $Res call({String name, List<TreeNode<T>> children});
 }
 
 /// @nodoc
-class __$$InnerTreeNodeCopyWithImpl<T, $Res>
-    extends _$TreeNodeCopyWithImpl<T, $Res, _$InnerTreeNode<T>>
-    implements _$$InnerTreeNodeCopyWith<T, $Res> {
-  __$$InnerTreeNodeCopyWithImpl(
-      _$InnerTreeNode<T> _value, $Res Function(_$InnerTreeNode<T>) _then)
+class __$$InnerTreeNodeImplCopyWithImpl<T, $Res>
+    extends _$TreeNodeCopyWithImpl<T, $Res, _$InnerTreeNodeImpl<T>>
+    implements _$$InnerTreeNodeImplCopyWith<T, $Res> {
+  __$$InnerTreeNodeImplCopyWithImpl(_$InnerTreeNodeImpl<T> _value,
+      $Res Function(_$InnerTreeNodeImpl<T>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -250,7 +251,7 @@ class __$$InnerTreeNodeCopyWithImpl<T, $Res>
     Object? name = null,
     Object? children = null,
   }) {
-    return _then(_$InnerTreeNode<T>(
+    return _then(_$InnerTreeNodeImpl<T>(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -265,8 +266,8 @@ class __$$InnerTreeNodeCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$InnerTreeNode<T> implements InnerTreeNode<T> {
-  const _$InnerTreeNode(
+class _$InnerTreeNodeImpl<T> implements InnerTreeNode<T> {
+  const _$InnerTreeNodeImpl(
       {required this.name, required final List<TreeNode<T>> children})
       : _children = children;
 
@@ -289,7 +290,7 @@ class _$InnerTreeNode<T> implements InnerTreeNode<T> {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$InnerTreeNode<T> &&
+            other is _$InnerTreeNodeImpl<T> &&
             (identical(other.name, name) || other.name == name) &&
             const DeepCollectionEquality().equals(other._children, _children));
   }
@@ -301,8 +302,9 @@ class _$InnerTreeNode<T> implements InnerTreeNode<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$InnerTreeNodeCopyWith<T, _$InnerTreeNode<T>> get copyWith =>
-      __$$InnerTreeNodeCopyWithImpl<T, _$InnerTreeNode<T>>(this, _$identity);
+  _$$InnerTreeNodeImplCopyWith<T, _$InnerTreeNodeImpl<T>> get copyWith =>
+      __$$InnerTreeNodeImplCopyWithImpl<T, _$InnerTreeNodeImpl<T>>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -376,30 +378,30 @@ class _$InnerTreeNode<T> implements InnerTreeNode<T> {
 abstract class InnerTreeNode<T> implements TreeNode<T> {
   const factory InnerTreeNode(
       {required final String name,
-      required final List<TreeNode<T>> children}) = _$InnerTreeNode<T>;
+      required final List<TreeNode<T>> children}) = _$InnerTreeNodeImpl<T>;
 
   String get name;
   List<TreeNode<T>> get children;
   @JsonKey(ignore: true)
-  _$$InnerTreeNodeCopyWith<T, _$InnerTreeNode<T>> get copyWith =>
+  _$$InnerTreeNodeImplCopyWith<T, _$InnerTreeNodeImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$LeafTreeNodeCopyWith<T, $Res> {
-  factory _$$LeafTreeNodeCopyWith(
-          _$LeafTreeNode<T> value, $Res Function(_$LeafTreeNode<T>) then) =
-      __$$LeafTreeNodeCopyWithImpl<T, $Res>;
+abstract class _$$LeafTreeNodeImplCopyWith<T, $Res> {
+  factory _$$LeafTreeNodeImplCopyWith(_$LeafTreeNodeImpl<T> value,
+          $Res Function(_$LeafTreeNodeImpl<T>) then) =
+      __$$LeafTreeNodeImplCopyWithImpl<T, $Res>;
   @useResult
   $Res call({T value});
 }
 
 /// @nodoc
-class __$$LeafTreeNodeCopyWithImpl<T, $Res>
-    extends _$TreeNodeCopyWithImpl<T, $Res, _$LeafTreeNode<T>>
-    implements _$$LeafTreeNodeCopyWith<T, $Res> {
-  __$$LeafTreeNodeCopyWithImpl(
-      _$LeafTreeNode<T> _value, $Res Function(_$LeafTreeNode<T>) _then)
+class __$$LeafTreeNodeImplCopyWithImpl<T, $Res>
+    extends _$TreeNodeCopyWithImpl<T, $Res, _$LeafTreeNodeImpl<T>>
+    implements _$$LeafTreeNodeImplCopyWith<T, $Res> {
+  __$$LeafTreeNodeImplCopyWithImpl(
+      _$LeafTreeNodeImpl<T> _value, $Res Function(_$LeafTreeNodeImpl<T>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -407,7 +409,7 @@ class __$$LeafTreeNodeCopyWithImpl<T, $Res>
   $Res call({
     Object? value = freezed,
   }) {
-    return _then(_$LeafTreeNode<T>(
+    return _then(_$LeafTreeNodeImpl<T>(
       value: freezed == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
@@ -418,8 +420,8 @@ class __$$LeafTreeNodeCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$LeafTreeNode<T> implements LeafTreeNode<T> {
-  const _$LeafTreeNode({required this.value});
+class _$LeafTreeNodeImpl<T> implements LeafTreeNode<T> {
+  const _$LeafTreeNodeImpl({required this.value});
 
   @override
   final T value;
@@ -433,7 +435,7 @@ class _$LeafTreeNode<T> implements LeafTreeNode<T> {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LeafTreeNode<T> &&
+            other is _$LeafTreeNodeImpl<T> &&
             const DeepCollectionEquality().equals(other.value, value));
   }
 
@@ -444,8 +446,9 @@ class _$LeafTreeNode<T> implements LeafTreeNode<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LeafTreeNodeCopyWith<T, _$LeafTreeNode<T>> get copyWith =>
-      __$$LeafTreeNodeCopyWithImpl<T, _$LeafTreeNode<T>>(this, _$identity);
+  _$$LeafTreeNodeImplCopyWith<T, _$LeafTreeNodeImpl<T>> get copyWith =>
+      __$$LeafTreeNodeImplCopyWithImpl<T, _$LeafTreeNodeImpl<T>>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -517,10 +520,10 @@ class _$LeafTreeNode<T> implements LeafTreeNode<T> {
 }
 
 abstract class LeafTreeNode<T> implements TreeNode<T> {
-  const factory LeafTreeNode({required final T value}) = _$LeafTreeNode<T>;
+  const factory LeafTreeNode({required final T value}) = _$LeafTreeNodeImpl<T>;
 
   T get value;
   @JsonKey(ignore: true)
-  _$$LeafTreeNodeCopyWith<T, _$LeafTreeNode<T>> get copyWith =>
+  _$$LeafTreeNodeImplCopyWith<T, _$LeafTreeNodeImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
