@@ -19,6 +19,14 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+      - name: Get version
+        id: vars
+        run: |
+          version=$(cat version.txt)
+          short_sha=$(echo $GITHUB_SHA | cut -c1-7)
+          full_version="${version}-dev-${short_sha}"
+          echo $full_version > version.txt
+          echo "version=$full_version" >> $GITHUB_OUTPUT
       - name: Build Plugin
         uses: ./.github/actions/build-plugin
       - name: Build Basic Adapter
@@ -53,14 +61,6 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: WorldGuardAdapter
-      - name: Get version
-        id: vars
-        run: |
-          version=$(cat version.txt)
-          short_sha=$(echo $GITHUB_SHA | cut -c1-7)
-          full_version="${version}-dev-${short_sha}"
-          echo $full_version
-          echo "version=$full_version" >> $GITHUB_OUTPUT
       - name: Publish Development Jars
         uses: Kir-Antipov/mc-publish@v3.3
         id: publish
