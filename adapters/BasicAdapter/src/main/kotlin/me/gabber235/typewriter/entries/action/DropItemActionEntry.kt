@@ -54,7 +54,7 @@ class DropItemActionEntry(
 }
 
 @EntryMigration(DropItemActionEntry::class, "0.4.0")
-private fun migrate040(json: JsonObject, context: EntryMigratorContext): JsonObject {
+fun migrate040DropItemAction(json: JsonObject, context: EntryMigratorContext): JsonObject {
     val data = JsonObject()
     data.copyAllBut(json, "material", "amount", "displayName", "lore")
 

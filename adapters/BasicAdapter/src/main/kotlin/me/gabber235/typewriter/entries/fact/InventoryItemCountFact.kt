@@ -49,7 +49,7 @@ class InventoryItemCountFact(
 }
 
 @EntryMigration(InventoryItemCountFact::class, "0.4.0")
-private fun migrate040(json: JsonObject, context: EntryMigratorContext): JsonObject {
+fun migrate040InventoryItemCount(json: JsonObject, context: EntryMigratorContext): JsonObject {
     val data = JsonObject()
     data.copyAllBut(json, "material", "itemName")
 

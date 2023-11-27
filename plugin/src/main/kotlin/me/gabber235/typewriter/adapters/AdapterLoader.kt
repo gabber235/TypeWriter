@@ -13,9 +13,7 @@ import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.Icons
-import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import me.gabber235.typewriter.utils.get
+import me.gabber235.typewriter.utils.*
 import org.koin.core.component.KoinComponent
 import java.io.File
 import java.net.URLClassLoader
@@ -87,6 +85,34 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
         adapters.forEach {
             jsonArray.add(gson.toJsonTree(it))
+        }
+
+        if (adapters.isEmpty()) {
+            logger.warning(
+                """
+                |
+                |${"-".repeat(15)}{ No Adapters Loaded }${"-".repeat(15)}
+                |
+                |No adapters were loaded. 
+                |You should always have at least the BasicAdapter loaded.
+                |
+                |${"-".repeat(50)}
+                """.trimMargin()
+            )
+        } else {
+            val maxAdapterLength = adapters.maxOf { it.name.length }
+            val maxVersionLength = adapters.maxOf { it.version.length }
+            val maxDigits = adapters.maxOf { it.entries.size.digits }
+            logger.info(
+                """
+                |
+                |${"-".repeat(15)}{ Loaded Adapters }${"-".repeat(15)}
+                |
+                |${adapters.joinToString("\n") { it.displayString(maxAdapterLength, maxVersionLength, maxDigits) }}
+                |
+                |${"-".repeat(50)}
+                """.trimMargin()
+            )
         }
 
         adaptersJson = jsonArray
@@ -194,7 +220,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     private fun constructCapturers(captureClasses: List<Class<*>>) =
         captureClasses.map { captureClass ->
             captureClass.kotlin as KClass<out Capturer<*>>
-        } + staticCaptureClasses
+        }
 
     //TODO: Make compatible with java.
     private fun findFilterForMessenger(messengerClass: Class<*>) =
@@ -234,7 +260,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     }
 
     override fun getCaptureClasses(): List<KClass<out Capturer<*>>> {
-        return adapters.asSequence().flatMap { it.captureClasses }.toList()
+        return adapters.asSequence().flatMap { it.captureClasses }.toList() + staticCaptureClasses
     }
 
     override fun getEntryMigrators(): List<EntryMigrator> {
@@ -257,7 +283,27 @@ data class AdapterData(
     val entryMigrators: List<EntryMigrator>,
     @Transient
     val clazz: Class<*>,
-)
+) {
+    /**
+     * Returns a string that can be used to display information about the adapter.
+     * It is nicely formatted to align the information between adapters.
+     */
+    fun displayString(maxAdapterLength: Int, maxVersionLength: Int, maxDigits: Int): String {
+        var display = "${name}Adapter".rightPad(maxAdapterLength + "Adapter".length)
+        display += " (${version})".rightPad(maxVersionLength + 2)
+        display += padCount("📚", entries.size, maxDigits)
+        display += padCount("👂", eventListeners.size, maxDigits)
+        display += padCount("💬", messengers.size, maxDigits)
+        display += padCount("📸", captureClasses.size, maxDigits)
+        display += padCount("🚚", entryMigrators.size, maxDigits)
+
+        return display
+    }
+
+    private fun padCount(prefix: String, count: Int, maxDigits: Int): String {
+        return " ${prefix}: ${" ".repeat((maxDigits - count.digits).coerceAtLeast(0))}$count"
+    }
+}
 
 // Annotation for marking a class as an adapter
 @Target(AnnotationTarget.CLASS)

@@ -10,32 +10,31 @@ import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.isFloodgate
 import me.gabber235.typewriter.utils.legacy
 import org.bukkit.entity.Player
-import org.geysermc.cumulus.form.SimpleForm
-import org.geysermc.floodgate.api.FloodgateApi
 
 @Messenger(RandomSpokenDialogueEntry::class, priority = 5)
+
 class BedrockRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpokenDialogueEntry) :
-	DialogueMessenger<RandomSpokenDialogueEntry>(player, entry) {
+    DialogueMessenger<RandomSpokenDialogueEntry>(player, entry) {
 
-	companion object : MessengerFilter {
-		override fun filter(player: Player, entry: DialogueEntry): Boolean = player.isFloodgate
-	}
+    companion object : MessengerFilter {
+        override fun filter(player: Player, entry: DialogueEntry): Boolean = player.isFloodgate
+    }
 
-	override fun init() {
-		super.init()
-		val message = entry.messages.randomOrNull() ?: return
-		FloodgateApi.getInstance().sendForm(
-			player.uniqueId,
-			SimpleForm.builder()
-				.title("<bold>${entry.speakerDisplayName}</bold>".legacy())
-				.content("${message.parsePlaceholders(player).legacy()}\n\n")
-				.button("Continue")
-				.closedOrInvalidResultHandler { _, _ ->
-					state = MessengerState.CANCELLED
-				}
-				.validResultHandler { _, _ ->
-					state = MessengerState.FINISHED
-				}
-		)
-	}
+    override fun init() {
+        super.init()
+        val message = entry.messages.randomOrNull() ?: return
+        org.geysermc.floodgate.api.FloodgateApi.getInstance().sendForm(
+            player.uniqueId,
+            org.geysermc.cumulus.form.SimpleForm.builder()
+                .title("<bold>${entry.speakerDisplayName}</bold>".legacy())
+                .content("${message.parsePlaceholders(player).legacy()}\n\n")
+                .button("Continue")
+                .closedOrInvalidResultHandler { _, _ ->
+                    state = MessengerState.CANCELLED
+                }
+                .validResultHandler { _, _ ->
+                    state = MessengerState.FINISHED
+                }
+        )
+    }
 }

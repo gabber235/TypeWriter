@@ -42,7 +42,7 @@ fun onPickupItem(event: EntityPickupItemEvent, query: Query<PickupItemEventEntry
 }
 
 @EntryMigration(PickupItemEventEntry::class, "0.4.0")
-private fun migrate040(json: JsonObject, context: EntryMigratorContext): JsonObject {
+fun migrate040PickupItemEvent(json: JsonObject, context: EntryMigratorContext): JsonObject {
     val data = JsonObject()
     data.copyAllBut(json, "material")
 

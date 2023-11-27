@@ -3,7 +3,6 @@ package me.gabber235.typewriter.entry
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import lirand.api.extensions.other.set
-import lirand.api.utilities.allMethods
 import me.gabber235.typewriter.adapters.AdapterLoader
 import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent.get
@@ -122,7 +121,7 @@ object EntryMigrations {
 
     fun constructEntryMigrators(classes: List<Class<*>>): List<EntryMigrator> {
         return classes.asSequence()
-            .flatMap { it.allMethods.asSequence() }
+            .flatMap { it.methods.asSequence() }
             .filter { Modifier.isStatic(it.modifiers) }
             .filter { it.isAnnotationPresent(EntryMigration::class.java) }
             .map(::constructEntryMigrator)
