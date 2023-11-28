@@ -28,7 +28,6 @@ val centralDependencies = listOf(
     "org.jetbrains.kotlin:kotlin-reflect:1.8.20",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1",
     "com.corundumstudio.socketio:netty-socketio:1.7.19", // Keep this on a lower version as the newer version breaks the ping
-    "org.bstats:bstats-bukkit:3.0.2",
 )
 
 dependencies {
@@ -44,6 +43,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:2.3.6")
     implementation("io.insert-koin:koin-core:3.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
 
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
@@ -82,6 +82,10 @@ tasks.processResources {
     filesMatching("plugin.yml") {
         expand("version" to version, "libraries" to centralDependencies)
     }
+}
+
+tasks.withType<ShadowJar> {
+    relocate("org.bstats", "${project.group}.${project.name}.extensions.bstats")
 }
 
 task<ShadowJar>("buildAndMove") {
