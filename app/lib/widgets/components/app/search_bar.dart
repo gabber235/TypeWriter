@@ -92,7 +92,8 @@ class SearchNotifier extends StateNotifier<Search?> {
   }
 
   void removeFilter(SearchFilter filter) {
-    state = state!.copyWith(filters: state!.filters.where((f) => f != filter).toList());
+    state = state!
+        .copyWith(filters: state!.filters.where((f) => f != filter).toList());
   }
 
   @override
@@ -132,7 +133,9 @@ abstract class SearchFetcher {
   });
 }
 
-final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(SearchNotifier.new, name: "searchProvider");
+final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(
+    SearchNotifier.new,
+    name: "searchProvider");
 
 class SearchBuilder {
   SearchBuilder(this.notifier);
@@ -149,11 +152,13 @@ class SearchBuilder {
   }
 
   void filter(SearchFilter filter) {
-    _currentSearch = _currentSearch.copyWith(filters: [..._currentSearch.filters, filter]);
+    _currentSearch =
+        _currentSearch.copyWith(filters: [..._currentSearch.filters, filter]);
   }
 
   void fetch(SearchFetcher fetcher) {
-    _currentSearch = _currentSearch.copyWith(fetchers: [..._currentSearch.fetchers, fetcher]);
+    _currentSearch = _currentSearch
+        .copyWith(fetchers: [..._currentSearch.fetchers, fetcher]);
   }
 
   void open() {
@@ -179,11 +184,11 @@ List<SearchFilter> searchFilters(SearchFiltersRef ref) {
 List<SearchElement> searchElements(SearchElementsRef ref) {
   final search = ref.watch(searchProvider);
   if (search == null) return [];
-  if (search.query.isEmpty && search.filters.isEmpty) return [];
 
   final fetchers = search.fetchers.where((f) => !f.disabled);
   final actions = fetchers.expand((f) => f.fetch(ref.passing));
-  final filtered = actions.where((e) => search.filters.every((f) => f.filter(e)));
+  final filtered =
+      actions.where((e) => search.filters.every((f) => f.filter(e)));
 
   return filtered.take(30).toList();
 }
@@ -196,7 +201,8 @@ List<GlobalKey> searchGlobalKeys(SearchGlobalKeysRef ref) {
 
 @riverpod
 List<FocusNode> searchFocusNodes(SearchFocusNodesRef ref) {
-  final actionsCount = ref.watch(searchElementsProvider.select((value) => value.length));
+  final actionsCount =
+      ref.watch(searchElementsProvider.select((value) => value.length));
   return List.generate(actionsCount, (_) => FocusNode());
 }
 
@@ -214,8 +220,11 @@ SearchElement? _focusedElement(_FocusedElementRef ref) {
 @riverpod
 Set<ShortcutActivator> _searchActionShortcuts(_SearchActionShortcutsRef ref) {
   final elements = ref.watch(searchElementsProvider);
-  final activators =
-      elements.expand((e) => e.actions(ref.passing)).where((a) => a.onTrigger != null).map((a) => a.shortcut).toSet();
+  final activators = elements
+      .expand((e) => e.actions(ref.passing))
+      .where((a) => a.onTrigger != null)
+      .map((a) => a.shortcut)
+      .toSet();
   return activators;
 }
 
@@ -310,7 +319,8 @@ class SearchBar extends HookConsumerWidget {
 
     return Shortcuts(
       shortcuts: {
-        for (final shortcut in shortcuts) shortcut: ActivateActionIntent(shortcut),
+        for (final shortcut in shortcuts)
+          shortcut: ActivateActionIntent(shortcut),
       },
       child: Stack(
         children: [
@@ -335,12 +345,15 @@ class SearchBar extends HookConsumerWidget {
                 onInvoke: (intent) => _changeFocusUp(context, ref.passing),
               ),
               DismissIntent: CallbackAction<DismissIntent>(
-                onInvoke: (intent) => ref.read(searchProvider.notifier).endSearch(),
+                onInvoke: (intent) =>
+                    ref.read(searchProvider.notifier).endSearch(),
               ),
               ActivateIntent: CallbackAction<ActivateIntent>(
                 onInvoke: (intent) => _activateItem(
                   ref.read(searchElementsProvider),
-                  ref.read(searchFocusNodesProvider).indexWhere((n) => n.hasFocus),
+                  ref
+                      .read(searchFocusNodesProvider)
+                      .indexWhere((n) => n.hasFocus),
                   context,
                   ref,
                 ),
@@ -361,7 +374,8 @@ class _Barrier extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSearching = ref.watch(searchProvider.select((value) => value != null));
+    final isSearching =
+        ref.watch(searchProvider.select((value) => value != null));
 
     return Positioned.fill(
       child: ModalBarrier(
@@ -384,7 +398,8 @@ class _Modal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSearching = ref.watch(searchProvider.select((value) => value != null));
+    final isSearching =
+        ref.watch(searchProvider.select((value) => value != null));
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 400),
@@ -447,13 +462,18 @@ class _SearchFilters extends HookConsumerWidget {
             children: [
               for (final fetcher in fetchers)
                 Material(
-                  color: fetcher.disabled ? Theme.of(context).cardColor : fetcher.color,
+                  color: fetcher.disabled
+                      ? Theme.of(context).cardColor
+                      : fetcher.color,
                   borderRadius: BorderRadius.circular(30),
                   child: InkWell(
-                    onTap: () => ref.read(searchProvider.notifier).toggleFetcher(fetcher),
+                    onTap: () => ref
+                        .read(searchProvider.notifier)
+                        .toggleFetcher(fetcher),
                     borderRadius: BorderRadius.circular(30),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 5),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -463,7 +483,8 @@ class _SearchFilters extends HookConsumerWidget {
                             size: 16,
                           ),
                           const SizedBox(width: 8),
-                          Text(fetcher.title, style: const TextStyle(color: Colors.white)),
+                          Text(fetcher.title,
+                              style: const TextStyle(color: Colors.white)),
                         ],
                       ),
                     ),
@@ -474,7 +495,8 @@ class _SearchFilters extends HookConsumerWidget {
                   color: filter.color,
                   borderRadius: BorderRadius.circular(30),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -484,16 +506,21 @@ class _SearchFilters extends HookConsumerWidget {
                           size: 16,
                         ),
                         const SizedBox(width: 8),
-                        Text(filter.title, style: const TextStyle(color: Colors.white)),
+                        Text(filter.title,
+                            style: const TextStyle(color: Colors.white)),
                         if (filter.canRemove) ...[
                           const SizedBox(width: 12),
                           IconButton(
                             iconSize: 12,
                             splashRadius: 12,
                             padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(maxHeight: 24, maxWidth: 24),
-                            onPressed: () => ref.read(searchProvider.notifier).removeFilter(filter),
-                            icon: const FaIcon(FontAwesomeIcons.xmark, color: Colors.white),
+                            constraints: const BoxConstraints(
+                                maxHeight: 24, maxWidth: 24),
+                            onPressed: () => ref
+                                .read(searchProvider.notifier)
+                                .removeFilter(filter),
+                            icon: const FaIcon(FontAwesomeIcons.xmark,
+                                color: Colors.white),
                           ),
                         ],
                       ],
@@ -554,8 +581,10 @@ class _SearchBar extends HookConsumerWidget {
                 border: InputBorder.none,
                 filled: false,
               ),
-              onChanged: (query) => ref.read(searchProvider.notifier).updateQuery(query),
-              onSubmitted: (query) => ref.read(searchProvider.notifier).endSearch(),
+              onChanged: (query) =>
+                  ref.read(searchProvider.notifier).updateQuery(query),
+              onSubmitted: (query) =>
+                  ref.read(searchProvider.notifier).endSearch(),
             ),
           ),
           IconButton(
@@ -612,7 +641,8 @@ class _SearchResults extends HookConsumerWidget {
                 ),
             ]
                 .animate(interval: 50.ms)
-                .scaleXY(begin: 0.9, curve: Curves.elasticOut, duration: 1.seconds)
+                .scaleXY(
+                    begin: 0.9, curve: Curves.elasticOut, duration: 1.seconds)
                 .fadeIn(duration: 500.ms),
           ),
         ),
@@ -667,8 +697,10 @@ class _ResultTile extends HookConsumerWidget {
   final String description;
   final List<SearchAction> actions;
 
-  void _invokeAction(BuildContext context, PassingRef ref, ActivateActionIntent intent) {
-    final action = actions.firstWhereOrNull((action) => action.shortcut == intent.shortcut);
+  void _invokeAction(
+      BuildContext context, PassingRef ref, ActivateActionIntent intent) {
+    final action = actions
+        .firstWhereOrNull((action) => action.shortcut == intent.shortcut);
     if (action == null) return;
     action.onTrigger?.call(context, ref);
   }
@@ -680,7 +712,8 @@ class _ResultTile extends HookConsumerWidget {
     return ContextMenuRegion(
       builder: (context) {
         return [
-          for (final action in actions.where((action) => action.onTrigger != null))
+          for (final action
+              in actions.where((action) => action.onTrigger != null))
             ContextMenuTile.button(
               title: action.name,
               icon: action.icon,
@@ -690,8 +723,9 @@ class _ResultTile extends HookConsumerWidget {
       },
       child: Actions(
         actions: {
-          ActivateActionIntent:
-              CallbackAction<ActivateActionIntent>(onInvoke: (intent) => _invokeAction(context, ref.passing, intent)),
+          ActivateActionIntent: CallbackAction<ActivateActionIntent>(
+              onInvoke: (intent) =>
+                  _invokeAction(context, ref.passing, intent)),
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
@@ -705,7 +739,8 @@ class _ResultTile extends HookConsumerWidget {
                 curve: Curves.fastLinearToSlowEaseIn,
                 height: 56.0,
                 width: 400,
-                color: focused.value ? color.withOpacity(0.6) : Colors.transparent,
+                color:
+                    focused.value ? color.withOpacity(0.6) : Colors.transparent,
                 child: Focus(
                   focusNode: focusNode,
                   autofocus: true,
@@ -721,9 +756,11 @@ class _ResultTile extends HookConsumerWidget {
                         children: [
                           Container(
                             height: double.infinity,
-                            color: color.withOpacity(color.opacity.clamp(0, 0.8)),
+                            color:
+                                color.withOpacity(color.opacity.clamp(0, 0.8)),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: IconTheme(
                                 data: const IconThemeData(color: Colors.white),
                                 child: icon,
@@ -740,9 +777,15 @@ class _ResultTile extends HookConsumerWidget {
                                   maxLines: 1,
                                   title,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                        color: focused.value ? Colors.white : null,
-                                        fontWeight: focused.value ? FontWeight.bold : null,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        color:
+                                            focused.value ? Colors.white : null,
+                                        fontWeight: focused.value
+                                            ? FontWeight.bold
+                                            : null,
                                       ),
                                 ),
                                 if (focused.value || hover.value)
@@ -751,10 +794,18 @@ class _ResultTile extends HookConsumerWidget {
                                     delayBefore: 1.seconds,
                                     pauseBetween: 3.seconds,
                                     intervalSpaces: 5,
-                                    velocity: const Velocity(pixelsPerSecond: Offset(30, 0)),
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: focused.value ? Colors.white : null,
-                                          fontWeight: focused.value ? FontWeight.bold : null,
+                                    velocity: const Velocity(
+                                        pixelsPerSecond: Offset(30, 0)),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: focused.value
+                                              ? Colors.white
+                                              : null,
+                                          fontWeight: focused.value
+                                              ? FontWeight.bold
+                                              : null,
                                         ),
                                   )
                                 else
@@ -762,9 +813,16 @@ class _ResultTile extends HookConsumerWidget {
                                     maxLines: 1,
                                     description,
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: focused.value ? Colors.white : null,
-                                          fontWeight: focused.value ? FontWeight.bold : null,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: focused.value
+                                              ? Colors.white
+                                              : null,
+                                          fontWeight: focused.value
+                                              ? FontWeight.bold
+                                              : null,
                                         ),
                                   ),
                               ],
@@ -819,7 +877,11 @@ class _SearchActions extends HookConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
-            Text("Actions", style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+            Text("Actions",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontWeight: FontWeight.bold)),
             const Spacer(),
             for (final action in actions) ...[
               _SearchBarAction(action: action),
@@ -829,7 +891,8 @@ class _SearchActions extends HookConsumerWidget {
           ],
         ),
       ),
-    ).animate().scaleXY(duration: 500.ms, begin: 0.95, end: 1, curve: Curves.elasticOut);
+    ).animate().scaleXY(
+        duration: 500.ms, begin: 0.95, end: 1, curve: Curves.elasticOut);
   }
 }
 
@@ -851,7 +914,9 @@ class _SearchBarAction extends HookConsumerWidget {
         ),
       ),
       child: InkWell(
-        onTap: action.onTrigger != null ? () => action.onTrigger!(context, ref.passing) : null,
+        onTap: action.onTrigger != null
+            ? () => action.onTrigger!(context, ref.passing)
+            : null,
         borderRadius: BorderRadius.circular(4),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
