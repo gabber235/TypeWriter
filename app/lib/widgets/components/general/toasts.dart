@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:math";
 
 import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
@@ -70,8 +71,51 @@ class Toasts extends StateNotifier<List<Toast>> {
   late final Timer _timer;
 
   void show(Toast toast) {
+    state = [...state, toast];
+    _refreshToast();
+  }
+
+  void hide(Toast toast) {
+    state = state.where((t) => t != toast).toList();
+    _refreshToast();
+  }
+
+  void _refreshToast() {
+    final current = state;
+    if (current.isEmpty) return;
+    final first = current.first;
+    if (first.shownAt != null) return;
+    state = [
+      first.copyWith(shownAt: DateTime.now()),
+      ...current.skip(1),
+    ];
+  }
+
+  void _checkExpiry() {
     final now = DateTime.now();
-    state = [...state, toast.copyWith(shownAt: now)];
+    final current = state;
+    if (current.isEmpty) return;
+    final first = current.first;
+    if (first.shownAt == null) return;
+    final expired = first.maybeMap(
+      (value) => false,
+      orElse: () => false,
+      temporary: (toast) {
+        final shownAt = toast.shownAt ?? now;
+        final duration = toast.duration;
+        final difference = now.difference(shownAt);
+
+        return difference > duration;
+      },
+    );
+    if (!expired) return;
+    hide(first);
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   static void showSuccess(
@@ -127,33 +171,6 @@ class Toasts extends StateNotifier<List<Toast>> {
           ),
         );
   }
-
-  void hide(Toast toast) {
-    state = state.where((t) => t != toast).toList();
-  }
-
-  void _checkExpiry() {
-    final now = DateTime.now();
-    final expired = state.where((toast) {
-      if (toast is TemporaryToast) {
-        final shownAt = toast.shownAt ?? now;
-        final duration = toast.duration;
-        final difference = now.difference(shownAt);
-
-        return difference > duration;
-      } else {
-        return false;
-      }
-    }).toList();
-    if (expired.isEmpty) return;
-    state = state.where((toast) => !expired.contains(toast)).toList();
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
 }
 
 final toastsProvider = StateNotifierProvider<Toasts, List<Toast>>(
@@ -172,27 +189,23 @@ class ToastDisplay extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final toasts = ref.watch(toastsProvider);
+    final toast =
+        ref.watch(toastsProvider.select((value) => value.firstOrNull));
     return Stack(
       children: [
         if (child != null) child!,
         Positioned(
           top: 0,
           right: 4,
-          bottom: 0,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final toast in toasts)
-                  if (toast is TemporaryToast)
-                    _ToastShowAnimation(
-                      toast: toast,
-                      child: _TemporaryToast(toast: toast),
-                    ),
-              ],
-            ),
-          ),
+          child: toast?.maybeMap(
+                (_) => Container(),
+                orElse: Container.new,
+                temporary: (toast) => _ToastShowAnimation(
+                  toast: toast,
+                  child: _TemporaryToast(toast: toast),
+                ),
+              ) ??
+              Container(),
         ),
       ],
     );
@@ -255,7 +268,7 @@ class _TemporaryToast extends HookConsumerWidget {
       ),
     );
 
-    final width = messageSize.width + 28 + 12 + 12 + 16;
+    final width = max(300.0, messageSize.width + 12 + 28 + 12 + 16);
 
     return Card(
       color: toast.color,
@@ -266,50 +279,57 @@ class _TemporaryToast extends HookConsumerWidget {
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
         width: width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _TemporaryToastProgress(toast: toast, width: width),
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 16),
-              child: Row(
-                children: [
-                  Icon(
-                    toast.icon,
-                    color: toast.darkenColor,
-                    size: 28.0,
-                  ),
-                  const SizedBox(width: 12.0),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          toast.message,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                            fontVariations: [extraBoldWeight],
-                          ),
-                        ),
-                        if (toast.description != null) ...[
-                          const SizedBox(height: 4.0),
-                          AutoSizeText(
-                            minFontSize: 10,
-                            toast.description!,
-                            style: TextStyle(
-                              color: toast.darkenColor,
+        child: InkWell(
+          onTap: () => ref.read(toastsProvider.notifier).hide(toast),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _TemporaryToastProgress(toast: toast, width: width),
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 8,
+                  bottom: 8,
+                  left: 12,
+                  right: 16,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      toast.icon,
+                      color: toast.darkenColor,
+                      size: 28.0,
+                    ),
+                    const SizedBox(width: 12.0),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            toast.message,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontVariations: [extraBoldWeight],
                             ),
                           ),
+                          if (toast.description != null) ...[
+                            const SizedBox(height: 4.0),
+                            AutoSizeText(
+                              // minFontSize: 10,
+                              toast.description!,
+                              style: TextStyle(
+                                color: toast.darkenColor,
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     )
