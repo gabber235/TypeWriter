@@ -527,3 +527,518 @@ abstract class LeafTreeNode<T> implements TreeNode<T> {
   _$$LeafTreeNodeImplCopyWith<T, _$LeafTreeNodeImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+mixin _$TreeModification<T> {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(TreeNode<T> node) add,
+    required TResult Function(String path, TreeNode<T> node) update,
+    required TResult Function(String path) remove,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(TreeNode<T> node)? add,
+    TResult? Function(String path, TreeNode<T> node)? update,
+    TResult? Function(String path)? remove,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(TreeNode<T> node)? add,
+    TResult Function(String path, TreeNode<T> node)? update,
+    TResult Function(String path)? remove,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_TreeAdd<T> value) add,
+    required TResult Function(_TreeUpdate<T> value) update,
+    required TResult Function(_TreeRemove<T> value) remove,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_TreeAdd<T> value)? add,
+    TResult? Function(_TreeUpdate<T> value)? update,
+    TResult? Function(_TreeRemove<T> value)? remove,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_TreeAdd<T> value)? add,
+    TResult Function(_TreeUpdate<T> value)? update,
+    TResult Function(_TreeRemove<T> value)? remove,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$TreeModificationCopyWith<T, $Res> {
+  factory _$TreeModificationCopyWith(_TreeModification<T> value,
+          $Res Function(_TreeModification<T>) then) =
+      __$TreeModificationCopyWithImpl<T, $Res, _TreeModification<T>>;
+}
+
+/// @nodoc
+class __$TreeModificationCopyWithImpl<T, $Res,
+        $Val extends _TreeModification<T>>
+    implements _$TreeModificationCopyWith<T, $Res> {
+  __$TreeModificationCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$TreeAddImplCopyWith<T, $Res> {
+  factory _$$TreeAddImplCopyWith(
+          _$TreeAddImpl<T> value, $Res Function(_$TreeAddImpl<T>) then) =
+      __$$TreeAddImplCopyWithImpl<T, $Res>;
+  @useResult
+  $Res call({TreeNode<T> node});
+
+  $TreeNodeCopyWith<T, $Res> get node;
+}
+
+/// @nodoc
+class __$$TreeAddImplCopyWithImpl<T, $Res>
+    extends __$TreeModificationCopyWithImpl<T, $Res, _$TreeAddImpl<T>>
+    implements _$$TreeAddImplCopyWith<T, $Res> {
+  __$$TreeAddImplCopyWithImpl(
+      _$TreeAddImpl<T> _value, $Res Function(_$TreeAddImpl<T>) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? node = null,
+  }) {
+    return _then(_$TreeAddImpl<T>(
+      node: null == node
+          ? _value.node
+          : node // ignore: cast_nullable_to_non_nullable
+              as TreeNode<T>,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $TreeNodeCopyWith<T, $Res> get node {
+    return $TreeNodeCopyWith<T, $Res>(_value.node, (value) {
+      return _then(_value.copyWith(node: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$TreeAddImpl<T> implements _TreeAdd<T> {
+  const _$TreeAddImpl({required this.node});
+
+  @override
+  final TreeNode<T> node;
+
+  @override
+  String toString() {
+    return '_TreeModification<$T>.add(node: $node)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TreeAddImpl<T> &&
+            (identical(other.node, node) || other.node == node));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, node);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TreeAddImplCopyWith<T, _$TreeAddImpl<T>> get copyWith =>
+      __$$TreeAddImplCopyWithImpl<T, _$TreeAddImpl<T>>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(TreeNode<T> node) add,
+    required TResult Function(String path, TreeNode<T> node) update,
+    required TResult Function(String path) remove,
+  }) {
+    return add(node);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(TreeNode<T> node)? add,
+    TResult? Function(String path, TreeNode<T> node)? update,
+    TResult? Function(String path)? remove,
+  }) {
+    return add?.call(node);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(TreeNode<T> node)? add,
+    TResult Function(String path, TreeNode<T> node)? update,
+    TResult Function(String path)? remove,
+    required TResult orElse(),
+  }) {
+    if (add != null) {
+      return add(node);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_TreeAdd<T> value) add,
+    required TResult Function(_TreeUpdate<T> value) update,
+    required TResult Function(_TreeRemove<T> value) remove,
+  }) {
+    return add(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_TreeAdd<T> value)? add,
+    TResult? Function(_TreeUpdate<T> value)? update,
+    TResult? Function(_TreeRemove<T> value)? remove,
+  }) {
+    return add?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_TreeAdd<T> value)? add,
+    TResult Function(_TreeUpdate<T> value)? update,
+    TResult Function(_TreeRemove<T> value)? remove,
+    required TResult orElse(),
+  }) {
+    if (add != null) {
+      return add(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _TreeAdd<T> implements _TreeModification<T> {
+  const factory _TreeAdd({required final TreeNode<T> node}) = _$TreeAddImpl<T>;
+
+  TreeNode<T> get node;
+  @JsonKey(ignore: true)
+  _$$TreeAddImplCopyWith<T, _$TreeAddImpl<T>> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TreeUpdateImplCopyWith<T, $Res> {
+  factory _$$TreeUpdateImplCopyWith(
+          _$TreeUpdateImpl<T> value, $Res Function(_$TreeUpdateImpl<T>) then) =
+      __$$TreeUpdateImplCopyWithImpl<T, $Res>;
+  @useResult
+  $Res call({String path, TreeNode<T> node});
+
+  $TreeNodeCopyWith<T, $Res> get node;
+}
+
+/// @nodoc
+class __$$TreeUpdateImplCopyWithImpl<T, $Res>
+    extends __$TreeModificationCopyWithImpl<T, $Res, _$TreeUpdateImpl<T>>
+    implements _$$TreeUpdateImplCopyWith<T, $Res> {
+  __$$TreeUpdateImplCopyWithImpl(
+      _$TreeUpdateImpl<T> _value, $Res Function(_$TreeUpdateImpl<T>) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? path = null,
+    Object? node = null,
+  }) {
+    return _then(_$TreeUpdateImpl<T>(
+      path: null == path
+          ? _value.path
+          : path // ignore: cast_nullable_to_non_nullable
+              as String,
+      node: null == node
+          ? _value.node
+          : node // ignore: cast_nullable_to_non_nullable
+              as TreeNode<T>,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $TreeNodeCopyWith<T, $Res> get node {
+    return $TreeNodeCopyWith<T, $Res>(_value.node, (value) {
+      return _then(_value.copyWith(node: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$TreeUpdateImpl<T> implements _TreeUpdate<T> {
+  const _$TreeUpdateImpl({required this.path, required this.node});
+
+  @override
+  final String path;
+  @override
+  final TreeNode<T> node;
+
+  @override
+  String toString() {
+    return '_TreeModification<$T>.update(path: $path, node: $node)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TreeUpdateImpl<T> &&
+            (identical(other.path, path) || other.path == path) &&
+            (identical(other.node, node) || other.node == node));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, path, node);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TreeUpdateImplCopyWith<T, _$TreeUpdateImpl<T>> get copyWith =>
+      __$$TreeUpdateImplCopyWithImpl<T, _$TreeUpdateImpl<T>>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(TreeNode<T> node) add,
+    required TResult Function(String path, TreeNode<T> node) update,
+    required TResult Function(String path) remove,
+  }) {
+    return update(path, node);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(TreeNode<T> node)? add,
+    TResult? Function(String path, TreeNode<T> node)? update,
+    TResult? Function(String path)? remove,
+  }) {
+    return update?.call(path, node);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(TreeNode<T> node)? add,
+    TResult Function(String path, TreeNode<T> node)? update,
+    TResult Function(String path)? remove,
+    required TResult orElse(),
+  }) {
+    if (update != null) {
+      return update(path, node);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_TreeAdd<T> value) add,
+    required TResult Function(_TreeUpdate<T> value) update,
+    required TResult Function(_TreeRemove<T> value) remove,
+  }) {
+    return update(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_TreeAdd<T> value)? add,
+    TResult? Function(_TreeUpdate<T> value)? update,
+    TResult? Function(_TreeRemove<T> value)? remove,
+  }) {
+    return update?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_TreeAdd<T> value)? add,
+    TResult Function(_TreeUpdate<T> value)? update,
+    TResult Function(_TreeRemove<T> value)? remove,
+    required TResult orElse(),
+  }) {
+    if (update != null) {
+      return update(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _TreeUpdate<T> implements _TreeModification<T> {
+  const factory _TreeUpdate(
+      {required final String path,
+      required final TreeNode<T> node}) = _$TreeUpdateImpl<T>;
+
+  String get path;
+  TreeNode<T> get node;
+  @JsonKey(ignore: true)
+  _$$TreeUpdateImplCopyWith<T, _$TreeUpdateImpl<T>> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TreeRemoveImplCopyWith<T, $Res> {
+  factory _$$TreeRemoveImplCopyWith(
+          _$TreeRemoveImpl<T> value, $Res Function(_$TreeRemoveImpl<T>) then) =
+      __$$TreeRemoveImplCopyWithImpl<T, $Res>;
+  @useResult
+  $Res call({String path});
+}
+
+/// @nodoc
+class __$$TreeRemoveImplCopyWithImpl<T, $Res>
+    extends __$TreeModificationCopyWithImpl<T, $Res, _$TreeRemoveImpl<T>>
+    implements _$$TreeRemoveImplCopyWith<T, $Res> {
+  __$$TreeRemoveImplCopyWithImpl(
+      _$TreeRemoveImpl<T> _value, $Res Function(_$TreeRemoveImpl<T>) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? path = null,
+  }) {
+    return _then(_$TreeRemoveImpl<T>(
+      path: null == path
+          ? _value.path
+          : path // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TreeRemoveImpl<T> implements _TreeRemove<T> {
+  const _$TreeRemoveImpl({required this.path});
+
+  @override
+  final String path;
+
+  @override
+  String toString() {
+    return '_TreeModification<$T>.remove(path: $path)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TreeRemoveImpl<T> &&
+            (identical(other.path, path) || other.path == path));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, path);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TreeRemoveImplCopyWith<T, _$TreeRemoveImpl<T>> get copyWith =>
+      __$$TreeRemoveImplCopyWithImpl<T, _$TreeRemoveImpl<T>>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(TreeNode<T> node) add,
+    required TResult Function(String path, TreeNode<T> node) update,
+    required TResult Function(String path) remove,
+  }) {
+    return remove(path);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(TreeNode<T> node)? add,
+    TResult? Function(String path, TreeNode<T> node)? update,
+    TResult? Function(String path)? remove,
+  }) {
+    return remove?.call(path);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(TreeNode<T> node)? add,
+    TResult Function(String path, TreeNode<T> node)? update,
+    TResult Function(String path)? remove,
+    required TResult orElse(),
+  }) {
+    if (remove != null) {
+      return remove(path);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_TreeAdd<T> value) add,
+    required TResult Function(_TreeUpdate<T> value) update,
+    required TResult Function(_TreeRemove<T> value) remove,
+  }) {
+    return remove(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_TreeAdd<T> value)? add,
+    TResult? Function(_TreeUpdate<T> value)? update,
+    TResult? Function(_TreeRemove<T> value)? remove,
+  }) {
+    return remove?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_TreeAdd<T> value)? add,
+    TResult Function(_TreeUpdate<T> value)? update,
+    TResult Function(_TreeRemove<T> value)? remove,
+    required TResult orElse(),
+  }) {
+    if (remove != null) {
+      return remove(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _TreeRemove<T> implements _TreeModification<T> {
+  const factory _TreeRemove({required final String path}) = _$TreeRemoveImpl<T>;
+
+  String get path;
+  @JsonKey(ignore: true)
+  _$$TreeRemoveImplCopyWith<T, _$TreeRemoveImpl<T>> get copyWith =>
+      throw _privateConstructorUsedError;
+}

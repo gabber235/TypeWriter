@@ -37,7 +37,7 @@ final searchFiltersProvider = AutoDisposeProvider<List<SearchFilter>>.internal(
 );
 
 typedef SearchFiltersRef = AutoDisposeProviderRef<List<SearchFilter>>;
-String _$searchElementsHash() => r'63eb5b94cd870af36b73dea6df406190222f8538';
+String _$searchElementsHash() => r'ea1fb60f87222d22dab3de9901736f16900c110a';
 
 /// See also [searchElements].
 @ProviderFor(searchElements)
