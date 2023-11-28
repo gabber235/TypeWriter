@@ -9,6 +9,7 @@ import me.gabber235.typewriter.adapters.AdapterLoaderImpl
 import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
+import me.gabber235.typewriter.extensions.bstats.BStatsMetrics
 import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.FactStorage
@@ -102,6 +103,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         }
 
         syncCommands()
+        BStatsMetrics.registerMetrics()
 
         // We want to initialize all the adapters after all the plugins have been enabled to make
         // sure
