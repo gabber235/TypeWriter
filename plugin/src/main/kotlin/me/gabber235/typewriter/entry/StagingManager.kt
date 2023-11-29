@@ -93,7 +93,11 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         val pages = mutableMapOf<String, JsonObject>()
         dir.pages().forEach { file ->
             val page = file.readText()
-            pages[file.nameWithoutExtension] = gson.fromJson(page, JsonObject::class.java)
+            val pageName = file.nameWithoutExtension
+            val pageJson = gson.fromJson(page, JsonObject::class.java)
+            // Sometimes the name of the page is out of sync with the file name, so we need to update it
+            pageJson.addProperty("name", pageName)
+            pages[pageName] = pageJson
         }
         return pages
     }
