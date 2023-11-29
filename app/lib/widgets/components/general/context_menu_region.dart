@@ -194,7 +194,7 @@ class _ContextMenu extends HookWidget {
   final Offset position;
   final List<ContextMenuTile> tiles;
 
-  static const _spacingWidth = 74;
+  static const _spacingWidth = 80;
 
   @override
   Widget build(BuildContext context) {

@@ -46,6 +46,7 @@ class SearchNotifier extends StateNotifier<Search?> {
   final Ref ref;
   late Debouncer<String> _debouncer;
 
+  // ignore: use_setters_to_change_properties
   void start(Search search) {
     state = search;
   }
@@ -54,15 +55,13 @@ class SearchNotifier extends StateNotifier<Search?> {
     return SearchBuilder(this);
   }
 
-  void startGlobalSearch(String addTag) => asBuilder()
+  void startGlobalSearch() => asBuilder()
     ..fetchNewEntry()
     ..fetchEntry()
-    ..addOnlyTag(addTag, canRemove: false)
     ..open();
 
-  void startAddSearch(String addTag) => asBuilder()
+  void startAddSearch() => asBuilder()
     ..fetchNewEntry()
-    ..addOnlyTag(addTag, canRemove: false)
     ..open();
 
   void endSearch() {
@@ -134,8 +133,9 @@ abstract class SearchFetcher {
 }
 
 final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(
-    SearchNotifier.new,
-    name: "searchProvider");
+  SearchNotifier.new,
+  name: "searchProvider",
+);
 
 class SearchBuilder {
   SearchBuilder(this.notifier);
@@ -515,12 +515,16 @@ class _SearchFilters extends HookConsumerWidget {
                             splashRadius: 12,
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(
-                                maxHeight: 24, maxWidth: 24),
+                              maxHeight: 24,
+                              maxWidth: 24,
+                            ),
                             onPressed: () => ref
                                 .read(searchProvider.notifier)
                                 .removeFilter(filter),
-                            icon: const FaIcon(FontAwesomeIcons.xmark,
-                                color: Colors.white),
+                            icon: const FaIcon(
+                              FontAwesomeIcons.xmark,
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       ],
@@ -642,7 +646,10 @@ class _SearchResults extends HookConsumerWidget {
             ]
                 .animate(interval: 50.ms)
                 .scaleXY(
-                    begin: 0.9, curve: Curves.elasticOut, duration: 1.seconds)
+                  begin: 0.9,
+                  curve: Curves.elasticOut,
+                  duration: 1.seconds,
+                )
                 .fadeIn(duration: 500.ms),
           ),
         ),
@@ -698,7 +705,10 @@ class _ResultTile extends HookConsumerWidget {
   final List<SearchAction> actions;
 
   void _invokeAction(
-      BuildContext context, PassingRef ref, ActivateActionIntent intent) {
+    BuildContext context,
+    PassingRef ref,
+    ActivateActionIntent intent,
+  ) {
     final action = actions
         .firstWhereOrNull((action) => action.shortcut == intent.shortcut);
     if (action == null) return;
@@ -724,8 +734,8 @@ class _ResultTile extends HookConsumerWidget {
       child: Actions(
         actions: {
           ActivateActionIntent: CallbackAction<ActivateActionIntent>(
-              onInvoke: (intent) =>
-                  _invokeAction(context, ref.passing, intent)),
+            onInvoke: (intent) => _invokeAction(context, ref.passing, intent),
+          ),
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
@@ -795,7 +805,8 @@ class _ResultTile extends HookConsumerWidget {
                                     pauseBetween: 3.seconds,
                                     intervalSpaces: 5,
                                     velocity: const Velocity(
-                                        pixelsPerSecond: Offset(30, 0)),
+                                      pixelsPerSecond: Offset(30, 0),
+                                    ),
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
@@ -877,11 +888,13 @@ class _SearchActions extends HookConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
-            Text("Actions",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "Actions",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
             const Spacer(),
             for (final action in actions) ...[
               _SearchBarAction(action: action),
@@ -892,7 +905,11 @@ class _SearchActions extends HookConsumerWidget {
         ),
       ),
     ).animate().scaleXY(
-        duration: 500.ms, begin: 0.95, end: 1, curve: Curves.elasticOut);
+          duration: 500.ms,
+          begin: 0.95,
+          end: 1,
+          curve: Curves.elasticOut,
+        );
   }
 }
 

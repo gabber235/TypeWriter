@@ -71,9 +71,7 @@ class PageEditor extends HookConsumerWidget {
         actions: {
           SearchIntent: CallbackAction<SearchIntent>(
             onInvoke: (intent) {
-              final tag = ref.read(currentPageTypeProvider)?.tag;
-              if (tag == null) return;
-              ref.read(searchProvider.notifier).startGlobalSearch(tag);
+              ref.read(searchProvider.notifier).startGlobalSearch();
               return null;
             },
           ),
@@ -206,15 +204,11 @@ class _AddEntryButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tag = ref.watch(currentPageTypeProvider.select((type) => type?.tag));
-    if (tag == null) {
-      return const SizedBox();
-    }
     return IconButton(
       iconSize: 16,
       padding: EdgeInsets.zero,
       icon: const Icon(FontAwesomeIcons.plus),
-      onPressed: () => ref.read(searchProvider.notifier).startAddSearch(tag),
+      onPressed: () => ref.read(searchProvider.notifier).startAddSearch(),
     );
   }
 }

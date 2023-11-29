@@ -1,5 +1,5 @@
 import "package:collection/collection.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
@@ -11,6 +11,7 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
+import "package:typewriter/widgets/components/app/page_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -179,10 +180,12 @@ Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
 class NewEntryFetcher extends SearchFetcher {
   const NewEntryFetcher({
     this.onAdd,
+    this.onAdded,
     this.disabled = false,
   });
 
   final FutureOr<bool?> Function(EntryBlueprint)? onAdd;
+  final FutureOr<bool?> Function(Entry)? onAdded;
 
   @override
   final bool disabled;
@@ -199,7 +202,8 @@ class NewEntryFetcher extends SearchFetcher {
     final results = fuzzy.search(search.query);
 
     return results
-        .map((result) => AddEntrySearchElement(result.item, onAdd: onAdd))
+        .map((result) =>
+            AddEntrySearchElement(result.item, onAdd: onAdd, onAdded: onAdded))
         .toList();
   }
 
@@ -209,6 +213,7 @@ class NewEntryFetcher extends SearchFetcher {
   }) {
     return NewEntryFetcher(
       onAdd: onAdd,
+      onAdded: onAdded,
       disabled: disabled ?? this.disabled,
     );
   }
@@ -266,8 +271,11 @@ extension SearchBuilderX on SearchBuilder {
     filter(ExcludeEntryFilter(entryId, canRemove: canRemove));
   }
 
-  void fetchNewEntry({FutureOr<bool?> Function(EntryBlueprint)? onAdd}) {
-    fetch(NewEntryFetcher(onAdd: onAdd));
+  void fetchNewEntry({
+    FutureOr<bool?> Function(EntryBlueprint)? onAdd,
+    FutureOr<bool?> Function(Entry)? onAdded,
+  }) {
+    fetch(NewEntryFetcher(onAdd: onAdd, onAdded: onAdded));
   }
 
   void fetchEntry({FutureOr<bool?> Function(Entry)? onSelect}) {
@@ -331,9 +339,10 @@ class EntrySearchElement extends SearchElement {
 }
 
 class AddEntrySearchElement extends SearchElement {
-  const AddEntrySearchElement(this.blueprint, {this.onAdd});
+  const AddEntrySearchElement(this.blueprint, {this.onAdd, this.onAdded});
   final EntryBlueprint blueprint;
   final FutureOr<bool?> Function(EntryBlueprint)? onAdd;
+  final FutureOr<bool?> Function(Entry)? onAdded;
 
   @override
   String get title => "Add ${blueprint.name.formatted}";
@@ -374,18 +383,39 @@ class AddEntrySearchElement extends SearchElement {
     }
     final page = ref.read(currentPageProvider);
     if (page == null) return false;
-    if (!page.canHave(blueprint)) {
-      Toasts.showError(
-        ref,
-        "Could not create entry!",
-        description: "Page does not support this  of entry.",
-      );
-      return false;
+    if (page.canHave(blueprint)) {
+      return _createAndNavigate(ref, page, blueprint);
     }
+
+    // This page can't have the entry, so we need to select/create a new page where we can.
+
+    ref.read(searchProvider.notifier).asBuilder()
+      ..pageType(PageType.fromBlueprint(blueprint), canRemove: false)
+      ..fetchPage(onSelect: (page) => _createAndNavigate(ref, page, blueprint))
+      ..fetchAddPage(
+        onAdded: (page) => _createAndNavigate(ref, page, blueprint),
+      )
+      ..open();
+
+    return false;
+  }
+
+  Future<bool> _createAndNavigate(
+    PassingRef ref,
+    Page page,
+    EntryBlueprint blueprint,
+  ) async {
     final entry = await page.createEntryFromBlueprint(ref, blueprint);
-    await ref
-        .read(inspectingEntryIdProvider.notifier)
-        .navigateAndSelectEntry(ref, entry.id);
+    onAdded?.call(entry);
+    final notifier = ref.read(inspectingEntryIdProvider.notifier);
+
+    final currentPage = ref.read(currentPageProvider);
+    // Had to create/select a new page for the entry
+    if (page.pageName != currentPage?.pageName) {
+      ref.read(searchProvider.notifier).endSearch();
+    }
+
+    await notifier.navigateAndSelectEntry(ref, entry.id);
     return true;
   }
 }
