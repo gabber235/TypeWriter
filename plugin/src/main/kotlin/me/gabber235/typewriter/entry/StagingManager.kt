@@ -119,7 +119,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     override fun renamePage(oldName: String, newName: String): Result<String> {
-        val oldPage = pages[oldName] ?: return failure("Page does not exist")
+        val oldPage = pages[oldName] ?: return failure("Page '$oldName' does not exist")
         if (pages.containsKey(newName)) return failure("Page with that name already exists")
 
         oldPage.addProperty("name", newName)
@@ -236,7 +236,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     private fun getPage(id: String): Result<JsonObject> {
-        val page = pages[id] ?: return failure("Page does not exist")
+        val page = pages[id] ?: return failure("Page '$id' does not exist")
         return ok(page)
     }
 

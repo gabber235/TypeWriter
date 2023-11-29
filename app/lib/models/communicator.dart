@@ -16,6 +16,7 @@ import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/socket_extensions.dart";
+import "package:typewriter/widgets/components/general/toasts.dart";
 
 part "communicator.g.dart";
 part "communicator.freezed.dart";
@@ -243,7 +244,9 @@ class Communicator {
     final jsonPages = jsonDecode(rawPages) as List;
     final jsonAdapters = jsonDecode(rawAdapters) as List;
 
-    final pages = jsonPages.map((e) => Page.fromJson(e)).toList();
+    // ignore: unnecessary_lambdas
+    final pages = jsonPages.map((p) => Page.fromJson(p)).toList();
+    // ignore: unnecessary_lambdas
     final adapters = jsonAdapters.map((a) => Adapter.fromJson(a)).toList();
 
     final book = Book(name: "Typewriter", adapters: adapters, pages: pages);
@@ -256,7 +259,9 @@ class Communicator {
       return;
     }
 
-    await socket.emitWithAckAsync("createPage", jsonEncode(page.toJson()));
+    handleAck(
+      await socket.emitWithAckAsync("createPage", jsonEncode(page.toJson())),
+    );
   }
 
   Future<void> renamePage(String old, String newName) async {
@@ -279,7 +284,9 @@ class Communicator {
       return;
     }
 
-    await socket.emitWithAckAsync("deletePage", name);
+    handleAck(
+      await socket.emitWithAckAsync("deletePage", name),
+    );
   }
 
   Future<void> createEntry(String page, Entry entry) async {
@@ -293,10 +300,17 @@ class Communicator {
       "entry": entry.toJson(),
     };
 
-    return socket.emitWithAckAsync("createEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("createEntry", jsonEncode(data)),
+    );
   }
 
-  void updateEntry(String pageId, String entryId, String path, dynamic value) {
+  Future<void> updateEntry(
+    String pageId,
+    String entryId,
+    String path,
+    dynamic value,
+  ) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -309,10 +323,12 @@ class Communicator {
       "value": value,
     };
 
-    socket.emit("updateEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("updateEntry", jsonEncode(data)),
+    );
   }
 
-  void updateEntireEntry(String pageId, Entry entry) {
+  Future<void> updateEntireEntry(String pageId, Entry entry) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -323,10 +339,12 @@ class Communicator {
       "entry": entry.toJson(),
     };
 
-    socket.emit("updateCompleteEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("updateCompleteEntry", jsonEncode(data)),
+    );
   }
 
-  void reorderEntry(String pageId, String entryId, int newIndex) {
+  Future<void> reorderEntry(String pageId, String entryId, int newIndex) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -338,7 +356,9 @@ class Communicator {
       "newIndex": newIndex,
     };
 
-    socket.emit("reorderEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("reorderEntry", jsonEncode(data)),
+    );
   }
 
   Future<void> deleteEntry(String pageId, String entryId) async {
@@ -352,26 +372,32 @@ class Communicator {
       "entryId": entryId,
     };
 
-    socket.emit("deleteEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("deleteEntry", jsonEncode(data)),
+    );
   }
 
-  void publish() {
+  Future<void> publish() async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
     }
     if (ref.read(stagingStateProvider) != StagingState.staging) return;
 
-    socket.emit("publish", "");
+    handleAck(
+      await socket.emitWithAckAsync("publish", ""),
+    );
   }
 
-  void updateSelfWriter(Map<String, dynamic> data) {
+  Future<void> updateSelfWriter(Map<String, dynamic> data) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
     }
 
-    socket.emit("updateWriter", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("updateSelfWriter", jsonEncode(data)),
+    );
   }
 
   Future<Response> requestCapture(Map<String, dynamic> data) async {
@@ -479,6 +505,32 @@ class Communicator {
 
   void handleUpdateWriters(dynamic data) {
     ref.read(writersProvider.notifier).syncWriters(data);
+  }
+
+  void handleAck(dynamic data) {
+    if (data == null) {
+      return;
+    }
+    if (data is! String) {
+      debugPrint("Could not parse ack: $data");
+      return;
+    }
+
+    final json = jsonDecode(data) as Map<String, dynamic>;
+    final response = Response.fromJson(json);
+
+    if (!response.success) {
+      debugPrint("Ack failed: ${response.message}");
+      Toasts.showError(
+        ref.passing,
+        response.message,
+        description: "Reloading the full book to resync with the server.",
+      );
+      fetchBook();
+      return;
+    }
+
+    debugPrint("Ack: ${response.message}");
   }
 }
 
