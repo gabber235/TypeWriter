@@ -54,6 +54,8 @@ dev_dependencies:
   riverpod_generator: ^2.3.8
   custom_lint:
   riverpod_lint: ^2.3.6
+  integration_test:
+    sdk: flutter
 
 icons_launcher:
   image_path: "assets/Typewriter.png"

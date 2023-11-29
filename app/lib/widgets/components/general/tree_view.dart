@@ -104,9 +104,7 @@ List<TreeNode<T>> _createTreeNode<T>(
 
   // Full path exists, so we only need to add it to that node
   if (overlappingNode.name == overlappingPath) {
-    final remainingPath = overlappingPath == path
-        ? ""
-        : path.substring(overlappingPath.length + 1);
+    final remainingPath = path.removePrefixPart(overlappingPath);
     return _applyModifications(
       elements,
       [
@@ -126,12 +124,12 @@ List<TreeNode<T>> _createTreeNode<T>(
   // Then add the original node with the remaining path to the new node
   // And finally add the new node with the new value
   final overlappingRemainingPath =
-      overlappingNode.name.substring(overlappingPath.length + 1);
+      overlappingNode.name.removePrefixPart(overlappingPath);
   final newInnerNode = TreeNode.inner(
     name: overlappingRemainingPath,
     children: overlappingNode.children,
   );
-  final remainingPath = path.substring(overlappingPath.length + 1);
+  final remainingPath = path.removePrefixPart(overlappingPath);
   final newNode = _createTreeNode(<TreeNode<T>>[], remainingPath, value);
 
   return _applyModifications(
@@ -191,4 +189,12 @@ class _TreeModification<T> with _$TreeModification {
   const factory _TreeModification.remove({
     required String path,
   }) = _TreeRemove;
+}
+
+extension on String {
+  String removePrefixPart(String part) {
+    if (!startsWith(part)) return this;
+    if (length == part.length) return "";
+    return substring(part.length + 1);
+  }
 }

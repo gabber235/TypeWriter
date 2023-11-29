@@ -28,6 +28,7 @@ interface StagingManager {
     fun fetchPages(): Map<String, JsonObject>
     fun createPage(data: JsonObject): Result<String>
     fun renamePage(oldName: String, newName: String): Result<String>
+    fun changePageValue(pageId: String, path: String, value: JsonElement): Result<String>
     fun deletePage(name: String): Result<String>
     fun createEntry(pageId: String, data: JsonObject): Result<String>
     fun updateEntryField(pageId: String, entryId: String, path: String, value: JsonElement): Result<String>
@@ -133,6 +134,15 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully renamed page from $oldName to $newName")
     }
 
+    override fun changePageValue(pageId: String, path: String, value: JsonElement): Result<String> {
+        val page = getPage(pageId) onFail { return it }
+
+        page.changePathValue(path, value)
+
+        autoSaver()
+        return ok("Successfully updated field")
+    }
+
     override fun deletePage(name: String): Result<String> {
         pages.remove(name) ?: return failure("Page does not exist")
 
@@ -169,22 +179,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         val entry = entries.find { it.asJsonObject["id"].asString == entryId } ?: return failure("Entry does not exist")
 
         // Update the entry
-        val pathParts = path.split(".")
-        var current: JsonElement = entry.asJsonObject
-        pathParts.forEachIndexed { index, key ->
-            if (index == pathParts.size - 1) {
-                if (current.isJsonObject) {
-                    current.asJsonObject.add(key, value)
-                } else if (current.isJsonArray) {
-                    current.asJsonArray[Integer.parseInt(key)] = value
-                }
-            } else if (current.isJsonObject) {
-                current = current.asJsonObject[key] ?: JsonObject().also { current.asJsonObject.add(key, it) }
-            } else if (current.isJsonArray) {
-                current =
-                    current.asJsonArray[Integer.parseInt(key)] ?: JsonObject().also { current.asJsonArray.add(it) }
-            }
-        }
+        entry.changePathValue(path, value)
 
         autoSaver()
         return ok("Successfully updated field")
@@ -306,6 +301,25 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
     override fun shutdown() {
         if (stagingState == STAGING) saveStaging()
+    }
+}
+
+fun JsonElement.changePathValue(path: String, value: JsonElement) {
+    val pathParts = path.split(".")
+    var current: JsonElement = this
+    pathParts.forEachIndexed { index, key ->
+        if (index == pathParts.size - 1) {
+            if (current.isJsonObject) {
+                current.asJsonObject.add(key, value)
+            } else if (current.isJsonArray) {
+                current.asJsonArray[Integer.parseInt(key)] = value
+            }
+        } else if (current.isJsonObject) {
+            current = current.asJsonObject[key] ?: JsonObject().also { current.asJsonObject.add(key, it) }
+        } else if (current.isJsonArray) {
+            current =
+                current.asJsonArray[Integer.parseInt(key)] ?: JsonObject().also { current.asJsonArray.add(it) }
+        }
     }
 }
 

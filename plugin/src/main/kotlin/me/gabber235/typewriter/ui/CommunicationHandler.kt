@@ -55,6 +55,7 @@ class CommunicationHandler : KoinComponent {
         server?.addEventListener("fetch", String::class.java, clientSynchronizer::handleFetchRequest)
         server?.addEventListener("createPage", String::class.java, clientSynchronizer::handleCreatePage)
         server?.addEventListener("renamePage", String::class.java, clientSynchronizer::handleRenamePage)
+        server?.addEventListener("changePageValue", String::class.java, clientSynchronizer::handleChangePageValue)
         server?.addEventListener("deletePage", String::class.java, clientSynchronizer::handleDeletePage)
         server?.addEventListener("createEntry", String::class.java, clientSynchronizer::handleCreateEntry)
         server?.addEventListener("updateEntry", String::class.java, clientSynchronizer::handleEntryFieldUpdate)

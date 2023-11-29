@@ -322,6 +322,9 @@ class ContextMenuController {
   /// The currently shown instance, if any.
   static ContextMenuController? _shownInstance;
 
+  /// True if and only if there is a context menu currently being shown.
+  static bool get hasContextMenu => _shownInstance != null;
+
   // The OverlayEntry is static because only one context menu can be displayed
   // at one time.
   static OverlayEntry? _menuOverlayEntry;

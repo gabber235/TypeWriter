@@ -163,4 +163,37 @@ void main() {
     final leafNode2 = innerNode2.children.first as LeafTreeNode<Pair>;
     expect(leafNode2.value.value, equals(2));
   });
+
+  test(
+      "When two elements with one having a sub path after the other expect there to be one inner node with leaf and inner node with a leaf",
+      () {
+    final node = createTreeNode(
+      [
+        const Pair("some.simple.path.other", 2),
+        const Pair("some.simple.path", 1),
+      ],
+      (e) => e.path,
+    );
+
+    expect(node.children, hasLength(1));
+    expect(node.children.first, isA<InnerTreeNode<Pair>>());
+
+    final innerNode = node.children.first as InnerTreeNode<Pair>;
+
+    expect(innerNode.name, equals("some.simple.path"));
+    expect(innerNode.children, hasLength(2));
+    expect(innerNode.children.first, isA<InnerTreeNode<Pair>>());
+    expect(innerNode.children.last, isA<LeafTreeNode<Pair>>());
+
+    final leafNode1 = innerNode.children.last as LeafTreeNode<Pair>;
+    expect(leafNode1.value.value, equals(1));
+
+    final innerNode2 = innerNode.children.first as InnerTreeNode<Pair>;
+    expect(innerNode2.name, equals("other"));
+    expect(innerNode2.children, hasLength(1));
+    expect(innerNode2.children.first, isA<LeafTreeNode<Pair>>());
+
+    final leafNode2 = innerNode2.children.first as LeafTreeNode<Pair>;
+    expect(leafNode2.value.value, equals(2));
+  });
 }

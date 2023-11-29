@@ -65,6 +65,12 @@ extension StringExtension on String {
     return this;
   }
 
+  String removePrefix(Pattern prefix) {
+    if (!startsWith(prefix)) return this;
+    if (this == prefix) return "";
+    return substring(prefix.toString().length);
+  }
+
   /// Returns a new string with all indexes replaced with wild cards
   /// Example: "some.1.test2.5" => "some.*.test2.*"
   String wild() {

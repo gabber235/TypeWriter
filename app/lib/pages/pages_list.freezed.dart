@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$PageData {
   String get name => throw _privateConstructorUsedError;
   PageType get type => throw _privateConstructorUsedError;
+  String get chapter => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   _$PageDataCopyWith<_PageData> get copyWith =>
@@ -29,7 +30,7 @@ abstract class _$PageDataCopyWith<$Res> {
   factory _$PageDataCopyWith(_PageData value, $Res Function(_PageData) then) =
       __$PageDataCopyWithImpl<$Res, _PageData>;
   @useResult
-  $Res call({String name, PageType type});
+  $Res call({String name, PageType type, String chapter});
 }
 
 /// @nodoc
@@ -47,6 +48,7 @@ class __$PageDataCopyWithImpl<$Res, $Val extends _PageData>
   $Res call({
     Object? name = null,
     Object? type = null,
+    Object? chapter = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -57,6 +59,10 @@ class __$PageDataCopyWithImpl<$Res, $Val extends _PageData>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PageType,
+      chapter: null == chapter
+          ? _value.chapter
+          : chapter // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -69,7 +75,7 @@ abstract class _$$$__PageDataImplCopyWith<$Res>
       __$$$__PageDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, PageType type});
+  $Res call({String name, PageType type, String chapter});
 }
 
 /// @nodoc
@@ -85,6 +91,7 @@ class __$$$__PageDataImplCopyWithImpl<$Res>
   $Res call({
     Object? name = null,
     Object? type = null,
+    Object? chapter = null,
   }) {
     return _then(_$$__PageDataImpl(
       name: null == name
@@ -95,6 +102,10 @@ class __$$$__PageDataImplCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PageType,
+      chapter: null == chapter
+          ? _value.chapter
+          : chapter // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -102,16 +113,19 @@ class __$$$__PageDataImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$$__PageDataImpl implements _$__PageData {
-  const _$$__PageDataImpl({required this.name, required this.type});
+  const _$$__PageDataImpl(
+      {required this.name, required this.type, required this.chapter});
 
   @override
   final String name;
   @override
   final PageType type;
+  @override
+  final String chapter;
 
   @override
   String toString() {
-    return '_PageData(name: $name, type: $type)';
+    return '_PageData(name: $name, type: $type, chapter: $chapter)';
   }
 
   @override
@@ -120,11 +134,12 @@ class _$$__PageDataImpl implements _$__PageData {
         (other.runtimeType == runtimeType &&
             other is _$$__PageDataImpl &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.type, type) || other.type == type));
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.chapter, chapter) || other.chapter == chapter));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, type);
+  int get hashCode => Object.hash(runtimeType, name, type, chapter);
 
   @JsonKey(ignore: true)
   @override
@@ -136,12 +151,15 @@ class _$$__PageDataImpl implements _$__PageData {
 abstract class _$__PageData implements _PageData {
   const factory _$__PageData(
       {required final String name,
-      required final PageType type}) = _$$__PageDataImpl;
+      required final PageType type,
+      required final String chapter}) = _$$__PageDataImpl;
 
   @override
   String get name;
   @override
   PageType get type;
+  @override
+  String get chapter;
   @override
   @JsonKey(ignore: true)
   _$$$__PageDataImplCopyWith<_$$__PageDataImpl> get copyWith =>

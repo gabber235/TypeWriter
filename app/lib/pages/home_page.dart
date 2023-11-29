@@ -45,11 +45,9 @@ class HomePage extends HookConsumerWidget {
           ),
           SizedBox(height: 24),
           CopyableText(text: "/typewriter connect"),
-          if (kDebugMode || kProfileMode) ...[
-            SizedBox(height: 24),
-            _DebugConnectButton(),
-            SizedBox(height: 24),
-          ],
+          SizedBox(height: 24),
+          _ConnectButtons(),
+          SizedBox(height: 24),
           Spacer(),
         ],
       ),
@@ -57,10 +55,8 @@ class HomePage extends HookConsumerWidget {
   }
 }
 
-/// This is a debug widget that allows you to connect quickly to a server.
-/// It is only visible in debug mode.
-class _DebugConnectButton extends HookConsumerWidget {
-  const _DebugConnectButton();
+class _ConnectButtons extends HookConsumerWidget {
+  const _ConnectButtons();
 
   void connectTo(
     WidgetRef ref,
@@ -128,7 +124,7 @@ class _DebugConnectButton extends HookConsumerWidget {
         FilledButton.icon(
           color: Colors.green,
           icon: const Icon(FontAwesomeIcons.house),
-          label: const Text("Connect Home"),
+          label: const Text("Connect Localhost"),
           onPressed: () => connectTo(ref, "localhost", 9092),
         ),
         const SizedBox(width: 24),

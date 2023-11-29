@@ -278,6 +278,23 @@ class Communicator {
     await socket.emitWithAckAsync("renamePage", jsonEncode(data));
   }
 
+  Future<void> changePageValue(String page, String path, dynamic value) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "pageId": page,
+      "path": path,
+      "value": value,
+    };
+
+    handleAck(
+      await socket.emitWithAckAsync("changePageValue", jsonEncode(data)),
+    );
+  }
+
   Future<void> deletePage(String name) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {

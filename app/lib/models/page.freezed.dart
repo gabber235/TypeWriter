@@ -24,6 +24,7 @@ mixin _$Page {
   String get pageName => throw _privateConstructorUsedError;
   PageType get type => throw _privateConstructorUsedError;
   List<Entry> get entries => throw _privateConstructorUsedError;
+  String get chapter => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,7 +39,8 @@ abstract class $PageCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: "name") String pageName,
       PageType type,
-      List<Entry> entries});
+      List<Entry> entries,
+      String chapter});
 }
 
 /// @nodoc
@@ -57,6 +59,7 @@ class _$PageCopyWithImpl<$Res, $Val extends Page>
     Object? pageName = null,
     Object? type = null,
     Object? entries = null,
+    Object? chapter = null,
   }) {
     return _then(_value.copyWith(
       pageName: null == pageName
@@ -71,6 +74,10 @@ class _$PageCopyWithImpl<$Res, $Val extends Page>
           ? _value.entries
           : entries // ignore: cast_nullable_to_non_nullable
               as List<Entry>,
+      chapter: null == chapter
+          ? _value.chapter
+          : chapter // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -85,7 +92,8 @@ abstract class _$$PageImplCopyWith<$Res> implements $PageCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: "name") String pageName,
       PageType type,
-      List<Entry> entries});
+      List<Entry> entries,
+      String chapter});
 }
 
 /// @nodoc
@@ -101,6 +109,7 @@ class __$$PageImplCopyWithImpl<$Res>
     Object? pageName = null,
     Object? type = null,
     Object? entries = null,
+    Object? chapter = null,
   }) {
     return _then(_$PageImpl(
       pageName: null == pageName
@@ -115,6 +124,10 @@ class __$$PageImplCopyWithImpl<$Res>
           ? _value._entries
           : entries // ignore: cast_nullable_to_non_nullable
               as List<Entry>,
+      chapter: null == chapter
+          ? _value.chapter
+          : chapter // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -125,7 +138,8 @@ class _$PageImpl implements _Page {
   const _$PageImpl(
       {@JsonKey(name: "name") required this.pageName,
       required this.type,
-      final List<Entry> entries = const []})
+      final List<Entry> entries = const [],
+      this.chapter = ""})
       : _entries = entries;
 
   factory _$PageImpl.fromJson(Map<String, dynamic> json) =>
@@ -146,8 +160,12 @@ class _$PageImpl implements _Page {
   }
 
   @override
+  @JsonKey()
+  final String chapter;
+
+  @override
   String toString() {
-    return 'Page(pageName: $pageName, type: $type, entries: $entries)';
+    return 'Page(pageName: $pageName, type: $type, entries: $entries, chapter: $chapter)';
   }
 
   @override
@@ -158,13 +176,14 @@ class _$PageImpl implements _Page {
             (identical(other.pageName, pageName) ||
                 other.pageName == pageName) &&
             (identical(other.type, type) || other.type == type) &&
-            const DeepCollectionEquality().equals(other._entries, _entries));
+            const DeepCollectionEquality().equals(other._entries, _entries) &&
+            (identical(other.chapter, chapter) || other.chapter == chapter));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, pageName, type,
-      const DeepCollectionEquality().hash(_entries));
+      const DeepCollectionEquality().hash(_entries), chapter);
 
   @JsonKey(ignore: true)
   @override
@@ -184,7 +203,8 @@ abstract class _Page implements Page {
   const factory _Page(
       {@JsonKey(name: "name") required final String pageName,
       required final PageType type,
-      final List<Entry> entries}) = _$PageImpl;
+      final List<Entry> entries,
+      final String chapter}) = _$PageImpl;
 
   factory _Page.fromJson(Map<String, dynamic> json) = _$PageImpl.fromJson;
 
@@ -195,6 +215,8 @@ abstract class _Page implements Page {
   PageType get type;
   @override
   List<Entry> get entries;
+  @override
+  String get chapter;
   @override
   @JsonKey(ignore: true)
   _$$PageImplCopyWith<_$PageImpl> get copyWith =>

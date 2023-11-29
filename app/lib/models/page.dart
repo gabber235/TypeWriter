@@ -114,6 +114,7 @@ class Page with _$Page {
     @JsonKey(name: "name") required String pageName,
     required PageType type,
     @Default([]) List<Entry> entries,
+    @Default("") String chapter,
   }) = _Page;
 
   factory Page.fromJson(Map<String, dynamic> json) => _$PageFromJson(json);
@@ -128,6 +129,16 @@ extension PageExtension on Page {
     }
     final newPage = update(currentPage);
     ref.read(bookProvider.notifier).insertPage(newPage);
+  }
+
+  Future<void> changeChapter(PassingRef ref, String newChapter) async {
+    updatePage(
+      ref,
+      (page) => page.copyWith(chapter: newChapter),
+    );
+    await ref
+        .read(communicatorProvider)
+        .changePageValue(pageName, "chapter", newChapter);
   }
 
   Future<void> createEntry(PassingRef ref, Entry entry) async {

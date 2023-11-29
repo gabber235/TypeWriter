@@ -13,6 +13,7 @@ _$PageImpl _$$PageImplFromJson(Map<String, dynamic> json) => _$PageImpl(
               ?.map((e) => Entry.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      chapter: json['chapter'] as String? ?? "",
     );
 
 Map<String, dynamic> _$$PageImplToJson(_$PageImpl instance) =>
@@ -20,6 +21,7 @@ Map<String, dynamic> _$$PageImplToJson(_$PageImpl instance) =>
       'name': instance.pageName,
       'type': _$PageTypeEnumMap[instance.type]!,
       'entries': instance.entries,
+      'chapter': instance.chapter,
     };
 
 const _$PageTypeEnumMap = {
