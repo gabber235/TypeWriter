@@ -1,6 +1,7 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
@@ -8,6 +9,7 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/pages_list.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 
 part "page_search.g.dart";
@@ -177,6 +179,39 @@ class PageSearchElement extends SearchElement {
         Icons.open_in_new,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
+      SearchAction(
+        "Rename",
+        FontAwesomeIcons.pencil,
+        SmartSingleActivator(LogicalKeyboardKey.keyR, control: true),
+        onTrigger: (context, __) async =>
+            await showDialog<bool>(
+              context: context,
+              builder: (_) => RenamePageDialogue(old: page.pageName),
+            ) ??
+            false,
+      ),
+      SearchAction(
+        "Change Chapter",
+        FontAwesomeIcons.bookBookmark,
+        SmartSingleActivator(LogicalKeyboardKey.keyC, control: true),
+        onTrigger: (context, __) async =>
+            await showDialog<bool>(
+              context: context,
+              builder: (_) => ChangeChapterDialogue(
+                pageId: page.pageName,
+                chapter: page.chapter,
+              ),
+            ) ??
+            false,
+      ),
+      SearchAction(
+        "Delete",
+        FontAwesomeIcons.trash,
+        SmartSingleActivator(LogicalKeyboardKey.backspace, control: true),
+        color: Colors.red,
+        onTrigger: (context, ref) =>
+            showPageDeletionDialogue(context, ref, page.pageName),
+      ),
     ];
   }
 
@@ -186,8 +221,12 @@ class PageSearchElement extends SearchElement {
       return await onSelect?.call(page) ?? true;
     }
 
-    await ref.read(appRouter).navigateToPage(ref, page.pageName);
-    return true;
+    final navigator = ref.read(appRouter);
+
+    ref.read(searchProvider.notifier).endSearch();
+
+    await navigator.navigateToPage(ref, page.pageName);
+    return false;
   }
 }
 

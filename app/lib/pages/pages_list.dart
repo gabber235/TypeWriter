@@ -352,7 +352,7 @@ class _PageTile extends HookConsumerWidget {
         icon: FontAwesomeIcons.pen,
         onTap: () => showDialog(
           context: context,
-          builder: (_) => _RenamePageDialogue(old: pageId),
+          builder: (_) => RenamePageDialogue(old: pageId),
         ),
       ),
       ContextMenuTile.button(
@@ -369,22 +369,7 @@ class _PageTile extends HookConsumerWidget {
         title: "Delete",
         icon: FontAwesomeIcons.trash,
         color: Colors.redAccent,
-        onTap: () => showConfirmationDialogue(
-          context: context,
-          title: "Delete ${pageId.formatted}?",
-          content:
-              "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
-          delayConfirm: 3.seconds,
-          confirmText: "Delete",
-          confirmIcon: FontAwesomeIcons.trash,
-          onConfirm: () async {
-            await ref.read(bookProvider.notifier).deletePage(pageId);
-            if (!isSelected) return;
-            unawaited(
-              ref.read(appRouter).replace(const EmptyPageEditorRoute()),
-            );
-          },
-        ),
+        onTap: () => showPageDeletionDialogue(context, ref.passing, pageId),
       ),
     ];
   }
@@ -657,9 +642,10 @@ class AddPageDialogue extends HookConsumerWidget {
   }
 }
 
-class _RenamePageDialogue extends HookConsumerWidget {
-  const _RenamePageDialogue({
+class RenamePageDialogue extends HookConsumerWidget {
+  const RenamePageDialogue({
     required this.old,
+    super.key,
   });
 
   final String old;
@@ -716,7 +702,7 @@ class _RenamePageDialogue extends HookConsumerWidget {
         onSubmitted: (value) async {
           final navigator = Navigator.of(context);
           await _renamePage(ref, value);
-          navigator.pop();
+          navigator.pop(true);
         },
       ),
       actions: [
@@ -726,7 +712,7 @@ class _RenamePageDialogue extends HookConsumerWidget {
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(false),
         ),
         FilledButton.icon(
           onPressed: !isNameValid.value
@@ -734,7 +720,7 @@ class _RenamePageDialogue extends HookConsumerWidget {
               : () async {
                   final navigator = Navigator.of(context);
                   await _renamePage(ref, controller.text);
-                  navigator.pop();
+                  navigator.pop(true);
                 },
           label: const Text("Rename"),
           icon: const Icon(FontAwesomeIcons.pen),
@@ -766,7 +752,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
 
     final navigator = Navigator.of(context);
     await ref.read(pageProvider(pageId))?.changeChapter(ref, newName);
-    navigator.pop();
+    navigator.pop(true);
   }
 
   @override
@@ -808,7 +794,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(false),
         ),
         FilledButton.icon(
           onPressed: () async => _changeChapter(
@@ -824,4 +810,26 @@ class ChangeChapterDialogue extends HookConsumerWidget {
       ],
     );
   }
+}
+
+Future<bool> showPageDeletionDialogue(
+  BuildContext context,
+  PassingRef ref,
+  String pageId,
+) {
+  return showConfirmationDialogue(
+    context: context,
+    title: "Delete ${pageId.formatted}?",
+    content:
+        "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
+    delayConfirm: 3.seconds,
+    confirmText: "Delete",
+    confirmIcon: FontAwesomeIcons.trash,
+    onConfirm: () async {
+      await ref.read(bookProvider.notifier).deletePage(pageId);
+      unawaited(
+        ref.read(appRouter).replace(const EmptyPageEditorRoute()),
+      );
+    },
+  );
 }

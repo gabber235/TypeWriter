@@ -13,7 +13,6 @@ import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/page_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
-import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "entry_search.g.dart";
@@ -202,8 +201,13 @@ class NewEntryFetcher extends SearchFetcher {
     final results = fuzzy.search(search.query);
 
     return results
-        .map((result) =>
-            AddEntrySearchElement(result.item, onAdd: onAdd, onAdded: onAdded))
+        .map(
+          (result) => AddEntrySearchElement(
+            result.item,
+            onAdd: onAdd,
+            onAdded: onAdded,
+          ),
+        )
         .toList();
   }
 
@@ -320,7 +324,10 @@ class EntrySearchElement extends SearchElement {
         "Open Wiki",
         FontAwesomeIcons.book,
         SmartSingleActivator(LogicalKeyboardKey.keyO, control: true),
-        onTrigger: (_, __) => blueprint.openWiki(),
+        onTrigger: (_, __) {
+          blueprint.openWiki();
+          return false;
+        },
       ),
     ];
   }
@@ -371,7 +378,10 @@ class AddEntrySearchElement extends SearchElement {
         "Open Wiki",
         FontAwesomeIcons.book,
         SmartSingleActivator(LogicalKeyboardKey.keyO, control: true),
-        onTrigger: (_, __) => blueprint.openWiki(),
+        onTrigger: (_, __) {
+          blueprint.openWiki();
+          return false;
+        },
       ),
     ];
   }

@@ -233,12 +233,19 @@ Set<ShortcutActivator> _searchActionShortcuts(_SearchActionShortcutsRef ref) {
 }
 
 class SearchAction {
-  const SearchAction(this.name, this.icon, this.shortcut, {this.onTrigger});
+  const SearchAction(
+    this.name,
+    this.icon,
+    this.shortcut, {
+    this.color,
+    this.onTrigger,
+  });
 
   final String name;
   final IconData icon;
   final ShortcutActivator shortcut;
-  final Function(BuildContext, PassingRef ref)? onTrigger;
+  final Color? color;
+  final FutureOr<bool> Function(BuildContext, PassingRef ref)? onTrigger;
 }
 
 abstract class SearchElement {
@@ -477,7 +484,9 @@ class _SearchFilters extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(30),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 5),
+                        horizontal: 12,
+                        vertical: 5,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -487,8 +496,10 @@ class _SearchFilters extends HookConsumerWidget {
                             size: 16,
                           ),
                           const SizedBox(width: 8),
-                          Text(fetcher.title,
-                              style: const TextStyle(color: Colors.white)),
+                          Text(
+                            fetcher.title,
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ],
                       ),
                     ),
@@ -510,8 +521,10 @@ class _SearchFilters extends HookConsumerWidget {
                           size: 16,
                         ),
                         const SizedBox(width: 8),
-                        Text(filter.title,
-                            style: const TextStyle(color: Colors.white)),
+                        Text(
+                          filter.title,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                         if (filter.canRemove) ...[
                           const SizedBox(width: 12),
                           IconButton(
@@ -613,11 +626,11 @@ class _SearchResults extends HookConsumerWidget {
     List<SearchElement> actions,
     int index,
     BuildContext context,
-    WidgetRef ref,
+    PassingRef ref,
   ) async {
     if (index >= actions.length) return;
     if (index < 0) return;
-    final canEnd = await actions[index].activate(context, ref.passing);
+    final canEnd = await actions[index].activate(context, ref);
     if (canEnd) ref.read(searchProvider.notifier).endSearch();
   }
 
@@ -638,7 +651,8 @@ class _SearchResults extends HookConsumerWidget {
               for (var i = 0; i < elements.length; i++)
                 _ResultTile(
                   key: globalKeys[i],
-                  onPressed: () => _activateItem(elements, i, context, ref),
+                  onPressed: () =>
+                      _activateItem(elements, i, context, ref.passing),
                   focusNode: focusNodes[i],
                   title: elements[i].title,
                   color: elements[i].color(context),
@@ -708,15 +722,16 @@ class _ResultTile extends HookConsumerWidget {
   final String description;
   final List<SearchAction> actions;
 
-  void _invokeAction(
+  Future<void> _invokeAction(
     BuildContext context,
     PassingRef ref,
     ActivateActionIntent intent,
-  ) {
+  ) async {
     final action = actions
         .firstWhereOrNull((action) => action.shortcut == intent.shortcut);
     if (action == null) return;
-    action.onTrigger?.call(context, ref);
+    final canEnd = await action.onTrigger?.call(context, ref) ?? false;
+    if (canEnd) ref.read(searchProvider.notifier).endSearch();
   }
 
   @override
@@ -731,6 +746,7 @@ class _ResultTile extends HookConsumerWidget {
             ContextMenuTile.button(
               title: action.name,
               icon: action.icon,
+              color: action.color,
               onTap: () => action.onTrigger!(context, ref.passing),
             ),
         ];
@@ -890,7 +906,8 @@ class _SearchActions extends HookConsumerWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "Actions",
@@ -899,12 +916,15 @@ class _SearchActions extends HookConsumerWidget {
                   .bodySmall
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const Spacer(),
-            for (final action in actions) ...[
-              _SearchBarAction(action: action),
-              const SizedBox(width: 8),
-            ],
-            const Spacer(),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final action in actions) _SearchBarAction(action: action),
+              ],
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -922,21 +942,30 @@ class _SearchBarAction extends HookConsumerWidget {
 
   final SearchAction action;
 
+  Future<void> _invokeAction(
+    BuildContext context,
+    PassingRef ref,
+  ) async {
+    final canEnd = await action.onTrigger?.call(context, ref) ?? false;
+    if (canEnd) ref.read(searchProvider.notifier).endSearch();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final borderColor = action.color ?? Theme.of(context).dividerColor;
     return Material(
       elevation: 0,
       color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
         side: BorderSide(
-          color: Theme.of(context).dividerColor,
+          color: borderColor,
           width: 1,
         ),
       ),
       child: InkWell(
         onTap: action.onTrigger != null
-            ? () => action.onTrigger!(context, ref.passing)
+            ? () => _invokeAction(context, ref.passing)
             : null,
         borderRadius: BorderRadius.circular(4),
         child: Padding(
@@ -944,6 +973,12 @@ class _SearchBarAction extends HookConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              FaIcon(
+                action.icon,
+                color: borderColor,
+                size: 12,
+              ),
+              const SizedBox(width: 8),
               Text(action.name),
               const SizedBox(width: 6),
               ShortcutLabel(activator: action.shortcut),
