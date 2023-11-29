@@ -155,7 +155,10 @@ class PageSearchElement extends SearchElement {
   String get title => page.pageName.formatted;
 
   @override
-  String description(BuildContext context) => page.type.name;
+  String description(BuildContext context) {
+    if (page.chapter.isEmpty) return page.type.name;
+    return "~${page.chapter}";
+  }
 
   @override
   Widget icon(BuildContext context) => Icon(page.type.icon);

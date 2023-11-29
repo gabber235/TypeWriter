@@ -11,6 +11,7 @@ import "package:text_scroll/text_scroll.dart";
 import "package:typewriter/utils/debouncer.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
+import "package:typewriter/widgets/components/app/page_search.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/focused_notifier.dart";
@@ -58,10 +59,13 @@ class SearchNotifier extends StateNotifier<Search?> {
   void startGlobalSearch() => asBuilder()
     ..fetchNewEntry()
     ..fetchEntry()
+    ..fetchPage()
+    ..fetchAddPage()
     ..open();
 
   void startAddSearch() => asBuilder()
     ..fetchNewEntry()
+    ..fetchAddPage()
     ..open();
 
   void endSearch() {

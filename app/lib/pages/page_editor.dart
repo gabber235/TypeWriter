@@ -66,6 +66,10 @@ class PageEditor extends HookConsumerWidget {
             SearchIntent(),
         SmartSingleActivator(LogicalKeyboardKey.space, control: true):
             SearchIntent(),
+        const SingleActivator(LogicalKeyboardKey.keyP, control: true):
+            const PreviousFocusIntent(),
+        const SingleActivator(LogicalKeyboardKey.keyN, control: true):
+            const NextFocusIntent(),
       },
       child: Actions(
         actions: {
