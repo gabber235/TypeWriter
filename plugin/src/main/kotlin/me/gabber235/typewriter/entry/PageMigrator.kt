@@ -113,7 +113,8 @@ data class SemanticVersion(
 ) : Comparable<SemanticVersion> {
     companion object {
         fun fromString(version: String): SemanticVersion {
-            val parts = version.split(".")
+            val versionPart = version.split("-").first()
+            val parts = versionPart.split(".")
             return SemanticVersion(parts[0].toInt(), parts[1].toInt(), parts[2].toInt())
         }
     }
