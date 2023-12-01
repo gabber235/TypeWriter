@@ -100,7 +100,14 @@ enum PageType {
   final Color color;
 
   static PageType fromBlueprint(EntryBlueprint blueprint) {
-    return values.firstWhere((type) => blueprint.tags.contains(type.tag));
+    final pageType =
+        values.firstWhereOrNull((type) => blueprint.tags.contains(type.tag));
+    if (pageType == null) {
+      throw Exception(
+        "No page type found for blueprint ${blueprint.name}, make sure it has one of the following tags: ${values.map((type) => type.tag).join(", ")}",
+      );
+    }
+    return pageType;
   }
 
   static PageType fromName(String name) {

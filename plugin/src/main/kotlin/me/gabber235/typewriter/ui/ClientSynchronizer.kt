@@ -152,6 +152,7 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
     override fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest) {
         writers.updateWriter(client.sessionId.toString(), data)
         communicationHandler.server.broadcastWriters(writers)
+        ack.sendResult(Result.success("Writer updated"))
     }
 
     override fun handleCaptureRequest(client: SocketIOClient, data: String, ack: AckRequest) {

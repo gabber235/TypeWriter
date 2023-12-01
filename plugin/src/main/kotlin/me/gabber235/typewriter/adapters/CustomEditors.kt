@@ -6,6 +6,7 @@ import me.gabber235.typewriter.adapters.editors.*
 import me.gabber235.typewriter.adapters.modifiers.StaticModifierComputer
 import me.gabber235.typewriter.utils.CronExpression
 import me.gabber235.typewriter.utils.Item
+import me.gabber235.typewriter.utils.SoundId
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.potion.PotionEffectType
@@ -206,6 +207,7 @@ internal val customEditors by lazy {
         ObjectEditor<CronExpression>::cron,
         ObjectEditor<PotionEffectType>::potionEffectType,
         ObjectEditor<Item>::item,
+        ObjectEditor<SoundId>::soundId,
     )
         .mapNotNull(::objectEditorFromFunction)
         .associateBy { it.klass }

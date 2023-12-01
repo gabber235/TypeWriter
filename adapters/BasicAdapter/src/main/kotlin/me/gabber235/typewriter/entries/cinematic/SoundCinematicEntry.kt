@@ -4,14 +4,13 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
-import me.gabber235.typewriter.adapters.modifiers.Sound
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.utils.Icons
-import net.kyori.adventure.key.Key
+import me.gabber235.typewriter.utils.SoundId
 import net.kyori.adventure.sound.SoundStop
 import org.bukkit.entity.Player
 
@@ -44,8 +43,7 @@ data class SoundSegment(
     override val startFrame: Int,
     override val endFrame: Int,
     @Help("The sound to play")
-    @Sound
-    val sound: String = "",
+    val sound: SoundId = SoundId.EMPTY,
     @Help("The volume of the sound")
     val volume: Float = 1f,
     @Help("The pitch of the sound")
@@ -63,18 +61,17 @@ class SoundCinematicAction(
         super.startSegment(segment)
         player.playSound(
             net.kyori.adventure.sound.Sound.sound(
-                Key.key(segment.sound),
+                segment.sound.namespacedKey ?: return,
                 entry.channel,
                 segment.volume,
                 segment.pitch,
             ),
-            net.kyori.adventure.sound.Sound.Emitter.self(),
         )
     }
 
     override suspend fun stopSegment(segment: SoundSegment) {
         super.stopSegment(segment)
-        player.stopSound(SoundStop.named(Key.key(segment.sound)))
+        player.stopSound(SoundStop.named(segment.sound.namespacedKey ?: return))
     }
 
 }
