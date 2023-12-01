@@ -77,7 +77,9 @@ jobs:
           loaders: |
             paper
             purpur
-          game-versions: "[1.19.4,1.20.2]"
+          game-versions: |
+            1.19.4
+            [1.20, 1.20.2]
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
         with:
