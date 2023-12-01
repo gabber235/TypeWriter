@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sound_id.dart';
+part of 'sound.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

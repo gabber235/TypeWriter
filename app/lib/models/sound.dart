@@ -1,7 +1,7 @@
 import "package:freezed_annotation/freezed_annotation.dart";
 
-part "sound_id.freezed.dart";
-part "sound_id.g.dart";
+part "sound.freezed.dart";
+part "sound.g.dart";
 
 @Freezed(unionKey: "type")
 class SoundId with _$SoundId {

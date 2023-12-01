@@ -9,7 +9,7 @@ import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
-import "package:typewriter/models/sound_id.dart";
+import "package:typewriter/models/sound.dart";
 import "package:typewriter/models/sounds.dart";
 import "package:typewriter/utils/audio_player.dart";
 import "package:typewriter/utils/extensions.dart";
