@@ -37,7 +37,7 @@ dependencies {
     compileOnly("io.insert-koin:koin-core:3.4.0")
 
     // External dependencies
-    compileOnly("net.citizensnpcs:citizens-main:2.0.32-SNAPSHOT") {
+    compileOnly("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
 

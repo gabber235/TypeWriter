@@ -113,7 +113,6 @@ data class ReferenceNpcData(val id: Int) : NpcData {
             val originalHologram = original.getOrAddTrait(HologramTrait::class.java)
 
             npc.getOrAddTrait(HologramTrait::class.java).apply {
-                direction = originalHologram.direction
                 lineHeight = originalHologram.lineHeight
                 originalHologram.lines.forEach { addLine(it) }
             }
