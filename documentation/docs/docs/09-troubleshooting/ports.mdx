@@ -1,0 +1,14 @@
+---
+title: Panel Loading/Saving Issues
+---
+
+Encountering difficulties with the panel not loading or saving? Follow these steps to ensure correct setup:
+
+## No Ports Assigned
+If the panel isn't loading, it's possible you haven't assigned any ports to the plugin. Ensure proper functionality by allocating 2 open ports for the plugin: one for the panel to load and another for the websocket to communicate with the server.
+:::info
+Hosting platforms like Aternos only offer 1 port, so saidly the plugin will not work on those types of hostings.
+:::
+
+## Incorrect URL
+Ensure you are connecting via the correct URL. Use `ip:port` or, if using a subdomain, `url:port`.

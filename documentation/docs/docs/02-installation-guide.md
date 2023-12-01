@@ -15,12 +15,8 @@ To install the Typewriter plugin on your paper spigot Minecraft server, follow t
 
 1. Download the plugin from [here](https://github.com/gabber235/TypeWriter/releases).
 2. Place the downloaded .jar file in your server's `plugins` folder.
-3. Download and install `ProtocolLib` from [here](https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/).
+3. Download and install all the required plugins from the **[dependencies](dependencies)**. Also check if you have installed any incompatible plugins.
 4. Restart your server to complete the installation.
-
-:::caution
-The `ProtocolLib` link on spigotmc.org is outdated and will not work with Typewriter. Make sure to use the link above.
-:::
 
 ### Basic Adapter
 
@@ -38,7 +34,6 @@ In addition to the basic adapter, Typewriter also offers several pre-made adapte
 configured. For a list of available adapters and instructions on how to install them, see [here](adapters).
 
 ## Configuring the Web Panel
-
 :::caution
 Typewriter's web panel does **not** support external server providers such as Minehut, Aternos, or Apex. You can still use everthing else in Typewriter. It is possible to use the panel still by setting up a local server with Typewriter installed. For more information, please visit the [Discord](https://discord.gg/p7WH9VvdMQ).
 :::
