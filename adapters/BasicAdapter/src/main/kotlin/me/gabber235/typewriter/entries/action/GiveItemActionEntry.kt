@@ -38,6 +38,7 @@ class GiveItemActionEntry(
 }
 
 @EntryMigration(GiveItemActionEntry::class, "0.4.0")
+@NeedsMigrationIfContainsAny(["material", "amount", "displayName", "lore"])
 fun migrate040GiveItemAction(json: JsonObject, context: EntryMigratorContext): JsonObject {
     val data = JsonObject()
     data.copyAllBut(json, "material", "amount", "displayName", "lore")

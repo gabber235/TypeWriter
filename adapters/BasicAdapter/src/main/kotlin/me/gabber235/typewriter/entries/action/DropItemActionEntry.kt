@@ -54,6 +54,7 @@ class DropItemActionEntry(
 }
 
 @EntryMigration(DropItemActionEntry::class, "0.4.0")
+@NeedsMigrationIfContainsAny(["material", "amount", "displayName", "lore"])
 fun migrate040DropItemAction(json: JsonObject, context: EntryMigratorContext): JsonObject {
     val data = JsonObject()
     data.copyAllBut(json, "material", "amount", "displayName", "lore")

@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entry
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import lirand.api.extensions.other.set
 import me.gabber235.typewriter.adapters.AdapterLoader
 import org.koin.core.qualifier.named
@@ -21,7 +22,7 @@ import kotlin.reflect.full.findAnnotations
  * @EntryMigration(InventoryItemCountFact::class, "0.1.0")
  * private fun migrate010(json: JsonObject, context: EntryMigratorContext): JsonObject {
  *    val data = JsonObject()
- *    data.keepProperties(json, "id", "name", "comment")
+ *    data.copyAllBut(json, "test")
  *
  *    val test = json.getAndParse<Optional<String>>("test", context.gson).optional
  *    // ...
@@ -30,6 +31,10 @@ import kotlin.reflect.full.findAnnotations
  * ```
  *
  * IMPORTANT: The function must be static
+ *
+ * Additionally, you can annotate the function with [NeedsMigrationIfContainsAny], [NeedsMigrationIfContainsAll],
+ * or [NeedsMigrationIfNotParsable] to prevent the migration of entries that are already parsable by the current version
+ * of the entry.
  */
 @Target(AnnotationTarget.FUNCTION)
 annotation class EntryMigration(val klass: KClass<out Entry>, val version: String)
@@ -39,8 +44,13 @@ class EntryMigratorContext(val gson: Gson)
 data class EntryMigrator(
     val klass: KClass<out Entry>,
     val version: SemanticVersion,
+    val needsMigration: NeedsMigration,
     val migrator: (JsonObject, EntryMigratorContext) -> JsonObject,
-)
+) {
+    fun needsMigration(json: JsonObject, context: EntryMigratorContext): Boolean {
+        return needsMigration.needsMigration(this, json, context)
+    }
+}
 
 fun JsonObject.copyAllBut(from: JsonObject, vararg properties: String) {
     from.entrySet().filter { it.key !in properties }.forEach { (key, value) ->
@@ -88,14 +98,13 @@ object EntryMigrations {
 
             val context = EntryMigratorContext(gson)
 
-            entryMigrators.fold(entryObject) { acc, migrator ->
+            entryMigrators.filter { it.needsMigration(entryObject, context) }.fold(entryObject) { acc, migrator ->
                 migrator.migrator(acc, context)
             }
         }
 
         this["entries"] = newEntries.json
     }
-
 
     private fun constructEntryMigrator(method: Method): EntryMigrator {
         val annotation = method.getAnnotation(EntryMigration::class.java)
@@ -112,8 +121,9 @@ object EntryMigrations {
         if (method.returnType != JsonObject::class.java) {
             throw EntryMigratorException(method, "the return type is not JsonObject.")
         }
+        val needsMigration = NeedsMigration.fromMethod(method)
 
-        return EntryMigrator(annotation.klass, annotation.version.v) { json, context ->
+        return EntryMigrator(annotation.klass, annotation.version.v, needsMigration) { json, context ->
             method.isAccessible = true
             method.invoke(null, json, context) as JsonObject
         }
@@ -127,6 +137,82 @@ object EntryMigrations {
             .map(::constructEntryMigrator)
             .toList()
 
+    }
+}
+
+/**
+ * Indicates that an entry needs to be migrated if any of the specified properties contain any value.
+ *
+ * Use this to prevent the migration of entries that are already parsable by the current version of the entry.
+ *
+ * @param properties The list of properties to check for values. If any of these properties contain a value,
+ *      the annotated function needs to be migrated.
+ */
+@Target(AnnotationTarget.FUNCTION)
+annotation class NeedsMigrationIfContainsAny(val properties: Array<String>)
+
+/**
+ * Indicates that an entry needs to be migrated if all the specified properties contain any value.
+ *
+ * Use this to prevent the migration of entries that are already parsable by the current version of the entry.
+ *
+ * @param properties The list of properties to check for values. If all of these properties contain a value,
+ */
+@Target(AnnotationTarget.FUNCTION)
+annotation class NeedsMigrationIfContainsAll(val properties: Array<String>)
+
+/**
+ * Indicates that an entry needs to be migrated if the object is not parsable by the current version of the entry.
+ *
+ * Use this to prevent the migration of entries that are already parsable by the current version of the entry.
+ */
+@Target(AnnotationTarget.FUNCTION)
+annotation class NeedsMigrationIfNotParsable
+
+sealed interface NeedsMigration {
+    fun needsMigration(migrator: EntryMigrator, json: JsonObject, context: EntryMigratorContext): Boolean
+
+    object Always : NeedsMigration {
+        override fun needsMigration(migrator: EntryMigrator, json: JsonObject, context: EntryMigratorContext): Boolean =
+            true
+    }
+
+    class ContainsAny(private val properties: Array<String>) : NeedsMigration {
+        override fun needsMigration(migrator: EntryMigrator, json: JsonObject, context: EntryMigratorContext): Boolean {
+            return properties.any { json.has(it) }
+        }
+    }
+
+    class ContainsAll(private val properties: Array<String>) : NeedsMigration {
+        override fun needsMigration(migrator: EntryMigrator, json: JsonObject, context: EntryMigratorContext): Boolean {
+            return properties.all { json.has(it) }
+        }
+    }
+
+    object NotParsable : NeedsMigration {
+        override fun needsMigration(migrator: EntryMigrator, json: JsonObject, context: EntryMigratorContext): Boolean {
+            return try {
+                context.gson.fromJson(json, migrator.klass.java)
+                false
+            } catch (e: JsonSyntaxException) {
+                true
+            }
+        }
+    }
+
+    companion object {
+        fun fromMethod(method: Method): NeedsMigration {
+            val any = method.getAnnotation(NeedsMigrationIfContainsAny::class.java)
+            val all = method.getAnnotation(NeedsMigrationIfContainsAll::class.java)
+            val notParsable = method.getAnnotation(NeedsMigrationIfNotParsable::class.java)
+
+            return when {
+                any != null -> ContainsAny(any.properties)
+                all != null -> ContainsAll(all.properties)
+                notParsable != null -> NotParsable
+                else -> Always
+            }
+        }
     }
 }
 

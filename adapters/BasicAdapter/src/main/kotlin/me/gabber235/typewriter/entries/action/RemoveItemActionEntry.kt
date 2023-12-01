@@ -46,6 +46,7 @@ class RemoveItemActionEntry(
 }
 
 @EntryMigration(RemoveItemActionEntry::class, "0.4.0")
+@NeedsMigrationIfContainsAny(["material", "amount", "itemName"])
 fun migrate040RemoveItemAction(json: JsonObject, context: EntryMigratorContext): JsonObject {
     val data = JsonObject()
     data.copyAllBut(json, "material", "amount", "itemName")

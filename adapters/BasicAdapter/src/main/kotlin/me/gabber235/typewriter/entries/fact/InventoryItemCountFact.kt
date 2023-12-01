@@ -6,11 +6,8 @@ import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.EntryMigration
-import me.gabber235.typewriter.entry.EntryMigratorContext
-import me.gabber235.typewriter.entry.copyAllBut
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
-import me.gabber235.typewriter.entry.getAndParse
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
@@ -49,6 +46,7 @@ class InventoryItemCountFact(
 }
 
 @EntryMigration(InventoryItemCountFact::class, "0.4.0")
+@NeedsMigrationIfContainsAny(["material", "itemName"])
 fun migrate040InventoryItemCount(json: JsonObject, context: EntryMigratorContext): JsonObject {
     val data = JsonObject()
     data.copyAllBut(json, "material", "itemName")
