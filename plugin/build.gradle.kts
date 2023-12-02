@@ -9,7 +9,8 @@ plugins {
 }
 
 group = "com.github.gabber235"
-version = file("../version.txt").readText().trim()
+val versionFile = if (file("version.txt").exists()) file("version.txt") else file("../version.txt")
+version = versionFile.readText().trim()
 
 repositories {
     mavenCentral()
