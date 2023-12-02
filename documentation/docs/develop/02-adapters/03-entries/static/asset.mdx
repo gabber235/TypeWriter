@@ -1,0 +1,20 @@
+# AssetEntry
+The AssetEntry is a specialized interface that extends the StaticEntry in the TypeWriter Spigot plugin.
+It is primarily used for handling static assets within the game. 
+Assets can include various types of files such as images, sounds, or other external resources that are crucial to enhancing the game environment and player experience.
+The key attribute of AssetEntry is the path, which specifies the location of the asset.
+
+## Usage
+```kotlin
+@Entry("example_asset", "An example asset entry.", Colors.PINK, Icons.PERSON_WALKING)
+class ExampleAssetEntry(
+    override val path: String = "",
+): AssetEntry
+```
+
+To get the asset from the entry, you can use the following code:
+```kotlin
+val id = // ID of the entry
+val entry = Query.findById<ExampleAssetEntry>(id)
+val path = entry.path
+```

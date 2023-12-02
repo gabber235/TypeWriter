@@ -1,0 +1,44 @@
+# Create Entries
+Creating adapters for the TypeWriter Spigot plugin involves working with various entry types, each serving a specific 
+purpose in crafting immersive player experiences. 
+This documentation explains the roles and functionalities of these entry types, providing clear guidance for developers on how to effectively use them.
+
+## Base Entry Interfaces
+There are three base interfaces that all entries extend atleast one of. These are:
+1. **StaticEntry**: Represents static pages. These are used for content that does not change dynamically or trigger any actions. Examples include static text or images.
+2. **TriggerEntry**: Designed for entries that initiate other actions or events. These entries can trigger one or more additional entries, making them crucial for interactive sequences.
+3. **CinematicEntry**: Used for cinematic experiences. These entries are ideal for creating immersive story-driven sequences that engage players in a more visually dynamic way.
+
+
+### 1. StaticEntry
+   - **AssetEntry**: Handles external assets, like images or files.
+   - **ArtifactEntry**: Manages plugin-generated assets, such as JSON files.
+   - **EntityEntry**: Serves as a base for static entities in the game.
+        - **SpeakerEntry**: Extends EntityEntry for entities capable of speaking, with defined display names and sounds.
+   - **FactEntry**: Represents static facts or data points.
+   - **SoundIdEntry**: Holds identifiers for specific sounds.
+   - **SoundSourceEntry**: Deals with the sources of sound emissions.
+
+### 2. TriggerEntry
+   - **EventEntry**: A base for entries that are event-driven.
+        - **CustomCommandEntry**: Extends EventEntry to allow for the creation of custom in-game commands.
+
+#### 2a. TriggerableEntry (an extension of TriggerEntry)
+These are entries that can be triggered by other entries. They are the most common type of entry, and are used for creating interactive sequences.
+   - **DialogueEntry**: Specialized for dialogues with specific speakers, enhancing NPC interactions.
+   - **ActionEntry**: Executes actions based on player interactions, capable of modifying facts or triggering events.
+        - **CustomTriggeringActionEntry**: A variant of ActionEntry, allowing for custom trigger mechanisms and manual triggering of actions.
+
+### 3. CinematicEntry
+   - Primarily used for crafting cinematic experiences in-game, this base interface doesn't have listed specialized interfaces, but it's pivotal for creating story-driven, visually dynamic sequences.
+
+
+## Implementation and Usage
+Each interface is designed with specific tags and methods to facilitate unique interactions within the TypeWriter plugin.
+Implementing these interfaces allows developers to craft a wide range of player experiences, from simple static displays to complex, multi-step interactive quests and dialogues.
+
+For instance, a TriggerableEntry can be used to set up a quest that only activates under certain conditions, while a DialogueEntry can bring an NPC to life with personalized dialogues.
+Similarly, an ActionEntry can be used to create dynamic effects that change based on player actions, and a CinematicEntry can be used to create a visually dynamic story sequence.
+
+In summary, these entry interfaces form the backbone of the TypeWriter plugin's functionality, offering a robust framework for creating immersive and interactive content within Minecraft.
+By understanding and utilizing these interfaces, developers can greatly enhance the player experience, making it more engaging and dynamic.

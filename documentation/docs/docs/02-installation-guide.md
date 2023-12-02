@@ -66,7 +66,6 @@ websocket:
     port: 9092
     # The authentication that is used. Leave unchanged if you don't know what you are doing.
     auth: "session"
-
 panel:
     # The panel can be disabled while the sockets are still open. Only disable this if you know what you are doing.
     # If the web sockets are disabled then the panel wil always be disabled.
