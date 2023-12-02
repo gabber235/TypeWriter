@@ -31,6 +31,18 @@ Caused by: java.lang.IllegalArgumentException: Directory 'plugins/BasicAdapter.j
 
 This typically indicates that the adapter is not placed in the correct folder. For instructions on proper placement, see [Correct Adapter Placement](troubleshooting/adapters#correct-adapter-placement).
 
+## Placeholders Not Parsing Correctly
+
+If placeholders from PlaceholderAPI, such as `%player_name%`, aren't being parsed correctly in Typewriter, follow these troubleshooting steps:
+
+1. Identify the required PlaceholderAPI placeholder extension. A list of extensions can be found [here](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders).
+2. Install the necessary extension using `/papi ecloud install [extension_name]`. For `%player_name%`, use `/papi ecloud install player`.
+3. Check if the placeholder is parsed correctly in normal usage by running `/papi parse me <placeholder>`. For `%player_name%`, use `/papi parse me %player_name%`.
+4. If the placeholder works in normal usage but still not in Typewriter, try restarting your server.
+
+If these steps do not resolve the issue, please contact us for further support by creating a ticket on our [Discord](https://discord.gg/HtbKyuDDBw).
+
+
 ## Citizens Not Interacting or Duplicated NPC Names
 
 This issue often arises with an outdated version of the Citizens plugin that is incompatible with the current version of Typewriter. To resolve this, ensure you have the latest version of the Citizens plugin. You can download the latest version from [Citizens on SpigotMC](https://www.spigotmc.org/resources/citizens.13811/).
