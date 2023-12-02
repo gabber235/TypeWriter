@@ -136,7 +136,19 @@ const config = {
             prism: {
                 theme: lightTheme,
                 darkTheme: darkTheme,
-                additionalLanguages: ['kotlin', 'yaml']
+                additionalLanguages: ['kotlin', 'yaml'],
+                magicComments: [
+                    {
+                        className: 'highlight-red',
+                        line: 'highlight-red', // For single line
+                        block: { start: 'highlight-red-start', end: 'highlight-red-end' }, // For block
+                    },
+                    {
+                        className: 'highlight-green',
+                        line: 'highlight-green', // For single line
+                        block: { start: 'highlight-green-start', end: 'highlight-green-end' }, // For block
+                    },
+                ]
             },
             algolia: {
                 appId: 'GE6F02MN59',

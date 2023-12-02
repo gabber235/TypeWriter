@@ -1,7 +1,40 @@
-# Troubleshooting
+# Troubleshooting Guide
 
-Before reaching out for assistance on Discord or GitHub, please review this list of commonly asked questions to troubleshoot your problem:
+Welcome to the Typewriter Plugin Troubleshooting Guide. This document aims to assist users in resolving common issues encountered while using the Typewriter plugin for Paper Spigot. Before reaching out for assistance on Discord or GitHub, we encourage you to review this comprehensive list of frequently encountered issues and their solutions. This proactive approach can help you solve your problem more quickly and efficiently.
 
-- [adapters not working](../docs/troubleshooting/adapters)
-- [No entries showing](../docs/troubleshooting/entries)
-- [Panel not loading](../docs/troubleshooting/ports)
+## Panel Not Loading
+
+If you encounter issues with the panel not loading, please follow these steps:
+
+1. Confirm that your server is running and accessible.
+2. Check if there are any network connectivity issues.
+3. Ensure your firewall settings are not blocking access.
+
+For more detailed troubleshooting steps, refer to: [Panel not loading](troubleshooting/ports).
+
+## No Entries Showing
+
+![No Entries](../assets/troubleshooting/no-entries.png)
+
+This issue typically occurs when no adapters are installed. To resolve this, ensure that adapters are correctly installed by following the steps outlined in the **[Basic Adapter Installation Tutorial](../installation-guide#basic-adapter)**.
+
+## Error: "plugin.yml not found" When Installing an Adapter
+
+If you encounter an error message similar to the following when installing an adapter:
+
+```log
+[08:49:35 ERROR]: [DirectoryProviderSource] Error loading plugin: Directory 'plugins/BasicAdapter.jar' failed to load!
+java.lang.RuntimeException: Directory 'plugins/BasicAdapter.jar' failed to load!
+        ...
+Caused by: java.lang.IllegalArgumentException: Directory 'plugins/BasicAdapter.jar' does not contain a paper-plugin.yml or plugin.yml! Could not determine plugin type, cannot load a plugin from it!
+```
+
+This typically indicates that the adapter is not placed in the correct folder. For instructions on proper placement, see [Correct Adapter Placement](troubleshooting/adapters#correct-adapter-placement).
+
+## Citizens Not Interacting or Duplicated NPC Names
+
+This issue often arises with an outdated version of the Citizens plugin that is incompatible with the current version of Typewriter. To resolve this, ensure you have the latest version of the Citizens plugin. You can download the latest version from [Citizens on SpigotMC](https://www.spigotmc.org/resources/citizens.13811/).
+
+---
+
+For further assistance, please reach out to our community on [Discord](https://discord.gg/HtbKyuDDBw). We're here to help make your experience with the Typewriter plugin as smooth as possible!

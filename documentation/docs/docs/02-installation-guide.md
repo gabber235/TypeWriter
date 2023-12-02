@@ -80,11 +80,17 @@ panel:
 
 :::info Note
 If the web panel is not working, make sure that the ports are open and that the `hostname` is set to your servers IP.
+Check the [Troubleshooting Guide](troubleshooting) for more information.
 If it still doesn't work, ask for help in the [Discord](https://discord.gg/HtbKyuDDBw).
 :::
 
 Once opened, you can use the web panel to create and configure quests, NPC dialogues, and more. The panel also allows
 you to view and edit your server's existing player interactions.
+
+## Troubleshooting
+
+Got any problems? Check out the [Troubleshooting](troubleshooting) page for solutions to common problems.
+If you still have problems, feel free to ask them in the [Discord](https://discord.gg/HtbKyuDDBw).
 
 ## What's Next?
 
