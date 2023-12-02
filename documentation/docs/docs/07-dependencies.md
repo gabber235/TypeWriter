@@ -5,7 +5,6 @@ For the plugin to properly work you need to have the dependencies of the plugin 
 
 ## Soft-dependencies
 If you want to add extra features or make other adapters work, you can install plugins like:
-In order for the dependencies to be recognized by Typewriter, you need to install the accompanying [Adapter](adapters).
 
 - **Citizens**: [download](https://www.spigotmc.org/resources/citizens.13811/)
 - **World Guard**: [download](https://dev.bukkit.org/projects/worldguard)
@@ -14,6 +13,8 @@ In order for the dependencies to be recognized by Typewriter, you need to instal
 - **Rpg regions**: [download](https://www.spigotmc.org/resources/rpgregions-1-16.74479/)
 - **Superior skyblock**: [download](https://www.spigotmc.org/resources/%E2%9A%A1%EF%B8%8F-superiorskyblock2-%E2%9A%A1%EF%B8%8F-the-best-core-on-market-%E2%9A%A1%EF%B8%8F-1-20-2-support.87411/)
 - **Combatlogx**: [download](https://www.spigotmc.org/resources/combatlogx.31689/)
+
+In order for the dependencies to be recognized by Typewriter, you need to install the accompanying [Adapter](adapters).
 
 ## Plugin-breakers
 These plugins are known to break the plugin so they should **NOT** be installed.
