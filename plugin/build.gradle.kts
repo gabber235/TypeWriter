@@ -4,10 +4,11 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 plugins {
     id("java")
     kotlin("jvm") version "1.8.20"
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "me.gabber235"
+group = "com.github.gabber235"
 version = file("../version.txt").readText().trim()
 
 repositories {
