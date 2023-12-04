@@ -1,0 +1,113 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Facts
+
+Facts are essentially variables. They store information that can be modified by other entries. All facts are numbers and are treated as such.
+
+:::info
+Facts are stored per player, not for the server or world, unless otherwise specified.
+:::
+
+The [`Basic Adapter`](../adapters/BasicAdapter) encompasses numerous facts available for use. However, it's important to note that [`adapters`](adapters) have the capability to further augment the array of available facts.
+
+## Why Use Facts?
+
+Facts play a crucial role in dynamic content creation and system behavior customization. Here are some reasons to consider using facts:
+
+- **Dynamic Quests:** Track player progress in quests by using facts to store and modify completion status.
+
+- **Customization:** Personalize player experiences by utilizing facts to adjust in-game parameters, such as difficulty levels or character attributes.
+
+- **Interactive Storytelling:** Enhance narrative elements by employing facts to remember player choices and actions, shaping the evolving story.
+
+- **Achievement Systems:** Implement achievement tracking by using facts to record specific milestones and accomplishments.
+
+### types of facts
+Facts have 2 types Readable and Writable.
+- **Readable Facts:** Used in the criteria of an entry. For example, checking if a player has a certain item in their inventory.
+- **Writable Facts:** Used in modifiers to modify the fact's value. For instance, updating a player's quest progression.
+
+:::warning
+Not all facts are both readable and writable; some are read-only.
+:::
+## fields
+In all actions are fields these field influance the way facts are handeld.
+
+![Criterion Fields](./assets/facts/criteria_and_modifier.png)
+
+### Criteria
+
+Criteria is the condition for an action, e.g., `if fact = 10 then...`. It controls whether an action will occur.
+
+![Criterion Fields](./assets/facts/criteria.png)
+
+When using Criteria, follow these steps:
+1. Select the fact to check.
+2. Choose the operator.
+3. Insert the value for the operator to check.
+
+### Modifiers
+
+Modifiers, as the name suggests, modify a fact.
+
+![Modifier Fields](./assets/facts/modifier.png)
+
+When using Modifiers, follow these steps:
+1. Select the fact to modify.
+2. Choose the operator. You can change the value directly (=) or add to it (+).
+3. Insert the value for the operator to modify.
+:::warning
+Modifiers only run if the entry is executed. If the entry isn't run, the fact won't be modified.
+If the entry has criteria, and the criteria is false, the fact won't be modified.
+:::
+
+## Tutorial
+To get your started with facts we will use a permanent fact to track progression in a quest.
+
+1. Create a new page and select it as static. Give it the name `Playerprogress`
+2. click on the + icon and select `Add Permanent Fact`. Rename it to `Playerprogress` and give it a nice comment.
+![Static Page Button](./assets/facts/static-page.png)
+3. Now in a sequance page click on an action.
+   - Set a **Criteria:** Check if `Playerprogress` == 0.
+   - Set a **Modifier:** If criteria are met, update `Playerprogress` to 1.
+4. Create additional actions to represent different quest stages, modifying `Playerprogress` accordingly.
+
+## Examples
+Their are many possibilities with facts. Here are some examples:
+<Tabs>
+   <TabItem value="Gathering Items Quest" label="Gathering Items Quest" default>
+      **Objective:** A player talks to an NPC and needs to gather items.
+
+      **Fact Used:**
+      - **Readable Fact:** [Inventory Item Count](../adapters/BasicAdapter/entries/fact/inventory_item_count_fact)
+
+      **Scenario:**
+      1. Player talks to the NPC.
+      2. Criteria check using the Inventory Item Count Fact to verify if the player has the required items.
+   </TabItem>
+   <TabItem value="Progression Tracking" label="Progression Tracking">
+      **Objective:** Track a player's progression through different quest stages.
+
+      **Fact Used:**
+      - **Writable Fact:** [Permanent Fact](../adapters/BasicAdapter/entries/fact/permanent_fact)
+
+      **Scenario:**
+      1. Player talks to an NPC (Progression set to 1).
+      2. Completes a specific action (Progression set to 2).
+      3. Finishes the quest (Progression set to 3).
+   </TabItem>
+   <TabItem value="Currency System" label="Currency System">
+      **Objective:** See if an player has enough balance 
+
+      **Fact Used:**
+      - **Readable Fact:** [balance fact](../adapters/VaultAdapter/entries/fact/balance_fact)
+
+      **Scenario:**
+      1. Player talks to an NPC.
+      2. Criteria check using the balance fact to see if the player has enough balance.
+   </TabItem>
+</Tabs>
+:::tip
+To see all available facts check the [Adapters section](../adapters).
+:::
