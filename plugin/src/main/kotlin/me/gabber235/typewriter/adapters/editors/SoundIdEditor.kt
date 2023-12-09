@@ -6,7 +6,6 @@ import me.gabber235.typewriter.adapters.ObjectEditor
 import me.gabber235.typewriter.utils.DefaultSoundId
 import me.gabber235.typewriter.utils.EntrySoundId
 import me.gabber235.typewriter.utils.SoundId
-import org.bukkit.NamespacedKey
 
 @CustomEditor(SoundId::class)
 fun ObjectEditor<SoundId>.soundId() = reference {
@@ -25,7 +24,7 @@ fun ObjectEditor<SoundId>.soundId() = reference {
         val value = obj.get("value").asString
 
         when (type) {
-            "default" -> DefaultSoundId(NamespacedKey.fromString(value))
+            "default" -> DefaultSoundId(value)
             "entry" -> EntrySoundId(value)
             else -> throw IllegalArgumentException("Invalid sound id type: $type")
         }
