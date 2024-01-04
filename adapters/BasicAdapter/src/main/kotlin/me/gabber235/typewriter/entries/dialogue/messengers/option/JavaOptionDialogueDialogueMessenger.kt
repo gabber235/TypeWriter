@@ -75,6 +75,10 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
         speakerDisplayName = entry.speakerDisplayName
 
+        if (usableOptions.isEmpty()) {
+            return
+        }
+
         listen<PlayerSwapHandItemsEvent> { event ->
             if (event.player.uniqueId != player.uniqueId) return@listen
             state = MessengerState.FINISHED
@@ -98,6 +102,12 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
     override fun tick(cycle: Int) {
         if (state != MessengerState.RUNNING) return
+
+        // When there are no options, just go to the next dialogue
+        if (usableOptions.isEmpty()) {
+            state = MessengerState.FINISHED
+            return
+        }
 
         if (cycle % 100 > 0) {
             // Only update periodically to avoid spamming the player
