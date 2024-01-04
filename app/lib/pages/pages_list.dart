@@ -233,7 +233,7 @@ class _TreeItem extends HookWidget {
   }
 }
 
-class _TreeCategory extends HookWidget {
+class _TreeCategory extends HookConsumerWidget {
   const _TreeCategory({
     required this.node,
     required this.showFull,
@@ -243,45 +243,65 @@ class _TreeCategory extends HookWidget {
   final bool showFull;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isExpanded = useState(false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          child: InkWell(
-            onTap: () => isExpanded.value = !isExpanded.value,
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  if (showFull) const SizedBox(width: 4),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: showFull ? 4 : 0),
-                    child: Icon(
-                      isExpanded.value
-                          ? FontAwesomeIcons.chevronDown
-                          : FontAwesomeIcons.chevronRight,
-                      size: 11,
-                      color: Colors.white,
-                    ),
-                  ),
-                  if (showFull) ...[
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        node.name.formatted,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.white,
-                            ),
+        DragTarget<String>(
+          onWillAcceptWithDetails: (details) {
+            return ref.read(_pageNamesProvider).contains(details.data);
+          },
+          onAcceptWithDetails: (details) {
+            final pageId = details.data;
+            ref
+                .read(pageProvider(pageId))
+                ?.changeChapter(ref.passing, node.name);
+          },
+          builder: (context, candidateData, rejectedData) => Material(
+            color: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              side: candidateData.isNotEmpty
+                  ? BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    )
+                  : BorderSide.none,
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+            ),
+            child: InkWell(
+              onTap: () => isExpanded.value = !isExpanded.value,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    if (showFull) const SizedBox(width: 4),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: showFull ? 4 : 0),
+                      child: Icon(
+                        isExpanded.value
+                            ? FontAwesomeIcons.chevronDown
+                            : FontAwesomeIcons.chevronRight,
+                        size: 11,
+                        color: Colors.white,
                       ),
                     ),
+                    if (showFull) ...[
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          node.name.formatted,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
@@ -391,48 +411,105 @@ class _PageTile extends HookConsumerWidget {
           padding: EdgeInsets.only(
             top: _needsShift(amount) ? 30 : 0,
           ),
-          child: Material(
-            color: isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-            child: ContextMenuRegion(
-              builder: (context) => _contextMenuItems(context, ref, isSelected),
-              child: InkWell(
-                onTap: () {
-                  if (isSelected) return;
-                  ref.read(appRouter).push(PageEditorRoute(id: pageId));
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 4),
-                      Icon(
-                        pageData.type.icon,
-                        size: 11,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          pageId.formatted,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.white,
-                                  ),
+          child: DragTarget<String>(
+            onWillAcceptWithDetails: (details) {
+              return ref.read(_pageNamesProvider).contains(details.data);
+            },
+            onAcceptWithDetails: (details) {
+              final pageId = details.data;
+              ref
+                  .read(pageProvider(pageId))
+                  ?.changeChapter(ref.passing, chapter);
+            },
+            builder: (context, candidateData, rejectedData) {
+              return Material(
+                color:
+                    isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  side: candidateData.isNotEmpty
+                      ? BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2,
+                        )
+                      : BorderSide.none,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ContextMenuRegion(
+                  builder: (context) =>
+                      _contextMenuItems(context, ref, isSelected),
+                  child: Draggable<String>(
+                    data: pageId,
+                    feedback: Material(
+                      color: Colors.transparent,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1e3f6f),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                pageData.type.icon,
+                                size: 11,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                pageId.formatted,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: Colors.white),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.chevron_right,
-                        size: 16,
-                        color: Colors.white,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        if (isSelected) return;
+                        ref.read(appRouter).push(PageEditorRoute(id: pageId));
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 4),
+                            Icon(
+                              pageData.type.icon,
+                              size: 11,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                pageId.formatted,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                    ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.chevron_right,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         );
       },
