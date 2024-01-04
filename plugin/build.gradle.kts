@@ -15,6 +15,7 @@ version = versionFile.readText().trim()
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
+    // ProtocolLib
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")
@@ -57,7 +58,7 @@ dependencies {
     compileOnly("com.mojang:brigadier:1.0.18")
     compileOnly("me.clip:placeholderapi:2.11.3")
     compileOnly("com.google.code.gson:gson:2.10.1")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
