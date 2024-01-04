@@ -71,7 +71,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
     override fun init() {
         super.init()
         usableOptions =
-            entry.options.filter { it.criteria.matches(player.uniqueId) }.sortedByDescending { it.criteria.size }
+            entry.options.filter { it.criteria.matches(player.uniqueId) }
 
         speakerDisplayName = entry.speakerDisplayName
 
