@@ -40,5 +40,29 @@ Implementing these interfaces allows developers to craft a wide range of player 
 For instance, a TriggerableEntry can be used to set up a quest that only activates under certain conditions, while a DialogueEntry can bring an NPC to life with personalized dialogues.
 Similarly, an ActionEntry can be used to create dynamic effects that change based on player actions, and a CinematicEntry can be used to create a visually dynamic story sequence.
 
+
+### Defining a Entry
+Typewriter takes care of the heavy lifting when it comes to creating and using entries.
+Developers only need to define the entry's class and its fields (and sometimes additional methods). The rest is handled by Typewriter. From scanning the adapters jar file for all the different entry classes to triggering them.
+
+To define an entry, it needs to meet the following requirements:
+1. It must be a class that implements one of the base entry interfaces.
+2. It must have a no-args constructor.
+3. It must have a `@Entry` annotation with all the required fields.
+
+The `@Entry` annotation is used to define the entry's type, name, and other properties. It has the following fields:
+- **name**: The name of the entry. This is used to identify the entry.
+- **description**: A short description of the entry.
+- **color**: The color of the entry in the editor. It can be one from the `Colors` class or a hex color code string.
+- **icon**: The icon of the entry in the editor. It can be one from the `Icons` class. All icons are from [Font Awesome](https://fontawesome.com/search?o=r&m=free) free collection.
+
+To find out specific requirements for each entry type, check the documentation for the entry's interface.
+
+:::caution
+Enties are not allowed to have any state. This means that there can't be any fields that are not final.
+:::
+
+---
+
 In summary, these entry interfaces form the backbone of the TypeWriter plugin's functionality, offering a robust framework for creating immersive and interactive content within Minecraft.
 By understanding and utilizing these interfaces, developers can greatly enhance the player experience, making it more engaging and dynamic.
