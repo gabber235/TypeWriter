@@ -21,4 +21,4 @@ You are most likely going to need the [Basic Adapter](../adapters/BasicAdapter).
 
 # Creating an Adapter
 
-Want to contribute to Typewriter? You can create your own adapter for any plugin you want, or just Minecraft itself. To start contributing, see the [development guide](../develop/).
+Want to contribute to Typewriter? You can create your own adapter for any plugin you want, or just Minecraft itself. To start contributing, see the [development guide](../develop/01-index.mdx).
