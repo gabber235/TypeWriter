@@ -1,9 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const { themes } = require('prism-react-renderer');
-const lightTheme = themes.github;
-const darkTheme = themes.dracula;
+import { themes } from 'prism-react-renderer';
+const lightTheme = themes.vsLight;
+const darkTheme = themes.vsDark;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -136,7 +136,19 @@ const config = {
             prism: {
                 theme: lightTheme,
                 darkTheme: darkTheme,
-                additionalLanguages: ['kotlin', 'yaml']
+                additionalLanguages: ['kotlin', 'yaml', 'java', 'log'],
+                magicComments: [
+                    {
+                        className: 'highlight-red',
+                        line: 'highlight-red', // For single line
+                        block: { start: 'highlight-red-start', end: 'highlight-red-end' }, // For block
+                    },
+                    {
+                        className: 'highlight-green',
+                        line: 'highlight-green', // For single line
+                        block: { start: 'highlight-green-start', end: 'highlight-green-end' }, // For block
+                    },
+                ]
             },
             algolia: {
                 appId: 'GE6F02MN59',
@@ -160,4 +172,4 @@ const config = {
     ]
 };
 
-module.exports = config;
+export default config;

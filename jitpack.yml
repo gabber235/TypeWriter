@@ -1,0 +1,11 @@
+jdk:
+  - openjdk17
+before_install:
+  - echo "Before install"
+    # Delete all folders and files, except .git,  plugin/, version.txt and move the content of `plugin` folder to the root
+  - find . ! -name '.git' ! -name 'plugin' ! -name 'version.txt' -maxdepth 1 -exec rm -rf {} \;
+  - mv plugin/* .
+  - rm -rf plugin
+install:
+  - echo "Installing with custom commands"
+  - ./gradlew clean build publishToMavenLocal -xtest

@@ -4,11 +4,13 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 plugins {
     id("java")
     kotlin("jvm") version "1.8.20"
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "me.gabber235"
-version = file("../version.txt").readText().trim()
+group = "com.github.gabber235"
+val versionFile = if (file("version.txt").exists()) file("version.txt") else file("../version.txt")
+version = versionFile.readText().trim()
 
 repositories {
     mavenCentral()
