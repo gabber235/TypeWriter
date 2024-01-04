@@ -317,14 +317,26 @@ extension PageX on Page {
     return entry;
   }
 
-  Future<void> _wireEntryToOtherEntry(
+  /// Will connects a triggerable entry to a trigger entry.
+  /// If it is already connected, it will remove the connection.
+  Future<void> wireEntryToOtherEntry(
     PassingRef ref,
     Entry originalEntry,
     Entry newEntry,
   ) async {
     final currentTriggers = originalEntry.get("triggers");
     if (currentTriggers == null || currentTriggers is! List) return;
-    final newTriggers = currentTriggers + [newEntry.id];
+
+    final currentTriggersIds = currentTriggers.cast<String>();
+    final List<String> newTriggers;
+
+    if (currentTriggers.contains(newEntry.id)) {
+      newTriggers =
+          currentTriggersIds.where((id) => id != newEntry.id).toList();
+    } else {
+      newTriggers = currentTriggersIds + [newEntry.id];
+    }
+
     final modifiedOriginalEntry =
         originalEntry.copyWith("triggers", newTriggers);
     await updateEntireEntry(ref, modifiedOriginalEntry);
@@ -350,7 +362,7 @@ extension PageX on Page {
         .copyWith("name", entry.name.incrementedName);
     await createEntry(ref, newEntry);
 
-    await _wireEntryToOtherEntry(ref, entry, newEntry);
+    await wireEntryToOtherEntry(ref, entry, newEntry);
   }
 
   void extendsWith(PassingRef ref, String entryId) {
@@ -367,7 +379,7 @@ extension PageX on Page {
       ..fetchNewEntry(
         onAdd: (blueprint) async {
           final newEntry = await createEntryFromBlueprint(ref, blueprint);
-          await _wireEntryToOtherEntry(ref, entry, newEntry);
+          await wireEntryToOtherEntry(ref, entry, newEntry);
           await ref
               .read(inspectingEntryIdProvider.notifier)
               .navigateAndSelectEntry(ref, newEntry.id);
@@ -376,7 +388,7 @@ extension PageX on Page {
       )
       ..fetchEntry(
         onSelect: (selectedEntry) async {
-          await _wireEntryToOtherEntry(ref, entry, selectedEntry);
+          await wireEntryToOtherEntry(ref, entry, selectedEntry);
           return null;
         },
       )

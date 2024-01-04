@@ -60,92 +60,153 @@ class EntrySelectorEditor extends HookConsumerWidget {
 
     final hasEntry = ref.watch(entryExistsProvider(id));
 
-    return Material(
-      color: Theme.of(context).inputDecorationTheme.fillColor,
-      borderRadius: BorderRadius.circular(8),
-      child: ContextMenuRegion(
-        builder: (context) {
-          return [
-            if (hasEntry) ...[
-              ContextMenuTile.button(
-                title: "Navigate to entry",
-                icon: FontAwesomeIcons.pencil,
-                onTap: () {
+    return DragTarget<EntryDrag>(
+      onWillAcceptWithDetails: (details) {
+        if (details.data.entryId == id) return false;
+
+        final entry = ref.read(globalEntryProvider(details.data.entryId));
+        if (entry == null) return false;
+        final blueprint = ref.read(entryBlueprintProvider(entry.type));
+        if (blueprint == null) return false;
+
+        return blueprint.tags.contains(tag);
+      },
+      builder: (context, candidateData, rejectedData) {
+        if (rejectedData.isNotEmpty) {
+          return _rejectWidget(context);
+        }
+        final isAccepting = candidateData.isNotEmpty;
+
+        final needsPadding = !hasEntry && !isAccepting;
+
+        return Material(
+          color: Theme.of(context).inputDecorationTheme.fillColor,
+          borderRadius: BorderRadius.circular(8),
+          child: ContextMenuRegion(
+            builder: (context) {
+              return [
+                if (hasEntry) ...[
+                  ContextMenuTile.button(
+                    title: "Navigate to entry",
+                    icon: FontAwesomeIcons.pencil,
+                    onTap: () {
+                      ref
+                          .read(inspectingEntryIdProvider.notifier)
+                          .navigateAndSelectEntry(ref.passing, id);
+                    },
+                  ),
+                  ContextMenuTile.button(
+                    title: "Remove reference",
+                    icon: FontAwesomeIcons.solidSquareMinus,
+                    color: Colors.redAccent,
+                    onTap: () {
+                      ref
+                          .read(inspectingEntryDefinitionProvider)
+                          ?.updateField(ref.passing, path, null);
+                    },
+                  ),
+                ],
+                if (!hasEntry) ...[
+                  ContextMenuTile.button(
+                    title: "Select entry",
+                    icon: FontAwesomeIcons.magnifyingGlass,
+                    onTap: () {
+                      _select(ref.passing, tag);
+                    },
+                  ),
+                ],
+              ];
+            },
+            child: InkWell(
+              onTap: () {
+                if (hasOverrideDown && hasEntry) {
                   ref
                       .read(inspectingEntryIdProvider.notifier)
                       .navigateAndSelectEntry(ref.passing, id);
-                },
-              ),
-              ContextMenuTile.button(
-                title: "Remove reference",
-                icon: FontAwesomeIcons.solidSquareMinus,
-                color: Colors.redAccent,
-                onTap: () {
-                  ref
-                      .read(inspectingEntryDefinitionProvider)
-                      ?.updateField(ref.passing, path, null);
-                },
-              ),
-            ],
-            if (!hasEntry) ...[
-              ContextMenuTile.button(
-                title: "Select entry",
-                icon: FontAwesomeIcons.magnifyingGlass,
-                onTap: () {
-                  _select(ref.passing, tag);
-                },
-              ),
-            ],
-          ];
-        },
-        child: InkWell(
-          onTap: () {
-            if (hasOverrideDown && hasEntry) {
-              ref
-                  .read(inspectingEntryIdProvider.notifier)
-                  .navigateAndSelectEntry(ref.passing, id);
-              return;
-            }
-            _select(ref.passing, tag);
-          },
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: hasEntry ? 4 : 12,
-              right: 16,
-              top: hasEntry ? 4 : 12,
-              bottom: hasEntry ? 4 : 12,
-            ),
-            child: Row(
-              children: [
-                if (!hasEntry) ...[
-                  FaIcon(
-                    FontAwesomeIcons.database,
-                    size: 16,
-                    color:
-                        Theme.of(context).inputDecorationTheme.hintStyle?.color,
-                  ),
-                  const SizedBox(width: 12),
-                ],
-                if (hasEntry)
-                  Expanded(child: FakeEntryNode(entryId: id))
-                else
-                  Expanded(
-                    child: Text(
-                      "Select a $tag",
-                      style: Theme.of(context).inputDecorationTheme.hintStyle,
-                    ),
-                  ),
-                const SizedBox(width: 12),
-                FaIcon(
-                  FontAwesomeIcons.caretDown,
-                  size: 16,
-                  color:
-                      Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                  return;
+                }
+                _select(ref.passing, tag);
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: needsPadding ? 12 : 4,
+                  right: 16,
+                  top: needsPadding ? 12 : 4,
+                  bottom: needsPadding ? 12 : 4,
                 ),
-              ],
+                child: Row(
+                  children: [
+                    if (!hasEntry && !isAccepting) ...[
+                      FaIcon(
+                        FontAwesomeIcons.database,
+                        size: 16,
+                        color: Theme.of(context)
+                            .inputDecorationTheme
+                            .hintStyle
+                            ?.color,
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    if (isAccepting)
+                      Expanded(
+                        child: Opacity(
+                          opacity: 0.5,
+                          child: FakeEntryNode(
+                            entryId: candidateData.first!.entryId,
+                          ),
+                        ),
+                      )
+                    else if (hasEntry)
+                      Expanded(child: FakeEntryNode(entryId: id))
+                    else
+                      Expanded(
+                        child: Text(
+                          "Select a $tag",
+                          style:
+                              Theme.of(context).inputDecorationTheme.hintStyle,
+                        ),
+                      ),
+                    const SizedBox(width: 12),
+                    FaIcon(
+                      FontAwesomeIcons.caretDown,
+                      size: 16,
+                      color: Theme.of(context)
+                          .inputDecorationTheme
+                          .hintStyle
+                          ?.color,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Widget _rejectWidget(BuildContext context) {
+    return Material(
+      color: Theme.of(context).inputDecorationTheme.fillColor,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          children: [
+            FaIcon(
+              FontAwesomeIcons.xmark,
+              size: 16,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                "Entry is not allowed here",
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          ],
         ),
       ),
     );
