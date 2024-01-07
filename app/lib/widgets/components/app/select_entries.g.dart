@@ -46,8 +46,6 @@ class _SystemHash {
   }
 }
 
-typedef HasEntryInSelectionRef = AutoDisposeProviderRef<bool>;
-
 /// See also [hasEntryInSelection].
 @ProviderFor(hasEntryInSelection)
 const hasEntryInSelectionProvider = HasEntryInSelectionFamily();
@@ -94,10 +92,10 @@ class HasEntryInSelectionFamily extends Family<bool> {
 class HasEntryInSelectionProvider extends AutoDisposeProvider<bool> {
   /// See also [hasEntryInSelection].
   HasEntryInSelectionProvider(
-    this.id,
-  ) : super.internal(
+    String id,
+  ) : this._internal(
           (ref) => hasEntryInSelection(
-            ref,
+            ref as HasEntryInSelectionRef,
             id,
           ),
           from: hasEntryInSelectionProvider,
@@ -109,9 +107,43 @@ class HasEntryInSelectionProvider extends AutoDisposeProvider<bool> {
           dependencies: HasEntryInSelectionFamily._dependencies,
           allTransitiveDependencies:
               HasEntryInSelectionFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  HasEntryInSelectionProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final String id;
+
+  @override
+  Override overrideWith(
+    bool Function(HasEntryInSelectionRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: HasEntryInSelectionProvider._internal(
+        (ref) => create(ref as HasEntryInSelectionRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<bool> createElement() {
+    return _HasEntryInSelectionProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -125,6 +157,19 @@ class HasEntryInSelectionProvider extends AutoDisposeProvider<bool> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin HasEntryInSelectionRef on AutoDisposeProviderRef<bool> {
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _HasEntryInSelectionProviderElement
+    extends AutoDisposeProviderElement<bool> with HasEntryInSelectionRef {
+  _HasEntryInSelectionProviderElement(super.provider);
+
+  @override
+  String get id => (origin as HasEntryInSelectionProvider).id;
 }
 
 String _$selectingTagHash() => r'e22363af393fbc3ddb3ad07ab830c863da440dfa';
@@ -142,7 +187,6 @@ final selectingTagProvider = AutoDisposeProvider<String>.internal(
 
 typedef SelectingTagRef = AutoDisposeProviderRef<String>;
 String _$canSelectEntryHash() => r'071b3e46373b5397bd8d56e24e309cce442f5624';
-typedef CanSelectEntryRef = AutoDisposeProviderRef<bool>;
 
 /// See also [canSelectEntry].
 @ProviderFor(canSelectEntry)
@@ -190,10 +234,10 @@ class CanSelectEntryFamily extends Family<bool> {
 class CanSelectEntryProvider extends AutoDisposeProvider<bool> {
   /// See also [canSelectEntry].
   CanSelectEntryProvider(
-    this.id,
-  ) : super.internal(
+    String id,
+  ) : this._internal(
           (ref) => canSelectEntry(
-            ref,
+            ref as CanSelectEntryRef,
             id,
           ),
           from: canSelectEntryProvider,
@@ -205,9 +249,43 @@ class CanSelectEntryProvider extends AutoDisposeProvider<bool> {
           dependencies: CanSelectEntryFamily._dependencies,
           allTransitiveDependencies:
               CanSelectEntryFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  CanSelectEntryProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final String id;
+
+  @override
+  Override overrideWith(
+    bool Function(CanSelectEntryRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CanSelectEntryProvider._internal(
+        (ref) => create(ref as CanSelectEntryRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<bool> createElement() {
+    return _CanSelectEntryProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -222,5 +300,18 @@ class CanSelectEntryProvider extends AutoDisposeProvider<bool> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin CanSelectEntryRef on AutoDisposeProviderRef<bool> {
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _CanSelectEntryProviderElement extends AutoDisposeProviderElement<bool>
+    with CanSelectEntryRef {
+  _CanSelectEntryProviderElement(super.provider);
+
+  @override
+  String get id => (origin as CanSelectEntryProvider).id;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

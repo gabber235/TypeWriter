@@ -99,11 +99,11 @@ class _$CaptureRequestCopyWithImpl<$Res, $Val extends CaptureRequest>
 }
 
 /// @nodoc
-abstract class _$$_CaptureRequestCopyWith<$Res>
+abstract class _$$CaptureRequestImplCopyWith<$Res>
     implements $CaptureRequestCopyWith<$Res> {
-  factory _$$_CaptureRequestCopyWith(
-          _$_CaptureRequest value, $Res Function(_$_CaptureRequest) then) =
-      __$$_CaptureRequestCopyWithImpl<$Res>;
+  factory _$$CaptureRequestImplCopyWith(_$CaptureRequestImpl value,
+          $Res Function(_$CaptureRequestImpl) then) =
+      __$$CaptureRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -116,11 +116,11 @@ abstract class _$$_CaptureRequestCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_CaptureRequestCopyWithImpl<$Res>
-    extends _$CaptureRequestCopyWithImpl<$Res, _$_CaptureRequest>
-    implements _$$_CaptureRequestCopyWith<$Res> {
-  __$$_CaptureRequestCopyWithImpl(
-      _$_CaptureRequest _value, $Res Function(_$_CaptureRequest) _then)
+class __$$CaptureRequestImplCopyWithImpl<$Res>
+    extends _$CaptureRequestCopyWithImpl<$Res, _$CaptureRequestImpl>
+    implements _$$CaptureRequestImplCopyWith<$Res> {
+  __$$CaptureRequestImplCopyWithImpl(
+      _$CaptureRequestImpl _value, $Res Function(_$CaptureRequestImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -133,7 +133,7 @@ class __$$_CaptureRequestCopyWithImpl<$Res>
     Object? cinematic = freezed,
     Object? cinematicRange = freezed,
   }) {
-    return _then(_$_CaptureRequest(
+    return _then(_$CaptureRequestImpl(
       capturerClassPath: null == capturerClassPath
           ? _value.capturerClassPath
           : capturerClassPath // ignore: cast_nullable_to_non_nullable
@@ -164,8 +164,8 @@ class __$$_CaptureRequestCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_CaptureRequest implements _CaptureRequest {
-  const _$_CaptureRequest(
+class _$CaptureRequestImpl implements _CaptureRequest {
+  const _$CaptureRequestImpl(
       {required this.capturerClassPath,
       required this.entryId,
       required this.fieldPath,
@@ -173,8 +173,8 @@ class _$_CaptureRequest implements _CaptureRequest {
       this.cinematic,
       @IntRangeConverter() this.cinematicRange});
 
-  factory _$_CaptureRequest.fromJson(Map<String, dynamic> json) =>
-      _$$_CaptureRequestFromJson(json);
+  factory _$CaptureRequestImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CaptureRequestImplFromJson(json);
 
   @override
   final String capturerClassPath;
@@ -199,7 +199,7 @@ class _$_CaptureRequest implements _CaptureRequest {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_CaptureRequest &&
+            other is _$CaptureRequestImpl &&
             (identical(other.capturerClassPath, capturerClassPath) ||
                 other.capturerClassPath == capturerClassPath) &&
             (identical(other.entryId, entryId) || other.entryId == entryId) &&
@@ -227,12 +227,13 @@ class _$_CaptureRequest implements _CaptureRequest {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_CaptureRequestCopyWith<_$_CaptureRequest> get copyWith =>
-      __$$_CaptureRequestCopyWithImpl<_$_CaptureRequest>(this, _$identity);
+  _$$CaptureRequestImplCopyWith<_$CaptureRequestImpl> get copyWith =>
+      __$$CaptureRequestImplCopyWithImpl<_$CaptureRequestImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_CaptureRequestToJson(
+    return _$$CaptureRequestImplToJson(
       this,
     );
   }
@@ -240,15 +241,16 @@ class _$_CaptureRequest implements _CaptureRequest {
 
 abstract class _CaptureRequest implements CaptureRequest {
   const factory _CaptureRequest(
-      {required final String capturerClassPath,
-      required final String entryId,
-      required final String fieldPath,
-      required final dynamic fieldValue,
-      final String? cinematic,
-      @IntRangeConverter() final IntRange? cinematicRange}) = _$_CaptureRequest;
+          {required final String capturerClassPath,
+          required final String entryId,
+          required final String fieldPath,
+          required final dynamic fieldValue,
+          final String? cinematic,
+          @IntRangeConverter() final IntRange? cinematicRange}) =
+      _$CaptureRequestImpl;
 
   factory _CaptureRequest.fromJson(Map<String, dynamic> json) =
-      _$_CaptureRequest.fromJson;
+      _$CaptureRequestImpl.fromJson;
 
   @override
   String get capturerClassPath;
@@ -265,6 +267,6 @@ abstract class _CaptureRequest implements CaptureRequest {
   IntRange? get cinematicRange;
   @override
   @JsonKey(ignore: true)
-  _$$_CaptureRequestCopyWith<_$_CaptureRequest> get copyWith =>
+  _$$CaptureRequestImplCopyWith<_$CaptureRequestImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

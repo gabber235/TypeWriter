@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef _ListValueLengthRef = AutoDisposeProviderRef<int>;
-
 /// See also [_listValueLength].
 @ProviderFor(_listValueLength)
 const _listValueLengthProvider = _ListValueLengthFamily();
@@ -77,10 +75,10 @@ class _ListValueLengthFamily extends Family<int> {
 class _ListValueLengthProvider extends AutoDisposeProvider<int> {
   /// See also [_listValueLength].
   _ListValueLengthProvider(
-    this.path,
-  ) : super.internal(
+    String path,
+  ) : this._internal(
           (ref) => _listValueLength(
-            ref,
+            ref as _ListValueLengthRef,
             path,
           ),
           from: _listValueLengthProvider,
@@ -92,9 +90,43 @@ class _ListValueLengthProvider extends AutoDisposeProvider<int> {
           dependencies: _ListValueLengthFamily._dependencies,
           allTransitiveDependencies:
               _ListValueLengthFamily._allTransitiveDependencies,
+          path: path,
         );
 
+  _ListValueLengthProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.path,
+  }) : super.internal();
+
   final String path;
+
+  @override
+  Override overrideWith(
+    int Function(_ListValueLengthRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _ListValueLengthProvider._internal(
+        (ref) => create(ref as _ListValueLengthRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        path: path,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _ListValueLengthProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -109,5 +141,18 @@ class _ListValueLengthProvider extends AutoDisposeProvider<int> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin _ListValueLengthRef on AutoDisposeProviderRef<int> {
+  /// The parameter `path` of this provider.
+  String get path;
+}
+
+class _ListValueLengthProviderElement extends AutoDisposeProviderElement<int>
+    with _ListValueLengthRef {
+  _ListValueLengthProviderElement(super.provider);
+
+  @override
+  String get path => (origin as _ListValueLengthProvider).path;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

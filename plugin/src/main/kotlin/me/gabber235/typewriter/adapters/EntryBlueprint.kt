@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import lirand.api.utilities.allFields
 import me.gabber235.typewriter.entry.Entry
+import java.lang.reflect.Modifier
 import java.lang.reflect.ParameterizedType
 
 data class EntryBlueprint(
@@ -162,7 +163,7 @@ class ObjectField(val fields: Map<String, FieldInfo>) : FieldInfo() {
         fun fromTypeToken(token: TypeToken<*>): ObjectField {
             val fields = mutableMapOf<String, FieldInfo>()
 
-            token.rawType.allFields.forEach { field ->
+            token.rawType.allFields.filter { !Modifier.isStatic(it.modifiers) }.forEach { field ->
                 val name =
                     if (field.isAnnotationPresent(SerializedName::class.java)) {
                         field.getAnnotation(SerializedName::class.java).value

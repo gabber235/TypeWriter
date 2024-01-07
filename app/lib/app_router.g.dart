@@ -6,7 +6,7 @@ part of 'app_router.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentRouteDataHash() => r'26e8ab76dc65802a22863a447292ee0d7c4e3b0d';
+String _$currentRouteDataHash() => r'3f2df7b23b6d8e38ccafd0d9de54c82fcc924dc6';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef CurrentRouteDataRef = ProviderRef<RouteData?>;
-
 /// Provides the current route data for the given [name].
 ///
 /// Copied from [currentRouteData].
@@ -50,10 +48,10 @@ class CurrentRouteDataFamily extends Family<RouteData?> {
   ///
   /// Copied from [currentRouteData].
   CurrentRouteDataProvider call(
-    String name,
+    String path,
   ) {
     return CurrentRouteDataProvider(
-      name,
+      path,
     );
   }
 
@@ -62,7 +60,7 @@ class CurrentRouteDataFamily extends Family<RouteData?> {
     covariant CurrentRouteDataProvider provider,
   ) {
     return call(
-      provider.name,
+      provider.path,
     );
   }
 
@@ -89,11 +87,11 @@ class CurrentRouteDataProvider extends Provider<RouteData?> {
   ///
   /// Copied from [currentRouteData].
   CurrentRouteDataProvider(
-    this.name,
-  ) : super.internal(
+    String path,
+  ) : this._internal(
           (ref) => currentRouteData(
-            ref,
-            name,
+            ref as CurrentRouteDataRef,
+            path,
           ),
           from: currentRouteDataProvider,
           name: r'currentRouteDataProvider',
@@ -104,22 +102,69 @@ class CurrentRouteDataProvider extends Provider<RouteData?> {
           dependencies: CurrentRouteDataFamily._dependencies,
           allTransitiveDependencies:
               CurrentRouteDataFamily._allTransitiveDependencies,
+          path: path,
         );
 
-  final String name;
+  CurrentRouteDataProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.path,
+  }) : super.internal();
+
+  final String path;
+
+  @override
+  Override overrideWith(
+    RouteData? Function(CurrentRouteDataRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CurrentRouteDataProvider._internal(
+        (ref) => create(ref as CurrentRouteDataRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        path: path,
+      ),
+    );
+  }
+
+  @override
+  ProviderElement<RouteData?> createElement() {
+    return _CurrentRouteDataProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
-    return other is CurrentRouteDataProvider && other.name == name;
+    return other is CurrentRouteDataProvider && other.path == path;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, name.hashCode);
+    hash = _SystemHash.combine(hash, path.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
+
+mixin CurrentRouteDataRef on ProviderRef<RouteData?> {
+  /// The parameter `path` of this provider.
+  String get path;
+}
+
+class _CurrentRouteDataProviderElement extends ProviderElement<RouteData?>
+    with CurrentRouteDataRef {
+  _CurrentRouteDataProviderElement(super.provider);
+
+  @override
+  String get path => (origin as CurrentRouteDataProvider).path;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -3,7 +3,6 @@ package me.gabber235.typewriter.entry.cinematic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.entry.entries.CinematicAction
-import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.triggerEntriesFor
 import me.gabber235.typewriter.entry.triggerFor
@@ -21,12 +20,11 @@ private const val ENDED_FRAME = -2
 
 class CinematicSequence(
     private val player: Player,
-    private val entries: List<CinematicEntry>,
+    private val actions: List<CinematicAction>,
     private val triggers: List<String>,
     private val minEndTime: Optional<Int>,
 ) {
     private var frame = STARTING_FRAME
-    private var actions = emptyList<CinematicAction>()
 
     suspend fun start() {
         if (frame > STARTING_FRAME) return
@@ -34,7 +32,6 @@ class CinematicSequence(
         player.startBlockingMessages()
         player.startBlockingActionBar()
 
-        actions = entries.map { it.create(player) }
         actions.forEach {
             try {
                 it.setup()

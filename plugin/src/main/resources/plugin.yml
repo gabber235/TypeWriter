@@ -1,7 +1,7 @@
 name: Typewriter
 version: '${version}'
 main: me.gabber235.typewriter.Typewriter
-api-version: 1.19
+api-version: "1.19"
 softdepend:
   - PlaceholderAPI
   - floodgate

@@ -75,7 +75,7 @@ class ConfirmationDialogue extends HookWidget {
           icon: Icon(cancelIcon),
           label: Text(cancelText),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(false);
             onCancel?.call();
           },
           style: TextButton.styleFrom(
@@ -90,7 +90,7 @@ class ConfirmationDialogue extends HookWidget {
           color: confirmColor,
           onPressed: canConfirm
               ? () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                   onConfirm();
                 }
               : null,
@@ -100,7 +100,7 @@ class ConfirmationDialogue extends HookWidget {
   }
 }
 
-void showConfirmationDialogue({
+Future<bool> showConfirmationDialogue({
   required BuildContext context,
   required Function onConfirm,
   String title = "Are you sure?",
@@ -112,28 +112,30 @@ void showConfirmationDialogue({
   String cancelText = "Cancel",
   IconData cancelIcon = FontAwesomeIcons.xmark,
   Function? onCancel,
-}) {
+}) async {
   // If the user has its shift key pressed, we skip the confirmation dialogue.
   // But only if the delay is 0.
-  final hasShiftDown = RawKeyboard.instance.keysPressed.contains(LogicalKeyboardKey.shiftLeft);
+  final hasShiftDown =
+      RawKeyboard.instance.keysPressed.contains(LogicalKeyboardKey.shiftLeft);
   if (hasShiftDown && delayConfirm.inSeconds == 0) {
     onConfirm();
-    return;
+    return true;
   }
 
-  showDialog(
-    context: context,
-    builder: (context) => ConfirmationDialogue(
-      onConfirm: onConfirm,
-      title: title,
-      content: content,
-      confirmText: confirmText,
-      confirmIcon: confirmIcon,
-      confirmColor: confirmColor,
-      delayConfirm: delayConfirm,
-      cancelText: cancelText,
-      cancelIcon: cancelIcon,
-      onCancel: onCancel,
-    ),
-  );
+  return await showDialog<bool>(
+        context: context,
+        builder: (context) => ConfirmationDialogue(
+          onConfirm: onConfirm,
+          title: title,
+          content: content,
+          confirmText: confirmText,
+          confirmIcon: confirmIcon,
+          confirmColor: confirmColor,
+          delayConfirm: delayConfirm,
+          cancelText: cancelText,
+          cancelIcon: cancelIcon,
+          onCancel: onCancel,
+        ),
+      ) ??
+      false;
 }

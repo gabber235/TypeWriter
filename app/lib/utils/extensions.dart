@@ -102,16 +102,22 @@ extension ObjectExtension on Object? {
   T? cast<T>() => this is T ? this as T : null;
 }
 
-extension ListExtensions on List<dynamic> {
+extension ListExtensions<T> on List<T> {
   List<int> get indices => List.generate(length, (index) => index);
+
+  List<T> difference(List<T> other) {
+    return where((element) => !other.contains(element)).toList()
+      ..addAll(other.where((element) => !contains(element)).toSet());
+  }
 }
 
 TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
       (oldValue, newValue) => newValue.copyWith(
-          text: newValue.text
-              .toLowerCase()
-              .replaceAll(" ", "_")
-              .replaceAll("-", "_"),),
+        text: newValue.text
+            .toLowerCase()
+            .replaceAll(" ", "_")
+            .replaceAll("-", "_"),
+      ),
     );
 
 extension RandomColor on String {

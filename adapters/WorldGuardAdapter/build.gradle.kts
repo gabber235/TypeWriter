@@ -27,7 +27,7 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
 
-    compileOnly("me.gabber235:typewriter:$version")
+    compileOnly("com.github.gabber235:typewriter:$version")
 
     // Already included in the TypeWriter plugin
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
@@ -90,5 +90,6 @@ task<ShadowJar>("buildRelease") {
         // Rename the jar to remove the version and -all
         val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
         jar.renameTo(file("build/libs/%s.jar".format(project.name)))
+        file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
     }
 }

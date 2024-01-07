@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef FieldValueRef = AutoDisposeProviderRef<dynamic>;
-
 /// See also [fieldValue].
 @ProviderFor(fieldValue)
 const fieldValueProvider = FieldValueFamily();
@@ -80,11 +78,11 @@ class FieldValueFamily extends Family<dynamic> {
 class FieldValueProvider extends AutoDisposeProvider<dynamic> {
   /// See also [fieldValue].
   FieldValueProvider(
-    this.path, [
-    this.defaultValue,
-  ]) : super.internal(
+    String path, [
+    dynamic defaultValue,
+  ]) : this._internal(
           (ref) => fieldValue(
-            ref,
+            ref as FieldValueRef,
             path,
             defaultValue,
           ),
@@ -97,10 +95,47 @@ class FieldValueProvider extends AutoDisposeProvider<dynamic> {
           dependencies: FieldValueFamily._dependencies,
           allTransitiveDependencies:
               FieldValueFamily._allTransitiveDependencies,
+          path: path,
+          defaultValue: defaultValue,
         );
+
+  FieldValueProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.path,
+    required this.defaultValue,
+  }) : super.internal();
 
   final String path;
   final dynamic defaultValue;
+
+  @override
+  Override overrideWith(
+    dynamic Function(FieldValueRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FieldValueProvider._internal(
+        (ref) => create(ref as FieldValueRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        path: path,
+        defaultValue: defaultValue,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<dynamic> createElement() {
+    return _FieldValueProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -119,7 +154,25 @@ class FieldValueProvider extends AutoDisposeProvider<dynamic> {
   }
 }
 
-String _$editorFiltersHash() => r'7a9a87432cb4d5032c078bd9d45ab3a4340fbbcf';
+mixin FieldValueRef on AutoDisposeProviderRef<dynamic> {
+  /// The parameter `path` of this provider.
+  String get path;
+
+  /// The parameter `defaultValue` of this provider.
+  dynamic get defaultValue;
+}
+
+class _FieldValueProviderElement extends AutoDisposeProviderElement<dynamic>
+    with FieldValueRef {
+  _FieldValueProviderElement(super.provider);
+
+  @override
+  String get path => (origin as FieldValueProvider).path;
+  @override
+  dynamic get defaultValue => (origin as FieldValueProvider).defaultValue;
+}
+
+String _$editorFiltersHash() => r'168b4998335c3de63d58cbd8c0bba07b574b53ec';
 
 /// See also [editorFilters].
 @ProviderFor(editorFilters)
@@ -135,7 +188,6 @@ final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>.internal(
 
 typedef EditorFiltersRef = AutoDisposeProviderRef<List<EditorFilter>>;
 String _$pathDisplayNameHash() => r'c772e17ed429169ba903826d0a5605d60b129a31';
-typedef PathDisplayNameRef = AutoDisposeProviderRef<String>;
 
 /// See also [pathDisplayName].
 @ProviderFor(pathDisplayName)
@@ -183,10 +235,10 @@ class PathDisplayNameFamily extends Family<String> {
 class PathDisplayNameProvider extends AutoDisposeProvider<String> {
   /// See also [pathDisplayName].
   PathDisplayNameProvider(
-    this.path,
-  ) : super.internal(
+    String path,
+  ) : this._internal(
           (ref) => pathDisplayName(
-            ref,
+            ref as PathDisplayNameRef,
             path,
           ),
           from: pathDisplayNameProvider,
@@ -198,9 +250,43 @@ class PathDisplayNameProvider extends AutoDisposeProvider<String> {
           dependencies: PathDisplayNameFamily._dependencies,
           allTransitiveDependencies:
               PathDisplayNameFamily._allTransitiveDependencies,
+          path: path,
         );
 
+  PathDisplayNameProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.path,
+  }) : super.internal();
+
   final String path;
+
+  @override
+  Override overrideWith(
+    String Function(PathDisplayNameRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PathDisplayNameProvider._internal(
+        (ref) => create(ref as PathDisplayNameRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        path: path,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<String> createElement() {
+    return _PathDisplayNameProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -215,5 +301,18 @@ class PathDisplayNameProvider extends AutoDisposeProvider<String> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin PathDisplayNameRef on AutoDisposeProviderRef<String> {
+  /// The parameter `path` of this provider.
+  String get path;
+}
+
+class _PathDisplayNameProviderElement extends AutoDisposeProviderElement<String>
+    with PathDisplayNameRef {
+  _PathDisplayNameProviderElement(super.provider);
+
+  @override
+  String get path => (origin as PathDisplayNameProvider).path;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

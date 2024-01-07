@@ -16,10 +16,13 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 class PageSelectorEditorFilter extends EditorFilter {
   @override
   bool canEdit(FieldInfo info) =>
-      info is PrimitiveField && info.type == PrimitiveFieldType.string && info.hasModifier("page");
+      info is PrimitiveField &&
+      info.type == PrimitiveFieldType.string &&
+      info.hasModifier("page");
 
   @override
-  Widget build(String path, FieldInfo info) => PageSelectorEditor(path: path, field: info as PrimitiveField);
+  Widget build(String path, FieldInfo info) =>
+      PageSelectorEditor(path: path, field: info as PrimitiveField);
 }
 
 class PageSelectorEditor extends HookConsumerWidget {
@@ -34,7 +37,9 @@ class PageSelectorEditor extends HookConsumerWidget {
 
   bool _update(PassingRef ref, Page? page) {
     if (page == null) return false;
-    ref.read(inspectingEntryDefinitionProvider)?.updateField(ref, path, page.name);
+    ref
+        .read(inspectingEntryDefinitionProvider)
+        ?.updateField(ref, path, page.pageName);
     return true;
   }
 
@@ -77,7 +82,9 @@ class PageSelectorEditor extends HookConsumerWidget {
                 icon: FontAwesomeIcons.solidSquareMinus,
                 color: Colors.redAccent,
                 onTap: () {
-                  ref.read(inspectingEntryDefinitionProvider)?.updateField(ref.passing, path, null);
+                  ref
+                      .read(inspectingEntryDefinitionProvider)
+                      ?.updateField(ref.passing, path, null);
                 },
               ),
             ],
@@ -102,15 +109,19 @@ class PageSelectorEditor extends HookConsumerWidget {
           },
           borderRadius: BorderRadius.circular(8),
           child: Padding(
-            padding:
-                EdgeInsets.only(left: hasPage ? 4 : 12, right: 16, top: hasPage ? 4 : 12, bottom: hasPage ? 4 : 12),
+            padding: EdgeInsets.only(
+                left: hasPage ? 4 : 12,
+                right: 16,
+                top: hasPage ? 4 : 12,
+                bottom: hasPage ? 4 : 12),
             child: Row(
               children: [
                 if (!hasPage) ...[
                   FaIcon(
                     FontAwesomeIcons.database,
                     size: 16,
-                    color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                    color:
+                        Theme.of(context).inputDecorationTheme.hintStyle?.color,
                   ),
                   const SizedBox(width: 12),
                 ],
@@ -118,13 +129,16 @@ class PageSelectorEditor extends HookConsumerWidget {
                   Expanded(child: _SelectedPage(id: pageId))
                 else
                   Expanded(
-                      child:
-                          Text("Select a ${type.tag} page", style: Theme.of(context).inputDecorationTheme.hintStyle),),
+                    child: Text("Select a ${type.tag} page",
+                        style:
+                            Theme.of(context).inputDecorationTheme.hintStyle),
+                  ),
                 const SizedBox(width: 12),
                 FaIcon(
                   FontAwesomeIcons.caretDown,
                   size: 16,
-                  color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                  color:
+                      Theme.of(context).inputDecorationTheme.hintStyle?.color,
                 ),
               ],
             ),

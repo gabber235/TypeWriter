@@ -6,13 +6,14 @@ part of 'sounds.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_SoundData _$$_SoundDataFromJson(Map<String, dynamic> json) => _$_SoundData(
+_$SoundDataImpl _$$SoundDataImplFromJson(Map<String, dynamic> json) =>
+    _$SoundDataImpl(
       name: json['name'] as String? ?? "",
       weight: json['weight'] as int? ?? 1,
       volume: (json['volume'] as num?)?.toDouble() ?? 1,
     );
 
-Map<String, dynamic> _$$_SoundDataToJson(_$_SoundData instance) =>
+Map<String, dynamic> _$$SoundDataImplToJson(_$SoundDataImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'weight': instance.weight,
@@ -62,16 +63,12 @@ class _SystemHash {
   }
 }
 
-typedef MinecraftSoundRef
-    = AutoDisposeFutureProviderRef<MapEntry<String, List<SoundData>>?>;
-
 /// See also [minecraftSound].
 @ProviderFor(minecraftSound)
 const minecraftSoundProvider = MinecraftSoundFamily();
 
 /// See also [minecraftSound].
-class MinecraftSoundFamily
-    extends Family<AsyncValue<MapEntry<String, List<SoundData>>?>> {
+class MinecraftSoundFamily extends Family<AsyncValue<MinecraftSound?>> {
   /// See also [minecraftSound].
   const MinecraftSoundFamily();
 
@@ -110,13 +107,13 @@ class MinecraftSoundFamily
 
 /// See also [minecraftSound].
 class MinecraftSoundProvider
-    extends AutoDisposeFutureProvider<MapEntry<String, List<SoundData>>?> {
+    extends AutoDisposeFutureProvider<MinecraftSound?> {
   /// See also [minecraftSound].
   MinecraftSoundProvider(
-    this.id,
-  ) : super.internal(
+    String id,
+  ) : this._internal(
           (ref) => minecraftSound(
-            ref,
+            ref as MinecraftSoundRef,
             id,
           ),
           from: minecraftSoundProvider,
@@ -128,9 +125,43 @@ class MinecraftSoundProvider
           dependencies: MinecraftSoundFamily._dependencies,
           allTransitiveDependencies:
               MinecraftSoundFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  MinecraftSoundProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final String id;
+
+  @override
+  Override overrideWith(
+    FutureOr<MinecraftSound?> Function(MinecraftSoundRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: MinecraftSoundProvider._internal(
+        (ref) => create(ref as MinecraftSoundRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<MinecraftSound?> createElement() {
+    return _MinecraftSoundProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -145,5 +176,19 @@ class MinecraftSoundProvider
     return _SystemHash.finish(hash);
   }
 }
+
+mixin MinecraftSoundRef on AutoDisposeFutureProviderRef<MinecraftSound?> {
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _MinecraftSoundProviderElement
+    extends AutoDisposeFutureProviderElement<MinecraftSound?>
+    with MinecraftSoundRef {
+  _MinecraftSoundProviderElement(super.provider);
+
+  @override
+  String get id => (origin as MinecraftSoundProvider).id;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

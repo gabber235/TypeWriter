@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef _WritersRef = AutoDisposeProviderRef<List<Writer>>;
-
 /// See also [_writers].
 @ProviderFor(_writers)
 const _writersProvider = _WritersFamily();
@@ -77,10 +75,10 @@ class _WritersFamily extends Family<List<Writer>> {
 class _WritersProvider extends AutoDisposeProvider<List<Writer>> {
   /// See also [_writers].
   _WritersProvider(
-    this.id,
-  ) : super.internal(
+    String id,
+  ) : this._internal(
           (ref) => _writers(
-            ref,
+            ref as _WritersRef,
             id,
           ),
           from: _writersProvider,
@@ -91,9 +89,43 @@ class _WritersProvider extends AutoDisposeProvider<List<Writer>> {
                   : _$writersHash,
           dependencies: _WritersFamily._dependencies,
           allTransitiveDependencies: _WritersFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  _WritersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final String id;
+
+  @override
+  Override overrideWith(
+    List<Writer> Function(_WritersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _WritersProvider._internal(
+        (ref) => create(ref as _WritersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<Writer>> createElement() {
+    return _WritersProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -108,5 +140,18 @@ class _WritersProvider extends AutoDisposeProvider<List<Writer>> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin _WritersRef on AutoDisposeProviderRef<List<Writer>> {
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _WritersProviderElement extends AutoDisposeProviderElement<List<Writer>>
+    with _WritersRef {
+  _WritersProviderElement(super.provider);
+
+  @override
+  String get id => (origin as _WritersProvider).id;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

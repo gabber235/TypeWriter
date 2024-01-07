@@ -91,9 +91,20 @@ fun PacketContainer.isActionBar(): Boolean {
  * Returns the chat component from a SystemChat packet.
  */
 fun PacketContainer.getChatComponent(): Component? {
+    // Version 1.20.4+
+    if (chatComponents.size() > 0) {
+        val wrapped = chatComponents.readSafely(0)
+        val json = wrapped.json
+        return GsonComponentSerializer.gson().deserialize(json)
+    }
+    // Version 1.20-1.20.3
     val adventureModifier: StructureModifier<Component>? = getSpecificModifier(Component::class.java)
-    return adventureModifier?.readSafely(0)
-        ?: strings.readSafely(0)?.let { GsonComponentSerializer.gson().deserialize(it) }
+    val component = adventureModifier?.readSafely(0)
+    if (component != null) {
+        return component
+    }
+    // Version 1.19-1.19.4
+    return strings.readSafely(0)?.let { GsonComponentSerializer.gson().deserialize(it) }
 }
 
 val Player.chatHistory: ChatHistory

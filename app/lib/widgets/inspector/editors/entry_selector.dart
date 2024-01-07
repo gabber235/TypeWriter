@@ -4,15 +4,12 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
-import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
-import "package:typewriter/widgets/components/app/page_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
-import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -46,61 +43,13 @@ class EntrySelectorEditor extends HookConsumerWidget {
     return true;
   }
 
-  Future<bool?> _create(PassingRef ref, EntryBlueprint blueprint) async {
-    final page = ref.read(currentPageProvider);
-    if (page == null) return false;
-
-    if (page.canHave(blueprint)) {
-      return _createAndNavigate(ref, page, blueprint);
-    }
-
-    // This page can't have the entry, so we need to select/create a new page where we can.
-
-    ref.read(searchProvider.notifier).asBuilder()
-      ..pageType(PageType.fromBlueprint(blueprint), canRemove: false)
-      ..fetchPage(onSelect: (page) => _createAndNavigate(ref, page, blueprint))
-      ..fetchAddPage(
-        onAdded: (page) => _createAndNavigate(ref, page, blueprint),
-      )
-      ..open();
-
-    return false;
-  }
-
-  Future<bool> _createAndNavigate(
-    PassingRef ref,
-    Page page,
-    EntryBlueprint blueprint,
-  ) async {
-    final entry = await page.createEntryFromBlueprint(ref, blueprint);
-
-    final didUpdate = _update(ref, entry);
-    if (!didUpdate) {
-      Toasts.showError(
-        ref,
-        "Failed to create entry",
-        description: "There was an error when creating the entry",
-      );
-      return false;
-    }
-
-    final notifier = ref.read(inspectingEntryIdProvider.notifier);
-
-    // Close the search bar.
-    ref.read(searchProvider.notifier).endSearch();
-
-    await notifier.navigateAndSelectEntry(ref, entry.id);
-
-    return true;
-  }
-
   void _select(PassingRef ref, String tag) {
     final selectedEntryId = ref.read(inspectingEntryIdProvider);
     ref.read(searchProvider.notifier).asBuilder()
       ..tag(tag, canRemove: false)
       ..excludeEntry(selectedEntryId ?? "", canRemove: false)
       ..fetchEntry(onSelect: (entry) => _update(ref, entry))
-      ..fetchNewEntry(onAdd: (blueprint) => _create(ref, blueprint))
+      ..fetchNewEntry(onAdded: (entry) => _update(ref, entry))
       ..open();
   }
 
@@ -111,92 +60,153 @@ class EntrySelectorEditor extends HookConsumerWidget {
 
     final hasEntry = ref.watch(entryExistsProvider(id));
 
-    return Material(
-      color: Theme.of(context).inputDecorationTheme.fillColor,
-      borderRadius: BorderRadius.circular(8),
-      child: ContextMenuRegion(
-        builder: (context) {
-          return [
-            if (hasEntry) ...[
-              ContextMenuTile.button(
-                title: "Navigate to entry",
-                icon: FontAwesomeIcons.pencil,
-                onTap: () {
+    return DragTarget<EntryDrag>(
+      onWillAcceptWithDetails: (details) {
+        if (details.data.entryId == id) return false;
+
+        final entry = ref.read(globalEntryProvider(details.data.entryId));
+        if (entry == null) return false;
+        final blueprint = ref.read(entryBlueprintProvider(entry.type));
+        if (blueprint == null) return false;
+
+        return blueprint.tags.contains(tag);
+      },
+      builder: (context, candidateData, rejectedData) {
+        if (rejectedData.isNotEmpty) {
+          return _rejectWidget(context);
+        }
+        final isAccepting = candidateData.isNotEmpty;
+
+        final needsPadding = !hasEntry && !isAccepting;
+
+        return Material(
+          color: Theme.of(context).inputDecorationTheme.fillColor,
+          borderRadius: BorderRadius.circular(8),
+          child: ContextMenuRegion(
+            builder: (context) {
+              return [
+                if (hasEntry) ...[
+                  ContextMenuTile.button(
+                    title: "Navigate to entry",
+                    icon: FontAwesomeIcons.pencil,
+                    onTap: () {
+                      ref
+                          .read(inspectingEntryIdProvider.notifier)
+                          .navigateAndSelectEntry(ref.passing, id);
+                    },
+                  ),
+                  ContextMenuTile.button(
+                    title: "Remove reference",
+                    icon: FontAwesomeIcons.solidSquareMinus,
+                    color: Colors.redAccent,
+                    onTap: () {
+                      ref
+                          .read(inspectingEntryDefinitionProvider)
+                          ?.updateField(ref.passing, path, null);
+                    },
+                  ),
+                ],
+                if (!hasEntry) ...[
+                  ContextMenuTile.button(
+                    title: "Select entry",
+                    icon: FontAwesomeIcons.magnifyingGlass,
+                    onTap: () {
+                      _select(ref.passing, tag);
+                    },
+                  ),
+                ],
+              ];
+            },
+            child: InkWell(
+              onTap: () {
+                if (hasOverrideDown && hasEntry) {
                   ref
                       .read(inspectingEntryIdProvider.notifier)
                       .navigateAndSelectEntry(ref.passing, id);
-                },
-              ),
-              ContextMenuTile.button(
-                title: "Remove reference",
-                icon: FontAwesomeIcons.solidSquareMinus,
-                color: Colors.redAccent,
-                onTap: () {
-                  ref
-                      .read(inspectingEntryDefinitionProvider)
-                      ?.updateField(ref.passing, path, null);
-                },
-              ),
-            ],
-            if (!hasEntry) ...[
-              ContextMenuTile.button(
-                title: "Select entry",
-                icon: FontAwesomeIcons.magnifyingGlass,
-                onTap: () {
-                  _select(ref.passing, tag);
-                },
-              ),
-            ],
-          ];
-        },
-        child: InkWell(
-          onTap: () {
-            if (hasOverrideDown && hasEntry) {
-              ref
-                  .read(inspectingEntryIdProvider.notifier)
-                  .navigateAndSelectEntry(ref.passing, id);
-              return;
-            }
-            _select(ref.passing, tag);
-          },
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: hasEntry ? 4 : 12,
-              right: 16,
-              top: hasEntry ? 4 : 12,
-              bottom: hasEntry ? 4 : 12,
-            ),
-            child: Row(
-              children: [
-                if (!hasEntry) ...[
-                  FaIcon(
-                    FontAwesomeIcons.database,
-                    size: 16,
-                    color:
-                        Theme.of(context).inputDecorationTheme.hintStyle?.color,
-                  ),
-                  const SizedBox(width: 12),
-                ],
-                if (hasEntry)
-                  Expanded(child: FakeEntryNode(entryId: id))
-                else
-                  Expanded(
-                    child: Text(
-                      "Select a $tag",
-                      style: Theme.of(context).inputDecorationTheme.hintStyle,
-                    ),
-                  ),
-                const SizedBox(width: 12),
-                FaIcon(
-                  FontAwesomeIcons.caretDown,
-                  size: 16,
-                  color:
-                      Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                  return;
+                }
+                _select(ref.passing, tag);
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: needsPadding ? 12 : 4,
+                  right: 16,
+                  top: needsPadding ? 12 : 4,
+                  bottom: needsPadding ? 12 : 4,
                 ),
-              ],
+                child: Row(
+                  children: [
+                    if (!hasEntry && !isAccepting) ...[
+                      FaIcon(
+                        FontAwesomeIcons.database,
+                        size: 16,
+                        color: Theme.of(context)
+                            .inputDecorationTheme
+                            .hintStyle
+                            ?.color,
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    if (isAccepting)
+                      Expanded(
+                        child: Opacity(
+                          opacity: 0.5,
+                          child: FakeEntryNode(
+                            entryId: candidateData.first!.entryId,
+                          ),
+                        ),
+                      )
+                    else if (hasEntry)
+                      Expanded(child: FakeEntryNode(entryId: id))
+                    else
+                      Expanded(
+                        child: Text(
+                          "Select a $tag",
+                          style:
+                              Theme.of(context).inputDecorationTheme.hintStyle,
+                        ),
+                      ),
+                    const SizedBox(width: 12),
+                    FaIcon(
+                      FontAwesomeIcons.caretDown,
+                      size: 16,
+                      color: Theme.of(context)
+                          .inputDecorationTheme
+                          .hintStyle
+                          ?.color,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Widget _rejectWidget(BuildContext context) {
+    return Material(
+      color: Theme.of(context).inputDecorationTheme.fillColor,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          children: [
+            FaIcon(
+              FontAwesomeIcons.xmark,
+              size: 16,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                "Entry is not allowed here",
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          ],
         ),
       ),
     );

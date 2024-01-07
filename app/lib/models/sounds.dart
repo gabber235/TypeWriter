@@ -5,6 +5,7 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:http/http.dart" as http;
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
+import "package:typewriter/utils/extensions.dart";
 
 part "sounds.freezed.dart";
 part "sounds.g.dart";
@@ -61,11 +62,12 @@ Future<Map<String, List<SoundData>>> minecraftSounds(
 
 @riverpod
 Future<MinecraftSound?> minecraftSound(MinecraftSoundRef ref, String id) async {
+  final strippedId = id.replacePrefix("minecraft:", "");
   final sounds = await ref.watch(minecraftSoundsProvider.future);
-  if (!sounds.containsKey(id)) return null;
-  final sound = sounds[id];
+  if (!sounds.containsKey(strippedId)) return null;
+  final sound = sounds[strippedId];
   if (sound == null) return null;
-  return MapEntry(id, sound);
+  return MapEntry(strippedId, sound);
 }
 
 extension SoundDataX on SoundData {

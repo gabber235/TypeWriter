@@ -67,7 +67,7 @@ class CaptureHeaderAction extends HookConsumerWidget {
       return;
     }
 
-    final cinematic = page.type == PageType.cinematic ? page.name : null;
+    final cinematic = page.type == PageType.cinematic ? page.pageName : null;
 
     /// ------- Segment In Out -------
     final segment = ref.read(inspectingSegmentProvider);

@@ -106,8 +106,10 @@ class _ReconnectOverlay extends HookConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Connection lost, Reconnecting...",
-                    style: Theme.of(context).textTheme.titleLarge,),
+                Text(
+                  "Connection lost, Reconnecting...",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 const SizedBox(height: 8),
                 const ConnectionScroller(
                   style: TextStyle(color: Colors.grey, fontSize: 16),

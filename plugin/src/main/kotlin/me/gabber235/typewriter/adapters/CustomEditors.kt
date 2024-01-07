@@ -5,6 +5,9 @@ import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.editors.*
 import me.gabber235.typewriter.adapters.modifiers.StaticModifierComputer
 import me.gabber235.typewriter.utils.CronExpression
+import me.gabber235.typewriter.utils.Item
+import me.gabber235.typewriter.utils.SoundId
+import me.gabber235.typewriter.utils.SoundSource
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.potion.PotionEffectType
@@ -204,6 +207,9 @@ internal val customEditors by lazy {
         ObjectEditor<Duration>::duration,
         ObjectEditor<CronExpression>::cron,
         ObjectEditor<PotionEffectType>::potionEffectType,
+        ObjectEditor<Item>::item,
+        ObjectEditor<SoundId>::soundId,
+        ObjectEditor<SoundSource>::soundSource,
     )
         .mapNotNull(::objectEditorFromFunction)
         .associateBy { it.klass }

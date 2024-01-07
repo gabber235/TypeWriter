@@ -4,7 +4,6 @@ import "package:collection/collection.dart";
 import "package:collection_ext/all.dart";
 import "package:flutter/material.dart" hide Title, FilledButton;
 import "package:flutter/services.dart";
-import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
@@ -191,7 +190,7 @@ int _totalSequenceFrames(_TotalSequenceFramesRef ref) {
 }
 
 @freezed
-class _TrackState with _$_TrackState {
+class _TrackState with _$TrackState {
   const factory _TrackState([
     @Default(0) double start,
     @Default(1) double end,
@@ -747,7 +746,7 @@ double _trackBackgroundFractionModifier(
 }
 
 @freezed
-class _FrameLine with _$_FrameLine {
+class _FrameLine with _$FrameLine {
   const factory _FrameLine({
     required int frame,
     required double offset,
@@ -969,7 +968,7 @@ bool _showThumbs(_ShowThumbsRef ref, int startFrame, int endFrame) {
 }
 
 @freezed
-class _MoveState with _$_MoveState {
+class _MoveState with _$MoveState {
   const factory _MoveState({
     required Segment? previousSegment,
     required Segment? nextSegment,
@@ -1100,7 +1099,7 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
   void _updateEntry(String entryId, String path, dynamic value) {
     final page = ref.read(currentPageProvider);
     if (page == null) return;
-    final entry = ref.read(entryProvider(page.name, entryId));
+    final entry = ref.read(entryProvider(page.pageName, entryId));
     if (entry == null) return;
     page.updateEntryValue(ref.passing, entry, path, value);
   }
@@ -1361,7 +1360,7 @@ String? _addSegment(
   final segments = ref.read(_segmentsProvider(entryId, segmentPath));
   final page = ref.read(currentPageProvider);
   if (page == null) return null;
-  final entry = ref.read(entryProvider(page.name, entryId));
+  final entry = ref.read(entryProvider(page.pageName, entryId));
   if (entry == null) return null;
 
   final blueprint = ref.read(entryBlueprintProvider(entry.type));
@@ -1482,7 +1481,7 @@ void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
     );
     return;
   }
-  final entry = ref.read(entryProvider(page.name, entryId));
+  final entry = ref.read(entryProvider(page.pageName, entryId));
   if (entry == null) {
     Toasts.showError(
       ref,

@@ -3,7 +3,7 @@ name: Build Development Jars and Publish
 on: 
   pull_request:
     branches:
-      - develop
+      - main
     paths:
       - 'plugins/**'
       - 'adapters/**'
@@ -19,6 +19,14 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+      - name: Get version
+        id: vars
+        run: |
+          version=$(cat version.txt)
+          short_sha=$(echo $GITHUB_SHA | cut -c1-7)
+          full_version="${version}-dev-${short_sha}"
+          echo $full_version > version.txt
+          echo "version=$full_version" >> $GITHUB_OUTPUT
       - name: Build Plugin
         uses: ./.github/actions/build-plugin
       - name: Build Basic Adapter
@@ -53,3 +61,34 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: WorldGuardAdapter
+      - name: Publish Development Jars
+        uses: Kir-Antipov/mc-publish@v3.3
+        id: publish
+        with:
+          modrinth-id: "Vm7B3ymm"
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          modrinth-featured: false
+          files: |
+            plugin/build/libs/typewriter.jar
+            adapters/**/build/libs/*.jar
+          name: "Typewriter v${{ steps.vars.outputs.version }} Development Build"
+          version: "${{ steps.vars.outputs.version }}"
+          version-type: "beta"
+          loaders: |
+            paper
+            purpur
+          game-versions: |
+            1.19.4
+            [1.20, 1.20.2]
+      - name: Notify Discord
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          title: Published Development Build
+          description: |
+            I have published a development build of Typewriter.
+            Version: ${{ steps.vars.outputs.version }}
+            [Download](https://modrinth.com/plugin/typewriter/version/${{ steps.publish.outputs.modrinth-version }})
+
+

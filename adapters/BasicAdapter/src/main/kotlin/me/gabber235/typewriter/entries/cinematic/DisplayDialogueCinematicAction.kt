@@ -96,7 +96,7 @@ class DisplayDialogueCinematicAction(
 
         val text = segment.text.parsePlaceholders(player)
 
-        display(player, speaker?.displayName ?: "", text, displayPercentage)
+        display(player, speaker?.displayName?.parsePlaceholders(player) ?: "", text, displayPercentage)
     }
 
     override suspend fun teardown() {

@@ -5,6 +5,7 @@ import lirand.api.extensions.server.commands.dispatchCommand
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.MultiLine
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
@@ -35,15 +36,19 @@ class PlayerCommandActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<String> = emptyList(),
     @Placeholder
-    @Help("The command to run. (Use %player_name% for the player's name)")
-    // The command that the player will run.
+    @MultiLine
+    @Help("The command(s) to run.")
+    // Every line is a different command. Commands should not be prefixed with <code>/</code>.
     private val command: String = "",
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
         // Run in main thread
         plugin.launch {
-            player.dispatchCommand(command.parsePlaceholders(player))
+            val commands = command.parsePlaceholders(player).lines()
+            for (cmd in commands) {
+                player.dispatchCommand(cmd)
+            }
         }
     }
 }

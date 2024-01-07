@@ -194,7 +194,7 @@ class _ContextMenu extends HookWidget {
   final Offset position;
   final List<ContextMenuTile> tiles;
 
-  static const _spacingWidth = 74;
+  static const _spacingWidth = 80;
 
   @override
   Widget build(BuildContext context) {
@@ -321,6 +321,9 @@ class ContextMenuController {
 
   /// The currently shown instance, if any.
   static ContextMenuController? _shownInstance;
+
+  /// True if and only if there is a context menu currently being shown.
+  static bool get hasContextMenu => _shownInstance != null;
 
   // The OverlayEntry is static because only one context menu can be displayed
   // at one time.

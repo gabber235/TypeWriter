@@ -1,15 +1,18 @@
 package me.gabber235.typewriter.entries.fact
 
+import com.google.gson.JsonObject
+import lirand.api.extensions.other.set
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.Fact
 import me.gabber235.typewriter.utils.Icons
-import me.gabber235.typewriter.utils.asMini
+import me.gabber235.typewriter.utils.Item
+import me.gabber235.typewriter.utils.optional
 import org.bukkit.Material
-import org.bukkit.inventory.ItemStack
 import java.util.*
 
 @Entry(
@@ -32,26 +35,30 @@ class InventoryItemCountFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    @Help("The material the item needs to be.")
-    // If specified, only items with this material will be counted.
-    private val material: Optional<Material> = Optional.empty(),
-    @Help("The name of the item.")
-    // If specified, only items with this name will be counted.
-    private val itemName: Optional<String> = Optional.empty(),
+    @Help("The item to check for.")
+    val item: Item = Item.Empty,
 ) : ReadableFactEntry {
-    private fun isValid(item: ItemStack): Boolean {
-        if (material.isPresent) {
-            if (item.type != material.get()) return false
-        }
-        if (itemName.isPresent) {
-            if (item.itemMeta?.displayName() != itemName.get().asMini()) return false
-        }
-        return true
-    }
-
     override fun read(playerId: UUID): Fact {
         val player = server.getPlayer(playerId) ?: return Fact(id, 0)
-        val amount = player.inventory.contents.filterNotNull().filter { isValid(it) }.sumOf { it.amount }
+        val amount = player.inventory.contents.filterNotNull().filter { item.isSameAs(player, it) }.sumOf { it.amount }
         return Fact(id, amount)
     }
+}
+
+@EntryMigration(InventoryItemCountFact::class, "0.4.0")
+@NeedsMigrationIfContainsAny(["material", "itemName"])
+fun migrate040InventoryItemCount(json: JsonObject, context: EntryMigratorContext): JsonObject {
+    val data = JsonObject()
+    data.copyAllBut(json, "material", "itemName")
+
+    val material = json.getAndParse<Optional<Material>>("material", context.gson).optional
+    val displayName = json.getAndParse<Optional<String>>("itemName", context.gson).optional
+
+    val item = Item(
+        material = material,
+        name = displayName,
+    )
+    data["item"] = context.gson.toJsonTree(item)
+
+    return data
 }

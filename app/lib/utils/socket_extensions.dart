@@ -3,7 +3,11 @@ import "dart:async";
 import "package:socket_io_client/socket_io_client.dart";
 
 extension SocketExt on Socket {
-  Future<dynamic> emitWithAckAsync(String event, dynamic data, {bool binary = false}) {
+  Future<dynamic> emitWithAckAsync(
+    String event,
+    dynamic data, {
+    bool binary = false,
+  }) {
     final completer = Completer<dynamic>();
 
     emitWithAck(

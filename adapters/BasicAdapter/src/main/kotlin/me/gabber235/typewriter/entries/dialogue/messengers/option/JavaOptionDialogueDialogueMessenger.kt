@@ -71,9 +71,13 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
     override fun init() {
         super.init()
         usableOptions =
-            entry.options.filter { it.criteria.matches(player.uniqueId) }.sortedByDescending { it.criteria.size }
+            entry.options.filter { it.criteria.matches(player.uniqueId) }
 
         speakerDisplayName = entry.speakerDisplayName
+
+        if (usableOptions.isEmpty()) {
+            return
+        }
 
         listen<PlayerSwapHandItemsEvent> { event ->
             if (event.player.uniqueId != player.uniqueId) return@listen
@@ -99,13 +103,19 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
     override fun tick(cycle: Int) {
         if (state != MessengerState.RUNNING) return
 
+        // When there are no options, just go to the next dialogue
+        if (usableOptions.isEmpty()) {
+            state = MessengerState.FINISHED
+            return
+        }
+
         if (cycle % 100 > 0) {
             // Only update periodically to avoid spamming the player
             return
         }
 
         val message = optionFormat.asMiniWithResolvers(
-            Placeholder.parsed("speaker", speakerDisplayName),
+            Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(player)),
             Placeholder.parsed("text", entry.text.parsePlaceholders(player)),
             Placeholder.component("options", formatOptions()),
         )

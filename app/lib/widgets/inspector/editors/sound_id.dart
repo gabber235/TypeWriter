@@ -9,19 +9,22 @@ import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/sound.dart";
 import "package:typewriter/models/sounds.dart";
 import "package:typewriter/utils/audio_player.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/entry_node.dart";
+import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/general/focused_notifier.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
-part "sound.g.dart";
+part "sound_id.g.dart";
 
 @riverpod
-Fuzzy<MinecraftSound> _fuzzySounds(_FuzzySoundsRef ref) {
+Fuzzy<MinecraftSound> _fuzzyMinecraftSounds(_FuzzyMinecraftSoundsRef ref) {
   final provider = ref.watch(minecraftSoundsProvider);
   final sounds = provider.map(
     data: (data) => data.value.entries.toList(),
@@ -36,7 +39,8 @@ Fuzzy<MinecraftSound> _fuzzySounds(_FuzzySoundsRef ref) {
       keys: [
         WeightedKey(
           name: "name",
-          getter: (entry) => entry.key.replaceAll(".", " ").replaceAll("_", " "),
+          getter: (entry) =>
+              entry.key.replaceAll(".", " ").replaceAll("_", " "),
           weight: 0.7,
         ),
         WeightedKey(
@@ -49,8 +53,8 @@ Fuzzy<MinecraftSound> _fuzzySounds(_FuzzySoundsRef ref) {
   );
 }
 
-class SoundsFetcher extends SearchFetcher {
-  const SoundsFetcher({
+class MinecraftSoundIdsFetcher extends SearchFetcher {
+  const MinecraftSoundIdsFetcher({
     this.onSelect,
     this.disabled = false,
   });
@@ -67,30 +71,33 @@ class SoundsFetcher extends SearchFetcher {
   List<SearchElement> fetch(PassingRef ref) {
     final search = ref.read(searchProvider);
     if (search == null) return [];
-    final fuzzy = ref.read(_fuzzySoundsProvider);
+    final fuzzy = ref.read(_fuzzyMinecraftSoundsProvider);
 
     final results = fuzzy.search(search.query);
 
     return results
         .map(
-          (result) => SoundSearchElement(sound: result.item, onSelect: onSelect),
+          (result) => MinecraftSoundIdSearchElement(
+            sound: result.item,
+            onSelect: onSelect,
+          ),
         )
         .toList();
   }
 
   @override
-  SoundsFetcher copyWith({
+  MinecraftSoundIdsFetcher copyWith({
     bool? disabled,
   }) {
-    return SoundsFetcher(
+    return MinecraftSoundIdsFetcher(
       onSelect: onSelect,
       disabled: disabled ?? this.disabled,
     );
   }
 }
 
-class SoundSearchElement extends SearchElement {
-  const SoundSearchElement({
+class MinecraftSoundIdSearchElement extends SearchElement {
+  const MinecraftSoundIdSearchElement({
     required this.sound,
     required this.onSelect,
   });
@@ -135,7 +142,8 @@ class SoundSearchElement extends SearchElement {
   Widget icon(BuildContext context) => _FocusedAudioPlayer(sound: sound);
 
   @override
-  Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.upRightFromSquare);
+  Widget suffixIcon(BuildContext context) =>
+      const Icon(FontAwesomeIcons.upRightFromSquare);
 
   @override
   String description(BuildContext context) {
@@ -166,7 +174,6 @@ class SoundSearchElement extends SearchElement {
 class _FocusedAudioPlayer extends HookConsumerWidget {
   const _FocusedAudioPlayer({
     required this.sound,
-    super.key,
   });
 
   final MinecraftSound sound;
@@ -207,10 +214,17 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
       child: MouseRegion(
         onEnter: (_) => hovering.value = true,
         onExit: (_) => hovering.value = false,
-        child: Icon(showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play, size: 16)
+        child: Icon(
+          showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play,
+          size: 16,
+        )
             .animate(controller: controller, autoPlay: false)
             .scaleXY(duration: 300.ms, begin: 1, end: 1.2)
-            .shake(delay: 100.ms, duration: 500.ms, curve: Curves.easeInOutCubicEmphasized)
+            .shake(
+              delay: 100.ms,
+              duration: 500.ms,
+              curve: Curves.easeInOutCubicEmphasized,
+            )
             .scaleXY(delay: 600.ms, duration: 300.ms, begin: 1.2, end: 1),
       ),
     );
@@ -218,21 +232,22 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
 }
 
 extension _SearchBuilderX on SearchBuilder {
-  void fetchSounds({
+  void fetchMinecraftSoundIds({
     FutureOr<bool?> Function(MinecraftSound)? onSelect,
     bool disabled = false,
   }) {
-    fetch(SoundsFetcher(onSelect: onSelect, disabled: disabled));
+    fetch(MinecraftSoundIdsFetcher(onSelect: onSelect, disabled: disabled));
   }
 }
 
-class SoundSelectorEditorFilter extends EditorFilter {
+class SoundIdEditorFilter extends EditorFilter {
   @override
   bool canEdit(FieldInfo info) =>
-      info is PrimitiveField && info.type == PrimitiveFieldType.string && info.hasModifier("sound");
+      info is CustomField && info.editor == "soundId";
 
   @override
-  Widget build(String path, FieldInfo info) => SoundSelectorEditor(path: path, field: info as PrimitiveField);
+  Widget build(String path, FieldInfo info) =>
+      SoundSelectorEditor(path: path, field: info as CustomField);
 }
 
 class SoundSelectorEditor extends HookConsumerWidget {
@@ -243,50 +258,103 @@ class SoundSelectorEditor extends HookConsumerWidget {
   });
 
   final String path;
-  final PrimitiveField field;
+  final CustomField field;
 
-  bool? _update(PassingRef ref, String value) {
-    ref.read(inspectingEntryDefinitionProvider)?.updateField(ref, path, value);
+  bool? _update(PassingRef ref, SoundId soundId) {
+    ref
+        .read(inspectingEntryDefinitionProvider)
+        ?.updateField(ref, path, soundId.toJson());
     return null;
   }
 
   void _select(PassingRef ref) {
     ref.read(searchProvider.notifier).asBuilder()
-      ..fetchSounds(onSelect: (sound) => _update(ref, sound.key))
+      ..tag("sound_id", canRemove: false)
+      ..fetchEntry(
+        onSelect: (entry) => _update(ref, SoundId.entry(entryId: entry.id)),
+      )
+      ..fetchMinecraftSoundIds(
+        onSelect: (sound) => _update(ref, SoundId(id: sound.key)),
+      )
+      ..fetchNewEntry(
+        onAdded: (entry) => _update(ref, SoundId.entry(entryId: entry.id)),
+      )
       ..open();
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(fieldValueProvider(path, ""));
+    final data = ref.watch(fieldValueProvider(path));
+    final soundId =
+        data != null ? SoundId.fromJson(data) : const SoundId(id: "");
 
-    final sound = ref.watch(minecraftSoundProvider(value));
+    return soundId.map(
+      (soundId) => _DefaultSoundIdSelector(
+        soundId: soundId,
+        select: () => _select(ref.passing),
+      ),
+      entry: (soundId) => _EntrySoundIdSelector(
+        soundId: soundId,
+        select: () => _select(ref.passing),
+      ),
+    );
+  }
+}
+
+class _DefaultSoundIdSelector extends HookConsumerWidget {
+  const _DefaultSoundIdSelector({
+    required this.soundId,
+    required this.select,
+  });
+
+  final DefaultSoundId soundId;
+  final VoidCallback select;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sound = ref.watch(minecraftSoundProvider(soundId.id));
 
     return sound.map(
-      data: (data) => _buildSelector(context, ref, data.value),
-      loading: (_) => _buildLoading(context),
+      data: (data) {
+        final value = data.value;
+        if (value == null) return _EmptySelector(select: select);
+        return _MinecraftSelector(sound: value, select: select);
+      },
+      loading: (_) => const _LoadingSelector(),
       error: (error) {
         debugPrint(error.error.toString());
-        debugPrintStack(label: "SoundSelectorEditor", maxFrames: 10, stackTrace: error.stackTrace);
-        return _buildError(context);
+        debugPrintStack(
+          label: "SoundSelectorEditor",
+          maxFrames: 10,
+          stackTrace: error.stackTrace,
+        );
+        return _ErrorSelector(select: select);
       },
     );
   }
+}
 
-  Widget _buildLoading(BuildContext context) {
-    return Material(
-      color: Theme.of(context).inputDecorationTheme.fillColor,
-      borderRadius: BorderRadius.circular(8),
+class _EntrySoundIdSelector extends HookConsumerWidget {
+  const _EntrySoundIdSelector({
+    required this.soundId,
+    required this.select,
+  });
+
+  final EntrySoundId soundId;
+  final VoidCallback select;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _Selector(
+      select: select,
       child: Padding(
-        padding: const EdgeInsets.only(right: 16, left: 12, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
         child: Row(
           children: [
-            const CircularProgressIndicator(),
-            const SizedBox(width: 8),
-            Expanded(child: Text("Loading Sounds...", style: Theme.of(context).inputDecorationTheme.hintStyle)),
+            Expanded(child: FakeEntryNode(entryId: soundId.entryId)),
             const SizedBox(width: 12),
             FaIcon(
-              FontAwesomeIcons.xmark,
+              FontAwesomeIcons.caretDown,
               size: 16,
               color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
             ),
@@ -295,20 +363,134 @@ class SoundSelectorEditor extends HookConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildError(BuildContext context) {
+class _Selector extends HookConsumerWidget {
+  const _Selector({
+    required this.select,
+    required this.child,
+  });
+
+  final VoidCallback? select;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: Theme.of(context).inputDecorationTheme.fillColor,
       borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        onTap: select,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptySelector extends HookConsumerWidget {
+  const _EmptySelector({
+    required this.select,
+  });
+
+  final VoidCallback select;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _Selector(
+      select: select,
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.music_note,
+                    color:
+                        Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Select a sound",
+                    style: Theme.of(context).inputDecorationTheme.hintStyle,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          FaIcon(
+            FontAwesomeIcons.caretDown,
+            size: 16,
+            color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadingSelector extends HookConsumerWidget {
+  const _LoadingSelector();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _Selector(
+      select: null,
       child: Padding(
-        padding: const EdgeInsets.only(right: 16, left: 12, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(top: 12, bottom: 12, left: 16),
+        child: Row(
+          children: [
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 3),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                "Loading Sounds...",
+                style: Theme.of(context).inputDecorationTheme.hintStyle,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorSelector extends HookConsumerWidget {
+  const _ErrorSelector({
+    required this.select,
+  });
+
+  final VoidCallback select;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _Selector(
+      select: select,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 12, bottom: 12, left: 16),
         child: Row(
           children: [
             const Icon(Icons.error, color: Colors.redAccent),
             const SizedBox(width: 8),
             Expanded(
-                child: Text("Failed to load sounds",
-                    style: Theme.of(context).inputDecorationTheme.hintStyle?.copyWith(color: Colors.redAccent),),),
+              child: Text(
+                "Failed to load sound",
+                style: Theme.of(context)
+                    .inputDecorationTheme
+                    .hintStyle
+                    ?.copyWith(color: Colors.redAccent),
+              ),
+            ),
             const SizedBox(width: 12),
             const FaIcon(
               FontAwesomeIcons.xmark,
@@ -320,43 +502,31 @@ class SoundSelectorEditor extends HookConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildSelector(BuildContext context, WidgetRef ref, MinecraftSound? sound) {
-    return Material(
-      color: Theme.of(context).inputDecorationTheme.fillColor,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: () => _select(ref.passing),
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: Row(
-            children: [
-              if (sound != null) Expanded(child: _ChosenSound(sound: sound)) else _buildEmpty(context),
-              const SizedBox(width: 12),
-              FaIcon(
-                FontAwesomeIcons.caretDown,
-                size: 16,
-                color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
-              ),
-            ],
+class _MinecraftSelector extends HookConsumerWidget {
+  const _MinecraftSelector({
+    required this.sound,
+    required this.select,
+  });
+
+  final MinecraftSound sound;
+  final VoidCallback select;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _Selector(
+      select: select,
+      child: Row(
+        children: [
+          Expanded(child: _ChosenSound(sound: sound)),
+          const SizedBox(width: 12),
+          FaIcon(
+            FontAwesomeIcons.caretDown,
+            size: 16,
+            color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmpty(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        child: Row(
-          children: [
-            Icon(Icons.music_note, color: Theme.of(context).inputDecorationTheme.hintStyle?.color),
-            const SizedBox(width: 8),
-            Text("Select a sound", style: Theme.of(context).inputDecorationTheme.hintStyle),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -365,7 +535,6 @@ class SoundSelectorEditor extends HookConsumerWidget {
 class _ChosenSound extends HookConsumerWidget {
   const _ChosenSound({
     required this.sound,
-    super.key,
   });
 
   final MinecraftSound sound;
@@ -407,10 +576,17 @@ class _ChosenSound extends HookConsumerWidget {
           MouseRegion(
             onEnter: (_) => hovering.value = true,
             onExit: (_) => hovering.value = false,
-            child: Icon(showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play, size: 16)
+            child: Icon(
+              showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play,
+              size: 16,
+            )
                 .animate(controller: controller, autoPlay: false)
                 .scaleXY(duration: 300.ms, begin: 1, end: 1.2)
-                .shake(delay: 100.ms, duration: 500.ms, curve: Curves.easeInOutCubicEmphasized)
+                .shake(
+                  delay: 100.ms,
+                  duration: 500.ms,
+                  curve: Curves.easeInOutCubicEmphasized,
+                )
                 .tint(color: Colors.amber)
                 .scaleXY(delay: 600.ms, duration: 300.ms, begin: 1.2, end: 1),
           ),
@@ -418,8 +594,14 @@ class _ChosenSound extends HookConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(sound.name.formatted, style: Theme.of(context).textTheme.bodyLarge),
-              Text(sound.category.formatted, style: Theme.of(context).textTheme.bodySmall),
+              Text(
+                sound.name.formatted,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              Text(
+                sound.category.formatted,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ],
           ),
         ],

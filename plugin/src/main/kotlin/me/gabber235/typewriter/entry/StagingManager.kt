@@ -28,6 +28,7 @@ interface StagingManager {
     fun fetchPages(): Map<String, JsonObject>
     fun createPage(data: JsonObject): Result<String>
     fun renamePage(oldName: String, newName: String): Result<String>
+    fun changePageValue(pageId: String, path: String, value: JsonElement): Result<String>
     fun deletePage(name: String): Result<String>
     fun createEntry(pageId: String, data: JsonObject): Result<String>
     fun updateEntryField(pageId: String, entryId: String, path: String, value: JsonElement): Result<String>
@@ -93,7 +94,11 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         val pages = mutableMapOf<String, JsonObject>()
         dir.pages().forEach { file ->
             val page = file.readText()
-            pages[file.nameWithoutExtension] = gson.fromJson(page, JsonObject::class.java)
+            val pageName = file.nameWithoutExtension
+            val pageJson = gson.fromJson(page, JsonObject::class.java)
+            // Sometimes the name of the page is out of sync with the file name, so we need to update it
+            pageJson.addProperty("name", pageName)
+            pages[pageName] = pageJson
         }
         return pages
     }
@@ -119,7 +124,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     override fun renamePage(oldName: String, newName: String): Result<String> {
-        val oldPage = pages[oldName] ?: return failure("Page does not exist")
+        val oldPage = pages[oldName] ?: return failure("Page '$oldName' does not exist")
         if (pages.containsKey(newName)) return failure("Page with that name already exists")
 
         oldPage.addProperty("name", newName)
@@ -127,6 +132,15 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         pages[newName] = oldPage
         autoSaver()
         return ok("Successfully renamed page from $oldName to $newName")
+    }
+
+    override fun changePageValue(pageId: String, path: String, value: JsonElement): Result<String> {
+        val page = getPage(pageId) onFail { return it }
+
+        page.changePathValue(path, value)
+
+        autoSaver()
+        return ok("Successfully updated field")
     }
 
     override fun deletePage(name: String): Result<String> {
@@ -165,22 +179,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         val entry = entries.find { it.asJsonObject["id"].asString == entryId } ?: return failure("Entry does not exist")
 
         // Update the entry
-        val pathParts = path.split(".")
-        var current: JsonElement = entry.asJsonObject
-        pathParts.forEachIndexed { index, key ->
-            if (index == pathParts.size - 1) {
-                if (current.isJsonObject) {
-                    current.asJsonObject.add(key, value)
-                } else if (current.isJsonArray) {
-                    current.asJsonArray[Integer.parseInt(key)] = value
-                }
-            } else if (current.isJsonObject) {
-                current = current.asJsonObject[key] ?: JsonObject().also { current.asJsonObject.add(key, it) }
-            } else if (current.isJsonArray) {
-                current =
-                    current.asJsonArray[Integer.parseInt(key)] ?: JsonObject().also { current.asJsonArray.add(it) }
-            }
-        }
+        entry.changePathValue(path, value)
 
         autoSaver()
         return ok("Successfully updated field")
@@ -236,7 +235,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     private fun getPage(id: String): Result<JsonObject> {
-        val page = pages[id] ?: return failure("Page does not exist")
+        val page = pages[id] ?: return failure("Page '$id' does not exist")
         return ok(page)
     }
 
@@ -302,6 +301,25 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
     override fun shutdown() {
         if (stagingState == STAGING) saveStaging()
+    }
+}
+
+fun JsonElement.changePathValue(path: String, value: JsonElement) {
+    val pathParts = path.split(".")
+    var current: JsonElement = this
+    pathParts.forEachIndexed { index, key ->
+        if (index == pathParts.size - 1) {
+            if (current.isJsonObject) {
+                current.asJsonObject.add(key, value)
+            } else if (current.isJsonArray) {
+                current.asJsonArray[Integer.parseInt(key)] = value
+            }
+        } else if (current.isJsonObject) {
+            current = current.asJsonObject[key] ?: JsonObject().also { current.asJsonObject.add(key, it) }
+        } else if (current.isJsonArray) {
+            current =
+                current.asJsonArray[Integer.parseInt(key)] ?: JsonObject().also { current.asJsonArray.add(it) }
+        }
     }
 }
 

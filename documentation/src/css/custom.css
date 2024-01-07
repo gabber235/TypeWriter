@@ -103,3 +103,24 @@
 .navbar__logo > img {
     border-radius: 0.5rem;
 }
+
+code span {
+    margin: 0;
+}
+
+.highlight-red {
+  background-color: #ff000020; /* Light red background */
+  border-left: 3px solid #ff000080; /* Darker red border */
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+.highlight-green {
+  background-color: #00ff0020; /* Light green background */
+  border-left: 3px solid #00ff0080; /* Darker green border */
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+

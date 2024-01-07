@@ -1,24 +1,29 @@
 package me.gabber235.typewriter.entry
 
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import lirand.api.extensions.other.set
-import me.gabber235.typewriter.adapters.AdapterLoader
+import me.gabber235.typewriter.entry.EntryMigrations.migrateEntriesForPage
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.get
-import me.gabber235.typewriter.utils.logErrorIfNull
-import org.koin.java.KoinJavaComponent.get
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.reflect.full.isSuperclassOf
+
+
+data class PossibleMigration(
+    val file: File,
+    val version: SemanticVersion,
+)
+
 
 fun File.pages(): Array<File> = listFiles { _, name -> name.endsWith(".json") } ?: emptyArray()
 
 fun File.migrateIfNecessary(run: Int = 0) {
-    val highestMigratorVersion = migrators.keys.maxOrNull() ?: return
+    val highestMigratorVersion = EntryMigrations.finaMaximalMigrationVersion() ?: return
     val migratable = pages().mapNotNull { file ->
         if (!file.exists()) {
             return@mapNotNull null
@@ -26,14 +31,14 @@ fun File.migrateIfNecessary(run: Int = 0) {
 
         val content = file.readText()
         val json = Gson().fromJson(content, JsonObject::class.java)
-        val version = json.getAsJsonPrimitive("version")?.asString ?: "0.0.0"
-        val semanticVersion = SemanticVersion.fromString(version)
+        val pageVersion = json.getAsJsonPrimitive("version")?.asString ?: "0.0.0"
+        val semanticVersion = SemanticVersion.fromString(pageVersion)
 
         if (semanticVersion >= highestMigratorVersion) {
             return@mapNotNull null
         }
 
-        return@mapNotNull file to semanticVersion
+        return@mapNotNull PossibleMigration(file, semanticVersion)
     }
 
     if (migratable.isEmpty()) {
@@ -55,19 +60,25 @@ fun File.migrateIfNecessary(run: Int = 0) {
 		""".trimMargin()
         )
 
-        migratable.map { it.first }.backup()
+        migratable.map { it.file }.backup()
     }
 
-    val lowestVersion = migratable.minBy { it.second }.second
+    val lowestPageVersion = migratable.minBy { it.version }.version
+    val lowestMigratorVersion = EntryMigrations.findMinimalNeededMigrationVersion(lowestPageVersion)
+        ?: throw IllegalStateException("Could not find a migration for version $lowestPageVersion")
 
-    val migrating = migratable.filter { it.second == lowestVersion }
+    val migrators = EntryMigrations.findEntryMigrators(lowestMigratorVersion)
 
-    val migrator = migrators.filter { it.key > lowestVersion }.minByOrNull { it.key }?.value
-        ?: throw IllegalStateException("No migrator found for version $lowestVersion")
+    val migrating = migratable.filter { it.version == lowestPageVersion }.map { it.file }
 
-    migrating.forEach { (file, _) ->
-        file.migrator()
+    migrating.forEach { file ->
+        val content = file.readText()
+        val json = Gson().fromJson(content, JsonObject::class.java)
+        json.migrateEntriesForPage(migrators)
+        json["version"] = lowestMigratorVersion.toString().json
+        file.writeText(Gson().toJson(json))
     }
+
 
     /// Recursively call this function until all files are migrated
     migrateIfNecessary(run + 1)
@@ -90,80 +101,10 @@ fun List<File>.backup() {
     }
 }
 
-private val migrators by lazy {
-    mutableMapOf<SemanticVersion, File.() -> Unit>(
-        "0.3.0".v to File::migrate0_3_0,
-    )
-}
+internal val String.json get() = JsonPrimitive(this)
+internal val List<JsonElement>.json get() = Gson().toJsonTree(this)
 
-private fun File.migrate0_3_0() {
-    val content = readText()
-    val json = Gson().fromJson(content, JsonObject::class.java)
-    val name = json.getAsJsonPrimitive("name")?.asString ?: "unnamed_${UUID.randomUUID().toString().substring(0, 5)}"
-
-    json["type"] = "sequence".json
-    json["version"] = "0.3.0".json
-
-    val entries = json.getAsJsonArray("entries")
-
-    val staticEntries = entries.mapNotNull { entry ->
-        val entryJson = entry.asJsonObject
-        val needsExtracting = entryJson.needsStaticExtractingForV0_3_0()
-        if (needsExtracting) entryJson
-        else null
-    }
-
-    if (staticEntries.isEmpty()) {
-        writeText(json.toString())
-        return
-    }
-
-
-    // Extract static entries to their own page
-    val newStaticPage = JsonObject().apply {
-        addProperty("name", "${name}_static")
-        addProperty("type", "static")
-        addProperty("version", "0.3.0")
-        add("entries", Gson().toJsonTree(staticEntries))
-    }
-
-    if (entries.size() == staticEntries.size) {
-        // All entries are static, just replace the page with the static page
-        writeText(newStaticPage.apply {
-            addProperty("name", name)
-        }.toString())
-        return
-    }
-
-    // Remove static entries from the original page
-    staticEntries.forEach { entries.remove(it) }
-
-    writeText(json.toString())
-
-    // Write the newly created static page
-    val staticPageFile = parentFile["${name}_static.json"]
-    staticPageFile.writeText(newStaticPage.toString())
-}
-
-private fun JsonObject.needsStaticExtractingForV0_3_0(): Boolean {
-    val type = getAsJsonPrimitive("type")?.asString ?: return false
-
-    val blueprint = get<AdapterLoader>(AdapterLoader::class.java).getEntryBlueprint(type).logErrorIfNull(
-        """
-		| ------ ERROR IN MIGRATION ------
-		|Failed to get blueprint for type $type while running the migration. 
-		|
-		|Make sure you install all the needed adapters to properly migrate your pages!
-		| ---------------------------------
-	""".trimMargin()
-    ) ?: return false
-
-    return StaticEntry::class.isSuperclassOf(blueprint.clazz.kotlin)
-}
-
-private val String.json get() = JsonPrimitive(this)
-
-private val String.v get() = SemanticVersion.fromString(this)
+internal val String.v get() = SemanticVersion.fromString(this)
 
 data class SemanticVersion(
     val major: Int,
@@ -172,7 +113,8 @@ data class SemanticVersion(
 ) : Comparable<SemanticVersion> {
     companion object {
         fun fromString(version: String): SemanticVersion {
-            val parts = version.split(".")
+            val versionPart = version.split("-").first()
+            val parts = versionPart.split(".")
             return SemanticVersion(parts[0].toInt(), parts[1].toInt(), parts[2].toInt())
         }
     }
@@ -185,5 +127,9 @@ data class SemanticVersion(
             return minor - other.minor
         }
         return patch - other.patch
+    }
+
+    override fun toString(): String {
+        return "$major.$minor.$patch"
     }
 }

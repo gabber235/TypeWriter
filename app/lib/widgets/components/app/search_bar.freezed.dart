@@ -77,9 +77,10 @@ class _$SearchCopyWithImpl<$Res, $Val extends Search>
 }
 
 /// @nodoc
-abstract class _$$_SearchCopyWith<$Res> implements $SearchCopyWith<$Res> {
-  factory _$$_SearchCopyWith(_$_Search value, $Res Function(_$_Search) then) =
-      __$$_SearchCopyWithImpl<$Res>;
+abstract class _$$SearchImplCopyWith<$Res> implements $SearchCopyWith<$Res> {
+  factory _$$SearchImplCopyWith(
+          _$SearchImpl value, $Res Function(_$SearchImpl) then) =
+      __$$SearchImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -90,10 +91,11 @@ abstract class _$$_SearchCopyWith<$Res> implements $SearchCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_SearchCopyWithImpl<$Res>
-    extends _$SearchCopyWithImpl<$Res, _$_Search>
-    implements _$$_SearchCopyWith<$Res> {
-  __$$_SearchCopyWithImpl(_$_Search _value, $Res Function(_$_Search) _then)
+class __$$SearchImplCopyWithImpl<$Res>
+    extends _$SearchCopyWithImpl<$Res, _$SearchImpl>
+    implements _$$SearchImplCopyWith<$Res> {
+  __$$SearchImplCopyWithImpl(
+      _$SearchImpl _value, $Res Function(_$SearchImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -104,7 +106,7 @@ class __$$_SearchCopyWithImpl<$Res>
     Object? filters = null,
     Object? onEnd = freezed,
   }) {
-    return _then(_$_Search(
+    return _then(_$SearchImpl(
       query: null == query
           ? _value.query
           : query // ignore: cast_nullable_to_non_nullable
@@ -127,8 +129,8 @@ class __$$_SearchCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_Search implements _Search {
-  const _$_Search(
+class _$SearchImpl implements _Search {
+  const _$SearchImpl(
       {this.query = "",
       final List<SearchFetcher> fetchers = const [],
       final List<SearchFilter> filters = const [],
@@ -169,7 +171,7 @@ class _$_Search implements _Search {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Search &&
+            other is _$SearchImpl &&
             (identical(other.query, query) || other.query == query) &&
             const DeepCollectionEquality().equals(other._fetchers, _fetchers) &&
             const DeepCollectionEquality().equals(other._filters, _filters) &&
@@ -187,8 +189,8 @@ class _$_Search implements _Search {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SearchCopyWith<_$_Search> get copyWith =>
-      __$$_SearchCopyWithImpl<_$_Search>(this, _$identity);
+  _$$SearchImplCopyWith<_$SearchImpl> get copyWith =>
+      __$$SearchImplCopyWithImpl<_$SearchImpl>(this, _$identity);
 }
 
 abstract class _Search implements Search {
@@ -196,7 +198,7 @@ abstract class _Search implements Search {
       {final String query,
       final List<SearchFetcher> fetchers,
       final List<SearchFilter> filters,
-      final dynamic Function()? onEnd}) = _$_Search;
+      final dynamic Function()? onEnd}) = _$SearchImpl;
 
   @override
   String get query;
@@ -208,6 +210,6 @@ abstract class _Search implements Search {
   dynamic Function()? get onEnd;
   @override
   @JsonKey(ignore: true)
-  _$$_SearchCopyWith<_$_Search> get copyWith =>
+  _$$SearchImplCopyWith<_$SearchImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

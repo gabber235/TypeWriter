@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef EntryDefinitionRef = AutoDisposeProviderRef<EntryDefinition?>;
-
 /// See also [entryDefinition].
 @ProviderFor(entryDefinition)
 const entryDefinitionProvider = EntryDefinitionFamily();
@@ -80,11 +78,11 @@ class EntryDefinitionFamily extends Family<EntryDefinition?> {
 class EntryDefinitionProvider extends AutoDisposeProvider<EntryDefinition?> {
   /// See also [entryDefinition].
   EntryDefinitionProvider(
-    this.pageId,
-    this.entryId,
-  ) : super.internal(
+    String pageId,
+    String entryId,
+  ) : this._internal(
           (ref) => entryDefinition(
-            ref,
+            ref as EntryDefinitionRef,
             pageId,
             entryId,
           ),
@@ -97,10 +95,47 @@ class EntryDefinitionProvider extends AutoDisposeProvider<EntryDefinition?> {
           dependencies: EntryDefinitionFamily._dependencies,
           allTransitiveDependencies:
               EntryDefinitionFamily._allTransitiveDependencies,
+          pageId: pageId,
+          entryId: entryId,
         );
+
+  EntryDefinitionProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.pageId,
+    required this.entryId,
+  }) : super.internal();
 
   final String pageId;
   final String entryId;
+
+  @override
+  Override overrideWith(
+    EntryDefinition? Function(EntryDefinitionRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EntryDefinitionProvider._internal(
+        (ref) => create(ref as EntryDefinitionRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        pageId: pageId,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<EntryDefinition?> createElement() {
+    return _EntryDefinitionProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -119,8 +154,26 @@ class EntryDefinitionProvider extends AutoDisposeProvider<EntryDefinition?> {
   }
 }
 
+mixin EntryDefinitionRef on AutoDisposeProviderRef<EntryDefinition?> {
+  /// The parameter `pageId` of this provider.
+  String get pageId;
+
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _EntryDefinitionProviderElement
+    extends AutoDisposeProviderElement<EntryDefinition?>
+    with EntryDefinitionRef {
+  _EntryDefinitionProviderElement(super.provider);
+
+  @override
+  String get pageId => (origin as EntryDefinitionProvider).pageId;
+  @override
+  String get entryId => (origin as EntryDefinitionProvider).entryId;
+}
+
 String _$entryNameHash() => r'7e19e3e55767e19fe015a69c99f4af9173872ef2';
-typedef EntryNameRef = AutoDisposeProviderRef<String?>;
 
 /// See also [entryName].
 @ProviderFor(entryName)
@@ -168,10 +221,10 @@ class EntryNameFamily extends Family<String?> {
 class EntryNameProvider extends AutoDisposeProvider<String?> {
   /// See also [entryName].
   EntryNameProvider(
-    this.entryId,
-  ) : super.internal(
+    String entryId,
+  ) : this._internal(
           (ref) => entryName(
-            ref,
+            ref as EntryNameRef,
             entryId,
           ),
           from: entryNameProvider,
@@ -182,9 +235,43 @@ class EntryNameProvider extends AutoDisposeProvider<String?> {
                   : _$entryNameHash,
           dependencies: EntryNameFamily._dependencies,
           allTransitiveDependencies: EntryNameFamily._allTransitiveDependencies,
+          entryId: entryId,
         );
 
+  EntryNameProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
   final String entryId;
+
+  @override
+  Override overrideWith(
+    String? Function(EntryNameRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EntryNameProvider._internal(
+        (ref) => create(ref as EntryNameRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<String?> createElement() {
+    return _EntryNameProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -200,8 +287,20 @@ class EntryNameProvider extends AutoDisposeProvider<String?> {
   }
 }
 
+mixin EntryNameRef on AutoDisposeProviderRef<String?> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _EntryNameProviderElement extends AutoDisposeProviderElement<String?>
+    with EntryNameRef {
+  _EntryNameProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as EntryNameProvider).entryId;
+}
+
 String _$entryTypeHash() => r'467b4a9545b746b07f721913e6c480ee100eedb1';
-typedef EntryTypeRef = AutoDisposeProviderRef<String?>;
 
 /// See also [entryType].
 @ProviderFor(entryType)
@@ -249,10 +348,10 @@ class EntryTypeFamily extends Family<String?> {
 class EntryTypeProvider extends AutoDisposeProvider<String?> {
   /// See also [entryType].
   EntryTypeProvider(
-    this.entryId,
-  ) : super.internal(
+    String entryId,
+  ) : this._internal(
           (ref) => entryType(
-            ref,
+            ref as EntryTypeRef,
             entryId,
           ),
           from: entryTypeProvider,
@@ -263,9 +362,43 @@ class EntryTypeProvider extends AutoDisposeProvider<String?> {
                   : _$entryTypeHash,
           dependencies: EntryTypeFamily._dependencies,
           allTransitiveDependencies: EntryTypeFamily._allTransitiveDependencies,
+          entryId: entryId,
         );
 
+  EntryTypeProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
   final String entryId;
+
+  @override
+  Override overrideWith(
+    String? Function(EntryTypeRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EntryTypeProvider._internal(
+        (ref) => create(ref as EntryTypeRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<String?> createElement() {
+    return _EntryTypeProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -280,5 +413,18 @@ class EntryTypeProvider extends AutoDisposeProvider<String?> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin EntryTypeRef on AutoDisposeProviderRef<String?> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _EntryTypeProviderElement extends AutoDisposeProviderElement<String?>
+    with EntryTypeRef {
+  _EntryTypeProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as EntryTypeProvider).entryId;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

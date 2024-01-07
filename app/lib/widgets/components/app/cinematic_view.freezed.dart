@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$_TrackState {
+mixin _$TrackState {
   double get start => throw _privateConstructorUsedError;
   double get end => throw _privateConstructorUsedError;
   int get totalFrames => throw _privateConstructorUsedError;
@@ -75,22 +75,22 @@ class __$TrackStateCopyWithImpl<$Res, $Val extends _TrackState>
 }
 
 /// @nodoc
-abstract class _$$_$__TrackStateCopyWith<$Res>
+abstract class _$$$__TrackStateImplCopyWith<$Res>
     implements _$TrackStateCopyWith<$Res> {
-  factory _$$_$__TrackStateCopyWith(
-          _$_$__TrackState value, $Res Function(_$_$__TrackState) then) =
-      __$$_$__TrackStateCopyWithImpl<$Res>;
+  factory _$$$__TrackStateImplCopyWith(
+          _$$__TrackStateImpl value, $Res Function(_$$__TrackStateImpl) then) =
+      __$$$__TrackStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({double start, double end, int totalFrames, double width});
 }
 
 /// @nodoc
-class __$$_$__TrackStateCopyWithImpl<$Res>
-    extends __$TrackStateCopyWithImpl<$Res, _$_$__TrackState>
-    implements _$$_$__TrackStateCopyWith<$Res> {
-  __$$_$__TrackStateCopyWithImpl(
-      _$_$__TrackState _value, $Res Function(_$_$__TrackState) _then)
+class __$$$__TrackStateImplCopyWithImpl<$Res>
+    extends __$TrackStateCopyWithImpl<$Res, _$$__TrackStateImpl>
+    implements _$$$__TrackStateImplCopyWith<$Res> {
+  __$$$__TrackStateImplCopyWithImpl(
+      _$$__TrackStateImpl _value, $Res Function(_$$__TrackStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -101,7 +101,7 @@ class __$$_$__TrackStateCopyWithImpl<$Res>
     Object? totalFrames = null,
     Object? width = null,
   }) {
-    return _then(_$_$__TrackState(
+    return _then(_$$__TrackStateImpl(
       null == start
           ? _value.start
           : start // ignore: cast_nullable_to_non_nullable
@@ -124,8 +124,8 @@ class __$$_$__TrackStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_$__TrackState implements _$__TrackState {
-  const _$_$__TrackState(
+class _$$__TrackStateImpl implements _$__TrackState {
+  const _$$__TrackStateImpl(
       [this.start = 0, this.end = 1, this.totalFrames = 0, this.width = 0]);
 
   @override
@@ -150,7 +150,7 @@ class _$_$__TrackState implements _$__TrackState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_$__TrackState &&
+            other is _$$__TrackStateImpl &&
             (identical(other.start, start) || other.start == start) &&
             (identical(other.end, end) || other.end == end) &&
             (identical(other.totalFrames, totalFrames) ||
@@ -164,8 +164,8 @@ class _$_$__TrackState implements _$__TrackState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_$__TrackStateCopyWith<_$_$__TrackState> get copyWith =>
-      __$$_$__TrackStateCopyWithImpl<_$_$__TrackState>(this, _$identity);
+  _$$$__TrackStateImplCopyWith<_$$__TrackStateImpl> get copyWith =>
+      __$$$__TrackStateImplCopyWithImpl<_$$__TrackStateImpl>(this, _$identity);
 }
 
 abstract class _$__TrackState implements _TrackState {
@@ -173,7 +173,7 @@ abstract class _$__TrackState implements _TrackState {
       [final double start,
       final double end,
       final int totalFrames,
-      final double width]) = _$_$__TrackState;
+      final double width]) = _$$__TrackStateImpl;
 
   @override
   double get start;
@@ -185,12 +185,12 @@ abstract class _$__TrackState implements _TrackState {
   double get width;
   @override
   @JsonKey(ignore: true)
-  _$$_$__TrackStateCopyWith<_$_$__TrackState> get copyWith =>
+  _$$$__TrackStateImplCopyWith<_$$__TrackStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$_FrameLine {
+mixin _$FrameLine {
   int get frame => throw _privateConstructorUsedError;
   double get offset => throw _privateConstructorUsedError;
   bool get primary => throw _privateConstructorUsedError;
@@ -244,22 +244,22 @@ class __$FrameLineCopyWithImpl<$Res, $Val extends _FrameLine>
 }
 
 /// @nodoc
-abstract class _$$_$__FrameLineCopyWith<$Res>
+abstract class _$$$__FrameLineImplCopyWith<$Res>
     implements _$FrameLineCopyWith<$Res> {
-  factory _$$_$__FrameLineCopyWith(
-          _$_$__FrameLine value, $Res Function(_$_$__FrameLine) then) =
-      __$$_$__FrameLineCopyWithImpl<$Res>;
+  factory _$$$__FrameLineImplCopyWith(
+          _$$__FrameLineImpl value, $Res Function(_$$__FrameLineImpl) then) =
+      __$$$__FrameLineImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int frame, double offset, bool primary});
 }
 
 /// @nodoc
-class __$$_$__FrameLineCopyWithImpl<$Res>
-    extends __$FrameLineCopyWithImpl<$Res, _$_$__FrameLine>
-    implements _$$_$__FrameLineCopyWith<$Res> {
-  __$$_$__FrameLineCopyWithImpl(
-      _$_$__FrameLine _value, $Res Function(_$_$__FrameLine) _then)
+class __$$$__FrameLineImplCopyWithImpl<$Res>
+    extends __$FrameLineCopyWithImpl<$Res, _$$__FrameLineImpl>
+    implements _$$$__FrameLineImplCopyWith<$Res> {
+  __$$$__FrameLineImplCopyWithImpl(
+      _$$__FrameLineImpl _value, $Res Function(_$$__FrameLineImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -269,7 +269,7 @@ class __$$_$__FrameLineCopyWithImpl<$Res>
     Object? offset = null,
     Object? primary = null,
   }) {
-    return _then(_$_$__FrameLine(
+    return _then(_$$__FrameLineImpl(
       frame: null == frame
           ? _value.frame
           : frame // ignore: cast_nullable_to_non_nullable
@@ -288,8 +288,8 @@ class __$$_$__FrameLineCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_$__FrameLine implements _$__FrameLine {
-  const _$_$__FrameLine(
+class _$$__FrameLineImpl implements _$__FrameLine {
+  const _$$__FrameLineImpl(
       {required this.frame, required this.offset, required this.primary});
 
   @override
@@ -308,7 +308,7 @@ class _$_$__FrameLine implements _$__FrameLine {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_$__FrameLine &&
+            other is _$$__FrameLineImpl &&
             (identical(other.frame, frame) || other.frame == frame) &&
             (identical(other.offset, offset) || other.offset == offset) &&
             (identical(other.primary, primary) || other.primary == primary));
@@ -320,15 +320,15 @@ class _$_$__FrameLine implements _$__FrameLine {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_$__FrameLineCopyWith<_$_$__FrameLine> get copyWith =>
-      __$$_$__FrameLineCopyWithImpl<_$_$__FrameLine>(this, _$identity);
+  _$$$__FrameLineImplCopyWith<_$$__FrameLineImpl> get copyWith =>
+      __$$$__FrameLineImplCopyWithImpl<_$$__FrameLineImpl>(this, _$identity);
 }
 
 abstract class _$__FrameLine implements _FrameLine {
   const factory _$__FrameLine(
       {required final int frame,
       required final double offset,
-      required final bool primary}) = _$_$__FrameLine;
+      required final bool primary}) = _$$__FrameLineImpl;
 
   @override
   int get frame;
@@ -338,12 +338,12 @@ abstract class _$__FrameLine implements _FrameLine {
   bool get primary;
   @override
   @JsonKey(ignore: true)
-  _$$_$__FrameLineCopyWith<_$_$__FrameLine> get copyWith =>
+  _$$$__FrameLineImplCopyWith<_$$__FrameLineImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$_MoveState {
+mixin _$MoveState {
   Segment? get previousSegment => throw _privateConstructorUsedError;
   Segment? get nextSegment => throw _privateConstructorUsedError;
   double get innerPercent => throw _privateConstructorUsedError;
@@ -425,11 +425,11 @@ class __$MoveStateCopyWithImpl<$Res, $Val extends _MoveState>
 }
 
 /// @nodoc
-abstract class _$$_$__MoveStateCopyWith<$Res>
+abstract class _$$$__MoveStateImplCopyWith<$Res>
     implements _$MoveStateCopyWith<$Res> {
-  factory _$$_$__MoveStateCopyWith(
-          _$_$__MoveState value, $Res Function(_$_$__MoveState) then) =
-      __$$_$__MoveStateCopyWithImpl<$Res>;
+  factory _$$$__MoveStateImplCopyWith(
+          _$$__MoveStateImpl value, $Res Function(_$$__MoveStateImpl) then) =
+      __$$$__MoveStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -442,11 +442,11 @@ abstract class _$$_$__MoveStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_$__MoveStateCopyWithImpl<$Res>
-    extends __$MoveStateCopyWithImpl<$Res, _$_$__MoveState>
-    implements _$$_$__MoveStateCopyWith<$Res> {
-  __$$_$__MoveStateCopyWithImpl(
-      _$_$__MoveState _value, $Res Function(_$_$__MoveState) _then)
+class __$$$__MoveStateImplCopyWithImpl<$Res>
+    extends __$MoveStateCopyWithImpl<$Res, _$$__MoveStateImpl>
+    implements _$$$__MoveStateImplCopyWith<$Res> {
+  __$$$__MoveStateImplCopyWithImpl(
+      _$$__MoveStateImpl _value, $Res Function(_$$__MoveStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -456,7 +456,7 @@ class __$$_$__MoveStateCopyWithImpl<$Res>
     Object? nextSegment = freezed,
     Object? innerPercent = null,
   }) {
-    return _then(_$_$__MoveState(
+    return _then(_$$__MoveStateImpl(
       previousSegment: freezed == previousSegment
           ? _value.previousSegment
           : previousSegment // ignore: cast_nullable_to_non_nullable
@@ -475,8 +475,8 @@ class __$$_$__MoveStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_$__MoveState implements _$__MoveState {
-  const _$_$__MoveState(
+class _$$__MoveStateImpl implements _$__MoveState {
+  const _$$__MoveStateImpl(
       {required this.previousSegment,
       required this.nextSegment,
       this.innerPercent = 0.0});
@@ -498,7 +498,7 @@ class _$_$__MoveState implements _$__MoveState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_$__MoveState &&
+            other is _$$__MoveStateImpl &&
             (identical(other.previousSegment, previousSegment) ||
                 other.previousSegment == previousSegment) &&
             (identical(other.nextSegment, nextSegment) ||
@@ -514,15 +514,15 @@ class _$_$__MoveState implements _$__MoveState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_$__MoveStateCopyWith<_$_$__MoveState> get copyWith =>
-      __$$_$__MoveStateCopyWithImpl<_$_$__MoveState>(this, _$identity);
+  _$$$__MoveStateImplCopyWith<_$$__MoveStateImpl> get copyWith =>
+      __$$$__MoveStateImplCopyWithImpl<_$$__MoveStateImpl>(this, _$identity);
 }
 
 abstract class _$__MoveState implements _MoveState {
   const factory _$__MoveState(
       {required final Segment? previousSegment,
       required final Segment? nextSegment,
-      final double innerPercent}) = _$_$__MoveState;
+      final double innerPercent}) = _$$__MoveStateImpl;
 
   @override
   Segment? get previousSegment;
@@ -532,6 +532,6 @@ abstract class _$__MoveState implements _MoveState {
   double get innerPercent;
   @override
   @JsonKey(ignore: true)
-  _$$_$__MoveStateCopyWith<_$_$__MoveState> get copyWith =>
+  _$$$__MoveStateImplCopyWith<_$$__MoveStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

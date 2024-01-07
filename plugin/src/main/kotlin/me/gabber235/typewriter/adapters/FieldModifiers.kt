@@ -136,7 +136,6 @@ private val computers: List<ModifierComputer> by lazy {
         MultiLineModifierComputer,
         MaterialPropertiesModifierComputer,
         WithRotationModifierComputer,
-        SoundModifierComputer,
         SegmentModifierComputer,
         MinModifierComputer,
         MaxModifierComputer,
@@ -146,9 +145,16 @@ private val computers: List<ModifierComputer> by lazy {
         PlaceholderModifierComputer,
         ColoredModifierComputer,
         RegexModifierComputer,
+        IconModifierComputer,
     )
 }
 
+
+/**
+ * If a field has a modifier for the ui. E.g. it is a trigger or fact or something else.
+ * We add a bit of extra information to the field. This is used by the UI to
+ * display the field differently.
+ */
 fun computeFieldModifiers(field: Field, info: FieldInfo) {
     computers.mapNotNull { it.compute(field, info) }.forEach { it.appendModifier(info) }
 }

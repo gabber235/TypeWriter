@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef SegmentWritersRef = AutoDisposeProviderRef<List<Writer>>;
-
 /// See also [segmentWriters].
 @ProviderFor(segmentWriters)
 const segmentWritersProvider = SegmentWritersFamily();
@@ -80,11 +78,11 @@ class SegmentWritersFamily extends Family<List<Writer>> {
 class SegmentWritersProvider extends AutoDisposeProvider<List<Writer>> {
   /// See also [segmentWriters].
   SegmentWritersProvider(
-    this.entryId,
-    this.segmentId,
-  ) : super.internal(
+    String entryId,
+    String segmentId,
+  ) : this._internal(
           (ref) => segmentWriters(
-            ref,
+            ref as SegmentWritersRef,
             entryId,
             segmentId,
           ),
@@ -97,10 +95,47 @@ class SegmentWritersProvider extends AutoDisposeProvider<List<Writer>> {
           dependencies: SegmentWritersFamily._dependencies,
           allTransitiveDependencies:
               SegmentWritersFamily._allTransitiveDependencies,
+          entryId: entryId,
+          segmentId: segmentId,
         );
+
+  SegmentWritersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+    required this.segmentId,
+  }) : super.internal();
 
   final String entryId;
   final String segmentId;
+
+  @override
+  Override overrideWith(
+    List<Writer> Function(SegmentWritersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: SegmentWritersProvider._internal(
+        (ref) => create(ref as SegmentWritersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+        segmentId: segmentId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<Writer>> createElement() {
+    return _SegmentWritersProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -118,5 +153,23 @@ class SegmentWritersProvider extends AutoDisposeProvider<List<Writer>> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin SegmentWritersRef on AutoDisposeProviderRef<List<Writer>> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+
+  /// The parameter `segmentId` of this provider.
+  String get segmentId;
+}
+
+class _SegmentWritersProviderElement
+    extends AutoDisposeProviderElement<List<Writer>> with SegmentWritersRef {
+  _SegmentWritersProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as SegmentWritersProvider).entryId;
+  @override
+  String get segmentId => (origin as SegmentWritersProvider).segmentId;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

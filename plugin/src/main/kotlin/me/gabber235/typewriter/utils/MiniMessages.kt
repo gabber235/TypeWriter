@@ -11,6 +11,8 @@ import org.bukkit.command.CommandSender
 
 private val mm = MiniMessage.miniMessage()
 
+fun Component.asMini() = mm.serialize(this)
+
 fun String.asMini() = mm.deserialize(this)
 
 fun String.asMiniWithResolvers(vararg resolvers: TagResolver) = mm.deserialize(this, *resolvers)

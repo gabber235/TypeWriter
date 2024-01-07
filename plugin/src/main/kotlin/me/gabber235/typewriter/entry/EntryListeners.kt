@@ -32,6 +32,7 @@ import kotlin.reflect.full.isSuperclassOf
  * fun onEntryCreated(event: PlayerInteractEvent, query: Query<InteractEventEntry>) {
  *    // ...
  * }
+ * ```
  *
  * IMPORTANT: The function must be static.
  */
@@ -70,8 +71,10 @@ class EntryListeners : KoinComponent {
 
         val entryListeners = adapterLoader.adapters.flatMap { it.eventListeners }
 
-        entryDatabase.events.map { it::class }.distinct().mapNotNull { klass ->
-            entryListeners.firstOrNull { it.entry.isSuperclassOf(klass) }
+        val activeEventEntries = entryDatabase.events.map { it::class }.distinct()
+
+        entryListeners.filter {
+            activeEventEntries.any { activeEventEntry -> it.entry.isSuperclassOf(activeEventEntry) }
         }.forEach {
             val eventClass = findEventFromMethod(it.method) ?: return@forEach
 

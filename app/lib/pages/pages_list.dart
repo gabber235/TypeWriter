@@ -1,7 +1,8 @@
 import "dart:async";
 
 import "package:auto_route/auto_route.dart";
-import "package:flutter/material.dart" hide FilledButton;
+import "package:collection/collection.dart";
+import "package:flutter/material.dart" hide FilledButton, ContextMenuController;
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -10,11 +11,13 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
+import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
@@ -22,17 +25,20 @@ import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/dropdown.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/formatted_text_field.dart";
+import "package:typewriter/widgets/components/general/tree_view.dart";
 import "package:typewriter/widgets/components/general/validated_text_field.dart";
 
 part "pages_list.freezed.dart";
 part "pages_list.g.dart";
 
 @freezed
-class _PageData with _$_PageData {
+class _PageData with _$PageData {
   const factory _PageData({
     required String name,
     required PageType type,
-  }) = _$PageData;
+    required String chapter,
+  }) = _$__PageData;
 }
 
 @riverpod
@@ -40,8 +46,22 @@ List<_PageData> _pagesData(_PagesDataRef ref) {
   return ref
       .watch(bookProvider)
       .pages
-      .map((page) => _PageData(name: page.name, type: page.type))
+      .map(
+        (page) => _PageData(
+          name: page.pageName,
+          type: page.type,
+          chapter: page.chapter,
+        ),
+      )
       .toList();
+}
+
+@riverpod
+RootTreeNode<_PageData> _pagesTree(_PagesTreeRef ref) {
+  return createTreeNode(
+    ref.watch(_pagesDataProvider),
+    (e) => e.chapter,
+  );
 }
 
 @riverpod
@@ -75,44 +95,245 @@ class _PagesSelector extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pagesData = ref.watch(_pagesDataProvider);
-    return Container(
-      color: const Color(0xFF163260),
-      width: 230,
-      height: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 12),
-            Text(
-              "Pages",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.white),
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (var i = 0; i < pagesData.length; i++)
-                      _PageTile(index: i, pageData: pagesData[i]),
-                    const SizedBox(height: 12),
-                    // When selecting entries we don't want to be able to add new pages
-                    const SelectingEntriesBlocker(
-                      child: _AddPageButton(),
+    final hovering = useState(false);
+    return MouseRegion(
+      onEnter: (_) => hovering.value = true,
+      onExit: (_) {
+        if (ContextMenuController.hasContextMenu) return;
+        hovering.value = false;
+      },
+      child: Container(
+        color: const Color(0xFF163260),
+        // width: 230,
+        height: double.infinity,
+        child: AnimatedSize(
+          duration: 200.ms,
+          curve: Curves.easeInOut,
+          alignment: Alignment.topLeft,
+          child: IntrinsicWidth(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 12),
+                  Text(
+                    "Pages",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.white),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _PagesTree(showFull: hovering.value),
+                          const SizedBox(height: 12),
+                          // When selecting entries we don't want to be able to add new pages
+                          if (hovering.value)
+                            const SelectingEntriesBlocker(
+                              child: _AddPageButton(),
+                            ),
+                        ],
+                      ),
                     ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PagesTree extends HookConsumerWidget {
+  const _PagesTree({
+    required this.showFull,
+  });
+
+  final bool showFull;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tree = ref.watch(_pagesTreeProvider);
+    return _TreeChildren(children: tree.children, showFull: showFull);
+  }
+}
+
+class _TreeChildren extends HookWidget {
+  const _TreeChildren({
+    required this.children,
+    required this.showFull,
+  });
+
+  final List<TreeNode<_PageData>> children;
+  final bool showFull;
+
+  @override
+  Widget build(BuildContext context) {
+    final sorted = useMemoized(
+      () => children.sorted((a, b) {
+        if (a is LeafTreeNode<_PageData> && b is LeafTreeNode<_PageData>) {
+          return a.value.name.compareTo(b.value.name);
+        } else if (a is InnerTreeNode<_PageData> &&
+            b is InnerTreeNode<_PageData>) {
+          return a.name.compareTo(b.name);
+        } else if (a is LeafTreeNode<_PageData>) {
+          return 1;
+        } else if (b is LeafTreeNode<_PageData>) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }),
+      children,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final child in sorted) _TreeItem(node: child, showFull: showFull),
+      ],
+    );
+  }
+}
+
+class _TreeItem extends HookWidget {
+  const _TreeItem({
+    required this.node,
+    required this.showFull,
+  });
+
+  final TreeNode<_PageData> node;
+  final bool showFull;
+
+  @override
+  Widget build(BuildContext context) {
+    // Flutter stupid where final fields are not auto-casted.
+    final node = this.node;
+    if (node is LeafTreeNode<_PageData>) {
+      if (showFull) {
+        return _PageTile(
+          pageData: node.value,
+        );
+      } else {
+        return _SmallPageTile(
+          pageData: node.value,
+        );
+      }
+    } else if (node is InnerTreeNode<_PageData>) {
+      return _TreeCategory(node: node, showFull: showFull);
+    } else {
+      throw UnimplementedError();
+    }
+  }
+}
+
+class _TreeCategory extends HookConsumerWidget {
+  const _TreeCategory({
+    required this.node,
+    required this.showFull,
+  });
+
+  final InnerTreeNode<_PageData> node;
+  final bool showFull;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isExpanded = useState(false);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DragTarget<String>(
+          onWillAcceptWithDetails: (details) {
+            return ref.read(_pageNamesProvider).contains(details.data);
+          },
+          onAcceptWithDetails: (details) {
+            final pageId = details.data;
+            ref
+                .read(pageProvider(pageId))
+                ?.changeChapter(ref.passing, node.name);
+          },
+          builder: (context, candidateData, rejectedData) => Material(
+            color: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              side: candidateData.isNotEmpty
+                  ? BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    )
+                  : BorderSide.none,
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+            ),
+            child: InkWell(
+              onTap: () => isExpanded.value = !isExpanded.value,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    if (showFull) const SizedBox(width: 4),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: showFull ? 4 : 0),
+                      child: Icon(
+                        isExpanded.value
+                            ? FontAwesomeIcons.chevronDown
+                            : FontAwesomeIcons.chevronRight,
+                        size: 11,
+                        color: Colors.white,
+                      ),
+                    ),
+                    if (showFull) ...[
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          node.name.formatted,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
             ),
-          ],
+          ),
         ),
-      ),
+        AnimatedSize(
+          duration: 200.ms,
+          curve: Curves.easeInOut,
+          alignment: Alignment.topLeft,
+          child: isExpanded.value
+              ? IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 6,
+                        margin: EdgeInsets.only(left: showFull ? 14 : 10),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      Expanded(
+                        child: _TreeChildren(
+                          children: node.children,
+                          showFull: showFull,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : const SizedBox(height: 0),
+        ),
+      ],
     );
   }
 }
@@ -127,19 +348,16 @@ List<Writer> _writers(_WritersRef ref, String pageId) {
 
 class _PageTile extends HookConsumerWidget {
   const _PageTile({
-    required this.index,
     required this.pageData,
   });
-  final int index;
   final _PageData pageData;
 
   String get pageId => pageData.name;
+  String get chapter => pageData.chapter;
 
   bool _needsShift(int amount) {
     // If the amount of writer is 0, we never need to shift
     if (amount == 0) return false;
-    // If we are the first page, we have some space above us, thus we don't need to shift if there are not a lot of writers
-    if (index == 0) return amount > 2;
     return true;
   }
 
@@ -154,7 +372,16 @@ class _PageTile extends HookConsumerWidget {
         icon: FontAwesomeIcons.pen,
         onTap: () => showDialog(
           context: context,
-          builder: (_) => _RenamePageDialogue(old: pageId),
+          builder: (_) => RenamePageDialogue(old: pageId),
+        ),
+      ),
+      ContextMenuTile.button(
+        title: "Change Chapter",
+        icon: FontAwesomeIcons.bookBookmark,
+        onTap: () => showDialog(
+          context: context,
+          builder: (_) =>
+              ChangeChapterDialogue(pageId: pageId, chapter: chapter),
         ),
       ),
       ContextMenuTile.divider(),
@@ -162,22 +389,7 @@ class _PageTile extends HookConsumerWidget {
         title: "Delete",
         icon: FontAwesomeIcons.trash,
         color: Colors.redAccent,
-        onTap: () => showConfirmationDialogue(
-          context: context,
-          title: "Delete ${pageId.formatted}?",
-          content:
-              "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
-          delayConfirm: 3.seconds,
-          confirmText: "Delete",
-          confirmIcon: FontAwesomeIcons.trash,
-          onConfirm: () async {
-            await ref.read(bookProvider.notifier).deletePage(pageId);
-            if (!isSelected) return;
-            unawaited(
-              ref.read(appRouter).replace(const EmptyPageEditorRoute()),
-            );
-          },
-        ),
+        onTap: () => showPageDeletionDialogue(context, ref.passing, pageId),
       ),
     ];
   }
@@ -197,55 +409,139 @@ class _PageTile extends HookConsumerWidget {
           duration: 200.ms,
           curve: Curves.easeInOut,
           padding: EdgeInsets.only(
-            left: 2.0,
-            right: 2.0,
             top: _needsShift(amount) ? 30 : 0,
           ),
-          child: Material(
-            color: isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-            child: ContextMenuRegion(
-              builder: (context) => _contextMenuItems(context, ref, isSelected),
-              child: InkWell(
-                onTap: () {
-                  if (isSelected) return;
-                  ref.read(appRouter).push(PageEditorRoute(id: pageId));
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 4),
-                      Icon(
-                        pageData.type.icon,
-                        size: 11,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          pageId.formatted,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.white,
-                                  ),
+          child: DragTarget<String>(
+            onWillAcceptWithDetails: (details) {
+              return ref.read(_pageNamesProvider).contains(details.data);
+            },
+            onAcceptWithDetails: (details) {
+              final pageId = details.data;
+              ref
+                  .read(pageProvider(pageId))
+                  ?.changeChapter(ref.passing, chapter);
+            },
+            builder: (context, candidateData, rejectedData) {
+              return Material(
+                color:
+                    isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  side: candidateData.isNotEmpty
+                      ? BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2,
+                        )
+                      : BorderSide.none,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ContextMenuRegion(
+                  builder: (context) =>
+                      _contextMenuItems(context, ref, isSelected),
+                  child: Draggable<String>(
+                    data: pageId,
+                    feedback: Material(
+                      color: Colors.transparent,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1e3f6f),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                pageData.type.icon,
+                                size: 11,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                pageId.formatted,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: Colors.white),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.chevron_right,
-                        size: 16,
-                        color: Colors.white,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        if (isSelected) return;
+                        ref.read(appRouter).push(PageEditorRoute(id: pageId));
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 4),
+                            Icon(
+                              pageData.type.icon,
+                              size: 11,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                pageId.formatted,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                    ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.chevron_right,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         );
       },
+    );
+  }
+}
+
+class _SmallPageTile extends HookConsumerWidget {
+  const _SmallPageTile({
+    required this.pageData,
+  });
+
+  final _PageData pageData;
+
+  String get pageId => pageData.name;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isSelected =
+        ref.watch(currentPageIdProvider.select((e) => e == pageId));
+
+    return Material(
+      color: isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(
+          pageData.type.icon,
+          size: 11,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }
@@ -423,9 +719,10 @@ class AddPageDialogue extends HookConsumerWidget {
   }
 }
 
-class _RenamePageDialogue extends HookConsumerWidget {
-  const _RenamePageDialogue({
+class RenamePageDialogue extends HookConsumerWidget {
+  const RenamePageDialogue({
     required this.old,
+    super.key,
   });
 
   final String old;
@@ -482,7 +779,7 @@ class _RenamePageDialogue extends HookConsumerWidget {
         onSubmitted: (value) async {
           final navigator = Navigator.of(context);
           await _renamePage(ref, value);
-          navigator.pop();
+          navigator.pop(true);
         },
       ),
       actions: [
@@ -492,7 +789,7 @@ class _RenamePageDialogue extends HookConsumerWidget {
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(false),
         ),
         FilledButton.icon(
           onPressed: !isNameValid.value
@@ -500,7 +797,7 @@ class _RenamePageDialogue extends HookConsumerWidget {
               : () async {
                   final navigator = Navigator.of(context);
                   await _renamePage(ref, controller.text);
-                  navigator.pop();
+                  navigator.pop(true);
                 },
           label: const Text("Rename"),
           icon: const Icon(FontAwesomeIcons.pen),
@@ -509,4 +806,107 @@ class _RenamePageDialogue extends HookConsumerWidget {
       ],
     );
   }
+}
+
+class ChangeChapterDialogue extends HookConsumerWidget {
+  const ChangeChapterDialogue({
+    required this.pageId,
+    required this.chapter,
+    super.key,
+  });
+
+  final String pageId;
+  final String chapter;
+
+  Future<void> _changeChapter(
+    BuildContext context,
+    PassingRef ref,
+    String newName,
+    ValueNotifier<bool> changed,
+  ) async {
+    if (changed.value) return;
+    changed.value = true;
+
+    final navigator = Navigator.of(context);
+    await ref.read(pageProvider(pageId))?.changeChapter(ref, newName);
+    navigator.pop(true);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useTextEditingController();
+    final focusNode = useFocusNode();
+    final changed = useState(false);
+
+    useDelayedExecution(focusNode.requestFocus);
+
+    return AlertDialog(
+      title: Text("Change chapter of ${pageId.formatted}"),
+      content: FormattedTextField(
+        controller: controller,
+        focus: focusNode,
+        text: chapter,
+        hintText: "Chapter Name",
+        icon: FontAwesomeIcons.book,
+        inputFormatters: [
+          TextInputFormatter.withFunction(
+            (oldValue, newValue) => newValue.copyWith(
+              text: newValue.text
+                  .toLowerCase()
+                  .replaceAll(" ", ".")
+                  .replaceAll("_", ".")
+                  .replaceAll("-", "."),
+            ),
+          ),
+          FilteringTextInputFormatter.singleLineFormatter,
+          FilteringTextInputFormatter.allow(RegExp("[a-z0-9.]")),
+        ],
+        onSubmitted: (value) async =>
+            _changeChapter(context, ref.passing, value, changed),
+      ),
+      actions: [
+        TextButton.icon(
+          icon: const Icon(FontAwesomeIcons.xmark),
+          label: const Text("Cancel"),
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
+          ),
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+        FilledButton.icon(
+          onPressed: () async => _changeChapter(
+            context,
+            ref.passing,
+            controller.text,
+            changed,
+          ),
+          label: const Text("Change"),
+          icon: const Icon(FontAwesomeIcons.pen),
+          color: Colors.orange,
+        ),
+      ],
+    );
+  }
+}
+
+Future<bool> showPageDeletionDialogue(
+  BuildContext context,
+  PassingRef ref,
+  String pageId,
+) {
+  return showConfirmationDialogue(
+    context: context,
+    title: "Delete ${pageId.formatted}?",
+    content:
+        "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
+    delayConfirm: 3.seconds,
+    confirmText: "Delete",
+    confirmIcon: FontAwesomeIcons.trash,
+    onConfirm: () async {
+      await ref.read(bookProvider.notifier).deletePage(pageId);
+      unawaited(
+        ref.read(appRouter).replace(const EmptyPageEditorRoute()),
+      );
+    },
+  );
 }

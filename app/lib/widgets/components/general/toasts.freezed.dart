@@ -141,9 +141,10 @@ class _$ToastCopyWithImpl<$Res, $Val extends Toast>
 }
 
 /// @nodoc
-abstract class _$$_ToastCopyWith<$Res> implements $ToastCopyWith<$Res> {
-  factory _$$_ToastCopyWith(_$_Toast value, $Res Function(_$_Toast) then) =
-      __$$_ToastCopyWithImpl<$Res>;
+abstract class _$$ToastImplCopyWith<$Res> implements $ToastCopyWith<$Res> {
+  factory _$$ToastImplCopyWith(
+          _$ToastImpl value, $Res Function(_$ToastImpl) then) =
+      __$$ToastImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -156,9 +157,11 @@ abstract class _$$_ToastCopyWith<$Res> implements $ToastCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_ToastCopyWithImpl<$Res> extends _$ToastCopyWithImpl<$Res, _$_Toast>
-    implements _$$_ToastCopyWith<$Res> {
-  __$$_ToastCopyWithImpl(_$_Toast _value, $Res Function(_$_Toast) _then)
+class __$$ToastImplCopyWithImpl<$Res>
+    extends _$ToastCopyWithImpl<$Res, _$ToastImpl>
+    implements _$$ToastImplCopyWith<$Res> {
+  __$$ToastImplCopyWithImpl(
+      _$ToastImpl _value, $Res Function(_$ToastImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -171,7 +174,7 @@ class __$$_ToastCopyWithImpl<$Res> extends _$ToastCopyWithImpl<$Res, _$_Toast>
     Object? icon = null,
     Object? shownAt = freezed,
   }) {
-    return _then(_$_Toast(
+    return _then(_$ToastImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -202,8 +205,8 @@ class __$$_ToastCopyWithImpl<$Res> extends _$ToastCopyWithImpl<$Res, _$_Toast>
 
 /// @nodoc
 
-class _$_Toast implements _Toast {
-  const _$_Toast(
+class _$ToastImpl implements _Toast {
+  const _$ToastImpl(
       {required this.id,
       required this.message,
       this.description,
@@ -235,7 +238,7 @@ class _$_Toast implements _Toast {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Toast &&
+            other is _$ToastImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.description, description) ||
@@ -252,8 +255,8 @@ class _$_Toast implements _Toast {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ToastCopyWith<_$_Toast> get copyWith =>
-      __$$_ToastCopyWithImpl<_$_Toast>(this, _$identity);
+  _$$ToastImplCopyWith<_$ToastImpl> get copyWith =>
+      __$$ToastImplCopyWithImpl<_$ToastImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -337,7 +340,7 @@ abstract class _Toast implements Toast {
       final String? description,
       final Color color,
       final IconData icon,
-      final DateTime? shownAt}) = _$_Toast;
+      final DateTime? shownAt}) = _$ToastImpl;
 
   @override
   String get id;
@@ -353,15 +356,16 @@ abstract class _Toast implements Toast {
   DateTime? get shownAt;
   @override
   @JsonKey(ignore: true)
-  _$$_ToastCopyWith<_$_Toast> get copyWith =>
+  _$$ToastImplCopyWith<_$ToastImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$TemporaryToastCopyWith<$Res> implements $ToastCopyWith<$Res> {
-  factory _$$TemporaryToastCopyWith(
-          _$TemporaryToast value, $Res Function(_$TemporaryToast) then) =
-      __$$TemporaryToastCopyWithImpl<$Res>;
+abstract class _$$TemporaryToastImplCopyWith<$Res>
+    implements $ToastCopyWith<$Res> {
+  factory _$$TemporaryToastImplCopyWith(_$TemporaryToastImpl value,
+          $Res Function(_$TemporaryToastImpl) then) =
+      __$$TemporaryToastImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -375,11 +379,11 @@ abstract class _$$TemporaryToastCopyWith<$Res> implements $ToastCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$TemporaryToastCopyWithImpl<$Res>
-    extends _$ToastCopyWithImpl<$Res, _$TemporaryToast>
-    implements _$$TemporaryToastCopyWith<$Res> {
-  __$$TemporaryToastCopyWithImpl(
-      _$TemporaryToast _value, $Res Function(_$TemporaryToast) _then)
+class __$$TemporaryToastImplCopyWithImpl<$Res>
+    extends _$ToastCopyWithImpl<$Res, _$TemporaryToastImpl>
+    implements _$$TemporaryToastImplCopyWith<$Res> {
+  __$$TemporaryToastImplCopyWithImpl(
+      _$TemporaryToastImpl _value, $Res Function(_$TemporaryToastImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -393,7 +397,7 @@ class __$$TemporaryToastCopyWithImpl<$Res>
     Object? duration = null,
     Object? shownAt = freezed,
   }) {
-    return _then(_$TemporaryToast(
+    return _then(_$TemporaryToastImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -428,8 +432,8 @@ class __$$TemporaryToastCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$TemporaryToast implements TemporaryToast {
-  const _$TemporaryToast(
+class _$TemporaryToastImpl implements TemporaryToast {
+  const _$TemporaryToastImpl(
       {required this.id,
       required this.message,
       this.description,
@@ -465,7 +469,7 @@ class _$TemporaryToast implements TemporaryToast {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TemporaryToast &&
+            other is _$TemporaryToastImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.description, description) ||
@@ -484,8 +488,9 @@ class _$TemporaryToast implements TemporaryToast {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$TemporaryToastCopyWith<_$TemporaryToast> get copyWith =>
-      __$$TemporaryToastCopyWithImpl<_$TemporaryToast>(this, _$identity);
+  _$$TemporaryToastImplCopyWith<_$TemporaryToastImpl> get copyWith =>
+      __$$TemporaryToastImplCopyWithImpl<_$TemporaryToastImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -572,7 +577,7 @@ abstract class TemporaryToast implements Toast {
       final Color color,
       final IconData icon,
       final Duration duration,
-      final DateTime? shownAt}) = _$TemporaryToast;
+      final DateTime? shownAt}) = _$TemporaryToastImpl;
 
   @override
   String get id;
@@ -589,6 +594,6 @@ abstract class TemporaryToast implements Toast {
   DateTime? get shownAt;
   @override
   @JsonKey(ignore: true)
-  _$$TemporaryToastCopyWith<_$TemporaryToast> get copyWith =>
+  _$$TemporaryToastImplCopyWith<_$TemporaryToastImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

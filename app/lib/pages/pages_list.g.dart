@@ -6,7 +6,7 @@ part of 'pages_list.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$pagesDataHash() => r'9907c05e4d5a4641c759f10afee98c130c47cf48';
+String _$pagesDataHash() => r'27d0b4987ac30e8743d3a522dacdd52889cafdc8';
 
 /// See also [_pagesData].
 @ProviderFor(_pagesData)
@@ -20,6 +20,21 @@ final _pagesDataProvider = AutoDisposeProvider<List<_PageData>>.internal(
 );
 
 typedef _PagesDataRef = AutoDisposeProviderRef<List<_PageData>>;
+String _$pagesTreeHash() => r'019eebde840b5af25aae49b4b3af4db61c5ac7a1';
+
+/// See also [_pagesTree].
+@ProviderFor(_pagesTree)
+final _pagesTreeProvider =
+    AutoDisposeProvider<RootTreeNode<_PageData>>.internal(
+  _pagesTree,
+  name: r'_pagesTreeProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$pagesTreeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _PagesTreeRef = AutoDisposeProviderRef<RootTreeNode<_PageData>>;
 String _$pageNamesHash() => r'd834681c3a622b64fd2562eb17db3434db172946';
 
 /// See also [_pageNames].
@@ -56,8 +71,6 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
-
-typedef _WritersRef = AutoDisposeProviderRef<List<Writer>>;
 
 /// See also [_writers].
 @ProviderFor(_writers)
@@ -105,10 +118,10 @@ class _WritersFamily extends Family<List<Writer>> {
 class _WritersProvider extends AutoDisposeProvider<List<Writer>> {
   /// See also [_writers].
   _WritersProvider(
-    this.pageId,
-  ) : super.internal(
+    String pageId,
+  ) : this._internal(
           (ref) => _writers(
-            ref,
+            ref as _WritersRef,
             pageId,
           ),
           from: _writersProvider,
@@ -119,9 +132,43 @@ class _WritersProvider extends AutoDisposeProvider<List<Writer>> {
                   : _$writersHash,
           dependencies: _WritersFamily._dependencies,
           allTransitiveDependencies: _WritersFamily._allTransitiveDependencies,
+          pageId: pageId,
         );
 
+  _WritersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.pageId,
+  }) : super.internal();
+
   final String pageId;
+
+  @override
+  Override overrideWith(
+    List<Writer> Function(_WritersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: _WritersProvider._internal(
+        (ref) => create(ref as _WritersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        pageId: pageId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<Writer>> createElement() {
+    return _WritersProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -136,5 +183,18 @@ class _WritersProvider extends AutoDisposeProvider<List<Writer>> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin _WritersRef on AutoDisposeProviderRef<List<Writer>> {
+  /// The parameter `pageId` of this provider.
+  String get pageId;
+}
+
+class _WritersProviderElement extends AutoDisposeProviderElement<List<Writer>>
+    with _WritersRef {
+  _WritersProviderElement(super.provider);
+
+  @override
+  String get pageId => (origin as _WritersProvider).pageId;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

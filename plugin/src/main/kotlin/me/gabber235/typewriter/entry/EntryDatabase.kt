@@ -7,7 +7,10 @@ import com.google.gson.stream.JsonReader
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
-import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.entries.CustomCommandEntry
+import me.gabber235.typewriter.entry.entries.EventEntry
+import me.gabber235.typewriter.entry.entries.FactEntry
+import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
@@ -167,7 +170,7 @@ private fun JsonReader.parseEntry(gson: Gson): Entry? {
         )
         null
     } catch (e: Exception) {
-        logger.warning("Failed to parse entry: ${e.message}")
+        logger.warning("Failed to parse entry: ${e.message} (${this})")
         null
     }
 }

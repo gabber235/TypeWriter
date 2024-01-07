@@ -24,6 +24,7 @@ interface ClientSynchronizer {
     fun handleCreatePage(client: SocketIOClient, data: String, ack: AckRequest)
 
     fun handleRenamePage(client: SocketIOClient, data: String, ackRequest: AckRequest)
+    fun handleChangePageValue(client: SocketIOClient, data: String, ackRequest: AckRequest)
 
     fun handleDeletePage(client: SocketIOClient, name: String, ack: AckRequest)
 
@@ -80,6 +81,15 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
 
         ackRequest.sendResult(result) {
             communicationHandler.server?.broadcastOperations?.sendEvent("renamePage", client, data)
+        }
+    }
+
+    override fun handleChangePageValue(client: SocketIOClient, data: String, ackRequest: AckRequest) {
+        val json = gson.fromJson(data, PageValueUpdate::class.java)
+        val result = stagingManager.changePageValue(json.pageId, json.path, json.value)
+
+        ackRequest.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("changePageValue", client, data)
         }
     }
 
@@ -142,6 +152,7 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
     override fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest) {
         writers.updateWriter(client.sessionId.toString(), data)
         communicationHandler.server.broadcastWriters(writers)
+        ack.sendResult(Result.success("Writer updated"))
     }
 
     override fun handleCaptureRequest(client: SocketIOClient, data: String, ack: AckRequest) {
@@ -205,6 +216,12 @@ inline fun AckRequest.sendResult(result: Result<String>, onSuccess: () -> Unit) 
 }
 
 private data class PageRename(val old: String, val new: String)
+
+private data class PageValueUpdate(
+    val pageId: String,
+    val path: String,
+    val value: JsonElement
+)
 
 private data class EntryCreate(
     val pageId: String,

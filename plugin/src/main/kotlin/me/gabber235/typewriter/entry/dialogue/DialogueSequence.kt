@@ -10,9 +10,7 @@ import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.startBlockingMessages
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingMessages
-import org.bukkit.NamespacedKey
-import org.bukkit.Sound
-import org.bukkit.SoundCategory
+import me.gabber235.typewriter.utils.playSound
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -82,9 +80,6 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 }
 
 fun Player.playSpeakerSound(speaker: SpeakerEntry?) {
-    val soundName = speaker?.sound ?: return
-    if (soundName.isBlank()) return
-    val soundNamespace = NamespacedKey.fromString(speaker.sound)
-    val sound = Sound.values().firstOrNull { it.key == soundNamespace } ?: return
-    playSound(this, sound, SoundCategory.VOICE, 1f, 1f)
+    val sound = speaker?.sound ?: return
+    playSound(sound)
 }

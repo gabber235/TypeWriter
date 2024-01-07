@@ -16,6 +16,7 @@ import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/socket_extensions.dart";
+import "package:typewriter/widgets/components/general/toasts.dart";
 
 part "communicator.g.dart";
 part "communicator.freezed.dart";
@@ -47,7 +48,43 @@ class SocketNotifier extends StateNotifier<Socket?> {
   /// When a socket gets disconnected, we want to try to reconnect it.
   /// Socket.io will try to reconnect automatically.
   /// Only if this fails within a certain time, we want consider the connection lost.
-  Timer? _disconnectTimer;
+  Timer? _timeoutTimer;
+
+  void _startTimeoutTimer(Socket socket) {
+    final currentConnectionState = _connectionState;
+    _timeoutTimer = Timer(30.seconds, () {
+      if (_disposed) return;
+      if (_connectionState != currentConnectionState) return;
+      _connectionState = ConnectionState.none;
+      state?.dispose();
+      state?.destroy();
+      state = null;
+      socket
+        ..dispose()
+        ..destroy();
+      ref.read(appRouter).replaceAll([
+        const ErrorConnectRoute(),
+      ]);
+    });
+  }
+
+  void _handleError(String message) {
+    if (_disposed) {
+      debugPrint(
+        "The socket was disposed so a connection error should not be possible. This is a bug.",
+      );
+      return;
+    }
+    if (_canError) return;
+    _connectionState = ConnectionState.none;
+    debugPrint(message);
+    state?.dispose();
+    state = null;
+
+    ref.read(appRouter).replaceAll(
+      [const ErrorConnectRoute()],
+    );
+  }
 
   ConnectionState get _connectionState {
     return ref.read(connectionStateProvider);
@@ -94,61 +131,20 @@ class SocketNotifier extends StateNotifier<Socket?> {
           return;
         }
         debugPrint("connected: $data");
-        _disconnectTimer?.cancel();
+        _timeoutTimer?.cancel();
         state = socket;
         final shouldSetup = _connectionState == ConnectionState.connecting;
         _connectionState = ConnectionState.connected;
         if (shouldSetup) setup(socket);
       })
       ..onConnectError((data) {
-        if (_disposed) {
-          debugPrint(
-            "The socket was disposed so a connection error should not be possible. This is a bug.",
-          );
-          return;
-        }
-        if (_canError) return;
-        _connectionState = ConnectionState.none;
-        debugPrint("connect error $data");
-        state?.dispose();
-        state = null;
-
-        ref.read(appRouter).replaceAll(
-          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
-        );
+        _handleError("connect error $data");
       })
       ..onConnectTimeout((data) {
-        if (_disposed) {
-          debugPrint(
-            "The socket was disposed so a connection timeout should not be possible. This is a bug.",
-          );
-          return;
-        }
-        if (_canError) return;
-        _connectionState = ConnectionState.none;
-        debugPrint("connect timeout $data");
-        state?.dispose();
-        state = null;
-        ref.read(appRouter).replaceAll(
-          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
-        );
+        _handleError("connect timeout $data");
       })
       ..onError((data) {
-        if (_disposed) {
-          debugPrint(
-            "The socket was disposed so an error should not be possible. This is a bug.",
-          );
-          return;
-        }
-        if (_canError) return;
-        _connectionState = ConnectionState.none;
-
-        debugPrint("error $data");
-        state?.dispose();
-        state = null;
-        ref.read(appRouter).replaceAll(
-          [ErrorConnectRoute(hostname: hostname, port: port, token: token)],
-        );
+        _handleError("error $data");
       })
       ..onDisconnect((data) {
         if (_disposed) {
@@ -160,45 +156,56 @@ class SocketNotifier extends StateNotifier<Socket?> {
         if (_connectionState != ConnectionState.connected) return;
         _connectionState = ConnectionState.disconnected;
         debugPrint("disconnected: $data");
-
-        _disconnectTimer = Timer(30.seconds, () {
-          if (_disposed) return;
-          if (_connectionState != ConnectionState.disconnected) return;
-          _connectionState = ConnectionState.none;
-          state?.dispose();
-          state = null;
-          ref.read(appRouter).replaceAll([
-            ErrorConnectRoute(hostname: hostname, port: port, token: token),
-          ]);
-        });
+        _startTimeoutTimer(socket);
       })
       ..connect();
+
+    _startTimeoutTimer(socket);
   }
 
   Future<void> setup(Socket socket) async {
     socket
-      ..on("stagingState",
-          (data) => ref.read(communicatorProvider).handleStagingState(data),)
-      ..on("createPage",
-          (data) => ref.read(communicatorProvider).handleCreatePage(data),)
-      ..on("renamePage",
-          (data) => ref.read(communicatorProvider).handleRenamePage(data),)
-      ..on("deletePage",
-          (data) => ref.read(communicatorProvider).handleDeletePage(data),)
-      ..on("createEntry",
-          (data) => ref.read(communicatorProvider).handleCreateEntry(data),)
-      ..on("updateEntry",
-          (data) => ref.read(communicatorProvider).handleUpdateEntry(data),)
       ..on(
-          "updateCompleteEntry",
-          (data) =>
-              ref.read(communicatorProvider).handleUpdateCompleteEntry(data),)
-      ..on("reorderEntry",
-          (data) => ref.read(communicatorProvider).handleReorderEntry(data),)
-      ..on("deleteEntry",
-          (data) => ref.read(communicatorProvider).handleDeleteEntry(data),)
-      ..on("updateWriters",
-          (data) => ref.read(communicatorProvider).handleUpdateWriters(data),);
+        "stagingState",
+        (data) => ref.read(communicatorProvider).handleStagingState(data),
+      )
+      ..on(
+        "createPage",
+        (data) => ref.read(communicatorProvider).handleCreatePage(data),
+      )
+      ..on(
+        "renamePage",
+        (data) => ref.read(communicatorProvider).handleRenamePage(data),
+      )
+      ..on(
+        "deletePage",
+        (data) => ref.read(communicatorProvider).handleDeletePage(data),
+      )
+      ..on(
+        "createEntry",
+        (data) => ref.read(communicatorProvider).handleCreateEntry(data),
+      )
+      ..on(
+        "updateEntry",
+        (data) => ref.read(communicatorProvider).handleUpdateEntry(data),
+      )
+      ..on(
+        "updateCompleteEntry",
+        (data) =>
+            ref.read(communicatorProvider).handleUpdateCompleteEntry(data),
+      )
+      ..on(
+        "reorderEntry",
+        (data) => ref.read(communicatorProvider).handleReorderEntry(data),
+      )
+      ..on(
+        "deleteEntry",
+        (data) => ref.read(communicatorProvider).handleDeleteEntry(data),
+      )
+      ..on(
+        "updateWriters",
+        (data) => ref.read(communicatorProvider).handleUpdateWriters(data),
+      );
 
     await ref.read(communicatorProvider).fetchBook();
     await ref.read(appRouter).push(const BookRoute());
@@ -208,8 +215,9 @@ class SocketNotifier extends StateNotifier<Socket?> {
   void dispose() {
     debugPrint("Disposing socket");
     _disposed = true;
-    _disconnectTimer?.cancel();
+    _timeoutTimer?.cancel();
     state?.dispose();
+    state?.destroy();
     super.dispose();
   }
 }
@@ -236,8 +244,10 @@ class Communicator {
     final jsonPages = jsonDecode(rawPages) as List;
     final jsonAdapters = jsonDecode(rawAdapters) as List;
 
-    final pages = jsonPages.map((e) => Page.fromJson(e)).toList();
-    final adapters = jsonAdapters.map((e) => Adapter.fromJson(e)).toList();
+    // ignore: unnecessary_lambdas
+    final pages = jsonPages.map((p) => Page.fromJson(p)).toList();
+    // ignore: unnecessary_lambdas
+    final adapters = jsonAdapters.map((a) => Adapter.fromJson(a)).toList();
 
     final book = Book(name: "Typewriter", adapters: adapters, pages: pages);
     ref.read(bookProvider.notifier).book = book;
@@ -249,7 +259,9 @@ class Communicator {
       return;
     }
 
-    await socket.emitWithAckAsync("createPage", jsonEncode(page.toJson()));
+    handleAck(
+      await socket.emitWithAckAsync("createPage", jsonEncode(page.toJson())),
+    );
   }
 
   Future<void> renamePage(String old, String newName) async {
@@ -266,13 +278,32 @@ class Communicator {
     await socket.emitWithAckAsync("renamePage", jsonEncode(data));
   }
 
+  Future<void> changePageValue(String page, String path, dynamic value) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "pageId": page,
+      "path": path,
+      "value": value,
+    };
+
+    handleAck(
+      await socket.emitWithAckAsync("changePageValue", jsonEncode(data)),
+    );
+  }
+
   Future<void> deletePage(String name) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
     }
 
-    await socket.emitWithAckAsync("deletePage", name);
+    handleAck(
+      await socket.emitWithAckAsync("deletePage", name),
+    );
   }
 
   Future<void> createEntry(String page, Entry entry) async {
@@ -286,10 +317,17 @@ class Communicator {
       "entry": entry.toJson(),
     };
 
-    return socket.emitWithAckAsync("createEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("createEntry", jsonEncode(data)),
+    );
   }
 
-  void updateEntry(String pageId, String entryId, String path, dynamic value) {
+  Future<void> updateEntry(
+    String pageId,
+    String entryId,
+    String path,
+    dynamic value,
+  ) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -302,10 +340,12 @@ class Communicator {
       "value": value,
     };
 
-    socket.emit("updateEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("updateEntry", jsonEncode(data)),
+    );
   }
 
-  void updateEntireEntry(String pageId, Entry entry) {
+  Future<void> updateEntireEntry(String pageId, Entry entry) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -316,10 +356,12 @@ class Communicator {
       "entry": entry.toJson(),
     };
 
-    socket.emit("updateCompleteEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("updateCompleteEntry", jsonEncode(data)),
+    );
   }
 
-  void reorderEntry(String pageId, String entryId, int newIndex) {
+  Future<void> reorderEntry(String pageId, String entryId, int newIndex) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
@@ -331,7 +373,9 @@ class Communicator {
       "newIndex": newIndex,
     };
 
-    socket.emit("reorderEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("reorderEntry", jsonEncode(data)),
+    );
   }
 
   Future<void> deleteEntry(String pageId, String entryId) async {
@@ -345,26 +389,32 @@ class Communicator {
       "entryId": entryId,
     };
 
-    socket.emit("deleteEntry", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("deleteEntry", jsonEncode(data)),
+    );
   }
 
-  void publish() {
+  Future<void> publish() async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
     }
     if (ref.read(stagingStateProvider) != StagingState.staging) return;
 
-    socket.emit("publish", "");
+    handleAck(
+      await socket.emitWithAckAsync("publish", ""),
+    );
   }
 
-  void updateSelfWriter(Map<String, dynamic> data) {
+  Future<void> updateSelfWriter(Map<String, dynamic> data) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
       return;
     }
 
-    socket.emit("updateWriter", jsonEncode(data));
+    handleAck(
+      await socket.emitWithAckAsync("updateSelfWriter", jsonEncode(data)),
+    );
   }
 
   Future<Response> requestCapture(Map<String, dynamic> data) async {
@@ -472,6 +522,32 @@ class Communicator {
 
   void handleUpdateWriters(dynamic data) {
     ref.read(writersProvider.notifier).syncWriters(data);
+  }
+
+  void handleAck(dynamic data) {
+    if (data == null) {
+      return;
+    }
+    if (data is! String) {
+      debugPrint("Could not parse ack: $data");
+      return;
+    }
+
+    final json = jsonDecode(data) as Map<String, dynamic>;
+    final response = Response.fromJson(json);
+
+    if (!response.success) {
+      debugPrint("Ack failed: ${response.message}");
+      Toasts.showError(
+        ref.passing,
+        response.message,
+        description: "Reloading the full book to resync with the server.",
+      );
+      fetchBook();
+      return;
+    }
+
+    debugPrint("Ack: ${response.message}");
   }
 }
 

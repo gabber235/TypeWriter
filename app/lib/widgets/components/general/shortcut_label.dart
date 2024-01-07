@@ -27,7 +27,12 @@ class ShortcutLabel extends HookConsumerWidget {
   Widget? _overrideIcon() {
     if (activator is SingleActivator) {
       final act = activator as SingleActivator;
-      if (act.trigger == LogicalKeyboardKey.enter) return const Icon(CupertinoIcons.return_icon);
+      if (act.trigger == LogicalKeyboardKey.enter) {
+        return const Icon(CupertinoIcons.return_icon);
+      }
+      if (act.trigger == LogicalKeyboardKey.backspace) {
+        return const Icon(CupertinoIcons.delete_left);
+      }
     }
     return null;
   }

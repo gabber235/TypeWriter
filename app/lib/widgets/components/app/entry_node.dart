@@ -1,4 +1,6 @@
+import "package:dotted_border/dotted_border.dart";
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -52,7 +54,7 @@ class EntryNode extends HookConsumerWidget {
       backgroundColor: blueprint.color,
       foregroundColor: Colors.white,
       name: entryName.formatted,
-      icon: Icon(blueprint.icon, size: 18, color: Colors.white),
+      icon: Icon(blueprint.icon, size: 18),
       isSelected: isSelected,
       contextActions: contextActions,
       onTap: () =>
@@ -133,80 +135,157 @@ class _EntryNode extends HookConsumerWidget {
 
     return WritersIndicator(
       provider: _writersProvider(id),
-      child: ContextMenuRegion(
-        enabled: enableContextMenu,
-        builder: (context) {
-          return [
-            ...contextActions,
-            if (canTrigger)
+      child: Draggable(
+        data: EntryDrag(entryId: id),
+        feedback: FakeEntryNode(entryId: id),
+        childWhenDragging: ColoredBox(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: _placeholderEntry(context, backgroundColor),
+        ),
+        child: ContextMenuRegion(
+          enabled: enableContextMenu,
+          builder: (context) {
+            return [
+              ...contextActions,
+              if (canTrigger)
+                ContextMenuTile.button(
+                  title: "Extend with ...",
+                  icon: FontAwesomeIcons.plus,
+                  onTap: () => _extendsWith(ref),
+                ),
+              if (canTrigger && canBeTriggered)
+                ContextMenuTile.button(
+                  title: "Extend with Duplicate",
+                  icon: FontAwesomeIcons.copy,
+                  onTap: () => _extendsWithDuplicate(ref),
+                ),
               ContextMenuTile.button(
-                title: "Extend with ...",
-                icon: FontAwesomeIcons.plus,
-                onTap: () => _extendsWith(ref),
+                title: "Delete",
+                icon: FontAwesomeIcons.trash,
+                color: Colors.redAccent,
+                onTap: () => _deleteEntry(context, ref),
               ),
-            if (canTrigger && canBeTriggered)
-              ContextMenuTile.button(
-                title: "Extend with Duplicate",
-                icon: FontAwesomeIcons.copy,
-                onTap: () => _extendsWithDuplicate(ref),
-              ),
-            ContextMenuTile.button(
-              title: "Delete",
-              icon: FontAwesomeIcons.trash,
-              color: Colors.redAccent,
-              onTap: () => _deleteEntry(context, ref),
-            ),
-          ];
-        },
-        child: GestureDetector(
-          onTap: onTap,
-          child: ColoredBox(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: AnimatedOpacity(
-              duration: 200.ms,
-              curve: Curves.easeOutCirc,
-              opacity: opacity,
-              child: Material(
-                borderRadius: BorderRadius.circular(4),
-                color: backgroundColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: AnimatedContainer(
-                    duration: 400.ms,
-                    curve: Curves.easeOutCirc,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: isSelected
-                            ? Theme.of(context).scaffoldBackgroundColor
-                            : backgroundColor,
-                        width: 3,
-                      ),
-                    ),
+            ];
+          },
+          child: DragTarget<EntryDrag>(
+            onWillAcceptWithDetails: (details) {
+              if (!canTrigger) return false;
+              final entry = ref.read(globalEntryProvider(details.data.entryId));
+              if (entry == null) return false;
+              final blueprint = ref.read(entryBlueprintProvider(entry.type));
+
+              // Check if the entry is triggerable
+              return blueprint?.tags.contains("triggerable") ?? false;
+            },
+            onAcceptWithDetails: (details) {
+              final page = ref.read(currentPageProvider);
+              if (page == null) return;
+              final currentEntry = ref.read(globalEntryProvider(id));
+              if (currentEntry == null) return;
+              final targetEntry =
+                  ref.read(globalEntryProvider(details.data.entryId));
+              if (targetEntry == null) return;
+
+              page.wireEntryToOtherEntry(
+                ref.passing,
+                currentEntry,
+                targetEntry,
+              );
+            },
+            builder: (context, candidateData, rejectedData) {
+              if (rejectedData.isNotEmpty) {
+                return MouseRegion(
+                  cursor: SystemMouseCursors.forbidden,
+                  child: Material(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(4),
                     child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          icon,
-                          const SizedBox(width: 12),
-                          Text(
-                            name,
-                            style: TextStyle(
-                              fontFamily: "JetBrainsMono",
-                              fontSize: 13,
-                              color: foregroundColor,
+                      padding: const EdgeInsets.all(7.0),
+                      child: _innerEntry(foregroundColor),
+                    ),
+                  ),
+                );
+              }
+
+              final isAccapting = candidateData.isNotEmpty;
+
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: onTap,
+                  child: ColoredBox(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: AnimatedOpacity(
+                      duration: 400.ms,
+                      curve: Curves.easeOutCubic,
+                      opacity: isAccapting ? 0.5 : opacity,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(4),
+                        color: backgroundColor,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: AnimatedContainer(
+                            duration: 400.ms,
+                            curve: Curves.easeOutCirc,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: isSelected
+                                    ? Theme.of(context).scaffoldBackgroundColor
+                                    : backgroundColor,
+                                width: 3,
+                              ),
                             ),
+                            child: _innerEntry(foregroundColor),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _placeholderEntry(BuildContext context, Color color) {
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: DottedBorder(
+        color: color,
+        borderType: BorderType.RRect,
+        strokeWidth: 2,
+        dashPattern: const [5, 5],
+        radius: const Radius.circular(1),
+        padding: const EdgeInsets.all(6),
+        child: _innerEntry(color),
+      ),
+    );
+  }
+
+  Widget _innerEntry(Color color) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconTheme(
+            data: IconThemeData(color: color),
+            child: icon,
+          ),
+          const SizedBox(width: 12),
+          Text(
+            name,
+            style: TextStyle(
+              fontFamily: "JetBrainsMono",
+              fontSize: 13,
+              color: color,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -347,72 +426,102 @@ class ExternalEntryNode extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final blueprint = ref.watch(entryBlueprintProvider(entry.type));
     final page = ref.watch(pageProvider(pageId));
-    final pageName = page?.name.formatted ?? "Unknown page";
+    final pageName = page?.pageName.formatted ?? "Unknown page";
     final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
 
     if (blueprint == null) {
       return const InvalidEntry();
     }
 
-    return ContextMenuRegion(
-      enabled: !isSelectingEntries,
-      builder: (context) {
-        return [
-          ContextMenuTile.button(
-            title: "Delete Reference",
-            icon: Icons.delete,
-            color: Colors.redAccent,
-            onTap: () => ref
-                .read(currentPageProvider)
-                ?.removeReferencesTo(ref.passing, entry.id),
-          ),
-        ];
-      },
-      child: ColoredBox(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Material(
-          animationDuration: 300.ms,
-          color: blueprint.color.withOpacity(0.6),
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: blueprint.color, width: 3),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: InkWell(
-            mouseCursor: SystemMouseCursors.click,
-            onTap: () => ref
-                .read(inspectingEntryIdProvider.notifier)
-                .navigateAndSelectEntry(ref.passing, entry.id),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Row(
-                children: [
-                  Icon(blueprint.icon, color: Colors.white, size: 18),
-                  const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        entry.formattedName,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 13),
-                      ),
-                      Text(
-                        pageName,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 16),
-                  const Icon(Icons.open_in_new, color: Colors.white, size: 18),
-                ],
-              ),
+    return Draggable(
+      data: EntryDrag(entryId: entry.id),
+      feedback: FakeEntryNode(entryId: entry.id),
+      childWhenDragging: DottedBorder(
+        color: blueprint.color,
+        borderType: BorderType.RRect,
+        strokeWidth: 2,
+        dashPattern: const [5, 5],
+        radius: const Radius.circular(1),
+        child: _innerEntry(blueprint, pageName, blueprint.color),
+      ),
+      child: ContextMenuRegion(
+        enabled: !isSelectingEntries,
+        builder: (context) {
+          return [
+            ContextMenuTile.button(
+              title: "Delete Reference",
+              icon: Icons.delete,
+              color: Colors.redAccent,
+              onTap: () => ref
+                  .read(currentPageProvider)
+                  ?.removeReferencesTo(ref.passing, entry.id),
+            ),
+          ];
+        },
+        child: ColoredBox(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: Material(
+            animationDuration: 300.ms,
+            color: blueprint.color.withOpacity(0.6),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: blueprint.color, width: 3),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: InkWell(
+              mouseCursor: SystemMouseCursors.click,
+              onTap: () => ref
+                  .read(inspectingEntryIdProvider.notifier)
+                  .navigateAndSelectEntry(ref.passing, entry.id),
+              child: _innerEntry(blueprint, pageName, Colors.white),
             ),
           ),
         ),
       ),
     );
   }
+
+  Widget _innerEntry(EntryBlueprint blueprint, String pageName, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        children: [
+          Icon(blueprint.icon, color: color, size: 18),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                entry.formattedName,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 13,
+                ),
+              ),
+              Text(
+                pageName,
+                style: TextStyle(
+                  color: color.withOpacity(0.7),
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 16),
+          Icon(
+            Icons.open_in_new,
+            color: color,
+            size: 18,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EntryDrag {
+  const EntryDrag({
+    required this.entryId,
+  });
+
+  final String entryId;
 }

@@ -19,11 +19,17 @@ typedef CombinedMaterial = MapEntry<String, MinecraftMaterial>;
 
 @riverpod
 List<MaterialProperty> materialProperties(
-    MaterialPropertiesRef ref, String meta,) {
+  MaterialPropertiesRef ref,
+  String meta,
+) {
   return meta
       .split(";")
-      .map((property) => MaterialProperty.values
-          .firstWhere((element) => element.name.toLowerCase() == property),)
+      .map(
+        (property) => MaterialProperty.values.firstWhere(
+          (element) => element.name.toLowerCase() == property,
+          orElse: () => throw Exception("Unknown material property: $property"),
+        ),
+      )
       .toList();
 }
 
@@ -234,13 +240,18 @@ class MaterialEditor extends HookConsumerWidget {
             children: [
               if (hasMaterial)
                 Expanded(
-                    child: _MaterialItem(
-                        id: currentValue, material: currentMaterial,),)
+                  child: _MaterialItem(
+                    id: currentValue,
+                    material: currentMaterial,
+                  ),
+                )
               else
                 Expanded(
-                    child: Text("Select a material",
-                        style:
-                            Theme.of(context).inputDecorationTheme.hintStyle,),),
+                  child: Text(
+                    "Select a material",
+                    style: Theme.of(context).inputDecorationTheme.hintStyle,
+                  ),
+                ),
               const SizedBox(width: 12),
               FaIcon(
                 FontAwesomeIcons.caretDown,

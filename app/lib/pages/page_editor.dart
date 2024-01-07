@@ -40,7 +40,7 @@ Page? currentPage(CurrentPageRef ref) {
   final id = ref.watch(currentPageIdProvider);
   final book = ref.watch(bookProvider);
 
-  return book.pages.firstWhereOrNull((element) => element.name == id);
+  return book.pages.firstWhereOrNull((element) => element.pageName == id);
 }
 
 @riverpod
@@ -64,14 +64,18 @@ class PageEditor extends HookConsumerWidget {
       shortcuts: {
         SmartSingleActivator(LogicalKeyboardKey.keyK, control: true):
             SearchIntent(),
+        SmartSingleActivator(LogicalKeyboardKey.space, control: true):
+            SearchIntent(),
+        const SingleActivator(LogicalKeyboardKey.keyP, control: true):
+            const PreviousFocusIntent(),
+        const SingleActivator(LogicalKeyboardKey.keyN, control: true):
+            const NextFocusIntent(),
       },
       child: Actions(
         actions: {
           SearchIntent: CallbackAction<SearchIntent>(
             onInvoke: (intent) {
-              final tag = ref.read(currentPageTypeProvider)?.tag;
-              if (tag == null) return;
-              ref.read(searchProvider.notifier).startGlobalSearch(tag);
+              ref.read(searchProvider.notifier).startGlobalSearch();
               return null;
             },
           ),
@@ -204,15 +208,11 @@ class _AddEntryButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tag = ref.watch(currentPageTypeProvider.select((type) => type?.tag));
-    if (tag == null) {
-      return const SizedBox();
-    }
     return IconButton(
       iconSize: 16,
       padding: EdgeInsets.zero,
       icon: const Icon(FontAwesomeIcons.plus),
-      onPressed: () => ref.read(searchProvider.notifier).startAddSearch(tag),
+      onPressed: () => ref.read(searchProvider.notifier).startAddSearch(),
     );
   }
 }

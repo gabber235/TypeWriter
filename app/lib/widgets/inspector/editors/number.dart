@@ -21,11 +21,11 @@ class NumberEditorFilter extends EditorFilter {
 
   @override
   Widget build(String path, FieldInfo info) =>
-      IntegerEditor(path: path, field: info as PrimitiveField);
+      NumberEditor(path: path, field: info as PrimitiveField);
 }
 
-class IntegerEditor extends HookConsumerWidget {
-  const IntegerEditor({
+class NumberEditor extends HookConsumerWidget {
+  const NumberEditor({
     required this.path,
     required this.field,
     super.key,

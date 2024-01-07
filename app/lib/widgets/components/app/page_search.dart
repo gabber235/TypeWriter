@@ -1,6 +1,7 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
@@ -8,6 +9,7 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/pages_list.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 
 part "page_search.g.dart";
@@ -45,12 +47,15 @@ Fuzzy<Page> _fuzzyPages(_FuzzyPagesRef ref) {
     pages,
     options: FuzzyOptions(
       threshold: 0.4,
-      sortFn: (a, b) => a.matches.map((e) => e.score).sum.compareTo(b.matches.map((e) => e.score).sum),
+      sortFn: (a, b) => a.matches
+          .map((e) => e.score)
+          .sum
+          .compareTo(b.matches.map((e) => e.score).sum),
       keys: [
         WeightedKey(
           name: "name",
           weight: 0.8,
-          getter: (page) => page.name.formatted,
+          getter: (page) => page.pageName.formatted,
         ),
         WeightedKey(
           name: "type",
@@ -149,10 +154,13 @@ class PageSearchElement extends SearchElement {
   final FutureOr<bool?> Function(Page)? onSelect;
 
   @override
-  String get title => page.name.formatted;
+  String get title => page.pageName.formatted;
 
   @override
-  String description(BuildContext context) => page.type.name;
+  String description(BuildContext context) {
+    if (page.chapter.isEmpty) return page.type.name;
+    return "~${page.chapter}";
+  }
 
   @override
   Widget icon(BuildContext context) => Icon(page.type.icon);
@@ -171,6 +179,39 @@ class PageSearchElement extends SearchElement {
         Icons.open_in_new,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
+      SearchAction(
+        "Rename",
+        FontAwesomeIcons.pencil,
+        SmartSingleActivator(LogicalKeyboardKey.keyR, control: true),
+        onTrigger: (context, __) async =>
+            await showDialog<bool>(
+              context: context,
+              builder: (_) => RenamePageDialogue(old: page.pageName),
+            ) ??
+            false,
+      ),
+      SearchAction(
+        "Change Chapter",
+        FontAwesomeIcons.bookBookmark,
+        SmartSingleActivator(LogicalKeyboardKey.keyC, control: true),
+        onTrigger: (context, __) async =>
+            await showDialog<bool>(
+              context: context,
+              builder: (_) => ChangeChapterDialogue(
+                pageId: page.pageName,
+                chapter: page.chapter,
+              ),
+            ) ??
+            false,
+      ),
+      SearchAction(
+        "Delete",
+        FontAwesomeIcons.trash,
+        SmartSingleActivator(LogicalKeyboardKey.backspace, control: true),
+        color: Colors.red,
+        onTrigger: (context, ref) =>
+            showPageDeletionDialogue(context, ref, page.pageName),
+      ),
     ];
   }
 
@@ -180,8 +221,12 @@ class PageSearchElement extends SearchElement {
       return await onSelect?.call(page) ?? true;
     }
 
-    await ref.read(appRouter).navigateToPage(ref, page.name);
-    return true;
+    final navigator = ref.read(appRouter);
+
+    ref.read(searchProvider.notifier).endSearch();
+
+    await navigator.navigateToPage(ref, page.pageName);
+    return false;
   }
 }
 
@@ -221,7 +266,8 @@ class AddPageSearchElement extends SearchElement {
   Future<bool> activate(BuildContext context, PassingRef ref) async {
     final pageName = await showDialog<String>(
       context: context,
-      builder: (context) => AddPageDialogue(fixedType: type, autoNavigate: false),
+      builder: (context) =>
+          AddPageDialogue(fixedType: type, autoNavigate: false),
     );
 
     if (pageName == null) return false;

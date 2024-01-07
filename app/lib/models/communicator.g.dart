@@ -6,12 +6,13 @@ part of 'communicator.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Response _$$_ResponseFromJson(Map<String, dynamic> json) => _$_Response(
+_$ResponseImpl _$$ResponseImplFromJson(Map<String, dynamic> json) =>
+    _$ResponseImpl(
       success: json['success'] as bool,
       message: json['message'] as String,
     );
 
-Map<String, dynamic> _$$_ResponseToJson(_$_Response instance) =>
+Map<String, dynamic> _$$ResponseImplToJson(_$ResponseImpl instance) =>
     <String, dynamic>{
       'success': instance.success,
       'message': instance.message,
@@ -36,4 +37,4 @@ final communicatorProvider = Provider<Communicator>.internal(
 
 typedef CommunicatorRef = ProviderRef<Communicator>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

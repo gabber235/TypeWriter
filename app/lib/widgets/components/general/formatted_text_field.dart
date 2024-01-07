@@ -10,6 +10,7 @@ class FormattedTextField extends HookWidget {
     this.text,
     this.onChanged,
     this.onDone,
+    this.onSubmitted,
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
     this.hintText,
@@ -22,6 +23,7 @@ class FormattedTextField extends HookWidget {
   final String? text;
   final Function(String)? onChanged;
   final Function(String)? onDone;
+  final Function(String)? onSubmitted;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType keyboardType;
   final String? hintText;
@@ -36,6 +38,7 @@ class FormattedTextField extends HookWidget {
       text: text,
       onChanged: onChanged,
       onDone: onDone,
+      onSubmitted: onSubmitted,
       maxLines: singleLine ? 1 : null,
       keyboardType: keyboardType,
       inputFormatters: [
@@ -45,7 +48,9 @@ class FormattedTextField extends HookWidget {
       decoration: InputDecoration(
         prefixIcon: icon != null ? Icon(icon, size: 18) : null,
         hintText: hintText,
-        contentPadding: singleLine ? null : const EdgeInsets.only(top: 12, bottom: 12, right: 8),
+        contentPadding: singleLine
+            ? null
+            : const EdgeInsets.only(top: 12, bottom: 12, right: 8),
       ),
     );
   }

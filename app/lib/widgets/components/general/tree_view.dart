@@ -1,3 +1,5 @@
+import "dart:math";
+
 import "package:freezed_annotation/freezed_annotation.dart";
 
 part "tree_view.freezed.dart";
@@ -32,6 +34,167 @@ class TreeNode<T> with _$TreeNode {
 ///    - path
 ///  - other.path
 ///    - too
-RootTreeNode<T> createTreeNode<T>(List<T> elements, String Function(T) pathFetcher) {
-  return const RootTreeNode(children: []);
+RootTreeNode<T> createTreeNode<T>(
+  List<T> elements,
+  String Function(T) pathFetcher,
+) {
+  var children = <TreeNode<T>>[];
+
+  for (final element in elements) {
+    final path = pathFetcher(element);
+    children = _createTreeNode(children, path, element);
+  }
+
+  return RootTreeNode(children: children);
+}
+
+(InnerTreeNode<T> innerNode, String path)? _findOverlappingPath<T>(
+  List<TreeNode<T>> elements,
+  String path,
+) {
+  for (final element in elements) {
+    if (element is! InnerTreeNode<T>) continue;
+    final overlappingPath = _overlappingStartingParts(path, element.name);
+    if (overlappingPath.isEmpty) continue;
+    return (element, overlappingPath);
+  }
+  return null;
+}
+
+String _overlappingStartingParts(String path, String otherPath) {
+  final pathParts = path.split(".");
+  final otherPathParts = otherPath.split(".");
+  final result = <String>[];
+  for (var i = 0; i < min(pathParts.length, otherPathParts.length); i++) {
+    if (pathParts[i] != otherPathParts[i]) break;
+    result.add(pathParts[i]);
+  }
+  return result.join(".");
+}
+
+List<TreeNode<T>> _createTreeNode<T>(
+  List<TreeNode<T>> elements,
+  String path,
+  T value,
+) {
+  if (path.isEmpty) {
+    return _applyModifications(
+      elements,
+      [_TreeModification.add(node: TreeNode.leaf(value: value))],
+    );
+  }
+
+  final (overlappingNode, overlappingPath) =
+      _findOverlappingPath(elements, path) ?? (null, null);
+
+  // Part does not exist yet, create it
+  if (overlappingNode == null || overlappingPath == null) {
+    return _applyModifications(
+      elements,
+      [
+        _TreeModification.add(
+          node: TreeNode.inner(
+            name: path,
+            children: _createTreeNode([], "", value),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Full path exists, so we only need to add it to that node
+  if (overlappingNode.name == overlappingPath) {
+    final remainingPath = path.removePrefixPart(overlappingPath);
+    return _applyModifications(
+      elements,
+      [
+        _TreeModification.update(
+          path: overlappingPath,
+          node: TreeNode.inner(
+            name: overlappingPath,
+            children:
+                _createTreeNode(overlappingNode.children, remainingPath, value),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Part of the path exists, so we need to remove the old node and add a new node with the partial path
+  // Then add the original node with the remaining path to the new node
+  // And finally add the new node with the new value
+  final overlappingRemainingPath =
+      overlappingNode.name.removePrefixPart(overlappingPath);
+  final newInnerNode = TreeNode.inner(
+    name: overlappingRemainingPath,
+    children: overlappingNode.children,
+  );
+  final remainingPath = path.removePrefixPart(overlappingPath);
+  final newNode = _createTreeNode(<TreeNode<T>>[], remainingPath, value);
+
+  return _applyModifications(
+    elements,
+    [
+      _TreeModification.remove(path: overlappingNode.name),
+      _TreeModification.add(
+        node: TreeNode.inner(
+          name: overlappingPath,
+          children: [
+            newInnerNode,
+            ...newNode,
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+List<TreeNode<T>> _applyModifications<T>(
+  List<TreeNode<T>> elements,
+  List<_TreeModification<T>> modifications,
+) {
+  final result = [...elements];
+  for (final modification in modifications) {
+    if (modification is _TreeRemove<T> || modification is _TreeUpdate<T>) {
+      result.removeWhere(
+        (element) =>
+            element.maybeMap(orElse: () => null, inner: (node) => node.name) ==
+            modification.mapOrNull(
+              remove: (node) => node.path,
+              update: (node) => node.path,
+            ),
+      );
+    }
+    if (modification is _TreeAdd<T>) {
+      result.add(modification.node);
+    }
+    if (modification is _TreeUpdate<T>) {
+      result.add(modification.node);
+    }
+  }
+  return result;
+}
+
+@freezed
+class _TreeModification<T> with _$TreeModification {
+  const factory _TreeModification.add({
+    required TreeNode<T> node,
+  }) = _TreeAdd;
+
+  const factory _TreeModification.update({
+    required String path,
+    required TreeNode<T> node,
+  }) = _TreeUpdate;
+
+  const factory _TreeModification.remove({
+    required String path,
+  }) = _TreeRemove;
+}
+
+extension on String {
+  String removePrefixPart(String part) {
+    if (!startsWith(part)) return this;
+    if (length == part.length) return "";
+    return substring(part.length + 1);
+  }
 }

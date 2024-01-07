@@ -11,12 +11,14 @@ You are most likely going to need the [Basic Adapter](../adapters/BasicAdapter).
 | Adapter Name                                                      | Description                                                                              | Download Link                                                |
 | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | [Basic Adapter](../adapters/BasicAdapter)                         | Contains essential building blocks for every server                                      | [Download](https://github.com/gabber235/TypeWriter/releases) |
-| [Superior Skyblock Adapter](../adapters/SuperiorSkyblockAdapter/) | Allows you to use Superior Skyblock islands in your Typewriter scripts.                  | [Download](https://github.com/gabber235/TypeWriter/releases) |
 | [Citizens Adapter](../adapters/CitizensAdapter/)                  | Extends the Citizens API to allow you to create NPCs with Typewriter.                    | [Download](https://github.com/gabber235/TypeWriter/releases) |
 | [Vault Adapter](../adapters/VaultAdapter/)                        | Integrates with Vault to allow you to use the economy system in your Typewriter scripts. | [Download](https://github.com/gabber235/TypeWriter/releases) |
+| [MythicMobs Adapter](../adapters/MythicMobsAdapter/)              | Allows you to use MythicMobs in your Typewriter scripts.                                 | [Download](https://github.com/gabber235/TypeWriter/releases) |
 | [WorldGuard Adapter](../adapters/WorldGuardAdapter/)              | Allows use of WorldGuard regions with Typewriter.                                        | [Download](https://github.com/gabber235/TypeWriter/releases) |
+| [RPGRegions Adapter](../adapters/RPGRegionsAdapter/)              | Allows you to use RPGRegions in your Typewriter scripts.                                 | [Download](https://github.com/gabber235/TypeWriter/releases) |
+| [Superior Skyblock Adapter](../adapters/SuperiorSkyblockAdapter/) | Allows you to use Superior Skyblock islands in your Typewriter scripts.                  | [Download](https://github.com/gabber235/TypeWriter/releases) |
 | [CombatLogX Adapter](../adapters/CombatLogXAdapter/)              | Check if a player is in combat or not with the CombatLogX plugin.                        | [Download](https://github.com/gabber235/TypeWriter/releases) |
 
 # Creating an Adapter
 
-Want to contribute to Typewriter? You can create your own adapter for any plugin you want, or just Minecraft itself. To start contributing, see the [development guide](../develop/).
+Want to contribute to Typewriter? You can create your own adapter for any plugin you want, or just Minecraft itself. To start contributing, see the [development guide](../develop/01-index.mdx).

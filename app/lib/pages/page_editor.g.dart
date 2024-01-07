@@ -36,7 +36,7 @@ final currentPageLabelProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef CurrentPageLabelRef = AutoDisposeProviderRef<String>;
-String _$currentPageHash() => r'019404b1e80234d7a6d9ed18030acc589ce2d700';
+String _$currentPageHash() => r'e4061bc62721be6ea098919cee27392d81d8de10';
 
 /// See also [currentPage].
 @ProviderFor(currentPage)
@@ -65,7 +65,7 @@ final currentPageTypeProvider = AutoDisposeProvider<PageType?>.internal(
 );
 
 typedef CurrentPageTypeRef = AutoDisposeProviderRef<PageType?>;
-String _$writersHash() => r'90aabc0610038faeb596c5fce4ab05f1db644033';
+String _$writersHash() => r'9c6cafb1a013526500fb7518776c0d1e7a93f479';
 
 /// See also [_writers].
 @ProviderFor(_writers)
@@ -80,4 +80,4 @@ final _writersProvider = AutoDisposeProvider<List<Writer>>.internal(
 
 typedef _WritersRef = AutoDisposeProviderRef<List<Writer>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

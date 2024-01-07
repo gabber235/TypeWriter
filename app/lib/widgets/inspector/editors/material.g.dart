@@ -7,7 +7,7 @@ part of 'material.dart';
 // **************************************************************************
 
 String _$materialPropertiesHash() =>
-    r'2537760a0cb4dc55f7fb40e4e045184959705bc2';
+    r'ec0ce652cc3458c9e2ee4d54c4fa1f496a45f1db';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,8 +29,6 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
-
-typedef MaterialPropertiesRef = AutoDisposeProviderRef<List<MaterialProperty>>;
 
 /// See also [materialProperties].
 @ProviderFor(materialProperties)
@@ -79,10 +77,10 @@ class MaterialPropertiesProvider
     extends AutoDisposeProvider<List<MaterialProperty>> {
   /// See also [materialProperties].
   MaterialPropertiesProvider(
-    this.meta,
-  ) : super.internal(
+    String meta,
+  ) : this._internal(
           (ref) => materialProperties(
-            ref,
+            ref as MaterialPropertiesRef,
             meta,
           ),
           from: materialPropertiesProvider,
@@ -94,9 +92,43 @@ class MaterialPropertiesProvider
           dependencies: MaterialPropertiesFamily._dependencies,
           allTransitiveDependencies:
               MaterialPropertiesFamily._allTransitiveDependencies,
+          meta: meta,
         );
 
+  MaterialPropertiesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.meta,
+  }) : super.internal();
+
   final String meta;
+
+  @override
+  Override overrideWith(
+    List<MaterialProperty> Function(MaterialPropertiesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: MaterialPropertiesProvider._internal(
+        (ref) => create(ref as MaterialPropertiesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        meta: meta,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<MaterialProperty>> createElement() {
+    return _MaterialPropertiesProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -112,12 +144,26 @@ class MaterialPropertiesProvider
   }
 }
 
+mixin MaterialPropertiesRef on AutoDisposeProviderRef<List<MaterialProperty>> {
+  /// The parameter `meta` of this provider.
+  String get meta;
+}
+
+class _MaterialPropertiesProviderElement
+    extends AutoDisposeProviderElement<List<MaterialProperty>>
+    with MaterialPropertiesRef {
+  _MaterialPropertiesProviderElement(super.provider);
+
+  @override
+  String get meta => (origin as MaterialPropertiesProvider).meta;
+}
+
 String _$fuzzyMaterialsHash() => r'bfaa303c86894a2592b383e46588f82a7a8b7e6d';
 
 /// See also [_fuzzyMaterials].
 @ProviderFor(_fuzzyMaterials)
 final _fuzzyMaterialsProvider =
-    AutoDisposeProvider<Fuzzy<MapEntry<String, MinecraftMaterial>>>.internal(
+    AutoDisposeProvider<Fuzzy<CombinedMaterial>>.internal(
   _fuzzyMaterials,
   name: r'_fuzzyMaterialsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -127,7 +173,6 @@ final _fuzzyMaterialsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _FuzzyMaterialsRef
-    = AutoDisposeProviderRef<Fuzzy<MapEntry<String, MinecraftMaterial>>>;
+typedef _FuzzyMaterialsRef = AutoDisposeProviderRef<Fuzzy<CombinedMaterial>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

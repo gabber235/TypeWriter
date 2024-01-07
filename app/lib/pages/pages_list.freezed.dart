@@ -15,9 +15,10 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$_PageData {
+mixin _$PageData {
   String get name => throw _privateConstructorUsedError;
   PageType get type => throw _privateConstructorUsedError;
+  String get chapter => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   _$PageDataCopyWith<_PageData> get copyWith =>
@@ -29,7 +30,7 @@ abstract class _$PageDataCopyWith<$Res> {
   factory _$PageDataCopyWith(_PageData value, $Res Function(_PageData) then) =
       __$PageDataCopyWithImpl<$Res, _PageData>;
   @useResult
-  $Res call({String name, PageType type});
+  $Res call({String name, PageType type, String chapter});
 }
 
 /// @nodoc
@@ -47,6 +48,7 @@ class __$PageDataCopyWithImpl<$Res, $Val extends _PageData>
   $Res call({
     Object? name = null,
     Object? type = null,
+    Object? chapter = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -57,26 +59,31 @@ class __$PageDataCopyWithImpl<$Res, $Val extends _PageData>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PageType,
+      chapter: null == chapter
+          ? _value.chapter
+          : chapter // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$_$PageDataCopyWith<$Res> implements _$PageDataCopyWith<$Res> {
-  factory _$$_$PageDataCopyWith(
-          _$_$PageData value, $Res Function(_$_$PageData) then) =
-      __$$_$PageDataCopyWithImpl<$Res>;
+abstract class _$$$__PageDataImplCopyWith<$Res>
+    implements _$PageDataCopyWith<$Res> {
+  factory _$$$__PageDataImplCopyWith(
+          _$$__PageDataImpl value, $Res Function(_$$__PageDataImpl) then) =
+      __$$$__PageDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, PageType type});
+  $Res call({String name, PageType type, String chapter});
 }
 
 /// @nodoc
-class __$$_$PageDataCopyWithImpl<$Res>
-    extends __$PageDataCopyWithImpl<$Res, _$_$PageData>
-    implements _$$_$PageDataCopyWith<$Res> {
-  __$$_$PageDataCopyWithImpl(
-      _$_$PageData _value, $Res Function(_$_$PageData) _then)
+class __$$$__PageDataImplCopyWithImpl<$Res>
+    extends __$PageDataCopyWithImpl<$Res, _$$__PageDataImpl>
+    implements _$$$__PageDataImplCopyWith<$Res> {
+  __$$$__PageDataImplCopyWithImpl(
+      _$$__PageDataImpl _value, $Res Function(_$$__PageDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -84,8 +91,9 @@ class __$$_$PageDataCopyWithImpl<$Res>
   $Res call({
     Object? name = null,
     Object? type = null,
+    Object? chapter = null,
   }) {
-    return _then(_$_$PageData(
+    return _then(_$$__PageDataImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -94,55 +102,66 @@ class __$$_$PageDataCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PageType,
+      chapter: null == chapter
+          ? _value.chapter
+          : chapter // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_$PageData implements _$PageData {
-  const _$_$PageData({required this.name, required this.type});
+class _$$__PageDataImpl implements _$__PageData {
+  const _$$__PageDataImpl(
+      {required this.name, required this.type, required this.chapter});
 
   @override
   final String name;
   @override
   final PageType type;
+  @override
+  final String chapter;
 
   @override
   String toString() {
-    return '_PageData(name: $name, type: $type)';
+    return '_PageData(name: $name, type: $type, chapter: $chapter)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_$PageData &&
+            other is _$$__PageDataImpl &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.type, type) || other.type == type));
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.chapter, chapter) || other.chapter == chapter));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, type);
+  int get hashCode => Object.hash(runtimeType, name, type, chapter);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_$PageDataCopyWith<_$_$PageData> get copyWith =>
-      __$$_$PageDataCopyWithImpl<_$_$PageData>(this, _$identity);
+  _$$$__PageDataImplCopyWith<_$$__PageDataImpl> get copyWith =>
+      __$$$__PageDataImplCopyWithImpl<_$$__PageDataImpl>(this, _$identity);
 }
 
-abstract class _$PageData implements _PageData {
-  const factory _$PageData(
+abstract class _$__PageData implements _PageData {
+  const factory _$__PageData(
       {required final String name,
-      required final PageType type}) = _$_$PageData;
+      required final PageType type,
+      required final String chapter}) = _$$__PageDataImpl;
 
   @override
   String get name;
   @override
   PageType get type;
   @override
+  String get chapter;
+  @override
   @JsonKey(ignore: true)
-  _$$_$PageDataCopyWith<_$_$PageData> get copyWith =>
+  _$$$__PageDataImplCopyWith<_$$__PageDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
