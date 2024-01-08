@@ -23,7 +23,6 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
     private var currentMessenger = messengerFinder.findMessenger(player, initialEntry)
     private var cycle = 0
     var isActive = false
-        private set
 
     val triggers: List<String>
         get() = currentMessenger.triggers
