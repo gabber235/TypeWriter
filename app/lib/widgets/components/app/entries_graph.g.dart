@@ -36,7 +36,413 @@ final graphableEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef GraphableEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$graphHash() => r'7269326e7ddcfc6d7d7d305a4be789fc3b3ec1e0';
+String _$isTriggerEntryHash() => r'917683e8c329400c0068ea5a34a064cb729e32ab';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+/// See also [isTriggerEntry].
+@ProviderFor(isTriggerEntry)
+const isTriggerEntryProvider = IsTriggerEntryFamily();
+
+/// See also [isTriggerEntry].
+class IsTriggerEntryFamily extends Family<bool> {
+  /// See also [isTriggerEntry].
+  const IsTriggerEntryFamily();
+
+  /// See also [isTriggerEntry].
+  IsTriggerEntryProvider call(
+    String entryId,
+  ) {
+    return IsTriggerEntryProvider(
+      entryId,
+    );
+  }
+
+  @override
+  IsTriggerEntryProvider getProviderOverride(
+    covariant IsTriggerEntryProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'isTriggerEntryProvider';
+}
+
+/// See also [isTriggerEntry].
+class IsTriggerEntryProvider extends AutoDisposeProvider<bool> {
+  /// See also [isTriggerEntry].
+  IsTriggerEntryProvider(
+    String entryId,
+  ) : this._internal(
+          (ref) => isTriggerEntry(
+            ref as IsTriggerEntryRef,
+            entryId,
+          ),
+          from: isTriggerEntryProvider,
+          name: r'isTriggerEntryProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$isTriggerEntryHash,
+          dependencies: IsTriggerEntryFamily._dependencies,
+          allTransitiveDependencies:
+              IsTriggerEntryFamily._allTransitiveDependencies,
+          entryId: entryId,
+        );
+
+  IsTriggerEntryProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
+  final String entryId;
+
+  @override
+  Override overrideWith(
+    bool Function(IsTriggerEntryRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: IsTriggerEntryProvider._internal(
+        (ref) => create(ref as IsTriggerEntryRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<bool> createElement() {
+    return _IsTriggerEntryProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is IsTriggerEntryProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin IsTriggerEntryRef on AutoDisposeProviderRef<bool> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _IsTriggerEntryProviderElement extends AutoDisposeProviderElement<bool>
+    with IsTriggerEntryRef {
+  _IsTriggerEntryProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as IsTriggerEntryProvider).entryId;
+}
+
+String _$isTriggerableEntryHash() =>
+    r'4b5b533dee75d07eb970a077785ab5defb6dcfe6';
+
+/// See also [isTriggerableEntry].
+@ProviderFor(isTriggerableEntry)
+const isTriggerableEntryProvider = IsTriggerableEntryFamily();
+
+/// See also [isTriggerableEntry].
+class IsTriggerableEntryFamily extends Family<bool> {
+  /// See also [isTriggerableEntry].
+  const IsTriggerableEntryFamily();
+
+  /// See also [isTriggerableEntry].
+  IsTriggerableEntryProvider call(
+    String entryId,
+  ) {
+    return IsTriggerableEntryProvider(
+      entryId,
+    );
+  }
+
+  @override
+  IsTriggerableEntryProvider getProviderOverride(
+    covariant IsTriggerableEntryProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'isTriggerableEntryProvider';
+}
+
+/// See also [isTriggerableEntry].
+class IsTriggerableEntryProvider extends AutoDisposeProvider<bool> {
+  /// See also [isTriggerableEntry].
+  IsTriggerableEntryProvider(
+    String entryId,
+  ) : this._internal(
+          (ref) => isTriggerableEntry(
+            ref as IsTriggerableEntryRef,
+            entryId,
+          ),
+          from: isTriggerableEntryProvider,
+          name: r'isTriggerableEntryProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$isTriggerableEntryHash,
+          dependencies: IsTriggerableEntryFamily._dependencies,
+          allTransitiveDependencies:
+              IsTriggerableEntryFamily._allTransitiveDependencies,
+          entryId: entryId,
+        );
+
+  IsTriggerableEntryProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
+  final String entryId;
+
+  @override
+  Override overrideWith(
+    bool Function(IsTriggerableEntryRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: IsTriggerableEntryProvider._internal(
+        (ref) => create(ref as IsTriggerableEntryRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<bool> createElement() {
+    return _IsTriggerableEntryProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is IsTriggerableEntryProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin IsTriggerableEntryRef on AutoDisposeProviderRef<bool> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _IsTriggerableEntryProviderElement
+    extends AutoDisposeProviderElement<bool> with IsTriggerableEntryRef {
+  _IsTriggerableEntryProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as IsTriggerableEntryProvider).entryId;
+}
+
+String _$entryTriggersHash() => r'2cdd643e8ce0f19c5b6dea06b5574c03276aad76';
+
+/// See also [entryTriggers].
+@ProviderFor(entryTriggers)
+const entryTriggersProvider = EntryTriggersFamily();
+
+/// See also [entryTriggers].
+class EntryTriggersFamily extends Family<Set<String>?> {
+  /// See also [entryTriggers].
+  const EntryTriggersFamily();
+
+  /// See also [entryTriggers].
+  EntryTriggersProvider call(
+    String entryId,
+  ) {
+    return EntryTriggersProvider(
+      entryId,
+    );
+  }
+
+  @override
+  EntryTriggersProvider getProviderOverride(
+    covariant EntryTriggersProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entryTriggersProvider';
+}
+
+/// See also [entryTriggers].
+class EntryTriggersProvider extends AutoDisposeProvider<Set<String>?> {
+  /// See also [entryTriggers].
+  EntryTriggersProvider(
+    String entryId,
+  ) : this._internal(
+          (ref) => entryTriggers(
+            ref as EntryTriggersRef,
+            entryId,
+          ),
+          from: entryTriggersProvider,
+          name: r'entryTriggersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$entryTriggersHash,
+          dependencies: EntryTriggersFamily._dependencies,
+          allTransitiveDependencies:
+              EntryTriggersFamily._allTransitiveDependencies,
+          entryId: entryId,
+        );
+
+  EntryTriggersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
+  final String entryId;
+
+  @override
+  Override overrideWith(
+    Set<String>? Function(EntryTriggersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EntryTriggersProvider._internal(
+        (ref) => create(ref as EntryTriggersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<Set<String>?> createElement() {
+    return _EntryTriggersProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EntryTriggersProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin EntryTriggersRef on AutoDisposeProviderRef<Set<String>?> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _EntryTriggersProviderElement
+    extends AutoDisposeProviderElement<Set<String>?> with EntryTriggersRef {
+  _EntryTriggersProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as EntryTriggersProvider).entryId;
+}
+
+String _$graphHash() => r'95895c4970adb0f53701f0bce28678009313d140';
 
 /// See also [graph].
 @ProviderFor(graph)
