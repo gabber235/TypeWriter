@@ -1,11 +1,11 @@
 import "package:flutter/material.dart" hide FilledButton;
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/entries_graph.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
 import "package:typewriter/widgets/components/general/outline_button.dart";
@@ -24,11 +24,8 @@ class Operations extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final type = ref.watch(inspectingEntryProvider.select((e) => e?.type));
     if (type == null) return const SizedBox();
-    final canTrigger = ref.watch(
-      modifierPathsProvider(type, "trigger").select((value) => value.contains("triggers.*")),
-    );
-    final canBeTriggered = ref
-        .watch(inspectingEntryDefinitionProvider.select((def) => def?.blueprint.tags.contains("triggerable") ?? false));
+    final canTrigger = ref.watch(isTriggerEntryProvider(type));
+    final canBeTriggered = ref.watch(isTriggerableEntryProvider(type));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -1,6 +1,5 @@
 import "package:dotted_border/dotted_border.dart";
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -12,6 +11,7 @@ import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/entries_graph.dart";
 import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
@@ -124,18 +124,12 @@ class _EntryNode extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final canTrigger = ref.read(
-      modifierPathsProvider(type, "trigger")
-          .select((value) => value.contains("triggers.*")),
-    );
-    final canBeTriggered = ref.watch(
-      entryBlueprintProvider(type)
-          .select((b) => b?.tags.contains("triggerable") ?? false),
-    );
+    final canTrigger = ref.watch(isTriggerEntryProvider(id));
+    final canBeTriggered = ref.watch(isTriggerableEntryProvider(id));
 
     return WritersIndicator(
       provider: _writersProvider(id),
-      child: Draggable(
+      child: LongPressDraggable(
         data: EntryDrag(entryId: id),
         feedback: FakeEntryNode(entryId: id),
         childWhenDragging: ColoredBox(
@@ -170,12 +164,9 @@ class _EntryNode extends HookConsumerWidget {
           child: DragTarget<EntryDrag>(
             onWillAcceptWithDetails: (details) {
               if (!canTrigger) return false;
-              final entry = ref.read(globalEntryProvider(details.data.entryId));
-              if (entry == null) return false;
-              final blueprint = ref.read(entryBlueprintProvider(entry.type));
+              final targetId = details.data.entryId;
 
-              // Check if the entry is triggerable
-              return blueprint?.tags.contains("triggerable") ?? false;
+              return ref.read(isTriggerableEntryProvider(targetId));
             },
             onAcceptWithDetails: (details) {
               final page = ref.read(currentPageProvider);
@@ -433,7 +424,7 @@ class ExternalEntryNode extends HookConsumerWidget {
       return const InvalidEntry();
     }
 
-    return Draggable(
+    return LongPressDraggable(
       data: EntryDrag(entryId: entry.id),
       feedback: FakeEntryNode(entryId: entry.id),
       childWhenDragging: DottedBorder(

@@ -32,6 +32,44 @@ List<String> graphableEntryIds(GraphableEntryIdsRef ref) {
 }
 
 @riverpod
+bool isTriggerEntry(IsTriggerEntryRef ref, String entryId) {
+  final entry = ref.watch(globalEntryProvider(entryId));
+  if (entry == null) return false;
+
+  final tags = ref.watch(entryTagsProvider(entry.type));
+  if (!tags.contains("trigger")) return false;
+
+  final modifiers = ref.watch(modifierPathsProvider(entry.type, "trigger"));
+
+  return modifiers.contains("triggers.*");
+}
+
+@riverpod
+bool isTriggerableEntry(IsTriggerableEntryRef ref, String entryId) {
+  final entry = ref.watch(globalEntryProvider(entryId));
+  if (entry == null) return false;
+
+  final tags = ref.watch(entryTagsProvider(entry.type));
+  return tags.contains("triggerable");
+}
+
+@riverpod
+Set<String>? entryTriggers(EntryTriggersRef ref, String entryId) {
+  final entry = ref.watch(globalEntryProvider(entryId));
+  if (entry == null) return null;
+
+  // Check if this entry is a trigger
+  if (!ref.read(isTriggerEntryProvider(entryId))) return null;
+
+  final modifiers = ref.watch(modifierPathsProvider(entry.type, "trigger"));
+  return modifiers
+      .expand(entry.getAll)
+      .map((id) => id as String)
+      .where((id) => id.isNotEmpty)
+      .toSet();
+}
+
+@riverpod
 Graph graph(GraphRef ref) {
   final entries = ref.watch(graphableEntriesProvider);
   final graph = Graph();
@@ -42,14 +80,18 @@ Graph graph(GraphRef ref) {
   }
 
   for (final entry in entries) {
-    final modifiers = ref.watch(fieldModifiersProvider(entry.type, "trigger"));
-    final triggeredEntryIds =
-        modifiers.entries.map((e) => e.key).expand(entry.getAll).where((id) => id.isNotEmpty).toSet();
+    final triggeredEntryIds = ref.watch(entryTriggersProvider(entry.id));
+    if (triggeredEntryIds == null) continue;
 
-    final color = ref.watch(entryBlueprintProvider(entry.type))?.color ?? Colors.grey;
+    final color =
+        ref.watch(entryBlueprintProvider(entry.type))?.color ?? Colors.grey;
 
     for (final triggeredEntryId in triggeredEntryIds) {
-      graph.addEdge(Node.Id(entry.id), Node.Id(triggeredEntryId), paint: Paint()..color = color);
+      graph.addEdge(
+        Node.Id(entry.id),
+        Node.Id(triggeredEntryId),
+        paint: Paint()..color = color,
+      );
     }
   }
 
@@ -103,12 +145,16 @@ class EntriesGraph extends HookConsumerWidget {
 
           final entryOnPage = entryIds.contains(id);
           if (!entryOnPage) {
-            final globalEntryWithPage = ref.watch(globalEntryWithPageProvider(id));
+            final globalEntryWithPage =
+                ref.watch(globalEntryWithPageProvider(id));
             if (globalEntryWithPage == null) {
               return const InvalidEntry();
             }
 
-            return ExternalEntryNode(pageId: globalEntryWithPage.key, entry: globalEntryWithPage.value);
+            return ExternalEntryNode(
+              pageId: globalEntryWithPage.key,
+              entry: globalEntryWithPage.value,
+            );
           }
           return EntryNode(
             entryId: id,

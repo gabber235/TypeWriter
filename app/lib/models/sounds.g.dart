@@ -40,7 +40,7 @@ final minecraftSoundsProvider =
 );
 
 typedef MinecraftSoundsRef = FutureProviderRef<Map<String, List<SoundData>>>;
-String _$minecraftSoundHash() => r'3a6806c1a0d534e49af8e067f895dfa0912868ee';
+String _$minecraftSoundHash() => r'360718281dd98a11b4669309eee983425b822717';
 
 /// Copied from Dart SDK
 class _SystemHash {

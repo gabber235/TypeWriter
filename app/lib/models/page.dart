@@ -10,6 +10,7 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
+import "package:typewriter/widgets/components/app/entries_graph.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -345,11 +346,13 @@ extension PageX on Page {
   Future<void> extendsWithDuplicate(PassingRef ref, String entryId) async {
     final entry = ref.read(entryProvider(pageName, entryId));
     if (entry == null) return;
-    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
-    if (!triggerPaths.contains("triggers.*")) {
-      debugPrint("Cannot duplicate entry with no triggers.*");
+    final isTrigger = ref.read(isTriggerEntryProvider(entryId));
+    if (!isTrigger) {
+      debugPrint("Cannot extend a non-trigger entry.");
       return;
     }
+
+    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
 
     final newEntry = triggerPaths
         .fold(
@@ -368,9 +371,9 @@ extension PageX on Page {
   void extendsWith(PassingRef ref, String entryId) {
     final entry = ref.read(entryProvider(pageName, entryId));
     if (entry == null) return;
-    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
-    if (!triggerPaths.contains("triggers.*")) {
-      debugPrint("Cannot extend entry with no triggers.*");
+    final isTrigger = ref.read(isTriggerEntryProvider(entryId));
+    if (!isTrigger) {
+      debugPrint("Cannot extend a non-trigger entry.");
       return;
     }
 
