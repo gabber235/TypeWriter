@@ -7,7 +7,9 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/book.dart";
+import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
@@ -70,12 +72,23 @@ class PageEditor extends HookConsumerWidget {
             const PreviousFocusIntent(),
         const SingleActivator(LogicalKeyboardKey.keyN, control: true):
             const NextFocusIntent(),
+        SmartSingleActivator(
+          LogicalKeyboardKey.keyP,
+          control: true,
+          shift: true,
+        ): const PublishPagesIntent(),
       },
       child: Actions(
         actions: {
           SearchIntent: CallbackAction<SearchIntent>(
             onInvoke: (intent) {
               ref.read(searchProvider.notifier).startGlobalSearch();
+              return null;
+            },
+          ),
+          PublishPagesIntent: CallbackAction<PublishPagesIntent>(
+            onInvoke: (intent) {
+              ref.read(communicatorProvider).publish();
               return null;
             },
           ),
