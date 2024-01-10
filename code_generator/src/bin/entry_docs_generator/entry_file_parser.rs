@@ -94,24 +94,22 @@ impl FromStr for EntryClass {
 }
 
 fn get_annotation(code: &str) -> Result<String, EntryParseError> {
-    let annotation_code: QueryResult = query(&code, "(class_declaration (modifiers) @annotation)")?;
+    let annotation_code: QueryResult =
+        query(&code, "(class_declaration (modifiers (annotation) @class))")?;
 
-    if annotation_code.captures.len() != 1 {
+    let Some(annotation) = annotation_code
+        .captures
+        .iter()
+        .find(|cap| cap.code.starts_with("@Entry"))
+    else {
         return Err(EntryParseError::NotEntryClass);
-    }
+    };
 
-    let annotation = annotation_code.captures[0].code.clone();
-
-    // Make sure this is an @Entry annotation
-    if annotation.starts_with("@Entry") == false {
-        return Err(EntryParseError::NotEntryClass);
-    }
-
-    Ok(annotation)
+    return Ok(annotation.code.clone());
 }
 
 fn parse_annotation(code: &str) -> Result<(String, String), EntryParseError> {
-    let annotation_code: QueryResult = query(&code, "(line_string_literal) @string")?;
+    let annotation_code: QueryResult = query(&code, "(string_literal) @string")?;
 
     if annotation_code.captures.len() < 2 {
         return Err(EntryParseError::NotEntryClass);
@@ -146,7 +144,8 @@ fn parse_class_name(code: &str) -> Result<String, EntryParseError> {
 }
 
 fn parse_comment(code: &str) -> Result<String, EntryParseError> {
-    let comment_code: QueryResult = query(&code, "(class_declaration (comment) @comment)")?;
+    let comment_code: QueryResult =
+        query(&code, "(class_declaration (multiline_comment) @comment)")?;
 
     if comment_code.captures.len() != 1 {
         return Err(EntryParseError::FieldNotFound("comment".to_string()));
@@ -258,10 +257,14 @@ fn parse_field_type(code: &str) -> Result<String, EntryParseError> {
 }
 
 fn parse_field_comment(code: &str) -> Result<String, EntryParseError> {
-    let comment_code: QueryResult = query(&code, "(comment) @comment")?;
+    let mut comment_code: QueryResult = query(&code, "(line_comment) @comment")?;
 
     if comment_code.captures.len() != 1 {
-        return Err(EntryParseError::FieldNotFound("comment".to_string()));
+        comment_code = query(&code, "(multiline_comment) @comment")?;
+
+        if comment_code.captures.len() != 1 {
+            return Err(EntryParseError::FieldNotFound("comment".to_string()));
+        }
     }
 
     let raw_comment = comment_code.captures[0].code.clone();
@@ -287,18 +290,7 @@ fn parse_field_comment(code: &str) -> Result<String, EntryParseError> {
 fn parse_field_annotations(code: &str) -> Result<Vec<FieldAnnotation>, EntryParseError> {
     let annotation_code = query(&code, "(modifiers (annotation) @annotation)")?;
 
-    let captures = if annotation_code.captures.len() == 0 {
-        let annotation_code = query(&code, "(prefix_expression) @annotation")?;
-
-        if annotation_code.captures.len() == 0 {
-            return Ok(Vec::new());
-        }
-
-        annotation_code.captures
-    } else {
-        annotation_code.captures
-    };
-
+    let captures = annotation_code.captures;
     let annotations: Result<Vec<FieldAnnotation>, EntryParseError> =
         captures.iter().map(|cap| cap.code.parse()).collect();
 
@@ -326,72 +318,32 @@ impl FromStr for FieldAnnotation {
     }
 }
 
-fn find_annotation_from_lines(code: &str) -> Option<String> {
-    // get the lines until the second @
-    let mut lines = vec![];
+fn parse_annotation_name(code: &str) -> Result<String, EntryParseError> {
+    let name_code: QueryResult = query(&code, "(user_type) @name")?;
 
-    let mut seen_at = 0;
-
-    for line in code.lines() {
-        if line.contains("@") {
-            seen_at += 1;
-        }
-
-        if seen_at == 2 {
-            break;
-        }
-
-        lines.push(line);
+    if name_code.captures.len() != 1 {
+        return Err(EntryParseError::AnnotationParse(format!(
+            "Could not parse annotation name: {}",
+            code
+        )));
     }
 
-    let annotation_line = lines.join("\n");
-
-    Some(annotation_line)
-}
-
-fn parse_annotation_name(code: &str) -> Result<String, EntryParseError> {
-    let annotation_lines = find_annotation_from_lines(code).ok_or_else(|| {
-        EntryParseError::AnnotationParse(format!("Could not create annotation line: {}", code))
-    })?;
-    // Parses if it has 0/1 arguments
-    let name_code: QueryResult = query(&annotation_lines, "(annotation (user_type) @name)")?;
-
-    let captures = if name_code.captures.len() != 1 {
-        // Parses if it has 2+ arguments
-        let name_code: QueryResult = query(
-            &annotation_lines,
-            "(annotation (constructor_invocation (user_type) @name))",
-        )?;
-
-        if name_code.captures.len() != 1 {
-            return Err(EntryParseError::AnnotationParse(format!(
-                "Could not parse annotation name: {}",
-                code
-            )));
-        }
-
-        name_code.captures
-    } else {
-        name_code.captures
-    };
-
+    let captures = name_code.captures;
     let name = captures[0].code.clone();
 
     Ok(name)
 }
 
 fn parse_annotation_arguments(code: &str) -> Result<Vec<String>, EntryParseError> {
-    let annotation_lines = find_annotation_from_lines(code).ok_or_else(|| {
-        EntryParseError::AnnotationParse(format!("Could not create annotation line: {}", code))
-    })?;
-    let Ok(arguments_code) = query(
-            &annotation_lines,
-            "(value_argument) @argument",
-        ) else {
-            return Ok(Vec::new());
-        };
+    // When has 0 or 2+ arguments
+    let mut arguments_code = query(&code, "(value_argument) @argument")?;
 
-    if arguments_code.captures.len() != 1 {
+    // Maybe it has 1 argument
+    if arguments_code.captures.len() == 0 {
+        arguments_code = query(&code, "(parenthesized_expression) @argument")?;
+    }
+
+    if arguments_code.captures.len() == 0 {
         return Ok(Vec::new());
     }
 
@@ -405,6 +357,8 @@ fn parse_annotation_arguments(code: &str) -> Result<Vec<String>, EntryParseError
                 .trim_end_matches("\"")
                 .trim_start_matches("(\"")
                 .trim_end_matches("\")")
+                .trim_start_matches("(")
+                .trim_end_matches(")")
                 .to_string()
         })
         .collect();

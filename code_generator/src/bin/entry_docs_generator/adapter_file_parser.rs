@@ -13,7 +13,7 @@ pub struct AdapterClass {
 }
 
 pub fn parse_adapter_class(code: &str) -> Result<AdapterClass, AdapterParseError> {
-    let classes_code: QueryResult = query(&code, "(source_file (prefix_expression) @class)")?;
+    let classes_code: QueryResult = query(&code, "(source_file (object_declaration) @class)")?;
 
     if classes_code.captures.len() == 0 {
         return Err(AdapterParseError::NotAdapterClass);
@@ -62,8 +62,7 @@ impl FromStr for AdapterClass {
 }
 
 fn get_annotation(code: &str) -> Result<String, AdapterParseError> {
-    let annotation_code: QueryResult =
-        query(&code, "(prefix_expression (annotation) @annotation)")?;
+    let annotation_code: QueryResult = query(&code, "(modifiers (annotation) @annotation)")?;
 
     if annotation_code.captures.len() != 1 {
         return Err(AdapterParseError::NotAdapterClass);
@@ -80,7 +79,7 @@ fn get_annotation(code: &str) -> Result<String, AdapterParseError> {
 }
 
 fn parse_annotation(code: &str) -> Result<(String, String), AdapterParseError> {
-    let annotation_code: QueryResult = query(&code, "(line_string_literal) @string")?;
+    let annotation_code: QueryResult = query(&code, "(string_literal) @string")?;
 
     if annotation_code.captures.len() < 2 {
         return Err(AdapterParseError::NotAdapterClass);
@@ -103,7 +102,8 @@ fn parse_annotation(code: &str) -> Result<(String, String), AdapterParseError> {
 }
 
 fn parse_comment(code: &str) -> Result<String, AdapterParseError> {
-    let comment_code: QueryResult = query(&code, "(prefix_expression (comment) @comment)")?;
+    let comment_code: QueryResult =
+        query(&code, "(object_declaration (multiline_comment) @comment)")?;
 
     if comment_code.captures.len() != 1 {
         return Err(AdapterParseError::FieldNotFound("comment".to_string()));

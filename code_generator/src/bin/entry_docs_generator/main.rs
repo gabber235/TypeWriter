@@ -9,7 +9,7 @@ mod markdown_formatter;
 mod treesitter;
 
 fn main() -> Result<(), OrchestrationError> {
-    // return parse_and_format_entry_file("../adapters/BasicAdapter/src/main/kotlin/me/gabber235/typewriter/entries/event/DetectCommandRanEventEntry.kt").map(|formatted| {
+    // return parse_and_format_entry_file("../adapters/BasicAdapter/src/main/kotlin/me/gabber235/typewriter/entries/action/CinematicEntry.kt").map(|formatted| {
     //     println!("{}", "-".repeat(80));
     //     println!("{}", formatted);
     //     println!("{}", "-".repeat(80));

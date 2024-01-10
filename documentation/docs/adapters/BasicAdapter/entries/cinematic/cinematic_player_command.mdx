@@ -2,17 +2,18 @@ import * as fields from '@site/src/components/EntryField';
 import Admonition from '@theme/Admonition';
 import Link from '@docusaurus/Link';
 
-# Sound Cinematic 
+# Cinematic Player Command 
 
-The `Sound Cinematic` entry plays a sound during a cinematic.
+The `Cinematic Player Command` entry runs a command as the player at a specific frame.
 
 ## How could this be used?
 
-This entry could be used to play a sound during a cinematic, such as a sound effect for a cutscene.
+You can use a different plugin to animate blocks, hide a scoreboard, or trigger something in another plugin.
 
 
 ## Fields
 
 <fields.CriteriaField />
 <fields.EntryField name='Segments' required multiple segment>
+     Run commands on different segments
 </fields.EntryField>

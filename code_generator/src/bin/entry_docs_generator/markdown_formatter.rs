@@ -98,6 +98,12 @@ fn field_name(field: &EntryField) -> String {
         .iter()
         .find(|annotation| annotation.name == "SerializedName")
     {
+        if name.arguments.len() != 1 {
+            panic!(
+                "Expected 1 argument for SerializedName annotation for field: {:?}",
+                field
+            );
+        }
         return name.arguments[0].clone();
     }
     return field.name.clone();
