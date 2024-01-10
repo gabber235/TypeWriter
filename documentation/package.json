@@ -18,7 +18,7 @@
         "@docusaurus/core": "^3.0.1",
         "@docusaurus/preset-classic": "^3.0.1",
         "@mdx-js/react": "^3.0.0",
-        "@rive-app/react-canvas": "^4.5.4",
+        "@rive-app/react-canvas": "^4.6.2",
         "clsx": "^2.0.0",
         "prism-react-renderer": "^2.3.1",
         "react": "^18.2.0",
