@@ -15,6 +15,7 @@ import me.gabber235.typewriter.extensions.protocollib.BoatType
 import me.gabber235.typewriter.extensions.protocollib.ClientEntity
 import me.gabber235.typewriter.extensions.protocollib.spectateEntity
 import me.gabber235.typewriter.extensions.protocollib.stopSpectatingEntity
+import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
@@ -87,7 +88,11 @@ class CameraCinematicAction(
     override suspend fun setup() {
         super.setup()
 
-        segments = entry.segments.map { segment ->
+        segments = entry.segments.mapNotNull { segment ->
+            if (segment.path.isEmpty()) {
+                logger.warning("Camera segment has no path in ${entry.id}, skipping.")
+                return@mapNotNull null
+            }
             if (player.isFloodgate) {
                 TeleportCameraSegmentAction(player, segment)
             } else {
