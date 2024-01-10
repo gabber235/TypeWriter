@@ -1815,9 +1815,14 @@ class _EndFrameField extends HookConsumerWidget {
         final nextSegment = segments
             .where((s) => s.startFrame >= segment.endFrame)
             .minBy((_, s) => s.startFrame);
-        final maximumFrame = nextSegment?.startFrame ??
-            ref.read(_trackStateProvider).totalFrames;
-        if (frame > maximumFrame) return "Cannot overlap with next segment";
+        final maximumFrame = nextSegment?.startFrame;
+        if (maximumFrame == null &&
+            frame > ref.read(_trackStateProvider).totalFrames) {
+          return "Cannot extend past the end of the track";
+        }
+        if (maximumFrame != null && frame > maximumFrame) {
+          return "Cannot overlap with next segment";
+        }
         return null;
       },
     );
