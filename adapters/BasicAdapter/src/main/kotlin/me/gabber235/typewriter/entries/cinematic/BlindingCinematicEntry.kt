@@ -82,10 +82,22 @@ class BlindingCinematicAction(
 
     override suspend fun stopSegment(segment: BlindingSegment) {
         super.stopSegment(segment)
+        restoreState()
+    }
+
+    private suspend fun restoreState() {
         val state = state ?: return
         this.state = null
         withContext(plugin.minecraftDispatcher) {
             player.restore(state)
+        }
+    }
+
+    override suspend fun teardown() {
+        super.teardown()
+
+        if (state != null) {
+            restoreState()
         }
     }
 }

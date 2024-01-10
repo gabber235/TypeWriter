@@ -48,7 +48,7 @@ enum class GenericPlayerStateProvider(private val store: Player.() -> Any, priva
     override fun restore(player: Player, value: Any) = player.restore(value)
 }
 
-class EffectStateProvider(
+data class EffectStateProvider(
     private val effect: PotionEffectType,
 ) : PlayerStateProvider {
     override fun store(player: Player): Any {
