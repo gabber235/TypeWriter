@@ -10,6 +10,10 @@ import me.gabber235.typewriter.logger
 /**
  * The Superior Skyblock Adapter allows you to use the Superior Skyblock plugin with TypeWriter.
  * It includes many events for you to use in your dialogue, as well as a few actions and conditions.
+ *
+ * :::danger
+ * This adapter is not tested. If you find any issues, please report them!
+ * :::
  */
 object SuperiorSkyblockAdapter : TypewriteAdapter() {
     override fun initialize() {

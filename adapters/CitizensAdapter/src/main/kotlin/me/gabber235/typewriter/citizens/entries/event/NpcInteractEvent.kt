@@ -5,8 +5,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.citizens.TypewriterTrait
-import me.gabber235.typewriter.citizens.entries.entity.Npc
-import me.gabber235.typewriter.citizens.entries.entity.ReferenceNpcEntry
+import me.gabber235.typewriter.citizens.entries.entity.CitizensNpc
 import me.gabber235.typewriter.entry.EntryListener
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.EventEntry
@@ -29,14 +28,14 @@ class NpcInteractEventEntry(
     override val id: String = "",
     override val name: String = "",
     override val triggers: List<String> = emptyList(),
-    @EntryIdentifier(Npc::class)
+    @EntryIdentifier(CitizensNpc::class)
     @Help("The identifier of the NPC.")
     // The NPC that needs to be interacted with.
     val identifier: String = "",
 ) : EventEntry
 
 private fun onNpcInteract(player: Player, identifier: String, query: Query<NpcInteractEventEntry>) {
-    val speaker: Npc? = Query findByName identifier
+    val speaker: CitizensNpc? = Query findByName identifier
     if (speaker == null) {
         logger.warning("Could not find a speaker with name $identifier.")
         return
@@ -47,7 +46,7 @@ private fun onNpcInteract(player: Player, identifier: String, query: Query<NpcIn
 }
 
 private fun onReferenceNpcInteract(player: Player, npcId: Int, query: Query<NpcInteractEventEntry>) {
-    val references: List<ReferenceNpcEntry> = Query findWhere { it.npcId == npcId }
+    val references: List<CitizensNpc> = Query findWhere { it.npcId == npcId }
     val identifiers = references.map { it.id }
 
     query.findWhere {

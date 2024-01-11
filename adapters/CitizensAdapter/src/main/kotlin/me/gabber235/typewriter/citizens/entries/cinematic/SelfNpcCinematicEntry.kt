@@ -4,6 +4,9 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.CinematicAction
+import me.gabber235.typewriter.entry.entries.NpcCinematicAction
+import me.gabber235.typewriter.entry.entries.NpcCinematicEntry
+import me.gabber235.typewriter.entry.entries.NpcRecordedSegment
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
@@ -27,7 +30,7 @@ class SelfNpcCinematicEntry(
         return NpcCinematicAction(
             player,
             this,
-            PlayerNpcData(player),
+            PlayerNpcData(),
         )
     }
 }

@@ -27,8 +27,8 @@ class ReferenceNpcEntry(
     override val displayName: String = "",
     override val sound: Sound,
     @Help("The id of the NPC in the Citizens plugin.")
-    val npcId: Int = 0,
-) : Npc {
+    override val npcId: Int = 0,
+) : CitizensNpc {
     override fun getEmitter(): AdventureSound.Emitter {
         val npc = CitizensAPI.getNPCRegistry().getById(npcId) ?: return AdventureSound.Emitter.self()
         return npc.entity

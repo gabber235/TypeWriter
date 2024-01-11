@@ -16,3 +16,6 @@ interface SpeakerEntry : EntityEntry {
     @Help("The sound that will be played when the entity speaks.")
     val sound: Sound
 }
+
+@Tags("npc")
+interface Npc : SpeakerEntry, SoundSourceEntry
