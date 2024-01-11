@@ -89,7 +89,7 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
         return dir.pages().mapNotNull { file ->
             val id = file.nameWithoutExtension
             val dialogueReader = JsonReader(file.reader())
-            dialogueReader.parsePage(id, gson)
+            dialogueReader.parsePage(id, gson).getOrNull()
         }
     }
 
@@ -117,9 +117,8 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     }
 }
 
-fun JsonReader.parsePage(id: String, gson: Gson): Page? {
+fun JsonReader.parsePage(id: String, gson: Gson): Result<Page> {
     return try {
-
         var page = Page(id)
 
         beginObject()
@@ -131,10 +130,12 @@ fun JsonReader.parsePage(id: String, gson: Gson): Page? {
             }
         }
 
-        page
+        endObject()
+
+        Result.success(page)
     } catch (e: Exception) {
         logger.warning("Failed to parse page: ${e.message}")
-        null
+        Result.failure(e)
     }
 }
 

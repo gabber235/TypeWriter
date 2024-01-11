@@ -42,14 +42,18 @@ class AssetManager : KoinComponent {
      * Find all the paths that either have a reference in the database or are in the staging area.
      */
     private fun usedPaths(): Result<Set<String>> {
-        val stagingPaths = stagingManager.fetchPages().map { (id, data) ->
+        val stagingPages = stagingManager.fetchPages().map { (id, data) ->
             id to JsonReader(StringReader(data.toString()))
-        }.mapNotNull { (id, reader) ->
+        }.map { (id, reader) ->
             reader.parsePage(id, gson)
-        }.filter {
-            it.type == PageType.STATIC
-        }.flatMap {
-            it.entries
+        }
+
+        if (stagingPages.any { it.isFailure }) {
+            return Result.failure(stagingPages.first { it.isFailure }.exceptionOrNull()!!)
+        }
+
+        val stagingPaths = stagingPages.flatMap {
+            it.getOrThrow().entries
         }.filterIsInstance<AssetEntry>().map {
             it.path
         }.toSet()
