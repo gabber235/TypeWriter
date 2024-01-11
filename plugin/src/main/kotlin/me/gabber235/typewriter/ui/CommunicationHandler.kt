@@ -26,12 +26,33 @@ class CommunicationHandler : KoinComponent {
     private val stagingManager: StagingManager by inject()
     private val panelHost: PanelHost by inject()
 
-    private val hostName: String by config("hostname", "localhost")
-    private val panelPort: Int by config("panel.port", 8080)
+    private val hostName: String by config(
+        "hostname",
+        "127.0.0.1",
+        comment = "The hostname of the server. CHANGE THIS to your servers ip."
+    )
+    private val panelPort: Int by config(
+        "panel.port",
+        8080,
+        comment = "The port of the web panel. Make sure this port is open."
+    )
     private val BASE_URL get() = "http://${hostName}:${panelPort}/#"
-    private val enabled: Boolean by config("enabled", false)
-    private val port: Int by config("websocket.port", 9092)
-    private val auth: String by config("websocket.auth", "session") // Possible values: none, session
+    private val enabled: Boolean by config(
+        "enabled",
+        false,
+        comment = "Whether the web panel and web sockets are enabled."
+    )
+    private val port: Int by config(
+        "websocket.port",
+        9092,
+        comment = "The port of the websocket server. Make sure this port is open."
+    )
+    private val auth: String by config(
+        "websocket.auth", "session", comment = """
+        |The authentication that is used. Leave unchanged if you don't know what you are doing.
+        |Possible values: none (not recommended), session
+    """.trimMargin()
+    ) // Possible values: none, session
     val authenticationEnabled: Boolean
         get() = auth == "session"
 

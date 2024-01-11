@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entry.dialogue
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.delay
@@ -11,13 +12,16 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.config
+import me.gabber235.typewriter.utils.reloadable
 import org.bukkit.entity.Player
-import org.bukkit.event.Event
-import org.bukkit.event.EventPriority
-import org.bukkit.event.HandlerList
-import org.bukkit.event.Listener
+import org.bukkit.event.*
+import org.bukkit.event.player.PlayerEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.util.*
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.primaryConstructor
 
@@ -101,5 +105,59 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
 class EmptyDialogueMessenger(player: Player, entry: DialogueEntry) : DialogueMessenger<DialogueEntry>(player, entry) {
     override fun init() {
         state = MessengerState.FINISHED
+    }
+}
+
+private val confirmationKeyString by config(
+    "confirmationKey", ConfirmationKey.SWAP_HANDS.name, comment = """
+    |The key that should be pressed to confirm a dialogue option.
+    |Possible values: ${ConfirmationKey.values().joinToString(", ") { it.name }}
+""".trimMargin()
+)
+
+val confirmationKey: ConfirmationKey by reloadable {
+    val key = ConfirmationKey.fromString(confirmationKeyString)
+    if (key == null) {
+        plugin.logger.warning("Invalid confirmation key '$confirmationKeyString'. Using default key '${ConfirmationKey.SWAP_HANDS.name}' instead.")
+        return@reloadable ConfirmationKey.SWAP_HANDS
+    }
+    key
+}
+
+
+enum class ConfirmationKey(val keybind: String) {
+    SWAP_HANDS("<key:key.swapOffhand>"),
+    JUMP("<key:key.jump>"),
+    SNEAK("<key:key.sneak>"),
+    ;
+
+    private inline fun <reified E : PlayerEvent> listenEvent(
+        listener: Listener,
+        playerUUID: UUID,
+        crossinline block: () -> Unit
+    ) {
+        plugin.listen(
+            listener,
+            EventPriority.HIGHEST,
+        ) event@{ event: E ->
+            if (event.player.uniqueId != playerUUID) return@event
+            if (event is PlayerToggleSneakEvent && !event.isSneaking) return@event // Otherwise the event is fired twice
+            block()
+            if (event is Cancellable) event.isCancelled = true
+        }
+    }
+
+    fun listen(listener: Listener, playerUUID: UUID, block: () -> Unit) {
+        when (this) {
+            SWAP_HANDS -> listenEvent<PlayerSwapHandItemsEvent>(listener, playerUUID, block)
+            JUMP -> listenEvent<PlayerJumpEvent>(listener, playerUUID, block)
+            SNEAK -> listenEvent<PlayerToggleSneakEvent>(listener, playerUUID, block)
+        }
+    }
+
+    companion object {
+        fun fromString(string: String): ConfirmationKey? {
+            return values().find { it.name.equals(string, true) }
+        }
     }
 }

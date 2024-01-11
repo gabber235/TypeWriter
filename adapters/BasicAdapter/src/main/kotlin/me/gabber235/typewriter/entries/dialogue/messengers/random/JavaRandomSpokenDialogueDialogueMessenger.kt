@@ -6,9 +6,9 @@ import me.gabber235.typewriter.entries.dialogue.RandomSpokenDialogueEntry
 import me.gabber235.typewriter.entries.dialogue.messengers.spoken.sendSpokenDialogue
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
+import me.gabber235.typewriter.entry.dialogue.confirmationKey
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import org.bukkit.entity.Player
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
 @Messenger(RandomSpokenDialogueEntry::class)
 class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpokenDialogueEntry) :
@@ -26,10 +26,8 @@ class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpo
         speakerDisplayName = entry.speakerDisplayName
         text = entry.messages.randomOrNull() ?: ""
 
-        listen<PlayerSwapHandItemsEvent> { event ->
-            if (event.player.uniqueId != player.uniqueId) return@listen
+        confirmationKey.listen(listener, player.uniqueId) {
             state = MessengerState.FINISHED
-            event.isCancelled = true
         }
     }
 
