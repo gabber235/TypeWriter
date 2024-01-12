@@ -21,6 +21,8 @@ import org.bukkit.inventory.ItemStack
 
 
 interface CitizensNpcData : NpcData<NPC> {
+    override val needsSync: Boolean
+        get() = true
 
     override fun spawn(player: Player, npc: NPC, location: Location) {
         val filter = npc.getOrAddTrait(PlayerFilter::class.java)

@@ -38,6 +38,9 @@ class NpcRecordedSegment(
 ) : Segment
 
 interface NpcData<N> {
+    val needsSync: Boolean
+        get() = false
+
     /// Create a new NPC with the data.
     fun create(player: Player, location: Location): N
 
@@ -82,8 +85,10 @@ class NpcCinematicAction<N>(
                 .mapNotNull { recording -> recordings[recording.artifact]?.firstNotNullWhere { it.location } }
                 .firstOrNull() ?: player.location
 
-        npc = data.create(player, firstLocation).apply {
-            data.spawn(player, this, firstLocation)
+        withCorrectContext {
+            npc = data.create(player, firstLocation).apply {
+                data.spawn(player, this, firstLocation)
+            }
         }
     }
 
@@ -93,17 +98,19 @@ class NpcCinematicAction<N>(
         val segment = (entry.recordedSegments activeSegmentAt frame) ?: return
         val recording = recordings[segment.artifact] ?: return
         val segmentFrame = frame - segment.startFrame
-        npc?.let {
-            handleMovement(player, it, recording.getFrame(segmentFrame) { location })
-            handleSneaking(player, it, recording.getFrame(segmentFrame) { sneaking })
-            handlePunching(player, it, recording.getExactFrame(segmentFrame) { swing })
+        withCorrectContext {
+            npc?.let {
+                handleMovement(player, it, recording.getFrame(segmentFrame) { location })
+                handleSneaking(player, it, recording.getFrame(segmentFrame) { sneaking })
+                handlePunching(player, it, recording.getExactFrame(segmentFrame) { swing })
 
-            handleInventory(player, it, HAND, recording.getExactFrame(segmentFrame) { mainHand })
-            handleInventory(player, it, OFF_HAND, recording.getExactFrame(segmentFrame) { offHand })
-            handleInventory(player, it, HEAD, recording.getExactFrame(segmentFrame) { helmet })
-            handleInventory(player, it, CHEST, recording.getExactFrame(segmentFrame) { chestplate })
-            handleInventory(player, it, LEGS, recording.getExactFrame(segmentFrame) { leggings })
-            handleInventory(player, it, FEET, recording.getExactFrame(segmentFrame) { boots })
+                handleInventory(player, it, HAND, recording.getExactFrame(segmentFrame) { mainHand })
+                handleInventory(player, it, OFF_HAND, recording.getExactFrame(segmentFrame) { offHand })
+                handleInventory(player, it, HEAD, recording.getExactFrame(segmentFrame) { helmet })
+                handleInventory(player, it, CHEST, recording.getExactFrame(segmentFrame) { chestplate })
+                handleInventory(player, it, LEGS, recording.getExactFrame(segmentFrame) { leggings })
+                handleInventory(player, it, FEET, recording.getExactFrame(segmentFrame) { boots })
+            }
         }
     }
 
@@ -129,8 +136,18 @@ class NpcCinematicAction<N>(
 
     override suspend fun teardown() {
         super.teardown()
-        withContext(plugin.minecraftDispatcher) {
+        withCorrectContext {
             npc?.let { data.teardown(player, it) }
+        }
+    }
+
+    private suspend inline fun withCorrectContext(crossinline block: suspend () -> Unit) {
+        if (data.needsSync) {
+            withContext(plugin.minecraftDispatcher) {
+                block()
+            }
+        } else {
+            block()
         }
     }
 
