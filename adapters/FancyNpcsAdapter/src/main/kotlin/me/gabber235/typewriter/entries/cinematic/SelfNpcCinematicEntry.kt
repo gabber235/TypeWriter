@@ -30,7 +30,7 @@ class SelfNpcCinematicEntry(
         return NpcCinematicAction(
             player,
             this,
-            PlayerNpcData(player),
+            PlayerNpcData(),
         )
     }
 }
