@@ -4,16 +4,14 @@ import App
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.Untested
 import me.gabber235.typewriter.logger
 
+@Untested
 @Adapter("SuperiorSkyblock", "For SuperiorSkyblock2, made by Caleb (Sniper)", App.VERSION)
 /**
  * The Superior Skyblock Adapter allows you to use the Superior Skyblock plugin with TypeWriter.
  * It includes many events for you to use in your dialogue, as well as a few actions and conditions.
- *
- * :::danger
- * This adapter is not tested. If you find any issues, please report them!
- * :::
  */
 object SuperiorSkyblockAdapter : TypewriteAdapter() {
     override fun initialize() {

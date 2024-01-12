@@ -3,13 +3,23 @@ use std::str::FromStr;
 use serde::Serialize;
 use thiserror::Error;
 
-use crate::treesitter::{query, QueryResult};
+use crate::{
+    entry_file_parser::{parse_field_annotations, FieldAnnotation},
+    treesitter::{query, QueryResult},
+};
 
 #[derive(Debug, Serialize, Clone)]
 pub struct AdapterClass {
     pub name: String,
     pub description: String,
     pub comment: Option<String>,
+    pub annotations: Vec<FieldAnnotation>,
+}
+
+impl AdapterClass {
+    pub fn has_annotation(&self, annotation: &str) -> bool {
+        self.annotations.iter().any(|a| a.name == annotation)
+    }
 }
 
 pub fn parse_adapter_class(code: &str) -> Result<AdapterClass, AdapterParseError> {
@@ -57,6 +67,7 @@ impl FromStr for AdapterClass {
             name,
             description,
             comment: parse_comment(s).ok(),
+            annotations: parse_field_annotations(s)?,
         })
     }
 }
@@ -64,18 +75,15 @@ impl FromStr for AdapterClass {
 fn get_annotation(code: &str) -> Result<String, AdapterParseError> {
     let annotation_code: QueryResult = query(&code, "(modifiers (annotation) @annotation)")?;
 
-    if annotation_code.captures.len() != 1 {
+    let Some(annotation) = annotation_code
+        .captures
+        .iter()
+        .find(|cap| cap.code.starts_with("@Adapter"))
+    else {
         return Err(AdapterParseError::NotAdapterClass);
-    }
+    };
 
-    let annotation = annotation_code.captures[0].code.clone();
-
-    // Make sure this is an @Adapter annotation
-    if annotation.starts_with("@Adapter") == false {
-        return Err(AdapterParseError::NotAdapterClass);
-    }
-
-    Ok(annotation)
+    return Ok(annotation.code.clone());
 }
 
 fn parse_annotation(code: &str) -> Result<(String, String), AdapterParseError> {
@@ -144,4 +152,7 @@ pub enum AdapterParseError {
 
     #[error("The {0} field was not found")]
     FieldNotFound(String),
+
+    #[error("Error parsing field annotations")]
+    FieldAnnotationError(#[from] crate::entry_file_parser::EntryParseError),
 }

@@ -5,16 +5,14 @@ import com.github.sirblobman.combatlogx.api.ICombatLogX
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.Untested
 import me.gabber235.typewriter.logger
 import org.bukkit.Bukkit
 
+@Untested
 @Adapter("CombatLogX", "For Using CombatLogX", App.VERSION)
 /**
  * The CombatLogX Adapter allows you to create entries that are triggered when a player enters or leaves combat.
- *
- * :::danger
- * This adapter is not tested. If you find any issues, please report them!
- * :::
  */
 object CombatLogXAdapter : TypewriteAdapter() {
 

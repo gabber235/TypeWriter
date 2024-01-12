@@ -159,6 +159,8 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     ): AdapterData {
         val adapterAnnotation = adapterClass.getAnnotation(Adapter::class.java)
 
+        val flags = constructFlags(adapterClass)
+
         // Entries info
         val blueprints = constructEntryBlueprints(adapterAnnotation, entryClasses)
 
@@ -176,6 +178,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             adapterAnnotation?.name ?: "",
             adapterAnnotation?.description ?: "",
             adapterAnnotation?.version ?: "",
+            flags,
             blueprints,
             messengers,
             adapterListeners,
@@ -183,6 +186,16 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             entryMigrators,
             adapterClass,
         )
+    }
+
+    private fun constructFlags(adapterClass: Class<*>): List<AdapterFlag> {
+        val flags = mutableListOf<AdapterFlag>()
+
+        if (adapterClass.hasAnnotation(Untested::class)) {
+            flags.add(AdapterFlag.Untested)
+        }
+
+        return flags
     }
 
     private fun constructEntryBlueprints(adapter: Adapter, entryClasses: List<Class<*>>) =
@@ -272,6 +285,7 @@ data class AdapterData(
     val name: String,
     val description: String,
     val version: String,
+    val flags: List<AdapterFlag>,
     val entries: List<EntryBlueprint>,
     @Transient
     val messengers: List<MessengerData>,
@@ -297,12 +311,25 @@ data class AdapterData(
         display += padCount("📸", captureClasses.size, maxDigits)
         display += padCount("🚚", entryMigrators.size, maxDigits)
 
+        flags.filter { it.warning.isNotBlank() }.joinToString { it.warning }.let {
+            if (it.isNotBlank()) {
+                display += " ($it)"
+            }
+        }
+
         return display
     }
 
     private fun padCount(prefix: String, count: Int, maxDigits: Int): String {
         return " ${prefix}: ${" ".repeat((maxDigits - count.digits).coerceAtLeast(0))}$count"
     }
+}
+
+enum class AdapterFlag(val warning: String) {
+    /**
+     * The adapter is not tested and may not work.
+     */
+    Untested("⚠\uFE0F UNTESTED"),
 }
 
 // Annotation for marking a class as an adapter
@@ -327,3 +354,5 @@ annotation class Messenger(
     val priority: Int = 0,
 )
 
+@Target(AnnotationTarget.CLASS)
+annotation class Untested

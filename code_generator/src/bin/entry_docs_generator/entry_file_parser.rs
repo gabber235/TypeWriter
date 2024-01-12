@@ -287,7 +287,7 @@ fn parse_field_comment(code: &str) -> Result<String, EntryParseError> {
     Ok(comment)
 }
 
-fn parse_field_annotations(code: &str) -> Result<Vec<FieldAnnotation>, EntryParseError> {
+pub fn parse_field_annotations(code: &str) -> Result<Vec<FieldAnnotation>, EntryParseError> {
     let annotation_code = query(&code, "(modifiers (annotation) @annotation)")?;
 
     let captures = annotation_code.captures;

@@ -184,6 +184,13 @@ fn format_adapter_description(builder: &mut Builder, adapter: &AdapterParsed) {
     } else {
         builder.append_line(adapter.adapter_data.description.to_string());
     }
+
+    if adapter.adapter_data.has_annotation("Untested") {
+        builder.empty_line();
+        builder.append_line(":::caution Untested");
+        builder.append_line("This adapter is untested. It may not work as expected. Please report any issues you find.");
+        builder.append_line(":::");
+    }
 }
 
 fn format_adapter_entries(
