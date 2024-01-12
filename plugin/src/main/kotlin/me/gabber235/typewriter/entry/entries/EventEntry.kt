@@ -63,7 +63,9 @@ interface EventTrigger {
     val id: String
 }
 
-data class EntryTrigger(override val id: String) : EventTrigger
+data class EntryTrigger(override val id: String) : EventTrigger {
+    constructor(entry: Entry) : this(entry.id)
+}
 
 enum class SystemTrigger : EventTrigger {
     DIALOGUE_NEXT,
