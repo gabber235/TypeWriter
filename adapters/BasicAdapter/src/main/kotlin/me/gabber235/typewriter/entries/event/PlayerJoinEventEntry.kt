@@ -25,6 +25,5 @@ class PlayerJoinEventEntry(
 
 @EntryListener(PlayerJoinEventEntry::class)
 fun onJoin(event: PlayerJoinEvent, query: Query<PlayerJoinEventEntry>) {
-    println("Player ${event.player.name} joined the server: ${query.find()}")
     query.find() triggerAllFor event.player
 }
