@@ -35,6 +35,10 @@ jobs:
               - adapters/VaultAdapter/**
             worldguard_adapter:
               - adapters/WorldGuardAdapter/**
+            znpcs_adapter:
+              - adapters/ZNPCsPlusAdapter/**
+            fancynpcs_adapter:
+              - adapters/FancyNpcsAdapter/**
 
   build-plugin:
     name: Build Typewriter Plugin
@@ -107,3 +111,18 @@ jobs:
     with:
       adapter: WorldGuardAdapter
 
+  build-adapter-znpcs:
+    name: Build ZNPCsPlus Adapter
+    needs: changes
+    if: needs.changes.outputs.znpcs_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: ZNPCsPlusAdapter
+
+  build-adapter-fancynpcs:
+    name: Build FancyNpcs Adapter
+    needs: changes
+    if: needs.changes.outputs.fancynpcs_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: FancyNpcsAdapter

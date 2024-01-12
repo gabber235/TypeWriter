@@ -61,10 +61,10 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: WorldGuardAdapter
-      - name: Build ZNPCs Adapter
+      - name: Build ZNPCsPlus Adapter
         uses: ./.github/actions/build-adapter
         with:
-          adapter: ZNPCsAdapter
+          adapter: ZNPCsPlusAdapter
       - name: Build FancyNpcs Adapter
         uses: ./.github/actions/build-adapter
         with:
