@@ -26,11 +26,11 @@ import java.time.Duration
  * This entry could be used to show a title during a cinematic, such as a title for a cutscene.
  */
 class TitleCinematicEntry(
-    override val id: String,
-    override val name: String,
-    override val criteria: List<Criteria>,
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
     @Segments(icon = Icons.PARAGRAPH)
-    val segments: List<TitleSegment>,
+    val segments: List<TitleSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
         return TitleCinematicAction(
@@ -41,8 +41,8 @@ class TitleCinematicEntry(
 }
 
 data class TitleSegment(
-    override val startFrame: Int,
-    override val endFrame: Int,
+    override val startFrame: Int = 0,
+    override val endFrame: Int = 0,
     @Help("The title to show")
     val title: String = "",
     @Help("The subtitle to show")
