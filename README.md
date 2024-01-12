@@ -14,6 +14,12 @@ The plugin can also be extended using adapters, which are [pre-made](https://gab
 
 To get started with Typewriter, see the [Getting Started](#getting-started) section.
 
+### Sponsors
+
+Thanks to the following sponsors for supporting this project:
+<!-- sponsors -->
+<!-- sponsors -->
+
 ### Examples
 
 ![cinematic](readme/cinematic.gif)
