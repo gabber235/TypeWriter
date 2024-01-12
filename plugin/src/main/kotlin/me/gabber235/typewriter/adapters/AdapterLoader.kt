@@ -11,6 +11,7 @@ import me.gabber235.typewriter.entry.EntryMigrations
 import me.gabber235.typewriter.entry.EntryMigrator
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.entries.DialogueEntry
+import me.gabber235.typewriter.entry.entries.NpcRecordedDataCapturer
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
@@ -41,6 +42,7 @@ val staticCaptureClasses by lazy {
     listOf(
         LocationFieldCapturer::class,
         ItemFieldCapturer::class,
+        NpcRecordedDataCapturer::class,
     )
 }
 
