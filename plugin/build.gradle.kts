@@ -8,9 +8,16 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = project.findProperty("group")?.toString() ?: "com.github.gabber235"
+fun Project.findPropertyOr(property: String, default: String): String {
+    val prop = findProperty(property)?.toString() ?: ""
+    if (prop.isBlank()) return default
+    if (prop == "unspecified") return default
+    return prop
+}
+
+group = project.findPropertyOr("group", "com.github.gabber235")
 val versionFile = if (file("version.txt").exists()) file("version.txt") else file("../version.txt")
-version = project.findProperty("version")?.toString() ?: versionFile.readText().trim()
+version = project.findPropertyOr("version", versionFile.readText().trim())
 
 repositories {
     mavenCentral()
