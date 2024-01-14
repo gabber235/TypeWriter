@@ -139,3 +139,24 @@ task<ShadowJar>("buildRelease") {
         file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
     }
 }
+
+val sourceJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets["main"].allSource)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+
+            artifact(tasks.named<ShadowJar>("shadowJar").get()) {
+                classifier = "all"
+            }
+
+            artifact(sourceJar.get())
+        }
+    }
+}
