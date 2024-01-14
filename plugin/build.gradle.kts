@@ -8,9 +8,9 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "com.github.gabber235"
+group = project.findProperty("group")?.toString() ?: "com.github.gabber235"
 val versionFile = if (file("version.txt").exists()) file("version.txt") else file("../version.txt")
-version = versionFile.readText().trim()
+version = project.findProperty("version")?.toString() ?: versionFile.readText().trim()
 
 repositories {
     mavenCentral()
