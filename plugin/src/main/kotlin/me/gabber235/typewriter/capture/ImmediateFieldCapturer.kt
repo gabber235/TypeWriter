@@ -16,7 +16,7 @@ open class ImmediateFieldCapturer<T>(
     private val gson: Gson by inject(Gson::class.java, named("entryParser"))
     private val stagingManager: StagingManager by inject(StagingManager::class.java)
     private val clientSynchronizer: ClientSynchronizer by inject(ClientSynchronizer::class.java)
-    override fun capture(player: Player): T {
+    override suspend fun capture(player: Player): T {
         val result = capturer.capture(player)
         val data = gson.toJsonTree(result)
 

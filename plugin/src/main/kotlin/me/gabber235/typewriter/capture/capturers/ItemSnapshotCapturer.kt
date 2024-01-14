@@ -6,7 +6,7 @@ import me.gabber235.typewriter.utils.toItem
 import org.bukkit.entity.Player
 
 class ItemSnapshotCapturer(override val title: String) : ImmediateCapturer<Item> {
-    override fun capture(player: Player): Item {
+    override suspend fun capture(player: Player): Item {
         return player.inventory.itemInMainHand.toItem()
     }
 }

@@ -7,7 +7,7 @@ sealed interface Capturer<T> {
 }
 
 interface ImmediateCapturer<T> : Capturer<T> {
-    fun capture(player: Player): T
+    suspend fun capture(player: Player): T
 }
 
 interface RecordedCapturer<T> : Capturer<T> {
