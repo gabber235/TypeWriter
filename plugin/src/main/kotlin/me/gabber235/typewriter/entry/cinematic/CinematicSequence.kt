@@ -7,6 +7,7 @@ import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.triggerEntriesFor
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.events.AsyncCinematicEndEvent
+import me.gabber235.typewriter.events.AsyncCinematicStartEvent
 import me.gabber235.typewriter.events.AsyncCinematicTickEvent
 import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.startBlockingMessages
@@ -38,6 +39,10 @@ class CinematicSequence(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+
+        withContext(Dispatchers.IO) {
+            AsyncCinematicStartEvent(player).callEvent()
         }
     }
 
