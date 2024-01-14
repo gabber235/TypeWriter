@@ -125,8 +125,12 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             if (TypewriteAdapter::class.isSuperclassOf(it.clazz.kotlin)) {
                 val objectInstance = it.clazz.kotlin.objectInstance
                 if (objectInstance == null) {
-                    logger.warning("Failed to initialize adapter ${it.name}. Error: ${it.clazz.kotlin.simpleName} is not an object. Skipping initialization...")
-                    return@forEach
+                    try {
+                        it.clazz.getConstructor().newInstance()
+                    } catch (e: Exception) {
+                        logger.warning("Failed to initialize adapter ${it.name}. It is both not a kotlin object and has no empty constructor. Skipping initialization...")
+                        return@forEach
+                    }
                 }
                 TypewriteAdapter::class.cast(objectInstance).initialize()
             }
