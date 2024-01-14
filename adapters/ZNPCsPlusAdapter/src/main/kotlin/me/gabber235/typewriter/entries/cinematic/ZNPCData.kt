@@ -110,4 +110,22 @@ class ReferenceNpcData(private val npcId: String) : ZNPCData {
 
         return entry
     }
+
+    override fun spawn(player: Player, npc: NpcEntry, location: Location) {
+        val original = NpcApiProvider.get().npcRegistry.getById(npcId)
+            ?: throw IllegalArgumentException("NPC with id $npcId not found.")
+
+        original.npc.hide(player)
+
+        super.spawn(player, npc, location)
+    }
+
+    override fun teardown(player: Player, npc: NpcEntry) {
+        super.teardown(player, npc)
+
+        val original = NpcApiProvider.get().npcRegistry.getById(npcId)
+            ?: throw IllegalArgumentException("NPC with id $npcId not found.")
+
+        original.npc.show(player)
+    }
 }
