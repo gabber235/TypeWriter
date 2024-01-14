@@ -76,6 +76,8 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+
+    withSourcesJar()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -140,23 +142,15 @@ task<ShadowJar>("buildRelease") {
     }
 }
 
-val sourceJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(sourceSets["main"].allSource)
-}
-
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
-            groupId = project.group.toString()
-            artifactId = project.name
+        create<MavenPublication>("main") {
+            group = project.group
             version = project.version.toString()
+            artifactId = project.name
 
-            artifact(tasks.named<ShadowJar>("shadowJar").get()) {
-                classifier = "all"
-            }
-
-            artifact(sourceJar.get())
+            from(components["kotlin"])
+            artifact(tasks["sourcesJar"])
         }
     }
 }
