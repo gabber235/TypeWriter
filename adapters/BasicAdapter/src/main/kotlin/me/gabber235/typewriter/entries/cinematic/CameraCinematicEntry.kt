@@ -199,7 +199,7 @@ private suspend inline fun Player.teleportIfNeeded(
         plugin.minecraftDispatcher
     ) {
         teleport(location.clone().apply {
-            y += 10
+            y += 2
         })
         allowFlight = true
         isFlying = true
