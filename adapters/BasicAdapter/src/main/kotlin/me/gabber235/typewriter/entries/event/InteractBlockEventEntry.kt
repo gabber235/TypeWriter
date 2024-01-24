@@ -80,6 +80,10 @@ private fun hasItemInHand(player: Player, item: Item): Boolean {
     )
 }
 
+fun Location.isSameBlock(location: Location): Boolean {
+    return this.world == location.world && this.blockX == location.blockX && this.blockY == location.blockY && this.blockZ == location.blockZ
+}
+
 @EntryListener(InteractBlockEventEntry::class)
 fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventEntry>) {
     if (event.clickedBlock == null) return
@@ -94,7 +98,8 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
         if (!entry.interactionType.actions.contains(event.action)) return@findWhere false
 
         // Check if the player clicked on the correct location
-        if (!entry.location.map { it == event.clickedBlock!!.location }.orElse(true)) return@findWhere false
+        if (!entry.location.map { it.isSameBlock(event.clickedBlock!!.location) }
+                .orElse(true)) return@findWhere false
 
         // Check if the player is holding the correct item
         if (!hasItemInHand(event.player, entry.itemInHand)) return@findWhere false
