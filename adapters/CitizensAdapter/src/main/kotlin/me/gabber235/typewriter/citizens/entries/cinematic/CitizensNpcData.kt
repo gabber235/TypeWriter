@@ -98,8 +98,12 @@ data class ReferenceNpcData(val id: Int) : CitizensNpcData {
         if (original.hasTrait(SkinTrait::class.java)) {
             val originalSkin = original.getOrAddTrait(SkinTrait::class.java)
 
-            npc.getOrAddTrait(SkinTrait::class.java)
-                .setSkinPersistent(originalSkin.skinName ?: "", originalSkin.signature, originalSkin.texture)
+            if (originalSkin.signature == null || originalSkin.texture == null) {
+                npc.getOrAddTrait(SkinTrait::class.java).skinName = originalSkin.skinName ?: ""
+            } else {
+                npc.getOrAddTrait(SkinTrait::class.java)
+                    .setSkinPersistent(originalSkin.skinName ?: "", originalSkin.signature, originalSkin.texture)
+            }
         }
 
         if (original.requiresNameHologram()) {
