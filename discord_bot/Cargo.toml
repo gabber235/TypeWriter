@@ -1,0 +1,16 @@
+[package]
+name = "discord_bot"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dotenv = "0.15.0"
+graphql_client = "0.13.0"
+octocrab = "0.33.2"
+poise = "0.6.1"
+reqwest = "0.11.23"
+serde = { version = "1.0.195", features = ["derive"] }
+thiserror = "1.0.56"
+tokio = { version = "1.35.1", features = ["rt-multi-thread"] }
