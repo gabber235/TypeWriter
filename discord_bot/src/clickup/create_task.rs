@@ -25,7 +25,7 @@ pub struct CustomField {
 
 #[derive(Debug, Deserialize)]
 pub struct CreateTaskResponse {
-    url: String,
+    id: String,
 }
 
 pub async fn create_task_in_clickup(
@@ -62,11 +62,17 @@ pub async fn create_task_in_clickup(
         .send()
         .await?;
 
-    // let text = result.text().await?;
-    // println!("{}", text);
-    //
-    // Ok("".to_string())
-    let response: CreateTaskResponse = result.json().await?;
+    if !result.status().is_success() {
+        return Err(WinstonError::ClickupApiError(
+            result.status().as_u16(),
+            result.text().await?,
+        ));
+    }
 
-    Ok(response.url)
+    let response: CreateTaskResponse = result.json().await?;
+    let url = format!(
+        "https://sharing.clickup.com/9015308602/v/6-901502296591-2/t/h/{}/a4c4c9d59ec667d",
+        response.id
+    );
+    Ok(url)
 }

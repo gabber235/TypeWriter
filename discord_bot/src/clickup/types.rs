@@ -1,10 +1,12 @@
 use std::fmt::Display;
 
+use strum::EnumIter;
+
 pub trait ClickupIdentifiable {
     fn clickup_id(&self) -> String;
 }
 
-#[derive(Debug, poise::ChoiceParameter)]
+#[derive(Debug, poise::ChoiceParameter, EnumIter, Hash, PartialEq, Eq, Clone)]
 pub enum TaskStatus {
     #[name = "📋 Backlog"]
     Backlog,
@@ -53,7 +55,7 @@ impl ClickupIdentifiable for TaskStatus {
 pub enum TaskTag {
     #[name = "🐛 Bug"]
     Bug,
-    #[name = "🚀 Feature"]
+    #[name = "🎁 Feature"]
     Feature,
     #[name = "📖 Documentation"]
     Documentation,
@@ -63,7 +65,7 @@ impl Display for TaskTag {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             TaskTag::Bug => write!(f, "🐛 Bug"),
-            TaskTag::Feature => write!(f, "🚀 Feature"),
+            TaskTag::Feature => write!(f, "🎁 Feature"),
             TaskTag::Documentation => write!(f, "📖 Documentation"),
         }
     }
