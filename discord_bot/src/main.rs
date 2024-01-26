@@ -1,9 +1,14 @@
+use once_cell::sync::Lazy;
 use poise::serenity_prelude as serenity;
 
+mod clickup;
 mod commands;
-mod github;
 
 use commands::*;
+use reqwest::{
+    header::{HeaderMap, HeaderValue, AUTHORIZATION},
+    Client,
+};
 
 pub struct Data {} // User data, which is stored and accessible in all command invocations
 pub type Context<'a> = poise::Context<'a, Data, WinstonError>;
@@ -11,26 +16,42 @@ pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, WinstonErr
 
 const GUILD_ID: serenity::GuildId = serenity::GuildId::new(1054708062520360960);
 const CONTRIBUTOR_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1054708457535713350);
-const GITHUB_PROJECT_ID: &str = "PVT_kwHOAPaj_s4AYpTR";
+
+const CLICKUP_LIST_ID: &str = "901502296591";
+
+static CLIENT: Lazy<Client> = Lazy::new(|| {
+    let mut headers = HeaderMap::new();
+
+    headers.insert(
+        reqwest::header::CONTENT_TYPE,
+        HeaderValue::from_static("application/json"),
+    );
+
+    let mut auth_value = HeaderValue::from_str(
+        std::env::var("CLICKUP_TOKEN")
+            .expect("missing CLICKUP_TOKEN")
+            .as_str(),
+    )
+    .expect("failed to create header value");
+    auth_value.set_sensitive(true);
+    headers.insert(AUTHORIZATION, auth_value);
+
+    Client::builder()
+        .default_headers(headers)
+        .build()
+        .expect("failed to build reqwest client")
+});
 
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-
-    let github_token = std::env::var("GITHUB_TOKEN").expect("missing GITHUB_TOKEN");
-    octocrab::initialise(
-        octocrab::Octocrab::builder()
-            .personal_token(github_token)
-            .build()
-            .expect("failed to initialise octocrab"),
-    );
 
     let discord_token = std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN");
     let intents = serenity::GatewayIntents::non_privileged();
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![create_card()],
+            commands: vec![create_task()],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
         })
@@ -72,11 +93,8 @@ pub enum WinstonError {
     #[error("Discord error: {0}")]
     Discord(#[from] serenity::Error),
 
-    #[error("Octocrab error: {0}")]
-    Octocrab(#[from] octocrab::Error),
-
-    #[error("Github error: {0:?}")]
-    GithubError(Vec<graphql_client::Error>),
+    #[error("Reqwest error: {0}")]
+    Reqwest(#[from] reqwest::Error),
 
     #[error("Query error: {0}")]
     QueryError(String),

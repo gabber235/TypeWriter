@@ -7,10 +7,10 @@ edition = "2021"
 
 [dependencies]
 dotenv = "0.15.0"
-graphql_client = "0.13.0"
-octocrab = "0.33.2"
+once_cell = "1.19.0"
 poise = "0.6.1"
-reqwest = "0.11.23"
+reqwest = { version = "0.11.23", features = ["json"] }
 serde = { version = "1.0.195", features = ["derive"] }
+serde_json = "1.0.111"
 thiserror = "1.0.56"
 tokio = { version = "1.35.1", features = ["rt-multi-thread"] }
