@@ -101,7 +101,7 @@ class ReferenceNpcData(private val npcId: String) : FancyNpcData {
             ogData.equipment,
             false,
             {},
-            "",
+            emptyList(),
             "",
             "",
             0f,

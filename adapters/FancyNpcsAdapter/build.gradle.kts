@@ -35,7 +35,7 @@ dependencies {
     compileOnly("net.kyori:adventure-text-minimessage:4.13.1")
 
     // External dependencies
-    compileOnly("de.oliver:FancyNpcs:2.0.6.1")
+    compileOnly("de.oliver:FancyNpcs:2.0.7")
 
     testImplementation(kotlin("test"))
 }
