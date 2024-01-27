@@ -127,6 +127,7 @@ async fn startup_discord_bot() {
         .build();
 
     let client = serenity::ClientBuilder::new(discord_token, intents)
+        .event_handler(TaskFixedHandler)
         .framework(framework)
         .await;
 

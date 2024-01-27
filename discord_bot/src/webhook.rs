@@ -48,6 +48,7 @@ pub async fn clickup_webhook(req: HttpRequest, bytes: Bytes) -> impl Responder {
     let result = match event {
         Event::TaskCreated(e) => crate::webhooks::handle_task_created(e).await,
         Event::TaskUpdated(e) => crate::webhooks::handle_task_updated(e).await,
+        Event::TaskStatusUpdated(e) => crate::webhooks::handle_task_status_updated(e).await,
         _ => Ok(()),
     };
 

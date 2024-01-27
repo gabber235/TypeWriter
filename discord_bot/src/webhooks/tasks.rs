@@ -2,24 +2,31 @@ use std::collections::HashMap;
 
 use indoc::formatdoc;
 use itertools::Itertools;
-use poise::serenity_prelude::{ChannelId, CreateMessage, EditThread, ForumTag, ForumTagId};
+use poise::serenity_prelude::{
+    ButtonStyle, ChannelId, CreateButton, CreateMessage, EditThread, ForumTag, ForumTagId,
+    ReactionType,
+};
 
 use crate::{
     clickup::{get_task_from_clickup, TaskStatus},
     get_discord,
-    webhook::{TaskCreated, TaskUpdated},
+    webhook::{TaskCreated, TaskStatusUpdated, TaskUpdated},
     WinstonError,
 };
 
 pub async fn handle_task_created(event: TaskCreated) -> Result<(), WinstonError> {
-    update_discord_channel(&event.task_id).await
+    update_discord_channel(&event.task_id, false).await
 }
 
 pub async fn handle_task_updated(event: TaskUpdated) -> Result<(), WinstonError> {
-    update_discord_channel(&event.task_id).await
+    update_discord_channel(&event.task_id, false).await
 }
 
-async fn update_discord_channel(task_id: &str) -> Result<(), WinstonError> {
+pub async fn handle_task_status_updated(event: TaskStatusUpdated) -> Result<(), WinstonError> {
+    update_discord_channel(&event.task_id, true).await
+}
+
+async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), WinstonError> {
     let discord = get_discord()?;
 
     let task = get_task_from_clickup(task_id).await?;
@@ -74,7 +81,11 @@ async fn update_discord_channel(task_id: &str) -> Result<(), WinstonError> {
         task.tags
             .iter()
             .map(|tag| tag.name.to_string())
-            .filter_map(|name| available_tags.iter().find(|tag| tag.name == name))
+            .filter_map(|name| {
+                available_tags
+                    .iter()
+                    .find(|tag| tag.name.to_lowercase() == name.to_lowercase())
+            })
             .map(|tag| tag.id.clone()),
     );
 
@@ -91,6 +102,10 @@ async fn update_discord_channel(task_id: &str) -> Result<(), WinstonError> {
                 .archived(lock),
         )
         .await?;
+
+    if !moved {
+        return Ok(());
+    }
 
     if TaskStatus::InProduction == status {
         let _ = channel
@@ -113,9 +128,20 @@ async fn update_discord_channel(task_id: &str) -> Result<(), WinstonError> {
                 CreateMessage::default().content(formatdoc! {"
                         # In Development
                         This task has been marked as **In Development**.
-                        Please test out the latest build [here]({}). If you find any bugs, please report them!
-                        This way, we can make sure that the next release is as stable as possible.
-                        ", "https://modrinth.com/plugin/typewriter/versions?c=beta"}),
+                        Please test out the latest build [here]({}). 
+                        
+                        __Please confirm that this issue has been fixed by clicking the button below.__
+                        __If the issue persists, indicate that by clicking the button below.__
+                        ", "https://modrinth.com/plugin/typewriter/versions?c=beta"})
+                                  .button(CreateButton::new(format!("task-fixed-{}", task_id))
+                                          .label("Fixed")
+                                          .style(ButtonStyle::Success)
+                                          .emoji(ReactionType::Unicode("👍".to_string())))
+                                  .button(CreateButton::new(format!("task-broken-{}", task_id))
+                                          .label("Broken")
+                                          .style(ButtonStyle::Danger)
+                                          .emoji(ReactionType::Unicode("🚧".to_string())))
+                                  ,
             )
             .await?;
     }

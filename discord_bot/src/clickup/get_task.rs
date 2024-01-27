@@ -1,7 +1,4 @@
-use crate::{
-    webhook::{TaskTag, User},
-    WinstonError, CLIENT,
-};
+use crate::{webhook::TaskTag, WinstonError, CLIENT};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use strum::IntoEnumIterator;

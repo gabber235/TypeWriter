@@ -25,7 +25,7 @@ pub async fn create_task(
                 .embed(
                     embed_card_data(&title, &description, &priority, &size, &tags).color(0x1F85DE),
                 )
-                .content("Creating card..."),
+                .content("Creating task..."),
         )
         .await?;
 
@@ -43,7 +43,7 @@ pub async fn create_task(
         handle
             .edit(
                 ctx,
-                CreateReply::default().content(format!("Failed to create card: {}", e)),
+                CreateReply::default().content(format!("Failed to create task: {}", e)),
             )
             .await?;
         return Err(e);
@@ -57,7 +57,7 @@ pub async fn create_task(
         .send_message(
             ctx,
             CreateMessage::default()
-                .content("This ticket has been linked to the following card:")
+                .content("This ticket has been linked to the following task:")
                 .embed(
                     embed_card_data(&title, &description, &priority, &size, &tags)
                         .color(0x78ee5c)
