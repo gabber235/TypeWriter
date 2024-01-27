@@ -18,7 +18,7 @@ import java.util.*
 interface ZNPCData : NpcData<NpcEntry> {
     override fun spawn(player: Player, npc: NpcEntry, location: Location) {
         npc.npc.location = NpcLocation(location)
-        npc.isProcessed = true
+        npc.isProcessed = false
         npc.isSave = false
         npc.npc.show(player)
     }
