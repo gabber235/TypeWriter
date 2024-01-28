@@ -120,6 +120,9 @@ data class ReferenceNpcData(val id: Int) : CitizensNpcData {
             }
         }
 
+        val namePlateVisible = original.data().get(NPC.Metadata.NAMEPLATE_VISIBLE, true).toString().toBoolean()
+        npc.data()[NPC.Metadata.NAMEPLATE_VISIBLE] = namePlateVisible
+
         return npc
     }
 
