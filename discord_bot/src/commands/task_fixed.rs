@@ -76,15 +76,20 @@ impl EventHandler for TaskFixedHandler {
             return;
         };
 
-        // Only allow the owner to change the status
-        if component.user.id != owner_id {
+        let is_contributor = component
+            .user
+            .has_role(&ctx, guild_channel.guild_id, CONTRIBUTOR_ROLE_ID)
+            .await
+            .unwrap_or(false);
+
+        // Only allow the owner to change the status, or a contributor
+        if component.user.id != owner_id && !is_contributor {
             update_response(
                 &ctx,
                 &component,
                 "Only the original ticket creator can change the status of the task.",
             )
             .await;
-            eprintln!("User is not the owner");
             return;
         }
 
