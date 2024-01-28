@@ -4,7 +4,7 @@ use indoc::formatdoc;
 use itertools::Itertools;
 use poise::serenity_prelude::{
     ButtonStyle, ChannelId, CreateButton, CreateMessage, EditThread, ForumTag, ForumTagId,
-    ReactionType,
+    Mentionable, ReactionType,
 };
 
 use crate::{
@@ -122,26 +122,38 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
     }
 
     if TaskStatus::InBeta == status {
+        let Some(owner) = channel
+            .to_channel(&discord)
+            .await?
+            .guild()
+            .ok_or(WinstonError::NotAGuildChannel)?
+            .owner_id
+        else {
+            return Ok(());
+        };
         let _ = channel
             .send_message(
                 &discord,
-                CreateMessage::default().content(formatdoc! {"
+                CreateMessage::default()
+                    .content(formatdoc! {"
                         # In Development
                         This task has been marked as **In Development**.
-                        Please test out the latest build [here]({}). 
+                        You can download latest build [here]({}). 
                         
-                        __Please confirm that this issue has been fixed by clicking the button below.__
-                        __If the issue persists, indicate that by clicking the button below.__
-                        ", "https://modrinth.com/plugin/typewriter/versions?c=beta"})
-                                  .button(CreateButton::new(format!("task-fixed-{}", task_id))
-                                          .label("Fixed")
-                                          .style(ButtonStyle::Success)
-                                          .emoji(ReactionType::Unicode("👍".to_string())))
-                                  .button(CreateButton::new(format!("task-broken-{}", task_id))
-                                          .label("Broken")
-                                          .style(ButtonStyle::Danger)
-                                          .emoji(ReactionType::Unicode("🚧".to_string())))
-                                  ,
+                        __{}: Please verify that this task is fixed or still broken, and indicate by clicking the button below.__
+                        ", "https://modrinth.com/plugin/typewriter/versions?c=beta", owner.mention()})
+                    .button(
+                        CreateButton::new(format!("task-fixed-{}", task_id))
+                            .label("Fixed")
+                            .style(ButtonStyle::Success)
+                            .emoji(ReactionType::Unicode("👍".to_string())),
+                    )
+                    .button(
+                        CreateButton::new(format!("task-broken-{}", task_id))
+                            .label("Broken")
+                            .style(ButtonStyle::Danger)
+                            .emoji(ReactionType::Unicode("🚧".to_string())),
+                    ),
             )
             .await?;
     }
