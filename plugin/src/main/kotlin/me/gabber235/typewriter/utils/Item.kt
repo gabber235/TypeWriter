@@ -91,8 +91,8 @@ open class Item(
         if (item == null) return false
         if (material.isPresent && item.type != material.get()) return false
         if (amount.isPresent && item.amount != amount.get()) return false
-        if (name.isPresent && item.itemMeta?.displayName() != name.get().parsePlaceholders(player)
-                .asMini()
+        if (name.isPresent && item.itemMeta?.displayName()?.asMini() != name.get()
+                .parsePlaceholders(player)
         ) return false
         if (lore.isPresent) {
             val lore = item.itemMeta?.lore()?.joinToString("\n") { it.asMini() } ?: ""
