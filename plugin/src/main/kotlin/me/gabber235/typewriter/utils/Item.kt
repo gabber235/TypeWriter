@@ -22,7 +22,7 @@ open class Item(
     @InnerMin(Min(0))
     @Icon(Icons.HASHTAG)
     @Help("The amount of items.")
-    private val amount: Optional<Int> = Optional.empty(),
+    val amount: Optional<Int> = Optional.empty(),
     @Placeholder
     @Colored
     @Icon(Icons.TAG)
@@ -102,6 +102,26 @@ open class Item(
         if (flags.isPresent && item.itemMeta?.itemFlags?.toList() != flags.get()) return false
         if (nbt.isPresent && item.strippedTagNbtData.toString() != nbt.get()) return false
         return true
+    }
+
+    fun copy(
+        material: Optional<Material>? = null,
+        amount: Optional<Int>? = null,
+        name: Optional<String>? = null,
+        lore: Optional<String>? = null,
+//        enchantments: Optional<Map<Enchantment, Int>>? = null,
+        flags: Optional<List<ItemFlag>>? = null,
+        nbt: Optional<String>? = null,
+    ): Item {
+        return Item(
+            material = material ?: this.material,
+            amount = amount ?: this.amount,
+            name = name ?: this.name,
+            lore = lore ?: this.lore,
+//            enchantments = enchantments ?: this.enchantments,
+            flags = flags ?: this.flags,
+            nbt = nbt ?: this.nbt,
+        )
     }
 }
 
