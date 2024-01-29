@@ -15,9 +15,12 @@ pub async fn create_task(
     #[description = "The description of the task"] description: String,
     #[description = "The priority of this task"] priority: TaskPriority,
     #[description = "The time estimate for this task"] size: TaskSize,
-    #[description = "All the tags this task has"] tags: Vec<TaskTag>,
+    // Sadly discord doesn't support multiple tags yet
+    #[description = "All the tags this task has"] tags: TaskTag,
 ) -> Result<(), WinstonError> {
     let channel = ctx.channel_id();
+
+    let tags = [tags];
 
     let handle = ctx
         .send(
