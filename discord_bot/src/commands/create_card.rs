@@ -32,13 +32,25 @@ pub async fn create_task(
         )
         .await?;
 
+    let channel_id = channel.get().to_string();
+    let guild_id = channel
+        .to_channel(ctx)
+        .await?
+        .guild()
+        .ok_or(WinstonError::NotAGuildChannel)?
+        .id
+        .to_string();
+
+    let url = format!("https://discord.com/channels/{}/{}", guild_id, channel_id);
+
     let result = create_task_in_clickup(
         &title,
         &description,
         &priority,
         &size,
         &tags,
-        channel.get().to_string(),
+        channel_id,
+        url,
     )
     .await;
 

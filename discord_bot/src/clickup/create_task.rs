@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{WinstonError, CLICKUP_LIST_ID, CLIENT};
 
 use super::{
-    ClickupIdentifiable, TaskPriority, TaskSize, TaskStatus, TaskTag,
+    post_comment, ClickupIdentifiable, TaskPriority, TaskSize, TaskStatus, TaskTag,
     CLICKUP_CUSTOM_DISCORD_FIELD_ID, CLICKUP_CUSTOM_SIZE_FIELD_ID,
 };
 
@@ -35,6 +35,7 @@ pub async fn create_task_in_clickup(
     size: &TaskSize,
     tags: &[TaskTag],
     discord_channel_id: String,
+    discord_channel_url: String,
 ) -> Result<String, WinstonError> {
     let request = CreateTaskRequest {
         name: title.to_string(),
@@ -74,5 +75,8 @@ pub async fn create_task_in_clickup(
         "https://sharing.clickup.com/9015308602/v/6-901502296591-2/t/h/{}/a4c4c9d59ec667d",
         response.id
     );
+
+    post_comment(&response.id, &discord_channel_url).await?;
+
     Ok(url)
 }

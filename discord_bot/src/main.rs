@@ -28,6 +28,7 @@ const GUILD_ID: serenity::GuildId = serenity::GuildId::new(1054708062520360960);
 const CONTRIBUTOR_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1054708457535713350);
 
 const CLICKUP_LIST_ID: &str = "901502296591";
+const CLICKUP_USER_ID: u32 = 62541886;
 
 static CLIENT: Lazy<Client> = Lazy::new(|| {
     let mut headers = HeaderMap::new();
