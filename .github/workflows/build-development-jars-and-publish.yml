@@ -23,8 +23,8 @@ jobs:
         id: vars
         run: |
           version=$(cat version.txt)
-          short_sha=$(echo $GITHUB_SHA | cut -c1-7)
-          full_version="${version}-dev-${short_sha}"
+          run_number=${{ github.run_number }}
+          full_version="${version}-dev-${run_number}"
           echo $full_version > version.txt
           echo "version=$full_version" >> $GITHUB_OUTPUT
       - name: Build Plugin
@@ -87,7 +87,7 @@ jobs:
             purpur
           game-versions: |
             1.19.4
-            [1.20, 1.20.2]
+            [1.20, 1.20.4]
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
         with:
