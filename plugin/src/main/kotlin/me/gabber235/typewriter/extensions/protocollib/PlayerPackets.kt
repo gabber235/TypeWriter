@@ -37,7 +37,6 @@ fun Player.swingArm(entityId: Int, armSwing: ArmSwing) {
 fun Player.swingArm(entityId: Int, hand: EnumWrappers.Hand) {
     val packet = PacketContainer(PacketType.Play.Server.ANIMATION)
     packet.integers.write(0, entityId)
-    packet.entityUseActions.write(0, EnumWrappers.EntityUseAction.ATTACK)
-    packet.hands.write(0, hand)
+    packet.integers.write(1, if (hand == EnumWrappers.Hand.MAIN_HAND) 0 else 3)
     ProtocolLibrary.getProtocolManager().sendServerPacket(this, packet, false)
 }
