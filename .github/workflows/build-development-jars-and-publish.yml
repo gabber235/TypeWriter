@@ -8,6 +8,7 @@ on:
       - 'plugins/**'
       - 'adapters/**'
       - '.github/workflows/build-development-jars-and-publish.yml'
+  workflow_dispatch:
   
 jobs:
   build-publish-development:
