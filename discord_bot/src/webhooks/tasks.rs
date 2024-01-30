@@ -4,13 +4,13 @@ use indoc::formatdoc;
 use itertools::Itertools;
 use poise::serenity_prelude::{
     ButtonStyle, ChannelId, CreateButton, CreateMessage, EditThread, ForumTag, ForumTagId,
-    Mentionable, ReactionType,
+    Mentionable, ReactionType, UserId,
 };
 
 use crate::{
     clickup::{get_task_from_clickup, TaskStatus},
     get_discord,
-    webhook::{TaskCreated, TaskStatusUpdated, TaskUpdated},
+    webhook::{TaskCreated, TaskStatusUpdated, TaskTag, TaskUpdated},
     WinstonError,
 };
 
@@ -131,10 +131,21 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
         else {
             return Ok(());
         };
+
         let _ = channel
             .send_message(
                 &discord,
-                CreateMessage::default()
+                create_development_message(task_id, &owner, &task.tags),
+            )
+            .await?;
+    }
+
+    Ok(())
+}
+
+fn create_development_message(task_id: &str, owner: &UserId, tags: &[TaskTag]) -> CreateMessage {
+    if tags.iter().any(|tag| tag.name == "bug") {
+        return                 CreateMessage::default()
                     .content(formatdoc! {"
                         # In Development
                         This task has been marked as **In Development**.
@@ -153,12 +164,35 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
                             .label("Broken")
                             .style(ButtonStyle::Danger)
                             .emoji(ReactionType::Unicode("🚧".to_string())),
-                    ),
-            )
-            .await?;
+                    );
+    } else if tags.iter().any(|tag| tag.name == "feature") {
+        return CreateMessage::default()
+                    .content(formatdoc! {"
+                        # In Development
+                        This task has been marked as **In Development**.
+                        You can download latest build [here]({}). 
+                        
+                        __{}: Please verify that this task is correctly implemented or if it is broken, and indicate by clicking the button below.__
+                        ", "https://modrinth.com/plugin/typewriter/versions?c=beta", owner.mention()})
+                    .button(
+                        CreateButton::new(format!("task-implemented-{}", task_id))
+                            .label("Implemented")
+                            .style(ButtonStyle::Success)
+                            .emoji(ReactionType::Unicode("👍".to_string())),
+                    )
+                    .button(
+                        CreateButton::new(format!("task-broken-{}", task_id))
+                            .label("Broken")
+                            .style(ButtonStyle::Danger)
+                            .emoji(ReactionType::Unicode("🚧".to_string())),
+                    );
     }
 
-    Ok(())
+    return CreateMessage::default().content(formatdoc! {"
+                        # In Development
+                        This task has been marked as **In Development**.
+                        You can download latest build [here]({}). 
+                        ", "https://modrinth.com/plugin/typewriter/versions?c=beta"});
 }
 
 fn get_status_tags(available_tags: &[ForumTag]) -> HashMap<TaskStatus, ForumTagId> {

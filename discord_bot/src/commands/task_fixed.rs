@@ -20,7 +20,10 @@ impl EventHandler for TaskFixedHandler {
         };
 
         let custom_id = &component.data.custom_id;
-        if !custom_id.starts_with("task-fixed-") && !custom_id.starts_with("task-broken-") {
+        if !custom_id.starts_with("task-fixed-")
+            && !custom_id.starts_with("task-broken-")
+            && !custom_id.starts_with("task-implemented-")
+        {
             return;
         }
 
@@ -98,6 +101,10 @@ impl EventHandler for TaskFixedHandler {
                 update_response(&ctx, &component, "Marking task as fixed...").await;
                 mark_task_as_fixed(&ctx, &mut component, &task_id).await
             }
+            "implemented" => {
+                update_response(&ctx, &component, "Marking task as implemented...").await;
+                mark_task_as_implemented(&ctx, &mut component, &task_id).await
+            }
             "broken" => {
                 update_response(&ctx, &component, "Marking task as broken...").await;
                 mark_task_as_broken(&ctx, &mut component, &task_id).await
@@ -151,6 +158,36 @@ async fn mark_task_as_fixed(
                         # In Development (Fixed)
                         This task has been marked as **In Development**.
                         This has been verified to be **fixed** and can be downloaded [here]({}). 
+                  ", "https://modrinth.com/plugin/typewriter/versions?c=beta"}),
+        )
+        .await?;
+    Ok(())
+}
+
+async fn mark_task_as_implemented(
+    ctx: &Context,
+    interaction: &mut ComponentInteraction,
+    task_id: &str,
+) -> Result<(), WinstonError> {
+    add_tag_to_task(task_id, "implemented").await?;
+
+    update_response(
+        ctx,
+        interaction,
+        "Thanks for marking the task as implemented! This helps us keep track of the status of the task.",
+    )
+    .await;
+
+    interaction
+        .message
+        .edit(
+            ctx,
+            EditMessage::default()
+                .components(Vec::new())
+                .content(formatdoc! {"
+                        # In Development (Implemented)
+                        This task has been marked as **In Development**.
+                        This has been verified to be **implemented** and can be downloaded [here]({}). 
                   ", "https://modrinth.com/plugin/typewriter/versions?c=beta"}),
         )
         .await?;
