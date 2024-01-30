@@ -12,6 +12,9 @@ on:
 jobs:
   build-publish-development:
     runs-on: ubuntu-latest
+    concurrency:
+      group: build-publish-development
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
       - name: Setup Java 
