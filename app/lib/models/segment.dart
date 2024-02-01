@@ -44,8 +44,18 @@ extension SegmentX on Segment {
 
   IntRange get range => IntRange(startFrame, endFrame);
 
+  bool get isSingleFrame => maxFrames == 1;
+
   bool contains(int frame) => frame >= startFrame && frame < endFrame;
 
   bool overlaps(int startFrame, int endFrame) =>
       contains(startFrame) || contains(endFrame);
+
+  String get display {
+    if (isSingleFrame) {
+      return "$startFrame";
+    }
+
+    return "[$startFrame, $endFrame]";
+  }
 }
