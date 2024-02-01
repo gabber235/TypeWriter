@@ -11,7 +11,7 @@ struct CommentRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct CommentResponse {
-    pub id: String,
+    pub id: u64,
     pub hist_id: String,
     pub date: u64,
 }
