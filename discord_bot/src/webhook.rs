@@ -74,6 +74,7 @@ enum Event {
     TaskDueDateUpdated(TaskDueDateUpdated),
     TaskMoved(TaskMoved),
     TaskCommentCreated(TaskCommentCreated),
+    TaskCommentPosted(TaskCommentPosted),
     TaskCommentUpdated(TaskCommentUpdated),
     TaskTimeEstimateUpdated(TaskTimeEstimateUpdated),
     TaskTimeTrackedUpdated(TaskTimeTrackedUpdated),
@@ -222,6 +223,9 @@ struct TaskMoved {}
 
 #[derive(Debug, Deserialize)]
 struct TaskCommentCreated {}
+
+#[derive(Debug, Deserialize)]
+struct TaskCommentPosted {}
 
 #[derive(Debug, Deserialize)]
 struct TaskCommentUpdated {}
