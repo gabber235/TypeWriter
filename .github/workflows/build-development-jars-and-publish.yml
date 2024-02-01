@@ -5,8 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'plugins/**'
+      - 'plugin/**'
       - 'adapters/**'
+      - 'app/**'
       - '.github/workflows/build-development-jars-and-publish.yml'
   workflow_dispatch:
   
