@@ -38,7 +38,7 @@ pub async fn create_task(
         .await?
         .guild()
         .ok_or(WinstonError::NotAGuildChannel)?
-        .id
+        .guild_id
         .to_string();
 
     let url = format!("https://discord.com/channels/{}/{}", guild_id, channel_id);
