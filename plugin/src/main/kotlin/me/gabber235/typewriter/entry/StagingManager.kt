@@ -121,8 +121,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     override fun renamePage(oldName: String, newName: String): Result<String> {
-        val oldPage = pages[oldName] ?: return failure("Page '$oldName' does not exist")
         if (pages.containsKey(newName)) return failure("Page with that name already exists")
+        val oldPage = pages.remove(oldName) ?: return failure("Page '$oldName' does not exist")
 
         oldPage.addProperty("name", newName)
 
@@ -142,12 +142,6 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
     override fun deletePage(name: String): Result<String> {
         pages.remove(name) ?: return failure("Page does not exist")
-
-        // Delete from the file system
-        val file = stagingDir["$name.json"]
-        if (file.exists()) {
-            file.delete()
-        }
 
         autoSaver()
         return ok("Successfully deleted page with name $name")
@@ -249,6 +243,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
             }
             file.writeText(page.toString())
         }
+
+        dir.listFiles()?.filter { it.nameWithoutExtension !in pages.keys }?.forEach { it.delete() }
 
         stagingState = STAGING
     }
