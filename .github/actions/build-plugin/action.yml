@@ -7,7 +7,7 @@ runs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: "master"
+          channel: "beta"
       - name: Get Flutter dependencies
         run: flutter pub get
         shell: bash
