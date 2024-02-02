@@ -109,13 +109,37 @@ internal val String.v get() = SemanticVersion.fromString(this)
 data class SemanticVersion(
     val major: Int,
     val minor: Int,
-    val patch: Int
+    val patch: Int,
+    val type: VersionType = VersionType.RELEASE,
+    val buildNumber: Int = 0,
 ) : Comparable<SemanticVersion> {
     companion object {
         fun fromString(version: String): SemanticVersion {
-            val versionPart = version.split("-").first()
+            val versionParts = version.split("-")
+            val versionPart = versionParts[0]
             val parts = versionPart.split(".")
-            return SemanticVersion(parts[0].toInt(), parts[1].toInt(), parts[2].toInt())
+            if (parts.size != 3) {
+                throw IllegalArgumentException("Invalid version format: $version")
+            }
+
+            val (major, minor, patch) = parts.map { it.toInt() }
+
+            if (versionParts.size == 1) {
+                return SemanticVersion(major, minor, patch)
+            }
+
+            val type = when (versionParts[1]) {
+                "dev" -> VersionType.DEVELOPMENT
+                else -> VersionType.RELEASE
+            }
+
+            val buildNumber = if (versionParts.size == 3) {
+                versionParts[2].toInt()
+            } else {
+                0
+            }
+
+            return SemanticVersion(major, minor, patch, type, buildNumber)
         }
     }
 
@@ -126,10 +150,30 @@ data class SemanticVersion(
         if (minor != other.minor) {
             return minor - other.minor
         }
-        return patch - other.patch
+        if (patch != other.patch) {
+            return patch - other.patch
+        }
+
+        if (type != other.type) {
+            return when (type) {
+                VersionType.RELEASE -> 1
+                VersionType.DEVELOPMENT -> -1
+            }
+        }
+
+        return buildNumber - other.buildNumber
     }
 
     override fun toString(): String {
-        return "$major.$minor.$patch"
+        if (type == VersionType.RELEASE) {
+            return "$major.$minor.$patch"
+        }
+
+        return "$major.$minor.$patch-${type.suffix}-$buildNumber"
     }
+}
+
+enum class VersionType(val suffix: String) {
+    RELEASE(""),
+    DEVELOPMENT("dev"),
 }

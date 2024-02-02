@@ -10,6 +10,7 @@ import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.bstats.BStatsMetrics
+import me.gabber235.typewriter.extensions.modrinth.Modrinth
 import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.FactStorage
@@ -36,6 +37,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
 import java.util.logging.Logger
+import kotlin.time.Duration.Companion.seconds
 
 class Typewriter : KotlinPlugin(), KoinComponent {
 
@@ -113,6 +115,9 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             get<AdapterLoader>().initializeAdapters()
             get<EntryDatabase>().loadEntries()
             get<CommunicationHandler>().initialize()
+
+            delay(5.seconds)
+            Modrinth.initialize()
         }
     }
 

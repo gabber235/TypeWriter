@@ -34,8 +34,8 @@ repositories {
 }
 
 val centralDependencies = listOf(
-    "org.jetbrains.kotlin:kotlin-stdlib:1.8.20",
-    "org.jetbrains.kotlin:kotlin-reflect:1.8.20",
+    "org.jetbrains.kotlin:kotlin-stdlib:1.9.22",
+    "org.jetbrains.kotlin:kotlin-reflect:1.9.22",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1",
     "com.corundumstudio.socketio:netty-socketio:1.7.19", // Keep this on a lower version as the newer version breaks the ping
 )
