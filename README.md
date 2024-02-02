@@ -17,8 +17,7 @@ To get started with Typewriter, see the [Getting Started](#getting-started) sect
 ### Sponsors
 
 Thanks to the following sponsors for supporting this project:
-<!-- sponsors -->
-<!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/timmienl"><img src="https://github.com/timmienl.png" width="60px" alt="Timmie" /></a><!-- sponsors -->
 
 ### Examples
 
