@@ -18,12 +18,12 @@
         "@docusaurus/core": "^3.1.1",
         "@docusaurus/preset-classic": "^3.1.1",
         "@mdx-js/react": "^3.0.0",
-        "@rive-app/react-canvas": "^4.5.4",
-        "clsx": "^2.0.0",
-        "prism-react-renderer": "^2.1.0",
+        "@rive-app/react-canvas": "^4.7.1",
+        "clsx": "^2.1.0",
+        "prism-react-renderer": "^2.3.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-player": "^2.13.0",
+        "react-player": "^2.14.1",
         "rive-loader": "file:plugins/rive-loader"
     },
     "devDependencies": {
