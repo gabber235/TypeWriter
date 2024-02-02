@@ -15,6 +15,7 @@ import me.gabber235.typewriter.extensions.protocollib.BoatType
 import me.gabber235.typewriter.extensions.protocollib.ClientEntity
 import me.gabber235.typewriter.extensions.protocollib.spectateEntity
 import me.gabber235.typewriter.extensions.protocollib.stopSpectatingEntity
+import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
@@ -87,16 +88,6 @@ class CameraCinematicAction(
     override suspend fun setup() {
         super.setup()
 
-        segments = entry.segments.map { segment ->
-            if (player.isFloodgate) {
-                TeleportCameraSegmentAction(player, segment)
-            } else {
-                val hasSegmentBefore = entry.segments.any { it isActiveAt (segment.startFrame - 1) }
-                BoatCameraSegmentAction(player, segment, hasSegmentBefore)
-            }
-        }
-        segments.forEach { it.setup() }
-
         originalState = player.state(
             LOCATION,
             ALLOW_FLIGHT,
@@ -114,7 +105,29 @@ class CameraCinematicAction(
                 it.hidePlayer(plugin, player)
                 player.hidePlayer(plugin, it)
             }
+
+            // Move the player before to the first location. This will spawn the boats in the correct world.
+            // And gives the client time to load the chunks.
+            val firstLocation = entry.segments.firstOrNull()?.path?.firstOrNull()?.location
+            firstLocation?.let {
+                player.teleport(it)
+            }
         }
+
+
+        segments = entry.segments.mapNotNull { segment ->
+            if (segment.path.isEmpty()) {
+                logger.warning("Camera segment has no path in ${entry.id}, skipping.")
+                return@mapNotNull null
+            }
+            if (player.isFloodgate) {
+                TeleportCameraSegmentAction(player, segment)
+            } else {
+                val hasSegmentBefore = entry.segments.any { it isActiveAt (segment.startFrame - 1) }
+                BoatCameraSegmentAction(player, segment, hasSegmentBefore)
+            }
+        }
+        segments.forEach { it.setup() }
     }
 
     override suspend fun tick(frame: Int) {
@@ -194,7 +207,7 @@ private suspend inline fun Player.teleportIfNeeded(
         plugin.minecraftDispatcher
     ) {
         teleport(location.clone().apply {
-            y += 10
+            y += 2
         })
         allowFlight = true
         isFlying = true

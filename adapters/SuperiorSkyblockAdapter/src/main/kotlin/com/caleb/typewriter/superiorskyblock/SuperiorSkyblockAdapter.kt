@@ -4,8 +4,10 @@ import App
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.Untested
 import me.gabber235.typewriter.logger
 
+@Untested
 @Adapter("SuperiorSkyblock", "For SuperiorSkyblock2, made by Caleb (Sniper)", App.VERSION)
 /**
  * The Superior Skyblock Adapter allows you to use the Superior Skyblock plugin with TypeWriter.

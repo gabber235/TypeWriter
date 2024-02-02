@@ -6,11 +6,16 @@ import Link from '@docusaurus/Link';
 
 The `Remove Item Action` is an action that removes an item from the player's inventory.
 This action provides you with the ability to remove items from the player's inventory in response to specific events.
+<Admonition type="caution">
+This action will try to remove "as much as possible" but does not verify if the player has enough items in their inventory.
+If you want to guarantee that the player has enough items in their inventory, add an
+<Link to='../fact/inventory_item_count_fact'>Inventory Item Count Fact</Link> to the criteria.
+</Admonition>
 
 ## How could this be used?
 
 This can be used when `giving` an NPC an item, and you want to remove the item from the player's inventory.
-Or when you want to remove an item from the player's inventory when they complete a quest or achievement.
+Or when you want to remove a key from the player's inventory after they use it to unlock a door.
 
 
 ## Fields
@@ -18,15 +23,6 @@ Or when you want to remove an item from the player's inventory when they complet
 <fields.CriteriaField />
 <fields.ModifiersField />
 <fields.TriggersField />
-<fields.EntryField name='Material' required>
+<fields.EntryField name='Item' required>
      The item to remove.
-</fields.EntryField>
-<fields.EntryField name='Amount' required>
-     The amount of items to remove.
-</fields.EntryField>
-<fields.EntryField name='Exact Amount' required>
-     Does the player need to have the exact amount of items?
-</fields.EntryField>
-<fields.EntryField name='Item Name' optional placeholders colored>
-     If the name is given, the item must have the same name to be removed.
 </fields.EntryField>

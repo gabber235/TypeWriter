@@ -41,7 +41,32 @@ class RemoveItemActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        player.inventory.removeItemAnySlot(item.build(player))
+        // Because item.build() can return a identical looking item but with different data,
+        // we need to compare the items
+
+        val itemWithoutAmount = item.copy(amount = Optional.empty())
+
+        val items = player.inventory.contents.withIndex().filter {
+            itemWithoutAmount.isSameAs(player, it.value)
+        }.iterator()
+
+        println(items)
+
+        var toRemove = item.amount.orElse(1)
+
+        while (toRemove > 0 && items.hasNext()) {
+            val (index, item) = items.next()
+            if (item == null) continue
+            val amount = item.amount
+            if (amount > toRemove) {
+                item.amount = amount - toRemove
+                player.inventory.setItem(index, item)
+                break
+            } else {
+                toRemove -= amount
+                player.inventory.setItem(index, null)
+            }
+        }
     }
 }
 

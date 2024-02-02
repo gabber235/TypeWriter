@@ -6,7 +6,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 
 class LocationSnapshotCapturer(override val title: String) : ImmediateCapturer<Location> {
-    override fun capture(player: Player): Location {
+    override suspend fun capture(player: Player): Location {
         val location = player.location
         return Location(
             location.world,

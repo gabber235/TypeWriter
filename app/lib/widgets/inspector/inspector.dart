@@ -109,11 +109,15 @@ class EntryInspector extends HookConsumerWidget {
   const EntryInspector({
     this.ignoreFields = const [],
     this.actions = const [],
+    this.sections = const [],
     super.key,
   }) : super();
 
   final List<String> ignoreFields;
   final List<ContextMenuTile> actions;
+
+  /// Additional sections to display in the inspector.
+  final List<Widget> sections;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -140,6 +144,10 @@ class EntryInspector extends HookConsumerWidget {
             ignoreFields: ["id", "name", ...ignoreFields],
             defaultExpanded: true,
           ),
+          for (final section in sections) ...[
+            const Divider(),
+            section,
+          ],
           const Divider(),
           Operations(actions: actions),
           const SizedBox(height: 30),

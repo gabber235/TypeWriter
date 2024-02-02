@@ -14,12 +14,12 @@ This could allow you to make custom ores with custom drops, give the player a re
 ## Fields
 
 <fields.TriggersField />
+<fields.EntryField name='Block' optional>
+     The block that was broken.
+</fields.EntryField>
 <fields.EntryField name='Location' optional>
      The location of the block that was broken.
 </fields.EntryField>
-<fields.EntryField name='Item In Hand' optional>
+<fields.EntryField name='Item In Hand' required>
      The item the player must be holding when the block is broken.
-</fields.EntryField>
-<fields.EntryField name='Block' optional>
-     The block that was broken.
 </fields.EntryField>

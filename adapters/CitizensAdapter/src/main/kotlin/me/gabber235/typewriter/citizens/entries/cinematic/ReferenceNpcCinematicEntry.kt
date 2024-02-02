@@ -8,6 +8,9 @@ import me.gabber235.typewriter.citizens.entries.entity.ReferenceNpcEntry
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.CinematicAction
+import me.gabber235.typewriter.entry.entries.NpcCinematicAction
+import me.gabber235.typewriter.entry.entries.NpcCinematicEntry
+import me.gabber235.typewriter.entry.entries.NpcRecordedSegment
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 

@@ -5,6 +5,7 @@ import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entries.dialogue.SpokenDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
+import me.gabber235.typewriter.entry.dialogue.confirmationKey
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
@@ -14,7 +15,6 @@ import me.gabber235.typewriter.utils.asPartialFormattedMini
 import me.gabber235.typewriter.utils.toTicks
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import java.time.Duration
 
 val spokenFormat: String by snippet(
@@ -26,7 +26,7 @@ val spokenFormat: String by snippet(
 		|
 		|<message>
 		|
-		|<next_color>${" ".repeat(20)} Press<white> <key:key.swapOffhand> </white>to <finish_text>
+		|<next_color>${" ".repeat(20)} Press<white> <confirmation_key> </white>to <finish_text>
 		|<gray><st>${" ".repeat(60)}</st>
 		""".trimMargin()
 )
@@ -55,10 +55,8 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
         super.init()
         speakerDisplayName = entry.speakerDisplayName
 
-        listen<PlayerSwapHandItemsEvent> { event ->
-            if (event.player.uniqueId != player.uniqueId) return@listen
+        confirmationKey.listen(listener, player.uniqueId) {
             state = MessengerState.FINISHED
-            event.isCancelled = true
         }
     }
 

@@ -3,14 +3,21 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "1.9.22"
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "com.github.gabber235"
+fun Project.findPropertyOr(property: String, default: String): String {
+    val prop = findProperty(property)?.toString() ?: ""
+    if (prop.isBlank()) return default
+    if (prop == "unspecified") return default
+    return prop
+}
+
+group = project.findPropertyOr("group", "com.github.gabber235")
 val versionFile = if (file("version.txt").exists()) file("version.txt") else file("../version.txt")
-version = versionFile.readText().trim()
+version = project.findPropertyOr("version", versionFile.readText().trim())
 
 repositories {
     mavenCentral()
@@ -27,8 +34,8 @@ repositories {
 }
 
 val centralDependencies = listOf(
-    "org.jetbrains.kotlin:kotlin-stdlib:1.8.20",
-    "org.jetbrains.kotlin:kotlin-reflect:1.8.20",
+    "org.jetbrains.kotlin:kotlin-stdlib:1.9.22",
+    "org.jetbrains.kotlin:kotlin-reflect:1.9.22",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1",
     "com.corundumstudio.socketio:netty-socketio:1.7.19", // Keep this on a lower version as the newer version breaks the ping
 )
@@ -69,6 +76,8 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+
+    withSourcesJar()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -130,5 +139,18 @@ task<ShadowJar>("buildRelease") {
         val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
         jar.renameTo(file("build/libs/%s.jar".format(project.name)))
         file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("main") {
+            group = project.group
+            version = project.version.toString()
+            artifactId = project.name
+
+            from(components["kotlin"])
+            artifact(tasks["sourcesJar"])
+        }
     }
 }

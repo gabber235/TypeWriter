@@ -6,6 +6,3 @@ before_install:
   - find . ! -name '.git' ! -name 'plugin' ! -name 'version.txt' -maxdepth 1 -exec rm -rf {} \;
   - mv plugin/* .
   - rm -rf plugin
-install:
-  - echo "Installing with custom commands"
-  - ./gradlew clean build publishToMavenLocal -xtest

@@ -120,8 +120,10 @@ class InteractionHandler : Listener, KoinComponent {
 
     // When a player leaves the server, we need to end the interaction.
     @EventHandler(priority = EventPriority.MONITOR)
-    suspend fun onPlayerQuit(event: PlayerQuitEvent) {
-        interactions.remove(event.player.uniqueId)?.end()
+    fun onPlayerQuit(event: PlayerQuitEvent) {
+        runBlocking {
+            interactions.remove(event.player.uniqueId)?.end()
+        }
     }
 
     // When the plugin reloads, we need to end all interactions and create new ones.

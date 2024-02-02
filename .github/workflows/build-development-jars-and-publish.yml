@@ -5,8 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'plugins/**'
+      - 'plugin/**'
       - 'adapters/**'
+      - 'app/**'
       - '.github/workflows/build-development-jars-and-publish.yml'
   workflow_dispatch:
   
@@ -27,8 +28,8 @@ jobs:
         id: vars
         run: |
           version=$(cat version.txt)
-          short_sha=$(echo $GITHUB_SHA | cut -c1-7)
-          full_version="${version}-dev-${short_sha}"
+          run_number=${{ github.run_number }}
+          full_version="${version}-dev-${run_number}"
           echo $full_version > version.txt
           echo "version=$full_version" >> $GITHUB_OUTPUT
       - name: Build Plugin
@@ -65,6 +66,14 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: WorldGuardAdapter
+      - name: Build ZNPCsPlus Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: ZNPCsPlusAdapter
+      - name: Build FancyNpcs Adapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: FancyNpcsAdapter
       - name: Publish Development Jars
         uses: Kir-Antipov/mc-publish@v3.3
         id: publish
@@ -83,7 +92,7 @@ jobs:
             purpur
           game-versions: |
             1.19.4
-            [1.20, 1.20.2]
+            [1.20, 1.20.4]
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
         with:

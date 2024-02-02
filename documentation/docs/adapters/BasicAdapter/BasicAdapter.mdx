@@ -3,7 +3,7 @@
 The Basic Adapter contains all the essential entries for Typewriter.
 In most cases, it should be installed with Typewriter.
 If you haven't installed Typewriter or the adapter yet,
-please follow the [Installation Guide](/docs/Installation-Guide)
+please follow the [Installation Guide](../../docs/02-installation-guide.md)
 first.
 
 ## Entries
@@ -23,6 +23,8 @@ first.
 | [Player Command Action](BasicAdapter/entries/action/player_run_command) | Make player run command |
 | [Random Trigger Gate](BasicAdapter/entries/action/random_trigger) | Randomly selects its connected triggers |
 | [Remove Item Action](BasicAdapter/entries/action/remove_item) | Remove an item from the players inventory |
+| [Set Block Action](BasicAdapter/entries/action/set_block) | Set a block at a location |
+| [Set Item Action](BasicAdapter/entries/action/set_item) | Set an item in a specific slot |
 | [Show Title Action](BasicAdapter/entries/action/show_title) | Show a title to a player |
 | [Simple Action](BasicAdapter/entries/action/simple_action) | Simple action to modify facts |
 | [Spawn Particle Action](BasicAdapter/entries/action/spawn_particles) | Spawn particles at location |
@@ -36,7 +38,10 @@ first.
 | [Action Bar Dialogue Cinematic](BasicAdapter/entries/cinematic/actionbar_dialogue_cinematic) | Show an action bar typed dialogue |
 | [Blinding Cinematic](BasicAdapter/entries/cinematic/blinding_cinematic) | Blind the player so the screen looks black |
 | [Camera Cinematic](BasicAdapter/entries/cinematic/camera_cinematic) | Create a cinematic camera path |
+| [Cinematic Console Command](BasicAdapter/entries/cinematic/cinematic_console_command) | Runs command as the console at a specific frame. |
+| [Cinematic Player Command](BasicAdapter/entries/cinematic/cinematic_player_command) | Runs command as the player at a specific frame. |
 | [Particle Cinematic](BasicAdapter/entries/cinematic/particle_cinematic) | Spawn particles for a cinematic |
+| [Pumpkin Hat Cinematic](BasicAdapter/entries/cinematic/pumpkin_hat_cinematic) | Show a pumpkin hat during a cinematic |
 | [Random Action Bar Dialogue Cinematic](BasicAdapter/entries/cinematic/random_actionbar_dialogue_cinematic) | Show a random action bar typed dialogue |
 | [Random Spoken Dialogue Cinematic](BasicAdapter/entries/cinematic/random_spoken_dialogue_cinematic) | Play a random spoken dialogue cinematic |
 | [Random Subtitle Dialogue Cinematic](BasicAdapter/entries/cinematic/random_subtitle_dialogue_cinematic) | Show a random action bar message |
@@ -76,6 +81,8 @@ first.
 | [Player Join Event](BasicAdapter/entries/event/on_player_join) | When the player joins the server |
 | [Player Kill Entity Event](BasicAdapter/entries/event/on_player_kill_entity) | When a player kills an entity |
 | [Player Kill Player Event](BasicAdapter/entries/event/on_player_kill_player) | When a player kills a player |
+| [Player Near Location Event](BasicAdapter/entries/event/on_player_near_location) | When the player is near a certain location |
+| [Player Quit Event](BasicAdapter/entries/event/on_player_quit) | When the player quits the server |
 | [Run Command Event](BasicAdapter/entries/event/on_run_command) | When a player runs a custom command |
 
 ### Facts
@@ -89,4 +96,10 @@ first.
 | [Session Fact](BasicAdapter/entries/fact/session_fact) | Saved until a player logouts of the server |
 | [Timed Fact](BasicAdapter/entries/fact/timed_fact) | Saved for a specified duration, like 20 minutes |
 | [Value Placeholder Fact](BasicAdapter/entries/fact/value_placeholder) | Fact for a placeholder value |
+
+### Sounds
+
+| Name | Description |
+| ---- | ----------- |
+| [Custom Sound](BasicAdapter/entries/sound/custom_sound) | A custom sound |
 

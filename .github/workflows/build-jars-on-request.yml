@@ -56,3 +56,14 @@ jobs:
     with:
       adapter: WorldGuardAdapter
 
+  build-adapter-znpcs:
+    name: Build ZNPCsPlus Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: ZNPCsPlusAdapter
+
+  build-adapter-fancynpcs:
+    name: Build FancyNpcs Adapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: FancyNpcsAdapter

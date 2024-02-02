@@ -37,8 +37,41 @@ class InteractBlockEventEntry(
     @Help("The location of the block that was interacted with.")
     val location: Optional<Location> = Optional.empty(),
     @Help("The item the player must be holding when the block is interacted with.")
-    val itemInHand: Item = Item.Empty
+    val itemInHand: Item = Item.Empty,
+    @Help("Cancel the event when triggered")
+    /**
+     * Cancel the event when triggered.
+     * It will only cancel the event if all the criteria are met.
+     * If set to false, it will not modify the event.
+     */
+    val cancel: Boolean = false,
+    @Help("The type of interaction that should trigger the event.")
+    val interactionType: InteractionType = InteractionType.ALL,
+    @Help("The type of shift that should trigger the event.")
+    val shiftType: ShiftType = ShiftType.ANY,
 ) : EventEntry
+
+enum class ShiftType {
+    ANY,
+    SHIFT,
+    NO_SHIFT;
+
+    fun isApplicable(player: Player): Boolean {
+        return when (this) {
+            ANY -> true
+            SHIFT -> player.isSneaking
+            NO_SHIFT -> !player.isSneaking
+        }
+    }
+}
+
+enum class InteractionType(vararg val actions: Action) {
+    ALL(Action.RIGHT_CLICK_BLOCK, Action.LEFT_CLICK_BLOCK, Action.PHYSICAL),
+    CLICK(Action.RIGHT_CLICK_BLOCK, Action.LEFT_CLICK_BLOCK),
+    RIGHT_CLICK(Action.RIGHT_CLICK_BLOCK),
+    LEFT_CLICK(Action.LEFT_CLICK_BLOCK),
+    PHYSICAL(Action.PHYSICAL),
+}
 
 private fun hasItemInHand(player: Player, item: Item): Boolean {
     return item.isSameAs(player, player.inventory.itemInMainHand) || item.isSameAs(
@@ -47,22 +80,36 @@ private fun hasItemInHand(player: Player, item: Item): Boolean {
     )
 }
 
+fun Location.isSameBlock(location: Location): Boolean {
+    return this.world == location.world && this.blockX == location.blockX && this.blockY == location.blockY && this.blockZ == location.blockZ
+}
+
 @EntryListener(InteractBlockEventEntry::class)
 fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventEntry>) {
     if (event.clickedBlock == null) return
-    if (event.action != Action.RIGHT_CLICK_BLOCK) return
     // The even triggers twice. Both for the main hand and offhand.
     // We only want to trigger once.
     if (event.hand != org.bukkit.inventory.EquipmentSlot.HAND) return // Disable off-hand interactions
-    query findWhere { entry ->
+    val entries = query findWhere { entry ->
+        // Check if the player is sneaking
+        if (!entry.shiftType.isApplicable(event.player)) return@findWhere false
+
+        // Check if the player is interacting with the block in the correct way
+        if (!entry.interactionType.actions.contains(event.action)) return@findWhere false
+
         // Check if the player clicked on the correct location
-        if (!entry.location.map { it == event.clickedBlock!!.location }.orElse(true)) return@findWhere false
+        if (!entry.location.map { it.isSameBlock(event.clickedBlock!!.location) }
+                .orElse(true)) return@findWhere false
 
         // Check if the player is holding the correct item
         if (!hasItemInHand(event.player, entry.itemInHand)) return@findWhere false
 
         entry.block == event.clickedBlock!!.type
-    } startDialogueWithOrNextDialogue event.player
+    }
+    if (entries.isEmpty()) return
+
+    entries startDialogueWithOrNextDialogue event.player
+    if (entries.any { it.cancel }) event.isCancelled = true
 }
 
 @EntryMigration(InteractBlockEventEntry::class, "0.4.0")

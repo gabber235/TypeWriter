@@ -3,12 +3,11 @@ package me.gabber235.typewriter.utils
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.plugin
-import org.koin.core.component.KoinComponent
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 fun <T> reloadable(loader: () -> T) = Reloadable(loader)
-class Reloadable<T>(private val loader: () -> T) : ReadOnlyProperty<Any?, T>, KoinComponent {
+class Reloadable<T>(private val loader: () -> T) : ReadOnlyProperty<Any?, T> {
     private var value: T? = null
 
     init {

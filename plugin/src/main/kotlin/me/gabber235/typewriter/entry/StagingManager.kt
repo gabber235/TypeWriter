@@ -1,9 +1,6 @@
 package me.gabber235.typewriter.entry
 
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
+import com.google.gson.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import lirand.api.extensions.events.listen
@@ -124,8 +121,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     override fun renamePage(oldName: String, newName: String): Result<String> {
-        val oldPage = pages[oldName] ?: return failure("Page '$oldName' does not exist")
         if (pages.containsKey(newName)) return failure("Page with that name already exists")
+        val oldPage = pages.remove(oldName) ?: return failure("Page '$oldName' does not exist")
 
         oldPage.addProperty("name", newName)
 
@@ -145,12 +142,6 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
     override fun deletePage(name: String): Result<String> {
         pages.remove(name) ?: return failure("Page does not exist")
-
-        // Delete from the file system
-        val file = stagingDir["$name.json"]
-        if (file.exists()) {
-            file.delete()
-        }
 
         autoSaver()
         return ok("Successfully deleted page with name $name")
@@ -253,6 +244,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
             file.writeText(page.toString())
         }
 
+        dir.listFiles()?.filter { it.nameWithoutExtension !in pages.keys }?.forEach { it.delete() }
+
         stagingState = STAGING
     }
 
@@ -312,13 +305,23 @@ fun JsonElement.changePathValue(path: String, value: JsonElement) {
             if (current.isJsonObject) {
                 current.asJsonObject.add(key, value)
             } else if (current.isJsonArray) {
-                current.asJsonArray[Integer.parseInt(key)] = value
+                val i = Integer.parseInt(key)
+                while (current.asJsonArray.size() <= i) {
+                    current.asJsonArray.add(JsonNull.INSTANCE)
+                }
+                current.asJsonArray[i] = value
             }
         } else if (current.isJsonObject) {
-            current = current.asJsonObject[key] ?: JsonObject().also { current.asJsonObject.add(key, it) }
+            if (!current.asJsonObject.has(key)) {
+                current.asJsonObject.add(key, JsonObject())
+            }
+            current = current.asJsonObject[key]
         } else if (current.isJsonArray) {
-            current =
-                current.asJsonArray[Integer.parseInt(key)] ?: JsonObject().also { current.asJsonArray.add(it) }
+            val i = Integer.parseInt(key)
+            while (current.asJsonArray.size() <= i) {
+                current.asJsonArray.add(JsonObject())
+            }
+            current = current.asJsonArray[i]
         }
     }
 }

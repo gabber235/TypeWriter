@@ -20,6 +20,17 @@ This could be used to create special interactions with blocks, such as opening a
 <fields.EntryField name='Location' optional>
      The location of the block that was interacted with.
 </fields.EntryField>
-<fields.EntryField name='Item In Hand' optional>
+<fields.EntryField name='Item In Hand' required>
      The item the player must be holding when the block is interacted with.
+</fields.EntryField>
+<fields.EntryField name='Cancel' required>
+     Cancel the event when triggered.
+It will only cancel the event if all the criteria are met.
+If set to false, it will not modify the event.
+</fields.EntryField>
+<fields.EntryField name='Interaction Type' required>
+     The type of interaction that should trigger the event.
+</fields.EntryField>
+<fields.EntryField name='Shift Type' required>
+     The type of shift that should trigger the event.
 </fields.EntryField>

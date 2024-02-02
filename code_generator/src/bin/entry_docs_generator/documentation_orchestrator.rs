@@ -1,7 +1,7 @@
 use colored::Colorize;
+use convert_case::{Case, Casing};
+use indicatif::{ParallelProgressIterator, ProgressIterator, ProgressStyle};
 use itertools::Itertools;
-use convert_case::{Casing, Case};
-use indicatif::{ParallelProgressIterator, ProgressStyle, ProgressIterator};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::{
     fs::{self, read_dir, File},
@@ -64,10 +64,13 @@ struct EntryFormatted {
 pub fn orchestrate_documentation_creation() -> Result<(), OrchestrationError> {
     let adapters = find_adapters()?;
 
+    println!("Found {} adapters", adapters.len());
+
     let references = find_references()?;
 
     let parsed = parse_entries(references)?;
 
+    println!("Found {} entries", parsed.len());
 
     let formatted_adapters = format_adapters(adapters, &parsed)?;
 
@@ -87,7 +90,7 @@ fn write_files(
             .iter()
             .filter(|entry| entry.adapter == adapter.adapter)
             .collect::<Vec<&EntryFormatted>>();
-        write_adapter_files(&adapter, adapter_entries)?; 
+        write_adapter_files(&adapter, adapter_entries)?;
     }
 
     return Ok(());
@@ -111,13 +114,12 @@ fn write_adapter_files(
 
     fs::create_dir_all(&base_path)?;
 
-    let mut adapter_file = File::create(base_path.join(format!{"{}.mdx", adapter.adapter}))?;
+    let mut adapter_file = File::create(base_path.join(format! {"{}.mdx", adapter.adapter}))?;
     adapter_file.write_all(adapter.markdown.as_bytes())?;
 
     let mut categories_file = File::create(base_path.join("_category_.yml"))?;
-    categories_file.write_all(
-        format!("label: {}", adapter.adapter.to_case(Case::Title)).as_bytes(),
-    )?;
+    categories_file
+        .write_all(format!("label: {}", adapter.adapter.to_case(Case::Title)).as_bytes())?;
 
     let entries_dir = base_path.join("entries");
     fs::create_dir_all(&entries_dir)?;
@@ -125,10 +127,7 @@ fn write_adapter_files(
     let mut entries_category_file = File::create(entries_dir.join("_category_.yml"))?;
     entries_category_file.write_all(b"label: Entries")?;
 
-    let categories = entries
-        .iter()
-        .map(|entry| entry.category.clone())
-        .unique();
+    let categories = entries.iter().map(|entry| entry.category.clone()).unique();
 
     for category in categories {
         let category_dir = entries_dir.join(&category);
@@ -145,11 +144,9 @@ fn write_adapter_files(
     return Ok(());
 }
 
-fn write_entry_file(
-    dir: &Path,
-    entry: &EntryFormatted,
-) -> Result<(), OrchestrationError> {
-    let mut entry_file = File::create(dir.join(format!{"{}/{}.mdx", entry.category, entry.entry_data.name}))?;
+fn write_entry_file(dir: &Path, entry: &EntryFormatted) -> Result<(), OrchestrationError> {
+    let mut entry_file =
+        File::create(dir.join(format! {"{}/{}.mdx", entry.category, entry.entry_data.name}))?;
     entry_file.write_all(entry.markdown.as_bytes())?;
 
     return Ok(());
@@ -191,9 +188,8 @@ fn format_entries(entries: Vec<EntryParsed>) -> Result<Vec<EntryFormatted>, Orch
 }
 
 fn format_entry(entry: &EntryParsed) -> Result<EntryFormatted, OrchestrationError> {
-    let markdown = format_entry_markdown(&entry.entry_data).map_err(|error| {
-        OrchestrationError::FormatError(error, entry.file_path.clone())
-    })?;
+    let markdown = format_entry_markdown(&entry.entry_data)
+        .map_err(|error| OrchestrationError::FormatError(error, entry.file_path.clone()))?;
 
     return Ok(EntryFormatted {
         adapter: entry.adapter.clone(),
@@ -300,12 +296,8 @@ fn format_adapter(
         .iter()
         .filter(|entry| entry.adapter == adapter.adapter)
         .collect();
-    let markdown = format_adapter_markdown(adapter, adapter_entries).map_err(|error| {
-        OrchestrationError::FormatError(
-            error,
-            adapter.file_path.clone(),
-        )
-    })?;
+    let markdown = format_adapter_markdown(adapter, adapter_entries)
+        .map_err(|error| OrchestrationError::FormatError(error, adapter.file_path.clone()))?;
 
     Ok(AdapterFormatted {
         adapter: adapter.adapter.clone(),
@@ -596,12 +588,8 @@ pub fn parse_and_format_entry_file(file: &str) -> Result<String, OrchestrationEr
 
     let entry_data = entry_data.first().unwrap();
 
-    format_entry_markdown(&entry_data).map_err(|error| {
-        OrchestrationError::FormatError(
-            error,
-            file.to_string(),
-        )
-    })
+    format_entry_markdown(&entry_data)
+        .map_err(|error| OrchestrationError::FormatError(error, file.to_string()))
 }
 
 #[derive(Debug, Error)]

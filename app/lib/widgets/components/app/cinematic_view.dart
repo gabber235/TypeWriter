@@ -1185,14 +1185,11 @@ class _SegmentWidget extends HookConsumerWidget {
               final entryId = ref.read(inspectingEntryIdProvider);
               if (entryId == null) return;
 
-              showConfirmationDialogue(
-                context: context,
-                title: "Delete Segment",
-                content: "Are you sure you want to delete this segment?",
-                confirmText: "Delete",
-                onConfirm: () {
-                  _deleteSegment(ref.passing, entryId, segmentId);
-                },
+              deleteSegmentConfirmation(
+                context,
+                ref.passing,
+                entryId,
+                segmentId,
               );
             },
           ),
@@ -1581,8 +1578,132 @@ class CinematicInspector extends HookConsumerWidget {
                       _entryContextActionsProvider(inspectingEntry.id),
                     ),
                     ignoreFields: ref.watch(_ignoreEntryFieldsProvider),
+                    sections: const [
+                      _SegmentSelector(),
+                    ],
                   )
                 : const EmptyInspector(),
+      ),
+    );
+  }
+}
+
+class _SegmentSelector extends HookConsumerWidget {
+  const _SegmentSelector();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entryId = ref.watch(inspectingEntryIdProvider);
+    if (entryId == null) return const SizedBox.shrink();
+    final segments = ref.watch(_allSegmentsProvider(entryId));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(title: "Segments"),
+        const SizedBox(height: 8),
+        if (segments.isEmpty) ...[
+          const Text("No segments"),
+        ] else ...[
+          for (final segment in segments)
+            _SegmentSelectorTile(segment: segment),
+        ],
+      ],
+    );
+  }
+}
+
+class _SegmentSelectorTile extends HookConsumerWidget {
+  const _SegmentSelectorTile({
+    required this.segment,
+  });
+
+  final Segment segment;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entryId = ref.watch(inspectingEntryIdProvider);
+    if (entryId == null) return const SizedBox.shrink();
+    final color = segment.color;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: ContextMenuRegion(
+        builder: (context) => [
+          ContextMenuTile.button(
+            title: "Select",
+            icon: FontAwesomeIcons.solidSquareCheck,
+            onTap: () {
+              ref
+                  .read(inspectingSegmentIdProvider.notifier)
+                  .select(entryId, segment.truePath);
+            },
+          ),
+          ContextMenuTile.button(
+            title: "Duplicate",
+            icon: FontAwesomeIcons.clone,
+            onTap: () {
+              _duplicateSelectedSegment(ref.passing);
+            },
+          ),
+          ContextMenuTile.button(
+            title: "Delete",
+            icon: FontAwesomeIcons.trash,
+            color: Theme.of(context).colorScheme.error,
+            onTap: () {
+              deleteSegmentConfirmation(
+                context,
+                ref.passing,
+                entryId,
+                segment.truePath,
+              );
+            },
+          ),
+        ],
+        child: Material(
+          color: color,
+          borderRadius: BorderRadius.circular(4),
+          child: InkWell(
+            onTap: () {
+              ref
+                  .read(inspectingSegmentIdProvider.notifier)
+                  .select(entryId, segment.truePath);
+            },
+            mouseCursor: SystemMouseCursors.click,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    segment.icon,
+                    size: 16,
+                    color: color.computeLuminance() > 0.5
+                        ? Colors.black.withOpacity(0.6)
+                        : Colors.white.withOpacity(0.6),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Segment ${segment.display}",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: color.computeLuminance() > 0.5
+                          ? Colors.black
+                          : Colors.white,
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    FontAwesomeIcons.angleRight,
+                    size: 12,
+                    color: color.computeLuminance() > 0.5
+                        ? Colors.black.withOpacity(0.5)
+                        : Colors.white.withOpacity(0.5),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -1595,23 +1716,29 @@ class _SegmentInspector extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const SingleChildScrollView(
+    final segment = ref.watch(inspectingSegmentProvider);
+    if (segment == null) return const SizedBox.shrink();
+    return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _InspectorHeader(),
-          Divider(),
-          _StartFrameField(),
-          SizedBox(height: 8),
-          _EndFrameField(),
-          SizedBox(height: 8),
-          _SegmentDurationDisplay(),
-          Divider(),
-          _InspectorContents(),
-          Divider(),
-          _SegmentOperations(),
-          SizedBox(height: 30),
+          const _InspectorHeader(),
+          const Divider(),
+          if (segment.isSingleFrame)
+            const _SingleFrameField()
+          else ...[
+            const _StartFrameField(),
+            const SizedBox(height: 8),
+            const _EndFrameField(),
+            const SizedBox(height: 8),
+            const _SegmentDurationDisplay(),
+          ],
+          const Divider(),
+          const _InspectorContents(),
+          const Divider(),
+          const _SegmentOperations(),
+          const SizedBox(height: 30),
         ],
       ),
     );
@@ -1678,6 +1805,7 @@ class _FrameField extends HookConsumerWidget {
     this.icon,
     this.hintText = "",
     this.onValidate,
+    this.onDone,
   });
 
   final String path;
@@ -1685,6 +1813,7 @@ class _FrameField extends HookConsumerWidget {
   final IconData? icon;
   final String hintText;
   final String? Function(int)? onValidate;
+  final Function(int)? onDone;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1724,14 +1853,58 @@ class _FrameField extends HookConsumerWidget {
                 if (errorText != null) return;
               }
 
-              ref
-                  .read(inspectingEntryDefinitionProvider)
-                  ?.updateField(ref.passing, path, newValue);
+              if (onDone != null) {
+                onDone?.call(newValue);
+              } else {
+                ref
+                    .read(inspectingEntryDefinitionProvider)
+                    ?.updateField(ref.passing, path, newValue);
+              }
             },
             maxLines: 1,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SingleFrameField extends HookConsumerWidget {
+  const _SingleFrameField();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final segmentId = ref.watch(inspectingSegmentIdProvider);
+
+    if (segmentId == null) return const SizedBox.shrink();
+
+    return _FrameField(
+      title: "Frame",
+      path: "$segmentId.startFrame",
+      icon: FontAwesomeIcons.forwardStep,
+      hintText: "Enter a frame number",
+      onValidate: (frame) {
+        final entryId = ref.read(inspectingEntryIdProvider);
+        if (entryId == null) return "No entry selected";
+        final segment = ref.read(inspectingSegmentProvider);
+        if (segment == null) return "No segment selected";
+
+        final segments = ref.read(_segmentsProvider(entryId, segmentId.wild()));
+        if (segments
+            .where((s) => s.truePath != segmentId)
+            .any((s) => s.startFrame == frame)) {
+          return "A segment already exists at this frame";
+        }
+        return null;
+      },
+      onDone: (frame) {
+        ref
+            .read(inspectingEntryDefinitionProvider)
+            ?.updateField(ref.passing, "$segmentId.startFrame", frame);
+        ref
+            .read(inspectingEntryDefinitionProvider)
+            ?.updateField(ref.passing, "$segmentId.endFrame", frame + 1);
+      },
     );
   }
 }
@@ -1815,9 +1988,14 @@ class _EndFrameField extends HookConsumerWidget {
         final nextSegment = segments
             .where((s) => s.startFrame >= segment.endFrame)
             .minBy((_, s) => s.startFrame);
-        final maximumFrame = nextSegment?.startFrame ??
-            ref.read(_trackStateProvider).totalFrames;
-        if (frame > maximumFrame) return "Cannot overlap with next segment";
+        final maximumFrame = nextSegment?.startFrame;
+        if (maximumFrame == null &&
+            frame > ref.read(_trackStateProvider).totalFrames) {
+          return "Cannot extend past the end of the track";
+        }
+        if (maximumFrame != null && frame > maximumFrame) {
+          return "Cannot overlap with next segment";
+        }
         return null;
       },
     );
@@ -1895,20 +2073,29 @@ class _DeleteSegment extends HookConsumerWidget {
         final entryId = ref.read(inspectingEntryIdProvider);
         if (entryId == null) return;
 
-        showConfirmationDialogue(
-          context: context,
-          title: "Delete Segment",
-          content: "Are you sure you want to delete this segment?",
-          confirmText: "Delete",
-          onConfirm: () {
-            _deleteSegment(ref.passing, entryId, segmentId);
-          },
-        );
+        deleteSegmentConfirmation(context, ref.passing, entryId, segmentId);
       },
       icon: const FaIcon(FontAwesomeIcons.trash),
       label: const Text("Delete Segment"),
       color: Theme.of(context).colorScheme.error,
     );
   }
+}
+
+void deleteSegmentConfirmation(
+  BuildContext context,
+  PassingRef ref,
+  String entryId,
+  String segmentId,
+) {
+  showConfirmationDialogue(
+    context: context,
+    title: "Delete Segment",
+    content: "Are you sure you want to delete this segment?",
+    confirmText: "Delete",
+    onConfirm: () {
+      _deleteSegment(ref, entryId, segmentId);
+    },
+  );
 }
 //</editor-fold>

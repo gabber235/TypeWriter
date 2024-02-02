@@ -93,5 +93,5 @@ If you still have problems, feel free to ask them in the [Discord](https://disco
 
 ## What's Next?
 
-Try to create your first interaction by following the [First Interaction](First-interaction) guide. If you have any
+Try to create your first interaction by following the [First Interaction](03-first-interaction.mdx) guide. If you have any
 questions, feel free to ask them in the [Discord](https://discord.gg/HtbKyuDDBw).

@@ -11,13 +11,12 @@ import lirand.api.dsl.command.types.PlayerType
 import lirand.api.dsl.command.types.WordType
 import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
-import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.PageType.CINEMATIC
-import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.CinematicStartTrigger
+import me.gabber235.typewriter.entry.entries.EntryTrigger
 import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
-import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.formattedName
@@ -32,9 +31,10 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.get
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
-import org.koin.java.KoinJavaComponent.get
+import kotlin.reflect.KClass
 
 fun Plugin.typeWriterCommand() = command("typewriter") {
     alias("tw")
@@ -48,6 +48,8 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
     connectCommand()
 
     cinematicCommand()
+
+    triggerCommand()
 }
 
 private fun LiteralDSLBuilder.reloadCommands() {
@@ -100,7 +102,7 @@ private fun LiteralDSLBuilder.factsCommands() {
             }
 
             literal("set") {
-                argument("fact", FactType) { fact ->
+                argument("fact", entryType<FactEntry>()) { fact ->
                     argument("value", integer(0)) { value ->
                         executes {
                             factDatabase.modify(player.get().uniqueId) {
@@ -129,7 +131,7 @@ private fun LiteralDSLBuilder.factsCommands() {
             source.listCachedFacts(source)
         }
         literal("set") {
-            argument("fact", FactType) { fact ->
+            argument("fact", entryType<FactEntry>()) { fact ->
                 argument("value", integer(0)) { value ->
                     executesPlayer {
                         factDatabase.modify(source.uniqueId) {
@@ -263,16 +265,31 @@ private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
     }
 }
 
-open class FactType(
+private fun LiteralDSLBuilder.triggerCommand() = literal("trigger") {
+    requiresPermissions("typewriter.trigger")
+    argument("entry", entryType<TriggerableEntry>()) { entry ->
+        executesPlayer {
+            EntryTrigger(entry.get()) triggerFor source
+        }
+
+        argument("player", PlayerType) { player ->
+            executes {
+                EntryTrigger(entry.get()) triggerFor player.get()
+            }
+        }
+
+    }
+}
+
+inline fun <reified E : Entry> entryType() = EntryType(E::class)
+
+open class EntryType<E : Entry>(
+    val type: KClass<E>,
     open val notFoundExceptionType: ChatCommandExceptionType = PlayerType.notFoundExceptionType
-) : WordType<FactEntry>, KoinComponent {
-    private val entryDatabase: EntryDatabase by inject()
-
-    companion object Instance : FactType()
-
-    override fun parse(reader: StringReader): FactEntry {
-        val name = reader.readUnquoted()
-        return Query.findByName<FactEntry>(name) ?: throw notFoundExceptionType.create(name)
+) : WordType<E>, KoinComponent {
+    override fun parse(reader: StringReader): E {
+        val arg = reader.readUnquoted()
+        return Query.findById(type, arg) ?: Query.findByName(type, arg) ?: throw notFoundExceptionType.create(arg)
     }
 
 
@@ -281,14 +298,14 @@ open class FactType(
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
 
-        entryDatabase.facts.filter { it.name.startsWith(builder.remaining, true) }.forEach {
+        Query.findWhere(type) { it.name.startsWith(builder.remaining, true) }.forEach {
             builder.suggest(it.name)
         }
 
         return builder.buildFuture()
     }
 
-    override fun getExamples(): Collection<String> = listOf("test.fact", "key.some_fact")
+    override fun getExamples(): Collection<String> = emptyList()
 }
 
 open class CinematicType(

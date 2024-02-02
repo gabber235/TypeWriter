@@ -1,15 +1,25 @@
 package me.gabber235.typewriter.utils
 
+import me.gabber235.typewriter.entry.dialogue.confirmationKey
 import net.kyori.adventure.text.*
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
 
-private val mm = MiniMessage.miniMessage()
+private val mm = MiniMessage.builder()
+    .tags(
+        TagResolver.builder()
+            .resolver(StandardTags.defaults())
+            .tag("confirmation_key") { _, _ -> Tag.preProcessParsed(confirmationKey.keybind) }
+            .build()
+    )
+    .build()
 
 fun Component.asMini() = mm.serialize(this)
 

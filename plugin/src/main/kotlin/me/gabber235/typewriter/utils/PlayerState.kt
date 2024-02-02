@@ -4,6 +4,8 @@ import me.gabber235.typewriter.plugin
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
@@ -48,7 +50,7 @@ enum class GenericPlayerStateProvider(private val store: Player.() -> Any, priva
     override fun restore(player: Player, value: Any) = player.restore(value)
 }
 
-class EffectStateProvider(
+data class EffectStateProvider(
     private val effect: PotionEffectType,
 ) : PlayerStateProvider {
     override fun store(player: Player): Any {
@@ -61,6 +63,41 @@ class EffectStateProvider(
             return
         }
         player.addPotionEffect(value)
+    }
+}
+
+data class InventorySlotStateProvider(
+    private val slot: Int,
+) : PlayerStateProvider {
+
+    override fun store(player: Player): Any {
+        EquipmentSlot.HAND
+        return player.inventory.getItem(slot) ?: return false
+    }
+
+    override fun restore(player: Player, value: Any) {
+        if (value !is ItemStack) {
+            player.inventory.setItem(slot, null)
+            return
+        }
+        player.inventory.setItem(slot, value)
+    }
+}
+
+data class EquipmentSlotStateProvider(
+    private val slot: EquipmentSlot,
+) : PlayerStateProvider {
+
+    override fun store(player: Player): Any {
+        return player.inventory.getItem(slot)
+    }
+
+    override fun restore(player: Player, value: Any) {
+        if (value !is ItemStack) {
+            player.inventory.setItem(slot, null)
+            return
+        }
+        player.inventory.setItem(slot, value)
     }
 }
 

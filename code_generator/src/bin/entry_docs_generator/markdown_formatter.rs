@@ -98,6 +98,12 @@ fn field_name(field: &EntryField) -> String {
         .iter()
         .find(|annotation| annotation.name == "SerializedName")
     {
+        if name.arguments.len() != 1 {
+            panic!(
+                "Expected 1 argument for SerializedName annotation for field: {:?}",
+                field
+            );
+        }
         return name.arguments[0].clone();
     }
     return field.name.clone();
@@ -177,6 +183,13 @@ fn format_adapter_description(builder: &mut Builder, adapter: &AdapterParsed) {
         builder.append_line(comment.to_string());
     } else {
         builder.append_line(adapter.adapter_data.description.to_string());
+    }
+
+    if adapter.adapter_data.has_annotation("Untested") {
+        builder.empty_line();
+        builder.append_line(":::caution Untested");
+        builder.append_line("This adapter is untested. It may not work as expected. Please report any issues you find.");
+        builder.append_line(":::");
     }
 }
 

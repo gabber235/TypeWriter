@@ -11,6 +11,7 @@ import me.gabber235.typewriter.entry.EntryMigrations
 import me.gabber235.typewriter.entry.EntryMigrator
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.entries.DialogueEntry
+import me.gabber235.typewriter.entry.entries.NpcRecordedDataCapturer
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
@@ -41,6 +42,7 @@ val staticCaptureClasses by lazy {
     listOf(
         LocationFieldCapturer::class,
         ItemFieldCapturer::class,
+        NpcRecordedDataCapturer::class,
     )
 }
 
@@ -123,8 +125,12 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             if (TypewriteAdapter::class.isSuperclassOf(it.clazz.kotlin)) {
                 val objectInstance = it.clazz.kotlin.objectInstance
                 if (objectInstance == null) {
-                    logger.warning("Failed to initialize adapter ${it.name}. Error: ${it.clazz.kotlin.simpleName} is not an object. Skipping initialization...")
-                    return@forEach
+                    try {
+                        it.clazz.getConstructor().newInstance()
+                    } catch (e: Exception) {
+                        logger.warning("Failed to initialize adapter ${it.name}. It is both not a kotlin object and has no empty constructor. Skipping initialization...")
+                        return@forEach
+                    }
                 }
                 TypewriteAdapter::class.cast(objectInstance).initialize()
             }
@@ -159,6 +165,8 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     ): AdapterData {
         val adapterAnnotation = adapterClass.getAnnotation(Adapter::class.java)
 
+        val flags = constructFlags(adapterClass)
+
         // Entries info
         val blueprints = constructEntryBlueprints(adapterAnnotation, entryClasses)
 
@@ -176,6 +184,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             adapterAnnotation?.name ?: "",
             adapterAnnotation?.description ?: "",
             adapterAnnotation?.version ?: "",
+            flags,
             blueprints,
             messengers,
             adapterListeners,
@@ -183,6 +192,16 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             entryMigrators,
             adapterClass,
         )
+    }
+
+    private fun constructFlags(adapterClass: Class<*>): List<AdapterFlag> {
+        val flags = mutableListOf<AdapterFlag>()
+
+        if (adapterClass.hasAnnotation(Untested::class)) {
+            flags.add(AdapterFlag.Untested)
+        }
+
+        return flags
     }
 
     private fun constructEntryBlueprints(adapter: Adapter, entryClasses: List<Class<*>>) =
@@ -272,6 +291,7 @@ data class AdapterData(
     val name: String,
     val description: String,
     val version: String,
+    val flags: List<AdapterFlag>,
     val entries: List<EntryBlueprint>,
     @Transient
     val messengers: List<MessengerData>,
@@ -297,12 +317,25 @@ data class AdapterData(
         display += padCount("📸", captureClasses.size, maxDigits)
         display += padCount("🚚", entryMigrators.size, maxDigits)
 
+        flags.filter { it.warning.isNotBlank() }.joinToString { it.warning }.let {
+            if (it.isNotBlank()) {
+                display += " ($it)"
+            }
+        }
+
         return display
     }
 
     private fun padCount(prefix: String, count: Int, maxDigits: Int): String {
         return " ${prefix}: ${" ".repeat((maxDigits - count.digits).coerceAtLeast(0))}$count"
     }
+}
+
+enum class AdapterFlag(val warning: String) {
+    /**
+     * The adapter is not tested and may not work.
+     */
+    Untested("⚠\uFE0F UNTESTED"),
 }
 
 // Annotation for marking a class as an adapter
@@ -327,3 +360,5 @@ annotation class Messenger(
     val priority: Int = 0,
 )
 
+@Target(AnnotationTarget.CLASS)
+annotation class Untested
