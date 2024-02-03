@@ -11,7 +11,6 @@ import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.startBlockingMessages
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingMessages
-import me.gabber235.typewriter.utils.ThreadType
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import java.util.*
@@ -84,9 +83,8 @@ class CinematicSequence(
             }
         }
 
-        if (!force) {
-            triggers triggerEntriesFor player
-        }
+        if (force) return
+        triggers triggerEntriesFor player
 
         DISPATCHERS_ASYNC.switchContext {
             AsyncCinematicEndEvent(player, originalFrame).callEvent()

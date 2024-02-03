@@ -16,7 +16,10 @@ enum class ThreadType {
     ;
 
     suspend fun <T> switchContext(block: suspend () -> T): T {
-        if (this == REMAIN || !plugin.isEnabled) {
+        if (!plugin.isEnabled) {
+            return block()
+        }
+        if (this == REMAIN) {
             return block()
         }
 

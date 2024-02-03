@@ -139,7 +139,7 @@ class NpcCinematicAction<N>(
         }
     }
 
-    private suspend inline fun withCorrectContext(crossinline block: suspend () -> Unit) {
+    private suspend inline fun withCorrectContext(noinline block: suspend () -> Unit) {
         data.threadType.switchContext(block)
     }
 

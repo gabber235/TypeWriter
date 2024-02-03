@@ -64,7 +64,6 @@ interface CitizensNpcData : NpcData<NPC> {
     }
 
     override fun teardown(player: Player, npc: NPC) {
-        npc.despawn()
         npc.destroy()
     }
 }
