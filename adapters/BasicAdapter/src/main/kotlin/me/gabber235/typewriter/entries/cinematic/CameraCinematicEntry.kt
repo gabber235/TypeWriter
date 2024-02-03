@@ -1,7 +1,5 @@
 package me.gabber235.typewriter.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import kotlinx.coroutines.withContext
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -19,6 +17,7 @@ import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.EntityType
@@ -97,7 +96,7 @@ class CameraCinematicAction(
             EffectStateProvider(INVISIBILITY)
         )
 
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             player.allowFlight = true
             player.isFlying = true
             player.addPotionEffect(PotionEffect(INVISIBILITY, INFINITE_DURATION, 0, false, false))
@@ -166,7 +165,7 @@ class CameraCinematicAction(
         segments = emptyList()
 
         originalState?.let {
-            withContext(plugin.minecraftDispatcher) {
+            SYNC.switchContext {
                 player.restore(it)
             }
         }
@@ -203,9 +202,7 @@ private suspend inline fun Player.teleportIfNeeded(
     frame: Int,
     location: Location,
 ) {
-    if (frame % 10 == 0 || location.distanceSquared(location) > MAX_DISTANCE_SQUARED) withContext(
-        plugin.minecraftDispatcher
-    ) {
+    if (frame % 10 == 0 || location.distanceSquared(location) > MAX_DISTANCE_SQUARED) SYNC.switchContext {
         teleport(location.clone().apply {
             y += 2
         })
@@ -257,7 +254,7 @@ private class BoatCameraSegmentAction(
         // As such, we can teleport them to the x/z of the first location.
         if (player.isHighUp) {
             val location = firstLocation.highUpLocation
-            withContext(plugin.minecraftDispatcher) {
+            SYNC.switchContext {
                 player.teleport(location)
             }
         }
@@ -268,7 +265,7 @@ private class BoatCameraSegmentAction(
     }
 
     override suspend fun start() {
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             // Teleport the player to the first location.
             // We need to use the unmodified location here.
             // Otherwise, the player will be shifted when spectating.
@@ -319,7 +316,7 @@ private class TeleportCameraSegmentAction(
     }
 
     override suspend fun start() {
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             player.teleport(firstLocation)
         }
     }
@@ -327,7 +324,7 @@ private class TeleportCameraSegmentAction(
     override suspend fun tick(frame: Int) {
         val percentage = percentage(frame)
         val location = segment.path.interpolate(percentage)
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             player.teleport(location)
             player.allowFlight = true
             player.isFlying = true

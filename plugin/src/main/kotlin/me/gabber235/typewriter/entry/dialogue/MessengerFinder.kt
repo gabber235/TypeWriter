@@ -1,7 +1,6 @@
 package me.gabber235.typewriter.entry.dialogue
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
@@ -12,6 +11,7 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.gabber235.typewriter.utils.config
 import me.gabber235.typewriter.utils.reloadable
 import org.bukkit.entity.Player
@@ -81,7 +81,7 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
         player.chatHistory.resendMessages(player)
 
         // Resend the chat history again after a delay to make sure that the dialogue chat is fully cleared
-        plugin.launch {
+        SYNC.launch {
             delay(1.ticks)
             player.chatHistory.resendMessages(player)
         }

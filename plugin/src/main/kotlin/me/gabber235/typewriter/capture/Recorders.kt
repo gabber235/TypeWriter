@@ -1,8 +1,7 @@
 package me.gabber235.typewriter.capture
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import me.gabber235.typewriter.adapters.AdapterLoader
-import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.gabber235.typewriter.utils.failure
 import me.gabber235.typewriter.utils.ok
 import org.bukkit.entity.Player
@@ -85,7 +84,7 @@ class Recorders : KoinComponent {
 
         val capturer = capturerResult.getOrThrow()
 
-        plugin.launch {
+        SYNC.launch {
             record(player, capturer, context.cinematicData)
         }
 

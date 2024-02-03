@@ -1,15 +1,15 @@
 package me.gabber235.typewriter.entries.action
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.delay
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.entry.Criteria
+import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
-import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 import java.time.Duration
 
@@ -35,7 +35,7 @@ class DelayedActionEntry(
 ) : CustomTriggeringActionEntry {
 
     override fun execute(player: Player) {
-        plugin.launch {
+        SYNC.launch {
             delay(duration.toMillis())
             super.execute(player)
             player.triggerCustomTriggers()

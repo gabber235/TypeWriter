@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.interaction
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import kotlinx.coroutines.*
 import lirand.api.extensions.server.registerSuspendingEvents
 import lirand.api.extensions.server.server
@@ -12,6 +11,8 @@ import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -71,7 +72,7 @@ class InteractionHandler : Listener, KoinComponent {
         // If the event is empty, we don't need to do anything
         if (event.triggers.isEmpty()) return
 
-        plugin.launch {
+        SYNC.launch {
             try {
                 event.player.interaction?.onEvent(event)
             } catch (e: Exception) {
@@ -83,7 +84,7 @@ class InteractionHandler : Listener, KoinComponent {
 
     fun initialize() {
 
-        job = plugin.launch(Dispatchers.IO) {
+        job = DISPATCHERS_ASYNC.launch {
             while (plugin.isEnabled) {
                 val startTime = System.currentTimeMillis()
                 tick()

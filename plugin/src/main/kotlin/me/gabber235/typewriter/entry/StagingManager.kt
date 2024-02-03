@@ -1,8 +1,6 @@
 package me.gabber235.typewriter.entry
 
 import com.google.gson.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.entry.StagingState.*
 import me.gabber235.typewriter.events.PublishedBookEvent
@@ -11,6 +9,7 @@ import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -253,7 +252,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     override suspend fun publish(): Result<String> {
         if (stagingState != STAGING) return failure("Can only publish when in staging")
         autoSaver.cancel()
-        return withContext(Dispatchers.IO) {
+        return DISPATCHERS_ASYNC.switchContext {
             stagingState = PUBLISHING
 
             try {

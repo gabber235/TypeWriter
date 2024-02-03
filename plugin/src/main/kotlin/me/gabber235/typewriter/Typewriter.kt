@@ -1,6 +1,7 @@
 package me.gabber235.typewriter
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.mcCoroutineConfiguration
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
@@ -78,6 +79,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         }
 
         get<AdapterLoader>().loadAdapters()
+        mcCoroutineConfiguration.shutdownStrategy
     }
 
     override suspend fun onEnableAsync() {

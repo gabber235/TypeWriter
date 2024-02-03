@@ -39,8 +39,10 @@ class ReferenceNpcCinematicEntry(
     val referenceNpc: String = "",
 ) : NpcCinematicEntry {
     override fun create(player: Player): CinematicAction {
+        if (referenceNpc.isBlank()) throw Exception("Reference npc is not set for $id ($name)")
         val referenceNpc =
-            Query.findById<ReferenceNpcEntry>(this.referenceNpc) ?: throw Exception("Reference npc not found")
+            Query.findById<ReferenceNpcEntry>(this.referenceNpc)
+                ?: throw Exception("Reference npc '$referenceNpc' not found")
 
         return NpcCinematicAction(
             player,

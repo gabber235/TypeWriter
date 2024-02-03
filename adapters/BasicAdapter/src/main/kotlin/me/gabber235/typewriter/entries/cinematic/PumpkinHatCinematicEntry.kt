@@ -1,7 +1,5 @@
 package me.gabber235.typewriter.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Segments
@@ -10,8 +8,8 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
@@ -57,7 +55,7 @@ class PumpkinHatCinematicAction(
     override suspend fun stopSegment(segment: PumpkinHatSegment) {
         super.stopSegment(segment)
 
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             player.restore(playerState)
             playerState = null
         }
@@ -65,7 +63,7 @@ class PumpkinHatCinematicAction(
 
     override suspend fun teardown() {
         super.teardown()
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             player.restore(playerState)
         }
     }

@@ -1,7 +1,5 @@
 package me.gabber235.typewriter.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -11,10 +9,10 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.GAME_MODE
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
@@ -66,7 +64,7 @@ class BlindingCinematicAction(
         super.startSegment(segment)
         state = player.state(LOCATION, GAME_MODE, EffectStateProvider(BLINDNESS))
 
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             player.addPotionEffect(PotionEffect(BLINDNESS, 10000000, 1, false, false, false))
 
             if (segment.teleport) {
@@ -88,7 +86,7 @@ class BlindingCinematicAction(
     private suspend fun restoreState() {
         val state = state ?: return
         this.state = null
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             player.restore(state)
         }
     }

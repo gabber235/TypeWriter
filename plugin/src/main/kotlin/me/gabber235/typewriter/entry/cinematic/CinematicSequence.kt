@@ -1,7 +1,5 @@
 package me.gabber235.typewriter.entry.cinematic
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.triggerEntriesFor
@@ -13,6 +11,8 @@ import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.startBlockingMessages
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingMessages
+import me.gabber235.typewriter.utils.ThreadType
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -41,7 +41,7 @@ class CinematicSequence(
             }
         }
 
-        withContext(Dispatchers.IO) {
+        DISPATCHERS_ASYNC.switchContext {
             AsyncCinematicStartEvent(player).callEvent()
         }
     }
@@ -88,7 +88,7 @@ class CinematicSequence(
             triggers triggerEntriesFor player
         }
 
-        withContext(Dispatchers.IO) {
+        DISPATCHERS_ASYNC.switchContext {
             AsyncCinematicEndEvent(player, originalFrame).callEvent()
         }
     }

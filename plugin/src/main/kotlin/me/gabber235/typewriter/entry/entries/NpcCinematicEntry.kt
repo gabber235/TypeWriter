@@ -1,9 +1,7 @@
 package me.gabber235.typewriter.entry.entries
 
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.modifiers.Capture
 import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
@@ -12,8 +10,8 @@ import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.capture.capturers.*
 import me.gabber235.typewriter.entry.AssetManager
 import me.gabber235.typewriter.entry.Query
-import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.ThreadType
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
@@ -38,8 +36,8 @@ class NpcRecordedSegment(
 ) : Segment
 
 interface NpcData<N> {
-    val needsSync: Boolean
-        get() = false
+    val threadType: ThreadType
+        get() = ThreadType.REMAIN
 
     /// Create a new NPC with the data.
     fun create(player: Player, location: Location): N
@@ -142,13 +140,7 @@ class NpcCinematicAction<N>(
     }
 
     private suspend inline fun withCorrectContext(crossinline block: suspend () -> Unit) {
-        if (data.needsSync) {
-            withContext(plugin.minecraftDispatcher) {
-                block()
-            }
-        } else {
-            block()
-        }
+        data.threadType.switchContext(block)
     }
 
     override fun canFinish(frame: Int): Boolean = entry.recordedSegments canFinishAt frame

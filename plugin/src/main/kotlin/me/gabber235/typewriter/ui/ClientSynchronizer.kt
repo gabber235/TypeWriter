@@ -2,7 +2,6 @@ package me.gabber235.typewriter.ui
 
 import com.corundumstudio.socketio.AckRequest
 import com.corundumstudio.socketio.SocketIOClient
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -13,7 +12,7 @@ import me.gabber235.typewriter.capture.RecorderRequestContext
 import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.entry.StagingManager
 import me.gabber235.typewriter.logger
-import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -143,7 +142,7 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
 
 
     override fun handlePublish(client: SocketIOClient, data: String, ack: AckRequest) {
-        plugin.launch {
+        SYNC.launch {
             val result = stagingManager.publish()
             ack.sendResult(result)
         }

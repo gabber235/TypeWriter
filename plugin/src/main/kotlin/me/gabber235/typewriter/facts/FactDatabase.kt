@@ -1,7 +1,5 @@
 package me.gabber235.typewriter.facts
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.events.listen
@@ -13,6 +11,7 @@ import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.entry.entries.WritableFactEntry
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.logErrorIfNull
 import org.bukkit.entity.Player
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
@@ -48,7 +47,7 @@ class FactDatabase : KoinComponent {
         plugin.listen<PlayerQuitEvent> { event ->
             val facts = cache.remove(event.player.uniqueId)
             if (facts != null) {
-                plugin.launch(Dispatchers.IO) {
+                DISPATCHERS_ASYNC.launch {
                     storeFactsInPersistentStorage(event.player.uniqueId)
                 }
             }
@@ -56,7 +55,7 @@ class FactDatabase : KoinComponent {
 
         // Filter expired facts every second.
         // After that, save the facts of the players who have facts that expired or changed.
-        plugin.launch(Dispatchers.IO) {
+        DISPATCHERS_ASYNC.launch {
             while (plugin.isEnabled) {
                 delay(1000)
                 cache.keys.forEach { uuid ->

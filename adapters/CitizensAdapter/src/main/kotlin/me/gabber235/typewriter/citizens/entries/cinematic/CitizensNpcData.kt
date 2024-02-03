@@ -3,6 +3,7 @@ package me.gabber235.typewriter.citizens.entries.cinematic
 import me.gabber235.typewriter.capture.capturers.ArmSwing
 import me.gabber235.typewriter.citizens.CitizensAdapter.temporaryRegistry
 import me.gabber235.typewriter.entry.entries.NpcData
+import me.gabber235.typewriter.utils.ThreadType
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.NPC
 import net.citizensnpcs.api.trait.trait.Equipment
@@ -21,8 +22,8 @@ import org.bukkit.inventory.ItemStack
 
 
 interface CitizensNpcData : NpcData<NPC> {
-    override val needsSync: Boolean
-        get() = true
+    override val threadType: ThreadType
+        get() = ThreadType.SYNC
 
     override fun spawn(player: Player, npc: NPC, location: Location) {
         val filter = npc.getOrAddTrait(PlayerFilter::class.java)

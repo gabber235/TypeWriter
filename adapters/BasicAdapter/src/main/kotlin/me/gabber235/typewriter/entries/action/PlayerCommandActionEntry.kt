@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.entries.action
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import lirand.api.extensions.server.commands.dispatchCommand
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -11,8 +10,8 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 
 @Entry("player_run_command", "Make player run command", Colors.RED, Icons.TERMINAL)
@@ -44,7 +43,7 @@ class PlayerCommandActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
         // Run in main thread
-        plugin.launch {
+        SYNC.launch {
             val commands = command.parsePlaceholders(player).lines()
             for (cmd in commands) {
                 player.dispatchCommand(cmd)

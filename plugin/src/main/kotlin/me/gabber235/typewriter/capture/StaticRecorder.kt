@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.capture
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
@@ -9,6 +8,7 @@ import lirand.api.extensions.events.SimpleListener
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.events.unregister
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.gabber235.typewriter.utils.asMini
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.key.Key
@@ -100,7 +100,7 @@ class StaticRecorder<T>(private val player: Player, private val capturer: Record
         player.playSound(Sound.sound(Key.key("ui.button.click"), Sound.Source.MASTER, 1f, 1f))
         capturer.startRecording(player)
 
-        job = plugin.launch {
+        job = SYNC.launch {
             var frame = 0
             while (state != RecordingState.FINISHED) {
                 onTick(frame++)
