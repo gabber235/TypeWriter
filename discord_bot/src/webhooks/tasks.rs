@@ -140,6 +140,11 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
             .await?;
     }
 
+    // Need to run it again as the message send may unarchive the thread
+    channel
+        .edit_thread(&discord, EditThread::default().locked(lock).archived(lock))
+        .await?;
+
     Ok(())
 }
 
