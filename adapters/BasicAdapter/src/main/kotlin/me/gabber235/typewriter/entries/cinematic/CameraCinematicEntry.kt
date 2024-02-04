@@ -1,30 +1,31 @@
 package me.gabber235.typewriter.entries.cinematic
 
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.InnerMin
-import me.gabber235.typewriter.adapters.modifiers.Min
-import me.gabber235.typewriter.adapters.modifiers.Segments
-import me.gabber235.typewriter.adapters.modifiers.WithRotation
+import me.gabber235.typewriter.adapters.modifiers.*
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.extensions.protocollib.BoatType
-import me.gabber235.typewriter.extensions.protocollib.ClientEntity
-import me.gabber235.typewriter.extensions.protocollib.spectateEntity
-import me.gabber235.typewriter.extensions.protocollib.stopSpectatingEntity
+import me.gabber235.typewriter.extensions.packetevents.meta
+import me.gabber235.typewriter.extensions.packetevents.spectateEntity
+import me.gabber235.typewriter.extensions.packetevents.stopSpectatingEntity
+import me.gabber235.typewriter.extensions.packetevents.toPacketLocation
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
+import me.tofaa.entitylib.EntityLib
+import me.tofaa.entitylib.meta.display.TextDisplayMeta
 import org.bukkit.Location
 import org.bukkit.Particle
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffect.INFINITE_DURATION
 import org.bukkit.potion.PotionEffectType.INVISIBILITY
+import java.util.*
+import kotlin.math.min
 
 @Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, Icons.VIDEO)
 /**
@@ -72,7 +73,15 @@ data class CameraSegment(
 
 data class PathPoint(
     @WithRotation
-    val location: Location,
+    val location: Location = Location(null, 0.0, 0.0, 0.0),
+    @Help("The duration of the path point in frames.")
+    /**
+     * The duration of the path point in frames.
+     * If not set,
+     * the duration will be calculated based on the total duration and the number of path points
+     * that don't have a duration.
+     */
+    val duration: Optional<Int> = Optional.empty(),
 )
 
 class CameraCinematicAction(
@@ -122,8 +131,7 @@ class CameraCinematicAction(
             if (player.isFloodgate) {
                 TeleportCameraSegmentAction(player, segment)
             } else {
-                val hasSegmentBefore = entry.segments.any { it isActiveAt (segment.startFrame - 1) }
-                BoatCameraSegmentAction(player, segment, hasSegmentBefore)
+                BlockDisplayCameraSegmentAction(player, segment)
             }
         }
         segments.forEach { it.setup() }
@@ -131,11 +139,6 @@ class CameraCinematicAction(
 
     override suspend fun tick(frame: Int) {
         super.tick(frame)
-
-        segments.filter { it.canPrepare(frame) }.forEach {
-            it.prepare()
-        }
-
 
         if (currentSegmentAction?.isActiveAt(frame) == false) {
             currentSegmentAction?.stop()
@@ -178,8 +181,6 @@ class CameraCinematicAction(
 private interface CameraSegmentAction {
     val segment: CameraSegment
     fun setup()
-    suspend fun prepare()
-    fun canPrepare(frame: Int): Boolean
     suspend fun start()
     suspend fun tick(frame: Int)
     fun stop()
@@ -203,65 +204,45 @@ private suspend inline fun Player.teleportIfNeeded(
     location: Location,
 ) {
     if (frame % 10 == 0 || location.distanceSquared(location) > MAX_DISTANCE_SQUARED) SYNC.switchContext {
-        teleport(location.clone().apply {
-            y += 2
-        })
+        teleport(location.highUpLocation)
         allowFlight = true
         isFlying = true
     }
 }
 
+private data class PointSegment(
+    override val startFrame: Int,
+    override val endFrame: Int,
+    val location: Location,
+) : Segment
 
-private class BoatCameraSegmentAction(
+
+private class BlockDisplayCameraSegmentAction(
     private val player: Player,
     override val segment: CameraSegment,
-    private val hasSegmentBefore: Boolean,
 ) : CameraSegmentAction {
-    companion object {
-        // As a boat is interpolated. We need the remove the last few frames to make sure the animation fully finishes.
-        private const val TRAILING_FRAMES = 10
-
-        // The amount of ticks the boat gets to prepare before the player is teleported to it.
-        private const val PREPARE_TICKS = 10
-
-        private const val BOAT_HEIGHT = 0.5625
-    }
-
-    private val path = segment.path.map {
-        it.copy(
-            location = it.location.clone().apply { y += player.eyeHeight - BOAT_HEIGHT }
-        )
-    }
-    private val firstLocation = path.first().location
-
-    private val farAwayLocation = firstLocation.highUpLocation
-
-    private val startLocation
-        get() = if (segment.startFrame > PREPARE_TICKS && hasSegmentBefore) farAwayLocation else firstLocation
-
-    private val entity = ClientEntity(startLocation, EntityType.BOAT).also {
-        it.boatType = BoatType.JUNGLE
-    }
-
-    override fun setup() {
-        entity.addViewer(player)
-    }
-
-    override suspend fun prepare() {
-        entity.move(firstLocation)
-
-        // If the player is up in the sky, we know that they can't see land.
-        // As such, we can teleport them to the x/z of the first location.
-        if (player.isHighUp) {
-            val location = firstLocation.highUpLocation
-            SYNC.switchContext {
-                player.teleport(location)
-            }
+    /**
+     * We need to have the last segment interpolation such that the entity has time at the end to finish the path.
+     * Only since the last segment never moves, since the cinematic ends at the last frame.
+     * We need to get the second last segment interpolation.
+     */
+    private val secondToLastSegmentInterpolation =
+        min(segment.path[segment.path.size - 2].duration.orElse(BASE_INTERPOLATION), BASE_INTERPOLATION)
+    private val path = segment.path.transform(segment.duration - secondToLastSegmentInterpolation) {
+        it.clone().apply {
+            y += player.eyeHeight
         }
     }
 
-    override fun canPrepare(frame: Int): Boolean {
-        return segment.startFrame - PREPARE_TICKS == frame
+    private val entity = EntityLib.createEntity(UUID.randomUUID(), EntityTypes.TEXT_DISPLAY)
+
+    companion object {
+        private const val BASE_INTERPOLATION = 10
+    }
+
+    override fun setup() {
+        entity.addViewer(player.uniqueId)
+        entity.spawn(path.first().location.toPacketLocation())
     }
 
     override suspend fun start() {
@@ -269,33 +250,36 @@ private class BoatCameraSegmentAction(
             // Teleport the player to the first location.
             // We need to use the unmodified location here.
             // Otherwise, the player will be shifted when spectating.
-            val firstNormalLocation = segment.path.first().location
-            player.teleport(firstNormalLocation)
+            player.teleport(segment.path.first().location)
             player.spectateEntity(entity)
         }
     }
 
     override suspend fun tick(frame: Int) {
-        val percentage = percentage(frame)
-        val location = path.interpolate(percentage)
+        val baseFrame = frame - segment.startFrame
+        val segment = (path activeSegmentAt baseFrame) ?: path.last()
+        val location = path.interpolate(baseFrame)
 
-        entity.move(location)
+        // If the segment duration is less than the base interpolation,
+        // we need to lower the interpolation to allow the entity to move quicker.
+        val interpolation = min(segment.duration, BASE_INTERPOLATION)
+
+        entity.meta<TextDisplayMeta> {
+            if (positionRotationInterpolationDuration == interpolation) return@meta
+            positionRotationInterpolationDuration = interpolation
+        }
+
+        entity.rotateHead(location.yaw, location.pitch)
+        entity.teleport(location.toPacketLocation())
         player.teleportIfNeeded(frame, location)
-    }
-
-    private fun percentage(frame: Int): Double {
-        val totalFrames = segment.endFrame - segment.startFrame - TRAILING_FRAMES
-        val currentFrame = frame - segment.startFrame
-        return (currentFrame.toDouble() / totalFrames).coerceIn(0.0, 1.0)
     }
 
     override fun stop() {
         player.stopSpectatingEntity()
-        entity.move(farAwayLocation)
     }
 
     override fun teardown() {
-        entity.removeViewer(player)
+        entity.remove()
     }
 }
 
@@ -303,16 +287,9 @@ private class TeleportCameraSegmentAction(
     private val player: Player,
     override val segment: CameraSegment,
 ) : CameraSegmentAction {
-    private val firstLocation = segment.path.first().location
-
+    private val path = segment.path.transform(segment.duration, Location::clone)
+    private val firstLocation = path.first().location
     override fun setup() {
-    }
-
-    override suspend fun prepare() {
-    }
-
-    override fun canPrepare(frame: Int): Boolean {
-        return segment.startFrame - 10 == frame
     }
 
     override suspend fun start() {
@@ -322,20 +299,13 @@ private class TeleportCameraSegmentAction(
     }
 
     override suspend fun tick(frame: Int) {
-        val percentage = percentage(frame)
-        val location = segment.path.interpolate(percentage)
+        val baseFrame = frame - segment.startFrame
+        val location = path.interpolate(baseFrame)
         SYNC.switchContext {
             player.teleport(location)
             player.allowFlight = true
             player.isFlying = true
         }
-    }
-
-
-    private fun percentage(frame: Int): Double {
-        val totalFrames = segment.endFrame - segment.startFrame
-        val currentFrame = frame - segment.startFrame
-        return (currentFrame.toDouble() / totalFrames).coerceIn(0.0, 1.0)
     }
 
     override fun stop() {
@@ -350,12 +320,20 @@ class SimulatedCameraCinematicAction(
     private val entry: CameraCinematicEntry,
 ) : CinematicAction {
 
+    private val paths = entry.segments.associateWith { segment ->
+        segment.path.transform(segment.duration) {
+            it.clone().apply {
+                y += player.eyeHeight
+            }
+        }
+    }
+
     override suspend fun tick(frame: Int) {
         super.tick(frame)
 
         val segment = (entry.segments activeSegmentAt frame) ?: return
-        val percentage = segment.percentageAt(frame)
-        val location = segment.path.interpolate(percentage)
+        val path = paths[segment] ?: return
+        val location = path.interpolate(frame - segment.startFrame)
 
         // Display a particle at the location
         player.spawnParticle(Particle.SCRAPE, location, 1)
@@ -364,20 +342,75 @@ class SimulatedCameraCinematicAction(
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
 }
 
+private fun List<PathPoint>.transform(
+    totalDuration: Int,
+    locationTransformer: (Location) -> Location
+): List<PointSegment> {
+    val allocatedDuration = sumOf { it.duration.orElse(0) }
+    if (allocatedDuration > totalDuration) {
+        throw IllegalArgumentException("The total duration of the path points is greater than the total duration of the cinematic.")
+    }
+
+    val remainingDuration = totalDuration - allocatedDuration
+
+    // The last segment should never have a duration. As the last segment will be reached when the cinematic ends.
+    val leftSegments = take(size - 1).count { it.duration.isEmpty }
+
+    if (leftSegments == 0) {
+        if (remainingDuration > 0) {
+            logger.warning("The sum duration of the path points is less than the total duration of the cinematic. The remaining duration will be still frames.")
+        }
+
+        var currentFrame = 0
+        return map {
+            val endFrame = currentFrame + it.duration.orElse(0)
+            val segment = PointSegment(currentFrame, endFrame, it.location.run(locationTransformer))
+            currentFrame = endFrame
+            segment
+        }
+    }
+
+    val durationPerSegment = remainingDuration / leftSegments
+    var leftOverDuration = remainingDuration % leftSegments
+
+    var currentFrame = 0
+
+    return map { pathPoint ->
+        val duration = pathPoint.duration.orElseGet {
+            if (leftOverDuration > 0) {
+                leftOverDuration--
+                durationPerSegment + 1
+            } else {
+                durationPerSegment
+            }
+        }
+        val endFrame = currentFrame + duration
+        val segment = PointSegment(currentFrame, endFrame, pathPoint.location.run(locationTransformer))
+        currentFrame = endFrame
+        segment
+    }
+}
+
 /**
  * Use catmull-rom interpolation to get a point between a list of points.
  */
-fun List<PathPoint>.interpolate(percentage: Double): Location {
-    val currentPart = percentage * (size - 1)
-    val index = currentPart.toInt()
-    val subPercentage = currentPart - index
+private fun List<PointSegment>.interpolate(frame: Int): Location {
+    val index = indexOfFirst { it isActiveAt frame }
+    if (index == -1) {
+        return last().location
+    }
 
-    val previousPoint = getOrNull(index - 1)?.location ?: this[index].location
-    val currentPoint = this[index].location
-    val nextPoint = getOrNull(index + 1)?.location ?: currentPoint
-    val nextNextPoint = getOrNull(index + 2)?.location ?: nextPoint
+    val segment = this[index]
+    val totalFrames = segment.endFrame - segment.startFrame
+    val currentFrame = frame - segment.startFrame
+    val percentage = currentFrame.toDouble() / totalFrames
 
-    return interpolatePoints(previousPoint, currentPoint, nextPoint, nextNextPoint, subPercentage)
+    val currentLocation = segment.location
+    val previousLocation = getOrNull(index - 1)?.location ?: currentLocation
+    val nextLocation = getOrNull(index + 1)?.location ?: currentLocation
+    val nextNextLocation = getOrNull(index + 2)?.location ?: nextLocation
+
+    return interpolatePoints(previousLocation, currentLocation, nextLocation, nextNextLocation, percentage)
 }
 
 /**

@@ -1,5 +1,6 @@
 package me.gabber235.typewriter
 
+import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.mcCoroutineConfiguration
 import com.google.gson.Gson
@@ -24,6 +25,7 @@ import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
 import me.gabber235.typewriter.ui.*
 import me.gabber235.typewriter.utils.createBukkitDataParser
 import me.gabber235.typewriter.utils.syncCommands
+import me.tofaa.entitylib.EntityLib
 import org.bukkit.plugin.Plugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -68,8 +70,8 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<Recorders>(::Recorders)
             singleOf<AssetStorage>(::LocalAssetStorage)
             singleOf<AssetManager>(::AssetManager)
-            single { ChatHistoryHandler(get()) }
-            single { ActionBarBlockerHandler(get()) }
+            singleOf(::ChatHistoryHandler)
+            singleOf(::ActionBarBlockerHandler)
             factory<Gson>(named("entryParser")) { createEntryParserGson(get()) }
             factory<Gson>(named("bukkitDataParser")) { createBukkitDataParser() }
         }
@@ -79,19 +81,19 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         }
 
         get<AdapterLoader>().loadAdapters()
-        mcCoroutineConfiguration.shutdownStrategy
     }
 
     override suspend fun onEnableAsync() {
         typeWriterCommand()
 
-        if (!server.pluginManager.isPluginEnabled("ProtocolLib")) {
+        if (!server.pluginManager.isPluginEnabled("packetevents")) {
             logger.warning(
-                "ProtocolLib is not enabled, Typewriter will not work without it. Shutting down..."
+                "PacketEvents is not enabled, Typewriter will not work without it. Shutting down..."
             )
             server.pluginManager.disablePlugin(this)
             return
         }
+        EntityLib.init(PacketEvents.getAPI())
 
         get<EntryDatabase>().initialize()
         get<StagingManager>().initialize()

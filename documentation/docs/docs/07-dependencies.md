@@ -1,12 +1,14 @@
 # Dependencies
 For the plugin to properly work you need to have the dependencies of the plugin installed these are:
-- **Protocollib**: [download](https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/)
+- **PacketEntities**: [download](https://modrinth.com/plugin/packetevents/versions?l=paper)
 - **PlaceholderAPI** _(Optional)_: [download](https://www.spigotmc.org/resources/placeholderapi.6245/) **NOTE**: run the command: `/papi ecloud install player` after installation to let it correctly work.
 
 ## Soft-dependencies
 If you want to add extra features or make other adapters work, you can install plugins like:
 
 - **Citizens**: [download](https://www.spigotmc.org/resources/citizens.13811/)
+- **FancyNpcs**: [download](https://modrinth.com/plugin/fancynpcs)
+- **ZNPCsPlus**: [download](https://www.spigotmc.org/resources/znpcsplus.109380/)
 - **World Guard**: [download](https://dev.bukkit.org/projects/worldguard)
 - **Vault**: [download](https://www.spigotmc.org/resources/vault.34315/)
 - **Mythic Mobs**: [download](https://www.spigotmc.org/resources/%E2%9A%94-mythicmobs-free-version-%E2%96%BAthe-1-custom-mob-creator%E2%97%84.5702/)

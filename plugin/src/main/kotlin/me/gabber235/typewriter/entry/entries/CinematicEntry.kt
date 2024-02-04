@@ -34,6 +34,8 @@ infix fun Segment.isActiveAt(frame: Int): Boolean = frame in startFrame..endFram
 
 infix fun Segment.canFinishAt(frame: Int): Boolean = frame > endFrame
 
+val Segment.duration: Int get() = endFrame - startFrame
+
 interface CinematicAction {
     /**
      * Called when the cinematic starts

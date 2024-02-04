@@ -8,7 +8,7 @@ import lol.pyr.znpcsplus.util.NpcLocation
 import lol.pyr.znpcsplus.util.NpcPose
 import me.gabber235.typewriter.capture.capturers.ArmSwing
 import me.gabber235.typewriter.entry.entries.NpcData
-import me.gabber235.typewriter.extensions.protocollib.swingArm
+import me.gabber235.typewriter.extensions.packetevents.swingArm
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot

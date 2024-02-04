@@ -48,7 +48,7 @@ The web panel for Typewriter, where you can create quests, NPCs, and more.
 To get started with Typewriter, simply download the [plugin](https://github.com/gabber235/TypeWriter/releases) and configure it accordingly. 
 See [Installation Guide](https://gabber235.github.io/TypeWriter/docs/installation-guide) for more information.
 
-Also be sure to download ProtocolLib from [here](https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/) (Click on `ProtocolLib.jar`).
+Also be sure to download PacketEvents from [here](https://modrinth.com/plugin/packetevents/versions?l=paper).
 
 Then, use the app to configure your custom interactions as desired.
 

@@ -5,7 +5,7 @@ api-version: "1.19"
 softdepend:
   - PlaceholderAPI
   - floodgate
-depend: [ ProtocolLib ]
+depend: [ packetevents ]
 authors: [ gabber235 ]
 description: Minecraft's Real Quest Plugin
 libraries: ${libraries}
