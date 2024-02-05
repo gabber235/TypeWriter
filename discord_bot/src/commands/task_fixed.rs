@@ -2,7 +2,8 @@ use async_trait::async_trait;
 use indoc::formatdoc;
 use itertools::Itertools;
 use poise::serenity_prelude::{
-    ComponentInteraction, Context, EditInteractionResponse, EditMessage, EventHandler, Interaction,
+    ComponentInteraction, Context, EditInteractionResponse, EditMessage, EventHandler,
+    GuildChannel, Interaction, UserId,
 };
 
 use crate::{
@@ -46,55 +47,9 @@ impl EventHandler for TaskFixedHandler {
         let task_status = split[1].to_string();
         let task_id = split[2].to_string();
 
-        let Ok(channel) = component.channel_id.to_channel(&ctx).await else {
-            update_response(
-                &ctx,
-                &component,
-                "Something whent wrong with the button. It seems to be outdated.",
-            )
-            .await;
-            eprintln!("No channel found");
+        let Some((guild_channel, _owner_id)) = check_permissions(&ctx, &component).await else {
             return;
         };
-
-        let Some(guild_channel) = channel.guild() else {
-            update_response(
-                &ctx,
-                &component,
-                "Something whent wrong with the button. It seems to be outdated.",
-            )
-            .await;
-            eprintln!("No guild channel found");
-            return;
-        };
-
-        let Some(owner_id) = guild_channel.owner_id else {
-            update_response(
-                &ctx,
-                &component,
-                "Something whent wrong with the button. It seems to be outdated.",
-            )
-            .await;
-            eprintln!("No owner found for channel: {}", guild_channel.name());
-            return;
-        };
-
-        let is_contributor = component
-            .user
-            .has_role(&ctx, guild_channel.guild_id, CONTRIBUTOR_ROLE_ID)
-            .await
-            .unwrap_or(false);
-
-        // Only allow the owner to change the status, or a contributor
-        if component.user.id != owner_id && !is_contributor {
-            update_response(
-                &ctx,
-                &component,
-                "Only the original ticket creator can change the status of the task.",
-            )
-            .await;
-            return;
-        }
 
         let result = match task_status.as_str() {
             "fixed" => {
@@ -232,7 +187,7 @@ async fn mark_task_as_broken(
     Ok(())
 }
 
-async fn update_response(
+pub async fn update_response(
     ctx: &Context,
     interaction: &ComponentInteraction,
     content: impl Into<String>,
@@ -244,4 +199,61 @@ async fn update_response(
     if let Err(e) = result {
         eprintln!("Failed to update response: {}", e);
     }
+}
+
+pub async fn check_permissions(
+    ctx: &Context,
+    component: &ComponentInteraction,
+) -> Option<(GuildChannel, UserId)> {
+    let Ok(channel) = component.channel_id.to_channel(&ctx).await else {
+        update_response(
+            &ctx,
+            &component,
+            "Something whent wrong with the button. It seems to be outdated.",
+        )
+        .await;
+        eprintln!("No channel found");
+        return None;
+    };
+
+    let Some(guild_channel) = channel.guild() else {
+        update_response(
+            &ctx,
+            &component,
+            "Something whent wrong with the button. It seems to be outdated.",
+        )
+        .await;
+        eprintln!("No guild channel found");
+        return None;
+    };
+
+    let Some(owner_id) = guild_channel.owner_id else {
+        update_response(
+            &ctx,
+            &component,
+            "Something whent wrong with the button. It seems to be outdated.",
+        )
+        .await;
+        eprintln!("No owner found for channel: {}", guild_channel.name());
+        return None;
+    };
+
+    let is_contributor = component
+        .user
+        .has_role(&ctx, guild_channel.guild_id, CONTRIBUTOR_ROLE_ID)
+        .await
+        .unwrap_or(false);
+
+    // Only allow the owner to change the status, or a contributor
+    if component.user.id != owner_id && !is_contributor {
+        update_response(
+            &ctx,
+            &component,
+            "Only the original ticket creator can do this.",
+        )
+        .await;
+        return None;
+    }
+
+    Some((guild_channel, owner_id))
 }

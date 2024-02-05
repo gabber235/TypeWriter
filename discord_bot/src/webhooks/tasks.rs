@@ -68,11 +68,7 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
     new_tags.push(status_tags[&status].clone());
 
     if TaskStatus::InProduction == status {
-        if let Some(resolved_tag) = available_tags
-            .iter()
-            .find(|tag| tag.name == "Resolved")
-            .map(|tag| tag.id.clone())
-        {
+        if let Some(resolved_tag) = available_tags.get_tag_id("Resolved") {
             new_tags.push(resolved_tag);
         }
     }
@@ -81,12 +77,7 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
         task.tags
             .iter()
             .map(|tag| tag.name.to_string())
-            .filter_map(|name| {
-                available_tags
-                    .iter()
-                    .find(|tag| tag.name.to_lowercase() == name.to_lowercase())
-            })
-            .map(|tag| tag.id.clone()),
+            .filter_map(|name| available_tags.get_tag_id(&name)),
     );
 
     new_tags = new_tags.into_iter().unique().collect::<Vec<_>>();
@@ -211,4 +202,16 @@ fn get_status_tags(available_tags: &[ForumTag]) -> HashMap<TaskStatus, ForumTagI
             _ => None,
         })
         .collect::<HashMap<_, _>>()
+}
+
+pub trait GetTagId {
+    fn get_tag_id(&self, name: &str) -> Option<ForumTagId>;
+}
+
+impl GetTagId for Vec<ForumTag> {
+    fn get_tag_id(&self, name: &str) -> Option<ForumTagId> {
+        self.iter()
+            .find(|tag| tag.name.to_lowercase() == name.to_lowercase())
+            .map(|tag| tag.id.clone())
+    }
 }

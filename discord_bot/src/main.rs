@@ -114,7 +114,7 @@ async fn startup_discord_bot() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![create_task()],
+            commands: vec![create_task(), close_ticket()],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
         })
@@ -129,6 +129,7 @@ async fn startup_discord_bot() {
 
     let client = serenity::ClientBuilder::new(discord_token, intents)
         .event_handler(TaskFixedHandler)
+        .event_handler(TicketReopenHandler)
         .framework(framework)
         .await;
 
