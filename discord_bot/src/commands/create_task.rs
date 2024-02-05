@@ -54,7 +54,7 @@ pub async fn create_task(
     )
     .await;
 
-    if (let Err(e) = result) {
+    if let Err(e) = result {
         handle
             .edit(
                 ctx,

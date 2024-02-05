@@ -3,8 +3,8 @@ use std::fmt::{self, Display, Formatter};
 use indoc::formatdoc;
 use poise::{
     serenity_prelude::{
-        ButtonStyle, CreateButton, CreateEmbed, CreateEmbedFooter, CreateMessage, EditChannel,
-        EditThread, ReactionType, Timestamp,
+        ButtonStyle, CreateButton, CreateEmbed, CreateEmbedFooter, CreateMessage, EditThread,
+        ReactionType, Timestamp,
     },
     CreateReply, ReplyHandle,
 };

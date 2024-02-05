@@ -1,5 +1,3 @@
-use std::env;
-
 use async_trait::async_trait;
 use indoc::formatdoc;
 use poise::serenity_prelude::{
