@@ -47,7 +47,7 @@ impl EventHandler for TaskFixedHandler {
         let task_status = split[1].to_string();
         let task_id = split[2].to_string();
 
-        let Some((guild_channel, _owner_id)) = check_permissions(&ctx, &component).await else {
+        let Some(_) = check_permissions(&ctx, &component).await else {
             return;
         };
 

@@ -20,7 +20,7 @@ impl EventHandler for TicketReopenHandler {
             return;
         }
 
-        let Some((guild_channel, _owner_id)) = check_permissions(&ctx, &component).await else {
+        let Some((mut guild_channel, _owner_id)) = check_permissions(&ctx, &component).await else {
             return;
         };
 
@@ -49,11 +49,11 @@ impl EventHandler for TicketReopenHandler {
             }
         };
 
-        let reason = responds.inputs[0];
+        let reason = responds.inputs[0].as_str();
 
         if let Err(e) = guild_channel
             .edit_thread(
-                ctx,
+                &ctx,
                 EditThread::default()
                     .applied_tags([])
                     .archived(false)
@@ -77,7 +77,11 @@ impl EventHandler for TicketReopenHandler {
                 ", CONTRIBUTOR_ROLE_ID, reason})
             .timestamp(Timestamp::now());
 
-        if let Err(e) = component.message.edit(&ctx, EditMessage::default()).await {
+        if let Err(e) = component
+            .message
+            .edit(&ctx, EditMessage::default().embed(embed))
+            .await
+        {
             update_response(&ctx, &component, "Failed to reopen ticket").await;
             eprintln!("Failed to reopen ticket: {}", e);
             return;
