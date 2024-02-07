@@ -131,7 +131,7 @@ class _$RootTreeNodeImpl<T> implements RootTreeNode<T> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RootTreeNodeImpl<T> &&
@@ -287,7 +287,7 @@ class _$InnerTreeNodeImpl<T> implements InnerTreeNode<T> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$InnerTreeNodeImpl<T> &&
@@ -432,7 +432,7 @@ class _$LeafTreeNodeImpl<T> implements LeafTreeNode<T> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LeafTreeNodeImpl<T> &&
@@ -650,7 +650,7 @@ class _$TreeAddImpl<T> implements _TreeAdd<T> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TreeAddImpl<T> &&
@@ -806,7 +806,7 @@ class _$TreeUpdateImpl<T> implements _TreeUpdate<T> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TreeUpdateImpl<T> &&
@@ -949,7 +949,7 @@ class _$TreeRemoveImpl<T> implements _TreeRemove<T> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TreeRemoveImpl<T> &&

@@ -2,9 +2,7 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
@@ -22,12 +20,10 @@ import org.bukkit.event.entity.EntityDeathEvent
 class PlayerKillPlayerEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
-    @Triggers
-    @EntryIdentifier(TriggerableEntry::class)
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The triggers to be executed for the player who was killed.")
     // The entries connected tho this field will be triggered for the player who was killed.
-    val killedTriggers: List<String> = emptyList(),
+    val killedTriggers: List<Ref<TriggerableEntry>> = emptyList(),
 ) : EventEntry
 
 

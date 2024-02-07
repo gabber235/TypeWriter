@@ -10,7 +10,6 @@ import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.entry.entries.FactEntry
-import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
@@ -199,7 +198,7 @@ enum class PageType(val id: String) {
 }
 
 fun Iterable<Criteria>.matches(playerUUID: UUID): Boolean = all {
-    val entry = Query.findById<ReadableFactEntry>(it.fact)
+    val entry = it.fact.get()
     val fact = entry?.read(playerUUID)
     it.isValid(fact)
 }

@@ -1,5 +1,7 @@
 package me.gabber235.typewriter.entry.dialogue
 
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
@@ -24,7 +26,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
     private var cycle = 0
     var isActive = false
 
-    val triggers: List<String>
+    val triggers: List<Ref<out TriggerableEntry>>
         get() = currentMessenger.triggers
 
 
@@ -32,7 +34,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         isActive = true
         cycle = 0
         currentMessenger.init()
-        player.playSpeakerSound(currentEntry.speakerEntry)
+        player.playSpeakerSound(currentEntry.speaker.get())
         player.startBlockingMessages()
         player.startBlockingActionBar()
         tick()

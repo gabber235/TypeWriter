@@ -2,11 +2,11 @@ package me.gabber235.typewriter.entries.cinematic
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
@@ -38,18 +38,15 @@ class SubtitleDialogueCinematicEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
-    @EntryIdentifier(SpeakerEntry::class)
-    val speaker: String = "",
+    val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = Icons.MESSAGE)
     val segments: List<DisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
-    val speakerEntry: SpeakerEntry?
-        get() = Query.findById(speaker)
 
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,
-            speakerEntry,
+            speaker.get(),
             segments,
             subtitlePercentage,
             reset = {
@@ -67,18 +64,14 @@ data class RandomSubtitleDialogueCinematicEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
-    @EntryIdentifier(SpeakerEntry::class)
-    val speaker: String = "",
+    val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = Icons.MESSAGE)
     val segments: List<RandomDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
-    val speakerEntry: SpeakerEntry?
-        get() = Query.findById(speaker)
-
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,
-            speakerEntry,
+            speaker.get(),
             segments.toDisplaySegments(),
             subtitlePercentage,
             reset = {

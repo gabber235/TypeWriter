@@ -51,11 +51,14 @@ Map<String, Modifier> fieldModifiers(
 List<String> modifierPaths(
   ModifierPathsRef ref,
   String blueprintName,
-  String modifierName,
-) {
+  String modifierName, [
+  String? data,
+]) {
   return ref
       .watch(fieldModifiersProvider(blueprintName, modifierName))
-      .keys
+      .entries
+      .where((e) => e.value.data == data)
+      .map((e) => e.key)
       .toList();
 }
 

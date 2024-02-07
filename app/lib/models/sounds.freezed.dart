@@ -139,7 +139,7 @@ class _$SoundDataImpl implements _SoundData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SoundDataImpl &&

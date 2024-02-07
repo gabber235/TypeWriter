@@ -25,7 +25,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent
 class PickupItemEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The item to listen for.")
     val item: Item = Item.Empty,
 ) : EventEntry

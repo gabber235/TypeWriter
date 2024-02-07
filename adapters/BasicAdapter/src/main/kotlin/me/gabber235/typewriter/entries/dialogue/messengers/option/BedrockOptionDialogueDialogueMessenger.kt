@@ -5,6 +5,8 @@ import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entries.dialogue.Option
 import me.gabber235.typewriter.entries.dialogue.OptionDialogueEntry
 import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.entries.DialogueEntry
@@ -27,7 +29,7 @@ class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialog
 
     private var usableOptions: List<Option> = emptyList()
 
-    override val triggers: List<String>
+    override val triggers: List<Ref<out TriggerableEntry>>
         get() = entry.triggers + selected.triggers
 
     override val modifiers: List<Modifier>

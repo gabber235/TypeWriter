@@ -42,7 +42,6 @@ class Query<E : Entry>(private val klass: KClass<E>) {
      */
     infix fun firstWhere(filter: (E) -> Boolean): E? = firstWhere(klass, filter)
 
-
     /**
      * Find all the entries for the given class.
      *
@@ -243,17 +242,17 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
 
 /**
  * Trigger all triggers for all entries in a list.
- * This is a convenience method for [triggerAllFor] that takes a list of strings.
+ * This is a convenience method for [triggerAllFor] that takes a list of [Ref].
  *
  * Example:
  * ```kotlin
- * val triggers: List<String> = ...
- * triggers triggerAllFor player
+ * val triggers: List<Ref<TriggerableEntry>> = ...
+ * triggers triggerEntriesFor player
  * ```
  *
  * @param player The player to trigger the triggers for.
  */
-infix fun List<String>.triggerEntriesFor(player: Player) {
+infix fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
     val triggers = this.map { EntryTrigger(it) }
     if (triggers.isEmpty()) return
     get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)

@@ -176,7 +176,7 @@ class _$AdapterImpl with DiagnosticableTreeMixin implements _Adapter {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AdapterImpl &&
@@ -455,7 +455,7 @@ class _$EntryBlueprintImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EntryBlueprintImpl &&
@@ -760,7 +760,7 @@ class _$FieldTypeImpl with DiagnosticableTreeMixin implements _FieldType {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FieldTypeImpl &&
@@ -1002,7 +1002,7 @@ class _$PrimitiveFieldImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PrimitiveFieldImpl &&
@@ -1254,7 +1254,7 @@ class _$EnumFieldImpl with DiagnosticableTreeMixin implements EnumField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EnumFieldImpl &&
@@ -1510,7 +1510,7 @@ class _$ListFieldImpl with DiagnosticableTreeMixin implements ListField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ListFieldImpl &&
@@ -1782,7 +1782,7 @@ class _$MapFieldImpl with DiagnosticableTreeMixin implements MapField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MapFieldImpl &&
@@ -2036,7 +2036,7 @@ class _$ObjectFieldImpl with DiagnosticableTreeMixin implements ObjectField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ObjectFieldImpl &&
@@ -2319,7 +2319,7 @@ class _$CustomFieldImpl with DiagnosticableTreeMixin implements CustomField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CustomFieldImpl &&
@@ -2614,7 +2614,7 @@ class _$ModifierImpl with DiagnosticableTreeMixin implements _Modifier {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ModifierImpl &&

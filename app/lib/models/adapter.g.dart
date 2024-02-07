@@ -687,7 +687,7 @@ class _FieldModifiersProviderElement
   String get modifierName => (origin as FieldModifiersProvider).modifierName;
 }
 
-String _$modifierPathsHash() => r'18c0cd2f1537f62ba9ae9bd98446e1b8280fa226';
+String _$modifierPathsHash() => r'a4565b3eea5dbb1aa9ac0121f7f517d6c97f6716';
 
 /// Gets all the paths from fields with a given modifier.
 ///
@@ -709,11 +709,13 @@ class ModifierPathsFamily extends Family<List<String>> {
   /// Copied from [modifierPaths].
   ModifierPathsProvider call(
     String blueprintName,
-    String modifierName,
-  ) {
+    String modifierName, [
+    String? data,
+  ]) {
     return ModifierPathsProvider(
       blueprintName,
       modifierName,
+      data,
     );
   }
 
@@ -724,6 +726,7 @@ class ModifierPathsFamily extends Family<List<String>> {
     return call(
       provider.blueprintName,
       provider.modifierName,
+      provider.data,
     );
   }
 
@@ -751,12 +754,14 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
   /// Copied from [modifierPaths].
   ModifierPathsProvider(
     String blueprintName,
-    String modifierName,
-  ) : this._internal(
+    String modifierName, [
+    String? data,
+  ]) : this._internal(
           (ref) => modifierPaths(
             ref as ModifierPathsRef,
             blueprintName,
             modifierName,
+            data,
           ),
           from: modifierPathsProvider,
           name: r'modifierPathsProvider',
@@ -769,6 +774,7 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
               ModifierPathsFamily._allTransitiveDependencies,
           blueprintName: blueprintName,
           modifierName: modifierName,
+          data: data,
         );
 
   ModifierPathsProvider._internal(
@@ -780,10 +786,12 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
     required super.from,
     required this.blueprintName,
     required this.modifierName,
+    required this.data,
   }) : super.internal();
 
   final String blueprintName;
   final String modifierName;
+  final String? data;
 
   @override
   Override overrideWith(
@@ -800,6 +808,7 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
         debugGetCreateSourceHash: null,
         blueprintName: blueprintName,
         modifierName: modifierName,
+        data: data,
       ),
     );
   }
@@ -813,7 +822,8 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
   bool operator ==(Object other) {
     return other is ModifierPathsProvider &&
         other.blueprintName == blueprintName &&
-        other.modifierName == modifierName;
+        other.modifierName == modifierName &&
+        other.data == data;
   }
 
   @override
@@ -821,6 +831,7 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, blueprintName.hashCode);
     hash = _SystemHash.combine(hash, modifierName.hashCode);
+    hash = _SystemHash.combine(hash, data.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -832,6 +843,9 @@ mixin ModifierPathsRef on AutoDisposeProviderRef<List<String>> {
 
   /// The parameter `modifierName` of this provider.
   String get modifierName;
+
+  /// The parameter `data` of this provider.
+  String? get data;
 }
 
 class _ModifierPathsProviderElement
@@ -842,6 +856,8 @@ class _ModifierPathsProviderElement
   String get blueprintName => (origin as ModifierPathsProvider).blueprintName;
   @override
   String get modifierName => (origin as ModifierPathsProvider).modifierName;
+  @override
+  String? get data => (origin as ModifierPathsProvider).data;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

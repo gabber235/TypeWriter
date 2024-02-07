@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entry.Entry
 import me.gabber235.typewriter.logger
 import kotlin.reflect.KClass
 
+@Deprecated("Use Ref instead")
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
 annotation class EntryIdentifier(val entry: KClass<out Entry>)
 

@@ -235,7 +235,7 @@ class _$ToastImpl implements _Toast {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ToastImpl &&
@@ -466,7 +466,7 @@ class _$TemporaryToastImpl implements TemporaryToast {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TemporaryToastImpl &&

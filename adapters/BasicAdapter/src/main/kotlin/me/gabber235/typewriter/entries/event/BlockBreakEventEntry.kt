@@ -29,7 +29,7 @@ import java.util.*
 class BlockBreakEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @MaterialProperties(MaterialProperty.BLOCK)
     @Help("The block that was broken.")
     val block: Optional<Material> = Optional.empty(),

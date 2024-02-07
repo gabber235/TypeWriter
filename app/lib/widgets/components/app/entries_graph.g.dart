@@ -36,7 +36,7 @@ final graphableEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef GraphableEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$isTriggerEntryHash() => r'917683e8c329400c0068ea5a34a064cb729e32ab';
+String _$isTriggerEntryHash() => r'b59e2358faaab1af711ce04aa78a7e6ab634c480';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -186,7 +186,7 @@ class _IsTriggerEntryProviderElement extends AutoDisposeProviderElement<bool>
 }
 
 String _$isTriggerableEntryHash() =>
-    r'4b5b533dee75d07eb970a077785ab5defb6dcfe6';
+    r'cba210e82b7fb849bd9561a3676292aa84cadb97';
 
 /// See also [isTriggerableEntry].
 @ProviderFor(isTriggerableEntry)
@@ -314,7 +314,7 @@ class _IsTriggerableEntryProviderElement
   String get entryId => (origin as IsTriggerableEntryProvider).entryId;
 }
 
-String _$entryTriggersHash() => r'2cdd643e8ce0f19c5b6dea06b5574c03276aad76';
+String _$entryTriggersHash() => r'1f4739026981fac9d7d507b9eeb57a22a0380357';
 
 /// See also [entryTriggers].
 @ProviderFor(entryTriggers)
@@ -442,7 +442,7 @@ class _EntryTriggersProviderElement
   String get entryId => (origin as EntryTriggersProvider).entryId;
 }
 
-String _$graphHash() => r'95895c4970adb0f53701f0bce28678009313d140';
+String _$graphHash() => r'177f6ba5a8480b0e1c89f0214809b14cdf70eecc';
 
 /// See also [graph].
 @ProviderFor(graph)

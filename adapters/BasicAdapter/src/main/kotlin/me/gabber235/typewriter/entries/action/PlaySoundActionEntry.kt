@@ -26,7 +26,7 @@ class PlaySoundActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The sound to play.")
     val sound: Sound = Sound.EMPTY,
 ) : ActionEntry {

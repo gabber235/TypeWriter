@@ -3,9 +3,7 @@ package com.caleb.typewriter.superiorskyblock.entries.event
 import com.bgsoftware.superiorskyblock.api.events.IslandInviteEvent
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.utils.Icons
@@ -21,11 +19,9 @@ import me.gabber235.typewriter.utils.Icons
 class IslandInviteEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
-    @Triggers
-    @EntryIdentifier(TriggerableEntry::class)
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The triggers for the player who got invited")
-    val inviteeTriggers: List<String> = emptyList(),
+    val inviteeTriggers: List<Ref<TriggerableEntry>> = emptyList(),
 ) : EventEntry
 
 @EntryListener(IslandInviteEventEntry::class)

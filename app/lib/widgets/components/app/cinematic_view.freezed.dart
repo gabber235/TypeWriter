@@ -15,181 +15,6 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$TrackState {
-  double get start => throw _privateConstructorUsedError;
-  double get end => throw _privateConstructorUsedError;
-  int get totalFrames => throw _privateConstructorUsedError;
-  double get width => throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  _$TrackStateCopyWith<_TrackState> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$TrackStateCopyWith<$Res> {
-  factory _$TrackStateCopyWith(
-          _TrackState value, $Res Function(_TrackState) then) =
-      __$TrackStateCopyWithImpl<$Res, _TrackState>;
-  @useResult
-  $Res call({double start, double end, int totalFrames, double width});
-}
-
-/// @nodoc
-class __$TrackStateCopyWithImpl<$Res, $Val extends _TrackState>
-    implements _$TrackStateCopyWith<$Res> {
-  __$TrackStateCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? start = null,
-    Object? end = null,
-    Object? totalFrames = null,
-    Object? width = null,
-  }) {
-    return _then(_value.copyWith(
-      start: null == start
-          ? _value.start
-          : start // ignore: cast_nullable_to_non_nullable
-              as double,
-      end: null == end
-          ? _value.end
-          : end // ignore: cast_nullable_to_non_nullable
-              as double,
-      totalFrames: null == totalFrames
-          ? _value.totalFrames
-          : totalFrames // ignore: cast_nullable_to_non_nullable
-              as int,
-      width: null == width
-          ? _value.width
-          : width // ignore: cast_nullable_to_non_nullable
-              as double,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$$__TrackStateImplCopyWith<$Res>
-    implements _$TrackStateCopyWith<$Res> {
-  factory _$$$__TrackStateImplCopyWith(
-          _$$__TrackStateImpl value, $Res Function(_$$__TrackStateImpl) then) =
-      __$$$__TrackStateImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({double start, double end, int totalFrames, double width});
-}
-
-/// @nodoc
-class __$$$__TrackStateImplCopyWithImpl<$Res>
-    extends __$TrackStateCopyWithImpl<$Res, _$$__TrackStateImpl>
-    implements _$$$__TrackStateImplCopyWith<$Res> {
-  __$$$__TrackStateImplCopyWithImpl(
-      _$$__TrackStateImpl _value, $Res Function(_$$__TrackStateImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? start = null,
-    Object? end = null,
-    Object? totalFrames = null,
-    Object? width = null,
-  }) {
-    return _then(_$$__TrackStateImpl(
-      null == start
-          ? _value.start
-          : start // ignore: cast_nullable_to_non_nullable
-              as double,
-      null == end
-          ? _value.end
-          : end // ignore: cast_nullable_to_non_nullable
-              as double,
-      null == totalFrames
-          ? _value.totalFrames
-          : totalFrames // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == width
-          ? _value.width
-          : width // ignore: cast_nullable_to_non_nullable
-              as double,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$$__TrackStateImpl implements _$__TrackState {
-  const _$$__TrackStateImpl(
-      [this.start = 0, this.end = 1, this.totalFrames = 0, this.width = 0]);
-
-  @override
-  @JsonKey()
-  final double start;
-  @override
-  @JsonKey()
-  final double end;
-  @override
-  @JsonKey()
-  final int totalFrames;
-  @override
-  @JsonKey()
-  final double width;
-
-  @override
-  String toString() {
-    return '_TrackState(start: $start, end: $end, totalFrames: $totalFrames, width: $width)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$$__TrackStateImpl &&
-            (identical(other.start, start) || other.start == start) &&
-            (identical(other.end, end) || other.end == end) &&
-            (identical(other.totalFrames, totalFrames) ||
-                other.totalFrames == totalFrames) &&
-            (identical(other.width, width) || other.width == width));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, start, end, totalFrames, width);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$$__TrackStateImplCopyWith<_$$__TrackStateImpl> get copyWith =>
-      __$$$__TrackStateImplCopyWithImpl<_$$__TrackStateImpl>(this, _$identity);
-}
-
-abstract class _$__TrackState implements _TrackState {
-  const factory _$__TrackState(
-      [final double start,
-      final double end,
-      final int totalFrames,
-      final double width]) = _$$__TrackStateImpl;
-
-  @override
-  double get start;
-  @override
-  double get end;
-  @override
-  int get totalFrames;
-  @override
-  double get width;
-  @override
-  @JsonKey(ignore: true)
-  _$$$__TrackStateImplCopyWith<_$$__TrackStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$FrameLine {
   int get frame => throw _privateConstructorUsedError;
   double get offset => throw _privateConstructorUsedError;
@@ -305,7 +130,7 @@ class _$$__FrameLineImpl implements _$__FrameLine {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$$__FrameLineImpl &&
@@ -495,7 +320,7 @@ class _$$__MoveStateImpl implements _$__MoveState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$$__MoveStateImpl &&
@@ -533,5 +358,180 @@ abstract class _$__MoveState implements _MoveState {
   @override
   @JsonKey(ignore: true)
   _$$$__MoveStateImplCopyWith<_$$__MoveStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$TrackState {
+  double get start => throw _privateConstructorUsedError;
+  double get end => throw _privateConstructorUsedError;
+  int get totalFrames => throw _privateConstructorUsedError;
+  double get width => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  _$TrackStateCopyWith<_TrackState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$TrackStateCopyWith<$Res> {
+  factory _$TrackStateCopyWith(
+          _TrackState value, $Res Function(_TrackState) then) =
+      __$TrackStateCopyWithImpl<$Res, _TrackState>;
+  @useResult
+  $Res call({double start, double end, int totalFrames, double width});
+}
+
+/// @nodoc
+class __$TrackStateCopyWithImpl<$Res, $Val extends _TrackState>
+    implements _$TrackStateCopyWith<$Res> {
+  __$TrackStateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? start = null,
+    Object? end = null,
+    Object? totalFrames = null,
+    Object? width = null,
+  }) {
+    return _then(_value.copyWith(
+      start: null == start
+          ? _value.start
+          : start // ignore: cast_nullable_to_non_nullable
+              as double,
+      end: null == end
+          ? _value.end
+          : end // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalFrames: null == totalFrames
+          ? _value.totalFrames
+          : totalFrames // ignore: cast_nullable_to_non_nullable
+              as int,
+      width: null == width
+          ? _value.width
+          : width // ignore: cast_nullable_to_non_nullable
+              as double,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$$__TrackStateImplCopyWith<$Res>
+    implements _$TrackStateCopyWith<$Res> {
+  factory _$$$__TrackStateImplCopyWith(
+          _$$__TrackStateImpl value, $Res Function(_$$__TrackStateImpl) then) =
+      __$$$__TrackStateImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({double start, double end, int totalFrames, double width});
+}
+
+/// @nodoc
+class __$$$__TrackStateImplCopyWithImpl<$Res>
+    extends __$TrackStateCopyWithImpl<$Res, _$$__TrackStateImpl>
+    implements _$$$__TrackStateImplCopyWith<$Res> {
+  __$$$__TrackStateImplCopyWithImpl(
+      _$$__TrackStateImpl _value, $Res Function(_$$__TrackStateImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? start = null,
+    Object? end = null,
+    Object? totalFrames = null,
+    Object? width = null,
+  }) {
+    return _then(_$$__TrackStateImpl(
+      null == start
+          ? _value.start
+          : start // ignore: cast_nullable_to_non_nullable
+              as double,
+      null == end
+          ? _value.end
+          : end // ignore: cast_nullable_to_non_nullable
+              as double,
+      null == totalFrames
+          ? _value.totalFrames
+          : totalFrames // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == width
+          ? _value.width
+          : width // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$$__TrackStateImpl implements _$__TrackState {
+  const _$$__TrackStateImpl(
+      [this.start = 0, this.end = 1, this.totalFrames = 0, this.width = 0]);
+
+  @override
+  @JsonKey()
+  final double start;
+  @override
+  @JsonKey()
+  final double end;
+  @override
+  @JsonKey()
+  final int totalFrames;
+  @override
+  @JsonKey()
+  final double width;
+
+  @override
+  String toString() {
+    return '_TrackState(start: $start, end: $end, totalFrames: $totalFrames, width: $width)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$$__TrackStateImpl &&
+            (identical(other.start, start) || other.start == start) &&
+            (identical(other.end, end) || other.end == end) &&
+            (identical(other.totalFrames, totalFrames) ||
+                other.totalFrames == totalFrames) &&
+            (identical(other.width, width) || other.width == width));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, start, end, totalFrames, width);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$$__TrackStateImplCopyWith<_$$__TrackStateImpl> get copyWith =>
+      __$$$__TrackStateImplCopyWithImpl<_$$__TrackStateImpl>(this, _$identity);
+}
+
+abstract class _$__TrackState implements _TrackState {
+  const factory _$__TrackState(
+      [final double start,
+      final double end,
+      final int totalFrames,
+      final double width]) = _$$__TrackStateImpl;
+
+  @override
+  double get start;
+  @override
+  double get end;
+  @override
+  int get totalFrames;
+  @override
+  double get width;
+  @override
+  @JsonKey(ignore: true)
+  _$$$__TrackStateImplCopyWith<_$$__TrackStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

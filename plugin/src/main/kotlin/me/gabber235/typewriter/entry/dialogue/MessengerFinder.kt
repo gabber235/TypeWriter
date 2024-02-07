@@ -8,6 +8,8 @@ import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.MessengerData
 import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.plugin
@@ -87,7 +89,7 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
         }
     }
 
-    open val triggers: List<String>
+    open val triggers: List<Ref<out TriggerableEntry>>
         get() = entry.triggers
 
     open val modifiers: List<Modifier>

@@ -6,6 +6,7 @@ import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.ModifierOperator
 import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.ExpirableFactEntry
 import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
@@ -18,10 +19,12 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.java.KoinJavaComponent.get
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 
 class FactDatabase : KoinComponent {
     private val storage: FactStorage by inject()
@@ -131,27 +134,31 @@ class FactDatabase : KoinComponent {
         if (Query.findById<PersistableFactEntry>(fact.id) != null) flush.add(playerId)
     }
 
-    fun getFact(playerId: UUID, id: String): Fact? {
-        val entry = Query.findById<ReadableFactEntry>(id) ?: return null
-        return entry.read(playerId)
-    }
-
-
     fun modify(playerId: UUID, modifiers: List<Modifier>) {
         modify(playerId) {
             modifiers.forEach { modifier ->
-                modify(modifier.fact) {
-                    when (modifier.operator) {
-                        ModifierOperator.ADD -> it + modifier.value
-                        ModifierOperator.SET -> modifier.value
+                when (modifier.operator) {
+                    ModifierOperator.ADD -> {
+                        val entry =
+                            modifier.fact.get().logErrorIfNull("Could not find ${modifier.fact}") ?: return@forEach
+
+                        if (entry !is ReadableFactEntry) {
+                            plugin.logger.warning("Tried to add to a non-readable fact: ${modifier.fact}, how do you expect to add if you can't read?")
+                            return@forEach
+                        }
+
+                        val fact = entry.read(playerId)
+                        modifier.value + fact.value
                     }
+
+                    ModifierOperator.SET -> modifier.value
                 }
             }
         }
     }
 
     fun modify(playerId: UUID, modifier: FactsModifier.() -> Unit) {
-        val modifications = FactsModifier(playerId).apply(modifier).build()
+        val modifications = FactsModifier().apply(modifier).build()
         if (modifications.isEmpty()) return
 
         val hasPersistentFact = modifications.map { (id, value) ->
@@ -166,17 +173,10 @@ class FactDatabase : KoinComponent {
     internal fun listCachedFacts(uniqueId: UUID): Set<Fact> = cache[uniqueId] ?: emptySet()
 }
 
-class FactsModifier(private val uuid: UUID) {
-
+class FactsModifier {
     private val modifications = mutableMapOf<String, Int>()
 
-    fun modify(id: String, modifier: (Int) -> Int) {
-        val oldValue = modifications[id] ?: get<FactDatabase>(FactDatabase::class.java).getFact(
-            uuid,
-            id
-        )?.value?.logErrorIfNull("Could not read fact: $id. Please report! Using 0 as default value.") ?: 0
-        modifications[id] = modifier(oldValue)
-    }
+    fun set(ref: Ref<out WritableFactEntry>, value: Int) = set(ref.id, value)
 
     fun set(id: String, value: Int) {
         modifications[id] = value
@@ -185,4 +185,4 @@ class FactsModifier(private val uuid: UUID) {
     fun build(): Map<String, Int> = modifications
 }
 
-fun Player.fact(id: String) = get<FactDatabase>(FactDatabase::class.java).getFact(uniqueId, id)
+fun Player.fact(ref: Ref<out ReadableFactEntry>) = ref.get()?.read(uniqueId)

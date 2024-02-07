@@ -25,7 +25,7 @@ class CinematicEntry(
     override val id: String = "",
     override val name: String = "",
     @SerializedName("triggers")
-    override val customTriggers: List<String> = emptyList(),
+    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     @SerializedName("page")

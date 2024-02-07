@@ -2,11 +2,11 @@ package me.gabber235.typewriter.citizens.entries.cinematic
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.citizens.entries.entity.ReferenceNpcEntry
 import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.NpcCinematicAction
 import me.gabber235.typewriter.entry.entries.NpcCinematicEntry
@@ -35,12 +35,11 @@ class ReferenceNpcCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val recordedSegments: List<NpcRecordedSegment> = emptyList(),
     @Help("Reference npc to clone")
-    @EntryIdentifier(ReferenceNpcEntry::class)
-    val referenceNpc: String = "",
+    val referenceNpc: Ref<ReferenceNpcEntry> = emptyRef(),
 ) : NpcCinematicEntry {
     override fun create(player: Player): CinematicAction {
         val referenceNpc =
-            Query.findById<ReferenceNpcEntry>(this.referenceNpc) ?: throw Exception("Reference npc not found")
+            this.referenceNpc.get() ?: throw Exception("Reference npc not found")
 
         return NpcCinematicAction(
             player,

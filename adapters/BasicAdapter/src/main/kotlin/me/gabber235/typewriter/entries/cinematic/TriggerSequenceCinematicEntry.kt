@@ -2,16 +2,16 @@ package me.gabber235.typewriter.entries.cinematic
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.*
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Query
-import me.gabber235.typewriter.entry.TriggerableEntry
+import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.InnerMax
+import me.gabber235.typewriter.adapters.modifiers.Max
+import me.gabber235.typewriter.adapters.modifiers.Segments
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.EntryTrigger
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
@@ -48,8 +48,7 @@ class TriggerSequenceCinematicEntry(
 data class TriggerSequenceSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
-    @EntryIdentifier(TriggerableEntry::class)
-    val trigger: String = "",
+    val trigger: Ref<TriggerableEntry> = emptyRef()
 ) : Segment
 
 class TriggerSequenceAction(
@@ -61,7 +60,7 @@ class TriggerSequenceAction(
     override suspend fun startSegment(segment: TriggerSequenceSegment) {
         super.startSegment(segment)
 
-        val entry = Query.findById<TriggerableEntry>(segment.trigger) ?: return
+        val entry = segment.trigger.get() ?: return
         EntryTrigger(entry) triggerFor player
     }
 }

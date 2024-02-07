@@ -30,7 +30,7 @@ import java.util.*
 class InteractBlockEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @MaterialProperties(BLOCK)
     @Help("The block that was interacted with.")
     val block: Material = Material.AIR,

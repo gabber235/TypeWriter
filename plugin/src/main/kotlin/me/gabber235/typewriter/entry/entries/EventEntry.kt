@@ -2,9 +2,7 @@ package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.Entry
-import me.gabber235.typewriter.entry.TriggerEntry
-import me.gabber235.typewriter.entry.triggerAllFor
+import me.gabber235.typewriter.entry.*
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -65,6 +63,7 @@ interface EventTrigger {
 
 data class EntryTrigger(override val id: String) : EventTrigger {
     constructor(entry: Entry) : this(entry.id)
+    constructor(reference: Ref<out Entry>) : this(reference.id)
 }
 
 enum class SystemTrigger : EventTrigger {
@@ -83,7 +82,7 @@ enum class SystemTrigger : EventTrigger {
 
 data class CinematicStartTrigger(
     val pageId: String,
-    val triggers: List<String> = emptyList(),
+    val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val override: Boolean = false,
     val simulate: Boolean = false,
     val ignoreEntries: List<String> = emptyList(),

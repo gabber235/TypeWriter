@@ -1,5 +1,7 @@
 package me.gabber235.typewriter.entry.cinematic
 
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.triggerEntriesFor
@@ -21,7 +23,7 @@ private const val ENDED_FRAME = -2
 class CinematicSequence(
     private val player: Player,
     private val actions: List<CinematicAction>,
-    private val triggers: List<String>,
+    private val triggers: List<Ref<TriggerableEntry>>,
     private val minEndTime: Optional<Int>,
 ) {
     private var frame = STARTING_FRAME

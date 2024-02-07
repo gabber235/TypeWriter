@@ -37,11 +37,7 @@ bool isTriggerEntry(IsTriggerEntryRef ref, String entryId) {
   if (entry == null) return false;
 
   final tags = ref.watch(entryTagsProvider(entry.type));
-  if (!tags.contains("trigger")) return false;
-
-  final modifiers = ref.watch(modifierPathsProvider(entry.type, "trigger"));
-
-  return modifiers.contains("triggers.*");
+  return tags.contains("trigger");
 }
 
 @riverpod
@@ -61,7 +57,8 @@ Set<String>? entryTriggers(EntryTriggersRef ref, String entryId) {
   // Check if this entry is a trigger
   if (!ref.read(isTriggerEntryProvider(entryId))) return null;
 
-  final modifiers = ref.watch(modifierPathsProvider(entry.type, "trigger"));
+  final modifiers =
+      ref.watch(modifierPathsProvider(entry.type, "entry", "triggerable"));
   return modifiers
       .expand(entry.getAll)
       .map((id) => id as String)

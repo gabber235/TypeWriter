@@ -34,7 +34,7 @@ class RemoveItemActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria>,
     override val modifiers: List<Modifier>,
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The item to remove.")
     val item: Item = Item.Empty,
 ) : ActionEntry {

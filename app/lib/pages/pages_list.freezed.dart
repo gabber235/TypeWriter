@@ -129,7 +129,7 @@ class _$$__PageDataImpl implements _$__PageData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$$__PageDataImpl &&

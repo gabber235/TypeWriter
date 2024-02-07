@@ -32,7 +32,7 @@ class DropItemActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria>,
     override val modifiers: List<Modifier>,
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The item to drop.")
     val item: Item = Item.Empty,
     @Help("The location to drop the item. (Defaults to the player's location)")

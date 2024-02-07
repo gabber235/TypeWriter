@@ -75,6 +75,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
                 loadAdapter(it)
             } catch (e: ClassNotFoundException) {
                 logger.warning("Failed to load adapter ${it.nameWithoutExtension}. Error: ${e.message}. This is likely due to a missing dependency. Skipping...")
+                e.printStackTrace()
                 null
             } catch (e: Exception) {
                 logger.warning("Failed to load adapter ${it.nameWithoutExtension}. Skipping...")

@@ -141,7 +141,7 @@ class _$DefaultSoundIdImpl implements DefaultSoundId {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DefaultSoundIdImpl &&
@@ -298,7 +298,7 @@ class _$EntrySoundIdImpl implements EntrySoundId {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EntrySoundIdImpl &&

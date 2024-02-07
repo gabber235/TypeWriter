@@ -5,9 +5,9 @@ import me.gabber235.typewriter.adapters.modifiers.Colored
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MultiLine
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
+import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.utils.Icons
 
 @Entry("random_message", "Display a random message from a list to a player", "#1c4da3", Icons.COMMENT)
@@ -23,8 +23,8 @@ class RandomMessageDialogueEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
-    override val speaker: String = "",
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
+    override val speaker: Ref<SpeakerEntry> = emptyRef(),
     @MultiLine
     @Colored
     @Placeholder

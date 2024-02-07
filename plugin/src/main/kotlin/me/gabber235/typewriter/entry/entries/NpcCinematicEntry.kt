@@ -4,12 +4,12 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.modifiers.Capture
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.capture.capturers.*
 import me.gabber235.typewriter.entry.AssetManager
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType
 import org.bukkit.Location
@@ -30,9 +30,8 @@ class NpcRecordedSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @Help("The artifact for the recorded interactions data")
-    @EntryIdentifier(NpcMovementArtifact::class)
     @Capture(NpcRecordedDataCapturer::class)
-    val artifact: String = "",
+    val artifact: Ref<NpcMovementArtifact> = emptyRef(),
 ) : Segment
 
 interface NpcData<N> {
@@ -70,8 +69,7 @@ class NpcCinematicAction<N>(
         super.setup()
 
         recordings = entry.recordedSegments
-            .associate { it.artifact to it.artifact }
-            .mapValues { Query.findById<ArtifactEntry>(it.value) }
+            .associate { it.artifact.id to it.artifact.get() }
             .filterValues { it != null }
             .mapValues { assetManager.fetchAsset(it.value!!) }
             .filterValues { it != null }
@@ -80,7 +78,7 @@ class NpcCinematicAction<N>(
 
         val firstLocation =
             entry.recordedSegments.asSequence()
-                .mapNotNull { recording -> recordings[recording.artifact]?.firstNotNullWhere { it.location } }
+                .mapNotNull { recording -> recordings[recording.artifact.id]?.firstNotNullWhere { it.location } }
                 .firstOrNull() ?: player.location
 
         withCorrectContext {
@@ -94,7 +92,7 @@ class NpcCinematicAction<N>(
         super.tick(frame)
 
         val segment = (entry.recordedSegments activeSegmentAt frame) ?: return
-        val recording = recordings[segment.artifact] ?: return
+        val recording = recordings[segment.artifact.id] ?: return
         val segmentFrame = frame - segment.startFrame
         withCorrectContext {
             npc?.let {
