@@ -194,7 +194,7 @@ enum class PageType(val id: String) {
     ;
 
     companion object {
-        fun fromId(id: String) = values().firstOrNull { it.id == id }
+        fun fromId(id: String) = entries.firstOrNull { it.id == id }
     }
 }
 

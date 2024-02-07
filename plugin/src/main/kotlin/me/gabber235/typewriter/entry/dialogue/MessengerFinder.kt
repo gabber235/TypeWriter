@@ -111,7 +111,7 @@ class EmptyDialogueMessenger(player: Player, entry: DialogueEntry) : DialogueMes
 private val confirmationKeyString by config(
     "confirmationKey", ConfirmationKey.SWAP_HANDS.name, comment = """
     |The key that should be pressed to confirm a dialogue option.
-    |Possible values: ${ConfirmationKey.values().joinToString(", ") { it.name }}
+    |Possible values: ${ConfirmationKey.entries.joinToString(", ") { it.name }}
 """.trimMargin()
 )
 
@@ -157,7 +157,7 @@ enum class ConfirmationKey(val keybind: String) {
 
     companion object {
         fun fromString(string: String): ConfirmationKey? {
-            return values().find { it.name.equals(string, true) }
+            return entries.find { it.name.equals(string, true) }
         }
     }
 }

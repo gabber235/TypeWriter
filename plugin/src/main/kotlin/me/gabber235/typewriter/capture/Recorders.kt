@@ -142,17 +142,17 @@ sealed interface RecorderResponse {
         }
     }
 
-    object CapturedRecording : RecorderResponse {
+    data object CapturedRecording : RecorderResponse {
         override val message: String = "Captured Field!"
         override val status: RecorderResponseStatus = RecorderResponseStatus.SUCCESS
     }
 
-    object RecordingStarting : RecorderResponse {
+    data object RecordingStarting : RecorderResponse {
         override val message: String = "Join the server to start recording!"
         override val status: RecorderResponseStatus = RecorderResponseStatus.SUCCESS
     }
 
-    object CapturerNotFound : RecorderResponse {
+    data object CapturerNotFound : RecorderResponse {
         override val message: String =
             "The capturer for this field was not found! Report to the typewriter adapter developer."
         override val status: RecorderResponseStatus = RecorderResponseStatus.ERROR
@@ -164,7 +164,7 @@ sealed interface RecorderResponse {
         override val status: RecorderResponseStatus = RecorderResponseStatus.ERROR
     }
 
-    object AlreadyRecording : RecorderResponse {
+    data object AlreadyRecording : RecorderResponse {
         override val message: String = "You are already recording!"
         override val status: RecorderResponseStatus = RecorderResponseStatus.ERROR
     }

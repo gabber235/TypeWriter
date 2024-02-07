@@ -23,9 +23,9 @@ interface CustomCommandEntry : EventEntry {
     }
 
     sealed interface CommandFilterResult {
-        object Success : CommandFilterResult
-        object Failure : CommandFilterResult
-        object FailureWithDefaultMessage : CommandFilterResult
+        data object Success : CommandFilterResult
+        data object Failure : CommandFilterResult
+        data object FailureWithDefaultMessage : CommandFilterResult
         data class FailureWithMessage(val message: String) : CommandFilterResult
     }
 

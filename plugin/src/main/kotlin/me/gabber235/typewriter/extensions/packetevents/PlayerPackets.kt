@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.extensions.packetevents
 
 import com.github.retrooper.packetevents.PacketEvents
+import com.github.retrooper.packetevents.util.Vector3i
 import com.github.retrooper.packetevents.wrapper.PacketWrapper
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerCamera
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation
@@ -45,3 +46,6 @@ inline fun <reified E : EntityMeta> WrapperEntity.meta(editor: E.() -> Unit): Wr
 }
 
 fun Location.toPacketLocation() = com.github.retrooper.packetevents.protocol.world.Location(x, y, z, yaw, pitch)
+
+fun Location.toVector3i() =
+    Vector3i(blockX, blockY, blockZ)
