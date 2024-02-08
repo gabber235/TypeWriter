@@ -122,7 +122,10 @@ pub async fn close_ticket(
     channel
         .edit_thread(
             ctx,
-            EditThread::default().applied_tags(vec![tag]).archived(true),
+            EditThread::default()
+                .applied_tags(vec![tag])
+                .archived(true)
+                .locked(!allow_reopen),
         )
         .await?;
 
