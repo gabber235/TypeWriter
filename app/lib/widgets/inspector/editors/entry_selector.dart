@@ -15,14 +15,11 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class EntrySelectorEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is PrimitiveField &&
-      info.type == PrimitiveFieldType.string &&
-      info.hasModifier("entry");
+  bool canEdit(FieldInfo info) => info.hasModifier("entry");
 
   @override
   Widget build(String path, FieldInfo info) =>
-      EntrySelectorEditor(path: path, field: info as PrimitiveField);
+      EntrySelectorEditor(path: path, field: info);
 }
 
 class EntrySelectorEditor extends HookConsumerWidget {
@@ -33,7 +30,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
   }) : super();
 
   final String path;
-  final PrimitiveField field;
+  final FieldInfo field;
 
   bool _update(PassingRef ref, Entry? entry) {
     if (entry == null) return false;
