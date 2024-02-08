@@ -1,11 +1,11 @@
 use async_trait::async_trait;
 use indoc::formatdoc;
 use poise::serenity_prelude::{
-    Context, CreateEmbed, CreateInteractionResponseFollowup, CreateQuickModal, EditMessage,
-    EditThread, EventHandler, Interaction, Timestamp,
+    ComponentInteraction, Context, CreateEmbed, CreateInteractionResponseFollowup,
+    CreateQuickModal, EditMessage, EditThread, EventHandler, Interaction, Timestamp,
 };
 
-use crate::{check_permissions, update_response, CONTRIBUTOR_ROLE_ID};
+use crate::{check_permissions, CONTRIBUTOR_ROLE_ID};
 
 pub struct TicketReopenHandler;
 
@@ -31,16 +31,15 @@ impl EventHandler for TicketReopenHandler {
                     .paragraph_field("Reason"),
             )
             .await;
-
         let responds = match responds {
             Ok(Some(responds)) if responds.inputs.len() > 0 => responds,
             Err(err) => {
-                update_response(&ctx, &component, "Failed to open modal").await;
+                send_followup(&ctx, &component, "Failed to open modal").await;
                 eprintln!("Failed to open modal: {}", err);
                 return;
             }
             _ => {
-                update_response(
+                send_followup(
                     &ctx,
                     &component,
                     "You need to supply a reason to reopen the ticket",
@@ -49,18 +48,8 @@ impl EventHandler for TicketReopenHandler {
                 return;
             }
         };
-        if let Err(e) = responds
-            .interaction
-            .create_followup(
-                &ctx,
-                CreateInteractionResponseFollowup::default().content("Reopening ticket..."),
-            )
-            .await
-        {
-            update_response(&ctx, &component, "Failed to reopen ticket").await;
-            eprintln!("Failed to reopen ticket: {}", e);
-            return;
-        }
+
+        send_followup(&ctx, &component, "Reopening ticket...").await;
 
         let reason = responds.inputs[0].as_str();
 
@@ -74,7 +63,7 @@ impl EventHandler for TicketReopenHandler {
             )
             .await
         {
-            update_response(&ctx, &component, "Failed to reopen ticket").await;
+            send_followup(&ctx, &component, "Failed to reopen ticket").await;
             eprintln!("Failed to reopen ticket: {}", e);
             return;
         }
@@ -95,9 +84,23 @@ impl EventHandler for TicketReopenHandler {
             .edit(&ctx, EditMessage::default().embed(embed).components(vec![]))
             .await
         {
-            update_response(&ctx, &component, "Failed to reopen ticket").await;
+            send_followup(&ctx, &component, "Failed to reopen ticket").await;
             eprintln!("Failed to reopen ticket: {}", e);
             return;
         }
+    }
+}
+
+async fn send_followup(ctx: &Context, interaction: &ComponentInteraction, content: &str) {
+    if let Err(e) = interaction
+        .create_followup(
+            &ctx,
+            CreateInteractionResponseFollowup::default()
+                .content(content)
+                .ephemeral(true),
+        )
+        .await
+    {
+        eprintln!("Failed to send followup: {}", e);
     }
 }
