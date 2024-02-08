@@ -17,6 +17,11 @@ val messageFormat: String by snippet(
     "\n<gray> [ <bold><speaker></bold><reset><gray> ]\n<reset><white> <message>\n"
 )
 
+val messagePadding: String by snippet(
+    "dialogue.message.padding",
+    " "
+)
+
 @Messenger(MessageDialogueEntry::class)
 class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDialogueEntry) :
     DialogueMessenger<MessageDialogueEntry>(player, entry) {
@@ -38,6 +43,6 @@ fun Player.sendMessageDialogue(text: String, speakerDisplayName: String) {
     sendMiniWithResolvers(
         messageFormat,
         Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(this)),
-        Placeholder.parsed("message", text.parsePlaceholders(this).replace("\n", "\n "))
+        Placeholder.parsed("message", text.parsePlaceholders(this).replace("\n", "\n$messagePadding"))
     )
 }
