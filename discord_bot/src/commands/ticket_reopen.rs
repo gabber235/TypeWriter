@@ -20,6 +20,10 @@ impl EventHandler for TicketReopenHandler {
             return;
         }
 
+        let Some((mut guild_channel, _owner_id)) = check_permissions(&ctx, &component).await else {
+            return;
+        };
+
         let responds = component
             .quick_modal(
                 &ctx,
@@ -27,10 +31,6 @@ impl EventHandler for TicketReopenHandler {
                     .paragraph_field("Reason"),
             )
             .await;
-
-        let Some((mut guild_channel, _owner_id)) = check_permissions(&ctx, &component).await else {
-            return;
-        };
 
         let responds = match responds {
             Ok(Some(responds)) if responds.inputs.len() > 0 => responds,
@@ -49,6 +49,18 @@ impl EventHandler for TicketReopenHandler {
                 return;
             }
         };
+
+        if let Err(e) = responds
+            .interaction
+            .create_response(
+                &ctx,
+                poise::serenity_prelude::CreateInteractionResponse::Acknowledge,
+            )
+            .await
+        {
+            eprintln!("Failed to acknowledge interaction: {}", e);
+            return;
+        }
 
         send_followup(&ctx, &component, "Reopening ticket...").await;
 
@@ -80,18 +92,22 @@ impl EventHandler for TicketReopenHandler {
                 ", CONTRIBUTOR_ROLE_ID, reason})
             .timestamp(Timestamp::now());
 
+        // if let Err(e) = component
+        //     .message
+        //     .channel_id
+        //     .send_message(&ctx, CreateMessage::default().embed(embed))
+        //     .await
+        // {
+        //     send_followup(&ctx, &component, "Failed to reopen ticket").await;
+        //     eprintln!("Failed to send new message: {}", e);
+        //     return;
+        // }
+
         if let Err(e) = component
             .message
-            .channel_id
-            .send_message(&ctx, CreateMessage::default().embed(embed))
+            .edit(&ctx, EditMessage::default().embed(embed).components(vec![]))
             .await
         {
-            send_followup(&ctx, &component, "Failed to reopen ticket").await;
-            eprintln!("Failed to send new message: {}", e);
-            return;
-        }
-
-        if let Err(e) = component.message.delete(&ctx).await {
             send_followup(&ctx, &component, "Failed to reopen ticket").await;
             eprintln!("Failed to delete old message: {}", e);
             return;
