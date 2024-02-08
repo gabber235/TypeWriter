@@ -62,8 +62,6 @@ impl EventHandler for TicketReopenHandler {
             return;
         }
 
-        send_followup(&ctx, &component, "Reopening ticket...").await;
-
         let reason = responds.inputs[0].as_str();
 
         if let Err(e) = guild_channel

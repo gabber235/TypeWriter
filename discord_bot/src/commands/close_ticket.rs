@@ -119,6 +119,16 @@ pub async fn close_ticket(
         embed.description("This ticket has been closed.")
     };
 
+    channel
+        .edit_thread(
+            ctx,
+            EditThread::default()
+                .applied_tags(vec![tag])
+                .archived(true)
+                .locked(true),
+        )
+        .await?;
+
     let message = CreateMessage::default().embed(embed);
 
     let message = if allow_reopen {
@@ -133,13 +143,6 @@ pub async fn close_ticket(
     };
 
     channel.send_message(&ctx, message).await?;
-
-    channel
-        .edit_thread(
-            ctx,
-            EditThread::default().applied_tags(vec![tag]).archived(true),
-        )
-        .await?;
 
     Ok(())
 }
