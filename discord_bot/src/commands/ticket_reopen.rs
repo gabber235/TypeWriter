@@ -90,18 +90,28 @@ impl EventHandler for TicketReopenHandler {
                 ", CONTRIBUTOR_ROLE_ID, reason})
             .timestamp(Timestamp::now());
 
+        // if let Err(e) = component
+        //     .message
+        //     .channel_id
+        //     .send_message(&ctx, CreateMessage::default().embed(embed))
+        //     .await
+        // {
+        //     send_followup(&ctx, &component, "Failed to reopen ticket").await;
+        //     eprintln!("Failed to send new message: {}", e);
+        //     return;
+        // }
+
         if let Err(e) = component
             .message
-            .channel_id
-            .send_message(&ctx, CreateMessage::default().embed(embed))
+            .edit(
+                &ctx,
+                EditMessage::default()
+                    .embed(embed)
+                    .content(format!("<@&{}>", CONTRIBUTOR_ROLE_ID))
+                    .components(vec![]),
+            )
             .await
         {
-            send_followup(&ctx, &component, "Failed to reopen ticket").await;
-            eprintln!("Failed to send new message: {}", e);
-            return;
-        }
-
-        if let Err(e) = component.message.delete(&ctx).await {
             send_followup(&ctx, &component, "Failed to reopen ticket").await;
             eprintln!("Failed to delete old message: {}", e);
             return;
