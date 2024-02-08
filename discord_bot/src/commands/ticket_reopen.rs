@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use indoc::formatdoc;
 use poise::serenity_prelude::{
-    ComponentInteraction, Context, CreateEmbed, CreateInteractionResponseFollowup,
+    ComponentInteraction, Context, CreateEmbed, CreateInteractionResponseFollowup, CreateMessage,
     CreateQuickModal, EditMessage, EditThread, EventHandler, Interaction, Timestamp,
 };
 
@@ -68,9 +68,6 @@ impl EventHandler for TicketReopenHandler {
             return;
         }
 
-        // Add a little delay to make sure the thread is reopened before we send the message
-        tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
-
         let embed = CreateEmbed::default()
             .title("Ticket Reopened")
             .color(0x8c44ff)
@@ -84,11 +81,18 @@ impl EventHandler for TicketReopenHandler {
 
         if let Err(e) = component
             .message
-            .edit(&ctx, EditMessage::default().embed(embed).components(vec![]))
+            .channel_id
+            .send_message(&ctx, CreateMessage::default().embed(embed))
             .await
         {
             send_followup(&ctx, &component, "Failed to reopen ticket").await;
-            eprintln!("Failed to update message: {}", e);
+            eprintln!("Failed to send new message: {}", e);
+            return;
+        }
+
+        if let Err(e) = component.message.delete(&ctx).await {
+            send_followup(&ctx, &component, "Failed to reopen ticket").await;
+            eprintln!("Failed to delete old message: {}", e);
             return;
         }
     }
