@@ -83,11 +83,11 @@ impl EventHandler for TicketReopenHandler {
             .title("Ticket Reopened")
             .color(0x8c44ff)
             .description(formatdoc! {"
-                This ticket has been reopened.
+                <@&{}> This ticket has been reopened.
 
                 **Reason**: 
                 {}
-                ", reason})
+                ", CONTRIBUTOR_ROLE_ID, reason})
             .timestamp(Timestamp::now());
 
         if let Err(e) = component
