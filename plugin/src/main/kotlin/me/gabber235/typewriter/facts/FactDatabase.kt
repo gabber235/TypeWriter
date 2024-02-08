@@ -137,7 +137,7 @@ class FactDatabase : KoinComponent {
     fun modify(playerId: UUID, modifiers: List<Modifier>) {
         modify(playerId) {
             modifiers.forEach { modifier ->
-                when (modifier.operator) {
+                this[modifier.fact] = when (modifier.operator) {
                     ModifierOperator.ADD -> {
                         val entry =
                             modifier.fact.get().logErrorIfNull("Could not find ${modifier.fact}") ?: return@forEach
@@ -176,9 +176,9 @@ class FactDatabase : KoinComponent {
 class FactsModifier {
     private val modifications = mutableMapOf<String, Int>()
 
-    fun set(ref: Ref<out WritableFactEntry>, value: Int) = set(ref.id, value)
+    operator fun set(ref: Ref<out WritableFactEntry>, value: Int) = set(ref.id, value)
 
-    fun set(id: String, value: Int) {
+    operator fun set(id: String, value: Int) {
         modifications[id] = value
     }
 
