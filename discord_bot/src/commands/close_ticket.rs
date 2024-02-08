@@ -136,7 +136,8 @@ pub async fn close_ticket(
             CreateButton::new("reopen_ticket")
                 .label("Reopen Ticket")
                 .style(ButtonStyle::Secondary)
-                .emoji(ReactionType::Unicode("🔓".to_string())),
+                .emoji(ReactionType::Unicode("🔓".to_string()))
+                .disabled(false),
         )
     } else {
         message
