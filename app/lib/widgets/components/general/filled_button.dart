@@ -71,6 +71,7 @@ class _FilledButtonWithIconChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     final scale = MediaQuery.maybeOf(context)?.textScaleFactor ?? 1;
     final gap = scale <= 1 ? 8.0 : lerpDouble(8, 4, math.min(scale - 1, 1))!;
     return Row(

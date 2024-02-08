@@ -20,7 +20,8 @@ class StagingIndicator extends HookConsumerWidget {
       children: [
         DottedBorder(
           borderType: BorderType.RRect,
-          color: state == StagingState.staging ? state.color : Colors.transparent,
+          color:
+              state == StagingState.staging ? state.color : Colors.transparent,
           strokeWidth: 2,
           dashPattern: const [5, 5],
           radius: const Radius.circular(8),
@@ -40,7 +41,8 @@ class StagingIndicator extends HookConsumerWidget {
             ],
           ),
         ),
-        if (state == StagingState.staging) const Positioned.fill(child: _PublishButton()),
+        if (state == StagingState.staging)
+          const Positioned.fill(child: _PublishButton()),
       ],
     );
   }
@@ -74,7 +76,7 @@ class _Icon extends HookConsumerWidget {
 }
 
 class _PublishButton extends HookConsumerWidget {
-  const _PublishButton({super.key});
+  const _PublishButton();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

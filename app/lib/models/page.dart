@@ -41,6 +41,11 @@ PageType pageType(PageTypeRef ref, String pageName) {
 }
 
 @riverpod
+String pageChapter(PageChapterRef ref, String pageName) {
+  return ref.watch(pageProvider(pageName))?.chapter ?? "";
+}
+
+@riverpod
 String? entriesPage(EntriesPageRef ref, String entryId) {
   return ref
       .watch(pagesProvider)
@@ -162,7 +167,7 @@ extension PageExtension on Page {
       ref,
       (page) => _insertEntry(page, entry),
     );
-    ref.read(communicatorProvider).updateEntireEntry(pageName, entry);
+    await ref.read(communicatorProvider).updateEntireEntry(pageName, entry);
   }
 
   void updateEntryValue(

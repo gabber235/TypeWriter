@@ -8,7 +8,10 @@ class PassingRef {
     this.providerRef,
     this.widgetRef,
     this.container,
-  }) : assert(providerRef != null || widgetRef != null || container != null);
+  }) : assert(
+          providerRef != null || widgetRef != null || container != null,
+          "At least one reference must be provided",
+        );
 
   final Ref<dynamic>? providerRef;
   final WidgetRef? widgetRef;

@@ -31,8 +31,14 @@ class WritersIndicator extends HookConsumerWidget {
     this.offset,
     this.enabled = true,
     super.key,
-  })  : assert(child != null || builder != null),
-        assert(!(shift != null && offset != null));
+  })  : assert(
+          child != null || builder != null,
+          "Either child or builder must be provided",
+        ),
+        assert(
+          !(shift != null && offset != null),
+          "Only one of shift or offset can be provided",
+        );
 
   final ProviderBase<List<Writer>> provider;
   final Widget? child;

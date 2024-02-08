@@ -314,7 +314,7 @@ class _IsTriggerableEntryProviderElement
   String get entryId => (origin as IsTriggerableEntryProvider).entryId;
 }
 
-String _$entryTriggersHash() => r'1f4739026981fac9d7d507b9eeb57a22a0380357';
+String _$entryTriggersHash() => r'202d6329486245dd0f1be929ab5f6c076a237fc4';
 
 /// See also [entryTriggers].
 @ProviderFor(entryTriggers)

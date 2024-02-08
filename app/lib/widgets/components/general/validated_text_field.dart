@@ -88,7 +88,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
 
     final formattedValue = deserialize?.call(value) ?? value.toString();
 
-    useFocusedChange(focus, (hasFocus) {
+    useFocusedChange(focus, ({required hasFocus}) {
       if (!hasFocus) state.value = _initial;
 
       if (hasFocus && keepValidVisibleWhileFocused && state.value == _initial) {
@@ -155,7 +155,10 @@ class _StateText extends HookWidget {
       padding: const EdgeInsets.only(left: 8.0, top: 4.0),
       child: Text(
         value ?? state.cast<_Valid>()?.message ?? "",
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.green),
+        style: Theme.of(context)
+            .textTheme
+            .bodySmall
+            ?.copyWith(color: Colors.green),
       ),
     )
         .animate()
@@ -166,8 +169,17 @@ class _StateText extends HookWidget {
         .addEffects([
       if (!keepValidVisible) ...[
         ThenEffect(delay: 300.ms),
-        MoveEffect(end: const Offset(0, -4), duration: 300.ms, curve: Curves.easeOut),
-        FadeEffect(begin: 1.0, end: 0.0, duration: 300.ms, curve: Curves.easeOut),
+        MoveEffect(
+          end: const Offset(0, -4),
+          duration: 300.ms,
+          curve: Curves.easeOut,
+        ),
+        FadeEffect(
+          begin: 1.0,
+          end: 0.0,
+          duration: 300.ms,
+          curve: Curves.easeOut,
+        ),
         SwapEffect(builder: (_, __) => Container()),
       ],
     ]);

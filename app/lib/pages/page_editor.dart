@@ -16,7 +16,6 @@ import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/cinematic_view.dart";
 import "package:typewriter/widgets/components/app/entries_graph.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
-import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/staging.dart";
 import "package:typewriter/widgets/components/app/static_entries_list.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
@@ -160,21 +159,14 @@ class _AppBar extends HookConsumerWidget {
           Text(ref.watch(currentPageLabelProvider)),
           const SizedBox(width: 5),
           const Spacer(),
-          // When selecting entries, we want to disable these interactions
-          SelectingEntriesBlocker(
-            child: Row(
-              children: [
-                Writers(writers: ref.watch(_writersProvider)),
-                const SizedBox(width: 20),
-                const StagingIndicator(key: Key("staging-indicator")),
-                const SizedBox(width: 20),
-                const _SearchBar(),
-                const SizedBox(width: 5),
-                const _AddEntryButton(),
-                const SizedBox(width: 10),
-              ],
-            ),
-          ),
+          Writers(writers: ref.watch(_writersProvider)),
+          const SizedBox(width: 20),
+          const StagingIndicator(key: Key("staging-indicator")),
+          const SizedBox(width: 20),
+          const _SearchBar(),
+          const SizedBox(width: 5),
+          const _AddEntryButton(),
+          const SizedBox(width: 10),
         ],
       ),
     );
@@ -235,23 +227,13 @@ class _Inspector extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
-
-    // When we are selecting entries, we want a special inspector that allows
-    // us to select entries.
-    if (isSelectingEntries) {
-      return const EntriesSelectorInspector();
-    }
-
     final pageType = ref.watch(currentPageTypeProvider);
     if (pageType == null) {
       return const SizedBox();
     }
 
     switch (pageType) {
-      case PageType.sequence:
-        return const GenericInspector();
-      case PageType.static:
+      case PageType.sequence || PageType.static:
         return const GenericInspector();
       case PageType.cinematic:
         return const CinematicInspector();

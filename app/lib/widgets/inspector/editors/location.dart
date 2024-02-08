@@ -13,24 +13,14 @@ import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
-class LocationEditorFilter extends EditorFilter {
-  @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "location";
-
-  @override
-  Widget build(String path, FieldInfo info) =>
-      LocationEditor(path: path, field: info as CustomField);
-}
-
 class LocationEditor extends HookConsumerWidget {
   const LocationEditor({
     required this.path,
     required this.field,
     super.key,
   });
-
   final String path;
+
   final CustomField field;
 
   @override
@@ -85,36 +75,14 @@ class LocationEditor extends HookConsumerWidget {
   }
 }
 
-class _LocationWorldEditor extends HookConsumerWidget {
-  const _LocationWorldEditor({
-    required this.path,
-  });
-
-  final String path;
+class LocationEditorFilter extends EditorFilter {
+  @override
+  Widget build(String path, FieldInfo info) =>
+      LocationEditor(path: path, field: info as CustomField);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final focus = useFocusNode();
-    final value = ref.watch(fieldValueProvider(path, ""));
-
-    useFocusedBasedCurrentEditingField(focus, ref.passing, path);
-
-    return WritersIndicator(
-      provider: fieldWritersProvider(path),
-      shift: (_) => const Offset(15, 0),
-      child: FormattedTextField(
-        focus: focus,
-        text: value,
-        icon: FontAwesomeIcons.earthAmericas,
-        hintText: "World",
-        onChanged: (value) {
-          ref
-              .read(inspectingEntryDefinitionProvider)
-              ?.updateField(ref.passing, path, value);
-        },
-      ),
-    );
-  }
+  bool canEdit(FieldInfo info) =>
+      info is CustomField && info.editor == "location";
 }
 
 class _LocationPropertyEditor extends HookConsumerWidget {
@@ -133,8 +101,8 @@ class _LocationPropertyEditor extends HookConsumerWidget {
     final focus = useFocusNode();
     final value = ref.watch(fieldValueProvider(path, 0.0));
 
-    useFocusedChange(focus, (focused) {
-      if (!focused) return;
+    useFocusedChange(focus, ({required hasFocus}) {
+      if (!hasFocus) return;
       // When we focus, we want to select the whole text
       controller.selection =
           TextSelection(baseOffset: 0, extentOffset: controller.text.length);
@@ -166,6 +134,38 @@ class _LocationPropertyEditor extends HookConsumerWidget {
             prefixStyle: TextStyle(color: color),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _LocationWorldEditor extends HookConsumerWidget {
+  const _LocationWorldEditor({
+    required this.path,
+  });
+
+  final String path;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final focus = useFocusNode();
+    final value = ref.watch(fieldValueProvider(path, ""));
+
+    useFocusedBasedCurrentEditingField(focus, ref.passing, path);
+
+    return WritersIndicator(
+      provider: fieldWritersProvider(path),
+      shift: (_) => const Offset(15, 0),
+      child: FormattedTextField(
+        focus: focus,
+        text: value,
+        icon: FontAwesomeIcons.earthAmericas,
+        hintText: "World",
+        onChanged: (value) {
+          ref
+              .read(inspectingEntryDefinitionProvider)
+              ?.updateField(ref.passing, path, value);
+        },
       ),
     );
   }

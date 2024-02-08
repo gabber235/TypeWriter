@@ -10,7 +10,6 @@ import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/headers/capture_action.dart";
 import "package:typewriter/widgets/inspector/headers/colored_action.dart";
-import "package:typewriter/widgets/inspector/headers/entry_selector_action.dart";
 import "package:typewriter/widgets/inspector/headers/help_action.dart";
 import "package:typewriter/widgets/inspector/headers/length_action.dart";
 import "package:typewriter/widgets/inspector/headers/multiline_action.dart";
@@ -172,7 +171,6 @@ List<HeaderActionFilter> headerActionFilters(HeaderActionFiltersRef ref) => [
       PlaceholderHeaderActionFilter(),
       RegexHeaderActionFilter(),
       LengthHeaderActionFilter(),
-      EntrySelectorHeaderActionFilter(),
       CaptureHeaderActionFilter(),
     ];
 

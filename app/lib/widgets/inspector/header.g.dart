@@ -7,7 +7,7 @@ part of 'header.dart';
 // **************************************************************************
 
 String _$headerActionFiltersHash() =>
-    r'1948745106f42d9109becc8ea5068801689ece7a';
+    r'444bbff86f1a77c89b0773a9a1b6dc5f76c3e0fa';
 
 /// See also [headerActionFilters].
 @ProviderFor(headerActionFilters)

@@ -132,6 +132,7 @@ void main() {
     test("When an entry is updated, expect the original entry to be unchanged",
         () {
       final entry = Entry(rawDynamicEntry);
+      // ignore: cascade_invocations
       entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
       expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
     });

@@ -2,7 +2,7 @@ import "dart:math";
 
 import "package:collection/collection.dart";
 import "package:collection_ext/all.dart";
-import "package:flutter/material.dart" hide Title, FilledButton;
+import "package:flutter/material.dart" hide FilledButton, Title;
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -683,8 +683,9 @@ class CinematicView extends HookConsumerWidget {
 
 //<editor-fold desc="Inspector">
 class InspectingSegmentIdNotifier extends StateNotifier<String?> {
-  final Ref ref;
   InspectingSegmentIdNotifier(this.ref) : super(null);
+
+  final Ref ref;
 
   void clear() {
     ref.read(currentEditingFieldProvider.notifier).clearIfSame(state ?? "");
@@ -701,11 +702,10 @@ class InspectingSegmentIdNotifier extends StateNotifier<String?> {
 }
 
 class _BackgroundLinePainter extends CustomPainter {
-  final List<_FrameLine> lines;
-
   const _BackgroundLinePainter({
     required this.lines,
   });
+  final List<_FrameLine> lines;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -859,13 +859,14 @@ class _EndFrameField extends HookConsumerWidget {
 }
 
 class _EntryRow extends HookConsumerWidget {
-  final int index;
-  final String entryId;
   const _EntryRow({
     required this.index,
     required this.entryId,
     super.key,
   });
+
+  final int index;
+  final String entryId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -899,11 +900,11 @@ class _EntryRow extends HookConsumerWidget {
 
 //<editor-fold desc="Segment Tracks">
 class _EntryTrack extends HookConsumerWidget {
-  final String entryId;
-
   const _EntryTrack({
     required this.entryId,
   });
+
+  final String entryId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -957,13 +958,6 @@ class _EntryTrack extends HookConsumerWidget {
 }
 
 class _FrameField extends HookConsumerWidget {
-  final String path;
-
-  final String title;
-  final IconData? icon;
-  final String hintText;
-  final String? Function(int)? onValidate;
-  final Function(int)? onDone;
   const _FrameField({
     required this.path,
     this.title = "",
@@ -972,6 +966,13 @@ class _FrameField extends HookConsumerWidget {
     this.onValidate,
     this.onDone,
   });
+
+  final String path;
+  final String title;
+  final IconData? icon;
+  final String hintText;
+  final String? Function(int)? onValidate;
+  final Function(int)? onDone;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1130,9 +1131,8 @@ class _InspectorHeader extends HookConsumerWidget {
 }
 
 class _MoveNotifier extends StateNotifier<_MoveState?> {
-  final Ref ref;
-
   _MoveNotifier(this.ref) : super(null);
+  final Ref ref;
 
   void end() {
     state = null;
@@ -1357,13 +1357,13 @@ class _SegmentOperations extends HookConsumerWidget {
 }
 
 class _SegmentPosition extends HookConsumerWidget {
-  final Segment segment;
-
-  final Widget child;
   const _SegmentPosition({
     required this.segment,
     required this.child,
   });
+  final Segment segment;
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1420,11 +1420,10 @@ class _SegmentSelector extends HookConsumerWidget {
 }
 
 class _SegmentSelectorTile extends HookConsumerWidget {
-  final Segment segment;
-
   const _SegmentSelectorTile({
     required this.segment,
   });
+  final Segment segment;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1517,15 +1516,15 @@ class _SegmentSelectorTile extends HookConsumerWidget {
 }
 
 class _SegmentsTrack extends HookConsumerWidget {
-  final String entryId;
-
-  final String path;
-  final Widget Function(BuildContext, Segment) segmentBuilder;
   const _SegmentsTrack({
     required this.entryId,
     required this.path,
     required this.segmentBuilder,
   });
+  final String entryId;
+
+  final String path;
+  final Widget Function(BuildContext, Segment) segmentBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1545,16 +1544,16 @@ class _SegmentsTrack extends HookConsumerWidget {
 }
 
 class _SegmentWidget extends HookConsumerWidget {
-  final String entryId;
-
-  final Segment segment;
-  final GlobalKey parentKey;
   const _SegmentWidget({
     required this.entryId,
     required this.segment,
     required this.parentKey,
     super.key,
   });
+  final String entryId;
+
+  final Segment segment;
+  final GlobalKey parentKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1752,11 +1751,10 @@ class _SingleFrameField extends HookConsumerWidget {
 }
 
 class _SmartSpacer extends HookConsumerWidget {
-  final String entryId;
-
   const _SmartSpacer({
     required this.entryId,
   });
+  final String entryId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1825,15 +1823,15 @@ class _StartFrameField extends HookConsumerWidget {
 //</editor-fold>
 
 class _Thumb extends HookConsumerWidget {
-  final Function(DragStartDetails)? onDragStart;
-  final Function(DragUpdateDetails) onDragUpdate;
-  final Function(DragEndDetails)? onDragEnd;
   const _Thumb({
     required this.onDragUpdate,
     this.onDragStart,
     this.onDragEnd,
     super.key,
   });
+  final Function(DragStartDetails)? onDragStart;
+  final Function(DragUpdateDetails) onDragUpdate;
+  final Function(DragEndDetails)? onDragEnd;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1869,11 +1867,10 @@ class _TrackBackground extends HookConsumerWidget {
 }
 
 class _TrackSlider extends HookConsumerWidget {
-  final GlobalKey outerKey;
-
   const _TrackSlider({
     required this.outerKey,
   });
+  final GlobalKey outerKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -2002,23 +1999,26 @@ class _TrackSliderTrack extends HookConsumerWidget {
 @freezed
 class _TrackState with _$TrackState {
   const factory _TrackState([
+    // ignore: unused_element
     @Default(0) double start,
+    // ignore: unused_element
     @Default(1) double end,
+    // ignore: unused_element
     @Default(0) int totalFrames,
+    // ignore: unused_element
     @Default(0) double width,
   ]) = _$__TrackState;
 }
 
 class _TrackStateProvider extends StateNotifier<_TrackState> {
-  static const _minWidth = 40;
-  final AutoDisposeStateNotifierProviderRef<_TrackStateProvider, _TrackState>
-      ref;
-
   _TrackStateProvider(this.ref) : super(const _TrackState()) {
     state = state.copyWith(
       totalFrames: max(100, ref.read(_totalSequenceFramesProvider)),
     );
   }
+  static const _minWidth = 40;
+  final AutoDisposeStateNotifierProviderRef<_TrackStateProvider, _TrackState>
+      ref;
   double calculateDelta(double delta) => delta / state.width;
 
   void changeTotalFrames(int totalFrames) {

@@ -10,7 +10,6 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
-import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:url_launcher/url_launcher.dart";
 
@@ -140,21 +139,18 @@ class _SideRail extends HookConsumerWidget {
           ),
           const SizedBox(height: 10),
           Flexible(
-            // When selecting entries we don't want to go to some other page
-            child: SelectingEntriesBlocker(
-              child: Column(
-                children: [
-                  _RailButton(index++, icon: FontAwesomeIcons.filePen),
-                  const Spacer(),
-                  const GlobalWriters(direction: Axis.vertical),
-                  const SizedBox(height: 5),
-                  const _DiscordButton(),
-                  const SizedBox(height: 5),
-                  const _WikiButton(),
-                  const SizedBox(height: 5),
-                  const _ReloadBookButton(),
-                ],
-              ),
+            child: Column(
+              children: [
+                _RailButton(index++, icon: FontAwesomeIcons.filePen),
+                const Spacer(),
+                const GlobalWriters(direction: Axis.vertical),
+                const SizedBox(height: 5),
+                const _DiscordButton(),
+                const SizedBox(height: 5),
+                const _WikiButton(),
+                const SizedBox(height: 5),
+                const _ReloadBookButton(),
+              ],
             ),
           ),
           const SizedBox(height: 10),

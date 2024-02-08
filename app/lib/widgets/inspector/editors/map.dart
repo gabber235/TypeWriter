@@ -52,6 +52,7 @@ class MapEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ignore: provider_parameters
     final rawValue = ref.watch(fieldValueProvider(path, {}));
 
     // Since the map will be of the form {dynamic: dynamic}, we
@@ -133,7 +134,7 @@ class _MapEntry extends HookConsumerWidget {
     String key,
   ) async {
     if (_alreadyContainsKey(key)) {
-      showConfirmationDialogue(
+      final confirm = await showConfirmationDialogue(
         context: context,
         title: "Override key?",
         content:
@@ -141,7 +142,7 @@ class _MapEntry extends HookConsumerWidget {
         confirmIcon: FontAwesomeIcons.triangleExclamation,
         onConfirm: () => _changeKeyField(ref, key),
       );
-      return;
+      if (!confirm) return;
     }
     _changeKeyField(ref, key);
   }

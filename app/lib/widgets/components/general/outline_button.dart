@@ -75,7 +75,8 @@ class _OutlineButtonWithIconChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scale = MediaQuery.maybeOf(context)?.textScaleFactor ?? 1;
+    // ignore: deprecated_member_use
+    final scale = MediaQuery.textScalerOf(context).textScaleFactor;
     final gap = scale <= 1 ? 8.0 : lerpDouble(8, 4, min(scale - 1, 1))!;
     return Row(
       mainAxisSize: MainAxisSize.min,

@@ -28,6 +28,7 @@ class BookNotifier extends StateNotifier<Book> {
   BookNotifier(super.state, {required this.ref});
   final Ref<Book> ref;
 
+  Book get book => state;
   set book(Book book) => state = book;
 
   @override

@@ -110,10 +110,11 @@ class PageSelectorEditor extends HookConsumerWidget {
           borderRadius: BorderRadius.circular(8),
           child: Padding(
             padding: EdgeInsets.only(
-                left: hasPage ? 4 : 12,
-                right: 16,
-                top: hasPage ? 4 : 12,
-                bottom: hasPage ? 4 : 12),
+              left: hasPage ? 4 : 12,
+              right: 16,
+              top: hasPage ? 4 : 12,
+              bottom: hasPage ? 4 : 12,
+            ),
             child: Row(
               children: [
                 if (!hasPage) ...[
@@ -129,9 +130,10 @@ class PageSelectorEditor extends HookConsumerWidget {
                   Expanded(child: _SelectedPage(id: pageId))
                 else
                   Expanded(
-                    child: Text("Select a ${type.tag} page",
-                        style:
-                            Theme.of(context).inputDecorationTheme.hintStyle),
+                    child: Text(
+                      "Select a ${type.tag} page",
+                      style: Theme.of(context).inputDecorationTheme.hintStyle,
+                    ),
                   ),
                 const SizedBox(width: 12),
                 FaIcon(
@@ -159,7 +161,7 @@ class _SelectedPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pageType = ref.watch(pageTypeProvider(id));
-    const chapter = "some.chapter"; // TODO: Get chapter from page
+    final chapter = ref.watch(pageChapterProvider(id));
     return Material(
       borderRadius: BorderRadius.circular(4),
       color: pageType.color,

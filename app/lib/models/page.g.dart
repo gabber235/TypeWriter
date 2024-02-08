@@ -449,6 +449,134 @@ class _PageTypeProviderElement extends AutoDisposeProviderElement<PageType>
   String get pageName => (origin as PageTypeProvider).pageName;
 }
 
+String _$pageChapterHash() => r'9cdd570d02d94300415088471aa61037d66464eb';
+
+/// See also [pageChapter].
+@ProviderFor(pageChapter)
+const pageChapterProvider = PageChapterFamily();
+
+/// See also [pageChapter].
+class PageChapterFamily extends Family<String> {
+  /// See also [pageChapter].
+  const PageChapterFamily();
+
+  /// See also [pageChapter].
+  PageChapterProvider call(
+    String pageName,
+  ) {
+    return PageChapterProvider(
+      pageName,
+    );
+  }
+
+  @override
+  PageChapterProvider getProviderOverride(
+    covariant PageChapterProvider provider,
+  ) {
+    return call(
+      provider.pageName,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'pageChapterProvider';
+}
+
+/// See also [pageChapter].
+class PageChapterProvider extends AutoDisposeProvider<String> {
+  /// See also [pageChapter].
+  PageChapterProvider(
+    String pageName,
+  ) : this._internal(
+          (ref) => pageChapter(
+            ref as PageChapterRef,
+            pageName,
+          ),
+          from: pageChapterProvider,
+          name: r'pageChapterProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$pageChapterHash,
+          dependencies: PageChapterFamily._dependencies,
+          allTransitiveDependencies:
+              PageChapterFamily._allTransitiveDependencies,
+          pageName: pageName,
+        );
+
+  PageChapterProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.pageName,
+  }) : super.internal();
+
+  final String pageName;
+
+  @override
+  Override overrideWith(
+    String Function(PageChapterRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PageChapterProvider._internal(
+        (ref) => create(ref as PageChapterRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        pageName: pageName,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<String> createElement() {
+    return _PageChapterProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PageChapterProvider && other.pageName == pageName;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, pageName.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin PageChapterRef on AutoDisposeProviderRef<String> {
+  /// The parameter `pageName` of this provider.
+  String get pageName;
+}
+
+class _PageChapterProviderElement extends AutoDisposeProviderElement<String>
+    with PageChapterRef {
+  _PageChapterProviderElement(super.provider);
+
+  @override
+  String get pageName => (origin as PageChapterProvider).pageName;
+}
+
 String _$entriesPageHash() => r'3e0b03d9a29e7f750327ccaf26fa961a567c745a';
 
 /// See also [entriesPage].

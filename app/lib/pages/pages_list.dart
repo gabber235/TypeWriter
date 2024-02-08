@@ -2,7 +2,7 @@ import "dart:async";
 
 import "package:auto_route/auto_route.dart";
 import "package:collection/collection.dart";
-import "package:flutter/material.dart" hide FilledButton, ContextMenuController;
+import "package:flutter/material.dart" hide ContextMenuController, FilledButton;
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -20,7 +20,6 @@ import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
-import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/dropdown.dart";
@@ -132,11 +131,7 @@ class _PagesSelector extends HookConsumerWidget {
                         children: [
                           _PagesTree(showFull: hovering.value),
                           const SizedBox(height: 12),
-                          // When selecting entries we don't want to be able to add new pages
-                          if (hovering.value)
-                            const SelectingEntriesBlocker(
-                              child: _AddPageButton(),
-                            ),
+                          if (hovering.value) const _AddPageButton(),
                         ],
                       ),
                     ),

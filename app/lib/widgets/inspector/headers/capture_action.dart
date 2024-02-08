@@ -104,7 +104,7 @@ class CaptureHeaderAction extends HookConsumerWidget {
           borderRadius: const BorderRadius.all(Radius.circular(4)),
           onTap: () => _requestCapture(ref.passing),
           child: const Padding(
-            padding: EdgeInsets.all(6.0),
+            padding: EdgeInsets.all(6),
             child: FaIcon(
               FontAwesomeIcons.camera,
               size: 16,

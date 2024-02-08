@@ -12,7 +12,6 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/entries_graph.dart";
-import "package:typewriter/widgets/components/app/select_entries.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -41,12 +40,6 @@ class EntryNode extends HookConsumerWidget {
 
     final blueprint = ref.watch(entryBlueprintProvider(entryType));
     if (blueprint == null) return const InvalidEntry();
-
-    // If we are selecting entries then we will show a specialized widget to allow the user to select entries
-    final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
-    if (isSelectingEntries) {
-      return _SelectingEntryNode(entryId, entryType, entryName, blueprint);
-    }
 
     return _EntryNode(
       id: entryId,
@@ -86,8 +79,6 @@ class _EntryNode extends HookConsumerWidget {
     this.name = "",
     this.icon = const Icon(Icons.book, color: Colors.white),
     this.isSelected = false,
-    this.opacity = 1.0,
-    this.enableContextMenu = true,
     this.contextActions = const [],
     this.onTap,
   });
@@ -98,8 +89,6 @@ class _EntryNode extends HookConsumerWidget {
   final String name;
   final Widget icon;
   final bool isSelected;
-  final double opacity;
-  final bool enableContextMenu;
   final List<ContextMenuTile> contextActions;
 
   final VoidCallback? onTap;
@@ -137,7 +126,6 @@ class _EntryNode extends HookConsumerWidget {
           child: _placeholderEntry(context, backgroundColor),
         ),
         child: ContextMenuRegion(
-          enabled: enableContextMenu,
           builder: (context) {
             return [
               ...contextActions,
@@ -209,7 +197,7 @@ class _EntryNode extends HookConsumerWidget {
                     child: AnimatedOpacity(
                       duration: 400.ms,
                       curve: Curves.easeOutCubic,
-                      opacity: isAccapting ? 0.5 : opacity,
+                      opacity: isAccapting ? 0.5 : 1.0,
                       child: Material(
                         borderRadius: BorderRadius.circular(4),
                         color: backgroundColor,
@@ -277,45 +265,6 @@ class _EntryNode extends HookConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// When the user is selecting entries, we will show a different entry node that allows them to select the entry.
-class _SelectingEntryNode extends HookConsumerWidget {
-  const _SelectingEntryNode(this.entryId, this.type, this.name, this.blueprint);
-  final String entryId;
-  final String type;
-  final String name;
-  final EntryBlueprint blueprint;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = ref.watch(hasEntryInSelectionProvider(entryId));
-    final canSelect = ref.watch(canSelectEntryProvider(entryId));
-
-    return MouseRegion(
-      cursor: canSelect
-          ? isSelected
-              ? SystemMouseCursors.disappearing
-              : SystemMouseCursors.copy
-          : SystemMouseCursors.forbidden,
-      child: _EntryNode(
-        id: entryId,
-        type: type,
-        backgroundColor: blueprint.color,
-        foregroundColor: Colors.white,
-        name: name.formatted,
-        icon: Icon(blueprint.icon, size: 18, color: Colors.white),
-        isSelected: isSelected,
-        opacity: canSelect ? 1 : 0.6,
-        enableContextMenu: false,
-        onTap: canSelect
-            ? () => ref
-                .read(entrySelectionProvider.notifier)
-                .toggleEntrySelection(entryId)
-            : null,
       ),
     );
   }
@@ -418,7 +367,6 @@ class ExternalEntryNode extends HookConsumerWidget {
     final blueprint = ref.watch(entryBlueprintProvider(entry.type));
     final page = ref.watch(pageProvider(pageId));
     final pageName = page?.pageName.formatted ?? "Unknown page";
-    final isSelectingEntries = ref.watch(isSelectingEntriesProvider);
 
     if (blueprint == null) {
       return const InvalidEntry();
@@ -436,7 +384,6 @@ class ExternalEntryNode extends HookConsumerWidget {
         child: _innerEntry(blueprint, pageName, blueprint.color),
       ),
       child: ContextMenuRegion(
-        enabled: !isSelectingEntries,
         builder: (context) {
           return [
             ContextMenuTile.button(

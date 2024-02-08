@@ -115,8 +115,8 @@ Future<bool> showConfirmationDialogue({
 }) async {
   // If the user has its shift key pressed, we skip the confirmation dialogue.
   // But only if the delay is 0.
-  final hasShiftDown =
-      RawKeyboard.instance.keysPressed.contains(LogicalKeyboardKey.shiftLeft);
+  final hasShiftDown = HardwareKeyboard.instance
+      .isLogicalKeyPressed(LogicalKeyboardKey.shiftLeft);
   if (hasShiftDown && delayConfirm.inSeconds == 0) {
     onConfirm();
     return true;
