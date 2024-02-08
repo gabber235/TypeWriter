@@ -4,7 +4,7 @@ use indoc::formatdoc;
 use poise::{
     serenity_prelude::{
         ButtonStyle, CreateButton, CreateEmbed, CreateEmbedFooter, CreateMessage, EditThread,
-        ReactionType, Timestamp,
+        ForumTag, ReactionType, Timestamp,
     },
     CreateReply, ReplyHandle,
 };
@@ -12,7 +12,7 @@ use poise::{
 use crate::{check_is_contributor, webhooks::GetTagId, Context, WinstonError};
 
 #[derive(Debug, poise::ChoiceParameter)]
-enum CloseReason {
+pub enum CloseReason {
     #[name = "✅ Resolved"]
     Resolved,
     #[name = "⛔ Declined"]
@@ -39,6 +39,13 @@ impl CloseReason {
             CloseReason::Declined => 0xff5252,
             CloseReason::UnReproducible => 0xFFA500,
             CloseReason::Duplicate => 0x1F85DE,
+        }
+    }
+
+    pub fn is_close_tag(tag: &ForumTag) -> bool {
+        match tag.name.to_lowercase().as_str() {
+            "resolved" | "declined" | "unreproducible" | "duplicate" => true,
+            _ => false,
         }
     }
 }
@@ -130,10 +137,7 @@ pub async fn close_ticket(
     channel
         .edit_thread(
             ctx,
-            EditThread::default()
-                .applied_tags(vec![tag])
-                .locked(true)
-                .archived(true),
+            EditThread::default().applied_tags(vec![tag]).archived(true),
         )
         .await?;
 

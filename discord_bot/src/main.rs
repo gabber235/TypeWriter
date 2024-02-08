@@ -26,6 +26,7 @@ pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, WinstonErr
 
 const GUILD_ID: serenity::GuildId = serenity::GuildId::new(1054708062520360960);
 const CONTRIBUTOR_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1054708457535713350);
+const TICKET_FORUM_ID: u64 = 1199700329948782613;
 
 const CLICKUP_LIST_ID: &str = "901502296591";
 const CLICKUP_USER_ID: u32 = 62541886;
@@ -130,6 +131,7 @@ async fn startup_discord_bot() {
     let client = serenity::ClientBuilder::new(discord_token, intents)
         .event_handler(TaskFixedHandler)
         .event_handler(TicketReopenHandler)
+        .event_handler(ThreadArchivingHandler)
         .framework(framework)
         .await;
 
@@ -194,4 +196,7 @@ pub enum WinstonError {
 
     #[error("Failed to parse json: {0}")]
     ParseJson(#[from] serde_json::Error),
+
+    #[error("Tag not found: {0}")]
+    TagNotFound(String),
 }
