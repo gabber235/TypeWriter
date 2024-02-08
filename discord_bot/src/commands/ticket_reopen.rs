@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 use indoc::formatdoc;
 use poise::serenity_prelude::{
-    Context, CreateEmbed, CreateQuickModal, EditMessage, EditThread, EventHandler, Interaction,
-    Timestamp,
+    Context, CreateEmbed, CreateInteractionResponseFollowup, CreateQuickModal, EditMessage,
+    EditThread, EventHandler, Interaction, Timestamp,
 };
 
 use crate::{check_permissions, update_response, CONTRIBUTOR_ROLE_ID};
@@ -31,6 +31,7 @@ impl EventHandler for TicketReopenHandler {
                     .paragraph_field("Reason"),
             )
             .await;
+
         let responds = match responds {
             Ok(Some(responds)) if responds.inputs.len() > 0 => responds,
             Err(err) => {
@@ -48,6 +49,18 @@ impl EventHandler for TicketReopenHandler {
                 return;
             }
         };
+        if let Err(e) = responds
+            .interaction
+            .create_followup(
+                &ctx,
+                CreateInteractionResponseFollowup::default().content("Reopening ticket..."),
+            )
+            .await
+        {
+            update_response(&ctx, &component, "Failed to reopen ticket").await;
+            eprintln!("Failed to reopen ticket: {}", e);
+            return;
+        }
 
         let reason = responds.inputs[0].as_str();
 
@@ -79,7 +92,7 @@ impl EventHandler for TicketReopenHandler {
 
         if let Err(e) = component
             .message
-            .edit(&ctx, EditMessage::default().embed(embed))
+            .edit(&ctx, EditMessage::default().embed(embed).components(vec![]))
             .await
         {
             update_response(&ctx, &component, "Failed to reopen ticket").await;
