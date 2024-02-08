@@ -20,10 +20,6 @@ impl EventHandler for TicketReopenHandler {
             return;
         }
 
-        let Some((mut guild_channel, _owner_id)) = check_permissions(&ctx, &component).await else {
-            return;
-        };
-
         let responds = component
             .quick_modal(
                 &ctx,
@@ -31,6 +27,11 @@ impl EventHandler for TicketReopenHandler {
                     .paragraph_field("Reason"),
             )
             .await;
+
+        let Some((mut guild_channel, _owner_id)) = check_permissions(&ctx, &component).await else {
+            return;
+        };
+
         let responds = match responds {
             Ok(Some(responds)) if responds.inputs.len() > 0 => responds,
             Err(err) => {
