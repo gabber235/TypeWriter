@@ -83,17 +83,22 @@ impl EventHandler for TicketReopenHandler {
             .title("Ticket Reopened")
             .color(0x8c44ff)
             .description(formatdoc! {"
-                <@&{}> This ticket has been reopened.
+                This ticket has been reopened.
 
                 **Reason**: 
                 {}
-                ", CONTRIBUTOR_ROLE_ID, reason})
+                ", reason})
             .timestamp(Timestamp::now());
 
         if let Err(e) = component
             .message
             .channel_id
-            .send_message(&ctx, CreateMessage::default().embed(embed))
+            .send_message(
+                &ctx,
+                CreateMessage::default()
+                    .embed(embed)
+                    .content(format!("<@&{}>", CONTRIBUTOR_ROLE_ID)),
+            )
             .await
         {
             send_followup(&ctx, &component, "Failed to reopen ticket").await;
