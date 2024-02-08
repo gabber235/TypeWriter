@@ -64,7 +64,7 @@ impl EventHandler for TicketReopenHandler {
             .await
         {
             send_followup(&ctx, &component, "Failed to reopen ticket").await;
-            eprintln!("Failed to reopen ticket: {}", e);
+            eprintln!("Failed to edit thread: {}", e);
             return;
         }
 
@@ -85,7 +85,7 @@ impl EventHandler for TicketReopenHandler {
             .await
         {
             send_followup(&ctx, &component, "Failed to reopen ticket").await;
-            eprintln!("Failed to reopen ticket: {}", e);
+            eprintln!("Failed to update message: {}", e);
             return;
         }
     }
