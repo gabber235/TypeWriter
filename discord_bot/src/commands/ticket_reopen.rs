@@ -68,6 +68,9 @@ impl EventHandler for TicketReopenHandler {
             return;
         }
 
+        // Add a little delay to make sure the thread is reopened before we send the message
+        tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+
         let embed = CreateEmbed::default()
             .title("Ticket Reopened")
             .color(0x8c44ff)
