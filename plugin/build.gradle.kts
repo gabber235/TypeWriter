@@ -101,13 +101,13 @@ tasks.processResources {
 
 tasks.withType<ShadowJar> {
     relocate("org.bstats", "${project.group}.${project.name}.extensions.bstats")
-    minimize()
-    {
+    minimize {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-reflect"))
         exclude(dependency("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core"))
-        exclude("io.netty")
     }
+
+    exclude("io.netty")
 }
 
 task<ShadowJar>("buildAndMove") {
