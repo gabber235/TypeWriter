@@ -158,10 +158,19 @@ async fn on_error(error: poise::FrameworkError<'_, Data, WinstonError>) {
     }
 }
 pub async fn check_is_contributor(ctx: Context<'_>) -> Result<bool, WinstonError> {
-    Ok(ctx
+    let has_role = ctx
         .author()
         .has_role(ctx, GUILD_ID, CONTRIBUTOR_ROLE_ID)
-        .await?)
+        .await?;
+
+    if !has_role {
+        eprintln!(
+            "User {} is not a contributor and tried to run command",
+            ctx.author().name
+        );
+        return Ok(false);
+    }
+    return Ok(true);
 }
 
 pub fn get_discord() -> Result<serenity::Context, WinstonError> {
