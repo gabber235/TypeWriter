@@ -10,6 +10,7 @@ import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/headers/add_action.dart";
 import "package:typewriter/widgets/inspector/headers/delete_action.dart";
+import "package:typewriter/widgets/inspector/headers/duplicate_list_item_action.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "list.g.dart";
@@ -135,9 +136,11 @@ class _ListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final type = field.type;
+    final childPath = "$path.$index";
     return FieldHeader(
-      field: field.type,
-      path: "$path.$index",
+      field: type,
+      path: childPath,
       canExpand: true,
       leading: [
         MouseRegion(
@@ -153,6 +156,7 @@ class _ListItem extends HookConsumerWidget {
         ),
       ],
       actions: [
+        DuplicateListItemAction(path, childPath, type),
         RemoveHeaderAction(
           path: "$path.$index",
           onRemove: () => _remove(ref.passing, index),
