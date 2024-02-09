@@ -68,6 +68,11 @@ class EntrySelectorEditor extends HookConsumerWidget {
 
         return blueprint.tags.contains(tag);
       },
+      onAcceptWithDetails: (details) {
+        ref
+            .read(inspectingEntryDefinitionProvider)
+            ?.updateField(ref.passing, path, details.data.entryId);
+      },
       builder: (context, candidateData, rejectedData) {
         if (rejectedData.isNotEmpty) {
           return _rejectWidget(context);

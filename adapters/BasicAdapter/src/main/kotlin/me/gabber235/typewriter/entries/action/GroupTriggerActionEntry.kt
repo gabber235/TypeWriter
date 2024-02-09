@@ -14,7 +14,7 @@ import java.util.*
 @Entry(
     "group_trigger_action",
     "Trigger the next entries for everyone in the same group as the player",
-    Colors.PURPLE,
+    Colors.RED,
     Icons.GLOBE
 )
 /**
