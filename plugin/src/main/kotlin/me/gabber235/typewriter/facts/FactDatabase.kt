@@ -10,7 +10,6 @@ import me.gabber235.typewriter.entry.entries.ExpirableFactEntry
 import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.entry.entries.WritableFactEntry
-import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.logErrorIfNull
@@ -67,8 +66,6 @@ class FactDatabase : KoinComponent {
     }
 
     private suspend fun storeFactsInPersistentStorage() {
-        logger.info("Storing facts in persistent storage")
-
         val entries =
             cache.keys.mapNotNull { Query.findById<PersistableFactEntry>(it.entryId) }.associateBy { it.id }
 

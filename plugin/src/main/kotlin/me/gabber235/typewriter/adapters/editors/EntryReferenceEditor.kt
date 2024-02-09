@@ -18,12 +18,15 @@ fun ObjectEditor<Ref<*>>.entryReference() = reference {
     }
 
     jsonDeserialize { element, type, _ ->
-        val id = element.asString
-
-
         val subType = (type as ParameterizedType).actualTypeArguments[0]
         val clazz = TypeToken.of(subType).rawType
         val klass = clazz.kotlin
+
+        if (element.isJsonNull) {
+            return@jsonDeserialize Ref("", klass as KClass<Entry>)
+        }
+        val id = element.asString
+
         Ref(id, klass as KClass<Entry>)
     }
 

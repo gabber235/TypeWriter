@@ -14,7 +14,7 @@ import me.gabber235.typewriter.utils.Icons
  *
  * ## How could this be used?
  *
- * This could be used to store if a player as joined the server before. If the player has completed a quest. Maybe if the player has received a reward already to prevent them from receiving it again.
+ * This could be used to store if a player joined the server before. If the player has completed a quest. Maybe if the player has received a reward already to prevent them from receiving it again.
  */
 class PermanentFactEntry(
     override val id: String = "",
