@@ -11,6 +11,7 @@ import me.gabber235.typewriter.entry.entries.GroupId
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.facts.FactId
 import me.gabber235.typewriter.facts.FactStorage
+import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.get
 import org.koin.core.component.KoinComponent
@@ -41,18 +42,22 @@ class FileFactStorage : FactStorage, KoinComponent {
 
         val facts = mutableMapOf<FactId, FactData>()
 
-        val reader = JsonReader(file.reader())
-        reader.beginObject()
-        while (reader.hasNext()) {
-            val entryId = reader.nextName()
-            reader.beginObject()
-            while (reader.hasNext()) {
-                val audienceId = reader.nextName()
-                val data = gson.fromJson<FactData>(reader, FactData::class.java)
-                val id = FactId(entryId, GroupId(audienceId))
-                facts[id] = data
+        file.reader().buffered().use { fileReader ->
+            JsonReader(fileReader).use { reader ->
+                reader.beginObject()
+                while (reader.hasNext()) {
+                    val entryId = reader.nextName()
+                    reader.beginObject()
+                    while (reader.hasNext()) {
+                        val audienceId = reader.nextName()
+                        val data = gson.fromJson<FactData>(reader, FactData::class.java)
+                        val id = FactId(entryId, GroupId(audienceId))
+                        facts[id] = data
+                    }
+                    reader.endObject()
+                }
+                reader.endObject()
             }
-            reader.endObject()
         }
 
         return facts
@@ -66,16 +71,19 @@ class FileFactStorage : FactStorage, KoinComponent {
             }
         }
 
-        val writer = JsonWriter(file.writer())
-        writer.beginObject()
-        for ((id, data) in facts) {
-            writer.name(id.entryId)
-            writer.beginObject()
-            writer.name(id.audienceId.id)
-            gson.toJson(data, FactData::class.java, writer)
-            writer.endObject()
+        file.writer().buffered().use { fileWriter ->
+            JsonWriter(fileWriter).use { writer ->
+                writer.beginObject()
+                for ((id, data) in facts) {
+                    writer.name(id.entryId)
+                    writer.beginObject()
+                    writer.name(id.groupId.id)
+                    gson.toJson(data, FactData::class.java, writer)
+                    writer.endObject()
+                }
+                writer.endObject()
+            }
         }
-        writer.flush()
     }
 }
 
@@ -96,6 +104,7 @@ private suspend fun migrateFacts(storage: FactStorage) {
         return
     }
 
+    logger.info("Migrating facts from old storage")
     val facts = directory.listFiles()?.flatMap { file ->
         val uuid = UUID.fromString(file.nameWithoutExtension)
         val facts = gson.fromJson(file.readText(), object : TypeToken<List<OldFact>>() {})

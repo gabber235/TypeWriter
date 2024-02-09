@@ -22,6 +22,8 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
+private const val FACT_STORAGE_DELAY = 60 * 3
+
 class FactDatabase : KoinComponent {
     private val storage: FactStorage by inject()
 
@@ -39,12 +41,12 @@ class FactDatabase : KoinComponent {
         // Filter expired facts every second.
         // After that, save the facts of the players who have facts that expired or changed.
         DISPATCHERS_ASYNC.launch {
-            var cycle = 0
+            var cycle = 1
             while (plugin.isEnabled) {
                 delay(1000)
                 removeExpiredFacts()
 
-                if (cycle++ % 60 == 0) {
+                if (cycle++ % FACT_STORAGE_DELAY == 0) {
                     storeFactsInPersistentStorage()
                 }
             }
