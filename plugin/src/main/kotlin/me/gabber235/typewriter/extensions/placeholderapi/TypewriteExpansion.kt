@@ -3,8 +3,10 @@ package me.gabber235.typewriter.extensions.placeholderapi
 import lirand.api.extensions.server.server
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
+import me.gabber235.typewriter.entry.Entry
 import me.gabber235.typewriter.entry.Query
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
+import me.gabber235.typewriter.entry.entries.SoundIdEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -24,16 +26,27 @@ object TypewriteExpansion : PlaceholderExpansion(), KoinComponent {
     override fun persist(): Boolean = true
 
     override fun onPlaceholderRequest(player: Player?, params: String): String? {
-
         if (params.startsWith("speaker_")) {
             val speakerName = params.substring(8)
-            val speaker: SpeakerEntry = Query.findByName(speakerName) ?: Query.findById(speakerName) ?: return null
+            val speaker: SpeakerEntry = Query.findById(speakerName) ?: Query.findByName(speakerName) ?: return null
             return speaker.displayName
         }
 
-        if (player == null) return null
-        val factEntry = Query.findByName<ReadableFactEntry>(params) ?: return null
-        return "${factEntry.readForPlayer(player).value}"
+        val entry: Entry = Query.findById(params) ?: Query.findByName(params) ?: return null
+        if (entry is ReadableFactEntry) {
+            if (player == null) return null
+            return entry.readForPlayer(player).value.toString()
+        }
+
+        if (entry is SpeakerEntry) {
+            return entry.displayName
+        }
+
+        if (entry is SoundIdEntry) {
+            return entry.soundId
+        }
+
+        return null
     }
 }
 
