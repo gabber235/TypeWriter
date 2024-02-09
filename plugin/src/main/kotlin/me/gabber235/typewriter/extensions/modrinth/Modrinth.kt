@@ -119,14 +119,14 @@ data class ModrinthVersion(
     val name: String = "",
     @SerializedName("version_number") val versionNumber: String = "",
     val changelog: String = "",
-    @SerializedName("changelog_url") val changelogUrl: String = "",
+    @SerializedName("changelog_url") val changelogUrl: String? = "",
     @SerializedName("date_published") val datePublished: Date = Date(0),
     val downloads: Int = 0,
     @SerializedName("version_type") val versionType: String = "",
     val status: String = "",
-    @SerializedName("requested_status") val requestedStatus: String = "",
+    @SerializedName("requested_status") val requestedStatus: String? = "",
     val files: List<Files> = listOf(),
-    val dependencies: List<String> = listOf()
+    val dependencies: List<Dependency> = listOf()
 ) {
     val url: String
         get() = "https://modrinth.com/plugin/$projectId/version/$id"
@@ -138,10 +138,17 @@ data class Files(
     val filename: String = "",
     val primary: Boolean = false,
     val size: Int = 0,
-    @SerializedName("file_type") val fileType: String = ""
+    @SerializedName("file_type") val fileType: String? = "",
 )
 
 data class Hashes(
     val sha512: String = "",
-    val sha1: String = ""
+    val sha1: String = "",
+)
+
+data class Dependency(
+    @SerializedName("version_id") val versionId: String? = "",
+    @SerializedName("project_id") val projectId: String = "",
+    @SerializedName("file_name") val fileName: String? = "",
+    @SerializedName("dependency_type") val dependencyType: String = "",
 )
