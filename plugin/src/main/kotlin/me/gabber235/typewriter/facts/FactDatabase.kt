@@ -115,7 +115,7 @@ class FactDatabase : KoinComponent {
                             return@forEach
                         }
 
-                        val fact = entry.readForPlayer(player)
+                        val fact = entry.readForPlayersGroup(player)
                         modifier.value + fact.value
                     }
 
@@ -148,4 +148,4 @@ class FactsModifier {
     fun build(): Map<String, Int> = modifications
 }
 
-fun Player.fact(ref: Ref<out ReadableFactEntry>) = ref.get()?.readForPlayer(this)
+fun Player.fact(ref: Ref<out ReadableFactEntry>) = ref.get()?.readForPlayersGroup(this)

@@ -5,7 +5,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.utils.Icons
@@ -25,7 +25,7 @@ class CombatFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<AudienceEntry> = emptyRef(),
+    override val audience: Ref<GroupEntry> = emptyRef(),
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
         val combatLogger = CombatLogXAdapter.getAPI() ?: return FactData(0)

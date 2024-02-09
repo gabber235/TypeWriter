@@ -1,31 +1,31 @@
-package com.caleb.typewriter.worldguard.entries.audience
+package com.caleb.typewriter.worldguard.entries.group
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldguard.WorldGuard
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.entries.AudienceEntry
-import me.gabber235.typewriter.entry.entries.AudienceId
+import me.gabber235.typewriter.entry.entries.GroupEntry
+import me.gabber235.typewriter.entry.entries.GroupId
 import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("region_audience", "All players grouped by WorldGuard regions", Colors.MYRTLE_GREEN, Icons.OBJECT_GROUP)
+@Entry("region_group", "All players grouped by WorldGuard regions", Colors.MYRTLE_GREEN, Icons.OBJECT_GROUP)
 /**
- * The `WorldGuardRegionAudience` is an audience that includes all the players in a specific WorldGuard region.
- * Only the given region will be considered for the audience.
+ * The `WorldGuardRegionGroup` is a group that includes all the players in a specific WorldGuard region.
+ * Only the given region will be considered for the group.
  *
  * ## How could this be used?
  * This could be used to have facts that are specific to a region, like the state of a boss fight.
- * It could also be used to send a title to all the players in a region.
+ * It could also be used to send a title to all the players in the region.
  */
-class RegionAudience(
+class RegionGroup(
     override val id: String = "",
     override val name: String = "",
-    @Help("The names of regions to consider for the audience")
+    @Help("The names of regions to consider for the group")
     val regions: List<String> = emptyList(),
-) : AudienceEntry {
-    override fun audienceId(player: Player): AudienceId? {
+) : GroupEntry {
+    override fun groupId(player: Player): GroupId? {
         val regionContainer = WorldGuard.getInstance().platform.regionContainer
         val regionManager = regionContainer.get(BukkitAdapter.adapt(player.world))
         val regions =
@@ -33,7 +33,7 @@ class RegionAudience(
 
         regions?.forEach { region ->
             if (this.regions.contains(region)) {
-                return AudienceId(region)
+                return GroupId(region)
             }
         }
 

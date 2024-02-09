@@ -6,7 +6,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.utils.Icons
@@ -36,7 +36,7 @@ class InventoryItemCountFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<AudienceEntry> = emptyRef(),
+    override val audience: Ref<GroupEntry> = emptyRef(),
     @Help("The item to check for.")
     val item: Item = Item.Empty,
 ) : ReadableFactEntry {

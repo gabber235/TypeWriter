@@ -80,7 +80,7 @@ private fun LiteralDSLBuilder.factsCommands() {
             source.msg("$name has the following facts:\n")
 
             for (entry in factEntries) {
-                val data = entry.readForPlayer(this)
+                val data = entry.readForPlayersGroup(this)
                 source.sendMini(
                     "<hover:show_text:'${
                         entry.comment.replace(

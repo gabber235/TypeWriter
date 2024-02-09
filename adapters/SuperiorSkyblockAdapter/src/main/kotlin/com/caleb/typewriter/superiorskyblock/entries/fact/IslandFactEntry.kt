@@ -8,7 +8,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.utils.Icons
@@ -51,7 +51,7 @@ class IslandFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<AudienceEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
     @Help("The fact to get")
     // The specific piece of information to retrieve about the island.
     val fact: IslandFacts,

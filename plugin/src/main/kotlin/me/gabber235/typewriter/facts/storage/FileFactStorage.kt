@@ -7,7 +7,7 @@ import com.google.gson.stream.JsonWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import me.gabber235.typewriter.entry.entries.AudienceId
+import me.gabber235.typewriter.entry.entries.GroupId
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.facts.FactId
 import me.gabber235.typewriter.facts.FactStorage
@@ -49,7 +49,7 @@ class FileFactStorage : FactStorage, KoinComponent {
             while (reader.hasNext()) {
                 val audienceId = reader.nextName()
                 val data = gson.fromJson<FactData>(reader, FactData::class.java)
-                val id = FactId(entryId, AudienceId(audienceId))
+                val id = FactId(entryId, GroupId(audienceId))
                 facts[id] = data
             }
             reader.endObject()
@@ -101,7 +101,7 @@ private suspend fun migrateFacts(storage: FactStorage) {
         val facts = gson.fromJson(file.readText(), object : TypeToken<List<OldFact>>() {})
 
         facts.map { oldFact ->
-            val id = FactId(oldFact.id, AudienceId(uuid))
+            val id = FactId(oldFact.id, GroupId(uuid))
             val data = FactData(oldFact.value, oldFact.lastUpdate)
 
             id to data

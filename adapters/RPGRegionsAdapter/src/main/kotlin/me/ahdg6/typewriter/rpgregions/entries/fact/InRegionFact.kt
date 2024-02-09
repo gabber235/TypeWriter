@@ -5,7 +5,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.utils.Icons
@@ -26,7 +26,7 @@ class InRegionFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<AudienceEntry> = emptyRef(),
+    override val audience: Ref<GroupEntry> = emptyRef(),
     @Help("The name of the region which the player must be in")
     // The name of the region which the player must be in. Make sure that this is the region ID, not the region's display name.
     val region: String = "",

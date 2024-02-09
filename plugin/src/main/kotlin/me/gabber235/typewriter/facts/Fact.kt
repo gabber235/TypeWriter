@@ -1,7 +1,7 @@
 package me.gabber235.typewriter.facts
 
-import me.gabber235.typewriter.entry.entries.AudienceId
 import me.gabber235.typewriter.entry.entries.FactEntry
+import me.gabber235.typewriter.entry.entries.GroupId
 import java.time.LocalDateTime
 import java.util.*
 
@@ -16,5 +16,5 @@ data class FactData(val value: Int, val lastUpdate: LocalDateTime = LocalDateTim
 
 data class FactId(
     val entryId: String,
-    val audienceId: AudienceId,
+    val groupId: GroupId,
 )

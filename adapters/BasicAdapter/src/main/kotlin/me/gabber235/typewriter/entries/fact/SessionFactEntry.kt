@@ -4,8 +4,8 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.CachableFactEntry
+import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.utils.Icons
 
 @Entry("session_fact", "Saved until a player logouts of the server", Colors.PURPLE, Icons.USER_CLOCK)
@@ -20,5 +20,5 @@ class SessionFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<AudienceEntry> = emptyRef(),
+    override val audience: Ref<GroupEntry> = emptyRef(),
 ) : CachableFactEntry

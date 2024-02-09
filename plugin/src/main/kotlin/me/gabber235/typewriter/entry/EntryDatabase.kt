@@ -199,7 +199,7 @@ enum class PageType(val id: String) {
 
 fun Iterable<Criteria>.matches(player: Player): Boolean = all {
     val entry = it.fact.get()
-    val fact = entry?.readForPlayer(player)
+    val fact = entry?.readForPlayersGroup(player)
     it.isValid(fact)
 }
 

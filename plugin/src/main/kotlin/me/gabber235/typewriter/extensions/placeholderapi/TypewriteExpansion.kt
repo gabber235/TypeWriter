@@ -35,7 +35,7 @@ object TypewriteExpansion : PlaceholderExpansion(), KoinComponent {
         val entry: Entry = Query.findById(params) ?: Query.findByName(params) ?: return null
         if (entry is ReadableFactEntry) {
             if (player == null) return null
-            return entry.readForPlayer(player).value.toString()
+            return entry.readForPlayersGroup(player).value.toString()
         }
 
         if (entry is SpeakerEntry) {

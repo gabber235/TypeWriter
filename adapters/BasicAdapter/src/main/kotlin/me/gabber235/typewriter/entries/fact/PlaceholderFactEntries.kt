@@ -7,7 +7,7 @@ import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.adapters.modifiers.Regex
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.extensions.placeholderapi.isPlaceholder
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
@@ -32,7 +32,7 @@ class NumberPlaceholderFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<AudienceEntry> = emptyRef(),
+    override val audience: Ref<GroupEntry> = emptyRef(),
     @Placeholder
     @Help("Placeholder to parse (e.g. %player_level%) - Only placeholders that return a number or boolean are supported!")
     /**
@@ -75,7 +75,7 @@ class ValuePlaceholderFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<AudienceEntry> = emptyRef(),
+    override val audience: Ref<GroupEntry> = emptyRef(),
     @Placeholder
     @Help("Placeholder to parse (e.g. %player_gamemode%)")
     private val placeholder: String = "",

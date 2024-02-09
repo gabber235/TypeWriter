@@ -17,39 +17,39 @@ interface FactEntry : StaticEntry {
     @Help("A comment to keep track of what this fact is used for.")
     val comment: String
 
-    @Help("The audience that this fact is for.")
-    val audience: Ref<AudienceEntry>
+    @Help("The group that this fact is for.")
+    val group: Ref<GroupEntry>
 
     fun identifier(player: Player): FactId? {
-        val entry = audience.get()
+        val entry = group.get()
 
-        val audienceId = if (entry != null) {
-            // If the player is not in an audience, we don't want to do anything with this fact
-            entry.audienceId(player) ?: return null
+        val groupId = if (entry != null) {
+            // If the player is not in an group, we don't want to do anything with this fact
+            entry.groupId(player) ?: return null
         } else {
-            // If no audience entry is set, we assume that the player is the audience for backwards compatibility
-            AudienceId(player.uniqueId)
+            // If no group entry is set, we assume that the player is the group for backwards compatibility
+            GroupId(player.uniqueId)
         }
 
-        return FactId(id, audienceId)
+        return FactId(id, groupId)
     }
 }
 
 @Tags("readable-fact")
 interface ReadableFactEntry : FactEntry {
-    fun readForPlayer(player: Player): FactData {
+    fun readForPlayersGroup(player: Player): FactData {
         val factId = identifier(player) ?: return FactData(0)
-        return readForAudience(factId.audienceId)
+        return readForGroup(factId.groupId)
     }
 
-    fun readForAudience(audienceId: AudienceId): FactData {
-        val entry = audience.get() ?: return FactData(0)
-        val audience = entry.audience(audienceId)
-        return audience.players.map { readSinglePlayer(it) }.let { FactData(it.sumOf(FactData::value)) }
+    fun readForGroup(groupId: GroupId): FactData {
+        val entry = group.get() ?: return FactData(0)
+        val group = entry.group(groupId)
+        return group.players.map { readSinglePlayer(it) }.let { FactData(it.sumOf(FactData::value)) }
     }
 
     /**
-     * This should **not** be used directly. Use [readForPlayer] instead.
+     * This should **not** be used directly. Use [readForPlayersGroup] instead.
      */
     fun readSinglePlayer(player: Player): FactData
 }
@@ -67,8 +67,8 @@ interface WritableFactEntry : FactEntry {
 @Tags("cachable-fact")
 interface CachableFactEntry : ReadableFactEntry, WritableFactEntry {
 
-    override fun readForAudience(audienceId: AudienceId): FactData {
-        return read(FactId(id, audienceId))
+    override fun readForGroup(groupId: GroupId): FactData {
+        return read(FactId(id, groupId))
     }
 
     override fun readSinglePlayer(player: Player): FactData {
