@@ -244,12 +244,12 @@ class _TreeCategory extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DragTarget<String>(
+        DragTarget<PageDrag>(
           onWillAcceptWithDetails: (details) {
-            return ref.read(_pageNamesProvider).contains(details.data);
+            return ref.read(_pageNamesProvider).contains(details.data.pageId);
           },
           onAcceptWithDetails: (details) {
-            final pageId = details.data;
+            final pageId = details.data.pageId;
             ref
                 .read(pageProvider(pageId))
                 ?.changeChapter(ref.passing, node.name);
@@ -406,12 +406,12 @@ class _PageTile extends HookConsumerWidget {
           padding: EdgeInsets.only(
             top: _needsShift(amount) ? 30 : 0,
           ),
-          child: DragTarget<String>(
+          child: DragTarget<PageDrag>(
             onWillAcceptWithDetails: (details) {
-              return ref.read(_pageNamesProvider).contains(details.data);
+              return ref.read(_pageNamesProvider).contains(details.data.pageId);
             },
             onAcceptWithDetails: (details) {
-              final pageId = details.data;
+              final pageId = details.data.pageId;
               ref
                   .read(pageProvider(pageId))
                   ?.changeChapter(ref.passing, chapter);
@@ -432,8 +432,8 @@ class _PageTile extends HookConsumerWidget {
                 child: ContextMenuRegion(
                   builder: (context) =>
                       _contextMenuItems(context, ref, isSelected),
-                  child: Draggable<String>(
-                    data: pageId,
+                  child: Draggable<PageDrag>(
+                    data: PageDrag(pageId: pageId),
                     feedback: Material(
                       color: Colors.transparent,
                       child: DecoratedBox(
@@ -904,4 +904,12 @@ Future<bool> showPageDeletionDialogue(
       );
     },
   );
+}
+
+class PageDrag {
+  const PageDrag({
+    required this.pageId,
+  });
+
+  final String pageId;
 }
