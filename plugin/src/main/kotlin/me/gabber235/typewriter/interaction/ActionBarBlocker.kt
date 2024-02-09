@@ -5,8 +5,8 @@ import com.github.retrooper.packetevents.event.PacketListenerAbstract
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.retrooper.packetevents.event.PacketSendEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType.Play
+import com.github.retrooper.packetevents.wrapper.PacketWrapper
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTitle
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.plugin
@@ -40,10 +40,10 @@ class ActionBarBlockerHandler :
                 packet.message
             }
 
-//            Play.Server.ACTION_BAR -> {
-//                val packet = WrapperPlayServerTitle(event)
-//                packet.actionBar ?: return
-//            }
+            Play.Server.ACTION_BAR -> {
+                val packet = WrapperPlayServerActionBar(event)
+                packet.actionBarText ?: return
+            }
 
             else -> return
         }
@@ -104,5 +104,32 @@ class ActionBarBlocker {
 
     fun isMessageAccepted(message: Component): Boolean {
         return acceptedMessages.contains(message)
+    }
+}
+
+
+/**
+ * This has been merged in to the PacketEvents library, but it is not yet released.
+ * This is a temporary fix until the next release.
+ */
+class WrapperPlayServerActionBar : PacketWrapper<WrapperPlayServerActionBar> {
+    var actionBarText: Component? = null
+
+    constructor(event: PacketSendEvent?) : super(event)
+
+    constructor(actionBarText: Component?) : super(Play.Server.ACTION_BAR) {
+        this.actionBarText = actionBarText
+    }
+
+    override fun read() {
+        this.actionBarText = this.readComponent()
+    }
+
+    override fun write() {
+        this.writeComponent(this.actionBarText)
+    }
+
+    override fun copy(wrapper: WrapperPlayServerActionBar) {
+        this.actionBarText = wrapper.actionBarText
     }
 }
