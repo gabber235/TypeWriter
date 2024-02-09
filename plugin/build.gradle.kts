@@ -106,7 +106,10 @@ tasks.withType<ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-reflect"))
         exclude(dependency("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core"))
     }
-    exclude("io.netty")
+
+    dependencies {
+        exclude(dependency("io.netty::"))
+    }
 }
 
 task<ShadowJar>("buildAndMove") {
