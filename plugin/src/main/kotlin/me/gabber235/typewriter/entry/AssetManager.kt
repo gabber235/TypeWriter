@@ -25,17 +25,18 @@ class AssetManager : KoinComponent {
     fun initialize() {
     }
 
-    private fun removeUnusedAssets() {
+    internal fun removeUnusedAssets(): Int {
         val usedPaths = usedPaths()
         if (usedPaths.isFailure) {
             plugin.logger.severe("Failed to remove unused assets: ${usedPaths.exceptionOrNull()?.message}")
-            return
+            return 0
         }
 
         val unusedPaths = storage.fetchAllAssetPaths().subtract((usedPaths.getOrNull() ?: emptySet()).toSet())
         unusedPaths.forEach {
             storage.deleteAsset(it)
         }
+        return unusedPaths.size
     }
 
     /**
@@ -79,7 +80,6 @@ class AssetManager : KoinComponent {
     }
 
     fun shutdown() {
-        removeUnusedAssets()
     }
 }
 

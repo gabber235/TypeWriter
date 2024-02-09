@@ -50,6 +50,8 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
     cinematicCommand()
 
     triggerCommand()
+
+    assetsCommands()
 }
 
 private fun LiteralDSLBuilder.reloadCommands() {
@@ -281,6 +283,19 @@ private fun LiteralDSLBuilder.triggerCommand() = literal("trigger") {
             }
         }
 
+    }
+}
+
+private fun LiteralDSLBuilder.assetsCommands() {
+    literal("assets") {
+        requiresPermissions("typewriter.assets")
+        literal("clean") {
+            requiresPermissions("typewriter.assets.clean")
+            executes {
+                val deleted = get<AssetManager>(AssetManager::class.java).removeUnusedAssets()
+                source.msg("Cleaned <blue>${deleted}</blue> assets.")
+            }
+        }
     }
 }
 
