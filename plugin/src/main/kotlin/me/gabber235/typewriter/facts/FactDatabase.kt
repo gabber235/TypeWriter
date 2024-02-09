@@ -2,7 +2,6 @@ package me.gabber235.typewriter.facts
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.ModifierOperator
 import me.gabber235.typewriter.entry.Query
@@ -11,17 +10,14 @@ import me.gabber235.typewriter.entry.entries.ExpirableFactEntry
 import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.entry.entries.WritableFactEntry
+import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.logErrorIfNull
 import org.bukkit.entity.Player
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent
-import org.bukkit.event.player.PlayerQuitEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedDeque
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -30,43 +26,26 @@ class FactDatabase : KoinComponent {
     private val storage: FactStorage by inject()
 
     // Local stored version of player facts
-    private val cache = ConcurrentHashMap<UUID, Set<Fact>>()
-
-    // Queue of players which facts need to be saved
-    private val flush = ConcurrentLinkedDeque<UUID>()
+    private val cache = ConcurrentHashMap<FactId, FactData>()
 
     fun initialize() {
         storage.init()
 
-        // Load facts for players before they join.
-        // This way we can delay the loading screen.
-        plugin.listen<AsyncPlayerPreLoginEvent> { event ->
-            runBlocking {
-                loadFactsFromPersistentStorage(event.uniqueId)
-            }
-        }
-
-        // Save facts when a player leaves
-        plugin.listen<PlayerQuitEvent> { event ->
-            val facts = cache.remove(event.player.uniqueId)
-            if (facts != null) {
-                DISPATCHERS_ASYNC.launch {
-                    storeFactsInPersistentStorage(event.player.uniqueId)
-                }
-            }
+        // Load all the facts from the storage
+        runBlocking {
+            loadFactsFromPersistentStorage()
         }
 
         // Filter expired facts every second.
         // After that, save the facts of the players who have facts that expired or changed.
         DISPATCHERS_ASYNC.launch {
+            var cycle = 0
             while (plugin.isEnabled) {
                 delay(1000)
-                cache.keys.forEach { uuid ->
-                    removeExpiredFacts(uuid)
-                }
+                removeExpiredFacts()
 
-                while (flush.isNotEmpty()) {
-                    storeFactsInPersistentStorage(flush.poll())
+                if (cycle++ % 60 == 0) {
+                    storeFactsInPersistentStorage()
                 }
             }
         }
@@ -74,68 +53,57 @@ class FactDatabase : KoinComponent {
 
     fun shutdown() {
         runBlocking {
-            cache.keys.forEach { playerId ->
-                storeFactsInPersistentStorage(playerId)
-            }
+            storeFactsInPersistentStorage()
         }
-        flush.clear()
         storage.shutdown()
     }
 
-    private suspend fun loadFactsFromPersistentStorage(playerId: UUID) {
-        val facts = storage.loadFacts(playerId)
-        cache[playerId] = facts
+    private suspend fun loadFactsFromPersistentStorage() {
+        val facts = storage.loadFacts()
+        cache.clear()
+        cache.putAll(facts)
     }
 
-    private suspend fun storeFactsInPersistentStorage(playerId: UUID) {
-        val facts =
-            cache[playerId]?.filter {
-                val entry = Query.findById<PersistableFactEntry>(it.id) ?: return@filter false
+    private suspend fun storeFactsInPersistentStorage() {
+        logger.info("Storing facts in persistent storage")
 
-                // If the fact is not persistable, or it has expired, don't store it.
-                if (!entry.canPersist(it)) return@filter false
-                if (entry is ExpirableFactEntry && entry.hasExpired(it)) return@filter false
+        val entries =
+            cache.keys.mapNotNull { Query.findById<PersistableFactEntry>(it.entryId) }.associateBy { it.id }
 
-                true
-            }?.toSet()
-                ?: return
-        storage.storeFacts(playerId, facts)
+        val facts = cache.entries.filter { (id, data) ->
+            val entry = entries[id.entryId] ?: return@filter false
+
+            // If the fact is not persistable, or it has expired, don't store it.
+            if (!entry.canPersist(id, data)) return@filter false
+            if (entry is ExpirableFactEntry && entry.hasExpired(id, data)) return@filter false
+
+            true
+        }.map { (id, data) -> id to data }
+
+        storage.storeFacts(facts)
     }
 
-    private fun removeExpiredFacts(playerId: UUID) {
-        cache.computeIfPresent(playerId) { _, facts ->
-            val newFacts = facts.filter {
-                val entry = Query.findById<ExpirableFactEntry>(it.id) ?: return@filter true
-                !entry.hasExpired(it)
-            }.toSet()
+    private fun removeExpiredFacts() {
+        val entries = cache.keys.mapNotNull { Query.findById<ExpirableFactEntry>(it.entryId) }.associateBy { it.id }
 
-            if (newFacts.size < facts.size) {
-                val needsFlush = playerId !in flush && facts.filter { it !in newFacts }.any { fact ->
-                    Query.findById<PersistableFactEntry>(fact.id) != null
-                }
-                if (needsFlush) flush.add(playerId)
-            }
-
-            newFacts
+        cache.entries.removeIf { (id, data) ->
+            val entry = entries[id.entryId] ?: return@removeIf false
+            entry.hasExpired(id, data)
         }
     }
 
-    internal fun getCachedFact(playerId: UUID, id: String): Fact? {
-        return cache[playerId]?.find { it.id == id }
-    }
+    internal operator fun get(id: FactId): FactData? = cache[id]
 
-    internal fun setCachedFact(playerId: UUID, fact: Fact) {
-        cache.compute(playerId) { _, facts ->
-            val newFacts = facts?.filter { it.id != fact.id }?.toSet() ?: emptySet()
-            if (fact.value == 0) return@compute newFacts
-            newFacts + fact
+    internal operator fun set(id: FactId, data: FactData) {
+        if (data.value == 0) {
+            cache.remove(id)
+        } else {
+            cache[id] = data
         }
-        if (playerId in flush) return
-        if (Query.findById<PersistableFactEntry>(fact.id) != null) flush.add(playerId)
     }
 
-    fun modify(playerId: UUID, modifiers: List<Modifier>) {
-        modify(playerId) {
+    fun modify(player: Player, modifiers: List<Modifier>) {
+        modify(player) {
             modifiers.forEach { modifier ->
                 this[modifier.fact] = when (modifier.operator) {
                     ModifierOperator.ADD -> {
@@ -147,7 +115,7 @@ class FactDatabase : KoinComponent {
                             return@forEach
                         }
 
-                        val fact = entry.read(playerId)
+                        val fact = entry.readForPlayer(player)
                         modifier.value + fact.value
                     }
 
@@ -157,20 +125,15 @@ class FactDatabase : KoinComponent {
         }
     }
 
-    fun modify(playerId: UUID, modifier: FactsModifier.() -> Unit) {
+    fun modify(player: Player, modifier: FactsModifier.() -> Unit) {
         val modifications = FactsModifier().apply(modifier).build()
         if (modifications.isEmpty()) return
 
-        val hasPersistentFact = modifications.map { (id, value) ->
-            val entry = Query.findById<WritableFactEntry>(id) ?: return@map false
-            entry.write(playerId, value)
-            entry is PersistableFactEntry
-        }.any()
-
-        if (hasPersistentFact) flush.add(playerId)
+        for ((id, value) in modifications) {
+            val entry = Query.findById<WritableFactEntry>(id) ?: continue
+            entry.write(player, value)
+        }
     }
-
-    internal fun listCachedFacts(uniqueId: UUID): Set<Fact> = cache[uniqueId] ?: emptySet()
 }
 
 class FactsModifier {
@@ -185,4 +148,4 @@ class FactsModifier {
     fun build(): Map<String, Int> = modifications
 }
 
-fun Player.fact(ref: Ref<out ReadableFactEntry>) = ref.get()?.read(uniqueId)
+fun Player.fact(ref: Ref<out ReadableFactEntry>) = ref.get()?.readForPlayer(this)

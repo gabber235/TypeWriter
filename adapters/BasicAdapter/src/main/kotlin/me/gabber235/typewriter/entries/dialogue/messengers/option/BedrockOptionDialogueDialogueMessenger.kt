@@ -38,7 +38,7 @@ class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialog
 
     override fun init() {
         super.init()
-        usableOptions = entry.options.filter { it.criteria.matches(player.uniqueId) }
+        usableOptions = entry.options.filter { it.criteria.matches(player) }
         org.geysermc.floodgate.api.FloodgateApi.getInstance().sendForm(
             player.uniqueId,
             org.geysermc.cumulus.form.CustomForm.builder()

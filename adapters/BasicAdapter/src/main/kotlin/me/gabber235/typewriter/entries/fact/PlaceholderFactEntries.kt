@@ -5,13 +5,16 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.adapters.modifiers.Regex
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.extensions.placeholderapi.isPlaceholder
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.facts.Fact
+import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.Icons
-import java.util.*
+import org.bukkit.entity.Player
 
 @Entry("number_placeholder", "Computed Fact for a placeholder number", Colors.PURPLE, Icons.HASHTAG)
 /**
@@ -29,6 +32,7 @@ class NumberPlaceholderFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
+    override val audience: Ref<AudienceEntry> = emptyRef(),
     @Placeholder
     @Help("Placeholder to parse (e.g. %player_level%) - Only placeholders that return a number or boolean are supported!")
     /**
@@ -43,13 +47,13 @@ class NumberPlaceholderFactEntry(
      */
     private val placeholder: String = "",
 ) : ReadableFactEntry {
-    override fun read(playerId: UUID): Fact {
+    override fun readSinglePlayer(player: Player): FactData {
         if (!placeholder.isPlaceholder) {
             logger.warning("Placeholder '$placeholder' is not a valid placeholder! Make sure it is only a placeholder starting & ending with %")
-            return Fact(id, 0)
+            return FactData(0)
         }
-        val value = placeholder.parsePlaceholders(playerId)
-        return Fact(id, value.toIntOrNull() ?: value.toBooleanStrictOrNull()?.toInt() ?: 0)
+        val value = placeholder.parsePlaceholders(player)
+        return FactData(value.toIntOrNull() ?: value.toBooleanStrictOrNull()?.toInt() ?: 0)
     }
 }
 
@@ -71,6 +75,7 @@ class ValuePlaceholderFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
+    override val audience: Ref<AudienceEntry> = emptyRef(),
     @Placeholder
     @Help("Placeholder to parse (e.g. %player_gamemode%)")
     private val placeholder: String = "",
@@ -93,13 +98,13 @@ class ValuePlaceholderFactEntry(
      */
     private val values: Map<String, Int> = mapOf()
 ) : ReadableFactEntry {
-    override fun read(playerId: UUID): Fact {
+    override fun readSinglePlayer(player: Player): FactData {
         if (!placeholder.isPlaceholder) {
             logger.warning("Placeholder '$placeholder' is not a valid placeholder! Make sure it is only a placeholder starting & ending with %")
-            return Fact(id, 0)
+            return FactData(0)
         }
-        val parsed = placeholder.parsePlaceholders(playerId)
+        val parsed = placeholder.parsePlaceholders(player)
         val value = values[parsed] ?: values.entries.firstOrNull { it.key.toRegex().matches(parsed) }?.value ?: 0
-        return Fact(id, value)
+        return FactData(value)
     }
 }

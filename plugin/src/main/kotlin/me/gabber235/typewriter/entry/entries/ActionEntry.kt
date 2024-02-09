@@ -13,7 +13,7 @@ import org.koin.java.KoinJavaComponent.get
 interface ActionEntry : TriggerableEntry {
     fun execute(player: Player) {
         val factDatabase: FactDatabase = get(FactDatabase::class.java)
-        factDatabase.modify(player.uniqueId, modifiers)
+        factDatabase.modify(player, modifiers)
     }
 }
 

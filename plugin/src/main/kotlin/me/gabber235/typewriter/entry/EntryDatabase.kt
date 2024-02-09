@@ -18,10 +18,10 @@ import me.gabber235.typewriter.utils.NonExistentSubtypeException
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
 import me.gabber235.typewriter.utils.get
 import me.gabber235.typewriter.utils.refreshAndRegisterAll
+import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
-import java.util.*
 import kotlin.reflect.KClass
 
 interface EntryDatabase {
@@ -197,9 +197,9 @@ enum class PageType(val id: String) {
     }
 }
 
-fun Iterable<Criteria>.matches(playerUUID: UUID): Boolean = all {
+fun Iterable<Criteria>.matches(player: Player): Boolean = all {
     val entry = it.fact.get()
-    val fact = entry?.read(playerUUID)
+    val fact = entry?.readForPlayer(player)
     it.isValid(fact)
 }
 

@@ -4,10 +4,13 @@ import io.lumine.mythic.bukkit.MythicBukkit
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
-import me.gabber235.typewriter.facts.Fact
+import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.utils.Icons
-import java.util.*
+import org.bukkit.entity.Player
 
 @Entry(
     "mythic_mob_count_fact",
@@ -28,12 +31,13 @@ class MobCountFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
+    override val audience: Ref<AudienceEntry> = emptyRef(),
     @Help("The id of the mob to count")
     val mobName: String = "",
 ) : ReadableFactEntry {
-    override fun read(playerId: UUID): Fact {
+    override fun readSinglePlayer(player: Player): FactData {
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName)
-        if (!mob.isPresent) return Fact(id, 0)
+        if (!mob.isPresent) return FactData(0)
 
         var count = 0
         for (activeMob in MythicBukkit.inst().mobManager.activeMobs) {
@@ -42,6 +46,6 @@ class MobCountFact(
             }
         }
 
-        return Fact(id, count)
+        return FactData(count)
     }
 }

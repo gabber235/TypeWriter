@@ -2,9 +2,10 @@ package me.gabber235.typewriter.entry
 
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Tags
-import me.gabber235.typewriter.adapters.modifiers.*
-import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.facts.Fact
+import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.entry.entries.ReadableFactEntry
+import me.gabber235.typewriter.entry.entries.WritableFactEntry
+import me.gabber235.typewriter.facts.FactData
 
 interface Entry {
     val id: String
@@ -44,6 +45,18 @@ enum class CriteriaOperator {
 
     @SerializedName(">=")
     GREATER_THAN_OR_EQUAL,
+
+    ;
+
+    fun isValid(value: Double, criteria: Double): Boolean {
+        return when (this) {
+            EQUALS -> value == criteria
+            LESS_THAN -> value < criteria
+            GREATER_THAN -> value > criteria
+            LESS_THAN_OR_EQUALS -> value <= criteria
+            GREATER_THAN_OR_EQUAL -> value >= criteria
+        }
+    }
 }
 
 data class Criteria(
@@ -54,15 +67,9 @@ data class Criteria(
     @Help("The value to compare the fact value to")
     val value: Int = 0,
 ) {
-    fun isValid(fact: Fact?): Boolean {
+    fun isValid(fact: FactData?): Boolean {
         val value = fact?.value ?: 0
-        return when (operator) {
-            CriteriaOperator.EQUALS -> value == this.value
-            CriteriaOperator.LESS_THAN -> value < this.value
-            CriteriaOperator.GREATER_THAN -> value > this.value
-            CriteriaOperator.LESS_THAN_OR_EQUALS -> value <= this.value
-            CriteriaOperator.GREATER_THAN_OR_EQUAL -> value >= this.value
-        }
+        return operator.isValid(value.toDouble(), this.value.toDouble())
     }
 }
 

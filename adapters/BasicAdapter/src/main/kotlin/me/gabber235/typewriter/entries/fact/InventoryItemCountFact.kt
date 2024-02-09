@@ -2,17 +2,18 @@ package me.gabber235.typewriter.entries.fact
 
 import com.google.gson.JsonObject
 import lirand.api.extensions.other.set
-import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
-import me.gabber235.typewriter.facts.Fact
+import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import java.util.*
 
 @Entry(
@@ -35,13 +36,13 @@ class InventoryItemCountFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
+    override val audience: Ref<AudienceEntry> = emptyRef(),
     @Help("The item to check for.")
     val item: Item = Item.Empty,
 ) : ReadableFactEntry {
-    override fun read(playerId: UUID): Fact {
-        val player = server.getPlayer(playerId) ?: return Fact(id, 0)
+    override fun readSinglePlayer(player: Player): FactData {
         val amount = player.inventory.contents.filterNotNull().filter { item.isSameAs(player, it) }.sumOf { it.amount }
-        return Fact(id, amount)
+        return FactData(amount)
     }
 }
 

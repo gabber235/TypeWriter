@@ -71,7 +71,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         }
         messenger.dispose()
 
-        factDatabase.modify(player.uniqueId, messenger.modifiers)
+        factDatabase.modify(player, messenger.modifiers)
     }
 
     fun end() {

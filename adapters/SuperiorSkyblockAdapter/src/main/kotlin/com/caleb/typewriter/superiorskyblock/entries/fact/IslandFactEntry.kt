@@ -6,10 +6,13 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
-import me.gabber235.typewriter.facts.Fact
+import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.utils.Icons
-import java.util.*
+import org.bukkit.entity.Player
 import kotlin.math.roundToInt
 
 
@@ -38,6 +41,8 @@ enum class IslandFacts(private val retrieveFact: (SuperiorPlayer, Island) -> Int
  *
  * <fields.ReadonlyFactInfo />
  *
+ * Be aware that this fact will return -1 if the player is not in an island.
+ *
  * ## How could this be used?
  *
  * This fact could be used to get the island's level and only allow some actions if the island is a certain level.
@@ -46,14 +51,15 @@ class IslandFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
+    override val audience: Ref<AudienceEntry> = emptyRef(),
     @Help("The fact to get")
     // The specific piece of information to retrieve about the island.
     val fact: IslandFacts,
 ) : ReadableFactEntry {
-    override fun read(playerId: UUID): Fact {
-        val sPlayer = SuperiorSkyblockAPI.getPlayer(playerId)
-        val island = sPlayer.island ?: return Fact(id, -1)
+    override fun readSinglePlayer(player: Player): FactData {
+        val sPlayer = SuperiorSkyblockAPI.getPlayer(player)
+        val island = sPlayer.island ?: return FactData(-1)
         val value = fact.getFact(sPlayer, island)
-        return Fact(id, value)
+        return FactData(value)
     }
 }

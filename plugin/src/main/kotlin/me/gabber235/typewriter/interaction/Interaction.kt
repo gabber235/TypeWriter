@@ -43,7 +43,7 @@ class Interaction(val player: Player) : KoinComponent {
         // Trigger all actions
         val actions =
             Query.findWhere<ActionEntry> {
-                it in event && it.criteria.matches(event.player.uniqueId)
+                it in event && it.criteria.matches(event.player)
             }
         actions.forEach { action -> action.execute(event.player) }
         val newTriggers =
@@ -80,7 +80,7 @@ class Interaction(val player: Player) : KoinComponent {
         val nextDialogue =
             Query.findWhere<DialogueEntry> { it in event }
                 .sortedByDescending { it.criteria.size }
-                .firstOrNull { it.criteria.matches(event.player.uniqueId) }
+                .firstOrNull { it.criteria.matches(event.player) }
 
         if (nextDialogue != null) {
             // If there is no sequence yet, start a new one
@@ -137,7 +137,7 @@ class Interaction(val player: Player) : KoinComponent {
 
         val entries =
             Query.findWhereFromPage<CinematicEntry>(trigger.pageId) {
-                it.criteria.matches(event.player.uniqueId)
+                it.criteria.matches(event.player)
                         && it.id !in trigger.ignoreEntries
             }
 

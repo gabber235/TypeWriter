@@ -15,10 +15,10 @@ import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.PageType.CINEMATIC
 import me.gabber235.typewriter.entry.entries.CinematicStartTrigger
 import me.gabber235.typewriter.entry.entries.EntryTrigger
-import me.gabber235.typewriter.entry.entries.FactEntry
+import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
+import me.gabber235.typewriter.entry.entries.WritableFactEntry
 import me.gabber235.typewriter.events.TypewriterReloadEvent
-import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.formattedName
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.ui.CommunicationHandler
@@ -64,34 +64,33 @@ private fun LiteralDSLBuilder.reloadCommands() {
 }
 
 private fun LiteralDSLBuilder.factsCommands() {
-    val factDatabase: FactDatabase = get(FactDatabase::class.java)
-
     literal("facts") {
         requiresPermissions("typewriter.facts")
         fun Player.listCachedFacts(source: CommandSender) {
-            val facts = factDatabase.listCachedFacts(uniqueId)
-            if (facts.isEmpty()) {
-                source.msg("$name has no facts.")
-            } else {
-                source.sendMini("\n\n")
-                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
-                source.msg("$name has the following facts:\n")
-                facts.map { it to Query.findById<FactEntry>(it.id) }.forEach { (fact, entry) ->
-                    if (entry == null) return@forEach
+            val factEntries = Query.find<ReadableFactEntry>()
+            if (factEntries.isEmpty()) {
+                source.msg("There are no facts available.")
+                return
+            }
 
-                    source.sendMini(
-                        "<hover:show_text:'${
-                            entry.comment.replace(
-                                Regex(" +"),
-                                " "
-                            )
-                        }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts $name set ${entry.name} ${fact.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${fact.value} <gray><i>(${
-                            formatter.format(
-                                fact.lastUpdate
-                            )
-                        })</i></gray>"
-                    )
-                }
+            source.sendMini("\n\n")
+            val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
+            source.msg("$name has the following facts:\n")
+
+            for (entry in factEntries) {
+                val data = entry.readForPlayer(this)
+                source.sendMini(
+                    "<hover:show_text:'${
+                        entry.comment.replace(
+                            Regex(" +"),
+                            " "
+                        ).replace("'", "\\'")
+                    }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts $name set ${entry.name} ${data.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${data.value} <gray><i>(${
+                        formatter.format(
+                            data.lastUpdate
+                        )
+                    })</i></gray>"
+                )
             }
         }
 
@@ -102,12 +101,10 @@ private fun LiteralDSLBuilder.factsCommands() {
             }
 
             literal("set") {
-                argument("fact", entryType<FactEntry>()) { fact ->
+                argument("fact", entryType<WritableFactEntry>()) { fact ->
                     argument("value", integer(0)) { value ->
                         executes {
-                            factDatabase.modify(player.get().uniqueId) {
-                                set(fact.get().id, value.get())
-                            }
+                            fact.get().write(player.get(), value.get())
                             source.msg("Set <blue>${fact.get().formattedName}</blue> to ${value.get()} for ${player.get().name}")
                         }
                     }
@@ -117,10 +114,14 @@ private fun LiteralDSLBuilder.factsCommands() {
             literal("reset") {
                 executes {
                     val p = player.get()
-                    factDatabase.modify(p.uniqueId) {
-                        factDatabase.listCachedFacts(p.uniqueId).forEach { (id, _) ->
-                            set(id, 0)
-                        }
+                    val entries = Query.find<WritableFactEntry>()
+                    if (entries.isEmpty()) {
+                        source.msg("There are no facts available.")
+                        return@executes
+                    }
+
+                    for (entry in entries) {
+                        entry.write(p, 0)
                     }
                     source.msg("All facts for ${p.name} have been reset.")
                 }
@@ -131,12 +132,10 @@ private fun LiteralDSLBuilder.factsCommands() {
             source.listCachedFacts(source)
         }
         literal("set") {
-            argument("fact", entryType<FactEntry>()) { fact ->
+            argument("fact", entryType<WritableFactEntry>()) { fact ->
                 argument("value", integer(0)) { value ->
                     executesPlayer {
-                        factDatabase.modify(source.uniqueId) {
-                            set(fact.get().id, value.get())
-                        }
+                        fact.get().write(source, value.get())
                         source.msg("Fact <blue>${fact.get().formattedName}</blue> set to ${value.get()}.")
                     }
                 }
@@ -145,10 +144,14 @@ private fun LiteralDSLBuilder.factsCommands() {
 
         literal("reset") {
             executesPlayer {
-                factDatabase.modify(source.uniqueId) {
-                    factDatabase.listCachedFacts(source.uniqueId).forEach { (id, _) ->
-                        set(id, 0)
-                    }
+                val entries = Query.find<WritableFactEntry>()
+                if (entries.isEmpty()) {
+                    source.msg("There are no facts available.")
+                    return@executesPlayer
+                }
+
+                for (entry in entries) {
+                    entry.write(source, 0)
                 }
                 source.msg("All your facts have been reset.")
             }
