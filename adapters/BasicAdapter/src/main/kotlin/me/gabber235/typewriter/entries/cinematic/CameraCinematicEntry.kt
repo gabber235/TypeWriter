@@ -226,8 +226,12 @@ private class BlockDisplayCameraSegmentAction(
      * Only since the last segment never moves, since the cinematic ends at the last frame.
      * We need to get the second last segment interpolation.
      */
-    private val secondToLastSegmentInterpolation =
-        min(segment.path[segment.path.size - 2].duration.orElse(BASE_INTERPOLATION), BASE_INTERPOLATION)
+    private val secondToLastSegmentInterpolation by lazy {
+        if (segment.path.size < 2) return@lazy BASE_INTERPOLATION
+        val point = segment.path[segment.path.size - 2]
+        val duration = point.duration.orElse(BASE_INTERPOLATION)
+        min(duration, BASE_INTERPOLATION)
+    }
     private val path = segment.path.transform(segment.duration - secondToLastSegmentInterpolation) {
         it.clone().apply {
             y += player.eyeHeight
