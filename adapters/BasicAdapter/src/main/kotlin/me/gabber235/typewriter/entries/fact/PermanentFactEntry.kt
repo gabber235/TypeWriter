@@ -20,5 +20,5 @@ class PermanentFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
 ) : PersistableFactEntry

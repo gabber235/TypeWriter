@@ -27,7 +27,7 @@ class TimedFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
     @Help("The duration after which the fact expires.")
     val duration: Duration = Duration.ZERO,
 ) : ExpirableFactEntry, PersistableFactEntry {

@@ -31,7 +31,7 @@ class MobCountFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
     @Help("The id of the mob to count")
     val mobName: String = "",
 ) : ReadableFactEntry {

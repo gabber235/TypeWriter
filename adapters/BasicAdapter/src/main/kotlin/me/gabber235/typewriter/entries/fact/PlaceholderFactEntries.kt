@@ -32,7 +32,7 @@ class NumberPlaceholderFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
     @Placeholder
     @Help("Placeholder to parse (e.g. %player_level%) - Only placeholders that return a number or boolean are supported!")
     /**
@@ -75,7 +75,7 @@ class ValuePlaceholderFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
     @Placeholder
     @Help("Placeholder to parse (e.g. %player_gamemode%)")
     private val placeholder: String = "",

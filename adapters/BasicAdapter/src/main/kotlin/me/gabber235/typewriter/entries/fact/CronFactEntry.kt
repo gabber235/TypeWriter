@@ -26,7 +26,7 @@ class CronFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
     @Help("The cron expression when the fact expires.")
     // The <Link to="https://www.netiq.com/documentation/cloud-manager-2-5/ncm-reference/data/bexyssf.html">Cron Expression</Link> when the fact expires.
     val cron: CronExpression = CronExpression.default(),

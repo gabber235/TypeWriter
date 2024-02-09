@@ -36,7 +36,7 @@ class InventoryItemCountFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
     @Help("The item to check for.")
     val item: Item = Item.Empty,
 ) : ReadableFactEntry {

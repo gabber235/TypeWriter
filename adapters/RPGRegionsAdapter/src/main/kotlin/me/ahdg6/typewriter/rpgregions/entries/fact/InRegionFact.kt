@@ -26,7 +26,7 @@ class InRegionFact(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
     @Help("The name of the region which the player must be in")
     // The name of the region which the player must be in. Make sure that this is the region ID, not the region's display name.
     val region: String = "",

@@ -25,7 +25,7 @@ class CombatFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
-    override val audience: Ref<GroupEntry> = emptyRef(),
+    override val group: Ref<GroupEntry> = emptyRef(),
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
         val combatLogger = CombatLogXAdapter.getAPI() ?: return FactData(0)
