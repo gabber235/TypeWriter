@@ -17,7 +17,7 @@ runs:
         shell: bash
         working-directory: ./app
       - name: Build web app
-        run: flutter build web --release --no-tree-shake-icons
+        run: flutter build web --release
         shell: bash
         working-directory: ./app
       - name: Test Plugin
