@@ -107,10 +107,6 @@ tasks.withType<ShadowJar> {
         exclude(dependency("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core"))
         exclude(dependency("web::"))
     }
-
-    dependencies {
-        exclude(dependency("io.netty::"))
-    }
 }
 
 task<ShadowJar>("buildAndMove") {
