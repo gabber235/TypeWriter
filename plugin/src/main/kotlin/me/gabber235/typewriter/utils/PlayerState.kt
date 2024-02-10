@@ -1,5 +1,8 @@
 package me.gabber235.typewriter.utils
 
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot
+import io.github.retrooper.packetevents.util.SpigotReflectionUtil
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.plugin
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -110,4 +113,24 @@ fun Player.state(keys: Array<out PlayerStateProvider>): PlayerState {
 
 fun Player.restore(state: PlayerState?) {
     state?.state?.forEach { (key, value) -> key.restore(this, value) }
+}
+
+fun Player.fakeClearInventory() {
+    for (i in 0..46) {
+        val item = inventory.getItem(i) ?: continue
+        if (item.type.isAir) continue
+
+        val packet = WrapperPlayServerSetSlot(-2, 0, i, com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY)
+        packet.sendPacketTo(this)
+    }
+}
+
+fun Player.restoreInventory() {
+    for (i in 0..46) {
+        val item = inventory.getItem(i) ?: continue
+        if (item.type.isAir) continue
+
+        val packet = WrapperPlayServerSetSlot(-2, 0, i, SpigotReflectionUtil.decodeBukkitItemStack(item))
+        packet.sendPacketTo(this)
+    }
 }

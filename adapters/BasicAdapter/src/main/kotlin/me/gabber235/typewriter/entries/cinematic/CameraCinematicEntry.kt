@@ -18,6 +18,7 @@ import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.display.TextDisplayMeta
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -114,6 +115,13 @@ class CameraCinematicAction(
                 player.hidePlayer(plugin, it)
             }
 
+            // In creative mode, when the player opens the inventory while their inventory is fake cleared,
+            // The actual inventory will be cleared.
+            // To prevent this, we only fake clear the inventory when the player is not in creative mode.
+            if (player.gameMode != GameMode.CREATIVE) {
+                player.fakeClearInventory()
+            }
+
             // Move the player before to the first location. This will spawn the boats in the correct world.
             // And gives the client time to load the chunks.
             val firstLocation = entry.segments.firstOrNull()?.path?.firstOrNull()?.location
@@ -170,6 +178,9 @@ class CameraCinematicAction(
         originalState?.let {
             SYNC.switchContext {
                 player.restore(it)
+                if (player.gameMode != GameMode.CREATIVE) {
+                    player.restoreInventory()
+                }
             }
         }
     }
