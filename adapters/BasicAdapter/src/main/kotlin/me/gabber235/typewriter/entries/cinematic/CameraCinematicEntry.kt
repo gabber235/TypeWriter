@@ -27,7 +27,7 @@ import org.bukkit.potion.PotionEffectType.INVISIBILITY
 import java.util.*
 import kotlin.math.min
 
-@Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, Icons.VIDEO)
+@Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, "fa6-solid:video")
 /**
  * The `Camera Cinematic` entry is used to create a cinematic camera path.
  *
@@ -45,7 +45,7 @@ class CameraCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(icon = Icons.VIDEO)
+    @Segments(icon = "fa6-solid:video")
     @InnerMin(Min(10))
     val segments: List<CameraSegment> = emptyList(),
 ) : CinematicEntry {

@@ -2,7 +2,6 @@ import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart" hide ConnectionState;
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
@@ -10,7 +9,9 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:url_launcher/url_launcher.dart";
 
 @RoutePage()
@@ -141,7 +142,7 @@ class _SideRail extends HookConsumerWidget {
           Flexible(
             child: Column(
               children: [
-                _RailButton(index++, icon: FontAwesomeIcons.filePen),
+                _RailButton(index++, icon: TWIcons.filePen),
                 const Spacer(),
                 const GlobalWriters(direction: Axis.vertical),
                 const SizedBox(height: 5),
@@ -166,7 +167,7 @@ class _RailButton extends HookConsumerWidget {
     required this.icon,
   });
   final int index;
-  final IconData icon;
+  final String icon;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -180,7 +181,7 @@ class _RailButton extends HookConsumerWidget {
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Icon(
+          child: Iconify(
             icon,
             color: isSelected ? Colors.white : Colors.white54,
             size: 20,
@@ -199,7 +200,7 @@ class _SimpleButton extends HookConsumerWidget {
   });
 
   final String tooltip;
-  final IconData icon;
+  final String icon;
   final VoidCallback onTap;
 
   @override
@@ -223,7 +224,7 @@ class _SimpleButton extends HookConsumerWidget {
           message: tooltip,
           child: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: FaIcon(
+            child: Iconify(
               icon,
               color: Colors.white54,
               size: 20,
@@ -264,7 +265,7 @@ class _DiscordButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _SimpleButton(
       tooltip: "Join Discord",
-      icon: FontAwesomeIcons.discord,
+      icon: "bi:discord",
       onTap: _launchDiscord,
     );
   }
@@ -284,7 +285,7 @@ class _WikiButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _SimpleButton(
       tooltip: "Open Wiki",
-      icon: FontAwesomeIcons.book,
+      icon: "oi:book",
       onTap: _launchWiki,
     );
   }
@@ -297,7 +298,7 @@ class _ReloadBookButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _SimpleButton(
       tooltip: "Reload Data",
-      icon: FontAwesomeIcons.arrowsRotate,
+      icon: "fa6-solid:arrows-rotate",
       onTap: () => ref.read(bookProvider.notifier).reload(),
     );
   }

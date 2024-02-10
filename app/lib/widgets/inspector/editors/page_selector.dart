@@ -1,16 +1,17 @@
 import "package:flutter/material.dart" hide Page;
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/pages_list.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/page_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -66,14 +67,14 @@ class PageSelectorEditor extends HookConsumerWidget {
                 if (hasPage) ...[
                   ContextMenuTile.button(
                     title: "Navigate to entry",
-                    icon: FontAwesomeIcons.pencil,
+                    icon: TWIcons.pencil,
                     onTap: () {
                       ref.read(appRouter).navigateToPage(ref.passing, pageId);
                     },
                   ),
                   ContextMenuTile.button(
                     title: "Remove reference",
-                    icon: FontAwesomeIcons.solidSquareMinus,
+                    icon: TWIcons.squareMinus,
                     color: Colors.redAccent,
                     onTap: () {
                       ref
@@ -85,7 +86,7 @@ class PageSelectorEditor extends HookConsumerWidget {
                 if (!hasPage) ...[
                   ContextMenuTile.button(
                     title: "Select entry",
-                    icon: FontAwesomeIcons.magnifyingGlass,
+                    icon: TWIcons.magnifyingGlass,
                     onTap: () {
                       _select(ref.passing, type);
                     },
@@ -112,8 +113,8 @@ class PageSelectorEditor extends HookConsumerWidget {
                 child: Row(
                   children: [
                     if (!hasPage && !isAccepting) ...[
-                      FaIcon(
-                        FontAwesomeIcons.database,
+                      Iconify(
+                        TWIcons.database,
                         size: 16,
                         color: Theme.of(context)
                             .inputDecorationTheme
@@ -140,8 +141,8 @@ class PageSelectorEditor extends HookConsumerWidget {
                         ),
                       ),
                     const SizedBox(width: 12),
-                    FaIcon(
-                      FontAwesomeIcons.caretDown,
+                    Iconify(
+                      TWIcons.caretDown,
                       size: 16,
                       color: Theme.of(context)
                           .inputDecorationTheme
@@ -166,8 +167,8 @@ class PageSelectorEditor extends HookConsumerWidget {
         padding: const EdgeInsets.all(15),
         child: Row(
           children: [
-            FaIcon(
-              FontAwesomeIcons.xmark,
+            Iconify(
+              TWIcons.x,
               size: 16,
               color: Theme.of(context).colorScheme.error,
             ),
@@ -231,7 +232,7 @@ class _SelectedPage extends HookConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Row(
           children: [
-            Icon(pageType.icon, color: Colors.white, size: 18),
+            Iconify(pageType.icon, color: Colors.white, size: 18),
             const SizedBox(width: 8),
             ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 35),

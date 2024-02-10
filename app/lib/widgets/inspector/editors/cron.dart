@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/cron.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/validated_inspector_text_field.dart";
@@ -35,7 +35,7 @@ class CronEditor extends HookConsumerWidget {
       child: ValidatedInspectorTextField<String>(
         path: path,
         defaultValue: "0 0 1 1 *",
-        icon: FontAwesomeIcons.solidClock,
+        icon: TWIcons.clock,
         inputFormatters: [
           FilteringTextInputFormatter.allow(
             RegExp(

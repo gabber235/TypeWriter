@@ -4,7 +4,6 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -13,11 +12,13 @@ import "package:typewriter/models/sound.dart";
 import "package:typewriter/models/sounds.dart";
 import "package:typewriter/utils/audio_player.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/general/focused_notifier.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -143,7 +144,7 @@ class MinecraftSoundIdSearchElement extends SearchElement {
 
   @override
   Widget suffixIcon(BuildContext context) =>
-      const Icon(FontAwesomeIcons.upRightFromSquare);
+      const Iconify(TWIcons.externalLink);
 
   @override
   String description(BuildContext context) {
@@ -159,7 +160,7 @@ class MinecraftSoundIdSearchElement extends SearchElement {
     return [
       const SearchAction(
         "Select",
-        FontAwesomeIcons.check,
+        TWIcons.check,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
     ];
@@ -214,8 +215,8 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
       child: MouseRegion(
         onEnter: (_) => hovering.value = true,
         onExit: (_) => hovering.value = false,
-        child: Icon(
-          showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play,
+        child: Iconify(
+          showPlaying ? TWIcons.volumeHigh : TWIcons.play,
           size: 16,
         )
             .animate(controller: controller, autoPlay: false)
@@ -353,8 +354,8 @@ class _EntrySoundIdSelector extends HookConsumerWidget {
           children: [
             Expanded(child: FakeEntryNode(entryId: soundId.entryId)),
             const SizedBox(width: 12),
-            FaIcon(
-              FontAwesomeIcons.caretDown,
+            Iconify(
+              TWIcons.caretDown,
               size: 16,
               color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
             ),
@@ -424,8 +425,8 @@ class _EmptySelector extends HookConsumerWidget {
             ),
           ),
           const SizedBox(width: 12),
-          FaIcon(
-            FontAwesomeIcons.caretDown,
+          Iconify(
+            TWIcons.caretDown,
             size: 16,
             color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
           ),
@@ -492,8 +493,8 @@ class _ErrorSelector extends HookConsumerWidget {
               ),
             ),
             const SizedBox(width: 12),
-            const FaIcon(
-              FontAwesomeIcons.xmark,
+            const Iconify(
+              TWIcons.x,
               size: 16,
               color: Colors.redAccent,
             ),
@@ -521,8 +522,8 @@ class _MinecraftSelector extends HookConsumerWidget {
         children: [
           Expanded(child: _ChosenSound(sound: sound)),
           const SizedBox(width: 12),
-          FaIcon(
-            FontAwesomeIcons.caretDown,
+          Iconify(
+            TWIcons.caretDown,
             size: 16,
             color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
           ),
@@ -576,8 +577,8 @@ class _ChosenSound extends HookConsumerWidget {
           MouseRegion(
             onEnter: (_) => hovering.value = true,
             onExit: (_) => hovering.value = false,
-            child: Icon(
-              showPlaying ? FontAwesomeIcons.volumeHigh : FontAwesomeIcons.play,
+            child: Iconify(
+              showPlaying ? TWIcons.volumeHigh : TWIcons.play,
               size: 16,
             )
                 .animate(controller: controller, autoPlay: false)

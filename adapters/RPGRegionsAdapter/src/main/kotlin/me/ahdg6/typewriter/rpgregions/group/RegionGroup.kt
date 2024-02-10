@@ -5,12 +5,11 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.GroupId
-import me.gabber235.typewriter.utils.Icons
 import net.islandearth.rpgregions.api.RPGRegionsAPI
 import org.bukkit.entity.Player
 import kotlin.jvm.optionals.getOrNull
 
-@Entry("rpg_region_group", "All players grouped by RPGRegions regions", Colors.MYRTLE_GREEN, Icons.OBJECT_GROUP)
+@Entry("rpg_region_group", "All players grouped by RPGRegions regions", Colors.MYRTLE_GREEN, "fa-solid:object-group")
 /**
  * The `Region Group` is a group that includes all the players in a specific RPGRegions region.
  * Only the given region will be considered for the group.

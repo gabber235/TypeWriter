@@ -5,7 +5,6 @@ import "package:collection_ext/all.dart";
 import "package:flutter/material.dart" hide FilledButton, Title;
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -13,7 +12,6 @@ import "package:typewriter/hooks/global_key.dart";
 import "package:typewriter/hooks/text_size.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
-import "package:typewriter/models/icons.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/segment.dart";
 import "package:typewriter/models/writers.dart";
@@ -21,6 +19,7 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/color_converter.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/fonts.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
@@ -31,6 +30,7 @@ import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -266,8 +266,7 @@ List<ContextMenuTile> _entryContextActions(
     final hexColor = modifierData["color"] as String? ?? "#009688";
     final color = colorConverter.fromJson(hexColor) ?? Colors.teal;
 
-    final iconName = modifierData["icon"] as String? ?? "plus";
-    final icon = icons[iconName] ?? FontAwesomeIcons.plus;
+    final icon = modifierData["icon"] as String? ?? TWIcons.plus;
 
     return ContextMenuTile.button(
       title: "Add $title",
@@ -437,8 +436,7 @@ List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
   final hexColor = segmentModifierData["color"] as String? ?? "#000000";
   final color = colorConverter.fromJson(hexColor) ?? Colors.teal;
 
-  final iconName = segmentModifierData["icon"] as String? ?? "star";
-  final icon = icons[iconName] ?? FontAwesomeIcons.star;
+  final icon = segmentModifierData["icon"] as String? ?? TWIcons.star;
 
   final field = blueprint.getField(path.wild());
   final min = field?.get("min") as int?;
@@ -747,7 +745,7 @@ class _DeleteSegment extends HookConsumerWidget {
 
         deleteSegmentConfirmation(context, ref.passing, entryId, segmentId);
       },
-      icon: const FaIcon(FontAwesomeIcons.trash),
+      icon: const Iconify(TWIcons.trash),
       label: const Text("Delete Segment"),
       color: Theme.of(context).colorScheme.error,
     );
@@ -764,7 +762,7 @@ class _DuplicateSegment extends HookConsumerWidget {
             Theme.of(context).colorScheme.primary;
     return FilledButton.icon(
       onPressed: () => _duplicateSelectedSegment(ref.passing),
-      icon: const FaIcon(FontAwesomeIcons.clone),
+      icon: const Iconify(TWIcons.duplicate),
       label: const Text("Duplicate Segment"),
       color: color,
     );
@@ -820,7 +818,7 @@ class _EndFrameField extends HookConsumerWidget {
     return _FrameField(
       title: "End Frame",
       path: "$segmentId.endFrame",
-      icon: FontAwesomeIcons.forwardStep,
+      icon: TWIcons.stepBackward,
       hintText: "Enter a frame number",
       onValidate: (frame) {
         final entryId = ref.read(inspectingEntryIdProvider);
@@ -879,7 +877,7 @@ class _EntryRow extends HookConsumerWidget {
             cursor: SystemMouseCursors.grab,
             child: ReorderableDragStartListener(
               index: index,
-              child: const Icon(FontAwesomeIcons.barsStaggered, size: 12),
+              child: const Iconify(TWIcons.barsStaggered, size: 12),
             ),
           ),
           const SizedBox(width: 8),
@@ -969,7 +967,7 @@ class _FrameField extends HookConsumerWidget {
 
   final String path;
   final String title;
-  final IconData? icon;
+  final String? icon;
   final String hintText;
   final String? Function(int)? onValidate;
   final Function(int)? onDone;
@@ -999,7 +997,7 @@ class _FrameField extends HookConsumerWidget {
             ],
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              prefixIcon: icon != null ? Icon(icon, size: 18) : null,
+              prefixIcon: icon != null ? Iconify(icon, size: 18) : null,
               hintText: hintText,
               errorText: error.value,
             ),
@@ -1437,7 +1435,7 @@ class _SegmentSelectorTile extends HookConsumerWidget {
         builder: (context) => [
           ContextMenuTile.button(
             title: "Select",
-            icon: FontAwesomeIcons.solidSquareCheck,
+            icon: TWIcons.checkSquare,
             onTap: () {
               ref
                   .read(inspectingSegmentIdProvider.notifier)
@@ -1446,14 +1444,14 @@ class _SegmentSelectorTile extends HookConsumerWidget {
           ),
           ContextMenuTile.button(
             title: "Duplicate",
-            icon: FontAwesomeIcons.clone,
+            icon: TWIcons.duplicate,
             onTap: () {
               _duplicateSelectedSegment(ref.passing);
             },
           ),
           ContextMenuTile.button(
             title: "Delete",
-            icon: FontAwesomeIcons.trash,
+            icon: TWIcons.trash,
             color: Theme.of(context).colorScheme.error,
             onTap: () {
               deleteSegmentConfirmation(
@@ -1480,7 +1478,7 @@ class _SegmentSelectorTile extends HookConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(
+                  Iconify(
                     segment.icon,
                     size: 16,
                     color: color.computeLuminance() > 0.5
@@ -1498,8 +1496,8 @@ class _SegmentSelectorTile extends HookConsumerWidget {
                     ),
                   ),
                   const Spacer(),
-                  Icon(
-                    FontAwesomeIcons.angleRight,
+                  Iconify(
+                    TWIcons.angleRight,
                     size: 12,
                     color: color.computeLuminance() > 0.5
                         ? Colors.black.withOpacity(0.5)
@@ -1574,12 +1572,12 @@ class _SegmentWidget extends HookConsumerWidget {
         builder: (context) => [
           ContextMenuTile.button(
             title: "Duplicate",
-            icon: FontAwesomeIcons.clone,
+            icon: TWIcons.duplicate,
             onTap: () => _duplicateSelectedSegment(ref.passing),
           ),
           ContextMenuTile.button(
             title: "Delete",
-            icon: FontAwesomeIcons.trash,
+            icon: TWIcons.trash,
             color: Theme.of(context).colorScheme.error,
             onTap: () {
               final segmentId = ref.read(inspectingSegmentIdProvider);
@@ -1722,7 +1720,7 @@ class _SingleFrameField extends HookConsumerWidget {
     return _FrameField(
       title: "Frame",
       path: "$segmentId.startFrame",
-      icon: FontAwesomeIcons.forwardStep,
+      icon: TWIcons.stepForward,
       hintText: "Enter a frame number",
       onValidate: (frame) {
         final entryId = ref.read(inspectingEntryIdProvider);
@@ -1789,7 +1787,7 @@ class _StartFrameField extends HookConsumerWidget {
     return _FrameField(
       title: "Start Frame",
       path: "$segmentId.startFrame",
-      icon: FontAwesomeIcons.backwardStep,
+      icon: TWIcons.stepBackward,
       hintText: "Enter a frame number",
       onValidate: (frame) {
         final entryId = ref.read(inspectingEntryIdProvider);

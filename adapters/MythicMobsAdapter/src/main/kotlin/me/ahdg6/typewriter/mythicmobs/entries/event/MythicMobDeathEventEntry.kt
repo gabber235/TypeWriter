@@ -6,11 +6,10 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
 
-@Entry("on_mythic_mob_die", "When a player kill a MythicMobs mob.", Colors.YELLOW, Icons.SKULL)
+@Entry("on_mythic_mob_die", "When a player kill a MythicMobs mob.", Colors.YELLOW, "fa6-solid:skull")
 /**
  * The `Mob Death Event` event is triggered when a player kill a mob.
  *

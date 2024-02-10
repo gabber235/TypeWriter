@@ -1,7 +1,6 @@
 import "package:dotted_border/dotted_border.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
@@ -10,10 +9,12 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/entries_graph.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "entry_node.g.dart";
@@ -47,7 +48,7 @@ class EntryNode extends HookConsumerWidget {
       backgroundColor: blueprint.color,
       foregroundColor: Colors.white,
       name: entryName.formatted,
-      icon: Icon(blueprint.icon, size: 18),
+      icon: Iconify(blueprint.icon, size: 18),
       isSelected: isSelected,
       contextActions: contextActions,
       onTap: () =>
@@ -132,18 +133,18 @@ class _EntryNode extends HookConsumerWidget {
               if (canTrigger)
                 ContextMenuTile.button(
                   title: "Extend with ...",
-                  icon: FontAwesomeIcons.plus,
+                  icon: TWIcons.plus,
                   onTap: () => _extendsWith(ref),
                 ),
               if (canTrigger && canBeTriggered)
                 ContextMenuTile.button(
                   title: "Extend with Duplicate",
-                  icon: FontAwesomeIcons.copy,
+                  icon: TWIcons.copy,
                   onTap: () => _extendsWithDuplicate(ref),
                 ),
               ContextMenuTile.button(
                 title: "Delete",
-                icon: FontAwesomeIcons.trash,
+                icon: TWIcons.trash,
                 color: Colors.redAccent,
                 onTap: () => _deleteEntry(context, ref),
               ),
@@ -293,7 +294,7 @@ class FakeEntryNode extends HookConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Row(
           children: [
-            Icon(blueprint.icon, color: Colors.white, size: 18),
+            Iconify(blueprint.icon, color: Colors.white, size: 18),
             const SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,7 +389,7 @@ class ExternalEntryNode extends HookConsumerWidget {
           return [
             ContextMenuTile.button(
               title: "Delete Reference",
-              icon: Icons.delete,
+              icon: TWIcons.delete,
               color: Colors.redAccent,
               onTap: () => ref
                   .read(currentPageProvider)
@@ -423,7 +424,7 @@ class ExternalEntryNode extends HookConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          Icon(blueprint.icon, color: color, size: 18),
+          Iconify(blueprint.icon, color: color, size: 18),
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

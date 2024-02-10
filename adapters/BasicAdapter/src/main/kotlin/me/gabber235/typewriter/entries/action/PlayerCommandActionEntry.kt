@@ -12,11 +12,10 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 
-@Entry("player_run_command", "Make player run command", Colors.RED, Icons.TERMINAL)
+@Entry("player_run_command", "Make player run command", Colors.RED, "mingcute:terminal-fill")
 /**
  * The `Player Command Action` is an action that runs a command as if the player entered it.
  * This action provides you with the ability to execute commands on behalf of the player in response to specific events.

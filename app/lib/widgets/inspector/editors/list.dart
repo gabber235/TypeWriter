@@ -1,10 +1,11 @@
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/header.dart";
@@ -147,8 +148,8 @@ class _ListItem extends HookConsumerWidget {
           cursor: SystemMouseCursors.grab,
           child: ReorderableDragStartListener(
             index: index,
-            child: const Icon(
-              FontAwesomeIcons.barsStaggered,
+            child: const Iconify(
+              TWIcons.barsStaggered,
               size: 12,
               color: Colors.grey,
             ),

@@ -12,10 +12,9 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.EntryTrigger
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("trigger_sequence_cinematic", "A sequence of triggers to run", Colors.PURPLE, Icons.PLAY)
+@Entry("trigger_sequence_cinematic", "A sequence of triggers to run", Colors.PURPLE, "fa-solid:play")
 /**
  * The `Trigger Sequence Cinematic` entry that runs a sequence of triggers. It is very powerful but also very dangerous.
  *

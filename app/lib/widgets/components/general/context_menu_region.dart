@@ -3,6 +3,7 @@ import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter/hooks/text_size.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 typedef ContextMenuBuilder = List<ContextMenuTile> Function(BuildContext);
 
@@ -146,13 +147,14 @@ enum Quadrant {
   bottomRight,
 }
 
+@immutable
 class ContextMenuTile {
   const ContextMenuTile();
 
-  factory ContextMenuTile.button({
+  const factory ContextMenuTile.button({
     required String title,
     VoidCallback? onTap,
-    IconData? icon,
+    String? icon,
     Color? color,
   }) = ContextMenuButton;
 
@@ -161,6 +163,7 @@ class ContextMenuTile {
   String get largestText => "";
 }
 
+@immutable
 class ContextMenuButton extends ContextMenuTile {
   const ContextMenuButton({
     required this.title,
@@ -171,13 +174,14 @@ class ContextMenuButton extends ContextMenuTile {
 
   final String title;
   final VoidCallback? onTap;
-  final IconData? icon;
+  final String? icon;
   final Color? color;
 
   @override
   String get largestText => title;
 }
 
+@immutable
 class ContextMenuDivider extends ContextMenuTile {}
 
 class _ContextMenu extends HookWidget {
@@ -282,7 +286,8 @@ class _ContextMenuButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
-              Icon(tile.icon, color: tile.color, size: 16),
+              if (tile.icon != null)
+                Iconify(tile.icon, color: tile.color, size: 16),
               const SizedBox(width: 10),
               Text(
                 tile.title,

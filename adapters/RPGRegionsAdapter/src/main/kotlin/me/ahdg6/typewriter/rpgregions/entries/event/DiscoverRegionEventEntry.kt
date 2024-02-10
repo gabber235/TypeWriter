@@ -6,10 +6,14 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import net.islandearth.rpgregions.api.events.RegionDiscoverEvent
 
-@Entry("on_discover_rpg_region", "When a player discovers an RPGRegions region", Colors.YELLOW, Icons.LOCATION_ARROW)
+@Entry(
+    "on_discover_rpg_region",
+    "When a player discovers an RPGRegions region",
+    Colors.YELLOW,
+    "fa-solid:location-arrow"
+)
 /**
  * The `Discover Region Event` is triggered when a player discovers a region.
  *

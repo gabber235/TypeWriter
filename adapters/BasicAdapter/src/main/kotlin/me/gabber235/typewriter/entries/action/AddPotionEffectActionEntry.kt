@@ -8,12 +8,11 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-@Entry("add_potion_effect", "Add a potion effect to the player", Colors.RED, Icons.FLASK_VIAL)
+@Entry("add_potion_effect", "Add a potion effect to the player", Colors.RED, "fa6-solid:flask-vial")
 /**
  * The `Add Potion Effect Action` is an action that adds a potion effect to the player.
  *

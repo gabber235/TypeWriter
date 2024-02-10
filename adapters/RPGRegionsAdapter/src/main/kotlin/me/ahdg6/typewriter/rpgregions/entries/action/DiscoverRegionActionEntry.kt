@@ -8,14 +8,13 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import net.islandearth.rpgregions.api.RPGRegionsAPI
 import net.islandearth.rpgregions.managers.data.region.WorldDiscovery
 import org.bukkit.entity.Player
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@Entry("discover_rpg_region", "Create a discover for an RPGRegions region", Colors.RED, Icons.ADDRESS_BOOK)
+@Entry("discover_rpg_region", "Create a discover for an RPGRegions region", Colors.RED, "fa6-solid:address-book")
 /**
  * The `Discover Region Action` is used to add a discovery into a user's account.
  *

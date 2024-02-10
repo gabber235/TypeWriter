@@ -1,13 +1,14 @@
 import "package:flutter/material.dart" hide FilledButton;
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/entries_graph.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/components/general/outline_button.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
@@ -35,7 +36,7 @@ class Operations extends HookConsumerWidget {
           if (action is ContextMenuDivider) const Divider(),
           if (action is ContextMenuButton)
             OutlineButton.icon(
-              icon: FaIcon(action.icon),
+              icon: Iconify(action.icon),
               label: Text(action.title),
               onPressed: action.onTap,
               color: action.color,
@@ -70,7 +71,7 @@ class _ExtendWithDuplicate extends HookConsumerWidget {
         if (entryId.isNullOrEmpty) return;
         page.extendsWithDuplicate(ref.passing, entryId!);
       },
-      icon: const FaIcon(FontAwesomeIcons.solidCopy),
+      icon: const Iconify(TWIcons.duplicate),
       label: const Text("Extend with Duplicate"),
       color: Colors.blue,
     );
@@ -90,7 +91,7 @@ class _ExtendWithEntry extends HookConsumerWidget {
         if (entryId.isNullOrEmpty) return;
         page.extendsWith(ref.passing, entryId!);
       },
-      icon: const FaIcon(FontAwesomeIcons.plus),
+      icon: const Iconify(TWIcons.plus),
       label: const Text("Extend with ..."),
       color: Colors.blue,
     );
@@ -110,7 +111,7 @@ class _DeleteEntry extends HookConsumerWidget {
         if (entryId.isNullOrEmpty) return;
         page.deleteEntryWithConfirmation(context, ref.passing, entryId!);
       },
-      icon: const FaIcon(FontAwesomeIcons.trash),
+      icon: const Iconify(TWIcons.trash),
       label: const Text("Delete Entry"),
       color: Theme.of(context).colorScheme.error,
     );

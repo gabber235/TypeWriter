@@ -14,7 +14,10 @@ import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.NpcRecordedDataCapturer
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
+import me.gabber235.typewriter.utils.digits
+import me.gabber235.typewriter.utils.get
+import me.gabber235.typewriter.utils.rightPad
 import org.koin.core.component.KoinComponent
 import java.io.File
 import java.net.URLClassLoader
@@ -217,7 +220,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
                     adapter.name,
                     ObjectField.fromTypeToken(TypeToken.get(entryClass)),
                     entryAnnotation.color,
-                    entryAnnotation.icon.id,
+                    entryAnnotation.icon,
                     getTags(entryClass),
                     entryClass,
                 )
@@ -352,7 +355,7 @@ annotation class Entry(
     val name: String,
     val description: String,
     val color: String, // Hex color
-    val icon: Icons, // Font awesome icon
+    val icon: String, // Any https://icon-sets.iconify.design/ icon
 )
 
 @Target(AnnotationTarget.CLASS)

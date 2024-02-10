@@ -3,171 +3,40 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:text_scroll/text_scroll.dart";
 import "package:typewriter/utils/debouncer.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/page_search.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/focused_notifier.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/components/general/shortcut_label.dart";
 
 part "search_bar.freezed.dart";
 part "search_bar.g.dart";
-
-/// When the user wants to search for nodes.
-class SearchIntent extends Intent {}
-
-class ActivateActionIntent extends Intent {
-  const ActivateActionIntent(this.shortcut);
-
-  final ShortcutActivator shortcut;
-}
-
-@freezed
-class Search with _$Search {
-  const factory Search({
-    @Default("") String query,
-    @Default([]) List<SearchFetcher> fetchers,
-    @Default([]) List<SearchFilter> filters,
-    Function()? onEnd,
-  }) = _Search;
-}
-
-class SearchNotifier extends StateNotifier<Search?> {
-  SearchNotifier(this.ref) : super(null) {
-    _debouncer = Debouncer<String>(duration: 200.ms, callback: _updateQuery);
-  }
-
-  final Ref ref;
-  late Debouncer<String> _debouncer;
-
-  // ignore: use_setters_to_change_properties
-  void start(Search search) {
-    state = search;
-  }
-
-  SearchBuilder asBuilder() {
-    return SearchBuilder(this);
-  }
-
-  void startGlobalSearch() => asBuilder()
-    ..fetchNewEntry()
-    ..fetchEntry()
-    ..fetchPage()
-    ..fetchAddPage()
-    ..open();
-
-  void startAddSearch() => asBuilder()
-    ..fetchNewEntry()
-    ..fetchAddPage()
-    ..open();
-
-  void endSearch() {
-    state?.onEnd?.call();
-    state = null;
-    _debouncer.cancel();
-  }
-
-  void updateQuery(String query) {
-    _debouncer.run(query);
-  }
-
-  void _updateQuery(String query) {
-    state = state!.copyWith(query: query);
-  }
-
-  void toggleFetcher(SearchFetcher fetcher) {
-    final fetchers = state?.fetchers;
-    if (fetchers == null) return;
-    final newFetchers = fetchers.map((f) {
-      if (f.runtimeType == fetcher.runtimeType) {
-        return f.copyWith(disabled: !f.disabled);
-      }
-      return f;
-    }).toList();
-    state = state!.copyWith(fetchers: newFetchers);
-  }
-
-  void removeFilter(SearchFilter filter) {
-    state = state!
-        .copyWith(filters: state!.filters.where((f) => f != filter).toList());
-  }
-
-  @override
-  void dispose() {
-    _debouncer.cancel();
-    super.dispose();
-  }
-}
-
-abstract class SearchFilter {
-  const SearchFilter();
-
-  bool get canRemove;
-  String get title;
-  Color get color;
-  IconData get icon;
-
-  bool filter(SearchElement action) {
-    return true;
-  }
-}
-
-abstract class SearchFetcher {
-  const SearchFetcher();
-
-  bool get disabled;
-  String get title;
-  IconData get icon => FontAwesomeIcons.magnifyingGlass;
-  Color get color => Colors.blueAccent;
-
-  List<SearchElement> fetch(PassingRef ref) {
-    return [];
-  }
-
-  SearchFetcher copyWith({
-    bool? disabled,
-  });
-}
 
 final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(
   SearchNotifier.new,
   name: "searchProvider",
 );
 
-class SearchBuilder {
-  SearchBuilder(this.notifier);
+@riverpod
+List<SearchElement> searchElements(SearchElementsRef ref) {
+  final search = ref.watch(searchProvider);
+  if (search == null) return [];
 
-  var _currentSearch = const Search();
-  final SearchNotifier notifier;
+  final fetchers = search.fetchers.where((f) => !f.disabled);
+  final actions = fetchers.expand((f) => f.fetch(ref.passing));
+  final filtered =
+      actions.where((e) => search.filters.every((f) => f.filter(e)));
 
-  void query(String query) {
-    _currentSearch = _currentSearch.copyWith(query: query);
-  }
-
-  void filters(List<SearchFilter> filters) {
-    _currentSearch = _currentSearch.copyWith(filters: filters);
-  }
-
-  void filter(SearchFilter filter) {
-    _currentSearch =
-        _currentSearch.copyWith(filters: [..._currentSearch.filters, filter]);
-  }
-
-  void fetch(SearchFetcher fetcher) {
-    _currentSearch = _currentSearch
-        .copyWith(fetchers: [..._currentSearch.fetchers, fetcher]);
-  }
-
-  void open() {
-    notifier.start(_currentSearch);
-  }
+  return filtered.take(30).toList();
 }
 
 @riverpod
@@ -185,29 +54,16 @@ List<SearchFilter> searchFilters(SearchFiltersRef ref) {
 }
 
 @riverpod
-List<SearchElement> searchElements(SearchElementsRef ref) {
-  final search = ref.watch(searchProvider);
-  if (search == null) return [];
-
-  final fetchers = search.fetchers.where((f) => !f.disabled);
-  final actions = fetchers.expand((f) => f.fetch(ref.passing));
-  final filtered =
-      actions.where((e) => search.filters.every((f) => f.filter(e)));
-
-  return filtered.take(30).toList();
+List<FocusNode> searchFocusNodes(SearchFocusNodesRef ref) {
+  final actionsCount =
+      ref.watch(searchElementsProvider.select((value) => value.length));
+  return List.generate(actionsCount, (_) => FocusNode());
 }
 
 @riverpod
 List<GlobalKey> searchGlobalKeys(SearchGlobalKeysRef ref) {
   final elements = ref.watch(searchElementsProvider);
   return elements.map((e) => GlobalKey(debugLabel: e.title)).toList();
-}
-
-@riverpod
-List<FocusNode> searchFocusNodes(SearchFocusNodesRef ref) {
-  final actionsCount =
-      ref.watch(searchElementsProvider.select((value) => value.length));
-  return List.generate(actionsCount, (_) => FocusNode());
 }
 
 @riverpod
@@ -222,6 +78,13 @@ SearchElement? _focusedElement(_FocusedElementRef ref) {
 }
 
 @riverpod
+List<SearchAction> _searchActions(_SearchActionsRef ref) {
+  final focusedElement = ref.watch(_focusedElementProvider);
+
+  return focusedElement?.actions(ref.passing) ?? [];
+}
+
+@riverpod
 Set<ShortcutActivator> _searchActionShortcuts(_SearchActionShortcutsRef ref) {
   final elements = ref.watch(searchElementsProvider);
   final activators = elements
@@ -232,6 +95,21 @@ Set<ShortcutActivator> _searchActionShortcuts(_SearchActionShortcutsRef ref) {
   return activators;
 }
 
+class ActivateActionIntent extends Intent {
+  const ActivateActionIntent(this.shortcut);
+  final ShortcutActivator shortcut;
+}
+
+@freezed
+class Search with _$Search {
+  const factory Search({
+    @Default("") String query,
+    @Default([]) List<SearchFetcher> fetchers,
+    @Default([]) List<SearchFilter> filters,
+    Function()? onEnd,
+  }) = _Search;
+}
+
 class SearchAction {
   const SearchAction(
     this.name,
@@ -240,89 +118,18 @@ class SearchAction {
     this.color,
     this.onTrigger,
   });
-
   final String name;
-  final IconData icon;
+
+  final String icon;
   final ShortcutActivator shortcut;
   final Color? color;
   final FutureOr<bool> Function(BuildContext, PassingRef ref)? onTrigger;
-}
-
-abstract class SearchElement {
-  const SearchElement();
-
-  String get title;
-
-  Color color(BuildContext context);
-
-  Widget icon(BuildContext context);
-
-  Widget suffixIcon(BuildContext context);
-
-  String description(BuildContext context);
-
-  List<SearchAction> actions(PassingRef ref);
-
-  /// Runs when the element is activated.
-  ///
-  /// Returns true if the search should be closed.
-  Future<bool> activate(BuildContext context, PassingRef ref);
 }
 
 class SearchBar extends HookConsumerWidget {
   const SearchBar({
     super.key,
   });
-
-  Future<void> _activateItem(
-    List<SearchElement> actions,
-    int index,
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    if (index >= actions.length) return;
-    if (index < 0) return;
-    final canEnd = await actions[index].activate(context, ref.passing);
-    if (canEnd) ref.read(searchProvider.notifier).endSearch();
-  }
-
-  /// Change focus to the next/previous search result.
-  void _changeFocus(
-    BuildContext context,
-    PassingRef ref,
-    int index,
-  ) {
-    final focusNodes = ref.read(searchFocusNodesProvider);
-    final keys = ref.read(searchGlobalKeysProvider);
-    FocusScope.of(context).requestFocus(focusNodes[index]);
-    ref.invalidate(_focusedElementProvider);
-
-    final indexContext = keys[index].currentContext;
-    if (indexContext == null) return;
-    Scrollable.ensureVisible(
-      indexContext,
-      alignment: 0.5,
-      duration: 300.ms,
-    );
-  }
-
-  void _changeFocusUp(BuildContext context, PassingRef ref) {
-    final focusNodes = ref.read(searchFocusNodesProvider);
-    var index = focusNodes.indexWhere((n) => n.hasFocus);
-    if (index == -1) index = 0;
-
-    index = (index - 1 + focusNodes.length) % focusNodes.length;
-    _changeFocus(context, ref, index);
-  }
-
-  void _changeFocusDown(BuildContext context, PassingRef ref) {
-    final focusNodes = ref.read(searchFocusNodesProvider);
-    var index = focusNodes.indexWhere((n) => n.hasFocus);
-
-    index = (index + 1) % focusNodes.length;
-
-    _changeFocus(context, ref, index);
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -377,6 +184,229 @@ class SearchBar extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _activateItem(
+    List<SearchElement> actions,
+    int index,
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    if (index >= actions.length) return;
+    if (index < 0) return;
+    final canEnd = await actions[index].activate(context, ref.passing);
+    if (canEnd) ref.read(searchProvider.notifier).endSearch();
+  }
+
+  /// Change focus to the next/previous search result.
+  void _changeFocus(
+    BuildContext context,
+    PassingRef ref,
+    int index,
+  ) {
+    final focusNodes = ref.read(searchFocusNodesProvider);
+    final keys = ref.read(searchGlobalKeysProvider);
+    FocusScope.of(context).requestFocus(focusNodes[index]);
+    ref.invalidate(_focusedElementProvider);
+
+    final indexContext = keys[index].currentContext;
+    if (indexContext == null) return;
+    Scrollable.ensureVisible(
+      indexContext,
+      alignment: 0.5,
+      duration: 300.ms,
+    );
+  }
+
+  void _changeFocusDown(BuildContext context, PassingRef ref) {
+    final focusNodes = ref.read(searchFocusNodesProvider);
+    var index = focusNodes.indexWhere((n) => n.hasFocus);
+
+    index = (index + 1) % focusNodes.length;
+
+    _changeFocus(context, ref, index);
+  }
+
+  void _changeFocusUp(BuildContext context, PassingRef ref) {
+    final focusNodes = ref.read(searchFocusNodesProvider);
+    var index = focusNodes.indexWhere((n) => n.hasFocus);
+    if (index == -1) index = 0;
+
+    index = (index - 1 + focusNodes.length) % focusNodes.length;
+    _changeFocus(context, ref, index);
+  }
+}
+
+class SearchBuilder {
+  SearchBuilder(this.notifier);
+  var _currentSearch = const Search();
+
+  final SearchNotifier notifier;
+
+  void fetch(SearchFetcher fetcher) {
+    _currentSearch = _currentSearch
+        .copyWith(fetchers: [..._currentSearch.fetchers, fetcher]);
+  }
+
+  void filter(SearchFilter filter) {
+    _currentSearch =
+        _currentSearch.copyWith(filters: [..._currentSearch.filters, filter]);
+  }
+
+  void filters(List<SearchFilter> filters) {
+    _currentSearch = _currentSearch.copyWith(filters: filters);
+  }
+
+  void open() {
+    notifier.start(_currentSearch);
+  }
+
+  void query(String query) {
+    _currentSearch = _currentSearch.copyWith(query: query);
+  }
+}
+
+abstract class SearchElement {
+  const SearchElement();
+
+  String get title;
+
+  List<SearchAction> actions(PassingRef ref);
+
+  /// Runs when the element is activated.
+  ///
+  /// Returns true if the search should be closed.
+  Future<bool> activate(BuildContext context, PassingRef ref);
+
+  Color color(BuildContext context);
+
+  String description(BuildContext context);
+
+  Widget icon(BuildContext context);
+
+  Widget suffixIcon(BuildContext context);
+}
+
+abstract class SearchFetcher {
+  const SearchFetcher();
+
+  Color get color => Colors.blueAccent;
+  bool get disabled;
+  String get icon => TWIcons.magnifyingGlass;
+  String get title;
+
+  SearchFetcher copyWith({
+    bool? disabled,
+  });
+
+  List<SearchElement> fetch(PassingRef ref) {
+    return [];
+  }
+}
+
+abstract class SearchFilter {
+  const SearchFilter();
+
+  bool get canRemove;
+  Color get color;
+  String get icon;
+  String get title;
+
+  bool filter(SearchElement action) {
+    return true;
+  }
+}
+
+/// When the user wants to search for nodes.
+class SearchIntent extends Intent {}
+
+class SearchNotifier extends StateNotifier<Search?> {
+  SearchNotifier(this.ref) : super(null) {
+    _debouncer = Debouncer<String>(duration: 200.ms, callback: _updateQuery);
+  }
+  final Ref ref;
+
+  late Debouncer<String> _debouncer;
+
+  SearchBuilder asBuilder() {
+    return SearchBuilder(this);
+  }
+
+  @override
+  void dispose() {
+    _debouncer.cancel();
+    super.dispose();
+  }
+
+  void endSearch() {
+    state?.onEnd?.call();
+    state = null;
+    _debouncer.cancel();
+  }
+
+  void removeFilter(SearchFilter filter) {
+    state = state!
+        .copyWith(filters: state!.filters.where((f) => f != filter).toList());
+  }
+
+  // ignore: use_setters_to_change_properties
+  void start(Search search) {
+    state = search;
+  }
+
+  void startAddSearch() => asBuilder()
+    ..fetchNewEntry()
+    ..fetchAddPage()
+    ..open();
+
+  void startGlobalSearch() => asBuilder()
+    ..fetchNewEntry()
+    ..fetchEntry()
+    ..fetchPage()
+    ..fetchAddPage()
+    ..open();
+
+  void toggleFetcher(SearchFetcher fetcher) {
+    final fetchers = state?.fetchers;
+    if (fetchers == null) return;
+    final newFetchers = fetchers.map((f) {
+      if (f.runtimeType == fetcher.runtimeType) {
+        return f.copyWith(disabled: !f.disabled);
+      }
+      return f;
+    }).toList();
+    state = state!.copyWith(fetchers: newFetchers);
+  }
+
+  void updateQuery(String query) {
+    _debouncer.run(query);
+  }
+
+  void _updateQuery(String query) {
+    state = state!.copyWith(query: query);
+  }
+}
+
+class VerticalClipper extends CustomClipper<Path> {
+  const VerticalClipper({this.additionalWidth = 0});
+  final double additionalWidth;
+
+  @override
+  Path getClip(Size size) {
+    return Path()
+      ..moveTo(-additionalWidth, 0)
+      ..lineTo(size.width + additionalWidth, 0)
+      ..lineTo(size.width + additionalWidth, size.height)
+      ..lineTo(-additionalWidth, size.height)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    if (oldClipper is VerticalClipper) {
+      return oldClipper.additionalWidth != additionalWidth;
+    }
+    return true;
   }
 }
 
@@ -444,262 +474,6 @@ class _Modal extends HookConsumerWidget {
   }
 }
 
-class _SearchFilters extends HookConsumerWidget {
-  const _SearchFilters();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final fetchers = ref.watch(searchFetchersProvider);
-    final filters = ref.watch(searchFiltersProvider);
-
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 16,
-          backgroundColor: Theme.of(context).cardColor,
-          child: FaIcon(
-            FontAwesomeIcons.filter,
-            color: Theme.of(context).iconTheme.color,
-            size: 16,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              for (final fetcher in fetchers)
-                Material(
-                  color: fetcher.disabled
-                      ? Theme.of(context).cardColor
-                      : fetcher.color,
-                  borderRadius: BorderRadius.circular(30),
-                  child: InkWell(
-                    onTap: () => ref
-                        .read(searchProvider.notifier)
-                        .toggleFetcher(fetcher),
-                    borderRadius: BorderRadius.circular(30),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 5,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          FaIcon(
-                            fetcher.icon,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            fetcher.title,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              for (final filter in filters)
-                Material(
-                  color: filter.color,
-                  borderRadius: BorderRadius.circular(30),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        FaIcon(
-                          filter.icon,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          filter.title,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        if (filter.canRemove) ...[
-                          const SizedBox(width: 12),
-                          IconButton(
-                            iconSize: 12,
-                            splashRadius: 12,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(
-                              maxHeight: 24,
-                              maxWidth: 24,
-                            ),
-                            onPressed: () => ref
-                                .read(searchProvider.notifier)
-                                .removeFilter(filter),
-                            icon: const FaIcon(
-                              FontAwesomeIcons.xmark,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SearchBar extends HookConsumerWidget {
-  const _SearchBar();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final search = ref.watch(searchProvider);
-    final controller = useTextEditingController(text: search?.query ?? "");
-    final focusNode = useFocusNode();
-
-    useEffect(
-      () {
-        focusNode.requestFocus();
-
-        void listener() {
-          ref.invalidate(_focusedElementProvider);
-        }
-
-        focusNode.addListener(listener);
-        return () => focusNode.removeListener(listener);
-      },
-      [focusNode],
-    );
-
-    return Material(
-      elevation: 3.0,
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 12),
-          FaIcon(
-            FontAwesomeIcons.magnifyingGlass,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          Expanded(
-            child: DecoratedTextField(
-              controller: controller,
-              focus: focusNode,
-              autofocus: true,
-              decoration: const InputDecoration(
-                hintText: "Enter search query...",
-                border: InputBorder.none,
-                filled: false,
-              ),
-              onChanged: (query) =>
-                  ref.read(searchProvider.notifier).updateQuery(query),
-              onSubmitted: (query) =>
-                  ref.read(searchProvider.notifier).endSearch(),
-            ),
-          ),
-          IconButton(
-            icon: const FaIcon(FontAwesomeIcons.xmark),
-            onPressed: () => ref.read(searchProvider.notifier).endSearch(),
-          ),
-          const SizedBox(width: 4),
-        ],
-      ),
-    );
-  }
-}
-
-class _SearchResults extends HookConsumerWidget {
-  const _SearchResults();
-
-  Future<void> _activateItem(
-    List<SearchElement> actions,
-    int index,
-    BuildContext context,
-    PassingRef ref,
-  ) async {
-    if (index >= actions.length) return;
-    if (index < 0) return;
-    final canEnd = await actions[index].activate(context, ref);
-    if (canEnd) ref.read(searchProvider.notifier).endSearch();
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final elements = ref.watch(searchElementsProvider);
-    final focusNodes = ref.watch(searchFocusNodesProvider);
-    final globalKeys = ref.watch(searchGlobalKeysProvider);
-
-    return Flexible(
-      child: ClipPath(
-        clipper: const VerticalClipper(additionalWidth: 100),
-        child: SingleChildScrollView(
-          clipBehavior: Clip.none,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < elements.length; i++)
-                _ResultTile(
-                  key: globalKeys[i],
-                  onPressed: () =>
-                      _activateItem(elements, i, context, ref.passing),
-                  focusNode: focusNodes[i],
-                  title: elements[i].title,
-                  color: elements[i].color(context),
-                  description: elements[i].description(context),
-                  icon: elements[i].icon(context),
-                  suffixIcon: elements[i].suffixIcon(context),
-                  actions: elements[i].actions(ref.passing),
-                ),
-            ]
-                .animate(interval: 50.ms)
-                .scaleXY(
-                  begin: 0.9,
-                  curve: Curves.elasticOut,
-                  duration: 1.seconds,
-                )
-                .fadeIn(duration: 500.ms),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class VerticalClipper extends CustomClipper<Path> {
-  const VerticalClipper({this.additionalWidth = 0});
-
-  final double additionalWidth;
-
-  @override
-  Path getClip(Size size) {
-    return Path()
-      ..moveTo(-additionalWidth, 0)
-      ..lineTo(size.width + additionalWidth, 0)
-      ..lineTo(size.width + additionalWidth, size.height)
-      ..lineTo(-additionalWidth, size.height)
-      ..close();
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    if (oldClipper is VerticalClipper) {
-      return oldClipper.additionalWidth != additionalWidth;
-    }
-    return true;
-  }
-}
-
 class _ResultTile extends HookConsumerWidget {
   const _ResultTile({
     required this.focusNode,
@@ -714,25 +488,13 @@ class _ResultTile extends HookConsumerWidget {
   });
   final FocusNode focusNode;
   final VoidCallback onPressed;
-
   final Color color;
+
   final Widget icon;
   final Widget suffixIcon;
   final String title;
   final String description;
   final List<SearchAction> actions;
-
-  Future<void> _invokeAction(
-    BuildContext context,
-    PassingRef ref,
-    ActivateActionIntent intent,
-  ) async {
-    final action = actions
-        .firstWhereOrNull((action) => action.shortcut == intent.shortcut);
-    if (action == null) return;
-    final canEnd = await action.onTrigger?.call(context, ref) ?? false;
-    if (canEnd) ref.read(searchProvider.notifier).endSearch();
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -880,13 +642,18 @@ class _ResultTile extends HookConsumerWidget {
       ),
     );
   }
-}
 
-@riverpod
-List<SearchAction> _searchActions(_SearchActionsRef ref) {
-  final focusedElement = ref.watch(_focusedElementProvider);
-
-  return focusedElement?.actions(ref.passing) ?? [];
+  Future<void> _invokeAction(
+    BuildContext context,
+    PassingRef ref,
+    ActivateActionIntent intent,
+  ) async {
+    final action = actions
+        .firstWhereOrNull((action) => action.shortcut == intent.shortcut);
+    if (action == null) return;
+    final canEnd = await action.onTrigger?.call(context, ref) ?? false;
+    if (canEnd) ref.read(searchProvider.notifier).endSearch();
+  }
 }
 
 class _SearchActions extends HookConsumerWidget {
@@ -937,18 +704,72 @@ class _SearchActions extends HookConsumerWidget {
   }
 }
 
+class _SearchBar extends HookConsumerWidget {
+  const _SearchBar();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final search = ref.watch(searchProvider);
+    final controller = useTextEditingController(text: search?.query ?? "");
+    final focusNode = useFocusNode();
+
+    useEffect(
+      () {
+        focusNode.requestFocus();
+
+        void listener() {
+          ref.invalidate(_focusedElementProvider);
+        }
+
+        focusNode.addListener(listener);
+        return () => focusNode.removeListener(listener);
+      },
+      [focusNode],
+    );
+
+    return Material(
+      elevation: 3.0,
+      color: Theme.of(context).cardColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        children: [
+          const SizedBox(width: 12),
+          Iconify(
+            TWIcons.magnifyingGlass,
+            color: Theme.of(context).iconTheme.color,
+          ),
+          Expanded(
+            child: DecoratedTextField(
+              controller: controller,
+              focus: focusNode,
+              autofocus: true,
+              decoration: const InputDecoration(
+                hintText: "Enter search query...",
+                border: InputBorder.none,
+                filled: false,
+              ),
+              onChanged: (query) =>
+                  ref.read(searchProvider.notifier).updateQuery(query),
+              onSubmitted: (query) =>
+                  ref.read(searchProvider.notifier).endSearch(),
+            ),
+          ),
+          IconButton(
+            icon: const Iconify(TWIcons.x),
+            onPressed: () => ref.read(searchProvider.notifier).endSearch(),
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
+    );
+  }
+}
+
 class _SearchBarAction extends HookConsumerWidget {
   const _SearchBarAction({required this.action});
-
   final SearchAction action;
-
-  Future<void> _invokeAction(
-    BuildContext context,
-    PassingRef ref,
-  ) async {
-    final canEnd = await action.onTrigger?.call(context, ref) ?? false;
-    if (canEnd) ref.read(searchProvider.notifier).endSearch();
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -973,7 +794,7 @@ class _SearchBarAction extends HookConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              FaIcon(
+              Iconify(
                 action.icon,
                 color: borderColor,
                 size: 12,
@@ -987,5 +808,182 @@ class _SearchBarAction extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _invokeAction(
+    BuildContext context,
+    PassingRef ref,
+  ) async {
+    final canEnd = await action.onTrigger?.call(context, ref) ?? false;
+    if (canEnd) ref.read(searchProvider.notifier).endSearch();
+  }
+}
+
+class _SearchFilters extends HookConsumerWidget {
+  const _SearchFilters();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fetchers = ref.watch(searchFetchersProvider);
+    final filters = ref.watch(searchFiltersProvider);
+
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 16,
+          backgroundColor: Theme.of(context).cardColor,
+          child: Iconify(
+            TWIcons.filter,
+            color: Theme.of(context).iconTheme.color,
+            size: 16,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              for (final fetcher in fetchers)
+                Material(
+                  color: fetcher.disabled
+                      ? Theme.of(context).cardColor
+                      : fetcher.color,
+                  borderRadius: BorderRadius.circular(30),
+                  child: InkWell(
+                    onTap: () => ref
+                        .read(searchProvider.notifier)
+                        .toggleFetcher(fetcher),
+                    borderRadius: BorderRadius.circular(30),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 5,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Iconify(
+                            fetcher.icon,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            fetcher.title,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              for (final filter in filters)
+                Material(
+                  color: filter.color,
+                  borderRadius: BorderRadius.circular(30),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Iconify(
+                          filter.icon,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          filter.title,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        if (filter.canRemove) ...[
+                          const SizedBox(width: 12),
+                          IconButton(
+                            iconSize: 12,
+                            splashRadius: 12,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(
+                              maxHeight: 24,
+                              maxWidth: 24,
+                            ),
+                            onPressed: () => ref
+                                .read(searchProvider.notifier)
+                                .removeFilter(filter),
+                            icon: const Iconify(
+                              TWIcons.x,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SearchResults extends HookConsumerWidget {
+  const _SearchResults();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final elements = ref.watch(searchElementsProvider);
+    final focusNodes = ref.watch(searchFocusNodesProvider);
+    final globalKeys = ref.watch(searchGlobalKeysProvider);
+
+    return Flexible(
+      child: ClipPath(
+        clipper: const VerticalClipper(additionalWidth: 100),
+        child: SingleChildScrollView(
+          clipBehavior: Clip.none,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < elements.length; i++)
+                _ResultTile(
+                  key: globalKeys[i],
+                  onPressed: () =>
+                      _activateItem(elements, i, context, ref.passing),
+                  focusNode: focusNodes[i],
+                  title: elements[i].title,
+                  color: elements[i].color(context),
+                  description: elements[i].description(context),
+                  icon: elements[i].icon(context),
+                  suffixIcon: elements[i].suffixIcon(context),
+                  actions: elements[i].actions(ref.passing),
+                ),
+            ]
+                .animate(interval: 50.ms)
+                .scaleXY(
+                  begin: 0.9,
+                  curve: Curves.elasticOut,
+                  duration: 1.seconds,
+                )
+                .fadeIn(duration: 500.ms),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _activateItem(
+    List<SearchElement> actions,
+    int index,
+    BuildContext context,
+    PassingRef ref,
+  ) async {
+    if (index >= actions.length) return;
+    if (index < 0) return;
+    final canEnd = await actions[index].activate(context, ref);
+    if (canEnd) ref.read(searchProvider.notifier).endSearch();
   }
 }

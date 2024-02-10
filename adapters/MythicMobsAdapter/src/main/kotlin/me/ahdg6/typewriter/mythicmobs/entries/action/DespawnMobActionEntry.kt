@@ -9,12 +9,11 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 
 
-@Entry("despawn_mythicmobs_mob", "Despawn a mob from MythicMobs", Colors.ORANGE, Icons.TRASH)
+@Entry("despawn_mythicmobs_mob", "Despawn a mob from MythicMobs", Colors.ORANGE, "fluent:crown-subtract-24-filled")
 /**
  * The `Despawn Mob Action` action removes MythicMobs mobs from the world.
  *

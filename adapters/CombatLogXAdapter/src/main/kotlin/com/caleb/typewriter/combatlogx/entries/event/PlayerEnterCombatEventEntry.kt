@@ -6,10 +6,9 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("on_player_enter_combat", "When a player enters combat", Colors.YELLOW, Icons.HEART_CRACK)
+@Entry("on_player_enter_combat", "When a player enters combat", Colors.YELLOW, "fa6-solid:heart-crack")
 /**
  * The `Player Enter Combat Event` is triggered when a player enters combat with another player.
  *

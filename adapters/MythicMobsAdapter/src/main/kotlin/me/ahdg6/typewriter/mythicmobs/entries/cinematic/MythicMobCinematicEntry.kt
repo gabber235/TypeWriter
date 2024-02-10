@@ -16,12 +16,11 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("mythicmob_cinematic", "Spawn a MythicMob during a cinematic", Colors.PURPLE, Icons.DRAGON)
+@Entry("mythicmob_cinematic", "Spawn a MythicMob during a cinematic", Colors.PURPLE, "fa6-solid:dragon")
 /**
  * The `Spawn MythicMob Cinematic` cinematic entry spawns a MythicMob during a cinematic.
  *
@@ -33,7 +32,7 @@ class MythicMobCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(Colors.PURPLE, Icons.DRAGON)
+    @Segments(Colors.PURPLE, "fa6-solid:dragon")
     val segments: List<MythicMobSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

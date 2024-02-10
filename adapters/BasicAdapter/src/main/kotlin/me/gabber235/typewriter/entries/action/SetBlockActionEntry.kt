@@ -8,13 +8,12 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-@Entry("set_block", "Set a block at a location", Colors.RED, Icons.CUBE)
+@Entry("set_block", "Set a block at a location", Colors.RED, "fluent:cube-add-20-filled")
 /**
  * The `SetBlockActionEntry` is an action that sets a block at a specific location.
  *

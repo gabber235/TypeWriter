@@ -9,11 +9,10 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.block.Biome
 import org.bukkit.entity.Player
 
-@Entry("island_set_biome", "Set a player's island's biome", Colors.RED, Icons.EARTH_AMERICAS)
+@Entry("island_set_biome", "Set a player's island's biome", Colors.RED, "fa6-solid:map")
 /**
  * The `Island Set Biome` action is used to set a player's island's biome.
  *

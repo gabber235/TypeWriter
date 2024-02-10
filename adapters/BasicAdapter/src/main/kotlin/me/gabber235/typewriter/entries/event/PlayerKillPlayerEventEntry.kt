@@ -5,11 +5,10 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDeathEvent
 
-@Entry("on_player_kill_player", "When a player kills a player", Colors.YELLOW, Icons.SKULL)
+@Entry("on_player_kill_player", "When a player kills a player", Colors.YELLOW, "fa6-solid:skull")
 /**
  * The `Player Kill Player Event` is triggered when a player kills another player. If you want to detect when a player kills some thing else, use the [`Player Kill Entity Event`](on_player_kill_entity) instead.
  *

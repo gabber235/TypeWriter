@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
@@ -27,7 +27,7 @@ class StringEditor extends HookConsumerWidget {
     required this.path,
     required this.field,
     this.forcedValue,
-    this.icon = FontAwesomeIcons.pencil,
+    this.icon = TWIcons.pencil,
     this.hint = "",
     this.onChanged,
     super.key,
@@ -37,7 +37,7 @@ class StringEditor extends HookConsumerWidget {
   final PrimitiveField field;
   final String? forcedValue;
 
-  final IconData icon;
+  final String icon;
   final String hint;
   final Function(String)? onChanged;
 

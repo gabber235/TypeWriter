@@ -7,9 +7,8 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("on_exit_region", "When a player exits a WorldGuard region", Colors.YELLOW, Icons.SQUARE_XMARK)
+@Entry("on_exit_region", "When a player exits a WorldGuard region", Colors.YELLOW, "fa6-solid:door-closed")
 /**
  * The `Exit Region Event` is triggered when a player leaves a region.
  *

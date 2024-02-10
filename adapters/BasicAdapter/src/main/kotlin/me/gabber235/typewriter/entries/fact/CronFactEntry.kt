@@ -11,10 +11,9 @@ import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.facts.FactId
 import me.gabber235.typewriter.utils.CronExpression
-import me.gabber235.typewriter.utils.Icons
 import java.time.LocalDateTime
 
-@Entry("cron_fact", "Saved until a specified date, like (0 0 * * 1)", Colors.PURPLE, Icons.CALENDAR_DAYS)
+@Entry("cron_fact", "Saved until a specified date, like (0 0 * * 1)", Colors.PURPLE, "mingcute:calendar-time-add-fill")
 /**
  * A [fact](/docs/facts) that is saved until a specified date, like (0 0 \* \* 1).
  *

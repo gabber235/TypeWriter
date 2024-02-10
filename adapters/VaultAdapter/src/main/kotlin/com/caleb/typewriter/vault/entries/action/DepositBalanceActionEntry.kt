@@ -9,11 +9,10 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.entity.Player
 
-@Entry("deposit_balance", "Deposit Balance", Colors.RED, Icons.MONEY_BILL)
+@Entry("deposit_balance", "Deposit Balance", Colors.RED, "majesticons:money-plus")
 /**
  * The `Deposit Balance Action` is used to deposit money into a user's balance.
  *

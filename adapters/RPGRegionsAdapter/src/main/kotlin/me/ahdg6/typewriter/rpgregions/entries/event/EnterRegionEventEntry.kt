@@ -6,11 +6,10 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import net.islandearth.rpgregions.api.events.RegionsEnterEvent
 
 
-@Entry("on_enter_rpg_region", "When a player enters a RPGRegions region", Colors.YELLOW, Icons.DOOR_OPEN)
+@Entry("on_enter_rpg_region", "When a player enters a RPGRegions region", Colors.YELLOW, "fa6-solid:door-open")
 /**
  * The `Enter Region Event` is triggered when a player enters a region.
  *

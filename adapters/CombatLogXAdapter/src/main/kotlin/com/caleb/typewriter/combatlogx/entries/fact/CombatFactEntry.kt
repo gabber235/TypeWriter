@@ -8,10 +8,9 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("combat_fact", "If the player is in combat", Colors.PURPLE, Icons.SHIELD_HALVED)
+@Entry("combat_fact", "If the player is in combat", Colors.PURPLE, "fa6-solid:shield-halved")
 /**
  * A [fact](/docs/facts) that tells whether a player is in combat.
  *

@@ -6,9 +6,8 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.PersistableFactEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("permanent_fact", "Saved permanently, it never gets removed", Colors.PURPLE, Icons.DATABASE)
+@Entry("permanent_fact", "Saved permanently, it never gets removed", Colors.PURPLE, "fa6-solid:database")
 /**
  * This [fact](/docs/facts) is permanent and never expires.
  *

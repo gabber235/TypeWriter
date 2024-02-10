@@ -4,10 +4,9 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.GroupId
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("global_group", "One group with all the online players", Colors.MYRTLE_GREEN, Icons.GLOBE)
+@Entry("global_group", "One group with all the online players", Colors.MYRTLE_GREEN, "fa6-solid:globe")
 /**
  * The `Global Group` is a group that includes all the online players.
  *

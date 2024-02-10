@@ -9,14 +9,13 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
 @Entry(
     "mythic_mob_count_fact",
     "Count the number of active Mythic Mobs of the specified type",
     Colors.PURPLE,
-    Icons.PLACE_OF_WORSHIP
+    "mingcute:counter-fill"
 )
 /**
  * A [fact](/docs/facts) that represents how many specific MythicMobs mob are in the world.

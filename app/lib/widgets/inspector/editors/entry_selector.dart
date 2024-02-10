@@ -1,15 +1,16 @@
 import "package:flutter/material.dart" hide Page;
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -90,7 +91,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                 if (hasEntry) ...[
                   ContextMenuTile.button(
                     title: "Navigate to entry",
-                    icon: FontAwesomeIcons.pencil,
+                    icon: TWIcons.pencil,
                     onTap: () {
                       ref
                           .read(inspectingEntryIdProvider.notifier)
@@ -99,7 +100,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                   ),
                   ContextMenuTile.button(
                     title: "Remove reference",
-                    icon: FontAwesomeIcons.solidSquareMinus,
+                    icon: TWIcons.squareMinus,
                     color: Colors.redAccent,
                     onTap: () {
                       ref
@@ -111,7 +112,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                 if (!hasEntry) ...[
                   ContextMenuTile.button(
                     title: "Select entry",
-                    icon: FontAwesomeIcons.magnifyingGlass,
+                    icon: TWIcons.magnifyingGlass,
                     onTap: () {
                       _select(ref.passing, tag);
                     },
@@ -140,8 +141,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
                 child: Row(
                   children: [
                     if (!hasEntry && !isAccepting) ...[
-                      FaIcon(
-                        FontAwesomeIcons.database,
+                      Iconify(
+                        TWIcons.database,
                         size: 16,
                         color: Theme.of(context)
                             .inputDecorationTheme
@@ -170,8 +171,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
                         ),
                       ),
                     const SizedBox(width: 12),
-                    FaIcon(
-                      FontAwesomeIcons.caretDown,
+                    Iconify(
+                      TWIcons.caretDown,
                       size: 16,
                       color: Theme.of(context)
                           .inputDecorationTheme
@@ -196,8 +197,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
         padding: const EdgeInsets.all(15),
         child: Row(
           children: [
-            FaIcon(
-              FontAwesomeIcons.xmark,
+            Iconify(
+              TWIcons.x,
               size: 16,
               color: Theme.of(context).colorScheme.error,
             ),

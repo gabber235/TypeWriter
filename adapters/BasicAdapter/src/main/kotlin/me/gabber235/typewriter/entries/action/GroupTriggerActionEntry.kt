@@ -7,7 +7,6 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
 import me.gabber235.typewriter.entry.entries.GroupEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -15,7 +14,7 @@ import java.util.*
     "group_trigger_action",
     "Trigger the next entries for everyone in the same group as the player",
     Colors.RED,
-    Icons.GLOBE
+    "fluent:globe-arrow-forward-16-filled"
 )
 /**
  * The `Group Trigger Action` is an action that triggers the next entries for everyone in the same group as the player.

@@ -7,10 +7,14 @@ import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
-import me.gabber235.typewriter.utils.Icons
 import java.time.Duration
 
-@Entry("random_spoken", "Display a random selected animated message to the player", "#1E88E5", Icons.MESSAGE)
+@Entry(
+    "random_spoken",
+    "Display a random selected animated message to the player",
+    "#1E88E5",
+    "mingcute:message-4-fill"
+)
 /**
  * The `Random Spoken Dialogue` action displays a randomly selected animated message to the player.
  *

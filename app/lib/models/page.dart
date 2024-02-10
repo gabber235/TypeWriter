@@ -1,6 +1,5 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
@@ -8,6 +7,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/entries_graph.dart";
@@ -94,15 +94,15 @@ bool entryExists(EntryExistsRef ref, String entryId) {
 }
 
 enum PageType {
-  sequence("trigger", FontAwesomeIcons.diagramProject, Colors.blue),
-  static("static", FontAwesomeIcons.bars, Colors.deepPurple),
-  cinematic("cinematic", FontAwesomeIcons.film, Colors.orange),
+  sequence("trigger", TWIcons.projectDiagram, Colors.blue),
+  static("static", TWIcons.pin, Colors.deepPurple),
+  cinematic("cinematic", TWIcons.film, Colors.orange),
   ;
 
   const PageType(this.tag, this.icon, this.color);
 
   final String tag;
-  final IconData icon;
+  final String icon;
   final Color color;
 
   static PageType fromBlueprint(EntryBlueprint blueprint) {

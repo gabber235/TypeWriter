@@ -9,12 +9,11 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("teleport", "Teleport a player", Colors.RED, Icons.STREET_VIEW)
+@Entry("teleport", "Teleport a player", Colors.RED, "teenyicons:google-streetview-solid")
 /**
  * The `Teleport Action` entry is used to teleport a player to a location.
  *

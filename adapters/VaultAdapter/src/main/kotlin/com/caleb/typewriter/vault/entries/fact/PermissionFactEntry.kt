@@ -9,11 +9,10 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
-import me.gabber235.typewriter.utils.Icons
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.entity.Player
 
-@Entry("permission_fact", "If the player has a permission", Colors.PURPLE, Icons.USER_SHIELD)
+@Entry("permission_fact", "If the player has a permission", Colors.PURPLE, "fa6-solid:user-shield")
 /**
  * A [fact](/docs/facts) that checks if the player has a certain permission.
  *

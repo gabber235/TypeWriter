@@ -6,12 +6,11 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 
-@Entry("particle_cinematic", "Spawn particles for a cinematic", Colors.CYAN, Icons.FIRE_FLAME_SIMPLE)
+@Entry("particle_cinematic", "Spawn particles for a cinematic", Colors.CYAN, "fa6-solid:fire-flame-simple")
 /**
  * The `Particle Cinematic` entry is used to spawn particles for a cinematic.
  *
@@ -42,7 +41,7 @@ class ParticleCinematicEntry(
     val speed: Double = 0.0,
     @Help("The amount of particles to spawn per tick.")
     val spawnCountPerTick: Int = 0,
-    @Segments(icon = Icons.FIRE_FLAME_SIMPLE)
+    @Segments(icon = "fa6-solid:fire-flame-simple")
     val segments: List<ParticleSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

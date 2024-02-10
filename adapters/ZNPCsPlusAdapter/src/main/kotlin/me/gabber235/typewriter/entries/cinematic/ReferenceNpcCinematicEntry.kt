@@ -11,14 +11,13 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.NpcCinematicAction
 import me.gabber235.typewriter.entry.entries.NpcCinematicEntry
 import me.gabber235.typewriter.entry.entries.NpcRecordedSegment
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
 @Entry(
     "znpc_reference_npc_cinematic",
     "A reference to an existing npc specifically for cinematic",
     Colors.PINK,
-    Icons.USER_TIE
+    "fa-solid:user-tie"
 )
 /**
  * The `Reference NPC Cinematic` entry that plays a recorded animation back on a reference NPC.

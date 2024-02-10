@@ -7,10 +7,9 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.GroupId
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("region_group", "All players grouped by WorldGuard regions", Colors.MYRTLE_GREEN, Icons.OBJECT_GROUP)
+@Entry("region_group", "All players grouped by WorldGuard regions", Colors.MYRTLE_GREEN, "fa6-solid:object-group")
 /**
  * The `WorldGuardRegionGroup` is a group that includes all the players in a specific WorldGuard region.
  * Only the given region will be considered for the group.

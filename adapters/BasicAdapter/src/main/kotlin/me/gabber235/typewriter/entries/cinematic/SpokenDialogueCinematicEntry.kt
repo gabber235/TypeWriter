@@ -15,14 +15,13 @@ import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMiniWithResolvers
 import me.gabber235.typewriter.utils.asPartialFormattedMini
 import me.gabber235.typewriter.utils.isFloodgate
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
-@Entry("spoken_dialogue_cinematic", "Play a spoken dialogue cinematic", Colors.CYAN, Icons.MESSAGE)
+@Entry("spoken_dialogue_cinematic", "Play a spoken dialogue cinematic", Colors.CYAN, "mingcute:message-4-fill")
 /**
  * The `Spoken Dialogue Cinematic` is a cinematic that displays an animated message in chat.
  *
@@ -36,7 +35,7 @@ class SpokenDialogueCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
-    @Segments(icon = Icons.MESSAGE)
+    @Segments(icon = "mingcute:message-4-fill")
     val segments: List<DisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
@@ -55,14 +54,19 @@ class SpokenDialogueCinematicEntry(
     }
 }
 
-@Entry("random_spoken_dialogue_cinematic", "Play a random spoken dialogue cinematic", Colors.CYAN, Icons.MESSAGE)
+@Entry(
+    "random_spoken_dialogue_cinematic",
+    "Play a random spoken dialogue cinematic",
+    Colors.CYAN,
+    "mingcute:message-4-fill"
+)
 data class RandomSpokenDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
-    @Segments(icon = Icons.MESSAGE)
+    @Segments(icon = "mingcute:message-4-fill")
     val segments: List<RandomDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

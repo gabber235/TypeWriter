@@ -5,10 +5,9 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("on_player_exit_combat", "When a player is no longer in combat", Colors.YELLOW, Icons.HEART_CIRCLE_PLUS)
+@Entry("on_player_exit_combat", "When a player is no longer in combat", Colors.YELLOW, "fa6-solid:heart-circle-plus")
 /**
  * The `Player Exit Combat Event` is fired when a player exits combat.
  *

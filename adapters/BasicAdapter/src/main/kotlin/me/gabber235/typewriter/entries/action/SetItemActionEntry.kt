@@ -8,11 +8,10 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import org.bukkit.entity.Player
 
-@Entry("set_item", "Set an item in a specific slot", Colors.RED, Icons.WAND_SPARKLES)
+@Entry("set_item", "Set an item in a specific slot", Colors.RED, "fluent:tray-item-add-24-filled")
 /**
  * The `Set Item Action` is an action that sets an item in a specific slot in the player's inventory.
  *

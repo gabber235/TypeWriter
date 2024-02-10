@@ -11,7 +11,6 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 import kotlin.math.roundToInt
 
@@ -35,7 +34,7 @@ enum class IslandFacts(private val retrieveFact: (SuperiorPlayer, Island) -> Int
     }
 }
 
-@Entry("island_fact", "Various facts about a player's island", Colors.PURPLE, Icons.MAP_LOCATION_DOT)
+@Entry("island_fact", "Various facts about a player's island", Colors.PURPLE, "fa6-solid:map-location-dot")
 /**
  * A [fact](/docs/facts) that can retrieve various information about an island.
  *

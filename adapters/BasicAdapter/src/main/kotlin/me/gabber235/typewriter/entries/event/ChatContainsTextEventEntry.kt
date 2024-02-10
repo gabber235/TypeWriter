@@ -7,7 +7,6 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Regex
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.plainText
 import kotlin.text.Regex as KotlinRegex
 
@@ -15,7 +14,7 @@ import kotlin.text.Regex as KotlinRegex
     "on_message_contains_text",
     "When the player sends a chat message containing certain text",
     Colors.YELLOW,
-    Icons.NOTE_STICKY
+    "fluent:note-48-filled"
 )
 /**
  * The `Chat Contains Text Event` is called when a player sends a chat message containing certain text.

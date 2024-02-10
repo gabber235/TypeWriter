@@ -20,35 +20,35 @@ mixin _$Toast {
   String get message => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   Color get color => throw _privateConstructorUsedError;
-  IconData get icon => throw _privateConstructorUsedError;
+  String get icon => throw _privateConstructorUsedError;
   DateTime? get shownAt => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)
+            Color color, String icon, DateTime? shownAt)
         $default, {
     required TResult Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)
+            Color color, String icon, Duration duration, DateTime? shownAt)
         temporary,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)?
+            Color color, String icon, DateTime? shownAt)?
         $default, {
     TResult? Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)?
+            Color color, String icon, Duration duration, DateTime? shownAt)?
         temporary,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)?
+            Color color, String icon, DateTime? shownAt)?
         $default, {
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)?
+            Color color, String icon, Duration duration, DateTime? shownAt)?
         temporary,
     required TResult orElse(),
   }) =>
@@ -87,7 +87,7 @@ abstract class $ToastCopyWith<$Res> {
       String message,
       String? description,
       Color color,
-      IconData icon,
+      String icon,
       DateTime? shownAt});
 }
 
@@ -131,7 +131,7 @@ class _$ToastCopyWithImpl<$Res, $Val extends Toast>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
       shownAt: freezed == shownAt
           ? _value.shownAt
           : shownAt // ignore: cast_nullable_to_non_nullable
@@ -152,7 +152,7 @@ abstract class _$$ToastImplCopyWith<$Res> implements $ToastCopyWith<$Res> {
       String message,
       String? description,
       Color color,
-      IconData icon,
+      String icon,
       DateTime? shownAt});
 }
 
@@ -194,7 +194,7 @@ class __$$ToastImplCopyWithImpl<$Res>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
       shownAt: freezed == shownAt
           ? _value.shownAt
           : shownAt // ignore: cast_nullable_to_non_nullable
@@ -211,7 +211,7 @@ class _$ToastImpl implements _Toast {
       required this.message,
       this.description,
       this.color = Colors.blue,
-      this.icon = FontAwesomeIcons.exclamation,
+      this.icon = TWIcons.exclamation,
       this.shownAt});
 
   @override
@@ -225,7 +225,7 @@ class _$ToastImpl implements _Toast {
   final Color color;
   @override
   @JsonKey()
-  final IconData icon;
+  final String icon;
   @override
   final DateTime? shownAt;
 
@@ -262,10 +262,10 @@ class _$ToastImpl implements _Toast {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)
+            Color color, String icon, DateTime? shownAt)
         $default, {
     required TResult Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)
+            Color color, String icon, Duration duration, DateTime? shownAt)
         temporary,
   }) {
     return $default(id, message, description, color, icon, shownAt);
@@ -275,10 +275,10 @@ class _$ToastImpl implements _Toast {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)?
+            Color color, String icon, DateTime? shownAt)?
         $default, {
     TResult? Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)?
+            Color color, String icon, Duration duration, DateTime? shownAt)?
         temporary,
   }) {
     return $default?.call(id, message, description, color, icon, shownAt);
@@ -288,10 +288,10 @@ class _$ToastImpl implements _Toast {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)?
+            Color color, String icon, DateTime? shownAt)?
         $default, {
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)?
+            Color color, String icon, Duration duration, DateTime? shownAt)?
         temporary,
     required TResult orElse(),
   }) {
@@ -339,7 +339,7 @@ abstract class _Toast implements Toast {
       required final String message,
       final String? description,
       final Color color,
-      final IconData icon,
+      final String icon,
       final DateTime? shownAt}) = _$ToastImpl;
 
   @override
@@ -351,7 +351,7 @@ abstract class _Toast implements Toast {
   @override
   Color get color;
   @override
-  IconData get icon;
+  String get icon;
   @override
   DateTime? get shownAt;
   @override
@@ -373,7 +373,7 @@ abstract class _$$TemporaryToastImplCopyWith<$Res>
       String message,
       String? description,
       Color color,
-      IconData icon,
+      String icon,
       Duration duration,
       DateTime? shownAt});
 }
@@ -417,7 +417,7 @@ class __$$TemporaryToastImplCopyWithImpl<$Res>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
       duration: null == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
@@ -438,7 +438,7 @@ class _$TemporaryToastImpl implements TemporaryToast {
       required this.message,
       this.description,
       this.color = Colors.blue,
-      this.icon = FontAwesomeIcons.exclamation,
+      this.icon = TWIcons.exclamation,
       this.duration = const Duration(seconds: 10),
       this.shownAt});
 
@@ -453,7 +453,7 @@ class _$TemporaryToastImpl implements TemporaryToast {
   final Color color;
   @override
   @JsonKey()
-  final IconData icon;
+  final String icon;
   @override
   @JsonKey()
   final Duration duration;
@@ -496,10 +496,10 @@ class _$TemporaryToastImpl implements TemporaryToast {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)
+            Color color, String icon, DateTime? shownAt)
         $default, {
     required TResult Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)
+            Color color, String icon, Duration duration, DateTime? shownAt)
         temporary,
   }) {
     return temporary(id, message, description, color, icon, duration, shownAt);
@@ -509,10 +509,10 @@ class _$TemporaryToastImpl implements TemporaryToast {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)?
+            Color color, String icon, DateTime? shownAt)?
         $default, {
     TResult? Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)?
+            Color color, String icon, Duration duration, DateTime? shownAt)?
         temporary,
   }) {
     return temporary?.call(
@@ -523,10 +523,10 @@ class _$TemporaryToastImpl implements TemporaryToast {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, DateTime? shownAt)?
+            Color color, String icon, DateTime? shownAt)?
         $default, {
     TResult Function(String id, String message, String? description,
-            Color color, IconData icon, Duration duration, DateTime? shownAt)?
+            Color color, String icon, Duration duration, DateTime? shownAt)?
         temporary,
     required TResult orElse(),
   }) {
@@ -575,7 +575,7 @@ abstract class TemporaryToast implements Toast {
       required final String message,
       final String? description,
       final Color color,
-      final IconData icon,
+      final String icon,
       final Duration duration,
       final DateTime? shownAt}) = _$TemporaryToastImpl;
 
@@ -588,7 +588,7 @@ abstract class TemporaryToast implements Toast {
   @override
   Color get color;
   @override
-  IconData get icon;
+  String get icon;
   Duration get duration;
   @override
   DateTime? get shownAt;

@@ -8,13 +8,12 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import java.util.*
 
-@Entry("spawn_particles", "Spawn particles at location", Colors.RED, Icons.FIRE_FLAME_SIMPLE)
+@Entry("spawn_particles", "Spawn particles at location", Colors.RED, "fa6-solid:fire-flame-simple")
 /**
  * The `Spawn Particle Action` is an action that spawns a specific particle at a given location. This action provides you with the ability to spawn particles with a specified type, count, and location.
  *

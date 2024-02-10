@@ -1,9 +1,10 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -34,7 +35,7 @@ class DuplicateListItemAction extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final name = ref.watch(pathDisplayNameProvider(path)).singular;
     return IconButton(
-      icon: const Icon(FontAwesomeIcons.solidClone, size: 12),
+      icon: const Iconify(TWIcons.duplicate, size: 12),
       color: Colors.green,
       tooltip: "Duplicate $name",
       onPressed: () => _duplicate(ref.passing),

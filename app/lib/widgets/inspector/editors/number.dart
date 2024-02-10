@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/writers.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
@@ -43,7 +43,7 @@ class NumberEditor extends HookConsumerWidget {
       shift: (_) => const Offset(15, 0),
       child: FormattedTextField(
         focus: focus,
-        icon: FontAwesomeIcons.hashtag,
+        icon: TWIcons.hashtag,
         hintText: "Enter a ${field.type.name}",
         text: "$value",
         keyboardType: TextInputType.number,

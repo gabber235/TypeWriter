@@ -9,7 +9,6 @@ import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Location
@@ -18,7 +17,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import java.util.*
 
-@Entry("on_block_break", "When the player breaks a block", Colors.YELLOW, Icons.HAND_POINTER)
+@Entry("on_block_break", "When the player breaks a block", Colors.YELLOW, "mingcute:pickax-fill")
 /**
  *The `Block Break Event` is triggered when a player breaks a block.
  *

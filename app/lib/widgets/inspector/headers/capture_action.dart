@@ -1,13 +1,14 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/capture.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/segment.dart";
 import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/cinematic_view.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/header.dart";
@@ -105,8 +106,8 @@ class CaptureHeaderAction extends HookConsumerWidget {
           onTap: () => _requestCapture(ref.passing),
           child: const Padding(
             padding: EdgeInsets.all(6),
-            child: FaIcon(
-              FontAwesomeIcons.camera,
+            child: Iconify(
+              TWIcons.camera,
               size: 16,
               color: Colors.white,
             ),

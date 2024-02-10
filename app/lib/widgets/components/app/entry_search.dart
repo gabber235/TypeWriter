@@ -1,7 +1,6 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
@@ -9,10 +8,12 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/page_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "entry_search.g.dart";
@@ -29,7 +30,7 @@ class TagFilter extends SearchFilter {
   @override
   Color get color => Colors.deepOrangeAccent;
   @override
-  IconData get icon => FontAwesomeIcons.hashtag;
+  String get icon => TWIcons.hashtag;
 
   @override
   bool filter(SearchElement action) {
@@ -69,7 +70,7 @@ class ExcludeEntryFilter extends SearchFilter {
   Color get color => Colors.orange;
 
   @override
-  IconData get icon => FontAwesomeIcons.solidFileLines;
+  String get icon => TWIcons.file;
 
   @override
   bool filter(SearchElement action) {
@@ -303,11 +304,11 @@ class EntrySearchElement extends SearchElement {
   Color color(BuildContext context) => blueprint.color;
 
   @override
-  Widget icon(BuildContext context) => Icon(blueprint.icon);
+  Widget icon(BuildContext context) => Iconify(blueprint.icon);
 
   @override
   Widget suffixIcon(BuildContext context) =>
-      const Icon(FontAwesomeIcons.upRightFromSquare);
+      const Iconify(TWIcons.externalLink);
 
   @override
   String description(BuildContext context) => definition.pageId.formatted;
@@ -317,12 +318,12 @@ class EntrySearchElement extends SearchElement {
     return [
       const SearchAction(
         "Open",
-        FontAwesomeIcons.upRightFromSquare,
+        TWIcons.externalLink,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
       SearchAction(
         "Open Wiki",
-        FontAwesomeIcons.book,
+        TWIcons.book,
         SmartSingleActivator(LogicalKeyboardKey.keyO, control: true),
         onTrigger: (_, __) {
           blueprint.openWiki();
@@ -358,10 +359,10 @@ class AddEntrySearchElement extends SearchElement {
   Color color(BuildContext context) => blueprint.color;
 
   @override
-  Widget icon(BuildContext context) => Icon(blueprint.icon);
+  Widget icon(BuildContext context) => Iconify(blueprint.icon);
 
   @override
-  Widget suffixIcon(BuildContext context) => const Icon(FontAwesomeIcons.plus);
+  Widget suffixIcon(BuildContext context) => const Iconify(TWIcons.plus);
 
   @override
   String description(BuildContext context) => blueprint.description;
@@ -371,12 +372,12 @@ class AddEntrySearchElement extends SearchElement {
     return [
       const SearchAction(
         "Add",
-        FontAwesomeIcons.plus,
+        TWIcons.plus,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
       SearchAction(
         "Open Wiki",
-        FontAwesomeIcons.book,
+        TWIcons.book,
         SmartSingleActivator(LogicalKeyboardKey.keyO, control: true),
         onTrigger: (_, __) {
           blueprint.openWiki();

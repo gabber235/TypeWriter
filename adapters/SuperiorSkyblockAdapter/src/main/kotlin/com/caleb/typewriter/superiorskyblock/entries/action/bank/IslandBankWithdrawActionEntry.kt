@@ -9,12 +9,11 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.math.BigDecimal
 
-@Entry("island_bank_withdraw", "Withdraw into a player's Island bank", Colors.RED, Icons.PIGGY_BANK)
+@Entry("island_bank_withdraw", "Withdraw into a player's Island bank", Colors.RED, "fa6-solid:piggy-bank")
 /**
  * The `Island Bank Withdraw` action allows you to withdraw money from the player's Island bank.
  *
