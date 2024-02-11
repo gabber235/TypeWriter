@@ -47,7 +47,12 @@ class FormattedTextField extends HookWidget {
         if (inputFormatters != null) ...inputFormatters!,
       ],
       decoration: InputDecoration(
-        prefixIcon: icon != null ? Iconify(icon, size: 18) : null,
+        prefixIcon: icon != null
+            ? Padding(
+                padding: const EdgeInsets.all(8),
+                child: Iconify(icon, size: 18),
+              )
+            : null,
         hintText: hintText,
         contentPadding: singleLine
             ? null

@@ -997,7 +997,12 @@ class _FrameField extends HookConsumerWidget {
             ],
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              prefixIcon: icon != null ? Iconify(icon, size: 18) : null,
+              prefixIcon: icon != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Iconify(icon, size: 18),
+                    )
+                  : null,
               hintText: hintText,
               errorText: error.value,
             ),
