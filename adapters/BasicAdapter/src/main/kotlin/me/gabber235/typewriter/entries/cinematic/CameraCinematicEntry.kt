@@ -2,7 +2,6 @@ package me.gabber235.typewriter.entries.cinematic
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
-import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
@@ -20,6 +19,7 @@ import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.tofaa.entitylib.EntityLib
+import me.tofaa.entitylib.entity.WrapperEntity
 import me.tofaa.entitylib.meta.display.TextDisplayMeta
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -29,7 +29,6 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffect.INFINITE_DURATION
 import org.bukkit.potion.PotionEffectType.INVISIBILITY
 import java.util.*
-import kotlin.math.min
 
 @Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, "fa6-solid:video")
 /**
@@ -54,10 +53,14 @@ class CameraCinematicEntry(
     val segments: List<CameraSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
-        return CameraCinematicAction(
+        return NewCameraCinematicAction(
             player,
             this,
         )
+//        return CameraCinematicAction(
+//            player,
+//            this,
+//        )
     }
 
     override fun createSimulated(player: Player): CinematicAction {
@@ -88,19 +91,51 @@ data class PathPoint(
     val duration: Optional<Int> = Optional.empty(),
 )
 
-class CameraCinematicAction(
+class NewCameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
 ) : CinematicAction {
-    private var segments = emptyList<CameraSegmentAction>()
+    private var currentSegment: CameraSegment? = null
+    private lateinit var action: CameraAction
 
-    private var currentSegmentAction: CameraSegmentAction? = null
     private var originalState: PlayerState? = null
 
     override suspend fun setup() {
+        action = if (player.isFloodgate) {
+            TeleportCameraAction(player)
+        } else {
+            DisplayCameraAction(player)
+        }
         super.setup()
+    }
 
-        originalState = player.state(
+    override suspend fun tick(frame: Int) {
+        super.tick(frame)
+
+        val segment = (entry.segments activeSegmentAt frame)
+
+        if (segment != currentSegment) {
+            if (currentSegment == null && segment != null) {
+                player.setup()
+                action.startSegment(segment)
+            } else if (segment != null) {
+                action.switchSegment(segment)
+            } else {
+                action.stop()
+                player.teardown()
+            }
+
+            currentSegment = segment
+        }
+
+        if (currentSegment != null) {
+            val baseFrame = frame - (currentSegment?.startFrame ?: 0)
+            action.tickSegment(baseFrame)
+        }
+    }
+
+    private suspend fun Player.setup() {
+        originalState = state(
             LOCATION,
             ALLOW_FLIGHT,
             FLYING,
@@ -110,106 +145,52 @@ class CameraCinematicAction(
         )
 
         SYNC.switchContext {
-            player.allowFlight = true
-            player.isFlying = true
-            player.addPotionEffect(PotionEffect(INVISIBILITY, INFINITE_DURATION, 0, false, false))
-            server.onlinePlayers.forEach {
-                it.hidePlayer(plugin, player)
-                player.hidePlayer(plugin, it)
+            allowFlight = true
+            isFlying = true
+            addPotionEffect(PotionEffect(INVISIBILITY, INFINITE_DURATION, 0, false, false))
+            lirand.api.extensions.server.server.onlinePlayers.forEach {
+                it.hidePlayer(plugin, this)
+                this.hidePlayer(plugin, it)
             }
 
             // In creative mode, when the player opens the inventory while their inventory is fake cleared,
             // The actual inventory will be cleared.
             // To prevent this, we only fake clear the inventory when the player is not in creative mode.
-            if (player.gameMode != GameMode.CREATIVE) {
-                player.fakeClearInventory()
-            }
-
-            // Move the player before to the first location. This will spawn the boats in the correct world.
-            // And gives the client time to load the chunks.
-            val firstLocation = entry.segments.firstOrNull()?.path?.firstOrNull()?.location
-            firstLocation?.let {
-                player.teleport(it)
+            if (gameMode != GameMode.CREATIVE) {
+                fakeClearInventory()
             }
         }
 
+        this blockPacket PacketType.Play.Client.CLICK_WINDOW
+        this blockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
+        this blockPacket PacketType.Play.Client.USE_ITEM
+        this blockPacket PacketType.Play.Client.INTERACT_ENTITY
 
-        segments = entry.segments.mapNotNull { segment ->
-            if (segment.path.isEmpty()) {
-                logger.warning("Camera segment has no path in ${entry.id}, skipping.")
-                return@mapNotNull null
-            }
-            if (player.isFloodgate) {
-                TeleportCameraSegmentAction(player, segment)
-            } else {
-                BlockDisplayCameraSegmentAction(player, segment)
-            }
-        }
-        segments.forEach { it.setup() }
-
-        player blockPacket PacketType.Play.Client.CLICK_WINDOW
-        player blockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
-        player blockPacket PacketType.Play.Client.USE_ITEM
-        player blockPacket PacketType.Play.Client.INTERACT_ENTITY
     }
 
-    override suspend fun tick(frame: Int) {
-        super.tick(frame)
-
-        if (currentSegmentAction?.isActiveAt(frame) == false) {
-            currentSegmentAction?.stop()
-            currentSegmentAction = null
-        }
-
-        if (currentSegmentAction == null) {
-            currentSegmentAction = findSegmentAction(frame)
-            currentSegmentAction?.start()
-        }
-
-        currentSegmentAction?.tick(frame)
-    }
-
-    private fun findSegmentAction(frame: Int): CameraSegmentAction? {
-        return segments.firstOrNull { it isActiveAt frame }
-    }
-
-
-    override suspend fun teardown() {
-        super.teardown()
-
-        currentSegmentAction?.stop()
-        currentSegmentAction = null
-
-        segments.forEach { it.teardown() }
-        segments = emptyList()
-
+    private suspend fun Player.teardown() {
         originalState?.let {
             SYNC.switchContext {
-                player.restore(it)
-                if (player.gameMode != GameMode.CREATIVE) {
-                    player.restoreInventory()
+                restore(it)
+                if (gameMode != GameMode.CREATIVE) {
+                    restoreInventory()
                 }
             }
         }
 
-        player unblockPacket PacketType.Play.Client.CLICK_WINDOW
-        player unblockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
-        player unblockPacket PacketType.Play.Client.USE_ITEM
-        player unblockPacket PacketType.Play.Client.INTERACT_ENTITY
+        this unblockPacket PacketType.Play.Client.CLICK_WINDOW
+        this unblockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
+        this unblockPacket PacketType.Play.Client.USE_ITEM
+        this unblockPacket PacketType.Play.Client.INTERACT_ENTITY
+    }
+
+    override suspend fun teardown() {
+        super.teardown()
+        action.stop()
+        player.teardown()
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
-}
-
-
-private interface CameraSegmentAction {
-    val segment: CameraSegment
-    fun setup()
-    suspend fun start()
-    suspend fun tick(frame: Int)
-    fun stop()
-    fun teardown()
-    infix fun isActiveAt(frame: Int): Boolean = segment isActiveAt frame
 }
 
 // The max distance the entity can be from the player before it gets teleported.
@@ -240,95 +221,111 @@ private data class PointSegment(
     val location: Location,
 ) : Segment
 
+private interface CameraAction {
+    suspend fun startSegment(segment: CameraSegment)
+    suspend fun tickSegment(frame: Int)
+    suspend fun switchSegment(newSegment: CameraSegment)
+    suspend fun stop()
+}
 
-private class BlockDisplayCameraSegmentAction(
-    private val player: Player,
-    override val segment: CameraSegment,
-) : CameraSegmentAction {
-    /**
-     * We need to have the last segment interpolation such that the entity has time at the end to finish the path.
-     * Only since the last segment never moves, since the cinematic ends at the last frame.
-     * We need to get the second last segment interpolation.
-     */
-    private val secondToLastSegmentInterpolation by lazy {
-        if (segment.path.size < 2) return@lazy BASE_INTERPOLATION
-        val point = segment.path[segment.path.size - 2]
-        val duration = point.duration.orElse(BASE_INTERPOLATION)
-        min(duration, BASE_INTERPOLATION)
-    }
-    private val path = segment.path.transform(segment.duration - secondToLastSegmentInterpolation) {
-        it.clone().apply {
-            y += player.eyeHeight
-        }
-    }
-
-    private val entity = EntityLib.createEntity(UUID.randomUUID(), EntityTypes.TEXT_DISPLAY)
+private class DisplayCameraAction(
+    val player: Player,
+) : CameraAction {
+    private var entity = createEntity()
+    private var path = emptyList<PointSegment>()
 
     companion object {
         private const val BASE_INTERPOLATION = 10
     }
 
-    override fun setup() {
+    private fun createEntity(): WrapperEntity {
+        return EntityLib.createEntity(UUID.randomUUID(), EntityTypes.TEXT_DISPLAY).meta<TextDisplayMeta> {
+            positionRotationInterpolationDuration = BASE_INTERPOLATION
+        }
+    }
+
+    private fun setupPath(segment: CameraSegment) {
+        path = segment.path.transform(segment.duration - BASE_INTERPOLATION) {
+            it.clone().apply {
+                y += player.eyeHeight
+            }
+        }
+    }
+
+    override suspend fun startSegment(segment: CameraSegment) {
+        setupPath(segment)
         entity.addViewer(player.uniqueId)
-        entity.spawn(path.first().location.toPacketLocation())
-    }
 
-    override suspend fun start() {
         SYNC.switchContext {
-            // Teleport the player to the first location.
-            // We need to use the unmodified location here.
-            // Otherwise, the player will be shifted when spectating.
-            player.teleport(segment.path.first().location)
-            player.spectateEntity(entity)
+            player.teleport(path.first().location)
         }
+
+        entity.spawn(path.first().location.toPacketLocation())
+        player.spectateEntity(entity)
     }
 
-    override suspend fun tick(frame: Int) {
-        val baseFrame = frame - segment.startFrame
-        val segment = (path activeSegmentAt baseFrame) ?: path.last()
-        val location = path.interpolate(baseFrame)
-
-        // If the segment duration is less than the base interpolation,
-        // we need to lower the interpolation to allow the entity to move quicker.
-        val interpolation = min(segment.duration, BASE_INTERPOLATION)
-
-        entity.meta<TextDisplayMeta> {
-            if (positionRotationInterpolationDuration == interpolation) return@meta
-            positionRotationInterpolationDuration = interpolation
-        }
-
+    override suspend fun tickSegment(frame: Int) {
+        val location = path.interpolate(frame)
         entity.rotateHead(location.yaw, location.pitch)
         entity.teleport(location.toPacketLocation())
         player.teleportIfNeeded(frame, location)
     }
 
-    override fun stop() {
-        player.stopSpectatingEntity()
-    }
+    override suspend fun switchSegment(newSegment: CameraSegment) {
+        val oldWorld = path.first().location.world.uid
+        val newWorld = newSegment.path.first().location.world.uid
 
-    override fun teardown() {
-        entity.remove()
-    }
-}
-
-private class TeleportCameraSegmentAction(
-    private val player: Player,
-    override val segment: CameraSegment,
-) : CameraSegmentAction {
-    private val path = segment.path.transform(segment.duration, Location::clone)
-    private val firstLocation = path.first().location
-    override fun setup() {
-    }
-
-    override suspend fun start() {
-        SYNC.switchContext {
-            player.teleport(firstLocation)
+        setupPath(newSegment)
+        if (oldWorld == newWorld) {
+            switchSeamless()
+        } else {
+            switchWithStop()
         }
     }
 
-    override suspend fun tick(frame: Int) {
-        val baseFrame = frame - segment.startFrame
-        val location = path.interpolate(baseFrame)
+    private suspend fun switchSeamless() {
+        val newEntity = createEntity()
+        newEntity.addViewer(player.uniqueId)
+        newEntity.spawn(path.first().location.toPacketLocation())
+
+        SYNC.switchContext {
+            player.teleport(path.first().location)
+            player.spectateEntity(newEntity)
+        }
+
+        entity.remove()
+        entity = newEntity
+    }
+
+    private suspend fun switchWithStop() {
+        player.stopSpectatingEntity()
+        entity.remove()
+        entity.addViewer(player.uniqueId)
+        SYNC.switchContext {
+            player.teleport(path.first().location)
+            entity.spawn(path.first().location.toPacketLocation())
+            player.spectateEntity(entity)
+        }
+    }
+
+    override suspend fun stop() {
+        player.stopSpectatingEntity()
+        entity.remove()
+    }
+
+}
+
+private class TeleportCameraAction(
+    private val player: Player,
+) : CameraAction {
+    private var path = emptyList<PointSegment>()
+
+    override suspend fun startSegment(segment: CameraSegment) {
+        path = segment.path.transform(segment.duration, Location::clone)
+    }
+
+    override suspend fun tickSegment(frame: Int) {
+        val location = path.interpolate(frame)
         SYNC.switchContext {
             player.teleport(location)
             player.allowFlight = true
@@ -336,10 +333,10 @@ private class TeleportCameraSegmentAction(
         }
     }
 
-    override fun stop() {
+    override suspend fun switchSegment(newSegment: CameraSegment) {
     }
 
-    override fun teardown() {
+    override suspend fun stop() {
     }
 }
 
