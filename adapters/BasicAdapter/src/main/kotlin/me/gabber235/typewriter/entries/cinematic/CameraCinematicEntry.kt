@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entries.cinematic
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
+import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -11,6 +12,8 @@ import me.gabber235.typewriter.extensions.packetevents.meta
 import me.gabber235.typewriter.extensions.packetevents.spectateEntity
 import me.gabber235.typewriter.extensions.packetevents.stopSpectatingEntity
 import me.gabber235.typewriter.extensions.packetevents.toPacketLocation
+import me.gabber235.typewriter.interaction.blockPacket
+import me.gabber235.typewriter.interaction.unblockPacket
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
@@ -143,6 +146,10 @@ class CameraCinematicAction(
             }
         }
         segments.forEach { it.setup() }
+
+        player blockPacket PacketType.Play.Client.CLICK_WINDOW
+        player blockPacket PacketType.Play.Client.USE_ITEM
+        player blockPacket PacketType.Play.Client.INTERACT_ENTITY
     }
 
     override suspend fun tick(frame: Int) {
@@ -183,6 +190,10 @@ class CameraCinematicAction(
                 }
             }
         }
+
+        player unblockPacket PacketType.Play.Client.CLICK_WINDOW
+        player unblockPacket PacketType.Play.Client.USE_ITEM
+        player unblockPacket PacketType.Play.Client.INTERACT_ENTITY
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame

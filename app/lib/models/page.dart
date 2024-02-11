@@ -284,6 +284,7 @@ extension PageExtension on Page {
         .expand((path) => entry.getAll(path))
         .whereType<String>()
         .toList();
+
     if (!referenceEntryIds.contains(targetId)) {
       return entry;
     }
