@@ -108,10 +108,13 @@ class ValidatedTextField<T> extends HookConsumerWidget {
           text: formattedValue,
           inputFormatters: inputFormatters,
           decoration: InputDecoration(
-            prefixIcon: Iconify(
-              icon,
-              size: 18,
-              color: state.value is _Invalid ? Colors.redAccent : null,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Iconify(
+                icon,
+                size: 18,
+                color: state.value is _Invalid ? Colors.redAccent : null,
+              ),
             ),
             hintText: "Enter a $name",
             errorText: state.value.cast<_Invalid>()?.message,

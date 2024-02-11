@@ -48,7 +48,10 @@ class EntryNode extends HookConsumerWidget {
       backgroundColor: blueprint.color,
       foregroundColor: Colors.white,
       name: entryName.formatted,
-      icon: Iconify(blueprint.icon, size: 18),
+      icon: SizedBox(
+        width: 18,
+        child: Iconify(blueprint.icon, size: 18),
+      ),
       isSelected: isSelected,
       contextActions: contextActions,
       onTap: () =>

@@ -37,6 +37,8 @@ class Iconify extends StatelessWidget {
       width: size,
       height: size,
       theme: SvgTheme(currentColor: color),
+      placeholderBuilder: (context) =>
+          Icon(Icons.question_mark, size: size, color: color),
     );
   }
 }
