@@ -9,7 +9,7 @@ import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.utils.*
 import kotlin.jvm.optionals.getOrDefault
 
-@Entry("simple_speaker", "The most basic speaker", Colors.ORANGE, Icons.PERSON)
+@Entry("simple_speaker", "The most basic speaker", Colors.ORANGE, "bi:person-fill")
 /**
  * The `Spoken Dialogue Action` is an action that displays an animated message to the player. This action provides you with the ability to display a message with a specified speaker, text, and duration.
  *

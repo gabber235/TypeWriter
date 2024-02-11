@@ -7,14 +7,13 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityPickupItemEvent
 
-@Entry("on_item_pickup", "When the player picks up an item", Colors.YELLOW, Icons.HAND_SPARKLES)
+@Entry("on_item_pickup", "When the player picks up an item", Colors.YELLOW, "fa6-solid:hand-holding-medical")
 /**
  * The `Pickup Item Event` is triggered when the player picks up an item.
  *

@@ -7,13 +7,12 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-@Entry("give_item", "Give an item to the player", Colors.RED, Icons.WAND_SPARKLES)
+@Entry("give_item", "Give an item to the player", Colors.RED, "streamline:give-gift-solid")
 /**
  * The `Give Item Action` is an action that gives a player an item. This action provides you with the ability to give an item with a specified Minecraft material, amount, display name, and lore.
  *

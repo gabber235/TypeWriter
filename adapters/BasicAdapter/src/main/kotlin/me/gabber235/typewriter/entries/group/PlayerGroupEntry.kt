@@ -4,10 +4,9 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.GroupId
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("player_group", "Group for every individual player", Colors.MYRTLE_GREEN, Icons.USER)
+@Entry("player_group", "Group for every individual player", Colors.MYRTLE_GREEN, "fa6-solid:user")
 /**
  * The `Player Group` is a group that is specific to each individual player.
  *

@@ -8,10 +8,9 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("balance_fact", "The balance of a player's account", Colors.PURPLE, Icons.MONEY_BILLS)
+@Entry("balance_fact", "The balance of a player's account", Colors.PURPLE, "fa6-solid:money-bill-wave")
 /**
  * A [fact](/docs/facts) that represents a player's balance.
  *

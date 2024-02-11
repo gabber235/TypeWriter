@@ -8,9 +8,8 @@ import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("message", "Display a single message to the player", "#1c4da3", Icons.COMMENT)
+@Entry("message", "Display a single message to the player", "#1c4da3", "ic:baseline-comment-bank")
 /**
  * The `Message Dialogue Action` is an action that displays a single message to the player. This action provides you with the ability to show a message to the player in response to specific events.
  *

@@ -10,7 +10,6 @@ import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.sendMiniWithResolvers
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
@@ -20,7 +19,7 @@ val messageFormat: String by snippet(
     "\n<gray> [ <bold><speaker></bold><reset><gray> ]\n<reset><white> <message>\n"
 )
 
-@Entry("send_message", "Send a message to a player", Colors.RED, Icons.MESSAGE)
+@Entry("send_message", "Send a message to a player", Colors.RED, "flowbite:message-dots-solid")
 /**
  * The `Send Message Action` is an action that sends a message to a player.
  * You can specify the speaker, and the message to send.

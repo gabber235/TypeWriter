@@ -12,12 +12,11 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
-@Entry("console_run_command", "Run command from console", Colors.RED, Icons.TERMINAL)
+@Entry("console_run_command", "Run command from console", Colors.RED, "mingcute:terminal-fill")
 /**
  * The Console Command Action is an action that sends a command to the server console. This action provides you with the ability to execute console commands on the server in response to specific events.
  *

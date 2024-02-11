@@ -6,9 +6,8 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("mythicmobs_interact_event", "MythicMob Interact Event", Colors.YELLOW, Icons.DRAGON)
+@Entry("mythicmobs_interact_event", "MythicMob Interact Event", Colors.YELLOW, "fa6-solid:dragon")
 /**
  * The `MythicMob Interact Event` is fired when a player interacts with a MythicMob.
  *

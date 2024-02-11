@@ -6,10 +6,9 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("on_island_join", "When a player joins a Skyblock island", Colors.YELLOW, Icons.ENVELOPE_OPEN)
+@Entry("on_island_join", "When a player joins a Skyblock island", Colors.YELLOW, "fa6-solid:envelope-open")
 /**
  * The `Island Join Event` is fired when a player joins an island.
  *

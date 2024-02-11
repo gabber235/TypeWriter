@@ -1,8 +1,8 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 class ShortcutLabel extends HookConsumerWidget {
   const ShortcutLabel({
@@ -16,10 +16,13 @@ class ShortcutLabel extends HookConsumerWidget {
 
     if (activator is SingleActivator) {
       final act = activator as SingleActivator;
-      if (act.control) prefixes.add(const Icon(CupertinoIcons.control));
-      if (act.meta) prefixes.add(const Icon(CupertinoIcons.command));
-      if (act.alt) prefixes.add(const Icon(CupertinoIcons.alt));
-      if (act.shift) prefixes.add(const Icon(CupertinoIcons.shift));
+      if (act.control) prefixes.add(const Iconify("ph:control-bold"));
+      if (act.meta) prefixes.add(const Iconify("ph:command-bold"));
+      if (act.alt) prefixes.add(const Iconify("ph:option-bold"));
+      if (act.shift) {
+        prefixes
+            .add(const Iconify("fluent:keyboard-shift-uppercase-24-filled"));
+      }
     }
     return prefixes;
   }
@@ -28,10 +31,10 @@ class ShortcutLabel extends HookConsumerWidget {
     if (activator is SingleActivator) {
       final act = activator as SingleActivator;
       if (act.trigger == LogicalKeyboardKey.enter) {
-        return const Icon(CupertinoIcons.return_icon);
+        return const Iconify("streamline:return-2-solid");
       }
       if (act.trigger == LogicalKeyboardKey.backspace) {
-        return const Icon(CupertinoIcons.delete_left);
+        return const Iconify("fa6-solid:delete-left");
       }
     }
     return null;

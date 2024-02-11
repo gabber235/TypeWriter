@@ -1,7 +1,8 @@
 import "package:clipboard/clipboard.dart";
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/utils/icons.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 class CopyableText extends HookConsumerWidget {
   const CopyableText({required this.text, super.key}) : super();
@@ -22,7 +23,7 @@ class CopyableText extends HookConsumerWidget {
           SelectableText(text, style: const TextStyle(fontSize: 16)),
           IconButton(
             onPressed: () => FlutterClipboard.copy(text),
-            icon: const Icon(FontAwesomeIcons.solidClipboard, size: 18),
+            icon: const Iconify(TWIcons.clipboard, size: 18),
           ),
         ],
       ),

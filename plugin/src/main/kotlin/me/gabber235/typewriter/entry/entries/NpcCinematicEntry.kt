@@ -10,7 +10,6 @@ import me.gabber235.typewriter.capture.capturers.*
 import me.gabber235.typewriter.entry.AssetManager
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -22,7 +21,7 @@ import org.koin.java.KoinJavaComponent
 
 interface NpcCinematicEntry : CinematicEntry {
     @Help("Recorded segments of the NPC's interactions")
-    @Segments(Colors.PINK, Icons.PERSON_WALKING)
+    @Segments(Colors.PINK, "fa6-solid:person-walking")
     val recordedSegments: List<NpcRecordedSegment>
 }
 

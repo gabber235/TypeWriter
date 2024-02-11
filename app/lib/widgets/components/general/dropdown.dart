@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:typewriter/utils/icons.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 class Dropdown<T> extends HookWidget {
   const Dropdown({
@@ -11,7 +12,7 @@ class Dropdown<T> extends HookWidget {
     this.filled = true,
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
     this.builder,
-    this.icon = FontAwesomeIcons.list,
+    this.icon = TWIcons.list,
     this.borderRadius,
     this.alignment,
     super.key,
@@ -21,7 +22,7 @@ class Dropdown<T> extends HookWidget {
   final Function(T value) onChanged;
 
   final FocusNode? focusNode;
-  final IconData? icon;
+  final String? icon;
   final bool filled;
   final EdgeInsets padding;
   final BorderRadius? borderRadius;
@@ -42,7 +43,7 @@ class Dropdown<T> extends HookWidget {
       child: Row(
         children: [
           if (icon != null) ...[
-            Icon(icon, color: const Color(0xFFBEBEBE), size: 16),
+            Iconify(icon, color: const Color(0xFFBEBEBE), size: 16),
             const SizedBox(width: 12),
           ],
           Expanded(
@@ -74,8 +75,8 @@ class Dropdown<T> extends HookWidget {
               },
             ),
           ),
-          const Icon(
-            FontAwesomeIcons.caretDown,
+          const Iconify(
+            TWIcons.caretDown,
             size: 16,
             color: Color(0xFFBEBEBE),
           ),

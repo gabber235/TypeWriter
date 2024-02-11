@@ -6,9 +6,8 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CachableFactEntry
 import me.gabber235.typewriter.entry.entries.GroupEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("session_fact", "Saved until a player logouts of the server", Colors.PURPLE, Icons.USER_CLOCK)
+@Entry("session_fact", "Saved until a player logouts of the server", Colors.PURPLE, "fa6-solid:user-clock")
 /**
  * This [fact](/docs/facts) is stored until the player logs out.
  *

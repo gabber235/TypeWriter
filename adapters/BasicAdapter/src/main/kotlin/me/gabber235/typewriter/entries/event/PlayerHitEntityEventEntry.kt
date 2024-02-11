@@ -5,13 +5,12 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import java.util.*
 
-@Entry("on_player_hit_entity", "When a player hits an entity", Colors.YELLOW, Icons.HEART_CRACK)
+@Entry("on_player_hit_entity", "When a player hits an entity", Colors.YELLOW, "fa6-solid:heart-crack")
 /**
  * The `Player Hit Entity Event` event is fired when a player hits an entity. If you want to detect when a player kills an entity, use the [`Player Kill Entity Event`](on_player_kill_entity) event.
  *

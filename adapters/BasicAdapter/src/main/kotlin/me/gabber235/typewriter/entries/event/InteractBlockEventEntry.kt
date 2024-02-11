@@ -9,7 +9,6 @@ import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.BLOCK
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Location
@@ -19,7 +18,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
 
-@Entry("on_interact_with_block", "When the player interacts with a block", Colors.YELLOW, Icons.HAND_POINTER)
+@Entry("on_interact_with_block", "When the player interacts with a block", Colors.YELLOW, "mingcute:finger-tap-fill")
 /**
  * The `Interact Block Event` is triggered when a player interacts with a block by right-clicking it.
  *

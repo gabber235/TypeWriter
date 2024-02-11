@@ -6,10 +6,9 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("random_trigger", "Randomly selects its connected triggers", Colors.PINK, Icons.CLOVER)
+@Entry("random_trigger", "Randomly selects its connected triggers", Colors.PINK, "mdi:clover")
 /**
  * The `Random Trigger Gate` is a gate that triggers a specified number of entries randomly. This gate provides you with the ability to randomly select and trigger a set number of entries in response to a specific event.
  *

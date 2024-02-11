@@ -5,10 +5,9 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.GroupId
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("island_group", "Group for the whole island", Colors.MYRTLE_GREEN, Icons.GLOBE)
+@Entry("island_group", "Group for the whole island", Colors.MYRTLE_GREEN, "fa6-solid:globe")
 /**
  * The `Island Group` is a group that includes all the players on an island.
  *

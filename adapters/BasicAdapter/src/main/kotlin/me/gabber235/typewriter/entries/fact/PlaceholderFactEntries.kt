@@ -13,10 +13,9 @@ import me.gabber235.typewriter.extensions.placeholderapi.isPlaceholder
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.logger
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("number_placeholder", "Computed Fact for a placeholder number", Colors.PURPLE, Icons.HASHTAG)
+@Entry("number_placeholder", "Computed Fact for a placeholder number", Colors.PURPLE, "ph:placeholder-fill")
 /**
  * A [fact](/docs/facts) that is computed from a placeholder.
  * This placeholder is evaluated when the fact is read and must return a number or boolean.
@@ -59,7 +58,7 @@ class NumberPlaceholderFactEntry(
 
 fun Boolean.toInt() = if (this) 1 else 0
 
-@Entry("value_placeholder", "Fact for a placeholder value", Colors.PURPLE, Icons.USER_TAG)
+@Entry("value_placeholder", "Fact for a placeholder value", Colors.PURPLE, "fa6-solid:user-tag")
 /**
  * A [fact](/docs/facts) that is computed from a placeholder.
  * This placeholder is evaluated when the fact is read and can return anything.

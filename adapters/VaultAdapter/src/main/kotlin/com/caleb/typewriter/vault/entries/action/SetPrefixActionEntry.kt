@@ -9,11 +9,10 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import net.milkbowl.vault.chat.Chat
 import org.bukkit.entity.Player
 
-@Entry("set_prefix", "Set Prefix", Colors.RED, Icons.USER_TAG)
+@Entry("set_prefix", "Set Prefix", Colors.RED, "fa6-solid:user-tag")
 /**
  * The `Set Prefix Action` action sets the prefix of a player's message
  *

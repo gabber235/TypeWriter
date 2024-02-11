@@ -363,9 +363,13 @@ abstract class _$__MoveState implements _MoveState {
 
 /// @nodoc
 mixin _$TrackState {
-  double get start => throw _privateConstructorUsedError;
-  double get end => throw _privateConstructorUsedError;
-  int get totalFrames => throw _privateConstructorUsedError;
+// ignore: unused_element
+  double get start =>
+      throw _privateConstructorUsedError; // ignore: unused_element
+  double get end =>
+      throw _privateConstructorUsedError; // ignore: unused_element
+  int get totalFrames =>
+      throw _privateConstructorUsedError; // ignore: unused_element
   double get width => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -475,15 +479,19 @@ class _$$__TrackStateImpl implements _$__TrackState {
   const _$$__TrackStateImpl(
       [this.start = 0, this.end = 1, this.totalFrames = 0, this.width = 0]);
 
+// ignore: unused_element
   @override
   @JsonKey()
   final double start;
+// ignore: unused_element
   @override
   @JsonKey()
   final double end;
+// ignore: unused_element
   @override
   @JsonKey()
   final int totalFrames;
+// ignore: unused_element
   @override
   @JsonKey()
   final double width;
@@ -522,13 +530,13 @@ abstract class _$__TrackState implements _TrackState {
       final int totalFrames,
       final double width]) = _$$__TrackStateImpl;
 
-  @override
+  @override // ignore: unused_element
   double get start;
-  @override
+  @override // ignore: unused_element
   double get end;
-  @override
+  @override // ignore: unused_element
   int get totalFrames;
-  @override
+  @override // ignore: unused_element
   double get width;
   @override
   @JsonKey(ignore: true)

@@ -6,9 +6,8 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("on_island_invite", "When a player is invited to a Skyblock island", Colors.YELLOW, Icons.ENVELOPE)
+@Entry("on_island_invite", "When a player is invited to a Skyblock island", Colors.YELLOW, "fa6-solid:envelope")
 /**
  * The `Island Invite Event` is an event that is triggered when a player is invited to an island.
  *

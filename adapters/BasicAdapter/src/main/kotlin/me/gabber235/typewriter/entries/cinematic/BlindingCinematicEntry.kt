@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType.BLINDNESS
 
-@Entry("blinding_cinematic", "Blind the player so the screen looks black", Colors.CYAN, Icons.SOLID_EYE_SLASH)
+@Entry("blinding_cinematic", "Blind the player so the screen looks black", Colors.CYAN, "heroicons-solid:eye-off")
 /**
  * The `Blinding Cinematic` entry is used to blind the player so the screen looks black.
  *
@@ -30,7 +30,7 @@ class BlindingCinematicEntry(
     override val id: String,
     override val name: String,
     override val criteria: List<Criteria>,
-    @Segments(icon = Icons.SOLID_EYE_SLASH)
+    @Segments(icon = "heroicons-solid:eye-off")
     val segments: List<BlindingSegment>,
 ) : CinematicEntry {
     override fun createSimulated(player: Player): CinematicAction? = null

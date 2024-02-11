@@ -242,8 +242,7 @@ mixin _$EntryBlueprint {
   List<String> get tags => throw _privateConstructorUsedError;
   @ColorConverter()
   Color get color => throw _privateConstructorUsedError;
-  @IconConverter()
-  IconData get icon => throw _privateConstructorUsedError;
+  String get icon => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -264,7 +263,7 @@ abstract class $EntryBlueprintCopyWith<$Res> {
       ObjectField fields,
       List<String> tags,
       @ColorConverter() Color color,
-      @IconConverter() IconData icon});
+      String icon});
 }
 
 /// @nodoc
@@ -316,7 +315,7 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
     ) as $Val);
   }
 }
@@ -336,7 +335,7 @@ abstract class _$$EntryBlueprintImplCopyWith<$Res>
       ObjectField fields,
       List<String> tags,
       @ColorConverter() Color color,
-      @IconConverter() IconData icon});
+      String icon});
 }
 
 /// @nodoc
@@ -386,7 +385,7 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
     ));
   }
 }
@@ -403,7 +402,7 @@ class _$EntryBlueprintImpl
       required this.fields,
       final List<String> tags = const <String>[],
       @ColorConverter() this.color = Colors.grey,
-      @IconConverter() this.icon = Icons.help})
+      this.icon = TWIcons.help})
       : _tags = tags;
 
   factory _$EntryBlueprintImpl.fromJson(Map<String, dynamic> json) =>
@@ -432,8 +431,7 @@ class _$EntryBlueprintImpl
   final Color color;
   @override
   @JsonKey()
-  @IconConverter()
-  final IconData icon;
+  final String icon;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -504,7 +502,7 @@ abstract class _EntryBlueprint implements EntryBlueprint {
       required final ObjectField fields,
       final List<String> tags,
       @ColorConverter() final Color color,
-      @IconConverter() final IconData icon}) = _$EntryBlueprintImpl;
+      final String icon}) = _$EntryBlueprintImpl;
 
   factory _EntryBlueprint.fromJson(Map<String, dynamic> json) =
       _$EntryBlueprintImpl.fromJson;
@@ -523,8 +521,7 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   @ColorConverter()
   Color get color;
   @override
-  @IconConverter()
-  IconData get icon;
+  String get icon;
   @override
   @JsonKey(ignore: true)
   _$$EntryBlueprintImplCopyWith<_$EntryBlueprintImpl> get copyWith =>

@@ -9,7 +9,6 @@ import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Material
@@ -20,7 +19,7 @@ import java.util.*
     "inventory_item_count_fact",
     "The amount of a specific item in the player's inventory",
     Colors.PURPLE,
-    Icons.BAG_SHOPPING
+    "fa6-solid:bag-shopping"
 )
 /**
  * The `Inventory Item Count Fact` is a fact that returns the amount of a specific item in the player's inventory.

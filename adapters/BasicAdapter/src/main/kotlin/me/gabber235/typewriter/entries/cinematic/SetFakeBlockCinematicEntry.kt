@@ -14,17 +14,16 @@ import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.extensions.packetevents.toVector3i
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-@Entry("set_fake_block_cinematic", "Set a fake block", Colors.CYAN, Icons.CUBE)
+@Entry("set_fake_block_cinematic", "Set a fake block", Colors.CYAN, "mingcute:cube-3d-fill")
 class SetFakeBlockCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(icon = Icons.CUBE)
+    @Segments(icon = "mingcute:cube-3d-fill")
     @Help("The segments that will be displayed in the cinematic")
     val segments: List<SetFakeBlockSegment> = emptyList(),
 ) : CinematicEntry {

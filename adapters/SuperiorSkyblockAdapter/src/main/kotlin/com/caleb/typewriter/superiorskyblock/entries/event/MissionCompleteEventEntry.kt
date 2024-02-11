@@ -6,9 +6,8 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("on_mission_complete", "When a player completes a mission", Colors.YELLOW, Icons.CLIPBOARD_CHECK)
+@Entry("on_mission_complete", "When a player completes a mission", Colors.YELLOW, "fa6-solid:clipboard-check")
 /**
  * The `Mission Complete` event is triggered when a player completes a mission.
  *

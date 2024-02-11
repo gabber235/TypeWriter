@@ -7,9 +7,8 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("simple_action", "Simple action to modify facts", Colors.RED, Icons.BOLT)
+@Entry("simple_action", "Simple action to modify facts", Colors.RED, "heroicons:bolt-16-solid")
 /**
  * The `Simple Action` is an empty action that can be used to modify facts.
  *

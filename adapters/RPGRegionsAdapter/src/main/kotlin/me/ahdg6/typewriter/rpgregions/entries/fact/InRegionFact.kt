@@ -8,11 +8,10 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
-import me.gabber235.typewriter.utils.Icons
 import net.islandearth.rpgregions.api.RPGRegionsAPI
 import org.bukkit.entity.Player
 
-@Entry("in_rpg_region_fact", "If the player is in a RPGRegions region", Colors.PURPLE, Icons.ROAD_BARRIER)
+@Entry("in_rpg_region_fact", "If the player is in a RPGRegions region", Colors.PURPLE, "fa6-solid:road-barrier")
 /**
  * A [fact](/docs/facts) that checks if the player is in a specific region. The value will be `0` if the player is not in the region, and `1` if the player is in the region.
  *

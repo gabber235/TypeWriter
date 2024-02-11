@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.5
   collection:
   stack_trace:
   freezed_annotation: ^2.4.1
@@ -19,7 +18,6 @@ dependencies:
   hooks_riverpod: ^2.3.8
   auto_size_text: ^3.0.0
   # google_fonts: ^4.0.4
-  font_awesome_flutter: ^10.5.0
   rive: ^0.12.3
   fuzzy: ^0.5.1
   auto_route: ^7.8.4

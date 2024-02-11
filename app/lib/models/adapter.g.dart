@@ -36,9 +36,7 @@ _$EntryBlueprintImpl _$$EntryBlueprintImplFromJson(Map<String, dynamic> json) =>
       color: json['color'] == null
           ? Colors.grey
           : const ColorConverter().fromJson(json['color'] as String),
-      icon: json['icon'] == null
-          ? Icons.help
-          : const IconConverter().fromJson(json['icon'] as String),
+      icon: json['icon'] as String? ?? TWIcons.help,
     );
 
 Map<String, dynamic> _$$EntryBlueprintImplToJson(
@@ -50,7 +48,7 @@ Map<String, dynamic> _$$EntryBlueprintImplToJson(
       'fields': instance.fields,
       'tags': instance.tags,
       'color': const ColorConverter().toJson(instance.color),
-      'icon': const IconConverter().toJson(instance.icon),
+      'icon': instance.icon,
     };
 
 _$FieldTypeImpl _$$FieldTypeImplFromJson(Map<String, dynamic> json) =>

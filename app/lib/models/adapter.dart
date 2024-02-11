@@ -5,8 +5,8 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/book.dart";
-import "package:typewriter/models/icons.dart";
 import "package:typewriter/utils/color_converter.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
@@ -86,7 +86,7 @@ class EntryBlueprint with _$EntryBlueprint {
     required ObjectField fields,
     @Default(<String>[]) List<String> tags,
     @ColorConverter() @Default(Colors.grey) Color color,
-    @IconConverter() @Default(Icons.help) IconData icon,
+    @Default(TWIcons.help) String icon,
   }) = _EntryBlueprint;
 
   factory EntryBlueprint.fromJson(Map<String, dynamic> json) =>
@@ -314,19 +314,4 @@ enum PrimitiveFieldType {
 
   /// The default value for this field type.
   final dynamic defaultValue;
-}
-
-class IconConverter extends JsonConverter<IconData, String> {
-  const IconConverter();
-
-  @override
-  IconData fromJson(String json) {
-    return icons[json] ?? Icons.question_mark;
-  }
-
-  // This should not be used.
-  @override
-  String toJson(IconData object) {
-    throw Exception("Icon data cannot be converted to JSON");
-  }
 }

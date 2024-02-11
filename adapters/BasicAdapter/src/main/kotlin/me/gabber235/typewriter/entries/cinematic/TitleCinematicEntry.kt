@@ -11,13 +11,12 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMini
 import net.kyori.adventure.title.Title
 import org.bukkit.entity.Player
 import java.time.Duration
 
-@Entry("title_cinematic", "Show a title during a cinematic", Colors.CYAN, Icons.PARAGRAPH)
+@Entry("title_cinematic", "Show a title during a cinematic", Colors.CYAN, "fluent:align-center-vertical-32-filled")
 /**
  * The `Title Cinematic` entry shows a title during a cinematic.
  *
@@ -29,7 +28,7 @@ class TitleCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(icon = Icons.PARAGRAPH)
+    @Segments(icon = "fluent:align-center-vertical-32-filled")
     val segments: List<TitleSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

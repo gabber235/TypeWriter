@@ -7,9 +7,8 @@ import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("option", "Display a list of options to the player", "#4CAF50", Icons.LIST_UL)
+@Entry("option", "Display a list of options to the player", "#4CAF50", "fa6-solid:list")
 /**
  * The `Option Dialogue` action displays a list of options to the player to choose from. This action provides you with the ability to give players choices that affect the outcome of the game.
  *

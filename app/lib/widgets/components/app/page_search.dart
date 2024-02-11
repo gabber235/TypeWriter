@@ -1,16 +1,17 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/pages_list.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 part "page_search.g.dart";
 
@@ -26,7 +27,7 @@ class PageTypeFiler extends SearchFilter {
   @override
   Color get color => type.color;
   @override
-  IconData get icon => type.icon;
+  String get icon => type.icon;
 
   @override
   bool filter(SearchElement action) {
@@ -163,25 +164,26 @@ class PageSearchElement extends SearchElement {
   }
 
   @override
-  Widget icon(BuildContext context) => Icon(page.type.icon);
+  Widget icon(BuildContext context) => Iconify(page.type.icon);
 
   @override
   Color color(BuildContext context) => page.type.color;
 
   @override
-  Widget suffixIcon(BuildContext context) => const Icon(Icons.open_in_new);
+  Widget suffixIcon(BuildContext context) =>
+      const Iconify(TWIcons.externalLink);
 
   @override
   List<SearchAction> actions(PassingRef ref) {
     return [
       const SearchAction(
         "Open",
-        Icons.open_in_new,
+        TWIcons.externalLink,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
       SearchAction(
         "Rename",
-        FontAwesomeIcons.pencil,
+        TWIcons.pencil,
         SmartSingleActivator(LogicalKeyboardKey.keyR, control: true),
         onTrigger: (context, __) async =>
             await showDialog<bool>(
@@ -192,7 +194,7 @@ class PageSearchElement extends SearchElement {
       ),
       SearchAction(
         "Change Chapter",
-        FontAwesomeIcons.bookBookmark,
+        TWIcons.bookMarker,
         SmartSingleActivator(LogicalKeyboardKey.keyC, control: true),
         onTrigger: (context, __) async =>
             await showDialog<bool>(
@@ -206,7 +208,7 @@ class PageSearchElement extends SearchElement {
       ),
       SearchAction(
         "Delete",
-        FontAwesomeIcons.trash,
+        TWIcons.trash,
         SmartSingleActivator(LogicalKeyboardKey.backspace, control: true),
         color: Colors.red,
         onTrigger: (context, ref) =>
@@ -243,7 +245,7 @@ class AddPageSearchElement extends SearchElement {
   String description(BuildContext context) => "Create a new ${type.name}";
 
   @override
-  Widget icon(BuildContext context) => Icon(type.icon);
+  Widget icon(BuildContext context) => Iconify(type.icon);
 
   @override
   Color color(BuildContext context) => type.color;
@@ -256,7 +258,7 @@ class AddPageSearchElement extends SearchElement {
     return [
       const SearchAction(
         "Add",
-        Icons.add,
+        TWIcons.plus,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
     ];

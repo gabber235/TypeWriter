@@ -10,12 +10,11 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 import java.time.Duration
 
-@Entry("delayed_action", "Delay an action for a certain amount of time", Colors.RED, Icons.SOLID_HOURGLASS_HALF)
+@Entry("delayed_action", "Delay an action for a certain amount of time", Colors.RED, "fa-solid:hourglass")
 /**
  * The `Delayed Action Entry` is an entry that fires its triggers after a specified duration. This entry provides you with the ability to create time-based actions and events.
  *

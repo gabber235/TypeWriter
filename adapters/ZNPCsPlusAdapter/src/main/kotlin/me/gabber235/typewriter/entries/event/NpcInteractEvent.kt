@@ -7,9 +7,8 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entries.entity.ZNPC
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("znpc_on_npc_interact", "When a player clicks on an NPC", Colors.YELLOW, Icons.PEOPLE_ROBBERY)
+@Entry("znpc_on_npc_interact", "When a player clicks on an NPC", Colors.YELLOW, "fa6-solid:people-robbery")
 /**
  * The `NPC Interact Event` is fired when a player interacts with an NPC.
  *

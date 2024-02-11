@@ -314,7 +314,7 @@ class _EndingFrameProviderElement extends AutoDisposeProviderElement<int>
 }
 
 String _$entryContextActionsHash() =>
-    r'28cdf01b3a0ee4838ebb303ef475c14c090b88c1';
+    r'328ae81dcb26da060ea5514c1336cb20903dd0da';
 
 /// See also [_entryContextActions].
 @ProviderFor(_entryContextActions)
@@ -888,7 +888,7 @@ class _SegmentPathsProviderElement
   String get entryId => (origin as _SegmentPathsProvider).entryId;
 }
 
-String _$segmentsHash() => r'9a50f061be29058473384d5e95184ca25b3fc3de';
+String _$segmentsHash() => r'f49571f7d75d0070fcbb69cef364a7cc5c5af448';
 
 /// See also [_segments].
 @ProviderFor(_segments)

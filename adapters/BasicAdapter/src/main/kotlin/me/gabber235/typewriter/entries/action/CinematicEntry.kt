@@ -8,11 +8,10 @@ import me.gabber235.typewriter.adapters.modifiers.Page
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.CinematicStartTrigger
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
 
-@Entry("cinematic", "Start a new cinematic", Colors.RED, Icons.CAMERA_RETRO)
+@Entry("cinematic", "Start a new cinematic", Colors.RED, "fa-solid:camera-retro")
 /**
  * The `Cinematic` action is used to start a new cinematic.
  *

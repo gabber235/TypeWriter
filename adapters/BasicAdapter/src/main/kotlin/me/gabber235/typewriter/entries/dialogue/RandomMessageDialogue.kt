@@ -8,9 +8,8 @@ import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("random_message", "Display a random message from a list to a player", "#1c4da3", Icons.COMMENT)
+@Entry("random_message", "Display a random message from a list to a player", "#1c4da3", "ic:baseline-comment-bank")
 /**
  * The `Random Message Dialogue` action displays a random message from a list to the player. This action provides you with the ability to create interactive dialogues with randomized responses.
  *

@@ -8,10 +8,9 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("island_disband", "Disbands player's island", Colors.RED, Icons.TRASH)
+@Entry("island_disband", "Disbands player's island", Colors.RED, "fa6-solid:trash-alt")
 /**
  * The `Island Disband Action` disbands a player's island.
  *

@@ -10,11 +10,10 @@ import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import me.gabber235.typewriter.facts.FactId
-import me.gabber235.typewriter.utils.Icons
 import java.time.Duration
 import java.time.LocalDateTime
 
-@Entry("timed_fact", "Saved for a specified duration, like 20 minutes", Colors.PURPLE, Icons.STOPWATCH)
+@Entry("timed_fact", "Saved for a specified duration, like 20 minutes", Colors.PURPLE, "bi:stopwatch-fill")
 /**
  * This fact is stored for a certain amount of time.
  * After that time, it is reset.

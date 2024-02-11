@@ -18,6 +18,7 @@ import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.display.TextDisplayMeta
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -27,7 +28,7 @@ import org.bukkit.potion.PotionEffectType.INVISIBILITY
 import java.util.*
 import kotlin.math.min
 
-@Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, Icons.VIDEO)
+@Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, "fa6-solid:video")
 /**
  * The `Camera Cinematic` entry is used to create a cinematic camera path.
  *
@@ -45,7 +46,7 @@ class CameraCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(icon = Icons.VIDEO)
+    @Segments(icon = "fa6-solid:video")
     @InnerMin(Min(10))
     val segments: List<CameraSegment> = emptyList(),
 ) : CinematicEntry {
@@ -114,6 +115,13 @@ class CameraCinematicAction(
                 player.hidePlayer(plugin, it)
             }
 
+            // In creative mode, when the player opens the inventory while their inventory is fake cleared,
+            // The actual inventory will be cleared.
+            // To prevent this, we only fake clear the inventory when the player is not in creative mode.
+            if (player.gameMode != GameMode.CREATIVE) {
+                player.fakeClearInventory()
+            }
+
             // Move the player before to the first location. This will spawn the boats in the correct world.
             // And gives the client time to load the chunks.
             val firstLocation = entry.segments.firstOrNull()?.path?.firstOrNull()?.location
@@ -170,6 +178,9 @@ class CameraCinematicAction(
         originalState?.let {
             SYNC.switchContext {
                 player.restore(it)
+                if (player.gameMode != GameMode.CREATIVE) {
+                    player.restoreInventory()
+                }
             }
         }
     }
@@ -226,8 +237,12 @@ private class BlockDisplayCameraSegmentAction(
      * Only since the last segment never moves, since the cinematic ends at the last frame.
      * We need to get the second last segment interpolation.
      */
-    private val secondToLastSegmentInterpolation =
-        min(segment.path[segment.path.size - 2].duration.orElse(BASE_INTERPOLATION), BASE_INTERPOLATION)
+    private val secondToLastSegmentInterpolation by lazy {
+        if (segment.path.size < 2) return@lazy BASE_INTERPOLATION
+        val point = segment.path[segment.path.size - 2]
+        val duration = point.duration.orElse(BASE_INTERPOLATION)
+        min(duration, BASE_INTERPOLATION)
+    }
     private val path = segment.path.transform(segment.duration - secondToLastSegmentInterpolation) {
         it.clone().apply {
             y += player.eyeHeight

@@ -5,9 +5,8 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("on_run_command", "When a player runs a custom command", Colors.YELLOW, Icons.TERMINAL)
+@Entry("on_run_command", "When a player runs a custom command", Colors.YELLOW, "mingcute:terminal-fill")
 /**
  * The `Run Command Event` event is triggered when a command is run. This event can be used to add custom commands to the server.
  *

@@ -8,19 +8,22 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.EquipmentSlotStateProvider
+import me.gabber235.typewriter.utils.PlayerState
 import me.gabber235.typewriter.utils.ThreadType.SYNC
+import me.gabber235.typewriter.utils.restore
+import me.gabber235.typewriter.utils.state
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
-@Entry("pumpkin_hat_cinematic", "Show a pumpkin hat during a cinematic", Colors.CYAN, Icons.HAT_COWBOY_SIDE)
+@Entry("pumpkin_hat_cinematic", "Show a pumpkin hat during a cinematic", Colors.CYAN, "mingcute:hat-fill")
 class PumpkinHatCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(icon = Icons.HAT_COWBOY_SIDE)
+    @Segments(icon = "mingcute:hat-fill")
     val segments: List<PumpkinHatSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

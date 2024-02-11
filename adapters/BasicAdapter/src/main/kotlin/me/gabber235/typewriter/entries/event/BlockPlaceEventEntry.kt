@@ -7,13 +7,12 @@ import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.BLOCK
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.event.block.BlockPlaceEvent
 import java.util.*
 
-@Entry("on_place_block", "When the player places a block", Colors.YELLOW, Icons.CUBES_STACKED)
+@Entry("on_place_block", "When the player places a block", Colors.YELLOW, "fluent:cube-add-20-filled")
 /**
  * The `Block Place Event` is called when a block is placed in the world.
  *

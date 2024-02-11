@@ -6,12 +6,11 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Min
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
 
-@Entry("on_player_near_location", "When the player is near a certain location", Colors.YELLOW, Icons.HAND_POINTER)
+@Entry("on_player_near_location", "When the player is near a certain location", Colors.YELLOW, "mdi:map-marker-radius")
 /**
  * The `PlayerNearLocationEventEntry` class represents an event that is triggered when a player is within a certain range of a location.
  *

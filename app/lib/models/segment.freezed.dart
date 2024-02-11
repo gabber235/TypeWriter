@@ -19,7 +19,7 @@ mixin _$Segment {
   String get path => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
   Color get color => throw _privateConstructorUsedError;
-  IconData get icon => throw _privateConstructorUsedError;
+  String get icon => throw _privateConstructorUsedError;
   int get startFrame => throw _privateConstructorUsedError;
   int get endFrame => throw _privateConstructorUsedError;
   int? get minFrames => throw _privateConstructorUsedError;
@@ -39,7 +39,7 @@ abstract class $SegmentCopyWith<$Res> {
       {String path,
       int index,
       Color color,
-      IconData icon,
+      String icon,
       int startFrame,
       int endFrame,
       int? minFrames,
@@ -86,7 +86,7 @@ class _$SegmentCopyWithImpl<$Res, $Val extends Segment>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
       startFrame: null == startFrame
           ? _value.startFrame
           : startFrame // ignore: cast_nullable_to_non_nullable
@@ -122,7 +122,7 @@ abstract class _$$SegmentImplCopyWith<$Res> implements $SegmentCopyWith<$Res> {
       {String path,
       int index,
       Color color,
-      IconData icon,
+      String icon,
       int startFrame,
       int endFrame,
       int? minFrames,
@@ -167,7 +167,7 @@ class __$$SegmentImplCopyWithImpl<$Res>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
       startFrame: null == startFrame
           ? _value.startFrame
           : startFrame // ignore: cast_nullable_to_non_nullable
@@ -199,7 +199,7 @@ class _$SegmentImpl implements _Segment {
       {this.path = "",
       this.index = 0,
       this.color = Colors.white,
-      this.icon = FontAwesomeIcons.star,
+      this.icon = TWIcons.star,
       this.startFrame = 0,
       this.endFrame = 0,
       this.minFrames,
@@ -218,7 +218,7 @@ class _$SegmentImpl implements _Segment {
   final Color color;
   @override
   @JsonKey()
-  final IconData icon;
+  final String icon;
   @override
   @JsonKey()
   final int startFrame;
@@ -288,7 +288,7 @@ abstract class _Segment implements Segment {
       {final String path,
       final int index,
       final Color color,
-      final IconData icon,
+      final String icon,
       final int startFrame,
       final int endFrame,
       final int? minFrames,
@@ -302,7 +302,7 @@ abstract class _Segment implements Segment {
   @override
   Color get color;
   @override
-  IconData get icon;
+  String get icon;
   @override
   int get startFrame;
   @override

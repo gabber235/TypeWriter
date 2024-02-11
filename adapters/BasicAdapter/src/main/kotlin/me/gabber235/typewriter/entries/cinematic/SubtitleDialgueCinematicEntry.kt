@@ -12,7 +12,6 @@ import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMini
 import me.gabber235.typewriter.utils.asMiniWithResolvers
 import me.gabber235.typewriter.utils.splitPercentage
@@ -24,7 +23,7 @@ import net.kyori.adventure.title.Title.Times
 import org.bukkit.entity.Player
 import java.time.Duration
 
-@Entry("subtitle_dialogue_cinematic", "Show an action bar message", Colors.CYAN, Icons.DIAGRAM_NEXT)
+@Entry("subtitle_dialogue_cinematic", "Show an action bar message", Colors.CYAN, "fa6-solid:diagram-next")
 /**
  * The `Subtitle Dialogue Cinematic Entry` is a cinematic entry that displays an animated subtitle message.
  * The speaker is displayed in the action bar, and the dialogue is displayed in the subtitle.
@@ -39,7 +38,7 @@ class SubtitleDialogueCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
-    @Segments(icon = Icons.MESSAGE)
+    @Segments(icon = "fa6-solid:diagram-next")
     val segments: List<DisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
 
@@ -58,14 +57,14 @@ class SubtitleDialogueCinematicEntry(
     }
 }
 
-@Entry("random_subtitle_dialogue_cinematic", "Show a random action bar message", Colors.CYAN, Icons.DIAGRAM_NEXT)
+@Entry("random_subtitle_dialogue_cinematic", "Show a random action bar message", Colors.CYAN, "fa6-solid:diagram-next")
 data class RandomSubtitleDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
-    @Segments(icon = Icons.MESSAGE)
+    @Segments(icon = "fa6-solid:diagram-next")
     val segments: List<RandomDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

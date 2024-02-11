@@ -101,6 +101,12 @@ tasks.processResources {
 
 tasks.withType<ShadowJar> {
     relocate("org.bstats", "${project.group}.${project.name}.extensions.bstats")
+    minimize {
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-reflect"))
+        exclude(dependency("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core"))
+        exclude(dependency("web::"))
+    }
 }
 
 task<ShadowJar>("buildAndMove") {
@@ -128,7 +134,7 @@ task("copyFlutterWebFiles") {
     }
 }
 
-task<ShadowJar>("buildRelease") {
+task("buildRelease") {
     dependsOn("copyFlutterWebFiles", "shadowJar")
     group = "build"
     description = "Builds the jar including the flutter web panel"

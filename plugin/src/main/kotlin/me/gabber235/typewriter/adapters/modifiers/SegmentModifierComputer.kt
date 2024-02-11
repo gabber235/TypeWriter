@@ -5,10 +5,9 @@ import me.gabber235.typewriter.adapters.*
 import me.gabber235.typewriter.adapters.FieldModifier.DynamicModifier
 import me.gabber235.typewriter.adapters.FieldModifier.InnerListModifier
 import me.gabber235.typewriter.logger
-import me.gabber235.typewriter.utils.Icons
 
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
-annotation class Segments(val color: String = Colors.CYAN, val icon: Icons = Icons.STAR)
+annotation class Segments(val color: String = Colors.CYAN, val icon: String = "fa6-solid:star")
 
 object SegmentModifierComputer : StaticModifierComputer<Segments> {
     override val annotationClass: Class<Segments> = Segments::class.java
@@ -40,7 +39,7 @@ object SegmentModifierComputer : StaticModifierComputer<Segments> {
 
         val data = JsonObject().apply {
             addProperty("color", color)
-            addProperty("icon", icon.id)
+            addProperty("icon", icon)
         }
 
         return InnerListModifier(DynamicModifier("segment", data))

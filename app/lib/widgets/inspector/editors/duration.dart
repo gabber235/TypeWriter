@@ -2,10 +2,10 @@ import "package:duration/duration.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/writers.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/validated_inspector_text_field.dart";
@@ -38,7 +38,7 @@ class DurationEditor extends HookConsumerWidget {
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r"[\dwdhminsu ]")),
         ],
-        icon: FontAwesomeIcons.stopwatch,
+        icon: TWIcons.stopwatch,
         deserialize: (value) {
           final parsedValue = value.milliseconds;
           return prettyDuration(
@@ -55,8 +55,11 @@ class DurationEditor extends HookConsumerWidget {
         },
         formatted: (value) {
           final parsedValue = value.milliseconds;
-          final formatted = prettyDuration(parsedValue,
-              abbreviated: false, tersity: DurationTersity.millisecond,);
+          final formatted = prettyDuration(
+            parsedValue,
+            abbreviated: false,
+            tersity: DurationTersity.millisecond,
+          );
           return "Valid Duration: $formatted";
         },
       ),

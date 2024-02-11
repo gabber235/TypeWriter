@@ -18,7 +18,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
-@Entry("actionbar_dialogue_cinematic", "Show an action bar typed dialogue", Colors.CYAN, Icons.XMARKS_LINES)
+@Entry("actionbar_dialogue_cinematic", "Show an action bar typed dialogue", Colors.CYAN, "fa6-solid:xmarks-lines")
 /**
  * The `Action Bar Dialogue Cinematic` is a cinematic that shows a dialogue in the action bar.
  * You can specify the speaker and the dialogue.
@@ -34,7 +34,7 @@ class ActionBarDialogueCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
-    @Segments(icon = Icons.MESSAGE)
+    @Segments(icon = "fa6-solid:xmarks-lines")
     val segments: List<DisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
@@ -53,7 +53,7 @@ class ActionBarDialogueCinematicEntry(
     "random_actionbar_dialogue_cinematic",
     "Show a random action bar typed dialogue",
     Colors.CYAN,
-    Icons.XMARKS_LINES
+    "fa6-solid:xmarks-lines"
 )
 data class RandomActionBarDialogueCinematicEntry(
     override val id: String = "",
@@ -61,7 +61,7 @@ data class RandomActionBarDialogueCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
-    @Segments(icon = Icons.MESSAGE)
+    @Segments(icon = "fa6-solid:xmarks-lines")
     val segments: List<RandomDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

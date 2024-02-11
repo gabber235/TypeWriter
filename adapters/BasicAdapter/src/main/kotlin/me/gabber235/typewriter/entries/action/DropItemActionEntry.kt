@@ -7,7 +7,6 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.gabber235.typewriter.utils.optional
@@ -16,7 +15,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import java.util.*
 
-@Entry("drop_item", "Drop an item at location, or on player", Colors.RED, Icons.DROPBOX)
+@Entry("drop_item", "Drop an item at location, or on player", Colors.RED, "fa-brands:dropbox")
 /**
  * The `Drop Item Action` is an action that drops an item in the world.
  * This action provides you with the ability to drop an item with a specified Minecraft material, amount, display name, lore, and location.

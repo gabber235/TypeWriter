@@ -6,7 +6,6 @@ import "package:flutter/material.dart" hide ContextMenuController, FilledButton;
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -17,6 +16,7 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
@@ -25,6 +25,7 @@ import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/dropdown.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/components/general/tree_view.dart";
 import "package:typewriter/widgets/components/general/validated_text_field.dart";
 
@@ -244,12 +245,12 @@ class _TreeCategory extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DragTarget<String>(
+        DragTarget<PageDrag>(
           onWillAcceptWithDetails: (details) {
-            return ref.read(_pageNamesProvider).contains(details.data);
+            return ref.read(_pageNamesProvider).contains(details.data.pageId);
           },
           onAcceptWithDetails: (details) {
-            final pageId = details.data;
+            final pageId = details.data.pageId;
             ref
                 .read(pageProvider(pageId))
                 ?.changeChapter(ref.passing, node.name);
@@ -275,10 +276,10 @@ class _TreeCategory extends HookConsumerWidget {
                     if (showFull) const SizedBox(width: 4),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: showFull ? 4 : 0),
-                      child: Icon(
+                      child: Iconify(
                         isExpanded.value
-                            ? FontAwesomeIcons.chevronDown
-                            : FontAwesomeIcons.chevronRight,
+                            ? TWIcons.chevronDown
+                            : TWIcons.chevronRight,
                         size: 11,
                         color: Colors.white,
                       ),
@@ -364,7 +365,7 @@ class _PageTile extends HookConsumerWidget {
     return [
       ContextMenuTile.button(
         title: "Rename",
-        icon: FontAwesomeIcons.pen,
+        icon: TWIcons.pencil,
         onTap: () => showDialog(
           context: context,
           builder: (_) => RenamePageDialogue(old: pageId),
@@ -372,7 +373,7 @@ class _PageTile extends HookConsumerWidget {
       ),
       ContextMenuTile.button(
         title: "Change Chapter",
-        icon: FontAwesomeIcons.bookBookmark,
+        icon: TWIcons.bookMarker,
         onTap: () => showDialog(
           context: context,
           builder: (_) =>
@@ -382,7 +383,7 @@ class _PageTile extends HookConsumerWidget {
       ContextMenuTile.divider(),
       ContextMenuTile.button(
         title: "Delete",
-        icon: FontAwesomeIcons.trash,
+        icon: TWIcons.trash,
         color: Colors.redAccent,
         onTap: () => showPageDeletionDialogue(context, ref.passing, pageId),
       ),
@@ -406,12 +407,12 @@ class _PageTile extends HookConsumerWidget {
           padding: EdgeInsets.only(
             top: _needsShift(amount) ? 30 : 0,
           ),
-          child: DragTarget<String>(
+          child: DragTarget<PageDrag>(
             onWillAcceptWithDetails: (details) {
-              return ref.read(_pageNamesProvider).contains(details.data);
+              return ref.read(_pageNamesProvider).contains(details.data.pageId);
             },
             onAcceptWithDetails: (details) {
-              final pageId = details.data;
+              final pageId = details.data.pageId;
               ref
                   .read(pageProvider(pageId))
                   ?.changeChapter(ref.passing, chapter);
@@ -432,8 +433,8 @@ class _PageTile extends HookConsumerWidget {
                 child: ContextMenuRegion(
                   builder: (context) =>
                       _contextMenuItems(context, ref, isSelected),
-                  child: Draggable<String>(
-                    data: pageId,
+                  child: Draggable<PageDrag>(
+                    data: PageDrag(pageId: pageId),
                     feedback: Material(
                       color: Colors.transparent,
                       child: DecoratedBox(
@@ -445,7 +446,7 @@ class _PageTile extends HookConsumerWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Icon(
+                              Iconify(
                                 pageData.type.icon,
                                 size: 11,
                                 color: Colors.white,
@@ -474,7 +475,7 @@ class _PageTile extends HookConsumerWidget {
                         child: Row(
                           children: [
                             const SizedBox(width: 4),
-                            Icon(
+                            Iconify(
                               pageData.type.icon,
                               size: 11,
                               color: Colors.white,
@@ -531,7 +532,7 @@ class _SmallPageTile extends HookConsumerWidget {
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Icon(
+        child: Iconify(
           pageData.type.icon,
           size: 11,
           color: Colors.white,
@@ -657,7 +658,7 @@ class AddPageDialogue extends HookConsumerWidget {
             value: "",
             controller: controller,
             name: "Page Name",
-            icon: FontAwesomeIcons.book,
+            icon: TWIcons.book,
             validator: (value) {
               final validation = _validateName(value, pagesNames);
               isNameValid.value = validation == null;
@@ -677,7 +678,7 @@ class AddPageDialogue extends HookConsumerWidget {
               builder: (context, value) {
                 return Row(
                   children: [
-                    Icon(value.icon, size: 18),
+                    Iconify(value.icon, size: 18),
                     const SizedBox(width: 8),
                     Text(value.name.formatted),
                   ],
@@ -691,7 +692,7 @@ class AddPageDialogue extends HookConsumerWidget {
       ),
       actions: [
         TextButton.icon(
-          icon: const Icon(FontAwesomeIcons.xmark),
+          icon: const Iconify(TWIcons.x),
           label: const Text("Cancel"),
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
@@ -707,7 +708,7 @@ class AddPageDialogue extends HookConsumerWidget {
                   navigator.pop(controller.text);
                 },
           label: const Text("Add"),
-          icon: const Icon(FontAwesomeIcons.plus),
+          icon: const Iconify(TWIcons.plus),
         ),
       ],
     );
@@ -760,7 +761,7 @@ class RenamePageDialogue extends HookConsumerWidget {
         value: old,
         controller: controller,
         name: "Page Name",
-        icon: FontAwesomeIcons.book,
+        icon: TWIcons.book,
         validator: (value) {
           final validation = _validateName(value, pagesNames);
           isNameValid.value = validation == null;
@@ -779,7 +780,7 @@ class RenamePageDialogue extends HookConsumerWidget {
       ),
       actions: [
         TextButton.icon(
-          icon: const Icon(FontAwesomeIcons.xmark),
+          icon: const Iconify(TWIcons.x),
           label: const Text("Cancel"),
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
@@ -795,7 +796,7 @@ class RenamePageDialogue extends HookConsumerWidget {
                   navigator.pop(true);
                 },
           label: const Text("Rename"),
-          icon: const Icon(FontAwesomeIcons.pen),
+          icon: const Iconify(TWIcons.pencil),
           color: Colors.orange,
         ),
       ],
@@ -842,7 +843,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
         focus: focusNode,
         text: chapter,
         hintText: "Chapter Name",
-        icon: FontAwesomeIcons.book,
+        icon: TWIcons.book,
         inputFormatters: [
           TextInputFormatter.withFunction(
             (oldValue, newValue) => newValue.copyWith(
@@ -861,7 +862,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
       ),
       actions: [
         TextButton.icon(
-          icon: const Icon(FontAwesomeIcons.xmark),
+          icon: const Iconify(TWIcons.x),
           label: const Text("Cancel"),
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
@@ -876,7 +877,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
             changed,
           ),
           label: const Text("Change"),
-          icon: const Icon(FontAwesomeIcons.pen),
+          icon: const Iconify(TWIcons.pencil),
           color: Colors.orange,
         ),
       ],
@@ -896,7 +897,7 @@ Future<bool> showPageDeletionDialogue(
         "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
     delayConfirm: 3.seconds,
     confirmText: "Delete",
-    confirmIcon: FontAwesomeIcons.trash,
+    confirmIcon: TWIcons.trash,
     onConfirm: () async {
       await ref.read(bookProvider.notifier).deletePage(pageId);
       unawaited(
@@ -904,4 +905,12 @@ Future<bool> showPageDeletionDialogue(
       );
     },
   );
+}
+
+class PageDrag {
+  const PageDrag({
+    required this.pageId,
+  });
+
+  final String pageId;
 }

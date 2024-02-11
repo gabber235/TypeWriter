@@ -1,13 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
-import "package:typewriter/models/icons.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/general/error_box.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/header.dart";
@@ -138,8 +137,8 @@ class _ItemChip extends HookConsumerWidget {
 
     return InputChip(
       label: Text(id.capitalize, style: TextStyle(color: foregroundColor)),
-      avatar: FaIcon(
-        icons[info.get("icon") ?? "check"] ?? FontAwesomeIcons.check,
+      avatar: Iconify(
+        info.get("icon"),
         size: 14,
         color: foregroundColor,
       ),
