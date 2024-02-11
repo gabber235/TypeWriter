@@ -17,5 +17,5 @@ class WorldGroupEntry(
     override val id: String = "",
     override val name: String = "",
 ) : GroupEntry {
-    override fun groupId(player: Player): GroupId = GroupId(player.world.name)
+    override fun groupId(player: Player): GroupId = GroupId(player.world.uid)
 }
