@@ -2,7 +2,6 @@ package me.gabber235.typewriter
 
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.mcCoroutineConfiguration
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
@@ -20,6 +19,7 @@ import me.gabber235.typewriter.facts.storage.FileFactStorage
 import me.gabber235.typewriter.interaction.ActionBarBlockerHandler
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
+import me.gabber235.typewriter.interaction.PacketBlocker
 import me.gabber235.typewriter.snippets.SnippetDatabase
 import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
 import me.gabber235.typewriter.ui.*
@@ -72,6 +72,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<AssetManager>(::AssetManager)
             singleOf(::ChatHistoryHandler)
             singleOf(::ActionBarBlockerHandler)
+            singleOf(::PacketBlocker)
             factory<Gson>(named("entryParser")) { createEntryParserGson(get()) }
             factory<Gson>(named("bukkitDataParser")) { createBukkitDataParser() }
         }
@@ -102,6 +103,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<MessengerFinder>().initialize()
         get<ChatHistoryHandler>().initialize()
         get<ActionBarBlockerHandler>().initialize()
+        get<PacketBlocker>().initialize()
         get<AssetManager>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
@@ -131,6 +133,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<StagingManager>().shutdown()
         get<ChatHistoryHandler>().shutdown()
         get<ActionBarBlockerHandler>().shutdown()
+        get<PacketBlocker>().shutdown()
         get<CommunicationHandler>().shutdown()
         get<InteractionHandler>().shutdown()
         get<EntryListeners>().unregister()
