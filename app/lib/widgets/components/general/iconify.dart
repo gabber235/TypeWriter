@@ -32,13 +32,17 @@ class Iconify extends StatelessWidget {
 
     if (icon == null) return SizedBox(width: size, height: size);
 
-    return SvgPicture.network(
-      _url(icon, size),
+    return SizedBox(
       width: size,
       height: size,
-      theme: SvgTheme(currentColor: color),
-      placeholderBuilder: (context) =>
-          Icon(Icons.question_mark, size: size, color: color),
+      child: SvgPicture.network(
+        _url(icon, size),
+        width: size,
+        height: size,
+        theme: SvgTheme(currentColor: color),
+        placeholderBuilder: (context) =>
+            Icon(Icons.question_mark, size: size, color: color),
+      ),
     );
   }
 }
