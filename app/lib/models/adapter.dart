@@ -57,7 +57,7 @@ List<String> modifierPaths(
   return ref
       .watch(fieldModifiersProvider(blueprintName, modifierName))
       .entries
-      .where((e) => e.value.data == data)
+      .where((e) => data == null || e.value.data == data)
       .map((e) => e.key)
       .toList();
 }
