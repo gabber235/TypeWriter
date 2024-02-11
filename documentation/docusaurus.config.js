@@ -44,6 +44,13 @@ const config = {
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
                     routeBasePath: '/',
+                    lastVersion: '0.4.1',
+                    versions: {
+                      current: {
+                        label: 'beta⚠️',
+                        path: 'beta',
+                      },
+                    },
                 },
                 blog: {
                     showReadingTime: true,
@@ -88,6 +95,10 @@ const config = {
                         label: 'Develop',
                     },
                     { to: '/blog', label: 'Blog', position: 'left' },
+                    {
+                        type: 'docsVersionDropdown',
+                        position: 'right',
+                    },
                     {
                         href: 'https://github.com/gabber235/TypeWriter',
                         label: 'GitHub',
