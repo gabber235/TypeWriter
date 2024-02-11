@@ -148,6 +148,7 @@ class CameraCinematicAction(
         segments.forEach { it.setup() }
 
         player blockPacket PacketType.Play.Client.CLICK_WINDOW
+        player blockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
         player blockPacket PacketType.Play.Client.USE_ITEM
         player blockPacket PacketType.Play.Client.INTERACT_ENTITY
     }
@@ -192,6 +193,7 @@ class CameraCinematicAction(
         }
 
         player unblockPacket PacketType.Play.Client.CLICK_WINDOW
+        player unblockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
         player unblockPacket PacketType.Play.Client.USE_ITEM
         player unblockPacket PacketType.Play.Client.INTERACT_ENTITY
     }

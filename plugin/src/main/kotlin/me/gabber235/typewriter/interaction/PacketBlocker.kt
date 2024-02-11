@@ -19,11 +19,13 @@ class PacketBlocker : PacketListenerAbstract() {
 
     override fun onPacketReceive(event: PacketReceiveEvent?) {
         if (event == null) return
-        val player = event.user.uuid
+        val player = event.player
+        if (player !is Player) return
         val packetType = event.packetType
-        val blocker = blockers[player] ?: return
-        if (packetType in blocker)
+        val blocker = blockers[player.uniqueId] ?: return
+        if (packetType in blocker) {
             event.isCancelled = true
+        }
     }
 
     fun blockPacket(player: UUID, packetType: PacketTypeCommon) {
