@@ -20,10 +20,11 @@ function UnreleasedVersionLabel({ siteTitle, versionMetadata }) {
       values={{
         siteTitle,
         versionLabel: <b>{versionMetadata.label}</b>,
+        betatext: <b>beta</b>,
       }}
     >
       {
-        "You are currently using the beta version of the typewriter documentation!"
+        "You are currently looking at the documentation of typewriter for the {betatext} version!"
       }
     </Translate>
   );
@@ -75,7 +76,7 @@ function LatestVersionSuggestionLabel({ versionLabel, to, onClick }) {
       }}
     >
       {
-        "For the latest released versionw, see the {latestVersionLink} ({versionLabel})."
+        "For the latest released version, see the {latestVersionLink} ({versionLabel})."
       }
     </Translate>
   );
