@@ -57,10 +57,6 @@ class CameraCinematicEntry(
             player,
             this,
         )
-//        return CameraCinematicAction(
-//            player,
-//            this,
-//        )
     }
 
     override fun createSimulated(player: Player): CinematicAction {
@@ -95,7 +91,7 @@ class CameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
 ) : CinematicAction {
-    private var currentSegment: CameraSegment? = null
+    private var previousSegment: CameraSegment? = null
     private lateinit var action: CameraAction
 
     private var originalState: PlayerState? = null
@@ -114,8 +110,8 @@ class CameraCinematicAction(
 
         val segment = (entry.segments activeSegmentAt frame)
 
-        if (segment != currentSegment) {
-            if (currentSegment == null && segment != null) {
+        if (segment != previousSegment) {
+            if (previousSegment == null && segment != null) {
                 player.setup()
                 action.startSegment(segment)
             } else if (segment != null) {
@@ -125,17 +121,17 @@ class CameraCinematicAction(
                 player.teardown()
             }
 
-            currentSegment = segment
+            previousSegment = segment
         }
 
-        if (currentSegment != null) {
-            val baseFrame = frame - (currentSegment?.startFrame ?: 0)
+        if (segment != null) {
+            val baseFrame = frame - segment.startFrame
             action.tickSegment(baseFrame)
         }
     }
 
     private suspend fun Player.setup() {
-        originalState = state(
+        if (originalState == null) originalState = state(
             LOCATION,
             ALLOW_FLIGHT,
             FLYING,
@@ -177,6 +173,7 @@ class CameraCinematicAction(
                 }
             }
         }
+        originalState = null
 
         this unblockPacket PacketType.Play.Client.CLICK_WINDOW
         this unblockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
@@ -312,7 +309,6 @@ private class DisplayCameraAction(
         player.stopSpectatingEntity()
         entity.remove()
     }
-
 }
 
 private class TeleportCameraAction(
