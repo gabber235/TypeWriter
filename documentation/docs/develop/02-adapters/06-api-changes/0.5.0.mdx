@@ -1,0 +1,81 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# All api changes to 0.5.0
+
+This document lists all the API changes introduced in version `0.5.0` of the TypeWriter plugin. If you are upgrading from an older version, please read this document before upgrading.
+
+## New type: ref
+
+To streamline the api more, I created a new type called Ref. It is a much nicer api.
+
+<Tabs>
+  <TabItem value="old" label="Old">
+    ```kotlin showLineNumbers
+    class ExampleEntry(
+        // ...
+        override val triggers: List<String> = emptyList(),
+        @EntryIdentifier(OtherEntry::class)
+        val identifier: String = "",
+        // ...
+    ) : TriggerableEntry
+    ```
+    Getting entry:
+    ```kotlin showLineNumbers
+    val otherEntry = Query.findById<OtherEntry>(entry.identifier)
+    ```
+  </TabItem>
+  <TabItem value="new" label="New" default>
+    ```kotlin showLineNumbers
+    class ExampleEntry(
+        // ...
+        override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
+        val identifier: Ref<OtherEntry> = emptyRef(),
+        // ...
+    ) : TriggerableEntry
+    ```
+    Getting entry:
+    ```kotlin showLineNumbers
+    val otherEntry = entry.identifier.get()
+    ```
+  </TabItem>
+</Tabs>
+
+## change to facts interface
+
+<Tabs>
+  <TabItem value="old" label="Old">
+    ```kotlin showLineNumbers
+    class InventoryItemCountFact(
+        override val id: String = "",
+        override val name: String = "",
+        override val comment: String = "",
+        @Help("The item to check for.")
+        val item: Item = Item.Empty,
+    ) : ReadableFactEntry {
+        override fun read(playerId: UUID): Fact {
+            val player = server.getPlayer(playerId) ?: return Fact(id, 0)
+            val amount = player.inventory.contents.filterNotNull().filter { item.isSameAs(player, it) }.sumOf { it.amount }
+            return Fact(id, amount)
+        }
+    }
+    ```
+  </TabItem>
+  <TabItem value="new" label="New" default>
+    ```kotlin showLineNumbers
+    class InventoryItemCountFact(
+        override val id: String = "",
+        override val name: String = "",
+        override val comment: String = "",
+        override val group: Ref<GroupEntry> = emptyRef(),
+        @Help("The item to check for.")
+        val item: Item = Item.Empty,
+    ) : ReadableFactEntry {
+        override fun readSinglePlayer(player: Player): FactData {
+            val amount = player.inventory.contents.filterNotNull().filter { item.isSameAs(player, it) }.sumOf { it.amount }
+            return FactData(amount)
+        }
+    }
+    ```
+  </TabItem>
+</Tabs>
