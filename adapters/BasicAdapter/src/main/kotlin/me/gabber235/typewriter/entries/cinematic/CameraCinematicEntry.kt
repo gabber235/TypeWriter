@@ -53,7 +53,7 @@ class CameraCinematicEntry(
     val segments: List<CameraSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
-        return NewCameraCinematicAction(
+        return CameraCinematicAction(
             player,
             this,
         )
@@ -91,7 +91,7 @@ data class PathPoint(
     val duration: Optional<Int> = Optional.empty(),
 )
 
-class NewCameraCinematicAction(
+class CameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
 ) : CinematicAction {
