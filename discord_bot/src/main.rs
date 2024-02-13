@@ -18,7 +18,7 @@ use reqwest::{
 };
 use webhook::clickup_webhook;
 
-use crate::webhook::webhook_get;
+use crate::webhook::{publish_beta_version, webhook_get};
 
 pub struct Data {} // User data, which is stored and accessible in all command invocations
 pub type Context<'a> = poise::Context<'a, Data, WinstonError>;
@@ -100,6 +100,7 @@ async fn startup_webhook() {
         App::new()
             .wrap(Logger::default())
             .service(webhook_get)
+            .service(publish_beta_version)
             .service(clickup_webhook)
     })
     .bind("0.0.0.0:8080")
