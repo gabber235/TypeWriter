@@ -2,18 +2,17 @@ package me.gabber235.typewriter.entries.cinematic
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.utils.*
-import me.gabber235.typewriter.utils.GenericPlayerStateProvider.GAME_MODE
-import me.gabber235.typewriter.utils.GenericPlayerStateProvider.LOCATION
+import me.gabber235.typewriter.utils.EffectStateProvider
+import me.gabber235.typewriter.utils.PlayerState
 import me.gabber235.typewriter.utils.ThreadType.SYNC
-import org.bukkit.GameMode
+import me.gabber235.typewriter.utils.restore
+import me.gabber235.typewriter.utils.state
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType.BLINDNESS
@@ -45,10 +44,6 @@ class BlindingCinematicEntry(
 data class BlindingSegment(
     override val startFrame: Int,
     override val endFrame: Int,
-    @Help("Teleport the player to y 500 to prevent them from seeing the world")
-    val teleport: Boolean = false,
-    @Help("Set the player to spectator mode")
-    val spectator: Boolean = false,
 ) : Segment
 
 class BlindingCinematicAction(
@@ -62,19 +57,10 @@ class BlindingCinematicAction(
 
     override suspend fun startSegment(segment: BlindingSegment) {
         super.startSegment(segment)
-        state = player.state(LOCATION, GAME_MODE, EffectStateProvider(BLINDNESS))
+        state = player.state(EffectStateProvider(BLINDNESS))
 
         SYNC.switchContext {
             player.addPotionEffect(PotionEffect(BLINDNESS, 10000000, 1, false, false, false))
-
-            if (segment.teleport) {
-                /// Teleport the player high up to prevent them from seeing the world
-                val location = player.location.highUpLocation
-                player.teleport(location)
-            }
-            if (segment.spectator) {
-                player.gameMode = GameMode.SPECTATOR
-            }
         }
     }
 
