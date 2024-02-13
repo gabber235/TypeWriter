@@ -8,7 +8,7 @@ pub async fn move_done_to_beta() -> Result<(), WinstonError> {
     })
     .await?;
 
-    for task in tasks {
+    for task in tasks.tasks {
         update_task(
             &task.id,
             UpdateTask {

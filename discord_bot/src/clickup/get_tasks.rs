@@ -8,7 +8,12 @@ pub struct TasksQuery {
     pub statuses: Vec<TaskStatus>,
 }
 
-pub async fn get_tasks(query: TasksQuery) -> Result<Vec<Task>, WinstonError> {
+#[derive(Debug, serde::Deserialize)]
+pub struct TaskListings {
+    pub tasks: Vec<Task>,
+}
+
+pub async fn get_tasks(query: TasksQuery) -> Result<TaskListings, WinstonError> {
     let mut params = vec![];
 
     for status in query.statuses {
@@ -34,7 +39,7 @@ pub async fn get_tasks(query: TasksQuery) -> Result<Vec<Task>, WinstonError> {
 
     let text = result.text().await?;
 
-    match serde_json::from_str::<Vec<Task>>(&text) {
+    match serde_json::from_str::<TaskListings>(&text) {
         Ok(tasks) => Ok(tasks),
         Err(e) => {
             eprintln!("failed to deserialize task: {}", e);

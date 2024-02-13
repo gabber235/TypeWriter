@@ -14,7 +14,8 @@ pub async fn webhook_get() -> impl Responder {
 
 #[actix_web::get("/publishbeta")]
 pub async fn publish_beta_version(req: HttpRequest) -> impl Responder {
-    let secret = std::env::var("GITHUB_WEBHOOK_SIGNATURE").expect("missing WEBHOOK_SECRET");
+    let secret =
+        std::env::var("GITHUB_WEBHOOK_SIGNATURE").expect("missing GITHUB_WEBHOOK_SIGNATURE");
     let headers = req.headers();
     let signature = headers
         .get("X-Signature")
@@ -22,10 +23,6 @@ pub async fn publish_beta_version(req: HttpRequest) -> impl Responder {
         .to_str()
         .expect("failed to convert X-Signature header to str")
         .trim();
-
-    if signature.is_empty() {
-        return HttpResponse::BadRequest().body("missing signature");
-    }
 
     // Check if the signature is equal to the expected signature
     if signature != secret {
