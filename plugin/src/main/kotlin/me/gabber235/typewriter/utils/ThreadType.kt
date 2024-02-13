@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.utils
 
+import com.github.shynixn.mccoroutine.bukkit.asyncDispatcher
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,7 @@ enum class ThreadType {
         return withContext(
             when (this) {
                 SYNC -> plugin.minecraftDispatcher
-                ASYNC -> plugin.minecraftDispatcher
+                ASYNC -> plugin.asyncDispatcher
                 DISPATCHERS_ASYNC -> Dispatchers.IO
                 else -> throw IllegalStateException("Unknown thread type: $this")
             }
