@@ -685,7 +685,7 @@ class _FieldModifiersProviderElement
   String get modifierName => (origin as FieldModifiersProvider).modifierName;
 }
 
-String _$modifierPathsHash() => r'a4565b3eea5dbb1aa9ac0121f7f517d6c97f6716';
+String _$modifierPathsHash() => r'284078b7f30b5e344e771c4a093ded5131de6632';
 
 /// Gets all the paths from fields with a given modifier.
 ///
