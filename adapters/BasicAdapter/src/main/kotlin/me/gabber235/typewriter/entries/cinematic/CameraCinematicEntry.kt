@@ -369,6 +369,17 @@ private fun List<PathPoint>.transform(
     totalDuration: Int,
     locationTransformer: (Location) -> Location
 ): List<PointSegment> {
+    if (isEmpty()) {
+        throw IllegalArgumentException("The path points cannot be empty.")
+    }
+
+    if (size == 1) {
+        val pathPoint = first()
+        val location = pathPoint.location.run(locationTransformer)
+        return listOf(PointSegment(0, totalDuration, location))
+    }
+
+
     val allocatedDuration = sumOf { it.duration.orElse(0) }
     if (allocatedDuration > totalDuration) {
         throw IllegalArgumentException("The total duration of the path points is greater than the total duration of the cinematic.")
