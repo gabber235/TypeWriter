@@ -17,7 +17,7 @@ pub async fn get_tasks(query: TasksQuery) -> Result<TaskListings, WinstonError> 
     let mut params = vec![];
 
     for status in query.statuses {
-        params.push(("statuses[]", status.to_string()));
+        params.push(("statuses[]", status.raw_string()));
     }
 
     let url = Url::parse_with_params(
