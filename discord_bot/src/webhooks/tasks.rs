@@ -197,6 +197,7 @@ fn get_status_tags(available_tags: &[ForumTag]) -> HashMap<TaskStatus, ForumTagI
         .filter_map(|tag| match tag.name.as_str() {
             "Backlog" => Some((TaskStatus::Backlog, tag.id.clone())),
             "In Progress" => Some((TaskStatus::InProgress, tag.id.clone())),
+            "Done" => Some((TaskStatus::Done, tag.id.clone())),
             "In Development" => Some((TaskStatus::InBeta, tag.id.clone())),
             "In Production" => Some((TaskStatus::InProduction, tag.id.clone())),
             _ => None,
