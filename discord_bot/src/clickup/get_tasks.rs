@@ -10,7 +10,12 @@ pub struct TasksQuery {
 
 #[derive(Debug, serde::Deserialize)]
 pub struct TaskListings {
-    pub tasks: Vec<Task>,
+    pub tasks: Vec<TaskListing>,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub struct TaskListing {
+    pub id: String,
 }
 
 pub async fn get_tasks(query: TasksQuery) -> Result<TaskListings, WinstonError> {
