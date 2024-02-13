@@ -33,7 +33,7 @@ class PlayerNearLocationEventEntry(
 @EntryListener(PlayerNearLocationEventEntry::class)
 fun onPlayerNearLocation(event: PlayerMoveEvent, query: Query<PlayerNearLocationEventEntry>) {
     // Only check if the player moved a block
-    if (event.from.blockX == event.to.blockX && event.from.blockY == event.to.blockY && event.from.blockZ == event.to.blockZ) return
+    if (!event.hasChangedBlock()) return
 
     query findWhere { entry ->
         event.player.isInRange(entry.location, entry.range)
@@ -41,5 +41,6 @@ fun onPlayerNearLocation(event: PlayerMoveEvent, query: Query<PlayerNearLocation
 }
 
 fun Player.isInRange(location: Location, range: Double): Boolean {
+    if (location.world != world) return false
     return this.location.distanceSquared(location) <= range * range
 }
