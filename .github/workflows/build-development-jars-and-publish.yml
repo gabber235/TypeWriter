@@ -1,14 +1,6 @@
 name: Build Development Jars and Publish
 
 on: 
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'plugin/**'
-      - 'adapters/**'
-      - 'app/**'
-      - '.github/workflows/build-development-jars-and-publish.yml'
   workflow_dispatch:
   
 jobs:
@@ -105,5 +97,10 @@ jobs:
             I have published a development build of Typewriter.
             Version: ${{ steps.vars.outputs.version }}
             [Download](https://modrinth.com/plugin/typewriter/version/${{ steps.publish.outputs.modrinth-version }})
-
+      - name: Notify Winston
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://winston-discord-bot.fly.dev/publishbeta'
+          method: 'GET'
+          customHeaders: '{"X-Signature": "${{ secrets.WINSTON_SIGNATURE }}"}'
 
