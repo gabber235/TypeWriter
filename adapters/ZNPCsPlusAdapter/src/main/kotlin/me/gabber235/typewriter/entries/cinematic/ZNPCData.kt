@@ -9,6 +9,7 @@ import lol.pyr.znpcsplus.util.NpcPose
 import me.gabber235.typewriter.capture.capturers.ArmSwing
 import me.gabber235.typewriter.entry.entries.NpcData
 import me.gabber235.typewriter.extensions.packetevents.swingArm
+import me.gabber235.typewriter.logger
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
@@ -17,6 +18,15 @@ import java.util.*
 
 interface ZNPCData : NpcData<NpcEntry> {
     override fun spawn(player: Player, npc: NpcEntry, location: Location) {
+        if (player.world != location.world) {
+            logger.severe(
+                """|
+                |Player and NPC are not in the same world! Cannot spawn NPC. 
+                |(Player: ${player.world}, NPC: ${location.world})
+                |Make sure that the player is teleported before the NPC is spawned. 
+            """.trimMargin()
+            )
+        }
         npc.npc.location = NpcLocation(location)
         npc.isProcessed = false
         npc.isSave = false
