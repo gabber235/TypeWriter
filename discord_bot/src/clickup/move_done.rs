@@ -8,6 +8,16 @@ pub async fn move_done_to_beta() -> Result<(), WinstonError> {
     })
     .await?;
 
+    println!(
+        "Moving tasks to beta: {}",
+        tasks
+            .tasks
+            .iter()
+            .map(|task| task.id.clone())
+            .collect::<Vec<_>>()
+            .join(", ")
+    );
+
     for task in tasks.tasks {
         update_task(
             &task.id,
