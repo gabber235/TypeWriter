@@ -12,6 +12,8 @@ pub enum TaskStatus {
     Backlog,
     #[name = "🏗 In progress"]
     InProgress,
+    #[name = "✅ Done"]
+    Done,
     #[name = "👀 In beta"]
     InBeta,
     #[name = "🚀 In production"]
@@ -23,6 +25,7 @@ impl TaskStatus {
         match self {
             TaskStatus::Backlog => "backlog".to_string(),
             TaskStatus::InProgress => "in progress".to_string(),
+            TaskStatus::Done => "done".to_string(),
             TaskStatus::InBeta => "in beta".to_string(),
             TaskStatus::InProduction => "in production".to_string(),
         }
@@ -34,6 +37,7 @@ impl Display for TaskStatus {
         match self {
             TaskStatus::Backlog => write!(f, "📋 Backlog"),
             TaskStatus::InProgress => write!(f, "🏗 In progress"),
+            TaskStatus::Done => write!(f, "✅ Done"),
             TaskStatus::InBeta => write!(f, "👀 In beta"),
             TaskStatus::InProduction => write!(f, "🚀 In production"),
         }
@@ -45,6 +49,7 @@ impl ClickupIdentifiable for TaskStatus {
         match self {
             TaskStatus::Backlog => "p90150987376_OOQuHfTS".to_string(),
             TaskStatus::InProgress => "p90150987376_2VuuCTca".to_string(),
+            TaskStatus::Done => "p90150987376_i5JDI7b8".to_string(),
             TaskStatus::InBeta => "p90150987376_rgJ7Kpgr".to_string(),
             TaskStatus::InProduction => "p90150987376_gaWBoToF".to_string(),
         }
