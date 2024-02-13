@@ -18,7 +18,7 @@ use reqwest::{
 };
 use webhook::clickup_webhook;
 
-use crate::webhook::clickup_webhook_get;
+use crate::webhook::webhook_get;
 
 pub struct Data {} // User data, which is stored and accessible in all command invocations
 pub type Context<'a> = poise::Context<'a, Data, WinstonError>;
@@ -99,7 +99,7 @@ async fn startup_webhook() {
     HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
-            .service(clickup_webhook_get)
+            .service(webhook_get)
             .service(clickup_webhook)
     })
     .bind("0.0.0.0:8080")
@@ -205,6 +205,9 @@ pub enum WinstonError {
 
     #[error("Failed to parse json: {0}")]
     ParseJson(#[from] serde_json::Error),
+
+    #[error("Failed to parse url: {0}")]
+    ParseUrl(#[from] url::ParseError),
 
     #[error("Tag not found: {0}")]
     TagNotFound(String),

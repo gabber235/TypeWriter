@@ -3,11 +3,42 @@ use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 
+use crate::clickup::move_done_to_beta;
+
 type HmacSha256 = Hmac<Sha256>;
 
 #[actix_web::get("/")]
-pub async fn clickup_webhook_get() -> impl Responder {
+pub async fn webhook_get() -> impl Responder {
     HttpResponse::Ok().body("ok")
+}
+
+#[actix_web::get("/publishbeta")]
+pub async fn publish_beta_version(req: HttpRequest) -> impl Responder {
+    let secret = std::env::var("GITHUB_WEBHOOK_SIGNATURE").expect("missing WEBHOOK_SECRET");
+    let headers = req.headers();
+    let signature = headers
+        .get("X-Signature")
+        .expect("missing X-Signature header")
+        .to_str()
+        .expect("failed to convert X-Signature header to str")
+        .trim();
+
+    if signature.is_empty() {
+        return HttpResponse::BadRequest().body("missing signature");
+    }
+
+    // Check if the signature is equal to the expected signature
+    if signature != secret {
+        return HttpResponse::Unauthorized().body("invalid signature");
+    }
+
+    match move_done_to_beta().await {
+        Ok(_) => HttpResponse::Ok().body("ok"),
+        Err(e) => {
+            eprintln!("failed to move tasks to beta: {}", e);
+            HttpResponse::InternalServerError().body(format!("failed to move tasks to beta: {}", e))
+        }
+    }
 }
 
 #[actix_web::post("/")]
