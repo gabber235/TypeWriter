@@ -49,7 +49,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
     implementation("com.github.dyam0:LirandAPI:96cc59d4fb")
-    implementation("com.github.Tofaa2:EntityLib:v1.2.1-SNAPSHOT")
+    implementation("com.github.Tofaa2.EntityLib:EntityLib:1.2.4-SNAPSHOT")
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.ktor:ktor-server-core-jvm:2.3.6")
@@ -68,7 +68,7 @@ dependencies {
     compileOnly("com.mojang:brigadier:1.0.18")
     compileOnly("me.clip:placeholderapi:2.11.3")
     compileOnly("com.google.code.gson:gson:2.10.1")
-    compileOnly("com.github.retrooper.packetevents:spigot:2.2.0")
+    compileOnly("com.github.retrooper.packetevents:spigot:2.2.1")
     compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")

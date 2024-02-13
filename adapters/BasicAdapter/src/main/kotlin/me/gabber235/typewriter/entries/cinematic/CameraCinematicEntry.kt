@@ -291,6 +291,7 @@ private class DisplayCameraAction(
         }
 
         entity.remove()
+        EntityLib.removeEntity(entity)
         entity = newEntity
     }
 
@@ -308,6 +309,7 @@ private class DisplayCameraAction(
     override suspend fun stop() {
         player.stopSpectatingEntity()
         entity.remove()
+        EntityLib.removeEntity(entity)
     }
 }
 
