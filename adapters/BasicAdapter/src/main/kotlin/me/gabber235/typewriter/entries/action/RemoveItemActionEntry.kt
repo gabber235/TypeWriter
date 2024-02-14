@@ -49,8 +49,6 @@ class RemoveItemActionEntry(
             itemWithoutAmount.isSameAs(player, it.value)
         }.iterator()
 
-        println(items)
-
         var toRemove = item.amount.orElse(1)
 
         while (toRemove > 0 && items.hasNext()) {

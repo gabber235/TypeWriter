@@ -399,7 +399,139 @@ class _EntryBlueprintProviderElement
   String get blueprintName => (origin as EntryBlueprintProvider).blueprintName;
 }
 
-String _$entryTagsHash() => r'7b74db2d147b0aa22b1ad3934f3c45dca69c8b97';
+String _$entryBlueprintTagsHash() =>
+    r'999df9eb33de7198efa9eb463cca6dd400d6456a';
+
+/// See also [entryBlueprintTags].
+@ProviderFor(entryBlueprintTags)
+const entryBlueprintTagsProvider = EntryBlueprintTagsFamily();
+
+/// See also [entryBlueprintTags].
+class EntryBlueprintTagsFamily extends Family<List<String>> {
+  /// See also [entryBlueprintTags].
+  const EntryBlueprintTagsFamily();
+
+  /// See also [entryBlueprintTags].
+  EntryBlueprintTagsProvider call(
+    String blueprintName,
+  ) {
+    return EntryBlueprintTagsProvider(
+      blueprintName,
+    );
+  }
+
+  @override
+  EntryBlueprintTagsProvider getProviderOverride(
+    covariant EntryBlueprintTagsProvider provider,
+  ) {
+    return call(
+      provider.blueprintName,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entryBlueprintTagsProvider';
+}
+
+/// See also [entryBlueprintTags].
+class EntryBlueprintTagsProvider extends AutoDisposeProvider<List<String>> {
+  /// See also [entryBlueprintTags].
+  EntryBlueprintTagsProvider(
+    String blueprintName,
+  ) : this._internal(
+          (ref) => entryBlueprintTags(
+            ref as EntryBlueprintTagsRef,
+            blueprintName,
+          ),
+          from: entryBlueprintTagsProvider,
+          name: r'entryBlueprintTagsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$entryBlueprintTagsHash,
+          dependencies: EntryBlueprintTagsFamily._dependencies,
+          allTransitiveDependencies:
+              EntryBlueprintTagsFamily._allTransitiveDependencies,
+          blueprintName: blueprintName,
+        );
+
+  EntryBlueprintTagsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.blueprintName,
+  }) : super.internal();
+
+  final String blueprintName;
+
+  @override
+  Override overrideWith(
+    List<String> Function(EntryBlueprintTagsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EntryBlueprintTagsProvider._internal(
+        (ref) => create(ref as EntryBlueprintTagsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        blueprintName: blueprintName,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<String>> createElement() {
+    return _EntryBlueprintTagsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EntryBlueprintTagsProvider &&
+        other.blueprintName == blueprintName;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, blueprintName.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin EntryBlueprintTagsRef on AutoDisposeProviderRef<List<String>> {
+  /// The parameter `blueprintName` of this provider.
+  String get blueprintName;
+}
+
+class _EntryBlueprintTagsProviderElement
+    extends AutoDisposeProviderElement<List<String>>
+    with EntryBlueprintTagsRef {
+  _EntryBlueprintTagsProviderElement(super.provider);
+
+  @override
+  String get blueprintName =>
+      (origin as EntryBlueprintTagsProvider).blueprintName;
+}
+
+String _$entryTagsHash() => r'b71bc52479db49fa3f55d80106a998243f377f3d';
 
 /// See also [entryTags].
 @ProviderFor(entryTags)
@@ -412,10 +544,10 @@ class EntryTagsFamily extends Family<List<String>> {
 
   /// See also [entryTags].
   EntryTagsProvider call(
-    String blueprintName,
+    String entryId,
   ) {
     return EntryTagsProvider(
-      blueprintName,
+      entryId,
     );
   }
 
@@ -424,7 +556,7 @@ class EntryTagsFamily extends Family<List<String>> {
     covariant EntryTagsProvider provider,
   ) {
     return call(
-      provider.blueprintName,
+      provider.entryId,
     );
   }
 
@@ -447,11 +579,11 @@ class EntryTagsFamily extends Family<List<String>> {
 class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
   /// See also [entryTags].
   EntryTagsProvider(
-    String blueprintName,
+    String entryId,
   ) : this._internal(
           (ref) => entryTags(
             ref as EntryTagsRef,
-            blueprintName,
+            entryId,
           ),
           from: entryTagsProvider,
           name: r'entryTagsProvider',
@@ -461,7 +593,7 @@ class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
                   : _$entryTagsHash,
           dependencies: EntryTagsFamily._dependencies,
           allTransitiveDependencies: EntryTagsFamily._allTransitiveDependencies,
-          blueprintName: blueprintName,
+          entryId: entryId,
         );
 
   EntryTagsProvider._internal(
@@ -471,10 +603,10 @@ class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.blueprintName,
+    required this.entryId,
   }) : super.internal();
 
-  final String blueprintName;
+  final String entryId;
 
   @override
   Override overrideWith(
@@ -489,7 +621,7 @@ class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        blueprintName: blueprintName,
+        entryId: entryId,
       ),
     );
   }
@@ -501,21 +633,21 @@ class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
 
   @override
   bool operator ==(Object other) {
-    return other is EntryTagsProvider && other.blueprintName == blueprintName;
+    return other is EntryTagsProvider && other.entryId == entryId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, blueprintName.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin EntryTagsRef on AutoDisposeProviderRef<List<String>> {
-  /// The parameter `blueprintName` of this provider.
-  String get blueprintName;
+  /// The parameter `entryId` of this provider.
+  String get entryId;
 }
 
 class _EntryTagsProviderElement extends AutoDisposeProviderElement<List<String>>
@@ -523,7 +655,7 @@ class _EntryTagsProviderElement extends AutoDisposeProviderElement<List<String>>
   _EntryTagsProviderElement(super.provider);
 
   @override
-  String get blueprintName => (origin as EntryTagsProvider).blueprintName;
+  String get entryId => (origin as EntryTagsProvider).entryId;
 }
 
 String _$fieldModifiersHash() => r'2e926b371b7db972ec7c3ed7db468baaa6839aba';

@@ -67,6 +67,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<FactDatabase>(::FactDatabase)
             singleOf<FactStorage>(::FileFactStorage)
             singleOf<EntryListeners>(::EntryListeners)
+            singleOf<AudienceManager>(::AudienceManager)
             singleOf<Recorders>(::Recorders)
             singleOf<AssetStorage>(::LocalAssetStorage)
             singleOf<AssetManager>(::AssetManager)
@@ -105,6 +106,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<ActionBarBlockerHandler>().initialize()
         get<PacketBlocker>().initialize()
         get<AssetManager>().initialize()
+        get<AudienceManager>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
             TypewriteExpansion.register()
@@ -139,6 +141,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<EntryListeners>().unregister()
         get<FactDatabase>().shutdown()
         get<AssetManager>().shutdown()
+        get<AudienceManager>().shutdown()
     }
 }
 

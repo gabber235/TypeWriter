@@ -5,6 +5,7 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/book.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/color_converter.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
@@ -30,8 +31,21 @@ EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String blueprintName) =>
         .firstWhereOrNull((e) => e.name == blueprintName);
 
 @riverpod
-List<String> entryTags(EntryTagsRef ref, String blueprintName) =>
+List<String> entryBlueprintTags(
+  EntryBlueprintTagsRef ref,
+  String blueprintName,
+) =>
     ref.watch(entryBlueprintProvider(blueprintName))?.tags ?? [];
+
+@riverpod
+List<String> entryTags(
+  EntryTagsRef ref,
+  String entryId,
+) {
+  final blueprint = ref.watch(entryTypeProvider(entryId));
+  if (blueprint == null) return [];
+  return ref.watch(entryBlueprintTagsProvider(blueprint));
+}
 
 /// Gets all the modifiers with a given name.
 @riverpod

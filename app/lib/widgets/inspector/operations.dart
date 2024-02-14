@@ -5,7 +5,7 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/components/app/entries_graph.dart";
+import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
@@ -25,8 +25,11 @@ class Operations extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final type = ref.watch(inspectingEntryProvider.select((e) => e?.type));
     if (type == null) return const SizedBox();
-    final canTrigger = ref.watch(isTriggerEntryProvider(type));
-    final canBeTriggered = ref.watch(isTriggerableEntryProvider(type));
+    final entryId = ref.read(inspectingEntryIdProvider);
+    if (entryId == null) return const SizedBox();
+    final linkablePaths = ref.watch(linkablePathsProvider(entryId));
+    final linkableDuplicatePaths =
+        ref.watch(linkableDuplicatePathsProvider(entryId));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -43,12 +46,12 @@ class Operations extends HookConsumerWidget {
             ),
           const SizedBox(height: 8),
         ],
-        if (canTrigger) ...[
-          const _ExtendWithEntry(),
+        if (linkablePaths.isNotEmpty) ...[
+          _LinkWithEntry(paths: linkablePaths),
           const SizedBox(height: 8),
         ],
-        if (canTrigger && canBeTriggered) ...[
-          const _ExtendWithDuplicate(),
+        if (linkableDuplicatePaths.isNotEmpty) ...[
+          _LinkWithDuplicate(paths: linkableDuplicatePaths),
           const SizedBox(height: 8),
         ],
         const _DeleteEntry(),
@@ -58,41 +61,53 @@ class Operations extends HookConsumerWidget {
   }
 }
 
-class _ExtendWithDuplicate extends HookConsumerWidget {
-  const _ExtendWithDuplicate();
+class _LinkWithEntry extends HookConsumerWidget {
+  const _LinkWithEntry({
+    required this.paths,
+  });
+
+  final List<String> paths;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return OutlineButton.icon(
-      onPressed: () {
+      onPressed: () async {
         final page = ref.read(currentPageProvider);
         if (page == null) return;
         final entryId = ref.read(inspectingEntryIdProvider);
         if (entryId.isNullOrEmpty) return;
-        page.extendsWithDuplicate(ref.passing, entryId!);
+        final path = await pathSelector(context, paths);
+        if (path == null) return;
+        page.linkWith(ref.passing, entryId!, path);
       },
-      icon: const Iconify(TWIcons.duplicate),
-      label: const Text("Extend with Duplicate"),
+      icon: const Iconify(TWIcons.plus),
+      label: const Text("Link with ..."),
       color: Colors.blue,
     );
   }
 }
 
-class _ExtendWithEntry extends HookConsumerWidget {
-  const _ExtendWithEntry();
+class _LinkWithDuplicate extends HookConsumerWidget {
+  const _LinkWithDuplicate({
+    required this.paths,
+  });
+
+  final List<String> paths;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return OutlineButton.icon(
-      onPressed: () {
+      onPressed: () async {
         final page = ref.read(currentPageProvider);
         if (page == null) return;
         final entryId = ref.read(inspectingEntryIdProvider);
         if (entryId.isNullOrEmpty) return;
-        page.extendsWith(ref.passing, entryId!);
+        final path = await pathSelector(context, paths);
+        if (path == null) return;
+        await page.linkWithDuplicate(ref.passing, entryId!, path);
       },
-      icon: const Iconify(TWIcons.plus),
-      label: const Text("Extend with ..."),
+      icon: const Iconify(TWIcons.duplicate),
+      label: const Text("Link with Duplicate"),
       color: Colors.blue,
     );
   }

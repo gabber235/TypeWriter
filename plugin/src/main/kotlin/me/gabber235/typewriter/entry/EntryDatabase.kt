@@ -46,6 +46,7 @@ interface EntryDatabase {
 
 class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     private val entryListeners: EntryListeners by inject()
+    private val audienceManager: AudienceManager by inject()
     private val gson: Gson by inject(named("entryParser"))
 
     private var pages: List<Page> = emptyList()
@@ -73,6 +74,7 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
         this.pages = pages
 
         entryListeners.register()
+        audienceManager.register()
 
         logger.info("Loaded ${entries.size} entries from ${pages.size} pages.")
     }
@@ -190,6 +192,9 @@ enum class PageType(val id: String) {
 
     @SerializedName("cinematic")
     CINEMATIC("cinematic"),
+
+    @SerializedName("manifest")
+    MANIFEST("manifest"),
     ;
 
     companion object {

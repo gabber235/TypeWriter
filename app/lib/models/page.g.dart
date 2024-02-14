@@ -28,6 +28,7 @@ const _$PageTypeEnumMap = {
   PageType.sequence: 'sequence',
   PageType.static: 'static',
   PageType.cinematic: 'cinematic',
+  PageType.manifest: 'manifest',
 };
 
 // **************************************************************************

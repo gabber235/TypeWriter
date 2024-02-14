@@ -17,7 +17,7 @@ List<String> _staticEntryIds(_StaticEntryIdsRef ref) {
 
   return page.entries
       .where((entry) {
-        final tags = ref.watch(entryTagsProvider(entry.type));
+        final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
         return tags.contains("static");
       })
       .map((entry) => entry.id)
