@@ -1,9 +1,12 @@
+import "dart:async";
+
 import "package:dotted_border/dotted_border.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide ContextMenuController;
 import "package:flutter_animate/flutter_animate.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/book.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
@@ -11,13 +14,60 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/components/app/entries_graph.dart";
+import "package:typewriter/widgets/components/app/page_search.dart";
+import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "entry_node.g.dart";
+
+@riverpod
+List<String> linkablePaths(
+  LinkablePathsRef ref,
+  String entryId,
+) {
+  final entry = ref.read(globalEntryProvider(entryId));
+  if (entry == null) return [];
+
+  final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
+  return modifiers.entries.expand((e) => entry.newPaths(e.key)).toList();
+}
+
+@riverpod
+List<String> linkableDuplicatePaths(
+  LinkableDuplicatePathsRef ref,
+  String entryId,
+) {
+  final entry = ref.read(globalEntryProvider(entryId));
+  if (entry == null) return [];
+  final tags = ref.read(entryTagsProvider(entryId));
+
+  final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
+  return modifiers.entries
+      .where((e) => tags.contains(e.value.data))
+      .expand((e) => entry.newPaths(e.key))
+      .toList();
+}
+
+@riverpod
+List<String> _acceptingPaths(
+  _AcceptingPathsRef ref,
+  String entryId,
+  String targetId,
+) {
+  final targetTags = ref.watch(entryTagsProvider(targetId));
+
+  final entry = ref.read(globalEntryProvider(entryId));
+  if (entry == null) return [];
+
+  final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
+  return modifiers.entries
+      .where((e) => targetTags.contains(e.value.data))
+      .expand((e) => entry.newPaths(e.key))
+      .toList();
+}
 
 class EntryNode extends HookConsumerWidget {
   const EntryNode({
@@ -46,7 +96,6 @@ class EntryNode extends HookConsumerWidget {
       id: entryId,
       type: entryType,
       backgroundColor: blueprint.color,
-      foregroundColor: Colors.white,
       name: entryName.formatted,
       icon: SizedBox(
         width: 18,
@@ -74,12 +123,44 @@ List<Writer> _writers(_WritersRef ref, String id) {
   }).toList();
 }
 
+Future<String?> pathSelector(
+  BuildContext context,
+  List<String> paths,
+) async {
+  if (paths.isEmpty) return null;
+  if (paths.length == 1) return paths.first;
+
+  final completer = Completer<String?>();
+
+  ContextMenuController(
+    onRemove: () async {
+      // This is a hack, as the onRemove callback is called before the context tile is called.
+      await Future.delayed(50.ms);
+      if (completer.isCompleted) return;
+      completer.complete(null);
+    },
+  ).showMenu(
+    context: context,
+    builder: (context) {
+      return paths.map((path) {
+        return ContextMenuTile.button(
+          title: path,
+          onTap: () {
+            completer.complete(path);
+          },
+        );
+      }).toList();
+    },
+  );
+
+  return completer.future;
+}
+
 class _EntryNode extends HookConsumerWidget {
   const _EntryNode({
     required this.id,
     required this.type,
     this.backgroundColor = Colors.grey,
-    this.foregroundColor = Colors.black,
     this.name = "",
     this.icon = const Icon(Icons.book, color: Colors.white),
     this.isSelected = false,
@@ -89,7 +170,6 @@ class _EntryNode extends HookConsumerWidget {
   final String id;
   final String type;
   final Color backgroundColor;
-  final Color foregroundColor;
   final String name;
   final Widget icon;
   final bool isSelected;
@@ -97,29 +177,64 @@ class _EntryNode extends HookConsumerWidget {
 
   final VoidCallback? onTap;
 
-  void _extendsWith(WidgetRef ref) {
-    final page = ref.read(currentPageProvider);
+  Future<void> _linkWith(
+    BuildContext context,
+    PassingRef ref,
+    List<String> paths,
+  ) async {
+    final page = ref.read(entryPageProvider(id));
     if (page == null) return;
-    page.extendsWith(ref.passing, id);
+    final path = await pathSelector(context, paths);
+    if (path == null) return;
+
+    page.linkWith(ref, id, path);
   }
 
-  void _extendsWithDuplicate(WidgetRef ref) {
-    final page = ref.read(currentPageProvider);
+  Future<void> _linkWithDuplicate(
+    BuildContext context,
+    PassingRef ref,
+    List<String> paths,
+  ) async {
+    final page = ref.read(entryPageProvider(id));
     if (page == null) return;
-    page.extendsWithDuplicate(ref.passing, id);
+    final path = await pathSelector(context, paths);
+    if (path == null) return;
+    await page.linkWithDuplicate(ref, id, path);
   }
 
-  void _deleteEntry(BuildContext context, WidgetRef ref) {
+  void _moveEntry(BuildContext context, PassingRef ref) {
+    final from = ref.read(entryPageIdProvider(id));
+    if (from == null) return;
+
+    final pageType = ref.read(entryBlueprintPageTypeProvider(type));
+
+    ref.read(searchProvider.notifier).asBuilder()
+      ..pageType(pageType)
+      ..fetchPage(
+        onSelect: (page) {
+          ref.read(bookProvider.notifier).moveEntry(id, from, page.pageName);
+          return true;
+        },
+      )
+      ..fetchAddPage(
+        onAdded: (page) {
+          ref.read(bookProvider.notifier).moveEntry(id, from, page.pageName);
+        },
+      )
+      ..open();
+  }
+
+  void _deleteEntry(BuildContext context, PassingRef ref) {
     final page = ref.read(currentPageProvider);
     if (page == null) return;
-    page.deleteEntryWithConfirmation(context, ref.passing, id);
+    page.deleteEntryWithConfirmation(context, ref, id);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final canTrigger = ref.watch(isTriggerEntryProvider(id));
-    final canBeTriggered = ref.watch(isTriggerableEntryProvider(id));
-
+    final linkablePaths = ref.watch(linkablePathsProvider(id));
+    final linkableDuplicatePaths =
+        ref.watch(linkableDuplicatePathsProvider(id));
     return WritersIndicator(
       provider: _writersProvider(id),
       child: LongPressDraggable(
@@ -133,34 +248,44 @@ class _EntryNode extends HookConsumerWidget {
           builder: (context) {
             return [
               ...contextActions,
-              if (canTrigger)
+              if (linkablePaths.isNotEmpty)
                 ContextMenuTile.button(
-                  title: "Extend with ...",
+                  title: "Link with ...",
                   icon: TWIcons.plus,
-                  onTap: () => _extendsWith(ref),
+                  onTap: () => _linkWith(context, ref.passing, linkablePaths),
                 ),
-              if (canTrigger && canBeTriggered)
+              if (linkableDuplicatePaths.isNotEmpty)
                 ContextMenuTile.button(
-                  title: "Extend with Duplicate",
+                  title: "Link with Duplicate",
                   icon: TWIcons.copy,
-                  onTap: () => _extendsWithDuplicate(ref),
+                  onTap: () => _linkWithDuplicate(
+                    context,
+                    ref.passing,
+                    linkableDuplicatePaths,
+                  ),
                 ),
+              ContextMenuTile.button(
+                title: "Move to ...",
+                icon: TWIcons.moveEntry,
+                color: Colors.blueAccent,
+                onTap: () => _moveEntry(context, ref.passing),
+              ),
+              ContextMenuTile.divider(),
               ContextMenuTile.button(
                 title: "Delete",
                 icon: TWIcons.trash,
                 color: Colors.redAccent,
-                onTap: () => _deleteEntry(context, ref),
+                onTap: () => _deleteEntry(context, ref.passing),
               ),
             ];
           },
           child: DragTarget<EntryDrag>(
-            onWillAcceptWithDetails: (details) {
-              if (!canTrigger) return false;
-              final targetId = details.data.entryId;
-
-              return ref.read(isTriggerableEntryProvider(targetId));
-            },
-            onAcceptWithDetails: (details) {
+            onWillAcceptWithDetails: (details) => ref
+                .read(
+                  _acceptingPathsProvider(id, details.data.entryId),
+                )
+                .isNotEmpty,
+            onAcceptWithDetails: (details) async {
               final page = ref.read(currentPageProvider);
               if (page == null) return;
               final currentEntry = ref.read(globalEntryProvider(id));
@@ -169,10 +294,19 @@ class _EntryNode extends HookConsumerWidget {
                   ref.read(globalEntryProvider(details.data.entryId));
               if (targetEntry == null) return;
 
-              page.wireEntryToOtherEntry(
+              final path = await pathSelector(
+                context,
+                ref.read(
+                  _acceptingPathsProvider(id, details.data.entryId),
+                ),
+              );
+              if (path == null) return;
+
+              await page.wireEntryToOtherEntry(
                 ref.passing,
                 currentEntry,
                 targetEntry,
+                path,
               );
             },
             builder: (context, candidateData, rejectedData) {
@@ -184,7 +318,7 @@ class _EntryNode extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(4),
                     child: Padding(
                       padding: const EdgeInsets.all(7.0),
-                      child: _innerEntry(foregroundColor),
+                      child: _innerEntry(Colors.white),
                     ),
                   ),
                 );
@@ -201,7 +335,7 @@ class _EntryNode extends HookConsumerWidget {
                     child: AnimatedOpacity(
                       duration: 400.ms,
                       curve: Curves.easeOutCubic,
-                      opacity: isAccapting ? 0.5 : 1.0,
+                      opacity: isAccapting ? 0.5 : 1,
                       child: Material(
                         borderRadius: BorderRadius.circular(4),
                         color: backgroundColor,
@@ -219,7 +353,12 @@ class _EntryNode extends HookConsumerWidget {
                                 width: 3,
                               ),
                             ),
-                            child: _innerEntry(foregroundColor),
+                            child: AnimatedSize(
+                              duration: 400.ms,
+                              curve: Curves.easeOutCirc,
+                              alignment: Alignment.topCenter,
+                              child: _innerEntry(Colors.white),
+                            ),
                           ),
                         ),
                       ),

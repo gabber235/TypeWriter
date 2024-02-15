@@ -138,6 +138,12 @@ extension IteratorExt<E> on Iterator<E> {
   E? get nextOrNull => moveNext() ? current : null;
 }
 
+extension EntriesIterable<K, V> on Iterable<MapEntry<K, V>> {
+  Map<K, V> toMap() {
+    return Map<K, V>.fromEntries(this);
+  }
+}
+
 extension ListExt<E> on List<E> {
   List<E> joinWith(E Function() separator) {
     final result = <E>[];

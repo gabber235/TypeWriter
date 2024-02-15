@@ -19,21 +19,25 @@ mixin _$TreeNode<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<TreeNode<T>> children) root,
-    required TResult Function(String name, List<TreeNode<T>> children) inner,
+    required TResult Function(
+            String name, String path, List<TreeNode<T>> children)
+        inner,
     required TResult Function(T value) leaf,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<TreeNode<T>> children)? root,
-    TResult? Function(String name, List<TreeNode<T>> children)? inner,
+    TResult? Function(String name, String path, List<TreeNode<T>> children)?
+        inner,
     TResult? Function(T value)? leaf,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<TreeNode<T>> children)? root,
-    TResult Function(String name, List<TreeNode<T>> children)? inner,
+    TResult Function(String name, String path, List<TreeNode<T>> children)?
+        inner,
     TResult Function(T value)? leaf,
     required TResult orElse(),
   }) =>
@@ -153,7 +157,9 @@ class _$RootTreeNodeImpl<T> implements RootTreeNode<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<TreeNode<T>> children) root,
-    required TResult Function(String name, List<TreeNode<T>> children) inner,
+    required TResult Function(
+            String name, String path, List<TreeNode<T>> children)
+        inner,
     required TResult Function(T value) leaf,
   }) {
     return root(children);
@@ -163,7 +169,8 @@ class _$RootTreeNodeImpl<T> implements RootTreeNode<T> {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<TreeNode<T>> children)? root,
-    TResult? Function(String name, List<TreeNode<T>> children)? inner,
+    TResult? Function(String name, String path, List<TreeNode<T>> children)?
+        inner,
     TResult? Function(T value)? leaf,
   }) {
     return root?.call(children);
@@ -173,7 +180,8 @@ class _$RootTreeNodeImpl<T> implements RootTreeNode<T> {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<TreeNode<T>> children)? root,
-    TResult Function(String name, List<TreeNode<T>> children)? inner,
+    TResult Function(String name, String path, List<TreeNode<T>> children)?
+        inner,
     TResult Function(T value)? leaf,
     required TResult orElse(),
   }) {
@@ -234,7 +242,7 @@ abstract class _$$InnerTreeNodeImplCopyWith<T, $Res> {
           $Res Function(_$InnerTreeNodeImpl<T>) then) =
       __$$InnerTreeNodeImplCopyWithImpl<T, $Res>;
   @useResult
-  $Res call({String name, List<TreeNode<T>> children});
+  $Res call({String name, String path, List<TreeNode<T>> children});
 }
 
 /// @nodoc
@@ -249,12 +257,17 @@ class __$$InnerTreeNodeImplCopyWithImpl<T, $Res>
   @override
   $Res call({
     Object? name = null,
+    Object? path = null,
     Object? children = null,
   }) {
     return _then(_$InnerTreeNodeImpl<T>(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      path: null == path
+          ? _value.path
+          : path // ignore: cast_nullable_to_non_nullable
               as String,
       children: null == children
           ? _value._children
@@ -268,11 +281,15 @@ class __$$InnerTreeNodeImplCopyWithImpl<T, $Res>
 
 class _$InnerTreeNodeImpl<T> implements InnerTreeNode<T> {
   const _$InnerTreeNodeImpl(
-      {required this.name, required final List<TreeNode<T>> children})
+      {required this.name,
+      required this.path,
+      required final List<TreeNode<T>> children})
       : _children = children;
 
   @override
   final String name;
+  @override
+  final String path;
   final List<TreeNode<T>> _children;
   @override
   List<TreeNode<T>> get children {
@@ -283,7 +300,7 @@ class _$InnerTreeNodeImpl<T> implements InnerTreeNode<T> {
 
   @override
   String toString() {
-    return 'TreeNode<$T>.inner(name: $name, children: $children)';
+    return 'TreeNode<$T>.inner(name: $name, path: $path, children: $children)';
   }
 
   @override
@@ -292,12 +309,13 @@ class _$InnerTreeNodeImpl<T> implements InnerTreeNode<T> {
         (other.runtimeType == runtimeType &&
             other is _$InnerTreeNodeImpl<T> &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.path, path) || other.path == path) &&
             const DeepCollectionEquality().equals(other._children, _children));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, name, const DeepCollectionEquality().hash(_children));
+      runtimeType, name, path, const DeepCollectionEquality().hash(_children));
 
   @JsonKey(ignore: true)
   @override
@@ -310,32 +328,36 @@ class _$InnerTreeNodeImpl<T> implements InnerTreeNode<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<TreeNode<T>> children) root,
-    required TResult Function(String name, List<TreeNode<T>> children) inner,
+    required TResult Function(
+            String name, String path, List<TreeNode<T>> children)
+        inner,
     required TResult Function(T value) leaf,
   }) {
-    return inner(name, children);
+    return inner(name, path, children);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<TreeNode<T>> children)? root,
-    TResult? Function(String name, List<TreeNode<T>> children)? inner,
+    TResult? Function(String name, String path, List<TreeNode<T>> children)?
+        inner,
     TResult? Function(T value)? leaf,
   }) {
-    return inner?.call(name, children);
+    return inner?.call(name, path, children);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<TreeNode<T>> children)? root,
-    TResult Function(String name, List<TreeNode<T>> children)? inner,
+    TResult Function(String name, String path, List<TreeNode<T>> children)?
+        inner,
     TResult Function(T value)? leaf,
     required TResult orElse(),
   }) {
     if (inner != null) {
-      return inner(name, children);
+      return inner(name, path, children);
     }
     return orElse();
   }
@@ -378,9 +400,11 @@ class _$InnerTreeNodeImpl<T> implements InnerTreeNode<T> {
 abstract class InnerTreeNode<T> implements TreeNode<T> {
   const factory InnerTreeNode(
       {required final String name,
+      required final String path,
       required final List<TreeNode<T>> children}) = _$InnerTreeNodeImpl<T>;
 
   String get name;
+  String get path;
   List<TreeNode<T>> get children;
   @JsonKey(ignore: true)
   _$$InnerTreeNodeImplCopyWith<T, _$InnerTreeNodeImpl<T>> get copyWith =>
@@ -454,7 +478,9 @@ class _$LeafTreeNodeImpl<T> implements LeafTreeNode<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<TreeNode<T>> children) root,
-    required TResult Function(String name, List<TreeNode<T>> children) inner,
+    required TResult Function(
+            String name, String path, List<TreeNode<T>> children)
+        inner,
     required TResult Function(T value) leaf,
   }) {
     return leaf(value);
@@ -464,7 +490,8 @@ class _$LeafTreeNodeImpl<T> implements LeafTreeNode<T> {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<TreeNode<T>> children)? root,
-    TResult? Function(String name, List<TreeNode<T>> children)? inner,
+    TResult? Function(String name, String path, List<TreeNode<T>> children)?
+        inner,
     TResult? Function(T value)? leaf,
   }) {
     return leaf?.call(value);
@@ -474,7 +501,8 @@ class _$LeafTreeNodeImpl<T> implements LeafTreeNode<T> {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<TreeNode<T>> children)? root,
-    TResult Function(String name, List<TreeNode<T>> children)? inner,
+    TResult Function(String name, String path, List<TreeNode<T>> children)?
+        inner,
     TResult Function(T value)? leaf,
     required TResult orElse(),
   }) {

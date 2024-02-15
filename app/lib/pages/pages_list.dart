@@ -11,7 +11,9 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
+import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
@@ -20,6 +22,7 @@ import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
+import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/dropdown.dart";
@@ -245,61 +248,84 @@ class _TreeCategory extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DragTarget<PageDrag>(
-          onWillAcceptWithDetails: (details) {
-            return ref.read(_pageNamesProvider).contains(details.data.pageId);
-          },
-          onAcceptWithDetails: (details) {
-            final pageId = details.data.pageId;
-            ref
-                .read(pageProvider(pageId))
-                ?.changeChapter(ref.passing, node.name);
-          },
-          builder: (context, candidateData, rejectedData) => Material(
-            color: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              side: candidateData.isNotEmpty
-                  ? BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 2,
-                    )
-                  : BorderSide.none,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-            ),
-            child: InkWell(
-              onTap: () => isExpanded.value = !isExpanded.value,
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    if (showFull) const SizedBox(width: 4),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: showFull ? 4 : 0),
-                      child: Iconify(
-                        isExpanded.value
-                            ? TWIcons.chevronDown
-                            : TWIcons.chevronRight,
-                        size: 11,
-                        color: Colors.white,
-                      ),
-                    ),
-                    if (showFull) ...[
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          node.name.formatted,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                        ),
-                      ),
-                    ],
-                  ],
+        ContextMenuRegion(
+          builder: (context) {
+            return [
+              ContextMenuTile.button(
+                title: "New Page",
+                icon: TWIcons.plus,
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (_) => AddPageDialogue(chapter: node.path),
                 ),
               ),
-            ),
+            ];
+          },
+          child: DragTarget<PageDrag>(
+            onWillAcceptWithDetails: (details) {
+              return ref.read(_pageNamesProvider).contains(details.data.pageId);
+            },
+            onAcceptWithDetails: (details) {
+              final pageId = details.data.pageId;
+              ref
+                  .read(pageProvider(pageId))
+                  ?.changeChapter(ref.passing, node.path);
+            },
+            builder: (context, candidateData, rejectedData) {
+              final isAccepting = candidateData.isNotEmpty;
+              final isRejecting = rejectedData.isNotEmpty;
+              return Material(
+                color: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  side: isAccepting || isRejecting
+                      ? BorderSide(
+                          color: isAccepting
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.error,
+                          width: 2,
+                        )
+                      : BorderSide.none,
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                ),
+                child: InkWell(
+                  onTap: () => isExpanded.value = !isExpanded.value,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        if (showFull) const SizedBox(width: 4),
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: showFull ? 4 : 0),
+                          child: Iconify(
+                            isExpanded.value
+                                ? TWIcons.chevronDown
+                                : TWIcons.chevronRight,
+                            size: 11,
+                            color: Colors.white,
+                          ),
+                        ),
+                        if (showFull) ...[
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              node.name.formatted,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
         AnimatedSize(
@@ -407,103 +433,134 @@ class _PageTile extends HookConsumerWidget {
           padding: EdgeInsets.only(
             top: _needsShift(amount) ? 30 : 0,
           ),
-          child: DragTarget<PageDrag>(
+          child: DragTarget<EntryDrag>(
             onWillAcceptWithDetails: (details) {
-              return ref.read(_pageNamesProvider).contains(details.data.pageId);
+              final entryId = details.data.entryId;
+              final entryType = ref.read(entryTypeProvider(entryId));
+              if (entryType == null) return false;
+              final entryPageType =
+                  ref.read(entryBlueprintPageTypeProvider(entryType));
+              return entryPageType == pageData.type;
             },
             onAcceptWithDetails: (details) {
-              final pageId = details.data.pageId;
+              final entryId = details.data.entryId;
+              final fromPageId = ref.read(entryPageIdProvider(entryId));
+              if (fromPageId == null) return;
               ref
-                  .read(pageProvider(pageId))
-                  ?.changeChapter(ref.passing, chapter);
+                  .read(bookProvider.notifier)
+                  .moveEntry(entryId, fromPageId, pageId);
             },
-            builder: (context, candidateData, rejectedData) {
-              return Material(
-                color:
-                    isSelected ? const Color(0xFF1e3f6f) : Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  side: candidateData.isNotEmpty
-                      ? BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2,
-                        )
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ContextMenuRegion(
-                  builder: (context) =>
-                      _contextMenuItems(context, ref, isSelected),
-                  child: Draggable<PageDrag>(
-                    data: PageDrag(pageId: pageId),
-                    feedback: Material(
-                      color: Colors.transparent,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1e3f6f),
-                          borderRadius: BorderRadius.circular(8),
+            builder: (context, entryCandidateData, entryRejectedData) {
+              return DragTarget<PageDrag>(
+                onWillAcceptWithDetails: (details) {
+                  return ref
+                      .read(_pageNamesProvider)
+                      .contains(details.data.pageId);
+                },
+                onAcceptWithDetails: (details) {
+                  final pageId = details.data.pageId;
+                  ref
+                      .read(pageProvider(pageId))
+                      ?.changeChapter(ref.passing, chapter);
+                },
+                builder: (context, pageCandidateData, rejectedData) {
+                  final isAccepting = entryCandidateData.isNotEmpty ||
+                      pageCandidateData.isNotEmpty;
+                  final isRejecting =
+                      entryRejectedData.isNotEmpty || rejectedData.isNotEmpty;
+                  return Material(
+                    color: isSelected
+                        ? const Color(0xFF1e3f6f)
+                        : Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      side: isAccepting || isRejecting
+                          ? BorderSide(
+                              color: isAccepting
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.error,
+                              width: 2,
+                            )
+                          : BorderSide.none,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ContextMenuRegion(
+                      builder: (context) =>
+                          _contextMenuItems(context, ref, isSelected),
+                      child: Draggable<PageDrag>(
+                        data: PageDrag(pageId: pageId),
+                        feedback: Material(
+                          color: Colors.transparent,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1e3f6f),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Iconify(
+                                    pageData.type.icon,
+                                    size: 11,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    pageId.formatted,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Iconify(
-                                pageData.type.icon,
-                                size: 11,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                pageId.formatted,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                            ],
+                        child: InkWell(
+                          onTap: () {
+                            if (isSelected) return;
+                            ref
+                                .read(appRouter)
+                                .push(PageEditorRoute(id: pageId));
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 4),
+                                Iconify(
+                                  pageData.type.icon,
+                                  size: 11,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    pageId.formatted,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(
+                                  Icons.chevron_right,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    child: InkWell(
-                      onTap: () {
-                        if (isSelected) return;
-                        ref.read(appRouter).push(PageEditorRoute(id: pageId));
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 4),
-                            Iconify(
-                              pageData.type.icon,
-                              size: 11,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                pageId.formatted,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: Colors.white,
-                                    ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(
-                              Icons.chevron_right,
-                              size: 16,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                  );
+                },
               );
             },
           ),
@@ -609,14 +666,16 @@ class AddPageDialogue extends HookConsumerWidget {
   const AddPageDialogue({
     this.fixedType,
     this.autoNavigate = true,
+    this.chapter = "",
     super.key,
   });
 
+  final String chapter;
   final PageType? fixedType;
   final bool autoNavigate;
 
   Future<void> _addPage(WidgetRef ref, String name, PageType type) async {
-    await ref.read(bookProvider.notifier).createPage(name, type);
+    await ref.read(bookProvider.notifier).createPage(name, type, chapter);
 
     if (!autoNavigate) return;
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));

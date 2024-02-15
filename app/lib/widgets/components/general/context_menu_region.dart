@@ -75,7 +75,7 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
     }
 
     // Get on which part of the screen the user tapped. The four options are TopLeft, TopRight, BottomLeft, BottomRight
-    final quadrant = _getQuadrant(box);
+    final quadrant = getQuadrant(context, box);
 
     _contextMenuController.show(
       context: context,
@@ -92,7 +92,7 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
 
   /// Get on which part of the screen the button is. The four options are TopLeft, TopRight, BottomLeft, BottomRight
   /// This is used to determine where the context menu should be shown
-  Quadrant _getQuadrant(RenderBox box) {
+  static Quadrant getQuadrant(BuildContext context, RenderBox box) {
     final boxSize = box.size;
     final boxPosition = box.localToGlobal(Offset.zero);
     final boxCenter =
@@ -433,5 +433,27 @@ class ContextMenuController {
       return;
     }
     removeAny();
+  }
+}
+
+extension ContextMenuControllerX on ContextMenuController {
+  void showMenu({
+    required BuildContext context,
+    required ContextMenuBuilder builder,
+  }) {
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null) return;
+
+    show(
+      context: context,
+      contextMenuBuilder: (context) {
+        return _ContextMenu(
+          controller: this,
+          quadrant: _ContextMenuRegionState.getQuadrant(context, box),
+          position: box.localToGlobal(Offset.zero),
+          tiles: builder(context),
+        );
+      },
+    );
   }
 }

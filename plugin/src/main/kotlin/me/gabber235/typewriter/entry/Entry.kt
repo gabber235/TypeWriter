@@ -15,6 +15,9 @@ interface Entry {
 @Tags("static")
 interface StaticEntry : Entry
 
+@Tags("manifest")
+interface ManifestEntry : Entry
+
 @Tags("trigger")
 interface TriggerEntry : Entry {
     @Help("The entries that will be fired after this entry.")

@@ -15,6 +15,7 @@ import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/cinematic_view.dart";
 import "package:typewriter/widgets/components/app/entries_graph.dart";
+import "package:typewriter/widgets/components/app/manifest_view.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/app/staging.dart";
 import "package:typewriter/widgets/components/app/static_entries_list.dart";
@@ -234,7 +235,7 @@ class _Inspector extends HookConsumerWidget {
     }
 
     switch (pageType) {
-      case PageType.sequence || PageType.static:
+      case PageType.sequence || PageType.static || PageType.manifest:
         return const GenericInspector();
       case PageType.cinematic:
         return const CinematicInspector();
@@ -259,6 +260,8 @@ class _PageContent extends HookConsumerWidget {
         return const StaticEntriesList();
       case PageType.cinematic:
         return const CinematicView();
+      case PageType.manifest:
+        return const ManifestView();
     }
   }
 }

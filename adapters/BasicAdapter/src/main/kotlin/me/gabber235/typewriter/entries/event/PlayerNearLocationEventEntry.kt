@@ -7,7 +7,6 @@ import me.gabber235.typewriter.adapters.modifiers.Min
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import org.bukkit.Location
-import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
 
 @Entry("on_player_near_location", "When the player is near a certain location", Colors.YELLOW, "mdi:map-marker-radius")
@@ -36,11 +35,11 @@ fun onPlayerNearLocation(event: PlayerMoveEvent, query: Query<PlayerNearLocation
     if (!event.hasChangedBlock()) return
 
     query findWhere { entry ->
-        event.player.isInRange(entry.location, entry.range)
+        !event.from.isInRange(entry.location, entry.range) && event.to.isInRange(entry.location, entry.range)
     } startDialogueWithOrNextDialogue event.player
 }
 
-fun Player.isInRange(location: Location, range: Double): Boolean {
+fun Location.isInRange(location: Location, range: Double): Boolean {
     if (location.world != world) return false
-    return this.location.distanceSquared(location) <= range * range
+    return this.distanceSquared(location) <= range * range
 }

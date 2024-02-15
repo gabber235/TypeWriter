@@ -28,6 +28,7 @@ const _$PageTypeEnumMap = {
   PageType.sequence: 'sequence',
   PageType.static: 'static',
   PageType.cinematic: 'cinematic',
+  PageType.manifest: 'manifest',
 };
 
 // **************************************************************************
@@ -577,29 +578,29 @@ class _PageChapterProviderElement extends AutoDisposeProviderElement<String>
   String get pageName => (origin as PageChapterProvider).pageName;
 }
 
-String _$entriesPageHash() => r'3e0b03d9a29e7f750327ccaf26fa961a567c745a';
+String _$entryPageIdHash() => r'ceb41cef3f8d8b1f0a28e5de7aead8969f03d6ac';
 
-/// See also [entriesPage].
-@ProviderFor(entriesPage)
-const entriesPageProvider = EntriesPageFamily();
+/// See also [entryPageId].
+@ProviderFor(entryPageId)
+const entryPageIdProvider = EntryPageIdFamily();
 
-/// See also [entriesPage].
-class EntriesPageFamily extends Family<String?> {
-  /// See also [entriesPage].
-  const EntriesPageFamily();
+/// See also [entryPageId].
+class EntryPageIdFamily extends Family<String?> {
+  /// See also [entryPageId].
+  const EntryPageIdFamily();
 
-  /// See also [entriesPage].
-  EntriesPageProvider call(
+  /// See also [entryPageId].
+  EntryPageIdProvider call(
     String entryId,
   ) {
-    return EntriesPageProvider(
+    return EntryPageIdProvider(
       entryId,
     );
   }
 
   @override
-  EntriesPageProvider getProviderOverride(
-    covariant EntriesPageProvider provider,
+  EntryPageIdProvider getProviderOverride(
+    covariant EntryPageIdProvider provider,
   ) {
     return call(
       provider.entryId,
@@ -618,32 +619,32 @@ class EntriesPageFamily extends Family<String?> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'entriesPageProvider';
+  String? get name => r'entryPageIdProvider';
 }
 
-/// See also [entriesPage].
-class EntriesPageProvider extends AutoDisposeProvider<String?> {
-  /// See also [entriesPage].
-  EntriesPageProvider(
+/// See also [entryPageId].
+class EntryPageIdProvider extends AutoDisposeProvider<String?> {
+  /// See also [entryPageId].
+  EntryPageIdProvider(
     String entryId,
   ) : this._internal(
-          (ref) => entriesPage(
-            ref as EntriesPageRef,
+          (ref) => entryPageId(
+            ref as EntryPageIdRef,
             entryId,
           ),
-          from: entriesPageProvider,
-          name: r'entriesPageProvider',
+          from: entryPageIdProvider,
+          name: r'entryPageIdProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$entriesPageHash,
-          dependencies: EntriesPageFamily._dependencies,
+                  : _$entryPageIdHash,
+          dependencies: EntryPageIdFamily._dependencies,
           allTransitiveDependencies:
-              EntriesPageFamily._allTransitiveDependencies,
+              EntryPageIdFamily._allTransitiveDependencies,
           entryId: entryId,
         );
 
-  EntriesPageProvider._internal(
+  EntryPageIdProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -657,12 +658,12 @@ class EntriesPageProvider extends AutoDisposeProvider<String?> {
 
   @override
   Override overrideWith(
-    String? Function(EntriesPageRef provider) create,
+    String? Function(EntryPageIdRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: EntriesPageProvider._internal(
-        (ref) => create(ref as EntriesPageRef),
+      override: EntryPageIdProvider._internal(
+        (ref) => create(ref as EntryPageIdRef),
         from: from,
         name: null,
         dependencies: null,
@@ -675,12 +676,12 @@ class EntriesPageProvider extends AutoDisposeProvider<String?> {
 
   @override
   AutoDisposeProviderElement<String?> createElement() {
-    return _EntriesPageProviderElement(this);
+    return _EntryPageIdProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is EntriesPageProvider && other.entryId == entryId;
+    return other is EntryPageIdProvider && other.entryId == entryId;
   }
 
   @override
@@ -692,17 +693,144 @@ class EntriesPageProvider extends AutoDisposeProvider<String?> {
   }
 }
 
-mixin EntriesPageRef on AutoDisposeProviderRef<String?> {
+mixin EntryPageIdRef on AutoDisposeProviderRef<String?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
 }
 
-class _EntriesPageProviderElement extends AutoDisposeProviderElement<String?>
-    with EntriesPageRef {
-  _EntriesPageProviderElement(super.provider);
+class _EntryPageIdProviderElement extends AutoDisposeProviderElement<String?>
+    with EntryPageIdRef {
+  _EntryPageIdProviderElement(super.provider);
 
   @override
-  String get entryId => (origin as EntriesPageProvider).entryId;
+  String get entryId => (origin as EntryPageIdProvider).entryId;
+}
+
+String _$entryPageHash() => r'00d12a29c4a1bfdec76651cba6577d582e65e20a';
+
+/// See also [entryPage].
+@ProviderFor(entryPage)
+const entryPageProvider = EntryPageFamily();
+
+/// See also [entryPage].
+class EntryPageFamily extends Family<Page?> {
+  /// See also [entryPage].
+  const EntryPageFamily();
+
+  /// See also [entryPage].
+  EntryPageProvider call(
+    String entryId,
+  ) {
+    return EntryPageProvider(
+      entryId,
+    );
+  }
+
+  @override
+  EntryPageProvider getProviderOverride(
+    covariant EntryPageProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entryPageProvider';
+}
+
+/// See also [entryPage].
+class EntryPageProvider extends AutoDisposeProvider<Page?> {
+  /// See also [entryPage].
+  EntryPageProvider(
+    String entryId,
+  ) : this._internal(
+          (ref) => entryPage(
+            ref as EntryPageRef,
+            entryId,
+          ),
+          from: entryPageProvider,
+          name: r'entryPageProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$entryPageHash,
+          dependencies: EntryPageFamily._dependencies,
+          allTransitiveDependencies: EntryPageFamily._allTransitiveDependencies,
+          entryId: entryId,
+        );
+
+  EntryPageProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
+  final String entryId;
+
+  @override
+  Override overrideWith(
+    Page? Function(EntryPageRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EntryPageProvider._internal(
+        (ref) => create(ref as EntryPageRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<Page?> createElement() {
+    return _EntryPageProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EntryPageProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin EntryPageRef on AutoDisposeProviderRef<Page?> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _EntryPageProviderElement extends AutoDisposeProviderElement<Page?>
+    with EntryPageRef {
+  _EntryPageProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as EntryPageProvider).entryId;
 }
 
 String _$entryHash() => r'f1e00a6ad6ab8e50c1e2178680c8004c98dea055';

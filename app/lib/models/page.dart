@@ -10,7 +10,6 @@ import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
-import "package:typewriter/widgets/components/app/entries_graph.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -46,13 +45,20 @@ String pageChapter(PageChapterRef ref, String pageName) {
 }
 
 @riverpod
-String? entriesPage(EntriesPageRef ref, String entryId) {
+String? entryPageId(EntryPageIdRef ref, String entryId) {
   return ref
       .watch(pagesProvider)
       .firstWhereOrNull(
         (page) => page.entries.any((entry) => entry.id == entryId),
       )
       ?.pageName;
+}
+
+@riverpod
+Page? entryPage(EntryPageRef ref, String entryId) {
+  return ref.watch(pagesProvider).firstWhereOrNull(
+        (page) => page.entries.any((entry) => entry.id == entryId),
+      );
 }
 
 @riverpod
@@ -65,11 +71,11 @@ Entry? entry(EntryRef ref, String pageId, String entryId) {
 
 @riverpod
 Entry? globalEntry(GlobalEntryRef ref, String entryId) {
-  final page = ref.watch(entriesPageProvider(entryId));
-  if (page == null) {
+  final pageId = ref.watch(entryPageIdProvider(entryId));
+  if (pageId == null) {
     return null;
   }
-  return ref.watch(entryProvider(page, entryId));
+  return ref.watch(entryProvider(pageId, entryId));
 }
 
 @riverpod
@@ -77,26 +83,27 @@ MapEntry<String, Entry>? globalEntryWithPage(
   GlobalEntryWithPageRef ref,
   String entryId,
 ) {
-  final page = ref.watch(entriesPageProvider(entryId));
-  if (page == null) {
+  final pageId = ref.watch(entryPageIdProvider(entryId));
+  if (pageId == null) {
     return null;
   }
-  final entry = ref.watch(entryProvider(page, entryId));
+  final entry = ref.watch(entryProvider(pageId, entryId));
   if (entry == null) {
     return null;
   }
-  return MapEntry(page, entry);
+  return MapEntry(pageId, entry);
 }
 
 @riverpod
 bool entryExists(EntryExistsRef ref, String entryId) {
-  return ref.watch(entriesPageProvider(entryId)) != null;
+  return ref.watch(entryPageIdProvider(entryId)) != null;
 }
 
 enum PageType {
   sequence("trigger", TWIcons.projectDiagram, Colors.blue),
   static("static", TWIcons.pin, Colors.deepPurple),
   cinematic("cinematic", TWIcons.film, Colors.orange),
+  manifest("manifest", TWIcons.treeGraph, Colors.green),
   ;
 
   const PageType(this.tag, this.icon, this.color);
@@ -170,17 +177,19 @@ extension PageExtension on Page {
     await ref.read(communicatorProvider).updateEntireEntry(pageName, entry);
   }
 
-  void updateEntryValue(
+  Future<void> updateEntryValue(
     PassingRef ref,
     Entry entry,
     String path,
     dynamic value,
-  ) {
+  ) async {
     updatePage(
       ref,
       (page) => _insertEntry(page, entry.copyWith(path, value)),
     );
-    ref.read(communicatorProvider).updateEntry(pageName, entry.id, path, value);
+    await ref
+        .read(communicatorProvider)
+        .updateEntry(pageName, entry.id, path, value);
   }
 
   void reorderEntry(PassingRef ref, String entryId, int newIndex) {
@@ -324,43 +333,73 @@ extension PageX on Page {
     return entry;
   }
 
-  /// Will connects a triggerable entry to a trigger entry.
+  /// Will connects an entry to another entry on a given path.
   /// If it is already connected, it will remove the connection.
   Future<void> wireEntryToOtherEntry(
     PassingRef ref,
-    Entry originalEntry,
-    Entry newEntry,
+    Entry baseEntry,
+    Entry targetEntry,
+    String path,
   ) async {
-    final currentTriggers = originalEntry.get("triggers");
-    if (currentTriggers == null || currentTriggers is! List) return;
+    if (!path.contains(".")) return;
+    final parts = path.split(".");
+    final lastPart = parts.last;
+    if (int.tryParse(lastPart) == null) {
+      // We are setting an exact value. Not a list. So we just overwrite it.
+      await updateEntryValue(ref, baseEntry, path, targetEntry.id);
+      return;
+    }
+
+    // If we have a list, we want to toggle the connection.
+    final parentPath = parts.sublist(0, parts.length - 1).join(".");
+    final currentTriggers = baseEntry.get(parentPath);
+    if (currentTriggers == null || currentTriggers is! List) {
+      debugPrint(
+        "Invalid path for wiring entry ${baseEntry.id} to target entry ${targetEntry.id}. $path is not a list.",
+      );
+      return;
+    }
 
     final currentTriggersIds = currentTriggers.cast<String>();
     final List<String> newTriggers;
 
-    if (currentTriggers.contains(newEntry.id)) {
+    if (currentTriggers.contains(targetEntry.id)) {
       newTriggers =
-          currentTriggersIds.where((id) => id != newEntry.id).toList();
+          currentTriggersIds.where((id) => id != targetEntry.id).toList();
     } else {
-      newTriggers = currentTriggersIds + [newEntry.id];
+      newTriggers = currentTriggersIds + [targetEntry.id];
     }
 
-    final modifiedOriginalEntry =
-        originalEntry.copyWith("triggers", newTriggers);
-    await updateEntireEntry(ref, modifiedOriginalEntry);
+    await updateEntryValue(ref, baseEntry, parentPath, newTriggers);
   }
 
-  Future<void> extendsWithDuplicate(PassingRef ref, String entryId) async {
+  Future<void> linkWithDuplicate(
+    PassingRef ref,
+    String entryId,
+    String path,
+  ) async {
     final entry = ref.read(entryProvider(pageName, entryId));
     if (entry == null) return;
-    final isTrigger = ref.read(isTriggerEntryProvider(entryId));
-    if (!isTrigger) {
-      debugPrint("Cannot extend a non-trigger entry.");
+
+    final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
+
+    final wildPath = path.wild();
+    final pathModifier =
+        modifiers.entries.firstWhereOrNull((e) => e.key == wildPath)?.value;
+    if (pathModifier == null) {
+      debugPrint(
+        "No modifier found for path $wildPath in entry ${entry.id}.",
+      );
       return;
     }
 
-    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "trigger"));
+    // Remove the paths with the same modifier.
+    final resetPaths = modifiers.entries
+        .where((e) => e.value.data == pathModifier.data)
+        .map((e) => e.key)
+        .toList();
 
-    final newEntry = triggerPaths
+    final newEntry = resetPaths
         .fold(
           entry.copyWith("id", getRandomString()),
           (previousEntry, path) => previousEntry.copyMapped(
@@ -371,24 +410,32 @@ extension PageX on Page {
         .copyWith("name", entry.name.incrementedName);
     await createEntry(ref, newEntry);
 
-    await wireEntryToOtherEntry(ref, entry, newEntry);
+    await wireEntryToOtherEntry(ref, entry, newEntry, path);
   }
 
-  void extendsWith(PassingRef ref, String entryId) {
+  void linkWith(PassingRef ref, String entryId, String path) {
     final entry = ref.read(entryProvider(pageName, entryId));
     if (entry == null) return;
-    final isTrigger = ref.read(isTriggerEntryProvider(entryId));
-    if (!isTrigger) {
-      debugPrint("Cannot extend a non-trigger entry.");
+    final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
+
+    final wildPath = path.wild();
+    final pathModifier =
+        modifiers.entries.firstWhereOrNull((e) => e.key == wildPath)?.value;
+    if (pathModifier == null) {
+      debugPrint(
+        "No modifier found for path $wildPath in entry ${entry.id}.",
+      );
       return;
     }
 
+    final tag = pathModifier.data;
+
     ref.read(searchProvider.notifier).asBuilder()
-      ..tag("triggerable", canRemove: false)
+      ..tag(tag, canRemove: false)
       ..fetchNewEntry(
         onAdd: (blueprint) async {
           final newEntry = await createEntryFromBlueprint(ref, blueprint);
-          await wireEntryToOtherEntry(ref, entry, newEntry);
+          await wireEntryToOtherEntry(ref, entry, newEntry, path);
           await ref
               .read(inspectingEntryIdProvider.notifier)
               .navigateAndSelectEntry(ref, newEntry.id);
@@ -397,7 +444,7 @@ extension PageX on Page {
       )
       ..fetchEntry(
         onSelect: (selectedEntry) async {
-          await wireEntryToOtherEntry(ref, entry, selectedEntry);
+          await wireEntryToOtherEntry(ref, entry, selectedEntry, path);
           return null;
         },
       )

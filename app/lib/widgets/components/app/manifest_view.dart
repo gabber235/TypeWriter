@@ -12,53 +12,31 @@ import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 
-part "entries_graph.g.dart";
+part "manifest_view.g.dart";
 
 @riverpod
-List<Entry> graphableEntries(GraphableEntriesRef ref) {
+List<Entry> manifestEntries(ManifestEntriesRef ref) {
   final page = ref.watch(currentPageProvider);
   if (page == null) return [];
 
   return page.entries.where((entry) {
     final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
-    return tags.contains("trigger");
+    return tags.contains("manifest");
   }).toList();
 }
 
 @riverpod
-List<String> graphableEntryIds(GraphableEntryIdsRef ref) {
-  final entries = ref.watch(graphableEntriesProvider);
+List<String> manifestEntryIds(ManifestEntryIdsRef ref) {
+  final entries = ref.watch(manifestEntriesProvider);
   return entries.map((entry) => entry.id).toList();
 }
 
 @riverpod
-bool isTriggerEntry(IsTriggerEntryRef ref, String entryId) {
-  final entry = ref.watch(globalEntryProvider(entryId));
-  if (entry == null) return false;
-
-  final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
-  return tags.contains("trigger");
-}
-
-@riverpod
-bool isTriggerableEntry(IsTriggerableEntryRef ref, String entryId) {
-  final entry = ref.watch(globalEntryProvider(entryId));
-  if (entry == null) return false;
-
-  final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
-  return tags.contains("triggerable");
-}
-
-@riverpod
-Set<String>? entryTriggers(EntryTriggersRef ref, String entryId) {
+Set<String>? entryReferences(EntryReferencesRef ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return null;
 
-  // Check if this entry is a trigger
-  if (!ref.read(isTriggerEntryProvider(entryId))) return null;
-
-  final modifiers =
-      ref.watch(modifierPathsProvider(entry.type, "entry", "triggerable"));
+  final modifiers = ref.watch(modifierPathsProvider(entry.type, "entry"));
   return modifiers
       .expand(entry.getAll)
       .map((id) => id as String)
@@ -67,8 +45,8 @@ Set<String>? entryTriggers(EntryTriggersRef ref, String entryId) {
 }
 
 @riverpod
-Graph graph(GraphRef ref) {
-  final entries = ref.watch(graphableEntriesProvider);
+Graph manifestGraph(ManifestGraphRef ref) {
+  final entries = ref.watch(manifestEntriesProvider);
   final graph = Graph();
 
   for (final entry in entries) {
@@ -77,16 +55,20 @@ Graph graph(GraphRef ref) {
   }
 
   for (final entry in entries) {
-    final triggeredEntryIds = ref.watch(entryTriggersProvider(entry.id));
-    if (triggeredEntryIds == null) continue;
+    final referenceEntryIds = ref.watch(entryReferencesProvider(entry.id));
+    if (referenceEntryIds == null) continue;
 
     final color =
         ref.watch(entryBlueprintProvider(entry.type))?.color ?? Colors.grey;
 
-    for (final triggeredEntryId in triggeredEntryIds) {
+    for (final referenceEntryId in referenceEntryIds) {
+      final referenceTags = ref.watch(entryTagsProvider(referenceEntryId));
+      // We only want to show references to manifest entries.
+      if (!referenceTags.contains("manifest")) continue;
+
       graph.addEdge(
         Node.Id(entry.id),
-        Node.Id(triggeredEntryId),
+        Node.Id(referenceEntryId),
         paint: Paint()..color = color,
       );
     }
@@ -95,28 +77,28 @@ Graph graph(GraphRef ref) {
   return graph;
 }
 
-class EntriesGraph extends HookConsumerWidget {
-  const EntriesGraph({super.key}) : super();
+class ManifestView extends HookConsumerWidget {
+  const ManifestView({super.key}) : super();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entryIds = ref.watch(graphableEntryIdsProvider);
-    final graph = ref.watch(graphProvider);
+    final entryIds = ref.watch(manifestEntryIdsProvider);
+    final graph = ref.watch(manifestGraphProvider);
 
     final builder = useMemoized(
       () => SugiyamaConfiguration()
         ..nodeSeparation = (40)
         ..levelSeparation = (40)
-        ..orientation = SugiyamaConfiguration.ORIENTATION_LEFT_RIGHT,
+        ..orientation = SugiyamaConfiguration.ORIENTATION_TOP_BOTTOM,
     );
 
     if (entryIds.isEmpty) {
       return EmptyScreen(
-        title: "There are no graphable entries on this page.",
+        title: "There are no manifest entries on this page.",
         buttonText: "Add Entry",
         onButtonPressed: () => ref.read(searchProvider.notifier).asBuilder()
           ..fetchNewEntry()
-          ..tag("trigger")
+          ..tag("manifest")
           ..open(),
       );
     }
@@ -153,6 +135,7 @@ class EntriesGraph extends HookConsumerWidget {
               entry: globalEntryWithPage.value,
             );
           }
+
           return EntryNode(
             entryId: id,
             key: ValueKey(id),
