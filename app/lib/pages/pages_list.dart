@@ -245,59 +245,73 @@ class _TreeCategory extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DragTarget<PageDrag>(
-          onWillAcceptWithDetails: (details) {
-            return ref.read(_pageNamesProvider).contains(details.data.pageId);
+        ContextMenuRegion(
+          builder: (context) {
+            return [
+              ContextMenuTile.button(
+                title: "New Page",
+                icon: TWIcons.plus,
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (_) => AddPageDialogue(chapter: node.path),
+                ),
+              ),
+            ];
           },
-          onAcceptWithDetails: (details) {
-            final pageId = details.data.pageId;
-            print("Accepting ${details.data.pageId}, ${node.path}");
-            ref
-                .read(pageProvider(pageId))
-                ?.changeChapter(ref.passing, node.path);
-          },
-          builder: (context, candidateData, rejectedData) => Material(
-            color: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              side: candidateData.isNotEmpty
-                  ? BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 2,
-                    )
-                  : BorderSide.none,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-            ),
-            child: InkWell(
-              onTap: () => isExpanded.value = !isExpanded.value,
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    if (showFull) const SizedBox(width: 4),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: showFull ? 4 : 0),
-                      child: Iconify(
-                        isExpanded.value
-                            ? TWIcons.chevronDown
-                            : TWIcons.chevronRight,
-                        size: 11,
-                        color: Colors.white,
-                      ),
-                    ),
-                    if (showFull) ...[
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          node.name.formatted,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.white,
-                                  ),
+          child: DragTarget<PageDrag>(
+            onWillAcceptWithDetails: (details) {
+              return ref.read(_pageNamesProvider).contains(details.data.pageId);
+            },
+            onAcceptWithDetails: (details) {
+              final pageId = details.data.pageId;
+              ref
+                  .read(pageProvider(pageId))
+                  ?.changeChapter(ref.passing, node.path);
+            },
+            builder: (context, candidateData, rejectedData) => Material(
+              color: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                side: candidateData.isNotEmpty
+                    ? BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2,
+                      )
+                    : BorderSide.none,
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+              ),
+              child: InkWell(
+                onTap: () => isExpanded.value = !isExpanded.value,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      if (showFull) const SizedBox(width: 4),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: showFull ? 4 : 0),
+                        child: Iconify(
+                          isExpanded.value
+                              ? TWIcons.chevronDown
+                              : TWIcons.chevronRight,
+                          size: 11,
+                          color: Colors.white,
                         ),
                       ),
+                      if (showFull) ...[
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            node.name.formatted,
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.white,
+                                    ),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -610,14 +624,16 @@ class AddPageDialogue extends HookConsumerWidget {
   const AddPageDialogue({
     this.fixedType,
     this.autoNavigate = true,
+    this.chapter = "",
     super.key,
   });
 
+  final String chapter;
   final PageType? fixedType;
   final bool autoNavigate;
 
   Future<void> _addPage(WidgetRef ref, String name, PageType type) async {
-    await ref.read(bookProvider.notifier).createPage(name, type);
+    await ref.read(bookProvider.notifier).createPage(name, type, chapter);
 
     if (!autoNavigate) return;
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));

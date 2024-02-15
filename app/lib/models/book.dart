@@ -38,8 +38,9 @@ class BookNotifier extends StateNotifier<Book> {
   Future<void> createPage(
     String name, [
     PageType type = PageType.static,
+    String chapter = "",
   ]) async {
-    final page = Page(pageName: name, type: type);
+    final page = Page(pageName: name, type: type, chapter: chapter);
     await ref.read(communicatorProvider).createPage(page);
     state = state.copyWith(
       pages: [...state.pages, page],
