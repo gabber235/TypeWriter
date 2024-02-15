@@ -251,9 +251,10 @@ class _TreeCategory extends HookConsumerWidget {
           },
           onAcceptWithDetails: (details) {
             final pageId = details.data.pageId;
+            print("Accepting ${details.data.pageId}, ${node.path}");
             ref
                 .read(pageProvider(pageId))
-                ?.changeChapter(ref.passing, node.name);
+                ?.changeChapter(ref.passing, node.path);
           },
           builder: (context, candidateData, rejectedData) => Material(
             color: Colors.transparent,

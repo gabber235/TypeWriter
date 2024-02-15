@@ -156,7 +156,7 @@ class _LinkablePathsProviderElement
 }
 
 String _$linkableDuplicatePathsHash() =>
-    r'b49379872d505f1e61946378d31d8886919de7c7';
+    r'a1b82b13064d278aaca96c45ce0ffd3b7917bf1c';
 
 /// See also [linkableDuplicatePaths].
 @ProviderFor(linkableDuplicatePaths)
