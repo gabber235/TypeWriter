@@ -658,6 +658,138 @@ class _EntryTagsProviderElement extends AutoDisposeProviderElement<List<String>>
   String get entryId => (origin as EntryTagsProvider).entryId;
 }
 
+String _$entryBlueprintPageTypeHash() =>
+    r'ab9695f4ad5cf34bf53658d8f765b51d8f463868';
+
+/// See also [entryBlueprintPageType].
+@ProviderFor(entryBlueprintPageType)
+const entryBlueprintPageTypeProvider = EntryBlueprintPageTypeFamily();
+
+/// See also [entryBlueprintPageType].
+class EntryBlueprintPageTypeFamily extends Family<PageType> {
+  /// See also [entryBlueprintPageType].
+  const EntryBlueprintPageTypeFamily();
+
+  /// See also [entryBlueprintPageType].
+  EntryBlueprintPageTypeProvider call(
+    String blueprintName,
+  ) {
+    return EntryBlueprintPageTypeProvider(
+      blueprintName,
+    );
+  }
+
+  @override
+  EntryBlueprintPageTypeProvider getProviderOverride(
+    covariant EntryBlueprintPageTypeProvider provider,
+  ) {
+    return call(
+      provider.blueprintName,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entryBlueprintPageTypeProvider';
+}
+
+/// See also [entryBlueprintPageType].
+class EntryBlueprintPageTypeProvider extends AutoDisposeProvider<PageType> {
+  /// See also [entryBlueprintPageType].
+  EntryBlueprintPageTypeProvider(
+    String blueprintName,
+  ) : this._internal(
+          (ref) => entryBlueprintPageType(
+            ref as EntryBlueprintPageTypeRef,
+            blueprintName,
+          ),
+          from: entryBlueprintPageTypeProvider,
+          name: r'entryBlueprintPageTypeProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$entryBlueprintPageTypeHash,
+          dependencies: EntryBlueprintPageTypeFamily._dependencies,
+          allTransitiveDependencies:
+              EntryBlueprintPageTypeFamily._allTransitiveDependencies,
+          blueprintName: blueprintName,
+        );
+
+  EntryBlueprintPageTypeProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.blueprintName,
+  }) : super.internal();
+
+  final String blueprintName;
+
+  @override
+  Override overrideWith(
+    PageType Function(EntryBlueprintPageTypeRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EntryBlueprintPageTypeProvider._internal(
+        (ref) => create(ref as EntryBlueprintPageTypeRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        blueprintName: blueprintName,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<PageType> createElement() {
+    return _EntryBlueprintPageTypeProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EntryBlueprintPageTypeProvider &&
+        other.blueprintName == blueprintName;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, blueprintName.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin EntryBlueprintPageTypeRef on AutoDisposeProviderRef<PageType> {
+  /// The parameter `blueprintName` of this provider.
+  String get blueprintName;
+}
+
+class _EntryBlueprintPageTypeProviderElement
+    extends AutoDisposeProviderElement<PageType>
+    with EntryBlueprintPageTypeRef {
+  _EntryBlueprintPageTypeProviderElement(super.provider);
+
+  @override
+  String get blueprintName =>
+      (origin as EntryBlueprintPageTypeProvider).blueprintName;
+}
+
 String _$fieldModifiersHash() => r'2e926b371b7db972ec7c3ed7db468baaa6839aba';
 
 /// Gets all the modifiers with a given name.

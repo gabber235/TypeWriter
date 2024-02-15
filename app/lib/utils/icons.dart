@@ -68,4 +68,5 @@ class TWIcons {
   static const String filePen = "fa6-solid:file-pen";
   static const String help = "fa-solid:question-circle";
   static const String treeGraph = "icon-park-solid:chart-graph";
+  static const String moveEntry = "material-symbols:tab-move";
 }

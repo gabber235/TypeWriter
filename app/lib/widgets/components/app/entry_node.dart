@@ -6,6 +6,7 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/book.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
@@ -13,6 +14,8 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/page_search.dart";
+import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
@@ -179,7 +182,7 @@ class _EntryNode extends HookConsumerWidget {
     PassingRef ref,
     List<String> paths,
   ) async {
-    final page = ref.read(currentPageProvider);
+    final page = ref.read(entryPageProvider(id));
     if (page == null) return;
     final path = await pathSelector(context, paths);
     if (path == null) return;
@@ -192,11 +195,33 @@ class _EntryNode extends HookConsumerWidget {
     PassingRef ref,
     List<String> paths,
   ) async {
-    final page = ref.read(currentPageProvider);
+    final page = ref.read(entryPageProvider(id));
     if (page == null) return;
     final path = await pathSelector(context, paths);
     if (path == null) return;
     await page.linkWithDuplicate(ref, id, path);
+  }
+
+  void _moveEntry(BuildContext context, PassingRef ref) {
+    final from = ref.read(entryPageIdProvider(id));
+    if (from == null) return;
+
+    final pageType = ref.read(entryBlueprintPageTypeProvider(type));
+
+    ref.read(searchProvider.notifier).asBuilder()
+      ..pageType(pageType)
+      ..fetchPage(
+        onSelect: (page) {
+          ref.read(bookProvider.notifier).moveEntry(id, from, page.pageName);
+          return true;
+        },
+      )
+      ..fetchAddPage(
+        onAdded: (page) {
+          ref.read(bookProvider.notifier).moveEntry(id, from, page.pageName);
+        },
+      )
+      ..open();
   }
 
   void _deleteEntry(BuildContext context, PassingRef ref) {
@@ -239,6 +264,13 @@ class _EntryNode extends HookConsumerWidget {
                     linkableDuplicatePaths,
                   ),
                 ),
+              ContextMenuTile.button(
+                title: "Move to ...",
+                icon: TWIcons.moveEntry,
+                color: Colors.blueAccent,
+                onTap: () => _moveEntry(context, ref.passing),
+              ),
+              ContextMenuTile.divider(),
               ContextMenuTile.button(
                 title: "Delete",
                 icon: TWIcons.trash,

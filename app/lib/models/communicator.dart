@@ -182,6 +182,10 @@ class SocketNotifier extends StateNotifier<Socket?> {
         (data) => ref.read(communicatorProvider).handleDeletePage(data),
       )
       ..on(
+        "moveEntry",
+        (data) => ref.read(communicatorProvider).handleMoveEntry(data),
+      )
+      ..on(
         "createEntry",
         (data) => ref.read(communicatorProvider).handleCreateEntry(data),
       )
@@ -303,6 +307,23 @@ class Communicator {
 
     handleAck(
       await socket.emitWithAckAsync("deletePage", name),
+    );
+  }
+
+  Future<void> moveEntry(String entryId, String fromPage, String toPage) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "entryId": entryId,
+      "fromPage": fromPage,
+      "toPage": toPage,
+    };
+
+    handleAck(
+      await socket.emitWithAckAsync("moveEntry", jsonEncode(data)),
     );
   }
 
@@ -467,6 +488,14 @@ class Communicator {
   void handleDeletePage(dynamic data) {
     final name = data as String;
     ref.read(bookProvider.notifier).syncDeletePage(name);
+  }
+
+  void handleMoveEntry(dynamic data) {
+    final json = jsonDecode(data as String) as Map<String, dynamic>;
+    final entryId = json["entryId"] as String;
+    final fromPage = json["fromPage"] as String;
+    final toPage = json["toPage"] as String;
+    ref.read(bookProvider.notifier).syncMoveEntry(entryId, fromPage, toPage);
   }
 
   void handleCreateEntry(dynamic data) {

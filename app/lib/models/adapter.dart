@@ -6,6 +6,7 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/color_converter.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
@@ -45,6 +46,16 @@ List<String> entryTags(
   final blueprint = ref.watch(entryTypeProvider(entryId));
   if (blueprint == null) return [];
   return ref.watch(entryBlueprintTagsProvider(blueprint));
+}
+
+@riverpod
+PageType entryBlueprintPageType(
+  EntryBlueprintPageTypeRef ref,
+  String blueprintName,
+) {
+  final blueprint = ref.watch(entryBlueprintProvider(blueprintName));
+  if (blueprint == null) return PageType.static;
+  return PageType.fromBlueprint(blueprint);
 }
 
 /// Gets all the modifiers with a given name.

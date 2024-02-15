@@ -26,6 +26,7 @@ interface ClientSynchronizer {
     fun handleChangePageValue(client: SocketIOClient, data: String, ackRequest: AckRequest)
 
     fun handleDeletePage(client: SocketIOClient, name: String, ack: AckRequest)
+    fun handleMoveEntry(client: SocketIOClient, data: String, ack: AckRequest)
 
     fun handleCreateEntry(client: SocketIOClient, data: String, ack: AckRequest)
 
@@ -96,6 +97,14 @@ class ClientSynchronizerImpl : ClientSynchronizer, KoinComponent {
         val result = stagingManager.deletePage(name)
         ack.sendResult(result) {
             communicationHandler.server?.broadcastOperations?.sendEvent("deletePage", client, name)
+        }
+    }
+
+    override fun handleMoveEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+        val (entryId, fromPage, toPage) = gson.fromJson(data, MoveEntry::class.java)
+        val result = stagingManager.moveEntry(entryId, fromPage, toPage)
+        ack.sendResult(result) {
+            communicationHandler.server?.broadcastOperations?.sendEvent("moveEntry", client, data)
         }
     }
 
@@ -221,6 +230,13 @@ private data class PageValueUpdate(
     val path: String,
     val value: JsonElement
 )
+
+private data class MoveEntry(
+    val entryId: String,
+    val fromPage: String,
+    val toPage: String,
+)
+
 
 private data class EntryCreate(
     val pageId: String,

@@ -26,6 +26,7 @@ interface StagingManager {
     fun renamePage(oldName: String, newName: String): Result<String>
     fun changePageValue(pageId: String, path: String, value: JsonElement): Result<String>
     fun deletePage(name: String): Result<String>
+    fun moveEntry(entryId: String, fromPage: String, toPage: String): Result<String>
     fun createEntry(pageId: String, data: JsonObject): Result<String>
     fun updateEntryField(pageId: String, entryId: String, path: String, value: JsonElement): Result<String>
     fun updateEntry(pageId: String, data: JsonObject): Result<String>
@@ -144,6 +145,20 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
         autoSaver()
         return ok("Successfully deleted page with name $name")
+    }
+
+    override fun moveEntry(entryId: String, fromPage: String, toPage: String): Result<String> {
+        val from = pages[fromPage] ?: return failure("Page '$fromPage' does not exist")
+        val to = pages[toPage] ?: return failure("Page '$toPage' does not exist")
+
+        val entry = from["entries"].asJsonArray.find { it.asJsonObject["id"].asString == entryId }
+            ?: return failure("Entry does not exist in page '$fromPage'")
+
+        from["entries"].asJsonArray.remove(entry)
+        to["entries"].asJsonArray.add(entry)
+
+        autoSaver()
+        return ok("Successfully moved entry")
     }
 
     override fun createEntry(pageId: String, data: JsonObject): Result<String> {

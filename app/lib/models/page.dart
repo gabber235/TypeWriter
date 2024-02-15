@@ -45,13 +45,20 @@ String pageChapter(PageChapterRef ref, String pageName) {
 }
 
 @riverpod
-String? entriesPage(EntriesPageRef ref, String entryId) {
+String? entryPageId(EntryPageIdRef ref, String entryId) {
   return ref
       .watch(pagesProvider)
       .firstWhereOrNull(
         (page) => page.entries.any((entry) => entry.id == entryId),
       )
       ?.pageName;
+}
+
+@riverpod
+Page? entryPage(EntryPageRef ref, String entryId) {
+  return ref.watch(pagesProvider).firstWhereOrNull(
+        (page) => page.entries.any((entry) => entry.id == entryId),
+      );
 }
 
 @riverpod
@@ -64,11 +71,11 @@ Entry? entry(EntryRef ref, String pageId, String entryId) {
 
 @riverpod
 Entry? globalEntry(GlobalEntryRef ref, String entryId) {
-  final page = ref.watch(entriesPageProvider(entryId));
-  if (page == null) {
+  final pageId = ref.watch(entryPageIdProvider(entryId));
+  if (pageId == null) {
     return null;
   }
-  return ref.watch(entryProvider(page, entryId));
+  return ref.watch(entryProvider(pageId, entryId));
 }
 
 @riverpod
@@ -76,20 +83,20 @@ MapEntry<String, Entry>? globalEntryWithPage(
   GlobalEntryWithPageRef ref,
   String entryId,
 ) {
-  final page = ref.watch(entriesPageProvider(entryId));
-  if (page == null) {
+  final pageId = ref.watch(entryPageIdProvider(entryId));
+  if (pageId == null) {
     return null;
   }
-  final entry = ref.watch(entryProvider(page, entryId));
+  final entry = ref.watch(entryProvider(pageId, entryId));
   if (entry == null) {
     return null;
   }
-  return MapEntry(page, entry);
+  return MapEntry(pageId, entry);
 }
 
 @riverpod
 bool entryExists(EntryExistsRef ref, String entryId) {
-  return ref.watch(entriesPageProvider(entryId)) != null;
+  return ref.watch(entryPageIdProvider(entryId)) != null;
 }
 
 enum PageType {
