@@ -3,16 +3,16 @@ import Player from "@site/src/components/Player";
 # First Cinematic
 This guide will lead you through making your first cinematic.
 
-:::danger
+:::danger[Outdated]
 This section currently is outdated and maybe contains images/videos that are not in the latest release
 :::
 
-:::info
-This guide uses the [Basic Adapter](../adapters/BasicAdapter), hence it must be installed before following this guide.
+:::info[Basic Adapter required]
+This guide uses the [Basic Adapter](../../adapters/BasicAdapter/BasicAdapter.mdx), hence it must be installed before following this guide.
 :::
 
 :::info
-This guide builds upon the [First Interaction](first-interaction) guide.
+This guide builds upon the [Interactions](./01-interactions.mdx) guide.
 We strongly recommend reading through it before following this guide.
 :::
 
@@ -30,7 +30,7 @@ This makes cinematics useful in a wide variety of scenarios, with some examples 
 
 ## Creating a Cinematic
 We'll start off by making a simple cinematic with a cinematic camera entry, with the cinematic being triggered through
-a command. Later in the guide we'll continue the [First Interaction](first-interaction) guide to trigger the cinematic
+a command. Later in the guide we'll continue the [Interactions](./01-interactions.mdx) guide to trigger the cinematic
 from a flower.
 
 ### Creating the Page
@@ -89,7 +89,7 @@ on the segment, or drag the segment on the track to our desired starting point.
 
 :::tip
 To make it really feel cinematic, you can add a black screen at the beginning of the cinematic.
-Using the [Blinding Cinematic](/adapters/BasicAdapter/entries/cinematic/blinding_cinematic) entry, you can make the screen
+Using the [Blinding Cinematic](../../adapters/BasicAdapter/entries/cinematic/blinding_cinematic.mdx) entry, you can make the screen
 go black for the first `20 frames`.
 :::
 
@@ -106,7 +106,7 @@ If you have done everything correctly, you should now have a cinematic that look
 I strongly recommend picking a specific red tulip and changing the cinematic paths to be around it if you havn't done so already.
 :::
 Now, you probably want the cinematic to be triggered when a player does something, and not through a command.
-Let's do that by modifying the flower example from [First Interaction](first-interaction) so that one of the
+Let's do that by modifying the flower example from [Interactions](./01-interactions.mdx) so that one of the
 options causes the cinematic to play.
 
 Let's head over to the Flower page by clicking on it in the Pages sidebar. We then simply want to add a new entry.
