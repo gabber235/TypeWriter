@@ -374,9 +374,25 @@ extension PageX on Page {
     final entry = ref.read(entryProvider(pageName, entryId));
     if (entry == null) return;
 
-    final triggerPaths = ref.read(modifierPathsProvider(entry.type, "entry"));
+    final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
 
-    final newEntry = triggerPaths
+    final wildPath = path.wild();
+    final pathModifier =
+        modifiers.entries.firstWhereOrNull((e) => e.key == wildPath)?.value;
+    if (pathModifier == null) {
+      debugPrint(
+        "No modifier found for path $wildPath in entry ${entry.id}.",
+      );
+      return;
+    }
+
+    // Remove the paths with the same modifier.
+    final resetPaths = modifiers.entries
+        .where((e) => e.value.data == pathModifier.data)
+        .map((e) => e.key)
+        .toList();
+
+    final newEntry = resetPaths
         .fold(
           entry.copyWith("id", getRandomString()),
           (previousEntry, path) => previousEntry.copyMapped(
