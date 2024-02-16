@@ -49,6 +49,13 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+    toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "$targetJavaVersion"
+    }
 }
 
 val copyTemplates by tasks.registering(Copy::class) {
@@ -56,7 +63,7 @@ val copyTemplates by tasks.registering(Copy::class) {
     from(projectDir.resolve("src/main/templates")) {
         expand("version" to version)
     }
-    into(layout.buildDirectory.dir("generated-sources/templates/kotlin/main"))
+    into(buildDir.resolve("generated-sources/templates/kotlin/main"))
 }
 
 sourceSets {
@@ -91,6 +98,9 @@ task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildRelease")
     doLast {
         // Rename the jar to remove the version and -all
         val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+        if (!jar.exists()) {
+            throw IllegalStateException("Jar does not exist: ${jar.absolutePath}")
+        }
         jar.renameTo(file("build/libs/%s.jar".format(project.name)))
         file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
     }

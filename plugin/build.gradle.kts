@@ -79,12 +79,14 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
-
+    toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     withSourcesJar()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "$targetJavaVersion"
+    }
 }
 
 tasks.test {
@@ -146,6 +148,9 @@ task("buildRelease") {
 
         // Rename the jar to remove the version and -all
         val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+        if (!jar.exists()) {
+            throw IllegalStateException("Jar does not exist: ${jar.absolutePath}")
+        }
         jar.renameTo(file("build/libs/%s.jar".format(project.name)))
         file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
     }
