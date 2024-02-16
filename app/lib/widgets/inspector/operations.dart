@@ -54,6 +54,8 @@ class Operations extends HookConsumerWidget {
           _LinkWithDuplicate(paths: linkableDuplicatePaths),
           const SizedBox(height: 8),
         ],
+        const _MoveEntry(),
+        const SizedBox(height: 8),
         const _DeleteEntry(),
         const SizedBox(height: 8),
       ],
@@ -109,6 +111,27 @@ class _LinkWithDuplicate extends HookConsumerWidget {
       icon: const Iconify(TWIcons.duplicate),
       label: const Text("Link with Duplicate"),
       color: Colors.blue,
+    );
+  }
+}
+
+class _MoveEntry extends HookConsumerWidget {
+  const _MoveEntry();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FilledButton.icon(
+      onPressed: () {
+        final entryId = ref.read(inspectingEntryIdProvider);
+        if (entryId.isNullOrEmpty) return;
+        moveEntryToSelectingPage(
+          ref.passing,
+          entryId!,
+        );
+      },
+      icon: const Iconify(TWIcons.moveEntry),
+      label: const Text("Move Entry"),
+      color: Theme.of(context).colorScheme.primary,
     );
   }
 }
