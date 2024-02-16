@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entry.entries
 
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MultiLine
@@ -10,6 +11,7 @@ import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.FactId
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.get
+import java.util.*
 
 @Tags("fact")
 interface FactEntry : StaticEntry {
@@ -43,7 +45,12 @@ interface ReadableFactEntry : FactEntry {
     }
 
     fun readForGroup(groupId: GroupId): FactData {
-        val entry = group.get() ?: return FactData(0)
+        val entry = group.get()
+        if (entry == null) {
+            // If no group entry is set, we assume that the player is the group for backwards compatibility
+            val player = server.getPlayer(UUID.fromString(groupId.id)) ?: return FactData(0)
+            return readSinglePlayer(player)
+        }
         val group = entry.group(groupId)
         return group.players.map { readSinglePlayer(it) }.let { FactData(it.sumOf(FactData::value)) }
     }
