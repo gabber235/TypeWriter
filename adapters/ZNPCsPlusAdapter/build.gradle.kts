@@ -31,8 +31,8 @@ dependencies {
     // Already included in the TypeWriter plugin
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
     compileOnly("com.github.dyam0:LirandAPI:96cc59d4fb")
-    compileOnly("net.kyori:adventure-api:4.13.1")
-    compileOnly("net.kyori:adventure-text-minimessage:4.13.1")
+    compileOnly("net.kyori:adventure-api:4.15.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.15.0")
 
     // External dependencies
     compileOnly("lol.pyr:znpcsplus-api:2.0.0-SNAPSHOT")
@@ -56,7 +56,7 @@ val copyTemplates by tasks.registering(Copy::class) {
     from(projectDir.resolve("src/main/templates")) {
         expand("version" to version)
     }
-    into(buildDir.resolve("generated-sources/templates/kotlin/main"))
+    into(layout.buildDirectory.dir("generated-sources/templates/kotlin/main"))
 }
 
 sourceSets {

@@ -30,8 +30,8 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
     compileOnly("com.github.dyam0:LirandAPI:96cc59d4fb")
     compileOnly("com.github.Tofaa2.EntityLib:EntityLib:1.2.4-SNAPSHOT")
-    compileOnly("net.kyori:adventure-api:4.13.1")
-    compileOnly("net.kyori:adventure-text-minimessage:4.13.1")
+    compileOnly("net.kyori:adventure-api:4.15.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.15.0")
 
     // External dependencies
     compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
@@ -55,7 +55,7 @@ val copyTemplates by tasks.registering(Copy::class) {
     from(projectDir.resolve("src/main/templates")) {
         expand("version" to version)
     }
-    into(buildDir.resolve("generated-sources/templates/kotlin/main"))
+    into(layout.buildDirectory.dir("generated-sources/templates/kotlin/main"))
 }
 
 sourceSets {
