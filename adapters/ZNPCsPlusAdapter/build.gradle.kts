@@ -10,7 +10,6 @@ version = file("../../version.txt").readText().trim()
 
 repositories {
     // Required
-    maven("https://jitpack.io")
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")
@@ -20,6 +19,7 @@ repositories {
     maven("https://repo.opencollab.dev/maven-snapshots/")
     // ZNPCsPlus Repositories
     maven("https://repo.pyr.lol/snapshots")
+    maven("https://jitpack.io")
 }
 
 dependencies {

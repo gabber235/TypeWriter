@@ -8,7 +8,6 @@ import lol.pyr.znpcsplus.util.NpcLocation
 import lol.pyr.znpcsplus.util.NpcPose
 import me.gabber235.typewriter.capture.capturers.ArmSwing
 import me.gabber235.typewriter.entry.entries.NpcData
-import me.gabber235.typewriter.extensions.packetevents.swingArm
 import me.gabber235.typewriter.logger
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -48,9 +47,7 @@ interface ZNPCData : NpcData<NpcEntry> {
     }
 
     override fun handlePunching(player: Player, npc: NpcEntry, punching: ArmSwing) {
-        // TODD: Wait for ZNPCs API to add punching
-        // For now we directly send the packet
-        player.swingArm(npc.npc.packetEntityId, punching)
+        npc.npc.swingHand(punching.swingLeft)
     }
 
     override fun handleInventory(player: Player, npc: NpcEntry, slot: EquipmentSlot, itemStack: ItemStack) {
@@ -64,7 +61,7 @@ interface ZNPCData : NpcData<NpcEntry> {
         }
 
         val property = NpcApiProvider.get().propertyRegistry.getByName(zNpcSlot, ItemStack::class.java)
-        npc.npc.setProperty(property, itemStack)
+        npc.npc.setItemProperty(property, itemStack)
     }
 
     override fun teardown(player: Player, npc: NpcEntry) {
