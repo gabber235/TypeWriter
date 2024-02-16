@@ -20,7 +20,7 @@ import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.entity.WrapperEntity
-import me.tofaa.entitylib.meta.display.TextDisplayMeta
+import me.tofaa.entitylib.meta.types.DisplayMeta
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Particle
@@ -206,7 +206,7 @@ private suspend inline fun Player.teleportIfNeeded(
     location: Location,
 ) {
     if (frame % 10 == 0 || location.distanceSquared(location) > MAX_DISTANCE_SQUARED) SYNC.switchContext {
-        teleport(location.highUpLocation)
+        teleport(location)
         allowFlight = true
         isFlying = true
     }
@@ -236,7 +236,7 @@ private class DisplayCameraAction(
     }
 
     private fun createEntity(): WrapperEntity {
-        return EntityLib.createEntity(UUID.randomUUID(), EntityTypes.TEXT_DISPLAY).meta<TextDisplayMeta> {
+        return EntityLib.createEntity(UUID.randomUUID(), EntityTypes.ITEM_DISPLAY).meta<DisplayMeta> {
             positionRotationInterpolationDuration = BASE_INTERPOLATION
         }
     }
