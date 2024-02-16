@@ -22,7 +22,7 @@ import org.bukkit.potion.PotionEffectType
     "potion_effect_cinematic",
     "Apply different potion effects to the player during a cinematic",
     Colors.CYAN,
-    "heroicons-solid:status-offline"
+    "fa6-solid:flask-vial"
 )
 /**
  * The `PotionEffectCinematicEntry` is used to apply different potion effects to the player during a cinematic.
