@@ -14,6 +14,7 @@ _$PageImpl _$$PageImplFromJson(Map<String, dynamic> json) => _$PageImpl(
               .toList() ??
           const [],
       chapter: json['chapter'] as String? ?? "",
+      priority: json['priority'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$$PageImplToJson(_$PageImpl instance) =>
@@ -22,6 +23,7 @@ Map<String, dynamic> _$$PageImplToJson(_$PageImpl instance) =>
       'type': _$PageTypeEnumMap[instance.type]!,
       'entries': instance.entries,
       'chapter': instance.chapter,
+      'priority': instance.priority,
     };
 
 const _$PageTypeEnumMap = {
@@ -578,6 +580,134 @@ class _PageChapterProviderElement extends AutoDisposeProviderElement<String>
   String get pageName => (origin as PageChapterProvider).pageName;
 }
 
+String _$pagePriorityHash() => r'6d67e3c592c0e5656c4c26213da90d64691825b5';
+
+/// See also [pagePriority].
+@ProviderFor(pagePriority)
+const pagePriorityProvider = PagePriorityFamily();
+
+/// See also [pagePriority].
+class PagePriorityFamily extends Family<int> {
+  /// See also [pagePriority].
+  const PagePriorityFamily();
+
+  /// See also [pagePriority].
+  PagePriorityProvider call(
+    String pageName,
+  ) {
+    return PagePriorityProvider(
+      pageName,
+    );
+  }
+
+  @override
+  PagePriorityProvider getProviderOverride(
+    covariant PagePriorityProvider provider,
+  ) {
+    return call(
+      provider.pageName,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'pagePriorityProvider';
+}
+
+/// See also [pagePriority].
+class PagePriorityProvider extends AutoDisposeProvider<int> {
+  /// See also [pagePriority].
+  PagePriorityProvider(
+    String pageName,
+  ) : this._internal(
+          (ref) => pagePriority(
+            ref as PagePriorityRef,
+            pageName,
+          ),
+          from: pagePriorityProvider,
+          name: r'pagePriorityProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$pagePriorityHash,
+          dependencies: PagePriorityFamily._dependencies,
+          allTransitiveDependencies:
+              PagePriorityFamily._allTransitiveDependencies,
+          pageName: pageName,
+        );
+
+  PagePriorityProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.pageName,
+  }) : super.internal();
+
+  final String pageName;
+
+  @override
+  Override overrideWith(
+    int Function(PagePriorityRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PagePriorityProvider._internal(
+        (ref) => create(ref as PagePriorityRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        pageName: pageName,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _PagePriorityProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PagePriorityProvider && other.pageName == pageName;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, pageName.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin PagePriorityRef on AutoDisposeProviderRef<int> {
+  /// The parameter `pageName` of this provider.
+  String get pageName;
+}
+
+class _PagePriorityProviderElement extends AutoDisposeProviderElement<int>
+    with PagePriorityRef {
+  _PagePriorityProviderElement(super.provider);
+
+  @override
+  String get pageName => (origin as PagePriorityProvider).pageName;
+}
+
 String _$entryPageIdHash() => r'ceb41cef3f8d8b1f0a28e5de7aead8969f03d6ac';
 
 /// See also [entryPageId].
@@ -977,7 +1107,7 @@ class _EntryProviderElement extends AutoDisposeProviderElement<Entry?>
   String get entryId => (origin as EntryProvider).entryId;
 }
 
-String _$globalEntryHash() => r'9aa2e0f379f22d9d87dee900fe3122f81698fac3';
+String _$globalEntryHash() => r'df6937f53ba0fe88ed629630eb2b366d2ed3a540';
 
 /// See also [globalEntry].
 @ProviderFor(globalEntry)
@@ -1106,7 +1236,7 @@ class _GlobalEntryProviderElement extends AutoDisposeProviderElement<Entry?>
 }
 
 String _$globalEntryWithPageHash() =>
-    r'250ed7d1b0146d138e1237d22c12a53e00a7b0b9';
+    r'003dec3f932daec4549b62ae8bb744dc256310ec';
 
 /// See also [globalEntryWithPage].
 @ProviderFor(globalEntryWithPage)
@@ -1237,7 +1367,7 @@ class _GlobalEntryWithPageProviderElement
   String get entryId => (origin as GlobalEntryWithPageProvider).entryId;
 }
 
-String _$entryExistsHash() => r'7e7ddbceb9b0efb860e5cd01f53c509eb6009bf9';
+String _$entryExistsHash() => r'5280290c9246fb7003da2717fc9a1639c952a286';
 
 /// See also [entryExists].
 @ProviderFor(entryExists)

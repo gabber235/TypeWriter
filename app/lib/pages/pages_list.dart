@@ -406,6 +406,14 @@ class _PageTile extends HookConsumerWidget {
               ChangeChapterDialogue(pageId: pageId, chapter: chapter),
         ),
       ),
+      ContextMenuTile.button(
+        title: "Change Priority",
+        icon: TWIcons.priority,
+        onTap: () => showDialog(
+          context: context,
+          builder: (_) => ChangePagePriorityDialogue(pageId: pageId),
+        ),
+      ),
       ContextMenuTile.divider(),
       ContextMenuTile.button(
         title: "Delete",
@@ -933,6 +941,76 @@ class ChangeChapterDialogue extends HookConsumerWidget {
             context,
             ref.passing,
             controller.text,
+            changed,
+          ),
+          label: const Text("Change"),
+          icon: const Iconify(TWIcons.pencil),
+          color: Colors.orange,
+        ),
+      ],
+    );
+  }
+}
+
+class ChangePagePriorityDialogue extends HookConsumerWidget {
+  const ChangePagePriorityDialogue({
+    required this.pageId,
+    super.key,
+  });
+
+  final String pageId;
+
+  Future<void> _changePriority(
+    BuildContext context,
+    PassingRef ref,
+    int newPriority,
+    ValueNotifier<bool> changed,
+  ) async {
+    if (changed.value) return;
+    changed.value = true;
+
+    final navigator = Navigator.of(context);
+    await ref.read(pageProvider(pageId))?.changePriority(ref, newPriority);
+    navigator.pop(true);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final priority = ref.watch(pagePriorityProvider(pageId));
+    final controller = useTextEditingController();
+    final focusNode = useFocusNode();
+    final changed = useState(false);
+
+    useDelayedExecution(focusNode.requestFocus);
+
+    return AlertDialog(
+      title: Text("Change priority of ${pageId.formatted}"),
+      content: FormattedTextField(
+        controller: controller,
+        focus: focusNode,
+        text: priority.toString(),
+        hintText: "Priority",
+        icon: TWIcons.book,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+        ],
+        onSubmitted: (value) async =>
+            _changePriority(context, ref.passing, int.parse(value), changed),
+      ),
+      actions: [
+        TextButton.icon(
+          icon: const Iconify(TWIcons.x),
+          label: const Text("Cancel"),
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
+          ),
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+        FilledButton.icon(
+          onPressed: () async => _changePriority(
+            context,
+            ref.passing,
+            int.parse(controller.text),
             changed,
           ),
           label: const Text("Change"),

@@ -8,8 +8,6 @@ import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry
-import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.entries.FactEntry
 import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
@@ -25,8 +23,6 @@ import org.koin.core.qualifier.named
 import kotlin.reflect.KClass
 
 interface EntryDatabase {
-    val events: List<EventEntry>
-    val facts: List<FactEntry>
     val commandEvents: List<CustomCommandEntry>
 
     fun initialize()
@@ -39,9 +35,9 @@ interface EntryDatabase {
     fun <E : Entry> findEntry(klass: KClass<E>, predicate: (E) -> Boolean): E?
 
     fun <E : Entry> findEntryById(kClass: KClass<E>, id: String): E?
-    fun getFact(id: String): FactEntry?
-    fun findFactByName(name: String): FactEntry?
     fun getPageNames(type: PageType? = null): List<String>
+
+    fun entryPriority(entry: Ref<out Entry>): Int
 }
 
 class EntryDatabaseImpl : EntryDatabase, KoinComponent {
@@ -52,9 +48,9 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     private var pages: List<Page> = emptyList()
     private var entries: List<Entry> = emptyList()
 
-    override var events = listOf<EventEntry>()
-    override var facts = listOf<FactEntry>()
     override var commandEvents = listOf<CustomCommandEntry>()
+
+    private var entryPriority = emptyMap<Ref<out Entry>, Int>()
 
     override fun initialize() {
         plugin.listen<TypewriterReloadEvent> { loadEntries() }
@@ -64,14 +60,15 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     override fun loadEntries() {
         val pages = readPages(gson)
 
-        this.events = pages.flatMap { it.entries.filterIsInstance<EventEntry>() }
-        this.facts = pages.flatMap { it.entries.filterIsInstance<FactEntry>() }
-
         val newCommandEvents = pages.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() }
         this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
 
         this.entries = pages.flatMap { it.entries }
+        this.entryPriority = pages.flatMap { page ->
+            page.entries.map { it.ref() to page.priority }
+        }.toMap()
         this.pages = pages
+
 
         entryListeners.register()
         audienceManager.register()
@@ -109,12 +106,14 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     }
 
     override fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
-    override fun getFact(id: String) = facts.firstOrNull { it.id == id }
-    override fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
 
     override fun getPageNames(type: PageType?): List<String> {
         return if (type == null) pages.map { it.id }
         else pages.filter { it.type == type }.map { it.id }
+    }
+
+    override fun entryPriority(entry: Ref<out Entry>): Int {
+        return entryPriority[entry] ?: 0
     }
 }
 
@@ -181,6 +180,7 @@ data class Page(
     val id: String = "",
     val entries: List<Entry> = emptyList(),
     val type: PageType = PageType.SEQUENCE,
+    val priority: Int = 0
 )
 
 enum class PageType(val id: String) {
