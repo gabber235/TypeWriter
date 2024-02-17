@@ -13,10 +13,10 @@ import org.koin.core.component.inject
 class Interaction(val player: Player) : KoinComponent {
     private val interactionHandler: InteractionHandler by inject()
 
-    private var dialogue: DialogueSequence? = null
-    private var cinematic: CinematicSequence? = null
-    val questTracker: QuestTracker = QuestTracker(player)
-    val factWatcher: FactWatcher = FactWatcher(player)
+    internal var dialogue: DialogueSequence? = null
+    internal var cinematic: CinematicSequence? = null
+    internal val questTracker: QuestTracker = QuestTracker(player)
+    internal val factWatcher: FactWatcher = FactWatcher(player)
     private val sidebarManager: SidebarManager = SidebarManager(player)
 
     val hasDialogue: Boolean
@@ -157,7 +157,7 @@ class Interaction(val player: Player) : KoinComponent {
             }
         }
 
-        this.cinematic = CinematicSequence(player, actions, trigger.triggers, trigger.minEndTime)
+        this.cinematic = CinematicSequence(trigger.pageId, player, actions, trigger.triggers, trigger.minEndTime)
     }
 
     private fun handleFactWatcher(event: Event) {
