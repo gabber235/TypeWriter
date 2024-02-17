@@ -13,11 +13,10 @@ import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.PageType.CINEMATIC
-import me.gabber235.typewriter.entry.entries.CinematicStartTrigger
-import me.gabber235.typewriter.entry.entries.EntryTrigger
-import me.gabber235.typewriter.entry.entries.ReadableFactEntry
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
-import me.gabber235.typewriter.entry.entries.WritableFactEntry
+import me.gabber235.typewriter.entry.quest.trackQuest
+import me.gabber235.typewriter.entry.quest.unTrackQuest
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.facts.formattedName
 import me.gabber235.typewriter.interaction.chatHistory
@@ -50,6 +49,8 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
     cinematicCommand()
 
     triggerCommand()
+
+    questCommands()
 
     assetsCommands()
 }
@@ -282,7 +283,38 @@ private fun LiteralDSLBuilder.triggerCommand() = literal("trigger") {
                 EntryTrigger(entry.get()) triggerFor player.get()
             }
         }
+    }
+}
 
+private fun LiteralDSLBuilder.questCommands() = literal("quest") {
+    literal("track") {
+        requiresPermissions("typewriter.quest.track")
+        argument("quest", entryType<QuestEntry>()) { quest ->
+            executesPlayer {
+                source.trackQuest(quest.get().ref())
+            }
+
+            argument("player", PlayerType) { player ->
+                requiresPermissions("typewriter.quest.track.other")
+                executes {
+                    player.get().trackQuest(quest.get().ref())
+                }
+            }
+        }
+    }
+
+    literal("untrack") {
+        requiresPermissions("typewriter.quest.untrack")
+        executesPlayer {
+            source.unTrackQuest()
+        }
+
+        argument("player", PlayerType) { player ->
+            requiresPermissions("typewriter.quest.untrack.other")
+            executes {
+                player.get().unTrackQuest()
+            }
+        }
     }
 }
 

@@ -161,7 +161,6 @@ class CameraCinematicAction(
         this blockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
         this blockPacket PacketType.Play.Client.USE_ITEM
         this blockPacket PacketType.Play.Client.INTERACT_ENTITY
-
     }
 
     private suspend fun Player.teardown() {

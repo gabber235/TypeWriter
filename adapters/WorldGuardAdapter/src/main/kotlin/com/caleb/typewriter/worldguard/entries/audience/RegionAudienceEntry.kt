@@ -9,7 +9,10 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.entries.AudienceFilter
+import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
+import me.gabber235.typewriter.entry.ref
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 
@@ -34,18 +37,18 @@ class RegionAudienceEntry(
     val region: String = "",
 ) : AudienceFilterEntry {
     override fun display(): AudienceFilter {
-        return RegionAudienceFilter(region, children.into())
+        return RegionAudienceFilter(ref(), region)
     }
 }
 
 class RegionAudienceFilter(
+    ref: Ref<out AudienceFilterEntry>,
     private val region: String,
-    children: List<AudienceDisplay>,
-) : AudienceFilter(children) {
+) : AudienceFilter(ref) {
 
     @EventHandler
     fun onRegionEnter(event: RegionsEnterEvent) {
-        if (event.player.uniqueId !in this) return
+        if (!canConsider(event.player.uniqueId)) return
         if (event.regions.none { it.id == region }) return
         val player = server.getPlayer(event.player.uniqueId) ?: return
         player.updateFilter(true)
@@ -53,7 +56,7 @@ class RegionAudienceFilter(
 
     @EventHandler
     fun onRegionLeave(event: RegionsExitEvent) {
-        if (event.player.uniqueId !in this) return
+        if (!canConsider(event.player.uniqueId)) return
         if (event.regions.none { it.id == region }) return
         val player = server.getPlayer(event.player.uniqueId) ?: return
         player.updateFilter(false)

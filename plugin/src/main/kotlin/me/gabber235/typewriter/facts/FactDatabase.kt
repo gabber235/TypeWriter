@@ -2,10 +2,7 @@ package me.gabber235.typewriter.facts
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import me.gabber235.typewriter.entry.Modifier
-import me.gabber235.typewriter.entry.ModifierOperator
-import me.gabber235.typewriter.entry.Query
-import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ExpirableFactEntry
 import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
@@ -131,6 +128,9 @@ class FactDatabase : KoinComponent {
         for ((id, value) in modifications) {
             val entry = Query.findById<WritableFactEntry>(id) ?: continue
             entry.write(player, value)
+            if (entry is ReadableFactEntry) {
+                RefreshFactTrigger(entry.ref()) triggerFor player
+            }
         }
     }
 }

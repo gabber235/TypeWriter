@@ -1,12 +1,11 @@
 package me.gabber235.typewriter.interaction
 
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.cinematic.CinematicSequence
 import me.gabber235.typewriter.entry.dialogue.DialogueSequence
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.*
-import me.gabber235.typewriter.entry.matches
-import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.entry.quest.QuestTracker
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -16,6 +15,9 @@ class Interaction(val player: Player) : KoinComponent {
 
     private var dialogue: DialogueSequence? = null
     private var cinematic: CinematicSequence? = null
+    val questTracker: QuestTracker = QuestTracker(player)
+    val factWatcher: FactWatcher = FactWatcher(player)
+
     val hasDialogue: Boolean
         get() = dialogue != null
 
@@ -25,6 +27,7 @@ class Interaction(val player: Player) : KoinComponent {
     suspend fun tick() {
         dialogue?.tick()
         cinematic?.tick()
+        factWatcher.tick()
     }
 
     /** Handles an event. All [SystemTrigger]'s are handled by the plugin itself. */
@@ -32,6 +35,7 @@ class Interaction(val player: Player) : KoinComponent {
         triggerActions(event)
         handleDialogue(event)
         handleCinematic(event)
+        handleFactWatcher(event)
     }
 
     /**
@@ -154,6 +158,15 @@ class Interaction(val player: Player) : KoinComponent {
         this.cinematic = CinematicSequence(player, actions, trigger.triggers, trigger.minEndTime)
     }
 
+    private fun handleFactWatcher(event: Event) {
+        val factRefreshes = event.triggers.filterIsInstance<RefreshFactTrigger>()
+        if (factRefreshes.isEmpty()) return
+
+        factRefreshes.forEach {
+            factWatcher.refreshFact(it.fact)
+        }
+    }
+
     suspend fun end() {
         val dialogue = dialogue
         val cinematic = cinematic
@@ -163,5 +176,6 @@ class Interaction(val player: Player) : KoinComponent {
 
         dialogue?.end()
         cinematic?.end(force = true)
+        questTracker.end()
     }
 }

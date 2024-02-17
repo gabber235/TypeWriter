@@ -4,6 +4,7 @@ import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MultiLine
+import me.gabber235.typewriter.entry.PlaceholderEntry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.StaticEntry
 import me.gabber235.typewriter.facts.FactData
@@ -38,7 +39,7 @@ interface FactEntry : StaticEntry {
 }
 
 @Tags("readable-fact")
-interface ReadableFactEntry : FactEntry {
+interface ReadableFactEntry : FactEntry, PlaceholderEntry {
     fun readForPlayersGroup(player: Player): FactData {
         val factId = identifier(player) ?: return FactData(0)
         return readForGroup(factId.groupId)
@@ -59,6 +60,11 @@ interface ReadableFactEntry : FactEntry {
      * This should **not** be used directly. Use [readForPlayersGroup] instead.
      */
     fun readSinglePlayer(player: Player): FactData
+
+    override fun display(player: Player?): String? {
+        if (player == null) return null
+        return readForPlayersGroup(player).value.toString()
+    }
 }
 
 @Tags("writable-fact")

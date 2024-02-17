@@ -6,6 +6,7 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.entry.entries.WritableFactEntry
 import me.gabber235.typewriter.facts.FactData
+import org.bukkit.entity.Player
 
 interface Entry {
     val id: String
@@ -31,6 +32,11 @@ interface TriggerableEntry : TriggerEntry {
 
     @Help("The modifiers that will be applied when this entry is triggered")
     val modifiers: List<Modifier>
+}
+
+@Tags("placeholder")
+interface PlaceholderEntry : Entry {
+    fun display(player: Player?): String?
 }
 
 enum class CriteriaOperator {
