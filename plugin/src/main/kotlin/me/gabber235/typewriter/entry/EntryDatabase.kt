@@ -126,6 +126,7 @@ fun JsonReader.parsePage(id: String, gson: Gson): Result<Page> {
             when (nextName()) {
                 "entries" -> page = page.copy(entries = parseEntries(gson))
                 "type" -> page = page.copy(type = PageType.fromId(nextString()) ?: PageType.SEQUENCE)
+                "priority" -> page = page.copy(priority = nextInt())
                 else -> skipValue()
             }
         }
