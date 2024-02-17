@@ -116,6 +116,7 @@ task<ShadowJar>("buildAndMove") {
 
     group = "build"
     description = "Builds the jar and moves it to the server folder"
+    outputs.upToDateWhen { false }
 
     // Move the jar from the build/libs folder to the server/plugins folder
     doLast {
@@ -140,6 +141,8 @@ task("buildRelease") {
     dependsOn("copyFlutterWebFiles", "shadowJar")
     group = "build"
     description = "Builds the jar including the flutter web panel"
+
+    outputs.upToDateWhen { false }
 
     doLast {
         // Remove the flutter web folder

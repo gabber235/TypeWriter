@@ -78,6 +78,7 @@ task<ShadowJar>("buildAndMove") {
 
     group = "build"
     description = "Builds the jar and moves it to the server folder"
+    outputs.upToDateWhen { false }
 
     // Move the jar from the build/libs folder to the server/plugins folder
     doLast {
@@ -92,6 +93,8 @@ task<ShadowJar>("buildRelease") {
     dependsOn("shadowJar")
     group = "build"
     description = "Builds the jar and renames it"
+    outputs.upToDateWhen { false }
+
 
     doLast {
         // Rename the jar to remove the version and -all
