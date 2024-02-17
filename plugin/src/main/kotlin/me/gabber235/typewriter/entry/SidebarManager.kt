@@ -22,12 +22,14 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 
 private const val MAX_LINES = 15
+private const val SCOREBOARD_OBJECTIVE = "typewriter"
 
 class SidebarManager(
     private val player: Player,
 ) : Listener {
     private var sidebar: Ref<SidebarEntry>? = null
     private var lines = emptyList<Ref<SidebarLinesEntry>>()
+    private var lastTitle = ""
     private var lastLines = emptyList<String>()
 
     init {
@@ -40,16 +42,19 @@ class SidebarManager(
         disposeSidebar()
         sidebar = null
         lines = emptyList()
+        lastTitle = ""
         lastLines = emptyList()
     }
 
     fun tick() {
-        val newSidebar = Query.findWhere<SidebarEntry> { player.inAudience(it.ref()) }.maxByOrNull { it.priority }
+        val newSidebar = Query.findWhere<SidebarEntry> { player.inAudience(it.ref()) }.maxByOrNull {
+            it.priority
+        }
         val title = newSidebar?.display(player) ?: ""
 
         if (newSidebar?.ref() != sidebar) {
             if (sidebar == null) createSidebar(title)
-            else disposeSidebar()
+            else if (newSidebar == null) disposeSidebar()
 
             sidebar = newSidebar?.ref()
             lines = sidebar?.descendants(SidebarLinesEntry::class) ?: emptyList()
@@ -60,27 +65,28 @@ class SidebarManager(
             .mapNotNull { it.get()?.lines(player) }
             .flatMap { it.split("\n") }
 
-        if (lines != lastLines) {
+        if (lines != lastLines || title != lastTitle) {
             sendSidebar(title, lines)
+            lastTitle = title
             lastLines = lines
         }
     }
 
     private fun createSidebar(title: String) {
         WrapperPlayServerScoreboardObjective(
-            "typewriter",
+            SCOREBOARD_OBJECTIVE,
             CREATE,
             title.asMini(),
             INTEGER,
             ScoreFormat.blankScore(),
         ).sendPacketTo(player)
 
-        WrapperPlayServerDisplayScoreboard(1, "typewriter").sendPacketTo(player)
+        WrapperPlayServerDisplayScoreboard(1, SCOREBOARD_OBJECTIVE).sendPacketTo(player)
     }
 
     private fun disposeSidebar() {
         WrapperPlayServerScoreboardObjective(
-            "typewriter",
+            SCOREBOARD_OBJECTIVE,
             WrapperPlayServerScoreboardObjective.ObjectiveMode.REMOVE,
             Component.empty(),
             null,
@@ -88,9 +94,9 @@ class SidebarManager(
         ).sendPacketTo(player)
     }
 
-    fun sendSidebar(title: String, lines: List<String>) {
+    private fun sendSidebar(title: String, lines: List<String>) {
         val packet = WrapperPlayServerScoreboardObjective(
-            "typewriter",
+            SCOREBOARD_OBJECTIVE,
             UPDATE,
             title.asMini(),
             INTEGER,
@@ -98,7 +104,7 @@ class SidebarManager(
         )
         packet.sendPacketTo(player)
 
-        val displayPacket = WrapperPlayServerDisplayScoreboard(1, "typewriter")
+        val displayPacket = WrapperPlayServerDisplayScoreboard(1, SCOREBOARD_OBJECTIVE)
         displayPacket.sendPacketTo(player)
 
 
@@ -107,9 +113,9 @@ class SidebarManager(
             if (lastLine == line) continue
 
             WrapperPlayServerUpdateScore(
-                "typewriter_line_$index",
+                "${SCOREBOARD_OBJECTIVE}_line_$index",
                 WrapperPlayServerUpdateScore.Action.CREATE_OR_UPDATE_ITEM,
-                "typewriter",
+                SCOREBOARD_OBJECTIVE,
                 MAX_LINES - index,
                 line.asMini(),
                 ScoreFormat.blankScore(),
@@ -119,8 +125,8 @@ class SidebarManager(
         if (lines.size < lastLines.size) {
             for (i in lines.size until lastLines.size) {
                 WrapperPlayServerResetScore(
-                    "typewriter_line_$i",
-                    "typewriter"
+                    "${SCOREBOARD_OBJECTIVE}_line_$i",
+                    SCOREBOARD_OBJECTIVE,
                 ).sendPacketTo(player)
             }
         }
