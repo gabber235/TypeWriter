@@ -292,12 +292,18 @@ private fun LiteralDSLBuilder.questCommands() = literal("quest") {
         argument("quest", entryType<QuestEntry>()) { quest ->
             executesPlayer {
                 source.trackQuest(quest.get().ref())
+                source.msg("You are now tracking <blue>${quest.get().display(source)}</blue>.")
             }
 
             argument("player", PlayerType) { player ->
                 requiresPermissions("typewriter.quest.track.other")
                 executes {
                     player.get().trackQuest(quest.get().ref())
+                    source.msg(
+                        "You are now tracking <blue>${
+                            quest.get().display(player.get())
+                        }</blue> for ${player.get().name}."
+                    )
                 }
             }
         }
@@ -307,12 +313,14 @@ private fun LiteralDSLBuilder.questCommands() = literal("quest") {
         requiresPermissions("typewriter.quest.untrack")
         executesPlayer {
             source.unTrackQuest()
+            source.msg("You are no longer tracking any quests.")
         }
 
         argument("player", PlayerType) { player ->
             requiresPermissions("typewriter.quest.untrack.other")
             executes {
                 player.get().unTrackQuest()
+                source.msg("You are no longer tracking any quests for ${player.get().name}.")
             }
         }
     }
