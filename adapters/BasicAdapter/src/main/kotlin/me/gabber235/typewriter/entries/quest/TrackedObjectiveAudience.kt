@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.entries.quest
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import me.gabber235.typewriter.adapters.Colors
@@ -12,10 +11,10 @@ import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
 import me.gabber235.typewriter.entry.entries.trackedShowingObjectives
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.events.AsyncTrackedQuestUpdate
-import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.milliseconds
 
 @Entry(
     "tracked_objective_audience",
@@ -50,9 +49,9 @@ class TrackedObjectiveAudienceFilter(
     override fun initialize() {
         super.initialize()
 
-        job = plugin.launch {
+        job = DISPATCHERS_ASYNC.launch {
             while (true) {
-                delay(1.seconds)
+                delay(50.milliseconds)
                 consideredPlayers.forEach { it.refresh() }
             }
         }

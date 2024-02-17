@@ -49,12 +49,14 @@ class ObjectiveAudienceFilter(
 
     override fun onPlayerAdd(player: Player) {
         super.onPlayerAdd(player)
-        val subscription = player.listenForFacts(
-            criteria.map { it.fact },
-            ::onFactChange,
-        )
 
-        factWatcherSubscriptions[player.uniqueId] = subscription
+        factWatcherSubscriptions.compute(player.uniqueId) { _, subscription ->
+            subscription?.cancel(player)
+            player.listenForFacts(
+                criteria.map { it.fact },
+                ::onFactChange,
+            )
+        }
     }
 
     private fun onFactChange(player: Player, fact: Ref<ReadableFactEntry>) {

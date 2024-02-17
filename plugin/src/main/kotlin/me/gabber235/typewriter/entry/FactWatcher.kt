@@ -13,12 +13,9 @@ class FactWatcher(
 ) {
     private val factWatch = ConcurrentHashMap<Ref<ReadableFactEntry>, Int>()
     private val listeners = mutableListOf<FactListener>()
-    private var cycle: Int = 0
 
     fun tick() {
-        if (cycle++ % 20 == 0) {
-            refresh()
-        }
+        refresh()
     }
 
     private fun refresh() {

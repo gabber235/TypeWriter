@@ -20,7 +20,8 @@ import me.gabber235.typewriter.utils.asMini
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import kotlin.math.max
+
+private const val MAX_LINES = 15
 
 class SidebarManager(
     private val player: Player,
@@ -71,7 +72,7 @@ class SidebarManager(
             CREATE,
             title.asMini(),
             INTEGER,
-            ScoreFormat.blankScore()
+            ScoreFormat.blankScore(),
         ).sendPacketTo(player)
 
         WrapperPlayServerDisplayScoreboard(1, "typewriter").sendPacketTo(player)
@@ -93,36 +94,35 @@ class SidebarManager(
             UPDATE,
             title.asMini(),
             INTEGER,
-            ScoreFormat.blankScore()
+            ScoreFormat.blankScore(),
         )
         packet.sendPacketTo(player)
 
         val displayPacket = WrapperPlayServerDisplayScoreboard(1, "typewriter")
         displayPacket.sendPacketTo(player)
 
-        val lineCount = max(lastLines.size, lines.size).coerceAtMost(15)
 
-        for (i in 0 until lineCount) {
-            val line = lines.getOrNull(i)
-            val lastLine = lastLines.getOrNull(i)
+        for ((index, line) in lines.withIndex().take(MAX_LINES)) {
+            val lastLine = lastLines.getOrNull(index)
             if (lastLine == line) continue
 
-            if (line == null) {
+            WrapperPlayServerUpdateScore(
+                "typewriter_line_$index",
+                WrapperPlayServerUpdateScore.Action.CREATE_OR_UPDATE_ITEM,
+                "typewriter",
+                MAX_LINES - index,
+                line.asMini(),
+                ScoreFormat.blankScore(),
+            ).sendPacketTo(player)
+        }
+
+        if (lines.size < lastLines.size) {
+            for (i in lines.size until lastLines.size) {
                 WrapperPlayServerResetScore(
                     "typewriter_line_$i",
                     "typewriter"
                 ).sendPacketTo(player)
-                continue
             }
-
-            WrapperPlayServerUpdateScore(
-                "typewriter_line_$i",
-                WrapperPlayServerUpdateScore.Action.CREATE_OR_UPDATE_ITEM,
-                "typewriter",
-                lineCount - i,
-                line.asMini(),
-                ScoreFormat.blankScore(),
-            ).sendPacketTo(player)
         }
     }
 }
