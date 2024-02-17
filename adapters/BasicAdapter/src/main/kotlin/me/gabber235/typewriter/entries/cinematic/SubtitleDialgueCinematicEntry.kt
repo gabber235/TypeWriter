@@ -23,7 +23,7 @@ import net.kyori.adventure.title.Title.Times
 import org.bukkit.entity.Player
 import java.time.Duration
 
-@Entry("subtitle_dialogue_cinematic", "Show an action bar message", Colors.CYAN, "fa6-solid:diagram-next")
+@Entry("subtitle_dialogue_cinematic", "Show an subtitle message", Colors.CYAN, "fa6-solid:diagram-next")
 /**
  * The `Subtitle Dialogue Cinematic Entry` is a cinematic entry that displays an animated subtitle message.
  * The speaker is displayed in the action bar, and the dialogue is displayed in the subtitle.
