@@ -234,3 +234,7 @@ fun createEntryParserGson(adapterLoader: AdapterLoader): Gson {
     return builder
         .create()
 }
+
+val Entry.priority: Int get() = ref().priority
+val Ref<out Entry>.priority: Int
+    get() = org.koin.java.KoinJavaComponent.get<EntryDatabase>(EntryDatabase::class.java).entryPriority(this)

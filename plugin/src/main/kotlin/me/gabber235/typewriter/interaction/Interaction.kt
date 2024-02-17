@@ -17,6 +17,7 @@ class Interaction(val player: Player) : KoinComponent {
     private var cinematic: CinematicSequence? = null
     val questTracker: QuestTracker = QuestTracker(player)
     val factWatcher: FactWatcher = FactWatcher(player)
+    private val sidebarManager: SidebarManager = SidebarManager(player)
 
     val hasDialogue: Boolean
         get() = dialogue != null
@@ -28,6 +29,7 @@ class Interaction(val player: Player) : KoinComponent {
         dialogue?.tick()
         cinematic?.tick()
         factWatcher.tick()
+        sidebarManager.tick()
     }
 
     /** Handles an event. All [SystemTrigger]'s are handled by the plugin itself. */
@@ -176,6 +178,7 @@ class Interaction(val player: Player) : KoinComponent {
 
         dialogue?.end()
         cinematic?.end(force = true)
-        questTracker.end()
+        questTracker.dispose()
+        sidebarManager.dispose(force = true)
     }
 }

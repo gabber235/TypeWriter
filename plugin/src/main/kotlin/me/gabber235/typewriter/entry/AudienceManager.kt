@@ -12,6 +12,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.koin.java.KoinJavaComponent.get
+import kotlin.reflect.KClass
 
 class AudienceManager : Listener {
     private var displays = emptyMap<Ref<out AudienceEntry>, AudienceDisplay>()
@@ -91,4 +92,18 @@ class AudienceManager : Listener {
 fun Player.inAudience(ref: Ref<out AudienceEntry>): Boolean {
     val manager = get<AudienceManager>(AudienceManager::class.java)
     return manager[ref]?.let { return it.contains(this) } ?: false
+}
+
+fun <E : AudienceEntry> Ref<out AudienceFilterEntry>.descendants(klass: KClass<E>): List<Ref<E>> {
+    val entry = get() ?: return emptyList()
+    return entry.children.flatMap {
+        val child = it.get() ?: return@flatMap emptyList<Ref<E>>()
+        if (klass.isInstance(child)) {
+            listOf(it as Ref<E>)
+        } else if (child is AudienceFilterEntry) {
+            child.ref().descendants(klass)
+        } else {
+            emptyList()
+        }
+    }
 }

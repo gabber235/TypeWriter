@@ -56,7 +56,10 @@ abstract class AudienceDisplay : Listener {
     open operator fun contains(uuid: UUID): Boolean = uuid in playerIds
 }
 
-fun List<Ref<AudienceEntry>>.into() = mapNotNull { it.get()?.display() }
+class PassThroughDisplay : AudienceDisplay() {
+    override fun onPlayerAdd(player: Player) {}
+    override fun onPlayerRemove(player: Player) {}
+}
 
 abstract class AudienceFilter(
     private val ref: Ref<out AudienceFilterEntry>
@@ -95,5 +98,11 @@ abstract class AudienceFilter(
 
     override fun contains(player: Player): Boolean = contains(player.uniqueId)
     override fun contains(uuid: UUID): Boolean = uuid in filteredPlayers
+}
+
+class PassThroughFilter(
+    ref: Ref<out AudienceFilterEntry>
+) : AudienceFilter(ref) {
+    override fun filter(player: Player): Boolean = true
 }
 

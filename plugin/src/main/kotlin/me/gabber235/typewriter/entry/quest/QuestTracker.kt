@@ -56,7 +56,7 @@ class QuestTracker(
         )
     }
 
-    fun end() {
+    fun dispose() {
         listener.unregister()
         factWatchSubscription?.cancel(player)
     }
