@@ -39,10 +39,13 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
 class Typewriter : KotlinPlugin(), KoinComponent {
+
+    private val entityId = AtomicInteger(100000)
 
     override fun onLoad() {
         super.onLoad()
@@ -96,6 +99,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             return
         }
         EntityLib.init(PacketEvents.getAPI())
+        EntityLib.setEntityIdProvider(entityId::getAndIncrement)
 
         get<EntryDatabase>().initialize()
         get<StagingManager>().initialize()
