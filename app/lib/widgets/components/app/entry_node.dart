@@ -156,6 +156,31 @@ Future<String?> pathSelector(
   return completer.future;
 }
 
+void moveEntryToSelectingPage(PassingRef ref, String entryId) {
+  final from = ref.read(entryPageIdProvider(entryId));
+  if (from == null) return;
+
+  final entryType = ref.read(entryTypeProvider(entryId));
+  if (entryType == null) return;
+
+  final pageType = ref.read(entryBlueprintPageTypeProvider(entryType));
+
+  ref.read(searchProvider.notifier).asBuilder()
+    ..pageType(pageType)
+    ..fetchPage(
+      onSelect: (page) {
+        ref.read(bookProvider.notifier).moveEntry(entryId, from, page.pageName);
+        return true;
+      },
+    )
+    ..fetchAddPage(
+      onAdded: (page) {
+        ref.read(bookProvider.notifier).moveEntry(entryId, from, page.pageName);
+      },
+    )
+    ..open();
+}
+
 class _EntryNode extends HookConsumerWidget {
   const _EntryNode({
     required this.id,
@@ -202,28 +227,6 @@ class _EntryNode extends HookConsumerWidget {
     await page.linkWithDuplicate(ref, id, path);
   }
 
-  void _moveEntry(BuildContext context, PassingRef ref) {
-    final from = ref.read(entryPageIdProvider(id));
-    if (from == null) return;
-
-    final pageType = ref.read(entryBlueprintPageTypeProvider(type));
-
-    ref.read(searchProvider.notifier).asBuilder()
-      ..pageType(pageType)
-      ..fetchPage(
-        onSelect: (page) {
-          ref.read(bookProvider.notifier).moveEntry(id, from, page.pageName);
-          return true;
-        },
-      )
-      ..fetchAddPage(
-        onAdded: (page) {
-          ref.read(bookProvider.notifier).moveEntry(id, from, page.pageName);
-        },
-      )
-      ..open();
-  }
-
   void _deleteEntry(BuildContext context, PassingRef ref) {
     final page = ref.read(currentPageProvider);
     if (page == null) return;
@@ -268,7 +271,7 @@ class _EntryNode extends HookConsumerWidget {
                 title: "Move to ...",
                 icon: TWIcons.moveEntry,
                 color: Colors.blueAccent,
-                onTap: () => _moveEntry(context, ref.passing),
+                onTap: () => moveEntryToSelectingPage(ref.passing, id),
               ),
               ContextMenuTile.divider(),
               ContextMenuTile.button(

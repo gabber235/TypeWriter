@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.plugin
 
 enum class ThreadType {
@@ -43,18 +44,13 @@ enum class ThreadType {
             }
             return Job()
         }
-        if (this == REMAIN) {
-            return launch {
-                block()
-            }
-        }
 
         return plugin.launch(
             when (this) {
                 SYNC -> plugin.minecraftDispatcher
                 ASYNC -> plugin.minecraftDispatcher
                 DISPATCHERS_ASYNC -> Dispatchers.IO
-                else -> throw IllegalStateException("Unknown thread type: $this")
+                REMAIN -> if (server.isPrimaryThread) plugin.minecraftDispatcher else plugin.asyncDispatcher
             }
         ) {
             block()

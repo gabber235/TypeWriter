@@ -12,12 +12,17 @@ abstract class SimpleCinematicAction<S : Segment> : CinematicAction {
         super.tick(frame)
         val segment = segments activeSegmentAt frame
 
-        if (segment == previousSegment)
+        if (segment == previousSegment) {
+            segment?.let { tickSegment(it, frame) }
             return
+        }
 
         previousSegment?.let { stopSegment(it) }
 
-        segment?.let { startSegment(it) }
+        segment?.let {
+            startSegment(it)
+            tickSegment(it, frame)
+        }
     }
 
     override fun canFinish(frame: Int): Boolean = segments canFinishAt frame
@@ -28,6 +33,9 @@ abstract class SimpleCinematicAction<S : Segment> : CinematicAction {
 
     protected open suspend fun stopSegment(segment: S) {
         previousSegment = null
+    }
+
+    protected open suspend fun tickSegment(segment: S, frame: Int) {
     }
 
     abstract val segments: List<S>

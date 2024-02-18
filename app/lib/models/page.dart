@@ -45,6 +45,11 @@ String pageChapter(PageChapterRef ref, String pageName) {
 }
 
 @riverpod
+int pagePriority(PagePriorityRef ref, String pageName) {
+  return ref.watch(pageProvider(pageName))?.priority ?? 0;
+}
+
+@riverpod
 String? entryPageId(EntryPageIdRef ref, String entryId) {
   return ref
       .watch(pagesProvider)
@@ -135,6 +140,7 @@ class Page with _$Page {
     required PageType type,
     @Default([]) List<Entry> entries,
     @Default("") String chapter,
+    @Default(0) int priority,
   }) = _Page;
 
   factory Page.fromJson(Map<String, dynamic> json) => _$PageFromJson(json);
@@ -159,6 +165,16 @@ extension PageExtension on Page {
     await ref
         .read(communicatorProvider)
         .changePageValue(pageName, "chapter", newChapter);
+  }
+
+  Future<void> changePriority(PassingRef ref, int newPriority) async {
+    updatePage(
+      ref,
+      (page) => page.copyWith(priority: newPriority),
+    );
+    await ref
+        .read(communicatorProvider)
+        .changePageValue(pageName, "priority", newPriority);
   }
 
   Future<void> createEntry(PassingRef ref, Entry entry) async {

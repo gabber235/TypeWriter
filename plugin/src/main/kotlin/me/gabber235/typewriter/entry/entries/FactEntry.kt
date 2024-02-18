@@ -1,8 +1,10 @@
 package me.gabber235.typewriter.entry.entries
 
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MultiLine
+import me.gabber235.typewriter.entry.PlaceholderEntry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.StaticEntry
 import me.gabber235.typewriter.facts.FactData
@@ -10,6 +12,7 @@ import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.FactId
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.get
+import java.util.*
 
 @Tags("fact")
 interface FactEntry : StaticEntry {
@@ -36,14 +39,19 @@ interface FactEntry : StaticEntry {
 }
 
 @Tags("readable-fact")
-interface ReadableFactEntry : FactEntry {
+interface ReadableFactEntry : FactEntry, PlaceholderEntry {
     fun readForPlayersGroup(player: Player): FactData {
         val factId = identifier(player) ?: return FactData(0)
         return readForGroup(factId.groupId)
     }
 
     fun readForGroup(groupId: GroupId): FactData {
-        val entry = group.get() ?: return FactData(0)
+        val entry = group.get()
+        if (entry == null) {
+            // If no group entry is set, we assume that the player is the group for backwards compatibility
+            val player = server.getPlayer(UUID.fromString(groupId.id)) ?: return FactData(0)
+            return readSinglePlayer(player)
+        }
         val group = entry.group(groupId)
         return group.players.map { readSinglePlayer(it) }.let { FactData(it.sumOf(FactData::value)) }
     }
@@ -52,6 +60,11 @@ interface ReadableFactEntry : FactEntry {
      * This should **not** be used directly. Use [readForPlayersGroup] instead.
      */
     fun readSinglePlayer(player: Player): FactData
+
+    override fun display(player: Player?): String? {
+        if (player == null) return null
+        return readForPlayersGroup(player).value.toString()
+    }
 }
 
 @Tags("writable-fact")

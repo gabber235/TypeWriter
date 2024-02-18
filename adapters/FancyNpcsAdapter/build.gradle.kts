@@ -31,8 +31,8 @@ dependencies {
     // Already included in the TypeWriter plugin
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
     compileOnly("com.github.dyam0:LirandAPI:96cc59d4fb")
-    compileOnly("net.kyori:adventure-api:4.13.1")
-    compileOnly("net.kyori:adventure-text-minimessage:4.13.1")
+    compileOnly("net.kyori:adventure-api:4.15.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.15.0")
 
     // External dependencies
     compileOnly("de.oliver:FancyNpcs:2.0.7")
@@ -49,6 +49,13 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+    toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "$targetJavaVersion"
+    }
 }
 
 val copyTemplates by tasks.registering(Copy::class) {
@@ -71,6 +78,7 @@ task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildAndMove")
 
     group = "build"
     description = "Builds the jar and moves it to the server folder"
+    outputs.upToDateWhen { false }
 
     // Move the jar from the build/libs folder to the server/plugins folder
     doLast {
@@ -91,6 +99,9 @@ task<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("buildRelease")
     doLast {
         // Rename the jar to remove the version and -all
         val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+        if (!jar.exists()) {
+            throw IllegalStateException("Jar does not exist: ${jar.absolutePath}")
+        }
         jar.renameTo(file("build/libs/%s.jar".format(project.name)))
         file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
     }

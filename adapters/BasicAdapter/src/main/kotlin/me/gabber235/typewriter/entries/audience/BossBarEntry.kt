@@ -20,7 +20,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Entry("boss_bar", "Boss Bar", Colors.GREEN, "carbon:progress-bar")
 /**
- * The `Boss Bar` is a display that shows a bar at the top of the screen.
+ * The `BossBarEntry` is a display that shows a bar at the top of the screen.
  *
  * ## How could this be used?
  * This could be used to show objectives in a quest, or to show the progress of a task.

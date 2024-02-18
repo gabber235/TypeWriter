@@ -30,7 +30,7 @@ class SoundCinematicEntry(
     override val id: String,
     override val name: String,
     override val criteria: List<Criteria>,
-    @Segments(icon = "fa6-solid:music")
+    @Segments(icon = "fa6-solid:music", color = Colors.YELLOW)
     val segments: List<SoundSegment>,
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

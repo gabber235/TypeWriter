@@ -60,11 +60,11 @@ dependencies {
 
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
-    compileOnly("net.kyori:adventure-api:4.13.1")
-    compileOnly("net.kyori:adventure-text-minimessage:4.13.1")
-    compileOnly("net.kyori:adventure-text-serializer-plain:4.13.1")
-    compileOnly("net.kyori:adventure-text-serializer-legacy:4.13.1")
-    compileOnly("net.kyori:adventure-text-serializer-gson:4.13.1")
+    compileOnly("net.kyori:adventure-api:4.15.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.15.0")
+    compileOnly("net.kyori:adventure-text-serializer-plain:4.15.0")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:4.15.0")
+    compileOnly("net.kyori:adventure-text-serializer-gson:4.15.0")
     compileOnly("com.mojang:brigadier:1.0.18")
     compileOnly("me.clip:placeholderapi:2.11.3")
     compileOnly("com.google.code.gson:gson:2.10.1")
@@ -79,12 +79,14 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
-
+    toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     withSourcesJar()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "$targetJavaVersion"
+    }
 }
 
 tasks.test {
@@ -114,6 +116,7 @@ task<ShadowJar>("buildAndMove") {
 
     group = "build"
     description = "Builds the jar and moves it to the server folder"
+    outputs.upToDateWhen { false }
 
     // Move the jar from the build/libs folder to the server/plugins folder
     doLast {
@@ -139,6 +142,8 @@ task("buildRelease") {
     group = "build"
     description = "Builds the jar including the flutter web panel"
 
+    outputs.upToDateWhen { false }
+
     doLast {
         // Remove the flutter web folder
         val flutterWebDest = file("src/main/resources/web")
@@ -146,6 +151,9 @@ task("buildRelease") {
 
         // Rename the jar to remove the version and -all
         val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+        if (!jar.exists()) {
+            throw IllegalStateException("Jar does not exist: ${jar.absolutePath}")
+        }
         jar.renameTo(file("build/libs/%s.jar".format(project.name)))
         file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
     }

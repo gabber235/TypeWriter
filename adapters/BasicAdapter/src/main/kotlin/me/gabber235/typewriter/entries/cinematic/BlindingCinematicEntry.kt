@@ -1,5 +1,7 @@
 package me.gabber235.typewriter.entries.cinematic
 
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChangeGameState
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerCloseWindow
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Segments
@@ -8,22 +10,15 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.utils.EffectStateProvider
-import me.gabber235.typewriter.utils.PlayerState
-import me.gabber235.typewriter.utils.ThreadType.SYNC
-import me.gabber235.typewriter.utils.restore
-import me.gabber235.typewriter.utils.state
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import org.bukkit.entity.Player
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType.BLINDNESS
 
 @Entry("blinding_cinematic", "Blind the player so the screen looks black", Colors.CYAN, "heroicons-solid:eye-off")
 /**
  * The `Blinding Cinematic` entry is used to blind the player so the screen looks black.
  *
  * ## How could this be used?
- * When starting a cinematic, if you have a [Camera Cinematic Entry](./camera_cinematic)
- * where you wait for a few frames to get it loading in.
+ * Make the screen look black for the player during a cinematic.
  */
 class BlindingCinematicEntry(
     override val id: String,
@@ -48,40 +43,27 @@ data class BlindingSegment(
 
 class BlindingCinematicAction(
     private val player: Player,
-    entry: BlindingCinematicEntry,
+    private val entry: BlindingCinematicEntry,
 ) : SimpleCinematicAction<BlindingSegment>() {
-
-    private var state: PlayerState? = null
-
     override val segments: List<BlindingSegment> = entry.segments
 
-    override suspend fun startSegment(segment: BlindingSegment) {
-        super.startSegment(segment)
-        state = player.state(EffectStateProvider(BLINDNESS))
+    override suspend fun tickSegment(segment: BlindingSegment, frame: Int) {
+        super.tickSegment(segment, frame)
 
-        SYNC.switchContext {
-            player.addPotionEffect(PotionEffect(BLINDNESS, 10000000, 1, false, false, false))
-        }
+        val packet = WrapperPlayServerChangeGameState(WrapperPlayServerChangeGameState.Reason.WIN_GAME, 1f)
+        packet.sendPacketTo(player)
     }
 
     override suspend fun stopSegment(segment: BlindingSegment) {
         super.stopSegment(segment)
-        restoreState()
+        val packet = WrapperPlayServerCloseWindow(0)
+        packet.sendPacketTo(player)
     }
 
-    private suspend fun restoreState() {
-        val state = state ?: return
-        this.state = null
-        SYNC.switchContext {
-            player.restore(state)
-        }
-    }
 
     override suspend fun teardown() {
         super.teardown()
-
-        if (state != null) {
-            restoreState()
-        }
+        val packet = WrapperPlayServerCloseWindow(0)
+        packet.sendPacketTo(player)
     }
 }

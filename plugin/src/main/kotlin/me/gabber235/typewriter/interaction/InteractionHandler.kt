@@ -31,7 +31,7 @@ class InteractionHandler : Listener, KoinComponent {
     private val interactions = ConcurrentHashMap<UUID, Interaction>()
     private var job: Job? = null
 
-    private val Player.interaction: Interaction?
+    internal val Player.interaction: Interaction?
         get() = interactions[uniqueId]
 
 

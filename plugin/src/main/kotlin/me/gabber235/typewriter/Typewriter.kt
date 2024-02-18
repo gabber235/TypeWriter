@@ -12,7 +12,7 @@ import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.bstats.BStatsMetrics
 import me.gabber235.typewriter.extensions.modrinth.Modrinth
-import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
+import me.gabber235.typewriter.extensions.placeholderapi.PlaceholderExpansion
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.FactStorage
 import me.gabber235.typewriter.facts.storage.FileFactStorage
@@ -39,10 +39,13 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
 class Typewriter : KotlinPlugin(), KoinComponent {
+
+    private val entityId = AtomicInteger(100000)
 
     override fun onLoad() {
         super.onLoad()
@@ -58,19 +61,19 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<EntryDatabase>(::EntryDatabaseImpl)
             singleOf<StagingManager>(::StagingManagerImpl)
             singleOf<ClientSynchronizer>(::ClientSynchronizerImpl)
-            singleOf<InteractionHandler>(::InteractionHandler)
-            singleOf<MessengerFinder>(::MessengerFinder)
-            singleOf<CommunicationHandler>(::CommunicationHandler)
-            singleOf<Writers>(::Writers)
-            singleOf<PanelHost>(::PanelHost)
+            singleOf(::InteractionHandler)
+            singleOf(::MessengerFinder)
+            singleOf(::CommunicationHandler)
+            singleOf(::Writers)
+            singleOf(::PanelHost)
             singleOf<SnippetDatabase>(::SnippetDatabaseImpl)
-            singleOf<FactDatabase>(::FactDatabase)
+            singleOf(::FactDatabase)
             singleOf<FactStorage>(::FileFactStorage)
-            singleOf<EntryListeners>(::EntryListeners)
-            singleOf<AudienceManager>(::AudienceManager)
-            singleOf<Recorders>(::Recorders)
+            singleOf(::EntryListeners)
+            singleOf(::AudienceManager)
+            singleOf(::Recorders)
             singleOf<AssetStorage>(::LocalAssetStorage)
-            singleOf<AssetManager>(::AssetManager)
+            singleOf(::AssetManager)
             singleOf(::ChatHistoryHandler)
             singleOf(::ActionBarBlockerHandler)
             singleOf(::PacketBlocker)
@@ -96,6 +99,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             return
         }
         EntityLib.init(PacketEvents.getAPI())
+        EntityLib.setEntityIdProvider(entityId::getAndIncrement)
 
         get<EntryDatabase>().initialize()
         get<StagingManager>().initialize()
@@ -109,7 +113,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<AudienceManager>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
-            TypewriteExpansion.register()
+            PlaceholderExpansion.register()
         }
 
         syncCommands()

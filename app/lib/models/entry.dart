@@ -11,7 +11,10 @@ part "entry.g.dart";
 
 @riverpod
 EntryDefinition? entryDefinition(
-    EntryDefinitionRef ref, String pageId, String entryId) {
+  EntryDefinitionRef ref,
+  String pageId,
+  String entryId,
+) {
   final entry = ref.watch(entryProvider(pageId, entryId));
   final adapterEntry = ref.watch(entryBlueprintProvider(entry?.type ?? ""));
   if (entry == null || adapterEntry == null) {
