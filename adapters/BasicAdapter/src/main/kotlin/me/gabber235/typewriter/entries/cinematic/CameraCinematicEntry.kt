@@ -19,8 +19,9 @@ import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.tofaa.entitylib.EntityLib
-import me.tofaa.entitylib.entity.WrapperEntity
-import me.tofaa.entitylib.meta.types.DisplayMeta
+import me.tofaa.entitylib.meta.display.TextDisplayMeta
+import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
+import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Particle
@@ -235,9 +236,10 @@ private class DisplayCameraAction(
     }
 
     private fun createEntity(): WrapperEntity {
-        return EntityLib.createEntity(UUID.randomUUID(), EntityTypes.ITEM_DISPLAY).meta<DisplayMeta> {
-            positionRotationInterpolationDuration = BASE_INTERPOLATION
-        }
+        return EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity>(EntityTypes.TEXT_DISPLAY)
+            .meta<TextDisplayMeta> {
+                positionRotationInterpolationDuration = BASE_INTERPOLATION
+            }
     }
 
     private fun setupPath(segment: CameraSegment) {
@@ -250,13 +252,13 @@ private class DisplayCameraAction(
 
     override suspend fun startSegment(segment: CameraSegment) {
         setupPath(segment)
-        entity.addViewer(player.uniqueId)
 
         SYNC.switchContext {
             player.teleport(path.first().location)
         }
 
         entity.spawn(path.first().location.toPacketLocation())
+        entity.addViewer(player.uniqueId)
         player.spectateEntity(entity)
     }
 
@@ -281,22 +283,22 @@ private class DisplayCameraAction(
 
     private suspend fun switchSeamless() {
         val newEntity = createEntity()
-        newEntity.addViewer(player.uniqueId)
         newEntity.spawn(path.first().location.toPacketLocation())
+        newEntity.addViewer(player.uniqueId)
 
         SYNC.switchContext {
             player.teleport(path.first().location)
             player.spectateEntity(newEntity)
         }
 
+        entity.despawn()
         entity.remove()
-        EntityLib.removeEntity(entity)
         entity = newEntity
     }
 
     private suspend fun switchWithStop() {
         player.stopSpectatingEntity()
-        entity.remove()
+        entity.despawn()
         entity.addViewer(player.uniqueId)
         SYNC.switchContext {
             player.teleport(path.first().location)
@@ -307,8 +309,8 @@ private class DisplayCameraAction(
 
     override suspend fun stop() {
         player.stopSpectatingEntity()
+        entity.despawn()
         entity.remove()
-        EntityLib.removeEntity(entity)
     }
 }
 

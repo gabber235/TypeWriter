@@ -25,7 +25,9 @@ import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
 import me.gabber235.typewriter.ui.*
 import me.gabber235.typewriter.utils.createBukkitDataParser
 import me.gabber235.typewriter.utils.syncCommands
+import me.tofaa.entitylib.APIConfig
 import me.tofaa.entitylib.EntityLib
+import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform
 import org.bukkit.plugin.Plugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -98,8 +100,15 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             server.pluginManager.disablePlugin(this)
             return
         }
-        EntityLib.init(PacketEvents.getAPI())
-        EntityLib.setEntityIdProvider(entityId::getAndIncrement)
+
+        val platform = SpigotEntityLibPlatform(this)
+        val settings = APIConfig(PacketEvents.getAPI())
+            .debugMode()
+            .useAsyncEvents()
+            .usePlatformLogger()
+            .tickTickables()
+
+        EntityLib.init(platform, settings)
 
         get<EntryDatabase>().initialize()
         get<StagingManager>().initialize()
