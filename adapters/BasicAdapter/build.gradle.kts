@@ -16,6 +16,9 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://libraries.minecraft.net/")
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+    // PacketEvents
+    maven("https://repo.codemc.io/repository/maven-releases/")
+    // Anvil GUI (Sub dependency of LirandAPI)
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.opencollab.dev/maven-snapshots/")
 }
@@ -29,7 +32,7 @@ dependencies {
     // Already included in the TypeWriter plugin
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
     compileOnly("com.github.dyam0:LirandAPI:96cc59d4fb")
-    compileOnly("com.github.Tofaa2.EntityLib:EntityLib:1.2.4-SNAPSHOT")
+    compileOnly("com.github.Tofaa2.EntityLib:spigot:2.0.1-SNAPSHOT")
     compileOnly("net.kyori:adventure-api:4.15.0")
     compileOnly("net.kyori:adventure-text-minimessage:4.15.0")
 

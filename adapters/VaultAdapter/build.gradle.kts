@@ -18,8 +18,6 @@ repositories {
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.opencollab.dev/maven-snapshots/")
-    maven("https://jitpack.io/")
-
     // Adapter Specific
 }
 

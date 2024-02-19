@@ -4,6 +4,7 @@ import kotlinx.coroutines.CompletableDeferred
 import lirand.api.extensions.events.SimpleListener
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.events.unregister
+import me.gabber235.typewriter.entry.dialogue.confirmationKey
 import me.gabber235.typewriter.entry.entries.CinematicStartTrigger
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.events.AsyncCinematicEndEvent
@@ -15,7 +16,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import java.util.*
 
 
@@ -56,7 +56,7 @@ class CinematicRecorder<T>(
         val completer = CompletableDeferred<T>()
 
         val bossBar = BossBar.bossBar(
-            "Waiting <aqua>${capturer.title}</aqua>: Press <red><bold><key:key.swapOffhand></bold></red> to start recording".asMini(),
+            "Waiting <aqua>${capturer.title}</aqua>: Press <red><bold>${confirmationKey.keybind}</bold></red> to start recording".asMini(),
             1f,
             BossBar.Color.BLUE,
             BossBar.Overlay.PROGRESS
@@ -65,20 +65,18 @@ class CinematicRecorder<T>(
         player.playSound(Sound.sound(Key.key("block.beacon.activate"), Sound.Source.MASTER, 1f, 1f))
 
         val listener = SimpleListener()
-        plugin.listen<PlayerSwapHandItemsEvent>(listener, block = this::onSwapHandItems)
+        confirmationKey.listen(listener, player.uniqueId, block = this::onConfirmation)
         plugin.listen<AsyncCinematicTickEvent>(listener, block = this::onTick)
         plugin.listen<AsyncCinematicEndEvent>(listener, block = this::onCinematicEnd)
 
         return RecordingData(completer, bossBar, listener)
     }
 
-    private fun onSwapHandItems(event: PlayerSwapHandItemsEvent) {
-        if (event.player.uniqueId != player.uniqueId) return
+    private fun onConfirmation() {
         if (data == null) return
         if (state != RecordingState.WAITING_FOR_START) return
 
         startCinematic()
-        event.isCancelled = true
     }
 
     private fun startCinematic() {

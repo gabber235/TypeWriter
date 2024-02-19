@@ -7,10 +7,9 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerCa
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_MAIN_ARM
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_OFF_HAND
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityRotation
 import me.gabber235.typewriter.capture.capturers.ArmSwing
-import me.tofaa.entitylib.entity.WrapperEntity
 import me.tofaa.entitylib.meta.EntityMeta
+import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -38,9 +37,11 @@ fun Player.swingArm(entityId: Int, armSwing: ArmSwing) {
 }
 
 inline fun <reified E : EntityMeta> WrapperEntity.meta(editor: E.() -> Unit): WrapperEntity {
-    val meta = meta
+    val meta = entityMeta
     if (meta is E) {
+        meta.setNotifyAboutChanges(false)
         editor(meta)
+        meta.setNotifyAboutChanges(true)
     }
     return this
 }
