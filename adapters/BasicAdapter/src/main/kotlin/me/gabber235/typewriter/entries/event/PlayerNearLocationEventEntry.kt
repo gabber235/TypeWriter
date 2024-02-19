@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entries.event
 
+import lirand.api.extensions.math.blockLocation
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -35,7 +36,10 @@ fun onPlayerNearLocation(event: PlayerMoveEvent, query: Query<PlayerNearLocation
     if (!event.hasChangedBlock()) return
 
     query findWhere { entry ->
-        !event.from.isInRange(entry.location, entry.range) && event.to.isInRange(entry.location, entry.range)
+        !event.from.blockLocation.isInRange(
+            entry.location,
+            entry.range
+        ) && event.to.blockLocation.isInRange(entry.location, entry.range)
     } startDialogueWithOrNextDialogue event.player
 }
 
