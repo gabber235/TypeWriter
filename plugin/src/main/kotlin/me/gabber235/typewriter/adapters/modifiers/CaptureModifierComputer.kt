@@ -4,7 +4,8 @@ import me.gabber235.typewriter.adapters.FieldInfo
 import me.gabber235.typewriter.adapters.FieldModifier
 import me.gabber235.typewriter.capture.Capturer
 import me.gabber235.typewriter.capture.CapturerCreator
-import me.gabber235.typewriter.logger
+import me.gabber235.typewriter.utils.failure
+import me.gabber235.typewriter.utils.ok
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.isSubclassOf
@@ -16,25 +17,19 @@ annotation class Capture(val capturer: KClass<out Capturer<*>>)
 object CaptureModifierComputer : StaticModifierComputer<Capture> {
     override val annotationClass: Class<Capture> = Capture::class.java
 
-    override fun computeModifier(annotation: Capture, info: FieldInfo): FieldModifier? {
+    override fun computeModifier(annotation: Capture, info: FieldInfo): Result<FieldModifier?> {
         val capturer = annotation.capturer
         val name = capturer.qualifiedName
-
-        if (name == null) {
-            logger.warning("Capturer ${capturer.jvmName} does not have a qualified name! It must be a non-local non-anonymous class.")
-            return null
-        }
+            ?: return failure("Capturer ${capturer.jvmName} does not have a qualified name! It must be a non-local non-anonymous class.")
 
         if (capturer.companionObject == null) {
-            logger.warning("Capturer ${capturer.jvmName} needs to have a companion object which extends CapturerCreator<${capturer.simpleName}>! It has no companion object.")
-            return null
+            return failure("Capturer ${capturer.jvmName} needs to have a companion object which extends CapturerCreator<${capturer.simpleName}>! It has no companion object.")
         }
 
         if (capturer.companionObject?.isSubclassOf(CapturerCreator::class) != true) {
-            logger.warning("Capturer ${capturer.jvmName} needs to have a companion object which extends CapturerCreator<${capturer.simpleName}>! Forgot to extend CapturerCreator?")
-            return null
+            return failure("Capturer ${capturer.jvmName} needs to have a companion object which extends CapturerCreator<${capturer.simpleName}>! Forgot to extend CapturerCreator?")
         }
 
-        return FieldModifier.DynamicModifier("capture", name)
+        return ok(FieldModifier.DynamicModifier("capture", name))
     }
 }
