@@ -44,7 +44,7 @@ interface PropertyCollector<P : EntityProperty> {
 }
 
 @Tags("entity_data")
-interface EntityData<P : EntityProperty> : AudienceEntry, PropertySupplier<P> {
+interface EntityData<P : EntityProperty> : AudienceEntry, PropertySupplier<P>, PriorityEntry {
     override fun canApply(player: Player): Boolean = player.inAudience(this)
     override fun display(): AudienceDisplay = PassThroughDisplay()
 }
@@ -66,7 +66,7 @@ interface EntityInstanceEntry : AudienceFilterEntry
 
 @Tags("entity_activity")
 @ChildOnly
-interface EntityActivityEntry : AudienceFilterEntry, ActivityCreator {
+interface EntityActivityEntry : AudienceFilterEntry, ActivityCreator, PriorityEntry {
     override val children: List<Ref<out AudienceEntry>>
         get() = emptyList()
 

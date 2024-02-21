@@ -12,6 +12,7 @@ import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.asMini
 import me.gabber235.typewriter.utils.asMiniWithResolvers
 import org.bukkit.entity.Player
+import java.util.*
 
 @Entry(
     "objective_lines",
@@ -33,6 +34,7 @@ class ObjectiveLinesEntry(
     @Placeholder
     @MultiLine
     val format: String = "<objective>",
+    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : LinesEntry {
     override fun lines(player: Player): String {
         return player.trackedShowingObjectives().joinToString("\n") {

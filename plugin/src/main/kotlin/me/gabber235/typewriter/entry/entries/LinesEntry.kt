@@ -2,12 +2,13 @@ package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.entry.PlaceholderEntry
+import me.gabber235.typewriter.entry.PriorityEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import org.bukkit.entity.Player
 import kotlin.reflect.KClass
 
 @Tags("lines")
-interface LinesEntry : EntityData<LinesProperty>, AudienceEntry, PlaceholderEntry {
+interface LinesEntry : EntityData<LinesProperty>, AudienceEntry, PlaceholderEntry, PriorityEntry {
     /**
      * The lines of the sidebar.
      * Multiple lines are separated by a newline character.

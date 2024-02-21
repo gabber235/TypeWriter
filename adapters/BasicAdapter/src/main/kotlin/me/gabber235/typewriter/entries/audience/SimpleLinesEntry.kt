@@ -8,6 +8,7 @@ import me.gabber235.typewriter.adapters.modifiers.MultiLine
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.entries.LinesEntry
 import org.bukkit.entity.Player
+import java.util.*
 
 @Entry("simple_lines", "Statically determined lines of text", Colors.ORANGE_RED, "bi:layout-text-sidebar")
 /**
@@ -26,6 +27,7 @@ class SimpleLinesEntry(
     @Placeholder
     @MultiLine
     val lines: String = "",
+    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : LinesEntry {
     override fun lines(player: Player): String = lines
 }

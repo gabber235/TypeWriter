@@ -7,10 +7,21 @@ import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.entry.entries.WritableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import org.bukkit.entity.Player
+import java.util.*
 
 interface Entry {
     val id: String
     val name: String
+}
+
+interface PriorityEntry : Entry {
+    /**
+     * Normally, the priority of an entry is determined by the priority of the page it is on.
+     * Subtypes may want to allow the user to override the priority for that specific entry.
+     * This is useful when entries need to have fine-grained control over their priority.
+     */
+    @Help("The priority of the entry. If not set, the priority of the page will be used.")
+    val priorityOverride: Optional<Int>
 }
 
 @Tags("static")

@@ -12,6 +12,7 @@ import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.ref
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import java.util.*
 
 @Entry("fixed_location_activity", "A fixed location activity", Colors.BLUE, "fa6-solid:map-marker")
 class FixedLocationActivityEntry(
@@ -19,7 +20,8 @@ class FixedLocationActivityEntry(
     override val name: String,
     @Help("The location of the activity")
     @WithRotation
-    val location: Location = Location(null, 0.0, 0.0, 0.0)
+    val location: Location = Location(null, 0.0, 0.0, 0.0),
+    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
     override fun create(player: Player?): EntityActivity = FixedLocationActivity(location, player, ref())
 }

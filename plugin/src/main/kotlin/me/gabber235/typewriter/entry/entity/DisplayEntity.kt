@@ -47,7 +47,7 @@ internal class DisplayEntity(
 internal fun List<Pair<PropertySupplier<*>, Int>>.into(): List<PropertyCollector<EntityProperty>> {
     return groupBy { it.first.type }
         .map { (type, suppliers) ->
-            val typeSuppliers = suppliers.sortedBy { it.second }
+            val typeSuppliers = suppliers.sortedByDescending { it.second }
                 .map { it.first }
 
             val companion = type.companionObjectInstance

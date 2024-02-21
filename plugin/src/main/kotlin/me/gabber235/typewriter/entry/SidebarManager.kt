@@ -63,6 +63,7 @@ class SidebarManager(
 
         val lines = lines
             .filter { player.inAudience(it) }
+            .sortedByDescending { it.priority }
             .mapNotNull { it.get()?.lines(player) }
             .flatMap { it.parsePlaceholders(player).lines() }
 

@@ -65,7 +65,10 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
 
         this.entries = pages.flatMap { it.entries }
         this.entryPriority = pages.flatMap { page ->
-            page.entries.map { it.ref() to page.priority }
+            page.entries.map { entry ->
+                if (entry !is PriorityEntry) return@map entry.ref() to page.priority
+                entry.ref() to entry.priorityOverride.orElse(page.priority)
+            }
         }.toMap()
         this.pages = pages
 
