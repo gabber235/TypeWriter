@@ -1,7 +1,5 @@
 package me.gabber235.typewriter.entries.audience
 
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Colored
@@ -9,14 +7,13 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.entries.AudienceDisplay
 import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.entries.TickableDisplay
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.asMini
 import net.kyori.adventure.bossbar.BossBar
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.time.Duration.Companion.milliseconds
 
 @Entry("boss_bar", "Boss Bar", Colors.GREEN, "carbon:progress-bar")
 /**
@@ -52,19 +49,12 @@ class BossBarDisplay(
     private val color: BossBar.Color,
     private val style: BossBar.Overlay,
     private val flags: List<BossBar.Flag>,
-) : AudienceDisplay() {
+) : AudienceDisplay(), TickableDisplay {
     private val bars = ConcurrentHashMap<UUID, BossBar>()
-    private var job: Job? = null
 
-    override fun initialize() {
-        super.initialize()
-        job = DISPATCHERS_ASYNC.launch {
-            while (true) {
-                for ((id, bar) in bars) {
-                    bar.name(title.parsePlaceholders(id).asMini())
-                }
-                delay(50.milliseconds)
-            }
+    override fun tick() {
+        for ((id, bar) in bars) {
+            bar.name(title.parsePlaceholders(id).asMini())
         }
     }
 
@@ -82,11 +72,5 @@ class BossBarDisplay(
 
     override fun onPlayerRemove(player: Player) {
         bars.remove(player.uniqueId)?.let { player.hideBossBar(it) }
-    }
-
-    override fun dispose() {
-        super.dispose()
-        job?.cancel()
-        job = null
     }
 }
