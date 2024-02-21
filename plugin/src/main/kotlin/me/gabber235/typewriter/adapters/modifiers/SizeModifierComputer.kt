@@ -36,7 +36,7 @@ object MaxModifierComputer : StaticModifierComputer<Max> {
         InnerAnnotationFinder(InnerMax::class.java, InnerMax::annotation)
     ) as List<InnerAnnotationFinder<Max, Annotation>>
 
-    override fun computeModifier(annotation: Max, info: FieldInfo): FieldModifier {
-        return FieldModifier.DynamicModifier("max", annotation.value)
+    override fun computeModifier(annotation: Max, info: FieldInfo): Result<FieldModifier?> {
+        return ok(FieldModifier.DynamicModifier("max", annotation.value))
     }
 }

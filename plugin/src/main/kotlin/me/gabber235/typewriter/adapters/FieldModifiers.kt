@@ -140,9 +140,9 @@ interface ModifierComputer {
 private val computers: List<ModifierComputer> by lazy {
     listOf(
         HelpModifierComputer,
-        EntrySelectorModifierComputer,
         SnakeCaseModifierComputer,
         MultiLineModifierComputer,
+        OnlyTagsModifierComputer,
         MaterialPropertiesModifierComputer,
         WithRotationModifierComputer,
         SegmentModifierComputer,

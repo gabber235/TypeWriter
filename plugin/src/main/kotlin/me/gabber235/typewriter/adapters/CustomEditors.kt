@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.editors.*
 import me.gabber235.typewriter.adapters.modifiers.StaticModifierComputer
 import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.CronExpression
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.SoundId
@@ -145,7 +146,7 @@ class ObjectEditor<T : Any>(val klass: KClass<T>, val name: String) {
     private var defaultGenerator: DefaultGenerator? = null
 
     /**
-     * Custom editors need a default value to be able to create new instances of the class they are editing.
+     * Custom editors need a default value to be able to create new instance of the class they are editing.
      *
      * Example:
      * ```kotlin
@@ -188,7 +189,12 @@ class ObjectEditor<T : Any>(val klass: KClass<T>, val name: String) {
     }
 
     infix fun <A : Annotation> StaticModifierComputer<A>.with(annotation: A) {
-        modifiers.add { _, info -> this.computeModifier(annotation, info) }
+        modifiers.add { _, info ->
+            this.computeModifier(annotation, info).onFailure {
+                logger.warning("Failed to compute modifier for ${this.annotationClass::class.simpleName} with annotation $annotation: $it")
+                return@add null
+            }.getOrNull()
+        }
     }
 
     fun modifier(supplier: FieldModifierGenerator) {
