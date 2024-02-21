@@ -10,11 +10,12 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSc
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateScore
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.events.unregister
+import me.gabber235.typewriter.entry.entries.LinesEntry
 import me.gabber235.typewriter.entry.entries.SidebarEntry
-import me.gabber235.typewriter.entry.entries.SidebarLinesEntry
 import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.asMini
 import net.kyori.adventure.text.Component
@@ -28,7 +29,7 @@ class SidebarManager(
     private val player: Player,
 ) : Listener {
     private var sidebar: Ref<SidebarEntry>? = null
-    private var lines = emptyList<Ref<SidebarLinesEntry>>()
+    private var lines = emptyList<Ref<LinesEntry>>()
     private var lastTitle = ""
     private var lastLines = emptyList<String>()
 
@@ -57,13 +58,13 @@ class SidebarManager(
             else if (newSidebar == null) disposeSidebar()
 
             sidebar = newSidebar?.ref()
-            lines = sidebar?.descendants(SidebarLinesEntry::class) ?: emptyList()
+            lines = sidebar?.descendants(LinesEntry::class) ?: emptyList()
         }
 
         val lines = lines
             .filter { player.inAudience(it) }
             .mapNotNull { it.get()?.lines(player) }
-            .flatMap { it.split("\n") }
+            .flatMap { it.parsePlaceholders(player).lines() }
 
         if (lines != lastLines || title != lastTitle) {
             sendSidebar(title, lines)

@@ -6,9 +6,7 @@ import me.gabber235.typewriter.adapters.modifiers.Colored
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MultiLine
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
-import me.gabber235.typewriter.entry.entries.AudienceDisplay
-import me.gabber235.typewriter.entry.entries.PassThroughDisplay
-import me.gabber235.typewriter.entry.entries.SidebarLinesEntry
+import me.gabber235.typewriter.entry.entries.LinesEntry
 import me.gabber235.typewriter.entry.entries.trackedShowingObjectives
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.asMini
@@ -16,26 +14,26 @@ import me.gabber235.typewriter.utils.asMiniWithResolvers
 import org.bukkit.entity.Player
 
 @Entry(
-    "objective_sidebar_lines",
-    "Display all the current objectives in the sidebar",
+    "objective_lines",
+    "Display all the current objectives",
     Colors.ORANGE_RED,
     "fluent:clipboard-task-list-ltr-24-filled"
 )
 /**
- * The `ObjectiveSidebarLinesEntry` is a display that shows all the current objectives in the sidebar.
+ * The `ObjectiveLinesEntry` is a display that shows all the current objectives.
  *
  * ## How could this be used?
  * This could be used to show a list of tracked objectives
  */
-class ObjectiveSidebarLinesEntry(
+class ObjectiveLinesEntry(
     override val id: String = "",
     override val name: String = "",
-    @Help("The format for the line. Use <objective> to replace with the objective name.")
+    @Help("The format for the line. Use &lt;objective&gt; to replace with the objective name.")
     @Colored
     @Placeholder
     @MultiLine
     val format: String = "<objective>",
-) : SidebarLinesEntry {
+) : LinesEntry {
     override fun lines(player: Player): String {
         return player.trackedShowingObjectives().joinToString("\n") {
             format.parsePlaceholders(player).asMiniWithResolvers(
@@ -46,6 +44,4 @@ class ObjectiveSidebarLinesEntry(
             ).asMini()
         }
     }
-
-    override fun display(): AudienceDisplay = PassThroughDisplay()
 }
