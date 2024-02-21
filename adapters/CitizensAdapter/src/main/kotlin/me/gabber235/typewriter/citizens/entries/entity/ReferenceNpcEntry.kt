@@ -12,6 +12,7 @@ import net.citizensnpcs.api.CitizensAPI
 import kotlin.jvm.optionals.getOrDefault
 import net.kyori.adventure.sound.Sound as AdventureSound
 
+@Deprecated("Use the EntityAdapter instead")
 @Tags("reference_npc")
 @Entry("reference_npc", "When the npc is not managed by TypeWriter", Colors.ORANGE, "fa-solid:user-tie")
 /**

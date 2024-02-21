@@ -8,6 +8,7 @@ import me.gabber235.typewriter.utils.Sound
 import net.kyori.adventure.sound.Sound as AdventureSound
 
 
+@Deprecated("Use the EntityAdapter instead")
 @Tags("fancy_reference_npc")
 @Entry("fancy_reference_npc", "When the npc is not managed by TypeWriter", Colors.ORANGE, "fa-solid:user-tie")
 /**

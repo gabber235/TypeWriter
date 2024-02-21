@@ -19,7 +19,8 @@ which could be used as an audit log for your admins.
 
 ## Fields
 
-<fields.TriggersField />
+<fields.EntryField name='Triggers' required multiple>
+</fields.EntryField>
 <fields.EntryField name='Command' required regex>
      The command to listen for.
 This can be partial, so if you wanted to listen for any warp command,

@@ -1,3 +1,4 @@
+use indoc::formatdoc;
 use itertools::Itertools;
 use std::string::FromUtf8Error;
 
@@ -31,6 +32,17 @@ fn append_headers(builder: &mut Builder, entry: &EntryClass) {
     builder.append_line("import Link from '@docusaurus/Link';");
 }
 
+fn append_deprecation_warning(builder: &mut Builder, entry: &EntryClass) {
+    let Some(message) = entry.annotations.iter().find(|a| a.name == "Deprecated") else {
+        return;
+    };
+    builder.append_line(formatdoc! {"
+            import DeprecationWarning from '@site/src/components/DeprecationWarning';
+
+            <DeprecationWarning message='{}' />
+            ", message.arguments[0]});
+}
+
 fn append_info(builder: &mut Builder, entry: &EntryClass) {
     builder.append_line(format!(
         "# {}",
@@ -39,6 +51,8 @@ fn append_info(builder: &mut Builder, entry: &EntryClass) {
             .to_case(Case::Title)
             .trim_end_matches("Entry")
     ));
+
+    append_deprecation_warning(builder, entry);
 
     builder.empty_line();
     if let Some(description) = &entry.comment {
@@ -176,6 +190,19 @@ pub fn format_adapter_markdown(
 }
 
 fn format_adapter_description(builder: &mut Builder, adapter: &AdapterParsed) {
+    if let Some(message) = adapter
+        .adapter_data
+        .annotations
+        .iter()
+        .find(|a| a.name == "Deprecated")
+    {
+        builder.append_line(formatdoc! {"
+            import DeprecationWarning from '@site/src/components/DeprecationWarning';
+
+            <DeprecationWarning adapter message='{}' />
+            ", message.arguments[0]});
+    }
+
     builder.append_line(format!("# {}", adapter.adapter.to_case(Case::Title)));
 
     builder.empty_line();

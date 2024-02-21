@@ -6,6 +6,7 @@ import me.gabber235.typewriter.adapters.TypewriteAdapter
 import me.gabber235.typewriter.adapters.Untested
 
 @Untested
+@Deprecated("Use the EntityAdapter instead")
 @Adapter("ZNPCsPlus", "For the ZNPCsPlus plugin", App.VERSION)
 /**
  * The ZNPCsPlus adapter allows you to create custom interactions with NPCs.

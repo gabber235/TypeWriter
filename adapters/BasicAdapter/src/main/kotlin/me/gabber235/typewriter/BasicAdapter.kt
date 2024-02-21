@@ -9,7 +9,7 @@ import me.gabber235.typewriter.adapters.TypewriteAdapter
  * The Basic Adapter contains all the essential entries for Typewriter.
  * In most cases, it should be installed with Typewriter.
  * If you haven't installed Typewriter or the adapter yet,
- * please follow the [Installation Guide](../../docs/02-installation-guide.md)
+ * please follow the [Installation Guide](../../docs/02-getting-started/01-installation.mdx)
  * first.
  */
 object BasicAdapter : TypewriteAdapter() {

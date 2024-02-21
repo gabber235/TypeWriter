@@ -12,6 +12,7 @@ import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
 import org.bukkit.entity.Player
 
+@Deprecated("Use the EntityAdapter instead")
 @Entry("on_npc_interact", "When a player clicks on an NPC", Colors.YELLOW, "fa6-solid:people-robbery")
 /**
  * The `NPC Interact Event` is fired when a player interacts with an NPC.

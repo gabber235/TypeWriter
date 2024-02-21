@@ -6,6 +6,7 @@ import me.gabber235.typewriter.adapters.TypewriteAdapter
 import me.gabber235.typewriter.adapters.Untested
 
 @Untested
+@Deprecated("Use the EntityAdapter instead")
 @Adapter("FancyNpcs", "For the FancyNpcs plugin", App.VERSION)
 /**
  * The FancyNpcs adapter allows you to create custom interactions with NPCs.

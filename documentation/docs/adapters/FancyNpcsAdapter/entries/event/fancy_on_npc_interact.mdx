@@ -3,6 +3,10 @@ import Admonition from '@theme/Admonition';
 import Link from '@docusaurus/Link';
 
 # Npc Interact Event 
+import DeprecationWarning from '@site/src/components/DeprecationWarning';
+
+<DeprecationWarning message='Use the EntityAdapter instead' />
+
 
 The `NPC Interact Event` is fired when a player interacts with an NPC.
 
@@ -13,7 +17,8 @@ This can be used to create a variety of interactions that can occur between an N
 
 ## Fields
 
-<fields.TriggersField />
-<fields.EntryField name='Identifier' required reference>
+<fields.EntryField name='Triggers' required multiple>
+</fields.EntryField>
+<fields.EntryField name='Identifier' required>
      The NPC that needs to be interacted with.
 </fields.EntryField>

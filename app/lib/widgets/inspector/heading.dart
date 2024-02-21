@@ -4,7 +4,10 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
@@ -52,6 +55,7 @@ class Heading extends HookConsumerWidget {
     final type = ref.watch(_entryTypeProvider);
     final url = ref.watch(_entryUrlProvider);
     final color = ref.watch(_entryColorProvider);
+    final isDeprecated = ref.watch(isEntryDeprecatedProvider(id));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,6 +63,7 @@ class Heading extends HookConsumerWidget {
         Title(
           color: color,
           title: name,
+          isDeprecated: isDeprecated,
         ),
         Row(
           children: [
@@ -67,6 +72,10 @@ class Heading extends HookConsumerWidget {
             _Identifier(id: id),
           ],
         ),
+        if (isDeprecated) ...[
+          const SizedBox(height: 8),
+          _DeperecationWarning(url: url),
+        ],
       ],
     );
   }
@@ -76,17 +85,29 @@ class Title extends StatelessWidget {
   const Title({
     required this.title,
     required this.color,
+    this.isDeprecated = false,
     super.key,
   });
   final String title;
   final Color color;
+  final bool isDeprecated;
 
   @override
-  Widget build(BuildContext context) => AutoSizeText(
-        title,
-        style: TextStyle(color: color, fontSize: 40, fontWeight: FontWeight.bold),
-        maxLines: 1,
-      );
+  Widget build(BuildContext context) {
+    return AutoSizeText(
+      title,
+      style: TextStyle(
+        color: color,
+        fontSize: 40,
+        fontWeight: FontWeight.bold,
+        decoration: isDeprecated ? TextDecoration.lineThrough : null,
+        decorationThickness: 2.8,
+        decorationStyle: TextDecorationStyle.wavy,
+        decorationColor: color,
+      ),
+      maxLines: 1,
+    );
+  }
 }
 
 class _Identifier extends StatelessWidget {
@@ -97,7 +118,11 @@ class _Identifier extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SelectableText(id, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey));
+    return SelectableText(
+      id,
+      style:
+          Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+    );
   }
 }
 
@@ -132,6 +157,71 @@ class _Type extends HookWidget {
                 color: color.withOpacity(0.9),
                 decoration: hovering.value ? TextDecoration.underline : null,
               ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DeperecationWarning extends StatelessWidget {
+  const _DeperecationWarning({
+    required this.url,
+  });
+
+  final String url;
+
+  Future<void> _launceUrl() async {
+    if (url.isEmpty) return;
+    if (!await canLaunchUrlString(url)) return;
+    await launchUrlString(url);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.redAccent.withOpacity(0.1),
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Colors.redAccent,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: _launceUrl,
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Row(
+            children: [
+              Iconify(
+                TWIcons.warning,
+                color: Colors.redAccent,
+              ),
+              SizedBox(width: 12),
+              Flexible(
+                child: Text.rich(
+                  TextSpan(
+                    text:
+                        "This entry has been marked as deprecated. Take a look at the ",
+                    children: [
+                      TextSpan(
+                        text: "documentation",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.redAccent,
+                        ),
+                      ),
+                      TextSpan(text: " for more information."),
+                    ],
+                  ),
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

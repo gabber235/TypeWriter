@@ -12,6 +12,7 @@ import net.citizensnpcs.api.npc.NPCDataStore
 import net.citizensnpcs.api.npc.NPCRegistry
 import net.citizensnpcs.api.trait.TraitInfo
 
+@Deprecated("Use the EntityAdapter instead")
 @Adapter("Citizens", "For the Citizens plugin", App.VERSION)
 /**
  * The Citizens adapter allows you to create custom interactions with NPCs.

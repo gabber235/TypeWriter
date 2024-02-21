@@ -18,6 +18,7 @@ first.
 | [Delayed Action](BasicAdapter/entries/action/delayed_action) | Delay an action for a certain amount of time |
 | [Drop Item Action](BasicAdapter/entries/action/drop_item) | Drop an item at location, or on player |
 | [Give Item Action](BasicAdapter/entries/action/give_item) | Give an item to the player |
+| [Group Trigger Action](BasicAdapter/entries/action/group_trigger_action) | Trigger the next entries for everyone in the same group as the player |
 | [Message Action](BasicAdapter/entries/action/send_message) | Send a message to a player |
 | [Play Sound Action](BasicAdapter/entries/action/play_sound) | Play sound at player, or location |
 | [Player Command Action](BasicAdapter/entries/action/player_run_command) | Make player run command |
@@ -31,6 +32,15 @@ first.
 | [Stop Sound Action](BasicAdapter/entries/action/stop_sound) | Stop a or all sounds for a player |
 | [Teleport Action](BasicAdapter/entries/action/teleport) | Teleport a player |
 
+### Audiences
+
+| Name | Description |
+| ---- | ----------- |
+| [Boss Bar](BasicAdapter/entries/audience/boss_bar) | Boss Bar |
+| [Cinematic Audience](BasicAdapter/entries/audience/cinematic_audience) | Filters an audience based on if they are in a cinematic |
+| [Simple Lines](BasicAdapter/entries/audience/simple_lines) | Statically determined lines of text |
+| [Simple Sidebar](BasicAdapter/entries/audience/sidebar) | Display a sidebar for players |
+
 ### Cinematics
 
 | Name | Description |
@@ -41,14 +51,18 @@ first.
 | [Cinematic Console Command](BasicAdapter/entries/cinematic/cinematic_console_command) | Runs command as the console at a specific frame. |
 | [Cinematic Player Command](BasicAdapter/entries/cinematic/cinematic_player_command) | Runs command as the player at a specific frame. |
 | [Particle Cinematic](BasicAdapter/entries/cinematic/particle_cinematic) | Spawn particles for a cinematic |
+| [Potion Effect Cinematic](BasicAdapter/entries/cinematic/potion_effect_cinematic) | Apply different potion effects to the player during a cinematic |
 | [Pumpkin Hat Cinematic](BasicAdapter/entries/cinematic/pumpkin_hat_cinematic) | Show a pumpkin hat during a cinematic |
 | [Random Action Bar Dialogue Cinematic](BasicAdapter/entries/cinematic/random_actionbar_dialogue_cinematic) | Show a random action bar typed dialogue |
 | [Random Spoken Dialogue Cinematic](BasicAdapter/entries/cinematic/random_spoken_dialogue_cinematic) | Play a random spoken dialogue cinematic |
 | [Random Subtitle Dialogue Cinematic](BasicAdapter/entries/cinematic/random_subtitle_dialogue_cinematic) | Show a random action bar message |
+| [Screen Shake Cinematic](BasicAdapter/entries/cinematic/screen_shake_cinematic) | Shake the screen |
+| [Set Fake Block Cinematic](BasicAdapter/entries/cinematic/set_fake_block_cinematic) | Set a fake block |
 | [Sound Cinematic](BasicAdapter/entries/cinematic/sound_cinematic) | Play a sound during a cinematic |
 | [Spoken Dialogue Cinematic](BasicAdapter/entries/cinematic/spoken_dialogue_cinematic) | Play a spoken dialogue cinematic |
-| [Subtitle Dialogue Cinematic](BasicAdapter/entries/cinematic/subtitle_dialogue_cinematic) | Show an action bar message |
+| [Subtitle Dialogue Cinematic](BasicAdapter/entries/cinematic/subtitle_dialogue_cinematic) | Show an subtitle message |
 | [Title Cinematic](BasicAdapter/entries/cinematic/title_cinematic) | Show a title during a cinematic |
+| [Trigger Sequence Cinematic](BasicAdapter/entries/cinematic/trigger_sequence_cinematic) | A sequence of triggers to run |
 
 ### Dialogues
 
@@ -64,6 +78,7 @@ first.
 
 | Name | Description |
 | ---- | ----------- |
+| [Self Speaker](BasicAdapter/entries/entity/self_speaker) | The player themself |
 | [Simple Speaker](BasicAdapter/entries/entity/simple_speaker) | The most basic speaker |
 
 ### Events
@@ -89,13 +104,34 @@ first.
 
 | Name | Description |
 | ---- | ----------- |
-| [Cron Fact](BasicAdapter/entries/fact/cron_fact) | Saved until a specified date, like (0 0 * * 1) |
+| [Cron Fact](BasicAdapter/entries/fact/cron_fact) | Saved until a specified date, like (0 0 * * 1 |
 | [Inventory Item Count Fact](BasicAdapter/entries/fact/inventory_item_count_fact) | The amount of a specific item in the player's inventory |
 | [Number Placeholder Fact](BasicAdapter/entries/fact/number_placeholder) | Computed Fact for a placeholder number |
 | [Permanent Fact](BasicAdapter/entries/fact/permanent_fact) | Saved permanently, it never gets removed |
 | [Session Fact](BasicAdapter/entries/fact/session_fact) | Saved until a player logouts of the server |
 | [Timed Fact](BasicAdapter/entries/fact/timed_fact) | Saved for a specified duration, like 20 minutes |
 | [Value Placeholder Fact](BasicAdapter/entries/fact/value_placeholder) | Fact for a placeholder value |
+
+### Groups
+
+| Name | Description |
+| ---- | ----------- |
+| [Global Group](BasicAdapter/entries/group/global_group) | One group with all the online players |
+| [Player Group](BasicAdapter/entries/group/player_group) | Group for every individual player |
+| [World Group](BasicAdapter/entries/group/world_group) | Group for the whole world |
+
+### Quests
+
+| Name | Description |
+| ---- | ----------- |
+| [Objective Lines](BasicAdapter/entries/quest/objective_lines) | Display all the current objectives |
+| [Quest Complete Event](BasicAdapter/entries/quest/quest_complete_event) | Triggered when a quest is completed for a player |
+| [Quest Start Event](BasicAdapter/entries/quest/quest_start_event) | Triggered when a quest is started for a player |
+| [Quest Status Update Event](BasicAdapter/entries/quest/quest_status_update_event) | Triggered when a quest status is updated for a player |
+| [Simple Objective](BasicAdapter/entries/quest/objective) | An objective entity |
+| [Simple Quest](BasicAdapter/entries/quest/quest) | A quest entity |
+| [Tracked Objective Audience](BasicAdapter/entries/quest/tracked_objective_audience) | Filters an audience based on if they have a tracked objective |
+| [Tracked Quest Audience](BasicAdapter/entries/quest/tracked_quest_audience) | Filters an audience based on if they have a quest tracked |
 
 ### Sounds
 

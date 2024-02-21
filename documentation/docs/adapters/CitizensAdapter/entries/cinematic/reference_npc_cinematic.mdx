@@ -3,6 +3,10 @@ import Admonition from '@theme/Admonition';
 import Link from '@docusaurus/Link';
 
 # Reference Npc Cinematic 
+import DeprecationWarning from '@site/src/components/DeprecationWarning';
+
+<DeprecationWarning message='Use the EntityAdapter instead' />
+
 
 The `Reference NPC Cinematic` entry that plays a recorded animation back on a reference NPC.
 When active, the original NPC will be hidden and a clone will be spawned in its place.
@@ -18,6 +22,6 @@ Like going in to a store and talking to the shopkeeper.
 <fields.CriteriaField />
 <fields.EntryField name='Recorded Segments' required multiple>
 </fields.EntryField>
-<fields.EntryField name='Reference Npc' required reference>
+<fields.EntryField name='Reference Npc' required>
      Reference npc to clone
 </fields.EntryField>

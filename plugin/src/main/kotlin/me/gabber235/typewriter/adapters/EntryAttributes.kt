@@ -5,9 +5,16 @@ annotation class Tags(vararg val tags: String)
 
 
 fun getTags(clazz: Class<*>): List<String> {
-    return (clazz.getAnnotation(Tags::class.java)?.tags?.toList() ?: emptyList()) +
-            (clazz.superclass?.let { getTags(it) } ?: emptyList()) +
-            clazz.interfaces.flatMap { getTags(it) }
+    val clazzTags = clazz.getAnnotation(Tags::class.java)?.tags?.toList() ?: emptyList()
+    val superClassTags = clazz.superclass?.let { getTags(it) } ?: emptyList()
+    val interfaceTags = clazz.interfaces.flatMap { getTags(it) }
+
+    val generatedTags = mutableListOf<String>()
+    if (clazz.isAnnotationPresent(Deprecated::class.java)) {
+        generatedTags.add("deprecated")
+    }
+
+    return (clazzTags + superClassTags + interfaceTags + generatedTags).distinct()
 }
 
 object Colors {

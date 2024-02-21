@@ -35,6 +35,12 @@ String? entryType(EntryTypeRef ref, String entryId) {
   return entry?.type;
 }
 
+@riverpod
+bool isEntryDeprecated(IsEntryDeprecatedRef ref, String entryId) {
+  final entryTags = ref.watch(entryTagsProvider(entryId));
+  return entryTags?.contains("deprecated") ?? false;
+}
+
 class EntryDefinition {
   EntryDefinition({
     required this.pageId,

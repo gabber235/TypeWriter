@@ -7,7 +7,6 @@ import lol.pyr.znpcsplus.api.skin.SkinDescriptor
 import lol.pyr.znpcsplus.util.NpcLocation
 import lol.pyr.znpcsplus.util.NpcPose
 import me.gabber235.typewriter.capture.capturers.ArmSwing
-import me.gabber235.typewriter.entry.entries.NpcData
 import me.gabber235.typewriter.logger
 import org.bukkit.Location
 import org.bukkit.entity.Player

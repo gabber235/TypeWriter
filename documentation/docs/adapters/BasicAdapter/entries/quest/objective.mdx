@@ -1,0 +1,29 @@
+import * as fields from '@site/src/components/EntryField';
+import Admonition from '@theme/Admonition';
+import Link from '@docusaurus/Link';
+
+# Simple Objective 
+
+The `Objective` entry is a tasks that the player can complete.
+It is mainly for displaying the progress to a player.
+
+It is **not** necessary to use this entry for objectives.
+It is just a visual novelty.
+
+The entry filters the audience based on if the objective is active.
+
+## How could this be used?
+This could be used to show the players what they need to do.
+
+
+## Fields
+
+<fields.EntryField name='Quest' required>
+</fields.EntryField>
+<fields.EntryField name='Children' required multiple>
+</fields.EntryField>
+<fields.CriteriaField />
+<fields.EntryField name='Finished Criteria' required multiple>
+</fields.EntryField>
+<fields.EntryField name='Display Name' required>
+</fields.EntryField>

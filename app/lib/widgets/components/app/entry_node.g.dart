@@ -156,7 +156,7 @@ class _LinkablePathsProviderElement
 }
 
 String _$linkableDuplicatePathsHash() =>
-    r'a1b82b13064d278aaca96c45ce0ffd3b7917bf1c';
+    r'b2c2a0a1159773985a764adf969dbb3706ceb56a';
 
 /// See also [linkableDuplicatePaths].
 @ProviderFor(linkableDuplicatePaths)
@@ -285,7 +285,7 @@ class _LinkableDuplicatePathsProviderElement
   String get entryId => (origin as LinkableDuplicatePathsProvider).entryId;
 }
 
-String _$acceptingPathsHash() => r'ac1b65f4ce1c18540821d637a96ffda86d2b639a';
+String _$acceptingPathsHash() => r'76724dcc043808279bdf1f4aa92687fe87f54446';
 
 /// See also [_acceptingPaths].
 @ProviderFor(_acceptingPaths)

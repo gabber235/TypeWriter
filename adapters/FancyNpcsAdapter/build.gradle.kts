@@ -33,6 +33,7 @@ dependencies {
     compileOnly("com.github.dyam0:LirandAPI:96cc59d4fb")
     compileOnly("net.kyori:adventure-api:4.15.0")
     compileOnly("net.kyori:adventure-text-minimessage:4.15.0")
+    compileOnly("io.insert-koin:koin-core:3.4.0")
 
     // External dependencies
     compileOnly("de.oliver:FancyNpcs:2.0.7")
