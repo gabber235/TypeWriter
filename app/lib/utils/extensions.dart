@@ -109,6 +109,13 @@ extension ListExtensions<T> on List<T> {
     return where((element) => !other.contains(element)).toList()
       ..addAll(other.where((element) => !contains(element)).toSet());
   }
+
+  bool containsAny(Iterable<T> elements) {
+    for (final element in elements) {
+      if (contains(element)) return true;
+    }
+    return false;
+  }
 }
 
 TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(

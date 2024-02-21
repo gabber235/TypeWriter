@@ -40,9 +40,9 @@ List<String> linkableDuplicatePaths(
   LinkableDuplicatePathsRef ref,
   String entryId,
 ) {
-  final entry = ref.read(globalEntryProvider(entryId));
+  final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return [];
-  final tags = ref.read(entryTagsProvider(entryId));
+  final tags = ref.watch(entryTagsProvider(entryId));
 
   final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
   return modifiers.entries
@@ -59,12 +59,20 @@ List<String> _acceptingPaths(
 ) {
   final targetTags = ref.watch(entryTagsProvider(targetId));
 
-  final entry = ref.read(globalEntryProvider(entryId));
+  final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return [];
 
-  final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
+  final modifiers = ref.watch(fieldModifiersProvider(entry.type, "entry"));
+  final onlyTags = ref.watch(fieldModifiersProvider(entry.type, "only_tags"));
   return modifiers.entries
-      .where((e) => targetTags.contains(e.value.data))
+      .where((e) {
+        final onlyTagModifier = onlyTags[e.key];
+        if (onlyTagModifier != null) {
+          final String data = onlyTagModifier.data;
+          return data.split(",").containsAny(targetTags);
+        }
+        return targetTags.contains(e.value.data);
+      })
       .expand((e) => entry.newPaths(e.key))
       .toList();
 }
@@ -102,6 +110,7 @@ class EntryNode extends HookConsumerWidget {
         child: Iconify(blueprint.icon, size: 18),
       ),
       isSelected: isSelected,
+      isDeprecated: ref.watch(isEntryDeprecatedProvider(entryId)),
       contextActions: contextActions,
       onTap: () =>
           ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId),
@@ -189,6 +198,7 @@ class _EntryNode extends HookConsumerWidget {
     this.name = "",
     this.icon = const Icon(Icons.book, color: Colors.white),
     this.isSelected = false,
+    this.isDeprecated = false,
     this.contextActions = const [],
     this.onTap,
   });
@@ -198,6 +208,7 @@ class _EntryNode extends HookConsumerWidget {
   final String name;
   final Widget icon;
   final bool isSelected;
+  final bool isDeprecated;
   final List<ContextMenuTile> contextActions;
 
   final VoidCallback? onTap;
@@ -321,7 +332,7 @@ class _EntryNode extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(4),
                     child: Padding(
                       padding: const EdgeInsets.all(7.0),
-                      child: _innerEntry(Colors.white),
+                      child: _innerEntry(context, Colors.white),
                     ),
                   ),
                 );
@@ -360,7 +371,7 @@ class _EntryNode extends HookConsumerWidget {
                               duration: 400.ms,
                               curve: Curves.easeOutCirc,
                               alignment: Alignment.topCenter,
-                              child: _innerEntry(Colors.white),
+                              child: _innerEntry(context, Colors.white),
                             ),
                           ),
                         ),
@@ -386,12 +397,12 @@ class _EntryNode extends HookConsumerWidget {
         dashPattern: const [5, 5],
         radius: const Radius.circular(1),
         padding: const EdgeInsets.all(6),
-        child: _innerEntry(color),
+        child: _innerEntry(context, color),
       ),
     );
   }
 
-  Widget _innerEntry(Color color) {
+  Widget _innerEntry(BuildContext context, Color color) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Row(
@@ -408,6 +419,10 @@ class _EntryNode extends HookConsumerWidget {
               fontFamily: "JetBrainsMono",
               fontSize: 13,
               color: color,
+              decoration: isDeprecated ? TextDecoration.lineThrough : null,
+              decorationThickness: 2.8,
+              decorationColor: Theme.of(context).scaffoldBackgroundColor,
+              decorationStyle: TextDecorationStyle.wavy,
             ),
           ),
         ],
@@ -432,6 +447,8 @@ class FakeEntryNode extends HookConsumerWidget {
     final blueprint = ref.watch(entryBlueprintProvider(type));
     if (blueprint == null) return const InvalidEntry();
 
+    final isDeprecated = ref.watch(isEntryDeprecatedProvider(entryId));
+
     return Material(
       borderRadius: BorderRadius.circular(4),
       color: blueprint.color,
@@ -446,11 +463,27 @@ class FakeEntryNode extends HookConsumerWidget {
               children: [
                 Text(
                   name.formatted,
-                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    decoration:
+                        isDeprecated ? TextDecoration.lineThrough : null,
+                    decorationThickness: 2.8,
+                    decorationColor: Theme.of(context).scaffoldBackgroundColor,
+                    decorationStyle: TextDecorationStyle.wavy,
+                  ),
                 ),
                 Text(
                   type.formatted,
-                  style: const TextStyle(color: Colors.white70, fontSize: 11),
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 11,
+                    decoration:
+                        isDeprecated ? TextDecoration.lineThrough : null,
+                    decorationThickness: 2.5,
+                    decorationColor: Theme.of(context).scaffoldBackgroundColor,
+                    decorationStyle: TextDecorationStyle.wavy,
+                  ),
                 ),
               ],
             ),
@@ -518,6 +551,8 @@ class ExternalEntryNode extends HookConsumerWidget {
       return const InvalidEntry();
     }
 
+    final isDeprecated = ref.watch(isEntryDeprecatedProvider(entry.id));
+
     return LongPressDraggable(
       data: EntryDrag(entryId: entry.id),
       feedback: FakeEntryNode(entryId: entry.id),
@@ -527,7 +562,13 @@ class ExternalEntryNode extends HookConsumerWidget {
         strokeWidth: 2,
         dashPattern: const [5, 5],
         radius: const Radius.circular(1),
-        child: _innerEntry(blueprint, pageName, blueprint.color),
+        child: _innerEntry(
+          context,
+          blueprint,
+          pageName,
+          blueprint.color,
+          isDeprecated,
+        ),
       ),
       child: ContextMenuRegion(
         builder: (context) {
@@ -556,7 +597,13 @@ class ExternalEntryNode extends HookConsumerWidget {
               onTap: () => ref
                   .read(inspectingEntryIdProvider.notifier)
                   .navigateAndSelectEntry(ref.passing, entry.id),
-              child: _innerEntry(blueprint, pageName, Colors.white),
+              child: _innerEntry(
+                context,
+                blueprint,
+                pageName,
+                Colors.white,
+                isDeprecated,
+              ),
             ),
           ),
         ),
@@ -564,7 +611,13 @@ class ExternalEntryNode extends HookConsumerWidget {
     );
   }
 
-  Widget _innerEntry(EntryBlueprint blueprint, String pageName, Color color) {
+  Widget _innerEntry(
+    BuildContext context,
+    EntryBlueprint blueprint,
+    String pageName,
+    Color color,
+    bool isDeprecated,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
@@ -579,6 +632,10 @@ class ExternalEntryNode extends HookConsumerWidget {
                 style: TextStyle(
                   color: color,
                   fontSize: 13,
+                  decoration: isDeprecated ? TextDecoration.lineThrough : null,
+                  decorationThickness: 2.8,
+                  decorationColor: Theme.of(context).scaffoldBackgroundColor,
+                  decorationStyle: TextDecorationStyle.wavy,
                 ),
               ),
               Text(

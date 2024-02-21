@@ -1,6 +1,7 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
@@ -896,9 +897,11 @@ class _SearchFilters extends HookConsumerWidget {
                           size: 16,
                         ),
                         const SizedBox(width: 8),
-                        Text(
-                          filter.title,
-                          style: const TextStyle(color: Colors.white),
+                        Flexible(
+                          child: Text(
+                            filter.title,
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
                         if (filter.canRemove) ...[
                           const SizedBox(width: 12),

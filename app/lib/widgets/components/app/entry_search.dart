@@ -18,15 +18,16 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "entry_search.g.dart";
 
+// Allows an entry if it has any of the tags.
 class TagFilter extends SearchFilter {
-  const TagFilter(this.tag, {this.canRemove = true});
+  const TagFilter(this.tags, {this.canRemove = true});
 
-  final String tag;
+  final List<String> tags;
   @override
   final bool canRemove;
 
   @override
-  String get title => tag;
+  String get title => tags.lastOrNull?.formatted ?? "Tags";
   @override
   Color get color => Colors.deepOrangeAccent;
   @override
@@ -35,22 +36,22 @@ class TagFilter extends SearchFilter {
   @override
   bool filter(SearchElement action) {
     if (action is EntrySearchElement) {
-      return action.blueprint.tags.contains(tag);
+      return action.blueprint.tags.containsAny(tags);
     }
     if (action is AddEntrySearchElement) {
-      return action.blueprint.tags.contains(tag);
+      return action.blueprint.tags.containsAny(tags);
     }
     return true;
   }
 }
 
 class AddOnlyTagFilter extends TagFilter {
-  const AddOnlyTagFilter(super.tag, {super.canRemove = true});
+  const AddOnlyTagFilter(super.tags, {super.canRemove = true});
 
   @override
   bool filter(SearchElement action) {
     if (action is AddEntrySearchElement) {
-      return action.blueprint.tags.contains(tag);
+      return action.blueprint.tags.containsAny(tags);
     }
     return true;
   }
@@ -141,7 +142,11 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
 
 @riverpod
 Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
-  final blueprints = ref.watch(entryBlueprintsProvider);
+  // If the blueprint has the "deprecated" tag, we don't want to show it.
+  final blueprints = ref
+      .watch(entryBlueprintsProvider)
+      .where((blueprint) => !blueprint.tags.contains("deprecated"))
+      .toList();
 
   return Fuzzy(
     blueprints,
@@ -265,11 +270,19 @@ class EntryFetcher extends SearchFetcher {
 
 extension SearchBuilderX on SearchBuilder {
   void tag(String tag, {bool canRemove = true}) {
-    filter(TagFilter(tag, canRemove: canRemove));
+    filter(TagFilter([tag], canRemove: canRemove));
+  }
+
+  void anyTag(List<String> tags, {bool canRemove = true}) {
+    filter(TagFilter(tags, canRemove: canRemove));
   }
 
   void addOnlyTag(String tag, {bool canRemove = true}) {
-    filter(AddOnlyTagFilter(tag, canRemove: canRemove));
+    filter(AddOnlyTagFilter([tag], canRemove: canRemove));
+  }
+
+  void addOnlyAnyTag(List<String> tags, {bool canRemove = true}) {
+    filter(AddOnlyTagFilter(tags, canRemove: canRemove));
   }
 
   void excludeEntry(String entryId, {bool canRemove = true}) {

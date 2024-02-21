@@ -400,8 +400,7 @@ extension PageX on Page {
     final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
 
     final wildPath = path.wild();
-    final pathModifier =
-        modifiers.entries.firstWhereOrNull((e) => e.key == wildPath)?.value;
+    final pathModifier = modifiers[wildPath];
     if (pathModifier == null) {
       debugPrint(
         "No modifier found for path $wildPath in entry ${entry.id}.",
@@ -435,8 +434,7 @@ extension PageX on Page {
     final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
 
     final wildPath = path.wild();
-    final pathModifier =
-        modifiers.entries.firstWhereOrNull((e) => e.key == wildPath)?.value;
+    final pathModifier = modifiers[wildPath];
     if (pathModifier == null) {
       debugPrint(
         "No modifier found for path $wildPath in entry ${entry.id}.",
@@ -446,8 +444,20 @@ extension PageX on Page {
 
     final tag = pathModifier.data;
 
+    // If the path has a only_tags modifier, we can only link to entries any of those tags and the tag of the entry.
+    final onlyTagsModifier =
+        ref.read(fieldModifiersProvider(entry.type, "only_tags"));
+
+    final onlyTags = onlyTagsModifier[wildPath];
+    final List<String> tags;
+    if (onlyTags != null) {
+      tags = onlyTags.data.split(",");
+    } else {
+      tags = [tag];
+    }
+
     ref.read(searchProvider.notifier).asBuilder()
-      ..tag(tag, canRemove: false)
+      ..anyTag(tags, canRemove: false)
       ..fetchNewEntry(
         onAdd: (blueprint) async {
           final newEntry = await createEntryFromBlueprint(ref, blueprint);

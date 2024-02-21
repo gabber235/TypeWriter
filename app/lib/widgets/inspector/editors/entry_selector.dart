@@ -41,10 +41,10 @@ class EntrySelectorEditor extends HookConsumerWidget {
     return true;
   }
 
-  void _select(PassingRef ref, String tag) {
+  void _select(PassingRef ref, List<String> tags) {
     final selectedEntryId = ref.read(inspectingEntryIdProvider);
     ref.read(searchProvider.notifier).asBuilder()
-      ..tag(tag, canRemove: false)
+      ..anyTag(tags, canRemove: false)
       ..excludeEntry(selectedEntryId ?? "", canRemove: false)
       ..fetchEntry(onSelect: (entry) => _update(ref, entry))
       ..fetchNewEntry(onAdded: (entry) => _update(ref, entry))
@@ -54,6 +54,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = field.get<String>("entry") ?? "";
+    final onlyTags = field.get<String>("only_tags")?.split(",") ?? [];
     final id = ref.watch(fieldValueProvider(path, "")) as String;
 
     final hasEntry = ref.watch(entryExistsProvider(id));
@@ -114,7 +115,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                     title: "Select entry",
                     icon: TWIcons.magnifyingGlass,
                     onTap: () {
-                      _select(ref.passing, tag);
+                      _select(ref.passing, onlyTags.isEmpty ? [tag] : onlyTags);
                     },
                   ),
                 ],
@@ -128,7 +129,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                       .navigateAndSelectEntry(ref.passing, id);
                   return;
                 }
-                _select(ref.passing, tag);
+                _select(ref.passing, onlyTags.isEmpty ? [tag] : onlyTags);
               },
               borderRadius: BorderRadius.circular(8),
               child: Padding(
