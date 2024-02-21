@@ -11,7 +11,6 @@ import me.gabber235.typewriter.entry.EntryMigrations
 import me.gabber235.typewriter.entry.EntryMigrator
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.entries.DialogueEntry
-import me.gabber235.typewriter.entry.entries.NpcRecordedDataCapturer
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
@@ -45,7 +44,6 @@ val staticCaptureClasses by lazy {
     listOf(
         LocationFieldCapturer::class,
         ItemFieldCapturer::class,
-        NpcRecordedDataCapturer::class,
     )
 }
 
@@ -204,6 +202,9 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         if (adapterClass.hasAnnotation(Untested::class)) {
             flags.add(AdapterFlag.Untested)
         }
+        if (adapterClass.isAnnotationPresent(Deprecated::class.java)) {
+            flags.add(AdapterFlag.Deprecated)
+        }
 
         return flags
     }
@@ -340,6 +341,11 @@ enum class AdapterFlag(val warning: String) {
      * The adapter is not tested and may not work.
      */
     Untested("⚠\uFE0F UNTESTED"),
+
+    /**
+     * The adapter is deprecated and should not be used.
+     */
+    Deprecated("⚠\uFE0F DEPRECATED"),
 }
 
 // Annotation for marking a class as an adapter
