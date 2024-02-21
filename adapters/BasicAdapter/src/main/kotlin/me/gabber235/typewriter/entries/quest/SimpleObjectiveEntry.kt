@@ -35,6 +35,7 @@ class SimpleObjectiveEntry(
         return ObjectiveAudienceFilter(
             ref(),
             criteria,
+            finishedCriteria,
         )
     }
 }
@@ -42,10 +43,11 @@ class SimpleObjectiveEntry(
 class ObjectiveAudienceFilter(
     objective: Ref<ObjectiveEntry>,
     private val criteria: List<Criteria>,
+    private val finishedCriteria: List<Criteria> = emptyList(),
 ) : AudienceFilter(objective) {
     private val factWatcherSubscriptions = ConcurrentHashMap<UUID, FactListenerSubscription>()
 
-    override fun filter(player: Player): Boolean = criteria.matches(player)
+    override fun filter(player: Player): Boolean = criteria.matches(player) || finishedCriteria.matches(player)
 
     override fun onPlayerAdd(player: Player) {
         super.onPlayerAdd(player)
@@ -53,7 +55,7 @@ class ObjectiveAudienceFilter(
         factWatcherSubscriptions.compute(player.uniqueId) { _, subscription ->
             subscription?.cancel(player)
             player.listenForFacts(
-                criteria.map { it.fact },
+                (criteria + finishedCriteria).map { it.fact },
                 ::onFactChange,
             )
         }
