@@ -49,7 +49,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
     implementation("com.github.dyam0:LirandAPI:96cc59d4fb")
-    implementation("com.github.Tofaa2.EntityLib:spigot:2.0.1-SNAPSHOT")
+    implementation("com.github.Tofaa2.EntityLib:spigot:2.0.3-SNAPSHOT")
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.ktor:ktor-server-core-jvm:2.3.6")

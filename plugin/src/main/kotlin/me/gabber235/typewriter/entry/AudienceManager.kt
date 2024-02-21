@@ -1,10 +1,13 @@
 package me.gabber235.typewriter.entry
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import lirand.api.extensions.server.server
-import me.gabber235.typewriter.entry.entries.AudienceDisplay
-import me.gabber235.typewriter.entry.entries.AudienceEntry
-import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
+import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.interaction.AVERAGE_SCHEDULING_DELAY_MS
+import me.gabber235.typewriter.interaction.TICK_MS
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
@@ -13,13 +16,34 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.koin.java.KoinJavaComponent.get
 import kotlin.reflect.KClass
+import kotlin.reflect.full.hasAnnotation
 
 class AudienceManager : Listener {
     private var displays = emptyMap<Ref<out AudienceEntry>, AudienceDisplay>()
     private var roots = emptyList<Ref<out AudienceEntry>>()
+    private var job: Job? = null
 
     fun initialize() {
         server.pluginManager.registerEvents(this, plugin)
+        job = DISPATCHERS_ASYNC.launch {
+            while (plugin.isEnabled) {
+                val startTime = System.currentTimeMillis()
+                displays.values.asSequence()
+                    .filter { it.isActive }
+                    .filterIsInstance<TickableDisplay>()
+                    .forEach {
+                        try {
+                            it.tick()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                val endTime = System.currentTimeMillis()
+                // Wait for the remainder or the tick
+                val wait = TICK_MS - (endTime - startTime) - AVERAGE_SCHEDULING_DELAY_MS
+                if (wait > 0) delay(wait)
+            }
+        }
     }
 
     fun register() {
@@ -27,7 +51,12 @@ class AudienceManager : Listener {
 
         val entries = Query.find<AudienceEntry>()
         val dependents = entries.filterIsInstance<AudienceFilterEntry>().flatMap { it.children }.map { it.id }.toSet()
-        roots = entries.filter { it.id !in dependents }.map { it.ref() }
+        roots = entries
+            .filter { it.id !in dependents }
+            .filter {
+                !it::class.hasAnnotation<ChildOnly>()
+            }
+            .map { it.ref() }
 
         displays = entries.associate { it.ref() to it.display() }
 
@@ -83,27 +112,40 @@ class AudienceManager : Listener {
     }
 
     fun shutdown() {
+        job?.cancel()
+        job = null
         unregister()
         HandlerList.unregisterAll(this)
     }
-
 }
+
+fun Player.inAudience(entry: AudienceEntry): Boolean = inAudience(entry.ref())
 
 fun Player.inAudience(ref: Ref<out AudienceEntry>): Boolean {
     val manager = get<AudienceManager>(AudienceManager::class.java)
     return manager[ref]?.let { return it.contains(this) } ?: false
 }
 
-fun <E : AudienceEntry> Ref<out AudienceFilterEntry>.descendants(klass: KClass<E>): List<Ref<E>> {
-    val entry = get() ?: return emptyList()
-    return entry.children.flatMap {
+val Ref<out AudienceEntry>.isActive: Boolean
+    get() {
+        val manager = get<AudienceManager>(AudienceManager::class.java)
+        return manager[this]?.isActive ?: false
+    }
+
+fun <E : AudienceEntry> List<Ref<out AudienceEntry>>.descendants(klass: KClass<E>): List<Ref<E>> {
+    return flatMap {
         val child = it.get() ?: return@flatMap emptyList<Ref<E>>()
         if (klass.isInstance(child)) {
             listOf(it as Ref<E>)
         } else if (child is AudienceFilterEntry) {
-            child.ref().descendants(klass)
+            child.children.descendants(klass)
         } else {
             emptyList()
         }
     }
+}
+
+fun <E : AudienceEntry> Ref<out AudienceFilterEntry>.descendants(klass: KClass<E>): List<Ref<E>> {
+    val entry = get() ?: return emptyList()
+    return entry.children.descendants(klass)
 }

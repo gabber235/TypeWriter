@@ -24,8 +24,8 @@ import org.koin.core.component.KoinComponent
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-private const val TICK_MS = 50L
-private const val AVERAGE_SCHEDULING_DELAY_MS = 5L
+internal const val TICK_MS = 50L
+internal const val AVERAGE_SCHEDULING_DELAY_MS = 5L
 
 class InteractionHandler : Listener, KoinComponent {
     private val interactions = ConcurrentHashMap<UUID, Interaction>()

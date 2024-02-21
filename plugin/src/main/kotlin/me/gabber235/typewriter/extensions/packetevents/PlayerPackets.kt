@@ -36,14 +36,40 @@ fun Player.swingArm(entityId: Int, armSwing: ArmSwing) {
     }
 }
 
-inline fun <reified E : EntityMeta> WrapperEntity.meta(editor: E.() -> Unit): WrapperEntity {
+inline fun <reified E : EntityMeta> WrapperEntity.meta(
+    preventNotification: Boolean = false,
+    editor: E.() -> Unit
+): WrapperEntity {
     val meta = entityMeta
     if (meta is E) {
-        meta.setNotifyAboutChanges(false)
+        if (!preventNotification) meta.setNotifyAboutChanges(false)
         editor(meta)
-        meta.setNotifyAboutChanges(true)
+        if (!preventNotification) meta.setNotifyAboutChanges(true)
     }
     return this
+}
+
+class Metas(val meta: EntityMeta) {
+    var hasBeenHandled = false
+    internal var error: String? = null
+    inline fun <reified E : EntityMeta> meta(editor: E.() -> Unit) {
+        if (meta is E) {
+            editor(meta)
+            hasBeenHandled = true
+        }
+    }
+
+    fun error(error: String) {
+        this.error = error
+    }
+}
+
+fun WrapperEntity.metas(editor: Metas.() -> Unit) {
+    val meta = entityMeta
+    val metas = Metas(meta).apply(editor)
+    if (!metas.hasBeenHandled) {
+        throw IllegalStateException(metas.error ?: "No meta was handled")
+    }
 }
 
 fun Location.toPacketLocation() = com.github.retrooper.packetevents.protocol.world.Location(x, y, z, yaw, pitch)

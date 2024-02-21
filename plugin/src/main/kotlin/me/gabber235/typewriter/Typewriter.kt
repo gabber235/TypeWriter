@@ -104,9 +104,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         val platform = SpigotEntityLibPlatform(this)
         val settings = APIConfig(PacketEvents.getAPI())
             .debugMode()
-            .useAsyncEvents()
             .usePlatformLogger()
-            .tickTickables()
 
         EntityLib.init(platform, settings)
 

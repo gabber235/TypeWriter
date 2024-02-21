@@ -13,6 +13,14 @@ import org.koin.java.KoinJavaComponent.get
 import java.util.*
 import java.util.concurrent.ConcurrentSkipListSet
 
+
+/**
+ * When an `AudienceEntry` is marked with `@ChildOnly`, it will only be used as a child of an `AudienceFilterEntry`.
+ * If the entry is at the root of the manifest, it will not be instantiated.
+ */
+@Target(AnnotationTarget.CLASS)
+annotation class ChildOnly
+
 @Tags("audience")
 interface AudienceEntry : ManifestEntry {
     fun display(): AudienceDisplay
@@ -20,19 +28,29 @@ interface AudienceEntry : ManifestEntry {
 
 @Tags("audience_filter")
 interface AudienceFilterEntry : AudienceEntry {
-    val children: List<Ref<AudienceEntry>>
+    val children: List<Ref<out AudienceEntry>>
     override fun display(): AudienceFilter
 }
 
+interface TickableDisplay {
+    fun tick()
+}
+
 abstract class AudienceDisplay : Listener {
-    protected val playerIds: ConcurrentSkipListSet<UUID> = ConcurrentSkipListSet()
+    var isActive = false
+        private set
+    private val playerIds: ConcurrentSkipListSet<UUID> = ConcurrentSkipListSet()
     open val players: List<Player> get() = server.onlinePlayers.filter { it.uniqueId in playerIds }
 
     open fun initialize() {
+        if (isActive) return
+        isActive = true
         server.pluginManager.registerEvents(this, plugin)
     }
 
     open fun dispose() {
+        if (!isActive) return
+        isActive = false
         players.forEach { removePlayer(it) }
         this.unregister()
     }
@@ -74,10 +92,12 @@ abstract class AudienceFilter(
     fun Player.updateFilter(isFiltered: Boolean) {
         if (isFiltered) {
             if (filteredPlayers.add(uniqueId)) {
+                onPlayerFilterAdded(this)
                 get<AudienceManager>(AudienceManager::class.java).addPlayerToChildren(this, ref)
             }
         } else {
             if (filteredPlayers.remove(uniqueId)) {
+                onPlayerFilterRemoved(this)
                 get<AudienceManager>(AudienceManager::class.java).removePlayerFromChildren(this, ref)
             }
         }
@@ -91,6 +111,12 @@ abstract class AudienceFilter(
 
     override fun onPlayerRemove(player: Player) {
         player.updateFilter(false)
+    }
+
+    open fun onPlayerFilterAdded(player: Player) {
+    }
+
+    open fun onPlayerFilterRemoved(player: Player) {
     }
 
     fun canConsider(player: Player): Boolean = super.contains(player)
