@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MultiLine
+import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.playSpeakerSound
 import me.gabber235.typewriter.entry.entries.ActionEntry
@@ -11,7 +12,7 @@ import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.sendMiniWithResolvers
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed
 import org.bukkit.entity.Player
 
 val messageFormat: String by snippet(
@@ -42,6 +43,7 @@ class MessageActionEntry(
     @Help("The speaker of the message")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Help("The message to send")
+    @Placeholder
     @MultiLine
     val message: String = "",
 ) : ActionEntry {
@@ -52,8 +54,14 @@ class MessageActionEntry(
         player.playSpeakerSound(speakerEntry)
         player.sendMiniWithResolvers(
             messageFormat,
-            Placeholder.parsed("speaker", speakerEntry?.displayName ?: ""),
-            Placeholder.parsed("message", message.parsePlaceholders(player).replace("\n", "\n "))
+            parsed(
+                "speaker",
+                speakerEntry?.displayName ?: ""
+            ),
+            parsed(
+                "message",
+                message.parsePlaceholders(player).replace("\n", "\n ")
+            )
         )
     }
 }
