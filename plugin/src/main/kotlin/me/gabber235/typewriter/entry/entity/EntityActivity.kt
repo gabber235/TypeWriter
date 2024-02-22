@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.entry.entity
 
-import org.bukkit.Location
 import org.bukkit.entity.Player
 
 
@@ -12,14 +11,14 @@ interface ActivityCreator {
  * Must be an immutable class
  */
 interface EntityActivity {
-    fun canActivate(currentLocation: Location): Boolean
-    fun currentTask(currentLocation: Location): EntityTask
+    fun canActivate(currentLocation: LocationProperty): Boolean
+    fun currentTask(currentLocation: LocationProperty): EntityTask
 
-    fun primaryLocation(): Location
+    fun primaryLocation(): LocationProperty
 }
 
 interface EntityTask {
-    val location: Location
+    val location: LocationProperty
     fun tick()
     fun mayInterrupt(): Boolean
     fun isComplete(): Boolean

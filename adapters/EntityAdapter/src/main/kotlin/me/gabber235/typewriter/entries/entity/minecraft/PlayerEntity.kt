@@ -14,12 +14,10 @@ import me.gabber235.typewriter.entry.entity.SimpleEntityInstance
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
-import me.gabber235.typewriter.extensions.packetevents.toPacketLocation
 import me.gabber235.typewriter.utils.Sound
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
 import me.tofaa.entitylib.wrapper.WrapperPlayer
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -65,13 +63,12 @@ private class PlayerEntity(player: Player) : FakeEntity(player) {
         if (entity == null) return
         properties.forEach { property ->
             when (property) {
-                is LocationProperty -> entity?.teleport(property.location.toPacketLocation())
                 else -> {}
             }
         }
     }
 
-    override fun spawn(location: Location) {
+    override fun spawn(location: LocationProperty) {
         val id = UUID.randomUUID()
         entity = EntityLib.getApi<SpigotEntityLibAPI>()
             .spawnPlayer(UserProfile(id, id.toString()), location.toPacketLocation())

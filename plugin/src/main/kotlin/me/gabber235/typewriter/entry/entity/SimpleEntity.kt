@@ -21,7 +21,7 @@ interface SimpleEntityInstance : EntityInstanceEntry {
         val definition = definition.get().logErrorIfNull("You must specify a definition for $name")
             ?: return PassThroughFilter(ref())
 
-        val activities = this.activities.mapNotNull { it.get() }
+        val activities = this.activities.mapNotNull { it.get() }.sortedByDescending { it.priority }
         if (activities.isEmpty()) {
             logger.warning("You must specify at least one activity for $name")
             return PassThroughFilter(ref())

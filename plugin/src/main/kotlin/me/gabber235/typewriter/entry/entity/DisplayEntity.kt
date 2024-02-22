@@ -33,7 +33,7 @@ internal class DisplayEntity(
             .filter { activeProperties.none { active -> it.type.isInstance(active) } }
             .mapNotNull { it.collect(player) }
 
-        entity.consumeProperties(properties)
+        entity.consumeProperties(activeProperties + properties)
     }
 
     fun dispose() {

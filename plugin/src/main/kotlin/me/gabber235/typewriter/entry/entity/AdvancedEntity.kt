@@ -36,6 +36,7 @@ fun List<Ref<out AudienceEntry>>.toAdvancedEntityDisplay(
 ): AudienceFilter {
     val activityCreators = descendants(EntityActivityEntry::class)
         .mapNotNull { it.get() }
+        .sortedByDescending { it.priority }
 
 
     val maxBaseSupplier = baseSuppliers.maxOfOrNull { it.second } ?: 0

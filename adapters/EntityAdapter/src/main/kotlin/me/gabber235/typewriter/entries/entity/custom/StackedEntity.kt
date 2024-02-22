@@ -5,11 +5,11 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entity.FakeEntity
+import me.gabber235.typewriter.entry.entity.LocationProperty
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.utils.Sound
-import org.bukkit.Location
 import org.bukkit.entity.Player
 
 @Entry("stacked_entity_definition", "A stacking of entities", Colors.ORANGE, "ic:baseline-stacked-bar-chart")
@@ -51,10 +51,13 @@ class StackedEntity(
 
     override fun applyProperties(properties: List<EntityProperty>) {
         if (entities.isEmpty()) return
-        entities.forEach { it.consumeProperties(properties) }
+        val otherProperties = properties.filter { it !is LocationProperty }
+        // Only the bottom entity will have the location
+        entities.first().consumeProperties(properties)
+        entities.asSequence().drop(1).forEach { it.consumeProperties(otherProperties) }
     }
 
-    override fun spawn(location: Location) {
+    override fun spawn(location: LocationProperty) {
         var lastEntity: FakeEntity? = null
         for (entity in entities) {
             entity.spawn(location)

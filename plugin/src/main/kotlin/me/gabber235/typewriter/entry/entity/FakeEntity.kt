@@ -1,7 +1,6 @@
 package me.gabber235.typewriter.entry.entity
 
 import me.gabber235.typewriter.entry.entries.EntityProperty
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import kotlin.reflect.KClass
 
@@ -32,7 +31,7 @@ abstract class FakeEntity(
 
     open fun tick() {}
 
-    abstract fun spawn(location: Location)
+    abstract fun spawn(location: LocationProperty)
     abstract fun addPassenger(entity: FakeEntity)
     abstract fun dispose()
 }
