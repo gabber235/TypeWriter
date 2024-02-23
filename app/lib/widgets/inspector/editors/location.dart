@@ -13,6 +13,16 @@ import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
+class LocationEditorFilter extends EditorFilter {
+  @override
+  Widget build(String path, FieldInfo info) =>
+      LocationEditor(path: path, field: info as CustomField);
+
+  @override
+  bool canEdit(FieldInfo info) =>
+      info is CustomField && info.editor == "location";
+}
+
 class LocationEditor extends HookConsumerWidget {
   const LocationEditor({
     required this.path,
@@ -73,16 +83,6 @@ class LocationEditor extends HookConsumerWidget {
       ],
     );
   }
-}
-
-class LocationEditorFilter extends EditorFilter {
-  @override
-  Widget build(String path, FieldInfo info) =>
-      LocationEditor(path: path, field: info as CustomField);
-
-  @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "location";
 }
 
 class _LocationPropertyEditor extends HookConsumerWidget {

@@ -13,8 +13,6 @@ interface ActivityCreator {
 interface EntityActivity {
     fun canActivate(currentLocation: LocationProperty): Boolean
     fun currentTask(currentLocation: LocationProperty): EntityTask
-
-    fun primaryLocation(): LocationProperty
 }
 
 interface EntityTask {

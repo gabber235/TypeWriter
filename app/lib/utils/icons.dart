@@ -70,4 +70,7 @@ class TWIcons {
   static const String treeGraph = "icon-park-solid:chart-graph";
   static const String moveEntry = "material-symbols:tab-move";
   static const String priority = "material-symbols:priority-high-rounded";
+  static const String accountTag = "mdi:account-tag";
+  static const String url = "lucide:link";
+  static const String download = "material-symbols:cloud-download";
 }

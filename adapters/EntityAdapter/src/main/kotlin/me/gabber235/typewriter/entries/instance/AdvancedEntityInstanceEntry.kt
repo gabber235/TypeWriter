@@ -7,6 +7,7 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.AdvancedEntityInstance
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
+import org.bukkit.Location
 
 @Entry(
     "advanced_entity_instance",
@@ -18,5 +19,6 @@ class AdvancedEntityInstanceEntry(
     override val id: String = "",
     override val name: String = "",
     override val definition: Ref<out EntityDefinitionEntry> = emptyRef(),
+    override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
     override val children: List<Ref<out AudienceEntry>> = emptyList(),
 ) : AdvancedEntityInstance

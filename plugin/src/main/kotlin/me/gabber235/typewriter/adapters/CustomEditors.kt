@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.editors.*
 import me.gabber235.typewriter.adapters.modifiers.StaticModifierComputer
 import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entity.SkinProperty
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.CronExpression
 import me.gabber235.typewriter.utils.Item
@@ -222,6 +223,7 @@ internal val customEditors by lazy {
         ObjectEditor<SoundId>::soundId,
         ObjectEditor<SoundSource>::soundSource,
         ObjectEditor<Ref<*>>::entryReference,
+        ObjectEditor<SkinProperty>::skin,
     )
         .mapNotNull(::objectEditorFromFunction)
         .associateBy { it.klass }

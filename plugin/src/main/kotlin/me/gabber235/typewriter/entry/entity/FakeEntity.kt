@@ -31,7 +31,10 @@ abstract class FakeEntity(
 
     open fun tick() {}
 
-    abstract fun spawn(location: LocationProperty)
+    open fun spawn(location: LocationProperty) {
+    }
+
     abstract fun addPassenger(entity: FakeEntity)
-    abstract fun dispose()
+    open fun dispose() {
+    }
 }

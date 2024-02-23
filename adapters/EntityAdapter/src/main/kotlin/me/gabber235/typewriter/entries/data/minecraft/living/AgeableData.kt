@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.entries.data
+package me.gabber235.typewriter.entries.data.minecraft.living
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry

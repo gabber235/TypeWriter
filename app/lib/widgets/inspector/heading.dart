@@ -7,6 +7,7 @@ import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
+import "package:typewriter/widgets/components/general/admonition.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:url_launcher/url_launcher_string.dart";
@@ -178,50 +179,21 @@ class _DeperecationWarning extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.redAccent.withOpacity(0.1),
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(
-          color: Colors.redAccent,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: InkWell(
-        onTap: _launceUrl,
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Row(
-            children: [
-              Iconify(
-                TWIcons.warning,
-                color: Colors.redAccent,
+    return Admonition.danger(
+      onTap: _launceUrl,
+      child: const Text.rich(
+        TextSpan(
+          text: "This entry has been marked as deprecated. Take a look at the ",
+          children: [
+            TextSpan(
+              text: "documentation",
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.redAccent,
               ),
-              SizedBox(width: 12),
-              Flexible(
-                child: Text.rich(
-                  TextSpan(
-                    text:
-                        "This entry has been marked as deprecated. Take a look at the ",
-                    children: [
-                      TextSpan(
-                        text: "documentation",
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          decorationColor: Colors.redAccent,
-                        ),
-                      ),
-                      TextSpan(text: " for more information."),
-                    ],
-                  ),
-                  style: TextStyle(
-                    color: Colors.redAccent,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+            TextSpan(text: " for more information."),
+          ],
         ),
       ),
     );

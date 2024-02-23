@@ -5,10 +5,8 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entity.EntityActivity
 import me.gabber235.typewriter.entry.entity.EntityTask
 import me.gabber235.typewriter.entry.entity.LocationProperty
-import me.gabber235.typewriter.entry.entity.toProperty
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.snippets.snippet
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.math.atan2
@@ -28,15 +26,13 @@ private val playerCloseLookRange by snippet("entity.look_close_activity.player_c
 class LookCloseActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    val location: Location = Location(null, 0.0, 0.0, 0.0),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
-    override fun create(player: Player?): EntityActivity = LookCloseActivity(player, location)
+    override fun create(player: Player?): EntityActivity = LookCloseActivity(player)
 }
 
 class LookCloseActivity(
     private val player: Player?,
-    private val location: Location,
 ) : EntityActivity {
     override fun canActivate(currentLocation: LocationProperty): Boolean {
         // Can only activate if there is a player nearby
@@ -52,11 +48,8 @@ class LookCloseActivity(
     }
 
     override fun currentTask(currentLocation: LocationProperty): EntityTask {
-        // TODO: Make the entity walk to the location if they are not already there
         return LookCloseActivityTask(player, currentLocation)
     }
-
-    override fun primaryLocation(): LocationProperty = location.toProperty()
 }
 
 class LookCloseActivityTask(

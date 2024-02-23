@@ -8,6 +8,7 @@ import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/cinematic_view.dart";
+import "package:typewriter/widgets/components/app/header_button.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -96,24 +97,10 @@ class CaptureHeaderAction extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Tooltip(
-      message: "Capture field",
-      child: Material(
-        borderRadius: BorderRadius.circular(4),
-        color: Colors.blue,
-        child: InkWell(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
-          onTap: () => _requestCapture(ref.passing),
-          child: const Padding(
-            padding: EdgeInsets.all(6),
-            child: Iconify(
-              TWIcons.camera,
-              size: 16,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
+    return HeaderButton(
+      tooltip: "Capture field",
+      icon: TWIcons.camera,
+      onTap: () => _requestCapture(ref.passing),
     );
   }
 }

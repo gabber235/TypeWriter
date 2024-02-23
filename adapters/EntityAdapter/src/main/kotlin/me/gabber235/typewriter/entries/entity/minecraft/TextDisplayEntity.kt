@@ -19,6 +19,7 @@ import me.gabber235.typewriter.extensions.packetevents.meta
 import me.gabber235.typewriter.utils.Sound
 import me.gabber235.typewriter.utils.asMini
 import me.tofaa.entitylib.meta.display.TextDisplayMeta
+import org.bukkit.Location
 import org.bukkit.entity.Player
 
 @Entry("text_display_definition", "A text display entity", Colors.ORANGE, "material-symbols:text-ad-rounded")
@@ -44,6 +45,7 @@ class TextDisplayInstance(
     override val id: String = "",
     override val name: String = "",
     override val definition: Ref<TextDisplayDefinition> = emptyRef(),
+    override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
     @OnlyTags("generic_entity_data", "display_data", "lines", "text_display_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),

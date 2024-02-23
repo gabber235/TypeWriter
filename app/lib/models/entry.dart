@@ -38,7 +38,7 @@ String? entryType(EntryTypeRef ref, String entryId) {
 @riverpod
 bool isEntryDeprecated(IsEntryDeprecatedRef ref, String entryId) {
   final entryTags = ref.watch(entryTagsProvider(entryId));
-  return entryTags?.contains("deprecated") ?? false;
+  return entryTags.contains("deprecated");
 }
 
 class EntryDefinition {
@@ -51,10 +51,10 @@ class EntryDefinition {
   final Entry entry;
   final EntryBlueprint blueprint;
 
-  void updateField(PassingRef ref, String path, dynamic value) {
+  Future<void> updateField(PassingRef ref, String path, dynamic value) async {
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
-    page.updateEntryValue(ref, entry, path, value);
+    await page.updateEntryValue(ref, entry, path, value);
   }
 }
 

@@ -4,7 +4,6 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.priority
 import me.gabber235.typewriter.entry.ref
-import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.logErrorIfNull
 
 interface SimpleEntityDefinition : EntityDefinitionEntry
@@ -22,10 +21,6 @@ interface SimpleEntityInstance : EntityInstanceEntry {
             ?: return PassThroughFilter(ref())
 
         val activities = this.activities.mapNotNull { it.get() }.sortedByDescending { it.priority }
-        if (activities.isEmpty()) {
-            logger.warning("You must specify at least one activity for $name")
-            return PassThroughFilter(ref())
-        }
 
         val definitionData = definition.data.mapNotNull {
             val data = it.get() ?: return@mapNotNull null
@@ -43,7 +38,8 @@ interface SimpleEntityInstance : EntityInstanceEntry {
             ref(),
             definition,
             activities,
-            (definitionData + instanceData)
+            (definitionData + instanceData),
+            spawnLocation,
         )
     }
 }

@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.entries.data
+package me.gabber235.typewriter.entries.data.minecraft.living.villager
 
 import com.github.retrooper.packetevents.protocol.entity.villager.VillagerData
 import com.github.retrooper.packetevents.protocol.entity.villager.profession.VillagerProfession

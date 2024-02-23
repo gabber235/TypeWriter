@@ -427,7 +427,7 @@ class _EntryTypeProviderElement extends AutoDisposeProviderElement<String?>
   String get entryId => (origin as EntryTypeProvider).entryId;
 }
 
-String _$isEntryDeprecatedHash() => r'ec8b83b8f12af010cc3cee3c14cf9ddcb49e0f31';
+String _$isEntryDeprecatedHash() => r'f7417cbbc63faac9f66342e4170f30e7466c646a';
 
 /// See also [isEntryDeprecated].
 @ProviderFor(isEntryDeprecated)

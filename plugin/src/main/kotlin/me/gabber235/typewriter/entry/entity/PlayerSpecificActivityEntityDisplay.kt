@@ -5,6 +5,7 @@ import me.gabber235.typewriter.entry.entries.AudienceFilter
 import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
 import me.gabber235.typewriter.entry.entries.PropertySupplier
 import me.gabber235.typewriter.entry.entries.TickableDisplay
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -14,6 +15,7 @@ class PlayerSpecificActivityEntityDisplay(
     private val creator: EntityCreator,
     private val activityCreators: List<ActivityCreator>,
     private val suppliers: List<Pair<PropertySupplier<*>, Int>>,
+    private val spawnLocation: Location,
 ) : AudienceFilter(ref), TickableDisplay {
     private val activityManagers = ConcurrentHashMap<UUID, ActivityManager>()
     private val entities = ConcurrentHashMap<UUID, DisplayEntity>()
@@ -27,7 +29,7 @@ class PlayerSpecificActivityEntityDisplay(
 
     override fun onPlayerAdd(player: Player) {
         activityManagers.computeIfAbsent(player.uniqueId) {
-            ActivityManager(activityCreators.map { it.create(player) })
+            ActivityManager(activityCreators.map { it.create(player) }, spawnLocation)
         }
         super.onPlayerAdd(player)
     }

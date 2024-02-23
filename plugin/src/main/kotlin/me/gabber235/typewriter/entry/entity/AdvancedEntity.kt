@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.priority
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.logger
+import org.bukkit.Location
 
 interface AdvancedEntityInstance : EntityInstanceEntry {
     val definition: Ref<out EntityDefinitionEntry>
@@ -20,8 +21,9 @@ interface AdvancedEntityInstance : EntityInstanceEntry {
         return children.toAdvancedEntityDisplay(
             ref(),
             definition,
-
-            definition.data.mapNotNull { it.get() }.map { it to it.priority })
+            definition.data.mapNotNull { it.get() }.map { it to it.priority },
+            spawnLocation,
+        )
     }
 }
 
@@ -33,6 +35,7 @@ fun List<Ref<out AudienceEntry>>.toAdvancedEntityDisplay(
     ref: Ref<out AudienceFilterEntry>,
     creator: EntityCreator,
     baseSuppliers: List<Pair<EntityData<*>, Int>> = emptyList(),
+    spawnLocation: Location,
 ): AudienceFilter {
     val activityCreators = descendants(EntityActivityEntry::class)
         .mapNotNull { it.get() }
@@ -52,9 +55,10 @@ fun List<Ref<out AudienceEntry>>.toAdvancedEntityDisplay(
         ref,
         creator,
         activityCreators,
-        suppliers
+        suppliers,
+        spawnLocation,
     )
-    else PlayerSpecificActivityEntityDisplay(ref, creator, activityCreators, suppliers)
+    else PlayerSpecificActivityEntityDisplay(ref, creator, activityCreators, suppliers, spawnLocation)
 }
 
 private fun List<Ref<out AudienceEntry>>.activityOnlyConnectedByActivity(

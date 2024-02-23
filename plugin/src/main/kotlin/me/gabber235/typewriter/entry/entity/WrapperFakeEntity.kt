@@ -36,6 +36,7 @@ abstract class WrapperFakeEntity(
     override fun spawn(location: LocationProperty) {
         entity.spawn(location.toPacketLocation())
         entity.addViewer(player.uniqueId)
+        super.spawn(location)
     }
 
     override fun addPassenger(entity: FakeEntity) {
@@ -43,6 +44,7 @@ abstract class WrapperFakeEntity(
     }
 
     override fun dispose() {
+        super.dispose()
         entity.despawn()
         entity.remove()
     }

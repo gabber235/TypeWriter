@@ -17,6 +17,7 @@ import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/editors/optional.dart";
 import "package:typewriter/widgets/inspector/editors/page_selector.dart";
 import "package:typewriter/widgets/inspector/editors/potion_effect.dart";
+import "package:typewriter/widgets/inspector/editors/skin.dart";
 import "package:typewriter/widgets/inspector/editors/sound_id.dart";
 import "package:typewriter/widgets/inspector/editors/sound_source.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
@@ -46,6 +47,7 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       ItemEditorFilter(),
       SoundIdEditorFilter(),
       SoundSourceEditorFilter(),
+      SkinEditorFilter(),
 
       // Default filters
       StringEditorFilter(),

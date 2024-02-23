@@ -357,7 +357,6 @@ extension PageX on Page {
     Entry targetEntry,
     String path,
   ) async {
-    if (!path.contains(".")) return;
     final parts = path.split(".");
     final lastPart = parts.last;
     if (int.tryParse(lastPart) == null) {

@@ -2,10 +2,12 @@ package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entity.ActivityCreator
 import me.gabber235.typewriter.entry.entity.EntityCreator
 import me.gabber235.typewriter.utils.Sound
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import kotlin.reflect.KClass
 
@@ -62,7 +64,10 @@ interface EntityDefinitionEntry : ManifestEntry, SpeakerEntry, EntityCreator {
 }
 
 @Tags("entity_instance")
-interface EntityInstanceEntry : AudienceFilterEntry
+interface EntityInstanceEntry : AudienceFilterEntry {
+    @WithRotation
+    val spawnLocation: Location
+}
 
 @Tags("entity_activity")
 @ChildOnly
