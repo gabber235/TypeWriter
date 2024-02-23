@@ -47,7 +47,8 @@ class ObjectiveAudienceFilter(
 ) : AudienceFilter(objective) {
     private val factWatcherSubscriptions = ConcurrentHashMap<UUID, FactListenerSubscription>()
 
-    override fun filter(player: Player): Boolean = criteria.matches(player) || finishedCriteria.matches(player)
+    override fun filter(player: Player): Boolean =
+        criteria.matches(player) || (finishedCriteria.isNotEmpty() && finishedCriteria.matches(player))
 
     override fun onPlayerAdd(player: Player) {
         super.onPlayerAdd(player)
