@@ -8,6 +8,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
+import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
@@ -102,8 +103,10 @@ private class PlayerEntity(
                 is SkinProperty -> entity.textureProperties =
                     listOf(TextureProperty("textures", property.texture, property.signature))
 
-                else -> {}
+                else -> {
+                }
             }
+            if (applyGenericEntityData(entity, property)) return
         }
     }
 

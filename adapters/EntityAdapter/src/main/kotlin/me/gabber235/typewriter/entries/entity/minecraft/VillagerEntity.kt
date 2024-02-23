@@ -5,6 +5,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
+import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entries.data.minecraft.living.AgableProperty
 import me.gabber235.typewriter.entries.data.minecraft.living.applyAgeableData
 import me.gabber235.typewriter.entries.data.minecraft.living.villager.VillagerProperty
@@ -57,5 +58,6 @@ private class VillagerEntity(player: Player) : WrapperFakeEntity(
             is VillagerProperty -> applyVillagerData(entity, property)
             else -> {}
         }
+        if (applyGenericEntityData(entity, property)) return
     }
 }

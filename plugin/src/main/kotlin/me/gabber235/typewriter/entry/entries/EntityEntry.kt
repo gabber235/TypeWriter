@@ -54,6 +54,7 @@ interface EntityData<P : EntityProperty> : AudienceEntry, PropertySupplier<P>, P
 @Tags("generic_entity_data")
 interface GenericEntityData<P : EntityProperty> : EntityData<P>
 
+
 @Tags("living_entity_data")
 interface LivingEntityData<P : EntityProperty> : EntityData<P>
 
