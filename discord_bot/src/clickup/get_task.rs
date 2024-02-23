@@ -103,17 +103,10 @@ pub struct CustomField {
     pub name: String,
     #[serde(rename = "type")]
     pub type_field: String,
-    pub type_config: TypeConfig,
     pub date_created: String,
     pub hide_from_guests: bool,
     pub value: Option<Value>,
     pub required: bool,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct TypeConfig {
-    pub new_drop_down: Option<bool>,
-    pub options: Option<Vec<TaskOption>>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
