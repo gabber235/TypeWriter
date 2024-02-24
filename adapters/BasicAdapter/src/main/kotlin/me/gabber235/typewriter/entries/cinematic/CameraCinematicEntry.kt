@@ -2,6 +2,9 @@ package me.gabber235.typewriter.entries.cinematic
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPosition
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerPositionAndLook
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
@@ -11,8 +14,8 @@ import me.gabber235.typewriter.extensions.packetevents.meta
 import me.gabber235.typewriter.extensions.packetevents.spectateEntity
 import me.gabber235.typewriter.extensions.packetevents.stopSpectatingEntity
 import me.gabber235.typewriter.extensions.packetevents.toPacketLocation
-import me.gabber235.typewriter.interaction.blockPacket
-import me.gabber235.typewriter.interaction.unblockPacket
+import me.gabber235.typewriter.interaction.InterceptionBundle
+import me.gabber235.typewriter.interaction.interceptPackets
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
@@ -96,6 +99,7 @@ class CameraCinematicAction(
     private lateinit var action: CameraAction
 
     private var originalState: PlayerState? = null
+    private var interceptor: InterceptionBundle? = null
 
     override suspend fun setup() {
         action = if (player.isFloodgate) {
@@ -158,10 +162,24 @@ class CameraCinematicAction(
             }
         }
 
-        this blockPacket PacketType.Play.Client.CLICK_WINDOW
-        this blockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
-        this blockPacket PacketType.Play.Client.USE_ITEM
-        this blockPacket PacketType.Play.Client.INTERACT_ENTITY
+        interceptor = this.interceptPackets {
+            !PacketType.Play.Client.CLICK_WINDOW
+            !PacketType.Play.Client.CLICK_WINDOW_BUTTON
+            !PacketType.Play.Client.USE_ITEM
+            !PacketType.Play.Client.INTERACT_ENTITY
+            PacketType.Play.Server.PLAYER_POSITION_AND_LOOK { event ->
+                val packet = WrapperPlayServerPlayerPositionAndLook(event)
+                packet.y += 500
+            }
+            PacketType.Play.Client.PLAYER_POSITION { event ->
+                val packet = WrapperPlayClientPlayerPosition(event)
+                packet.position = packet.position.withY(packet.position.y - 500)
+            }
+            PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION { event ->
+                val packet = WrapperPlayClientPlayerPositionAndRotation(event)
+                packet.position = packet.position.withY(packet.position.y - 500)
+            }
+        }
     }
 
     private suspend fun Player.teardown() {
@@ -175,10 +193,7 @@ class CameraCinematicAction(
         }
         originalState = null
 
-        this unblockPacket PacketType.Play.Client.CLICK_WINDOW
-        this unblockPacket PacketType.Play.Client.CLICK_WINDOW_BUTTON
-        this unblockPacket PacketType.Play.Client.USE_ITEM
-        this unblockPacket PacketType.Play.Client.INTERACT_ENTITY
+        interceptor?.cancel()
     }
 
     override suspend fun teardown() {

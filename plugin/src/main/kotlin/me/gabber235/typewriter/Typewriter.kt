@@ -19,7 +19,7 @@ import me.gabber235.typewriter.facts.storage.FileFactStorage
 import me.gabber235.typewriter.interaction.ActionBarBlockerHandler
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
-import me.gabber235.typewriter.interaction.PacketBlocker
+import me.gabber235.typewriter.interaction.PacketInterceptor
 import me.gabber235.typewriter.snippets.SnippetDatabase
 import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
 import me.gabber235.typewriter.ui.*
@@ -78,7 +78,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf(::AssetManager)
             singleOf(::ChatHistoryHandler)
             singleOf(::ActionBarBlockerHandler)
-            singleOf(::PacketBlocker)
+            singleOf(::PacketInterceptor)
             factory<Gson>(named("entryParser")) { createEntryParserGson(get()) }
             factory<Gson>(named("bukkitDataParser")) { createBukkitDataParser() }
         }
@@ -115,7 +115,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<MessengerFinder>().initialize()
         get<ChatHistoryHandler>().initialize()
         get<ActionBarBlockerHandler>().initialize()
-        get<PacketBlocker>().initialize()
+        get<PacketInterceptor>().initialize()
         get<AssetManager>().initialize()
         get<AudienceManager>().initialize()
 
@@ -146,7 +146,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<StagingManager>().shutdown()
         get<ChatHistoryHandler>().shutdown()
         get<ActionBarBlockerHandler>().shutdown()
-        get<PacketBlocker>().shutdown()
+        get<PacketInterceptor>().shutdown()
         get<CommunicationHandler>().shutdown()
         get<InteractionHandler>().shutdown()
         get<EntryListeners>().unregister()
