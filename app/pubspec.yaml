@@ -39,6 +39,7 @@ dependencies:
   collection_ext: ^1.0.0
   tinycolor2: ^3.0.1
   uuid: ^4.2.1
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:
