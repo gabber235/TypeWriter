@@ -62,7 +62,7 @@ class PlayerInstance(
     override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
 ) : SimpleEntityInstance
 
-private class PlayerEntity(
+class PlayerEntity(
     player: Player,
 ) : FakeEntity(player) {
     private var entity: WrapperPlayer
@@ -139,8 +139,11 @@ private class PlayerEntity(
     }
 
     override fun addPassenger(entity: FakeEntity) {
-        val player = this.entity
-        player.addPassenger(entity.entityId)
+        this.entity.addPassenger(entity.entityId)
+    }
+
+    override fun removePassenger(entity: FakeEntity) {
+        this.entity.removePassenger(entity.entityId)
     }
 
     override fun dispose() {

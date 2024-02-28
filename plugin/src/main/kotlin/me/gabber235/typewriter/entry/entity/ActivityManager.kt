@@ -1,7 +1,6 @@
 package me.gabber235.typewriter.entry.entity
 
 import me.gabber235.typewriter.entry.entries.EntityProperty
-import me.gabber235.typewriter.logger
 import org.bukkit.Location
 
 class ActivityManager(
@@ -30,7 +29,6 @@ class ActivityManager(
             if (!task.isComplete()) return false
             activity = null
             task = IdleTask(location)
-            logger.severe("No activity found! Assigning idle task.")
             return false
         }
         if (activity == null) {

@@ -58,11 +58,11 @@ class StackedEntity(
     }
 
     override fun spawn(location: LocationProperty) {
-        var lastEntity: FakeEntity? = null
+        if (entities.isEmpty()) return
+        val baseEntity = entities.first()
         for (entity in entities) {
             entity.spawn(location)
-            lastEntity?.addPassenger(entity)
-            lastEntity = entity
+            baseEntity.addPassenger(entity)
         }
     }
 
@@ -72,8 +72,11 @@ class StackedEntity(
     }
 
     override fun addPassenger(entity: FakeEntity) {
-        // Add the passenger to the top entity.
-        entities.lastOrNull()?.addPassenger(entity)
+        entities.firstOrNull()?.addPassenger(entity)
+    }
+
+    override fun removePassenger(entity: FakeEntity) {
+        entities.firstOrNull()?.removePassenger(entity)
     }
 
     override fun dispose() {

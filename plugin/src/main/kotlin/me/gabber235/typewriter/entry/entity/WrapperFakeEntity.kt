@@ -43,6 +43,10 @@ abstract class WrapperFakeEntity(
         this.entity.addPassenger(entity.entityId)
     }
 
+    override fun removePassenger(entity: FakeEntity) {
+        this.entity.removePassenger(entity.entityId)
+    }
+
     override fun dispose() {
         super.dispose()
         entity.despawn()

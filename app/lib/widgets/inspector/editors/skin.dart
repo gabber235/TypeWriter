@@ -39,6 +39,7 @@ class SkinEditor extends HookConsumerWidget {
   final CustomField field;
 
   String? _getSkinUrl(String textureData) {
+    if (textureData.isEmpty) return null;
     // Decode base64 string
     final bytes = base64Decode(textureData);
     // Convert to a string and read the json
