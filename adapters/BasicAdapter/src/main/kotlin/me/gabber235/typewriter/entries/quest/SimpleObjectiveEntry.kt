@@ -1,13 +1,13 @@
 package me.gabber235.typewriter.entries.quest
 
-import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.entry.entries.*
-import org.bukkit.entity.Player
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import me.gabber235.typewriter.entry.Criteria
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.entries.ObjectiveEntry
+import me.gabber235.typewriter.entry.entries.QuestEntry
 
 @Entry("objective", "An objective definition", Colors.BLUE_VIOLET, "streamline:target-solid")
 /**
@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
  * It is just a visual novelty.
  *
  * The entry filters the audience based on if the objective is active.
+ * It will show the objective to the player if the criteria are met.
  *
  * ## How could this be used?
  * This could be used to show the players what they need to do.
@@ -28,54 +29,5 @@ class SimpleObjectiveEntry(
     override val quest: Ref<QuestEntry> = emptyRef(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
-    override val finishedCriteria: List<Criteria> = emptyList(),
-    override val displayName: String = "",
-) : ObjectiveEntry {
-    override fun display(): AudienceFilter {
-        return ObjectiveAudienceFilter(
-            ref(),
-            criteria,
-            finishedCriteria,
-        )
-    }
-}
-
-class ObjectiveAudienceFilter(
-    objective: Ref<ObjectiveEntry>,
-    private val criteria: List<Criteria>,
-    private val finishedCriteria: List<Criteria> = emptyList(),
-) : AudienceFilter(objective) {
-    private val factWatcherSubscriptions = ConcurrentHashMap<UUID, FactListenerSubscription>()
-
-    override fun filter(player: Player): Boolean =
-        criteria.matches(player) || (finishedCriteria.isNotEmpty() && finishedCriteria.matches(player))
-
-    override fun onPlayerAdd(player: Player) {
-        super.onPlayerAdd(player)
-
-        factWatcherSubscriptions.compute(player.uniqueId) { _, subscription ->
-            subscription?.cancel(player)
-            player.listenForFacts(
-                (criteria + finishedCriteria).map { it.fact },
-                ::onFactChange,
-            )
-        }
-    }
-
-    private fun onFactChange(player: Player, fact: Ref<ReadableFactEntry>) {
-        player.refresh()
-    }
-
-    override fun onPlayerRemove(player: Player) {
-        super.onPlayerRemove(player)
-        factWatcherSubscriptions.remove(player.uniqueId)?.cancel(player)
-    }
-
-    override fun dispose() {
-        super.dispose()
-        factWatcherSubscriptions.forEach { (playerId, subscription) ->
-            val player = server.getPlayer(playerId) ?: return@forEach
-            subscription.cancel(player)
-        }
-    }
-}
+    override val display: String = "",
+) : ObjectiveEntry
