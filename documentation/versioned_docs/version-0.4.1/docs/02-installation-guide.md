@@ -33,6 +33,10 @@ To install the basic adapter (or any for that matter), follow these steps:
 In addition to the basic adapter, Typewriter also offers several pre-made adapters that can be easily installed and
 configured. For a list of available adapters and instructions on how to install them, see [here](adapters).
 
+:::danger[Out of Sync]
+When updating the plugin, it's crucial to **always** install the corresponding adapters for that update. Failure to match the versions of the adapter and plugin can result in the plugin not functioning correctly!
+:::
+
 ## Configuring the Web Panel
 :::caution
 Typewriter's web panel does **not** support external server providers such as Minehut, Aternos, or Apex. You can still use everthing else in Typewriter. It is possible to use the panel still by setting up a local server with Typewriter installed. For more information, please visit the [Discord](https://discord.gg/p7WH9VvdMQ).
