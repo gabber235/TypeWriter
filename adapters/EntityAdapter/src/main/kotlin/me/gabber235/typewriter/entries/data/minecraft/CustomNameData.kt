@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("custom_name_data", "The custom name of the entity", Colors.RED, "bi:chat")
+@Entry("custom_name_data", "The custom name of the entity", Colors.RED, "cbi:abc")
 
 class CustomNameData(
     override val id: String = "",

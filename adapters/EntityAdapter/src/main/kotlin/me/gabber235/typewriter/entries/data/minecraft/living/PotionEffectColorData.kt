@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("potion_effect_color_data", "The color of the potion effect particles", Colors.RED, "bi:droplet")
+@Entry("potion_effect_color_data", "The color of the potion effect particles", Colors.RED, "bi:droplet-fill")
 class PotionEffectColorData(
     override val id: String = "",
     override val name: String = "",

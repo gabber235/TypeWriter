@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("billboard_constraint_data", "Constraints for a billboard", Colors.GREEN, "material-symbols:aspect_ratio")
+@Entry("billboard_constraint_data", "Constraints for a billboard", Colors.RED, "material-symbols:aspect_ratio")
 @Tags("billboard_constraint_data")
 class BillboardConstraintData(
     override val id: String = "",

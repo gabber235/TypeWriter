@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("pose_data", "The pose of the entity", Colors.RED, "bi:person")
+@Entry("pose_data", "The pose of the entity", Colors.RED, "bi:person-arms-up")
 class PoseData(
     override val id: String = "",
     override val name: String = "",

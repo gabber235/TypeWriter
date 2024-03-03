@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("arrow_count_data", "The amount of arrows in the entity", Colors.RED, "bi:arrow-up")
+@Entry("arrow_count_data", "The amount of arrows in the entity", Colors.RED, "mdi:arrow-projectile")
 class ArrowCountData(
     override val id: String = "",
     override val name: String = "",

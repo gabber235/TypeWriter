@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
 @Entry(
     "background_color_data",
     "Background color for a text display",
-    Colors.GREEN,
+    Colors.RED,
     "fluent:video-background-effect-32-filled"
 )
 @Tags("background_color_data")
