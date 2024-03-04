@@ -41,6 +41,7 @@ abstract class FakeEntity(
 
     abstract fun addPassenger(entity: FakeEntity)
     abstract fun removePassenger(entity: FakeEntity)
+    abstract operator fun contains(entityId: Int): Boolean
     open fun dispose() {
     }
 

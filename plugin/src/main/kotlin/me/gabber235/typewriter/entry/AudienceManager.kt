@@ -105,6 +105,10 @@ class AudienceManager : Listener {
             .forEach { removePlayerFor(player, it) }
     }
 
+    fun <D : Any> findDisplays(klass: KClass<D>): Sequence<D> {
+        return displays.values.asSequence().filterIsInstance(klass.java)
+    }
+
     operator fun get(ref: Ref<out AudienceEntry>): AudienceDisplay? = displays[ref]
 
     fun getParents(ref: Ref<out AudienceEntry>): List<Ref<out AudienceFilterEntry>> = parents[ref] ?: emptyList()

@@ -36,6 +36,8 @@ internal class DisplayEntity(
         entity.consumeProperties(activeProperties + properties)
     }
 
+    operator fun contains(entityId: Int): Boolean = entity.contains(entityId)
+
     fun dispose() {
         entity.dispose()
     }
