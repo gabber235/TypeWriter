@@ -105,10 +105,12 @@ class ReferenceNpcData(private val npcId: String) : FancyNpcData {
             false,
             {},
             emptyList(),
+            false,
             "",
-            "",
+            emptyList(),
             0f,
-            ogData.attributes,
+            emptyMap(),
+            false
         )
 
         val npc = FancyNpcsPlugin.get().npcAdapter.apply(data)
