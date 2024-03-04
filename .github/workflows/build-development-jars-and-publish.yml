@@ -1,4 +1,4 @@
-name: Build Development Jars and Publish
+name: Build Beta Jars and Publish
 
 on: 
   workflow_dispatch:
@@ -7,7 +7,7 @@ jobs:
   build-publish-development:
     runs-on: ubuntu-latest
     concurrency:
-      group: build-publish-development
+      group: build-publish-beta
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
@@ -83,7 +83,7 @@ jobs:
             paper
             purpur
           game-versions: |
-            [1.20.2, 1.20.4]
+            [1.20.3, 1.20.4]
           dependencies: |
             packetevents
       - name: Notify Discord
