@@ -160,8 +160,16 @@ class NpcEntity(
         playerEntity.removePassenger(entity)
     }
 
+    override fun contains(entityId: Int): Boolean {
+        if (playerEntity.contains(entityId)) return true
+        if (hologram.contains(entityId)) return true
+        if (indicatorEntity.contains(entityId)) return true
+        return false
+    }
+
     override fun dispose() {
         playerEntity.dispose()
         hologram.dispose()
+        indicatorEntity.dispose()
     }
 }

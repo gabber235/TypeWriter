@@ -25,10 +25,12 @@ import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
 import me.gabber235.typewriter.ui.*
 import me.gabber235.typewriter.utils.createBukkitDataParser
 import me.gabber235.typewriter.utils.syncCommands
+import me.gabber235.typewriter.entry.entity.EntityHandler
 import me.tofaa.entitylib.APIConfig
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform
 import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.context.GlobalContext.startKoin
@@ -41,13 +43,10 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
 class Typewriter : KotlinPlugin(), KoinComponent {
-
-    private val entityId = AtomicInteger(100000)
 
     override fun onLoad() {
         super.onLoad()
@@ -56,6 +55,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
                     {
                         named("plugin")
                         bind<Plugin>()
+                        bind<JavaPlugin>()
                         createdAtStart()
                     }
 
@@ -79,6 +79,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf(::ChatHistoryHandler)
             singleOf(::ActionBarBlockerHandler)
             singleOf(::PacketInterceptor)
+            singleOf(::EntityHandler)
             factory<Gson>(named("entryParser")) { createEntryParserGson(get()) }
             factory<Gson>(named("bukkitDataParser")) { createBukkitDataParser() }
         }
@@ -101,12 +102,6 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             return
         }
 
-        val platform = SpigotEntityLibPlatform(this)
-        val settings = APIConfig(PacketEvents.getAPI())
-            .debugMode()
-            .usePlatformLogger()
-
-        EntityLib.init(platform, settings)
 
         get<EntryDatabase>().initialize()
         get<StagingManager>().initialize()
@@ -117,6 +112,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<ActionBarBlockerHandler>().initialize()
         get<PacketInterceptor>().initialize()
         get<AssetManager>().initialize()
+        get<EntityHandler>().initialize()
         get<AudienceManager>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
@@ -153,6 +149,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<FactDatabase>().shutdown()
         get<AssetManager>().shutdown()
         get<AudienceManager>().shutdown()
+        get<EntityHandler>().shutdown()
     }
 }
 
@@ -184,4 +181,4 @@ fun java.util.logging.Level?.convertLogger(): Level {
 
 val logger: Logger by lazy { plugin.logger }
 
-val plugin: Plugin by lazy { KoinJavaComponent.get(Plugin::class.java) }
+val plugin: JavaPlugin by lazy { KoinJavaComponent.get(JavaPlugin::class.java) }

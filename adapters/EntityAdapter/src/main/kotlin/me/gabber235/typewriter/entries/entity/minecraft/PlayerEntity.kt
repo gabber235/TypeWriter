@@ -146,6 +146,8 @@ class PlayerEntity(
         this.entity.removePassenger(entity.entityId)
     }
 
+    override fun contains(entityId: Int): Boolean = this.entityId == entityId
+
     override fun dispose() {
         WrapperPlayServerTeams(
             "typewriter-$entityId",

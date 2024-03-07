@@ -4,5 +4,5 @@ repositories {
 }
 
 dependencies {
-    compileOnly("de.oliver:FancyNpcs:2.0.7")
+    compileOnly("de.oliver:FancyNpcs:2.0.9")
 }

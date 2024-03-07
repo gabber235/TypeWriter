@@ -2,11 +2,10 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.TriggerableEntry
-import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
 import me.gabber235.typewriter.entry.entries.EventEntry
+import me.gabber235.typewriter.events.AsyncFakeEntityInteract
 
 @Entry(
     "entity_interact_event",
@@ -26,3 +25,9 @@ class EntityInteractEventEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val definition: Ref<EntityDefinitionEntry> = emptyRef(),
 ) : EventEntry
+
+@EntryListener(EntityInteractEventEntry::class)
+fun onEntityInteract(event: AsyncFakeEntityInteract, query: Query<EntityInteractEventEntry>) {
+    val definition = event.definition.ref()
+    query.findWhere {it.definition == definition } startDialogueWithOrNextDialogue event.player
+}

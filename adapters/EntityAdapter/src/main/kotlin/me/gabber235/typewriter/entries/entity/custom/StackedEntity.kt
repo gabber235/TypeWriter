@@ -79,6 +79,8 @@ class StackedEntity(
         entities.firstOrNull()?.removePassenger(entity)
     }
 
+    override fun contains(entityId: Int): Boolean = entities.any { it.contains(entityId) }
+
     override fun dispose() {
         entities.forEach { it.dispose() }
     }

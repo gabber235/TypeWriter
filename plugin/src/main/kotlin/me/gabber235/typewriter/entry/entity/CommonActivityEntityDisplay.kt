@@ -15,11 +15,11 @@ val entityShowRange by config("entity.show-range", 50.0, "The range at which ent
 
 class CommonActivityEntityDisplay(
     ref: Ref<out AudienceFilterEntry>,
-    private val creator: EntityCreator,
+    override val creator: EntityCreator,
     private val activityCreators: List<ActivityCreator>,
     private val suppliers: List<Pair<PropertySupplier<*>, Int>>,
     private val spawnLocation: Location,
-) : AudienceFilter(ref), TickableDisplay {
+) : AudienceFilter(ref), TickableDisplay, ActivityEntityDisplay {
     private var activityManager: ActivityManager? = null
     private val entities = ConcurrentHashMap<UUID, DisplayEntity>()
 
@@ -60,5 +60,9 @@ class CommonActivityEntityDisplay(
         entities.clear()
         activityManager?.dispose()
         activityManager = null
+    }
+
+    override fun playerHasEntity(playerId: UUID, entityId: Int): Boolean {
+        return entities[playerId]?.contains(entityId) ?: false
     }
 }

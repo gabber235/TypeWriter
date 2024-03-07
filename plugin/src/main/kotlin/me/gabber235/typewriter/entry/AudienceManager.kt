@@ -20,6 +20,7 @@ import kotlin.reflect.full.hasAnnotation
 
 class AudienceManager : Listener {
     private var displays = emptyMap<Ref<out AudienceEntry>, AudienceDisplay>()
+    private var parents = emptyMap<Ref<out AudienceEntry>, List<Ref<out AudienceFilterEntry>>>()
     private var roots = emptyList<Ref<out AudienceEntry>>()
     private var job: Job? = null
 
@@ -50,9 +51,18 @@ class AudienceManager : Listener {
         unregister()
 
         val entries = Query.find<AudienceEntry>()
-        val dependents = entries.filterIsInstance<AudienceFilterEntry>().flatMap { it.children }.map { it.id }.toSet()
+
+        val parents = mutableMapOf<Ref<out AudienceEntry>, List<Ref<out AudienceFilterEntry>>>()
+        entries.filterIsInstance<AudienceFilterEntry>().forEach { entry ->
+            entry.children.forEach { child ->
+                val list = parents.getOrPut(child) { mutableListOf() }
+                (list as MutableList).add(entry.ref())
+            }
+        }
+        this.parents = parents
+
         roots = entries
-            .filter { it.id !in dependents }
+            .filter { parents[it.ref()].isNullOrEmpty() }
             .filter {
                 !it::class.hasAnnotation<ChildOnly>()
             }
@@ -90,10 +100,18 @@ class AudienceManager : Listener {
 
     fun removePlayerFromChildren(player: Player, ref: Ref<out AudienceFilterEntry>) {
         val entry = ref.get() ?: return
-        entry.children.forEach { removePlayerFor(player, it) }
+        entry.children
+            .filter { entryRef -> getParents(entryRef).none { this[it]?.contains(player) ?: false } }
+            .forEach { removePlayerFor(player, it) }
+    }
+
+    fun <D : Any> findDisplays(klass: KClass<D>): Sequence<D> {
+        return displays.values.asSequence().filterIsInstance(klass.java)
     }
 
     operator fun get(ref: Ref<out AudienceEntry>): AudienceDisplay? = displays[ref]
+
+    fun getParents(ref: Ref<out AudienceEntry>): List<Ref<out AudienceFilterEntry>> = parents[ref] ?: emptyList()
 
     fun unregister() {
         val displays = displays

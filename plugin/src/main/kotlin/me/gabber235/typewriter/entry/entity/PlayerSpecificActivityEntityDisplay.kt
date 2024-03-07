@@ -12,11 +12,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 class PlayerSpecificActivityEntityDisplay(
     ref: Ref<out AudienceFilterEntry>,
-    private val creator: EntityCreator,
+    override val creator: EntityCreator,
     private val activityCreators: List<ActivityCreator>,
     private val suppliers: List<Pair<PropertySupplier<*>, Int>>,
     private val spawnLocation: Location,
-) : AudienceFilter(ref), TickableDisplay {
+) : AudienceFilter(ref), TickableDisplay, ActivityEntityDisplay {
     private val activityManagers = ConcurrentHashMap<UUID, ActivityManager>()
     private val entities = ConcurrentHashMap<UUID, DisplayEntity>()
 
@@ -65,5 +65,9 @@ class PlayerSpecificActivityEntityDisplay(
         entities.clear()
         activityManagers.values.forEach { it.dispose() }
         activityManagers.clear()
+    }
+
+    override fun playerHasEntity(playerId: UUID, entityId: Int): Boolean {
+        return entities[playerId]?.contains(entityId) ?: false
     }
 }
