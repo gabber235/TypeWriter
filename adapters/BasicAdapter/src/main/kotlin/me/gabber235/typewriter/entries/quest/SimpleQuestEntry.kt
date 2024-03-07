@@ -2,11 +2,14 @@ package me.gabber235.typewriter.entries.quest
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.AudienceFilter
 import me.gabber235.typewriter.entry.entries.QuestEntry
+import me.gabber235.typewriter.entry.entries.ReadableFactEntry
+import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.entry.quest.QuestStatus
 import me.gabber235.typewriter.entry.quest.isQuestActive
 import me.gabber235.typewriter.entry.ref
@@ -33,22 +36,19 @@ class SimpleQuestEntry(
     override val name: String = "",
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val displayName: String,
-    override val activeCriteria: List<Criteria>,
-    override val completedCriteria: List<Criteria>,
+    @Help("When the criteria is met, it considers the quest to be active.")
+    val activeCriteria: List<Criteria>,
+
+    @Help("When the criteria is met, it considers the quest to be completed.")
+    val completedCriteria: List<Criteria>,
 ) : QuestEntry {
-    override fun display(): AudienceFilter = QuestAudienceFilter(
-        ref()
-    )
-}
-
-class QuestAudienceFilter(
-    private val quest: Ref<QuestEntry>
-) : AudienceFilter(quest) {
-    override fun filter(player: Player): Boolean = player isQuestActive quest
-
-    @EventHandler
-    fun onQuestStatusUpdate(event: AsyncQuestStatusUpdate) {
-        if (event.quest != quest) return
-        event.player.updateFilter(event.to == QuestStatus.ACTIVE)
+    override val facts: List<Ref<ReadableFactEntry>>
+        get() = (activeCriteria + completedCriteria).map { it.fact }
+    override fun questStatus(player: Player): QuestStatus {
+        return when {
+            completedCriteria matches player -> QuestStatus.COMPLETED
+            activeCriteria matches player -> QuestStatus.ACTIVE
+            else -> QuestStatus.INACTIVE
+        }
     }
 }

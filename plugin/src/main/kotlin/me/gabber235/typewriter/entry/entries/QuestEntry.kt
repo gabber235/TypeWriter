@@ -13,14 +13,18 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.inAudience
 import me.gabber235.typewriter.entry.listenForFacts
 import me.gabber235.typewriter.entry.matches
+import me.gabber235.typewriter.entry.quest.QuestStatus
+import me.gabber235.typewriter.entry.quest.isQuestActive
 import me.gabber235.typewriter.entry.quest.trackedQuest
 import me.gabber235.typewriter.entry.ref
+import me.gabber235.typewriter.events.AsyncQuestStatusUpdate
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.asMini
 import me.gabber235.typewriter.utils.asMiniWithResolvers
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -31,14 +35,25 @@ interface QuestEntry : AudienceFilterEntry, PlaceholderEntry {
     @Placeholder
     val displayName: String
 
-    @Help("When the criteria is met, it considers the quest to be active.")
-    val activeCriteria: List<Criteria>
-
-    @Help("When the criteria is met, it considers the quest to be completed.")
-    val completedCriteria: List<Criteria>
-
+    val facts: List<Ref<ReadableFactEntry>> get() = emptyList()
+    fun questStatus(player: Player): QuestStatus
 
     override fun display(player: Player?): String = displayName.parsePlaceholders(player)
+    override fun display(): AudienceFilter = QuestAudienceFilter(
+        ref()
+    )
+}
+
+class QuestAudienceFilter(
+    private val quest: Ref<QuestEntry>
+) : AudienceFilter(quest) {
+    override fun filter(player: Player): Boolean = player isQuestActive quest
+
+    @EventHandler
+    fun onQuestStatusUpdate(event: AsyncQuestStatusUpdate) {
+        if (event.quest != quest) return
+        event.player.updateFilter(event.to == QuestStatus.ACTIVE)
+    }
 }
 
 private val inactiveObjectiveDisplay by snippet("quest.objective.inactive", "<gray><display></gray>")
