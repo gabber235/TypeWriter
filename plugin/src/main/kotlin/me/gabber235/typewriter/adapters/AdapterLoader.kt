@@ -26,7 +26,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.isSuperclassOf
 
 private val gson =
     GsonBuilder().registerTypeAdapterFactory(
@@ -53,6 +52,7 @@ interface AdapterLoader {
 
     fun loadAdapters()
     fun initializeAdapters()
+    fun shutdown()
     fun getEntryBlueprint(type: String): EntryBlueprint?
 
     fun getCaptureClasses(): List<KClass<out Capturer<*>>>
@@ -124,19 +124,25 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
     override fun initializeAdapters() {
         adapters.forEach {
-            if (TypewriteAdapter::class.isSuperclassOf(it.clazz.kotlin)) {
-                val objectInstance = it.clazz.kotlin.objectInstance
-                if (objectInstance == null) {
-                    try {
-                        it.clazz.getConstructor().newInstance()
-                    } catch (e: Exception) {
-                        logger.warning("Failed to initialize adapter ${it.name}. It is both not a kotlin object and has no empty constructor. Skipping initialization...")
-                        return@forEach
-                    }
-                }
-                TypewriteAdapter::class.cast(objectInstance).initialize()
-            }
+            it.adapter.initialize()
         }
+    }
+
+    override fun shutdown() {
+        adapters.forEach {
+            it.adapter.shutdown()
+        }
+    }
+
+    fun instantiateAdapter(adapterClass: Class<*>): TypewriterAdapter {
+        if (!TypewriterAdapter::class.java.isAssignableFrom(adapterClass)) {
+            throw IllegalArgumentException("Adapter class must be a subclass of TypewriteAdapter")
+        }
+        val objectInstance = adapterClass.kotlin.objectInstance
+        if (objectInstance != null) {
+            return TypewriterAdapter::class.cast(objectInstance)
+        }
+        return adapterClass.getConstructor().newInstance() as TypewriterAdapter
     }
 
     private val ignorePrefixes = listOf("kotlin", "java", "META-INF", "org/bukkit", "org/intellij", "org/jetbrains")
@@ -147,6 +153,8 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         val adapterClass: Class<*> = classes.firstOrNull { it.hasAnnotation(Adapter::class) }
             ?: throw IllegalArgumentException("No adapter class found in ${file.name}")
 
+        val adapterInstance = instantiateAdapter(adapterClass)
+
         val entryClasses = classes.filter { it.hasAnnotation(Entry::class) }
         val messengerClasses = classes.filter { it.hasAnnotation(Messenger::class) }
         val captureClasses = classes.filter {
@@ -155,12 +163,13 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         }
 
 
-        return constructAdapter(classes, adapterClass, entryClasses, messengerClasses, captureClasses)
+        return constructAdapter(classes, adapterClass, adapterInstance, entryClasses, messengerClasses, captureClasses)
     }
 
     private fun constructAdapter(
         classes: List<Class<*>>,
         adapterClass: Class<*>,
+        adapterInstance: TypewriterAdapter,
         entryClasses: List<Class<*>>,
         messengerClasses: List<Class<*>>,
         captureClasses: List<Class<*>>,
@@ -193,6 +202,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             capturers,
             entryMigrators,
             adapterClass,
+            adapterInstance,
         )
     }
 
@@ -308,6 +318,8 @@ data class AdapterData(
     val entryMigrators: List<EntryMigrator>,
     @Transient
     val clazz: Class<*>,
+    @Transient
+    val adapter: TypewriterAdapter
 ) {
     /**
      * Returns a string that can be used to display information about the adapter.
