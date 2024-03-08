@@ -1,6 +1,6 @@
 package me.gabber235.typewriter.adapters
 
-open class TypewriteAdapter {
+open class TypewriterAdapter {
 	open fun initialize() {}
 
 	open fun shutdown() {}

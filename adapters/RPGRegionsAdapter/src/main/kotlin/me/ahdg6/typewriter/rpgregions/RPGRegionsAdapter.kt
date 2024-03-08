@@ -3,7 +3,7 @@ package me.ahdg6.typewriter.rpgregions
 import App
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Adapter
-import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.TypewriterAdapter
 import me.gabber235.typewriter.adapters.Untested
 import me.gabber235.typewriter.logger
 
@@ -12,7 +12,7 @@ import me.gabber235.typewriter.logger
 /**
  * The RPGRegions Adapter is an adapter for the RPGRegions plugin. It allows you to use RPGRegions's discovery system in your dialogue.
  */
-object RPGRegionsAdapter : TypewriteAdapter() {
+object RPGRegionsAdapter : TypewriterAdapter() {
 
     override fun initialize() {
         if (!server.pluginManager.isPluginEnabled("RPGRegions")) {

@@ -206,7 +206,7 @@ enum class PageType(val id: String) {
     }
 }
 
-fun Iterable<Criteria>.matches(player: Player): Boolean = all {
+infix fun Iterable<Criteria>.matches(player: Player): Boolean = all {
     val entry = it.fact.get()
     val fact = entry?.readForPlayersGroup(player)
     it.isValid(fact)

@@ -43,12 +43,12 @@ class QuestTracker(
 
     private fun refreshWatchedFacts() {
         factWatchSubscription?.cancel(player)
-        val facts = Query.find<QuestEntry>().flatMap { it.activeCriteria + it.completedCriteria }.map { it.fact }
+        val facts = Query.find<QuestEntry>().flatMap { it.facts }
         factWatchSubscription = player.listenForFacts(
             facts,
             listener = { _, ref ->
                 Query.findWhere<QuestEntry> { quest ->
-                    quest.activeCriteria.any { it.fact == ref } || quest.completedCriteria.any { it.fact == ref }
+                    quest.facts.contains(ref)
                 }.forEach {
                     refresh(it.ref())
                 }
@@ -63,11 +63,7 @@ class QuestTracker(
 
     private fun refresh(ref: Ref<QuestEntry>) {
         val quest = ref.get() ?: return
-        val status = when {
-            quest.completedCriteria.matches(player) -> QuestStatus.COMPLETED
-            quest.activeCriteria.matches(player) -> QuestStatus.ACTIVE
-            else -> QuestStatus.INACTIVE
-        }
+        val status = quest.questStatus(player)
 
         val oldStatus = quests[ref]
         quests[ref] = status
