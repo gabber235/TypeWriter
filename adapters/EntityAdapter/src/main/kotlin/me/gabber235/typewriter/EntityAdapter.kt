@@ -2,7 +2,7 @@ package me.gabber235.typewriter
 
 import App
 import me.gabber235.typewriter.adapters.Adapter
-import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.TypewriterAdapter
 
 @Adapter("Entity", "For all entity related interactions", App.VERSION)
 /**
@@ -14,7 +14,7 @@ import me.gabber235.typewriter.adapters.TypewriteAdapter
  * please follow the [Installation Guide](../../docs/02-getting-started/01-installation.mdx)
  * first.
  */
-object EntityAdapter : TypewriteAdapter() {
+object EntityAdapter : TypewriterAdapter() {
     override fun initialize() {
 
     }
