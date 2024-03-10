@@ -1,6 +1,6 @@
 # Dependencies
 For the plugin to properly work you need to have the dependencies of the plugin installed these are:
-- **PacketEntities**: [download](https://modrinth.com/plugin/packetevents/versions?l=paper)
+- **ProtocolLib**: [download](https://www.spigotmc.org/resources/protocollib.1997/)
 - **PlaceholderAPI** _(Optional)_: [download](https://www.spigotmc.org/resources/placeholderapi.6245/) **NOTE**: run the command: `/papi ecloud install player` after installation to let it correctly work.
 
 ## Soft-dependencies
