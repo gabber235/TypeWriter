@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("parrot_color_data", "The color of the parrot", Colors.RED, "mdi:parrot")
+@Entry("parrot_color_data", "The color of the parrot", Colors.RED, "ph:bird-fill")
 
 class ParrotColorData (
     override val id: String = "",
