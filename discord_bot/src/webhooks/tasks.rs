@@ -8,7 +8,7 @@ use poise::serenity_prelude::{
 };
 
 use crate::{
-    clickup::{get_task_from_clickup, TaskStatus},
+    clickup::{get_task_from_clickup, TaskStatus, TaskType},
     get_discord,
     webhook::{TaskCreated, TaskStatusUpdated, TaskTag, TaskUpdated},
     WinstonError,
@@ -42,6 +42,7 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
     };
 
     let status: TaskStatus = (&task.status).into();
+    let task_type = (task.custom_item_id).into();
 
     let channel: ChannelId = channel_id.parse::<u64>()?.into();
 
@@ -62,10 +63,12 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
     let available_tags = parent_channel.available_tags;
 
     let status_tags = get_status_tags(&available_tags);
+    let type_tags = get_type_tags(&available_tags);
 
     let mut new_tags = Vec::new();
 
     new_tags.push(status_tags[&status].clone());
+    new_tags.push(type_tags[&task_type].clone());
 
     if TaskStatus::InProduction == status {
         if let Some(resolved_tag) = available_tags.get_tag_id("Resolved") {
@@ -200,6 +203,18 @@ fn get_status_tags(available_tags: &[ForumTag]) -> HashMap<TaskStatus, ForumTagI
             "Done" => Some((TaskStatus::Done, tag.id.clone())),
             "In Development" => Some((TaskStatus::InBeta, tag.id.clone())),
             "In Production" => Some((TaskStatus::InProduction, tag.id.clone())),
+            _ => None,
+        })
+        .collect::<HashMap<_, _>>()
+}
+
+fn get_type_tags(available_tags: &[ForumTag]) -> HashMap<TaskType, ForumTagId> {
+    available_tags
+        .into_iter()
+        .filter_map(|tag| match tag.name.as_str() {
+            "Bug" => Some((TaskType::Bug, tag.id.clone())),
+            "Feature" => Some((TaskType::Feature, tag.id.clone())),
+            "Documentation" => Some((TaskType::Documentation, tag.id.clone())),
             _ => None,
         })
         .collect::<HashMap<_, _>>()

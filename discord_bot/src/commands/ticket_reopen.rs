@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use indoc::formatdoc;
 use poise::serenity_prelude::{
     ComponentInteraction, Context, CreateEmbed, CreateInteractionResponseFollowup, CreateMessage,
-    CreateQuickModal, EditMessage, EditThread, EventHandler, Interaction, Timestamp,
+    CreateQuickModal, EditThread, EventHandler, Interaction, Timestamp,
 };
 
 use crate::{check_permissions, CONTRIBUTOR_ROLE_ID};
@@ -12,7 +12,7 @@ pub struct TicketReopenHandler;
 #[async_trait]
 impl EventHandler for TicketReopenHandler {
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
-        let Some(mut component) = interaction.message_component() else {
+        let Some(component) = interaction.message_component() else {
             return;
         };
         let custom_id = &component.data.custom_id;

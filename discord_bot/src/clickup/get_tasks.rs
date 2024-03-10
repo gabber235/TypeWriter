@@ -2,7 +2,7 @@ use url::Url;
 
 use crate::{WinstonError, CLICKUP_LIST_ID, CLIENT};
 
-use super::{Task, TaskStatus};
+use super::TaskStatus;
 
 pub struct TasksQuery {
     pub statuses: Vec<TaskStatus>,
