@@ -100,11 +100,11 @@ class NpcEntity(
         hologram.consumeProperties(
             LinesProperty(hologramText),
             TranslationProperty(Vector(y = 0.2)),
-            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.VERTICAL)
+            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER)
         )
         indicatorEntity.consumeProperties(
             TranslationProperty(calculateIndicatorOffset(hologramText)),
-            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.VERTICAL)
+            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER)
         )
     }
 
