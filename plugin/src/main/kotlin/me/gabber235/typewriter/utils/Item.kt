@@ -62,8 +62,8 @@ open class Item(
         }
         item
             .meta<ItemMeta> {
-                if (name.isPresent) {
-                    displayName(name.get().parsePlaceholders(player).asMini())
+                if (this@Item.name.isPresent) {
+                    displayName(this@Item.name.get().parsePlaceholders(player).asMini())
                 }
                 if (this@Item.lore.isPresent) {
                     lore(this@Item.lore.get().parsePlaceholders(player).split("\n").map { it.asMini() })

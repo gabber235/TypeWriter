@@ -5,6 +5,7 @@ import net.kyori.adventure.text.*
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.Tag
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
@@ -17,6 +18,7 @@ private val mm = MiniMessage.builder()
         TagResolver.builder()
             .resolver(StandardTags.defaults())
             .tag("confirmation_key") { _, _ -> Tag.preProcessParsed(confirmationKey.keybind) }
+            .resolver(Placeholder.parsed("line", "<#ECFFF8><bold>│</bold></#ECFFF8><white>"))
             .build()
     )
     .build()

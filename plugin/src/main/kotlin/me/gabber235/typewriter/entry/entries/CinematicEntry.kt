@@ -11,7 +11,8 @@ interface CinematicEntry : Entry {
     @Help("The criteria that must be met before this entry is shown")
     val criteria: List<Criteria>
 
-    fun createSimulated(player: Player): CinematicAction? = create(player)
+    fun createRecording(player: Player): CinematicAction? = createSimulating(player)
+    fun createSimulating(player: Player): CinematicAction? = create(player)
 
     fun create(player: Player): CinematicAction
 }
@@ -59,4 +60,12 @@ interface CinematicAction {
      * ```
      */
     infix fun canFinish(frame: Int): Boolean
+}
+
+fun List<CinematicAction>.maxFrame(): Int {
+    var max = 0
+    while (any { !it.canFinish(max) }) {
+        max++
+    }
+    return max
 }

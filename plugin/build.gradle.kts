@@ -108,6 +108,7 @@ tasks.withType<ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-reflect"))
         exclude(dependency("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core"))
+        exclude(dependency("com.github.Tofaa2.EntityLib:spigot"))
         exclude(dependency("web::"))
     }
 }

@@ -49,6 +49,7 @@ val staticCaptureClasses by lazy {
 interface AdapterLoader {
     val adapters: List<AdapterData>
     val adaptersJson: JsonArray
+    val loader: URLClassLoader?
 
     fun loadAdapters()
     fun initializeAdapters()
@@ -64,13 +65,20 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     override var adapters = listOf<AdapterData>()
     override var adaptersJson: JsonArray = JsonArray()
 
+    override var loader: URLClassLoader? = null
+        private set
+
     override fun loadAdapters() {
         val dir = plugin.dataFolder["adapters"]
         if (!dir.exists()) {
             dir.mkdirs()
         }
 
-        adapters = dir.listFiles()?.filter { it.extension == "jar" }?.mapNotNull {
+        val jars = dir.listFiles()?.filter { it.extension == "jar" } ?: listOf()
+
+        loader = URLClassLoader(jars.map { it.toURI().toURL() }.toTypedArray(), plugin.javaClass.classLoader)
+
+        adapters = jars.mapNotNull {
             logger.info("Loading adapter ${it.nameWithoutExtension}")
             try {
                 loadAdapter(it)
@@ -124,13 +132,23 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
     override fun initializeAdapters() {
         adapters.forEach {
-            it.adapter.initialize()
+            try {
+                it.adapter.initialize()
+            } catch (e: Exception) {
+                logger.warning("Failed to initialize adapter ${it.name}. Error: ${e.message}")
+                e.printStackTrace()
+            }
         }
     }
 
     override fun shutdown() {
         adapters.forEach {
-            it.adapter.shutdown()
+            try {
+                it.adapter.shutdown()
+            } catch (e: Exception) {
+                logger.warning("Failed to shutdown adapter ${it.name}. Error: ${e.message}")
+                e.printStackTrace()
+            }
         }
     }
 
@@ -265,8 +283,8 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         }
 
     private fun loadClasses(file: File): List<Class<*>> {
+        val loader = this.loader ?: throw IllegalStateException("Loader is not initialized")
         val jarFile = JarFile(file)
-        val loader = URLClassLoader(arrayOf(file.toURI().toURL()), plugin.javaClass.classLoader)
         val entries = jarFile.entries()
 
         val classes = mutableListOf<Class<*>>()

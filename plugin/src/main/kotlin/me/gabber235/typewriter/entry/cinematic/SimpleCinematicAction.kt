@@ -6,9 +6,12 @@ import me.gabber235.typewriter.entry.entries.activeSegmentAt
 import me.gabber235.typewriter.entry.entries.canFinishAt
 
 abstract class SimpleCinematicAction<S : Segment> : CinematicAction {
+    protected var lastFrame = 0
+        private set
     private var previousSegment: S? = null
 
     override suspend fun tick(frame: Int) {
+        lastFrame = frame
         super.tick(frame)
         val segment = segments activeSegmentAt frame
 
@@ -23,6 +26,11 @@ abstract class SimpleCinematicAction<S : Segment> : CinematicAction {
             startSegment(it)
             tickSegment(it, frame)
         }
+    }
+
+    override suspend fun teardown() {
+        super.teardown()
+        previousSegment?.let { stopSegment(it) }
     }
 
     override fun canFinish(frame: Int): Boolean = segments canFinishAt frame

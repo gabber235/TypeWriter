@@ -38,7 +38,7 @@ class PotionEffectCinematicEntry(
     @Segments(icon = "heroicons-solid:status-offline")
     val segments: List<PotionEffectSegment> = emptyList()
 ) : CinematicEntry {
-    override fun createSimulated(player: Player): CinematicAction? = null
+    override fun createSimulating(player: Player): CinematicAction? = null
     override fun create(player: Player): CinematicAction {
         return PotionEffectCinematicAction(
             player,

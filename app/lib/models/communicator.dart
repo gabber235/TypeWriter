@@ -438,6 +438,26 @@ class Communicator {
     );
   }
 
+  Future<void> requestContentMode(
+    String contentModeClassPath,
+    Map<String, dynamic> data,
+  ) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    handleAck(
+      await socket.emitWithAckAsync(
+        "contentModeRequest",
+        jsonEncode({
+          "contentMode": contentModeClassPath,
+          "data": data,
+        }),
+      ),
+    );
+  }
+
   Future<Response> requestCapture(Map<String, dynamic> data) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {

@@ -27,7 +27,7 @@ class BlindingCinematicEntry(
     @Segments(icon = "heroicons-solid:eye-off")
     val segments: List<BlindingSegment>,
 ) : CinematicEntry {
-    override fun createSimulated(player: Player): CinematicAction? = null
+    override fun createSimulating(player: Player): CinematicAction? = null
     override fun create(player: Player): CinematicAction {
         return BlindingCinematicAction(
             player,

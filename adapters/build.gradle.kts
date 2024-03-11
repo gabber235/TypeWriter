@@ -36,6 +36,10 @@ subprojects {
         compileOnly("com.github.gabber235:typewriter:$version")
     }
 
+    tasks.withType<ShadowJar> {
+        exclude("kotlin/**")
+    }
+
     val targetJavaVersion = 17
     java {
         val javaVersion = JavaVersion.toVersion(targetJavaVersion)
