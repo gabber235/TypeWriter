@@ -42,7 +42,7 @@ const config = {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl:
-                        'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
+                        'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
                     lastVersion: '0.4.1',
                     versions: {
@@ -55,7 +55,7 @@ const config = {
                 blog: {
                     showReadingTime: true,
                     editUrl:
-                        'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
+                        'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
