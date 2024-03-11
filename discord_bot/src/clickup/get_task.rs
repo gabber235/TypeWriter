@@ -34,7 +34,7 @@ pub async fn get_task_from_clickup(task_id: &str) -> Result<Task, WinstonError> 
 pub struct Task {
     pub id: String,
     // pub custom_id: Value,
-    // pub custom_item_id: i64,
+    pub custom_item_id: u16,
     pub name: String,
     pub text_content: String,
     pub description: String,

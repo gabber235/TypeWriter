@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.interaction
 
+import me.gabber235.typewriter.content.ContentEditor
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.cinematic.CinematicSequence
 import me.gabber235.typewriter.entry.dialogue.DialogueSequence
@@ -15,6 +16,7 @@ class Interaction(val player: Player) : KoinComponent {
 
     internal var dialogue: DialogueSequence? = null
     internal var cinematic: CinematicSequence? = null
+    internal var content: ContentEditor? = null
     internal val questTracker: QuestTracker = QuestTracker(player)
     internal val factWatcher: FactWatcher = FactWatcher(player)
     private val sidebarManager: SidebarManager = SidebarManager(player)
@@ -28,6 +30,7 @@ class Interaction(val player: Player) : KoinComponent {
     suspend fun tick() {
         dialogue?.tick()
         cinematic?.tick()
+        content?.tick()
         factWatcher.tick()
         sidebarManager.tick()
     }
@@ -37,6 +40,7 @@ class Interaction(val player: Player) : KoinComponent {
         triggerActions(event)
         handleDialogue(event)
         handleCinematic(event)
+        handleContent(event)
         handleFactWatcher(event)
     }
 
@@ -151,13 +155,39 @@ class Interaction(val player: Player) : KoinComponent {
 
         val actions = entries.mapNotNull {
             if (trigger.simulate) {
-                it.createSimulated(player)
+                it.createSimulating(player)
             } else {
                 it.create(player)
             }
         }
 
         this.cinematic = CinematicSequence(trigger.pageId, player, actions, trigger.triggers, trigger.minEndTime)
+    }
+
+    private suspend fun handleContent(event: Event) {
+        if (CONTENT_END in event) {
+            val content = content ?: return
+            this.content = null
+            content.dispose()
+        }
+
+        if (CONTENT_POP in event) {
+            val content = content ?: return
+            if (content.popMode()) return
+            this.content = null
+            content.dispose()
+        }
+
+        val trigger = event.triggers.asSequence().filterIsInstance<ContentModeTrigger>().firstOrNull() ?: return
+
+        val content = content
+        if (content != null) {
+            content.pushMode(trigger.mode)
+            return
+        }
+        this.content = ContentEditor(trigger.context, player, trigger.mode).also {
+            it.initialize()
+        }
     }
 
     private fun handleFactWatcher(event: Event) {
@@ -172,12 +202,15 @@ class Interaction(val player: Player) : KoinComponent {
     suspend fun end() {
         val dialogue = dialogue
         val cinematic = cinematic
+        val content = content
 
         this.dialogue = null
         this.cinematic = null
+        this.content = null
 
         dialogue?.end()
         cinematic?.end(force = true)
+        content?.dispose()
         questTracker.dispose()
         sidebarManager.dispose(force = true)
     }

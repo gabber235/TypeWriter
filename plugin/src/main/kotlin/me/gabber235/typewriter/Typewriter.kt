@@ -1,6 +1,5 @@
 package me.gabber235.typewriter
 
-import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
@@ -26,9 +25,6 @@ import me.gabber235.typewriter.ui.*
 import me.gabber235.typewriter.utils.createBukkitDataParser
 import me.gabber235.typewriter.utils.syncCommands
 import me.gabber235.typewriter.entry.entity.EntityHandler
-import me.tofaa.entitylib.APIConfig
-import me.tofaa.entitylib.EntityLib
-import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
@@ -62,7 +58,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<AdapterLoader>(::AdapterLoaderImpl)
             singleOf<EntryDatabase>(::EntryDatabaseImpl)
             singleOf<StagingManager>(::StagingManagerImpl)
-            singleOf<ClientSynchronizer>(::ClientSynchronizerImpl)
+            singleOf(::ClientSynchronizer)
             singleOf(::InteractionHandler)
             singleOf(::MessengerFinder)
             singleOf(::CommunicationHandler)
@@ -139,6 +135,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
     val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
 
     override suspend fun onDisableAsync() {
+        get<AdapterLoader>().shutdown()
         get<StagingManager>().shutdown()
         get<ChatHistoryHandler>().shutdown()
         get<ActionBarBlockerHandler>().shutdown()

@@ -21,17 +21,17 @@ class CatVariantData (
     @Help("The variant of the cat.")
     val catVariant: CatMeta.Variant = CatMeta.Variant.TABBY,
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : GenericEntityData<VariantProperty> {
-    override val type: KClass<VariantProperty> = VariantProperty::class
+) : GenericEntityData<CatVariantProperty> {
+    override val type: KClass<CatVariantProperty> = CatVariantProperty::class
 
-    override fun build(player: Player): VariantProperty = VariantProperty(catVariant)
+    override fun build(player: Player): CatVariantProperty = CatVariantProperty(catVariant)
 }
 
-data class VariantProperty(val catVariant: CatMeta.Variant) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<VariantProperty>(VariantProperty::class)
+data class CatVariantProperty(val catVariant: CatMeta.Variant) : EntityProperty {
+    companion object : SinglePropertyCollectorSupplier<CatVariantProperty>(CatVariantProperty::class)
 }
 
-fun applyCatVariantData(entity: WrapperEntity, property: VariantProperty) {
+fun applyCatVariantData(entity: WrapperEntity, property: CatVariantProperty) {
     entity.metas {
         meta<CatMeta> { variant = property.catVariant }
         error("Could not apply CatVariantData to ${entity.entityType} entity.")

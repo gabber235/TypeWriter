@@ -33,6 +33,8 @@ object CitizensAdapter : TypewriterAdapter() {
     }
 
     override fun shutdown() {
+        // If citizens is not enabled, we don't need to do anything
+        if (!CitizensAPI.hasImplementation()) return
         CitizensAPI.getTraitFactory().deregisterTrait(TraitInfo.create(TypewriterTrait::class.java))
         tmpRegistry?.deregisterAll()
         tmpRegistry = null

@@ -20,3 +20,8 @@ processes = ['app']
 cpu_kind = 'shared'
 cpus = 1
 memory_mb = 256
+
+[services.concurrency]
+type = "connections"
+hard_limit = 10000
+soft_limit = 1000

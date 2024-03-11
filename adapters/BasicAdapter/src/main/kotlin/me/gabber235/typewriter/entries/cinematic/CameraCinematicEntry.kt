@@ -5,10 +5,14 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPosition
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerPositionAndLook
+import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import lirand.api.extensions.inventory.meta
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
+import me.gabber235.typewriter.entries.cinematic.DisplayCameraAction.Companion.BASE_INTERPOLATION
 import me.gabber235.typewriter.entry.Criteria
+import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.packetevents.meta
 import me.gabber235.typewriter.extensions.packetevents.spectateEntity
@@ -22,13 +26,17 @@ import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.tofaa.entitylib.EntityLib
+import me.tofaa.entitylib.meta.display.ItemDisplayMeta
 import me.tofaa.entitylib.meta.display.TextDisplayMeta
 import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.GameMode
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffect.INFINITE_DURATION
 import org.bukkit.potion.PotionEffectType.INVISIBILITY
@@ -63,7 +71,7 @@ class CameraCinematicEntry(
         )
     }
 
-    override fun createSimulated(player: Player): CinematicAction {
+    override fun createSimulating(player: Player): CinematicAction {
         return SimulatedCameraCinematicAction(
             player,
             this,
@@ -247,7 +255,7 @@ private class DisplayCameraAction(
     private var path = emptyList<PointSegment>()
 
     companion object {
-        private const val BASE_INTERPOLATION = 10
+        const val BASE_INTERPOLATION = 10
     }
 
     private fun createEntity(): WrapperEntity {
@@ -357,7 +365,8 @@ private class TeleportCameraAction(
 class SimulatedCameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
-) : CinematicAction {
+) : SimpleCinematicAction<CameraSegment>() {
+    override val segments: List<CameraSegment> = entry.segments
 
     private val paths = entry.segments.associateWith { segment ->
         segment.path.transform(segment.duration) {
@@ -367,15 +376,38 @@ class SimulatedCameraCinematicAction(
         }
     }
 
-    override suspend fun tick(frame: Int) {
-        super.tick(frame)
+    private var entity: WrapperEntity? = null
 
-        val segment = (entry.segments activeSegmentAt frame) ?: return
+    override suspend fun startSegment(segment: CameraSegment) {
+        super.startSegment(segment)
+        entity?.despawn()
+        entity?.remove()
+        entity = EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity?>(EntityTypes.ITEM_DISPLAY)
+            .meta<ItemDisplayMeta> {
+                positionRotationInterpolationDuration = 3
+                displayType = ItemDisplayMeta.DisplayType.HEAD
+                item = SpigotConversionUtil.fromBukkitItemStack(ItemStack(Material.PLAYER_HEAD).meta<SkullMeta> {
+                    applySkinUrl("https://textures.minecraft.net/texture/427066e899358b1185460f867fc6dc434c7b4c82fbe70e1919ce74b8bacf80a1")
+                })
+            }
+        val path = paths[segment] ?: return
+        val location = path.interpolate(lastFrame - segment.startFrame)
+        entity?.spawn(location.toPacketLocation().apply { yaw += 180; pitch = -pitch })
+        entity?.addViewer(player.uniqueId)
+    }
+
+    override suspend fun tickSegment(segment: CameraSegment, frame: Int) {
+        super.tickSegment(segment, frame)
         val path = paths[segment] ?: return
         val location = path.interpolate(frame - segment.startFrame)
+        entity?.teleport(location.toPacketLocation().apply { yaw += 180; pitch = -pitch })
+    }
 
-        // Display a particle at the location
-        player.spawnParticle(Particle.SCRAPE, location, 1)
+    override suspend fun stopSegment(segment: CameraSegment) {
+        super.stopSegment(segment)
+        entity?.despawn()
+        entity?.remove()
+        entity = null
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame

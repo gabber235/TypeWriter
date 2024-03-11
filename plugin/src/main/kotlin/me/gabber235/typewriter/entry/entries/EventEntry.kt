@@ -2,6 +2,8 @@ package me.gabber235.typewriter.entry.entries
 
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.content.ContentContext
+import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.entry.*
 import org.bukkit.entity.Player
 import java.util.*
@@ -70,6 +72,8 @@ enum class SystemTrigger : EventTrigger {
     DIALOGUE_NEXT,
     DIALOGUE_END,
     CINEMATIC_END,
+    CONTENT_POP,
+    CONTENT_END,
     ;
 
     override val id: String
@@ -90,4 +94,12 @@ data class CinematicStartTrigger(
 ) : EventTrigger {
     override val id: String
         get() = "system.cinematic.start.$pageId"
+}
+
+data class ContentModeTrigger(
+    val context: ContentContext,
+    val mode: ContentMode,
+) : EventTrigger {
+    override val id: String
+        get() = "content.${mode::class.simpleName}"
 }

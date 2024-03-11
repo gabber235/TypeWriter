@@ -92,6 +92,7 @@ class CommunicationHandler : KoinComponent {
         server?.addEventListener("publish", String::class.java, clientSynchronizer::handlePublish)
 
         server?.addEventListener("updateWriter", String::class.java, clientSynchronizer::handleUpdateWriter)
+        server?.addEventListener("contentModeRequest", String::class.java, clientSynchronizer::handleContentModeRequest)
         server?.addEventListener("captureRequest", String::class.java, clientSynchronizer::handleCaptureRequest)
 
         server?.addConnectListener { socket ->

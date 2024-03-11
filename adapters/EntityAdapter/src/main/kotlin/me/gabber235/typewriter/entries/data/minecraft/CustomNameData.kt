@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.entries.GenericEntityData
 import me.gabber235.typewriter.extensions.packetevents.metas
 import me.gabber235.typewriter.utils.asMini
 import me.tofaa.entitylib.meta.EntityMeta
+import me.tofaa.entitylib.meta.mobs.passive.MooshroomMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.entity.Player
 import java.util.*
@@ -42,7 +43,6 @@ fun applyCustomNameData(entity: WrapperEntity, property: CustomNameProperty) {
             }
             isCustomNameVisible = true
             customName = property.customName.asMini()
-            println("Name column: ${property.customName}")
         }
         error("Could not apply CustomNameData to ${entity.entityType} entity.")
     }

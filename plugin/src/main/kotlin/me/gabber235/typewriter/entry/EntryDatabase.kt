@@ -35,6 +35,8 @@ interface EntryDatabase {
     fun <E : Entry> findEntry(klass: KClass<E>, predicate: (E) -> Boolean): E?
 
     fun <E : Entry> findEntryById(kClass: KClass<E>, id: String): E?
+
+    fun findPageById(id: String): Page?
     fun getPageNames(type: PageType? = null): List<String>
 
     fun entryPriority(entry: Ref<out Entry>): Int
@@ -109,6 +111,8 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     }
 
     override fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
+
+    override fun findPageById(id: String): Page? = pages.firstOrNull { it.id == id }
 
     override fun getPageNames(type: PageType?): List<String> {
         return if (type == null) pages.map { it.id }
