@@ -1,5 +1,6 @@
 package me.ahdg6.typewriter.mythicmobs.entries.action
 
+import io.lumine.mythic.api.mobs.entities.SpawnReason
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
 import me.gabber235.typewriter.adapters.Colors
@@ -10,6 +11,7 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
+import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -33,6 +35,8 @@ class SpawnMobActionEntry(
     private val mobName: String = "",
     @Help("The mob's level")
     private val level: Double = 1.0,
+    @Help("Whether the mob should be only seen by the player")
+    private val onlyVisibleForPlayer: Boolean = false,
     @Help("The mob's spawn location")
     private var spawnLocation: Location,
 ) : ActionEntry {
@@ -43,7 +47,12 @@ class SpawnMobActionEntry(
         if (!mob.isPresent) return
 
         SYNC.launch {
-            mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level)
+            mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level, SpawnReason.OTHER) {
+                if (onlyVisibleForPlayer) {
+                    it.isVisibleByDefault = false
+                    player.showEntity(plugin, it)
+                }
+            }
         }
     }
 }
