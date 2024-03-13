@@ -22,7 +22,7 @@ class PigSaddleData (
     val pigSaddle: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<SaddleProperty> {
-    override val type: KClass<SaddleProperty> = SaddleProperty::class
+    override fun type(): KClass<SaddleProperty> = SaddleProperty::class
 
     override fun build(player: Player): SaddleProperty = SaddleProperty(pigSaddle)
 }

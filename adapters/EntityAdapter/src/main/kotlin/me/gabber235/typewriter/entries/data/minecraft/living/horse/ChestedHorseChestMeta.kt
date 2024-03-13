@@ -22,7 +22,7 @@ class ChestedHorseChestData (
     val chestedHorse: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<ChestedHorseChestProperty> {
-    override val type: KClass<ChestedHorseChestProperty> = ChestedHorseChestProperty::class
+    override fun type(): KClass<ChestedHorseChestProperty> = ChestedHorseChestProperty::class
 
     override fun build(player: Player): ChestedHorseChestProperty = ChestedHorseChestProperty(chestedHorse)
 }

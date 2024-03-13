@@ -21,7 +21,6 @@ class EntityHandler : PacketListenerAbstract(), KoinComponent {
     fun initialize() {
         val platform = SpigotEntityLibPlatform(plugin)
         val settings = APIConfig(PacketEvents.getAPI())
-            .debugMode()
             .usePlatformLogger()
 
         EntityLib.init(platform, settings)

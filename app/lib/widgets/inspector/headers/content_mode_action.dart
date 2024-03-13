@@ -1,11 +1,12 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
-import "package:typewriter/models/capture.dart";
 import "package:typewriter/models/communicator.dart";
+import "package:typewriter/models/segment.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/cinematic_view.dart";
 import "package:typewriter/widgets/components/app/header_button.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -73,6 +74,15 @@ class ContentModeHeaderAction extends HookConsumerWidget {
       "fieldPath": path,
       "fieldValue": value,
     };
+
+    /// ------- Start & End Frame -------
+    final segment = ref.read(inspectingSegmentProvider);
+    final range = segment?.range;
+    if (range != null) {
+      data["startFrame"] = range.from;
+      data["endFrame"] = range.to;
+      print("Frames: ${range}");
+    }
 
     await ref
         .read(communicatorProvider)

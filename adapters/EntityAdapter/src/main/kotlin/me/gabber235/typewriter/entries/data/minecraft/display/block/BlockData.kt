@@ -25,7 +25,7 @@ class BlockData(
     val blockId: Int = 0,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<BlockProperty> {
-    override val type: KClass<BlockProperty> = BlockProperty::class
+    override fun type(): KClass<BlockProperty> = BlockProperty::class
 
     override fun build(player: Player): BlockProperty = BlockProperty(blockId)
 }

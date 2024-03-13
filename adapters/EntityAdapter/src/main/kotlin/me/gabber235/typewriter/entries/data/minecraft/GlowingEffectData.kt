@@ -22,7 +22,7 @@ class GlowingEffectData(
     val glowing: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<GlowingEffectProperty> {
-    override val type: KClass<GlowingEffectProperty> = GlowingEffectProperty::class
+    override fun type(): KClass<GlowingEffectProperty> = GlowingEffectProperty::class
 
     override fun build(player: Player): GlowingEffectProperty = GlowingEffectProperty(glowing)
 }

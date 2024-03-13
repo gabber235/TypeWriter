@@ -22,7 +22,7 @@ class CatVariantData (
     val catVariant: CatMeta.Variant = CatMeta.Variant.TABBY,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<CatVariantProperty> {
-    override val type: KClass<CatVariantProperty> = CatVariantProperty::class
+    override fun type(): KClass<CatVariantProperty> = CatVariantProperty::class
 
     override fun build(player: Player): CatVariantProperty = CatVariantProperty(catVariant)
 }

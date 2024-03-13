@@ -269,9 +269,25 @@ infix fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
  *
  * @param player The player to trigger the trigger for.
  */
-infix fun EventTrigger.triggerFor(player: Player) {
-    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, listOf(this))
+infix fun EventTrigger.triggerFor(player: Player) = listOf(this) triggerFor  player
+
+/**
+ * Trigger all triggers for a player.
+ *
+ * Example:
+ * ```kotlin
+ * val triggers: List<EventTrigger> = ...
+ * triggers triggerAllFor player
+ * ```
+ *
+ * @param player The player to trigger the triggers for.
+ */
+infix fun List<EventTrigger>.triggerFor(player: Player) {
+    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, this)
 }
+
+
+
 
 /**
  * If the player is not in a dialogue, trigger all triggers for all entries in a list.

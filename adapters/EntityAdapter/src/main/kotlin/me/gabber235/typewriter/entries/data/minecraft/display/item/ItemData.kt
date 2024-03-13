@@ -25,7 +25,7 @@ class ItemData(
     val item: Item  = Item.Empty,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<ItemProperty> {
-    override val type: KClass<ItemProperty> = ItemProperty::class
+    override fun type(): KClass<ItemProperty> = ItemProperty::class
 
     override fun build(player: Player): ItemProperty = ItemProperty(item)
 }

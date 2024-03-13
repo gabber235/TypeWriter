@@ -33,7 +33,7 @@ class VillagerData(
     val level: VillagerMeta.Level = VillagerMeta.Level.NOVICE,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityData<VillagerProperty> {
-    override val type: KClass<VillagerProperty> = VillagerProperty::class
+    override fun type(): KClass<VillagerProperty> = VillagerProperty::class
 
     override fun build(player: Player): VillagerProperty = VillagerProperty(villagerType, profession, level)
 }

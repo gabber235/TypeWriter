@@ -26,7 +26,7 @@ class AgeableData(
     val baby: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityData<AgableProperty> {
-    override val type: KClass<AgableProperty> = AgableProperty::class
+    override fun type(): KClass<AgableProperty> = AgableProperty::class
 
     override fun build(player: Player): AgableProperty = AgableProperty(baby)
 }

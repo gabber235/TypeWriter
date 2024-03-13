@@ -23,7 +23,7 @@ class TranslationData(
     val vector: Vector = Vector(0.0, 0.0, 0.0),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<TranslationProperty> {
-    override val type: KClass<TranslationProperty> = TranslationProperty::class
+    override fun type(): KClass<TranslationProperty> = TranslationProperty::class
 
     override fun build(player: Player): TranslationProperty = TranslationProperty(vector)
 }

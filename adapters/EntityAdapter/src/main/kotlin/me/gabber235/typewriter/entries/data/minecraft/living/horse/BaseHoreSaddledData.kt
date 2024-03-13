@@ -21,7 +21,7 @@ class BaseHorseSaddledData (
     val horseSaddled: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<HorseSaddledProperty> {
-    override val type: KClass<HorseSaddledProperty> = HorseSaddledProperty::class
+    override fun type(): KClass<HorseSaddledProperty> = HorseSaddledProperty::class
 
     override fun build(player: Player): HorseSaddledProperty = HorseSaddledProperty(horseSaddled)
 }

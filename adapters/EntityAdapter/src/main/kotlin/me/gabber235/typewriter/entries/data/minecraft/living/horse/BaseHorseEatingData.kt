@@ -22,7 +22,7 @@ class HorseEatingData (
     val horseEating: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<EatingProperty> {
-    override val type: KClass<EatingProperty> = EatingProperty::class
+    override fun type(): KClass<EatingProperty> = EatingProperty::class
 
     override fun build(player: Player): EatingProperty = EatingProperty(horseEating)
 }

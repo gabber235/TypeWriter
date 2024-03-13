@@ -21,7 +21,7 @@ class OnFireData(
     val onFire: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<OnFireProperty> {
-    override val type: KClass<OnFireProperty> = OnFireProperty::class
+    override fun type(): KClass<OnFireProperty> = OnFireProperty::class
 
     override fun build(player: Player): OnFireProperty = OnFireProperty(onFire)
 }

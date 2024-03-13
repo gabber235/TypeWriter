@@ -19,7 +19,7 @@ class BossBarComponent(
         val barBuilder = BossBarBuilder().apply(builder)
         bossBar = BossBar.bossBar(
             barBuilder.title.parsePlaceholders(player).asMini(),
-            barBuilder.progress,
+            barBuilder.progress.coerceIn(0.0f, 1.0f),
             barBuilder.color,
             barBuilder.overlay,
             barBuilder.flags
@@ -32,7 +32,7 @@ class BossBarComponent(
         val bossBar = bossBar ?: return
         val barBuilder = BossBarBuilder().apply(builder)
         bossBar.name(barBuilder.title.parsePlaceholders(player).asMini())
-            .progress(barBuilder.progress)
+            .progress(barBuilder.progress.coerceIn(0.0f, 1.0f))
             .color(barBuilder.color)
             .overlay(barBuilder.overlay)
             .removeFlags(bossBar.flags() - barBuilder.flags)

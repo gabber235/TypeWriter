@@ -28,7 +28,7 @@ class BackgroundColorData(
     val color: Color = Color.BLACK_BACKGROUND,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : TextDisplayEntityData<BackgroundColorProperty> {
-    override val type: KClass<BackgroundColorProperty> = BackgroundColorProperty::class
+    override fun type(): KClass<BackgroundColorProperty> = BackgroundColorProperty::class
 
     override fun build(player: Player): BackgroundColorProperty =
         BackgroundColorProperty(color)

@@ -31,6 +31,7 @@ abstract class SimpleCinematicAction<S : Segment> : CinematicAction {
     override suspend fun teardown() {
         super.teardown()
         previousSegment?.let { stopSegment(it) }
+        previousSegment = null
     }
 
     override fun canFinish(frame: Int): Boolean = segments canFinishAt frame

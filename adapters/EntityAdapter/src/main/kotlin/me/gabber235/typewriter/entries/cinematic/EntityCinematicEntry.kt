@@ -1,24 +1,46 @@
 package me.gabber235.typewriter.entries.cinematic
 
+import com.github.retrooper.packetevents.protocol.entity.pose.EntityPose
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.papermc.paper.event.player.PlayerArmSwingEvent
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.ContentEditor
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
+import me.gabber235.typewriter.capture.capturers.*
 import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.ContentMode
-import me.gabber235.typewriter.content.components.bossBar
+import me.gabber235.typewriter.content.RecordingCinematicContentMode
+import me.gabber235.typewriter.content.components.CachedInventoryComponent
+import me.gabber235.typewriter.content.components.cachedInventory
 import me.gabber235.typewriter.content.components.cinematic
 import me.gabber235.typewriter.content.components.exit
+import me.gabber235.typewriter.content.recordingCinematic
+import me.gabber235.typewriter.entries.data.minecraft.ArmSwingProperty
+import me.gabber235.typewriter.entries.data.minecraft.PoseProperty
+import me.gabber235.typewriter.entries.data.minecraft.living.toProperty
+import me.gabber235.typewriter.entries.data.minecraft.toBukkitPose
+import me.gabber235.typewriter.entries.data.minecraft.toEntityPose
+import me.gabber235.typewriter.entry.AssetManager
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
+import me.gabber235.typewriter.entry.entity.toProperty
 import me.gabber235.typewriter.entry.entries.*
-import net.kyori.adventure.bossbar.BossBar
+import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent
+import kotlin.reflect.KClass
 
 @Entry("entity_cinematic", "Use an animated entity in a cinematic", Colors.PINK, "material-symbols:identity-platform")
 /**
@@ -73,20 +95,43 @@ class EntityCinematicAction(
     private val entry: EntityCinematicEntry,
 ) :
     SimpleCinematicAction<EntityRecordedSegment>() {
+    private val assetManager: AssetManager by KoinJavaComponent.inject(AssetManager::class.java)
+    private val gson: Gson by KoinJavaComponent.inject(Gson::class.java, named("bukkitDataParser"))
+
     override val segments: List<EntityRecordedSegment>
         get() = entry.segments
 
     private var entity: FakeEntity? = null
+    private var recordings: Map<String, Tape<EntityFrame>> = emptyMap()
+    override suspend fun setup() {
+        super.setup()
+
+        recordings = entry.segments
+            .associate { it.artifact.id to it.artifact.get() }
+            .filterValues { it != null }
+            .mapValues { assetManager.fetchAsset(it.value!!) }
+            .filterValues { it != null }
+            .mapValues { gson.fromJson(it.value, object : TypeToken<Tape<EntityFrame>>() {}.type) }
+    }
 
     override suspend fun startSegment(segment: EntityRecordedSegment) {
         super.startSegment(segment)
+        val recording = recordings[segment.artifact.id] ?: return
         this.entity = entry.definition.get()?.create(player)
-        // TODO: Spawn the entity
+
+        val startLocation = recording.firstNotNullWhere { it.location } ?: return
+        val firstFrame = recording.firstFrame ?: return
+
+        this.entity?.consumeProperties(firstFrame.toProperties())
+        this.entity?.spawn(startLocation.toProperty())
     }
 
     override suspend fun tickSegment(segment: EntityRecordedSegment, frame: Int) {
         super.tickSegment(segment, frame)
-        // TODO: Handle the entity's movement
+        val relativeFrame = frame - segment.startFrame
+        val recording = recordings[segment.artifact.id] ?: return
+        val frameData = recording.getFrame(relativeFrame) ?: return
+        this.entity?.consumeProperties(frameData.toProperties())
     }
 
     override suspend fun stopSegment(segment: EntityRecordedSegment) {
@@ -99,6 +144,110 @@ class EntityCinematicAction(
 class EntityCinematicViewing(context: ContentContext, player: Player) : ContentMode(context, player) {
     override fun setup() {
         exit()
-        cinematic(context)
+        val cinematic = cinematic(context)
+        recordingCinematic(context, 4, cinematic::frame, ::EntityCinematicRecording)
+    }
+}
+
+data class EntityFrame(
+    val location: Location?,
+    val pose: EntityPose?,
+    val swing: ArmSwing?,
+
+    val mainHand: ItemStack?,
+    val offHand: ItemStack?,
+    val helmet: ItemStack?,
+    val chestplate: ItemStack?,
+    val leggings: ItemStack?,
+    val boots: ItemStack?,
+) {
+    fun toProperties(): List<EntityProperty> {
+        val properties = mutableListOf<EntityProperty>()
+
+        location?.let { properties.add(it.toProperty()) }
+        pose?.let { properties.add(PoseProperty(it)) }
+        swing?.let { properties.add(ArmSwingProperty(it)) }
+        mainHand?.let { properties.add(it.toProperty(MAIN_HAND)) }
+        offHand?.let { properties.add(it.toProperty(OFF_HAND)) }
+        helmet?.let { properties.add(it.toProperty(HELMET)) }
+        chestplate?.let { properties.add(it.toProperty(CHEST_PLATE)) }
+        leggings?.let { properties.add(it.toProperty(LEGGINGS)) }
+        boots?.let { properties.add(it.toProperty(BOOTS)) }
+
+        return properties
+    }
+}
+
+class EntityCinematicRecording(
+    context: ContentContext,
+    player: Player,
+    initialFrame: Int,
+    klass: KClass<EntityFrame>,
+) : RecordingCinematicContentMode<EntityFrame>(context, player, initialFrame, klass) {
+    private var swing: ArmSwing? = null
+
+    override fun setup() {
+        super.setup()
+        cachedInventory()
+    }
+
+    @EventHandler
+    fun onArmSwing(event: PlayerArmSwingEvent) {
+        if (event.player.uniqueId != player.uniqueId) return
+        addSwing(
+            when (event.hand) {
+                EquipmentSlot.OFF_HAND -> ArmSwing.LEFT
+                EquipmentSlot.HAND -> ArmSwing.RIGHT
+                else -> ArmSwing.BOTH
+            }
+        )
+    }
+
+    private fun addSwing(swing: ArmSwing) {
+        if (this.swing != null && this.swing != swing) {
+            this.swing = ArmSwing.BOTH
+            return
+        }
+
+        this.swing = swing
+    }
+
+    override fun captureFrame(): EntityFrame {
+        val inv = player.inventory
+        val data = EntityFrame(
+            location = player.location,
+            pose = player.pose.toEntityPose(),
+            swing = swing,
+            mainHand = if (inv.itemInMainHand.isEmpty) null else inv.itemInMainHand,
+            offHand = if (inv.itemInOffHand.isEmpty) null else inv.itemInOffHand,
+            helmet = inv.helmet,
+            chestplate = inv.chestplate,
+            leggings = inv.leggings,
+            boots = inv.boots,
+        )
+        this.swing = null
+        return data
+    }
+
+    override fun applyState(value: EntityFrame) {
+        value.location?.let { player.teleport(it) }
+        value.pose?.let { player.pose = it.toBukkitPose() }
+        value.swing?.let { swing ->
+            when (swing) {
+                ArmSwing.LEFT -> player.swingMainHand()
+                ArmSwing.RIGHT -> player.swingOffHand()
+                ArmSwing.BOTH -> {
+                    player.swingMainHand()
+                    player.swingOffHand()
+                }
+            }
+        }
+
+        value.mainHand?.let { player.inventory.setItemInMainHand(it) }
+        value.offHand?.let { player.inventory.setItemInOffHand(it) }
+        value.helmet?.let { player.inventory.helmet = it }
+        value.chestplate?.let { player.inventory.chestplate = it }
+        value.leggings?.let { player.inventory.leggings = it }
+        value.boots?.let { player.inventory.boots = it }
     }
 }

@@ -22,7 +22,7 @@ class LlamaCarpetColorData(
     val color: Int = 0,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<LlamaCarpetColorProperty> {
-    override val type: KClass<LlamaCarpetColorProperty> = LlamaCarpetColorProperty::class
+    override fun type(): KClass<LlamaCarpetColorProperty> = LlamaCarpetColorProperty::class
 
     override fun build(player: Player): LlamaCarpetColorProperty = LlamaCarpetColorProperty(color)
 }

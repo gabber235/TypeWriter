@@ -14,7 +14,6 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("Wolf_Begging_data", "The begging state of the wolf", Colors.RED, "game-icons:sitting-dog")
-
 class WolfBeggingData (
     override val id: String = "",
     override val name: String = "",
@@ -22,7 +21,7 @@ class WolfBeggingData (
     val wolfBegging: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<BeggingProperty> {
-    override val type: KClass<BeggingProperty> = BeggingProperty::class
+    override fun type(): KClass<BeggingProperty> = BeggingProperty::class
 
     override fun build(player: Player): BeggingProperty = BeggingProperty(wolfBegging)
 }

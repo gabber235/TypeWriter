@@ -1,14 +1,17 @@
 package me.gabber235.typewriter.content.components
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
 import lirand.api.extensions.server.registerEvents
-import lirand.api.extensions.server.server
 import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.content.components.ItemInteractionType.*
 import me.gabber235.typewriter.content.pageId
 import me.gabber235.typewriter.entry.EntryDatabase
+import me.gabber235.typewriter.entry.Page
 import me.gabber235.typewriter.entry.PageType
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
@@ -26,9 +29,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.inventory.ItemStack
 import org.koin.java.KoinJavaComponent
-import java.util.UUID
-import kotlin.math.abs
-import kotlin.math.log10
+import java.util.*
 
 fun ContentMode.cinematic(context: ContentContext) = +SimulateCinematicComponent(context)
 
@@ -43,30 +44,14 @@ class SimulateCinematicComponent(
         set(value) {
             field = value.coerceIn(0.0, maxFrame.toDouble())
         }
-    private val frame: Int
+    val frame: Int
         get() = partialFrame.toInt()
 
     // If we are in scrolling modes where we scroll through the frames. If set to the UUID of the player
     private var scrollFrames: UUID? = null
 
     override suspend fun initialize(player: Player) {
-        val pageId = context.pageId
-
-        if (pageId == null) {
-            logger.warning("Can only simulate cinematic for a page")
-            return
-        }
-        val entryDatabase = KoinJavaComponent.get<EntryDatabase>(EntryDatabase::class.java)
-        val page = entryDatabase.findPageById(pageId)
-        if (page == null) {
-            logger.warning("Page $pageId not found, make sure to publish before using content mode")
-            return
-        }
-
-        if (page.type != PageType.CINEMATIC) {
-            logger.warning("Page $pageId is not a cinematic page")
-            return
-        }
+        val page = findCinematicPageById(context.pageId) ?: return
 
         actions = page.entries.filterIsInstance<CinematicEntry>().mapNotNull { it.createSimulating(player) }
 
@@ -86,8 +71,10 @@ class SimulateCinematicComponent(
 
         bossBar {
             val frameDisplay = "$frame".padStart(maxFrame.digits)
-            val scrolling = if (scrollFrames != null) " <gray>- <gradient:#9452ff:#ff2eea><b>(Scrolling)</b></gradient>" else ""
-            title = "<yellow><bold>${page.id} <reset><gray>- <white>$frameDisplay/$maxFrame (${playbackSpeed}x)$scrolling"
+            val scrolling =
+                if (scrollFrames != null) " <gray>- <gradient:#9452ff:#ff2eea><b>(Scrolling)</b></gradient>" else ""
+            title =
+                "<yellow><bold>${page.id} <reset><gray>- <white>$frameDisplay/$maxFrame (${playbackSpeed}x)$scrolling"
             color = if (scrollFrames != null) BossBar.Color.PURPLE else BossBar.Color.YELLOW
             overlay = BossBar.Overlay.NOTCHED_20
             progress = (partialFrame / maxFrame).toFloat()
@@ -107,12 +94,16 @@ class SimulateCinematicComponent(
             playbackSpeed = 0.0
         }
 
-        actions.forEach {
-            try {
-                it.tick(frame)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        coroutineScope {
+            actions.map {
+                launch {
+                    try {
+                        it.tick(frame)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }.joinAll()
         }
 
         super.tick(player)
@@ -137,6 +128,7 @@ class SimulateCinematicComponent(
                 e.printStackTrace()
             }
         }
+        actions = emptyList()
         super.dispose(player)
     }
 
@@ -190,6 +182,7 @@ class SimulateCinematicComponent(
                         null
                     }
                 }
+
                 else -> {
                     return@onInteract
                 }
@@ -202,4 +195,23 @@ class SimulateCinematicComponent(
             1 to skip,
         )
     }
+}
+
+fun findCinematicPageById(pageId: String?): Page? {
+    if (pageId.isNullOrEmpty()) {
+        logger.warning("Can only simulate cinematic for a page")
+        return null
+    }
+    val entryDatabase = KoinJavaComponent.get<EntryDatabase>(EntryDatabase::class.java)
+    val page = entryDatabase.findPageById(pageId)
+    if (page == null) {
+        logger.warning("Page $pageId not found, make sure to publish before using content mode")
+        return null
+    }
+
+    if (page.type != PageType.CINEMATIC) {
+        logger.warning("Page $pageId is not a cinematic page")
+        return null
+    }
+    return page
 }

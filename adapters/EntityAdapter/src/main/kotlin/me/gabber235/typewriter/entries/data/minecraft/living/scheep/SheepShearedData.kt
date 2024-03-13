@@ -22,7 +22,7 @@ class SheepShearedData (
     val sheepSheared: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<ShearedProperty> {
-    override val type: KClass<ShearedProperty> = ShearedProperty::class
+    override fun type(): KClass<ShearedProperty> = ShearedProperty::class
 
     override fun build(player: Player): ShearedProperty = ShearedProperty(sheepSheared)
 }

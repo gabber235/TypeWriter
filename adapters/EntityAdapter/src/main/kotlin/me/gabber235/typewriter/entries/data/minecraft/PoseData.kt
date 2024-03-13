@@ -11,6 +11,7 @@ import me.gabber235.typewriter.extensions.packetevents.metas
 import me.tofaa.entitylib.meta.EntityMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.entity.Player
+import org.bukkit.entity.Pose
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -22,13 +23,23 @@ class PoseData(
     val pose: EntityPose = EntityPose.STANDING,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<PoseProperty> {
-    override val type: KClass<PoseProperty> = PoseProperty::class
+    override fun type(): KClass<PoseProperty> = PoseProperty::class
 
     override fun build(player: Player): PoseProperty = PoseProperty(pose)
 }
 
 data class PoseProperty(val pose: EntityPose) : EntityProperty {
     companion object : SinglePropertyCollectorSupplier<PoseProperty>(PoseProperty::class)
+}
+
+fun Pose.toEntityPose() = when(this) {
+    Pose.SNEAKING -> EntityPose.CROUCHING
+    else -> EntityPose.valueOf(this.name)
+}
+
+fun EntityPose.toBukkitPose() = when(this) {
+    EntityPose.CROUCHING -> Pose.SNEAKING
+    else -> Pose.valueOf(this.name)
 }
 
 fun applyPoseData(entity: WrapperEntity, property: PoseProperty) {

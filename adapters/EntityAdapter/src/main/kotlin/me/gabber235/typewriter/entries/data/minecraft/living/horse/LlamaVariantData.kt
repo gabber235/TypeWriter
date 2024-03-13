@@ -22,7 +22,7 @@ class LlamaVariantData(
     val variant: LlamaMeta.Variant = LlamaMeta.Variant.CREAMY,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<LlamaVariantProperty> {
-    override val type: KClass<LlamaVariantProperty> = LlamaVariantProperty::class
+    override fun type(): KClass<LlamaVariantProperty> = LlamaVariantProperty::class
 
     override fun build(player: Player): LlamaVariantProperty = LlamaVariantProperty(variant)
 }

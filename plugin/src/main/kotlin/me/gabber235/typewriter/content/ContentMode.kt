@@ -15,13 +15,13 @@ abstract class ContentMode(
     }
     abstract fun setup()
 
-    suspend fun initialize() {
+    open suspend fun initialize() {
         components.forEach { it.initialize(player) }
     }
-    suspend fun tick() {
+    open suspend fun tick() {
         components.forEach { it.tick(player) }
     }
-    suspend fun dispose() {
+    open suspend fun dispose() {
         components.forEach { it.dispose(player) }
     }
 
@@ -32,7 +32,8 @@ abstract class ContentMode(
 
 interface ComponentContainer {
     val components: MutableList<ContentComponent>
-    operator fun ContentComponent.unaryPlus() {
+    operator fun <C : ContentComponent> C.unaryPlus(): C {
         components.add(this)
+        return this
     }
 }

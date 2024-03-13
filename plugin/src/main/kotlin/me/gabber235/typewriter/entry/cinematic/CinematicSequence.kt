@@ -1,5 +1,8 @@
 package me.gabber235.typewriter.entry.cinematic
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.CinematicAction
@@ -52,12 +55,16 @@ class CinematicSequence(
         if (canEnd) return
 
         frame++
-        actions.forEach {
-            try {
-                it.tick(frame)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        coroutineScope {
+            actions.map {
+                launch {
+                    try {
+                        it.tick(frame)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }.joinAll()
         }
         AsyncCinematicTickEvent(player, frame).callEvent()
 

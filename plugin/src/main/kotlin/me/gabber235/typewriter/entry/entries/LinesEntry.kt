@@ -17,9 +17,7 @@ interface LinesEntry : EntityData<LinesProperty>, AudienceEntry, PlaceholderEntr
 
     override fun display(player: Player?): String? = player?.let { lines(it) }
 
-    override val type: KClass<LinesProperty>
-        get() = LinesProperty::class
-
+    override fun type(): KClass<LinesProperty> = LinesProperty::class
     override fun build(player: Player): LinesProperty = LinesProperty(lines(player))
 }
 

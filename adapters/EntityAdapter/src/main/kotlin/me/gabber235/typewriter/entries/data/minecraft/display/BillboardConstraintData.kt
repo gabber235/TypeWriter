@@ -23,7 +23,7 @@ class BillboardConstraintData(
     val constraint: BillboardConstraints = BillboardConstraints.CENTER,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<BillboardConstraintProperty> {
-    override val type: KClass<BillboardConstraintProperty> = BillboardConstraintProperty::class
+    override fun type(): KClass<BillboardConstraintProperty> = BillboardConstraintProperty::class
 
     override fun build(player: Player): BillboardConstraintProperty =
         BillboardConstraintProperty(constraint)

@@ -32,3 +32,4 @@ enum class ItemInteractionType {
     DROP,
     SWAP,
 }
+

@@ -22,7 +22,7 @@ class WolfCollarColorData (
     val wolfCollarColor: Int = 1,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<CollarColorProperty> {
-    override val type: KClass<CollarColorProperty> = CollarColorProperty::class
+    override fun type(): KClass<CollarColorProperty> = CollarColorProperty::class
 
     override fun build(player: Player): CollarColorProperty = CollarColorProperty(wolfCollarColor)
 }

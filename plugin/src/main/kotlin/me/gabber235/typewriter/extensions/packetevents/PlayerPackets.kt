@@ -7,11 +7,13 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerCa
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_MAIN_ARM
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_OFF_HAND
+import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import me.gabber235.typewriter.capture.capturers.ArmSwing
 import me.tofaa.entitylib.meta.EntityMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 infix fun <T : PacketWrapper<T>> Player.sendPacket(packet: PacketWrapper<T>) {
     PacketEvents.getAPI().playerManager.sendPacket(this, packet)
@@ -73,6 +75,8 @@ fun WrapperEntity.metas(editor: Metas.() -> Unit) {
 }
 
 fun Location.toPacketLocation() = com.github.retrooper.packetevents.protocol.world.Location(x, y, z, yaw, pitch)
+
+fun ItemStack.toPacketItem() = SpigotConversionUtil.fromBukkitItemStack(this)
 
 fun Location.toVector3i() =
     Vector3i(blockX, blockY, blockZ)

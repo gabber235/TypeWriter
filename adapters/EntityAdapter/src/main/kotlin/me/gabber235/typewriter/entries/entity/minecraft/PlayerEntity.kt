@@ -9,6 +9,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
+import me.gabber235.typewriter.entries.data.minecraft.living.applyLivingEntityData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
@@ -107,6 +108,7 @@ class PlayerEntity(
                 }
             }
             if (applyGenericEntityData(entity, property)) return
+            if (applyLivingEntityData(entity, property)) return
         }
     }
 

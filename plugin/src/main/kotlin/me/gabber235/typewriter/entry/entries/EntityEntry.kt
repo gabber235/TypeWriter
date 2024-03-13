@@ -35,7 +35,7 @@ interface PropertyCollectorSupplier<P : EntityProperty> {
 }
 
 interface PropertySupplier<P : EntityProperty> {
-    val type: KClass<P>
+    fun type(): KClass<P>
     fun build(player: Player): P
     fun canApply(player: Player): Boolean
 }

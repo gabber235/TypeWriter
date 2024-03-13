@@ -71,7 +71,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf(::AudienceManager)
             singleOf(::Recorders)
             singleOf<AssetStorage>(::LocalAssetStorage)
-            singleOf(::AssetManager)
+            singleOf<AssetManager>(::AssetManager)
             singleOf(::ChatHistoryHandler)
             singleOf(::ActionBarBlockerHandler)
             singleOf(::PacketInterceptor)

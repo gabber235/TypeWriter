@@ -23,7 +23,7 @@ class CollarColorData (
     val catCollarColor: DyeColor = DyeColor.RED,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<CollarColorProperty> {
-    override val type: KClass<CollarColorProperty> = CollarColorProperty::class
+    override fun type(): KClass<CollarColorProperty> = CollarColorProperty::class
 
     override fun build(player: Player): CollarColorProperty = CollarColorProperty(catCollarColor)
 }

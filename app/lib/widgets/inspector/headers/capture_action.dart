@@ -9,7 +9,6 @@ import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/cinematic_view.dart";
 import "package:typewriter/widgets/components/app/header_button.dart";
-import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/header.dart";

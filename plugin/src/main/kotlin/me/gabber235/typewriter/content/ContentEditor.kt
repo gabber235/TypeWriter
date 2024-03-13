@@ -29,7 +29,7 @@ class ContentEditor(
     val player: Player,
     mode: ContentMode,
 ) : Listener {
-    private val cachedInventory = player.inventory.contents.copyOf()
+    val cachedInventory = player.inventory.contents.copyOf()
     private val stack = ConcurrentLinkedDeque(listOf(mode))
     private var items = emptyMap<Int, IntractableItem>()
 
@@ -64,23 +64,24 @@ class ContentEditor(
 
     suspend fun pushMode(newMode: ContentMode) {
         player.playSound("ui.loom.take_result")
-        mode?.dispose()
+        val previous = mode
         stack.push(newMode)
+        previous?.dispose()
         newMode.initialize()
     }
 
     suspend fun popMode(): Boolean {
-        mode?.dispose()
         player.playSound("ui.cartography_table.take_result")
-        stack.pop()
+        stack.pop()?.dispose()
         mode?.initialize()
         return mode != null
     }
 
     suspend fun dispose() {
         unregister()
-        stack.forEach { it.dispose() }
+        val cache =  stack.toList()
         stack.clear()
+        cache.forEach { it.dispose() }
         SYNC.switchContext {
             player.inventory.contents = cachedInventory
             player.playSound("block.beacon.deactivate")
@@ -152,3 +153,6 @@ val Player.isInContent: Boolean
 
 val Player.inLastContentMode: Boolean
     get() = content?.isInLastMode() == true
+
+val Player.contentEditorCachedInventory: Array<org.bukkit.inventory.ItemStack?>?
+    get() = content?.cachedInventory

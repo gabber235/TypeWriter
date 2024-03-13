@@ -21,7 +21,7 @@ class ArrowCountData(
     val arrowCount: Int = 0,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<ArrowCountProperty> {
-    override val type: KClass<ArrowCountProperty> = ArrowCountProperty::class
+    override fun type(): KClass<ArrowCountProperty> = ArrowCountProperty::class
 
     override fun build(player: Player): ArrowCountProperty = ArrowCountProperty(arrowCount)
 }

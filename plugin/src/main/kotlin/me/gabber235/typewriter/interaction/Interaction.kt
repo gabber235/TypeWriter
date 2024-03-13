@@ -27,6 +27,9 @@ class Interaction(val player: Player) : KoinComponent {
     val hasCinematic: Boolean
         get() = cinematic != null
 
+    val hasContent: Boolean
+        get() = content != null
+
     suspend fun tick() {
         dialogue?.tick()
         cinematic?.tick()
@@ -37,11 +40,12 @@ class Interaction(val player: Player) : KoinComponent {
 
     /** Handles an event. All [SystemTrigger]'s are handled by the plugin itself. */
     suspend fun onEvent(event: Event) {
+        handleContent(event)
         triggerActions(event)
+        handleFactWatcher(event)
+        if (hasContent) return
         handleDialogue(event)
         handleCinematic(event)
-        handleContent(event)
-        handleFactWatcher(event)
     }
 
     /**
@@ -179,6 +183,8 @@ class Interaction(val player: Player) : KoinComponent {
         }
 
         val trigger = event.triggers.asSequence().filterIsInstance<ContentModeTrigger>().firstOrNull() ?: return
+
+        listOf(DIALOGUE_END, CINEMATIC_END) triggerFor  player
 
         val content = content
         if (content != null) {

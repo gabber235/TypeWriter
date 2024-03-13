@@ -24,7 +24,7 @@ class CustomNameData(
     val customName: String = "",
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<CustomNameProperty> {
-    override val type: KClass<CustomNameProperty> = CustomNameProperty::class
+    override fun type(): KClass<CustomNameProperty> = CustomNameProperty::class
 
     override fun build(player: Player): CustomNameProperty = CustomNameProperty(customName)
 }

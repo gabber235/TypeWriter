@@ -21,7 +21,7 @@ class PotionEffectColorData(
     val color: Int = 0,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<PotionEffectColorProperty> {
-    override val type: KClass<PotionEffectColorProperty> = PotionEffectColorProperty::class
+    override fun type(): KClass<PotionEffectColorProperty> = PotionEffectColorProperty::class
 
     override fun build(player: Player): PotionEffectColorProperty = PotionEffectColorProperty(color)
 }

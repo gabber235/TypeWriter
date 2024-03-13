@@ -22,7 +22,7 @@ class ParrotColorData (
     val parrotColor: ParrotMeta.Color  = ParrotMeta.Color.RED_BLUE,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<ParrotColorProperty> {
-    override val type: KClass<ParrotColorProperty> = ParrotColorProperty::class
+    override fun type(): KClass<ParrotColorProperty> = ParrotColorProperty::class
 
     override fun build(player: Player): ParrotColorProperty = ParrotColorProperty(parrotColor)
 }

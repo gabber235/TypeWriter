@@ -22,7 +22,7 @@ class RabbitTypeData (
     val rabbitType: RabbitMeta.Type = RabbitMeta.Type.BROWN,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<TypeProperty> {
-    override val type: KClass<TypeProperty> = TypeProperty::class
+    override fun type(): KClass<TypeProperty> = TypeProperty::class
 
     override fun build(player: Player): TypeProperty = TypeProperty(rabbitType)
 }

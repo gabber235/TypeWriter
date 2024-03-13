@@ -23,7 +23,7 @@ class HorseVariantData(
     val marking: HorseMeta.Marking = HorseMeta.Marking.NONE,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<HorseVariantProperty> {
-    override val type: KClass<HorseVariantProperty> = HorseVariantProperty::class
+    override fun type(): KClass<HorseVariantProperty> = HorseVariantProperty::class
 
     override fun build(player: Player): HorseVariantProperty = HorseVariantProperty(HorseMeta.Variant(marking, color))
 }

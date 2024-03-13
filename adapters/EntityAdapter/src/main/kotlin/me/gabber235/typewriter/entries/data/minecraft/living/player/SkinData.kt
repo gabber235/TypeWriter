@@ -17,7 +17,7 @@ class SkinData(
     val skin: SkinProperty = SkinProperty(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityData<SkinProperty> {
-    override val type: KClass<SkinProperty> = SkinProperty::class
+    override fun type(): KClass<SkinProperty> = SkinProperty::class
 
     override fun build(player: Player): SkinProperty = skin
 }

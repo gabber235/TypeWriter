@@ -25,7 +25,7 @@ class DisplayTypeData(
     val display: DisplayType  = DisplayType.NONE ,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<DisplayTypeProperty> {
-    override val type: KClass<DisplayTypeProperty> = DisplayTypeProperty::class
+    override fun type(): KClass<DisplayTypeProperty> = DisplayTypeProperty::class
 
     override fun build(player: Player): DisplayTypeProperty = DisplayTypeProperty(display)
 }
