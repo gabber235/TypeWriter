@@ -34,11 +34,11 @@ class FactWatcher(
     }
 
     private fun notifyListeners(ref: Ref<ReadableFactEntry>) {
-        listeners.forEach { listener ->
-            if (ref in listener) {
+        listeners
+            .filter { ref in it }
+            .forEach { listener ->
                 listener.listener(player, ref)
             }
-        }
     }
 
     fun addListener(
