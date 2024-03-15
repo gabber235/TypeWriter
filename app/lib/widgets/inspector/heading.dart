@@ -6,9 +6,7 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/general/admonition.dart";
-import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
