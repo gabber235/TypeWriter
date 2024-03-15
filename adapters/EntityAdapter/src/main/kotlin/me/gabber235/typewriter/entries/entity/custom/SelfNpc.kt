@@ -16,7 +16,7 @@ import me.gabber235.typewriter.utils.Sound
 import org.bukkit.entity.Player
 import java.util.*
 
-@Entry("self_npc_definition", "The definition of the self NPC", Colors.RED, "mdi:account")
+@Entry("self_npc_definition", "The definition of the self NPC", Colors.ORANGE, "mdi:account")
 /**
  * The `Self NPC Definition` entry that defines a player entity with the skin of the viewer.
  *
