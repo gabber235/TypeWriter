@@ -290,10 +290,7 @@ fn format_adapter_entry(
         .class_name
         .trim_end_matches("Entry")
         .to_case(Case::Title);
-    let link = format!(
-        "{}/entries/{}/{}",
-        adapter.adapter, entry.category, entry.entry_data.name
-    );
+    let link = format!("./entries/{}/{}.mdx", entry.category, entry.entry_data.name);
     let description = entry.entry_data.description.clone();
     builder.append_line(format!(
         "| [{}]({}) | {} |",
