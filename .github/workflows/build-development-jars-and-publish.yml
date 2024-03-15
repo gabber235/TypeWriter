@@ -58,14 +58,6 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: WorldGuardAdapter
-      - name: Build ZNPCsPlus Adapter
-        uses: ./.github/actions/build-adapter
-        with:
-          adapter: ZNPCsPlusAdapter
-      - name: Build FancyNpcs Adapter
-        uses: ./.github/actions/build-adapter
-        with:
-          adapter: FancyNpcsAdapter
       - name: Publish Development Jars
         uses: Kir-Antipov/mc-publish@v3.3
         id: publish
