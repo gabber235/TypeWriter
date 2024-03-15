@@ -46,7 +46,7 @@ class BossBarComponent(
 
 class BossBarBuilder {
     var title: String = ""
-    var progress: Float = 0.0f
+    var progress: Float = 1.0f
     var color: BossBar.Color = BossBar.Color.WHITE
     var overlay: BossBar.Overlay = BossBar.Overlay.PROGRESS
     val flags = mutableSetOf<BossBar.Flag>()
