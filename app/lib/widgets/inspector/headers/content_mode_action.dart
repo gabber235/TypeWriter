@@ -81,8 +81,11 @@ class ContentModeHeaderAction extends HookConsumerWidget {
     if (range != null) {
       data["startFrame"] = range.from;
       data["endFrame"] = range.to;
-      print("Frames: ${range}");
     }
+
+    // Publish the changes before requesting the content mode to ensure the
+    // latest changes are captured. And all entries are published.
+    await ref.read(communicatorProvider).publish();
 
     await ref
         .read(communicatorProvider)
