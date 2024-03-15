@@ -38,6 +38,7 @@ interface EntryDatabase {
 
     fun findPageById(id: String): Page?
     fun getPageNames(type: PageType? = null): List<String>
+    fun pageIdByEntryId(entryId: String): String?
 
     fun entryPriority(entry: Ref<out Entry>): Int
 }
@@ -117,6 +118,10 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     override fun getPageNames(type: PageType?): List<String> {
         return if (type == null) pages.map { it.id }
         else pages.filter { it.type == type }.map { it.id }
+    }
+
+    override fun pageIdByEntryId(entryId: String): String? {
+        return pages.firstOrNull { page -> page.entries.any { it.id == entryId } }?.id
     }
 
     override fun entryPriority(entry: Ref<out Entry>): Int {

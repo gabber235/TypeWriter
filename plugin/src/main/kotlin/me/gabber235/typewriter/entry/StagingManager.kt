@@ -13,6 +13,7 @@ import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
@@ -344,4 +345,14 @@ enum class StagingState {
     PUBLISHING,
     STAGING,
     PUBLISHED
+}
+
+fun Ref<Entry>.fieldValue(path: String, value: Any) {
+    val stagingManager = KoinJavaComponent.get<StagingManager>(StagingManager::class.java)
+    val gson = KoinJavaComponent.get<Gson>(Gson::class.java, named("bukkitDataParser"))
+
+    val pageId = pageId ?: return
+
+    val json = gson.toJsonTree(value)
+    val result = stagingManager.updateEntryField(pageId, id, path, json)
 }

@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entry
 
+import org.koin.java.KoinJavaComponent
 import kotlin.reflect.KClass
 
 inline fun <reified E : Entry> emptyRef() = Ref("", E::class)
@@ -40,3 +41,9 @@ class Ref<E : Entry>(
 }
 
 fun <E : Entry> List<Ref<E>>.get(): List<E> = mapNotNull { it.get() }
+
+val Ref<out Entry>.pageId: String?
+    get() {
+        val entryDatabase = KoinJavaComponent.get<EntryDatabase>(EntryDatabase::class.java)
+        return entryDatabase.pageIdByEntryId(id)
+    }
