@@ -6,7 +6,6 @@ import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.AdapterLoaderImpl
-import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.bstats.BStatsMetrics
@@ -69,7 +68,6 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<FactStorage>(::FileFactStorage)
             singleOf(::EntryListeners)
             singleOf(::AudienceManager)
-            singleOf(::Recorders)
             singleOf<AssetStorage>(::LocalAssetStorage)
             singleOf<AssetManager>(::AssetManager)
             singleOf(::ChatHistoryHandler)

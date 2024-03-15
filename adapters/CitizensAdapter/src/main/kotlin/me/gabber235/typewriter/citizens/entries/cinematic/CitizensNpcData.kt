@@ -1,7 +1,7 @@
 package me.gabber235.typewriter.citizens.entries.cinematic
 
-import me.gabber235.typewriter.capture.capturers.ArmSwing
 import me.gabber235.typewriter.citizens.CitizensAdapter.temporaryRegistry
+import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import me.gabber235.typewriter.utils.ThreadType
 import net.citizensnpcs.api.CitizensAPI
 import net.citizensnpcs.api.npc.NPC

@@ -93,7 +93,6 @@ class CommunicationHandler : KoinComponent {
 
         server?.addEventListener("updateWriter", String::class.java, clientSynchronizer::handleUpdateWriter)
         server?.addEventListener("contentModeRequest", String::class.java, clientSynchronizer::handleContentModeRequest)
-        server?.addEventListener("captureRequest", String::class.java, clientSynchronizer::handleCaptureRequest)
 
         server?.addConnectListener { socket ->
             logger.info("Client connected: ${socket.remoteAddress}")

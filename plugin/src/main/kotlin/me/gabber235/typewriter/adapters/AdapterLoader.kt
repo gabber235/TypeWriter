@@ -3,10 +3,6 @@ package me.gabber235.typewriter.adapters
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
-import me.gabber235.typewriter.adapters.editors.ItemFieldCapturer
-import me.gabber235.typewriter.adapters.editors.LocationFieldCapturer
-import me.gabber235.typewriter.capture.Capturer
-import me.gabber235.typewriter.capture.CapturerCreator
 import me.gabber235.typewriter.entry.EntryMigrations
 import me.gabber235.typewriter.entry.EntryMigrator
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
@@ -39,12 +35,6 @@ private val gson =
     ).enableComplexMapKeySerialization()
         .create()
 
-val staticCaptureClasses by lazy {
-    listOf(
-        LocationFieldCapturer::class,
-        ItemFieldCapturer::class,
-    )
-}
 
 interface AdapterLoader {
     val adapters: List<AdapterData>
@@ -55,8 +45,6 @@ interface AdapterLoader {
     fun initializeAdapters()
     fun shutdown()
     fun getEntryBlueprint(type: String): EntryBlueprint?
-
-    fun getCaptureClasses(): List<KClass<out Capturer<*>>>
 
     fun getEntryMigrators(): List<EntryMigrator>
 }
@@ -91,7 +79,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
                 e.printStackTrace()
                 null
             }
-        } ?: listOf()
+        }
 
         val jsonArray = JsonArray()
 
@@ -175,13 +163,8 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
         val entryClasses = classes.filter { it.hasAnnotation(Entry::class) }
         val messengerClasses = classes.filter { it.hasAnnotation(Messenger::class) }
-        val captureClasses = classes.filter {
-            Capturer::class.java.isAssignableFrom(it) &&
-                    it.kotlin.companionObject?.isSubclassOf(CapturerCreator::class) == true
-        }
 
-
-        return constructAdapter(classes, adapterClass, adapterInstance, entryClasses, messengerClasses, captureClasses)
+        return constructAdapter(classes, adapterClass, adapterInstance, entryClasses, messengerClasses)
     }
 
     private fun constructAdapter(
@@ -190,7 +173,6 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         adapterInstance: TypewriterAdapter,
         entryClasses: List<Class<*>>,
         messengerClasses: List<Class<*>>,
-        captureClasses: List<Class<*>>,
     ): AdapterData {
         val adapterAnnotation = adapterClass.getAnnotation(Adapter::class.java)
 
@@ -204,8 +186,6 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
         val adapterListeners = AdapterListeners.constructAdapterListeners(classes)
 
-        val capturers = constructCapturers(captureClasses)
-
         val entryMigrators = EntryMigrations.constructEntryMigrators(classes)
 
         // Create the adapter data
@@ -217,7 +197,6 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             blueprints,
             messengers,
             adapterListeners,
-            capturers,
             entryMigrators,
             adapterClass,
             adapterInstance,
@@ -269,11 +248,6 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             )
         }
 
-    private fun constructCapturers(captureClasses: List<Class<*>>) =
-        captureClasses.map { captureClass ->
-            captureClass.kotlin as KClass<out Capturer<*>>
-        }
-
     //TODO: Make compatible with java.
     private fun findFilterForMessenger(messengerClass: Class<*>) =
         if (messengerClass.kotlin.companionObject?.isSubclassOf(MessengerFilter::class) == true) {
@@ -311,10 +285,6 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         return adapters.asSequence().flatMap { it.entries }.firstOrNull { it.name == type }
     }
 
-    override fun getCaptureClasses(): List<KClass<out Capturer<*>>> {
-        return adapters.asSequence().flatMap { it.captureClasses }.toList() + staticCaptureClasses
-    }
-
     override fun getEntryMigrators(): List<EntryMigrator> {
         return adapters.asSequence().flatMap { it.entryMigrators }.toList()
     }
@@ -330,8 +300,6 @@ data class AdapterData(
     val messengers: List<MessengerData>,
     @Transient
     val eventListeners: List<AdapterListener>,
-    @Transient
-    val captureClasses: List<KClass<out Capturer<*>>>,
     @Transient
     val entryMigrators: List<EntryMigrator>,
     @Transient
@@ -349,7 +317,6 @@ data class AdapterData(
         display += padCount("📚", entries.size, maxDigits)
         display += padCount("👂", eventListeners.size, maxDigits)
         display += padCount("💬", messengers.size, maxDigits)
-        display += padCount("📸", captureClasses.size, maxDigits)
         display += padCount("🚚", entryMigrators.size, maxDigits)
 
         flags.filter { it.warning.isNotBlank() }.joinToString { it.warning }.let {

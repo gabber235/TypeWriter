@@ -4,7 +4,7 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin
 import de.oliver.fancynpcs.api.Npc
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot.*
 import de.oliver.fancynpcs.api.utils.SkinFetcher
-import me.gabber235.typewriter.capture.capturers.ArmSwing
+import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import me.gabber235.typewriter.extensions.packetevents.swingArm
 import me.gabber235.typewriter.utils.ThreadType
 import net.kyori.adventure.text.format.NamedTextColor

@@ -8,7 +8,6 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_MAIN_ARM
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_OFF_HAND
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
-import me.gabber235.typewriter.capture.capturers.ArmSwing
 import me.tofaa.entitylib.meta.EntityMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.Location
@@ -28,6 +27,12 @@ fun Player.spectateEntity(entity: WrapperEntity) = setCamera(entityId = entity.e
 fun Player.stopSpectatingEntity() = setCamera(entityId = entityId)
 
 private fun Player.setCamera(entityId: Int) = WrapperPlayServerCamera(entityId).sendPacketTo(this)
+
+enum class ArmSwing {
+    LEFT, RIGHT, BOTH;
+    val swingLeft: Boolean get() = this == LEFT || this == BOTH
+    val swingRight: Boolean get() = this == RIGHT || this == BOTH
+}
 
 fun Player.swingArm(entityId: Int, armSwing: ArmSwing) {
     if (armSwing.swingLeft) {

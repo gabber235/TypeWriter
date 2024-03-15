@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.content
+package me.gabber235.typewriter.content.modes
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
 import lirand.api.extensions.server.registerEvents
-import me.gabber235.typewriter.capture.capturers.mutableTapeOf
+import me.gabber235.typewriter.content.*
 import me.gabber235.typewriter.content.components.*
 import me.gabber235.typewriter.entry.AssetManager
 import me.gabber235.typewriter.entry.entries.*
@@ -18,7 +18,6 @@ import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.ThreadType
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.gabber235.typewriter.utils.loreString
 import me.gabber235.typewriter.utils.msg

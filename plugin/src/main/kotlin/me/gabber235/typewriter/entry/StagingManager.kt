@@ -8,6 +8,7 @@ import me.gabber235.typewriter.events.StagingChangeEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.ui.ClientSynchronizer
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.koin.core.component.KoinComponent
@@ -349,10 +350,21 @@ enum class StagingState {
 
 fun Ref<Entry>.fieldValue(path: String, value: Any) {
     val stagingManager = KoinJavaComponent.get<StagingManager>(StagingManager::class.java)
-    val gson = KoinJavaComponent.get<Gson>(Gson::class.java, named("bukkitDataParser"))
+    val gson = KoinJavaComponent.get<Gson>(Gson::class.java, named("entryParser"))
 
-    val pageId = pageId ?: return
+    val pageId = pageId
+    if (pageId == null) {
+        logger.warning("No pageId found for $this. Did you forgot to publish?")
+        return
+    }
 
     val json = gson.toJsonTree(value)
     val result = stagingManager.updateEntryField(pageId, id, path, json)
+    if (result.isFailure) {
+        logger.warning("Failed to update field: ${result.exceptionOrNull()}")
+        return
+    }
+
+    val clientSynchronizer = KoinJavaComponent.get<ClientSynchronizer>(ClientSynchronizer::class.java)
+    clientSynchronizer.sendEntryFieldUpdate(pageId, id, path, json)
 }

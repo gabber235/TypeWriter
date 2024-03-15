@@ -3,17 +3,19 @@ package me.gabber235.typewriter.entries.cinematic
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.Colors
-import me.gabber235.typewriter.adapters.modifiers.Capture
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
-import me.gabber235.typewriter.capture.capturers.*
+import me.gabber235.typewriter.content.modes.Tape
+import me.gabber235.typewriter.content.modes.firstNotNullWhere
+import me.gabber235.typewriter.content.modes.getExactFrame
+import me.gabber235.typewriter.content.modes.getFrame
 import me.gabber235.typewriter.entries.artifact.FancyNpcMovementArtifact
 import me.gabber235.typewriter.entries.artifact.NpcFrame
-import me.gabber235.typewriter.entries.artifact.NpcRecordedDataCapturer
 import me.gabber235.typewriter.entry.AssetManager
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import me.gabber235.typewriter.utils.ThreadType
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -33,7 +35,6 @@ class NpcRecordedSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @Help("The artifact for the recorded interactions data")
-    @Capture(NpcRecordedDataCapturer::class)
     val artifact: Ref<FancyNpcMovementArtifact> = emptyRef(),
 ) : Segment
 

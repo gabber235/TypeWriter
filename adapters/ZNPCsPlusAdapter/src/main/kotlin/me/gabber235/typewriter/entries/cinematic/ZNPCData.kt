@@ -6,7 +6,7 @@ import lol.pyr.znpcsplus.api.npc.NpcEntry
 import lol.pyr.znpcsplus.api.skin.SkinDescriptor
 import lol.pyr.znpcsplus.util.NpcLocation
 import lol.pyr.znpcsplus.util.NpcPose
-import me.gabber235.typewriter.capture.capturers.ArmSwing
+import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import me.gabber235.typewriter.logger
 import org.bukkit.Location
 import org.bukkit.entity.Player

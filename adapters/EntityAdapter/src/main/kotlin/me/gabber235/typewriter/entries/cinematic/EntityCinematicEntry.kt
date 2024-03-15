@@ -11,15 +11,12 @@ import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.ContentEditor
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
-import me.gabber235.typewriter.capture.capturers.*
 import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.ContentMode
-import me.gabber235.typewriter.content.RecordingCinematicContentMode
-import me.gabber235.typewriter.content.components.CachedInventoryComponent
 import me.gabber235.typewriter.content.components.cachedInventory
 import me.gabber235.typewriter.content.components.cinematic
 import me.gabber235.typewriter.content.components.exit
-import me.gabber235.typewriter.content.recordingCinematic
+import me.gabber235.typewriter.content.modes.*
 import me.gabber235.typewriter.entries.data.minecraft.ArmSwingProperty
 import me.gabber235.typewriter.entries.data.minecraft.PoseProperty
 import me.gabber235.typewriter.entries.data.minecraft.living.toProperty
@@ -33,6 +30,7 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.toProperty
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler

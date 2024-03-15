@@ -9,8 +9,6 @@ import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.AdapterLoader
-import me.gabber235.typewriter.capture.RecorderRequestContext
-import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.entry.StagingManager
@@ -32,7 +30,6 @@ class ClientSynchronizer : KoinComponent {
     private val adapterLoader: AdapterLoader by inject()
     private val adapters by adapterLoader::adaptersJson
     private val gson: Gson by inject(named("bukkitDataParser"))
-    private val recorders: Recorders by inject()
 
     fun handleFetchRequest(client: SocketIOClient, data: String, ack: AckRequest) {
         if (data == "pages") {
@@ -200,40 +197,6 @@ class ClientSynchronizer : KoinComponent {
             e.printStackTrace()
             return
         }
-    }
-
-    fun handleCaptureRequest(client: SocketIOClient, data: String, ack: AckRequest) {
-        val context = gson.fromJson(data, RecorderRequestContext::class.java)
-
-        var player = communicationHandler.getPlayer(client)
-
-        if (player == null) {
-            // If we have authentication enabled, we don't want to fallback as it could be a security issue.
-            if (communicationHandler.authenticationEnabled) {
-                ack.sendResult(Result.failure(Exception("Could not determine player")))
-                return
-            }
-
-            // If we have no authentication, we can assume that it's a local server,
-            // and we can fall back to the first player.
-
-            val onlinePlayers = server.onlinePlayers
-            if (onlinePlayers.isEmpty()) {
-                ack.sendResult(Result.failure(Exception("No players online to record")))
-                return
-            }
-
-            if (onlinePlayers.size > 1) {
-                ack.sendResult(Result.failure(Exception("Could not determine player to record")))
-                return
-            }
-
-            player = onlinePlayers.first()
-            logger.warning("Could not determine player from session, using ${player.name}")
-        }
-
-        val result = recorders.requestRecording(player!!, context)
-        ack.sendResult(result.toResult())
     }
 
     fun sendEntryFieldUpdate(pageId: String, entryId: String, fieldPath: String, data: JsonElement) {

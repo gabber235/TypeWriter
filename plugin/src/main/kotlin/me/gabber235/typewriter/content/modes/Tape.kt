@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.capture.capturers
+package me.gabber235.typewriter.content.modes
 
 /**
  * Tape is a map of ticks to values.

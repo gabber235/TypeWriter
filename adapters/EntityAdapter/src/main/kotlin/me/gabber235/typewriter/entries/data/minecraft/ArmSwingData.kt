@@ -1,9 +1,9 @@
 package me.gabber235.typewriter.entries.data.minecraft
 
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation
-import me.gabber235.typewriter.capture.capturers.ArmSwing
 import me.gabber235.typewriter.entry.entity.SinglePropertyCollectorSupplier
 import me.gabber235.typewriter.entry.entries.EntityProperty
+import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import me.tofaa.entitylib.wrapper.WrapperEntity
 
 data class ArmSwingProperty(val armSwing: ArmSwing) : EntityProperty {

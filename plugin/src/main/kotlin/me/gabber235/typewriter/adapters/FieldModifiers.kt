@@ -150,7 +150,6 @@ private val computers: List<ModifierComputer> by lazy {
         MaxModifierComputer,
         PageModifierComputer,
         GeneratedModifierComputer,
-        CaptureModifierComputer,
         ContentEditorModifierComputer,
         PlaceholderModifierComputer,
         ColoredModifierComputer,
