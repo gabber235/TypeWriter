@@ -58,6 +58,7 @@ class EntityCinematicEntry(
     val segments: List<EntityRecordedSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction = EntityCinematicAction(player, this)
+    override fun createRecording(player: Player): CinematicAction? = null
 }
 
 @Entry(
