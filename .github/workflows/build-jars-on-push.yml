@@ -25,6 +25,8 @@ jobs:
               - adapters/CitizensAdapter/**
             combat_log_x_adapter:
               - adapters/CombatLogXAdapter/**
+            entity_adapter:
+              - adapters/EntityAdapter/**
             mythic_mobs_adapter:
               - adapters/MythicMobsAdapter/**
             rpg_regions_adapter:
@@ -70,6 +72,14 @@ jobs:
     uses: ./.github/workflows/build-adapter.yml
     with:
       adapter: CombatLogXAdapter
+
+  build-adapter-entity:
+    name: Build EntityAdapter
+    needs: changes
+    if: needs.changes.outputs.entity_adapter == 'true'
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: EntityAdapter
 
   build-adapter-mythic-mobs:
     name: Build MythicMobs Adapter

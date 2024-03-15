@@ -2,8 +2,10 @@ package me.gabber235.typewriter.entries.data.minecraft.living.scheep
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.entity.SinglePropertyCollectorSupplier
+import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.entry.entries.GenericEntityData
 import me.gabber235.typewriter.extensions.packetevents.metas
@@ -14,14 +16,14 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("sheep_sheared_data", "If the sheep is sheared.", Colors.RED, "mdi:sheep")
-
+@Tags("sheep_data", "sheep_sheared_data")
 class SheepShearedData (
     override val id: String = "",
     override val name: String = "",
     @Help("If the sheep is sheared.")
     val sheepSheared: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : GenericEntityData<ShearedProperty> {
+) : EntityData<ShearedProperty> {
     override fun type(): KClass<ShearedProperty> = ShearedProperty::class
 
     override fun build(player: Player): ShearedProperty = ShearedProperty(sheepSheared)

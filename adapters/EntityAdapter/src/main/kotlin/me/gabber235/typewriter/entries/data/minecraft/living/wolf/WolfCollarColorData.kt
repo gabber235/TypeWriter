@@ -2,8 +2,10 @@ package me.gabber235.typewriter.entries.data.minecraft.living.wolf
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.entity.SinglePropertyCollectorSupplier
+import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.entry.entries.GenericEntityData
 import me.gabber235.typewriter.extensions.packetevents.metas
@@ -14,14 +16,14 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("wolf_collar_color_data", "The color of the wolf's collar", Colors.RED, "mdi:dog")
-
+@Tags("wolf_data", "collar_color_data")
 class WolfCollarColorData (
     override val id: String = "",
     override val name: String = "",
     @Help("The color of the wolf's collar.")
     val wolfCollarColor: Int = 1,
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : GenericEntityData<CollarColorProperty> {
+) : EntityData<CollarColorProperty> {
     override fun type(): KClass<CollarColorProperty> = CollarColorProperty::class
 
     override fun build(player: Player): CollarColorProperty = CollarColorProperty(wolfCollarColor)

@@ -42,6 +42,10 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: MythicMobsAdapter
+      - name: Build EntityAdapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: EntityAdapter
       - name: Build RPGRegions Adapter
         uses: ./.github/actions/build-adapter
         with:

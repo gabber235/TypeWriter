@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.entity.SinglePropertyCollectorSupplier
+import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.entry.entries.GenericEntityData
 import me.gabber235.typewriter.extensions.packetevents.metas
@@ -22,7 +23,7 @@ class HorseVariantData(
     val color: HorseMeta.Color = HorseMeta.Color.WHITE,
     val marking: HorseMeta.Marking = HorseMeta.Marking.NONE,
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : GenericEntityData<HorseVariantProperty> {
+) : EntityData<HorseVariantProperty> {
     override fun type(): KClass<HorseVariantProperty> = HorseVariantProperty::class
 
     override fun build(player: Player): HorseVariantProperty = HorseVariantProperty(HorseMeta.Variant(marking, color))
