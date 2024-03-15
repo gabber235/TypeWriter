@@ -3,6 +3,7 @@ package me.gabber235.typewriter.citizens
 import App
 import me.gabber235.typewriter.adapters.Adapter
 import me.gabber235.typewriter.adapters.TypewriterAdapter
+import me.gabber235.typewriter.adapters.Unsupported
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import net.citizensnpcs.api.CitizensAPI
@@ -12,7 +13,7 @@ import net.citizensnpcs.api.npc.NPCDataStore
 import net.citizensnpcs.api.npc.NPCRegistry
 import net.citizensnpcs.api.trait.TraitInfo
 
-@Deprecated("Use the EntityAdapter instead")
+@Unsupported
 @Adapter("Citizens", "For the Citizens plugin", App.VERSION)
 /**
  * The Citizens adapter allows you to create custom interactions with NPCs.

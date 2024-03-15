@@ -32,6 +32,11 @@ fn append_headers(builder: &mut Builder, entry: &EntryClass) {
     builder.append_line("import Link from '@docusaurus/Link';");
 }
 
+fn append_warnings(builder: &mut Builder, entry: &EntryClass) {
+    append_deprecation_warning(builder, entry);
+    append_unsupported_warning(builder, entry);
+}
+
 fn append_deprecation_warning(builder: &mut Builder, entry: &EntryClass) {
     let Some(message) = entry.annotations.iter().find(|a| a.name == "Deprecated") else {
         return;
@@ -43,6 +48,17 @@ fn append_deprecation_warning(builder: &mut Builder, entry: &EntryClass) {
             ", message.arguments[0]});
 }
 
+fn append_unsupported_warning(builder: &mut Builder, entry: &EntryClass) {
+    if !entry.annotations.iter().any(|a| a.name == "Unsupported") {
+        return;
+    };
+    builder.append_line(formatdoc! {"
+            import UnsupportedWarning from '@site/src/components/UnsupportedWarning';
+
+            <UnsupportedWarning />
+            "});
+}
+
 fn append_info(builder: &mut Builder, entry: &EntryClass) {
     builder.append_line(format!(
         "# {}",
@@ -52,7 +68,7 @@ fn append_info(builder: &mut Builder, entry: &EntryClass) {
             .trim_end_matches("Entry")
     ));
 
-    append_deprecation_warning(builder, entry);
+    append_warnings(builder, entry);
 
     builder.empty_line();
     if let Some(description) = &entry.comment {
@@ -202,6 +218,19 @@ fn format_adapter_description(builder: &mut Builder, adapter: &AdapterParsed) {
             <DeprecationWarning adapter message='{}' />
             ", message.arguments[0]});
     }
+
+    if adapter
+        .adapter_data
+        .annotations
+        .iter()
+        .any(|a| a.name == "Unsupported")
+    {
+        builder.append_line(formatdoc! {"
+            import UnsupportedWarning from '@site/src/components/UnsupportedWarning';
+
+            <UnsupportedWarning adapter />
+            "});
+    };
 
     builder.append_line(format!("# {}", adapter.adapter.to_case(Case::Title)));
 

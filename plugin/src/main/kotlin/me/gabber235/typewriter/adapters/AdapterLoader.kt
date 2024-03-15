@@ -100,6 +100,12 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
                 """.trimMargin()
             )
         } else {
+            val unsupportedMessage = if (adapters.any { it.flags.contains(AdapterFlag.Unsupported) }) {
+                "\nThere are unsupported adapters loaded. You won't get any support for these.\n"
+            } else {
+                ""
+            }
+
             val maxAdapterLength = adapters.maxOf { it.name.length }
             val maxVersionLength = adapters.maxOf { it.version.length }
             val maxDigits = adapters.maxOf { it.entries.size.digits }
@@ -109,7 +115,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
                 |${"-".repeat(15)}{ Loaded Adapters }${"-".repeat(15)}
                 |
                 |${adapters.joinToString("\n") { it.displayString(maxAdapterLength, maxVersionLength, maxDigits) }}
-                |
+                |$unsupportedMessage
                 |${"-".repeat(50)}
                 """.trimMargin()
             )
@@ -211,6 +217,9 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         }
         if (adapterClass.isAnnotationPresent(Deprecated::class.java)) {
             flags.add(AdapterFlag.Deprecated)
+        }
+        if (adapterClass.hasAnnotation(Unsupported::class)) {
+            flags.add(AdapterFlag.Unsupported)
         }
 
         return flags
@@ -343,6 +352,11 @@ enum class AdapterFlag(val warning: String) {
      * The adapter is deprecated and should not be used.
      */
     Deprecated("⚠\uFE0F DEPRECATED"),
+
+    /**
+     * The adapter is not supported and should be migrated away from.
+     */
+    Unsupported("⚠\uFE0F UNSUPPORTED"),
 }
 
 // Annotation for marking a class as an adapter
@@ -369,3 +383,6 @@ annotation class Messenger(
 
 @Target(AnnotationTarget.CLASS)
 annotation class Untested
+
+@Target(AnnotationTarget.CLASS)
+annotation class Unsupported
