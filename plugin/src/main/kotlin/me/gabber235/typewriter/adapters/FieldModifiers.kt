@@ -155,6 +155,7 @@ private val computers: List<ModifierComputer> by lazy {
         ColoredModifierComputer,
         RegexModifierComputer,
         IconModifierComputer,
+        NegativeModifierComputer,
     )
 }
 

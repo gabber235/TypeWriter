@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entry
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Negative
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.entry.entries.WritableFactEntry
 import me.gabber235.typewriter.facts.FactData
@@ -85,6 +86,7 @@ data class Criteria(
     @Help("The operator to use when comparing the fact value to the criteria value")
     val operator: CriteriaOperator = CriteriaOperator.EQUALS,
     @Help("The value to compare the fact value to")
+    @Negative
     val value: Int = 0,
 ) {
     fun isValid(fact: FactData?): Boolean {
@@ -107,5 +109,6 @@ data class Modifier(
     @Help("The operator to use when modifying the fact value")
     val operator: ModifierOperator = ModifierOperator.ADD,
     @Help("The value to modify the fact value by")
+    @Negative
     val value: Int = 0,
 )

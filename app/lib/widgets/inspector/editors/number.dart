@@ -37,7 +37,11 @@ class NumberEditor extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final focus = useFocusNode();
     useFocusedBasedCurrentEditingField(focus, ref.passing, path);
+
     final value = ref.watch(fieldValueProvider(path, ""));
+
+    final isNegativeAllowed = field.get("negative") as bool? ?? true;
+
     return WritersIndicator(
       provider: fieldWritersProvider(path),
       shift: (_) => const Offset(15, 0),
@@ -48,10 +52,17 @@ class NumberEditor extends HookConsumerWidget {
         text: "$value",
         keyboardType: TextInputType.number,
         inputFormatters: [
-          if (field.type == PrimitiveFieldType.integer)
-            FilteringTextInputFormatter.digitsOnly,
-          if (field.type == PrimitiveFieldType.double)
-            FilteringTextInputFormatter.allow(RegExp(r"^\d+\.?\d*")),
+          if (!isNegativeAllowed) ...[
+            if (field.type == PrimitiveFieldType.integer)
+              FilteringTextInputFormatter.digitsOnly,
+            if (field.type == PrimitiveFieldType.double)
+              FilteringTextInputFormatter.allow(RegExp(r"^\d+\.?\d*")),
+          ] else ...[
+            if (field.type == PrimitiveFieldType.integer)
+              FilteringTextInputFormatter.allow(RegExp(r"^-?\d*")),
+            if (field.type == PrimitiveFieldType.double)
+              FilteringTextInputFormatter.allow(RegExp(r"^-?\d*\.?\d*")),
+          ],
         ],
         onChanged: (value) {
           final number = field.type == PrimitiveFieldType.integer
