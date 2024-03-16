@@ -7,11 +7,16 @@ import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
 import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.events.AsyncDialogueEndEvent
+import me.gabber235.typewriter.events.AsyncDialogueStartEvent
+import me.gabber235.typewriter.events.AsyncDialogueSwitchEvent
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.startBlockingMessages
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingMessages
+import me.gabber235.typewriter.utils.ThreadType
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.playSound
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
@@ -38,6 +43,9 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         player.startBlockingMessages()
         player.startBlockingActionBar()
         tick()
+        DISPATCHERS_ASYNC.launch {
+            AsyncDialogueStartEvent(player).callEvent()
+        }
     }
 
     fun tick() {
@@ -58,6 +66,9 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         currentEntry = nextEntry
         currentMessenger = messengerFinder.findMessenger(player, nextEntry)
         init()
+        DISPATCHERS_ASYNC.launch {
+            AsyncDialogueSwitchEvent(player).callEvent()
+        }
         return true
     }
 
@@ -77,6 +88,9 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
     fun end() {
         isActive = false
         cleanupEntry(true)
+        DISPATCHERS_ASYNC.launch {
+            AsyncDialogueEndEvent(player).callEvent()
+        }
     }
 }
 
