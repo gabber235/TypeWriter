@@ -10,7 +10,7 @@ use poise::serenity_prelude::{
 use crate::{
     clickup::{get_task_from_clickup, TaskStatus, TaskType},
     get_discord,
-    webhook::{TaskCreated, TaskStatusUpdated, TaskTag, TaskUpdated},
+    webhook::{TaskCreated, TaskStatusUpdated, TaskUpdated},
     WinstonError,
 };
 
@@ -129,7 +129,7 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
         let _ = channel
             .send_message(
                 &discord,
-                create_development_message(task_id, &owner, &task.tags),
+                create_beta_message(task_id, &owner, &task.custom_item_id.into()),
             )
             .await?;
     }
@@ -142,12 +142,12 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
     Ok(())
 }
 
-fn create_development_message(task_id: &str, owner: &UserId, tags: &[TaskTag]) -> CreateMessage {
-    if tags.iter().any(|tag| tag.name == "bug") {
+fn create_beta_message(task_id: &str, owner: &UserId, task_type: &TaskType) -> CreateMessage {
+    if task_type == &TaskType::Bug {
         return                 CreateMessage::default()
                     .content(formatdoc! {"
-                        # In Development
-                        This task has been marked as **In Development**.
+                        # In Beta
+                        This task has been published to **Beta**.
                         You can download latest build [here]({}). 
                         
                         __{}: Please verify that this task is fixed or still broken, and indicate by clicking the button below.__
@@ -164,11 +164,11 @@ fn create_development_message(task_id: &str, owner: &UserId, tags: &[TaskTag]) -
                             .style(ButtonStyle::Danger)
                             .emoji(ReactionType::Unicode("🚧".to_string())),
                     );
-    } else if tags.iter().any(|tag| tag.name == "feature") {
+    } else if task_type == &TaskType::Feature {
         return CreateMessage::default()
                     .content(formatdoc! {"
-                        # In Development
-                        This task has been marked as **In Development**.
+                        # In Beta
+                        This task has been published to **Beta**.
                         You can download latest build [here]({}). 
                         
                         __{}: Please verify that this task is correctly implemented or if it is broken, and indicate by clicking the button below.__
@@ -188,8 +188,8 @@ fn create_development_message(task_id: &str, owner: &UserId, tags: &[TaskTag]) -
     }
 
     return CreateMessage::default().content(formatdoc! {"
-                        # In Development
-                        This task has been marked as **In Development**.
+                        # In Beta
+                        This task has been published to **Beta**.
                         You can download latest build [here]({}). 
                         ", "https://modrinth.com/plugin/typewriter/versions?c=beta"});
 }
@@ -201,7 +201,7 @@ fn get_status_tags(available_tags: &[ForumTag]) -> HashMap<TaskStatus, ForumTagI
             "Backlog" => Some((TaskStatus::Backlog, tag.id.clone())),
             "In Progress" => Some((TaskStatus::InProgress, tag.id.clone())),
             "Done" => Some((TaskStatus::Done, tag.id.clone())),
-            "In Development" => Some((TaskStatus::InBeta, tag.id.clone())),
+            "In Beta" => Some((TaskStatus::InBeta, tag.id.clone())),
             "In Production" => Some((TaskStatus::InProduction, tag.id.clone())),
             _ => None,
         })

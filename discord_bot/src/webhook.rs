@@ -61,17 +61,21 @@ pub async fn clickup_webhook(req: HttpRequest, bytes: Bytes) -> impl Responder {
     };
 
     let Ok(signature) = hex::decode(new_signature.trim()) else {
+        eprintln!("failed to decode signature");
         return HttpResponse::BadRequest()
             .body("failed to decode signature")
             .into();
     };
     if let Err(_) = mac.verify_slice(&signature) {
+        eprintln!("invalid signature: {:?}", signature);
         return HttpResponse::Unauthorized()
             .body("invalid signature")
             .into();
     }
 
     let event: Event = serde_json::from_slice(&bytes).expect("failed to deserialize event");
+
+    println!("Received Event: {:?}", event);
 
     let result = match event {
         Event::TaskCreated(e) => crate::webhooks::handle_task_created(e).await,
