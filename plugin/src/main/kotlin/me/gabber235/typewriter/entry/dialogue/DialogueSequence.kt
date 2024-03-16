@@ -15,7 +15,6 @@ import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.startBlockingMessages
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingMessages
-import me.gabber235.typewriter.utils.ThreadType
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.playSound
 import org.bukkit.entity.Player

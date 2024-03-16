@@ -9,6 +9,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSy
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
@@ -21,6 +22,9 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.koin.java.KoinJavaComponent.get
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.min
+
+private val darkenLimit by snippet("chat.darken-limit", 12)
 
 class ChatHistoryHandler :
     PacketListenerAbstract(PacketListenerPriority.HIGH), Listener {
@@ -105,7 +109,7 @@ class ChatHistory {
         messages.clear()
     }
 
-    private fun clearMessage() = "\n".repeat(100 - messages.size)
+    private fun clearMessage() = "\n".repeat(100 - min(messages.size, darkenLimit))
 
     fun resendMessages(player: Player, clear: Boolean = true) {
         // Start with "no-index" to prevent the server from adding the message to the history
@@ -119,7 +123,7 @@ class ChatHistory {
         // Start with "no-index" to prevent the server from adding the message to the history
         var msg = Component.text("no-index")
         if (clear) msg = msg.append(Component.text(clearMessage()))
-        messages.forEach {
+        messages.take(darkenLimit).forEach {
             msg = msg.append(it.darkenMessage)
         }
         return msg.append(message)
