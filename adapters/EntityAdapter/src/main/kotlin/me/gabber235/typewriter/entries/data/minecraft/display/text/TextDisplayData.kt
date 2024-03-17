@@ -7,11 +7,3 @@ import me.tofaa.entitylib.wrapper.WrapperEntity
 
 @Tags("text_display_data")
 interface TextDisplayEntityData<P : EntityProperty> : EntityData<P>
-
-fun applyTextDisplayEntityData(entity: WrapperEntity, property: EntityProperty): Boolean {
-    when (property) {
-        is BackgroundColorProperty -> applyBackgroundColorData(entity, property)
-        else -> return false
-    }
-    return true
-}

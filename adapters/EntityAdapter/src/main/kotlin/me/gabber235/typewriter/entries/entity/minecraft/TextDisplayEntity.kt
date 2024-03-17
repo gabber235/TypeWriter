@@ -7,7 +7,7 @@ import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entries.data.minecraft.display.applyDisplayEntityData
-import me.gabber235.typewriter.entries.data.minecraft.display.text.applyTextDisplayEntityData
+import me.gabber235.typewriter.entries.data.minecraft.display.text.*
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
@@ -64,11 +64,14 @@ open class TextDisplayEntity(player: Player) : WrapperFakeEntity(
                 text = property.lines.asMini()
 
             }
-
+            is BackgroundColorProperty -> applyBackgroundColorData(entity, property)
+            is TextOpacityProperty -> applyTextOpacityData(entity, property)
+            is LineWidthProperty -> applyLineWidthData(entity, property)
+            is ShadowProperty -> applyShadowData(entity, property)
+            is SeeThroughProperty -> applySeeThroughData(entity, property)
             else -> {}
         }
         if (applyGenericEntityData(entity, property)) return
         if (applyDisplayEntityData(entity, property)) return
-        if (applyTextDisplayEntityData(entity, property)) return
     }
 }
