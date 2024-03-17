@@ -13,13 +13,13 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("text_shadow_data", "If text is shadow", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("text_shadow_data", "If text in TextDisplay has shadow.", Colors.RED, "fluent:video-background-effect-32-filled")
 @Tags("text_shadow_data")
 
 class TextShadowData(
     override val id: String = "",
     override val name: String = "",
-    @Help("If text has shadow")
+    @Help("If text has shadow.")
     val shadow: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : TextDisplayEntityData<ShadowProperty> {

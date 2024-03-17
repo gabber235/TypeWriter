@@ -13,13 +13,13 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("text_line_width_data", "Line width for a text display", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("text_line_width_data", "LineWidth for a TextDisplay.", Colors.RED, "fluent:video-background-effect-32-filled")
 @Tags("text_line_width_data")
 
 class TextLineWidthData(
     override val id: String = "",
     override val name: String = "",
-    @Help("Line Width")
+    @Help("LineWidth of the TextDisplay.")
     val lineWidth: Int = 0,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : TextDisplayEntityData<LineWidthProperty> {

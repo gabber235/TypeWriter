@@ -7,7 +7,9 @@ import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entries.data.minecraft.display.applyDisplayEntityData
+import me.gabber235.typewriter.entries.data.minecraft.display.item.DisplayTypeProperty
 import me.gabber235.typewriter.entries.data.minecraft.display.item.ItemProperty
+import me.gabber235.typewriter.entries.data.minecraft.display.item.applyDisplayTypeData
 import me.gabber235.typewriter.entries.data.minecraft.display.item.applyItemData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
@@ -59,6 +61,7 @@ open class ItemDisplayEntity(player: Player) : WrapperFakeEntity(
     override fun applyProperty(property: EntityProperty) {
         when (property) {
             is ItemProperty -> applyItemData(entity, property, player)
+            is DisplayTypeProperty -> applyDisplayTypeData(entity, property)
         }
         if (applyGenericEntityData(entity, property)) return
         if (applyDisplayEntityData(entity, property)) return

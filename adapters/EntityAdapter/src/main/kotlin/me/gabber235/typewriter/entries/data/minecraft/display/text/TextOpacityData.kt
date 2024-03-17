@@ -13,13 +13,13 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("text_opacity_data", "Opacity for a text display", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("text_opacity_data", "Opacity for a TextDisplay.", Colors.RED, "fluent:video-background-effect-32-filled")
 @Tags("text_opacity_data")
 
 class TextOpacityData(
     override val id: String = "",
     override val name: String = "",
-    @Help("Opacity of the text display")
+    @Help("Opacity of the TextDisplay.")
     val opacity: Int = 0,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : TextDisplayEntityData<TextOpacityProperty> {

@@ -16,12 +16,12 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("item_data", "Item for a display", Colors.RED, "mdi:tools")
+@Entry("item_data", "Item of an ItemDisplay.", Colors.RED, "mdi:tools")
 @Tags("item_data")
 class ItemData(
     override val id: String = "",
     override val name: String = "",
-    @Help("Item ID")
+    @Help("Item for the ItemDisplay.")
     val item: Item  = Item.Empty,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<ItemProperty> {

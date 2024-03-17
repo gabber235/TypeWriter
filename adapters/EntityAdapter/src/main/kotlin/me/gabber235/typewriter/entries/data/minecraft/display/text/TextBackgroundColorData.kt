@@ -15,12 +15,12 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry(
-    "background_color_data", "Background color for a text display", Colors.RED, "fluent:video-background-effect-32-filled")
+    "background_color_data", "Background color for a TextDisplay.", Colors.RED, "fluent:video-background-effect-32-filled")
 @Tags("background_color_data")
 class TextBackgroundColorData(
     override val id: String = "",
     override val name: String = "",
-    @Help("Background Color")
+    @Help("Background Color Of the TextDisplay.")
     val color: Color = Color.BLACK_BACKGROUND,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : TextDisplayEntityData<BackgroundColorProperty> {

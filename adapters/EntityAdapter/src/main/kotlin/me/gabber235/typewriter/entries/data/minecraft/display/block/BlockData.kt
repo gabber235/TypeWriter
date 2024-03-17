@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("block_data", "Block for a display", Colors.RED, "mage:box-3d-fill")
+@Entry("block_data", "Block of a BlockDisplay.", Colors.RED, "mage:box-3d-fill")
 
 @Tags("block_data")
 

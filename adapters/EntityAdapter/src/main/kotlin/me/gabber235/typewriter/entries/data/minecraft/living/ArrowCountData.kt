@@ -13,11 +13,11 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("arrow_count_data", "The amount of arrows in the entity", Colors.RED, "mdi:arrow-projectile")
+@Entry("arrow_count_data", "The amount of arrows in a entity", Colors.RED, "mdi:arrow-projectile")
 class ArrowCountData(
     override val id: String = "",
     override val name: String = "",
-    @Help("The amount of arrows in the entity.")
+    @Help("The amount of arrows in a entity.")
     val arrowCount: Int = 0,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<ArrowCountProperty> {

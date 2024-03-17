@@ -14,13 +14,13 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("scale_data", "Scale for a display", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("scale_data", "Scale of a Display.", Colors.RED, "fluent:video-background-effect-32-filled")
 @Tags("scale_data")
 
 class ScaleData(
     override val id: String = "",
     override val name: String = "",
-    @Help("Scale")
+    @Help("The scale vector.")
     val scale: Vector = Vector(0.0, 0.0, 0.0),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<ScaleProperty> {

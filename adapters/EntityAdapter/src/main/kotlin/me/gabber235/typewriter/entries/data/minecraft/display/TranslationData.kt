@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("translation_data", "Translate the entity", Colors.RED, "material-symbols:move-selection-up-rounded")
+@Entry("translation_data", "Translate the Display.", Colors.RED, "material-symbols:move-selection-up-rounded")
 @Tags("translation_data")
 class TranslationData(
     override val id: String = "",
