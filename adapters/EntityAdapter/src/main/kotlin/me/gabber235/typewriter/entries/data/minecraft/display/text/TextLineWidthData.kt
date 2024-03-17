@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("text_line_width_data", "LineWidth for a TextDisplay.", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("text_line_width_data", "LineWidth for a TextDisplay.", Colors.RED, "mdi:format-letter-spacing")
 @Tags("text_line_width_data")
 
 class TextLineWidthData(

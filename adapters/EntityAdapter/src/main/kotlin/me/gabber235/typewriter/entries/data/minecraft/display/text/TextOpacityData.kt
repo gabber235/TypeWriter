@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("text_opacity_data", "Opacity for a TextDisplay.", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("text_opacity_data", "Opacity for a TextDisplay.", Colors.RED, "mdi:opacity")
 @Tags("text_opacity_data")
 
 class TextOpacityData(
