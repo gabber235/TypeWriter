@@ -191,6 +191,7 @@ class CameraCinematicAction(
     }
 
     private suspend fun Player.teardown() {
+        interceptor?.cancel()
         originalState?.let {
             SYNC.switchContext {
                 restore(it)
@@ -200,8 +201,6 @@ class CameraCinematicAction(
             }
         }
         originalState = null
-
-        interceptor?.cancel()
     }
 
     override suspend fun teardown() {
