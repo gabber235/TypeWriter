@@ -12,6 +12,7 @@ fun applyDisplayEntityData(entity: WrapperEntity, property: EntityProperty): Boo
     when (property) {
         is TranslationProperty -> applyTranslationData(entity, property)
         is BillboardConstraintProperty -> applyBillboardConstraintData(entity, property)
+        is ScaleProperty -> applyScaleData(entity, property)
         else -> return false
     }
     return true
