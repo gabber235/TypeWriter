@@ -67,6 +67,9 @@ enum class CriteriaOperator {
     @SerializedName(">=")
     GREATER_THAN_OR_EQUAL,
 
+    @SerializedName("!=")
+    NOT_EQUALS
+
     ;
 
     fun isValid(value: Double, criteria: Double): Boolean {
@@ -76,6 +79,7 @@ enum class CriteriaOperator {
             GREATER_THAN -> value > criteria
             LESS_THAN_OR_EQUALS -> value <= criteria
             GREATER_THAN_OR_EQUAL -> value >= criteria
+            NOT_EQUALS -> value != criteria
         }
     }
 }
