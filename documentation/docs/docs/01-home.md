@@ -9,7 +9,7 @@ quests, NPC dialogues, and more. It also allows you to manage your server's exis
 
 In this wiki there are several pages that will help you get started with Typewriter. The first page is
 the [Installation Guide](./02-getting-started/01-installation.mdx). This page will help you install Typewriter and the basic adapter. Then you
-can follow the [First Interaction](./03-first-story/01-interactions.mdx) guide to create your first interaction.
+can follow the [First Interaction](./03-creating-stories/01-first-story/01-interactions.mdx) guide to create your first interaction.
 
 :::caution[In beta]
 Typewriter is currently in beta. This means that the plugin is still in development and may contain bugs. If you find
