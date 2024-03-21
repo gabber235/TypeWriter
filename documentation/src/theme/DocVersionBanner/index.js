@@ -24,7 +24,7 @@ function UnreleasedVersionLabel({ siteTitle, versionMetadata }) {
       }}
     >
       {
-        "You are currently looking at the documentation of typewriter for the {betatext} version!"
+        "You are currently looking at the documentation of typewriter for the {betatext} version! Currently Rewriting!"
       }
     </Translate>
   );
@@ -100,7 +100,7 @@ function DocVersionBannerEnabled({ className, versionMetadata }) {
       className={clsx(
         className,
         ThemeClassNames.docs.docVersionBanner,
-        "alert alert--warning margin-bottom--md"
+        "alert alert--danger margin-bottom--md"
       )}
       role="alert"
     >

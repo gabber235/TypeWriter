@@ -6,7 +6,7 @@ This section currently is outdated and maybe contains images/videos that are not
 :::
 
 :::info[Basic Adapter required]
-This guide uses the [Basic Adapter](../../adapters/BasicAdapter/BasicAdapter.mdx), hence it must be installed before following this guide.
+This guide uses the [Basic Adapter](../../../adapters/BasicAdapter/BasicAdapter.mdx), hence it must be installed before following this guide.
 :::
 
 Let's create our first interaction. Our example interaction will look like this:
@@ -21,24 +21,6 @@ Let's create our first interaction. Our example interaction will look like this:
 
 If at any point you get stuck, feel free to ask for help on our [Discord](https://discord.gg/HtbKyuDDBw).
 
-## Opening the Web Panel
-
-Before we begin creating our interaction, we need to open the web panel.
-To do this, run `/typewriter connect` in game. Then clicking the link that is given to you.
-
-![connect-command](../assets/first-interaction/connect-command.gif)
-
-![connect-book](../assets/first-interaction/connect-book.png)
-
-:::caution
-If you're getting a message along the lines of "The server is not hosting the websocket. Try enabling it in the config", please refer to [Configuring the Web Panel](../02-getting-started/01-installation.mdx#configuring-the-web-panel)
-:::
-
-This will give you a link to the web panel. Once you have opened the web panel, it should look something like
-this:
-
-![panel-empty](../assets/first-interaction/panel-empty.png)
-
 ## Creating a page
 
 Pages in typewriter represent a self-contained unit of content. Pages can be used to create a story, or to
@@ -49,13 +31,13 @@ page. Pages need a name which is used to identify the page and must be unique. W
 Page names are written in `snake_case`, just like any other identifier in Typewriter.\
 For now, we will leave the page type on `Sequence`.
 
-<Player url={require("../assets/first-interaction/add-page.webm").default} />
+<Player url={require("../../assets/first-interaction/add-page.webm").default} />
 
 ## Panel layout
 
 Let's have a look at everything that is on the panel.
 
-![panel-layout](../assets/first-interaction/panel-layout.png)
+![panel-layout](../../assets/first-interaction/panel-layout.png)
 
 1. **The page lists**: This is where you can see all the pages that you have created. You can also create new
    pages here.
@@ -87,7 +69,7 @@ Click on the `Add On Interact With Block` entry.
 This will create a new `event` entry.
 
 <Player
-  url={require("../assets/first-interaction/create-event.webm").default}
+  url={require("../../assets/first-interaction/create-event.webm").default}
 />
 
 As you can see, the inspector auto selected the entry that we just created. In the inspector, there are several
@@ -95,7 +77,7 @@ things that we can change. Let's change the name of the entry to `on_flower_clic
 that we want to interact with. To do this, click on the `Block` field. This will open a modal where you can
 select a block. Let's select the red tulip. After this the inspector should look like this:
 
-![inspector-1](../assets/first-interaction/inspector-1.png)
+![inspector-1](../../assets/first-interaction/inspector-1.png)
 
 ## Creating an option
 
@@ -107,7 +89,7 @@ tulip. To do this, click on the `+` button in the action bar, and add an `option
 Then change the name of the entry to `inspect_flower`. Then change the text of the option to `What do you want
 to do?`. After this the inspector should look like this:
 
-![inspector-2](../assets/first-interaction/inspector-2.png)
+![inspector-2](../../assets/first-interaction/inspector-2.png)
 
 ### Adding a speaker
 
@@ -121,7 +103,7 @@ This will make the display name of the speaker red and bold using the [Adventure
 It should look like this:
 
 <Player
-  url={require("../assets/first-interaction/create-speaker.webm").default}
+  url={require("../../assets/first-interaction/create-speaker.webm").default}
 />
 
 After that, we still need to go back to the `flower` page, and select the new speaker in
@@ -129,7 +111,7 @@ the `Inspect Flower` entry. To do this, click on the `Speaker` field. This will 
 Select the `flower` speaker. It should look like this:
 
 <Player
-  url={require("../assets/first-interaction/select-speaker.webm").default}
+  url={require("../../assets/first-interaction/select-speaker.webm").default}
 />
 
 Now we only need to put in the different options that we want the player to be able to use. Click on the `+`
@@ -137,7 +119,7 @@ next to the options drop down to add a new option. Then change the text of the o
 then add another option with the text `Touch the flower`. After this the inspector
 should look like this:
 
-![inspector-3](../assets/first-interaction/inspector-3.png)
+![inspector-3](../../assets/first-interaction/inspector-3.png)
 
 ## Connecting the entries
 
@@ -147,7 +129,7 @@ the entries that you want to trigger. When you are done you can click finish to 
 something like:
 
 <Player
-  url={require("../assets/first-interaction/connect-entries.webm").default}
+  url={require("../../assets/first-interaction/connect-entries.webm").default}
 />
 
 ## Testing the interaction
@@ -156,7 +138,7 @@ To test our changes we need to publish them to the server. We can do this by hov
 
 and clicking the publish button.
 
-![publish-changes](../assets/first-interaction/publish-changes.gif)
+![publish-changes](../../assets/first-interaction/publish-changes.gif)
 
 :::info Note
 We do **not** have to restart the server. Publishing changes is instant and will be active immediately.
@@ -164,7 +146,7 @@ We do **not** have to restart the server. Publishing changes is instant and will
 
 If we now go in-game we will see the following when we click on a red tulip it will show us the two options:
 
-<Player url={require("../assets/first-interaction/game-1.webm").default} />
+<Player url={require("../../assets/first-interaction/game-1.webm").default} />
 
 ## Smelling flower
 
@@ -180,11 +162,11 @@ It is important that you use the specific trigger from the correct option. The f
 global triggers.
 :::
 
-![inspector-4](../assets/first-interaction/inspector-4.png)
+![inspector-4](../../assets/first-interaction/inspector-4.png)
 
 When you publish the changes in the game, it should look something like this:
 
-<Player url={require("../assets/first-interaction/game-2.webm").default} />
+<Player url={require("../../assets/first-interaction/game-2.webm").default} />
 
 ### Adding a conditional dialogue
 
@@ -208,7 +190,7 @@ To create a fact, head over to a static page such as `Flower Static`, click on t
 of the entry to `smelled_flower`. We can add a comment describing the fact and how it is used. After this the
 inspector should look like this:
 
-![inspector-5](../assets/first-interaction/inspector-5.png)
+![inspector-5](../../assets/first-interaction/inspector-5.png)
 
 #### Adding criteria to the dialogue
 
@@ -219,7 +201,7 @@ this fact when the dialogue gets triggered. To do this, click on the `+` button 
 down. Then select the `smelled_flower` fact, make the modification `=` and the value `1`. After this the
 inspector should look like this:
 
-![inspector-6](../assets/first-interaction/inspector-6.png)
+![inspector-6](../../assets/first-interaction/inspector-6.png)
 
 Now we can create a new `spoken` dialogue entry that will be triggered when the player smells the flower for
 subsequent times. Rename it to `smell_flower_second_time`, add the text `You smell the flower again. It still smells <blue><bold>fragrant</bold></blue>.`, select our `flower` speaker we created earlier, and finally specify a
@@ -236,11 +218,11 @@ So `smell_flower_initialy` will be picked when the player has not smelled the fl
 
 The UI should look something like this:
 
-![panel-looked](../assets/first-interaction/panel-looked.png)
+![panel-looked](../../assets/first-interaction/panel-looked.png)
 
 When you publish the changes. In the game it should look something like this:
 
-<Player url={require("../assets/first-interaction/game-3.webm").default} />
+<Player url={require("../../assets/first-interaction/game-3.webm").default} />
 
 ## Adding additional dialogue
 
@@ -258,14 +240,14 @@ If you are not able to make it work, try reading parts again or go to our
 
 Finally, the UI should look something like this:
 
-![panel-final](../assets/first-interaction/panel-final.png)
+![panel-final](../../assets/first-interaction/panel-final.png)
 
 When you publish the changes. In the game it should look something like this:
 
-<Player url={require("../assets/first-interaction/game-4.webm").default} />
+<Player url={require("../../assets/first-interaction/game-4.webm").default} />
 
 ## Next steps
 
-Now that you understand the basics of TypeWriter and have made your first interaction, it's time to spice up your interaction by adding a `cinematic`. Read the [Cinematics](./02-cinematics.mdx) guide to learn more!
+Now that you understand the basics of TypeWriter and have made your first interaction, it's time to spice up your interaction by adding a `cinematic`. Read the [Cinematics](./cinematics) guide to learn more!
 
 If you have any questions, feel free to ask them in the [Discord](https://discord.gg/HtbKyuDDBw).

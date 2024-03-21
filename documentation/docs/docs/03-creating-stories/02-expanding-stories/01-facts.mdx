@@ -5,7 +5,7 @@ import TabItem from "@theme/TabItem";
 
 Facts are essentially variables. They store information that can be modified by other entries. All facts are numbers and are treated as such.
 
-The [`Basic Adapter`](../../adapters/BasicAdapter/BasicAdapter.mdx) encompasses numerous facts available for use. However, it's important to note that [`adapters`](../../adapters/README.mdx) have the capability to further augment the array of available facts.
+The [`Basic Adapter`](../../../adapters/BasicAdapter/BasicAdapter.mdx) encompasses numerous facts available for use. However, it's important to note that [`adapters`](../../../adapters/README.mdx) have the capability to further augment the array of available facts.
 
 ## Why Use Facts?
 
@@ -27,8 +27,8 @@ Facts have two types: Readable and Writable.
 - **Writable Facts:** Used in modifiers to modify the fact's value. For instance, updating a player's quest progression.
 
 :::info
-Some facts are both readable and writable. For example, the [Permanent Fact](../../adapters/BasicAdapter/entries/fact/permanent_fact) can be used in both criteria and modifiers.
-But some facts are only readable. For example, the [Inventory Item Count Fact](../../adapters/BasicAdapter/entries/fact/inventory_item_count_fact) can only be used in criteria.
+Some facts are both readable and writable. For example, the [Permanent Fact](../../../adapters/BasicAdapter/entries/fact/permanent_fact) can be used in both criteria and modifiers.
+But some facts are only readable. For example, the [Inventory Item Count Fact](../../../adapters/BasicAdapter/entries/fact/inventory_item_count_fact) can only be used in criteria.
 :::
 
 ## Groups
@@ -43,13 +43,13 @@ In a fact you can select a group. Their are 3 types of groups:
 
 In some entries, there are fields that influence the way facts are handled.
 
-![Criterion Fields](../assets/facts/criteria_and_modifier.png)
+![Criterion Fields](../../assets/facts/criteria_and_modifier.png)
 
 ### Criteria
 
 Criteria is the condition for an entry, e.g., `if fact = 10 then...`. It controls whether an entry will occur.
 
-![Criterion Fields](../assets/facts/criteria.png)
+![Criterion Fields](../../assets/facts/criteria.png)
 
 When using Criteria, follow these steps:
 
@@ -61,7 +61,7 @@ When using Criteria, follow these steps:
 
 Modifiers, as the name suggests, modify a fact.
 
-![Modifier Fields](../assets/facts/modifier.png)
+![Modifier Fields](../../assets/facts/modifier.png)
 
 When using Modifiers, follow these steps:
 
@@ -80,7 +80,7 @@ To get you started with facts, we will use a permanent fact to track progression
 
 1. Create a new page and select it as `static`. Give it the name `Playerprogress`
 2. Click on the + icon and select `Add Permanent Fact`. Rename it to `Playerprogress` and give it a nice comment.
-   ![Static Page Button](../assets/facts/static-page.png)
+   ![Static Page Button](../../assets/facts/static-page.png)
 3. Select the player group.
 4. On the sequence page, click on an action.
    - Set a **Criteria:** Check if `Playerprogress` == 0.
@@ -96,7 +96,7 @@ There are many possibilities with the facts system. Here are some examples:
       **Objective:** A player talks to an NPC and needs to gather items.
 
       **Fact Used:**
-      - **Readable Fact:** [Inventory Item Count](../../adapters/BasicAdapter/entries/fact/inventory_item_count_fact)
+      - **Readable Fact:** [Inventory Item Count](../../../adapters/BasicAdapter/entries/fact/inventory_item_count_fact)
 
       **Scenario:**
       1. Player talks to the NPC.
@@ -107,7 +107,7 @@ There are many possibilities with the facts system. Here are some examples:
       **Objective:** Track a player's progression through different quest stages.
 
       **Fact Used:**
-      - **Writable Fact:** [Permanent Fact](../../adapters/BasicAdapter/entries/fact/permanent_fact)
+      - **Writable Fact:** [Permanent Fact](../../../adapters/BasicAdapter/entries/fact/permanent_fact)
 
       **Scenario:**
       1. Player talks to an NPC (Progression set to 1).
@@ -119,7 +119,7 @@ There are many possibilities with the facts system. Here are some examples:
       **Objective:** See if a player has enough money to buy an item.
 
       **Fact Used:**
-      - **Readable Fact:** [balance fact](../../adapters/VaultAdapter/entries/fact/balance_fact)
+      - **Readable Fact:** [balance fact](../../../adapters/VaultAdapter/entries/fact/balance_fact)
 
       **Scenario:**
       1. Player talks to an NPC.
@@ -130,5 +130,5 @@ There are many possibilities with the facts system. Here are some examples:
    </TabItem>
 </Tabs>
 :::tip
-To see all the available facts, check out the [Adapters section](../../adapters/README.mdx).
+To see all the available facts, check out the [Adapters section](../../../adapters/README.mdx).
 :::
