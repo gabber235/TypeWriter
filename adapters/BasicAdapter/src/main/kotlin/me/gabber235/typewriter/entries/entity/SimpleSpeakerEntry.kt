@@ -22,7 +22,7 @@ class SimpleSpeakerEntry(
     override val name: String = "",
     override val displayName: String = "",
     override val sound: Sound = Sound.EMPTY,
-) : SpeakerEntry
+) : SpeakerEntry, StaticEntry
 
 @EntryMigration(SimpleSpeakerEntry::class, "0.4.0")
 @NeedsMigrationIfNotParsable
