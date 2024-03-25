@@ -168,18 +168,7 @@ const config = {
             }
         }),
     plugins: [
-        "rive-loader",
-        // [
-        //     '@docusaurus/plugin-content-docs',
-        //     {
-        //         id: 'adapters',
-        //         path: 'adapters',
-        //         routeBasePath: 'adapters',
-        //         sidebarPath: require.resolve('./sidebars.js'),
-        //         editUrl:
-        //             'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
-        //     },
-        // ]
+        "rive-loader"
     ]
 };
 
