@@ -1,15 +1,16 @@
 package me.gabber235.typewriter.entries.audience
 
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.AudienceFilter
 import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
-import me.gabber235.typewriter.entry.matches
-import me.gabber235.typewriter.entry.ref
+import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import org.bukkit.entity.Player
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 @Entry("criteria_audience", "An audience filter based on criteria", Colors.MEDIUM_SEA_GREEN, "fa-solid:filter")
 /**
@@ -31,5 +32,35 @@ class CriteriaAudienceFilter(
     ref: Ref<out AudienceFilterEntry>,
     val criteria: List<Criteria>,
 ) : AudienceFilter(ref) {
+    private val factWatcherSubscriptions = ConcurrentHashMap<UUID, FactListenerSubscription>()
     override fun filter(player: Player): Boolean = criteria matches player
+
+    override fun onPlayerAdd(player: Player) {
+        factWatcherSubscriptions.compute(player.uniqueId) { _, subscription ->
+            subscription?.cancel(player)
+            player.listenForFacts(
+                (criteria).map { it.fact },
+                ::onFactChange,
+            )
+        }
+
+        super.onPlayerAdd(player)
+    }
+
+    private fun onFactChange(player: Player, fact: Ref<ReadableFactEntry>) {
+        player.refresh()
+    }
+
+    override fun onPlayerRemove(player: Player) {
+        super.onPlayerRemove(player)
+        factWatcherSubscriptions.remove(player.uniqueId)?.cancel(player)
+    }
+
+    override fun dispose() {
+        super.dispose()
+        factWatcherSubscriptions.forEach { (playerId, subscription) ->
+            val player = server.getPlayer(playerId) ?: return@forEach
+            subscription.cancel(player)
+        }
+    }
 }
