@@ -100,8 +100,6 @@ class ObjectiveAudienceFilter(
         criteria.matches(player)
 
     override fun onPlayerAdd(player: Player) {
-        super.onPlayerAdd(player)
-
         factWatcherSubscriptions.compute(player.uniqueId) { _, subscription ->
             subscription?.cancel(player)
             player.listenForFacts(
@@ -109,6 +107,8 @@ class ObjectiveAudienceFilter(
                 ::onFactChange,
             )
         }
+
+        super.onPlayerAdd(player)
     }
 
     private fun onFactChange(player: Player, fact: Ref<ReadableFactEntry>) {
