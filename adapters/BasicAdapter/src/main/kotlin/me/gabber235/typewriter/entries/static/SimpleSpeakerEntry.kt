@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.entries.entity
+package me.gabber235.typewriter.entries.static
 
 import com.google.gson.JsonObject
 import lirand.api.extensions.other.set

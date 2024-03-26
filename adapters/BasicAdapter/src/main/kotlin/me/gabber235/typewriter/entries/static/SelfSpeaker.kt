@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.entries.entity
+package me.gabber235.typewriter.entries.static
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
