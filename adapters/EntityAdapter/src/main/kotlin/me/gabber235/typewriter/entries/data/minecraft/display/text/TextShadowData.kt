@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("text_shadow_data", "If text in TextDisplay has shadow.", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("text_shadow_data", "If text in TextDisplay has shadow.", Colors.RED, "mdi:box-shadow")
 @Tags("text_shadow_data")
 
 class TextShadowData(

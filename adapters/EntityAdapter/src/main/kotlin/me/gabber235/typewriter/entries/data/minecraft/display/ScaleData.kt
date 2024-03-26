@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("scale_data", "Scale of a Display.", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("scale_data", "Scale of a Display.", Colors.RED, "mdi:resize")
 @Tags("scale_data")
 
 class ScaleData(

@@ -8,11 +8,11 @@ This section currently is outdated and maybe contains images/videos that are not
 :::
 
 :::info[Basic Adapter required]
-This guide uses the [Basic Adapter](../../adapters/BasicAdapter/BasicAdapter.mdx), hence it must be installed before following this guide.
+This guide uses the [Basic Adapter](../../../adapters/BasicAdapter/BasicAdapter.mdx), hence it must be installed before following this guide.
 :::
 
 :::info
-This guide builds upon the [Interactions](./01-interactions.mdx) guide.
+This guide builds upon the [Interactions](../01-interactions/index.mdx) guide.
 We strongly recommend reading through it before following this guide.
 :::
 
@@ -30,13 +30,13 @@ This makes cinematics useful in a wide variety of scenarios, with some examples 
 
 ## Creating a Cinematic
 We'll start off by making a simple cinematic with a cinematic camera entry, with the cinematic being triggered through
-a command. Later in the guide we'll continue the [Interactions](./01-interactions.mdx) guide to trigger the cinematic
+a command. Later in the guide we'll continue the [Interactions](../01-interactions/index.mdx) guide to trigger the cinematic
 from a flower.
 
 ### Creating the Page
 Start off by clicking add page. Here, choose the **Cinematic** type in the dropdown menu, and name the page `flower_cinematic`.
 
-<Player url={require("../assets/first-cinematic/page-creation.webm").default} />
+<Player url={require("../../assets/first-cinematic/page-creation.webm").default} />
 
 ### Adding a Camera Entry
 Let's now add an entry to the newly created page. Click the `Add Entry` button or the `+` in the top right corner,
@@ -45,7 +45,7 @@ Let's rename the entry to `camera_view`. Then, click `Add Segment` to add a new 
 
 You'll now see a lot of new fields that aren't in the other pages. Let's go through those.
 
-![Cinematics Layout](../assets/first-cinematic/cinematic-layout.png)
+![Cinematics Layout](../../assets/first-cinematic/cinematic-layout.png)
 
 > #### Track Duration (1)
 The track duration field is where you decide the duration of the entire cinematic.
@@ -73,13 +73,13 @@ We now need to decide on two locations. To more easily continue the guide later 
 around a red tulip. We then fill in `Path #1`'s location, and expand `Path #2` and add the location of that path.
 Remember to add two different locations. You can see example paths in the screenshot below.
 
-![Example Camera Paths](../assets/first-cinematic/camera-paths-example.png)
+![Example Camera Paths](../../assets/first-cinematic/camera-paths-example.png)
 
 You should now have a functioning cinematic!
 Let's `Publish` and check it out. Type `/tw cinematic start flower_cinematic` in chat, and
 the cinematic should start playing!
 
-<Player url={require("../assets/first-cinematic/cinematic-1.webm").default} />
+<Player url={require("../../assets/first-cinematic/cinematic-1.webm").default} />
 
 As you see in the beginning of the camera path, the camera weirdly turns around. 
 This is because when starting the cinematic, Minecraft needs a few frames to set everything up.
@@ -89,7 +89,7 @@ on the segment, or drag the segment on the track to our desired starting point.
 
 :::tip
 To make it really feel cinematic, you can add a black screen at the beginning of the cinematic.
-Using the [Blinding Cinematic](../../adapters/BasicAdapter/entries/cinematic/blinding_cinematic.mdx) entry, you can make the screen
+Using the [Blinding Cinematic](../../../adapters/BasicAdapter/entries/cinematic/blinding_cinematic.mdx) entry, you can make the screen
 go black for the first `20 frames`.
 :::
 
@@ -99,14 +99,14 @@ We can add more segments to create different camera paths.
 Try adding a new segment, and then adding mutliple paths to that segment.
 If you have done everything correctly, you should now have a cinematic that looks something like this:
 
-<Player url={require("../assets/first-cinematic/cinematic-2.webm").default} />
+<Player url={require("../../assets/first-cinematic/cinematic-2.webm").default} />
 
 ## Triggering the Cinematic
 :::info
 I strongly recommend picking a specific red tulip and changing the cinematic paths to be around it if you havn't done so already.
 :::
 Now, you probably want the cinematic to be triggered when a player does something, and not through a command.
-Let's do that by modifying the flower example from [Interactions](./01-interactions.mdx) so that one of the
+Let's do that by modifying the flower example from [Interactions](../01-interactions/index.mdx) so that one of the
 options causes the cinematic to play.
 
 Let's head over to the Flower page by clicking on it in the Pages sidebar. We then simply want to add a new entry.
@@ -115,7 +115,7 @@ Search for `add: cinematic` when adding a new entry, and select `Add Cinematic` 
 that we made earlier. Select that page, and then select the `Inspect Flower` entry. Here we want to add a new option. 
 Let's call it `Look at flower`. In the new option, add a new Trigger, and select `Play Flower Cinematic` option in the search box.
 
-<Player url={require("../assets/first-cinematic/cinematic-trigger.webm").default} />
+<Player url={require("../../assets/first-cinematic/cinematic-trigger.webm").default} />
 
 :::info
 Strongly recommended to pick a specific red tulip and changing the cinematic paths to be around it.
@@ -145,7 +145,7 @@ Will send the speaker in the actionbar, and sends the message as a subtitle (mid
 > #### Spoken Dialogue Cinematic
 Will send the speaker & message in chat.
 
-<Player url={require("../assets/first-cinematic/cinematic-3.webm").default} />
+<Player url={require("../../assets/first-cinematic/cinematic-3.webm").default} />
 
 ## Adding Particles
 You can also add particles to be displayed during the cinematic. Let's do so hearts appear around the red tulip.
@@ -163,7 +163,7 @@ hearts spawning at the same time, and we will set spawnCountPerTick to 1, meanin
 Now, we will add a segment to the particle entry, and we're finished! If you now play your cinematic, heart particles
 should spawn around the red tulip.
 
-<Player url={require("../assets/first-cinematic/cinematic-4.webm").default} />
+<Player url={require("../../assets/first-cinematic/cinematic-4.webm").default} />
 
 ## Adding a Self NPC
 :::info
@@ -184,7 +184,7 @@ following the cinematic to add movement to it.
 
 If you now play the cinematic again, an NPC with the skin of the player watching the cinematic should appear, with all the movement you did.
 
-<Player url={require("../assets/first-cinematic/cinematic-5.webm").default} />
+<Player url={require("../../assets/first-cinematic/cinematic-5.webm").default} />
 
 ## Next steps
 You should now know how to make simple cinematics, but remember, cinematics have a lot more to offer!

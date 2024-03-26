@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("text_see_through_data", "If a TextDisplay is see through.", Colors.RED, "fluent:video-background-effect-32-filled")
+@Entry("text_see_through_data", "If a TextDisplay is see through.", Colors.RED, "mdi:texture")
 @Tags("text_see_through_data")
 
 class TextSeeThroughData(
