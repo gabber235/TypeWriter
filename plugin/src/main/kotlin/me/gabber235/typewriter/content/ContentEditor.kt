@@ -43,6 +43,7 @@ class ContentEditor(
             player.inventory.clearAll()
         }
         plugin.registerEvents(this)
+        mode?.setup()
         mode?.initialize()
     }
 
@@ -65,6 +66,7 @@ class ContentEditor(
     suspend fun pushMode(newMode: ContentMode) {
         player.playSound("ui.loom.take_result")
         val previous = mode
+        newMode.setup()
         stack.push(newMode)
         previous?.dispose()
         newMode.initialize()
@@ -96,6 +98,7 @@ class ContentEditor(
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
         if (event.whoClicked != player) return
+        if (event.clickedInventory != player.inventory) return
         val item = items[event.slot] ?: return
         item.action(
             ItemInteraction(ItemInteractionType.INVENTORY_CLICK, event.slot)

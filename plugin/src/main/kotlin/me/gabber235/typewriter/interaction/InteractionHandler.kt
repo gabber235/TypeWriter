@@ -92,6 +92,7 @@ class InteractionHandler : Listener, KoinComponent {
                 // Wait for the remainder or the tick
                 val wait = TICK_MS - (endTime - startTime) - AVERAGE_SCHEDULING_DELAY_MS
                 if (wait > 0) delay(wait)
+                else logger.warning("The interaction handler is running behind! Took ${endTime - startTime}ms")
             }
         }
 

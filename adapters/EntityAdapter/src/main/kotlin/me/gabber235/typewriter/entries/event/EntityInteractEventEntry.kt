@@ -5,7 +5,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.events.AsyncFakeEntityInteract
+import me.gabber235.typewriter.events.AsyncEntityDefinitionInteract
 
 @Entry(
     "entity_interact_event",
@@ -27,7 +27,7 @@ class EntityInteractEventEntry(
 ) : EventEntry
 
 @EntryListener(EntityInteractEventEntry::class)
-fun onEntityInteract(event: AsyncFakeEntityInteract, query: Query<EntityInteractEventEntry>) {
+fun onEntityInteract(event: AsyncEntityDefinitionInteract, query: Query<EntityInteractEventEntry>) {
     val definition = event.definition.ref()
     query.findWhere {it.definition == definition } startDialogueWithOrNextDialogue event.player
 }

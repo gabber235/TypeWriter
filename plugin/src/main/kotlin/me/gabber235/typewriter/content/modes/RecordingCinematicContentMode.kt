@@ -268,7 +268,7 @@ abstract class RecordingCinematicContentMode<T : Any>(
         tape[relativeFrame] = value
     }
 
-    private fun saveStore() {
+    private suspend fun saveStore() {
         val asset = asset ?: return
         val json = gson.toJsonTree(tape)
         optimizeTape(json)

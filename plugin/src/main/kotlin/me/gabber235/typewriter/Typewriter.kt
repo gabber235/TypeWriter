@@ -8,6 +8,9 @@ import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.AdapterLoaderImpl
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
+import me.gabber235.typewriter.entry.entity.EntityHandler
+import me.gabber235.typewriter.entry.entries.createRoadNetworkParser
+import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
 import me.gabber235.typewriter.extensions.bstats.BStatsMetrics
 import me.gabber235.typewriter.extensions.modrinth.Modrinth
 import me.gabber235.typewriter.extensions.placeholderapi.PlaceholderExpansion
@@ -20,10 +23,12 @@ import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.interaction.PacketInterceptor
 import me.gabber235.typewriter.snippets.SnippetDatabase
 import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
-import me.gabber235.typewriter.ui.*
+import me.gabber235.typewriter.ui.ClientSynchronizer
+import me.gabber235.typewriter.ui.CommunicationHandler
+import me.gabber235.typewriter.ui.PanelHost
+import me.gabber235.typewriter.ui.Writers
 import me.gabber235.typewriter.utils.createBukkitDataParser
 import me.gabber235.typewriter.utils.syncCommands
-import me.gabber235.typewriter.entry.entity.EntityHandler
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
@@ -38,6 +43,7 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
+import org.patheloper.mapping.PatheticMapper
 import java.util.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
@@ -74,8 +80,10 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf(::ActionBarBlockerHandler)
             singleOf(::PacketInterceptor)
             singleOf(::EntityHandler)
+            singleOf(::RoadNetworkManager)
             factory<Gson>(named("entryParser")) { createEntryParserGson(get()) }
             factory<Gson>(named("bukkitDataParser")) { createBukkitDataParser() }
+            factory<Gson>(named("roadNetworkParser")) { createRoadNetworkParser() }
         }
         startKoin {
             modules(modules)
@@ -106,6 +114,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<AssetManager>().initialize()
         get<EntityHandler>().initialize()
         get<AudienceManager>().initialize()
+        get<RoadNetworkManager>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
             PlaceholderExpansion.register()
@@ -113,6 +122,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
 
         syncCommands()
         BStatsMetrics.registerMetrics()
+        PatheticMapper.initialize(this)
 
         // We want to initialize all the adapters after all the plugins have been enabled to make
         // sure
@@ -131,8 +141,11 @@ class Typewriter : KotlinPlugin(), KoinComponent {
     val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
 
     override suspend fun onDisableAsync() {
+        PatheticMapper.shutdown()
         get<AdapterLoader>().shutdown()
         get<StagingManager>().shutdown()
+        get<EntityHandler>().shutdown()
+        get<RoadNetworkManager>().shutdown()
         get<ChatHistoryHandler>().shutdown()
         get<ActionBarBlockerHandler>().shutdown()
         get<PacketInterceptor>().shutdown()
@@ -142,7 +155,6 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<FactDatabase>().shutdown()
         get<AssetManager>().shutdown()
         get<AudienceManager>().shutdown()
-        get<EntityHandler>().shutdown()
     }
 }
 

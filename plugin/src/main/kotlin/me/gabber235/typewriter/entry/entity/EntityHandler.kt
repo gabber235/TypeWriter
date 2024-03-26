@@ -4,9 +4,11 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerAbstract
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType.Play
+import com.github.retrooper.packetevents.protocol.player.InteractionHand
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.entry.AudienceManager
+import me.gabber235.typewriter.events.AsyncEntityDefinitionInteract
 import me.gabber235.typewriter.events.AsyncFakeEntityInteract
 import me.gabber235.typewriter.plugin
 import me.tofaa.entitylib.APIConfig
@@ -32,15 +34,18 @@ class EntityHandler : PacketListenerAbstract(), KoinComponent {
         if(event == null) return
         if (event.packetType != Play.Client.INTERACT_ENTITY) return
         val packet = WrapperPlayClientInteractEntity(event)
+
         val entityId = packet.entityId
+        val player = event.player as? Player ?: server.getPlayer(event.user.uuid) ?: return
+
+        AsyncFakeEntityInteract(player, entityId, packet.hand, packet.action).callEvent()
 
         val display = audienceManager
             .findDisplays(ActivityEntityDisplay::class)
             .firstOrNull { it.playerHasEntity(event.user.uuid, entityId) } ?: return
 
         val definition = display.definition ?: return
-        val player = event.player as? Player ?: server.getPlayer(event.user.uuid) ?: return
-        AsyncFakeEntityInteract(player, entityId, definition).callEvent()
+        AsyncEntityDefinitionInteract(player, entityId, definition).callEvent()
     }
 
     fun shutdown() {

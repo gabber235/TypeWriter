@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.content.components
 
+import me.gabber235.typewriter.content.ContentComponent
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -8,6 +9,19 @@ import org.bukkit.inventory.ItemStack
  */
 interface ItemsComponent {
     fun items(player: Player): Map<Int, IntractableItem>
+}
+
+interface ItemComponent : ContentComponent, ItemsComponent {
+    fun item(player: Player): Pair<Int, IntractableItem>
+
+    override fun items(player: Player): Map<Int, IntractableItem> {
+        val (slot, item) = item(player)
+        return mapOf(slot to item)
+    }
+
+    override suspend fun initialize(player: Player) {}
+    override suspend fun tick(player: Player) {}
+    override suspend fun dispose(player: Player) {}
 }
 
 infix fun ItemStack.onInteract(action: (ItemInteraction) -> Unit) = IntractableItem(this, action)
@@ -31,5 +45,9 @@ enum class ItemInteractionType {
     SHIFT_RIGHT_CLICK,
     DROP,
     SWAP,
+    ;
+
+    val isClick: Boolean
+        get() = this == LEFT_CLICK || this == RIGHT_CLICK || this == SHIFT_LEFT_CLICK || this == SHIFT_RIGHT_CLICK
 }
 

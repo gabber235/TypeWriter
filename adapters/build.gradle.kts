@@ -96,7 +96,6 @@ subprojects {
             file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
         }
     }
-
 }
 
 

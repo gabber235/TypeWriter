@@ -11,16 +11,19 @@ import lirand.api.dsl.command.types.PlayerType
 import lirand.api.dsl.command.types.WordType
 import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
 import lirand.api.dsl.command.types.extensions.readUnquoted
+import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.PageType.CINEMATIC
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.quest.trackQuest
 import me.gabber235.typewriter.entry.quest.unTrackQuest
+import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkContentMode
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.facts.formattedName
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.ui.CommunicationHandler
+import me.gabber235.typewriter.utils.ThreadType
 import me.gabber235.typewriter.utils.asMini
 import me.gabber235.typewriter.utils.msg
 import me.gabber235.typewriter.utils.sendMini
@@ -53,6 +56,8 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
     questCommands()
 
     assetsCommands()
+
+    roadNetworkCommands()
 }
 
 private fun LiteralDSLBuilder.reloadCommands() {
@@ -332,8 +337,33 @@ private fun LiteralDSLBuilder.assetsCommands() {
         literal("clean") {
             requiresPermissions("typewriter.assets.clean")
             executes {
-                val deleted = get<AssetManager>(AssetManager::class.java).removeUnusedAssets()
-                source.msg("Cleaned <blue>${deleted}</blue> assets.")
+                source.msg("Cleaning unused assets...")
+                ThreadType.DISPATCHERS_ASYNC.launch {
+                    val deleted = get<AssetManager>(AssetManager::class.java).removeUnusedAssets()
+                    source.msg("Cleaned <blue>${deleted}</blue> assets.")
+                }
+            }
+        }
+    }
+}
+
+private fun LiteralDSLBuilder.roadNetworkCommands() {
+    literal("roadNetwork") {
+        requiresPermissions("typewriter.roadNetwork")
+        literal("edit") {
+            requiresPermissions("typewriter.roadNetwork.edit")
+            argument("network", entryType<RoadNetworkEntry>()) { network ->
+                executesPlayer {
+                    val entry = network.get()
+                    val data = mapOf(
+                        "entryId" to entry.id,
+                    )
+                    val context = ContentContext(data)
+                    ContentModeTrigger(
+                        context,
+                        RoadNetworkContentMode(context, source)
+                    ) triggerFor source
+                }
             }
         }
     }

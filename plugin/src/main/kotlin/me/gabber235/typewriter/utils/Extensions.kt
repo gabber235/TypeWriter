@@ -3,12 +3,12 @@ package me.gabber235.typewriter.utils
 import com.destroystokyo.paper.profile.PlayerProfile
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.logger
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.meta.ItemMeta
@@ -52,6 +52,8 @@ fun Audience.playSound(
     pitch: Float = 1.0f
 ) = playSound(Sound.sound(Key.key(sound), source, volume, pitch))
 
+
+
 val Player.isHighUp: Boolean
     get() = this.location.isHighUp
 val Location.isHighUp: Boolean
@@ -63,6 +65,18 @@ val Location.highUpLocation: Location
         location.y += 200
         return location
     }
+
+fun Location.lerp(other: Location, amount: Double): Location {
+    val percentage = amount.coerceIn(0.0, 1.0)
+    val x = this.x + (other.x - this.x) * percentage
+    val y = this.y + (other.y - this.y) * percentage
+    val z = this.z + (other.z - this.z) * percentage
+    return Location(world, x, y, z)
+}
+
+operator fun Location.component1(): Double = x
+operator fun Location.component2(): Double = y
+operator fun Location.component3(): Double = z
 
 fun Double.round(decimals: Int): Double {
     var multiplier = 1.0

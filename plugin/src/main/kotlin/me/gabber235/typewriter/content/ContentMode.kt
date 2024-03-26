@@ -10,9 +10,6 @@ abstract class ContentMode(
 ) : ComponentContainer {
     override val components = mutableListOf<ContentComponent>()
 
-    init {
-        setup()
-    }
     abstract fun setup()
 
     open suspend fun initialize() {
