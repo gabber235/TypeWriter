@@ -1,3 +1,4 @@
 {
-  "editor.wordBasedSuggestions": "matchingDocuments"
+  "editor.wordBasedSuggestions": "matchingDocuments",
+  "cSpell.words": ["triggerable"]
 }
