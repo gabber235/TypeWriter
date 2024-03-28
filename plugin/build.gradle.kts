@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.papermc.hangarpublishplugin.model.Platforms
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
+import java.io.ByteArrayOutputStream
 
 plugins {
     id("java")
@@ -8,7 +9,7 @@ plugins {
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("java-library")
-   id("io.papermc.hangar-publish-plugin") version "0.1.0"
+   id("io.papermc.hangar-publish-plugin") version "0.1.2"
 }
 
 fun Project.findPropertyOr(property: String, default: String): String {
@@ -177,6 +178,19 @@ publishing {
     }
 }
 
+fun executeGitCommand(vararg command: String): String {
+    val byteOut = ByteArrayOutputStream()
+    exec {
+        commandLine = listOf("git", *command)
+        standardOutput = byteOut
+    }
+    return byteOut.toString(Charsets.UTF_8.name()).trim()
+}
+
+fun latestCommitMessage(): String {
+    return executeGitCommand("log", "-1", "--pretty=%B")
+}
+
 hangarPublish {
     publications.register("plugin") {
         version.set(project.version.toString())
@@ -187,6 +201,7 @@ hangarPublish {
         }
 
         id.set("Typewriter")
+        changelog.set(latestCommitMessage())
         apiKey.set(System.getenv("HANGAR_API_TOKEN"))
 
         platforms {
