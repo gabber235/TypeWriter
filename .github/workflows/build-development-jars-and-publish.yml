@@ -21,7 +21,7 @@ jobs:
         run: |
           version=$(cat version.txt)
           run_number=${{ github.run_number }}
-          full_version="${version}-dev-${run_number}"
+          full_version="${version}-beta-${run_number}"
           echo $full_version > version.txt
           echo "version=$full_version" >> $GITHUB_OUTPUT
       - name: Build Plugin
@@ -62,7 +62,7 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: WorldGuardAdapter
-      - name: Publish Development Jars
+      - name: Publish Modrinth
         uses: Kir-Antipov/mc-publish@v3.3
         id: publish
         with:
@@ -82,6 +82,12 @@ jobs:
             [1.20.3, 1.20.4]
           dependencies: |
             packetevents
+
+      - name: Publish Hangar
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publishPluginPublicationToHangar --scan
+          build-root-directory: ./plugin
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
         with:

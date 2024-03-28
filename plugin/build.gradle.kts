@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import io.papermc.hangarpublishplugin.model.Platforms
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
@@ -7,6 +8,7 @@ plugins {
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("java-library")
+   id("io.papermc.hangar-publish-plugin") version "0.1.0"
 }
 
 fun Project.findPropertyOr(property: String, default: String): String {
@@ -171,6 +173,37 @@ publishing {
 
             from(components["kotlin"])
             artifact(tasks["sourcesJar"])
+        }
+    }
+}
+
+hangarPublish {
+    publications.register("plugin") {
+        version.set(project.version.toString())
+        if (project.version.toString().contains("beta")) {
+            channel.set("Beta")
+        } else {
+            channel.set("Release")
+        }
+
+        id.set("Typewriter")
+        apiKey.set(System.getenv("HANGAR_API_TOKEN"))
+
+        platforms {
+            register(Platforms.PAPER) {
+                url.set("https://modrinth.com/plugin/typewriter/version/${project.version}")
+
+                val versions: List<String> = (property("paperVersion") as String)
+                        .split(",")
+                        .map { it.trim() }
+                platformVersions.set(versions)
+
+                dependencies {
+                    url("PacketEvents", "https://modrinth.com/plugin/packetevents/versions?l=paper&l=purpur") {
+                        required.set(true)
+                    }
+                }
+            }
         }
     }
 }
