@@ -85,6 +85,8 @@ jobs:
 
       - name: Publish Hangar
         uses: gradle/gradle-build-action@v2
+        env:
+          HANGAR_API_KEY: ${{ secrets.HANGAR_API_KEY }}
         with:
           arguments: publishPluginPublicationToHangar --scan
           build-root-directory: ./plugin
