@@ -40,8 +40,6 @@ val npcNamePlate by snippet(
     <reset><display_name>
 """.trimIndent()
 )
-val trackedInteractIndicator by snippet("objective.entity.indicator.tracked", "<gold><b>!")
-val interactIndicator by snippet("objective.entity.indicator.normal", "<blue><b>?")
 
 @Entry("npc_definition", "A simplified premade npc", Colors.ORANGE, "material-symbols:account-box")
 @Tags("npc_definition")
