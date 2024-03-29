@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.entry
 
-import com.google.common.collect.ConcurrentHashMultiset
 import io.ktor.util.collections.*
 import me.gabber235.typewriter.entry.entries.EventTrigger
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
@@ -26,9 +25,7 @@ class FactWatcher(
     }
 
     fun refreshFact(ref: Ref<ReadableFactEntry>) {
-        val old =
-            factCache[ref].logErrorIfNull("Does not have cache for $ref while trying to refresh it, how did I screw this up?")
-                ?: 0
+        val old = factCache[ref] ?: return
         val fact =
             ref.get().logErrorIfNull("Tracking a fact $ref which does not have an entry associated with it.") ?: return
         val new = fact.readForPlayersGroup(player).value
@@ -57,7 +54,6 @@ class FactWatcher(
         } while (listeners.containsKey(id))
 
         listeners[id] = FactListener(id, facts, listener)
-        println("Added listener with id $id for facts $facts")
 
         for (fact in facts) {
             factCache.computeIfAbsent(fact) { fact.get()?.readForPlayersGroup(player)?.value ?: 0 }

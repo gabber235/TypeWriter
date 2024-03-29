@@ -13,6 +13,7 @@ import me.gabber235.typewriter.content.components.*
 import me.gabber235.typewriter.content.entryId
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.forceTriggerFor
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
@@ -107,7 +108,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         val entryId = context.entryId
         if (entryId == null) {
             logger.severe("No entry id found for RoadNetworkContentMode")
-            SystemTrigger.CONTENT_END triggerFor player
+            SystemTrigger.CONTENT_END forceTriggerFor player
             return
         }
 
@@ -115,7 +116,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         val entry = ref?.get()
         if (entry == null) {
             logger.severe("No entry '$entryId' found for RoadNetworkContentMode")
-            SystemTrigger.CONTENT_END triggerFor player
+            SystemTrigger.CONTENT_END forceTriggerFor player
             return
         }
 

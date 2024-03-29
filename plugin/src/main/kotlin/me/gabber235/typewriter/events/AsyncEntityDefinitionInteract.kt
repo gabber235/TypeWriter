@@ -28,6 +28,8 @@ class AsyncEntityDefinitionInteract(
     player: Player,
     val entityId: Int,
     val definition: EntityDefinitionEntry,
+    val hand: InteractionHand,
+    val action: InteractAction,
 ) : PlayerEvent(player, true) {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 

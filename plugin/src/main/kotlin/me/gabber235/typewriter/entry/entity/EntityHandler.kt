@@ -4,7 +4,6 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerAbstract
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType.Play
-import com.github.retrooper.packetevents.protocol.player.InteractionHand
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.entry.AudienceManager
@@ -31,7 +30,7 @@ class EntityHandler : PacketListenerAbstract(), KoinComponent {
     }
 
     override fun onPacketReceive(event: PacketReceiveEvent?) {
-        if(event == null) return
+        if (event == null) return
         if (event.packetType != Play.Client.INTERACT_ENTITY) return
         val packet = WrapperPlayClientInteractEntity(event)
 
@@ -45,7 +44,7 @@ class EntityHandler : PacketListenerAbstract(), KoinComponent {
             .firstOrNull { it.playerHasEntity(event.user.uuid, entityId) } ?: return
 
         val definition = display.definition ?: return
-        AsyncEntityDefinitionInteract(player, entityId, definition).callEvent()
+        AsyncEntityDefinitionInteract(player, entityId, definition, packet.hand, packet.action).callEvent()
     }
 
     fun shutdown() {

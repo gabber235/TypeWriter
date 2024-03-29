@@ -13,6 +13,7 @@ import me.gabber235.typewriter.content.*
 import me.gabber235.typewriter.content.components.*
 import me.gabber235.typewriter.entry.AssetManager
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.forceTriggerFor
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
@@ -211,9 +212,7 @@ abstract class RecordingCinematicContentMode<T : Any>(
             recordFrame()
         } else if (frame > frames.last) {
             saveStore()
-            SYNC.switchContext {
-                SystemTrigger.CONTENT_POP triggerFor player
-            }
+            SystemTrigger.CONTENT_POP forceTriggerFor player
         } else if (frame < frames.first) {
             preStart(frame)
         }
@@ -251,9 +250,10 @@ abstract class RecordingCinematicContentMode<T : Any>(
             if (!dataElement.isJsonObject) continue
             val data = dataElement.asJsonObject
 
-            data.entrySet().filter { !previousValues.has(it.key) }.associate { it.key to it.value }.forEach {(key, value) ->
-                previousValues.add(key, value)
-            }
+            data.entrySet().filter { !previousValues.has(it.key) }.associate { it.key to it.value }
+                .forEach { (key, value) ->
+                    previousValues.add(key, value)
+                }
         }
 
         val value = gson.fromJson(previousValues, klass.java)

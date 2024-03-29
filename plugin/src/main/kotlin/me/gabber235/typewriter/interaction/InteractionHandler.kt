@@ -29,7 +29,6 @@ internal const val AVERAGE_SCHEDULING_DELAY_MS = 5L
 
 class InteractionHandler : Listener, KoinComponent {
     private val interactions = ConcurrentHashMap<UUID, Interaction>()
-    private var job: Job? = null
 
     val Player.interaction: Interaction?
         get() = interactions[uniqueId]
@@ -67,14 +66,27 @@ class InteractionHandler : Listener, KoinComponent {
         triggerEvent(Event(player, triggers))
     }
 
+    /**
+     * Forces an event to be executed.
+     * This will bypass the event queue and execute the event immediately.
+     * This is useful for events that need to be executed immediately.
+     * **This should only be used sparingly.**
+     *
+     * @param player The player who interacted
+     * @param triggers The trigger that should be fired.
+     */
+    suspend fun forceTriggerActions(player: Player, triggers: List<EventTrigger>) {
+        player.interaction?.forceEvent(Event(player, triggers))
+    }
+
 
     private fun triggerEvent(event: Event) {
         // If the event is empty, we don't need to do anything
         if (event.triggers.isEmpty()) return
 
-        SYNC.launch {
+        DISPATCHERS_ASYNC.launch {
             try {
-                event.player.interaction?.onEvent(event)
+                event.player.interaction?.addToSchedule(event)
             } catch (e: Exception) {
                 logger.severe("An error occurred while handling event ${event}: ${e.message}")
                 e.printStackTrace()
@@ -83,35 +95,7 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     fun initialize() {
-
-        job = DISPATCHERS_ASYNC.launch {
-            while (plugin.isEnabled) {
-                val startTime = System.currentTimeMillis()
-                tick()
-                val endTime = System.currentTimeMillis()
-                // Wait for the remainder or the tick
-                val wait = TICK_MS - (endTime - startTime) - AVERAGE_SCHEDULING_DELAY_MS
-                if (wait > 0) delay(wait)
-                else logger.warning("The interaction handler is running behind! Took ${endTime - startTime}ms")
-            }
-        }
-
         plugin.registerSuspendingEvents(this)
-    }
-
-    suspend fun tick() {
-        coroutineScope {
-            interactions.map { (_, interaction) ->
-                launch {
-                    try {
-                        interaction.tick()
-                    } catch (e: Exception) {
-                        logger.severe("An error occurred while ticking interaction ${interaction.player.name}: ${e.message}")
-                        e.printStackTrace()
-                    }
-                }
-            }.joinAll()
-        }
     }
 
     // When a player joins the server, we need to create an interaction for them.
@@ -155,8 +139,6 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     suspend fun shutdown() {
-        job?.cancel()
-        job = null
         interactions.forEach { (_, interaction) ->
             interaction.end()
         }

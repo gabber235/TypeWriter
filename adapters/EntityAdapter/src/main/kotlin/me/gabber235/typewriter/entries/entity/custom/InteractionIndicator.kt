@@ -59,7 +59,7 @@ class InteractionIndicatorEntity(
             it.entity == definition && player.inAudience(it)
         }.toList()
         if (objectives.isEmpty()) {
-            if (hasDialogue()) {
+            if (hasInteractionEntry()) {
                 return dialogueIndicator
             }
             return ""
@@ -75,11 +75,10 @@ class InteractionIndicatorEntity(
         return icon
     }
 
-    private fun hasDialogue(): Boolean {
+    private fun hasInteractionEntry(): Boolean {
         return Query.findWhere<EntityInteractEventEntry> { it.definition == definition }
             .flatMap { it.triggers }
             .mapNotNull { it.get() }
-            .filterIsInstance<DialogueEntry>()
             .any { it.criteria matches player }
     }
 }

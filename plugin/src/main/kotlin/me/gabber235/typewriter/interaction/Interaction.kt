@@ -1,5 +1,9 @@
 package me.gabber235.typewriter.interaction
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.gabber235.typewriter.content.ContentEditor
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.cinematic.CinematicSequence
@@ -7,11 +11,15 @@ import me.gabber235.typewriter.entry.dialogue.DialogueSequence
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.*
 import me.gabber235.typewriter.entry.quest.QuestTracker
+import me.gabber235.typewriter.logger
+import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class Interaction(val player: Player) : KoinComponent {
+    private var job: Job
     private val interactionHandler: InteractionHandler by inject()
 
     internal var dialogue: DialogueSequence? = null
@@ -20,6 +28,9 @@ class Interaction(val player: Player) : KoinComponent {
     internal val questTracker: QuestTracker = QuestTracker(player)
     internal val factWatcher: FactWatcher = FactWatcher(player)
     private val sidebarManager: SidebarManager = SidebarManager(player)
+
+    private var scheduledEvent: Event? = null
+    private val eventMutex = Mutex()
 
     val hasDialogue: Boolean
         get() = dialogue != null
@@ -30,7 +41,41 @@ class Interaction(val player: Player) : KoinComponent {
     val hasContent: Boolean
         get() = content != null
 
+    init {
+        job = DISPATCHERS_ASYNC.launch {
+            while (plugin.isEnabled) {
+                val startTime = System.currentTimeMillis()
+                tick()
+                val endTime = System.currentTimeMillis()
+                // Wait for the remainder or the tick
+                val wait = TICK_MS - (endTime - startTime) - AVERAGE_SCHEDULING_DELAY_MS
+                if (wait > 0) delay(wait)
+                else logger.warning("The interaction for ${player.name} is running behind! Took ${endTime - startTime}ms")
+            }
+        }
+    }
+
+    /**
+     * Adds an event to the schedule. If there is already an event scheduled, it will be merged with
+     */
+    suspend fun addToSchedule(event: Event) = eventMutex.withLock {
+        scheduledEvent = event.merge(scheduledEvent)
+    }
+
+    /**
+     * Forces an event to be executed.
+     * This will bypass the schedule and execute the event immediately.
+     * This will also clear the schedule.
+     */
+    suspend fun forceEvent(event: Event) = eventMutex.withLock {
+        addToSchedule(event)
+        runSchedule()
+    }
+
     suspend fun tick() {
+        eventMutex.withLock {
+            runSchedule()
+        }
         dialogue?.tick()
         cinematic?.tick()
         content?.tick()
@@ -38,8 +83,14 @@ class Interaction(val player: Player) : KoinComponent {
         sidebarManager.tick()
     }
 
+    private suspend fun runSchedule() {
+        val scheduledEvent = scheduledEvent ?: return
+        onEvent(scheduledEvent.distinct())
+        this.scheduledEvent = null
+    }
+
     /** Handles an event. All [SystemTrigger]'s are handled by the plugin itself. */
-    suspend fun onEvent(event: Event) {
+    private suspend fun onEvent(event: Event) {
         handleContent(event)
         triggerActions(event)
         handleFactWatcher(event)
@@ -99,8 +150,9 @@ class Interaction(val player: Player) : KoinComponent {
         if (nextDialogue != null) {
             // If there is no sequence yet, start a new one
             if (dialogue == null) {
-                dialogue = DialogueSequence(player, nextDialogue)
-                dialogue?.init()
+                dialogue = DialogueSequence(player, nextDialogue).also {
+                    it.init()
+                }
             } else {
                 // If there is a sequence, trigger the next dialogue
                 dialogue?.next(nextDialogue)
@@ -197,6 +249,7 @@ class Interaction(val player: Player) : KoinComponent {
     }
 
     suspend fun end() {
+        job.cancel()
         val dialogue = dialogue
         val cinematic = cinematic
         val content = content

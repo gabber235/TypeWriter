@@ -1,5 +1,7 @@
 package me.gabber235.typewriter.entries.event
 
+import com.github.retrooper.packetevents.protocol.player.InteractionHand
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.*
@@ -28,6 +30,7 @@ class EntityInteractEventEntry(
 
 @EntryListener(EntityInteractEventEntry::class)
 fun onEntityInteract(event: AsyncEntityDefinitionInteract, query: Query<EntityInteractEventEntry>) {
+    if (event.hand != InteractionHand.MAIN_HAND || event.action == WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT) return
     val definition = event.definition.ref()
     query.findWhere {it.definition == definition } startDialogueWithOrNextDialogue event.player
 }

@@ -23,9 +23,8 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerItemHeldEvent
-import kotlin.math.max
-import kotlin.math.min
 
 val optionFormat: String by snippet(
     "dialogue.option.format", """
@@ -73,7 +72,6 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         get() = entry.modifiers + (selected?.modifiers ?: emptyList())
 
     override fun init() {
-        super.init()
         usableOptions =
             entry.options.filter { it.criteria.matches(player) }
 
@@ -83,23 +81,24 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             return
         }
 
-        confirmationKey.listen(listener, player.uniqueId) {
+        super.init()
+        confirmationKey.listen(this, player.uniqueId) {
             state = MessengerState.FINISHED
         }
+    }
 
-        listen<PlayerItemHeldEvent> { event ->
-            if (event.player.uniqueId == player.uniqueId) {
-                val curSlot = event.previousSlot
-                val newSlot = event.newSlot
-                val dif = loopingDistance(curSlot, newSlot, 8)
-                val index = selectedIndex
-                event.isCancelled = true
-                var newIndex = (index + dif) % usableOptions.size
-                while (newIndex < 0) newIndex += usableOptions.size
-                selectedIndex = newIndex
-                tick(0)
-            }
-        }
+    @EventHandler
+    private fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
+        if (event.player.uniqueId != player.uniqueId) return
+        val curSlot = event.previousSlot
+        val newSlot = event.newSlot
+        val dif = loopingDistance(curSlot, newSlot, 8)
+        val index = selectedIndex
+        event.isCancelled = true
+        var newIndex = (index + dif) % usableOptions.size
+        while (newIndex < 0) newIndex += usableOptions.size
+        selectedIndex = newIndex
+        tick(0)
     }
 
     override fun tick(cycle: Int) {

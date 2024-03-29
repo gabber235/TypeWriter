@@ -26,7 +26,7 @@ class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpo
         speakerDisplayName = entry.speakerDisplayName
         text = entry.messages.randomOrNull() ?: ""
 
-        confirmationKey.listen(listener, player.uniqueId) {
+        confirmationKey.listen(this, player.uniqueId) {
             state = MessengerState.FINISHED
         }
     }

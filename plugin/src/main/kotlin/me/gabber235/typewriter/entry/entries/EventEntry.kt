@@ -6,7 +6,6 @@ import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.entry.*
 import org.bukkit.entity.Player
-import java.util.*
 
 @Tags("event")
 interface EventEntry : TriggerEntry
@@ -40,6 +39,12 @@ class Event(val player: Player, val triggers: List<EventTrigger>) {
     operator fun contains(entry: Entry) = EntryTrigger(entry.id) in triggers
 
 
+    fun merge(other: Event?): Event {
+        if (other == null) return this
+        if (player.uniqueId != other.player.uniqueId) return this
+        return Event(player, triggers + other.triggers)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Event) return false
@@ -57,6 +62,8 @@ class Event(val player: Player, val triggers: List<EventTrigger>) {
     override fun toString(): String {
         return "Event(player=${player.name}, triggers=$triggers)"
     }
+
+    fun distinct(): Event = Event(player, triggers.distinct())
 }
 
 interface EventTrigger {

@@ -308,6 +308,21 @@ infix fun Sequence<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) 
 infix fun EventTrigger.triggerFor(player: Player) = listOf(this) triggerFor player
 
 /**
+ * Forcefully Trigger a specific trigger for a player.
+ *
+ * This will bypass the event queue and execute the event immediately.
+ * This is useful for events that need to be executed immediately.
+ * **This should only be used sparingly.**
+ *
+ * Example:
+ * ```kotlin
+ * val trigger: EventTrigger = ...
+ * trigger forceTriggerFor player
+ * ```
+ */
+suspend infix fun EventTrigger.forceTriggerFor(player: Player) = listOf(this) forceTriggerFor player
+
+/**
  * Trigger all triggers for a player.
  *
  * Example:
@@ -320,6 +335,23 @@ infix fun EventTrigger.triggerFor(player: Player) = listOf(this) triggerFor play
  */
 infix fun List<EventTrigger>.triggerFor(player: Player) {
     get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, this)
+}
+
+/**
+ * Forcefully Trigger all triggers for a player.
+ *
+ * This will bypass the event queue and execute the event immediately.
+ * This is useful for events that need to be executed immediately.
+ * **This should only be used sparingly.**
+ *
+ * Example:
+ * ```kotlin
+ * val triggers: List<EventTrigger> = ...
+ * triggers forceTriggerFor player
+ * ```
+ */
+suspend infix fun List<EventTrigger>.forceTriggerFor(player: Player) {
+    get<InteractionHandler>(InteractionHandler::class.java).forceTriggerActions(player, this)
 }
 
 

@@ -35,21 +35,24 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 
 
     fun init() {
-        isActive = true
-        cycle = 0
-        currentMessenger.init()
-        player.playSpeakerSound(currentEntry.speaker.get())
-        player.startBlockingMessages()
-        player.startBlockingActionBar()
+        setup()
         tick()
         DISPATCHERS_ASYNC.launch {
             AsyncDialogueStartEvent(player).callEvent()
         }
     }
 
+    private fun setup() {
+        isActive = true
+        cycle = 0
+        currentMessenger.init()
+        player.playSpeakerSound(currentEntry.speaker.get())
+        player.startBlockingMessages()
+        player.startBlockingActionBar()
+    }
+
     fun tick() {
         if (!isActive) return
-        currentMessenger.tick(cycle++)
 
         if (currentMessenger.state == MessengerState.FINISHED) {
             isActive = false
@@ -58,13 +61,15 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
             isActive = false
             DIALOGUE_END triggerFor player
         }
+
+        currentMessenger.tick(cycle++)
     }
 
     fun next(nextEntry: DialogueEntry): Boolean {
         cleanupEntry(false)
         currentEntry = nextEntry
         currentMessenger = messengerFinder.findMessenger(player, nextEntry)
-        init()
+        setup()
         DISPATCHERS_ASYNC.launch {
             AsyncDialogueSwitchEvent(player).callEvent()
         }

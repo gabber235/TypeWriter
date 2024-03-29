@@ -55,7 +55,7 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
         super.init()
         speakerDisplayName = entry.speakerDisplayName
 
-        confirmationKey.listen(listener, player.uniqueId) {
+        confirmationKey.listen(this, player.uniqueId) {
             state = MessengerState.FINISHED
         }
     }
