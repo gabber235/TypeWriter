@@ -37,11 +37,11 @@ class TextDisplayCollector(
 ) : PropertyCollector<LinesProperty> {
     override val type: KClass<LinesProperty> = LinesProperty::class
 
-    override fun collect(player: Player): LinesProperty {
-        return suppliers.filter {
+    override fun collect(player: Player): List<LinesProperty> {
+        return listOf(suppliers.filter {
             it.canApply(player)
         }.joinToString("\n") {
             it.build(player).lines
-        }.parsePlaceholders(player).let { LinesProperty(it) }
+        }.parsePlaceholders(player).let { LinesProperty(it) })
     }
 }

@@ -31,7 +31,7 @@ internal class DisplayEntity(
         // Active properties should override the properties from the collectors
         val properties = collectors
             .filter { activeProperties.none { active -> it.type.isInstance(active) } }
-            .mapNotNull { it.collect(player) }
+            .flatMap { it.collect(player) }
 
         entity.consumeProperties(activeProperties + properties)
     }
