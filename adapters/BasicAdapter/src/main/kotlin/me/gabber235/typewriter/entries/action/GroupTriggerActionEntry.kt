@@ -48,7 +48,7 @@ class GroupTriggerActionEntry(
         val group = forceGroup
             .map { groupEntry.group(GroupId(it)) }
             .orElseGet { groupEntry.group(player) } ?: return
-        
+
         group.players.forEach {
             it.triggerCustomTriggers()
         }

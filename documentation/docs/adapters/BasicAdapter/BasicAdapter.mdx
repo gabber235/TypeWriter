@@ -38,7 +38,11 @@ first.
 | ---- | ----------- |
 | [Boss Bar](./entries/audience/boss_bar.mdx) | Boss Bar |
 | [Cinematic Audience](./entries/audience/cinematic_audience.mdx) | Filters an audience based on if they are in a cinematic |
+| [Closest Group Member Path Stream](./entries/audience/closest_group_member_path_stream.mdx) | A Path Stream to the Closest Group Member |
 | [Criteria Audience](./entries/audience/criteria_audience.mdx) | An audience filter based on criteria |
+| [Group Members Path Stream](./entries/audience/group_members_path_stream.mdx) | A Path Stream to Group Members |
+| [Holding Item Audience](./entries/audience/holding_item_audience.mdx) | Filters an audience based on if they are holding a specific item |
+| [Location Objectives Path Stream](./entries/audience/location_objectives_path_stream.mdx) | A Path Stream to tracked Location Objectives |
 | [Simple Lines](./entries/audience/simple_lines.mdx) | Statically determined lines of text |
 | [Simple Sidebar](./entries/audience/sidebar.mdx) | Display a sidebar for players |
 
@@ -75,13 +79,6 @@ first.
 | [Random Spoken Dialogue](./entries/dialogue/random_spoken.mdx) | Display a random selected animated message to the player |
 | [Spoken Dialogue](./entries/dialogue/spoken.mdx) | Display a animated message to the player |
 
-### Entitys
-
-| Name | Description |
-| ---- | ----------- |
-| [Self Speaker](./entries/entity/self_speaker.mdx) | The player themself |
-| [Simple Speaker](./entries/entity/simple_speaker.mdx) | The most basic speaker |
-
 ### Events
 
 | Name | Description |
@@ -89,6 +86,7 @@ first.
 | [Block Break Event](./entries/event/on_block_break.mdx) | When the player breaks a block |
 | [Block Place Event](./entries/event/on_place_block.mdx) | When the player places a block |
 | [Chat Contains Text Event](./entries/event/on_message_contains_text.mdx) | When the player sends a chat message containing certain text |
+| [Craft Item Event](./entries/event/craft_item_event.mdx) | Called when a player crafts an item |
 | [Detect Command Ran Event](./entries/event/on_detect_command_ran.mdx) | When a player runs an existing command |
 | [Interact Block Event](./entries/event/on_interact_with_block.mdx) | When the player interacts with a block |
 | [Pickup Item Event](./entries/event/on_item_pickup.mdx) | When the player picks up an item |
@@ -107,6 +105,7 @@ first.
 | ---- | ----------- |
 | [Cron Fact](./entries/fact/cron_fact.mdx) | Saved until a specified date, like (0 0 * * 1 |
 | [Inventory Item Count Fact](./entries/fact/inventory_item_count_fact.mdx) | The amount of a specific item in the player's inventory |
+| [Item Holding Fact](./entries/fact/item_holding_fact.mdx) | The amount of a specific item the player is currently holding |
 | [Number Placeholder Fact](./entries/fact/number_placeholder.mdx) | Computed Fact for a placeholder number |
 | [Permanent Fact](./entries/fact/permanent_fact.mdx) | Saved permanently, it never gets removed |
 | [Session Fact](./entries/fact/session_fact.mdx) | Saved until a player logouts of the server |
@@ -125,6 +124,7 @@ first.
 
 | Name | Description |
 | ---- | ----------- |
+| [Location Objective](./entries/quest/location_objective.mdx) | A location objective definition |
 | [Objective Lines](./entries/quest/objective_lines.mdx) | Display all the current objectives |
 | [Quest Complete Event](./entries/quest/quest_complete_event.mdx) | Triggered when a quest is completed for a player |
 | [Quest Start Event](./entries/quest/quest_start_event.mdx) | Triggered when a quest is started for a player |
@@ -139,4 +139,12 @@ first.
 | Name | Description |
 | ---- | ----------- |
 | [Custom Sound](./entries/sound/custom_sound.mdx) | A custom sound |
+
+### Statics
+
+| Name | Description |
+| ---- | ----------- |
+| [Base Road Network](./entries/static/base_road_network.mdx) | A definition of the words road network |
+| [Self Speaker](./entries/static/self_speaker.mdx) | The player themself |
+| [Simple Speaker](./entries/static/simple_speaker.mdx) | The most basic speaker |
 
