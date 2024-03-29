@@ -4,6 +4,7 @@ import io.ktor.util.collections.*
 import me.gabber235.typewriter.entry.entries.EventTrigger
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.interaction.InteractionHandler
+import me.gabber235.typewriter.utils.logErrorIfNull
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent
 import java.util.*
@@ -12,29 +13,31 @@ import java.util.concurrent.ConcurrentHashMap
 class FactWatcher(
     private val player: Player,
 ) {
-    private val factWatch = ConcurrentHashMap<Ref<ReadableFactEntry>, Int>()
-    private val listeners = ConcurrentSet<FactListener>()
+    private val factCache = ConcurrentHashMap<Ref<ReadableFactEntry>, Int>()
+    private val listeners = ConcurrentMap<UUID, FactListener>()
 
     fun tick() {
         refresh()
     }
 
     private fun refresh() {
-        factWatch.keys.forEach { refreshFact(it) }
+        factCache.keys.forEach { refreshFact(it) }
     }
 
     fun refreshFact(ref: Ref<ReadableFactEntry>) {
-        val old = factWatch[ref] ?: return
-        val fact = ref.get() ?: return
+        val old = factCache[ref] ?: return
+        val fact =
+            ref.get().logErrorIfNull("Tracking a fact $ref which does not have an entry associated with it.") ?: return
         val new = fact.readForPlayersGroup(player).value
         if (old != new) {
-            factWatch[ref] = new
+            factCache[ref] = new
             notifyListeners(ref)
         }
     }
 
     private fun notifyListeners(ref: Ref<ReadableFactEntry>) {
         listeners
+            .values
             .filter { ref in it }
             .forEach { listener ->
                 listener.listener(player, ref)
@@ -45,21 +48,26 @@ class FactWatcher(
         facts: List<Ref<ReadableFactEntry>>,
         listener: (Player, Ref<ReadableFactEntry>) -> Unit
     ): FactListenerSubscription {
-        val id = UUID.randomUUID()
-        listeners.add(FactListener(id, facts, listener))
+        var id: UUID
+        do {
+            id = UUID.randomUUID()
+        } while (listeners.containsKey(id))
+
+        listeners[id] = FactListener(id, facts, listener)
+
         for (fact in facts) {
-            factWatch.computeIfAbsent(fact) { fact.get()?.readForPlayersGroup(player)?.value ?: 0 }
+            factCache.computeIfAbsent(fact) { fact.get()?.readForPlayersGroup(player)?.value ?: 0 }
         }
 
         return FactListenerSubscription(id)
     }
 
     fun removeListener(subscription: FactListenerSubscription) {
-        listeners.removeIf { it.id == subscription.id }
+        listeners.remove(subscription.id)
 
-        for (fact in factWatch.keys.toList()) {
-            if (listeners.none { fact in it }) {
-                factWatch.remove(fact)
+        for (fact in factCache.keys.toList()) {
+            if (listeners.values.none { fact in it }) {
+                factCache.remove(fact)
             }
         }
     }

@@ -43,7 +43,7 @@ class QuestTracker(
 
     private fun refreshWatchedFacts() {
         factWatchSubscription?.cancel(player)
-        val facts = Query.find<QuestEntry>().flatMap { it.facts }
+        val facts = Query.find<QuestEntry>().flatMap { it.facts }.toList()
         factWatchSubscription = player.listenForFacts(
             facts,
             listener = { _, ref ->
@@ -70,9 +70,9 @@ class QuestTracker(
         if (oldStatus == null) return
         if (oldStatus == status) return
 
-        if (oldStatus == QuestStatus.INACTIVE && status == QuestStatus.ACTIVE) {
+        if (oldStatus != QuestStatus.ACTIVE && status == QuestStatus.ACTIVE) {
             trackQuest(ref)
-        } else if (trackedQuest == ref && status != QuestStatus.ACTIVE) {
+        } else if (trackedQuest == ref) {
             unTrackQuest()
         }
 
@@ -151,7 +151,8 @@ infix fun Player.isQuestActive(quest: Ref<QuestEntry>) = tracker?.isQuestActive(
 infix fun Player.isQuestCompleted(quest: Ref<QuestEntry>) = tracker?.isQuestCompleted(quest) ?: false
 fun Player.trackedQuest() = tracker?.trackedQuest()
 infix fun Player.isQuestTracked(quest: Ref<QuestEntry>): Boolean {
-    val trackedQuest = trackedQuest() ?: return false
+    val trackedQuest = trackedQuest()
+    if (!quest.isSet) return trackedQuest != null
     return trackedQuest == quest
 }
 

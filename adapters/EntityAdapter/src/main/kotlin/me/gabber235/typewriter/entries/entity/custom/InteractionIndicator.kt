@@ -4,19 +4,23 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.entity.minecraft.TextDisplayEntity
+import me.gabber235.typewriter.entries.event.EntityInteractEventEntry
 import me.gabber235.typewriter.entries.quest.InteractEntityObjective
-import me.gabber235.typewriter.entry.Query
-import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.SimpleEntityDefinition
+import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
 import me.gabber235.typewriter.entry.entries.LinesProperty
-import me.gabber235.typewriter.entry.inAudience
 import me.gabber235.typewriter.entry.quest.trackedQuest
+import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.Sound
 import org.bukkit.entity.Player
+
+val trackedInteractIndicator by snippet("objective.entity.indicator.tracked", "<gold><b>❗")
+val interactIndicator by snippet("objective.entity.indicator.normal", "<blue><b>❓")
+val dialogueIndicator by snippet("objective.entity.indicator.dialogue", "<white><b>💬")
 
 @Entry(
     "interaction_indicator_definition",
@@ -53,8 +57,11 @@ class InteractionIndicatorEntity(
     private fun indicator(): String {
         val objectives = Query.findWhere<InteractEntityObjective> {
             it.entity == definition && player.inAudience(it)
-        }
+        }.toList()
         if (objectives.isEmpty()) {
+            if (hasInteractionEntry()) {
+                return dialogueIndicator
+            }
             return ""
         }
         // If one of them is for the tracked quest we want to display a different icon
@@ -66,5 +73,12 @@ class InteractionIndicatorEntity(
         }
 
         return icon
+    }
+
+    private fun hasInteractionEntry(): Boolean {
+        return Query.findWhere<EntityInteractEventEntry> { it.definition == definition }
+            .flatMap { it.triggers }
+            .mapNotNull { it.get() }
+            .any { it.criteria matches player }
     }
 }

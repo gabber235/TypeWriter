@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
 import me.gabber235.typewriter.entry.entries.ObjectiveEntry
 import me.gabber235.typewriter.entry.entries.QuestEntry
+import java.util.*
 
 @Entry("interact_entity_objective", "Interact with an entity", Colors.BLUE_VIOLET, "ph:hand-tap-fill")
 /**
@@ -24,6 +25,7 @@ class InteractEntityObjective(
     override val criteria: List<Criteria> = emptyList(),
     @Help("The entity that the player needs to interact with.")
     val entity: Ref<out EntityDefinitionEntry> = emptyRef(),
+    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry {
     override val display: String
         get() = "Interact with ${entity.get()?.displayName ?: "an entity"}"

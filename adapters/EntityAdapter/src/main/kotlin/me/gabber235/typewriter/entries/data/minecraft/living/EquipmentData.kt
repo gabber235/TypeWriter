@@ -5,9 +5,7 @@ import com.github.retrooper.packetevents.protocol.player.EquipmentSlot
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
-import me.gabber235.typewriter.entry.entity.SinglePropertyCollectorSupplier
-import me.gabber235.typewriter.entry.entries.EntityProperty
-import me.gabber235.typewriter.entry.entries.LivingEntityData
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.packetevents.toPacketItem
 import me.gabber235.typewriter.utils.Item
 import me.tofaa.entitylib.wrapper.WrapperEntity
@@ -32,7 +30,26 @@ class EquipmentData(
 }
 
 data class EquipmentProperty(val equipmentSlot: EquipmentSlot, val item: ItemStack) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<EquipmentProperty>(EquipmentProperty::class)
+    companion object : PropertyCollectorSupplier<EquipmentProperty> {
+        override val type: KClass<EquipmentProperty> = EquipmentProperty::class
+
+        override fun collector(suppliers: List<PropertySupplier<out EquipmentProperty>>): PropertyCollector<EquipmentProperty> {
+            return EquipmentCollector(suppliers.filterIsInstance<PropertySupplier<EquipmentProperty>>())
+        }
+    }
+}
+
+private class EquipmentCollector(
+    private val suppliers: List<PropertySupplier<EquipmentProperty>>,
+) : PropertyCollector<EquipmentProperty> {
+    override val type: KClass<EquipmentProperty> = EquipmentProperty::class
+
+override fun collect(player: Player): List<EquipmentProperty> {
+        return suppliers
+            .map { it.build(player) }
+            .groupBy { it.equipmentSlot }
+            .mapNotNull { it.value.firstOrNull() }
+    }
 }
 
 fun org.bukkit.inventory.ItemStack.toProperty(equipmentSlot: EquipmentSlot) =
@@ -40,5 +57,6 @@ fun org.bukkit.inventory.ItemStack.toProperty(equipmentSlot: EquipmentSlot) =
 
 fun applyEquipmentData(entity: WrapperEntity, property: EquipmentProperty) {
     if (entity !is WrapperLivingEntity) return
+    println("Setting equipment for ${entity.entityId} to ${property.item.type} in ${property.equipmentSlot}")
     entity.equipment.setItem(property.equipmentSlot, property.item)
 }

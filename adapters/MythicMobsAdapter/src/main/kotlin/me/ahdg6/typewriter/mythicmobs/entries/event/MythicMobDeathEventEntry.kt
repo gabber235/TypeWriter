@@ -28,5 +28,5 @@ class MythicMobDeathEventEntry(
 @EntryListener(MythicMobDeathEventEntry::class)
 fun onMobDeath(event: MythicMobDeathEvent, query: Query<MythicMobDeathEventEntry>) {
     val player = event.killer as? Player ?: return
-    query findWhere { it.mobName == event.mob.name } triggerAllFor player
+    query findWhere { it.mobName == event.mobType.internalName } triggerAllFor player
 }

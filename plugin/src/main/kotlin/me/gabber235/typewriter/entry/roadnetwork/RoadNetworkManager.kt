@@ -46,7 +46,12 @@ class RoadNetworkManager : KoinComponent {
     }
 
     internal suspend fun saveRoadNetwork(ref: Ref<out RoadNetworkEntry>, network: RoadNetwork) {
-        ref.get()?.saveRoadNetwork(gson, network)
+        val entry = ref.get()
+        if (entry == null) {
+            logger.severe("Failed to save road network with id ${ref.id}")
+            return
+        }
+        entry.saveRoadNetwork(gson, network)
         networks.put(ref.id, CompletableDeferred(network))
     }
 

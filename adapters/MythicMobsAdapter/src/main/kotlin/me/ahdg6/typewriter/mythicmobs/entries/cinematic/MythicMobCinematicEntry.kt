@@ -11,6 +11,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
+import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
@@ -46,6 +47,7 @@ data class MythicMobSegment(
     @Help("The name of the mob to spawn")
     val mobName: String = "",
     @Help("The location to spawn the mob at")
+    @WithRotation
     val location: Location = Location(null, 0.0, 0.0, 0.0),
 ) : Segment
 

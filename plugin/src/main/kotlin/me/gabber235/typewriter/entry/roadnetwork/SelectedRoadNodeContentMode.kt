@@ -56,7 +56,7 @@ class SelectedRoadNodeContentMode(
     private val initiallyScrolling: Boolean,
 ) : ContentMode(context, player), KoinComponent {
     private val roadNetworkManager by inject<RoadNetworkManager>()
-    private val modifications = network.modifications.toMutableList()
+    private var modifications = network.modifications.toMutableList()
 
     // If the player has been in range of the node
     private var removedComponent = false
@@ -101,7 +101,11 @@ class SelectedRoadNodeContentMode(
             network.nodes.map { if (it == selectedNode) selectedNode else it }
         }, ::showingLocation) { node ->
             item = ItemStack(node.material(modifications))
-            glow = if (node == selectedNode) NamedTextColor.GREEN else null
+            glow = when {
+                node == selectedNode -> NamedTextColor.GREEN
+                network.edges.any { it.start == selectedNode.id && it.end == node.id } -> NamedTextColor.YELLOW
+                else -> null
+            }
             scale = Vector3f(0.5f, 0.5f, 0.5f)
             onInteract(::pop)
         }
@@ -135,6 +139,7 @@ class SelectedRoadNodeContentMode(
 
     override suspend fun initialize() {
         network = roadNetworkManager.getNetwork(ref)
+        modifications = network.modifications.toMutableList()
         super.initialize()
     }
 

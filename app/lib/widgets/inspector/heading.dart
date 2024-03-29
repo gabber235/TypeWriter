@@ -1,5 +1,6 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -64,10 +65,13 @@ class Heading extends HookConsumerWidget {
           title: name,
           isDeprecated: isDeprecated,
         ),
-        Row(
+        Wrap(
+          spacing: 8,
+          runSpacing: 2,
+          direction: Axis.horizontal,
+          alignment: WrapAlignment.start,
           children: [
             _Type(type: type, url: url, color: color),
-            const SizedBox(width: 8),
             _Identifier(id: id),
           ],
         ),

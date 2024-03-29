@@ -39,7 +39,7 @@ class CriteriaAudienceFilter(
         factWatcherSubscriptions.compute(player.uniqueId) { _, subscription ->
             subscription?.cancel(player)
             player.listenForFacts(
-                (criteria).map { it.fact },
+                criteria.map { it.fact },
                 ::onFactChange,
             )
         }

@@ -70,4 +70,6 @@ class PlayerSpecificActivityEntityDisplay(
     override fun playerHasEntity(playerId: UUID, entityId: Int): Boolean {
         return entities[playerId]?.contains(entityId) ?: false
     }
+
+    override fun location(playerId: UUID): Location? = activityManagers[playerId]?.location?.toLocation()
 }

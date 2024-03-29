@@ -66,6 +66,14 @@ val Location.highUpLocation: Location
         return location
     }
 
+fun Location.distanceSqrt(other: Location): Double? {
+    if (world != other.world) return null
+    val dx = x - other.x
+    val dy = y - other.y
+    val dz = z - other.z
+    return dx * dx + dy * dy + dz * dz
+}
+
 fun Location.lerp(other: Location, amount: Double): Location {
     val percentage = amount.coerceIn(0.0, 1.0)
     val x = this.x + (other.x - this.x) * percentage

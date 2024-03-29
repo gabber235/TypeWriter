@@ -6,6 +6,7 @@ import io.lumine.mythic.bukkit.MythicBukkit
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
@@ -38,6 +39,7 @@ class SpawnMobActionEntry(
     @Help("Whether the mob should be only seen by the player")
     private val onlyVisibleForPlayer: Boolean = false,
     @Help("The mob's spawn location")
+    @WithRotation
     private var spawnLocation: Location,
 ) : ActionEntry {
     override fun execute(player: Player) {

@@ -34,7 +34,7 @@ class Query<E : Entry>(private val klass: KClass<E>) {
      *
      * @param filter The filter to apply to the entries.
      */
-    infix fun findWhere(filter: (E) -> Boolean): List<E> = findWhere(klass, filter)
+    infix fun findWhere(filter: (E) -> Boolean): Sequence<E> = findWhere(klass, filter)
 
     /**
      * Find the first entry that matches the given a filter
@@ -79,7 +79,8 @@ class Query<E : Entry>(private val klass: KClass<E>) {
      * Find entry all entries that are on the given page [pageId] with the given [filter].
      * @see findWhere
      */
-    fun findWhereFromPage(pageId: String, filter: (E) -> Boolean): List<E> = findWhereFromPage(klass, pageId, filter)
+    fun findWhereFromPage(pageId: String, filter: (E) -> Boolean): Sequence<E> =
+        findWhereFromPage(klass, pageId, filter)
 
     companion object {
         /**
@@ -98,7 +99,7 @@ class Query<E : Entry>(private val klass: KClass<E>) {
          *
          * @param filter The filter to apply to the entries.
          */
-        inline infix fun <reified E : Entry> findWhere(noinline filter: (E) -> Boolean): List<E> {
+        inline infix fun <reified E : Entry> findWhere(noinline filter: (E) -> Boolean): Sequence<E> {
             return findWhere(E::class, filter)
         }
 
@@ -118,7 +119,7 @@ class Query<E : Entry>(private val klass: KClass<E>) {
          *
          * @param filter The filter to apply to the entries.
          */
-        fun <E : Entry> findWhere(klass: KClass<E>, filter: (E) -> Boolean): List<E> {
+        fun <E : Entry> findWhere(klass: KClass<E>, filter: (E) -> Boolean): Sequence<E> {
             return get<EntryDatabase>(EntryDatabase::class.java).findEntries(klass, filter)
         }
 
@@ -192,7 +193,7 @@ class Query<E : Entry>(private val klass: KClass<E>) {
          * Find entry all entries that are on the given page [pageId] with the given [filter].
          * @see findWhere
          */
-        inline fun <reified E : Entry> findWhereFromPage(pageId: String, noinline filter: (E) -> Boolean): List<E> {
+        inline fun <reified E : Entry> findWhereFromPage(pageId: String, noinline filter: (E) -> Boolean): Sequence<E> {
             return findWhereFromPage(E::class, pageId, filter)
         }
 
@@ -200,7 +201,7 @@ class Query<E : Entry>(private val klass: KClass<E>) {
          * Find entry all entries that are on the given page [pageId] with the given [filter].
          * @see findWhere
          */
-        fun <E : Entry> findWhereFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E> {
+        fun <E : Entry> findWhereFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): Sequence<E> {
             return get<EntryDatabase>(EntryDatabase::class.java).findEntriesFromPage(klass, pageId, filter)
         }
     }
@@ -219,6 +220,23 @@ class Query<E : Entry>(private val klass: KClass<E>) {
  */
 infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
     val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
+    if (triggers.isEmpty()) return
+    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
+}
+
+/**
+ * Trigger all triggers for all entries in a sequence.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: Sequence<SomeEntry> = ...
+ * entries triggerAllFor player
+ * ```
+ *
+ * @param player The player to trigger the triggers for.
+ */
+infix fun <E : TriggerEntry> Sequence<E>.triggerAllFor(player: Player) {
+    val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }.toList()
     if (triggers.isEmpty()) return
     get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
 }
@@ -259,6 +277,24 @@ infix fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
 }
 
 /**
+ * Trigger all triggers for all entries in a sequence.
+ * This is a convenience method for [triggerAllFor] that takes a sequence of [Ref].
+ *
+ * Example:
+ * ```kotlin
+ * val triggers: Sequence<Ref<TriggerableEntry>> = ...
+ * triggers triggerEntriesFor player
+ * ```
+ *
+ * @param player The player to trigger the triggers for.
+ */
+infix fun Sequence<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
+    val triggers = this.map { EntryTrigger(it) }.toList()
+    if (triggers.isEmpty()) return
+    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
+}
+
+/**
  * Trigger a specific trigger for a player.
  *
  * Example:
@@ -269,7 +305,22 @@ infix fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
  *
  * @param player The player to trigger the trigger for.
  */
-infix fun EventTrigger.triggerFor(player: Player) = listOf(this) triggerFor  player
+infix fun EventTrigger.triggerFor(player: Player) = listOf(this) triggerFor player
+
+/**
+ * Forcefully Trigger a specific trigger for a player.
+ *
+ * This will bypass the event queue and execute the event immediately.
+ * This is useful for events that need to be executed immediately.
+ * **This should only be used sparingly.**
+ *
+ * Example:
+ * ```kotlin
+ * val trigger: EventTrigger = ...
+ * trigger forceTriggerFor player
+ * ```
+ */
+suspend infix fun EventTrigger.forceTriggerFor(player: Player) = listOf(this) forceTriggerFor player
 
 /**
  * Trigger all triggers for a player.
@@ -286,7 +337,22 @@ infix fun List<EventTrigger>.triggerFor(player: Player) {
     get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, this)
 }
 
-
+/**
+ * Forcefully Trigger all triggers for a player.
+ *
+ * This will bypass the event queue and execute the event immediately.
+ * This is useful for events that need to be executed immediately.
+ * **This should only be used sparingly.**
+ *
+ * Example:
+ * ```kotlin
+ * val triggers: List<EventTrigger> = ...
+ * triggers forceTriggerFor player
+ * ```
+ */
+suspend infix fun List<EventTrigger>.forceTriggerFor(player: Player) {
+    get<InteractionHandler>(InteractionHandler::class.java).forceTriggerActions(player, this)
+}
 
 
 /**
@@ -329,5 +395,24 @@ fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, contin
  */
 infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player) =
     startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
+
+
+/**
+ * If the player is not in a dialogue, trigger all triggers for all entries in a sequence.
+ * If the player is in a dialogue, it will trigger the next dialogue.
+ *
+ * This can be useful for actions that should not be triggered again if the player is already in a dialogue.
+ * Like clicking on a npc to start a conversation.
+ * As we don't want to start the conversation again
+ * if the player is already in a dialogue.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: Sequence<SomeEntry> = ...
+ * entries startDialogueWithOrTrigger player
+ * ```
+ */
+infix fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrNextDialogue(player: Player) =
+    toList().startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
 
 

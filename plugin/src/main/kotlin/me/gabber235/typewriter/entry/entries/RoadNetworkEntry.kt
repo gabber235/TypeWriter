@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entry.entries
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.LocationSerializer
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
@@ -9,6 +10,7 @@ import org.bukkit.Location
 
 val roadNetworkMaxDistance by snippet("road_network.distance.max", 30.0)
 
+@Tags("road-network")
 interface RoadNetworkEntry : ArtifactEntry {
     suspend fun loadRoadNetwork(gson: Gson): RoadNetwork
     suspend fun saveRoadNetwork(gson: Gson, network: RoadNetwork)

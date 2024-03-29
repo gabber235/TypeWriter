@@ -29,8 +29,8 @@ class NpcInteractEventEntry(
 
 @EntryListener(NpcInteractEventEntry::class)
 fun onNpcInteract(event: NpcInteractEvent, query: Query<NpcInteractEventEntry>) {
-    val entries: List<ZNPC> = Query findWhere { it.id == event.entry.id }
-    val identifiers = entries.map { it.id }
+    val entries: Sequence<ZNPC> = Query findWhere { it.id == event.entry.id }
+    val identifiers = entries.map { it.id }.toList()
 
     query findWhere {
         it.identifier.id in identifiers

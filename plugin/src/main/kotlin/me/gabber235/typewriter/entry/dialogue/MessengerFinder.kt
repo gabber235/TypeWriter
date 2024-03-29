@@ -4,6 +4,8 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
+import lirand.api.extensions.events.unregister
+import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.MessengerData
 import me.gabber235.typewriter.adapters.MessengerFilter
@@ -62,20 +64,18 @@ enum class MessengerState {
     CANCELLED,
 }
 
-open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: DE) {
-
-    protected val listener: Listener = object : Listener {}
-
+open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: DE) : Listener {
     open var state: MessengerState = MessengerState.RUNNING
         protected set
 
     open fun init() {
+        plugin.registerEvents(this)
     }
 
     open fun tick(cycle: Int) {}
 
     open fun dispose() {
-        HandlerList.unregisterAll(listener)
+        unregister()
     }
 
     open fun end() {
@@ -94,14 +94,6 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
 
     open val modifiers: List<Modifier>
         get() = entry.modifiers
-
-    protected inline fun <reified E : Event> listen(
-        priority: EventPriority = EventPriority.NORMAL,
-        ignoreCancelled: Boolean = false,
-        noinline block: (event: E) -> Unit,
-    ) {
-        plugin.listen(listener, priority, ignoreCancelled, block)
-    }
 }
 
 class EmptyDialogueMessenger(player: Player, entry: DialogueEntry) : DialogueMessenger<DialogueEntry>(player, entry) {

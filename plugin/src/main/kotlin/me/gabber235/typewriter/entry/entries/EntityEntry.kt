@@ -42,7 +42,7 @@ interface PropertySupplier<P : EntityProperty> {
 
 interface PropertyCollector<P : EntityProperty> {
     val type: KClass<P>
-    fun collect(player: Player): P?
+    fun collect(player: Player): List<P>
 }
 
 @Tags("entity_data")
@@ -66,6 +66,8 @@ interface EntityDefinitionEntry : ManifestEntry, SpeakerEntry, EntityCreator {
 
 @Tags("entity_instance")
 interface EntityInstanceEntry : AudienceFilterEntry {
+    val definition: Ref<out EntityDefinitionEntry>
+
     @WithRotation
     val spawnLocation: Location
 }

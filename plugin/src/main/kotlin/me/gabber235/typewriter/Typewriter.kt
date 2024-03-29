@@ -1,5 +1,6 @@
 package me.gabber235.typewriter
 
+import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
@@ -101,6 +102,8 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             server.pluginManager.disablePlugin(this)
             return
         }
+
+        PacketEvents.getAPI().settings.downsampleColors(false)
 
 
         get<EntryDatabase>().initialize()

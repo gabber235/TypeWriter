@@ -20,7 +20,6 @@ import me.gabber235.typewriter.entry.quest.trackQuest
 import me.gabber235.typewriter.entry.quest.unTrackQuest
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkContentMode
 import me.gabber235.typewriter.events.TypewriterReloadEvent
-import me.gabber235.typewriter.facts.formattedName
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.ui.CommunicationHandler
 import me.gabber235.typewriter.utils.ThreadType
@@ -58,6 +57,8 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
     assetsCommands()
 
     roadNetworkCommands()
+
+    manifestCommands()
 }
 
 private fun LiteralDSLBuilder.reloadCommands() {
@@ -75,8 +76,8 @@ private fun LiteralDSLBuilder.factsCommands() {
     literal("facts") {
         requiresPermissions("typewriter.facts")
         fun Player.listCachedFacts(source: CommandSender) {
-            val factEntries = Query.find<ReadableFactEntry>()
-            if (factEntries.isEmpty()) {
+            val factEntries = Query.find<ReadableFactEntry>().toList()
+            if (factEntries.none()) {
                 source.msg("There are no facts available.")
                 return
             }
@@ -122,8 +123,8 @@ private fun LiteralDSLBuilder.factsCommands() {
             literal("reset") {
                 executes {
                     val p = player.get()
-                    val entries = Query.find<WritableFactEntry>()
-                    if (entries.isEmpty()) {
+                    val entries = Query.find<WritableFactEntry>().toList()
+                    if (entries.none()) {
                         source.msg("There are no facts available.")
                         return@executes
                     }
@@ -152,8 +153,8 @@ private fun LiteralDSLBuilder.factsCommands() {
 
         literal("reset") {
             executesPlayer {
-                val entries = Query.find<WritableFactEntry>()
-                if (entries.isEmpty()) {
+                val entries = Query.find<WritableFactEntry>().toList()
+                if (entries.none()) {
                     source.msg("There are no facts available.")
                     return@executesPlayer
                 }
@@ -248,32 +249,6 @@ private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
             }
         }
     }
-
-    literal("simulate") {
-        requiresPermissions("typewriter.cinematic.start")
-
-        argument("cinematic", CinematicType) { cinematicId ->
-            executesPlayer {
-                CinematicStartTrigger(
-                    cinematicId.get(),
-                    emptyList(),
-                    override = true,
-                    simulate = true
-                ) triggerFor source
-            }
-
-            argument("player", PlayerType) { player ->
-                executes {
-                    CinematicStartTrigger(
-                        cinematicId.get(),
-                        emptyList(),
-                        override = true,
-                        simulate = true
-                    ) triggerFor player.get()
-                }
-            }
-        }
-    }
 }
 
 private fun LiteralDSLBuilder.triggerCommand() = literal("trigger") {
@@ -347,7 +322,7 @@ private fun LiteralDSLBuilder.assetsCommands() {
     }
 }
 
-private fun LiteralDSLBuilder.roadNetworkCommands() {
+private fun LiteralDSLBuilder.roadNetworkCommands() =
     literal("roadNetwork") {
         requiresPermissions("typewriter.roadNetwork")
         literal("edit") {
@@ -364,6 +339,39 @@ private fun LiteralDSLBuilder.roadNetworkCommands() {
                         RoadNetworkContentMode(context, source)
                     ) triggerFor source
                 }
+            }
+        }
+    }
+
+private fun LiteralDSLBuilder.manifestCommands() = literal("manifest") {
+    requiresPermissions("typewriter.manifest")
+    literal("inspect") {
+        requiresPermissions("typewriter.manifest.inspect")
+
+        fun Player.inspectManifest() {
+            val inEntries = Query.findWhere<AudienceEntry> { inAudience(it) }.toList()
+            if (inEntries.none()) {
+                msg("You are not in any audience entries.")
+                return
+            }
+
+            sendMini("\n\n")
+            msg("You are in the following audience entries:")
+            for (entry in inEntries) {
+                sendMini(
+                    "<hover:show_text:'<gray>${entry.id}'><click:copy_to_clipboard:${entry.id}><gray> - </gray><blue>${entry.formattedName}</blue></click></hover>"
+                )
+            }
+        }
+
+        executesPlayer {
+            source.inspectManifest()
+        }
+
+        argument("player", PlayerType) { player ->
+            requiresPermissions("typewriter.manifest.inspect.other")
+            executes {
+                player.get().inspectManifest()
             }
         }
     }

@@ -19,7 +19,7 @@ import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.logger
 import org.bukkit.entity.Player
 
-@Entry("mythicskill_cinematic", "Spawn a MythicMob during a cinematic", Colors.PURPLE, "fa6-solid:bolt-lightning")
+@Entry("mythicskill_cinematic", "Trigger a MythicSkill during a cinematic", Colors.PURPLE, "fa6-solid:bolt-lightning")
 /**
  * The `Mythic Skill Cinematic` cinematic entry triggers a skill during a cinematic.
  *
