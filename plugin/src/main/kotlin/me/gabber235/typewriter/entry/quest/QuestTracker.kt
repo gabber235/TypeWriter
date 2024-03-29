@@ -151,7 +151,8 @@ infix fun Player.isQuestActive(quest: Ref<QuestEntry>) = tracker?.isQuestActive(
 infix fun Player.isQuestCompleted(quest: Ref<QuestEntry>) = tracker?.isQuestCompleted(quest) ?: false
 fun Player.trackedQuest() = tracker?.trackedQuest()
 infix fun Player.isQuestTracked(quest: Ref<QuestEntry>): Boolean {
-    val trackedQuest = trackedQuest() ?: return false
+    val trackedQuest = trackedQuest()
+    if (!quest.isSet) return trackedQuest != null
     return trackedQuest == quest
 }
 
