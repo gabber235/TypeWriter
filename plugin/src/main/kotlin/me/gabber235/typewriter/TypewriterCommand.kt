@@ -368,6 +368,39 @@ private fun LiteralDSLBuilder.roadNetworkCommands() =
             }
         }
     }
+
+private fun LiteralDSLBuilder.manifestCommands() = literal("manifest") {
+    requiresPermissions("typewriter.manifest")
+    literal("inspect") {
+        requiresPermissions("typewriter.manifest.inspect")
+
+        fun Player.inspectManifest() {
+            val inEntries = Query.findWhere<AudienceEntry> { inAudience(it) }.toList()
+            if (inEntries.none()) {
+                msg("You are not in any audience entries.")
+                return
+            }
+
+            sendMini("\n\n")
+            msg("You are in the following audience entries:")
+            for (entry in inEntries) {
+                sendMini(
+                    "<hover:show_text:'<gray>${entry.id}'><click:copy_to_clipboard:${entry.id}><gray> - </gray><blue>${entry.formattedName}</blue></click></hover>"
+                )
+            }
+        }
+
+        executesPlayer {
+            source.inspectManifest()
+        }
+
+        argument("player", PlayerType) { player ->
+            requiresPermissions("typewriter.manifest.inspect.other")
+            executes {
+                player.get().inspectManifest()
+            }
+        }
+    }
 }
 
 inline fun <reified E : Entry> entryType() = EntryType(E::class)

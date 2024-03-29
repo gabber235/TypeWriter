@@ -10,6 +10,12 @@ import me.gabber235.typewriter.facts.FactData
 import org.bukkit.entity.Player
 import java.util.*
 
+val Entry.formattedName: String
+    get() = name.split(".")
+        .joinToString(" | ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+        .split("_")
+        .joinToString(" ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+
 interface Entry {
     val id: String
     val name: String
