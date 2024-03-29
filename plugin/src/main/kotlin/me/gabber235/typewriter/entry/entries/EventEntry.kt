@@ -88,9 +88,6 @@ data class CinematicStartTrigger(
     val pageId: String,
     val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val override: Boolean = false,
-    val simulate: Boolean = false,
-    val ignoreEntries: List<String> = emptyList(),
-    val minEndTime: Optional<Int> = Optional.empty(),
 ) : EventTrigger {
     override val id: String
         get() = "system.cinematic.start.$pageId"

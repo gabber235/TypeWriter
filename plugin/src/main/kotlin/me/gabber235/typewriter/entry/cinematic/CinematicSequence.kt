@@ -26,7 +26,6 @@ class CinematicSequence(
     private val player: Player,
     private val actions: List<CinematicAction>,
     private val triggers: List<Ref<TriggerableEntry>>,
-    private val minEndTime: Optional<Int>,
 ) {
     private var frame = STARTING_FRAME
 
@@ -73,7 +72,7 @@ class CinematicSequence(
         }
     }
 
-    private val canEnd get() = actions.all { it.canFinish(frame) } && minEndTime.map { frame >= it }.orElse(true)
+    private val canEnd get() = actions.all { it.canFinish(frame) }
 
     suspend fun end(force: Boolean = false) {
         if (frame == ENDED_FRAME || frame == STARTING_FRAME) return
