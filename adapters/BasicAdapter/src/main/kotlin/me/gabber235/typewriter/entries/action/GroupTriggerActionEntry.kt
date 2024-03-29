@@ -7,6 +7,7 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
 import me.gabber235.typewriter.entry.entries.GroupEntry
+import me.gabber235.typewriter.entry.entries.GroupId
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -44,7 +45,10 @@ class GroupTriggerActionEntry(
 
         val groupEntry = group.get() ?: return
 
-        val group = groupEntry.group(player) ?: return
+        val group = forceGroup
+            .map { groupEntry.group(GroupId(it)) }
+            .orElseGet { groupEntry.group(player) } ?: return
+        
         group.players.forEach {
             it.triggerCustomTriggers()
         }
