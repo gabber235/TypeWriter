@@ -66,6 +66,8 @@ interface EntityDefinitionEntry : ManifestEntry, SpeakerEntry, EntityCreator {
 
 @Tags("entity_instance")
 interface EntityInstanceEntry : AudienceFilterEntry {
+    val definition: Ref<out EntityDefinitionEntry>
+    
     @WithRotation
     val spawnLocation: Location
 }

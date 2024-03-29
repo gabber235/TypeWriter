@@ -65,4 +65,6 @@ class CommonActivityEntityDisplay(
     override fun playerHasEntity(playerId: UUID, entityId: Int): Boolean {
         return entities[playerId]?.contains(entityId) ?: false
     }
+
+    override fun location(playerId: UUID): Location? = activityManager?.location?.toLocation()
 }

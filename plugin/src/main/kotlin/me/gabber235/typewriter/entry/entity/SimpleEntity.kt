@@ -9,7 +9,7 @@ import me.gabber235.typewriter.utils.logErrorIfNull
 interface SimpleEntityDefinition : EntityDefinitionEntry
 
 interface SimpleEntityInstance : EntityInstanceEntry {
-    val definition: Ref<out SimpleEntityDefinition>
+    override val definition: Ref<out SimpleEntityDefinition>
     val data: List<Ref<EntityData<*>>>
     val activities: List<Ref<out EntityActivityEntry>>
 

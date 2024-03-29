@@ -11,7 +11,6 @@ class CachedInventoryComponent : ContentComponent, ItemsComponent {
     private var cachedInventory: Map<Int, IntractableItem>? = null
 
     override suspend fun initialize(player: Player) {
-        println("player.contentEditorCachedInventory: ${player.contentEditorCachedInventory}")
         cachedInventory = player.contentEditorCachedInventory?.mapIndexedNotNull { index, item ->
             item?.let { index to IntractableItem(it) {} }
         }?.toMap() ?: emptyMap()

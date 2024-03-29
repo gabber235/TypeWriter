@@ -9,7 +9,6 @@ plugins {
 allprojects {
     repositories {
         // Required
-        maven("https://jitpack.io")
         mavenCentral()
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://oss.sonatype.org/content/groups/public/")
@@ -20,6 +19,7 @@ allprojects {
         // Anvil GUI (Sub dependency of LirandAPI)
         maven("https://repo.codemc.io/repository/maven-snapshots/")
         maven("https://repo.opencollab.dev/maven-snapshots/")
+        maven("https://jitpack.io")
     }
 }
 

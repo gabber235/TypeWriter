@@ -9,8 +9,6 @@ import me.gabber235.typewriter.logger
 import org.bukkit.Location
 
 interface AdvancedEntityInstance : EntityInstanceEntry {
-    val definition: Ref<out EntityDefinitionEntry>
-
     override fun display(): AudienceFilter {
         val definition = definition.get()
         if (definition == null) {

@@ -1,7 +1,9 @@
 includeBuild("../plugin")
 
+val ignoringAdapters: List<String> = emptyList()
+
 val directories = file("./").listFiles()?.filter {
-    it.name.endsWith("Adapter") && it.isDirectory
+    it.name.endsWith("Adapter") && it.isDirectory && it.name !in ignoringAdapters
 } ?: emptyList()
 
 for (directory in directories) {

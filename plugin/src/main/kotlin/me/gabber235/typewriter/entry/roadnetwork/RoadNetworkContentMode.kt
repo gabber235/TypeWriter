@@ -156,10 +156,10 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
 
     private fun calculateEdgesFor(node: RoadNode) {
         jobs.add(DISPATCHERS_ASYNC.launch {
-            val generatedEdges =
+        val generatedEdges =
                 nodes
                     .filter { !modifications.containsRemoval(node.id, it.id) }
-                    .filter { it != node && it.location.distanceSquared(node.location) < roadNetworkMaxDistance * roadNetworkMaxDistance }
+                    .filter { it != node && it.location.world == node.location.world && it.location.distanceSquared(node.location) < roadNetworkMaxDistance * roadNetworkMaxDistance }
                     .mapNotNull { target ->
                         val pathFinder = PatheticMapper.newPathfinder(
                             PathingRuleSet.createAsyncRuleSet()
@@ -212,6 +212,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
 }
 
 internal fun Location.toPathPosition(): PathPosition = BukkitMapper.toPathPosition(this)
+internal fun PathPosition.toLocation(): Location = BukkitMapper.toLocation(this)
 
 internal fun RoadNode.material(modifications: List<RoadModification>): Material {
     val hasAdded = modifications.any { it is RoadModification.EdgeAddition && it.start == id }
@@ -265,14 +266,16 @@ internal class NetworkSavingComponent(
         cycle++
         if (changedOnCycle != Long.MAX_VALUE && cycle - changedOnCycle > 60 && !isSaving) {
             changedOnCycle = Long.MAX_VALUE
-            save()
+            job = DISPATCHERS_ASYNC.launch {
+                save()
+            }
         }
     }
 
-    private fun save() {
+    private suspend fun save() {
         val network = fetchNetwork()
         val ref = ref() ?: return
-        job = DISPATCHERS_ASYNC.launch {
+        DISPATCHERS_ASYNC.switchContext {
             roadNetworkManager.saveRoadNetwork(ref, network)
             job = null
         }
@@ -280,6 +283,7 @@ internal class NetworkSavingComponent(
 
     override suspend fun dispose(player: Player) {
         save()
+        changedOnCycle = Long.MAX_VALUE
     }
 }
 
