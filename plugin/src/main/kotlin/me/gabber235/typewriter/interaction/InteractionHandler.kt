@@ -129,13 +129,13 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     // When the plugin reloads, we need to end all interactions and create new ones.
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     suspend fun onReloadTypewriter(event: TypewriterReloadEvent) {
         resetAllInteractions()
     }
 
     // When a book is published, we need to end all interactions.
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     suspend fun onPublishBook(event: PublishedBookEvent) {
         resetAllInteractions()
     }

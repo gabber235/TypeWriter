@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entry
 
+import com.google.common.collect.ConcurrentHashMultiset
 import io.ktor.util.collections.*
 import me.gabber235.typewriter.entry.entries.EventTrigger
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
@@ -14,7 +15,7 @@ class FactWatcher(
     private val player: Player,
 ) {
     private val factCache = ConcurrentHashMap<Ref<ReadableFactEntry>, Int>()
-    private val listeners = ConcurrentSet<FactListener>()
+    private val listeners = ConcurrentMap<UUID, FactListener>()
 
     fun tick() {
         refresh()
@@ -39,6 +40,7 @@ class FactWatcher(
 
     private fun notifyListeners(ref: Ref<ReadableFactEntry>) {
         listeners
+            .values
             .filter { ref in it }
             .forEach { listener ->
                 listener.listener(player, ref)
@@ -49,8 +51,14 @@ class FactWatcher(
         facts: List<Ref<ReadableFactEntry>>,
         listener: (Player, Ref<ReadableFactEntry>) -> Unit
     ): FactListenerSubscription {
-        val id = UUID.randomUUID()
-        listeners.add(FactListener(id, facts, listener))
+        var id: UUID
+        do {
+            id = UUID.randomUUID()
+        } while (listeners.containsKey(id))
+
+        listeners[id] = FactListener(id, facts, listener)
+        println("Added listener with id $id for facts $facts")
+
         for (fact in facts) {
             factCache.computeIfAbsent(fact) { fact.get()?.readForPlayersGroup(player)?.value ?: 0 }
         }
@@ -59,10 +67,10 @@ class FactWatcher(
     }
 
     fun removeListener(subscription: FactListenerSubscription) {
-        listeners.removeIf { it.id == subscription.id }
+        listeners.remove(subscription.id)
 
         for (fact in factCache.keys.toList()) {
-            if (listeners.none { fact in it }) {
+            if (listeners.values.none { fact in it }) {
                 factCache.remove(fact)
             }
         }

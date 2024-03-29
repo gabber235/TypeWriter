@@ -33,11 +33,6 @@ class SidebarManager(
     private var lastTitle = ""
     private var lastLines = emptyList<String>()
 
-    init {
-        plugin.listen<PublishedBookEvent>(this) { dispose(false) }
-        plugin.listen<TypewriterReloadEvent>(this) { dispose(false) }
-    }
-
     fun dispose(force: Boolean) {
         if (force) unregister()
         disposeSidebar()
