@@ -5,18 +5,11 @@ import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Colored
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.FactListenerSubscription
-import me.gabber235.typewriter.entry.PlaceholderEntry
-import me.gabber235.typewriter.entry.Query
-import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.inAudience
-import me.gabber235.typewriter.entry.listenForFacts
-import me.gabber235.typewriter.entry.matches
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.quest.QuestStatus
 import me.gabber235.typewriter.entry.quest.isQuestActive
+import me.gabber235.typewriter.entry.quest.trackQuest
 import me.gabber235.typewriter.entry.quest.trackedQuest
-import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.events.AsyncQuestStatusUpdate
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.snippets.snippet
@@ -60,7 +53,7 @@ private val inactiveObjectiveDisplay by snippet("quest.objective.inactive", "<gr
 private val showingObjectiveDisplay by snippet("quest.objective.showing", "<white><display></white>")
 
 @Tags("objective")
-interface ObjectiveEntry : AudienceFilterEntry, PlaceholderEntry {
+interface ObjectiveEntry : AudienceFilterEntry, PlaceholderEntry, PriorityEntry {
     @Help("The quest that the objective is a part of.")
     val quest: Ref<QuestEntry>
 
@@ -91,7 +84,7 @@ interface ObjectiveEntry : AudienceFilterEntry, PlaceholderEntry {
 
 
 class ObjectiveAudienceFilter(
-    objective: Ref<ObjectiveEntry>,
+    private val objective: Ref<ObjectiveEntry>,
     private val criteria: List<Criteria>,
 ) : AudienceFilter(objective) {
     private val factWatcherSubscriptions = ConcurrentHashMap<UUID, FactListenerSubscription>()
@@ -120,6 +113,23 @@ class ObjectiveAudienceFilter(
         factWatcherSubscriptions.remove(player.uniqueId)?.cancel(player)
     }
 
+    override fun onPlayerFilterAdded(player: Player) {
+        super.onPlayerFilterAdded(player)
+        val quest = objective.get()?.quest ?: return
+        // If the player doesn't have a quest tracked. We should start tracking this one.
+        if (player.trackedQuest() == null) {
+            player.trackQuest(quest)
+            return
+        }
+        // If the player has a tracked quest, we only want to override it if the new quest has a higher priority.
+        val highestObjectivePriority = player.trackedShowingObjectives().maxOfOrNull { it.priority } ?: 0
+        if (objective.priority < highestObjectivePriority) {
+            return
+        }
+
+        player.trackQuest(quest)
+    }
+
     override fun dispose() {
         super.dispose()
         factWatcherSubscriptions.forEach { (playerId, subscription) ->
@@ -129,7 +139,7 @@ class ObjectiveAudienceFilter(
     }
 }
 
-fun Player.trackedShowingObjectives() = trackedQuest()?.let { questShowingObjectives(it) } ?: emptyList()
+fun Player.trackedShowingObjectives() = trackedQuest()?.let { questShowingObjectives(it) } ?: emptySequence()
 
 fun Player.questShowingObjectives(quest: Ref<QuestEntry>) = Query.findWhere<ObjectiveEntry> { objectiveEntry ->
     objectiveEntry.quest == quest && inAudience(objectiveEntry.ref())

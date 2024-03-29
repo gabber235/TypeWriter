@@ -70,9 +70,9 @@ class QuestTracker(
         if (oldStatus == null) return
         if (oldStatus == status) return
 
-        if (oldStatus == QuestStatus.INACTIVE && status == QuestStatus.ACTIVE) {
+        if (oldStatus != QuestStatus.ACTIVE && status == QuestStatus.ACTIVE) {
             trackQuest(ref)
-        } else if (trackedQuest == ref && status != QuestStatus.ACTIVE) {
+        } else if (trackedQuest == ref) {
             unTrackQuest()
         }
 

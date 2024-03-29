@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.ObjectiveEntry
 import me.gabber235.typewriter.entry.entries.QuestEntry
 import org.bukkit.Location
+import java.util.*
 
 @Entry("location_objective", "A location objective definition", Colors.BLUE_VIOLET, "streamline:target-solid")
 /**
@@ -35,4 +36,5 @@ class LocationObjectiveEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val display: String = "",
     val targetLocation: Location,
+    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry

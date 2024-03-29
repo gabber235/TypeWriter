@@ -8,6 +8,7 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.ObjectiveEntry
 import me.gabber235.typewriter.entry.entries.QuestEntry
+import java.util.*
 
 @Entry("objective", "An objective definition", Colors.BLUE_VIOLET, "streamline:target-solid")
 /**
@@ -30,4 +31,5 @@ class SimpleObjectiveEntry(
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
     override val display: String = "",
+    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry
