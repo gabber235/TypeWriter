@@ -10,5 +10,17 @@ interface ActivityEntityDisplay {
         get() = creator as? EntityDefinitionEntry
     fun playerHasEntity(playerId: UUID, entityId: Int): Boolean
 
+    /**
+     * The location of the entity for the player.
+     */
     fun location(playerId: UUID): Location?
+
+    /**
+     * Whether the player can view the entity.
+     * This is regardless of whether the entity is spawned in for the player.
+     * Just that the player has the ability to see the entity.
+     *
+     * @param playerId The player to check.
+     */
+    fun canView(playerId: UUID): Boolean
 }

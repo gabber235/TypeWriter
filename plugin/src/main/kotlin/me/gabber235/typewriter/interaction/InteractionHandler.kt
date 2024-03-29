@@ -1,6 +1,6 @@
 package me.gabber235.typewriter.interaction
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.server.registerSuspendingEvents
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.entry.entries.Event
@@ -12,7 +12,6 @@ import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
-import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority

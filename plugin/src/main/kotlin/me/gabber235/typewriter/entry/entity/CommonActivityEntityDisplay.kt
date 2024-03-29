@@ -67,4 +67,6 @@ class CommonActivityEntityDisplay(
     }
 
     override fun location(playerId: UUID): Location? = activityManager?.location?.toLocation()
+
+    override fun canView(playerId: UUID): Boolean = canConsider(playerId)
 }

@@ -36,6 +36,7 @@ class InteractEntityObjectivesPathStream(
         Query.findWhere<EntityInstanceEntry> { it.ref() !in ignoreInstances && it.definition in definitions }
             .mapNotNull { manager[it.ref()] }
             .filterIsInstance<ActivityEntityDisplay>()
+            .filter { it.canView(player.uniqueId) }
             .mapNotNull { it.location(player.uniqueId) }
             .toList()
     })

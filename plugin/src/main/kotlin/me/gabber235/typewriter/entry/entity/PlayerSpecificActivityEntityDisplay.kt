@@ -72,4 +72,5 @@ class PlayerSpecificActivityEntityDisplay(
     }
 
     override fun location(playerId: UUID): Location? = activityManagers[playerId]?.location?.toLocation()
+    override fun canView(playerId: UUID): Boolean = canConsider(playerId)
 }
