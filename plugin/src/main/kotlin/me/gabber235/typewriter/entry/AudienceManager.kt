@@ -67,6 +67,7 @@ class AudienceManager : Listener {
                 !it::class.hasAnnotation<ChildOnly>()
             }
             .map { it.ref() }
+            .toList()
 
         displays = entries.associate { it.ref() to it.display() }
 

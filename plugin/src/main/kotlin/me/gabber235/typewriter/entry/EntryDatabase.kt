@@ -28,9 +28,9 @@ interface EntryDatabase {
     fun initialize()
     fun loadEntries()
 
-    fun <E : Entry> findEntries(klass: KClass<E>, predicate: (E) -> Boolean): List<E>
+    fun <E : Entry> findEntries(klass: KClass<E>, predicate: (E) -> Boolean): Sequence<E>
 
-    fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E>
+    fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): Sequence<E>
 
     fun <E : Entry> findEntry(klass: KClass<E>, predicate: (E) -> Boolean): E?
 
@@ -97,14 +97,14 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
         }
     }
 
-    override fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
-        return entries.asSequence().filterIsInstance(klass.java).filter(predicate).toList()
+    override fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): Sequence<T> {
+        return entries.asSequence().filterIsInstance(klass.java).filter(predicate)
     }
 
-    override fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E> {
+    override fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): Sequence<E> {
         return pages.firstOrNull { it.id == pageId }?.entries?.asSequence()?.filterIsInstance(klass.java)
-            ?.filter(filter)?.toList()
-            ?: emptyList()
+            ?.filter(filter)
+            ?: emptySequence()
     }
 
     override fun <T : Entry> findEntry(klass: KClass<T>, predicate: (T) -> Boolean): T? {

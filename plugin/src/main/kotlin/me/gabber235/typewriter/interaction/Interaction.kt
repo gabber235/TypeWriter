@@ -63,7 +63,7 @@ class Interaction(val player: Player) : KoinComponent {
         val newTriggers =
             actions.flatMap { it.triggers }.map { EntryTrigger(it) }.filter {
                 it !in event
-            } // Stops infinite loops
+            }.toList() // Stops infinite loops
         if (newTriggers.isNotEmpty()) {
             interactionHandler.triggerActions(event.player, newTriggers)
         }
@@ -149,23 +149,14 @@ class Interaction(val player: Player) : KoinComponent {
         this.cinematic = null
         cinematic?.end()
 
-        val entries =
+        val actions =
             Query.findWhereFromPage<CinematicEntry>(trigger.pageId) {
                 it.criteria.matches(event.player)
-                        && it.id !in trigger.ignoreEntries
-            }
+            }.map { it.create(event.player) }.toList()
 
-        if (entries.isEmpty() && !trigger.simulate) return
+        if (actions.isEmpty()) return
 
-        val actions = entries.mapNotNull {
-            if (trigger.simulate) {
-                it.createSimulating(player)
-            } else {
-                it.create(player)
-            }
-        }
-
-        this.cinematic = CinematicSequence(trigger.pageId, player, actions, trigger.triggers, trigger.minEndTime)
+        this.cinematic = CinematicSequence(trigger.pageId, player, actions, trigger.triggers)
     }
 
     private suspend fun handleContent(event: Event) {
@@ -184,7 +175,7 @@ class Interaction(val player: Player) : KoinComponent {
 
         val trigger = event.triggers.asSequence().filterIsInstance<ContentModeTrigger>().firstOrNull() ?: return
 
-        listOf(DIALOGUE_END, CINEMATIC_END) triggerFor  player
+        listOf(DIALOGUE_END, CINEMATIC_END) triggerFor player
 
         val content = content
         if (content != null) {

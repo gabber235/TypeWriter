@@ -41,8 +41,8 @@ private fun onNpcInteract(player: Player, identifier: String, query: Query<NpcIn
 }
 
 private fun onReferenceNpcInteract(player: Player, npcId: Int, query: Query<NpcInteractEventEntry>) {
-    val references: List<CitizensNpc> = Query findWhere { it.npcId == npcId }
-    val identifiers = references.map { it.id }
+    val references: Sequence<CitizensNpc> = Query findWhere { it.npcId == npcId }
+    val identifiers = references.map { it.id }.toList()
 
     query.findWhere {
         it.identifier.id in identifiers

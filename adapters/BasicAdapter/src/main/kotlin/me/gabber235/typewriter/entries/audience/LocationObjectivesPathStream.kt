@@ -31,6 +31,6 @@ class LocationObjectivesPathStream(
     val road: Ref<RoadNetworkEntry> = emptyRef(),
 ) : AudienceEntry {
     override fun display(): AudienceDisplay = MultiPathStreamDisplay(road, endLocations = { player ->
-        player.trackedShowingObjectives().filterIsInstance<LocationObjectiveEntry>().map { it.targetLocation }
+        player.trackedShowingObjectives().filterIsInstance<LocationObjectiveEntry>().map { it.targetLocation }.toList()
     })
 }

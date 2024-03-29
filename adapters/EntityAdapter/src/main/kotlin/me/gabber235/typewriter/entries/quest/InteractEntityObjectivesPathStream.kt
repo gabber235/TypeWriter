@@ -37,5 +37,6 @@ class InteractEntityObjectivesPathStream(
             .mapNotNull { manager[it.ref()] }
             .filterIsInstance<ActivityEntityDisplay>()
             .mapNotNull { it.location(player.uniqueId) }
+            .toList()
     })
 }

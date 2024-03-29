@@ -43,7 +43,7 @@ class QuestTracker(
 
     private fun refreshWatchedFacts() {
         factWatchSubscription?.cancel(player)
-        val facts = Query.find<QuestEntry>().flatMap { it.facts }
+        val facts = Query.find<QuestEntry>().flatMap { it.facts }.toList()
         factWatchSubscription = player.listenForFacts(
             facts,
             listener = { _, ref ->

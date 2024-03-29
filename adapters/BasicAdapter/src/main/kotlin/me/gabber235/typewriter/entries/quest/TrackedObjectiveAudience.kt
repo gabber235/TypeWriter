@@ -35,7 +35,7 @@ class TrackedObjectiveAudience(
 class TrackedObjectiveAudienceFilter(
     ref: Ref<out AudienceFilterEntry>
 ) : AudienceFilter(ref), TickableDisplay {
-    override fun filter(player: Player): Boolean = player.trackedShowingObjectives().isNotEmpty()
+    override fun filter(player: Player): Boolean = player.trackedShowingObjectives().any()
 
     override fun tick() {
         consideredPlayers.forEach { it.refresh() }
