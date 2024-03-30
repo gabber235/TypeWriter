@@ -39,8 +39,10 @@ class BookNotifier extends StateNotifier<Book> {
     String name, [
     PageType type = PageType.static,
     String chapter = "",
+    int priority = 0,
   ]) async {
-    final page = Page(pageName: name, type: type, chapter: chapter);
+    final page =
+        Page(pageName: name, type: type, chapter: chapter, priority: priority);
     await ref.read(communicatorProvider).createPage(page);
     state = state.copyWith(
       pages: [...state.pages, page],

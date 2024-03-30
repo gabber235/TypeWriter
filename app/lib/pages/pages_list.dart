@@ -682,8 +682,16 @@ class AddPageDialogue extends HookConsumerWidget {
   final PageType? fixedType;
   final bool autoNavigate;
 
-  Future<void> _addPage(WidgetRef ref, String name, PageType type) async {
-    await ref.read(bookProvider.notifier).createPage(name, type, chapter);
+  Future<void> _addPage(
+    WidgetRef ref,
+    String name,
+    PageType type,
+    String chapter,
+    int priority,
+  ) async {
+    await ref
+        .read(bookProvider.notifier)
+        .createPage(name, type, chapter, priority);
 
     if (!autoNavigate) return;
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));
@@ -707,9 +715,14 @@ class AddPageDialogue extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pagesNames = ref.watch(_pageNamesProvider);
-    final controller = useTextEditingController();
+    final nameController = useTextEditingController();
     final isNameValid = useState(false);
     final type = useState(fixedType ?? PageType.sequence);
+    final chapterController = useTextEditingController(text: chapter);
+    final priorityController = useTextEditingController(text: "0");
+
+    final chapterFocus = useFocusNode();
+    final priorityFocus = useFocusNode();
 
     return AlertDialog(
       title: Text(
@@ -723,7 +736,7 @@ class AddPageDialogue extends HookConsumerWidget {
         children: [
           ValidatedTextField<String>(
             value: "",
-            controller: controller,
+            controller: nameController,
             name: "Page Name",
             icon: TWIcons.book,
             validator: (value) {
@@ -755,6 +768,44 @@ class AddPageDialogue extends HookConsumerWidget {
               onChanged: (value) => type.value = value,
             ),
           ],
+          const SizedBox(height: 12),
+          ExpansionTile(
+            title: const Text("Advanced"),
+            shape: const RoundedRectangleBorder(),
+            children: [
+              const SizedBox(height: 12),
+              FormattedTextField(
+                focus: chapterFocus,
+                controller: chapterController,
+                text: chapter,
+                hintText: "Chapter Name",
+                icon: TWIcons.book,
+                inputFormatters: [
+                  TextInputFormatter.withFunction(
+                    (oldValue, newValue) => newValue.copyWith(
+                      text: newValue.text
+                          .toLowerCase()
+                          .replaceAll(" ", ".")
+                          .replaceAll("_", ".")
+                          .replaceAll("-", "."),
+                    ),
+                  ),
+                  FilteringTextInputFormatter.singleLineFormatter,
+                  FilteringTextInputFormatter.allow(RegExp("[a-z0-9.]")),
+                ],
+              ),
+              const SizedBox(height: 12),
+              FormattedTextField(
+                focus: priorityFocus,
+                controller: priorityController,
+                hintText: "Priority",
+                icon: TWIcons.priority,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r"^-?\d*")),
+                ],
+              ),
+            ],
+          ),
         ],
       ),
       actions: [
@@ -771,8 +822,14 @@ class AddPageDialogue extends HookConsumerWidget {
               ? null
               : () async {
                   final navigator = Navigator.of(context);
-                  await _addPage(ref, controller.text, type.value);
-                  navigator.pop(controller.text);
+                  await _addPage(
+                    ref,
+                    nameController.text,
+                    type.value,
+                    chapterController.text,
+                    int.tryParse(priorityController.text) ?? 0,
+                  );
+                  navigator.pop(nameController.text);
                 },
           label: const Text("Add"),
           icon: const Iconify(TWIcons.plus),
@@ -992,7 +1049,7 @@ class ChangePagePriorityDialogue extends HookConsumerWidget {
         hintText: "Priority",
         icon: TWIcons.book,
         inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
+          FilteringTextInputFormatter.allow(RegExp(r"^-?\d*")),
         ],
         onSubmitted: (value) async =>
             _changePriority(context, ref.passing, int.parse(value), changed),
