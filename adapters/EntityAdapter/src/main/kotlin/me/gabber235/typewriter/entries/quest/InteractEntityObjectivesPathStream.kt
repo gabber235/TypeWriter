@@ -11,7 +11,7 @@ import org.koin.java.KoinJavaComponent
 @Entry(
     "interact_entity_objectives_path_stream",
     "A Path Stream to Interact Entity Objectives",
-    Colors.MEDIUM_SEA_GREEN,
+    Colors.GREEN,
     "material-symbols:conversion-path"
 )
 /**

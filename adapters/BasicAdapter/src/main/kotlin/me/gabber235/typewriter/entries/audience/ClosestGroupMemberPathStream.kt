@@ -13,7 +13,7 @@ import me.gabber235.typewriter.entry.roadnetwork.gps.PathStreamDisplay
 @Entry(
     "closest_group_member_path_stream",
     "A Path Stream to the Closest Group Member",
-    Colors.MEDIUM_SEA_GREEN,
+    Colors.GREEN,
     "material-symbols:conversion-path"
 )
 /**

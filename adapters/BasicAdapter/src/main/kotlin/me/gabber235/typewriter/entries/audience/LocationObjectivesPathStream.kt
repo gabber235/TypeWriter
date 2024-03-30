@@ -15,7 +15,7 @@ import me.gabber235.typewriter.entries.quest.LocationObjectiveEntry
 @Entry(
     "location_objectives_path_stream",
     "A Path Stream to tracked Location Objectives",
-    Colors.MEDIUM_SEA_GREEN,
+    Colors.GREEN,
     "material-symbols:conversion-path"
 )
 /**
