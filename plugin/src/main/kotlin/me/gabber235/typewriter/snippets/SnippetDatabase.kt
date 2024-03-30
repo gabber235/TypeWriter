@@ -9,9 +9,9 @@ import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 interface SnippetDatabase {
-    fun get(path: String, default: Any): Any
-    fun <T : Any> getSnippet(path: String, klass: KClass<T>, default: T): T
-    fun registerSnippet(path: String, defaultValue: Any)
+    fun get(path: String, default: Any, comment: String = ""): Any
+    fun <T : Any> getSnippet(path: String, klass: KClass<T>, default: T, comment: String = ""): T
+    fun registerSnippet(path: String, defaultValue: Any, comment: String = "")
 }
 
 class SnippetDatabaseImpl : SnippetDatabase, KoinComponent {
@@ -26,11 +26,14 @@ class SnippetDatabaseImpl : SnippetDatabase, KoinComponent {
 
     private val ymlConfiguration by reloadable { YamlConfiguration.loadConfiguration(file) }
 
-    override fun get(path: String, default: Any): Any {
+    override fun get(path: String, default: Any, comment: String): Any {
         val value = ymlConfiguration.get(path)
 
         if (value == null) {
             ymlConfiguration.set(path, default)
+            if (comment.isNotBlank()) {
+                ymlConfiguration.setComments(path, comment.lines())
+            }
             ymlConfiguration.save(file)
             return default
         }
@@ -38,13 +41,16 @@ class SnippetDatabaseImpl : SnippetDatabase, KoinComponent {
         return value
     }
 
-    override fun <T : Any> getSnippet(path: String, klass: KClass<T>, default: T): T {
+    override fun <T : Any> getSnippet(path: String, klass: KClass<T>, default: T, comment: String): T {
         val value = get(path, default)
 
         val casted = klass.safeCast(value)
 
         if (casted == null) {
             ymlConfiguration.set(path, default)
+            if (comment.isNotBlank()) {
+                ymlConfiguration.setComments(path, comment.lines())
+            }
             ymlConfiguration.save(file)
             return default
         }
@@ -52,7 +58,7 @@ class SnippetDatabaseImpl : SnippetDatabase, KoinComponent {
         return casted
     }
 
-    override fun registerSnippet(path: String, defaultValue: Any) {
-        get(path, defaultValue)
+    override fun registerSnippet(path: String, defaultValue: Any, comment: String) {
+        get(path, defaultValue, comment)
     }
 }

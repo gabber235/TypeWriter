@@ -24,7 +24,11 @@ import org.patheloper.api.wrapper.PathPosition
 import org.patheloper.mapping.PatheticMapper
 import java.util.*
 
-private val pathStreamRefreshTime by snippet("path_stream.refresh_time", 3000)
+private val pathStreamRefreshTime by snippet(
+    "path_stream.refresh_time",
+    1700,
+    "The time in milliseconds between a new stream being calculated.",
+)
 
 class PathStreamDisplay(
     private val ref: Ref<RoadNetworkEntry>,
