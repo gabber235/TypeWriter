@@ -80,6 +80,7 @@ fun Component.addPaddingBeforeLines(padding: String = "    "): Component {
 }
 
 fun Component.splitPercentage(percentage: Double): Component {
+    if (percentage >= 1.0) return this
     val components = iterable(ComponentIteratorType.DEPTH_FIRST)
 
     val message = components.first().plainText()

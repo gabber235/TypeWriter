@@ -15,10 +15,7 @@ import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.around
-import me.gabber235.typewriter.utils.asMini
-import me.gabber235.typewriter.utils.asMiniWithResolvers
-import me.gabber235.typewriter.utils.loopingDistance
+import me.gabber235.typewriter.utils.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
@@ -59,11 +56,14 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
     }
 
+    private val typeDuration = entry.duration.toTicks()
+
     private var selectedIndex = 0
     private val selected get() = usableOptions.getOrNull(selectedIndex)
 
     private var usableOptions: List<Option> = emptyList()
     private var speakerDisplayName = ""
+    private var lastCycle = 0
 
     override val triggers: List<Ref<out TriggerableEntry>>
         get() = entry.triggers + (selected?.triggers ?: emptyList())
@@ -98,10 +98,11 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         var newIndex = (index + dif) % usableOptions.size
         while (newIndex < 0) newIndex += usableOptions.size
         selectedIndex = newIndex
-        tick(0)
+        tick(lastCycle)
     }
 
     override fun tick(cycle: Int) {
+        lastCycle = cycle
         if (state != MessengerState.RUNNING) return
 
         // When there are no options, just go to the next dialogue
@@ -110,14 +111,20 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             return
         }
 
-        if (cycle % 100 > 0) {
+        if (cycle % 100 > 0 && cycle > typeDuration) {
             // Only update periodically to avoid spamming the player
             return
         }
 
+        val typePercentage =
+            if (typeDuration > 0) {
+                (cycle / entry.duration.toTicks().toDouble()).coerceIn(0.0, 1.0)
+            } else 1.0
+        val text = entry.text.parsePlaceholders(player).asMini().splitPercentage(typePercentage)
+
         val message = optionFormat.asMiniWithResolvers(
             Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(player)),
-            Placeholder.parsed("text", entry.text.parsePlaceholders(player)),
+            Placeholder.component("text", text),
             Placeholder.component("options", formatOptions()),
         )
 

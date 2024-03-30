@@ -7,6 +7,7 @@ import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
+import java.time.Duration
 
 @Entry("option", "Display a list of options to the player", "#4CAF50", "fa6-solid:list")
 /**
@@ -29,6 +30,8 @@ class OptionDialogueEntry(
     val text: String = "",
     @Help("The options for the player to choose from.")
     val options: List<Option> = emptyList(),
+    @Help("The duration it takes to type out the message. If the duration is zero, the message will be displayed instantly.")
+    val duration: Duration = Duration.ZERO,
 ) : DialogueEntry
 
 data class Option(
