@@ -25,6 +25,4 @@ class SimpleSidebarEntry(
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val title: String = "",
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : SidebarEntry {
-    override fun display(): AudienceFilter = PassThroughFilter(ref())
-}
+) : SidebarEntry

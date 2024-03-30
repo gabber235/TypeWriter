@@ -98,7 +98,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         typeWriterCommand()
 
         if (!server.pluginManager.isPluginEnabled("packetevents")) {
-            logger.warning("PacketEvents is not enabled, Typewriter will not work without it. Shutting down...");
+            logger.warning("PacketEvents is not enabled, Typewriter will not work without it. Shutting down...")
             server.pluginManager.disablePlugin(this)
             return
         }

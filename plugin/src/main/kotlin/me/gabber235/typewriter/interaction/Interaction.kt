@@ -27,7 +27,6 @@ class Interaction(val player: Player) : KoinComponent {
     internal var content: ContentEditor? = null
     internal val questTracker: QuestTracker = QuestTracker(player)
     internal val factWatcher: FactWatcher = FactWatcher(player)
-    private val sidebarManager: SidebarManager = SidebarManager(player)
 
     private var scheduledEvent: Event? = null
     private val eventMutex = Mutex()
@@ -80,7 +79,6 @@ class Interaction(val player: Player) : KoinComponent {
         cinematic?.tick()
         content?.tick()
         factWatcher.tick()
-        sidebarManager.tick()
     }
 
     private suspend fun runSchedule() {
@@ -262,6 +260,5 @@ class Interaction(val player: Player) : KoinComponent {
         cinematic?.end(force = true)
         content?.dispose()
         questTracker.dispose()
-        sidebarManager.dispose(force = true)
     }
 }
