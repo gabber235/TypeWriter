@@ -17,6 +17,7 @@ import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.Duration
 
 class Interaction(val player: Player) : KoinComponent {
     private var job: Job
@@ -31,6 +32,8 @@ class Interaction(val player: Player) : KoinComponent {
     private var scheduledEvent: Event? = null
     private val eventMutex = Mutex()
 
+    private var lastTickTime = System.currentTimeMillis()
+
     val hasDialogue: Boolean
         get() = dialogue != null
 
@@ -44,12 +47,18 @@ class Interaction(val player: Player) : KoinComponent {
         job = DISPATCHERS_ASYNC.launch {
             while (plugin.isEnabled) {
                 val startTime = System.currentTimeMillis()
-                tick()
+                eventMutex.withLock {
+                    runSchedule()
+                }
+                val now = System.currentTimeMillis()
+                val deltaTime = now - lastTickTime
+                lastTickTime = now
+                tick(Duration.ofMillis(deltaTime))
                 val endTime = System.currentTimeMillis()
                 // Wait for the remainder or the tick
                 val wait = TICK_MS - (endTime - startTime) - AVERAGE_SCHEDULING_DELAY_MS
                 if (wait > 0) delay(wait)
-                else logger.warning("The interaction for ${player.name} is running behind! Took ${endTime - startTime}ms")
+                else logger.fine("The interaction for ${player.name} is running behind! Took ${endTime - startTime}ms")
             }
         }
     }
@@ -71,12 +80,9 @@ class Interaction(val player: Player) : KoinComponent {
         runSchedule()
     }
 
-    suspend fun tick() {
-        eventMutex.withLock {
-            runSchedule()
-        }
-        dialogue?.tick()
-        cinematic?.tick()
+    suspend fun tick(deltaTime: Duration) {
+        dialogue?.tick(deltaTime)
+        cinematic?.tick(deltaTime)
         content?.tick()
         factWatcher.tick()
     }

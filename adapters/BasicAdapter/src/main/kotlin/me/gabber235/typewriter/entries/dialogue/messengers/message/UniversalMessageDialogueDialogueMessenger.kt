@@ -11,6 +11,7 @@ import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.sendMiniWithResolvers
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
+import java.time.Duration
 
 val messageFormat: String by snippet(
     "dialogue.message.format",
@@ -30,9 +31,9 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
     }
 
-    override fun tick(cycle: Int) {
-        super.tick(cycle)
-        if (cycle == 0) {
+    override fun tick(playTime: Duration) {
+        super.tick(playTime)
+        if (playTime.isZero) {
             player.sendMessageDialogue(entry.text, entry.speakerDisplayName)
             state = MessengerState.FINISHED
         }

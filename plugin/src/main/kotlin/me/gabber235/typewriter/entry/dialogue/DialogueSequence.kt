@@ -20,6 +20,7 @@ import me.gabber235.typewriter.utils.playSound
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.Duration
 
 class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) : KoinComponent {
     private val messengerFinder: MessengerFinder by inject()
@@ -27,7 +28,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 
     private var currentEntry: DialogueEntry = initialEntry
     private var currentMessenger = messengerFinder.findMessenger(player, initialEntry)
-    private var cycle = 0
+    private var playTime = Duration.ZERO
     var isActive = false
 
     val triggers: List<Ref<out TriggerableEntry>>
@@ -36,7 +37,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 
     fun init() {
         setup()
-        tick()
+        tick(playTime)
         DISPATCHERS_ASYNC.launch {
             AsyncDialogueStartEvent(player).callEvent()
         }
@@ -44,15 +45,16 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 
     private fun setup() {
         isActive = true
-        cycle = 0
+        playTime = Duration.ZERO
         currentMessenger.init()
         player.playSpeakerSound(currentEntry.speaker.get())
         player.startBlockingMessages()
         player.startBlockingActionBar()
     }
 
-    fun tick() {
+    fun tick(deltaTime: Duration) {
         if (!isActive) return
+        playTime += deltaTime
 
         if (currentMessenger.state == MessengerState.FINISHED) {
             isActive = false
@@ -62,7 +64,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
             DIALOGUE_END triggerFor player
         }
 
-        currentMessenger.tick(cycle++)
+        currentMessenger.tick(playTime)
     }
 
     fun next(nextEntry: DialogueEntry): Boolean {

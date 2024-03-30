@@ -72,7 +72,7 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
         plugin.registerEvents(this)
     }
 
-    open fun tick(cycle: Int) {}
+    open fun tick(playTime: Duration) {}
 
     open fun dispose() {
         unregister()

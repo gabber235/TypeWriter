@@ -38,8 +38,8 @@ val spokenInstructionHighlightColor: String by snippet("dialogue.spoken.instruct
 val spokenPadding: String by snippet("dialogue.spoken.padding", "    ")
 val spokenMinLines: Int by snippet("dialogue.spoken.minLines", 3)
 val spokenMaxLineLength: Int by snippet("dialogue.spoken.maxLineLength", 40)
-val spokenInstructionTicksHighlighted: Int by snippet("dialogue.spoken.instruction.ticks.highlighted", 10)
-val spokenInstructionTicksBase: Int by snippet("dialogue.spoken.instruction.ticks.base", 30)
+val spokenInstructionTicksHighlighted: Long by snippet("dialogue.spoken.instruction.ticks.highlighted", 10)
+val spokenInstructionTicksBase: Long by snippet("dialogue.spoken.instruction.ticks.base", 30)
 
 
 @Messenger(SpokenDialogueEntry::class)
@@ -60,9 +60,9 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
         }
     }
 
-    override fun tick(cycle: Int) {
+    override fun tick(playTime: Duration) {
         if (state != MessengerState.RUNNING) return
-        player.sendSpokenDialogue(entry.text, speakerDisplayName, entry.duration, cycle, triggers.isEmpty())
+        player.sendSpokenDialogue(entry.text, speakerDisplayName, entry.duration, playTime, triggers.isEmpty())
     }
 }
 
@@ -70,22 +70,23 @@ fun Player.sendSpokenDialogue(
     text: String,
     speakerDisplayName: String,
     duration: Duration,
-    cycle: Int,
+    playTime: Duration,
     canFinish: Boolean
 ) {
+    val playedTicks = playTime.toTicks()
     val durationInTicks = duration.toTicks()
 
-    val percentage = (cycle / durationInTicks.toDouble())
+    val percentage = (playedTicks / durationInTicks.toDouble())
 
     val totalInstructionDuration = spokenInstructionTicksHighlighted + spokenInstructionTicksBase
-    val instructionCycle = cycle % totalInstructionDuration
+    val instructionCycle = playedTicks % totalInstructionDuration
     if (percentage > 1) {
         // Change in highlight color
-        val shouldDisplay = instructionCycle == 0 || instructionCycle == spokenInstructionTicksHighlighted
+        val shouldDisplay = instructionCycle == 0L || instructionCycle == spokenInstructionTicksHighlighted
         if (!shouldDisplay) return
     }
 
-    val highlightStarted = cycle > durationInTicks * 2.5
+    val highlightStarted = playedTicks > durationInTicks * 2.5
     val needsHighlight = instructionCycle < spokenInstructionTicksHighlighted
     val nextColor =
         if (highlightStarted && needsHighlight) spokenInstructionHighlightColor else spokenInstructionBaseColor

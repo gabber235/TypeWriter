@@ -5,6 +5,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
+import me.gabber235.typewriter.entry.cinematic.CinematicState.*
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.triggerEntriesFor
@@ -16,10 +17,8 @@ import me.gabber235.typewriter.interaction.*
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent
-import java.util.*
+import java.time.Duration
 
-private const val STARTING_FRAME = -1
-private const val ENDED_FRAME = -2
 
 class CinematicSequence(
     val pageId: String,
@@ -27,10 +26,13 @@ class CinematicSequence(
     private val actions: List<CinematicAction>,
     private val triggers: List<Ref<TriggerableEntry>>,
 ) {
-    private var frame = STARTING_FRAME
+    private var state = STARTING
+    private var playTime = Duration.ZERO
+    private val frame: Int get() = (playTime.toMillis()/50).toInt()
 
     suspend fun start() {
-        if (frame > STARTING_FRAME) return
+        if (state != STARTING) return
+        state = PLAYING
 
         player.startBlockingMessages()
         player.startBlockingActionBar()
@@ -48,12 +50,12 @@ class CinematicSequence(
         }
     }
 
-    suspend fun tick() {
-        if (frame == ENDED_FRAME) return
-        if (frame == STARTING_FRAME) start()
+    suspend fun tick(deltaTime: Duration) {
+        if (state == ENDING) return
+        if (state == STARTING) start()
         if (canEnd) return
 
-        frame++
+        playTime += deltaTime
         coroutineScope {
             actions.map {
                 launch {
@@ -75,9 +77,9 @@ class CinematicSequence(
     private val canEnd get() = actions.all { it.canFinish(frame) }
 
     suspend fun end(force: Boolean = false) {
-        if (frame == ENDED_FRAME || frame == STARTING_FRAME) return
+        if (state != PLAYING) return
+        state = ENDING
         val originalFrame = frame
-        frame = ENDED_FRAME
 
         player.stopBlockingMessages()
         player.stopBlockingActionBar()
@@ -97,6 +99,10 @@ class CinematicSequence(
             AsyncCinematicEndEvent(player, originalFrame, pageId).callEvent()
         }
     }
+}
+
+private enum class CinematicState {
+    STARTING, PLAYING, ENDING
 }
 
 private val Player.cinematicSequence: CinematicSequence?

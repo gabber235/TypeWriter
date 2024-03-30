@@ -44,7 +44,12 @@ interface CinematicAction {
     suspend fun setup() {}
 
     /**
-     * Called every frame
+     * Called to display the cinematic at the given frame.
+     * **This is not necessarily called every frame!
+     * Sometimes frames are skipped to keep the cinematic timings tight**
+     *
+     * When the same action is used for recording, it may be that previous frames are played back.
+     * If this is not possible, create a new action for recording!
      */
     suspend fun tick(frame: Int) {}
 

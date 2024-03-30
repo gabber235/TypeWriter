@@ -22,6 +22,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerItemHeldEvent
+import java.time.Duration
 
 val optionFormat: String by snippet(
     "dialogue.option.format", """
@@ -56,14 +57,14 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
     }
 
-    private val typeDuration = entry.duration.toTicks()
+    private val typeDuration = entry.duration
 
     private var selectedIndex = 0
     private val selected get() = usableOptions.getOrNull(selectedIndex)
 
     private var usableOptions: List<Option> = emptyList()
     private var speakerDisplayName = ""
-    private var lastCycle = 0
+    private var lastPlayTime = Duration.ZERO
 
     override val triggers: List<Ref<out TriggerableEntry>>
         get() = entry.triggers + (selected?.triggers ?: emptyList())
@@ -98,11 +99,12 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         var newIndex = (index + dif) % usableOptions.size
         while (newIndex < 0) newIndex += usableOptions.size
         selectedIndex = newIndex
-        tick(lastCycle)
+        tick(lastPlayTime)
     }
 
-    override fun tick(cycle: Int) {
-        lastCycle = cycle
+    override fun tick(playTime: Duration) {
+        super.tick(playTime)
+        lastPlayTime = playTime
         if (state != MessengerState.RUNNING) return
 
         // When there are no options, just go to the next dialogue
@@ -111,15 +113,17 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             return
         }
 
-        if (cycle % 100 > 0 && cycle > typeDuration) {
+        if (playTime.toTicks() % 100 > 0 && playTime > typeDuration) {
             // Only update periodically to avoid spamming the player
             return
         }
 
         val typePercentage =
-            if (typeDuration > 0) {
-                (cycle / entry.duration.toTicks().toDouble()).coerceIn(0.0, 1.0)
-            } else 1.0
+            if (typeDuration.isZero) {
+                1.0
+            } else
+                (playTime.toTicks() / entry.duration.toTicks().toDouble()).coerceIn(0.0, 1.0)
+
         val text = entry.text.parsePlaceholders(player).asMini().splitPercentage(typePercentage)
 
         val message = optionFormat.asMiniWithResolvers(
