@@ -107,6 +107,9 @@ fun String.rightPad(length: Int, padChar: Char = ' '): String {
     return if (this.length >= length) this else this + padChar.toString().repeat(length - this.length)
 }
 
+val String.lineCount: Int
+    get() = this.count { it == '\n' } + 1
+
 val <T : Any> Optional<T>?.optional: Optional<T> get() = Optional.ofNullable(this?.orElse(null))
 val <T : Any> T?.optional: Optional<T> get() = Optional.ofNullable(this)
 

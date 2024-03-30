@@ -123,7 +123,6 @@ fun Component.noChildren() = this.children(mutableListOf())
  * Adds missing lines to a string.
  */
 private fun String.minimalLines(minLines: Int = 3): String {
-    val lineCount = count { it == '\n' } + 1
     val missingLines = (minLines - lineCount).coerceAtLeast(0)
     val missingLinesString = "\n".repeat(missingLines)
     return "$this$missingLinesString"

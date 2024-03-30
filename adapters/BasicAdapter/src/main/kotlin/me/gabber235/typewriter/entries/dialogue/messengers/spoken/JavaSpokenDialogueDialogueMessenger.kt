@@ -10,9 +10,7 @@ import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.asMiniWithResolvers
-import me.gabber235.typewriter.utils.asPartialFormattedMini
-import me.gabber235.typewriter.utils.toTicks
+import me.gabber235.typewriter.utils.*
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -73,6 +71,7 @@ fun Player.sendSpokenDialogue(
     playTime: Duration,
     canFinish: Boolean
 ) {
+    val rawText = text.parsePlaceholders(this).stripped()
     val playedTicks = playTime.toTicks()
     val durationInTicks = duration.toTicks()
 
@@ -93,10 +92,12 @@ fun Player.sendSpokenDialogue(
 
     val continueOrFinish = if (canFinish) spokenInstructionFinishText else spokenInstructionNextText
 
+    val resultingLines = rawText.limitLineLength(spokenMaxLineLength).lineCount
+
     val message = text.parsePlaceholders(this).asPartialFormattedMini(
         percentage,
         padding = spokenPadding,
-        minLines = spokenMinLines,
+        minLines = spokenMinLines.coerceAtLeast(resultingLines),
         maxLineLength = spokenMaxLineLength
     )
 
