@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.dialogue.confirmationKey
+import me.gabber235.typewriter.entry.dialogue.typingDurationType
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
@@ -113,7 +114,9 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             return
         }
 
-        if (playTime.toTicks() % 100 > 0 && playTime > typeDuration) {
+        val rawText = entry.text.parsePlaceholders(player).stripped()
+        val totalDuration = typingDurationType.totalDuration(rawText, typeDuration)
+        if (playTime.toTicks() % 100 > 0 && playTime > totalDuration) {
             // Only update periodically to avoid spamming the player
             return
         }
@@ -121,8 +124,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         val typePercentage =
             if (typeDuration.isZero) {
                 1.0
-            } else
-                (playTime.toTicks() / entry.duration.toTicks().toDouble()).coerceIn(0.0, 1.0)
+            } else typingDurationType.calculatePercentage(playTime, typeDuration, rawText)
 
         val text = entry.text.parsePlaceholders(player).asMini().splitPercentage(typePercentage)
 

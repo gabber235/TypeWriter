@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entries.dialogue.SpokenDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.dialogue.confirmationKey
+import me.gabber235.typewriter.entry.dialogue.typingDurationType
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
@@ -73,9 +74,9 @@ fun Player.sendSpokenDialogue(
 ) {
     val rawText = text.parsePlaceholders(this).stripped()
     val playedTicks = playTime.toTicks()
-    val durationInTicks = duration.toTicks()
+    val durationInTicks = typingDurationType.totalDuration(rawText, duration).toTicks()
 
-    val percentage = (playedTicks / durationInTicks.toDouble())
+    val percentage = typingDurationType.calculatePercentage(playTime, duration, rawText)
 
     val totalInstructionDuration = spokenInstructionTicksHighlighted + spokenInstructionTicksBase
     val instructionCycle = playedTicks % totalInstructionDuration
