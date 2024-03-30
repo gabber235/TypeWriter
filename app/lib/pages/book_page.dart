@@ -10,6 +10,7 @@ import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/pages/connect_page.dart";
 import "package:typewriter/utils/icons.dart";
+import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:url_launcher/url_launcher.dart";
@@ -33,14 +34,16 @@ class BookPage extends HookConsumerWidget {
       builder: (context, child) {
         return Stack(
           children: [
-            Scaffold(
-              body: Row(
-                children: [
-                  const _SideRail(),
-                  Expanded(
-                    child: child,
-                  ),
-                ],
+            SearchBarWrapper(
+              child: Scaffold(
+                body: Row(
+                  children: [
+                    const _SideRail(),
+                    Expanded(
+                      child: child,
+                    ),
+                  ],
+                ),
               ),
             ),
             if (connectionState == ConnectionState.disconnected) ...[

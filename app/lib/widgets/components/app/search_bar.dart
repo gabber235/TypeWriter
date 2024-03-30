@@ -1,17 +1,22 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:text_scroll/text_scroll.dart";
+import "package:typewriter/models/communicator.dart";
+import "package:typewriter/models/staging.dart";
 import "package:typewriter/utils/debouncer.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/page_search.dart";
+import "package:typewriter/widgets/components/general/always_focused.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
 import "package:typewriter/widgets/components/general/focused_notifier.dart";
@@ -124,6 +129,63 @@ class SearchAction {
   final ShortcutActivator shortcut;
   final Color? color;
   final FutureOr<bool> Function(BuildContext, PassingRef ref)? onTrigger;
+}
+
+class SearchBarWrapper extends HookConsumerWidget {
+  const SearchBarWrapper({
+    required this.child,
+    super.key,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Shortcuts(
+      shortcuts: {
+        SmartSingleActivator(LogicalKeyboardKey.keyK, control: true):
+            SearchIntent(),
+        SmartSingleActivator(LogicalKeyboardKey.space, control: true):
+            SearchIntent(),
+        const SingleActivator(LogicalKeyboardKey.keyP, control: true):
+            const PreviousFocusIntent(),
+        const SingleActivator(LogicalKeyboardKey.keyN, control: true):
+            const NextFocusIntent(),
+        SmartSingleActivator(
+          LogicalKeyboardKey.keyP,
+          control: true,
+          shift: true,
+        ): const PublishPagesIntent(),
+      },
+      child: Actions(
+        actions: {
+          SearchIntent: CallbackAction<SearchIntent>(
+            onInvoke: (intent) {
+              ref.read(searchProvider.notifier).startGlobalSearch();
+              return null;
+            },
+          ),
+          PublishPagesIntent: CallbackAction<PublishPagesIntent>(
+            onInvoke: (intent) {
+              ref.read(communicatorProvider).publish();
+              return null;
+            },
+          ),
+        },
+        child: AlwaysFocused(
+          child: ColoredBox(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Stack(
+              children: [
+                child,
+                const SearchBar(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class SearchBar extends HookConsumerWidget {
@@ -750,8 +812,9 @@ class _SearchBar extends HookConsumerWidget {
                 border: InputBorder.none,
                 filled: false,
               ),
-              onChanged: (query) =>
-                  ref.read(searchProvider.notifier).updateQuery(query),
+              onChanged: (query) {
+                ref.read(searchProvider.notifier).updateQuery(query);
+              },
               onSubmitted: (query) =>
                   ref.read(searchProvider.notifier).endSearch(),
             ),

@@ -62,75 +62,22 @@ class PageEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Shortcuts(
-      key: Key(id),
-      shortcuts: {
-        SmartSingleActivator(LogicalKeyboardKey.keyK, control: true):
-            SearchIntent(),
-        SmartSingleActivator(LogicalKeyboardKey.space, control: true):
-            SearchIntent(),
-        const SingleActivator(LogicalKeyboardKey.keyP, control: true):
-            const PreviousFocusIntent(),
-        const SingleActivator(LogicalKeyboardKey.keyN, control: true):
-            const NextFocusIntent(),
-        SmartSingleActivator(
-          LogicalKeyboardKey.keyP,
-          control: true,
-          shift: true,
-        ): const PublishPagesIntent(),
-      },
-      child: Actions(
-        actions: {
-          SearchIntent: CallbackAction<SearchIntent>(
-            onInvoke: (intent) {
-              ref.read(searchProvider.notifier).startGlobalSearch();
-              return null;
-            },
-          ),
-          PublishPagesIntent: CallbackAction<PublishPagesIntent>(
-            onInvoke: (intent) {
-              ref.read(communicatorProvider).publish();
-              return null;
-            },
-          ),
-        },
-        child: AlwaysFocused(
-          child: ColoredBox(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: const _Content(),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Content extends HookConsumerWidget {
-  const _Content();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return const Stack(
+    return const Column(
       children: [
-        Column(
-          children: [
-            _AppBar(key: Key("appBar")),
-            Divider(),
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _PageContent(),
-                  ),
-                  VerticalDivider(),
-                  _Inspector(),
-                ],
+        _AppBar(key: Key("appBar")),
+        Divider(),
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _PageContent(),
               ),
-            ),
-          ],
+              VerticalDivider(),
+              _Inspector(),
+            ],
+          ),
         ),
-        SearchBar(),
       ],
     );
   }
