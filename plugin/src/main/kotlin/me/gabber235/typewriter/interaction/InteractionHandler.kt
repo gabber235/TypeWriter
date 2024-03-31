@@ -3,6 +3,8 @@ package me.gabber235.typewriter.interaction
 import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.server.registerSuspendingEvents
 import lirand.api.extensions.server.server
+import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.entries.CustomCommandEntry
 import me.gabber235.typewriter.entry.entries.Event
 import me.gabber235.typewriter.entry.entries.EventTrigger
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
@@ -134,6 +136,11 @@ class InteractionHandler : Listener, KoinComponent {
     // When a player tries to execute a command, we need to end the dialogue.
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
+        // If this is a custom command, we don't want to end the dialogue
+        val entry = Query.firstWhere<CustomCommandEntry> {
+            it.command == event.message.removePrefix("/")
+        }
+        if (entry != null) return
         DIALOGUE_END triggerFor event.player
     }
 
