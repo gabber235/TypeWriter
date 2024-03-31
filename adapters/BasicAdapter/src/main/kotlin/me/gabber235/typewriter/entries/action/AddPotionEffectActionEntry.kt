@@ -10,9 +10,11 @@ import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.ThreadType
 import me.gabber235.typewriter.utils.ThreadType.SYNC
+import me.gabber235.typewriter.utils.toTicks
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import java.time.Duration
 
 @Entry("add_potion_effect", "Add a potion effect to the player", Colors.RED, "fa6-solid:flask-vial")
 /**
@@ -30,8 +32,8 @@ class AddPotionEffectActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The potion effect to add.")
     val potionEffect: PotionEffectType = PotionEffectType.SPEED,
-    @Help("The duration of the potion effect in ticks.")
-    val duration: Int = 20,
+    @Help("The duration of the potion effect.")
+    val duration: Duration = Duration.ofSeconds(1),
     @Help("The amplifier of the potion effect.")
     val amplifier: Int = 1,
     @Help("Whether or not the effect is ambient")
@@ -44,7 +46,7 @@ class AddPotionEffectActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        val potion = PotionEffect(potionEffect, duration, amplifier, ambient, particles, icon)
+        val potion = PotionEffect(potionEffect, duration.toTicks().toInt(), amplifier, ambient, particles, icon)
         SYNC.launch {
             player.addPotionEffect(potion)
         }
