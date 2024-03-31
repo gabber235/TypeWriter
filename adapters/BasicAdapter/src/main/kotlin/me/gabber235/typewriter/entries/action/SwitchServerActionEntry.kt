@@ -12,7 +12,7 @@ import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.plugin
 import org.bukkit.entity.Player
 
-@Entry("switch_server_action", "Switches the player to another server", Colors.RED, "teenyicons:google-streetview-solid")
+@Entry("switch_server_action", "Switches the player to another server", Colors.RED, "fluent:server-link-16-filled")
 /**
  * The `Switch Server Action` is an action that switches the player to another server.
  *
