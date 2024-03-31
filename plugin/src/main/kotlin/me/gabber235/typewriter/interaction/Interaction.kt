@@ -75,9 +75,11 @@ class Interaction(val player: Player) : KoinComponent {
      * This will bypass the schedule and execute the event immediately.
      * This will also clear the schedule.
      */
-    suspend fun forceEvent(event: Event) = eventMutex.withLock {
-        addToSchedule(event)
-        runSchedule()
+    suspend fun forceEvent(event: Event) {
+        eventMutex.withLock {
+            scheduledEvent = event.merge(scheduledEvent)
+            runSchedule()
+        }
     }
 
     suspend fun tick(deltaTime: Duration) {
