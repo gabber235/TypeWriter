@@ -15,7 +15,6 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/utils/socket_extensions.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 
 part "communicator.g.dart";
@@ -584,4 +583,24 @@ class Response with _$Response {
 
   factory Response.fromJson(Map<String, dynamic> json) =>
       _$ResponseFromJson(json);
+}
+
+extension SocketExt on Socket {
+  Future<dynamic> emitWithAckAsync(
+    String event,
+    dynamic data, {
+    bool binary = false,
+  }) {
+    final completer = Completer<dynamic>();
+
+    emitWithAck(
+      event,
+      data,
+      binary: binary,
+      ack: (data) {
+        if (!completer.isCompleted) completer.complete(data);
+      },
+    );
+    return completer.future;
+  }
 }
