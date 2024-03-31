@@ -8,6 +8,8 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
+import me.gabber235.typewriter.utils.ThreadType
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -43,7 +45,8 @@ class AddPotionEffectActionEntry(
         super.execute(player)
 
         val potion = PotionEffect(potionEffect, duration, amplifier, ambient, particles, icon)
-        player.addPotionEffect(potion)
-
+        SYNC.launch {
+            player.addPotionEffect(potion)
+        }
     }
 }
