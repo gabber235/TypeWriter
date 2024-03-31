@@ -57,6 +57,5 @@ fun org.bukkit.inventory.ItemStack.toProperty(equipmentSlot: EquipmentSlot) =
 
 fun applyEquipmentData(entity: WrapperEntity, property: EquipmentProperty) {
     if (entity !is WrapperLivingEntity) return
-    println("Setting equipment for ${entity.entityId} to ${property.item.type} in ${property.equipmentSlot}")
     entity.equipment.setItem(property.equipmentSlot, property.item)
 }
