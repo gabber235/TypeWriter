@@ -212,7 +212,9 @@ class Interaction(val player: Player) : KoinComponent {
 
         if (actions.isEmpty()) return
 
-        this.cinematic = CinematicSequence(trigger.pageId, player, actions, trigger.triggers)
+        this.cinematic = CinematicSequence(trigger.pageId, player, actions, trigger.triggers).also {
+            it.start()
+        }
     }
 
     private suspend fun handleContent(event: Event) {

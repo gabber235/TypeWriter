@@ -27,12 +27,11 @@ class CinematicSequence(
     private val triggers: List<Ref<TriggerableEntry>>,
 ) {
     private var state = STARTING
-    private var playTime = Duration.ZERO
+    private var playTime = Duration.ofMillis(-1)
     private val frame: Int get() = (playTime.toMillis()/50).toInt()
 
     suspend fun start() {
         if (state != STARTING) return
-        state = PLAYING
 
         player.startBlockingMessages()
         player.startBlockingActionBar()
@@ -45,17 +44,21 @@ class CinematicSequence(
             }
         }
 
+        state = PLAYING
+
         DISPATCHERS_ASYNC.switchContext {
             AsyncCinematicStartEvent(player, pageId).callEvent()
         }
     }
 
     suspend fun tick(deltaTime: Duration) {
-        if (state == ENDING) return
-        if (state == STARTING) start()
+        if (state != PLAYING) return
         if (canEnd) return
 
-        playTime += deltaTime
+        // Make sure that the first frame is 0
+        if (playTime.isNegative) playTime = Duration.ZERO
+        else playTime += deltaTime
+
         coroutineScope {
             actions.map {
                 launch {
