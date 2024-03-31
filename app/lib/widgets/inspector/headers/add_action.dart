@@ -24,7 +24,7 @@ class AddHeaderAction extends HookConsumerWidget {
       onPressed: () {
         onAdd();
         // If we add a new item, we probably want to edit it.
-        Header.of(context)?.expanded.value = true;
+        Header.maybeOf(context)?.expanded.value = true;
       },
     );
   }

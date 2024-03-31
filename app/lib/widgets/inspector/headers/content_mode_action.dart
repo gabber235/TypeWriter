@@ -3,6 +3,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/segment.dart";
+import "package:typewriter/models/staging.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
@@ -37,7 +38,7 @@ class ContentModeHeaderAction extends HookConsumerWidget {
   final String path;
   final FieldInfo field;
 
-  Future<void> _requestContentMode(PassingRef ref) async {
+  Future<void> _requestContentMode(PassingRef ref, Header? header) async {
     final contentModeClassPath =
         field.getModifier("contentMode")?.data as String?;
     if (contentModeClassPath == null) return;
@@ -85,7 +86,14 @@ class ContentModeHeaderAction extends HookConsumerWidget {
 
     // Publish the changes before requesting the content mode to ensure the
     // latest changes are captured. And all entries are published.
-    await ref.read(communicatorProvider).publish();
+    if (ref.read(stagingStateProvider) == StagingState.staging) {
+      await ref.read(communicatorProvider).publish();
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    if (header != null && header.canExpand) {
+      header.expanded.value = true;
+    }
 
     await ref
         .read(communicatorProvider)
@@ -94,10 +102,11 @@ class ContentModeHeaderAction extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final header = Header.maybeOf(context);
     return HeaderButton(
       tooltip: "Request Content Mode",
       icon: TWIcons.camera,
-      onTap: () => _requestContentMode(ref.passing),
+      onTap: () => _requestContentMode(ref.passing, header),
     );
   }
 }

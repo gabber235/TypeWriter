@@ -8,7 +8,6 @@ import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/inspector/headers/capture_action.dart";
 import "package:typewriter/widgets/inspector/headers/colored_action.dart";
 import "package:typewriter/widgets/inspector/headers/content_mode_action.dart";
 import "package:typewriter/widgets/inspector/headers/help_action.dart";
@@ -44,7 +43,7 @@ class FieldHeader extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final parent = Header.of(context);
+    final parent = Header.maybeOf(context);
 
     // If there already is a header for this path, we don't need to create a new
     if (parent?.path == path) {
@@ -61,8 +60,10 @@ class FieldHeader extends HookConsumerWidget {
     final expanded = useState(defaultExpanded);
 
     return Header(
+      key: ValueKey(path),
       path: path,
       expanded: expanded,
+      canExpand: canExpand,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,17 +152,19 @@ class Header extends InheritedWidget {
   const Header({
     required this.path,
     required this.expanded,
+    required this.canExpand,
     required super.child,
     super.key,
   });
 
   final String path;
   final ValueNotifier<bool> expanded;
+  final bool canExpand;
 
   @override
   bool updateShouldNotify(covariant Header oldWidget) => path != oldWidget.path;
 
-  static Header? of(BuildContext context) =>
+  static Header? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<Header>();
 }
 
@@ -172,7 +175,6 @@ List<HeaderActionFilter> headerActionFilters(HeaderActionFiltersRef ref) => [
       PlaceholderHeaderActionFilter(),
       RegexHeaderActionFilter(),
       LengthHeaderActionFilter(),
-      CaptureHeaderActionFilter(),
       ContentModeHeaderActionFilter(),
     ];
 
