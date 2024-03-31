@@ -458,31 +458,6 @@ class Communicator {
     );
   }
 
-  Future<Response> requestCapture(Map<String, dynamic> data) async {
-    final socket = ref.read(socketProvider);
-    if (socket == null || !socket.connected) {
-      return const Response(
-        success: false,
-        message: "Socket not connected",
-      );
-    }
-
-    final response = await socket.emitWithAckAsync(
-      "captureRequest",
-      jsonEncode(data),
-    ) as String?;
-
-    if (response == null) {
-      return const Response(
-        success: false,
-        message: "No response from server",
-      );
-    }
-
-    final json = jsonDecode(response) as Map<String, dynamic>;
-    return Response.fromJson(json);
-  }
-
   void handleStagingState(dynamic data) {
     final rawStaging = data as String;
     final state = StagingState.values.firstWhere(
