@@ -157,7 +157,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
 
     private fun calculateEdgesFor(node: RoadNode) {
         jobs.add(DISPATCHERS_ASYNC.launch {
-        val generatedEdges =
+            val generatedEdges =
                 nodes
                     .filter { !modifications.containsRemoval(node.id, it.id) }
                     .filter { it != node && it.location.world == node.location.world && it.location.distanceSquared(node.location) < roadNetworkMaxDistance * roadNetworkMaxDistance }
