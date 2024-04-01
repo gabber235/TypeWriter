@@ -100,7 +100,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         var newIndex = (index + dif) % usableOptions.size
         while (newIndex < 0) newIndex += usableOptions.size
         selectedIndex = newIndex
-        tick(lastPlayTime)
+        displayMessage(lastPlayTime)
     }
 
     override fun tick(playTime: Duration) {
@@ -120,6 +120,11 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             // Only update periodically to avoid spamming the player
             return
         }
+        displayMessage(playTime, rawText)
+    }
+
+    private fun displayMessage(playTime: Duration, rawMessage: String? = null) {
+        val rawText = rawMessage ?: entry.text.parsePlaceholders(player).stripped()
 
         val typePercentage =
             if (typeDuration.isZero) {
