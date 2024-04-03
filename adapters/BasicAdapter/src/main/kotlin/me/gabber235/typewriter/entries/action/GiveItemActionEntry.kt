@@ -8,6 +8,8 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Item
+import me.gabber235.typewriter.utils.ThreadType
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -32,7 +34,9 @@ class GiveItemActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        player.inventory.addItem(item.build(player))
+        SYNC.launch {
+            player.inventory.addItem(item.build(player))
+        }
     }
 }
 

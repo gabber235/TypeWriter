@@ -9,6 +9,8 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Item
+import me.gabber235.typewriter.utils.ThreadType
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 
 @Entry("set_item", "Set an item in a specific slot", Colors.RED, "fluent:tray-item-add-24-filled")
@@ -33,6 +35,8 @@ class SetItemActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        player.inventory.setItem(slot, item.build(player))
+        SYNC.launch {
+            player.inventory.setItem(slot, item.build(player))
+        }
     }
 }

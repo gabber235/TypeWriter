@@ -52,15 +52,17 @@ class ContentEditor(
         mode?.tick()
     }
 
-    private fun applyInventory() {
+    private suspend fun applyInventory() {
         val previousSlots = items.keys
         items = mode?.items() ?: emptyMap()
         val newSlots = items.keys
         val toRemove = previousSlots - newSlots
-        items.forEach { (slot, item) ->
-            player.inventory.setItem(slot, item.item)
+        SYNC.switchContext {
+            items.forEach { (slot, item) ->
+                player.inventory.setItem(slot, item.item)
+            }
+            toRemove.forEach { player.inventory.setItem(it, null) }
         }
-        toRemove.forEach { player.inventory.setItem(it, null) }
     }
 
     suspend fun pushMode(newMode: ContentMode) {

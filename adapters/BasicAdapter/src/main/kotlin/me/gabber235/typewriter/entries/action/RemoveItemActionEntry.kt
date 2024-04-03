@@ -8,6 +8,7 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.utils.Item
+import me.gabber235.typewriter.utils.ThreadType
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -51,17 +52,19 @@ class RemoveItemActionEntry(
 
         var toRemove = item.amount.orElse(1)
 
-        while (toRemove > 0 && items.hasNext()) {
-            val (index, item) = items.next()
-            if (item == null) continue
-            val amount = item.amount
-            if (amount > toRemove) {
-                item.amount = amount - toRemove
-                player.inventory.setItem(index, item)
-                break
-            } else {
-                toRemove -= amount
-                player.inventory.setItem(index, null)
+        ThreadType.SYNC.launch {
+            while (toRemove > 0 && items.hasNext()) {
+                val (index, item) = items.next()
+                if (item == null) continue
+                val amount = item.amount
+                if (amount > toRemove) {
+                    item.amount = amount - toRemove
+                    player.inventory.setItem(index, item)
+                    break
+                } else {
+                    toRemove -= amount
+                    player.inventory.setItem(index, null)
+                }
             }
         }
     }
