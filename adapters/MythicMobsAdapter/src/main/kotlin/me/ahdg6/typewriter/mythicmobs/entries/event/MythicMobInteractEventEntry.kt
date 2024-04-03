@@ -4,8 +4,10 @@ import io.lumine.mythic.bukkit.events.MythicMobInteractEvent
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Regex
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
+import me.gabber235.typewriter.utils.ThreadType.ASYNC
 
 @Entry("mythicmobs_interact_event", "MythicMob Interact Event", Colors.YELLOW, "fa6-solid:dragon")
 /**
@@ -20,12 +22,15 @@ class MythicMobInteractEventEntry(
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The specific MythicMob type to listen for")
+    @Regex
     val mobName: String = "",
 ) : EventEntry
 
 @EntryListener(MythicMobInteractEventEntry::class)
 fun onMythicMobInteractEvent(event: MythicMobInteractEvent, query: Query<MythicMobInteractEventEntry>) {
-    query.findWhere {
-        it.mobName == event.activeMobType.internalName
-    } startDialogueWithOrNextDialogue event.player
+    ASYNC.launch {
+        query findWhere {
+            it.mobName.toRegex(RegexOption.IGNORE_CASE).matches(event.activeMobType.internalName)
+        } startDialogueWithOrNextDialogue event.player
+    }
 }
