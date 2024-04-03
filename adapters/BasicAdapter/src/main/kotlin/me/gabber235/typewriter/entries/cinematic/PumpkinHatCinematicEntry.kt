@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.cinematic
 
 import com.github.retrooper.packetevents.protocol.player.Equipment
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEquipment
+import lirand.api.extensions.inventory.meta
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Segments
@@ -12,8 +13,11 @@ import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.extensions.packetevents.toPacketItem
+import me.gabber235.typewriter.utils.name
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
 @Entry("pumpkin_hat_cinematic", "Show a pumpkin hat during a cinematic", Colors.CYAN, "mingcute:hat-fill")
@@ -57,7 +61,13 @@ class PumpkinHatCinematicAction(
             listOf(
                 Equipment(
                     com.github.retrooper.packetevents.protocol.player.EquipmentSlot.HELMET,
-                    ItemStack(Material.CARVED_PUMPKIN).toPacketItem()
+                    ItemStack(Material.CARVED_PUMPKIN)
+                        .meta {
+                            name = " "
+                            addEnchant(Enchantment.BINDING_CURSE, 1, true)
+                            addItemFlags(ItemFlag.HIDE_ENCHANTS)
+                        }
+                        .toPacketItem()
                 )
             )
         ) sendPacketTo player
@@ -74,6 +84,6 @@ class PumpkinHatCinematicAction(
                         ?: com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
                 )
             )
-        )
+        ) sendPacketTo player
     }
 }
