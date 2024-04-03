@@ -1,5 +1,7 @@
 package me.gabber235.typewriter.entries.cinematic
 
+import com.github.retrooper.packetevents.protocol.player.Equipment
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEquipment
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Segments
@@ -8,14 +10,10 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.utils.EquipmentSlotStateProvider
-import me.gabber235.typewriter.utils.PlayerState
-import me.gabber235.typewriter.utils.ThreadType.SYNC
-import me.gabber235.typewriter.utils.restore
-import me.gabber235.typewriter.utils.state
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
+import me.gabber235.typewriter.extensions.packetevents.toPacketItem
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 @Entry("pumpkin_hat_cinematic", "Show a pumpkin hat during a cinematic", Colors.CYAN, "mingcute:hat-fill")
@@ -45,29 +43,30 @@ class PumpkinHatCinematicAction(
 ) : SimpleCinematicAction<PumpkinHatSegment>() {
     override val segments: List<PumpkinHatSegment> = entry.segments
 
-    private var playerState: PlayerState? = null
-
     override suspend fun startSegment(segment: PumpkinHatSegment) {
         super.startSegment(segment)
 
-        playerState = player.state(EquipmentSlotStateProvider(EquipmentSlot.HEAD))
-
-        player.equipment.helmet = ItemStack(Material.CARVED_PUMPKIN)
+        WrapperPlayServerEntityEquipment(
+            player.entityId,
+            listOf(
+                Equipment(
+                    com.github.retrooper.packetevents.protocol.player.EquipmentSlot.HELMET,
+                    ItemStack(Material.CARVED_PUMPKIN).toPacketItem()
+                )
+            )
+        ) sendPacketTo player
     }
 
     override suspend fun stopSegment(segment: PumpkinHatSegment) {
         super.stopSegment(segment)
-
-        SYNC.switchContext {
-            player.restore(playerState)
-            playerState = null
-        }
-    }
-
-    override suspend fun teardown() {
-        super.teardown()
-        SYNC.switchContext {
-            player.restore(playerState)
-        }
+        WrapperPlayServerEntityEquipment(
+            player.entityId,
+            listOf(
+                Equipment(
+                    com.github.retrooper.packetevents.protocol.player.EquipmentSlot.HELMET,
+                    player.inventory.helmet?.toPacketItem() ?: com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
+                )
+            )
+        )
     }
 }
