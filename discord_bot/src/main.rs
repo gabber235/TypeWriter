@@ -7,11 +7,11 @@ use tokio::signal;
 use tokio_util::sync::CancellationToken;
 
 mod clickup;
-mod commands;
+mod discord;
 mod webhook;
 mod webhooks;
 
-use commands::*;
+use discord::*;
 use reqwest::{
     header::{HeaderMap, HeaderValue, AUTHORIZATION},
     Client,

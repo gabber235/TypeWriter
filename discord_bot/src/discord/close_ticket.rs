@@ -124,7 +124,6 @@ pub async fn close_ticket(
             ctx,
             EditThread::default()
                 .applied_tags(vec![tag])
-                .archived(true)
                 .locked(!allow_reopen),
         )
         .await?;
