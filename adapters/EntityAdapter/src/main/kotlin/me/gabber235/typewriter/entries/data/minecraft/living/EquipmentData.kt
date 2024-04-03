@@ -19,17 +19,19 @@ import kotlin.reflect.KClass
 class EquipmentData(
     override val id: String = "",
     override val name: String = "",
-    val equipmentSlot: EquipmentSlot = EquipmentSlot.MAIN_HAND,
-    val item: Item = Item.Empty,
+    val equipment: Map<EquipmentSlot, Item> = emptyMap(),
     override val priorityOverride: Optional<Int>,
 ) : LivingEntityData<EquipmentProperty> {
     override fun type(): KClass<EquipmentProperty> = EquipmentProperty::class
 
     override fun build(player: Player): EquipmentProperty =
-        EquipmentProperty(equipmentSlot, item.build(player).toPacketItem())
+        EquipmentProperty(equipment.mapValues { (_, item) -> item.build(player).toPacketItem() })
 }
 
-data class EquipmentProperty(val equipmentSlot: EquipmentSlot, val item: ItemStack) : EntityProperty {
+data class EquipmentProperty
+    (val data: Map<EquipmentSlot, ItemStack>) : EntityProperty {
+    constructor(equipmentSlot: EquipmentSlot, item: ItemStack) : this(mapOf(equipmentSlot to item))
+
     companion object : PropertyCollectorSupplier<EquipmentProperty> {
         override val type: KClass<EquipmentProperty> = EquipmentProperty::class
 
@@ -44,11 +46,15 @@ private class EquipmentCollector(
 ) : PropertyCollector<EquipmentProperty> {
     override val type: KClass<EquipmentProperty> = EquipmentProperty::class
 
-override fun collect(player: Player): List<EquipmentProperty> {
-        return suppliers
+    override fun collect(player: Player): EquipmentProperty {
+        val properties = suppliers.filter { it.canApply(player) }
             .map { it.build(player) }
-            .groupBy { it.equipmentSlot }
-            .mapNotNull { it.value.firstOrNull() }
+        val data = mutableMapOf<EquipmentSlot, ItemStack>()
+        properties.asSequence()
+            .flatMap { it.data.asSequence() }
+            .filter { (slot, _) -> !data.containsKey(slot) }
+            .forEach { (slot, item) -> data[slot] = item }
+        return EquipmentProperty(data)
     }
 }
 
@@ -57,5 +63,7 @@ fun org.bukkit.inventory.ItemStack.toProperty(equipmentSlot: EquipmentSlot) =
 
 fun applyEquipmentData(entity: WrapperEntity, property: EquipmentProperty) {
     if (entity !is WrapperLivingEntity) return
-    entity.equipment.setItem(property.equipmentSlot, property.item)
+    property.data.forEach { (slot, item) ->
+        entity.equipment.setItem(slot, item)
+    }
 }

@@ -42,7 +42,7 @@ interface PropertySupplier<P : EntityProperty> {
 
 interface PropertyCollector<P : EntityProperty> {
     val type: KClass<P>
-    fun collect(player: Player): List<P>
+    fun collect(player: Player): P?
 }
 
 @Tags("entity_data")

@@ -11,9 +11,8 @@ class SinglePropertyCollector<P : EntityProperty>(
     private val suppliers: List<PropertySupplier<out P>>,
     override val type: KClass<P>,
 ) : PropertyCollector<P> {
-    override fun collect(player: Player): List<P> {
-        val property = suppliers.firstOrNull { it.canApply(player) }?.build(player)
-        return if (property != null) listOf(property) else emptyList()
+    override fun collect(player: Player): P? {
+        return suppliers.firstOrNull { it.canApply(player) }?.build(player)
     }
 }
 
