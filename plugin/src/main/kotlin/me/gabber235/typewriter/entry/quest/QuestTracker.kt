@@ -30,8 +30,6 @@ class QuestTracker(
 
     init {
         Query.find<QuestEntry>().forEach { refresh(it.ref()) }
-        plugin.listen<TypewriterReloadEvent>(listener) { refreshWatchedFacts() }
-        plugin.listen<PublishedBookEvent>(listener) { refreshWatchedFacts() }
 
         // At this point, the player is not yet in the interaction handler.
         // So we wait until the next tick to register the listener.
