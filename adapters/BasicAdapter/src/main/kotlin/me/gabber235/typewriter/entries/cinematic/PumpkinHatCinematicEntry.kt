@@ -17,6 +17,12 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 @Entry("pumpkin_hat_cinematic", "Show a pumpkin hat during a cinematic", Colors.CYAN, "mingcute:hat-fill")
+/**
+ * The `Pumpkin Hat Cinematic` is a cinematic that shows a pumpkin hat on the player's head.
+ *
+ * ## How could this be used?
+ * When you have a resource pack, you can re-texture the pumpkin overlay to make it look like cinematic black bars.
+ */
 class PumpkinHatCinematicEntry(
     override val id: String = "",
     override val name: String = "",
