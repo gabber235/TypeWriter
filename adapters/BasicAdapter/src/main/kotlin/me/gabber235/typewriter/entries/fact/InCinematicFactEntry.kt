@@ -14,7 +14,7 @@ import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import org.bukkit.entity.Player
 
-@Entry("in_cinematic_fact", "If the player has the given MMOCore class", Colors.PURPLE, "eos-icons:storage-class")
+@Entry("in_cinematic_fact", "If the player is in a cinematic", Colors.PURPLE, "eos-icons:storage-class")
 /**
  * The 'In Cinematic Fact' is a fact that returns 1 if the player has an active cinematic, and 0 if not.
  *
