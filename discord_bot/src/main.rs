@@ -133,6 +133,7 @@ async fn startup_discord_bot() {
         .event_handler(TaskFixedHandler)
         .event_handler(TicketReopenHandler)
         .event_handler(ThreadArchivingHandler)
+        .event_handler(ThreadPostedHandler)
         .framework(framework)
         .await;
 
