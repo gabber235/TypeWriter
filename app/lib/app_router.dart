@@ -95,7 +95,6 @@ extension AppRouterX on AppRouter {
   Future<void> navigateToEntry(PassingRef ref, String entryId) async {
     final entryPage = ref.read(globalEntryWithPageProvider(entryId))?.key;
 
-    print("Entry page: $entryPage");
     if (entryPage == null) {
       return;
     }
@@ -110,8 +109,6 @@ extension AppRouterX on AppRouter {
     if (currentPage?.pageName == pageName) {
       return;
     }
-
-    print(" to page $pageName");
 
     await ref.read(appRouter).push(
           PageEditorRoute(id: pageName),
