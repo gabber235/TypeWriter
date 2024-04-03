@@ -235,7 +235,7 @@ class SearchBar extends HookConsumerWidget {
                       .read(searchFocusNodesProvider)
                       .indexWhere((n) => n.hasFocus),
                   context,
-                  ref,
+                  ref.passing,
                 ),
               ),
             },
@@ -252,11 +252,11 @@ class SearchBar extends HookConsumerWidget {
     List<SearchElement> actions,
     int index,
     BuildContext context,
-    WidgetRef ref,
+    PassingRef ref,
   ) async {
     if (index >= actions.length) return;
     if (index < 0) return;
-    final canEnd = await actions[index].activate(context, ref.passing);
+    final canEnd = await actions[index].activate(context, ref);
     if (canEnd) ref.read(searchProvider.notifier).endSearch();
   }
 

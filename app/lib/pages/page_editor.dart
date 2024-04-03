@@ -59,23 +59,26 @@ class PageEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Column(
-      children: [
-        _AppBar(key: Key("appBar")),
-        Divider(),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _PageContent(),
-              ),
-              VerticalDivider(),
-              _Inspector(),
-            ],
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: const Column(
+        children: [
+          _AppBar(key: Key("appBar")),
+          Divider(),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _PageContent(),
+                ),
+                VerticalDivider(),
+                _Inspector(),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

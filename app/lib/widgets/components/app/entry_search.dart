@@ -352,9 +352,11 @@ class EntrySearchElement extends SearchElement {
       return await onSelect?.call(entry) ?? true;
     }
 
+    print("Navigating to entry ${entry.id}");
     await ref
         .read(inspectingEntryIdProvider.notifier)
         .navigateAndSelectEntry(ref, entry.id);
+    print("Navigated to entry ${entry.id}");
     return true;
   }
 }

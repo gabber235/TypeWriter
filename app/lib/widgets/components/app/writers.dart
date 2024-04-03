@@ -158,8 +158,12 @@ class WriterIcon extends HookWidget {
 
   Widget _icon(Color color) {
     if (writer.iconUrl == null) {
+      // We want to remove the opacity from the color which is the first two characters
+      final colorValue = color.value & 0xFFFFFF;
+      final url =
+          "https://api.dicebear.com/8.x/adventurer-neutral/svg?backgroundColor=${colorValue.toRadixString(16)}&seed=${writer.id}";
       return SvgPicture.network(
-        "https://avatars.dicebear.com/api/adventurer-neutral/${writer.id}.svg?b=%23${color.value.toRadixString(16)}",
+        url,
         height: 25,
       );
     }
