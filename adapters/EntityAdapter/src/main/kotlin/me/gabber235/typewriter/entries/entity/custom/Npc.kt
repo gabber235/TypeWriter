@@ -11,16 +11,8 @@ import me.gabber235.typewriter.entries.entity.minecraft.PlayerEntity
 import me.gabber235.typewriter.entries.entity.minecraft.TextDisplayEntity
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.entry.entity.FakeEntity
-import me.gabber235.typewriter.entry.entity.LocationProperty
-import me.gabber235.typewriter.entry.entity.SimpleEntityDefinition
-import me.gabber235.typewriter.entry.entity.SimpleEntityInstance
-import me.gabber235.typewriter.entry.entity.SkinProperty
-import me.gabber235.typewriter.entry.entries.EntityActivityEntry
-import me.gabber235.typewriter.entry.entries.EntityData
-import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
-import me.gabber235.typewriter.entry.entries.EntityProperty
-import me.gabber235.typewriter.entry.entries.LinesProperty
+import me.gabber235.typewriter.entry.entity.*
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.snippets.snippet
@@ -40,6 +32,8 @@ val npcNamePlate by snippet(
     <reset><display_name>
 """.trimIndent()
 )
+
+val npcNamePlateOffset by snippet("entity.npc.name.offset", 0.2)
 
 @Entry("npc_definition", "A simplified premade npc", Colors.ORANGE, "material-symbols:account-box")
 @Tags("npc_definition")
@@ -97,7 +91,7 @@ class NpcEntity(
         val hologramText = hologram()
         hologram.consumeProperties(
             LinesProperty(hologramText),
-            TranslationProperty(Vector(y = 0.2)),
+            TranslationProperty(Vector(y = npcNamePlateOffset)),
             BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER)
         )
         indicatorEntity.consumeProperties(
@@ -138,7 +132,7 @@ class NpcEntity(
 
     private fun calculateIndicatorOffset(hologramText: String): Vector {
         val lines = hologramText.count { it == '\n' } + 1
-        val height = lines * 0.3 + 0.2
+        val height = lines * 0.3 + npcNamePlateOffset
         return Vector(y = height)
     }
 
