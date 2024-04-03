@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entries.fact
 
+import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -12,11 +13,12 @@ import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.facts.FactData
 import org.bukkit.entity.Player
-import java.util.Optional
 
 @Entry("in_cinematic_fact", "If the player has the given MMOCore class", Colors.PURPLE, "eos-icons:storage-class")
 /**
  * The 'In Cinematic Fact' is a fact that returns 1 if the player has an active cinematic, and 0 if not.
+ *
+ * If no cinematic is referenced, it will filter based on if any cinematic is active.
  *
  * <fields.ReadonlyFactInfo />
  *
@@ -28,14 +30,17 @@ class InCinematicFactEntry(
     override val name: String = "",
     override val comment: String = "",
     override val group: Ref<GroupEntry> = emptyRef(),
-    @Help("The Cinematic page, which must be active for the player for the fact to be true (1).")
+    @Help("When not set it will filter based on if any cinematic is active.")
     @Page(PageType.CINEMATIC)
-    val pageID: Optional<String> = Optional.empty()
-): ReadableFactEntry {
+    @SerializedName("cinematic")
+    val pageId: String = "",
+) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
-        if (pageID == null)
-            if (player.isPlayingCinematic()) return FactData(1) else return FactData(0)
+        val inCinematic = if (pageId.isNotBlank())
+            player.isPlayingCinematic(pageId)
         else
-            if (player.isPlayingCinematic(pageID.toString())) return FactData(1) else return FactData(0)
+            player.isPlayingCinematic()
+
+        return FactData(inCinematic.toInt())
     }
 }
