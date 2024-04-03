@@ -54,7 +54,9 @@ open class Item(
     )
 
     fun build(player: Player?): ItemStack {
-        val item = ItemStack(material.orElse(Material.STONE), amount.orElse(1))
+        val material = material.orElse(Material.STONE)
+        if (material == Material.AIR) return ItemStack.empty()
+        val item = ItemStack(material, amount.orElse(1))
         // Nbt needs to be done first because it will not include the display name and lore.
         // Otherwise, it will overwrite the display name and lore.
         if (nbt.isPresent) {
