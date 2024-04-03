@@ -14,7 +14,6 @@ import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.*
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
@@ -89,7 +88,6 @@ val actionBarPercentage: Double by snippet(
 private fun displayActionBar(player: Player, speakerName: String, text: String, displayPercentage: Double) {
     val message = text.asMini()
         .splitPercentage(displayPercentage)
-        .color(NamedTextColor.WHITE)
 
     // Find out how much padding is needed to fill the rest of the action bar.
     // As the action bar is centered, adding padding to the end of the message
