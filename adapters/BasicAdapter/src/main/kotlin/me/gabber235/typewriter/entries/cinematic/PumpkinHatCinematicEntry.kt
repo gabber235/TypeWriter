@@ -29,7 +29,7 @@ class PumpkinHatCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     @Segments(icon = "mingcute:hat-fill")
     val segments: List<PumpkinHatSegment> = emptyList(),
-) : CinematicEntry {
+    ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
         return PumpkinHatCinematicAction(
             player,
@@ -70,7 +70,8 @@ class PumpkinHatCinematicAction(
             listOf(
                 Equipment(
                     com.github.retrooper.packetevents.protocol.player.EquipmentSlot.HELMET,
-                    player.inventory.helmet?.toPacketItem() ?: com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
+                    player.inventory.helmet?.toPacketItem()
+                        ?: com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
                 )
             )
         )
