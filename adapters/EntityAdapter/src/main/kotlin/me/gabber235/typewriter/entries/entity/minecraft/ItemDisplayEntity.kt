@@ -24,7 +24,7 @@ import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("item_display_definition", "An item display entity", Colors.ORANGE, "material-symbols:aspect_ratio")
+@Entry("item_display_definition", "An item display entity", Colors.ORANGE, "mingcute:sword-fill")
 @Tags("item_display_definition")
 class ItemDisplayDefinition(
     override val id: String = "",
