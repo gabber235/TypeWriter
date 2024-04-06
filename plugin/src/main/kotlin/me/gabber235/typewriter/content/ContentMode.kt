@@ -10,7 +10,10 @@ abstract class ContentMode(
 ) : ComponentContainer {
     override val components = mutableListOf<ContentComponent>()
 
-    abstract fun setup()
+    /**
+     * If the result is [Result.Failure], the content mode will not be started.
+     */
+    abstract suspend fun setup(): Result<Unit>
 
     open suspend fun initialize() {
         components.forEach { it.initialize(player) }

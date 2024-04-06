@@ -17,13 +17,11 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
-import me.gabber235.typewriter.utils.loopingDistance
-import me.gabber235.typewriter.utils.loreString
-import me.gabber235.typewriter.utils.name
-import me.gabber235.typewriter.utils.playSound
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -36,7 +34,6 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.patheloper.api.pathing.configuration.PathingRuleSet
 import org.patheloper.api.pathing.result.Path
 import org.patheloper.mapping.PatheticMapper
@@ -51,30 +48,30 @@ class SelectedRoadNodeContentMode(
     context: ContentContext,
     player: Player,
     private val ref: Ref<RoadNetworkEntry>,
-    private var network: RoadNetwork,
-    private var selectedNode: RoadNode,
+    private val selectedNodeId: RoadNodeId,
     private val initiallyScrolling: Boolean,
 ) : ContentMode(context, player), KoinComponent {
-    private val roadNetworkManager by inject<RoadNetworkManager>()
-    private var modifications = network.modifications.toMutableList()
+    private lateinit var editorComponent: RoadNetworkEditorComponent
 
-    // If the player has been in range of the node
-    private var removedComponent = false
+    private val network get() = editorComponent.network
+
+    private val selectedNode get() = network.nodes.find { it.id == selectedNodeId }
+
     private var cycle = 0
-    override fun setup() {
-        val networkSavingComponent = +NetworkSavingComponent(::ref) {
-            roadNetwork()
-        }
-        val pathsComponent = +SelectedNodePathsComponent(::selectedNode, ::roadNetwork)
+
+    override suspend fun setup(): Result<Unit> {
+        editorComponent = +RoadNetworkEditorComponent(ref)
+
+        val pathsComponent = +SelectedNodePathsComponent(::selectedNode, ::network)
         bossBar {
             var suffix = ""
-            if (networkSavingComponent.isDirty) suffix += " <gray><i>(unsaved changes)</i></gray>"
-            else if (networkSavingComponent.isSaving) suffix = " <red><i>(saving)</i></red>"
+            if (editorComponent.state == RoadNetworkEditorState.DIRTY) suffix += " <gray><i>(unsaved changes)</i></gray>"
+            else if (editorComponent.state == RoadNetworkEditorState.SAVING) suffix = " <red><i>(saving)</i></red>"
             if (!pathsComponent.isPathsLoaded) suffix += " <gray><i>(calculating edges)</i></gray>"
 
-            title = "Editing <gray>${selectedNode.id}</gray> node$suffix"
+            title = "Editing <gray>${selectedNode?.id}</gray> node$suffix"
             color = when {
-                networkSavingComponent.isDirty -> BossBar.Color.RED
+                editorComponent.state == RoadNetworkEditorState.DIRTY -> BossBar.Color.RED
                 !pathsComponent.isPathsLoaded -> BossBar.Color.PURPLE
                 else -> BossBar.Color.GREEN
             }
@@ -82,51 +79,63 @@ class SelectedRoadNodeContentMode(
         exit(doubleShiftExits = true)
 
         +NodeRadiusComponent(::selectedNode, initiallyScrolling) {
-            selectedNode = selectedNode.copy(radius = (selectedNode.radius + it).coerceAtLeast(0.5))
-            networkSavingComponent.isDirty = true
+            editorComponent.updateAsync { roadNetwork ->
+                roadNetwork.copy(nodes = roadNetwork.nodes.map { node ->
+                    if (node.id == selectedNodeId) node.copy(
+                        radius = (node.radius + it).coerceAtLeast(
+                            0.5
+                        )
+                    ) else node
+                })
+            }
         }
 
         +RemoveNodeComponent {
-            removedComponent = true
-            networkSavingComponent.isDirty = true
+            editorComponent.updateAsync { roadNetwork ->
+                roadNetwork.copy(
+                    nodes = roadNetwork.nodes.filter { it.id != selectedNodeId },
+                    edges = roadNetwork.edges.filter { it.start != selectedNodeId && it.end != selectedNodeId },
+                    modifications = roadNetwork.modifications.filter {
+                        if (it !is RoadModification.EdgeModification) return@filter true
+                        it.start != selectedNodeId && it.end != selectedNodeId
+                    }
+                )
+            }
             pop()
         }
 
-        +ModificationComponent(context, ref, ::selectedNode, ::roadNetwork) { modification ->
-            modifications.remove(modification)
-            networkSavingComponent.isDirty = true
+        +ModificationComponent(::selectedNode, ::network) { modification ->
+            editorComponent.updateAsync { roadNetwork ->
+                roadNetwork.copy(
+                    modifications = roadNetwork.modifications - modification
+                )
+            }
         }
 
-        nodes({
-            network.nodes.map { if (it == selectedNode) selectedNode else it }
-        }, ::showingLocation) { node ->
-            item = ItemStack(node.material(modifications))
+        nodes({ network.nodes }, ::showingLocation) { node ->
+            item = ItemStack(node.material(network.modifications))
             glow = when {
-                node == selectedNode -> NamedTextColor.GREEN
-                network.edges.any { it.start == selectedNode.id && it.end == node.id } -> NamedTextColor.YELLOW
+                node == selectedNode -> NamedTextColor.WHITE
+                network.edges.any { it.start == selectedNodeId && it.end == node.id } -> NamedTextColor.BLUE
+                network.modifications.containsRemoval(
+                    selectedNodeId,
+                    node.id
+                ) && network.modifications.containsRemoval(node.id, selectedNodeId) -> NamedTextColor.RED
+
+                network.modifications.containsRemoval(selectedNodeId, node.id) -> NamedTextColor.GOLD
+                network.modifications.containsAddition(
+                    selectedNodeId,
+                    node.id
+                ) && network.modifications.containsAddition(node.id, selectedNodeId) -> NamedTextColor.GREEN
+
+                network.modifications.containsAddition(selectedNodeId, node.id) -> TextColor.color(0x4fec97)
                 else -> null
             }
             scale = Vector3f(0.5f, 0.5f, 0.5f)
-            onInteract(::pop)
+            onInteract { interactWithNode(node) }
         }
-    }
 
-    private fun roadNetwork() = if (removedComponent) {
-        RoadNetwork(
-            nodes = network.nodes - selectedNode,
-            edges = network.edges.filter { it.start != selectedNode.id && it.end != selectedNode.id },
-            modifications = modifications.filter {
-                when (it) {
-                    is RoadModification.EdgeModification -> it.start != selectedNode.id && it.end != selectedNode.id
-                }
-            }
-        )
-    } else {
-        RoadNetwork(
-            nodes = network.nodes - selectedNode + selectedNode,
-            edges = network.edges,
-            modifications = modifications
-        )
+        return ok(Unit)
     }
 
     private fun showingLocation(node: RoadNode): Location = node.location.clone().apply {
@@ -137,10 +146,90 @@ class SelectedRoadNodeContentMode(
         SystemTrigger.CONTENT_POP triggerFor player
     }
 
-    override suspend fun initialize() {
-        network = roadNetworkManager.getNetwork(ref)
-        modifications = network.modifications.toMutableList()
-        super.initialize()
+    private fun interactWithNode(node: RoadNode) {
+        if (node == selectedNode) {
+            pop()
+            return
+        }
+
+        if (player.inventory.heldItemSlot == 5) {
+            edgeAddition(node)
+        }
+
+        if (player.inventory.heldItemSlot == 6) {
+            edgeRemoval(node)
+        }
+    }
+
+    /**
+     * Toggle the edge between modified and unmodified bidirectional
+     * When the player is shifting, then we want to do it only directionally
+     */
+    private inline fun <reified M : RoadModification.EdgeModification> edgeModification(
+        node: RoadNode,
+        create: (RoadNodeId, RoadNodeId) -> M,
+        crossinline modifyNetwork: (RoadNode, RoadNode, RoadNetwork) -> RoadNetwork,
+    ) {
+        if (node == selectedNode) return
+        // If it contains the other modification, we don't want to do anything
+        val containsOtherModification =
+            network.modifications.any {
+                it is RoadModification.EdgeModification && it !is M
+                        && it.start == selectedNodeId && it.end == node.id
+            }
+        if (containsOtherModification) return
+        val containsModification =
+            network.modifications.any { it is M && it.start == selectedNodeId && it.end == node.id }
+
+        val modification = create(selectedNodeId, node.id)
+        val reverseModification = create(node.id, selectedNodeId)
+
+        if (containsModification) {
+
+            editorComponent.updateAsync { roadNetwork ->
+                roadNetwork.copy(
+                    modifications = roadNetwork.modifications.filter {
+                        it != modification && if (player.isSneaking) it != reverseModification else true
+                    }
+                )
+            }
+        } else {
+            val selectedNode = selectedNode ?: return
+            editorComponent.updateAsync { roadNetwork ->
+                val modifications = if (player.isSneaking) {
+                    roadNetwork.modifications + modification
+                } else {
+                    roadNetwork.modifications + modification + reverseModification
+                }
+
+                val n1 = roadNetwork.copy(
+                    modifications = modifications
+                )
+                if (player.isSneaking) {
+                    modifyNetwork(selectedNode, node, n1)
+                } else {
+                    modifyNetwork(selectedNode, node, modifyNetwork(node, selectedNode, n1))
+                }
+            }
+        }
+    }
+
+    private fun edgeAddition(node: RoadNode) {
+        edgeModification(
+            node,
+            { start, end -> RoadModification.EdgeAddition(start, end, 0.0) }) { start, end, network ->
+            network.copy(
+                edges = network.edges + RoadEdge(start.id, end.id, 0.0)
+            )
+        }
+    }
+
+    private fun edgeRemoval(node: RoadNode) {
+        edgeModification(node, { start, end -> RoadModification.EdgeRemoval(start, end) }) { start, end, network ->
+            network.copy(
+                edges = network.edges.filter { it.start != start.id || it.end != end.id }
+            )
+        }
     }
 
     override suspend fun tick() {
@@ -165,7 +254,7 @@ private class RemoveNodeComponent(
 }
 
 private class SelectedNodePathsComponent(
-    private val nodeFetcher: () -> RoadNode,
+    private val nodeFetcher: () -> RoadNode?,
     private val networkFetcher: () -> RoadNetwork,
 ) : ContentComponent {
     private var paths: Map<RoadEdge, Path>? = null
@@ -179,7 +268,7 @@ private class SelectedNodePathsComponent(
     }
 
     private suspend fun loadEdgePaths(): Map<RoadEdge, Path> {
-        val node = nodeFetcher()
+        val node = nodeFetcher() ?: return emptyMap()
         val network = networkFetcher()
         val nodes = network.nodes.associateBy { it.id }
         return network.edges.filter { it.start == node.id }
@@ -204,11 +293,20 @@ private class SelectedNodePathsComponent(
             .toMap()
     }
 
+    private suspend fun refreshEdges() {
+        val node = nodeFetcher() ?: return
+        val network = networkFetcher()
+        val edges = network.edges.filter { it.start == node.id }
+        if (paths?.keys?.toSet() == edges.toSet()) return
+        paths = loadEdgePaths()
+    }
 
     private var tick = 0
     override suspend fun tick(player: Player) {
-
         if (paths == null) return
+        if (tick++ % 20 == 0) {
+            refreshEdges()
+        }
         if (tick++ % 3 != 0) return
 
         paths?.forEach { (edge, path) ->
@@ -233,7 +331,7 @@ private class SelectedNodePathsComponent(
 }
 
 private class NodeRadiusComponent(
-    private val nodeFetcher: () -> RoadNode,
+    private val nodeFetcher: () -> RoadNode?,
     private val initiallyScrolling: Boolean,
     private val slot: Int = 2,
     private val editRadius: (Double) -> Unit,
@@ -245,9 +343,11 @@ private class NodeRadiusComponent(
         val item = if (scrolling != null) ItemStack(Material.CALIBRATED_SCULK_SENSOR).meta {
             name = "<yellow><b>Selecting Radius"
             loreString = "<line> <gray>Right click to set the radius of the node."
+            unClickable()
         } else ItemStack(Material.SCULK_SENSOR).meta {
             name = "<yellow><b>Change Radius"
-            loreString = "<line> <gray>Current radius: <white>${nodeFetcher().radius}"
+            loreString = "<line> <gray>Current radius: <white>${nodeFetcher()?.radius}"
+            unClickable()
         }
         return slot to (item onInteract {
             scrolling = if (scrolling == player.uniqueId) {
@@ -283,7 +383,7 @@ private class NodeRadiusComponent(
     override suspend fun tick(player: Player) {
         super.tick(player)
         if (tick++ % 2 == 0) return
-        val node = nodeFetcher()
+        val node = nodeFetcher() ?: return
         val radius = node.radius
         val location = node.location
 
@@ -319,15 +419,13 @@ private class NodeRadiusComponent(
 }
 
 private class ModificationComponent(
-    private val context: ContentContext,
-    private val ref: Ref<RoadNetworkEntry>,
-    private val nodeFetcher: () -> RoadNode,
+    private val nodeFetcher: () -> RoadNode?,
     private val networkFetcher: () -> RoadNetwork,
     private val removeModification: (RoadModification) -> Unit,
 ) : ContentComponent, ItemsComponent {
     override fun items(player: Player): Map<Int, IntractableItem> {
         val map = mutableMapOf<Int, IntractableItem>()
-        val node = nodeFetcher()
+        val node = nodeFetcher() ?: return map
         val network = networkFetcher()
 
         val hasModification =
@@ -347,62 +445,37 @@ private class ModificationComponent(
         if (hasNonConnectedNode) {
             map[5] = ItemStack(Material.EMERALD).meta {
                 name = "<green><b>Add Fast Travel Connection"
-                loreString = "<line> <gray>Click to add a fast travel connection to another node."
-            } onInteract {
-                ContentModeTrigger(
-                    context,
-                    EdgeModificationContentMode(
-                        context,
-                        player,
-                        ref,
-                        networkFetcher(),
-                        "Select a node to create a <green>fast travel connection</green> to",
-                        network.nodes
-                            .asSequence()
-                            .filter { target -> target.id != node.id }
-                            .filter { target -> network.edges.none { it.start == node.id && it.end == target.id } }
-                            .filter { target ->
-                                network.modifications.none {
-                                    it is RoadModification.EdgeModification && it.start == node.id && it.end == target.id
-                                }
-                            }
-                            .toList()
-                    ) { target -> RoadModification.EdgeAddition(node.id, target.id, 0.0) }
-                ) triggerFor player
-            }
+                loreString = """
+                    |<line> <gray>Click on a unconnected node to <green>add a fast travel connection</green> to it.
+                    |<line> <gray>Click on a modified node to <red>remove the connection</red>.
+                    |
+                    |<line> <gray>If you only want to connect one way, hold <red>Shift</red> while clicking.
+                    |""".trimMargin()
+                unClickable()
+            } onInteract {}
         }
 
         val hasEdges = network.edges.any { it.start == node.id }
         if (hasEdges) {
             map[6] = ItemStack(Material.REDSTONE).meta {
                 name = "<red><b>Remove Edge"
-                loreString = "<line> <gray>Click to <red>remove an edge</red> from this node."
+                loreString = """
+                    |<line> <gray>Click on a connected node to <red>force remove the edge</red> between them.
+                    |<line> <gray>Click on a modified node to allow the edge to be added again.
+                    |
+                    |<line> <gray>If you only want to remove one way, hold <red>Shift</red> while clicking.
+                """.trimMargin()
+                unClickable()
             } onInteract {
-                val targetNodeIds = network.edges.filter { it.start == node.id }.map { it.end }
-                ContentModeTrigger(
-                    context,
-                    EdgeModificationContentMode(
-                        context,
-                        player,
-                        ref,
-                        networkFetcher(),
-                        "Select an edge to remove",
-                        network.nodes.filter { target -> target.id in targetNodeIds }
-                            .filter { target ->
-                                network.modifications.none {
-                                    it is RoadModification.EdgeModification && it.start == node.id && it.end == target.id
-                                }
-                            }
-                    ) { target -> RoadModification.EdgeRemoval(node.id, target.id) }
-                ) triggerFor player
             }
         }
 
         return map
     }
+
     private fun openMenu(player: Player) {
         plugin.chestMenu(6) {
-            val node = nodeFetcher()
+            val node = nodeFetcher() ?: return@chestMenu
             title = "Modifications"
             val modifications = networkFetcher().modifications
                 .filterIsInstance<RoadModification.EdgeModification>()
@@ -447,9 +520,11 @@ private class ModificationComponent(
                                     player.teleport(target.location)
                                 }
                             }
+
                             ClickType.SHIFT_RIGHT -> {
                                 removeModification(modification)
                             }
+
                             else -> {}
                         }
                         close()

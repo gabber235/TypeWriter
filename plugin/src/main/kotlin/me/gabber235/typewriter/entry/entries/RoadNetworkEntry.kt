@@ -68,6 +68,9 @@ data class RoadEdge(
     }
 }
 
+fun Collection<RoadEdge>.containsEdge(start: RoadNodeId, end: RoadNodeId): Boolean =
+    any { it.start == start && it.end == end }
+
 sealed interface RoadModification {
     sealed interface EdgeModification : RoadModification {
         val start: RoadNodeId
@@ -105,6 +108,9 @@ sealed interface RoadModification {
 
 fun Collection<RoadModification>.containsRemoval(start: RoadNodeId, end: RoadNodeId): Boolean =
     any { it is RoadModification.EdgeRemoval && it.start == start && it.end == end }
+
+fun Collection<RoadModification>.containsAddition(start: RoadNodeId, end: RoadNodeId): Boolean =
+    any { it is RoadModification.EdgeAddition && it.start == start && it.end == end }
 
 fun createRoadNetworkParser(): Gson = GsonBuilder()
     .registerTypeAdapter(Location::class.java, LocationSerializer())
