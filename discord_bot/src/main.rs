@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use actix_web::{middleware::Logger, App, HttpServer};
 use once_cell::sync::Lazy;
-use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::{self as serenity, GatewayIntents};
 use tokio::signal;
 use tokio_util::sync::CancellationToken;
 
@@ -64,6 +64,7 @@ async fn main() {
     let token = CancellationToken::new();
     let webhook_token = token.clone();
     let discord_token = token.clone();
+    let schedule_token = token.clone();
 
     let webhook_task = tokio::spawn(async move {
         tokio::select! {
@@ -79,6 +80,13 @@ async fn main() {
         }
     });
 
+    let schedule_task = tokio::spawn(async move {
+        tokio::select! {
+            _ = schedule_token.cancelled() => {}
+            _ = schedule_task() => {}
+        }
+    });
+
     match signal::ctrl_c().await {
         Ok(()) => {
             println!("\nShutting down...");
@@ -90,7 +98,9 @@ async fn main() {
         }
     }
 
-    tokio::join!(webhook_task, discord_task).0.unwrap();
+    tokio::join!(webhook_task, discord_task, schedule_task)
+        .0
+        .unwrap();
 }
 
 async fn startup_webhook() {
@@ -112,7 +122,8 @@ async fn startup_webhook() {
 
 async fn startup_discord_bot() {
     let discord_token = std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN");
-    let intents = serenity::GatewayIntents::non_privileged();
+    let intents =
+        GatewayIntents::MESSAGE_CONTENT | GatewayIntents::GUILD_MESSAGES | GatewayIntents::GUILDS;
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
@@ -134,6 +145,8 @@ async fn startup_discord_bot() {
         .event_handler(TicketReopenHandler)
         .event_handler(ThreadArchivingHandler)
         .event_handler(ThreadPostedHandler)
+        .event_handler(SupportAnsweringHandler)
+        .event_handler(ThreadClosedBlockerHandler)
         .framework(framework)
         .await;
 
@@ -144,6 +157,16 @@ async fn startup_discord_bot() {
         .start()
         .await
         .expect("failed to start discord bot");
+}
+
+async fn schedule_task() {
+    loop {
+        println!("Running schedule task...");
+        if let Err(e) = cleanup_threads().await {
+            eprintln!("Failed to run cleanup task: {}", e);
+        }
+        tokio::time::sleep(std::time::Duration::from_secs(60 * 60 * 12)).await;
+    }
 }
 
 async fn on_error(error: poise::FrameworkError<'_, Data, WinstonError>) {
@@ -201,6 +224,9 @@ pub enum WinstonError {
 
     #[error("Not a guild channel")]
     NotAGuildChannel,
+
+    #[error("Not a thread channel")]
+    NotAThreadChannel,
 
     #[error("Failed to parse int: {0}")]
     ParseInt(#[from] std::num::ParseIntError),
