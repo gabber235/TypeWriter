@@ -14,6 +14,7 @@ import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.extensions.packetevents.toPacketItem
 import me.gabber235.typewriter.utils.name
+import me.gabber235.typewriter.utils.unClickable
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -64,8 +65,7 @@ class PumpkinHatCinematicAction(
                     ItemStack(Material.CARVED_PUMPKIN)
                         .meta {
                             name = " "
-                            addEnchant(Enchantment.BINDING_CURSE, 1, true)
-                            addItemFlags(ItemFlag.HIDE_ENCHANTS)
+                            unClickable()
                         }
                         .toPacketItem()
                 )

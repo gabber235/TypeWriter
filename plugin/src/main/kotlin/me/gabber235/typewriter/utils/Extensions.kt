@@ -10,7 +10,9 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.profile.PlayerTextures
@@ -122,6 +124,12 @@ var ItemMeta.loreString: String?
 var ItemMeta.name: String?
     get() = if (hasDisplayName()) displayName()?.asMini() else null
     set(value) = displayName(if (!value.isNullOrEmpty()) "<!i>$value".asMini() else Component.text(" "))
+
+fun ItemMeta.unClickable(): ItemMeta {
+    addEnchant(Enchantment.BINDING_CURSE, 1, true)
+    addItemFlags(ItemFlag.HIDE_ENCHANTS)
+    return this
+}
 
 private val RANDOM_UUID =
     UUID.fromString("92864445-51c5-4c3b-9039-517c9927d1b4") // We reuse the same "random" UUID all the time
