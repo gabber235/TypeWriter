@@ -100,7 +100,6 @@ private val times = Times.times(Duration.ZERO, Duration.ofDays(1), Duration.ZERO
 private fun displaySubTitle(player: Player, speakerName: String, text: String, displayPercentage: Double) {
     val message = text.asMini()
         .splitPercentage(displayPercentage)
-        .color(NamedTextColor.WHITE)
 
     val component = subtitleFormat.asMiniWithResolvers(
         Placeholder.component("message", message),
