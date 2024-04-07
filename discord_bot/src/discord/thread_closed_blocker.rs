@@ -41,7 +41,6 @@ impl EventHandler for ThreadClosedBlockerHandler {
         };
 
         if parent.id != TICKET_FORUM_ID {
-            println!("Parent is not ticket forum");
             return;
         }
 
