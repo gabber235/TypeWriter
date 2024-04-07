@@ -31,6 +31,8 @@ class RoadNetworkEditorComponent(
         }
     }
 
+    fun recalculateEdges() = networkManager.getEditorNetwork(ref).recalculateEdges()
+
     override suspend fun initialize(player: Player) {}
 
     override suspend fun tick(player: Player) {}

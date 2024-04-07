@@ -8,6 +8,7 @@ import me.gabber235.typewriter.content.components.exit
 import me.gabber235.typewriter.content.components.nodes
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.forceTriggerFor
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.utils.ok
@@ -65,7 +66,6 @@ class SelectedNegativeNodeContentMode(
                     negativeNodes = roadNetwork.negativeNodes.filter { it.id != selectedNodeId }
                 )
             }
-            SystemTrigger.CONTENT_POP triggerFor player
         }
 
         nodes({ network.negativeNodes }, ::showingLocation) {
@@ -90,6 +90,11 @@ class SelectedNegativeNodeContentMode(
 
     override suspend fun tick() {
         super.tick()
+        if (selectedNode == null) {
+            // If the node is no longer in the network, we want to pop the content
+            SystemTrigger.CONTENT_POP forceTriggerFor  player
+        }
+
         cycle++
     }
 

@@ -15,6 +15,7 @@ import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.content.components.*
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.forceTriggerFor
 import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
 import me.gabber235.typewriter.entry.triggerFor
@@ -99,7 +100,6 @@ class SelectedRoadNodeContentMode(
                     }
                 )
             }
-            SystemTrigger.CONTENT_POP triggerFor player
         }
 
         +ModificationComponent(::selectedNode, ::network) { modification ->
@@ -259,6 +259,11 @@ class SelectedRoadNodeContentMode(
 
     override suspend fun tick() {
         cycle++
+
+        if (selectedNode == null) {
+            // If the node is no longer in the network, we want to pop the content
+            SystemTrigger.CONTENT_POP forceTriggerFor  player
+        }
 
         super.tick()
     }

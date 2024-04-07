@@ -74,13 +74,8 @@ class NodesComponent<N>(
         refreshNodes(player)
     }
 
-    private var lastNodeCollection: Collection<N> = emptyList()
     override suspend fun tick(player: Player) {
-        val collection = nodeFetcher()
-        if (lastNodeCollection != collection) {
-            refreshNodes(player)
-            lastNodeCollection = collection
-        } else if (lastRefresh++ > 20) {
+        if (lastRefresh++ > 20) {
             refreshNodes(player)
         }
     }
@@ -160,6 +155,8 @@ private class NodeDisplay {
 
     fun dispose() {
         itemDisplay.despawn()
+        itemDisplay.remove()
         interaction.despawn()
+        interaction.remove()
     }
 }

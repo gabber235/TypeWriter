@@ -1,7 +1,6 @@
 package me.gabber235.typewriter.entry.roadnetwork.content
 
 import com.github.retrooper.packetevents.util.Vector3f
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.future.await
 import lirand.api.extensions.inventory.meta
 import me.gabber235.typewriter.content.ContentComponent
@@ -32,14 +31,11 @@ import org.patheloper.api.wrapper.PathPosition
 import org.patheloper.mapping.PatheticMapper
 import org.patheloper.mapping.bukkit.BukkitMapper
 import java.util.*
-import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.pow
 
 class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentMode(context, player), KoinComponent {
     private lateinit var ref: Ref<RoadNetworkEntry>
     private lateinit var editorComponent: RoadNetworkEditorComponent
-
-    private val jobs = ConcurrentLinkedQueue<Job>()
 
     private var cycle = 0L
 
@@ -60,12 +56,11 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
             var suffix = ""
             if (highlighting) suffix += " <yellow>(highlighting)</yellow>"
             suffix += editorComponent.state.message
-            if (jobs.isNotEmpty()) suffix += " <red><i>(calculating)</i></red>"
 
             title = "Editing Road Network$suffix"
             color = when {
                 editorComponent.state == RoadNetworkEditorState.DIRTY -> BossBar.Color.RED
-                jobs.isNotEmpty() -> BossBar.Color.PURPLE
+                editorComponent.state == RoadNetworkEditorState.CALCULATING -> BossBar.Color.PURPLE
                 highlighting -> BossBar.Color.YELLOW
                 else -> BossBar.Color.GREEN
             }
@@ -73,14 +68,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         exit()
         +NetworkHighlightComponent(::toggleHighlight)
         +NetworkRecalculateAllEdgesComponent {
-            jobs.add(DISPATCHERS_ASYNC.launch {
-                editorComponent.update {
-                    it.copy(edges = emptyList())
-                }
-                jobs.addAll(network.nodes.map {
-                    DISPATCHERS_ASYNC.launch { calculateEdgesFor(it) }
-                })
-            })
+            editorComponent.recalculateEdges()
         }
         +NetworkAddNodeComponent(::addRoadNode, ::addNegativeNode)
         nodes({ network.nodes }, ::showingLocation) {
@@ -131,6 +119,12 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
 
     private fun createNode(): RoadNode {
         val location = player.location.toCenterLocation().apply {
+            if (block.type.isSolid) {
+                // If you are standing on a slab or something, we want to place the node on top of it
+                if (!up.block.type.isSolid) {
+                    add(0.0, 1.0, 0.0)
+                }
+            }
             yaw = 0.0f
             pitch = 0.0f
         }
@@ -144,6 +138,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
     private fun addRoadNode() = DISPATCHERS_ASYNC.launch {
         val node = createNode()
         editorComponent.update { it.copy(nodes = it.nodes + node) }
+        editorComponent.recalculateEdges()
         ContentModeTrigger(
             context,
             SelectedRoadNodeContentMode(context, player, ref, node.id, true)
@@ -207,13 +202,10 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
     override suspend fun tick() {
         super.tick()
         cycle++
-
-        jobs.removeIf { it.isCompleted }
     }
 
     override suspend fun dispose() {
         super.dispose()
-        jobs.forEach { it.cancel() }
     }
 
     private fun showingLocation(node: RoadNode): Location = node.location.clone().apply {
@@ -313,7 +305,7 @@ internal class NetworkEdgesComponent(
         val nodes = fetchNodes().associateBy { it.id }
         showingEdges = fetchEdges()
             .filter {
-                (nodes[it.start]?.location?.distanceSquared(player.location)
+                (nodes[it.start]?.location?.distanceSqrt(player.location)
                     ?: Double.MAX_VALUE) < (roadNetworkMaxDistance * roadNetworkMaxDistance)
             }
             .mapNotNull { edge ->
@@ -384,14 +376,14 @@ class NegativeNodePulseComponent(
     override suspend fun tick(player: Player) {
         if (cycle == 0) {
             showingNodes = negativeNodes()
-                .filter { (it.location.distanceSqrt(player.location) ?: Double.MAX_VALUE) < NODE_SHOW_DISTANCE_SQUARED }
+                .filter { (it.location.distanceSqrt(player.location) ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance }
                 .map { Pulse(it.location, it.radius) }
         }
 
         val percentage = (cycle.toDouble() / PULSE_DURATION).easeOutBack()
         showingNodes.forEach { pulse ->
             val radius = percentage * (pulse.radius - 0.2)
-            pulse.location.particleSphere(player, radius, Color.BLACK, phiDivisions = 8, thetaDivisions = 6)
+            pulse.location.particleSphere(player, radius, Color.BLACK, phiDivisions = 8, thetaDivisions = 5)
         }
 
         cycle++

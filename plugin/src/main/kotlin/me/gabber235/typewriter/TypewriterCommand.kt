@@ -329,9 +329,9 @@ private fun LiteralDSLBuilder.roadNetworkCommands() =
         literal("edit") {
             requiresPermissions("typewriter.roadNetwork.edit")
             argument("network", entryType<RoadNetworkEntry>()) { network ->
-                fun Player.editRoadNetwork() {
+                fun Player.editRoadNetwork(entry: RoadNetworkEntry) {
                     val data = mapOf(
-                        "entryId" to network
+                        "entryId" to entry.id
                     )
                     val context = ContentContext(data)
                     ContentModeTrigger(
@@ -340,13 +340,13 @@ private fun LiteralDSLBuilder.roadNetworkCommands() =
                     ) triggerFor this
                 }
                 executesPlayer {
-                    source.editRoadNetwork()
+                    source.editRoadNetwork(network.get())
                 }
 
                 argument("player", PlayerType) { player ->
                     requiresPermissions("typewriter.roadNetwork.edit.other")
                     executes {
-                        player.get().editRoadNetwork()
+                        player.get().editRoadNetwork(network.get())
                     }
                 }
             }
