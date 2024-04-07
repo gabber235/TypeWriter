@@ -23,7 +23,7 @@ class PlayerSpecificActivityEntityDisplay(
     override fun filter(player: Player): Boolean {
         val activityManager = activityManagers[player.uniqueId] ?: return false
         val npcLocation = activityManager.location
-        val distance = npcLocation.distanceSquared(player.location) ?: return false
+        val distance = npcLocation.distanceSqrt(player.location) ?: return false
         return distance <= entityShowRange * entityShowRange
     }
 

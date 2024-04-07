@@ -25,7 +25,7 @@ class CommonActivityEntityDisplay(
 
     override fun filter(player: Player): Boolean {
         val npcLocation = activityManager?.location ?: return false
-        val distance = npcLocation.distanceSquared(player.location) ?: return false
+        val distance = npcLocation.distanceSqrt(player.location) ?: return false
         return distance <= entityShowRange * entityShowRange
     }
 

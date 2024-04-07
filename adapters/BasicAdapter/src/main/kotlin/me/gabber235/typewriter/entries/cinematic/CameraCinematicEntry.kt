@@ -227,7 +227,7 @@ private suspend inline fun Player.teleportIfNeeded(
     frame: Int,
     location: Location,
 ) {
-    if (frame % 10 == 0 || location.distanceSquared(location) > MAX_DISTANCE_SQUARED) SYNC.switchContext {
+    if (frame % 10 == 0 || (location.distanceSqrt(location) ?: Double.MAX_VALUE) > MAX_DISTANCE_SQUARED) SYNC.switchContext {
         teleport(location)
         allowFlight = true
         isFlying = true

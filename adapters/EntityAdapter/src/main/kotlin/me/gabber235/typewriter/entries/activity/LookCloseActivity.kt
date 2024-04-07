@@ -38,12 +38,12 @@ class LookCloseActivity(
         // Can only activate if there is a player nearby
         if (player == null) {
             return currentLocation.bukkitWorld?.players?.any {
-                val distance = currentLocation.distanceSquared(it.location) ?: return@any false
+                val distance = currentLocation.distanceSqrt(it.location) ?: return@any false
                 distance <= playerCloseLookRange * playerCloseLookRange
             } ?: false
         }
 
-        val distance = currentLocation.distanceSquared(player.location) ?: return false
+        val distance = currentLocation.distanceSqrt(player.location) ?: return false
         return distance <= playerCloseLookRange * playerCloseLookRange
     }
 
@@ -63,11 +63,11 @@ class LookCloseActivityTask(
     private fun findNewTarget(): Player? {
         if (player == null) {
             val closestTarget = location.bukkitWorld?.players
-                ?.minByOrNull { location.distanceSquared(it.location) ?: Double.POSITIVE_INFINITY }
+                ?.minByOrNull { location.distanceSqrt(it.location) ?: Double.POSITIVE_INFINITY }
             if (closestTarget == null) {
                 return null
             }
-            val distance = location.distanceSquared(closestTarget.location)
+            val distance = location.distanceSqrt(closestTarget.location)
 
             if (distance == null || distance > playerCloseLookRange * playerCloseLookRange) {
                 return null
@@ -77,7 +77,7 @@ class LookCloseActivityTask(
         }
 
 
-        val distance = location.distanceSquared(player.location)
+        val distance = location.distanceSqrt(player.location)
         if (distance == null || distance > playerCloseLookRange * playerCloseLookRange) {
             return null
         }
@@ -89,7 +89,7 @@ class LookCloseActivityTask(
         if (target == null) target = findNewTarget()
         if (target == null) return
 
-        val distance = location.distanceSquared(target.location) ?: Double.POSITIVE_INFINITY
+        val distance = location.distanceSqrt(target.location) ?: Double.POSITIVE_INFINITY
         if (distance > playerCloseLookRange * playerCloseLookRange) {
             this.target = null
             return

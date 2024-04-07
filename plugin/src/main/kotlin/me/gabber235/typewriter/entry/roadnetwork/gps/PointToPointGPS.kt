@@ -36,7 +36,7 @@ class PointToPointGPS(
     override suspend fun findPath(): Result<List<GPSEdge>> = DISPATCHERS_ASYNC.switchContext {
         val start = startFetcher()
         val end = endFetcher()
-        if (start.distanceSquared(end) < 1) return@switchContext ok(emptyList())
+        if ((start.distanceSqrt(end) ?: Double.MAX_VALUE) < 1) return@switchContext ok(emptyList())
         var network = roadNetworkManager.getNetwork(network)
 
         val startPair = getOrCreateNode(network, start, previousStart, -1, asEnd = false)
@@ -216,11 +216,15 @@ class PointToPointGPS(
         id: Int,
         asEnd: Boolean,
     ): Pair<RoadNode, List<RoadEdge>?> {
-        if (previous != null && previous.first.location.distanceSquared(location) < previous.first.radius * previous.first.radius) {
+        if (previous != null && (previous.first.location.distanceSqrt(location)
+                ?: Double.MAX_VALUE) < previous.first.radius * previous.first.radius
+        ) {
             return previous
         }
 
-        val node = network.nodes.firstOrNull { it.location.distanceSquared(location) < it.radius * it.radius }
+        val node = network.nodes.firstOrNull {
+            (it.location.distanceSqrt(location) ?: Double.MAX_VALUE) < it.radius * it.radius
+        }
         if (node != null) return node to null
         val newNode = RoadNode(RoadNodeId(id), location, 0.5)
         val additionalEdges = findAdditionalEdges(network, newNode, asEnd)
@@ -230,7 +234,10 @@ class PointToPointGPS(
     private suspend fun findAdditionalEdges(network: RoadNetwork, node: RoadNode, asEnd: Boolean): List<RoadEdge> =
         coroutineScope {
             network.nodes
-                .filter { it != node && it.location.world == node.location.world && it.location.distanceSquared(node.location) < roadNetworkMaxDistance * roadNetworkMaxDistance }
+                .filter {
+                    it != node && it.location.world == node.location.world && (it.location.distanceSqrt(node.location)
+                        ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance
+                }
                 .map {
                     async {
                         val pathFinder = PatheticMapper.newPathfinder(
