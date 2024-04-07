@@ -1,9 +1,11 @@
-package me.gabber235.typewriter.entry.roadnetwork
+package me.gabber235.typewriter.entry.roadnetwork.content
 
 import me.gabber235.typewriter.content.ContentComponent
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.RoadNetwork
 import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
+import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
+import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
 import me.gabber235.typewriter.utils.ThreadType
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent

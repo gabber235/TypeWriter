@@ -15,15 +15,16 @@ class RoadNetworkEditor(
 ) : KoinComponent {
     private val networkManager: RoadNetworkManager by inject()
 
-    var network: RoadNetwork = RoadNetwork(emptyList(), emptyList(), emptyList())
+    var network: RoadNetwork = RoadNetwork()
         private set
 
-    private var lastChange: Long = Long.MAX_VALUE
+    private var lastChange: Long = -1
     private var job: Job? = null
     private var mutex = Mutex()
 
     val state: RoadNetworkEditorState
         get() = when {
+            lastChange < 0 -> RoadNetworkEditorState.LOADING
             job != null -> RoadNetworkEditorState.SAVING
             lastChange != Long.MAX_VALUE -> RoadNetworkEditorState.DIRTY
             else -> RoadNetworkEditorState.IDLE
@@ -46,6 +47,7 @@ class RoadNetworkEditor(
     }
 
     fun refresh() {
+        if (lastChange < 0) return
         if (lastChange + 3_000 < System.currentTimeMillis() && job == null) {
             job = DISPATCHERS_ASYNC.launch {
                 val network = mutex.withLock {
@@ -71,8 +73,9 @@ class RoadNetworkEditor(
     }
 }
 
-enum class RoadNetworkEditorState {
-    IDLE,
-    DIRTY,
-    SAVING,
+enum class RoadNetworkEditorState(val message: String) {
+    LOADING(" <gray><i>(loading)</i></gray>"),
+    IDLE(""),
+    DIRTY(" <gray><i>(unsaved changes)</i></gray>"),
+    SAVING(" <red><i>(saving)</i></red>"),
 }

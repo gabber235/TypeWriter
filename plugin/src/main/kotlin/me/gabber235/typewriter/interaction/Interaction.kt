@@ -239,7 +239,11 @@ class Interaction(val player: Player) : KoinComponent {
 
         val content = content
         if (content != null) {
-            content.pushMode(trigger.mode)
+            if (trigger is ContentModeSwapTrigger) {
+                content.swapMode(trigger.mode)
+            } else {
+                content.pushMode(trigger.mode)
+            }
             return
         }
         this.content = ContentEditor(trigger.context, player, trigger.mode).also {

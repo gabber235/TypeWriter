@@ -52,7 +52,7 @@ class RoadNetworkManager : KoinComponent {
             } catch (e: Exception) {
                 logger.severe("Failed to load road network with id $id")
                 null
-            } ?: RoadNetwork(emptyList(), emptyList(), emptyList())
+            } ?: RoadNetwork()
 
             deferred.complete(network)
         }

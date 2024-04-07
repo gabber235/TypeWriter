@@ -11,8 +11,8 @@ import me.gabber235.typewriter.entry.entries.AudienceDisplay
 import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
 import me.gabber235.typewriter.entry.entries.TickableDisplay
 import me.gabber235.typewriter.entry.entries.roadNetworkMaxDistance
-import me.gabber235.typewriter.entry.roadnetwork.toLocation
-import me.gabber235.typewriter.entry.roadnetwork.toPathPosition
+import me.gabber235.typewriter.entry.roadnetwork.content.toLocation
+import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.Location

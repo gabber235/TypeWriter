@@ -17,9 +17,10 @@ interface RoadNetworkEntry : ArtifactEntry {
 }
 
 data class RoadNetwork(
-    val nodes: List<RoadNode>,
-    val edges: List<RoadEdge>,
-    val modifications: List<RoadModification>,
+    val nodes: List<RoadNode> = emptyList(),
+    val edges: List<RoadEdge> = emptyList(),
+    val modifications: List<RoadModification> = emptyList(),
+    val negativeNodes: List<RoadNode> = emptyList(),
 )
 
 @JvmInline

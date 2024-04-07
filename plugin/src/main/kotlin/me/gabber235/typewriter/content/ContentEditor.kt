@@ -89,6 +89,15 @@ class ContentEditor(
         newMode.initialize()
     }
 
+    suspend fun swapMode(newMode: ContentMode) {
+        player.playSound("ui.loom.take_result")
+        val previous = stack.pop()
+        newMode.setup()
+        stack.push(newMode)
+        previous.dispose()
+        newMode.initialize()
+    }
+
     suspend fun popMode(): Boolean {
         player.playSound("ui.cartography_table.take_result")
         stack.pop()?.dispose()

@@ -18,7 +18,7 @@ import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.quest.trackQuest
 import me.gabber235.typewriter.entry.quest.unTrackQuest
-import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkContentMode
+import me.gabber235.typewriter.entry.roadnetwork.content.RoadNetworkContentMode
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.ui.CommunicationHandler

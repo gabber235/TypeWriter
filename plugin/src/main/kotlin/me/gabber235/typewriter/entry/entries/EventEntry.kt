@@ -100,10 +100,34 @@ data class CinematicStartTrigger(
         get() = "system.cinematic.start.$pageId"
 }
 
-data class ContentModeTrigger(
+open class ContentModeTrigger(
     val context: ContentContext,
     val mode: ContentMode,
 ) : EventTrigger {
     override val id: String
         get() = "content.${mode::class.simpleName}"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ContentModeTrigger) return false
+
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}
+
+/**
+ * Swaps the content mode to the given mode.
+ *
+ * If no content mode is currently active, this will start a new context.
+ */
+class ContentModeSwapTrigger(
+    context: ContentContext,
+    mode: ContentMode,
+) : ContentModeTrigger(context, mode) {
+    override val id: String
+        get() = "content.swap.${mode::class.simpleName}"
 }

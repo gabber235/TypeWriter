@@ -9,7 +9,10 @@ import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
+import org.bukkit.Color
 import org.bukkit.Location
+import org.bukkit.Particle
+import org.bukkit.Particle.DustOptions
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
@@ -23,9 +26,7 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.time.Duration
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.log10
-import kotlin.math.round
+import kotlin.math.*
 
 
 operator fun File.get(name: String): File = File(this, name)
@@ -87,6 +88,38 @@ fun Location.lerp(other: Location, amount: Double): Location {
 operator fun Location.component1(): Double = x
 operator fun Location.component2(): Double = y
 operator fun Location.component3(): Double = z
+
+fun Location.particleSphere(
+    player: Player,
+    radius: Double,
+    color: Color,
+    phiDivisions : Int = 16,
+    thetaDivisions : Int = 8,
+    ) {
+    var phi = 0.0
+    while (phi < Math.PI) {
+        phi += Math.PI / phiDivisions
+        var theta = 0.0
+        while (theta < 2 * Math.PI) {
+            theta += Math.PI / thetaDivisions
+            val x = radius * sin(phi) * cos(theta)
+            val y = radius * cos(phi)
+            val z = radius * sin(phi) * sin(theta)
+            player.spawnParticle(
+                Particle.REDSTONE,
+                this.x + x,
+                this.y + y,
+                this.z + z,
+                1,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                DustOptions(color, radius.toFloat() / 2)
+            )
+        }
+    }
+}
 
 fun Double.round(decimals: Int): Double {
     var multiplier = 1.0

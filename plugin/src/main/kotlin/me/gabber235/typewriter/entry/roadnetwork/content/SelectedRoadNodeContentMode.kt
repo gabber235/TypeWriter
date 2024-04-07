@@ -1,4 +1,4 @@
-package me.gabber235.typewriter.entry.roadnetwork
+package me.gabber235.typewriter.entry.roadnetwork.content
 
 import com.github.retrooper.packetevents.util.Vector3f
 import kotlinx.coroutines.future.await
@@ -15,6 +15,8 @@ import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.content.components.*
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
+import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
@@ -36,13 +38,12 @@ import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
 import org.patheloper.api.pathing.configuration.PathingRuleSet
 import org.patheloper.api.pathing.result.Path
+import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
 import org.patheloper.mapping.PatheticMapper
 import java.util.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.cos
-import kotlin.math.sin
 
 class SelectedRoadNodeContentMode(
     context: ContentContext,
@@ -54,7 +55,6 @@ class SelectedRoadNodeContentMode(
     private lateinit var editorComponent: RoadNetworkEditorComponent
 
     private val network get() = editorComponent.network
-
     private val selectedNode get() = network.nodes.find { it.id == selectedNodeId }
 
     private var cycle = 0
@@ -64,9 +64,7 @@ class SelectedRoadNodeContentMode(
 
         val pathsComponent = +SelectedNodePathsComponent(::selectedNode, ::network)
         bossBar {
-            var suffix = ""
-            if (editorComponent.state == RoadNetworkEditorState.DIRTY) suffix += " <gray><i>(unsaved changes)</i></gray>"
-            else if (editorComponent.state == RoadNetworkEditorState.SAVING) suffix = " <red><i>(saving)</i></red>"
+            var suffix = editorComponent.state.message
             if (!pathsComponent.isPathsLoaded) suffix += " <gray><i>(calculating edges)</i></gray>"
 
             title = "Editing <gray>${selectedNode?.id}</gray> node$suffix"
@@ -101,7 +99,7 @@ class SelectedRoadNodeContentMode(
                     }
                 )
             }
-            pop()
+            SystemTrigger.CONTENT_POP triggerFor player
         }
 
         +ModificationComponent(::selectedNode, ::network) { modification ->
@@ -135,6 +133,25 @@ class SelectedRoadNodeContentMode(
             onInteract { interactWithNode(node) }
         }
 
+        nodes({ network.negativeNodes }, ::showingLocation) {
+            item = ItemStack(Material.NETHERITE_BLOCK)
+            glow = NamedTextColor.BLACK
+            scale = Vector3f(0.5f, 0.5f, 0.5f)
+            onInteract {
+                ContentModeSwapTrigger(
+                    context,
+                    SelectedNegativeNodeContentMode(
+                        context,
+                        player,
+                        ref,
+                        it.id,
+                        false
+                    )
+                ) triggerFor player
+            }
+        }
+        +NegativeNodePulseComponent { network.negativeNodes }
+
         return ok(Unit)
     }
 
@@ -142,22 +159,28 @@ class SelectedRoadNodeContentMode(
         yaw = (cycle % 360).toFloat()
     }
 
-    private fun pop() {
-        SystemTrigger.CONTENT_POP triggerFor player
-    }
-
     private fun interactWithNode(node: RoadNode) {
         if (node == selectedNode) {
-            pop()
+            SystemTrigger.CONTENT_POP triggerFor player
             return
         }
 
         if (player.inventory.heldItemSlot == 5) {
             edgeAddition(node)
+            return
         }
 
         if (player.inventory.heldItemSlot == 6) {
             edgeRemoval(node)
+            return
+        }
+
+        if (player.inventory.itemInMainHand.isEmpty) {
+            ContentModeSwapTrigger(
+                context,
+                SelectedRoadNodeContentMode(context, player, ref, node.id, false),
+            ) triggerFor player
+            return
         }
     }
 
@@ -178,6 +201,9 @@ class SelectedRoadNodeContentMode(
                         && it.start == selectedNodeId && it.end == node.id
             }
         if (containsOtherModification) return
+
+        player.playSound("ui.button.click")
+
         val containsModification =
             network.modifications.any { it is M && it.start == selectedNodeId && it.end == node.id }
 
@@ -185,7 +211,6 @@ class SelectedRoadNodeContentMode(
         val reverseModification = create(node.id, selectedNodeId)
 
         if (containsModification) {
-
             editorComponent.updateAsync { roadNetwork ->
                 roadNetwork.copy(
                     modifications = roadNetwork.modifications.filter {
@@ -239,7 +264,7 @@ class SelectedRoadNodeContentMode(
     }
 }
 
-private class RemoveNodeComponent(
+class RemoveNodeComponent(
     private val slot: Int = 0,
     private val onRemove: () -> Unit,
 ) : ItemComponent {
@@ -285,7 +310,15 @@ private class SelectedNodePathsComponent(
                 val result = pathFinder.findPath(
                     start.location.toPathPosition(),
                     end.location.toPathPosition(),
-                    NodeAvoidPathfindingStrategy(nodeAvoidance = network.nodes - start - end)
+                    NodeAvoidPathfindingStrategy(
+                        nodeAvoidance = network.nodes - start - end,
+                        permanentLock = true,
+                        strategy = NodeAvoidPathfindingStrategy(
+                            nodeAvoidance = network.negativeNodes,
+                            permanentLock = false,
+                            strategy = WalkablePathfinderStrategy(),
+                        )
+                    )
                 ).await()
                 if (result.hasFailed()) return@mapNotNull null
                 edge to result.path
@@ -330,10 +363,11 @@ private class SelectedNodePathsComponent(
     override suspend fun dispose(player: Player) {}
 }
 
-private class NodeRadiusComponent(
+class NodeRadiusComponent(
     private val nodeFetcher: () -> RoadNode?,
     private val initiallyScrolling: Boolean,
     private val slot: Int = 2,
+    private val color: Color = Color.RED,
     private val editRadius: (Double) -> Unit,
 ) : ItemComponent, Listener {
 
@@ -387,29 +421,7 @@ private class NodeRadiusComponent(
         val radius = node.radius
         val location = node.location
 
-        var phi = 0.0
-        while (phi < Math.PI) {
-            phi += Math.PI / 16
-            var theta = 0.0
-            while (theta < 2 * Math.PI) {
-                theta += Math.PI / 8
-                val x = radius * sin(phi) * cos(theta)
-                val y = radius * cos(phi)
-                val z = radius * sin(phi) * sin(theta)
-                player.spawnParticle(
-                    Particle.REDSTONE,
-                    location.x + x,
-                    location.y + y,
-                    location.z + z,
-                    1,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    DustOptions(Color.RED, radius.toFloat() / 2)
-                )
-            }
-        }
+        location.particleSphere(player, radius, color, phiDivisions = 16, thetaDivisions = 8)
     }
 
     override suspend fun dispose(player: Player) {

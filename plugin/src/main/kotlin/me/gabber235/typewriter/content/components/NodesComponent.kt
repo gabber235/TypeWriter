@@ -46,7 +46,9 @@ class NodesComponent<N>(
 
     private fun refreshNodes(player: Player) {
         val newNodes = nodeFetcher()
-            .filter { (nodeLocation(it).distanceSqrt(player.location) ?: Double.MAX_VALUE) < NODE_SHOW_DISTANCE_SQUARED }
+            .filter {
+                (nodeLocation(it).distanceSqrt(player.location) ?: Double.MAX_VALUE) < NODE_SHOW_DISTANCE_SQUARED
+            }
             .toSet()
 
         val toRemove = nodes.keys - newNodes
@@ -72,8 +74,13 @@ class NodesComponent<N>(
         refreshNodes(player)
     }
 
+    private var lastNodeCollection: Collection<N> = emptyList()
     override suspend fun tick(player: Player) {
-        if (lastRefresh++ > 20) {
+        val collection = nodeFetcher()
+        if (lastNodeCollection != collection) {
+            refreshNodes(player)
+            lastNodeCollection = collection
+        } else if (lastRefresh++ > 20) {
             refreshNodes(player)
         }
     }

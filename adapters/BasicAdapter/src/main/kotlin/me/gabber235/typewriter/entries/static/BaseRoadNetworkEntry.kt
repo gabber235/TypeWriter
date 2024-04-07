@@ -8,7 +8,7 @@ import me.gabber235.typewriter.adapters.modifiers.ContentEditor
 import me.gabber235.typewriter.entry.entries.RoadNetwork
 import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
 import me.gabber235.typewriter.entry.entries.data
-import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkContentMode
+import me.gabber235.typewriter.entry.roadnetwork.content.RoadNetworkContentMode
 
 @Entry("base_road_network", "A definition of the words road network", Colors.YELLOW, "material-symbols:map")
 /**

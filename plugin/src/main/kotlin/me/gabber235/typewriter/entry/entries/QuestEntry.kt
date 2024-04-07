@@ -116,7 +116,11 @@ class ObjectiveAudienceFilter(
     override fun onPlayerFilterAdded(player: Player) {
         super.onPlayerFilterAdded(player)
         val quest = objective.get()?.quest ?: return
-        // If the player doesn't have a quest tracked. We should start tracking this one.
+
+        if (!player.isQuestActive(quest)) {
+            return
+        }
+
         if (player.trackedQuest() == null) {
             player.trackQuest(quest)
             return
