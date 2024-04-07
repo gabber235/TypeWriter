@@ -85,6 +85,9 @@ fun Location.lerp(other: Location, amount: Double): Location {
     return Location(world, x, y, z)
 }
 
+val Location.up: Location
+    get() = clone().apply { y += 1 }
+
 operator fun Location.component1(): Double = x
 operator fun Location.component2(): Double = y
 operator fun Location.component3(): Double = z
@@ -115,7 +118,7 @@ fun Location.particleSphere(
                 0.0,
                 0.0,
                 0.0,
-                DustOptions(color, radius.toFloat() / 2)
+                DustOptions(color, sqrt(radius/3).toFloat())
             )
         }
     }
