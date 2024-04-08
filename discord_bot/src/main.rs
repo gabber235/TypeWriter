@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{cmp::min, sync::Arc};
 
 use actix_web::{middleware::Logger, App, HttpServer};
 use once_cell::sync::Lazy;
@@ -160,12 +160,20 @@ async fn startup_discord_bot() {
 }
 
 async fn schedule_task() {
+    let mut fail_count = 0;
     loop {
         println!("Running schedule task...");
-        if let Err(e) = cleanup_threads().await {
+        let wait_time = if let Err(e) = cleanup_threads().await {
             eprintln!("Failed to run cleanup task: {}", e);
-        }
-        tokio::time::sleep(std::time::Duration::from_secs(60 * 60 * 12)).await;
+            fail_count += 1;
+            30 * 2u64.pow(fail_count)
+        } else {
+            println!("Cleanup task completed");
+            fail_count = 0;
+            60 * 60 * 12
+        };
+        println!("Waiting for {} seconds before running again", wait_time);
+        tokio::time::sleep(std::time::Duration::from_secs(wait_time)).await;
     }
 }
 
