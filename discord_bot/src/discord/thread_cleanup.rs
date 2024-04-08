@@ -41,12 +41,12 @@ pub async fn cleanup_threads() -> Result<(), WinstonError> {
             .any(|tag| closed_tags.iter().any(|close_tag| close_tag.id == *tag));
 
         if has_close_tag {
-            cleanup_thread(&discord, thread).await?;
+            archive_thread(&discord, thread).await?;
             continue;
         }
 
         if thread.applied_tags.iter().any(|tag| *tag == answered_tag) {
-            closedown_thread(&discord, thread, &available_tags).await?;
+            resolve_answered_thread(&discord, thread, &available_tags).await?;
             continue;
         }
     }
@@ -62,18 +62,41 @@ async fn is_ticket_forum_thread(channel: &channel::GuildChannel) -> bool {
     parent.get() == TICKET_FORUM_ID
 }
 
-async fn cleanup_thread(
+async fn archive_thread(
     discord: &Context,
     mut thread: channel::GuildChannel,
 ) -> Result<(), WinstonError> {
-    let Some(last_message_date) = get_last_message_date(&discord, &thread) else {
+    let Some(last_message_date) = get_last_message_date(&thread) else {
         return Ok(());
     };
 
     let now = Timestamp::now();
-    let duration = now.time() - last_message_date.time();
+    let duration = now.timestamp() - last_message_date.timestamp();
 
-    if duration < Duration::days(3) {
+    if duration < Duration::days(3).num_seconds() {
+        return Ok(());
+    }
+
+    thread
+        .edit_thread(&discord, EditThread::default().archived(true))
+        .await?;
+
+    Ok(())
+}
+
+async fn resolve_answered_thread(
+    discord: &Context,
+    mut thread: channel::GuildChannel,
+    available_tags: &[ForumTag],
+) -> Result<(), WinstonError> {
+    let Some(last_message_date) = get_last_message_date(&thread) else {
+        return Ok(());
+    };
+
+    let now = Timestamp::now();
+    let duration = now.timestamp() - last_message_date.timestamp();
+
+    if duration < Duration::days(3).num_seconds() {
         return Ok(());
     }
 
@@ -103,32 +126,9 @@ async fn cleanup_thread(
         )
         .await?;
 
-    thread
-        .edit_thread(&discord, EditThread::default().archived(true))
-        .await?;
-
-    Ok(())
-}
-
-async fn closedown_thread(
-    discord: &Context,
-    mut thread: channel::GuildChannel,
-    available_tags: &[ForumTag],
-) -> Result<(), WinstonError> {
-    let Some(last_message_date) = get_last_message_date(&discord, &thread) else {
-        return Ok(());
-    };
-
-    let now = Timestamp::now();
-    let duration = now.time() - last_message_date.time();
-
-    if duration < Duration::days(3) {
-        return Ok(());
-    }
-
     // Close the thread
     let Some(resolved_tag) = available_tags.get_tag_id("resolved") else {
-        return Ok(());
+        return Err(WinstonError::TagNotFound("resolved".to_string()));
     };
 
     thread
@@ -144,6 +144,6 @@ fn get_tag(available_tags: &[ForumTag], tag: &str) -> Result<ForumTagId, Winston
         .ok_or_else(|| WinstonError::TagNotFound(tag.to_string()))
 }
 
-fn get_last_message_date(discord: &Context, thread: &channel::GuildChannel) -> Option<Timestamp> {
+fn get_last_message_date(thread: &channel::GuildChannel) -> Option<Timestamp> {
     Some(thread.last_message_id?.created_at())
 }
