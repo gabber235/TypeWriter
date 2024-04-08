@@ -77,6 +77,8 @@ async fn archive_thread(
         return Ok(());
     }
 
+    println!("Archiving thread {} ({})", thread.id, thread.name());
+
     thread
         .edit_thread(&discord, EditThread::default().archived(true))
         .await?;
@@ -99,6 +101,8 @@ async fn resolve_answered_thread(
     if duration < Duration::days(3).num_seconds() {
         return Ok(());
     }
+
+    println!("Auto Resolving thread {} ({})", thread.id, thread.name());
 
     let owner_id = thread.owner_id.ok_or(WinstonError::NotAThreadChannel)?;
 
