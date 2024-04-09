@@ -85,6 +85,7 @@ jobs:
 
       - name: Publish Hangar
         uses: gradle/gradle-build-action@v2
+        continue-on-error: true
         env:
           HANGAR_API_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}
         with:
