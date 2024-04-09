@@ -18,7 +18,7 @@ class OutlineButton extends HookConsumerWidget {
     required Widget label,
     required VoidCallback? onPressed,
     Color? color,
-    MaterialStatesController? controller,
+    WidgetStatesController? controller,
     Key? key,
   }) = _OutlineButtonIcon;
 
@@ -27,7 +27,7 @@ class OutlineButton extends HookConsumerWidget {
 
   final Color? color;
 
-  final MaterialStatesController? controller;
+  final WidgetStatesController? controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => OutlinedButton(
