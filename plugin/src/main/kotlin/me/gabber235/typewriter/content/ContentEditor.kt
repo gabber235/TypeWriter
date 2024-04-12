@@ -6,11 +6,15 @@ import lirand.api.extensions.world.clearAll
 import me.gabber235.typewriter.content.components.IntractableItem
 import me.gabber235.typewriter.content.components.ItemInteraction
 import me.gabber235.typewriter.content.components.ItemInteractionType
+import me.gabber235.typewriter.entry.entries.SystemTrigger
+import me.gabber235.typewriter.entry.forceTriggerFor
 import me.gabber235.typewriter.events.ContentEditorEndEvent
 import me.gabber235.typewriter.events.ContentEditorStartEvent
 import me.gabber235.typewriter.interaction.InteractionHandler
+import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.ThreadType.SYNC
+import me.gabber235.typewriter.utils.msg
 import me.gabber235.typewriter.utils.playSound
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -43,8 +47,19 @@ class ContentEditor(
             player.inventory.clearAll()
         }
         plugin.registerEvents(this)
-        mode?.setup()
-        mode?.initialize()
+        val mode = mode
+        if (mode == null) {
+            SystemTrigger.CONTENT_END forceTriggerFor player
+            return
+        }
+        val result = mode.setup()
+        if (result.isFailure) {
+            logger.severe("Failed to setup content mode for player ${player.name}: ${result.exceptionOrNull()?.message}")
+            player.msg("<red><b>Failed to setup content mode. Please report this to the server administrator.")
+            SystemTrigger.CONTENT_END forceTriggerFor player
+            return
+        }
+        mode.initialize()
     }
 
     suspend fun tick() {
@@ -71,6 +86,15 @@ class ContentEditor(
         newMode.setup()
         stack.push(newMode)
         previous?.dispose()
+        newMode.initialize()
+    }
+
+    suspend fun swapMode(newMode: ContentMode) {
+        player.playSound("ui.loom.take_result")
+        val previous = stack.pop()
+        newMode.setup()
+        stack.push(newMode)
+        previous.dispose()
         newMode.initialize()
     }
 

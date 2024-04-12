@@ -4,7 +4,7 @@ use indoc::formatdoc;
 use poise::{
     serenity_prelude::{
         ButtonStyle, CreateButton, CreateEmbed, CreateEmbedFooter, CreateMessage, EditThread,
-        ForumTag, ReactionType, Timestamp,
+        ForumTag, Mentionable, ReactionType, Timestamp,
     },
     CreateReply, ReplyHandle,
 };
@@ -33,7 +33,7 @@ impl CloseReason {
         }
     }
 
-    fn get_color(&self) -> u32 {
+    pub fn get_color(&self) -> u32 {
         match self {
             CloseReason::Resolved => 0x53ff52,
             CloseReason::Declined => 0xff5252,
@@ -86,6 +86,8 @@ pub async fn close_ticket(
         .guild()
         .ok_or(WinstonError::NotAGuildChannel)?;
 
+    let owner_id = channel.owner_id.ok_or(WinstonError::NotAThreadChannel)?;
+
     let available_tags = parent_channel.available_tags;
     let Some(tag) = available_tags.get_tag_id(reason.get_tag_name()) else {
         update_responds(
@@ -119,16 +121,9 @@ pub async fn close_ticket(
         embed.description("This ticket has been closed.")
     };
 
-    channel
-        .edit_thread(
-            ctx,
-            EditThread::default()
-                .applied_tags(vec![tag])
-                .locked(!allow_reopen),
-        )
-        .await?;
-
-    let message = CreateMessage::default().embed(embed);
+    let message = CreateMessage::default()
+        .content(format!("{}", owner_id.mention()))
+        .embed(embed);
 
     let message = if allow_reopen {
         message.button(
@@ -143,6 +138,15 @@ pub async fn close_ticket(
     };
 
     channel.send_message(&ctx, message).await?;
+
+    channel
+        .edit_thread(
+            ctx,
+            EditThread::default()
+                .applied_tags(vec![tag])
+                .locked(!allow_reopen),
+        )
+        .await?;
 
     Ok(())
 }

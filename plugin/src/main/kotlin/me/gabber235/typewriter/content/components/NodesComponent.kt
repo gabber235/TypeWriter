@@ -13,6 +13,7 @@ import me.gabber235.typewriter.extensions.packetevents.meta
 import me.gabber235.typewriter.extensions.packetevents.toPacketItem
 import me.gabber235.typewriter.extensions.packetevents.toPacketLocation
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.distanceSqrt
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta
 import me.tofaa.entitylib.meta.other.InteractionMeta
@@ -45,7 +46,9 @@ class NodesComponent<N>(
 
     private fun refreshNodes(player: Player) {
         val newNodes = nodeFetcher()
-            .filter { nodeLocation(it).distanceSquared(player.location) < NODE_SHOW_DISTANCE_SQUARED }
+            .filter {
+                (nodeLocation(it).distanceSqrt(player.location) ?: Double.MAX_VALUE) < NODE_SHOW_DISTANCE_SQUARED
+            }
             .toSet()
 
         val toRemove = nodes.keys - newNodes
@@ -152,6 +155,8 @@ private class NodeDisplay {
 
     fun dispose() {
         itemDisplay.despawn()
+        itemDisplay.remove()
         interaction.despawn()
+        interaction.remove()
     }
 }

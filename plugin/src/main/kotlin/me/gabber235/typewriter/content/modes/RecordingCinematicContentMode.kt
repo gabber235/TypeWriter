@@ -17,12 +17,12 @@ import me.gabber235.typewriter.entry.forceTriggerFor
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.interaction.startBlockingActionBar
 import me.gabber235.typewriter.interaction.stopBlockingActionBar
-import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.ThreadType.SYNC
+import me.gabber235.typewriter.utils.failure
 import me.gabber235.typewriter.utils.loreString
-import me.gabber235.typewriter.utils.msg
 import me.gabber235.typewriter.utils.name
+import me.gabber235.typewriter.utils.ok
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -33,7 +33,22 @@ import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.associate
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.filter
+import kotlin.collections.filterIsInstance
+import kotlin.collections.first
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.mapNotNull
+import kotlin.collections.mapOf
+import kotlin.collections.mutableMapOf
 import kotlin.collections.set
+import kotlin.collections.sorted
+import kotlin.collections.toList
 import kotlin.reflect.KClass
 
 inline fun <reified T : Any> ComponentContainer.recordingCinematic(
@@ -96,12 +111,11 @@ abstract class RecordingCinematicContentMode<T : Any>(
 
     private var tape = mutableTapeOf<T>()
 
-    override fun setup() {
+    override suspend fun setup(): Result<Unit> {
         val startFrame = context.startFrame
         val endFrame = context.endFrame
         if (startFrame == null || endFrame == null) {
-            player.msg("Missing startFrame or endFrame in context.")
-            logger.severe(
+            return failure(
                 """
                 |Missing startFrame or endFrame in context.
                 |Context: $context
@@ -110,15 +124,13 @@ abstract class RecordingCinematicContentMode<T : Any>(
                 |Report this to the adapter developer.
             """.trimMargin()
             )
-            SystemTrigger.CONTENT_END triggerFor player
-            return
         }
 
         frames = startFrame..endFrame
 
         val result = getAssetFromFieldValue(context.fieldValue)
         if (result.isFailure) {
-            player.msg(
+            return failure(
                 """
                 |Failed to get asset from field value (${context.fieldValue}):
                 |${result.exceptionOrNull()?.message}
@@ -126,14 +138,13 @@ abstract class RecordingCinematicContentMode<T : Any>(
                 |It is likely that you forgot to publish the asset before using it in a content mode.
             """.trimMargin()
             )
-            SystemTrigger.CONTENT_END triggerFor player
-            return
         }
 
         asset = result.getOrThrow()
 
 
-        val page = findCinematicPageById(context.pageId) ?: return
+        val page =
+            findCinematicPageById(context.pageId) ?: return failure("No cinematic page found with id ${context.pageId}")
 
         val entryId = context.entryId
 
@@ -165,6 +176,7 @@ abstract class RecordingCinematicContentMode<T : Any>(
             title = "Recording ends in <bold>$secondsLeft</bold>"
             progress = (frame - frames.first) / (frames.last - frames.first).toFloat()
         }
+        return ok(Unit)
     }
 
     override suspend fun initialize() {

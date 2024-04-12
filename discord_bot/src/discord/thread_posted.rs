@@ -8,8 +8,6 @@ pub struct ThreadPostedHandler;
 #[async_trait]
 impl EventHandler for ThreadPostedHandler {
     async fn thread_create(&self, ctx: Context, mut thread: GuildChannel) {
-        // If the thread was created in the ticket forum
-
         let Some(parent) = thread.parent_id else {
             return;
         };
@@ -30,11 +28,21 @@ impl EventHandler for ThreadPostedHandler {
         }
 
         let available_tags = parent.available_tags;
-        if let Some(support_tag) = available_tags.get_tag_id("support") {
-            thread
-                .edit_thread(&ctx, EditThread::default().applied_tags([support_tag]))
-                .await
-                .ok();
-        }
+        let Some(support_tag) = available_tags.get_tag_id("support") else {
+            eprintln!("Support tag not found in available tags");
+            return;
+        };
+
+        let Some(pending_tag) = available_tags.get_tag_id("pending") else {
+            eprintln!("Pending tag not found in available tags");
+            return;
+        };
+        thread
+            .edit_thread(
+                &ctx,
+                EditThread::default().applied_tags([support_tag, pending_tag]),
+            )
+            .await
+            .ok();
     }
 }

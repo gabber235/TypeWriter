@@ -31,6 +31,7 @@ import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.toProperty
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.packetevents.ArmSwing
+import me.gabber235.typewriter.utils.ok
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -141,10 +142,12 @@ class EntityCinematicAction(
 }
 
 class EntityCinematicViewing(context: ContentContext, player: Player) : ContentMode(context, player) {
-    override fun setup() {
+    override suspend fun setup(): Result<Unit> {
         exit()
         val cinematic = cinematic(context)
         recordingCinematic(context, 4, cinematic::frame, ::EntityCinematicRecording)
+
+        return ok(Unit)
     }
 }
 
@@ -185,9 +188,11 @@ class EntityCinematicRecording(
 ) : RecordingCinematicContentMode<EntityFrame>(context, player, initialFrame, klass) {
     private var swing: ArmSwing? = null
 
-    override fun setup() {
-        super.setup()
+    override suspend fun setup(): Result<Unit> {
+        val result =super.setup()
+        if (result.isFailure) return result
         cachedInventory()
+        return ok(Unit)
     }
 
     @EventHandler

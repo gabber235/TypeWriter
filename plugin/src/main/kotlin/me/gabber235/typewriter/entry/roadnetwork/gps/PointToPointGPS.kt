@@ -8,7 +8,7 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
-import me.gabber235.typewriter.entry.roadnetwork.toPathPosition
+import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
 import me.gabber235.typewriter.utils.ComputedMap
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.distanceSqrt
@@ -18,27 +18,10 @@ import org.bukkit.Location
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.patheloper.api.pathing.configuration.PathingRuleSet
+import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
 import org.patheloper.mapping.PatheticMapper
 import java.util.*
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.emptyList
-import kotlin.collections.filter
-import kotlin.collections.filterNotNull
-import kotlin.collections.firstOrNull
-import kotlin.collections.forEach
-import kotlin.collections.isNotEmpty
-import kotlin.collections.map
-import kotlin.collections.minus
-import kotlin.collections.minusAssign
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.orEmpty
-import kotlin.collections.plus
-import kotlin.collections.plusAssign
-import kotlin.collections.reversed
 import kotlin.collections.set
-import kotlin.collections.toMutableList
 
 class PointToPointGPS(
     private val network: Ref<RoadNetworkEntry>,
@@ -53,7 +36,7 @@ class PointToPointGPS(
     override suspend fun findPath(): Result<List<GPSEdge>> = DISPATCHERS_ASYNC.switchContext {
         val start = startFetcher()
         val end = endFetcher()
-        if (start.distanceSquared(end) < 1) return@switchContext ok(emptyList())
+        if ((start.distanceSqrt(end) ?: Double.MAX_VALUE) < 1) return@switchContext ok(emptyList())
         var network = roadNetworkManager.getNetwork(network)
 
         val startPair = getOrCreateNode(network, start, previousStart, -1, asEnd = false)
@@ -97,7 +80,12 @@ class PointToPointGPS(
         val startEndDistance = start.location.distanceSqrt(end.location)
         val visited = mutableMapOf<RoadNodeId, VisitedNode>()
         val inspecting = PriorityQueue<InspectingNode>()
-        inspecting += InspectingNode(start.id, null, 0.0, distanceWeight(startEndDistance, start.location, end.location))
+        inspecting += InspectingNode(
+            start.id,
+            null,
+            0.0,
+            distanceWeight(startEndDistance, start.location, end.location)
+        )
 
         while (inspecting.isNotEmpty()) {
             val current = inspecting.poll()
@@ -185,7 +173,8 @@ class PointToPointGPS(
         val oldInspecting = inspecting.firstOrNull { it.node == next.id }
         if (oldInspecting != null && oldInspecting.weight <= weight) return
         inspecting -= oldInspecting
-        val inspectingNode = InspectingNode(next.id, edge, weight, distanceWeight(startEndDistance, next.location, targetLocation))
+        val inspectingNode =
+            InspectingNode(next.id, edge, weight, distanceWeight(startEndDistance, next.location, targetLocation))
         inspecting += inspectingNode
     }
 
@@ -227,11 +216,15 @@ class PointToPointGPS(
         id: Int,
         asEnd: Boolean,
     ): Pair<RoadNode, List<RoadEdge>?> {
-        if (previous != null && previous.first.location.distanceSquared(location) < previous.first.radius * previous.first.radius) {
+        if (previous != null && (previous.first.location.distanceSqrt(location)
+                ?: Double.MAX_VALUE) < previous.first.radius * previous.first.radius
+        ) {
             return previous
         }
 
-        val node = network.nodes.firstOrNull { it.location.distanceSquared(location) < it.radius * it.radius }
+        val node = network.nodes.firstOrNull {
+            (it.location.distanceSqrt(location) ?: Double.MAX_VALUE) < it.radius * it.radius
+        }
         if (node != null) return node to null
         val newNode = RoadNode(RoadNodeId(id), location, 0.5)
         val additionalEdges = findAdditionalEdges(network, newNode, asEnd)
@@ -241,7 +234,10 @@ class PointToPointGPS(
     private suspend fun findAdditionalEdges(network: RoadNetwork, node: RoadNode, asEnd: Boolean): List<RoadEdge> =
         coroutineScope {
             network.nodes
-                .filter { it != node && it.location.world == node.location.world && it.location.distanceSquared(node.location) < roadNetworkMaxDistance * roadNetworkMaxDistance }
+                .filter {
+                    it != node && it.location.world == node.location.world && (it.location.distanceSqrt(node.location)
+                        ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance
+                }
                 .map {
                     async {
                         val pathFinder = PatheticMapper.newPathfinder(
@@ -256,7 +252,18 @@ class PointToPointGPS(
                         val result = pathFinder.findPath(
                             start.location.toPathPosition(),
                             end.location.toPathPosition(),
-                            NodeAvoidPathfindingStrategy(nodeAvoidance = network.nodes - start - end)
+                            NodeAvoidPathfindingStrategy(
+                                nodeAvoidance = network.nodes - start - end,
+                                permanentLock = true,
+                                strategy = NodeAvoidPathfindingStrategy(
+                                    nodeAvoidance = network.negativeNodes.filter {
+                                        val distance = start.location.distanceSqrt(it.location) ?: 0.0
+                                        distance > it.radius * it.radius && distance < roadNetworkMaxDistance * roadNetworkMaxDistance
+                                    },
+                                    permanentLock = false,
+                                    strategy = WalkablePathfinderStrategy(),
+                                ),
+                            )
                         ).await()
 
                         if (result.hasFailed()) return@async null
@@ -285,7 +292,7 @@ class PointToPointGPS(
         if (startEnd == null) return null
         val currentEnd = current.distanceSqrt(end) ?: return null
         if (currentEnd == 0.0) return 0.0
-        return currentEnd/startEnd
+        return currentEnd / startEnd
     }
 }
 

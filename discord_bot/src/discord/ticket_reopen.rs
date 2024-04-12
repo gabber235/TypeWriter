@@ -5,7 +5,7 @@ use poise::serenity_prelude::{
     CreateQuickModal, EditThread, EventHandler, Interaction, Timestamp,
 };
 
-use crate::{check_permissions, CONTRIBUTOR_ROLE_ID};
+use crate::{check_permissions, webhooks::GetTagId, CONTRIBUTOR_ROLE_ID, TICKET_FORUM_ID};
 
 pub struct TicketReopenHandler;
 
@@ -64,11 +64,42 @@ impl EventHandler for TicketReopenHandler {
 
         let reason = responds.inputs[0].as_str();
 
+        let Some(parent) = guild_channel.parent_id else {
+            return;
+        };
+        let parent = match parent.to_channel(&ctx).await {
+            Ok(parent) => parent,
+            Err(e) => {
+                eprintln!("Error getting parent channel: {}", e);
+                return;
+            }
+        };
+
+        let Some(parent) = parent.guild() else {
+            return;
+        };
+
+        if parent.id != TICKET_FORUM_ID {
+            return;
+        }
+
+        let available_tags = parent.available_tags;
+
+        let Some(support_tag) = available_tags.get_tag_id("support") else {
+            eprintln!("Support tag not found in available tags");
+            return;
+        };
+
+        let Some(pending_tag) = available_tags.get_tag_id("pending") else {
+            eprintln!("Pending tag not found in available tags");
+            return;
+        };
+
         if let Err(e) = guild_channel
             .edit_thread(
                 &ctx,
                 EditThread::default()
-                    .applied_tags([])
+                    .applied_tags([support_tag, pending_tag])
                     .archived(false)
                     .locked(false),
             )

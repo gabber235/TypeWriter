@@ -224,7 +224,7 @@ pub trait GetTagId {
     fn get_tag_id(&self, name: &str) -> Option<ForumTagId>;
 }
 
-impl GetTagId for Vec<ForumTag> {
+impl GetTagId for [ForumTag] {
     fn get_tag_id(&self, name: &str) -> Option<ForumTagId> {
         self.iter()
             .find(|tag| tag.name.to_lowercase() == name.to_lowercase())

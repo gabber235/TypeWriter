@@ -11,10 +11,11 @@ import me.gabber235.typewriter.entry.entries.AudienceDisplay
 import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
 import me.gabber235.typewriter.entry.entries.TickableDisplay
 import me.gabber235.typewriter.entry.entries.roadNetworkMaxDistance
-import me.gabber235.typewriter.entry.roadnetwork.toLocation
-import me.gabber235.typewriter.entry.roadnetwork.toPathPosition
+import me.gabber235.typewriter.entry.roadnetwork.content.toLocation
+import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
+import me.gabber235.typewriter.utils.distanceSqrt
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -141,12 +142,12 @@ private class PlayerPathStreamDisplay(
         val end = endLocation(player)
 
         // When the start and end location are the same, we don't need to find a path.
-        if (start.distanceSquared(end) < 1) {
+        if ((start.distanceSqrt(end) ?: Double.MAX_VALUE) < 1) {
             return@launch
         }
 
         // When the start and end location are within roadNetworkMaxDistance, we can just find the path between them.
-        if (start.distanceSquared(end) < roadNetworkMaxDistance * roadNetworkMaxDistance) {
+        if ((start.distanceSqrt(end) ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance) {
             val result = findPath(start, end)
             val path = result.map { it.mid().toLocation() }
             if (path.isEmpty()) return@launch
@@ -159,8 +160,9 @@ private class PlayerPathStreamDisplay(
         coroutineScope {
             // We only need to calculate the paths that the player will be able to see
             val path = edges.filter {
-                it.start.distanceSquared(start) < roadNetworkMaxDistance * roadNetworkMaxDistance
-                        || it.end.distanceSquared(start) < roadNetworkMaxDistance * roadNetworkMaxDistance
+                ((it.start.distanceSqrt(start) ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance
+                        || (it.end.distanceSqrt(start)
+                    ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance)
             }
                 .map { edge ->
                     async {

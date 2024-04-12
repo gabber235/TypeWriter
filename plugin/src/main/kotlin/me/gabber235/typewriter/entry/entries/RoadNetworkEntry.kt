@@ -17,9 +17,10 @@ interface RoadNetworkEntry : ArtifactEntry {
 }
 
 data class RoadNetwork(
-    val nodes: List<RoadNode>,
-    val edges: List<RoadEdge>,
-    val modifications: List<RoadModification>,
+    val nodes: List<RoadNode> = emptyList(),
+    val edges: List<RoadEdge> = emptyList(),
+    val modifications: List<RoadModification> = emptyList(),
+    val negativeNodes: List<RoadNode> = emptyList(),
 )
 
 @JvmInline
@@ -68,6 +69,9 @@ data class RoadEdge(
     }
 }
 
+fun Collection<RoadEdge>.containsEdge(start: RoadNodeId, end: RoadNodeId): Boolean =
+    any { it.start == start && it.end == end }
+
 sealed interface RoadModification {
     sealed interface EdgeModification : RoadModification {
         val start: RoadNodeId
@@ -105,6 +109,9 @@ sealed interface RoadModification {
 
 fun Collection<RoadModification>.containsRemoval(start: RoadNodeId, end: RoadNodeId): Boolean =
     any { it is RoadModification.EdgeRemoval && it.start == start && it.end == end }
+
+fun Collection<RoadModification>.containsAddition(start: RoadNodeId, end: RoadNodeId): Boolean =
+    any { it is RoadModification.EdgeAddition && it.start == start && it.end == end }
 
 fun createRoadNetworkParser(): Gson = GsonBuilder()
     .registerTypeAdapter(Location::class.java, LocationSerializer())

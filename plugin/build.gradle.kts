@@ -61,7 +61,7 @@ dependencies {
     api("io.insert-koin:koin-core:3.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
     implementation("org.bstats:bstats-bukkit:3.0.2")
-    implementation("com.github.patheloper.pathetic:pathetic-mapping:2.4")
+    implementation("com.github.patheloper.pathetic:pathetic-mapping:2.4.1")
 
     compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")

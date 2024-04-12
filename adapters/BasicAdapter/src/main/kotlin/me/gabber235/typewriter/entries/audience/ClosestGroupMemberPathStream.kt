@@ -36,6 +36,7 @@ class ClosestGroupMemberPathStream(
 ) : AudienceEntry {
     override fun display(): AudienceDisplay = PathStreamDisplay(road) { player ->
         group.get()?.group(player)?.players
+            ?.asSequence()
             ?.filter { it != player }
             ?.filter { player.world == it.world }
             ?.minByOrNull { it.location.distanceSquared(player.location) }

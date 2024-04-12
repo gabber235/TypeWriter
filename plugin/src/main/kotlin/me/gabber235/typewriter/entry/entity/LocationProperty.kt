@@ -35,12 +35,12 @@ data class LocationProperty(
         return org.bukkit.util.Vector(x, y, z)
     }
 
-    fun distanceSquared(other: LocationProperty): Double? {
+    fun distanceSqrt(other: LocationProperty): Double? {
         if (world != other.world) return null
         return toVector().distanceSquared(other.toVector())
     }
 
-    fun distanceSquared(other: org.bukkit.Location): Double? {
+    fun distanceSqrt(other: org.bukkit.Location): Double? {
         if (world != other.world.uid) return null
         return toVector().distanceSquared(other.toVector())
     }
