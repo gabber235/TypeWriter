@@ -10,6 +10,8 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
+import me.gabber235.typewriter.utils.ThreadType
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -36,7 +38,7 @@ class DelayedActionEntry(
 ) : CustomTriggeringActionEntry {
 
     override fun execute(player: Player) {
-        SYNC.launch {
+        DISPATCHERS_ASYNC.launch {
             delay(duration.toMillis())
             super.execute(player)
             player.triggerCustomTriggers()
