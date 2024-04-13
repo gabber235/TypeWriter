@@ -43,11 +43,26 @@ class DetectCommandRanEventEntry(
      * </Admonition>
      */
     val command: String = "",
+    /**
+     * Cancel the event when triggered.
+     * It will only cancel the event if all the criteria are met.
+     * If set to false, it will not modify the event.
+     *
+     * <Admonition type="tip">
+     *     You should always set this to true if any dialog is triggered after this.
+     *     To prevent the dialog from immediately being closed.
+     * </Admonition>
+     */
+    @Help("Cancel the event when triggered")
+    val cancel: Boolean = false,
 ) : EventEntry
 
 @EntryListener(DetectCommandRanEventEntry::class)
 fun onRunCommand(event: PlayerCommandPreprocessEvent, query: Query<DetectCommandRanEventEntry>) {
     val message = event.message.removePrefix("/")
 
-    query findWhere { KotlinRegex(it.command).matches(message) } triggerAllFor event.player
+    val entries = query.findWhere { KotlinRegex(it.command).matches(message) }.toList()
+    if (entries.isEmpty()) return
+    entries triggerAllFor event.player
+    if (entries.any { it.cancel }) event.isCancelled = true
 }
