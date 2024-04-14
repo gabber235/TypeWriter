@@ -26,6 +26,12 @@ import org.bukkit.entity.Player
 
 @Entry("item_display_definition", "An item display entity", Colors.ORANGE, "mingcute:sword-fill")
 @Tags("item_display_definition")
+/**
+ * The `ItemDisplayDefinition` class is an entry that represents an item display entity.
+ *
+ * ## How could this be used?
+ * This could be used to create an entity that displays an item.
+ */
 class ItemDisplayDefinition(
     override val id: String = "",
     override val name: String = "",
