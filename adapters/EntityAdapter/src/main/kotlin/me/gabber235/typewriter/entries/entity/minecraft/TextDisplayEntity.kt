@@ -27,6 +27,12 @@ import org.bukkit.entity.Player
 
 @Entry("text_display_definition", "A text display entity", Colors.ORANGE, "material-symbols:text-ad-rounded")
 @Tags("text_display_definition")
+/**
+ * The `TextDisplayDefinition` class is an entry that represents a text display entity.
+ *
+ * ## How could this be used?
+ * This could be used to create an entity that displays text.
+ */
 class TextDisplayDefinition(
     override val id: String = "",
     override val name: String = "",

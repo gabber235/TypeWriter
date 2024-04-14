@@ -11,6 +11,9 @@ import org.bukkit.entity.Player
 import java.util.*
 
 @Entry("fixed_location_activity", "A fixed location activity", Colors.BLUE, "majesticons:map-marker-area")
+/**
+ * The "Fixed Location Activity" makes the entity always be in the same location.
+ */
 class FixedLocationActivityEntry(
     override val id: String = "",
     override val name: String = "",

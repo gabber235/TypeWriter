@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import me.tofaa.entitylib.wrapper.WrapperEntity
 
+
 data class ArmSwingProperty(val armSwing: ArmSwing) : EntityProperty {
     companion object : SinglePropertyCollectorSupplier<ArmSwingProperty>(ArmSwingProperty::class)
 
