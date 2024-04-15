@@ -1,7 +1,6 @@
 # Entity Adapter
 Here you will learn about all the features of the Entity Adapter.
 
-
 ## What is the Entity Adapter?
 The Entity Adapter is a feature that makes it easy to spawn, manage and control entities like NPCs on your server.
 
@@ -37,45 +36,15 @@ then search for `Add NPC Definition`, and add it to the page. You should now see
 
 ![Search for NPC Definition](../../assets/entity-adapter/definition_search.png)
 
-### Customizing the entity
+# Customizing the entity
 Now that you have defined the entity, you can customize it to your liking.
 
-#### Setting the entity's name
+## Setting the entity's name
 Let's rename the entry to `Questmaster Definition`.
 
 We want him to have the name Quest Master in-game, so click on the DisplayName and name him `Quest Master` to give the entity a custom name.
 
 ![Rename Entry and Entity](../../assets/entity-adapter/entity_name_change.png)
-
-#### Setting the entity's custom noises
-If you want the NPC to emit custom noises, you can do that by using the `Sound` field.
-We won't touch this field in this example,
-but it will be explained further later on.
-
-
-#### Setting the entity's skin
-Don't want to have the default skin?
-No problem!
-You can change the skin of the entity by navigating to the `Skin` field and selecting
-a skin from either a valid skin link or enter a player's UUID from the buttons to the right of `Skin`.
-We want the NPC to have a custom skin,
-so we will enter a valid skin link.
-Choose any you like.
-
-![Glow Effect Select](../../assets/entity-adapter/skin_change_button.png)
-![Glow Effect Select](../../assets/entity-adapter/skin_change_menu.png)
-
-
-#### Setting the entity's data
-If you want to give the entity some custom data,
-you can do that by adding a data field and adding the data you want to link with the entity.
-You can add as many data fields as you want.
-In this example, we want to see the NPC from far away, so we will add a `Glowing Effect` data field
-and set it to `true` in the editor.
-
-![Glow Effect Select](../../assets/entity-adapter/glow_effect.png)
-![Glow Effect Set True](../../assets/entity-adapter/glow_editor.png)
-
 
 ### Creating an entity instance
 We have now defined the entity, but it is not yet spawned in the world. To spawn the entity, we have to add the `Entity Instance` component to the page.
@@ -89,31 +58,6 @@ This will act as a base for our NPC instance
 
 ![Definition Select](../../assets/entity-adapter/definition_select.png)
 
-
-#### Customizing the entity instance
-In the entity instance component, you can set the entity's position, rotation, data and activities.
-
-#### Setting the entity's position and rotation
-Next, you can set the position and rotation of the entity.
-You can do this by entering the coordinates in the `Position` and `Rotation` fields.
-We want the NPC to spawn at certain coordinates,
-you can either enter the coordinates manually or use the `Capture Position` button
-to synchronize the NPC to your current position and rotation in the game.
-
-![Location Select](../../assets/entity-adapter/location_select.png)
-
-#### Setting the entity's data
-You can also add data to the entity instance.
-This data is specific to that NPC instance and will not affect the definition, but only that instance.
-You can reuse entity definitions and their data across multiple instances.
-
-#### Setting the entity's activities
-Activities are currently limited to `fixed location` and `look at close players`.
-You can set the activity of the entity by selecting the activity you want from the `Activity` dropdown.
-We want the NPC to look at close players, so we will select `Add Look Close Activites`.
-
-![Activity Select](../../assets/entity-adapter/activity_select.png)
-
 That's it!
 You have now created an entity definition and spawned an instance of it in the world.
 You can now see the NPC in-game with the custom name, skin and data you provided.
@@ -122,120 +66,3 @@ It should also look at you when you are nearby.
 The same principle applies to all other entities, such as **Cows** or **Villagers**.
 You can define and spawn any entity you want using the Entity Adapter, just make sure the type of your definition
 matches the type of the instance you want to spawn.
-
-
-## Additional features not covered in the basic guide:
-
-
-## Sound
-Just enter the sound you want the entity to emit in the SoundId field, select where you want the sound to come from:
-If you want the sound to be emitted by the NPC itself, select `self`, if you want a custom
-emitter select `emitter`, if it should come from a place on the map select `location`.
-
-### Self
-This means that the sound will be emitted by the NPC itself.
-First, select the track you want the sound to be played on.
-This is what you can see in the `Music and Sound` tab inside the Minecraft Options Menu.
-Then, select the volume of the sound, and the pitch that the sound should be played at.
-
-### Emitter
-This means that the sound will be emitted by a custom emitter.
-First, select the specific emitter you want the sound to be emitted by.
-You can use any speaker that you have already created, or you can create a new one.
-Next, select the track you want the sound to be played on.
-This is what you can see in the `Music and Sound` tab inside the Minecraft Options Menu.
-Then, select the volume of the sound, and the pitch that the sound should be played at.
-
-### Location
-This means that the sound will be emitted by a location on the map.
-First, select the location you want the sound to be emitted from.
-Next, select the track you want the sound to be played on.
-This is what you can see in the `Music and Sound` tab inside the Minecraft Options Menu.
-Then, select the volume of the sound, and the pitch that the sound should be played at.
-
-## Data
-This is where you can add custom data to the entity.
-This data could be used for anything you want,
-from adding purely visual changes to storing custom information about the entity.
-
-### Introduction
-IMPORTANT: Data is affected by the priority of the data field.
-
-### Simple Lines
-Simple lines are just a text that is displayed above the entity.
-This is best used conditionally with audience entries to display different information to each player individually.
-This could be used to display a message to only a select group of players
-that have a certain permission or are in a certain team.
-#### Input
-Line: The text that should be displayed above the entity. Input can be a string or a string that contains placeholders.
-
-### Objective Lines
-Objective lines are used to display objectives above the entity.
-This is best used for displaying information about a quest or a task that the player has to complete.
-This could be used to display the name of a quest or the progress of a task.
-#### Input
-Line: The text that should be displayed above the entity. Input can be a string or a string that contains placeholders.
-
-### Glowing Effect
-The glowing effect is used to make the entity glow.
-This is best used to make the entity stand out from the environment.
-This could be used to make the entity more visible in dark areas or to make it more noticeable in a crowded area.
-#### Input
-Glowing: Whether the entity should glow or not. Input can be a boolean.
-
-### Custom Name
-The custom name is used to change the name of the entity.
-This is best used to give the entity a unique name that is different from its default name.
-This could be used to give the entity a name that is more descriptive or more interesting.
-#### Input
-Name: The name that should be displayed above the entity. Input can be a string but it cannot contain placeholders.
-
-### Arrow Count
-The arrow count is used to change the number of arrows that the entity has.
-This is best used to give the entity a specific number of arrows that it can shoot.
-This could be used to give the entity a limited number of arrows that it can use to attack the player.
-#### Input
-ArrowCount: The number of arrows that the entity should have. Input can be an integer.
-
-### Potion Effect Color
-The potion effect color is used to change the color of the potion effect that the entity has.
-This is best used to give the entity a unique color that is different from its default color.
-This could be used to give the entity a color that matches its appearance or its behavior.
-#### Input
-Color: The color of the potion effect that the entity should have. Input can be a color.
-
-### Equipment
-The equipment is used to change the equipment that the entity has.
-This is best used to give the entity specific equipment that it makes it more powerful or more interesting.
-This could be used to give the entity a weapon or armor that it can use to fit its role.
-#### Input
-Equipment: The equipment that the entity should have.
-Possible slots: mainhand, offhand, head, chest, legs, feet.
-Possible item stats:
-- Material: The name of the item in the game. Input can be an item name.
-- Amount: The number of items in the stack. Input can be an integer.
-- Name: The custom name of the item. Input can be a string or a string that contains placeholders.
-- Lore: The lore of the item. Input can be a string or a string that contains placeholders.
-- Flags: The flags of the item. Input can be a valid BukkitAPI item flag.
-- NBT Tags: The NBT tags of the item. Input can be a string that does not contain placeholders.
-
-### Skin
-The skin is used to change the skin of the entity.
-This is best used to give the entity a unique appearance that is different from its default appearance.
-This could be used to give the entity a skin that matches its role or its behavior.
-#### Input
-Skin: The skin that the entity should have. Input can be a valid skin link or a player UUID.
-
-### Pose
-The pose is used to change the pose of the entity.
-This is best used to give the entity a specific pose that fits its role or its behavior.
-This could be used to give the entity a pose that makes it look more aggressive or more friendly.
-#### Input
-Pose: The pose that the entity should have. Input can be a valid pose.
-
-### On Fire
-The on fire is used to set the entity on fire.
-This is best used to give the entity a burning effect that makes it more dangerous or more interesting.
-This could be used to give the entity a fire effect that makes it look more powerful or more threatening.
-#### Input
-OnFire: Whether the entity should be on fire or not. Input can be a boolean.
