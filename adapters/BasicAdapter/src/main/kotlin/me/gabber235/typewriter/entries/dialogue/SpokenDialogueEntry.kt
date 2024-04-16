@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entries.dialogue
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Colored
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.MultiLine
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
@@ -26,6 +27,7 @@ class SpokenDialogueEntry(
     override val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Placeholder
     @Colored
+    @MultiLine
     @Help("The text to display to the player.")
     val text: String = "",
     @Help("The duration it takes to type out the message.")
