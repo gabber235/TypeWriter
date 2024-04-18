@@ -134,7 +134,7 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     // When a player tries to execute a command, we need to end the dialogue.
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
         // If this is a custom command, we don't want to end the dialogue
         val entry = Query.firstWhere<CustomCommandEntry> {

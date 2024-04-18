@@ -16,6 +16,7 @@ import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.distanceSqrt
+import me.gabber235.typewriter.utils.firstWalkableLocationBelow
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -138,8 +139,8 @@ private class PlayerPathStreamDisplay(
     }
 
     private fun refreshPath() = DISPATCHERS_ASYNC.launch {
-        val start = startLocation(player)
-        val end = endLocation(player)
+        val start = startLocation(player).firstWalkableLocationBelow
+        val end = endLocation(player).firstWalkableLocationBelow
 
         // When the start and end location are the same, we don't need to find a path.
         if ((start.distanceSqrt(end) ?: Double.MAX_VALUE) < 1) {

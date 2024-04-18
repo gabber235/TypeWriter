@@ -9,6 +9,10 @@ class ActivityManager(
 ) {
     private var activity: EntityActivity? = null
     private var task: EntityTask = IdleTask(spawnLocation.toProperty())
+        set(value) {
+            field.dispose()
+            field = value
+        }
 
     init {
         findNewTask()
@@ -49,9 +53,9 @@ class ActivityManager(
         return true
     }
 
-    fun tick() {
+    fun tick(context: TaskContext) {
         findNewTask()
-        task.tick()
+        task.tick(context)
     }
 
     fun dispose() {
@@ -59,7 +63,7 @@ class ActivityManager(
 }
 
 class IdleTask(override val location: LocationProperty) : EntityTask {
-    override fun tick() {}
+    override fun tick(context: TaskContext) {}
     override fun mayInterrupt(): Boolean = true
 
     override fun isComplete(): Boolean = false

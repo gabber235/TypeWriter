@@ -3,7 +3,6 @@ package me.gabber235.typewriter.utils
 import com.destroystokyo.paper.profile.PlayerProfile
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter
-import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.logger
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
@@ -87,6 +86,16 @@ fun Location.lerp(other: Location, amount: Double): Location {
 
 val Location.up: Location
     get() = clone().apply { y += 1 }
+
+val Location.down: Location
+    get() = clone().apply { y -= 1 }
+
+val Location.firstWalkableLocationBelow: Location
+    get() = clone().apply {
+        while (block.isPassable) y--
+        // We want to be on top of the block
+        y++
+    }
 
 operator fun Location.component1(): Double = x
 operator fun Location.component2(): Double = y

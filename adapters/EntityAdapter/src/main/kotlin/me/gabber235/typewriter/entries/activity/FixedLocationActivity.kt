@@ -6,6 +6,7 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.entity.EntityActivity
 import me.gabber235.typewriter.entry.entity.EntityTask
 import me.gabber235.typewriter.entry.entity.LocationProperty
+import me.gabber235.typewriter.entry.entity.TaskContext
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import org.bukkit.entity.Player
 import java.util.*
@@ -20,8 +21,7 @@ class FixedLocationActivityEntry(
     override fun create(player: Player?): EntityActivity = FixedLocationActivity()
 }
 
-private class FixedLocationActivity :
-    EntityActivity {
+private class FixedLocationActivity : EntityActivity {
     override fun canActivate(currentLocation: LocationProperty): Boolean = true
 
     override fun currentTask(currentLocation: LocationProperty): EntityTask {
@@ -30,10 +30,7 @@ private class FixedLocationActivity :
 }
 
 private class FixedLocationActivityTask(override val location: LocationProperty) : EntityTask {
-    override fun tick() {
-    }
-
+    override fun tick(context: TaskContext) {}
     override fun mayInterrupt(): Boolean = true
-
     override fun isComplete(): Boolean = false
 }

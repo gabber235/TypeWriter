@@ -213,10 +213,10 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
     }
 }
 
-internal fun Location.toPathPosition(): PathPosition = BukkitMapper.toPathPosition(this)
-internal fun PathPosition.toLocation(): Location = BukkitMapper.toLocation(this)
+fun Location.toPathPosition(): PathPosition = BukkitMapper.toPathPosition(this)
+fun PathPosition.toLocation(): Location = BukkitMapper.toLocation(this)
 
-internal fun RoadNode.material(modifications: List<RoadModification>): Material {
+fun RoadNode.material(modifications: List<RoadModification>): Material {
     val hasAdded = modifications.any { it is RoadModification.EdgeAddition && it.start == id }
     val hasRemoved = modifications.any { it is RoadModification.EdgeRemoval && it.start == id }
     return when {

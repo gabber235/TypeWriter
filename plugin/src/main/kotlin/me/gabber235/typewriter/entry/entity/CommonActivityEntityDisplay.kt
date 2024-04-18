@@ -45,7 +45,7 @@ class CommonActivityEntityDisplay(
     override fun tick() {
         consideredPlayers.forEach { it.refresh() }
 
-        activityManager?.tick()
+        activityManager?.tick(GroupTaskContext(players))
         entities.values.forEach { it.tick() }
     }
 

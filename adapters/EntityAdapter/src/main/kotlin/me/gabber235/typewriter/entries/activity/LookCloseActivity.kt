@@ -5,11 +5,14 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entity.EntityActivity
 import me.gabber235.typewriter.entry.entity.EntityTask
 import me.gabber235.typewriter.entry.entity.LocationProperty
+import me.gabber235.typewriter.entry.entity.TaskContext
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.snippets.snippet
 import org.bukkit.entity.Player
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.atan2
+import kotlin.math.max
 import kotlin.math.sqrt
 
 private val playerCloseLookRange by snippet("entity.look_close_activity.player_close_look_range", 10.0)
@@ -84,7 +87,11 @@ class LookCloseActivityTask(
         return player
     }
 
-    override fun tick() {
+    override fun tick(context: TaskContext) {
+        if (!context.isViewed) {
+            this.target = null
+            return
+        }
         var target = target
         if (target == null) target = findNewTarget()
         if (target == null) return
@@ -100,10 +107,8 @@ class LookCloseActivityTask(
         val direction = target.location.toVector().subtract(location.toVector()).normalize()
 
 
-        val targetYaw = Math.toDegrees(atan2(-direction.x, direction.z))
-        val targetPitch =
-            -Math.toDegrees(atan2(direction.y, sqrt(direction.x * direction.x + direction.z * direction.z)))
-
+        val targetYaw = getLookYaw(direction.x, direction.z)
+        val targetPitch = getLookPitch(direction.x, direction.y, direction.z)
 
         val currentYaw = if (location.yaw - targetYaw > 180) {
             location.yaw - 360
@@ -114,8 +119,8 @@ class LookCloseActivityTask(
         }
         val currentPitch = location.pitch
 
-        val yaw = smoothDamp(currentYaw, targetYaw.toFloat(), yawVelocity, 0.2f)
-        val pitch = smoothDamp(currentPitch, targetPitch.toFloat(), pitchVelocity, 0.2f)
+        val yaw = smoothDamp(currentYaw, targetYaw, yawVelocity, 0.2f)
+        val pitch = smoothDamp(currentPitch, targetPitch, pitchVelocity, 0.2f)
 
         location = LocationProperty(location.world, location.x, location.y, location.z, yaw, pitch)
     }
@@ -158,4 +163,17 @@ fun smoothDamp(
     }
 
     return output
+}
+
+fun getLookYaw(dx: Double, dz: Double): Float {
+    val radians = atan2(dz, dx)
+    val degrees = Math.toDegrees(radians).toFloat() - 90
+    if (degrees < -180) return degrees + 360
+    if (degrees > 180) return degrees - 360
+    return degrees
+}
+
+fun getLookPitch(dx: Double, dy: Double, dz: Double): Float {
+    val radians = -atan2(dy, max(abs(dx), abs(dz)))
+    return Math.toDegrees(radians).toFloat()
 }

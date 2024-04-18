@@ -74,7 +74,6 @@ class RoadNetworkManager : KoinComponent {
     }
 
     private fun createEditor(ref: Ref<out RoadNetworkEntry>): RoadNetworkEditor {
-        println("Creating editor for $ref")
         return RoadNetworkEditor(ref).also { it.load() }
     }
 

@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entry.entity
 
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.AudienceFilter
 import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
@@ -45,7 +46,11 @@ class PlayerSpecificActivityEntityDisplay(
     override fun tick() {
         consideredPlayers.forEach { it.refresh() }
 
-        activityManagers.values.forEach { it.tick() }
+        activityManagers.forEach { (pid, manager) ->
+            val player = server.getPlayer(pid) ?: return@forEach
+            val isViewing = pid in this
+            manager.tick(IndividualTaskContext(player, isViewing))
+        }
         entities.values.forEach { it.tick() }
     }
 
