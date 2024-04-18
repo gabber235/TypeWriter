@@ -241,7 +241,10 @@ private class NetworkAddNodeComponent(
 
         val addNegativeNodeItem = ItemStack(Material.NETHERITE_INGOT).meta {
             name = "<red><b>Add Negative Node"
-            loreString = "<line> <gray>Click to add a new negative node to the road network"
+            loreString = """
+                |<line> <gray>Click to add a new negative node to the road network
+                |<line> <gray>Blocking pathfinding through its radius
+                """.trimMargin()
         } onInteract {
             if (it.type.isClick) onAddNegative()
         }
