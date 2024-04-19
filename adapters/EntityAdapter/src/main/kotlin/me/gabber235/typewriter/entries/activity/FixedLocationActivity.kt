@@ -8,7 +8,6 @@ import me.gabber235.typewriter.entry.entity.EntityTask
 import me.gabber235.typewriter.entry.entity.LocationProperty
 import me.gabber235.typewriter.entry.entity.TaskContext
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
-import org.bukkit.entity.Player
 import java.util.*
 
 @Entry("fixed_location_activity", "A fixed location activity", Colors.BLUE, "majesticons:map-marker-area")

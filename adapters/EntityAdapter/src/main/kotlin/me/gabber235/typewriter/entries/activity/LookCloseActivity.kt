@@ -11,7 +11,7 @@ import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
 
-private val playerCloseLookRange by snippet("entity.look_close_activity.player_close_look_range", 10.0)
+private val playerCloseLookRange by snippet("entity.activity.look_close.range", 10.0)
 
 @Entry("look_close_activity", "A look close activity", Colors.BLUE, "fa6-solid:eye")
 /**

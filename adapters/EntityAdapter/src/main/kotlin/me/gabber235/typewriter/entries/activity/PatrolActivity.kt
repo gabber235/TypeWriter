@@ -5,9 +5,11 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
-import me.gabber235.typewriter.entry.entries.*
+import me.gabber235.typewriter.entry.entries.EntityActivityEntry
+import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
+import me.gabber235.typewriter.entry.entries.RoadNodeCollectionEntry
+import me.gabber235.typewriter.entry.entries.RoadNodeId
 import me.gabber235.typewriter.entry.roadnetwork.gps.PointToPointGPS
-import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import java.util.*
 
