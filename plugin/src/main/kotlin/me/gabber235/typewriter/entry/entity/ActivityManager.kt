@@ -68,3 +68,16 @@ class IdleTask(override val location: LocationProperty) : EntityTask {
 
     override fun isComplete(): Boolean = false
 }
+
+abstract class FilterActivity(
+    private val children: List<EntityActivity>,
+) : EntityActivity {
+    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
+        return children.any { it.canActivate(context, currentLocation) }
+    }
+
+    override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
+        return children.firstOrNull { it.canActivate(context, currentLocation) }?.currentTask(context, currentLocation)
+            ?: IdleTask(currentLocation)
+    }
+}
