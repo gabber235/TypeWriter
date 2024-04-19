@@ -1,9 +1,12 @@
 package me.gabber235.typewriter.entry.entity
 
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entries.EntityInstanceEntry
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import org.bukkit.Location
 
 class ActivityManager(
+    instanceRef: Ref<out EntityInstanceEntry>,
     private val activities: List<EntityActivity>,
     spawnLocation: Location,
 ) {
@@ -15,7 +18,7 @@ class ActivityManager(
         }
 
     init {
-        findNewTask(EmptyTaskContext)
+        findNewTask(EmptyTaskContext(instanceRef))
     }
 
     val location: LocationProperty

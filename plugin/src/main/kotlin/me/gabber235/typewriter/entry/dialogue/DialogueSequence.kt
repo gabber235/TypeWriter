@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entry.dialogue
 
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
+import me.gabber235.typewriter.entry.cinematic.CinematicSequence
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
@@ -12,22 +13,20 @@ import me.gabber235.typewriter.events.AsyncDialogueEndEvent
 import me.gabber235.typewriter.events.AsyncDialogueStartEvent
 import me.gabber235.typewriter.events.AsyncDialogueSwitchEvent
 import me.gabber235.typewriter.facts.FactDatabase
-import me.gabber235.typewriter.interaction.startBlockingActionBar
-import me.gabber235.typewriter.interaction.startBlockingMessages
-import me.gabber235.typewriter.interaction.stopBlockingActionBar
-import me.gabber235.typewriter.interaction.stopBlockingMessages
+import me.gabber235.typewriter.interaction.*
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.playSound
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent
 import java.time.Duration
 
 class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) : KoinComponent {
     private val messengerFinder: MessengerFinder by inject()
     private val factDatabase: FactDatabase by inject()
 
-    private var currentEntry: DialogueEntry = initialEntry
+    internal var currentEntry: DialogueEntry = initialEntry
     private var currentMessenger = messengerFinder.findMessenger(player, initialEntry)
     private var playTime = Duration.ZERO
     var isActive = false
@@ -103,6 +102,19 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         }
     }
 }
+
+
+private val Player.dialogueSequence: DialogueSequence?
+    get() = with(KoinJavaComponent.get<InteractionHandler>(InteractionHandler::class.java)) {
+        interaction?.dialogue
+    }
+
+val Player.currentDialogue: DialogueEntry?
+    get() {
+        val sequence = dialogueSequence ?: return null
+        if (!sequence.isActive) return null
+        return sequence.currentEntry
+    }
 
 fun Player.playSpeakerSound(speaker: SpeakerEntry?) {
     val sound = speaker?.sound ?: return

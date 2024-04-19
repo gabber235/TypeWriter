@@ -1,5 +1,7 @@
 package me.gabber235.typewriter.entry.entity
 
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entries.EntityInstanceEntry
 import org.bukkit.entity.Player
 
 
@@ -25,12 +27,14 @@ interface EntityTask {
 }
 
 interface TaskContext {
+    val instanceRef: Ref<out EntityInstanceEntry>
     val isViewed: Boolean
 
     val viewers: List<Player>
 }
 
 class GroupTaskContext(
+    override val instanceRef: Ref<out EntityInstanceEntry>,
     override val viewers: List<Player>,
 ) : TaskContext {
     override val isViewed: Boolean
@@ -38,6 +42,7 @@ class GroupTaskContext(
 }
 
 class IndividualTaskContext(
+    override val instanceRef: Ref<out EntityInstanceEntry>,
     val viewer: Player,
     override val isViewed: Boolean,
 ) : TaskContext {
@@ -45,7 +50,9 @@ class IndividualTaskContext(
         get() = listOf(viewer)
 }
 
-object EmptyTaskContext : TaskContext {
+class EmptyTaskContext(
+    override val instanceRef: Ref<out EntityInstanceEntry>,
+) : TaskContext {
     override val isViewed: Boolean = false
 
     override val viewers: List<Player> = emptyList()
