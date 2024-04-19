@@ -4,10 +4,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.entry.entity.EntityActivity
-import me.gabber235.typewriter.entry.entity.EntityTask
-import me.gabber235.typewriter.entry.entity.IdleTask
-import me.gabber235.typewriter.entry.entity.LocationProperty
+import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.roadnetwork.gps.PointToPointGPS
 import org.bukkit.entity.Player
@@ -31,18 +28,18 @@ class PatrolActivityEntry(
     override val nodes: List<RoadNodeId> = emptyList(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry, RoadNodeCollectionEntry {
-    override fun create(player: Player?): EntityActivity = PatrolActivity(roadNetwork, nodes)
+    override fun create(context: TaskContext): EntityActivity = PatrolActivity(roadNetwork, nodes)
 }
 
 private class PatrolActivity(
     private val roadNetwork: Ref<RoadNetworkEntry>,
     private val nodes: List<RoadNodeId>,
 ) : EntityActivity, KoinComponent {
-    override fun canActivate(currentLocation: LocationProperty): Boolean = nodes.isNotEmpty()
+    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean = nodes.isNotEmpty()
 
     private var currentLocationIndex = -1
 
-    override fun currentTask(currentLocation: LocationProperty): EntityTask {
+    override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
         currentLocationIndex = (currentLocationIndex + 1) % nodes.size
         val nodeId = nodes.getOrNull(currentLocationIndex) ?: return IdleTask(currentLocation)
 

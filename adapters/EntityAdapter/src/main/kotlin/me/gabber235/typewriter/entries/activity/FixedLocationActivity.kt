@@ -18,13 +18,13 @@ class FixedLocationActivityEntry(
     @Help("The location of the activity")
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
-    override fun create(player: Player?): EntityActivity = FixedLocationActivity()
+    override fun create(context: TaskContext): EntityActivity = FixedLocationActivity()
 }
 
 private class FixedLocationActivity : EntityActivity {
-    override fun canActivate(currentLocation: LocationProperty): Boolean = true
+    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean = true
 
-    override fun currentTask(currentLocation: LocationProperty): EntityTask {
+    override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
         return FixedLocationActivityTask(currentLocation)
     }
 }

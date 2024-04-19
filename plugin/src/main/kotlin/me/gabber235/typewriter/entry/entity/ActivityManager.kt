@@ -15,7 +15,7 @@ class ActivityManager(
         }
 
     init {
-        findNewTask()
+        findNewTask(EmptyTaskContext)
     }
 
     val location: LocationProperty
@@ -24,9 +24,9 @@ class ActivityManager(
     val activeProperties: List<EntityProperty>
         get() = listOf(location)
 
-    private fun findNewTask(): Boolean {
+    private fun findNewTask(context: TaskContext): Boolean {
         val newActivity = activities.firstOrNull {
-            it.canActivate(location)
+            it.canActivate(context, location)
         }
         if (newActivity == null) {
             // If the old task is not complete, we can just keep doing it
@@ -37,24 +37,24 @@ class ActivityManager(
         }
         if (activity == null) {
             activity = newActivity
-            task = newActivity.currentTask(location)
+            task = newActivity.currentTask(context, location)
             return true
         }
 
         if (activity != newActivity) {
             if (!task.mayInterrupt()) return false
             activity = newActivity
-            task = newActivity.currentTask(location)
+            task = newActivity.currentTask(context, location)
             return true
         }
 
         if (!task.isComplete()) return false
-        task = newActivity.currentTask(location)
+        task = newActivity.currentTask(context, location)
         return true
     }
 
     fun tick(context: TaskContext) {
-        findNewTask()
+        findNewTask(context)
         task.tick(context)
     }
 

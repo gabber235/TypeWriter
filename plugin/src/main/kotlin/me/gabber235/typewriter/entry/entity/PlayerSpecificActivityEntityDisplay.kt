@@ -30,7 +30,7 @@ class PlayerSpecificActivityEntityDisplay(
 
     override fun onPlayerAdd(player: Player) {
         activityManagers.computeIfAbsent(player.uniqueId) {
-            ActivityManager(activityCreators.map { it.create(player) }, spawnLocation)
+            ActivityManager(activityCreators.map { it.create(IndividualTaskContext(player, false)) }, spawnLocation)
         }
         super.onPlayerAdd(player)
     }

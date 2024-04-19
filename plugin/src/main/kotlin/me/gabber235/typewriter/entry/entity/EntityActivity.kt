@@ -4,15 +4,15 @@ import org.bukkit.entity.Player
 
 
 interface ActivityCreator {
-    fun create(player: Player?): EntityActivity
+    fun create(context: TaskContext): EntityActivity
 }
 
 /**
  * Must be an immutable class
  */
 interface EntityActivity {
-    fun canActivate(currentLocation: LocationProperty): Boolean
-    fun currentTask(currentLocation: LocationProperty): EntityTask
+    fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean
+    fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask
 }
 
 interface EntityTask {
@@ -26,10 +26,12 @@ interface EntityTask {
 
 interface TaskContext {
     val isViewed: Boolean
+
+    val viewers: List<Player>
 }
 
 class GroupTaskContext(
-    val viewers: List<Player>,
+    override val viewers: List<Player>,
 ) : TaskContext {
     override val isViewed: Boolean
         get() = viewers.isNotEmpty()
@@ -38,4 +40,13 @@ class GroupTaskContext(
 class IndividualTaskContext(
     val viewer: Player,
     override val isViewed: Boolean,
-) : TaskContext
+) : TaskContext {
+    override val viewers: List<Player>
+        get() = listOf(viewer)
+}
+
+object EmptyTaskContext : TaskContext {
+    override val isViewed: Boolean = false
+
+    override val viewers: List<Player> = emptyList()
+}

@@ -31,7 +31,7 @@ class CommonActivityEntityDisplay(
 
     override fun initialize() {
         super.initialize()
-        activityManager = ActivityManager(activityCreators.map { it.create(null) }, spawnLocation)
+        activityManager = ActivityManager(activityCreators.map { it.create(GroupTaskContext(players)) }, spawnLocation)
     }
 
     override fun onPlayerFilterAdded(player: Player) {

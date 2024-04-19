@@ -2,10 +2,7 @@ package me.gabber235.typewriter.entries.activity
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.entry.entity.EntityActivity
-import me.gabber235.typewriter.entry.entity.EntityTask
-import me.gabber235.typewriter.entry.entity.LocationProperty
-import me.gabber235.typewriter.entry.entity.TaskContext
+import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.snippets.snippet
 import org.bukkit.entity.Player
@@ -13,7 +10,6 @@ import java.util.*
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
-import kotlin.math.sqrt
 
 private val playerCloseLookRange by snippet("entity.look_close_activity.player_close_look_range", 10.0)
 
@@ -31,60 +27,56 @@ class LookCloseActivityEntry(
     override val name: String = "",
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
-    override fun create(player: Player?): EntityActivity = LookCloseActivity(player)
+    override fun create(context: TaskContext): EntityActivity = LookCloseActivity()
 }
 
-class LookCloseActivity(
-    private val player: Player?,
-) : EntityActivity {
-    override fun canActivate(currentLocation: LocationProperty): Boolean {
-        // Can only activate if there is a player nearby
-        if (player == null) {
-            return currentLocation.bukkitWorld?.players?.any {
-                val distance = currentLocation.distanceSqrt(it.location) ?: return@any false
-                distance <= playerCloseLookRange * playerCloseLookRange
-            } ?: false
+class LookCloseActivity : EntityActivity {
+    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
+        // Only if there is someone to look at
+        return context.viewers.any { player ->
+            val distance = currentLocation.distanceSqrt(player.location) ?: return@any false
+            distance <= playerCloseLookRange * playerCloseLookRange
         }
-
-        val distance = currentLocation.distanceSqrt(player.location) ?: return false
-        return distance <= playerCloseLookRange * playerCloseLookRange
     }
 
-    override fun currentTask(currentLocation: LocationProperty): EntityTask {
-        return LookCloseActivityTask(player, currentLocation)
+    override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
+        return LookCloseActivityTask(currentLocation)
     }
 }
 
 class LookCloseActivityTask(
-    private val player: Player?,
     override var location: LocationProperty,
 ) : EntityTask {
-    private var target: Player? = null
+    inner class Target(val player: Player, private val lookupTime: Long = System.currentTimeMillis()) {
+        val shouldRefresh: Boolean
+            get() {
+                if (!player.isValid) return true
+                if (player.location.world.uid != this@LookCloseActivityTask.location.world) return true
+                if (this@LookCloseActivityTask.location.distanceSquared(player.location.toProperty()) > playerCloseLookRange * playerCloseLookRange) return true
+                return System.currentTimeMillis() - lookupTime > 1000
+            }
+
+        val location: LocationProperty
+            get() = player.location.toProperty()
+    }
+
+    private var target: Target? = null
     private val yawVelocity = Velocity(0f)
     private val pitchVelocity = Velocity(0f)
 
-    private fun findNewTarget(): Player? {
-        if (player == null) {
-            val closestTarget = location.bukkitWorld?.players
-                ?.minByOrNull { location.distanceSqrt(it.location) ?: Double.POSITIVE_INFINITY }
-            if (closestTarget == null) {
-                return null
-            }
-            val distance = location.distanceSqrt(closestTarget.location)
-
-            if (distance == null || distance > playerCloseLookRange * playerCloseLookRange) {
-                return null
-            }
-
-            return closestTarget
+    private fun findNewTarget(context: TaskContext): Target? {
+        val closestTarget = context.viewers
+            .minByOrNull { location.distanceSqrt(it.location) ?: Double.POSITIVE_INFINITY }
+        if (closestTarget == null) {
+            return null
         }
+        val distance = location.distanceSqrt(closestTarget.location)
 
-
-        val distance = location.distanceSqrt(player.location)
         if (distance == null || distance > playerCloseLookRange * playerCloseLookRange) {
             return null
         }
-        return player
+
+        return Target(closestTarget)
     }
 
     override fun tick(context: TaskContext) {
@@ -93,11 +85,10 @@ class LookCloseActivityTask(
             return
         }
         var target = target
-        if (target == null) target = findNewTarget()
+        if (target == null) target = findNewTarget(context)
         if (target == null) return
 
-        val distance = location.distanceSqrt(target.location) ?: Double.POSITIVE_INFINITY
-        if (distance > playerCloseLookRange * playerCloseLookRange) {
+        if (target.shouldRefresh) {
             this.target = null
             return
         }
