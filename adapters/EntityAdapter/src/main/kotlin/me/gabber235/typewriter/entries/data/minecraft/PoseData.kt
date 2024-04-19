@@ -32,12 +32,12 @@ data class PoseProperty(val pose: EntityPose) : EntityProperty {
     companion object : SinglePropertyCollectorSupplier<PoseProperty>(PoseProperty::class)
 }
 
-fun Pose.toEntityPose() = when(this) {
+fun Pose.toEntityPose() = when (this) {
     Pose.SNEAKING -> EntityPose.CROUCHING
     else -> EntityPose.valueOf(this.name)
 }
 
-fun EntityPose.toBukkitPose() = when(this) {
+fun EntityPose.toBukkitPose() = when (this) {
     EntityPose.CROUCHING -> Pose.SNEAKING
     else -> Pose.valueOf(this.name)
 }
