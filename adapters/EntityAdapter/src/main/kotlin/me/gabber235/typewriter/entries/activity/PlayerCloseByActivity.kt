@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.activity
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.descendants
 import me.gabber235.typewriter.entry.entity.*
@@ -29,7 +30,9 @@ class PlayerCloseByActivityEntry(
     override val id: String = "",
     override val name: String = "",
     override val children: List<Ref<out AudienceEntry>> = emptyList(),
+    @Help("The range in which the player has to be close by to activate the activity.")
     val range: Double = 10.0,
+    @Help("The maximum duration a player can be idle in the same range before the activity deactivates.")
     val maxIdleDuration: Duration = Duration.ofSeconds(30),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
@@ -50,7 +53,7 @@ class PlayerCloseByActivity(
     private val range: Double,
     private val maxIdleDuration: Duration,
 ) : FilterActivity(childActivities) {
-    private var trackers = mutableMapOf<UUID, PlayerLocation>()
+    private var trackers = mutableMapOf<UUID, PlayerLocationTracker>()
 
     override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
         val trackingPlayers = context.viewers
@@ -62,12 +65,12 @@ class PlayerCloseByActivity(
         trackers.keys.removeAll { it !in trackingPlayerIds }
 
         trackingPlayers.forEach { player ->
-            trackers.computeIfAbsent(player.uniqueId) { PlayerLocation(player.location.toProperty()) }
+            trackers.computeIfAbsent(player.uniqueId) { PlayerLocationTracker(player.location.toProperty()) }
                 .update(player.location.toProperty())
         }
 
         val canActivate =
-            !trackers.all { (_, playerLocation) -> playerLocation.isIdle(maxIdleDuration) } &&
+            !trackers.all { (_, tracker) -> tracker.isIdle(maxIdleDuration) } &&
                     super.canActivate(context, currentLocation)
         // Cleanup memory
         if (!canActivate) {
@@ -76,7 +79,7 @@ class PlayerCloseByActivity(
         return canActivate
     }
 
-    private class PlayerLocation(
+    private class PlayerLocationTracker(
         var location: LocationProperty,
         var lastSeen: Long = System.currentTimeMillis()
     ) {
