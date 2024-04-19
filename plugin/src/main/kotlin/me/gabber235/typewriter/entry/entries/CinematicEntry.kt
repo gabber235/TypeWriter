@@ -17,6 +17,15 @@ interface CinematicEntry : Entry {
     fun create(player: Player): CinematicAction
 }
 
+/**
+ * Primary cinematic entries may only be triggerd in the primary cinematic.
+ * Not in looping cinematics.
+ *
+ * Most of the time it is used when only one cinematic should be played at a time.
+ */
+@Tags("primary_cinematic")
+interface PrimaryCinematicEntry : CinematicEntry
+
 infix fun <S : Segment> List<S>.activeSegmentAt(frame: Int) = firstOrNull { it isActiveAt frame }
 infix fun <S : Segment> List<S>.canFinishAt(frame: Int): Boolean = all { it canFinishAt frame }
 

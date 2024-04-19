@@ -63,7 +63,7 @@ class CameraCinematicEntry(
     @Segments(icon = "fa6-solid:video")
     @InnerMin(Min(10))
     val segments: List<CameraSegment> = emptyList(),
-) : CinematicEntry {
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return CameraCinematicAction(
             player,

@@ -130,7 +130,7 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     }
 
     override fun pagePriority(pageId: String): Int {
-        return pages.firstOrNull { it.id == pageId }?.priority ?: Int.MIN_VALUE
+        return findPageById(pageId)?.priority ?: Int.MIN_VALUE
     }
 }
 
