@@ -295,6 +295,22 @@ infix fun Sequence<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) 
 }
 
 /**
+ * Trigger all triggers for an entry.
+ * This is a convenience method for [triggerAllFor] that takes a [Ref].
+ *
+ * Example:
+ * ```kotlin
+ * val trigger: Ref<TriggerableEntry> = ...
+ * trigger triggerFor player
+ * ```
+ *
+ * @param player The player to trigger the trigger for.
+ */
+infix fun Ref<out TriggerableEntry>.triggerFor(player: Player) {
+    EntryTrigger(this) triggerFor player
+}
+
+/**
  * Trigger a specific trigger for a player.
  *
  * Example:
