@@ -6,7 +6,7 @@ Adapters are additions that can be added to Typewriter to add more functionality
 You are most likely going to need the [Basic Adapter](../adapters/BasicAdapter). It contains essential building blocks for using Typewriter.
 :::
 
-# Pre-made Adapters
+# Pre-made Adapters {#pre-made-adapters}
 
 | Adapter Name                                                      | Description                                                                              | Download Link                                                |
 | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
