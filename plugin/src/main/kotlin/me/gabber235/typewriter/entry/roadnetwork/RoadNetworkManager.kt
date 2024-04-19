@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.gson.Gson
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import me.gabber235.typewriter.entry.Query
@@ -61,6 +62,12 @@ class RoadNetworkManager : KoinComponent {
 
     suspend fun getNetwork(ref: Ref<out RoadNetworkEntry>): RoadNetwork {
         return networks.get(ref.id).await()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getNetworkOrNull(ref: Ref<out RoadNetworkEntry>): RoadNetwork? {
+        val deferred = networks.get(ref.id)
+        return if (deferred.isCompleted) deferred.getCompleted() else null
     }
 
     internal suspend fun saveRoadNetwork(ref: Ref<out RoadNetworkEntry>, network: RoadNetwork) {

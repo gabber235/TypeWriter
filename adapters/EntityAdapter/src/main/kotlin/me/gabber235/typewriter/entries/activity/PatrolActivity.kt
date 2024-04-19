@@ -9,8 +9,10 @@ import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
 import me.gabber235.typewriter.entry.entries.RoadNodeCollectionEntry
 import me.gabber235.typewriter.entry.entries.RoadNodeId
+import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
 import me.gabber235.typewriter.entry.roadnetwork.gps.PointToPointGPS
 import org.koin.core.component.KoinComponent
+import org.koin.java.KoinJavaComponent
 import java.util.*
 
 
@@ -39,11 +41,20 @@ private class PatrolActivity(
 ) : EntityActivity, KoinComponent {
     override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean = nodes.isNotEmpty()
 
-    private var currentLocationIndex = -1
+    private var currentLocationIndex = 0
 
     override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
-        currentLocationIndex = (currentLocationIndex + 1) % nodes.size
+        val network = KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)
+            ?: return IdleTask(currentLocation)
+
         val nodeId = nodes.getOrNull(currentLocationIndex) ?: return IdleTask(currentLocation)
+        val currentTargetNode = network.nodes.find { it.id == nodeId }
+            ?: return IdleTask(currentLocation)
+
+        // Only move to the next location if the entity is close to the current location
+        if (currentLocation.toLocation().distanceSquared(currentTargetNode.location) < 1.0) {
+            currentLocationIndex = (currentLocationIndex + 1) % nodes.size
+        }
 
         val gps = PointToPointGPS(
             roadNetwork,

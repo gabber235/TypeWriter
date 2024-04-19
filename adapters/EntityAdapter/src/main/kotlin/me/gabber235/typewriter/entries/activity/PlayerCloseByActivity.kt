@@ -72,10 +72,7 @@ class PlayerCloseByActivity(
         val canActivate =
             !trackers.all { (_, tracker) -> tracker.isIdle(maxIdleDuration) } &&
                     super.canActivate(context, currentLocation)
-        // Cleanup memory
-        if (!canActivate) {
-            trackers.clear()
-        }
+
         return canActivate
     }
 
@@ -90,6 +87,7 @@ class PlayerCloseByActivity(
         }
 
         fun isIdle(maxIdleDuration: Duration): Boolean {
+            if (maxIdleDuration.isZero) return false
             return System.currentTimeMillis() - lastSeen > maxIdleDuration.toMillis()
         }
     }

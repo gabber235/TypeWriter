@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entries.activity
 
+import kotlinx.coroutines.NonCancellable.children
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -34,6 +35,8 @@ class InDialogueActivityEntry(
     @Help("When a player is considered to be idle in the same dialogue")
     /**
      * The duration a player can be idle in the same dialogue before the activity deactivates.
+     *
+     * When set to 0, it won't use the timer.
      *
      * <Admonition type="info">
      *     When the dialogue priority is higher than this activity's priority, this timer will be ignored.
@@ -78,10 +81,6 @@ class InDialogueActivity(
         val canActivate =
             !trackers.all { (_, playerLocation) -> playerLocation.canIgnore(dialogueIdleDuration) } &&
                     super.canActivate(context, currentLocation)
-        // Cleanup memory
-        if (!canActivate) {
-            trackers.clear()
-        }
         return canActivate
     }
 
@@ -91,12 +90,13 @@ class InDialogueActivity(
     ) {
         fun update(player: Player) {
             val currentDialogue = player.currentDialogue
-            if (dialogue == currentDialogue) return
+            if (dialogue?.id == currentDialogue?.id) return
             lastInteraction = System.currentTimeMillis()
             dialogue = currentDialogue
         }
 
         fun canIgnore(maxIdleDuration: Duration): Boolean {
+            if (maxIdleDuration.isZero) return false
             val dialogue = dialogue ?: return true
             if (dialogue.priority > priority) return false
             return System.currentTimeMillis() - lastInteraction > maxIdleDuration.toMillis()

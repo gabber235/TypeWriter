@@ -32,8 +32,6 @@ class ActivityManager(
             it.canActivate(context, location)
         }
         if (newActivity == null) {
-            // If the old task is not complete, we can just keep doing it
-            if (!task.isComplete()) return false
             activity = null
             task = IdleTask(location)
             return false
