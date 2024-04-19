@@ -3,13 +3,10 @@ package me.gabber235.typewriter.entry.cinematic
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.TriggerableEntry
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.cinematic.CinematicState.*
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
-import me.gabber235.typewriter.entry.triggerEntriesFor
-import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.events.AsyncCinematicEndEvent
 import me.gabber235.typewriter.events.AsyncCinematicStartEvent
 import me.gabber235.typewriter.events.AsyncCinematicTickEvent
@@ -29,6 +26,8 @@ class CinematicSequence(
     private var state = STARTING
     private var playTime = Duration.ofMillis(-1)
     private val frame: Int get() = (playTime.toMillis()/50).toInt()
+
+    val priority by lazy { KoinJavaComponent.get<EntryDatabase>(EntryDatabase::class.java).pagePriority(pageId) }
 
     suspend fun start() {
         if (state != STARTING) return

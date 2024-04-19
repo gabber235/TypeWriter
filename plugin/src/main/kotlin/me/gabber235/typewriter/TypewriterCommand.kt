@@ -240,12 +240,12 @@ private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
 
         argument("cinematic", CinematicType) { cinematicId ->
             executesPlayer {
-                CinematicStartTrigger(cinematicId.get(), emptyList(), override = true) triggerFor source
+                CinematicStartTrigger(cinematicId.get(), emptyList()) triggerFor source
             }
 
             argument("player", PlayerType) { player ->
                 executes {
-                    CinematicStartTrigger(cinematicId.get(), emptyList(), override = true) triggerFor player.get()
+                    CinematicStartTrigger(cinematicId.get(), emptyList()) triggerFor player.get()
                 }
             }
         }

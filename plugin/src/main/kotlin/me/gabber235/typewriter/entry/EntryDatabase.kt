@@ -41,6 +41,7 @@ interface EntryDatabase {
     fun pageIdByEntryId(entryId: String): String?
 
     fun entryPriority(entry: Ref<out Entry>): Int
+    fun pagePriority(pageId: String): Int
 }
 
 class EntryDatabaseImpl : EntryDatabase, KoinComponent {
@@ -126,6 +127,10 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
 
     override fun entryPriority(entry: Ref<out Entry>): Int {
         return entryPriority[entry] ?: 0
+    }
+
+    override fun pagePriority(pageId: String): Int {
+        return pages.firstOrNull { it.id == pageId }?.priority ?: Int.MIN_VALUE
     }
 }
 

@@ -6,6 +6,7 @@ import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.entry.*
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent
 
 @Tags("event")
 interface EventEntry : TriggerEntry
@@ -94,8 +95,9 @@ enum class SystemTrigger : EventTrigger {
 data class CinematicStartTrigger(
     val pageId: String,
     val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val override: Boolean = false,
 ) : EventTrigger {
+    val priority: Int = KoinJavaComponent.get<EntryDatabase>(EntryDatabase::class.java).pagePriority(pageId)
+
     override val id: String
         get() = "system.cinematic.start.$pageId"
 }

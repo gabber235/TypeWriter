@@ -6,6 +6,7 @@ import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_NEXT
+import me.gabber235.typewriter.entry.priority
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.events.AsyncDialogueEndEvent
 import me.gabber235.typewriter.events.AsyncDialogueStartEvent
@@ -33,6 +34,9 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 
     val triggers: List<Ref<out TriggerableEntry>>
         get() = currentMessenger.triggers
+
+    val priority: Int
+        get() = currentEntry.priority
 
 
     fun init() {

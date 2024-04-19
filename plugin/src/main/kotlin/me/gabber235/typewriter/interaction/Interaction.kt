@@ -19,6 +19,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.Duration
 
+
 class Interaction(val player: Player) : KoinComponent {
     private var job: Job
     private val interactionHandler: InteractionHandler by inject()
@@ -150,7 +151,11 @@ class Interaction(val player: Player) : KoinComponent {
     private fun tryTriggerNextDialogue(event: Event) {
         val nextDialogue =
             Query.findWhere<DialogueEntry> { it in event }
-                .sortedByDescending { it.criteria.size }
+                .sortedWith { a, b ->
+                    val priorityDiff = b.priority - a.priority
+                    if (priorityDiff != 0) return@sortedWith priorityDiff
+                    b.criteria.size - a.criteria.size
+                }
                 .firstOrNull { it.criteria.matches(event.player) }
 
         if (nextDialogue != null) {
@@ -159,7 +164,7 @@ class Interaction(val player: Player) : KoinComponent {
                 dialogue = DialogueSequence(player, nextDialogue).also {
                     it.init()
                 }
-            } else {
+            } else if (dialogue?.isActive == false || nextDialogue.priority >= (dialogue?.priority ?: 0)) {
                 // If there is a sequence, trigger the next dialogue
                 dialogue?.next(nextDialogue)
             }
@@ -200,10 +205,10 @@ class Interaction(val player: Player) : KoinComponent {
         if (triggers.isEmpty()) return
         // If any of the triggers is an override, we should use that one
         // Otherwise, we should use the first one
-        val trigger = triggers.firstOrNull { it.override } ?: triggers.first()
-        if (cinematic != null && !trigger.override) return
-
+        val trigger = triggers.maxBy { it.priority }
         val cinematic = cinematic
+        if (cinematic != null && trigger.priority <= cinematic.priority) return
+
         this.cinematic = null
         cinematic?.end()
 
