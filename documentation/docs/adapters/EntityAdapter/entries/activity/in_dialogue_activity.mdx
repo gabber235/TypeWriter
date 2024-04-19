@@ -14,8 +14,12 @@ This can be used to stop a npc from moving when a player is in a dialogue with i
 
 ## Fields
 
+<fields.EntryField name='Children' required multiple>
+</fields.EntryField>
 <fields.EntryField name='Dialogue Idle Duration' required duration>
      The duration a player can be idle in the same dialogue before the activity deactivates.
+
+When set to 0, it won't use the timer.
 
 <Admonition type="info">
 When the dialogue priority is higher than this activity's priority, this timer will be ignored.
