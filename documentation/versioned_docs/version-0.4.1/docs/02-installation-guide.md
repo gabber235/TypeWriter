@@ -31,7 +31,7 @@ To install the basic adapter (or any for that matter), follow these steps:
 #### Pre-Made Adapters
 
 In addition to the basic adapter, Typewriter also offers several pre-made adapters that can be easily installed and
-configured. For a list of available adapters and instructions on how to install them, see [here](adapters).
+configured. For a list of available adapters and instructions on how to install them, see [here](./06-adapters.md#pre-made-adapters).
 
 :::danger[Out of Sync]
 When updating the plugin, it's crucial to **always** install the corresponding adapters for that update. Failure to match the versions of the adapter and plugin can result in the plugin not functioning correctly!
