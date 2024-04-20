@@ -49,6 +49,11 @@ pub async fn cleanup_threads() -> Result<(), WinstonError> {
             resolve_answered_thread(&discord, thread, &available_tags).await?;
             continue;
         }
+
+        if unverified_in_beta(&available_tags, &thread.applied_tags)? {
+            reask_verification(&discord, thread).await?;
+            continue;
+        }
     }
 
     Ok(())
@@ -140,6 +145,60 @@ async fn resolve_answered_thread(
         .await?;
 
     Ok(())
+}
+
+async fn reask_verification(
+    discord: &Context,
+    thread: channel::GuildChannel,
+) -> Result<(), WinstonError> {
+    let Some(last_message_date) = get_last_message_date(&thread) else {
+        return Ok(());
+    };
+
+    let now = Timestamp::now();
+    let duration = now.timestamp() - last_message_date.timestamp();
+
+    if duration < Duration::days(3).num_seconds() {
+        return Ok(());
+    }
+
+    println!(
+        "Reasking verification for thread {} ({})",
+        thread.id,
+        thread.name()
+    );
+
+    let owner_id = thread.owner_id.ok_or(WinstonError::NotAThreadChannel)?;
+
+    thread
+        .send_message(
+            discord,
+            CreateMessage::default()
+                .content(format!("Hey {}, it looks like you haven't verified the issue yet. Can you verify the issue, and then click one of the buttons above to indicate your findings?", owner_id.mention()))
+        )
+        .await?;
+
+    Ok(())
+}
+
+fn unverified_in_beta(
+    available_tags: &[ForumTag],
+    tags: &[ForumTagId],
+) -> Result<bool, WinstonError> {
+    let beta_tag = get_tag(available_tags, "in beta")?;
+
+    let fixed_tag = get_tag(available_tags, "fixed")?;
+    let implemented_tag = get_tag(available_tags, "implemented")?;
+
+    if !tags.contains(&beta_tag) {
+        return Ok(false);
+    }
+
+    if tags.contains(&fixed_tag) || tags.contains(&implemented_tag) {
+        return Ok(false);
+    }
+
+    Ok(true)
 }
 
 fn get_tag(available_tags: &[ForumTag], tag: &str) -> Result<ForumTagId, WinstonError> {
