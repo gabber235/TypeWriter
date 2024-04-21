@@ -102,7 +102,9 @@ class InteractionHandler : Listener, KoinComponent {
     // When a player joins the server, we need to create an interaction for them.
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        interactions[event.player.uniqueId] = Interaction(event.player)
+        val interaction = Interaction(event.player)
+        interactions[event.player.uniqueId] = interaction
+        interaction.setup()
     }
 
     // When a player leaves the server, we need to end the interaction.

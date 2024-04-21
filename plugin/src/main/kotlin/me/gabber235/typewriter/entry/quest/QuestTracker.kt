@@ -4,14 +4,11 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.delay
 import lirand.api.extensions.events.SimpleListener
-import lirand.api.extensions.events.listen
 import lirand.api.extensions.events.unregister
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.QuestEntry
 import me.gabber235.typewriter.events.AsyncQuestStatusUpdate
 import me.gabber235.typewriter.events.AsyncTrackedQuestUpdate
-import me.gabber235.typewriter.events.PublishedBookEvent
-import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
@@ -28,15 +25,10 @@ class QuestTracker(
     private val listener = SimpleListener()
     private var factWatchSubscription: FactListenerSubscription? = null
 
-    init {
+    fun setup() {
         Query.find<QuestEntry>().forEach { refresh(it.ref()) }
 
-        // At this point, the player is not yet in the interaction handler.
-        // So we wait until the next tick to register the listener.
-        plugin.launch {
-            delay(1.ticks)
-            refreshWatchedFacts()
-        }
+        refreshWatchedFacts()
     }
 
     private fun refreshWatchedFacts() {

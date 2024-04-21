@@ -46,6 +46,8 @@ class Interaction(val player: Player) : KoinComponent {
 
     init {
         job = DISPATCHERS_ASYNC.launch {
+            // Wait for the plugin to be enabled
+            delay(100)
             while (plugin.isEnabled) {
                 val startTime = System.currentTimeMillis()
                 eventMutex.withLock {
@@ -62,6 +64,10 @@ class Interaction(val player: Player) : KoinComponent {
                 else logger.fine("The interaction for ${player.name} is running behind! Took ${endTime - startTime}ms")
             }
         }
+    }
+
+    internal fun setup() {
+        questTracker.setup()
     }
 
     /**
