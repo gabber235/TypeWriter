@@ -8,6 +8,7 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.AudienceDisplay
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.ThreadType
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -45,6 +46,10 @@ class TimerAudienceDisplay(
     private val jobs = mutableMapOf<UUID, Job>()
 
     override fun onPlayerAdd(player: Player) {
+        if (duration.isZero || duration.isNegative) {
+            logger.warning("Timer duration must be positive, otherwise it will infinitely trigger.")
+            return
+        }
         jobs[player.uniqueId] = ThreadType.DISPATCHERS_ASYNC.launch {
             while (player in this) {
                 delay(duration.toMillis())
