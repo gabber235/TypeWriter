@@ -6,7 +6,9 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPl
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerPositionAndLook
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
+import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
@@ -35,6 +37,11 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
+import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.potion.PotionEffect
@@ -102,7 +109,7 @@ data class PathPoint(
 class CameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
-) : CinematicAction {
+) : CinematicAction, Listener {
     private var previousSegment: CameraSegment? = null
     private lateinit var action: CameraAction
 
@@ -115,6 +122,7 @@ class CameraCinematicAction(
         } else {
             DisplayCameraAction(player)
         }
+        plugin.registerEvents(this)
         super.setup()
     }
 
@@ -207,6 +215,22 @@ class CameraCinematicAction(
         super.teardown()
         action.stop()
         player.teardown()
+        unregister()
+    }
+
+    @EventHandler
+    private fun onSwapHand(event: PlayerSwapHandItemsEvent) {
+        event.isCancelled = true
+    }
+
+    @EventHandler
+    private fun onDrop(event: PlayerDropItemEvent) {
+        event.isCancelled = true
+    }
+
+    @EventHandler
+    private fun onPickup(event: PlayerAttemptPickupItemEvent) {
+        event.isCancelled = true
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
