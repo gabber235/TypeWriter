@@ -37,7 +37,7 @@ class SpokenDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "mingcute:message-4-fill")
-    val segments: List<DisplayDialogueSegment> = emptyList(),
+    val segments: List<MultiLineDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
@@ -68,7 +68,7 @@ data class RandomSpokenDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "mingcute:message-4-fill")
-    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
+    val segments: List<MultiLineRandomDisplayDialogueSegment> = emptyList(),
 ) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(

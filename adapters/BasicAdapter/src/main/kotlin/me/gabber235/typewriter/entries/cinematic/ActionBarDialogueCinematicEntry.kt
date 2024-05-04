@@ -35,7 +35,7 @@ class ActionBarDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "fa6-solid:xmarks-lines")
-    val segments: List<DisplayDialogueSegment> = emptyList(),
+    val segments: List<SingleLineDisplayDialogueSegment> = emptyList(),
 ) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
@@ -62,7 +62,7 @@ data class RandomActionBarDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "fa6-solid:xmarks-lines")
-    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
+    val segments: List<SingleLineRandomDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(

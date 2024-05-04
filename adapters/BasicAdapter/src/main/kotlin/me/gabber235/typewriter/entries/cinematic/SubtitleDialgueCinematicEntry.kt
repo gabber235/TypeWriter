@@ -40,7 +40,7 @@ class SubtitleDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "fa6-solid:diagram-next")
-    val segments: List<DisplayDialogueSegment> = emptyList(),
+    val segments: List<SingleLineDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
 
     override fun create(player: Player): CinematicAction {
@@ -66,7 +66,7 @@ data class RandomSubtitleDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "fa6-solid:diagram-next")
-    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
+    val segments: List<SingleLineRandomDisplayDialogueSegment> = emptyList(),
 ) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
