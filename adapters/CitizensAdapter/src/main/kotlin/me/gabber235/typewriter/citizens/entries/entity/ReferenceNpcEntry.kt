@@ -32,7 +32,7 @@ class ReferenceNpcEntry(
 ) : CitizensNpc {
     override fun getEmitter(): AdventureSound.Emitter {
         val npc = CitizensAPI.getNPCRegistry().getById(npcId) ?: return AdventureSound.Emitter.self()
-        return npc.entity
+        return npc.entity ?: AdventureSound.Emitter.self()
     }
 }
 
