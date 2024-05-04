@@ -141,6 +141,18 @@ fun String.limitLineLength(maxLength: Int = 40): String {
     var currentLine = ""
 
     for (word in words) {
+        // When \n is found we just want to add those lines to the list
+        if (word.contains("\n")) {
+            val wordLines = word.split("\n")
+            for (line in wordLines.subList(0, wordLines.size-1) ) {
+                val newLines = "$currentLine$line"
+                lines.add(newLines)
+                currentLine = ""
+            }
+            currentLine += "${wordLines.last()} "
+            continue
+        }
+
         val potentialLine = "$currentLine$word".stripped()
 
         if (potentialLine.length > maxLength) {
@@ -151,6 +163,7 @@ fun String.limitLineLength(maxLength: Int = 40): String {
         currentLine += "$word "
     }
 
-    lines.add(currentLine)
+    lines.add(currentLine.trimEnd())
+    println("--------------------------------------")
     return lines.joinToString("\n")
 }
