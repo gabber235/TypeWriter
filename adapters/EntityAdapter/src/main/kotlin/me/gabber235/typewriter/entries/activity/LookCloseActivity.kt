@@ -5,6 +5,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.snippets.snippet
+import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.math.abs
@@ -66,7 +67,9 @@ class LookCloseActivityTask(
 
     private fun findNewTarget(context: TaskContext): Target? {
         val closestTarget = context.viewers
+            .filter { it.isValid && it.gameMode != GameMode.SPECTATOR && !it.isInvisible }
             .minByOrNull { location.distanceSqrt(it.location) ?: Double.POSITIVE_INFINITY }
+        
         if (closestTarget == null) {
             return null
         }
