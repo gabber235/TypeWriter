@@ -13,7 +13,6 @@ import java.util.*
 class FixedLocationActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    @Help("The location of the activity")
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
     override fun create(context: TaskContext): EntityActivity = FixedLocationActivity(ref())

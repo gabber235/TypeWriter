@@ -14,7 +14,6 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("glowing_effect_data", "If the entity is glowing", Colors.RED, "bi:lightbulb-fill")
-
 class GlowingEffectData(
     override val id: String = "",
     override val name: String = "",

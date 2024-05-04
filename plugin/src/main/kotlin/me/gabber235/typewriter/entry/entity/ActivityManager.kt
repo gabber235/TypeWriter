@@ -67,7 +67,7 @@ class IdleTask(override val location: LocationProperty) : EntityTask {
     override fun tick(context: TaskContext) {}
     override fun mayInterrupt(): Boolean = true
 
-    override fun isComplete(): Boolean = false
+    override fun isComplete(): Boolean = true
 }
 
 abstract class FilterActivity(

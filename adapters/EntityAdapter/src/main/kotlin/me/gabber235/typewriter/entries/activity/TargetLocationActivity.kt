@@ -27,9 +27,9 @@ private val locationActivityRange by snippet("entity.activity.target_location.ra
 class TargetLocationActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    override val priorityOverride: Optional<Int> = Optional.empty(),
     val roadNetwork: Ref<RoadNetworkEntry> = emptyRef(),
     val targetLocation: Location = Location(null, 0.0, 0.0, 0.0),
+    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
     override fun create(context: TaskContext): EntityActivity =
         TargetLocationActivity(ref(), roadNetwork, targetLocation)
