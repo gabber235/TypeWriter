@@ -69,7 +69,7 @@ class LookCloseActivityTask(
         val closestTarget = context.viewers
             .filter { it.isValid && it.gameMode != GameMode.SPECTATOR && !it.isInvisible }
             .minByOrNull { location.distanceSqrt(it.location) ?: Double.POSITIVE_INFINITY }
-        
+
         if (closestTarget == null) {
             return null
         }
