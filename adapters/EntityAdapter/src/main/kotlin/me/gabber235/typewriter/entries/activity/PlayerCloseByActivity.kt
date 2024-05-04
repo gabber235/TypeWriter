@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.priority
+import me.gabber235.typewriter.entry.ref
 import java.time.Duration
 import java.util.*
 
@@ -38,6 +39,7 @@ class PlayerCloseByActivityEntry(
 ) : EntityActivityEntry {
     override fun create(context: TaskContext): EntityActivity =
         PlayerCloseByActivity(
+            ref(),
             children
                 .descendants(EntityActivityEntry::class)
                 .mapNotNull { it.get() }
@@ -49,6 +51,7 @@ class PlayerCloseByActivityEntry(
 }
 
 class PlayerCloseByActivity(
+    val ref: Ref<PlayerCloseByActivityEntry>,
     childActivities: List<EntityActivity>,
     private val range: Double,
     private val maxIdleDuration: Duration,
@@ -56,6 +59,10 @@ class PlayerCloseByActivity(
     private var trackers = mutableMapOf<UUID, PlayerLocationTracker>()
 
     override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
+        if (!ref.canActivateFor(context)) {
+            return false
+        }
+
         val trackingPlayers = context.viewers
             .filter { it.isValid }
             .filter { (it.location.toProperty().distanceSqrt(currentLocation) ?: Double.MAX_VALUE) < range * range }

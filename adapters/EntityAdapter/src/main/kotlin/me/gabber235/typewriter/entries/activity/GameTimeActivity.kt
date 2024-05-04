@@ -1,16 +1,18 @@
 package me.gabber235.typewriter.entries.activity
 
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.descendants
-import me.gabber235.typewriter.entry.entity.EntityActivity
-import me.gabber235.typewriter.entry.entity.FilterActivity
-import me.gabber235.typewriter.entry.entity.LocationProperty
-import me.gabber235.typewriter.entry.entity.TaskContext
-import me.gabber235.typewriter.entry.entries.AudienceEntry
-import me.gabber235.typewriter.entry.entries.EntityActivityEntry
+import me.gabber235.typewriter.entry.entity.*
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.priority
+import me.gabber235.typewriter.entry.ref
+import me.gabber235.typewriter.logger
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.player.PlayerChangedWorldEvent
 import java.util.*
 
 @Entry("game_time_activity", "A game time activity", Colors.BLUE, "bi:clock-fill")
@@ -37,17 +39,20 @@ class GameTimeActivityEntry(
     override val id: String = "",
     override val name: String = "",
     override val children: List<Ref<out AudienceEntry>> = emptyList(),
+    val world: String = "",
     val activeTimes: List<GameTimeRange> = emptyList(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
     override fun create(context: TaskContext): EntityActivity = GameTimeActivity(
+        ref(),
         children
             .descendants(EntityActivityEntry::class)
             .mapNotNull { it.get() }
             .sortedByDescending { it.priority }
             .map { it.create(context) },
-        activeTimes
     )
+
+    override fun display(): AudienceFilter = GameTimeFilter(ref(), world, activeTimes)
 }
 
 class GameTimeRange(
@@ -59,14 +64,43 @@ class GameTimeRange(
     }
 }
 
-class GameTimeActivity(
-    children: List<EntityActivity>,
+class GameTimeFilter(
+    val ref: Ref<out AudienceFilterEntry>,
+    private val world: String,
     private val activeTimes: List<GameTimeRange>,
+) : AudienceFilter(ref), TickableDisplay {
+    override fun filter(player: Player): Boolean {
+        if (player.world.name != world) return false
+        val worldTime = player.world.time % 24000
+        return activeTimes.any { worldTime in it }
+    }
+
+    @EventHandler
+    private fun onWorldChange(event: PlayerChangedWorldEvent) {
+        event.player.refresh()
+    }
+
+    override fun tick() {
+        val world = server.getWorld(world)
+        if (world == null) {
+            logger.warning("World '${this.world}' does not exist, $ref will not work.")
+            return
+        }
+
+        val isActive = activeTimes.any { world.time % 24000 in it }
+        if (isActive && consideredPlayers.isNotEmpty() && players.isEmpty()) {
+            consideredPlayers.forEach { it.refresh() }
+        } else if (!isActive && players.isNotEmpty()) {
+            players.forEach { it.updateFilter(false) }
+        }
+    }
+}
+
+class GameTimeActivity(
+    val ref: Ref<out GameTimeActivityEntry>,
+    children: List<EntityActivity>,
 ) : FilterActivity(children) {
     override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
-        val worldTime = currentLocation.toLocation().world?.time ?: return false
-        val activationTime = worldTime % 24000
-
-        return activeTimes.any { activationTime in it } && super.canActivate(context, currentLocation)
+        return ref.canActivateFor(context)
     }
 }

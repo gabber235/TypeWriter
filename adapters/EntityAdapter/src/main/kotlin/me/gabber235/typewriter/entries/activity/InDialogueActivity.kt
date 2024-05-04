@@ -1,20 +1,17 @@
 package me.gabber235.typewriter.entries.activity
 
-import kotlinx.coroutines.NonCancellable.children
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.descendants
 import me.gabber235.typewriter.entry.dialogue.currentDialogue
-import me.gabber235.typewriter.entry.entity.EntityActivity
-import me.gabber235.typewriter.entry.entity.FilterActivity
-import me.gabber235.typewriter.entry.entity.LocationProperty
-import me.gabber235.typewriter.entry.entity.TaskContext
+import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.priority
+import me.gabber235.typewriter.entry.ref
 import org.bukkit.entity.Player
 import java.time.Duration
 import java.util.*
@@ -47,6 +44,7 @@ class InDialogueActivityEntry(
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
     override fun create(context: TaskContext): EntityActivity = InDialogueActivity(
+        ref(),
         children
             .descendants(EntityActivityEntry::class)
             .mapNotNull { it.get() }
@@ -58,6 +56,7 @@ class InDialogueActivityEntry(
 }
 
 class InDialogueActivity(
+    val ref: Ref<InDialogueActivityEntry>,
     children: List<EntityActivity>,
     private val dialogueIdleDuration: Duration,
     private val priority: Int,
@@ -65,6 +64,9 @@ class InDialogueActivity(
     private var trackers = mutableMapOf<UUID, PlayerDialogueTracker>()
 
     override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
+        if (!ref.canActivateFor(context)) {
+            return false
+        }
         val definition = context.instanceRef.get()?.definition ?: return false
         val trackingPlayers = context.viewers
             .filter { it.currentDialogue?.speaker == definition }

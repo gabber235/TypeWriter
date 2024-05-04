@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
 import me.gabber235.typewriter.entry.entries.RoadNodeCollectionEntry
 import me.gabber235.typewriter.entry.entries.RoadNodeId
+import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
 import me.gabber235.typewriter.entry.roadnetwork.gps.PointToPointGPS
 import org.koin.core.component.KoinComponent
@@ -32,20 +33,28 @@ class PatrolActivityEntry(
     override val nodes: List<RoadNodeId> = emptyList(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry, RoadNodeCollectionEntry {
-    override fun create(context: TaskContext): EntityActivity = PatrolActivity(roadNetwork, nodes)
+    override fun create(context: TaskContext): EntityActivity = PatrolActivity(ref(), roadNetwork, nodes)
 }
 
 private class PatrolActivity(
+    val ref: Ref<PatrolActivityEntry>,
     private val roadNetwork: Ref<RoadNetworkEntry>,
     private val nodes: List<RoadNodeId>,
 ) : EntityActivity, KoinComponent {
-    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean = nodes.isNotEmpty()
+    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
+        if (!ref.canActivateFor(context)) {
+            return false
+        }
+
+        return nodes.isNotEmpty()
+    }
 
     private var currentLocationIndex = 0
 
     override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
-        val network = KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)
-            ?: return IdleTask(currentLocation)
+        val network =
+            KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)
+                ?: return IdleTask(currentLocation)
 
         val nodeId = nodes.getOrNull(currentLocationIndex) ?: return IdleTask(currentLocation)
         val currentTargetNode = network.nodes.find { it.id == nodeId }

@@ -7,6 +7,7 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
+import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.entry.roadnetwork.gps.PointToPointGPS
 import me.gabber235.typewriter.snippets.snippet
 import org.bukkit.Location
@@ -14,7 +15,7 @@ import java.util.*
 
 private val locationActivityRange by snippet("entity.activity.target_location.range", 1.0)
 
-@Entry("target_location_activity", "A location activity", Colors.BLUE, "fa6-solid:map-marker-alt")
+@Entry("target_location_activity", "A location activity", Colors.BLUE, "mdi:map-marker-account")
 /**
  * The `TargetLocationActivityEntry` is an activity that makes the entity navigate to a specific location.
  *
@@ -30,14 +31,20 @@ class TargetLocationActivityEntry(
     val roadNetwork: Ref<RoadNetworkEntry> = emptyRef(),
     val targetLocation: Location = Location(null, 0.0, 0.0, 0.0),
 ) : EntityActivityEntry {
-    override fun create(context: TaskContext): EntityActivity = TargetLocationActivity(roadNetwork, targetLocation)
+    override fun create(context: TaskContext): EntityActivity =
+        TargetLocationActivity(ref(), roadNetwork, targetLocation)
 }
 
 class TargetLocationActivity(
+    val ref: Ref<TargetLocationActivityEntry>,
     private val network: Ref<RoadNetworkEntry>,
     private val targetLocation: Location,
 ) : EntityActivity {
     override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
+        if (!ref.canActivateFor(context)) {
+            return false
+        }
+
         // Only activate if outside the defined range
         val distance = currentLocation.distanceSqrt(targetLocation.toProperty()) ?: return false
         return distance > locationActivityRange * locationActivityRange

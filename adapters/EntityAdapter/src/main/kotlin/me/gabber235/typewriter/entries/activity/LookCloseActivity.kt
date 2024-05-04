@@ -2,8 +2,10 @@ package me.gabber235.typewriter.entries.activity
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
+import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.snippets.snippet
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
@@ -28,11 +30,15 @@ class LookCloseActivityEntry(
     override val name: String = "",
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
-    override fun create(context: TaskContext): EntityActivity = LookCloseActivity()
+    override fun create(context: TaskContext): EntityActivity = LookCloseActivity(ref())
 }
 
-class LookCloseActivity : EntityActivity {
+class LookCloseActivity(val ref: Ref<LookCloseActivityEntry>) : EntityActivity {
     override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
+        if (!ref.canActivateFor(context)) {
+            return false
+        }
+
         // Only if there is someone to look at
         return context.viewers.any { player ->
             val distance = currentLocation.distanceSqrt(player.location) ?: return@any false
