@@ -86,7 +86,8 @@ class DisplayDialogueCinematicAction(
         // The percentage of the dialogue that should be displayed.
         val displayPercentage = percentage / splitPercentage
 
-        if (displayPercentage > 1) {
+        // We must make sure that the full dialogue is displayed before we stop spamming it.
+        if (displayPercentage > 1.1) {
             // When the dialogue is fully displayed, we don't need to display it every tick and should avoid spamming the player.
             val needsDisplay = (frame - segment.startFrame) % 20 == 0
             if (!needsDisplay) return
