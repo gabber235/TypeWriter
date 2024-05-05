@@ -10,6 +10,12 @@ import me.gabber235.typewriter.entry.ref
 import java.util.*
 
 @Entry("fixed_location_activity", "A fixed location activity", Colors.BLUE, "majesticons:map-marker-area")
+/**
+* The `FixedLocationActivityEntry` is an activity that freezes the entity in a specific location.
+ *
+ * ## How could this be used?
+ * This could be used to freeze an entity in a specific location.
+ */
 class FixedLocationActivityEntry(
     override val id: String = "",
     override val name: String = "",
