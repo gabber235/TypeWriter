@@ -70,7 +70,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         currentMessenger.tick(playTime)
     }
 
-    fun next(nextEntry: DialogueEntry): Boolean {
+    fun next(nextEntry: DialogueEntry) {
         cleanupEntry(false)
         currentEntry = nextEntry
         currentMessenger = messengerFinder.findMessenger(player, nextEntry)
@@ -78,7 +78,6 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         DISPATCHERS_ASYNC.launch {
             AsyncDialogueSwitchEvent(player).callEvent()
         }
-        return true
     }
 
     private fun cleanupEntry(final: Boolean) {
