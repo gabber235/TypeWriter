@@ -53,10 +53,20 @@ import java.util.*
 /**
  * The `Camera Cinematic` entry is used to create a cinematic camera path.
  *
- * :::tip
- * When starting a camera, Minecraft needs `10` frames to load camera's.
- * It is suggested to use a [Blinding Cinematic Entry](./blinding_cinematic) and wait for `10`-`20` frames.
- * Before the first segment to get the smoothest cinematic.
+ * Durations for path points calculated based on the total duration of each segment and specified path point's duration.
+ * Suppose you have a segment with a duration of 300 ticks, and it has 3 path points.
+ * Then we specify the duration on the second path point as 200 ticks.
+ * The resulting durations between path points are as follows:
+ *
+ * | From | To | Duration |
+ * |------|----|----------|
+ * | 1    | 2  | 100      |
+ * | 2    | 3  | 200      |
+ *
+ * ::: warning
+ * Since the duration of a path point is the duration from that point to the next point,
+ * the last path point will always have a duration of `0`.
+ * Regardless of the duration specified on the last path point.
  * :::
  *
  * ## How could this be used?
