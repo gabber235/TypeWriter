@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.snippets.snippet
@@ -39,7 +40,7 @@ class SubtitleDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "fa6-solid:diagram-next")
-    val segments: List<DisplayDialogueSegment> = emptyList(),
+    val segments: List<SingleLineDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
 
     override fun create(player: Player): CinematicAction {
@@ -65,8 +66,8 @@ data class RandomSubtitleDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "fa6-solid:diagram-next")
-    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
-) : CinematicEntry {
+    val segments: List<SingleLineRandomDisplayDialogueSegment> = emptyList(),
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,

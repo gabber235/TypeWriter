@@ -6,7 +6,9 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPl
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerPositionAndLook
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
+import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
@@ -35,6 +37,11 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
+import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.potion.PotionEffect
@@ -46,10 +53,20 @@ import java.util.*
 /**
  * The `Camera Cinematic` entry is used to create a cinematic camera path.
  *
- * :::tip
- * When starting a camera, Minecraft needs `10` frames to load camera's.
- * It is suggested to use a [Blinding Cinematic Entry](./blinding_cinematic) and wait for `10`-`20` frames.
- * Before the first segment to get the smoothest cinematic.
+ * Durations for path points calculated based on the total duration of each segment and specified path point's duration.
+ * Suppose you have a segment with a duration of 300 ticks, and it has 3 path points.
+ * Then we specify the duration on the second path point as 200 ticks.
+ * The resulting durations between path points are as follows:
+ *
+ * | From | To | Duration |
+ * |------|----|----------|
+ * | 1    | 2  | 100      |
+ * | 2    | 3  | 200      |
+ *
+ * ::: warning
+ * Since the duration of a path point is the duration from that point to the next point,
+ * the last path point will always have a duration of `0`.
+ * Regardless of the duration specified on the last path point.
  * :::
  *
  * ## How could this be used?
@@ -63,7 +80,7 @@ class CameraCinematicEntry(
     @Segments(icon = "fa6-solid:video")
     @InnerMin(Min(10))
     val segments: List<CameraSegment> = emptyList(),
-) : CinematicEntry {
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return CameraCinematicAction(
             player,
@@ -102,7 +119,7 @@ data class PathPoint(
 class CameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
-) : CinematicAction {
+) : CinematicAction, Listener {
     private var previousSegment: CameraSegment? = null
     private lateinit var action: CameraAction
 
@@ -115,6 +132,7 @@ class CameraCinematicAction(
         } else {
             DisplayCameraAction(player)
         }
+        plugin.registerEvents(this)
         super.setup()
     }
 
@@ -207,6 +225,22 @@ class CameraCinematicAction(
         super.teardown()
         action.stop()
         player.teardown()
+        unregister()
+    }
+
+    @EventHandler
+    private fun onSwapHand(event: PlayerSwapHandItemsEvent) {
+        event.isCancelled = true
+    }
+
+    @EventHandler
+    private fun onDrop(event: PlayerDropItemEvent) {
+        event.isCancelled = true
+    }
+
+    @EventHandler
+    private fun onPickup(event: PlayerAttemptPickupItemEvent) {
+        event.isCancelled = true
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame

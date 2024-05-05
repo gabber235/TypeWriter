@@ -29,7 +29,7 @@ class ScreenShakeCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     @Segments(icon = "ant-design:shake-outlined")
     val segments: List<ScreenShakeSegment>
-) : CinematicEntry {
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return ScreenShakeCinematicAction(
             player,

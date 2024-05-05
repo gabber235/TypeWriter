@@ -27,14 +27,23 @@ class EntrySelectorEditor extends HookConsumerWidget {
   const EntrySelectorEditor({
     required this.path,
     required this.field,
+    this.forcedValue,
+    this.onChanged,
     super.key,
   }) : super();
 
   final String path;
   final FieldInfo field;
 
+  final String? forcedValue;
+  final void Function(String)? onChanged;
+
   bool _update(PassingRef ref, Entry? entry) {
     if (entry == null) return false;
+    if (onChanged != null) {
+      onChanged!(entry.id);
+      return true;
+    }
     ref
         .read(inspectingEntryDefinitionProvider)
         ?.updateField(ref, path, entry.id);
@@ -55,7 +64,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = field.get<String>("entry") ?? "";
     final onlyTags = field.get<String>("only_tags")?.split(",") ?? [];
-    final id = ref.watch(fieldValueProvider(path, "")) as String;
+    final id = forcedValue ?? ref.watch(fieldValueProvider(path, "")) as String;
 
     final hasEntry = ref.watch(entryExistsProvider(id));
 
@@ -71,9 +80,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
         return blueprint.tags.contains(tag);
       },
       onAcceptWithDetails: (details) {
-        ref
-            .read(inspectingEntryDefinitionProvider)
-            ?.updateField(ref.passing, path, details.data.entryId);
+        final entry = ref.read(globalEntryProvider(details.data.entryId));
+        _update(ref.passing, entry);
       },
       builder: (context, candidateData, rejectedData) {
         if (rejectedData.isNotEmpty) {

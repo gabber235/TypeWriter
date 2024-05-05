@@ -15,6 +15,9 @@ import org.bukkit.entity.Player
 /**
  * The `Cinematic` action is used to start a new cinematic.
  *
+ * A cinematic can only be overridden
+ * if another cinematic is triggered with a higher page priority than the current one.
+ *
  * ## How could this be used?
  *
  * This action can be useful in situations where you want to start a cinematic.
@@ -31,12 +34,10 @@ class CinematicEntry(
     @Page(PageType.CINEMATIC)
     @Help("The cinematic page to start.")
     val pageId: String = "",
-    @Help("If the player is already in a cinematic, should the cinematic be replaced?")
-    val override: Boolean = false
 ) : CustomTriggeringActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
-        CinematicStartTrigger(pageId, customTriggers, override) triggerFor player
+        CinematicStartTrigger(pageId, customTriggers) triggerFor player
     }
 }

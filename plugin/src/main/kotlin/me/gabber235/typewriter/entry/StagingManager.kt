@@ -348,7 +348,7 @@ enum class StagingState {
     PUBLISHED
 }
 
-fun Ref<Entry>.fieldValue(path: String, value: Any) {
+fun Ref<out Entry>.fieldValue(path: String, value: Any) {
     val stagingManager = KoinJavaComponent.get<StagingManager>(StagingManager::class.java)
     val gson = KoinJavaComponent.get<Gson>(Gson::class.java, named("entryParser"))
 

@@ -102,7 +102,9 @@ class InteractionHandler : Listener, KoinComponent {
     // When a player joins the server, we need to create an interaction for them.
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        interactions[event.player.uniqueId] = Interaction(event.player)
+        val interaction = Interaction(event.player)
+        interactions[event.player.uniqueId] = interaction
+        interaction.setup()
     }
 
     // When a player leaves the server, we need to end the interaction.
@@ -134,7 +136,7 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     // When a player tries to execute a command, we need to end the dialogue.
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
         // If this is a custom command, we don't want to end the dialogue
         val entry = Query.firstWhere<CustomCommandEntry> {

@@ -30,7 +30,7 @@ interface AdvancedEntityInstance : EntityInstanceEntry {
  * Otherwise, we need to have a `PlayerSpecificActivityEntityDisplay`.
  */
 fun List<Ref<out AudienceEntry>>.toAdvancedEntityDisplay(
-    ref: Ref<out AudienceFilterEntry>,
+    ref: Ref<out EntityInstanceEntry>,
     creator: EntityCreator,
     baseSuppliers: List<Pair<EntityData<*>, Int>> = emptyList(),
     spawnLocation: Location,

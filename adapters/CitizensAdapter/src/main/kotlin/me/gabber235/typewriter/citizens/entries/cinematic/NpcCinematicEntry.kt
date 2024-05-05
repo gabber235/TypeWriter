@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack
 import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent
 
-interface NpcCinematicEntry : CinematicEntry {
+interface NpcCinematicEntry : PrimaryCinematicEntry {
     @Help("Recorded segments of the NPC's interactions")
     @Segments(Colors.PINK, "fa6-solid:person-walking")
     val recordedSegments: List<NpcRecordedSegment>

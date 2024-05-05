@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.extensions.packetevents.toPacketItem
@@ -34,7 +35,7 @@ class PumpkinHatCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     @Segments(icon = "mingcute:hat-fill")
     val segments: List<PumpkinHatSegment> = emptyList(),
-    ) : CinematicEntry {
+    ) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return PumpkinHatCinematicAction(
             player,

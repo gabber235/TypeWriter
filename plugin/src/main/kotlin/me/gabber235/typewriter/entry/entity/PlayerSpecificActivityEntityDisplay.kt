@@ -1,8 +1,9 @@
 package me.gabber235.typewriter.entry.entity
 
+import lirand.api.extensions.server.server
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.AudienceFilter
-import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
+import me.gabber235.typewriter.entry.entries.EntityInstanceEntry
 import me.gabber235.typewriter.entry.entries.PropertySupplier
 import me.gabber235.typewriter.entry.entries.TickableDisplay
 import org.bukkit.Location
@@ -11,7 +12,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class PlayerSpecificActivityEntityDisplay(
-    ref: Ref<out AudienceFilterEntry>,
+    private val ref: Ref<out EntityInstanceEntry>,
     override val creator: EntityCreator,
     private val activityCreators: List<ActivityCreator>,
     private val suppliers: List<Pair<PropertySupplier<*>, Int>>,
@@ -29,7 +30,11 @@ class PlayerSpecificActivityEntityDisplay(
 
     override fun onPlayerAdd(player: Player) {
         activityManagers.computeIfAbsent(player.uniqueId) {
-            ActivityManager(activityCreators.map { it.create(player) }, spawnLocation)
+            ActivityManager(
+                ref,
+                activityCreators.map { it.create(IndividualTaskContext(ref, player, false)) },
+                spawnLocation
+            )
         }
         super.onPlayerAdd(player)
     }
@@ -45,7 +50,11 @@ class PlayerSpecificActivityEntityDisplay(
     override fun tick() {
         consideredPlayers.forEach { it.refresh() }
 
-        activityManagers.values.forEach { it.tick() }
+        activityManagers.forEach { (pid, manager) ->
+            val player = server.getPlayer(pid) ?: return@forEach
+            val isViewing = pid in this
+            manager.tick(IndividualTaskContext(ref, player, isViewing))
+        }
         entities.values.forEach { it.tick() }
     }
 

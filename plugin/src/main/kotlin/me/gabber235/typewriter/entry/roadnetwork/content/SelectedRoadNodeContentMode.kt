@@ -456,10 +456,6 @@ private class ModificationComponent(
             }
         }
 
-        val hasNonConnectedNode =
-            network.nodes.any { target -> target.id != node.id && network.edges.none { it.start == node.id && it.end == target.id } }
-
-        if (hasNonConnectedNode) {
             map[5] = ItemStack(Material.EMERALD).meta {
                 name = "<green><b>Add Fast Travel Connection"
                 loreString = """
@@ -470,7 +466,6 @@ private class ModificationComponent(
                     |""".trimMargin()
                 unClickable()
             } onInteract {}
-        }
 
         val hasEdges = network.edges.any { it.start == node.id }
         if (hasEdges) {

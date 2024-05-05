@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.triggerFor
@@ -36,7 +37,7 @@ class SpokenDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "mingcute:message-4-fill")
-    val segments: List<DisplayDialogueSegment> = emptyList(),
+    val segments: List<MultiLineDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
@@ -67,8 +68,8 @@ data class RandomSpokenDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "mingcute:message-4-fill")
-    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
-) : CinematicEntry {
+    val segments: List<MultiLineRandomDisplayDialogueSegment> = emptyList(),
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,

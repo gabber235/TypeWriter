@@ -10,6 +10,9 @@ class AsyncDialogueStartEvent(player: Player) : PlayerEvent(player, true) {
     companion object {
         @JvmStatic
         val HANDLER_LIST = HandlerList()
+
+        @JvmStatic
+        fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 }
 
@@ -19,6 +22,9 @@ class AsyncDialogueSwitchEvent(player: Player): PlayerEvent(player, true) {
     companion object {
         @JvmStatic
         val HANDLER_LIST = HandlerList()
+
+        @JvmStatic
+        fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 }
 
@@ -28,5 +34,8 @@ class AsyncDialogueEndEvent(player: Player): PlayerEvent(player, true) {
     companion object {
         @JvmStatic
         val HANDLER_LIST = HandlerList()
+
+        @JvmStatic
+        fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 }

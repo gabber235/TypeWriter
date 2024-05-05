@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.snippets.snippet
@@ -34,8 +35,8 @@ class ActionBarDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "fa6-solid:xmarks-lines")
-    val segments: List<DisplayDialogueSegment> = emptyList(),
-) : CinematicEntry {
+    val segments: List<SingleLineDisplayDialogueSegment> = emptyList(),
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,
@@ -61,7 +62,7 @@ data class RandomActionBarDialogueCinematicEntry(
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Segments(icon = "fa6-solid:xmarks-lines")
-    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
+    val segments: List<SingleLineRandomDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(

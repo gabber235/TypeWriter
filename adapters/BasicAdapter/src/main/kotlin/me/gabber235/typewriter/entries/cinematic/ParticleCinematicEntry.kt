@@ -39,8 +39,6 @@ class ParticleCinematicEntry(
     @Help("The speed of the particles.")
     // The speed of the particles. For some particles, this is the "extra" data value to control particle behavior.
     val speed: Double = 0.0,
-    @Help("The amount of particles to spawn per tick.")
-    val spawnCountPerTick: Int = 0,
     @Segments(icon = "fa6-solid:fire-flame-simple")
     val segments: List<ParticleSegment> = emptyList(),
 ) : CinematicEntry {
@@ -69,7 +67,7 @@ class ParticleCinematicAction(
         player.spawnParticle(
             entry.particle,
             entry.location,
-            entry.spawnCountPerTick,
+            entry.count,
             entry.offsetX,
             entry.offsetY,
             entry.offsetZ,

@@ -18,7 +18,7 @@ class GlobalWriters extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final writers = ref.watch(writersProvider);
 
-    return Writers(writers: writers);
+    return Writers(writers: writers, direction: direction);
   }
 }
 

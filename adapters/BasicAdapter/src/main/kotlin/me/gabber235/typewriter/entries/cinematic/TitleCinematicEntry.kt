@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.asMini
@@ -30,7 +31,7 @@ class TitleCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     @Segments(icon = "fluent:align-center-vertical-32-filled")
     val segments: List<TitleSegment> = emptyList(),
-) : CinematicEntry {
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return TitleCinematicAction(
             player,

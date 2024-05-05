@@ -372,7 +372,8 @@ class AddEntrySearchElement extends SearchElement {
   Color color(BuildContext context) => blueprint.color;
 
   @override
-  Widget icon(BuildContext context) => Iconify(blueprint.icon);
+  Widget icon(BuildContext context) =>
+      Iconify(blueprint.icon, color: Theme.of(context).scaffoldBackgroundColor);
 
   @override
   Widget suffixIcon(BuildContext context) => const Iconify(TWIcons.plus);

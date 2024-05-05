@@ -107,8 +107,8 @@ class PlayerEntity(
                 else -> {
                 }
             }
-            if (applyGenericEntityData(entity, property)) return
-            if (applyLivingEntityData(entity, property)) return
+            if (applyGenericEntityData(entity, property)) return@forEach
+            if (applyLivingEntityData(entity, property)) return@forEach
         }
     }
 

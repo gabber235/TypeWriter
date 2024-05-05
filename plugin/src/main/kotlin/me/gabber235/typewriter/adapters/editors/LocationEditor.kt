@@ -9,6 +9,7 @@ import me.gabber235.typewriter.adapters.modifiers.ContentEditorModifierComputer
 import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.modes.ImmediateFieldValueContentMode
 import me.gabber235.typewriter.utils.logErrorIfNull
+import me.gabber235.typewriter.utils.round
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -65,5 +66,15 @@ fun ObjectEditor<Location>.location() = reference {
 
 class LocationContentMode(context: ContentContext, player: Player) :
     ImmediateFieldValueContentMode<Location>(context, player) {
-    override fun value(): Location = player.location
+    override fun value(): Location {
+        val location = player.location
+        val world = location.world
+        val x = location.x.round(2)
+        val y = location.y.round(2)
+        val z = location.z.round(2)
+        val yaw = location.yaw.round(2)
+        val pitch = location.pitch.round(2)
+
+        return Location(world, x, y, z, yaw, pitch)
+    }
 }

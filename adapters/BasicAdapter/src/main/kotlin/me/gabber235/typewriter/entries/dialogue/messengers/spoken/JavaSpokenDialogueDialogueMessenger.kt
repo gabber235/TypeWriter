@@ -80,7 +80,9 @@ fun Player.sendSpokenDialogue(
 
     val totalInstructionDuration = spokenInstructionTicksHighlighted + spokenInstructionTicksBase
     val instructionCycle = playedTicks % totalInstructionDuration
-    if (percentage > 1) {
+    // When the messages is send we don't want to keep sending the message every tick.
+    // However, we only start reducing after the message has been displayed fully.
+    if (percentage > 1.1) {
         // Change in highlight color
         val shouldDisplay = instructionCycle == 0L || instructionCycle == spokenInstructionTicksHighlighted
         if (!shouldDisplay) return

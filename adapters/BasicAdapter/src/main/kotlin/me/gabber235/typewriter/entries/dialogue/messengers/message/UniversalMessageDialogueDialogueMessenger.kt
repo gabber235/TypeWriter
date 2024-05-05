@@ -33,10 +33,9 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
 
     override fun tick(playTime: Duration) {
         super.tick(playTime)
-        if (playTime.isZero) {
-            player.sendMessageDialogue(entry.text, entry.speakerDisplayName)
-            state = MessengerState.FINISHED
-        }
+        if (state != MessengerState.RUNNING) return
+        state = MessengerState.FINISHED
+        player.sendMessageDialogue(entry.text, entry.speakerDisplayName)
     }
 }
 

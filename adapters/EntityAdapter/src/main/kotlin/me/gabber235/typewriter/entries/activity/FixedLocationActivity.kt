@@ -3,40 +3,37 @@ package me.gabber235.typewriter.entries.activity
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.entity.EntityActivity
-import me.gabber235.typewriter.entry.entity.EntityTask
-import me.gabber235.typewriter.entry.entity.LocationProperty
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
-import org.bukkit.entity.Player
+import me.gabber235.typewriter.entry.ref
 import java.util.*
 
 @Entry("fixed_location_activity", "A fixed location activity", Colors.BLUE, "majesticons:map-marker-area")
 /**
- * The "Fixed Location Activity" makes the entity always be in the same location.
+* The `FixedLocationActivityEntry` is an activity that freezes the entity in a specific location.
+ *
+ * ## How could this be used?
+ * This could be used to freeze an entity in a specific location.
  */
 class FixedLocationActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    @Help("The location of the activity")
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityActivityEntry {
-    override fun create(player: Player?): EntityActivity = FixedLocationActivity()
+    override fun create(context: TaskContext): EntityActivity = FixedLocationActivity(ref())
 }
 
-private class FixedLocationActivity :
-    EntityActivity {
-    override fun canActivate(currentLocation: LocationProperty): Boolean = true
+private class FixedLocationActivity(val ref: Ref<FixedLocationActivityEntry>) : EntityActivity {
+    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean = ref canActivateFor context
 
-    override fun currentTask(currentLocation: LocationProperty): EntityTask {
+    override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
         return FixedLocationActivityTask(currentLocation)
     }
 }
 
 private class FixedLocationActivityTask(override val location: LocationProperty) : EntityTask {
-    override fun tick() {
-    }
-
+    override fun tick(context: TaskContext) {}
     override fun mayInterrupt(): Boolean = true
-
     override fun isComplete(): Boolean = false
 }

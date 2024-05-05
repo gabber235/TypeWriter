@@ -18,7 +18,6 @@ import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.quest.trackQuest
 import me.gabber235.typewriter.entry.quest.unTrackQuest
-import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
 import me.gabber235.typewriter.entry.roadnetwork.content.RoadNetworkContentMode
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.interaction.chatHistory
@@ -52,6 +51,8 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
     cinematicCommand()
 
     triggerCommand()
+    fireCommand()
+
 
     questCommands()
 
@@ -240,12 +241,12 @@ private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
 
         argument("cinematic", CinematicType) { cinematicId ->
             executesPlayer {
-                CinematicStartTrigger(cinematicId.get(), emptyList(), override = true) triggerFor source
+                CinematicStartTrigger(cinematicId.get(), emptyList()) triggerFor source
             }
 
             argument("player", PlayerType) { player ->
                 executes {
-                    CinematicStartTrigger(cinematicId.get(), emptyList(), override = true) triggerFor player.get()
+                    CinematicStartTrigger(cinematicId.get(), emptyList()) triggerFor player.get()
                 }
             }
         }
@@ -262,6 +263,21 @@ private fun LiteralDSLBuilder.triggerCommand() = literal("trigger") {
         argument("player", PlayerType) { player ->
             executes {
                 EntryTrigger(entry.get()) triggerFor player.get()
+            }
+        }
+    }
+}
+
+private fun LiteralDSLBuilder.fireCommand() = literal("fire") {
+    requiresPermissions("typewriter.fire")
+    argument("entry", entryType<FireTriggerEventEntry>()) { entry ->
+        executesPlayer {
+            entry.get().triggers triggerEntriesFor source
+        }
+
+        argument("player", PlayerType) { player ->
+            executes {
+                entry.get().triggers triggerEntriesFor player.get()
             }
         }
     }

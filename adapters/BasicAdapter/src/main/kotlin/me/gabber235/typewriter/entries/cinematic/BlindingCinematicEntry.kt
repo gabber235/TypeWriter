@@ -9,6 +9,7 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import org.bukkit.entity.Player
@@ -26,7 +27,7 @@ class BlindingCinematicEntry(
     override val criteria: List<Criteria>,
     @Segments(icon = "heroicons-solid:eye-off")
     val segments: List<BlindingSegment>,
-) : CinematicEntry {
+) : PrimaryCinematicEntry {
     override fun createSimulating(player: Player): CinematicAction? = null
     override fun create(player: Player): CinematicAction {
         return BlindingCinematicAction(
