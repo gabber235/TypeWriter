@@ -1,4 +1,14 @@
 {
   "editor.wordBasedSuggestions": "matchingDocuments",
-  "cSpell.words": ["triggerable"]
+  "cSpell.words": [
+    "actionbar",
+    "Actionbar",
+    "bossbar",
+    "cinematics",
+    "Cinematics",
+    "Playerprogress",
+    "triggerable"
+  ],
+  "todo-tree.tree.showBadges": true,
+  "todo-tree.tree.showCountsInTree": true
 }
