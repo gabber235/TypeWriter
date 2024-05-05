@@ -2,9 +2,9 @@ import * as fields from '@site/src/components/EntryField';
 import Admonition from '@theme/Admonition';
 import Link from '@docusaurus/Link';
 
-# Game Time Activity 
+# Game Time Audience 
 
-The `GameTimeActivityEntry` is an activity that activates child activities at specific times in the game.
+The `GameTimeAudienceEntry` filters an audience based on the game time.
 
 The total time of a Minecraft day is `24000` ticks.
 Some examples of times are:
@@ -18,9 +18,9 @@ Some examples of times are:
 ------------------------------
 
 ## How could this be used?
-
-This can be used to create schedules for npc's to follow.
-For example, going to the market in the morning, going to the tavern at night.
+This can be used to only allow passage to a certain area at night.
+For example, a vampire castle that only opens its doors at night.
+Or a market that only opens during the day.
 
 
 ## Fields
@@ -30,6 +30,4 @@ For example, going to the market in the morning, going to the tavern at night.
 <fields.EntryField name='World' required>
 </fields.EntryField>
 <fields.EntryField name='Active Times' required multiple>
-</fields.EntryField>
-<fields.EntryField name='Priority Override' optional>
 </fields.EntryField>

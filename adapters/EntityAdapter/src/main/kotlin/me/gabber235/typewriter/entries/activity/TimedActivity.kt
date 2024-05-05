@@ -14,8 +14,8 @@ import java.time.Duration
 import java.util.*
 
 @Entry(
-    name = "timed_activity",
-    description = "Allows child activities for a limited amount of time",
+    "timed_activity",
+    "Allows child activities for a limited amount of time",
     Colors.BLUE,
     "fa6-solid:hourglass"
 )
