@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[350],{19423:e=>{e.exports=JSON.parse('{"tags":[{"label":"personal","permalink":"/TypeWriter/blog/tags/personal","count":1}]}')}}]);
