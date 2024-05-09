@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.data.minecraft.living
 
 import com.github.retrooper.packetevents.protocol.item.ItemStack
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot
+import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
@@ -11,6 +12,7 @@ import me.gabber235.typewriter.utils.Item
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EntityEquipment
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -28,8 +30,7 @@ class EquipmentData(
         EquipmentProperty(equipment.mapValues { (_, item) -> item.build(player).toPacketItem() })
 }
 
-data class EquipmentProperty
-    (val data: Map<EquipmentSlot, ItemStack>) : EntityProperty {
+data class EquipmentProperty(val data: Map<EquipmentSlot, ItemStack>) : EntityProperty {
     constructor(equipmentSlot: EquipmentSlot, item: ItemStack) : this(mapOf(equipmentSlot to item))
 
     companion object : PropertyCollectorSupplier<EquipmentProperty> {
@@ -39,6 +40,23 @@ data class EquipmentProperty
             return EquipmentCollector(suppliers.filterIsInstance<PropertySupplier<EquipmentProperty>>())
         }
     }
+}
+
+fun EntityEquipment.toProperty(): EquipmentProperty {
+    return EquipmentProperty(org.bukkit.inventory.EquipmentSlot.entries.mapNotNull {
+        val item = getItem(it)
+        if (item.isEmpty) return@mapNotNull null
+        it.toPacketEquipmentSlot() to getItem(it).toPacketItem()
+    }.toMap())
+}
+
+fun org.bukkit.inventory.EquipmentSlot.toPacketEquipmentSlot() = when(this) {
+    org.bukkit.inventory.EquipmentSlot.HAND -> EquipmentSlot.MAIN_HAND
+    org.bukkit.inventory.EquipmentSlot.OFF_HAND -> EquipmentSlot.OFF_HAND
+    org.bukkit.inventory.EquipmentSlot.HEAD -> EquipmentSlot.HELMET
+    org.bukkit.inventory.EquipmentSlot.CHEST -> EquipmentSlot.CHEST_PLATE
+    org.bukkit.inventory.EquipmentSlot.LEGS -> EquipmentSlot.LEGGINGS
+    org.bukkit.inventory.EquipmentSlot.FEET -> EquipmentSlot.BOOTS
 }
 
 private class EquipmentCollector(

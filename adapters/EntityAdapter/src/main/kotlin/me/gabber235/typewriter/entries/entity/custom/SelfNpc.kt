@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
+import me.gabber235.typewriter.entries.data.minecraft.living.toProperty
 import me.gabber235.typewriter.entries.entity.minecraft.PlayerEntity
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entity.FakeEntity
@@ -44,7 +45,11 @@ class SelfNpc(
     private val playerEntity = PlayerEntity(player)
 
     init {
-        consumeProperties(player.skin)
+        setup()
+    }
+
+    private fun setup() {
+        consumeProperties(player.skin, player.equipment.toProperty())
     }
 
     override val entityId: Int
@@ -59,6 +64,8 @@ class SelfNpc(
     }
 
     override fun spawn(location: LocationProperty) {
+        // When in a cinematic, the equipment will be reset to empty. We want to keep the player's equipment.
+        setup()
         playerEntity.spawn(location)
     }
 
