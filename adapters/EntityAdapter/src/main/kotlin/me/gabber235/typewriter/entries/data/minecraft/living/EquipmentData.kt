@@ -2,7 +2,6 @@ package me.gabber235.typewriter.entries.data.minecraft.living
 
 import com.github.retrooper.packetevents.protocol.item.ItemStack
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot
-import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
@@ -50,7 +49,7 @@ fun EntityEquipment.toProperty(): EquipmentProperty {
     }.toMap())
 }
 
-fun org.bukkit.inventory.EquipmentSlot.toPacketEquipmentSlot() = when(this) {
+fun org.bukkit.inventory.EquipmentSlot.toPacketEquipmentSlot() = when (this) {
     org.bukkit.inventory.EquipmentSlot.HAND -> EquipmentSlot.MAIN_HAND
     org.bukkit.inventory.EquipmentSlot.OFF_HAND -> EquipmentSlot.OFF_HAND
     org.bukkit.inventory.EquipmentSlot.HEAD -> EquipmentSlot.HELMET
@@ -82,6 +81,7 @@ fun org.bukkit.inventory.ItemStack.toProperty(equipmentSlot: EquipmentSlot) =
 fun applyEquipmentData(entity: WrapperEntity, property: EquipmentProperty) {
     if (entity !is WrapperLivingEntity) return
     property.data.forEach { (slot, item) ->
-        entity.equipment.setItem(slot, item)
+        if (item.isEmpty) entity.equipment.setItem(slot, null)
+        else entity.equipment.setItem(slot, item)
     }
 }

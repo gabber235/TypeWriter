@@ -50,7 +50,7 @@ dependencies {
     }
     compileOnlyApi("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
-    api("com.github.Tofaa2.EntityLib:spigot:2.1.0-SNAPSHOT")
+    api("com.github.Tofaa2.EntityLib:spigot:2.1.2-SNAPSHOT")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
 
