@@ -571,7 +571,11 @@ class _ResultTile extends HookConsumerWidget {
               title: action.name,
               icon: action.icon,
               color: action.color,
-              onTap: () => action.onTrigger!(context, ref.passing),
+              onTap: () => _invokeAction(
+                context,
+                ref.passing,
+                ActivateActionIntent(action.shortcut),
+              ),
             ),
         ];
       },

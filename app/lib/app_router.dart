@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -110,10 +112,13 @@ extension AppRouterX on AppRouter {
       return;
     }
 
-    await ref.read(appRouter).push(
-          PageEditorRoute(id: pageName),
-          onFailure: (e) =>
-              debugPrint("Failed to navigate to page $pageName: $e"),
-        );
+    // Sometimes the app router does not complete the future and it gets stuck.
+    unawaited(
+      ref.read(appRouter).push(
+            PageEditorRoute(id: pageName),
+            onFailure: (e) =>
+                debugPrint("Failed to navigate to page $pageName: $e"),
+          ),
+    );
   }
 }

@@ -32,8 +32,8 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
   }
 
   Future<void> navigateAndSelectEntry(PassingRef ref, String entryId) async {
-    selectEntry(entryId);
     await ref.read(appRouter).navigateToEntry(ref, entryId);
+    selectEntry(entryId);
   }
 }
 
