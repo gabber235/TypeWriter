@@ -6,13 +6,13 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPl
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerPositionAndLook
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import kotlinx.coroutines.delay
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
 import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
-import me.gabber235.typewriter.entries.cinematic.DisplayCameraAction.Companion.BASE_INTERPOLATION
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.*
@@ -26,6 +26,7 @@ import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta
@@ -35,11 +36,9 @@ import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
@@ -231,16 +230,16 @@ class CameraCinematicAction(
     @EventHandler
     private fun onSwapHand(event: PlayerSwapHandItemsEvent) {
         event.isCancelled = true
+        player.fakeClearInventory()
     }
 
     @EventHandler
     private fun onDrop(event: PlayerDropItemEvent) {
         event.isCancelled = true
-    }
-
-    @EventHandler
-    private fun onPickup(event: PlayerAttemptPickupItemEvent) {
-        event.isCancelled = true
+        DISPATCHERS_ASYNC.launch {
+            delay(50)
+            player.fakeClearInventory()
+        }
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
@@ -261,7 +260,9 @@ private suspend inline fun Player.teleportIfNeeded(
     frame: Int,
     location: Location,
 ) {
-    if (frame % 10 == 0 || (location.distanceSqrt(location) ?: Double.MAX_VALUE) > MAX_DISTANCE_SQUARED) SYNC.switchContext {
+    if (frame % 10 == 0 || (location.distanceSqrt(location)
+            ?: Double.MAX_VALUE) > MAX_DISTANCE_SQUARED
+    ) SYNC.switchContext {
         teleport(location)
         allowFlight = true
         isFlying = true
