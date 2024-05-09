@@ -29,7 +29,6 @@ import me.gabber235.typewriter.ui.CommunicationHandler
 import me.gabber235.typewriter.ui.PanelHost
 import me.gabber235.typewriter.ui.Writers
 import me.gabber235.typewriter.utils.createBukkitDataParser
-import me.gabber235.typewriter.utils.syncCommands
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
@@ -123,7 +122,6 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             PlaceholderExpansion.register()
         }
 
-        syncCommands()
         BStatsMetrics.registerMetrics()
         PatheticMapper.initialize(this)
 
