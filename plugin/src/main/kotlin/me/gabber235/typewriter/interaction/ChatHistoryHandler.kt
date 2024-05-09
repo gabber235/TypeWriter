@@ -24,7 +24,8 @@ import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
 
-private val darkenLimit by snippet("chat.darken-limit", 12)
+private val darkenLimit by snippet("chat.darken-limit", 12, "The amount of messages displayed in the chat history during a dialogue")
+private val spacing by snippet("chat.spacing", 3, "The amount of padding between the dialogue and the chat history")
 
 class ChatHistoryHandler :
     PacketListenerAbstract(PacketListenerPriority.HIGH), Listener {
@@ -126,6 +127,7 @@ class ChatHistory {
         messages.take(darkenLimit).forEach {
             msg = msg.append(it.darkenMessage)
         }
+        msg = msg.append(Component.text("\n".repeat(spacing)))
         return msg.append(message)
     }
 
