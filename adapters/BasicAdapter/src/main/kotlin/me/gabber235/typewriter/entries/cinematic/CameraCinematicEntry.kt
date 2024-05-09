@@ -6,10 +6,7 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPl
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerPositionAndLook
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
-import kotlinx.coroutines.delay
-import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
-import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
@@ -26,7 +23,6 @@ import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
-import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta
@@ -37,10 +33,6 @@ import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.potion.PotionEffect
@@ -118,7 +110,7 @@ data class PathPoint(
 class CameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
-) : CinematicAction, Listener {
+) : CinematicAction {
     private var previousSegment: CameraSegment? = null
     private lateinit var action: CameraAction
 
@@ -131,7 +123,6 @@ class CameraCinematicAction(
         } else {
             DisplayCameraAction(player)
         }
-        plugin.registerEvents(this)
         super.setup()
     }
 
@@ -192,6 +183,7 @@ class CameraCinematicAction(
             !PacketType.Play.Client.CLICK_WINDOW_BUTTON
             !PacketType.Play.Client.USE_ITEM
             !PacketType.Play.Client.INTERACT_ENTITY
+            !PacketType.Play.Client.PLAYER_DIGGING
             PacketType.Play.Server.PLAYER_POSITION_AND_LOOK { event ->
                 val packet = WrapperPlayServerPlayerPositionAndLook(event)
                 packet.y += 500
@@ -224,22 +216,6 @@ class CameraCinematicAction(
         super.teardown()
         action.stop()
         player.teardown()
-        unregister()
-    }
-
-    @EventHandler
-    private fun onSwapHand(event: PlayerSwapHandItemsEvent) {
-        event.isCancelled = true
-        player.fakeClearInventory()
-    }
-
-    @EventHandler
-    private fun onDrop(event: PlayerDropItemEvent) {
-        event.isCancelled = true
-        DISPATCHERS_ASYNC.launch {
-            delay(50)
-            player.fakeClearInventory()
-        }
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
