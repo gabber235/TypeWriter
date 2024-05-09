@@ -43,7 +43,7 @@ class PlayerSpecificActivityEntityDisplay(
         super.onPlayerFilterAdded(player)
         val activityManager = activityManagers[player.uniqueId] ?: return
         entities.computeIfAbsent(player.uniqueId) {
-            DisplayEntity(player, creator, activityManager, suppliers.into())
+            DisplayEntity(player, creator, activityManager, suppliers.toCollectors())
         }
     }
 

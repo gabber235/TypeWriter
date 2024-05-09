@@ -39,7 +39,7 @@ class CommonActivityEntityDisplay(
         super.onPlayerFilterAdded(player)
         val activityManager = activityManager ?: return
         entities.computeIfAbsent(player.uniqueId) {
-            DisplayEntity(player, creator, activityManager, suppliers.into())
+            DisplayEntity(player, creator, activityManager, suppliers.toCollectors())
         }
     }
 

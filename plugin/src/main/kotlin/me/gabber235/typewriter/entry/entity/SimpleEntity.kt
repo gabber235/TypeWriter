@@ -22,10 +22,7 @@ interface SimpleEntityInstance : EntityInstanceEntry {
 
         val activities = this.activities.mapNotNull { it.get() }.sortedByDescending { it.priority }
 
-        val definitionData = definition.data.mapNotNull {
-            val data = it.get() ?: return@mapNotNull null
-            data to data.priority
-        }
+        val definitionData = definition.data.withPriority()
 
         val maxDefinitionData = definitionData.maxOfOrNull { it.second } ?: 0
 
@@ -42,4 +39,9 @@ interface SimpleEntityInstance : EntityInstanceEntry {
             spawnLocation,
         )
     }
+}
+
+fun List<Ref<EntityData<*>>>.withPriority(): List<Pair<EntityData<*>, Int>> = mapNotNull {
+    val data = it.get() ?: return@mapNotNull null
+    data to data.priority
 }

@@ -19,7 +19,7 @@ interface AdvancedEntityInstance : EntityInstanceEntry {
         return children.toAdvancedEntityDisplay(
             ref(),
             definition,
-            definition.data.mapNotNull { it.get() }.map { it to it.priority },
+            definition.data.withPriority(),
             spawnLocation,
         )
     }
@@ -38,7 +38,6 @@ fun List<Ref<out AudienceEntry>>.toAdvancedEntityDisplay(
     val activityCreators = descendants(EntityActivityEntry::class)
         .mapNotNull { it.get() }
         .sortedByDescending { it.priority }
-
 
     val maxBaseSupplier = baseSuppliers.maxOfOrNull { it.second } ?: 0
     val overrideSuppliers = descendants(EntityData::class)
