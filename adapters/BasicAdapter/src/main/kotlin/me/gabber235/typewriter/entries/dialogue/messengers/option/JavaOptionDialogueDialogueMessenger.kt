@@ -24,6 +24,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerItemHeldEvent
 import java.time.Duration
+import kotlin.math.min
 
 val optionFormat: String by snippet(
     "dialogue.option.format", """
@@ -148,11 +149,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
         val lines = mutableListOf<Component>()
 
-        for (i in 0..3) {
-            if (i >= around.size) {
-                lines.add("\n".asMini())
-                continue
-            }
+        for (i in 0..min(3, around.size)) {
             val option = around[i]
             val isSelected = selected == option
 
