@@ -6,7 +6,7 @@ Adapters are additions that can be added to Typewriter to add more functionality
 You are most likely going to need the [Basic Adapter](../adapters/BasicAdapter). It contains essential building blocks for using Typewriter.
 :::
 
-# Pre-made Adapters {#pre-made-adapters}
+## Pre-made Adapters {#pre-made-adapters}
 
 | Adapter Name                                                      | Description                                                                              | Download Link                                                |
 | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
@@ -19,6 +19,6 @@ You are most likely going to need the [Basic Adapter](../adapters/BasicAdapter).
 | [Superior Skyblock Adapter](../adapters/SuperiorSkyblockAdapter/) | Allows you to use Superior Skyblock islands in your Typewriter scripts.                  | [Download](https://github.com/gabber235/TypeWriter/releases) |
 | [CombatLogX Adapter](../adapters/CombatLogXAdapter/)              | Check if a player is in combat or not with the CombatLogX plugin.                        | [Download](https://github.com/gabber235/TypeWriter/releases) |
 
-# Creating an Adapter
+## Creating an Adapter
 
 Want to contribute to Typewriter? You can create your own adapter for any plugin you want, or just Minecraft itself. To start contributing, see the [development guide](../develop/01-index.mdx).
