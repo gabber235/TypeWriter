@@ -149,7 +149,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
         val lines = mutableListOf<Component>()
 
-        for (i in 0..min(3, around.size)) {
+        for (i in 0 until min(4, around.size)) {
             val option = around[i]
             val isSelected = selected == option
 

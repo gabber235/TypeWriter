@@ -164,6 +164,5 @@ fun String.limitLineLength(maxLength: Int = 40): String {
     }
 
     lines.add(currentLine.trimEnd())
-    println("--------------------------------------")
     return lines.joinToString("\n")
 }
