@@ -27,8 +27,6 @@ repositories {
     mavenCentral()
     // PacketEvents
     maven("https://repo.codemc.io/repository/maven-releases/")
-    // Anvil GUI (Sub dependency of LirandAPI)
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
     // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     // Floodgate
@@ -52,8 +50,9 @@ dependencies {
     }
     compileOnlyApi("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
-    api("com.github.dyam0:LirandAPI:96cc59d4fb")
     api("com.github.Tofaa2.EntityLib:spigot:2.1.0-SNAPSHOT")
+    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
+    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.ktor:ktor-server-core-jvm:2.3.6")
@@ -63,14 +62,12 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.0.2")
     implementation("com.github.patheloper.pathetic:pathetic-mapping:2.4.1")
 
-    compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
-    compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
     compileOnlyApi("net.kyori:adventure-api:4.15.0")
     compileOnlyApi("net.kyori:adventure-text-minimessage:4.15.0")
     compileOnlyApi("net.kyori:adventure-text-serializer-plain:4.15.0")
     compileOnlyApi("net.kyori:adventure-text-serializer-legacy:4.15.0")
     compileOnlyApi("net.kyori:adventure-text-serializer-gson:4.15.0")
-    compileOnly("com.mojang:brigadier:1.0.18")
+    compileOnlyApi("com.mojang:brigadier:1.0.18")
     compileOnly("me.clip:placeholderapi:2.11.3")
     compileOnly("com.google.code.gson:gson:2.10.1")
     compileOnlyApi("com.github.retrooper.packetevents:spigot:2.2.1")
