@@ -24,6 +24,12 @@ import org.bukkit.entity.Player
 
 @Entry("cow_definition", "A cow entity", Colors.ORANGE, "fa6-solid:cow")
 @Tags("cow_definition")
+/**
+ * The `CowDefinition` class is an entry that shows up as a cow in-game.
+ *
+ * ## How could this be used?
+ * This could be used to create a cow entity.
+ */
 class CowDefinition(
     override val id: String = "",
     override val name: String = "",
