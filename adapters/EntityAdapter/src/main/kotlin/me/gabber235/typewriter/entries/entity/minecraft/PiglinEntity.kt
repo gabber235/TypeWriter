@@ -20,7 +20,7 @@ import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("piglin_definition", "A piglin entity", Colors.ORANGE, "fa6-solid:piglin")
+@Entry("piglin_definition", "A piglin entity", Colors.ORANGE, "fluent-emoji-high-contrast:pig-nose")
 @Tags("piglin_definition")
 /**
  * The `PiglinDefinition` class is an entry that shows up as a piglin in-game.
@@ -39,7 +39,7 @@ class PiglinDefinition(
     override fun create(player: Player): FakeEntity = PiglinEntity(player)
 }
 
-@Entry("piglin_instance", "An instance of a piglin entity", Colors.YELLOW, "fa6-solid:piglin")
+@Entry("piglin_instance", "An instance of a piglin entity", Colors.YELLOW, "fluent-emoji-high-contrast:pig-nose")
 class PiglinInstance(
     override val id: String = "",
     override val name: String = "",

@@ -50,7 +50,7 @@ class IronGolemInstance(
     override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
 ) : SimpleEntityInstance
 
-private class PiglinEntity(player: Player) : WrapperFakeEntity(
+private class IronGolemEntity(player: Player) : WrapperFakeEntity(
     EntityTypes.IRON_GOLEM,
     player,
 ) {

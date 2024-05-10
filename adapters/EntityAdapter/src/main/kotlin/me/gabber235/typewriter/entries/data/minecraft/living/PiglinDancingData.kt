@@ -16,7 +16,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("piglin_dancing_data", "Whether the piglin is dancing", Colors.RED, "mdi:dance-pole")
+@Entry("piglin_dancing_data", "Whether the piglin is dancing", Colors.RED, "streamline:travel-wayfinder-man-arm-raises-2-man-raise-arm-scaning-detect-posture-security")
 @Tags("piglin_data", "piglin_dancing_data")
 
 class PiglinDancingData(

@@ -41,7 +41,7 @@ class HoglinDefinition(
     override fun create(player: Player): FakeEntity = HoglinEntity(player)
 }
 
-@Entry("hoglin_instance", "An instance of a hoglin entity", Colors.YELLOW, "fa6-solid:cow")
+@Entry("hoglin_instance", "An instance of a hoglin entity", Colors.YELLOW, "icon-park-outline:pig")
 class HoglinInstance(
     override val id: String = "",
     override val name: String = "",
