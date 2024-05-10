@@ -1,0 +1,20 @@
+run = "kotlinc -d main.jar main.kt && kotlin -classpath main.jar MainKt"
+
+entrypoint = "main.kt"
+
+hidden=["*.jar"]
+
+[nix]
+channel = "stable-23_11"
+
+[packager]
+language = "java"
+
+[packager.features]
+packageSearch = true
+
+[languages.kotlin]
+pattern = "**/*.{kt,kts,java}"
+
+[languages.kotlin.languageServer]
+start = ["kotlin-language-server"]
