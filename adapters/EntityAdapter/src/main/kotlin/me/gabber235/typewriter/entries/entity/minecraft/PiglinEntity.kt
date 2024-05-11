@@ -19,7 +19,6 @@ import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.extensions.packetevents.metas
 import me.gabber235.typewriter.utils.Sound
 import me.tofaa.entitylib.meta.mobs.monster.piglin.BasePiglinMeta
-import me.tofaa.entitylib.meta.mobs.monster.piglin.PiglinMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.Location
 import org.bukkit.entity.Player
