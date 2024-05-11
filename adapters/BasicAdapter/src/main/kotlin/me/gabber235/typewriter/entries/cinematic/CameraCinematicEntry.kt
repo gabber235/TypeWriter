@@ -5,6 +5,8 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPosition
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerPositionAndLook
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import lirand.api.extensions.inventory.meta
 import me.gabber235.typewriter.adapters.Colors
@@ -184,6 +186,14 @@ class CameraCinematicAction(
             !PacketType.Play.Client.USE_ITEM
             !PacketType.Play.Client.INTERACT_ENTITY
             !PacketType.Play.Client.PLAYER_DIGGING
+            PacketType.Play.Server.WINDOW_ITEMS { event ->
+                val packet = WrapperPlayServerWindowItems(event)
+                packet.items = packet.items.map { com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY }
+            }
+            PacketType.Play.Server.SET_SLOT { event ->
+                val packet = WrapperPlayServerSetSlot(event)
+                packet.item = com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
+            }
             PacketType.Play.Server.PLAYER_POSITION_AND_LOOK { event ->
                 val packet = WrapperPlayServerPlayerPositionAndLook(event)
                 packet.y += 500
@@ -201,6 +211,7 @@ class CameraCinematicAction(
 
     private suspend fun Player.teardown() {
         interceptor?.cancel()
+        interceptor = null
         originalState?.let {
             SYNC.switchContext {
                 restore(it)
