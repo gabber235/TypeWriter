@@ -164,6 +164,7 @@ class Interaction(val player: Player) : KoinComponent {
                 }
                 .firstOrNull { it.criteria.matches(event.player) }
 
+
         if (nextDialogue != null) {
             // If there is no sequence yet, start a new one
             if (dialogue == null) {
