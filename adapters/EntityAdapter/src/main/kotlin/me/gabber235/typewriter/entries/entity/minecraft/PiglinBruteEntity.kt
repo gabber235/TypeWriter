@@ -33,7 +33,7 @@ class PiglinBruteDefinition(
     override val name: String = "",
     override val displayName: String = "",
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "trembling_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = PiglinBruteEntity(player)
@@ -45,7 +45,7 @@ class PiglinBruteInstance(
     override val name: String = "",
     override val definition: Ref<PiglinBruteDefinition> = emptyRef(),
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "trembling_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
 ) : SimpleEntityInstance
@@ -55,9 +55,12 @@ private class PiglinBruteEntity(player: Player) : WrapperFakeEntity(
     player,
 ) {
     init {
-        trembleDeactivate(entity)
+        consumeProperties(TremblingProperty(false))
     }
     override fun applyProperty(property: EntityProperty) {
+        when (property) {
+            is TremblingProperty -> applyTremblingData(entity, property)
+        }
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
     }

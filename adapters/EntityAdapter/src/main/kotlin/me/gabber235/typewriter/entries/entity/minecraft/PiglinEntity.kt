@@ -7,6 +7,8 @@ import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entries.data.minecraft.living.*
+import me.gabber235.typewriter.entries.data.minecraft.living.piglin.PiglinDancingProperty
+import me.gabber235.typewriter.entries.data.minecraft.living.piglin.applyPiglinDancingData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
@@ -16,10 +18,7 @@ import me.gabber235.typewriter.entry.entity.WrapperFakeEntity
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
-import me.gabber235.typewriter.extensions.packetevents.metas
 import me.gabber235.typewriter.utils.Sound
-import me.tofaa.entitylib.meta.mobs.monster.piglin.BasePiglinMeta
-import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -58,12 +57,13 @@ private class PiglinEntity(player: Player) : WrapperFakeEntity(
     player,
 ) {
     init {
-        trembleDeactivate(entity)
+        consumeProperties(TremblingProperty(false))
     }
     override fun applyProperty(property: EntityProperty) {
         when (property) {
             is PiglinDancingProperty -> applyPiglinDancingData(entity, property)
             is AgableProperty -> applyAgeableData(entity, property)
+            is TremblingProperty -> applyTremblingData(entity, property)
             else -> {}
         }
         if (applyGenericEntityData(entity, property)) return
@@ -71,9 +71,3 @@ private class PiglinEntity(player: Player) : WrapperFakeEntity(
     }
 }
 
-fun trembleDeactivate(entity: WrapperEntity) {
-    entity.metas {
-        meta<BasePiglinMeta> { isImmuneToZombification = true }
-        error("Could not apply to ${entity.entityType} entity.")
-    }
-}

@@ -22,7 +22,7 @@ import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("warden_definition", "A warden entity", Colors.ORANGE, "fluent-emoji-high-contrast:pig-nose")
+@Entry("warden_definition", "A warden entity", Colors.ORANGE, "streamline:smiley-surprised-solid")
 @Tags("warden_definition")
 /**
  * The `WardenDefinition` class is an entry that shows up as a warden in-game.
@@ -41,7 +41,7 @@ class WardenDefinition(
     override fun create(player: Player): FakeEntity = WardenEntity(player)
 }
 
-@Entry("warden_instance", "An instance of a warden entity", Colors.YELLOW, "fluent-emoji-high-contrast:pig-nose")
+@Entry("warden_instance", "An instance of a warden entity", Colors.YELLOW, "streamline:smiley-surprised-solid")
 class WardenInstance(
     override val id: String = "",
     override val name: String = "",
