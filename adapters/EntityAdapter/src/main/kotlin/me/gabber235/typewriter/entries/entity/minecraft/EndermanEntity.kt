@@ -6,7 +6,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
-import me.gabber235.typewriter.entries.data.minecraft.living.applyLivingEntityData
+import me.gabber235.typewriter.entries.data.minecraft.living.*
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
@@ -33,7 +33,7 @@ class EndermanDefinition(
     override val name: String = "",
     override val displayName: String = "",
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "enderman_screaming_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = EndermanEntity(player)
@@ -45,7 +45,7 @@ class EndermanInstance(
     override val name: String = "",
     override val definition: Ref<EndermanDefinition> = emptyRef(),
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "enderman_screaming_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
 ) : SimpleEntityInstance
@@ -55,6 +55,10 @@ private class EndermanEntity(player: Player) : WrapperFakeEntity(
     player,
 ) {
     override fun applyProperty(property: EntityProperty) {
+        when (property) {
+            is EndermanScreamingProperty -> applyEndermanScreamingData(entity, property)
+            else -> {}
+        }
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
     }
