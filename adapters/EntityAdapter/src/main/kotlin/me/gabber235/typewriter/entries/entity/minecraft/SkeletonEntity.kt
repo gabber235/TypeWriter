@@ -20,7 +20,7 @@ import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("skeleton_definition", "A skeleton entity", Colors.ORANGE, "icon-park-outline:pig")
+@Entry("skeleton_definition", "A skeleton entity", Colors.ORANGE, "healthicons:skeleton")
 @Tags("skeleton_definition")
 /**
  * The `SkeletonDefinition` class is an entry that shows up as a skeleton in-game.
@@ -39,7 +39,7 @@ class SkeletonDefinition(
     override fun create(player: Player): FakeEntity = SkeletonEntity(player)
 }
 
-@Entry("skeleton_instance", "An instance of a skeleton entity", Colors.YELLOW, "icon-park-outline:pig")
+@Entry("skeleton_instance", "An instance of a skeleton entity", Colors.YELLOW, "healthicons:skeleton")
 class SkeletonInstance(
     override val id: String = "",
     override val name: String = "",
