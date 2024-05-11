@@ -22,7 +22,7 @@ import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("hoglin_definition", "A hoglin entity", Colors.ORANGE, "fa6-solid:cow")
+@Entry("hoglin_definition", "A hoglin entity", Colors.ORANGE, "icon-park-outline:pig")
 @Tags("hoglin_definition")
 /**
  * The `HoglinDefinition` class is an entry that shows up as a hoglin in-game.
