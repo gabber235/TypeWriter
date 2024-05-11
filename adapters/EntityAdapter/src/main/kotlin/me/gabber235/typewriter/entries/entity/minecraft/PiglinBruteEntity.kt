@@ -54,6 +54,9 @@ private class PiglinBruteEntity(player: Player) : WrapperFakeEntity(
     EntityTypes.PIGLIN_BRUTE,
     player,
 ) {
+    init {
+        trembleDeactivate(entity)
+    }
     override fun applyProperty(property: EntityProperty) {
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
