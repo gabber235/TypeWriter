@@ -1,19 +1,17 @@
 package me.gabber235.typewriter
 
-import com.mojang.brigadier.StringReader
-import com.mojang.brigadier.arguments.IntegerArgumentType.integer
-import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import lirand.api.dsl.command.builders.LiteralDSLBuilder
-import lirand.api.dsl.command.builders.command
-import lirand.api.dsl.command.types.PlayerType
-import lirand.api.dsl.command.types.WordType
-import lirand.api.dsl.command.types.exceptions.ChatCommandExceptionType
-import lirand.api.dsl.command.types.extensions.readUnquoted
+import dev.jorel.commandapi.CommandTree
+import dev.jorel.commandapi.StringTooltip
+import dev.jorel.commandapi.arguments.Argument
+import dev.jorel.commandapi.arguments.ArgumentSuggestions
+import dev.jorel.commandapi.arguments.CustomArgument
+import dev.jorel.commandapi.arguments.CustomArgument.CustomArgumentException
+import dev.jorel.commandapi.arguments.CustomArgument.MessageBuilder
+import dev.jorel.commandapi.arguments.StringArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import dev.jorel.commandapi.kotlindsl.*
 import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.entry.PageType.CINEMATIC
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.entry.quest.trackQuest
@@ -29,16 +27,11 @@ import me.gabber235.typewriter.utils.sendMini
 import net.kyori.adventure.inventory.Book
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koin.java.KoinJavaComponent.get
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.CompletableFuture
-import kotlin.reflect.KClass
 
-fun Plugin.typeWriterCommand() = command("typewriter") {
-    alias("tw")
+fun typeWriterCommand() = commandTree("typewriter") {
+    withAliases("tw")
 
     reloadCommands()
 
@@ -63,145 +56,123 @@ fun Plugin.typeWriterCommand() = command("typewriter") {
     manifestCommands()
 }
 
-private fun LiteralDSLBuilder.reloadCommands() {
-    literal("reload") {
-        requiresPermissions("typewriter.reload")
-        executes {
-            source.msg("Reloading configuration...")
+private fun CommandTree.reloadCommands() {
+    literalArgument("reload") {
+        withPermission("typewriter.reload")
+        anyExecutor { sender, _ ->
+            sender.msg("Reloading configuration...")
             TypewriterReloadEvent().callEvent()
-            source.msg("Configuration reloaded!")
+            sender.msg("Configuration reloaded!")
         }
     }
 }
 
-private fun LiteralDSLBuilder.factsCommands() {
-    literal("facts") {
-        requiresPermissions("typewriter.facts")
-        fun Player.listCachedFacts(source: CommandSender) {
-            val factEntries = Query.find<ReadableFactEntry>().toList()
-            if (factEntries.none()) {
-                source.msg("There are no facts available.")
-                return
-            }
+private fun CommandTree.factsCommands() {
+    literalArgument("facts") {
+        withPermission("typewriter.facts")
 
-            source.sendMini("\n\n")
-            val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
-            source.msg("$name has the following facts:\n")
-
-            for (entry in factEntries) {
-                val data = entry.readForPlayersGroup(this)
-                source.sendMini(
-                    "<hover:show_text:'${
-                        entry.comment.replace(
-                            Regex(" +"),
-                            " "
-                        ).replace("'", "\\'")
-                    }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts $name set ${entry.name} ${data.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${data.value} <gray><i>(${
-                        formatter.format(
-                            data.lastUpdate
-                        )
-                    })</i></gray>"
-                )
-            }
-        }
-
-
-        argument("player", PlayerType) { player ->
-            executes {
-                player.get().listCachedFacts(source)
-            }
-
-            literal("set") {
-                argument("fact", entryType<WritableFactEntry>()) { fact ->
-                    argument("value", integer(0)) { value ->
-                        executes {
-                            fact.get().write(player.get(), value.get())
-                            source.msg("Set <blue>${fact.get().formattedName}</blue> to ${value.get()} for ${player.get().name}")
+        literalArgument("set") {
+            withPermission("typewriter.facts.set")
+            argument(entryArgument<WritableFactEntry>("fact")) {
+                integerArgument("value") {
+                    optionalTarget {
+                        anyExecutor { sender, args ->
+                            val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                            val fact = args["fact"] as WritableFactEntry
+                            val value = args["value"] as Int
+                            fact.write(target, value)
+                            sender.msg("Fact <blue>${fact.formattedName}</blue> set to $value for ${target.name}.")
                         }
                     }
                 }
             }
+        }
 
-            literal("reset") {
-                executes {
-                    val p = player.get()
+        literalArgument("reset") {
+            withPermission("typewriter.facts.reset")
+            optionalTarget {
+                anyExecutor { sender, args ->
+                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
                     val entries = Query.find<WritableFactEntry>().toList()
                     if (entries.none()) {
-                        source.msg("There are no facts available.")
-                        return@executes
+                        sender.msg("There are no facts available.")
+                        return@anyExecutor
                     }
 
                     for (entry in entries) {
-                        entry.write(p, 0)
+                        entry.write(target, 0)
                     }
-                    source.msg("All facts for ${p.name} have been reset.")
+                    sender.msg("All facts for ${target.name} have been reset.")
                 }
             }
         }
 
-        executesPlayer {
-            source.listCachedFacts(source)
-        }
-        literal("set") {
-            argument("fact", entryType<WritableFactEntry>()) { fact ->
-                argument("value", integer(0)) { value ->
-                    executesPlayer {
-                        fact.get().write(source, value.get())
-                        source.msg("Fact <blue>${fact.get().formattedName}</blue> set to ${value.get()}.")
-                    }
-                }
-            }
-        }
+        optionalTarget {
+            anyExecutor { sender, args ->
+                val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
 
-        literal("reset") {
-            executesPlayer {
-                val entries = Query.find<WritableFactEntry>().toList()
-                if (entries.none()) {
-                    source.msg("There are no facts available.")
-                    return@executesPlayer
+                val factEntries = Query.find<ReadableFactEntry>().toList()
+                if (factEntries.none()) {
+                    sender.msg("There are no facts available.")
+                    return@anyExecutor
                 }
 
-                for (entry in entries) {
-                    entry.write(source, 0)
+                sender.sendMini("\n\n")
+                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
+                sender.msg("$name has the following facts:\n")
+
+                for (entry in factEntries) {
+                    val data = entry.readForPlayersGroup(target)
+                    sender.sendMini(
+                        "<hover:show_text:'${
+                            entry.comment.replace(
+                                Regex(" +"),
+                                " "
+                            ).replace("'", "\\'")
+                        }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts $name set ${entry.name} ${data.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${data.value} <gray><i>(${
+                            formatter.format(
+                                data.lastUpdate
+                            )
+                        })</i></gray>"
+                    )
                 }
-                source.msg("All your facts have been reset.")
             }
         }
     }
 }
 
-private fun LiteralDSLBuilder.clearChatCommand() {
-    literal("clearChat") {
-        requiresPermissions("typewriter.clearChat")
-        executesPlayer {
-            source.chatHistory.let {
+private fun CommandTree.clearChatCommand() {
+    literalArgument("clearChat") {
+        withPermission("typewriter.clearChat")
+        playerExecutor { player, _ ->
+            player.chatHistory.let {
                 it.clear()
-                it.resendMessages(source)
+                it.resendMessages(player)
             }
         }
     }
 }
 
-private fun LiteralDSLBuilder.connectCommand() {
+private fun CommandTree.connectCommand() {
     val communicationHandler: CommunicationHandler = get(CommunicationHandler::class.java)
-    literal("connect") {
-        requiresPermissions("typewriter.connect")
-        executesConsole {
+    literalArgument("connect") {
+        withPermission("typewriter.connect")
+        consoleExecutor { console, _ ->
             if (communicationHandler.server == null) {
-                source.msg("The server is not hosting the websocket. Try and enable it in the config.")
-                return@executesConsole
+                console.msg("The server is not hosting the websocket. Try and enable it in the config.")
+                return@consoleExecutor
             }
 
             val url = communicationHandler.generateUrl(playerId = null)
-            source.msg("Connect to<blue> $url </blue>to start the connection.")
+            console.msg("Connect to<blue> $url </blue>to start the connection.")
         }
-        executesPlayer {
+        playerExecutor { player, _ ->
             if (communicationHandler.server == null) {
-                source.msg("The server is not hosting the websocket. Try and enable it in the config.")
-                return@executesPlayer
+                player.msg("The server is not hosting the websocket. Try and enable it in the config.")
+                return@playerExecutor
             }
 
-            val url = communicationHandler.generateUrl(source.uniqueId)
+            val url = communicationHandler.generateUrl(player.uniqueId)
 
             val bookTitle = "<blue>Connect to the server</blue>".asMini()
             val bookAuthor = "<blue>Typewriter</blue>".asMini()
@@ -217,243 +188,191 @@ private fun LiteralDSLBuilder.connectCommand() {
 			""".trimMargin().asMini()
 
             val book = Book.book(bookTitle, bookAuthor, bookPage)
-            source.openBook(book)
+            player.openBook(book)
         }
     }
 }
 
-private fun LiteralDSLBuilder.cinematicCommand() = literal("cinematic") {
-    literal("stop") {
-        requiresPermissions("typewriter.cinematic.stop")
-        executesPlayer {
-            CINEMATIC_END triggerFor source
-        }
+private fun CommandTree.cinematicCommand() = literalArgument("cinematic") {
 
-        argument("player", PlayerType) { player ->
-            executes {
-                CINEMATIC_END triggerFor player.get()
-            }
-        }
-    }
+    literalArgument("start") {
+        withPermission("typewriter.cinematic.start")
 
-    literal("start") {
-        requiresPermissions("typewriter.cinematic.start")
-
-        argument("cinematic", CinematicType) { cinematicId ->
-            executesPlayer {
-                CinematicStartTrigger(cinematicId.get(), emptyList()) triggerFor source
-            }
-
-            argument("player", PlayerType) { player ->
-                executes {
-                    CinematicStartTrigger(cinematicId.get(), emptyList()) triggerFor player.get()
-                }
-            }
-        }
-    }
-}
-
-private fun LiteralDSLBuilder.triggerCommand() = literal("trigger") {
-    requiresPermissions("typewriter.trigger")
-    argument("entry", entryType<TriggerableEntry>()) { entry ->
-        executesPlayer {
-            EntryTrigger(entry.get()) triggerFor source
-        }
-
-        argument("player", PlayerType) { player ->
-            executes {
-                EntryTrigger(entry.get()) triggerFor player.get()
-            }
-        }
-    }
-}
-
-private fun LiteralDSLBuilder.fireCommand() = literal("fire") {
-    requiresPermissions("typewriter.fire")
-    argument("entry", entryType<FireTriggerEventEntry>()) { entry ->
-        executesPlayer {
-            entry.get().triggers triggerEntriesFor source
-        }
-
-        argument("player", PlayerType) { player ->
-            executes {
-                entry.get().triggers triggerEntriesFor player.get()
-            }
-        }
-    }
-}
-
-private fun LiteralDSLBuilder.questCommands() = literal("quest") {
-    literal("track") {
-        requiresPermissions("typewriter.quest.track")
-        argument("quest", entryType<QuestEntry>()) { quest ->
-            executesPlayer {
-                source.trackQuest(quest.get().ref())
-                source.msg("You are now tracking <blue>${quest.get().display(source)}</blue>.")
-            }
-
-            argument("player", PlayerType) { player ->
-                requiresPermissions("typewriter.quest.track.other")
-                executes {
-                    player.get().trackQuest(quest.get().ref())
-                    source.msg(
-                        "You are now tracking <blue>${
-                            quest.get().display(player.get())
-                        }</blue> for ${player.get().name}."
-                    )
+        argument(pageNames("cinematic", PageType.CINEMATIC)) {
+            optionalTarget {
+                anyExecutor { sender, args ->
+                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                    val pageName = args["page"] as String
+                    CinematicStartTrigger(pageName, emptyList()) triggerFor target
                 }
             }
         }
     }
 
-    literal("untrack") {
-        requiresPermissions("typewriter.quest.untrack")
-        executesPlayer {
-            source.unTrackQuest()
-            source.msg("You are no longer tracking any quests.")
-        }
-
-        argument("player", PlayerType) { player ->
-            requiresPermissions("typewriter.quest.untrack.other")
-            executes {
-                player.get().unTrackQuest()
-                source.msg("You are no longer tracking any quests for ${player.get().name}.")
+    literalArgument("stop") {
+        withPermission("typewriter.cinematic.stop")
+        optionalTarget {
+            anyExecutor { sender, args ->
+                val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                CINEMATIC_END triggerFor target
             }
         }
     }
 }
 
-private fun LiteralDSLBuilder.assetsCommands() {
-    literal("assets") {
-        requiresPermissions("typewriter.assets")
-        literal("clean") {
-            requiresPermissions("typewriter.assets.clean")
-            executes {
-                source.msg("Cleaning unused assets...")
+private fun CommandTree.triggerCommand() = literalArgument("trigger") {
+    withPermission("typewriter.trigger")
+
+    argument(entryArgument<TriggerableEntry>("entry")) {
+        optionalTarget {
+            anyExecutor { sender, args ->
+                val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                val entry = args["entry"] as TriggerableEntry
+                EntryTrigger(entry) triggerFor target
+            }
+        }
+    }
+}
+
+private fun CommandTree.fireCommand() = literalArgument("fire") {
+    withPermission("typewriter.fire")
+
+    argument(entryArgument<FireTriggerEventEntry>("entry")) {
+        optionalTarget {
+            anyExecutor { sender, args ->
+                val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                val entry = args["entry"] as FireTriggerEventEntry
+                entry.triggers triggerEntriesFor target
+            }
+        }
+    }
+}
+
+private fun CommandTree.questCommands() = literalArgument("quest") {
+    literalArgument("track") {
+        withPermission("typewriter.quest.track")
+
+        argument(entryArgument<QuestEntry>("quest")) {
+            optionalTarget {
+                anyExecutor { sender, args ->
+                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                    val quest = args["quest"] as QuestEntry
+                    target.trackQuest(quest.ref())
+                    sender.msg("You are now tracking <blue>${quest.display(target)}</blue>.")
+                }
+            }
+        }
+    }
+
+
+    literalArgument("untrack") {
+        withPermission("typewriter.quest.untrack")
+
+        optionalTarget {
+            anyExecutor { sender, args ->
+                val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                target.unTrackQuest()
+                sender.msg("You are no longer tracking any quests.")
+            }
+        }
+    }
+}
+
+private fun CommandTree.assetsCommands() {
+    literalArgument("assets") {
+        withPermission("typewriter.assets")
+        literalArgument("clean") {
+            withPermission("typewriter.assets.clean")
+            anyExecutor { sender, _ ->
+                sender.msg("Cleaning unused assets...")
                 ThreadType.DISPATCHERS_ASYNC.launch {
                     val deleted = get<AssetManager>(AssetManager::class.java).removeUnusedAssets()
-                    source.msg("Cleaned <blue>${deleted}</blue> assets.")
+                    sender.msg("Cleaned <blue>${deleted}</blue> assets.")
                 }
             }
         }
     }
 }
 
-private fun LiteralDSLBuilder.roadNetworkCommands() =
-    literal("roadNetwork") {
-        requiresPermissions("typewriter.roadNetwork")
-        literal("edit") {
-            requiresPermissions("typewriter.roadNetwork.edit")
-            argument("network", entryType<RoadNetworkEntry>()) { network ->
-                fun Player.editRoadNetwork(entry: RoadNetworkEntry) {
-                    val data = mapOf(
-                        "entryId" to entry.id
-                    )
-                    val context = ContentContext(data)
-                    ContentModeTrigger(
-                        context,
-                        RoadNetworkContentMode(context, this)
-                    ) triggerFor this
-                }
-                executesPlayer {
-                    source.editRoadNetwork(network.get())
-                }
+private fun CommandTree.roadNetworkCommands() =
+    literalArgument("roadNetwork") {
+        withPermission("typewriter.roadNetwork")
+        literalArgument("edit") {
+            withPermission("typewriter.roadNetwork.edit")
 
-                argument("player", PlayerType) { player ->
-                    requiresPermissions("typewriter.roadNetwork.edit.other")
-                    executes {
-                        player.get().editRoadNetwork(network.get())
+            argument(entryArgument<RoadNetworkEntry>("network")) {
+                optionalTarget {
+                    anyExecutor { sender, args ->
+                        val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                        val entry = args["network"] as RoadNetworkEntry
+                        val data = mapOf(
+                            "entryId" to entry.id
+                        )
+                        val context = ContentContext(data)
+                        ContentModeTrigger(
+                            context,
+                            RoadNetworkContentMode(context, target)
+                        ) triggerFor target
                     }
                 }
             }
         }
     }
 
-private fun LiteralDSLBuilder.manifestCommands() = literal("manifest") {
-    requiresPermissions("typewriter.manifest")
-    literal("inspect") {
-        requiresPermissions("typewriter.manifest.inspect")
+private fun CommandTree.manifestCommands() = literalArgument("manifest") {
+    withPermission("typewriter.manifest")
+    literalArgument("inspect") {
+        withPermission("typewriter.manifest.inspect")
 
-        fun Player.inspectManifest() {
-            val inEntries = Query.findWhere<AudienceEntry> { inAudience(it) }.sortedBy { it.name }.toList()
-            if (inEntries.none()) {
-                msg("You are not in any audience entries.")
-                return
-            }
+        optionalTarget {
+            anyExecutor { sender, args ->
+                val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                val inEntries = Query.findWhere<AudienceEntry> { target.inAudience(it) }.sortedBy { it.name }.toList()
+                if (inEntries.none()) {
+                    target.msg("You are not in any audience entries.")
+                    return@anyExecutor
+                }
 
-            sendMini("\n\n")
-            msg("You are in the following audience entries:")
-            for (entry in inEntries) {
-                sendMini(
-                    "<hover:show_text:'<gray>${entry.id}'><click:copy_to_clipboard:${entry.id}><gray> - </gray><blue>${entry.formattedName}</blue></click></hover>"
-                )
-            }
-        }
-
-        executesPlayer {
-            source.inspectManifest()
-        }
-
-        argument("player", PlayerType) { player ->
-            requiresPermissions("typewriter.manifest.inspect.other")
-            executes {
-                player.get().inspectManifest()
+                target.sendMini("\n\n")
+                target.msg("You are in the following audience entries:")
+                for (entry in inEntries) {
+                    target.sendMini(
+                        "<hover:show_text:'<gray>${entry.id}'><click:copy_to_clipboard:${entry.id}><gray> - </gray><blue>${entry.formattedName}</blue></click></hover>"
+                    )
+                }
             }
         }
     }
 }
 
-inline fun <reified E : Entry> entryType() = EntryType(E::class)
-
-open class EntryType<E : Entry>(
-    val type: KClass<E>,
-    open val notFoundExceptionType: ChatCommandExceptionType = PlayerType.notFoundExceptionType
-) : WordType<E>, KoinComponent {
-    override fun parse(reader: StringReader): E {
-        val arg = reader.readUnquoted()
-        return Query.findById(type, arg) ?: Query.findByName(type, arg) ?: throw notFoundExceptionType.create(arg)
-    }
-
-
-    override fun <S> listSuggestions(
-        context: CommandContext<S>,
-        builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions> {
-
-        Query.findWhere(type) { it.name.startsWith(builder.remaining, true) }.forEach {
-            builder.suggest(it.name)
-        }
-
-        return builder.buildFuture()
-    }
-
-    override fun getExamples(): Collection<String> = emptyList()
+fun CommandArguments.targetOrSelfPlayer(commandSender: CommandSender): Player? {
+    val target = this["target"] as? Player
+    if (target != null) return target
+    val self = commandSender as? Player
+    if (self != null) return self
+    commandSender.msg("<red>You must specify a target to execute this command on.")
+    return null
 }
 
-open class CinematicType(
-    open val notFoundExceptionType: ChatCommandExceptionType = PlayerType.notFoundExceptionType
-) : WordType<String>, KoinComponent {
-    private val entryDatabase: EntryDatabase by inject()
+fun Argument<*>.optionalTarget(block: Argument<*>.() -> Unit) = playerArgument("target", optional = true, block)
 
-    companion object Instance : CinematicType()
+inline fun <reified E : Entry> entryArgument(name: String): Argument<E> = CustomArgument(StringArgument(name)) { info ->
+    Query.findById(E::class, info.input)
+        ?: Query.findByName(E::class, info.input)
+        ?: throw CustomArgumentException.fromMessageBuilder(MessageBuilder("Could not find entry: ").appendArgInput())
+}.replaceSuggestions(ArgumentSuggestions.stringsWithTooltips { _ ->
+    Query.find<E>().map {
+        StringTooltip.ofString(it.name, it.id)
+    }.toList().toTypedArray()
+})
 
-    override fun parse(reader: StringReader): String {
-        val name = reader.readString()
-        if (name !in entryDatabase.getPageNames(CINEMATIC)) throw notFoundExceptionType.create(name)
-        return name
+fun pageNames(name: String, type: PageType): Argument<String> = CustomArgument(StringArgument(name)) { info ->
+    if (info.input !in get<EntryDatabase>(EntryDatabase::class.java).getPageNames(type)) {
+        throw CustomArgumentException.fromMessageBuilder(MessageBuilder("Page does not exist."))
     }
-
-    override fun <S> listSuggestions(
-        context: CommandContext<S>,
-        builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions> {
-
-        entryDatabase.getPageNames(CINEMATIC).filter { it.startsWith(builder.remaining, true) }.forEach {
-            builder.suggest(it)
-        }
-
-        return builder.buildFuture()
-    }
-
-    override fun getExamples(): Collection<String> = listOf("test.cinematic", "key.some_cinematic")
-}
+    info.input
+}.replaceSuggestions(ArgumentSuggestions.stringsWithTooltips { _ ->
+    get<EntryDatabase>(EntryDatabase::class.java).getPageNames(type).map {
+        StringTooltip.ofString(it, it)
+    }.toList().toTypedArray()
+})

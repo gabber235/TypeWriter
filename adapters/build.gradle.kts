@@ -38,6 +38,11 @@ subprojects {
 
     tasks.withType<ShadowJar> {
         exclude("kotlin/**")
+        exclude("META-INF/maven/**")
+        // Important: Use the relocated commandapi which is shadowed by the plugin
+        relocate("dev.jorel.commandapi", "com.github.gabber235.typewriter.extensions.commandapi") {
+            include("dev.jorel.commandapi.**")
+        }
     }
 
     val targetJavaVersion = 17

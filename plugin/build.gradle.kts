@@ -9,7 +9,7 @@ plugins {
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("java-library")
-   id("io.papermc.hangar-publish-plugin") version "0.1.2"
+    id("io.papermc.hangar-publish-plugin") version "0.1.2"
 }
 
 fun Project.findPropertyOr(property: String, default: String): String {
@@ -25,7 +25,7 @@ version = project.findPropertyOr("version", versionFile.readText().trim())
 
 repositories {
     mavenCentral()
-    // PacketEvents
+    // PacketEvents, CommandAPI
     maven("https://repo.codemc.io/repository/maven-releases/")
     // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -53,6 +53,8 @@ dependencies {
     api("com.github.Tofaa2.EntityLib:spigot:2.1.2-SNAPSHOT")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
+    api("dev.jorel:commandapi-bukkit-shade:9.4.1")
+    api("dev.jorel:commandapi-bukkit-kotlin:9.4.1")
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.ktor:ktor-server-core-jvm:2.3.6")
@@ -95,7 +97,6 @@ tasks.test {
     useJUnitPlatform()
 }
 
-
 tasks.processResources {
     filteringCharset = "UTF-8"
     filesMatching("plugin.yml") {
@@ -105,6 +106,9 @@ tasks.processResources {
 
 tasks.withType<ShadowJar> {
     relocate("org.bstats", "${project.group}.${project.name}.extensions.bstats")
+    relocate("dev.jorel.commandapi", "${project.group}.${project.name}.extensions.commandapi") {
+        include("dev.jorel.commandapi.**")
+    }
     minimize {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-reflect"))
@@ -171,6 +175,9 @@ publishing {
 
             from(components["kotlin"])
             artifact(tasks["sourcesJar"])
+            artifact(tasks["shadowJar"]) {
+                classifier = null
+            }
         }
     }
 }
@@ -206,8 +213,8 @@ hangarPublish {
                 url.set("https://modrinth.com/plugin/typewriter/version/${project.version}")
 
                 val versions: List<String> = (property("paperVersion") as String)
-                        .split(",")
-                        .map { it.trim() }
+                    .split(",")
+                    .map { it.trim() }
                 platformVersions.set(versions)
 
                 dependencies {

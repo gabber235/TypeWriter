@@ -1,6 +1,6 @@
 package me.gabber235.typewriter.entry.entries
 
-import lirand.api.dsl.command.builders.LiteralDSLBuilder
+import dev.jorel.commandapi.CommandTree
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.content.ContentContext
@@ -16,7 +16,7 @@ interface CustomCommandEntry : EventEntry {
     @Help("The command to register. Do not include the leading slash.")
     val command: String
 
-    fun LiteralDSLBuilder.builder()
+    fun CommandTree.builder()
 
     companion object
 }

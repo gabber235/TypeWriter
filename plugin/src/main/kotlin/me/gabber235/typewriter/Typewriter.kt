@@ -3,6 +3,8 @@ package me.gabber235.typewriter
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
+import dev.jorel.commandapi.CommandAPI
+import dev.jorel.commandapi.CommandAPIBukkitConfig
 import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.adapters.AdapterLoader
@@ -90,10 +92,13 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             logger(MinecraftLogger(logger))
         }
 
+        CommandAPI.onLoad(CommandAPIBukkitConfig(this).usePluginNamespace())
+
         get<AdapterLoader>().loadAdapters()
     }
 
     override suspend fun onEnableAsync() {
+        CommandAPI.onEnable()
         typeWriterCommand()
 
         if (!server.pluginManager.isPluginEnabled("packetevents")) {
@@ -142,6 +147,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
     val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
 
     override suspend fun onDisableAsync() {
+        CommandAPI.onDisable()
         PatheticMapper.shutdown()
         get<AdapterLoader>().shutdown()
         get<StagingManager>().shutdown()

@@ -1,7 +1,7 @@
 package me.gabber235.typewriter.utils
 
-import lirand.api.dsl.command.builders.LiteralDSLBuilder
-import lirand.api.dsl.command.implementation.dispatcher.Dispatcher
+import dev.jorel.commandapi.CommandAPI
+import dev.jorel.commandapi.CommandTree
 import me.gabber235.typewriter.entry.EntryDatabase
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry
 import me.gabber235.typewriter.logger
@@ -16,16 +16,15 @@ fun CustomCommandEntry.Companion.refreshAndRegisterAll(newEntries: List<CustomCo
     oldEntries.forEach { it.unregister() }
     newEntries.forEach { it.register() }
 
-    Dispatcher.of(plugin).update()
     return newEntries
 }
 
 fun CustomCommandEntry.register() {
-    Dispatcher.of(plugin).register(LiteralDSLBuilder(plugin, command).apply { builder() })
+    CommandTree(command).apply { builder() }.register(plugin)
 
     logger.info("Registered command $command for $name (${id})")
 }
 
 fun CustomCommandEntry.unregister() {
-    Dispatcher.of(plugin).unregister(command)
+    CommandAPI.unregister(command)
 }

@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entries.event
 
-import lirand.api.dsl.command.builders.LiteralDSLBuilder
+import dev.jorel.commandapi.CommandTree
+import dev.jorel.commandapi.kotlindsl.playerExecutor
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
@@ -22,9 +23,9 @@ class RunCommandEventEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     override val command: String = "",
 ) : CustomCommandEntry {
-    override fun LiteralDSLBuilder.builder() {
-        executesPlayer {
-            triggerAllFor(source)
+    override fun CommandTree.builder() {
+        playerExecutor { player, _ ->
+            triggerAllFor(player)
         }
     }
 }
