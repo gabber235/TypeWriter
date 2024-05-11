@@ -16,7 +16,11 @@ import me.gabber235.typewriter.entry.entity.WrapperFakeEntity
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
+import me.gabber235.typewriter.extensions.packetevents.metas
 import me.gabber235.typewriter.utils.Sound
+import me.tofaa.entitylib.meta.mobs.monster.piglin.BasePiglinMeta
+import me.tofaa.entitylib.meta.mobs.monster.piglin.PiglinMeta
+import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -54,6 +58,9 @@ private class PiglinEntity(player: Player) : WrapperFakeEntity(
     EntityTypes.PIGLIN,
     player,
 ) {
+    init {
+        trembleDeactivate(entity)
+    }
     override fun applyProperty(property: EntityProperty) {
         when (property) {
             is PiglinDancingProperty -> applyPiglinDancingData(entity, property)
@@ -62,5 +69,12 @@ private class PiglinEntity(player: Player) : WrapperFakeEntity(
         }
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
+    }
+}
+
+fun trembleDeactivate(entity: WrapperEntity) {
+    entity.metas {
+        meta<BasePiglinMeta> { isImmuneToZombification = true }
+        error("Could not apply to ${entity.entityType} entity.")
     }
 }
