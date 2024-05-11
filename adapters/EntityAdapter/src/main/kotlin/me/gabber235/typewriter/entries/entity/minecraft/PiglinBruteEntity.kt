@@ -6,7 +6,9 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
-import me.gabber235.typewriter.entries.data.minecraft.living.*
+import me.gabber235.typewriter.entries.data.minecraft.living.TremblingProperty
+import me.gabber235.typewriter.entries.data.minecraft.living.applyLivingEntityData
+import me.gabber235.typewriter.entries.data.minecraft.living.applyTremblingData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
@@ -57,6 +59,7 @@ private class PiglinBruteEntity(player: Player) : WrapperFakeEntity(
     init {
         consumeProperties(TremblingProperty(false))
     }
+
     override fun applyProperty(property: EntityProperty) {
         when (property) {
             is TremblingProperty -> applyTremblingData(entity, property)

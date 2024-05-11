@@ -14,28 +14,32 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("piglin_dancing_data", "Whether the piglin is dancing", Colors.RED, "streamline:travel-wayfinder-man-arm-raises-2-man-raise-arm-scaning-detect-posture-security")
-@Tags("piglin_data", "piglin_dancing_data")
-
-class PiglinDancingData(
+@Entry(
+    "dancing_data",
+    "Whether an entity is dancing",
+    Colors.RED,
+    "streamline:travel-wayfinder-man-arm-raises-2-man-raise-arm-scaning-detect-posture-security"
+)
+@Tags("data", "dancing_data")
+class DancingData(
     override val id: String = "",
     override val name: String = "",
     @Help("Whether the piglin is dancing.")
     val dancing: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : EntityData<PiglinDancingProperty> {
-    override fun type(): KClass<PiglinDancingProperty> = PiglinDancingProperty::class
+) : EntityData<DancingProperty> {
+    override fun type(): KClass<DancingProperty> = DancingProperty::class
 
-    override fun build(player: Player): PiglinDancingProperty = PiglinDancingProperty(dancing)
+    override fun build(player: Player): DancingProperty = DancingProperty(dancing)
 }
 
-data class PiglinDancingProperty(val dancing: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<PiglinDancingProperty>(PiglinDancingProperty::class)
+data class DancingProperty(val dancing: Boolean) : EntityProperty {
+    companion object : SinglePropertyCollectorSupplier<DancingProperty>(DancingProperty::class)
 }
 
-fun applyPiglinDancingData(entity: WrapperEntity, property: PiglinDancingProperty) {
+fun applyDancingData(entity: WrapperEntity, property: DancingProperty) {
     entity.metas {
         meta<PiglinMeta> { isDancing = property.dancing }
-        error("Could not apply PiglinDancingData to ${entity.entityType} entity.")
+        error("Could not apply DancingData to ${entity.entityType} entity.")
     }
 }

@@ -7,8 +7,8 @@ import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entries.data.minecraft.living.*
-import me.gabber235.typewriter.entries.data.minecraft.living.piglin.PiglinDancingProperty
-import me.gabber235.typewriter.entries.data.minecraft.living.piglin.applyPiglinDancingData
+import me.gabber235.typewriter.entries.data.minecraft.living.piglin.DancingProperty
+import me.gabber235.typewriter.entries.data.minecraft.living.piglin.applyDancingData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
@@ -35,7 +35,14 @@ class PiglinDefinition(
     override val name: String = "",
     override val displayName: String = "",
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "piglin_data", "piglin_dancing_data")
+    @OnlyTags(
+        "generic_entity_data",
+        "living_entity_data",
+        "mob_data",
+        "ageable_data",
+        "piglin_data",
+        "piglin_dancing_data"
+    )
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = PiglinEntity(player)
@@ -47,7 +54,14 @@ class PiglinInstance(
     override val name: String = "",
     override val definition: Ref<PiglinDefinition> = emptyRef(),
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "piglin_data", "piglin_dancing_data")
+    @OnlyTags(
+        "generic_entity_data",
+        "living_entity_data",
+        "mob_data",
+        "ageable_data",
+        "piglin_data",
+        "piglin_dancing_data"
+    )
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
 ) : SimpleEntityInstance
@@ -59,9 +73,10 @@ private class PiglinEntity(player: Player) : WrapperFakeEntity(
     init {
         consumeProperties(TremblingProperty(false))
     }
+
     override fun applyProperty(property: EntityProperty) {
         when (property) {
-            is PiglinDancingProperty -> applyPiglinDancingData(entity, property)
+            is DancingProperty -> applyDancingData(entity, property)
             is AgableProperty -> applyAgeableData(entity, property)
             is TremblingProperty -> applyTremblingData(entity, property)
             else -> {}

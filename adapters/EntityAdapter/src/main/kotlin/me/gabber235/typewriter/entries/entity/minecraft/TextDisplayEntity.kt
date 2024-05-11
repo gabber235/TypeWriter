@@ -70,6 +70,7 @@ open class TextDisplayEntity(player: Player) : WrapperFakeEntity(
                 text = property.lines.asMini()
 
             }
+
             is BackgroundColorProperty -> applyBackgroundColorData(entity, property)
             is TextOpacityProperty -> applyTextOpacityData(entity, property)
             is LineWidthProperty -> applyLineWidthData(entity, property)

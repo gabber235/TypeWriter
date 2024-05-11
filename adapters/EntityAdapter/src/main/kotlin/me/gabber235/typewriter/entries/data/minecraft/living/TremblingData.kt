@@ -9,10 +9,7 @@ import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.extensions.packetevents.metas
 import me.tofaa.entitylib.meta.mobs.HoglinMeta
-import me.tofaa.entitylib.meta.mobs.monster.EndermanMeta
 import me.tofaa.entitylib.meta.mobs.monster.piglin.BasePiglinMeta
-import me.tofaa.entitylib.meta.mobs.monster.piglin.PiglinBruteMeta
-import me.tofaa.entitylib.meta.mobs.monster.piglin.PiglinMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.entity.Player
 import java.util.*
@@ -20,7 +17,6 @@ import kotlin.reflect.KClass
 
 @Entry("trembling_data", "Makes nether mobs tremble", Colors.RED, "game-icons:eye-monster")
 @Tags("trembling_data")
-
 class TremblingData(
     override val id: String = "",
     override val name: String = "",

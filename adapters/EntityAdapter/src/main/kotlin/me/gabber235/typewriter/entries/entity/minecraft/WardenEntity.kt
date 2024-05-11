@@ -6,7 +6,9 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
-import me.gabber235.typewriter.entries.data.minecraft.living.*
+import me.gabber235.typewriter.entries.data.minecraft.living.AgableProperty
+import me.gabber235.typewriter.entries.data.minecraft.living.applyAgeableData
+import me.gabber235.typewriter.entries.data.minecraft.living.applyLivingEntityData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
@@ -16,9 +18,7 @@ import me.gabber235.typewriter.entry.entity.WrapperFakeEntity
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
-import me.gabber235.typewriter.extensions.packetevents.metas
 import me.gabber235.typewriter.utils.Sound
-import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.Location
 import org.bukkit.entity.Player
 

@@ -56,7 +56,8 @@ private class HoglinEntity(player: Player) : WrapperFakeEntity(
 ) {
     init {
         consumeProperties(TremblingProperty(false))
-}
+    }
+
     override fun applyProperty(property: EntityProperty) {
         when (property) {
             is AgableProperty -> applyAgeableData(entity, property)
