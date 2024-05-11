@@ -375,7 +375,7 @@ private fun LiteralDSLBuilder.manifestCommands() = literal("manifest") {
         requiresPermissions("typewriter.manifest.inspect")
 
         fun Player.inspectManifest() {
-            val inEntries = Query.findWhere<AudienceEntry> { inAudience(it) }.toList()
+            val inEntries = Query.findWhere<AudienceEntry> { inAudience(it) }.sortedBy { it.name }.toList()
             if (inEntries.none()) {
                 msg("You are not in any audience entries.")
                 return
