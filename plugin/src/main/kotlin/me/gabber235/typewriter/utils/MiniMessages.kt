@@ -99,7 +99,7 @@ private fun Component.splitText(runningText: RunningText, style: Style): Compone
 
     if (this !is TextComponent) return this
 
-    val mergedStyle = style.merge(this.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET)
+    val mergedStyle = this.style().merge(style, Style.Merge.Strategy.IF_ABSENT_ON_TARGET)
 
     val text = this.content()
     val size = text.length

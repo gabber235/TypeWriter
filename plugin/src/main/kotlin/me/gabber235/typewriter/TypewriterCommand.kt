@@ -202,7 +202,7 @@ private fun CommandTree.cinematicCommand() = literalArgument("cinematic") {
             optionalTarget {
                 anyExecutor { sender, args ->
                     val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                    val pageName = args["page"] as String
+                    val pageName = args["cinematic"] as String
                     CinematicStartTrigger(pageName, emptyList()) triggerFor target
                 }
             }
@@ -367,12 +367,15 @@ inline fun <reified E : Entry> entryArgument(name: String): Argument<E> = Custom
 })
 
 fun pageNames(name: String, type: PageType): Argument<String> = CustomArgument(StringArgument(name)) { info ->
-    if (info.input !in get<EntryDatabase>(EntryDatabase::class.java).getPageNames(type)) {
+    val entryDatabase = get<EntryDatabase>(EntryDatabase::class.java)
+    val pageNames = entryDatabase.getPageNames(type)
+    if (info.input !in pageNames) {
         throw CustomArgumentException.fromMessageBuilder(MessageBuilder("Page does not exist."))
     }
     info.input
 }.replaceSuggestions(ArgumentSuggestions.stringsWithTooltips { _ ->
-    get<EntryDatabase>(EntryDatabase::class.java).getPageNames(type).map {
+    val entryDatabase = get<EntryDatabase>(EntryDatabase::class.java)
+    entryDatabase.getPageNames(type).map {
         StringTooltip.ofString(it, it)
     }.toList().toTypedArray()
 })
