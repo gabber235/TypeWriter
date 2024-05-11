@@ -51,7 +51,7 @@ class SkeletonInstance(
 ) : SimpleEntityInstance
 
 private class SkeletonEntity(player: Player) : WrapperFakeEntity(
-    EntityTypes.HOGLIN,
+    EntityTypes.SKELETON,
     player,
 ) {
     override fun applyProperty(property: EntityProperty) {
