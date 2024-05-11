@@ -6,9 +6,9 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
-import me.gabber235.typewriter.entries.data.minecraft.living.AgableProperty
-import me.gabber235.typewriter.entries.data.minecraft.living.applyAgeableData
-import me.gabber235.typewriter.entries.data.minecraft.living.applyLivingEntityData
+import me.gabber235.typewriter.entries.data.minecraft.living.*
+import me.gabber235.typewriter.entries.data.minecraft.living.piglin.DancingProperty
+import me.gabber235.typewriter.entries.data.minecraft.living.piglin.applyDancingData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
@@ -22,46 +22,67 @@ import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("cow_definition", "A cow entity", Colors.ORANGE, "fa6-solid:cow")
-@Tags("cow_definition")
+@Entry("piglin_definition", "A piglin entity", Colors.ORANGE, "fluent-emoji-high-contrast:pig-nose")
+@Tags("piglin_definition")
 /**
- * The `CowDefinition` class is an entry that shows up as a cow in-game.
+ * The `PiglinDefinition` class is an entry that shows up as a piglin in-game.
  *
  * ## How could this be used?
- * This could be used to create a cow entity.
+ * This could be used to create a piglin entity.
  */
-class CowDefinition(
+class PiglinDefinition(
     override val id: String = "",
     override val name: String = "",
     override val displayName: String = "",
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "cow_data")
+    @OnlyTags(
+        "generic_entity_data",
+        "living_entity_data",
+        "mob_data",
+        "ageable_data",
+        "piglin_data",
+        "piglin_dancing_data"
+    )
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
-    override fun create(player: Player): FakeEntity = CowEntity(player)
+    override fun create(player: Player): FakeEntity = PiglinEntity(player)
 }
 
-@Entry("cow_instance", "An instance of a cow entity", Colors.YELLOW, "fa6-solid:cow")
-class CowInstance(
+@Entry("piglin_instance", "An instance of a piglin entity", Colors.YELLOW, "fluent-emoji-high-contrast:pig-nose")
+class PiglinInstance(
     override val id: String = "",
     override val name: String = "",
-    override val definition: Ref<CowDefinition> = emptyRef(),
+    override val definition: Ref<PiglinDefinition> = emptyRef(),
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "cow_data")
+    @OnlyTags(
+        "generic_entity_data",
+        "living_entity_data",
+        "mob_data",
+        "ageable_data",
+        "piglin_data",
+        "piglin_dancing_data"
+    )
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
 ) : SimpleEntityInstance
 
-private class CowEntity(player: Player) : WrapperFakeEntity(
-    EntityTypes.COW,
+private class PiglinEntity(player: Player) : WrapperFakeEntity(
+    EntityTypes.PIGLIN,
     player,
 ) {
+    init {
+        consumeProperties(TremblingProperty(false))
+    }
+
     override fun applyProperty(property: EntityProperty) {
         when (property) {
+            is DancingProperty -> applyDancingData(entity, property)
             is AgableProperty -> applyAgeableData(entity, property)
+            is TremblingProperty -> applyTremblingData(entity, property)
             else -> {}
         }
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
     }
 }
+

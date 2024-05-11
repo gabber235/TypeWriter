@@ -22,38 +22,38 @@ import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("cow_definition", "A cow entity", Colors.ORANGE, "fa6-solid:cow")
-@Tags("cow_definition")
+@Entry("warden_definition", "A warden entity", Colors.ORANGE, "streamline:smiley-surprised-solid")
+@Tags("warden_definition")
 /**
- * The `CowDefinition` class is an entry that shows up as a cow in-game.
+ * The `WardenDefinition` class is an entry that shows up as a warden in-game.
  *
  * ## How could this be used?
- * This could be used to create a cow entity.
+ * This could be used to create a warden entity.
  */
-class CowDefinition(
+class WardenDefinition(
     override val id: String = "",
     override val name: String = "",
     override val displayName: String = "",
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "cow_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
-    override fun create(player: Player): FakeEntity = CowEntity(player)
+    override fun create(player: Player): FakeEntity = WardenEntity(player)
 }
 
-@Entry("cow_instance", "An instance of a cow entity", Colors.YELLOW, "fa6-solid:cow")
-class CowInstance(
+@Entry("warden_instance", "An instance of a warden entity", Colors.YELLOW, "streamline:smiley-surprised-solid")
+class WardenInstance(
     override val id: String = "",
     override val name: String = "",
-    override val definition: Ref<CowDefinition> = emptyRef(),
+    override val definition: Ref<WardenDefinition> = emptyRef(),
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "cow_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
 ) : SimpleEntityInstance
 
-private class CowEntity(player: Player) : WrapperFakeEntity(
-    EntityTypes.COW,
+private class WardenEntity(player: Player) : WrapperFakeEntity(
+    EntityTypes.WARDEN,
     player,
 ) {
     override fun applyProperty(property: EntityProperty) {

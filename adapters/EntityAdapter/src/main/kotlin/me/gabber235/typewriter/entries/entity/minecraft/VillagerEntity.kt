@@ -27,6 +27,12 @@ import org.bukkit.entity.Player
 
 @Entry("villager_definition", "A villager entity", Colors.ORANGE, "material-symbols:diamond")
 @Tags("villager_definition")
+/**
+ * The `VillagerDefinition` class is an entry that shows up as a villager in-game.
+ *
+ * ## How could this be used?
+ * This could be used to create a villager entity.
+ */
 class VillagerDefinition(
     override val id: String = "",
     override val name: String = "",
