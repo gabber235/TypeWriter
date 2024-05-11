@@ -133,6 +133,9 @@ class InteractionHandler : Listener, KoinComponent {
         }
         interactions.clear()
         interactions.putAll(server.onlinePlayers.map { it.uniqueId to Interaction(it) })
+        interactions.forEach { (_, interaction) ->
+            interaction.setup()
+        }
     }
 
     // When a player tries to execute a command, we need to end the dialogue.

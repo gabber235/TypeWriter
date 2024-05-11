@@ -22,7 +22,6 @@ class QuestTracker(
     private val quests = ConcurrentHashMap<Ref<QuestEntry>, QuestStatus>()
     private var trackedQuest: Ref<QuestEntry>? = null
 
-    private val listener = SimpleListener()
     private var factWatchSubscription: FactListenerSubscription? = null
 
     fun setup() {
@@ -47,7 +46,6 @@ class QuestTracker(
     }
 
     fun dispose() {
-        listener.unregister()
         factWatchSubscription?.cancel(player)
     }
 
