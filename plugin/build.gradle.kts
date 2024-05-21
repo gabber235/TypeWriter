@@ -69,10 +69,9 @@ dependencies {
     compileOnlyApi("net.kyori:adventure-text-serializer-plain:4.15.0")
     compileOnlyApi("net.kyori:adventure-text-serializer-legacy:4.15.0")
     compileOnlyApi("net.kyori:adventure-text-serializer-gson:4.15.0")
-    compileOnlyApi("com.mojang:brigadier:1.0.18")
     compileOnly("me.clip:placeholderapi:2.11.3")
     compileOnly("com.google.code.gson:gson:2.10.1")
-    compileOnlyApi("com.github.retrooper.packetevents:spigot:2.2.1")
+    compileOnlyApi("com.github.retrooper.packetevents:spigot:2.3.0")
     compileOnlyApi("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
