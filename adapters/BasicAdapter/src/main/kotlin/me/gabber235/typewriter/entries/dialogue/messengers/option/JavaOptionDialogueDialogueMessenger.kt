@@ -66,6 +66,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
     private var usableOptions: List<Option> = emptyList()
     private var speakerDisplayName = ""
+    private var parsedText = ""
     private var lastPlayTime = Duration.ZERO
 
     override val triggers: List<Ref<out TriggerableEntry>>
@@ -78,7 +79,8 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         usableOptions =
             entry.options.filter { it.criteria.matches(player) }
 
-        speakerDisplayName = entry.speakerDisplayName
+        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
+        parsedText = entry.text.parsePlaceholders(player)
 
         if (usableOptions.isEmpty()) {
             return
@@ -115,7 +117,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             return
         }
 
-        val rawText = entry.text.parsePlaceholders(player).stripped()
+        val rawText = parsedText.stripped()
         val totalDuration = typingDurationType.totalDuration(rawText, typeDuration)
         if (playTime.toTicks() % 100 > 0 && playTime > totalDuration * 1.1) {
             // Only update periodically to avoid spamming the player
@@ -125,17 +127,17 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
     }
 
     private fun displayMessage(playTime: Duration, rawMessage: String? = null) {
-        val rawText = rawMessage ?: entry.text.parsePlaceholders(player).stripped()
+        val rawText = rawMessage ?: parsedText.stripped()
 
         val typePercentage =
             if (typeDuration.isZero) {
                 1.0
             } else typingDurationType.calculatePercentage(playTime, typeDuration, rawText)
 
-        val text = entry.text.parsePlaceholders(player).asMini().splitPercentage(typePercentage)
+        val text = parsedText.asMini().splitPercentage(typePercentage)
 
         val message = optionFormat.asMiniWithResolvers(
-            Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(player)),
+            Placeholder.parsed("speaker", speakerDisplayName),
             Placeholder.component("text", text),
             Placeholder.component("options", formatOptions()),
         )
