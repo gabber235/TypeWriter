@@ -46,6 +46,7 @@ infix fun <T> Boolean.then(t: T): T? = if (this) t else null
 
 
 fun Duration.toTicks(): Long = this.toMillis() / 50
+operator fun Duration.times(other: Double): Duration = Duration.ofMillis((this.toMillis() * other).roundToLong())
 
 fun Audience.playSound(
     sound: String,

@@ -117,7 +117,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
         val rawText = entry.text.parsePlaceholders(player).stripped()
         val totalDuration = typingDurationType.totalDuration(rawText, typeDuration)
-        if (playTime.toTicks() % 100 > 0 && playTime > totalDuration) {
+        if (playTime.toTicks() % 100 > 0 && playTime > totalDuration * 1.1) {
             // Only update periodically to avoid spamming the player
             return
         }
