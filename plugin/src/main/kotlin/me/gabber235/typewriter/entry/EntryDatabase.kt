@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.google.gson.stream.JsonReader
+import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
@@ -12,10 +13,7 @@ import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.NonExistentSubtypeException
-import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import me.gabber235.typewriter.utils.get
-import me.gabber235.typewriter.utils.refreshAndRegisterAll
+import me.gabber235.typewriter.utils.*
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -65,7 +63,12 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
         val pages = readPages(gson)
 
         val newCommandEvents = pages.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() }
-        this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
+        // CommandAPI crashes when we try to register commands not on the main thread
+        runBlocking {
+            ThreadType.SYNC.switchContext {
+                this@EntryDatabaseImpl.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
+            }
+        }
 
         this.entries = pages.flatMap { it.entries }
         this.entryPriority = pages.flatMap { page ->
