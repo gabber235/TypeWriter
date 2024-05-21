@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.utils
 
+import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.util.Vector3f
 import kotlin.math.sqrt
 
@@ -23,6 +24,8 @@ data class Vector(
         get() = sqrt(lengthSquared)
 
     fun toPacketVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
+    fun toPacketVector3d() = Vector3d(x, y, z)
+    fun toBukkitVector(): org.bukkit.util.Vector = org.bukkit.util.Vector(x, y, z)
 
     fun lerp(other: Vector, alpha: Double): Vector {
         return Vector(
@@ -91,6 +94,7 @@ data class Vector(
             div(length)
         }
     }
+
 }
 
 fun org.bukkit.util.Vector.toVector(): Vector {
