@@ -110,12 +110,17 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Docs',
+                        title: 'Information',
                         items: [
                             {
                                 label: 'Documentation',
                                 to: '/docs/home',
                             },
+                            {
+                                label: 'Clickup',
+                                href: 'https://sharing.clickup.com/9015308602/l/h/6-901502296591-1/e32ea9f33a22632',
+                            }
+                            
                         ],
                     },
                     {

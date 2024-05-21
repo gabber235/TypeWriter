@@ -28,7 +28,7 @@ class InteractEntityObjective(
     override val criteria: List<Criteria> = emptyList(),
     @Help("The entity that the player needs to interact with.")
     val entity: Ref<out EntityDefinitionEntry> = emptyRef(),
-    @Help("The objective display that will be shown to the player. Use <entity> to replace the entity name.")
+    @Help("The objective display that will be shown to the player. Use `<entity>` to replace the entity name.")
     val overrideDisplay: Optional<String> = Optional.empty(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry {
