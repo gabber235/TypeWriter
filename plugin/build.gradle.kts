@@ -33,7 +33,7 @@ repositories {
     maven("https://repo.opencollab.dev/maven-snapshots/")
     // PaperMC
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
-    // LirandAPI
+    // EntityLib
     maven("https://jitpack.io")
 }
 
@@ -50,7 +50,7 @@ dependencies {
     }
     compileOnlyApi("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
-    api("com.github.Tofaa2.EntityLib:spigot:2.1.2-SNAPSHOT")
+    api("com.github.Tofaa2.EntityLib:spigot:2.2.0-SNAPSHOT")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
     api("dev.jorel:commandapi-bukkit-shade:9.4.1")
