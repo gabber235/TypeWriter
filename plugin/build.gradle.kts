@@ -174,9 +174,7 @@ publishing {
 
             from(components["kotlin"])
             artifact(tasks["sourcesJar"])
-            artifact(tasks["shadowJar"]) {
-                classifier = null
-            }
+            artifact(tasks["shadowJar"])
         }
     }
 }
