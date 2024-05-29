@@ -73,9 +73,9 @@ abstract class Database : KoinComponent {
     abstract fun fetchAllAssetPaths(): Set<String>
 
     /**
-     * Load all staging pages from the database and fill the [pages] map.
+     * Load pages state from the database and return the staging state.
      */
-    abstract fun loadStagingPages(pages: MutableMap<String, JsonObject>): StagingState
+    abstract fun loadPagesState(pages: MutableMap<String, JsonObject>): StagingState
 
     /**
      * Load all pages from the database and return them.

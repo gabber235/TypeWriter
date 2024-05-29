@@ -196,7 +196,7 @@ class MySQLDatabase : Database(), KoinComponent {
         }
     }
 
-    override fun loadStagingPages(pages: MutableMap<String, JsonObject>): StagingState {
+    override fun loadPagesState(pages: MutableMap<String, JsonObject>): StagingState {
         val query = "SELECT path, content, is_staging FROM $TABLE_PAGES_NAME"
         return try {
             var anyStaging = false

@@ -76,7 +76,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     private fun loadState() {
-        stagingState = database.loadStagingPages(pages)
+        stagingState = database.loadPagesState(pages)
     }
 
     override fun fetchPages(): Map<String, JsonObject> {

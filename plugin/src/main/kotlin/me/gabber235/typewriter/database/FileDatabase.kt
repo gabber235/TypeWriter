@@ -80,7 +80,7 @@ class FileDatabase : Database(), KoinComponent {
             .map { it.relativeTo(plugin.dataFolder.resolve("assets")).path }.toSet()
     }
 
-    override fun loadStagingPages(pages: MutableMap<String, JsonObject>): StagingState {
+    override fun loadPagesState(pages: MutableMap<String, JsonObject>): StagingState {
         val stagingState = if (stagingDir.exists()) {
             // Migrate staging directory to use the new format
             stagingDir.migrateIfNecessary()
