@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.events.listen
+import me.gabber235.typewriter.database.Database
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.ModifierOperator
 import me.gabber235.typewriter.entry.Query
@@ -25,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
 
 class FactDatabase : KoinComponent {
-    private val storage: FactStorage by inject()
+    private val database: Database by inject()
 
     // Local stored version of player facts
     private val cache = ConcurrentHashMap<UUID, Set<Fact>>()
@@ -34,8 +35,6 @@ class FactDatabase : KoinComponent {
     private val flush = ConcurrentLinkedDeque<UUID>()
 
     fun initialize() {
-        storage.init()
-
         // Load facts for players before they join.
         // This way we can delay the loading screen.
         plugin.listen<AsyncPlayerPreLoginEvent> { event ->
@@ -77,11 +76,10 @@ class FactDatabase : KoinComponent {
             }
         }
         flush.clear()
-        storage.shutdown()
     }
 
     private suspend fun loadFactsFromPersistentStorage(playerId: UUID) {
-        val facts = storage.loadFacts(playerId)
+        val facts = database.loadFacts(playerId)
         cache[playerId] = facts
     }
 
@@ -97,7 +95,7 @@ class FactDatabase : KoinComponent {
                 true
             }?.toSet()
                 ?: return
-        storage.storeFacts(playerId, facts)
+        database.storeFacts(playerId, facts)
     }
 
     private fun removeExpiredFacts(playerId: UUID) {

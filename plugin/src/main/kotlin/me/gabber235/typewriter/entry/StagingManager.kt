@@ -1,21 +1,32 @@
 package me.gabber235.typewriter.entry
 
-import com.google.gson.*
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonNull
+import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import lirand.api.extensions.events.listen
+import me.gabber235.typewriter.database.Database
 import me.gabber235.typewriter.entry.StagingState.*
 import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.StagingChangeEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
-import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.Timeout
+import me.gabber235.typewriter.utils.failure
+import me.gabber235.typewriter.utils.ok
+import me.gabber235.typewriter.utils.onFail
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.qualifier.named
-import java.io.File
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.Map
+import kotlin.collections.any
+import kotlin.collections.find
+import kotlin.collections.forEachIndexed
+import kotlin.collections.indexOfFirst
+import kotlin.collections.removeAll
+import kotlin.collections.set
 import kotlin.time.Duration.Companion.seconds
 
 interface StagingManager {
@@ -39,7 +50,7 @@ interface StagingManager {
 }
 
 class StagingManagerImpl : StagingManager, KoinComponent {
-    private val gson: Gson by inject(named("bukkitDataParser"))
+    private val database: Database by inject()
 
     private val pages = ConcurrentHashMap<String, JsonObject>()
 
@@ -51,12 +62,6 @@ class StagingManagerImpl : StagingManager, KoinComponent {
                 // When called to save, we immediately want to update the staging state
                 if (stagingState != PUBLISHING) stagingState = STAGING
             })
-
-    private val stagingDir
-        get() = plugin.dataFolder["staging"]
-
-    private val publishedDir
-        get() = plugin.dataFolder["pages"]
 
     override var stagingState = PUBLISHED
         private set(value) {
@@ -71,33 +76,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     private fun loadState() {
-        stagingState = if (stagingDir.exists()) {
-            // Migrate staging directory to use the new format
-            stagingDir.migrateIfNecessary()
-
-            val stagingPages = fetchPages(stagingDir)
-            val publishedPages = fetchPages(publishedDir)
-
-            if (stagingPages == publishedPages) PUBLISHED else STAGING
-        } else PUBLISHED
-
-        // Read the pages from the file
-        val dir =
-            if (stagingState == STAGING) stagingDir else publishedDir
-        pages.putAll(fetchPages(dir))
-    }
-
-    private fun fetchPages(dir: File): Map<String, JsonObject> {
-        val pages = mutableMapOf<String, JsonObject>()
-        dir.pages().forEach { file ->
-            val page = file.readText()
-            val pageName = file.nameWithoutExtension
-            val pageJson = gson.fromJson(page, JsonObject::class.java)
-            // Sometimes the name of the page is out of sync with the file name, so we need to update it
-            pageJson.addProperty("name", pageName)
-            pages[pageName] = pageJson
-        }
-        return pages
+        stagingState = database.loadStagingPages(pages)
     }
 
     override fun fetchPages(): Map<String, JsonObject> {
@@ -115,6 +94,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         // Add the version of this page to track migrations
         data.addProperty("version", plugin.pluginMeta.version)
 
+        markPageAsStaging(data)
+
         pages[name] = data
         autoSaver()
         return ok("Successfully created page with name $name")
@@ -126,6 +107,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
         oldPage.addProperty("name", newName)
 
+        markPageAsStaging(oldPage)
+
         pages[newName] = oldPage
         autoSaver()
         return ok("Successfully renamed page from $oldName to $newName")
@@ -135,6 +118,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         val page = getPage(pageId) onFail { return it }
 
         page.changePathValue(path, value)
+
+        markPageAsStaging(page)
 
         autoSaver()
         return ok("Successfully updated field")
@@ -154,6 +139,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         entries.add(data)
         page.add("entries", entries)
 
+        markPageAsStaging(page)
+
         autoSaver()
         return ok("Successfully created entry with id ${data["id"]}")
     }
@@ -172,6 +159,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         // Update the entry
         entry.changePathValue(path, value)
 
+        markPageAsStaging(page)
+
         autoSaver()
         return ok("Successfully updated field")
     }
@@ -183,6 +172,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
         entries.removeAll { entry -> entry.asJsonObject["id"]?.asString == entryId }
         entries.add(data)
+        page.add("entries", entries)
 
         autoSaver()
         return ok("Successfully updated entry with id ${data["id"]}")
@@ -202,6 +192,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         entries[correctIndex] = entries[oldIndex]
         entries[oldIndex] = entryAtNewIndex
 
+        markPageAsStaging(page)
+
         autoSaver()
         return ok("Successfully reordered entry")
     }
@@ -212,6 +204,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         val entry = entries.find { it.asJsonObject["id"].asString == entryId } ?: return failure("Entry does not exist")
 
         entries.remove(entry)
+        markPageAsStaging(page)
 
         autoSaver()
         return ok("Successfully deleted entry with id $entryId")
@@ -233,67 +226,46 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     private fun saveStaging() {
         // If we are already publishing, we don't want to save the staging
         if (stagingState == PUBLISHING) return
-        val dir = stagingDir
 
-        pages.forEach { (name, page) ->
-            val file = dir["$name.json"]
-            if (!file.exists()) {
-                file.parentFile.mkdirs()
-                file.createNewFile()
-            }
-            file.writeText(page.toString())
-        }
+        val stagingPages = pages.filter { it.value.has("staging") }.toMutableMap()
 
-        dir.listFiles()?.filter { it.nameWithoutExtension !in pages.keys }?.forEach { it.delete() }
+        database.saveStagingPages(stagingPages)
+        removeStagingFlag(stagingPages)
 
         stagingState = STAGING
     }
 
-    // Save the page to the file
+    // Save the page to the database
     override suspend fun publish(): Result<String> {
         if (stagingState != STAGING) return failure("Can only publish when in staging")
         autoSaver.cancel()
         return withContext(Dispatchers.IO) {
             stagingState = PUBLISHING
 
-            try {
-                pages.forEach { (name, page) ->
-                    val file = publishedDir["$name.json"]
-                    file.writeText(page.toString())
-                }
+            removeStagingFlag(pages)
 
-                val stagingPages = pages.keys
-                val publishedFiles = publishedDir.listFiles()?.toList() ?: emptyList()
-
-                val deletedPages = publishedFiles.filter { it.nameWithoutExtension !in stagingPages }
-                if (deletedPages.isNotEmpty()) {
-                    logger.info(
-                        "Deleting ${deletedPages.size} pages, as they are no longer in staging. (${
-                            deletedPages.joinToString(
-                                ", "
-                            ) { it.nameWithoutExtension }
-                        })"
-                    )
-                    deletedPages.backup()
-                    deletedPages.forEach { it.delete() }
-                }
-
-                // Delete the staging folder
-                stagingDir.deleteRecursively()
-                PublishedBookEvent().callEvent()
-                logger.info("Published the staging state")
-                stagingState = PUBLISHED
-                ok("Successfully published the staging state")
-            } catch (e: Exception) {
-                e.printStackTrace()
+            val result = database.publishStagingPages(pages)
+            if (result.isFailure) {
                 stagingState = STAGING
-                failure("Failed to publish the staging state")
+                return@withContext result
             }
+
+            PublishedBookEvent().callEvent()
+            stagingState = PUBLISHED
+            return@withContext result
         }
     }
 
     override fun shutdown() {
         if (stagingState == STAGING) saveStaging()
+    }
+
+    private fun markPageAsStaging(page: JsonObject) {
+        page.addProperty("staging", true)
+    }
+
+    private fun removeStagingFlag(stagingPages: Map<String, JsonObject>) {
+        stagingPages.values.forEach { it.remove("staging") }
     }
 }
 

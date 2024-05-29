@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonReader
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
+import me.gabber235.typewriter.database.Database
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry
 import me.gabber235.typewriter.entry.entries.EventEntry
 import me.gabber235.typewriter.entry.entries.FactEntry
@@ -17,11 +18,9 @@ import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.NonExistentSubtypeException
 import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import me.gabber235.typewriter.utils.get
 import me.gabber235.typewriter.utils.refreshAndRegisterAll
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.qualifier.named
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -46,8 +45,8 @@ interface EntryDatabase {
 }
 
 class EntryDatabaseImpl : EntryDatabase, KoinComponent {
+    private val database: Database by inject()
     private val entryListeners: EntryListeners by inject()
-    private val gson: Gson by inject(named("entryParser"))
 
     private var pages: List<Page> = emptyList()
     private var entries: List<Entry> = emptyList()
@@ -62,7 +61,7 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     }
 
     override fun loadEntries() {
-        val pages = readPages(gson)
+        val pages = database.loadPages()
 
         this.events = pages.flatMap { it.entries.filterIsInstance<EventEntry>() }
         this.facts = pages.flatMap { it.entries.filterIsInstance<FactEntry>() }
@@ -76,21 +75,6 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
         entryListeners.register()
 
         logger.info("Loaded ${entries.size} entries from ${pages.size} pages.")
-    }
-
-    private fun readPages(gson: Gson): List<Page> {
-        val dir = plugin.dataFolder["pages"]
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-
-        dir.migrateIfNecessary()
-
-        return dir.pages().mapNotNull { file ->
-            val id = file.nameWithoutExtension
-            val dialogueReader = JsonReader(file.reader())
-            dialogueReader.parsePage(id, gson).getOrNull()
-        }
     }
 
     override fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {

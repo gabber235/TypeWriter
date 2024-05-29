@@ -7,20 +7,20 @@ import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.AdapterLoaderImpl
 import me.gabber235.typewriter.capture.Recorders
+import me.gabber235.typewriter.database.*
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
 import me.gabber235.typewriter.extensions.bstats.BStatsMetrics
 import me.gabber235.typewriter.extensions.modrinth.Modrinth
 import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
 import me.gabber235.typewriter.facts.FactDatabase
-import me.gabber235.typewriter.facts.FactStorage
-import me.gabber235.typewriter.facts.storage.FileFactStorage
 import me.gabber235.typewriter.interaction.ActionBarBlockerHandler
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
 import me.gabber235.typewriter.snippets.SnippetDatabase
 import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
 import me.gabber235.typewriter.ui.*
+import me.gabber235.typewriter.utils.config
 import me.gabber235.typewriter.utils.createBukkitDataParser
 import me.gabber235.typewriter.utils.syncCommands
 import org.bukkit.plugin.Plugin
@@ -51,6 +51,14 @@ class Typewriter : KotlinPlugin(), KoinComponent {
                         createdAtStart()
                     }
 
+            // we can't use the config property delegate here because the plugin is not initialized yet
+            val storageType = config.getString("storage.type") ?: "file";
+            when (storageType.lowercase()) {
+                "postgresql" -> singleOf<Database>(::PostgresDatabase)
+                "mysql", "mariadb" -> singleOf<Database>(::MySQLDatabase)
+                else -> singleOf<Database>(::FileDatabase)
+            }
+
             singleOf<AdapterLoader>(::AdapterLoaderImpl)
             singleOf<EntryDatabase>(::EntryDatabaseImpl)
             singleOf<StagingManager>(::StagingManagerImpl)
@@ -62,10 +70,8 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             singleOf<PanelHost>(::PanelHost)
             singleOf<SnippetDatabase>(::SnippetDatabaseImpl)
             singleOf<FactDatabase>(::FactDatabase)
-            singleOf<FactStorage>(::FileFactStorage)
             singleOf<EntryListeners>(::EntryListeners)
             singleOf<Recorders>(::Recorders)
-            singleOf<AssetStorage>(::LocalAssetStorage)
             singleOf<AssetManager>(::AssetManager)
             single { ChatHistoryHandler(get()) }
             single { ActionBarBlockerHandler(get()) }
@@ -91,6 +97,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             return
         }
 
+        get<Database>().initialize()
         get<EntryDatabase>().initialize()
         get<StagingManager>().initialize()
         get<InteractionHandler>().initialize()
@@ -119,6 +126,14 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             delay(5.seconds)
             Modrinth.initialize()
         }
+
+        // make sure we set the storage type property in the config so user can modify it
+        val storageType: String by config(
+            "storage.type",
+            "file",
+            comment = "The type of storage to use. Possible values: file, mysql, mariadb, postgresql"
+        )
+        logger.info("Typewriter is using '$storageType' as a storage type.")
     }
 
     val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
@@ -132,6 +147,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<EntryListeners>().unregister()
         get<FactDatabase>().shutdown()
         get<AssetManager>().shutdown()
+        get<Database>().shutdown()
     }
 }
 
