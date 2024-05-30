@@ -1,52 +1,59 @@
 import "package:flutter/material.dart" hide Page;
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/general/context_menu_region.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 class EntrySelectorEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is PrimitiveField &&
-      info.type == PrimitiveFieldType.string &&
-      info.hasModifier("entry");
+  bool canEdit(FieldInfo info) => info.hasModifier("entry");
 
   @override
   Widget build(String path, FieldInfo info) =>
-      EntrySelectorEditor(path: path, field: info as PrimitiveField);
+      EntrySelectorEditor(path: path, field: info);
 }
 
 class EntrySelectorEditor extends HookConsumerWidget {
   const EntrySelectorEditor({
     required this.path,
     required this.field,
+    this.forcedValue,
+    this.onChanged,
     super.key,
   }) : super();
 
   final String path;
-  final PrimitiveField field;
+  final FieldInfo field;
+
+  final String? forcedValue;
+  final void Function(String)? onChanged;
 
   bool _update(PassingRef ref, Entry? entry) {
     if (entry == null) return false;
+    if (onChanged != null) {
+      onChanged!(entry.id);
+      return true;
+    }
     ref
         .read(inspectingEntryDefinitionProvider)
         ?.updateField(ref, path, entry.id);
     return true;
   }
 
-  void _select(PassingRef ref, String tag) {
+  void _select(PassingRef ref, List<String> tags) {
     final selectedEntryId = ref.read(inspectingEntryIdProvider);
     ref.read(searchProvider.notifier).asBuilder()
-      ..tag(tag, canRemove: false)
+      ..anyTag(tags, canRemove: false)
       ..excludeEntry(selectedEntryId ?? "", canRemove: false)
       ..fetchEntry(onSelect: (entry) => _update(ref, entry))
       ..fetchNewEntry(onAdded: (entry) => _update(ref, entry))
@@ -56,7 +63,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = field.get<String>("entry") ?? "";
-    final id = ref.watch(fieldValueProvider(path, "")) as String;
+    final onlyTags = field.get<String>("only_tags")?.split(",") ?? [];
+    final id = forcedValue ?? ref.watch(fieldValueProvider(path, "")) as String;
 
     final hasEntry = ref.watch(entryExistsProvider(id));
 
@@ -70,6 +78,10 @@ class EntrySelectorEditor extends HookConsumerWidget {
         if (blueprint == null) return false;
 
         return blueprint.tags.contains(tag);
+      },
+      onAcceptWithDetails: (details) {
+        final entry = ref.read(globalEntryProvider(details.data.entryId));
+        _update(ref.passing, entry);
       },
       builder: (context, candidateData, rejectedData) {
         if (rejectedData.isNotEmpty) {
@@ -88,30 +100,31 @@ class EntrySelectorEditor extends HookConsumerWidget {
                 if (hasEntry) ...[
                   ContextMenuTile.button(
                     title: "Navigate to entry",
-                    icon: FontAwesomeIcons.pencil,
+                    icon: TWIcons.pencil,
                     onTap: () {
                       ref
                           .read(inspectingEntryIdProvider.notifier)
                           .navigateAndSelectEntry(ref.passing, id);
                     },
                   ),
-                  ContextMenuTile.button(
-                    title: "Remove reference",
-                    icon: FontAwesomeIcons.solidSquareMinus,
-                    color: Colors.redAccent,
-                    onTap: () {
-                      ref
-                          .read(inspectingEntryDefinitionProvider)
-                          ?.updateField(ref.passing, path, null);
-                    },
-                  ),
+                  if (id.isNotEmpty)
+                    ContextMenuTile.button(
+                      title: "Remove reference",
+                      icon: TWIcons.squareMinus,
+                      color: Colors.redAccent,
+                      onTap: () {
+                        ref
+                            .read(inspectingEntryDefinitionProvider)
+                            ?.updateField(ref.passing, path, "");
+                      },
+                    ),
                 ],
                 if (!hasEntry) ...[
                   ContextMenuTile.button(
                     title: "Select entry",
-                    icon: FontAwesomeIcons.magnifyingGlass,
+                    icon: TWIcons.magnifyingGlass,
                     onTap: () {
-                      _select(ref.passing, tag);
+                      _select(ref.passing, onlyTags.isEmpty ? [tag] : onlyTags);
                     },
                   ),
                 ],
@@ -125,7 +138,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                       .navigateAndSelectEntry(ref.passing, id);
                   return;
                 }
-                _select(ref.passing, tag);
+                _select(ref.passing, onlyTags.isEmpty ? [tag] : onlyTags);
               },
               borderRadius: BorderRadius.circular(8),
               child: Padding(
@@ -138,8 +151,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
                 child: Row(
                   children: [
                     if (!hasEntry && !isAccepting) ...[
-                      FaIcon(
-                        FontAwesomeIcons.database,
+                      Iconify(
+                        TWIcons.database,
                         size: 16,
                         color: Theme.of(context)
                             .inputDecorationTheme
@@ -168,8 +181,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
                         ),
                       ),
                     const SizedBox(width: 12),
-                    FaIcon(
-                      FontAwesomeIcons.caretDown,
+                    Iconify(
+                      TWIcons.caretDown,
                       size: 16,
                       color: Theme.of(context)
                           .inputDecorationTheme
@@ -194,8 +207,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
         padding: const EdgeInsets.all(15),
         child: Row(
           children: [
-            FaIcon(
-              FontAwesomeIcons.xmark,
+            Iconify(
+              TWIcons.x,
               size: 16,
               color: Theme.of(context).colorScheme.error,
             ),

@@ -4,15 +4,12 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Regex
-import me.gabber235.typewriter.entry.EntryListener
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.triggerAllFor
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import kotlin.text.Regex as KotlinRegex
 
-@Entry("on_detect_command_ran", "When a player runs an existing command", Colors.YELLOW, Icons.TERMINAL)
+@Entry("on_detect_command_ran", "When a player runs an existing command", Colors.YELLOW, "mdi:account-eye")
 /**
  * The `Detect Command Ran Event` event is triggered when an **already existing** command is ran.
  *
@@ -29,7 +26,7 @@ import kotlin.text.Regex as KotlinRegex
 class DetectCommandRanEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Regex
     @Help("The command that was ran. Can be a regular expression.")
     /**
@@ -46,11 +43,26 @@ class DetectCommandRanEventEntry(
      * </Admonition>
      */
     val command: String = "",
+    /**
+     * Cancel the event when triggered.
+     * It will only cancel the event if all the criteria are met.
+     * If set to false, it will not modify the event.
+     *
+     * <Admonition type="tip">
+     *     You should always set this to true if any dialog is triggered after this.
+     *     To prevent the dialog from immediately being closed.
+     * </Admonition>
+     */
+    @Help("Cancel the event when triggered")
+    val cancel: Boolean = false,
 ) : EventEntry
 
 @EntryListener(DetectCommandRanEventEntry::class)
 fun onRunCommand(event: PlayerCommandPreprocessEvent, query: Query<DetectCommandRanEventEntry>) {
     val message = event.message.removePrefix("/")
 
-    query findWhere { KotlinRegex(it.command).matches(message) } triggerAllFor event.player
+    val entries = query.findWhere { KotlinRegex(it.command).matches(message) }.toList()
+    if (entries.isEmpty()) return
+    entries triggerAllFor event.player
+    if (entries.any { it.cancel }) event.isCancelled = true
 }

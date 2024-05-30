@@ -1,15 +1,15 @@
 import "dart:async";
 
 import "package:auto_route/auto_route.dart";
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart" hide FilledButton;
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/utils/fonts.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/general/copyable_text.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 @RoutePage()
 class HomePage extends HookConsumerWidget {
@@ -88,7 +88,7 @@ class _ConnectButtons extends HookConsumerWidget {
               child: const Text("Cancel"),
             ),
             FilledButton.icon(
-              icon: const FaIcon(FontAwesomeIcons.link),
+              icon: const Iconify(TWIcons.externalLink),
               label: const Text("Connect"),
               onPressed: () => Navigator.of(context).pop(controller.text),
             ),
@@ -123,13 +123,13 @@ class _ConnectButtons extends HookConsumerWidget {
       children: [
         FilledButton.icon(
           color: Colors.green,
-          icon: const Icon(FontAwesomeIcons.house),
+          icon: const Iconify(TWIcons.home),
           label: const Text("Connect Localhost"),
           onPressed: () => connectTo(ref, "localhost", 9092),
         ),
         const SizedBox(width: 24),
         FilledButton.icon(
-          icon: const Icon(FontAwesomeIcons.connectdevelop),
+          icon: const Iconify(TWIcons.connect),
           label: const Text("Connect Custom"),
           onPressed: () => customConnectToPopup(context, ref),
         ),

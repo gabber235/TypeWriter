@@ -82,6 +82,7 @@ class RiveStateMachine extends ChangeNotifier {
 
   void fire(String name) => getTrigger(name)?.fire();
 
+  // ignore: avoid_positional_boolean_parameters
   void setBool(String name, bool value) => getBool(name)?.value = value;
 
   void setNumber(String name, double value) => getNumber(name)?.value = value;

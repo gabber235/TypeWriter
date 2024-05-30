@@ -3,6 +3,7 @@ import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter/hooks/text_size.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 typedef ContextMenuBuilder = List<ContextMenuTile> Function(BuildContext);
 
@@ -56,7 +57,7 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
   }
 
   void _onLongPress() {
-    assert(_longPressOffset != null);
+    assert(_longPressOffset != null, "Long press offset should not be null");
     _show(_longPressOffset!);
     _longPressOffset = null;
   }
@@ -74,7 +75,7 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
     }
 
     // Get on which part of the screen the user tapped. The four options are TopLeft, TopRight, BottomLeft, BottomRight
-    final quadrant = _getQuadrant(box);
+    final quadrant = getQuadrant(context, box);
 
     _contextMenuController.show(
       context: context,
@@ -91,7 +92,7 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
 
   /// Get on which part of the screen the button is. The four options are TopLeft, TopRight, BottomLeft, BottomRight
   /// This is used to determine where the context menu should be shown
-  Quadrant _getQuadrant(RenderBox box) {
+  static Quadrant getQuadrant(BuildContext context, RenderBox box) {
     final boxSize = box.size;
     final boxPosition = box.localToGlobal(Offset.zero);
     final boxCenter =
@@ -146,13 +147,14 @@ enum Quadrant {
   bottomRight,
 }
 
+@immutable
 class ContextMenuTile {
   const ContextMenuTile();
 
-  factory ContextMenuTile.button({
+  const factory ContextMenuTile.button({
     required String title,
     VoidCallback? onTap,
-    IconData? icon,
+    String? icon,
     Color? color,
   }) = ContextMenuButton;
 
@@ -161,6 +163,7 @@ class ContextMenuTile {
   String get largestText => "";
 }
 
+@immutable
 class ContextMenuButton extends ContextMenuTile {
   const ContextMenuButton({
     required this.title,
@@ -171,13 +174,14 @@ class ContextMenuButton extends ContextMenuTile {
 
   final String title;
   final VoidCallback? onTap;
-  final IconData? icon;
+  final String? icon;
   final Color? color;
 
   @override
   String get largestText => title;
 }
 
+@immutable
 class ContextMenuDivider extends ContextMenuTile {}
 
 class _ContextMenu extends HookWidget {
@@ -282,7 +286,8 @@ class _ContextMenuButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
-              Icon(tile.icon, color: tile.color, size: 16),
+              if (tile.icon != null)
+                Iconify(tile.icon, color: tile.color, size: 16),
               const SizedBox(width: 10),
               Text(
                 tile.title,
@@ -403,7 +408,10 @@ class ContextMenuController {
   ///
   ///  * [OverlayEntry.markNeedsBuild]
   void markNeedsBuild() {
-    assert(isShown);
+    assert(
+      isShown,
+      "Cannot call markNeedsBuild on a context menu that is not shown",
+    );
     _menuOverlayEntry?.markNeedsBuild();
   }
 
@@ -425,5 +433,27 @@ class ContextMenuController {
       return;
     }
     removeAny();
+  }
+}
+
+extension ContextMenuControllerX on ContextMenuController {
+  void showMenu({
+    required BuildContext context,
+    required ContextMenuBuilder builder,
+  }) {
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null) return;
+
+    show(
+      context: context,
+      contextMenuBuilder: (context) {
+        return _ContextMenu(
+          controller: this,
+          quadrant: _ContextMenuRegionState.getQuadrant(context, box),
+          position: box.localToGlobal(Offset.zero),
+          tiles: builder(context),
+        );
+      },
+    );
   }
 }

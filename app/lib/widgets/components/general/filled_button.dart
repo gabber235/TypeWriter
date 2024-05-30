@@ -18,7 +18,7 @@ class FilledButton extends HookConsumerWidget {
     required Widget label,
     required VoidCallback? onPressed,
     Color? color,
-    MaterialStatesController? controller,
+    WidgetStatesController? controller,
     Key? key,
   }) = _FilledButtonIcon;
 
@@ -27,7 +27,7 @@ class FilledButton extends HookConsumerWidget {
 
   final Color? color;
 
-  final MaterialStatesController? controller;
+  final WidgetStatesController? controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => TextButton(
@@ -71,6 +71,7 @@ class _FilledButtonWithIconChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     final scale = MediaQuery.maybeOf(context)?.textScaleFactor ?? 1;
     final gap = scale <= 1 ? 8.0 : lerpDouble(8, 4, math.min(scale - 1, 1))!;
     return Row(

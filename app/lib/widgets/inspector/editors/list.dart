@@ -1,15 +1,17 @@
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/headers/add_action.dart";
 import "package:typewriter/widgets/inspector/headers/delete_action.dart";
+import "package:typewriter/widgets/inspector/headers/duplicate_list_item_action.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "list.g.dart";
@@ -135,17 +137,19 @@ class _ListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final type = field.type;
+    final childPath = "$path.$index";
     return FieldHeader(
-      field: field.type,
-      path: "$path.$index",
+      field: type,
+      path: childPath,
       canExpand: true,
       leading: [
         MouseRegion(
           cursor: SystemMouseCursors.grab,
           child: ReorderableDragStartListener(
             index: index,
-            child: const Icon(
-              FontAwesomeIcons.barsStaggered,
+            child: const Iconify(
+              TWIcons.barsStaggered,
               size: 12,
               color: Colors.grey,
             ),
@@ -153,6 +157,7 @@ class _ListItem extends HookConsumerWidget {
         ),
       ],
       actions: [
+        DuplicateListItemAction(path, childPath, type),
         RemoveHeaderAction(
           path: "$path.$index",
           onRemove: () => _remove(ref.passing, index),

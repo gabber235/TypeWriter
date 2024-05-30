@@ -26,6 +26,7 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
 
   late Debouncer<String> _debouncer;
 
+  String get path => state;
   set path(String path) {
     state = path;
   }
@@ -50,13 +51,13 @@ class CurrentEditingFieldNotifier extends StateNotifier<String> {
 
 void useFocusedChange(
   FocusNode focus,
-  Function(bool) onChange, [
+  Function({required bool hasFocus}) onChange, [
   List<Object?>? keys,
 ]) {
   useEffect(
     () {
       void onFocusChange() {
-        onChange(focus.hasFocus);
+        onChange(hasFocus: focus.hasFocus);
       }
 
       focus.addListener(onFocusChange);
@@ -73,7 +74,7 @@ void useFocusedBasedCurrentEditingField(
 ) {
   useFocusedChange(
     focus,
-    (hasFocus) {
+    ({required hasFocus}) {
       if (hasFocus) {
         ref.read(currentEditingFieldProvider.notifier).path = path;
       } else {

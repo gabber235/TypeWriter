@@ -12,54 +12,54 @@ import org.bukkit.event.HandlerList
 
 class WorldGuardHandler(session: Session?) : Handler(session) {
 
-	class Factory : Handler.Factory<WorldGuardHandler>() {
-		override fun create(session: Session?): WorldGuardHandler {
-			return WorldGuardHandler(session)
-		}
-	}
+    class Factory : Handler.Factory<WorldGuardHandler>() {
+        override fun create(session: Session?): WorldGuardHandler {
+            return WorldGuardHandler(session)
+        }
+    }
 
-	override fun onCrossBoundary(
-		player: LocalPlayer?,
-		from: Location?,
-		to: Location?,
-		toSet: ApplicableRegionSet?,
-		entered: MutableSet<ProtectedRegion>?,
-		exited: MutableSet<ProtectedRegion>?,
-		moveType: MoveType?
-	): Boolean {
-		if (player == null) return false
+    override fun onCrossBoundary(
+        player: LocalPlayer?,
+        from: Location?,
+        to: Location?,
+        toSet: ApplicableRegionSet?,
+        entered: MutableSet<ProtectedRegion>?,
+        exited: MutableSet<ProtectedRegion>?,
+        moveType: MoveType?
+    ): Boolean {
+        if (player == null) return false
 
-		entered?.let { RegionsEnterEvent(player, it).callEvent() }
-		exited?.let { RegionsExitEvent(player, it).callEvent() }
+        if (!entered.isNullOrEmpty()) entered.let { RegionsEnterEvent(player, it).callEvent() }
+        if (!exited.isNullOrEmpty()) exited.let { RegionsExitEvent(player, it).callEvent() }
 
-		return super.onCrossBoundary(player, from, to, toSet, entered, exited, moveType)
-	}
+        return super.onCrossBoundary(player, from, to, toSet, entered, exited, moveType)
+    }
 }
 
 class RegionsEnterEvent(val player: LocalPlayer, val regions: Set<ProtectedRegion>) : Event() {
 
-	operator fun contains(regionName: String) = regions.any { it.id == regionName }
+    operator fun contains(regionName: String) = regions.any { it.id == regionName }
 
-	companion object {
-		@JvmStatic
-		val handlerList = HandlerList()
-	}
+    companion object {
+        @JvmStatic
+        val handlerList = HandlerList()
+    }
 
-	override fun getHandlers(): HandlerList {
-		return handlerList
-	}
+    override fun getHandlers(): HandlerList {
+        return handlerList
+    }
 }
 
 class RegionsExitEvent(val player: LocalPlayer, val regions: Set<ProtectedRegion>) : Event() {
 
-	operator fun contains(regionName: String) = regions.any { it.id == regionName }
+    operator fun contains(regionName: String) = regions.any { it.id == regionName }
 
-	companion object {
-		@JvmStatic
-		val handlerList = HandlerList()
-	}
+    companion object {
+        @JvmStatic
+        val handlerList = HandlerList()
+    }
 
-	override fun getHandlers(): HandlerList {
-		return handlerList
-	}
+    override fun getHandlers(): HandlerList {
+        return handlerList
+    }
 }

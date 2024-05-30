@@ -1,21 +1,24 @@
 package me.ahdg6.typewriter.mythicmobs.entries.action
 
-import com.github.shynixn.mccoroutine.bukkit.launch
+import io.lumine.mythic.api.mobs.entities.SpawnReason
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
 
-@Entry("spawn_mythicmobs_mob", "Spawn a mob from MythicMobs", Colors.ORANGE, Icons.DRAGON)
+@Entry("spawn_mythicmobs_mob", "Spawn a mob from MythicMobs", Colors.ORANGE, "fa6-solid:dragon")
 /**
  * The `Spawn Mob Action` action spawn MythicMobs mobs to the world.
  *
@@ -28,12 +31,15 @@ class SpawnMobActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The mob's name")
     private val mobName: String = "",
     @Help("The mob's level")
     private val level: Double = 1.0,
+    @Help("Whether the mob should be only seen by the player")
+    private val onlyVisibleForPlayer: Boolean = false,
     @Help("The mob's spawn location")
+    @WithRotation
     private var spawnLocation: Location,
 ) : ActionEntry {
     override fun execute(player: Player) {
@@ -42,8 +48,13 @@ class SpawnMobActionEntry(
         val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName)
         if (!mob.isPresent) return
 
-        plugin.launch {
-            mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level)
+        SYNC.launch {
+            mob.get().spawn(BukkitAdapter.adapt(spawnLocation), level, SpawnReason.OTHER) {
+                if (onlyVisibleForPlayer) {
+                    it.isVisibleByDefault = false
+                    player.showEntity(plugin, it)
+                }
+            }
         }
     }
 }

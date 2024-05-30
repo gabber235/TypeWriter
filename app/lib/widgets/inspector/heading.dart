@@ -4,7 +4,9 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/components/general/admonition.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
@@ -52,6 +54,7 @@ class Heading extends HookConsumerWidget {
     final type = ref.watch(_entryTypeProvider);
     final url = ref.watch(_entryUrlProvider);
     final color = ref.watch(_entryColorProvider);
+    final isDeprecated = ref.watch(isEntryDeprecatedProvider(id));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,14 +62,22 @@ class Heading extends HookConsumerWidget {
         Title(
           color: color,
           title: name,
+          isDeprecated: isDeprecated,
         ),
-        Row(
+        Wrap(
+          spacing: 8,
+          runSpacing: 2,
+          direction: Axis.horizontal,
+          alignment: WrapAlignment.start,
           children: [
-            _Type(type: type, url: url, color: color),
-            const SizedBox(width: 8),
-            _Identifier(id: id),
+            EntryType(type: type, url: url, color: color),
+            EntryIdentifier(id: id),
           ],
         ),
+        if (isDeprecated) ...[
+          const SizedBox(height: 8),
+          _DeperecationWarning(url: url),
+        ],
       ],
     );
   }
@@ -76,36 +87,54 @@ class Title extends StatelessWidget {
   const Title({
     required this.title,
     required this.color,
+    this.isDeprecated = false,
     super.key,
   });
   final String title;
   final Color color;
+  final bool isDeprecated;
 
   @override
-  Widget build(BuildContext context) => AutoSizeText(
-        title,
-        style: TextStyle(color: color, fontSize: 40, fontWeight: FontWeight.bold),
-        maxLines: 1,
-      );
+  Widget build(BuildContext context) {
+    return AutoSizeText(
+      title,
+      style: TextStyle(
+        color: color,
+        fontSize: 40,
+        fontWeight: FontWeight.bold,
+        decoration: isDeprecated ? TextDecoration.lineThrough : null,
+        decorationThickness: 2.8,
+        decorationStyle: TextDecorationStyle.wavy,
+        decorationColor: color,
+      ),
+      maxLines: 1,
+    );
+  }
 }
 
-class _Identifier extends StatelessWidget {
-  const _Identifier({
+class EntryIdentifier extends StatelessWidget {
+  const EntryIdentifier({
     required this.id,
+    super.key,
   });
   final String id;
 
   @override
   Widget build(BuildContext context) {
-    return SelectableText(id, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey));
+    return SelectableText(
+      id,
+      style:
+          Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+    );
   }
 }
 
-class _Type extends HookWidget {
-  const _Type({
+class EntryType extends HookWidget {
+  const EntryType({
     required this.type,
     required this.url,
     required this.color,
+    super.key,
   });
   final String type;
   final String url;
@@ -125,13 +154,49 @@ class _Type extends HookWidget {
       onEnter: (_) => hovering.value = true,
       onExit: (_) => hovering.value = false,
       child: GestureDetector(
-        onTap: _launceUrl,
+        onTap: url.isNotEmpty ? _launceUrl : null,
         child: Text(
           type.formatted,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: color.withOpacity(0.9),
                 decoration: hovering.value ? TextDecoration.underline : null,
               ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DeperecationWarning extends StatelessWidget {
+  const _DeperecationWarning({
+    required this.url,
+  });
+
+  final String url;
+
+  Future<void> _launceUrl() async {
+    if (url.isEmpty) return;
+    if (!await canLaunchUrlString(url)) return;
+    await launchUrlString(url);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Admonition.danger(
+      onTap: _launceUrl,
+      child: const Text.rich(
+        TextSpan(
+          text: "This entry has been marked as deprecated. Take a look at the ",
+          children: [
+            TextSpan(
+              text: "documentation",
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.redAccent,
+              ),
+            ),
+            TextSpan(text: " for more information."),
+          ],
         ),
       ),
     );

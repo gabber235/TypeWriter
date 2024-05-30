@@ -4,9 +4,9 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin
 import de.oliver.fancynpcs.api.Npc
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot.*
 import de.oliver.fancynpcs.api.utils.SkinFetcher
-import me.gabber235.typewriter.capture.capturers.ArmSwing
-import me.gabber235.typewriter.entry.entries.NpcData
-import me.gabber235.typewriter.extensions.protocollib.swingArm
+import me.gabber235.typewriter.extensions.packetevents.ArmSwing
+import me.gabber235.typewriter.extensions.packetevents.swingArm
+import me.gabber235.typewriter.utils.ThreadType
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
@@ -17,6 +17,9 @@ import java.util.*
 
 
 interface FancyNpcData : NpcData<Npc> {
+    override val threadType: ThreadType
+        get() = ThreadType.ASYNC
+
     override fun spawn(player: Player, npc: Npc, location: Location) {
         npc.data.location = location
         npc.spawn(player)
@@ -82,7 +85,7 @@ class PlayerNpcData : FancyNpcData {
 class ReferenceNpcData(private val npcId: String) : FancyNpcData {
     override fun create(player: Player, location: Location): Npc {
         val original = FancyNpcsPlugin.get().npcManager.getNpc(npcId)
-            ?: throw IllegalArgumentException("NPC with id $npcId not found.")
+            ?: throw IllegalArgumentException("NPC with id '$npcId' not found.")
         val ogData = original.data
 
         val data = de.oliver.fancynpcs.api.NpcData(
@@ -102,10 +105,12 @@ class ReferenceNpcData(private val npcId: String) : FancyNpcData {
             false,
             {},
             emptyList(),
+            false,
             "",
-            "",
+            emptyList(),
             0f,
-            ogData.attributes,
+            emptyMap(),
+            false
         )
 
         val npc = FancyNpcsPlugin.get().npcAdapter.apply(data)
@@ -115,7 +120,7 @@ class ReferenceNpcData(private val npcId: String) : FancyNpcData {
 
     override fun spawn(player: Player, npc: Npc, location: Location) {
         val original = FancyNpcsPlugin.get().npcManager.getNpc(npcId)
-            ?: throw IllegalArgumentException("NPC with id $npcId not found.")
+            ?: throw IllegalArgumentException("NPC with id '$npcId' not found.")
 
         original.remove(player)
 
@@ -126,7 +131,7 @@ class ReferenceNpcData(private val npcId: String) : FancyNpcData {
         super.teardown(player, npc)
 
         val original = FancyNpcsPlugin.get().npcManager.getNpc(npcId)
-            ?: throw IllegalArgumentException("NPC with id $npcId not found.")
+            ?: throw IllegalArgumentException("NPC with id '$npcId' not found.")
 
         original.spawn(player)
     }

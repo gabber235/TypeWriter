@@ -8,7 +8,9 @@ import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.dialogue.confirmationKey
 import me.gabber235.typewriter.entry.entries.DialogueEntry
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import org.bukkit.entity.Player
+import java.time.Duration
 
 @Messenger(RandomSpokenDialogueEntry::class)
 class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpokenDialogueEntry) :
@@ -26,13 +28,19 @@ class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpo
         speakerDisplayName = entry.speakerDisplayName
         text = entry.messages.randomOrNull() ?: ""
 
-        confirmationKey.listen(listener, player.uniqueId) {
+        confirmationKey.listen(this, player.uniqueId) {
             state = MessengerState.FINISHED
         }
     }
 
-    override fun tick(cycle: Int) {
+    override fun tick(playTime: Duration) {
         if (state != MessengerState.RUNNING) return
-        player.sendSpokenDialogue(text, speakerDisplayName, entry.duration, cycle, triggers.isEmpty())
+        player.sendSpokenDialogue(
+            text.parsePlaceholders(player),
+            speakerDisplayName.parsePlaceholders(player),
+            entry.duration,
+            playTime,
+            triggers.isEmpty()
+        )
     }
 }

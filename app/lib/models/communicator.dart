@@ -15,7 +15,6 @@ import "package:typewriter/models/page.dart";
 import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/utils/socket_extensions.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
 
 part "communicator.g.dart";
@@ -182,6 +181,10 @@ class SocketNotifier extends StateNotifier<Socket?> {
         (data) => ref.read(communicatorProvider).handleDeletePage(data),
       )
       ..on(
+        "moveEntry",
+        (data) => ref.read(communicatorProvider).handleMoveEntry(data),
+      )
+      ..on(
         "createEntry",
         (data) => ref.read(communicatorProvider).handleCreateEntry(data),
       )
@@ -306,6 +309,23 @@ class Communicator {
     );
   }
 
+  Future<void> moveEntry(String entryId, String fromPage, String toPage) async {
+    final socket = ref.read(socketProvider);
+    if (socket == null || !socket.connected) {
+      return;
+    }
+
+    final data = {
+      "entryId": entryId,
+      "fromPage": fromPage,
+      "toPage": toPage,
+    };
+
+    handleAck(
+      await socket.emitWithAckAsync("moveEntry", jsonEncode(data)),
+    );
+  }
+
   Future<void> createEntry(String page, Entry entry) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
@@ -417,29 +437,24 @@ class Communicator {
     );
   }
 
-  Future<Response> requestCapture(Map<String, dynamic> data) async {
+  Future<void> requestContentMode(
+    String contentModeClassPath,
+    Map<String, dynamic> data,
+  ) async {
     final socket = ref.read(socketProvider);
     if (socket == null || !socket.connected) {
-      return const Response(
-        success: false,
-        message: "Socket not connected",
-      );
+      return;
     }
 
-    final response = await socket.emitWithAckAsync(
-      "captureRequest",
-      jsonEncode(data),
-    ) as String?;
-
-    if (response == null) {
-      return const Response(
-        success: false,
-        message: "No response from server",
-      );
-    }
-
-    final json = jsonDecode(response) as Map<String, dynamic>;
-    return Response.fromJson(json);
+    handleAck(
+      await socket.emitWithAckAsync(
+        "contentModeRequest",
+        jsonEncode({
+          "contentMode": contentModeClassPath,
+          "data": data,
+        }),
+      ),
+    );
   }
 
   void handleStagingState(dynamic data) {
@@ -467,6 +482,14 @@ class Communicator {
   void handleDeletePage(dynamic data) {
     final name = data as String;
     ref.read(bookProvider.notifier).syncDeletePage(name);
+  }
+
+  void handleMoveEntry(dynamic data) {
+    final json = jsonDecode(data as String) as Map<String, dynamic>;
+    final entryId = json["entryId"] as String;
+    final fromPage = json["fromPage"] as String;
+    final toPage = json["toPage"] as String;
+    ref.read(bookProvider.notifier).syncMoveEntry(entryId, fromPage, toPage);
   }
 
   void handleCreateEntry(dynamic data) {
@@ -560,4 +583,24 @@ class Response with _$Response {
 
   factory Response.fromJson(Map<String, dynamic> json) =>
       _$ResponseFromJson(json);
+}
+
+extension SocketExt on Socket {
+  Future<dynamic> emitWithAckAsync(
+    String event,
+    dynamic data, {
+    bool binary = false,
+  }) {
+    final completer = Completer<dynamic>();
+
+    emitWithAck(
+      event,
+      data,
+      binary: binary,
+      ack: (data) {
+        if (!completer.isCompleted) completer.complete(data);
+      },
+    );
+    return completer.future;
+  }
 }

@@ -1,10 +1,10 @@
 import "package:collection_ext/all.dart";
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 
 part "segment.g.dart";
 part "segment.freezed.dart";
@@ -30,7 +30,7 @@ class Segment with _$Segment {
     @Default("") String path,
     @Default(0) int index,
     @Default(Colors.white) Color color,
-    @Default(FontAwesomeIcons.star) IconData icon,
+    @Default(TWIcons.star) String icon,
     @Default(0) int startFrame,
     @Default(0) int endFrame,
     int? minFrames,

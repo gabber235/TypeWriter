@@ -1,19 +1,16 @@
 package me.gabber235.typewriter.entries.event
 
+import lirand.api.extensions.math.blockLocation
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Min
-import me.gabber235.typewriter.entry.EntryListener
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.startDialogueWithOrNextDialogue
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
-import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
 
-@Entry("on_player_near_location", "When the player is near a certain location", Colors.YELLOW, Icons.HAND_POINTER)
+@Entry("on_player_near_location", "When the player is near a certain location", Colors.YELLOW, "mdi:map-marker-radius")
 /**
  * The `PlayerNearLocationEventEntry` class represents an event that is triggered when a player is within a certain range of a location.
  *
@@ -25,7 +22,7 @@ import org.bukkit.event.player.PlayerMoveEvent
 class PlayerNearLocationEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The location the player should be near.")
     val location: Location = Location(null, 0.0, 0.0, 0.0),
     @Help("The range within which the event should trigger.")
@@ -39,11 +36,14 @@ fun onPlayerNearLocation(event: PlayerMoveEvent, query: Query<PlayerNearLocation
     if (!event.hasChangedBlock()) return
 
     query findWhere { entry ->
-        event.player.isInRange(entry.location, entry.range)
+        !event.from.blockLocation.isInRange(
+            entry.location,
+            entry.range
+        ) && event.to.blockLocation.isInRange(entry.location, entry.range)
     } startDialogueWithOrNextDialogue event.player
 }
 
-fun Player.isInRange(location: Location, range: Double): Boolean {
+fun Location.isInRange(location: Location, range: Double): Boolean {
     if (location.world != world) return false
-    return this.location.distanceSquared(location) <= range * range
+    return this.distanceSquared(location) <= range * range
 }

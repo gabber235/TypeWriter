@@ -12,7 +12,7 @@ part of 'page.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Page _$PageFromJson(Map<String, dynamic> json) {
   return _Page.fromJson(json);
@@ -25,6 +25,7 @@ mixin _$Page {
   PageType get type => throw _privateConstructorUsedError;
   List<Entry> get entries => throw _privateConstructorUsedError;
   String get chapter => throw _privateConstructorUsedError;
+  int get priority => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -40,7 +41,8 @@ abstract class $PageCopyWith<$Res> {
       {@JsonKey(name: "name") String pageName,
       PageType type,
       List<Entry> entries,
-      String chapter});
+      String chapter,
+      int priority});
 }
 
 /// @nodoc
@@ -60,6 +62,7 @@ class _$PageCopyWithImpl<$Res, $Val extends Page>
     Object? type = null,
     Object? entries = null,
     Object? chapter = null,
+    Object? priority = null,
   }) {
     return _then(_value.copyWith(
       pageName: null == pageName
@@ -78,6 +81,10 @@ class _$PageCopyWithImpl<$Res, $Val extends Page>
           ? _value.chapter
           : chapter // ignore: cast_nullable_to_non_nullable
               as String,
+      priority: null == priority
+          ? _value.priority
+          : priority // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -93,7 +100,8 @@ abstract class _$$PageImplCopyWith<$Res> implements $PageCopyWith<$Res> {
       {@JsonKey(name: "name") String pageName,
       PageType type,
       List<Entry> entries,
-      String chapter});
+      String chapter,
+      int priority});
 }
 
 /// @nodoc
@@ -110,6 +118,7 @@ class __$$PageImplCopyWithImpl<$Res>
     Object? type = null,
     Object? entries = null,
     Object? chapter = null,
+    Object? priority = null,
   }) {
     return _then(_$PageImpl(
       pageName: null == pageName
@@ -128,6 +137,10 @@ class __$$PageImplCopyWithImpl<$Res>
           ? _value.chapter
           : chapter // ignore: cast_nullable_to_non_nullable
               as String,
+      priority: null == priority
+          ? _value.priority
+          : priority // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -139,7 +152,8 @@ class _$PageImpl implements _Page {
       {@JsonKey(name: "name") required this.pageName,
       required this.type,
       final List<Entry> entries = const [],
-      this.chapter = ""})
+      this.chapter = "",
+      this.priority = 0})
       : _entries = entries;
 
   factory _$PageImpl.fromJson(Map<String, dynamic> json) =>
@@ -162,14 +176,17 @@ class _$PageImpl implements _Page {
   @override
   @JsonKey()
   final String chapter;
+  @override
+  @JsonKey()
+  final int priority;
 
   @override
   String toString() {
-    return 'Page(pageName: $pageName, type: $type, entries: $entries, chapter: $chapter)';
+    return 'Page(pageName: $pageName, type: $type, entries: $entries, chapter: $chapter, priority: $priority)';
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PageImpl &&
@@ -177,13 +194,15 @@ class _$PageImpl implements _Page {
                 other.pageName == pageName) &&
             (identical(other.type, type) || other.type == type) &&
             const DeepCollectionEquality().equals(other._entries, _entries) &&
-            (identical(other.chapter, chapter) || other.chapter == chapter));
+            (identical(other.chapter, chapter) || other.chapter == chapter) &&
+            (identical(other.priority, priority) ||
+                other.priority == priority));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, pageName, type,
-      const DeepCollectionEquality().hash(_entries), chapter);
+      const DeepCollectionEquality().hash(_entries), chapter, priority);
 
   @JsonKey(ignore: true)
   @override
@@ -204,7 +223,8 @@ abstract class _Page implements Page {
       {@JsonKey(name: "name") required final String pageName,
       required final PageType type,
       final List<Entry> entries,
-      final String chapter}) = _$PageImpl;
+      final String chapter,
+      final int priority}) = _$PageImpl;
 
   factory _Page.fromJson(Map<String, dynamic> json) = _$PageImpl.fromJson;
 
@@ -217,6 +237,8 @@ abstract class _Page implements Page {
   List<Entry> get entries;
   @override
   String get chapter;
+  @override
+  int get priority;
   @override
   @JsonKey(ignore: true)
   _$$PageImplCopyWith<_$PageImpl> get copyWith =>

@@ -36,7 +36,17 @@ class TypeWriterApp extends HookConsumerWidget {
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
       debugShowCheckedModeBanner: false,
-      routerConfig: router.config(),
+      routerConfig: router.config(
+        navigatorObservers: () => <NavigatorObserver>[
+          InvalidatorNavigatorObserver(
+            () async {
+              // We don't want to invalidate during the build phase, so we wait
+              await WidgetsBinding.instance.endOfFrame;
+              ref.invalidate(currentRouteDataProvider);
+            },
+          ),
+        ],
+      ),
       shortcuts: WidgetsApp.defaultShortcuts,
       builder: (_, child) => ToastDisplay(child: child),
     );

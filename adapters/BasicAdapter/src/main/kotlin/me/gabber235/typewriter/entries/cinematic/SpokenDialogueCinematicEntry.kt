@@ -2,27 +2,27 @@ package me.gabber235.typewriter.entries.cinematic
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMiniWithResolvers
 import me.gabber235.typewriter.utils.asPartialFormattedMini
 import me.gabber235.typewriter.utils.isFloodgate
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 
-@Entry("spoken_dialogue_cinematic", "Play a spoken dialogue cinematic", Colors.CYAN, Icons.MESSAGE)
+@Entry("spoken_dialogue_cinematic", "Play a spoken dialogue cinematic", Colors.CYAN, "mingcute:message-4-fill")
 /**
  * The `Spoken Dialogue Cinematic` is a cinematic that displays an animated message in chat.
  *
@@ -35,18 +35,14 @@ class SpokenDialogueCinematicEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
-    @EntryIdentifier(SpeakerEntry::class)
-    val speaker: String = "",
-    @Segments(icon = Icons.MESSAGE)
-    val segments: List<DisplayDialogueSegment> = emptyList(),
+    val speaker: Ref<SpeakerEntry> = emptyRef(),
+    @Segments(icon = "mingcute:message-4-fill")
+    val segments: List<MultiLineDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
-    val speakerEntry: SpeakerEntry?
-        get() = Query.findById(speaker)
-
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,
-            speakerEntry,
+            speaker.get(),
             segments,
             spokenPercentage,
             setup = {
@@ -59,24 +55,25 @@ class SpokenDialogueCinematicEntry(
     }
 }
 
-@Entry("random_spoken_dialogue_cinematic", "Play a random spoken dialogue cinematic", Colors.CYAN, Icons.MESSAGE)
+@Entry(
+    "random_spoken_dialogue_cinematic",
+    "Play a random spoken dialogue cinematic",
+    Colors.CYAN,
+    "mingcute:message-4-fill"
+)
 data class RandomSpokenDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
-    @EntryIdentifier(SpeakerEntry::class)
-    val speaker: String = "",
-    @Segments(icon = Icons.MESSAGE)
-    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
-) : CinematicEntry {
-    val speakerEntry: SpeakerEntry?
-        get() = Query.findById(speaker)
-
+    val speaker: Ref<SpeakerEntry> = emptyRef(),
+    @Segments(icon = "mingcute:message-4-fill")
+    val segments: List<MultiLineRandomDisplayDialogueSegment> = emptyList(),
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,
-            speakerEntry,
+            speaker.get(),
             segments.toDisplaySegments(),
             spokenPercentage,
             setup = {

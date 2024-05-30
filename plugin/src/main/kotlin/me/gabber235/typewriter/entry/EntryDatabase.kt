@@ -4,57 +4,55 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.google.gson.stream.JsonReader
+import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
 import me.gabber235.typewriter.entry.entries.CustomCommandEntry
-import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.entries.FactEntry
-import me.gabber235.typewriter.entry.entries.ReadableFactEntry
 import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.NonExistentSubtypeException
-import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import me.gabber235.typewriter.utils.get
-import me.gabber235.typewriter.utils.refreshAndRegisterAll
+import me.gabber235.typewriter.utils.*
+import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
-import java.util.*
 import kotlin.reflect.KClass
 
 interface EntryDatabase {
-    val events: List<EventEntry>
-    val facts: List<FactEntry>
     val commandEvents: List<CustomCommandEntry>
 
     fun initialize()
     fun loadEntries()
 
-    fun <E : Entry> findEntries(klass: KClass<E>, predicate: (E) -> Boolean): List<E>
+    fun <E : Entry> findEntries(klass: KClass<E>, predicate: (E) -> Boolean): Sequence<E>
 
-    fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E>
+    fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): Sequence<E>
 
     fun <E : Entry> findEntry(klass: KClass<E>, predicate: (E) -> Boolean): E?
 
     fun <E : Entry> findEntryById(kClass: KClass<E>, id: String): E?
-    fun getFact(id: String): FactEntry?
-    fun findFactByName(name: String): FactEntry?
+
+    fun findPageById(id: String): Page?
     fun getPageNames(type: PageType? = null): List<String>
+    fun pageIdByEntryId(entryId: String): String?
+
+    fun entryPriority(entry: Ref<out Entry>): Int
+    fun pagePriority(pageId: String): Int
 }
 
 class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     private val entryListeners: EntryListeners by inject()
+    private val audienceManager: AudienceManager by inject()
     private val gson: Gson by inject(named("entryParser"))
 
     private var pages: List<Page> = emptyList()
     private var entries: List<Entry> = emptyList()
 
-    override var events = listOf<EventEntry>()
-    override var facts = listOf<FactEntry>()
     override var commandEvents = listOf<CustomCommandEntry>()
+
+    private var entryPriority = emptyMap<Ref<out Entry>, Int>()
 
     override fun initialize() {
         plugin.listen<TypewriterReloadEvent> { loadEntries() }
@@ -64,16 +62,26 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     override fun loadEntries() {
         val pages = readPages(gson)
 
-        this.events = pages.flatMap { it.entries.filterIsInstance<EventEntry>() }
-        this.facts = pages.flatMap { it.entries.filterIsInstance<FactEntry>() }
-
         val newCommandEvents = pages.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() }
-        this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
+        // CommandAPI crashes when we try to register commands not on the main thread
+        runBlocking {
+            ThreadType.SYNC.switchContext {
+                this@EntryDatabaseImpl.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
+            }
+        }
 
         this.entries = pages.flatMap { it.entries }
+        this.entryPriority = pages.flatMap { page ->
+            page.entries.map { entry ->
+                if (entry !is PriorityEntry) return@map entry.ref() to page.priority
+                entry.ref() to entry.priorityOverride.orElse(page.priority)
+            }
+        }.toMap()
         this.pages = pages
 
+
         entryListeners.register()
+        audienceManager.register()
 
         logger.info("Loaded ${entries.size} entries from ${pages.size} pages.")
     }
@@ -93,14 +101,14 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
         }
     }
 
-    override fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): List<T> {
-        return entries.asSequence().filterIsInstance(klass.java).filter(predicate).toList()
+    override fun <T : Entry> findEntries(klass: KClass<T>, predicate: (T) -> Boolean): Sequence<T> {
+        return entries.asSequence().filterIsInstance(klass.java).filter(predicate)
     }
 
-    override fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): List<E> {
+    override fun <E : Entry> findEntriesFromPage(klass: KClass<E>, pageId: String, filter: (E) -> Boolean): Sequence<E> {
         return pages.firstOrNull { it.id == pageId }?.entries?.asSequence()?.filterIsInstance(klass.java)
-            ?.filter(filter)?.toList()
-            ?: emptyList()
+            ?.filter(filter)
+            ?: emptySequence()
     }
 
     override fun <T : Entry> findEntry(klass: KClass<T>, predicate: (T) -> Boolean): T? {
@@ -108,12 +116,24 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
     }
 
     override fun <T : Entry> findEntryById(kClass: KClass<T>, id: String): T? = findEntry(kClass) { it.id == id }
-    override fun getFact(id: String) = facts.firstOrNull { it.id == id }
-    override fun findFactByName(name: String) = facts.firstOrNull { it.name == name }
+
+    override fun findPageById(id: String): Page? = pages.firstOrNull { it.id == id }
 
     override fun getPageNames(type: PageType?): List<String> {
         return if (type == null) pages.map { it.id }
         else pages.filter { it.type == type }.map { it.id }
+    }
+
+    override fun pageIdByEntryId(entryId: String): String? {
+        return pages.firstOrNull { page -> page.entries.any { it.id == entryId } }?.id
+    }
+
+    override fun entryPriority(entry: Ref<out Entry>): Int {
+        return entryPriority[entry] ?: 0
+    }
+
+    override fun pagePriority(pageId: String): Int {
+        return findPageById(pageId)?.priority ?: Int.MIN_VALUE
     }
 }
 
@@ -124,8 +144,9 @@ fun JsonReader.parsePage(id: String, gson: Gson): Result<Page> {
         beginObject()
         while (hasNext()) {
             when (nextName()) {
-                "entries" -> page = page.copy(entries = parseEntries(gson))
+                "entries" -> page = page.copy(entries = parseEntries(gson, id))
                 "type" -> page = page.copy(type = PageType.fromId(nextString()) ?: PageType.SEQUENCE)
+                "priority" -> page = page.copy(priority = nextInt())
                 else -> skipValue()
             }
         }
@@ -139,12 +160,12 @@ fun JsonReader.parsePage(id: String, gson: Gson): Result<Page> {
     }
 }
 
-private fun JsonReader.parseEntries(gson: Gson): List<Entry> {
+private fun JsonReader.parseEntries(gson: Gson, pageId: String): List<Entry> {
     val entries = mutableListOf<Entry>()
 
     beginArray()
     while (hasNext()) {
-        val entry = parseEntry(gson) ?: continue
+        val entry = parseEntry(gson, pageId) ?: continue
         entries.add(entry)
     }
     endArray()
@@ -152,7 +173,7 @@ private fun JsonReader.parseEntries(gson: Gson): List<Entry> {
     return entries
 }
 
-private fun JsonReader.parseEntry(gson: Gson): Entry? {
+private fun JsonReader.parseEntry(gson: Gson, pageId: String): Entry? {
     return try {
         gson.fromJson(this, Entry::class.java)
     } catch (e: NonExistentSubtypeException) {
@@ -161,7 +182,7 @@ private fun JsonReader.parseEntry(gson: Gson): Entry? {
         logger.warning(
             """
 			|--------------------------------------------------------------------------
-			|Failed to parse entry: $subtypeName is not a valid entry type. (skipping)
+			|Failed to parse entry type '$subtypeName' on page '$pageId' is not a valid entry type. (skipping)
 			|
 			|This is either because an adapter is missing or due to having an outdated page entry. 
 			|
@@ -180,6 +201,7 @@ data class Page(
     val id: String = "",
     val entries: List<Entry> = emptyList(),
     val type: PageType = PageType.SEQUENCE,
+    val priority: Int = 0
 )
 
 enum class PageType(val id: String) {
@@ -191,16 +213,19 @@ enum class PageType(val id: String) {
 
     @SerializedName("cinematic")
     CINEMATIC("cinematic"),
+
+    @SerializedName("manifest")
+    MANIFEST("manifest"),
     ;
 
     companion object {
-        fun fromId(id: String) = values().firstOrNull { it.id == id }
+        fun fromId(id: String) = entries.firstOrNull { it.id == id }
     }
 }
 
-fun Iterable<Criteria>.matches(playerUUID: UUID): Boolean = all {
-    val entry = Query.findById<ReadableFactEntry>(it.fact)
-    val fact = entry?.read(playerUUID)
+infix fun Iterable<Criteria>.matches(player: Player): Boolean = all {
+    val entry = it.fact.get()
+    val fact = entry?.readForPlayersGroup(player)
     it.isValid(fact)
 }
 
@@ -230,3 +255,7 @@ fun createEntryParserGson(adapterLoader: AdapterLoader): Gson {
     return builder
         .create()
 }
+
+val Entry.priority: Int get() = ref().priority
+val Ref<out Entry>.priority: Int
+    get() = org.koin.java.KoinJavaComponent.get<EntryDatabase>(EntryDatabase::class.java).entryPriority(this)

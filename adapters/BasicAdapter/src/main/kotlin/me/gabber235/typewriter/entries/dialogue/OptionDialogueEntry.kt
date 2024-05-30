@@ -1,14 +1,15 @@
 package me.gabber235.typewriter.entries.dialogue
 
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.*
-import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Modifier
-import me.gabber235.typewriter.entry.TriggerableEntry
+import me.gabber235.typewriter.adapters.modifiers.Colored
+import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Placeholder
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.DialogueEntry
-import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.entry.entries.SpeakerEntry
+import java.time.Duration
 
-@Entry("option", "Display a list of options to the player", "#4CAF50", Icons.LIST_UL)
+@Entry("option", "Display a list of options to the player", "#4CAF50", "fa6-solid:list")
 /**
  * The `Option Dialogue` action displays a list of options to the player to choose from. This action provides you with the ability to give players choices that affect the outcome of the game.
  *
@@ -21,14 +22,16 @@ class OptionDialogueEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
-    override val speaker: String = "",
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
+    override val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Placeholder
     @Colored
     @Help("The text to display to the player.")
     val text: String = "",
     @Help("The options for the player to choose from.")
     val options: List<Option> = emptyList(),
+    @Help("The duration it takes to type out the message. If the duration is zero, the message will be displayed instantly.")
+    val duration: Duration = Duration.ZERO,
 ) : DialogueEntry
 
 data class Option(
@@ -38,8 +41,6 @@ data class Option(
     val criteria: List<Criteria> = emptyList(),
     @Help("The modifiers to apply when this option is chosen.")
     val modifiers: List<Modifier> = emptyList(),
-    @Triggers
-    @EntryIdentifier(TriggerableEntry::class)
     @Help("The triggers to fire when this option is chosen.")
-    val triggers: List<String> = emptyList()
+    val triggers: List<Ref<TriggerableEntry>> = emptyList()
 )

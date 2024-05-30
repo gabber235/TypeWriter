@@ -20,7 +20,7 @@ sealed interface ParameterGenerator {
     fun isApplicable(parameter: Parameter): Boolean
     fun generate(event: Event, adapterListener: AdapterListener): Any
 
-    object EventParameterGenerator : ParameterGenerator {
+    data object EventParameterGenerator : ParameterGenerator {
         override fun isApplicable(parameter: Parameter): Boolean {
             // It and all superclasses must be Event
             return Event::class.java.isAssignableFrom(parameter.type)
@@ -29,7 +29,7 @@ sealed interface ParameterGenerator {
         override fun generate(event: Event, adapterListener: AdapterListener): Any = event
     }
 
-    object QueryParameterGenerator : ParameterGenerator {
+    data object QueryParameterGenerator : ParameterGenerator {
         override fun isApplicable(parameter: Parameter): Boolean {
             // It can only be Query
             return parameter.type.isAssignableFrom(Query::class.java)

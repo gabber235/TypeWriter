@@ -12,7 +12,7 @@ part of 'adapter.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Adapter _$AdapterFromJson(Map<String, dynamic> json) {
   return _Adapter.fromJson(json);
@@ -176,7 +176,7 @@ class _$AdapterImpl with DiagnosticableTreeMixin implements _Adapter {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AdapterImpl &&
@@ -242,8 +242,7 @@ mixin _$EntryBlueprint {
   List<String> get tags => throw _privateConstructorUsedError;
   @ColorConverter()
   Color get color => throw _privateConstructorUsedError;
-  @IconConverter()
-  IconData get icon => throw _privateConstructorUsedError;
+  String get icon => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -264,7 +263,7 @@ abstract class $EntryBlueprintCopyWith<$Res> {
       ObjectField fields,
       List<String> tags,
       @ColorConverter() Color color,
-      @IconConverter() IconData icon});
+      String icon});
 }
 
 /// @nodoc
@@ -316,7 +315,7 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
     ) as $Val);
   }
 }
@@ -336,7 +335,7 @@ abstract class _$$EntryBlueprintImplCopyWith<$Res>
       ObjectField fields,
       List<String> tags,
       @ColorConverter() Color color,
-      @IconConverter() IconData icon});
+      String icon});
 }
 
 /// @nodoc
@@ -386,7 +385,7 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
-              as IconData,
+              as String,
     ));
   }
 }
@@ -403,7 +402,7 @@ class _$EntryBlueprintImpl
       required this.fields,
       final List<String> tags = const <String>[],
       @ColorConverter() this.color = Colors.grey,
-      @IconConverter() this.icon = Icons.help})
+      this.icon = TWIcons.help})
       : _tags = tags;
 
   factory _$EntryBlueprintImpl.fromJson(Map<String, dynamic> json) =>
@@ -432,8 +431,7 @@ class _$EntryBlueprintImpl
   final Color color;
   @override
   @JsonKey()
-  @IconConverter()
-  final IconData icon;
+  final String icon;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -455,7 +453,7 @@ class _$EntryBlueprintImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EntryBlueprintImpl &&
@@ -504,7 +502,7 @@ abstract class _EntryBlueprint implements EntryBlueprint {
       required final ObjectField fields,
       final List<String> tags,
       @ColorConverter() final Color color,
-      @IconConverter() final IconData icon}) = _$EntryBlueprintImpl;
+      final String icon}) = _$EntryBlueprintImpl;
 
   factory _EntryBlueprint.fromJson(Map<String, dynamic> json) =
       _$EntryBlueprintImpl.fromJson;
@@ -523,8 +521,7 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   @ColorConverter()
   Color get color;
   @override
-  @IconConverter()
-  IconData get icon;
+  String get icon;
   @override
   @JsonKey(ignore: true)
   _$$EntryBlueprintImplCopyWith<_$EntryBlueprintImpl> get copyWith =>
@@ -760,7 +757,7 @@ class _$FieldTypeImpl with DiagnosticableTreeMixin implements _FieldType {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FieldTypeImpl &&
@@ -1002,7 +999,7 @@ class _$PrimitiveFieldImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PrimitiveFieldImpl &&
@@ -1254,7 +1251,7 @@ class _$EnumFieldImpl with DiagnosticableTreeMixin implements EnumField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EnumFieldImpl &&
@@ -1510,7 +1507,7 @@ class _$ListFieldImpl with DiagnosticableTreeMixin implements ListField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ListFieldImpl &&
@@ -1782,7 +1779,7 @@ class _$MapFieldImpl with DiagnosticableTreeMixin implements MapField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MapFieldImpl &&
@@ -2036,7 +2033,7 @@ class _$ObjectFieldImpl with DiagnosticableTreeMixin implements ObjectField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ObjectFieldImpl &&
@@ -2319,7 +2316,7 @@ class _$CustomFieldImpl with DiagnosticableTreeMixin implements CustomField {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CustomFieldImpl &&
@@ -2614,7 +2611,7 @@ class _$ModifierImpl with DiagnosticableTreeMixin implements _Modifier {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ModifierImpl &&

@@ -1,5 +1,6 @@
+import "dart:async";
+
 import "package:auto_route/auto_route.dart";
-import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/guard/connected_guard.dart";
@@ -42,6 +43,7 @@ class AppRouter extends _$AppRouter {
           path: "/book",
           guards: [ConnectedGuard(ref)],
           children: [
+            RedirectRoute(path: "", redirectTo: "pages"),
             AutoRoute(
               page: PagesListRoute.page,
               path: "pages",
@@ -64,13 +66,27 @@ RouteData? _fetchCurrentRouteData(String name, RoutingController controller) {
   return child != null ? _fetchCurrentRouteData(name, child) : null;
 }
 
+class InvalidatorNavigatorObserver extends NavigatorObserver {
+  InvalidatorNavigatorObserver(this.invalidator);
+  final void Function() invalidator;
+
+  @override
+  void didPop(Route route, Route? previousRoute) => invalidator();
+
+  @override
+  void didPush(Route route, Route? previousRoute) => invalidator();
+
+  @override
+  void didRemove(Route route, Route? previousRoute) => invalidator();
+
+  @override
+  void didReplace({Route? newRoute, Route? oldRoute}) => invalidator();
+}
+
 /// Provides the current route data for the given [name].
 @Riverpod(keepAlive: true)
 RouteData? currentRouteData(CurrentRouteDataRef ref, String path) {
   final router = ref.watch(appRouter);
-  void invalidator() => ref.invalidateSelf();
-  router.addListener(invalidator);
-  ref.onDispose(() => router.removeListener(invalidator));
   return _fetchCurrentRouteData(path, router);
 }
 
@@ -79,15 +95,12 @@ extension AppRouterX on AppRouter {
   /// containing the entry and then navigate to the entry.
   /// Returns true if the page was changed.
   Future<void> navigateToEntry(PassingRef ref, String entryId) async {
-    final currentPage = ref.read(currentPageProvider);
+    final entryPage = ref.read(globalEntryWithPageProvider(entryId))?.key;
 
-    if (currentPage != null &&
-        currentPage.entries.none((e) => e.id == entryId)) {
-      final entryPage = ref.read(globalEntryWithPageProvider(entryId))?.key;
-      if (entryPage != null) {
-        await navigateToPage(ref, entryPage);
-      }
+    if (entryPage == null) {
+      return;
     }
+    await navigateToPage(ref, entryPage);
   }
 
   /// Navigate to the given [pageName].
@@ -95,12 +108,17 @@ extension AppRouterX on AppRouter {
   Future<void> navigateToPage(PassingRef ref, String pageName) async {
     final currentPage = ref.read(currentPageProvider);
 
-    if (currentPage?.pageName != pageName) {
-      await ref.read(appRouter).push(
+    if (currentPage?.pageName == pageName) {
+      return;
+    }
+
+    // Sometimes the app router does not complete the future and it gets stuck.
+    unawaited(
+      ref.read(appRouter).push(
             PageEditorRoute(id: pageName),
             onFailure: (e) =>
                 debugPrint("Failed to navigate to page $pageName: $e"),
-          );
-    }
+          ),
+    );
   }
 }

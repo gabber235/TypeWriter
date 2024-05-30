@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{WinstonError, CLICKUP_LIST_ID, CLIENT};
 
 use super::{
-    post_comment, ClickupIdentifiable, TaskPriority, TaskSize, TaskStatus, TaskTag,
+    post_comment, ClickupIdentifiable, TaskPriority, TaskSize, TaskStatus, TaskType,
     CLICKUP_CUSTOM_DISCORD_FIELD_ID, CLICKUP_CUSTOM_SIZE_FIELD_ID,
 };
 
@@ -11,10 +11,10 @@ use super::{
 pub struct CreateTaskRequest {
     name: String,
     description: String,
-    tags: Vec<String>,
     status: String,
     priority: u8,
     custom_fields: Vec<CustomField>,
+    custom_item_id: u16,
 }
 
 #[derive(Debug, Serialize)]
@@ -33,14 +33,14 @@ pub async fn create_task_in_clickup(
     description: &str,
     priority: &TaskPriority,
     size: &TaskSize,
-    tags: &[TaskTag],
+    task_type: &TaskType,
     discord_channel_id: String,
     discord_channel_url: String,
 ) -> Result<String, WinstonError> {
     let request = CreateTaskRequest {
         name: title.to_string(),
         description: description.to_string(),
-        tags: tags.into_iter().map(|tag| tag.raw_string()).collect(),
+        custom_item_id: task_type.clickup_id(),
         status: TaskStatus::Backlog.raw_string(),
         priority: priority.into(),
         custom_fields: vec![

@@ -15,13 +15,17 @@ This action could be used in a plethora of scenarios. From simple quests requiri
 
 <fields.CriteriaField />
 <fields.ModifiersField />
-<fields.TriggersField />
+<fields.EntryField name='Triggers' required multiple>
+</fields.EntryField>
 <fields.EntryField name='Mob Name' required>
      The mob's name
 </fields.EntryField>
 <fields.EntryField name='Level' required>
      The mob's level
 </fields.EntryField>
-<fields.EntryField name='Spawn Location' required>
+<fields.EntryField name='Only Visible For Player' required>
+     Whether the mob should be only seen by the player
+</fields.EntryField>
+<fields.EntryField name='Spawn Location' required rotation>
      The mob's spawn location
 </fields.EntryField>

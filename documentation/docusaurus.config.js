@@ -42,13 +42,20 @@ const config = {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl:
-                        'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
+                        'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
+                    lastVersion: '0.4.1',
+                    versions: {
+                      current: {
+                        label: 'Beta⚠️',
+                        path: 'beta',
+                      },
+                    },
                 },
                 blog: {
                     showReadingTime: true,
                     editUrl:
-                        'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
+                        'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
@@ -89,6 +96,10 @@ const config = {
                     },
                     { to: '/blog', label: 'Blog', position: 'left' },
                     {
+                        type: 'docsVersionDropdown',
+                        position: 'right',
+                    },
+                    {
                         href: 'https://github.com/gabber235/TypeWriter',
                         label: 'GitHub',
                         position: 'right',
@@ -99,12 +110,17 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Docs',
+                        title: 'Information',
                         items: [
                             {
                                 label: 'Documentation',
                                 to: '/docs/home',
                             },
+                            {
+                                label: 'Clickup',
+                                href: 'https://sharing.clickup.com/9015308602/l/h/6-901502296591-1/e32ea9f33a22632',
+                            }
+                            
                         ],
                     },
                     {
@@ -157,18 +173,7 @@ const config = {
             }
         }),
     plugins: [
-        "rive-loader",
-        // [
-        //     '@docusaurus/plugin-content-docs',
-        //     {
-        //         id: 'adapters',
-        //         path: 'adapters',
-        //         routeBasePath: 'adapters',
-        //         sidebarPath: require.resolve('./sidebars.js'),
-        //         editUrl:
-        //             'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
-        //     },
-        // ]
+        "rive-loader"
     ]
 };
 

@@ -2,6 +2,7 @@ package me.gabber235.typewriter.adapters
 
 import com.google.gson.JsonObject
 import me.gabber235.typewriter.adapters.modifiers.*
+import me.gabber235.typewriter.logger
 import java.lang.reflect.Field
 
 
@@ -72,7 +73,7 @@ sealed interface FieldModifier {
 }
 
 interface ModifierComputer {
-    fun compute(field: Field, info: FieldInfo): FieldModifier?
+    fun compute(field: Field, info: FieldInfo): Result<FieldModifier?>
 
     /**
      * Checks if the given field is a list and tries to compute the modifier for the list's type.
@@ -83,7 +84,8 @@ interface ModifierComputer {
      */
     fun innerComputeForList(field: Field, info: FieldInfo): FieldModifier? {
         if (info !is ListField) return null
-        return compute(field, info.type)?.let { FieldModifier.InnerListModifier(it) }
+        val modifier = compute(field, info.type).getOrNull() ?: return null
+        return FieldModifier.InnerListModifier(modifier)
     }
 
     /**
@@ -95,8 +97,8 @@ interface ModifierComputer {
      */
     fun innerComputeForMap(field: Field, info: FieldInfo): FieldModifier? {
         if (info !is MapField) return null
-        val keyModifier = compute(field, info.key)
-        val valueModifier = compute(field, info.value)
+        val keyModifier = compute(field, info.key).onFailure { return null }.getOrNull()
+        val valueModifier = compute(field, info.value).onFailure { return null }.getOrNull()
 
         if (keyModifier == null && valueModifier == null) return null
         return FieldModifier.InnerMapModifier(keyModifier, valueModifier)
@@ -112,7 +114,10 @@ interface ModifierComputer {
     fun innerComputeForCustom(field: Field, info: FieldInfo): FieldModifier? {
         if (info !is CustomField) return null
         val customInfo = info.fieldInfo ?: return null
-        return compute(field, customInfo)?.let { FieldModifier.InnerCustomModifier(it) }
+        val modifier = compute(field, customInfo)
+            .getOrNull()
+            ?: return null
+        return FieldModifier.InnerCustomModifier(modifier)
     }
 
     /**
@@ -123,17 +128,21 @@ interface ModifierComputer {
      * @param info The info of the field
      */
     fun innerCompute(field: Field, info: FieldInfo): FieldModifier? {
-        return innerComputeForList(field, info) ?: innerComputeForMap(field, info) ?: innerComputeForCustom(field, info)
+        return when (info) {
+            is ListField -> innerComputeForList(field, info)
+            is MapField -> innerComputeForMap(field, info)
+            is CustomField -> innerComputeForCustom(field, info)
+            else -> null
+        }
     }
 }
 
 private val computers: List<ModifierComputer> by lazy {
     listOf(
         HelpModifierComputer,
-        TriggersModifierComputer,
-        EntrySelectorModifierComputer,
         SnakeCaseModifierComputer,
         MultiLineModifierComputer,
+        OnlyTagsModifierComputer,
         MaterialPropertiesModifierComputer,
         WithRotationModifierComputer,
         SegmentModifierComputer,
@@ -141,11 +150,12 @@ private val computers: List<ModifierComputer> by lazy {
         MaxModifierComputer,
         PageModifierComputer,
         GeneratedModifierComputer,
-        CaptureModifierComputer,
+        ContentEditorModifierComputer,
         PlaceholderModifierComputer,
         ColoredModifierComputer,
         RegexModifierComputer,
         IconModifierComputer,
+        NegativeModifierComputer,
     )
 }
 
@@ -156,5 +166,13 @@ private val computers: List<ModifierComputer> by lazy {
  * display the field differently.
  */
 fun computeFieldModifiers(field: Field, info: FieldInfo) {
-    computers.mapNotNull { it.compute(field, info) }.forEach { it.appendModifier(info) }
+    computers.mapNotNull { computer ->
+        val result = computer.compute(field, info)
+        if (result.isSuccess) {
+            result.getOrNull()
+        } else {
+            logger.warning("Failed to compute modifier ${computer::class.simpleName} for field ${field.name} in ${field.declaringClass.simpleName}: ${result.exceptionOrNull()?.message}")
+            null
+        }
+    }.forEach { it.appendModifier(info) }
 }

@@ -1,9 +1,10 @@
 package me.gabber235.typewriter.interaction
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.server.registerSuspendingEvents
 import lirand.api.extensions.server.server
+import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.entries.CustomCommandEntry
 import me.gabber235.typewriter.entry.entries.Event
 import me.gabber235.typewriter.entry.entries.EventTrigger
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
@@ -12,6 +13,7 @@ import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -23,14 +25,13 @@ import org.koin.core.component.KoinComponent
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-private const val TICK_MS = 50L
-private const val AVERAGE_SCHEDULING_DELAY_MS = 5L
+internal const val TICK_MS = 50L
+internal const val AVERAGE_SCHEDULING_DELAY_MS = 5L
 
 class InteractionHandler : Listener, KoinComponent {
     private val interactions = ConcurrentHashMap<UUID, Interaction>()
-    private var job: Job? = null
 
-    private val Player.interaction: Interaction?
+    val Player.interaction: Interaction?
         get() = interactions[uniqueId]
 
 
@@ -66,14 +67,27 @@ class InteractionHandler : Listener, KoinComponent {
         triggerEvent(Event(player, triggers))
     }
 
+    /**
+     * Forces an event to be executed.
+     * This will bypass the event queue and execute the event immediately.
+     * This is useful for events that need to be executed immediately.
+     * **This should only be used sparingly.**
+     *
+     * @param player The player who interacted
+     * @param triggers The trigger that should be fired.
+     */
+    suspend fun forceTriggerActions(player: Player, triggers: List<EventTrigger>) {
+        player.interaction?.forceEvent(Event(player, triggers))
+    }
+
 
     private fun triggerEvent(event: Event) {
         // If the event is empty, we don't need to do anything
         if (event.triggers.isEmpty()) return
 
-        plugin.launch {
+        DISPATCHERS_ASYNC.launch {
             try {
-                event.player.interaction?.onEvent(event)
+                event.player.interaction?.addToSchedule(event)
             } catch (e: Exception) {
                 logger.severe("An error occurred while handling event ${event}: ${e.message}")
                 e.printStackTrace()
@@ -82,40 +96,15 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     fun initialize() {
-
-        job = plugin.launch(Dispatchers.IO) {
-            while (plugin.isEnabled) {
-                val startTime = System.currentTimeMillis()
-                tick()
-                val endTime = System.currentTimeMillis()
-                // Wait for the remainder or the tick
-                val wait = TICK_MS - (endTime - startTime) - AVERAGE_SCHEDULING_DELAY_MS
-                if (wait > 0) delay(wait)
-            }
-        }
-
         plugin.registerSuspendingEvents(this)
-    }
-
-    suspend fun tick() {
-        coroutineScope {
-            interactions.map { (_, interaction) ->
-                launch {
-                    try {
-                        interaction.tick()
-                    } catch (e: Exception) {
-                        logger.severe("An error occurred while ticking interaction ${interaction.player.name}: ${e.message}")
-                        e.printStackTrace()
-                    }
-                }
-            }.joinAll()
-        }
     }
 
     // When a player joins the server, we need to create an interaction for them.
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        interactions[event.player.uniqueId] = Interaction(event.player)
+        val interaction = Interaction(event.player)
+        interactions[event.player.uniqueId] = interaction
+        interaction.setup()
     }
 
     // When a player leaves the server, we need to end the interaction.
@@ -127,13 +116,13 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     // When the plugin reloads, we need to end all interactions and create new ones.
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     suspend fun onReloadTypewriter(event: TypewriterReloadEvent) {
         resetAllInteractions()
     }
 
     // When a book is published, we need to end all interactions.
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     suspend fun onPublishBook(event: PublishedBookEvent) {
         resetAllInteractions()
     }
@@ -144,17 +133,29 @@ class InteractionHandler : Listener, KoinComponent {
         }
         interactions.clear()
         interactions.putAll(server.onlinePlayers.map { it.uniqueId to Interaction(it) })
+        interactions.forEach { (_, interaction) ->
+            interaction.setup()
+        }
     }
 
     // When a player tries to execute a command, we need to end the dialogue.
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
+        val command = event.message.removePrefix("/")
+        // We don't want to end the dialogue if the player is running a typewriter command
+        if (command.startsWith("typewriter")) return
+        if (command.startsWith("tw")) return
+
+
+        // If this is a custom command, we don't want to end the dialogue
+        val entry = Query.firstWhere<CustomCommandEntry> {
+            command.startsWith(it.command)
+        }
+        if (entry != null) return
         DIALOGUE_END triggerFor event.player
     }
 
     suspend fun shutdown() {
-        job?.cancel()
-        job = null
         interactions.forEach { (_, interaction) ->
             interaction.end()
         }

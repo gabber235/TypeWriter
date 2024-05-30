@@ -12,6 +12,7 @@ class TreeNode<T> with _$TreeNode {
 
   const factory TreeNode.inner({
     required String name,
+    required String path,
     required List<TreeNode<T>> children,
   }) = InnerTreeNode;
 
@@ -42,7 +43,7 @@ RootTreeNode<T> createTreeNode<T>(
 
   for (final element in elements) {
     final path = pathFetcher(element);
-    children = _createTreeNode(children, path, element);
+    children = _createTreeNode(children, path, element, "");
   }
 
   return RootTreeNode(children: children);
@@ -76,6 +77,7 @@ List<TreeNode<T>> _createTreeNode<T>(
   List<TreeNode<T>> elements,
   String path,
   T value,
+  String currentPath,
 ) {
   if (path.isEmpty) {
     return _applyModifications(
@@ -89,13 +91,15 @@ List<TreeNode<T>> _createTreeNode<T>(
 
   // Part does not exist yet, create it
   if (overlappingNode == null || overlappingPath == null) {
+    final newPath = currentPath.join(path);
     return _applyModifications(
       elements,
       [
         _TreeModification.add(
           node: TreeNode.inner(
             name: path,
-            children: _createTreeNode([], "", value),
+            path: newPath,
+            children: _createTreeNode([], "", value, newPath),
           ),
         ),
       ],
@@ -105,6 +109,7 @@ List<TreeNode<T>> _createTreeNode<T>(
   // Full path exists, so we only need to add it to that node
   if (overlappingNode.name == overlappingPath) {
     final remainingPath = path.removePrefixPart(overlappingPath);
+    final newPath = currentPath.join(overlappingPath);
     return _applyModifications(
       elements,
       [
@@ -112,8 +117,13 @@ List<TreeNode<T>> _createTreeNode<T>(
           path: overlappingPath,
           node: TreeNode.inner(
             name: overlappingPath,
-            children:
-                _createTreeNode(overlappingNode.children, remainingPath, value),
+            path: newPath,
+            children: _createTreeNode(
+              overlappingNode.children,
+              remainingPath,
+              value,
+              newPath,
+            ),
           ),
         ),
       ],
@@ -127,10 +137,16 @@ List<TreeNode<T>> _createTreeNode<T>(
       overlappingNode.name.removePrefixPart(overlappingPath);
   final newInnerNode = TreeNode.inner(
     name: overlappingRemainingPath,
+    path: currentPath.join(overlappingNode.name),
     children: overlappingNode.children,
   );
   final remainingPath = path.removePrefixPart(overlappingPath);
-  final newNode = _createTreeNode(<TreeNode<T>>[], remainingPath, value);
+  final newNode = _createTreeNode(
+    <TreeNode<T>>[],
+    remainingPath,
+    value,
+    currentPath.join(overlappingPath),
+  );
 
   return _applyModifications(
     elements,
@@ -139,6 +155,7 @@ List<TreeNode<T>> _createTreeNode<T>(
       _TreeModification.add(
         node: TreeNode.inner(
           name: overlappingPath,
+          path: currentPath.join(overlappingPath),
           children: [
             newInnerNode,
             ...newNode,
@@ -196,5 +213,11 @@ extension on String {
     if (!startsWith(part)) return this;
     if (length == part.length) return "";
     return substring(part.length + 1);
+  }
+
+  String join(String other) {
+    if (isEmpty) return other;
+    if (other.isEmpty) return this;
+    return "$this.$other";
   }
 }

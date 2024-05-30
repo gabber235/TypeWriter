@@ -1,7 +1,6 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -9,8 +8,10 @@ import "package:typewriter/main.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/potion_effects.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -117,14 +118,14 @@ class PotionEffectSearchElement extends SearchElement {
 
   @override
   Widget suffixIcon(BuildContext context) =>
-      const Icon(FontAwesomeIcons.upRightFromSquare);
+      const Iconify(TWIcons.externalLink);
 
   @override
   List<SearchAction> actions(PassingRef ref) {
     return [
       const SearchAction(
         "Select",
-        FontAwesomeIcons.check,
+        TWIcons.check,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
     ];
@@ -202,8 +203,8 @@ class PotionEffectEditor extends HookConsumerWidget {
             children: [
               Expanded(child: _PotionEffectItem(potionEffect: value)),
               const SizedBox(width: 12),
-              FaIcon(
-                FontAwesomeIcons.caretDown,
+              Iconify(
+                TWIcons.caretDown,
                 size: 16,
                 color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
               ),

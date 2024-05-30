@@ -1,10 +1,8 @@
 package me.gabber235.typewriter.utils
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.koin.core.component.KoinComponent
 import kotlin.time.Duration
 
@@ -17,7 +15,7 @@ class Timeout(
     operator fun invoke() {
         immediateRunnable?.run()
         if (job == null) {
-            job = plugin.launch(Dispatchers.IO) {
+            job = DISPATCHERS_ASYNC.launch {
                 delay(duration)
                 job = null
                 invoker()

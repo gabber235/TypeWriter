@@ -6,6 +6,22 @@ part of 'search_bar.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$searchElementsHash() => r'ea1fb60f87222d22dab3de9901736f16900c110a';
+
+/// See also [searchElements].
+@ProviderFor(searchElements)
+final searchElementsProvider =
+    AutoDisposeProvider<List<SearchElement>>.internal(
+  searchElements,
+  name: r'searchElementsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$searchElementsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef SearchElementsRef = AutoDisposeProviderRef<List<SearchElement>>;
 String _$searchFetchersHash() => r'2d5cadf196e4124536a572332a4fee5e52f107e1';
 
 /// See also [searchFetchers].
@@ -37,37 +53,6 @@ final searchFiltersProvider = AutoDisposeProvider<List<SearchFilter>>.internal(
 );
 
 typedef SearchFiltersRef = AutoDisposeProviderRef<List<SearchFilter>>;
-String _$searchElementsHash() => r'ea1fb60f87222d22dab3de9901736f16900c110a';
-
-/// See also [searchElements].
-@ProviderFor(searchElements)
-final searchElementsProvider =
-    AutoDisposeProvider<List<SearchElement>>.internal(
-  searchElements,
-  name: r'searchElementsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$searchElementsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef SearchElementsRef = AutoDisposeProviderRef<List<SearchElement>>;
-String _$searchGlobalKeysHash() => r'bdabd3beff37b339bab7032a03c48a3714ac500f';
-
-/// See also [searchGlobalKeys].
-@ProviderFor(searchGlobalKeys)
-final searchGlobalKeysProvider = AutoDisposeProvider<List<GlobalKey>>.internal(
-  searchGlobalKeys,
-  name: r'searchGlobalKeysProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$searchGlobalKeysHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef SearchGlobalKeysRef = AutoDisposeProviderRef<List<GlobalKey>>;
 String _$searchFocusNodesHash() => r'e8f229dddc824b6f24244adcd4193ae40daed175';
 
 /// See also [searchFocusNodes].
@@ -83,6 +68,21 @@ final searchFocusNodesProvider = AutoDisposeProvider<List<FocusNode>>.internal(
 );
 
 typedef SearchFocusNodesRef = AutoDisposeProviderRef<List<FocusNode>>;
+String _$searchGlobalKeysHash() => r'bdabd3beff37b339bab7032a03c48a3714ac500f';
+
+/// See also [searchGlobalKeys].
+@ProviderFor(searchGlobalKeys)
+final searchGlobalKeysProvider = AutoDisposeProvider<List<GlobalKey>>.internal(
+  searchGlobalKeys,
+  name: r'searchGlobalKeysProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$searchGlobalKeysHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef SearchGlobalKeysRef = AutoDisposeProviderRef<List<GlobalKey>>;
 String _$focusedElementHash() => r'30e569a4d12a0f28f496a0e235319f5e5e44e433';
 
 /// See also [_focusedElement].
@@ -98,6 +98,21 @@ final _focusedElementProvider = AutoDisposeProvider<SearchElement?>.internal(
 );
 
 typedef _FocusedElementRef = AutoDisposeProviderRef<SearchElement?>;
+String _$searchActionsHash() => r'b5542c6b01dc4d9186c38a2ef1453cbb8bc2eede';
+
+/// See also [_searchActions].
+@ProviderFor(_searchActions)
+final _searchActionsProvider = AutoDisposeProvider<List<SearchAction>>.internal(
+  _searchActions,
+  name: r'_searchActionsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$searchActionsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _SearchActionsRef = AutoDisposeProviderRef<List<SearchAction>>;
 String _$searchActionShortcutsHash() =>
     r'e3fbc98277d831182b5690cae7d29278bb67ccdc';
 
@@ -116,20 +131,5 @@ final _searchActionShortcutsProvider =
 
 typedef _SearchActionShortcutsRef
     = AutoDisposeProviderRef<Set<ShortcutActivator>>;
-String _$searchActionsHash() => r'b5542c6b01dc4d9186c38a2ef1453cbb8bc2eede';
-
-/// See also [_searchActions].
-@ProviderFor(_searchActions)
-final _searchActionsProvider = AutoDisposeProvider<List<SearchAction>>.internal(
-  _searchActions,
-  name: r'_searchActionsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$searchActionsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _SearchActionsRef = AutoDisposeProviderRef<List<SearchAction>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
