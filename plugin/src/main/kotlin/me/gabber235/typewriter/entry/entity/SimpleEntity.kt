@@ -1,5 +1,8 @@
 package me.gabber235.typewriter.entry.entity
 
+import me.gabber235.typewriter.adapters.Tags
+import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.priority
@@ -8,19 +11,22 @@ import me.gabber235.typewriter.utils.logErrorIfNull
 
 interface SimpleEntityDefinition : EntityDefinitionEntry
 
+@Tags("shared_entity_instance")
 interface SimpleEntityInstance : EntityInstanceEntry {
     override val definition: Ref<out SimpleEntityDefinition>
     val data: List<Ref<EntityData<*>>>
-    val activities: List<Ref<out EntityActivityEntry>>
+    @Help("What the entity will do.")
+    @OnlyTags("shared_entity_activity")
+    val activity: Ref<out EntityActivityEntry>
 
     override val children: List<Ref<out AudienceEntry>>
-        get() = data + activities
+        get() = data
 
     override fun display(): AudienceFilter {
         val definition = definition.get().logErrorIfNull("You must specify a definition for $name")
             ?: return PassThroughFilter(ref())
 
-        val activities = this.activities.mapNotNull { it.get() }.sortedByDescending { it.priority }
+        val activity = this.activity.get() ?: IdleActivity
 
         val definitionData = definition.data.withPriority()
 
@@ -31,10 +37,10 @@ interface SimpleEntityInstance : EntityInstanceEntry {
             data to (data.priority + maxDefinitionData + 1)
         }
 
-        return CommonActivityEntityDisplay(
+        return SharedActivityEntityDisplay(
             ref(),
             definition,
-            activities,
+            activity,
             (definitionData + instanceData),
             spawnLocation,
         )

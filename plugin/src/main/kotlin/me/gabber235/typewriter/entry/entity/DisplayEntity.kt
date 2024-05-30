@@ -11,7 +11,7 @@ import kotlin.reflect.full.companionObjectInstance
 internal class DisplayEntity(
     private val player: Player,
     creator: EntityCreator,
-    private val activityManager: ActivityManager,
+    private val activityManager: ActivityManager<*>,
     private val collectors: List<PropertyCollector<*>>,
 ) {
     private val entity = creator.create(player)

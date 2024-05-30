@@ -1,70 +1,110 @@
 package me.gabber235.typewriter.entry.entity
 
 import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.EntityInstanceEntry
-import me.gabber235.typewriter.entry.inAudience
+import me.gabber235.typewriter.entry.entries.EntityProperty
 import org.bukkit.entity.Player
 
-
 interface ActivityCreator {
-    fun create(context: TaskContext): EntityActivity
+    fun create(context: ActivityContext, currentLocation: LocationProperty): EntityActivity<ActivityContext>
+}
+
+interface EntityActivity<Context : ActivityContext> {
+    fun initialize(context: Context)
+    fun tick(context: Context): TickResult
+    fun dispose(context: Context)
+
+    val currentLocation: LocationProperty
+    val currentProperties: List<EntityProperty> get() = listOf(currentLocation)
 }
 
 /**
- * Class can be recreated at any time. Must not hold a disposable state.
+ * Indicates what the result of the tick is.
  *
- * If the activity is from an entry, make sure that this checks if the context can be activated for the activity.
+ * Some activities may want to do fallback actions if the tick is ignored.
  */
-interface EntityActivity {
-    fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean
-    fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask
+enum class TickResult {
+    // The activity is done and everything is fine.
+    CONSUMED,
+
+    // The activity got ignored and did not activate.
+    IGNORED,
 }
 
-interface EntityTask {
-    val location: LocationProperty
-    fun tick(context: TaskContext)
-    fun mayInterrupt(): Boolean
-    fun isComplete(): Boolean
+interface SharedEntityActivity : EntityActivity<SharedActivityContext>
+interface IndividualEntityActivity : EntityActivity<IndividualActivityContext>
+interface GenericEntityActivity : EntityActivity<ActivityContext>
 
-    fun dispose() {}
+class IdleActivity(override var currentLocation: LocationProperty) : GenericEntityActivity {
+    override fun initialize(context: ActivityContext) {}
+
+    override fun tick(context: ActivityContext): TickResult = TickResult.IGNORED
+
+    override fun dispose(context: ActivityContext) {}
+
+    companion object : ActivityCreator {
+        override fun create(context: ActivityContext, currentLocation: LocationProperty): EntityActivity<in ActivityContext> = IdleActivity(currentLocation)
+    }
 }
 
-interface TaskContext {
+abstract class SingleChildActivity<Context : ActivityContext>(
+    private val startLocation: LocationProperty,
+) : EntityActivity<Context> {
+    private var child: Ref<out EntityActivityEntry> = emptyRef()
+    private var currentActivity: EntityActivity<in Context>? = null
+
+    override fun initialize(context: Context) {
+        child = currentChild(context)
+        currentActivity = child.get()?.create(context, currentLocation)
+        currentActivity?.initialize(context)
+    }
+
+    override fun tick(context: Context): TickResult {
+        val correctChild = currentChild(context)
+        if (child != correctChild) {
+            child = correctChild
+            val currentLocation = this.currentLocation
+            currentActivity?.dispose(context)
+            currentActivity = child.get()?.create(context, currentLocation)
+            currentActivity?.initialize(context)
+        }
+        return currentActivity?.tick(context) ?: TickResult.IGNORED
+    }
+
+    override fun dispose(context: Context) {
+        currentActivity?.dispose(context)
+        currentActivity = null
+        child = emptyRef()
+    }
+
+    override val currentLocation: LocationProperty
+        get() = currentActivity?.currentLocation ?: startLocation
+
+    abstract fun currentChild(context: Context): Ref<out EntityActivityEntry>
+}
+
+sealed interface ActivityContext {
     val instanceRef: Ref<out EntityInstanceEntry>
     val isViewed: Boolean
 
     val viewers: List<Player>
 }
 
-class GroupTaskContext(
+class SharedActivityContext(
     override val instanceRef: Ref<out EntityInstanceEntry>,
     override val viewers: List<Player>,
-) : TaskContext {
+) : ActivityContext {
     override val isViewed: Boolean
         get() = viewers.isNotEmpty()
 }
 
-class IndividualTaskContext(
+class IndividualActivityContext(
     override val instanceRef: Ref<out EntityInstanceEntry>,
     val viewer: Player,
     override val isViewed: Boolean,
-) : TaskContext {
+) : ActivityContext {
     override val viewers: List<Player>
         get() = listOf(viewer)
-}
-
-class EmptyTaskContext(
-    override val instanceRef: Ref<out EntityInstanceEntry>,
-) : TaskContext {
-    override val isViewed: Boolean = false
-
-    override val viewers: List<Player> = emptyList()
-}
-
-/**
- * Can activate child activities if all the players in the context pass are in the audience for the activity.
- */
-infix fun Ref<out EntityActivityEntry>.canActivateFor(context: TaskContext): Boolean {
-    return context.viewers.all { it.inAudience(this) }
 }

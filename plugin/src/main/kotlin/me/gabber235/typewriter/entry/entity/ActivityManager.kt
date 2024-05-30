@@ -1,84 +1,25 @@
 package me.gabber235.typewriter.entry.entity
 
-import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.entries.EntityInstanceEntry
 import me.gabber235.typewriter.entry.entries.EntityProperty
-import org.bukkit.Location
 
-class ActivityManager(
-    instanceRef: Ref<out EntityInstanceEntry>,
-    private val activities: List<EntityActivity>,
-    spawnLocation: Location,
+class ActivityManager<Context : ActivityContext>(
+    private val activity: EntityActivity<in Context>,
 ) {
-    private var activity: EntityActivity? = null
-    private var task: EntityTask = IdleTask(spawnLocation.toProperty())
-        set(value) {
-            field.dispose()
-            field = value
-        }
-
-    init {
-        findNewTask(EmptyTaskContext(instanceRef))
-    }
-
     val location: LocationProperty
-        get() = task.location
+        get() = activity.currentLocation
 
     val activeProperties: List<EntityProperty>
-        get() = listOf(location)
+        get() = activity.currentProperties
 
-    private fun findNewTask(context: TaskContext): Boolean {
-        val newActivity = activities.firstOrNull {
-            it.canActivate(context, location)
-        }
-        if (newActivity == null) {
-            activity = null
-            task = IdleTask(location)
-            return false
-        }
-        if (activity == null) {
-            activity = newActivity
-            task = newActivity.currentTask(context, location)
-            return true
-        }
-
-        if (activity != newActivity) {
-            if (!task.mayInterrupt()) return false
-            activity = newActivity
-            task = newActivity.currentTask(context, location)
-            return true
-        }
-
-        if (!task.isComplete()) return false
-        task = newActivity.currentTask(context, location)
-        return true
+    fun initialize(context: Context) {
+        activity.initialize(context)
     }
 
-    fun tick(context: TaskContext) {
-        findNewTask(context)
-        task.tick(context)
+    fun tick(context: Context) {
+        activity.tick(context)
     }
 
-    fun dispose() {
-    }
-}
-
-class IdleTask(override val location: LocationProperty) : EntityTask {
-    override fun tick(context: TaskContext) {}
-    override fun mayInterrupt(): Boolean = true
-
-    override fun isComplete(): Boolean = true
-}
-
-abstract class FilterActivity(
-    private val children: List<EntityActivity>,
-) : EntityActivity {
-    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
-        return children.any { it.canActivate(context, currentLocation) }
-    }
-
-    override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
-        return children.firstOrNull { it.canActivate(context, currentLocation) }?.currentTask(context, currentLocation)
-            ?: IdleTask(currentLocation)
+    fun dispose(context: Context) {
+        activity.dispose(context)
     }
 }

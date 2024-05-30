@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entry.entity
 
+import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.descendants
 import me.gabber235.typewriter.entry.entries.*
@@ -8,70 +9,58 @@ import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.logger
 import org.bukkit.Location
 
-interface AdvancedEntityInstance : EntityInstanceEntry {
-    override fun display(): AudienceFilter {
-        val definition = definition.get()
-        if (definition == null) {
-            logger.warning("You must specify a definition for $name")
-            return PassThroughFilter(ref())
-        }
+@Tags("shared_entity_instance")
+interface SharedAdvancedEntityInstance : EntityInstanceEntry {
+    val activity: Ref<out SharedEntityActivityEntry>
 
-        return children.toAdvancedEntityDisplay(
-            ref(),
-            definition,
-            definition.data.withPriority(),
-            spawnLocation,
+    override fun display(): AudienceFilter {
+        val activityCreator = this.activity.get() ?: IdleActivity
+
+        return toAdvancedEntityDisplay(
+            activityCreator,
+            ::SharedActivityEntityDisplay,
         )
     }
 }
 
-/**
- * If the activities are only linked from the root with only other activities, we can use a `CommonActivityEntityDisplay`.
- * Otherwise, we need to have a `PlayerSpecificActivityEntityDisplay`.
- */
-fun List<Ref<out AudienceEntry>>.toAdvancedEntityDisplay(
-    ref: Ref<out EntityInstanceEntry>,
-    creator: EntityCreator,
-    baseSuppliers: List<Pair<EntityData<*>, Int>> = emptyList(),
-    spawnLocation: Location,
+@Tags("individual_entity_instance")
+interface IndividualAdvancedEntityInstance : EntityInstanceEntry {
+    val activity: Ref<out IndividualEntityActivityEntry>
+
+    override fun display(): AudienceFilter {
+        val activityCreator = this.activity.get() ?: IdleActivity
+
+        return toAdvancedEntityDisplay(
+            activityCreator,
+            ::IndividualActivityEntityDisplay,
+        )
+    }
+}
+
+private fun EntityInstanceEntry.toAdvancedEntityDisplay(
+    activityCreator: ActivityCreator,
+    creator: (Ref<out EntityInstanceEntry>, EntityDefinitionEntry, ActivityCreator, List<Pair<EntityData<*>, Int>>, Location) -> AudienceFilter,
 ): AudienceFilter {
-    val activityCreators = descendants(EntityActivityEntry::class)
-        .mapNotNull { it.get() }
-        .sortedByDescending { it.priority }
+    val definition = definition.get()
+    if (definition == null) {
+        logger.warning("You must specify a definition for $name")
+        return PassThroughFilter(ref())
+    }
+
+    val baseSuppliers = definition.data.withPriority()
 
     val maxBaseSupplier = baseSuppliers.maxOfOrNull { it.second } ?: 0
-    val overrideSuppliers = descendants(EntityData::class)
+    val overrideSuppliers = children.descendants(EntityData::class)
         .mapNotNull { it.get() }
         .map { it to (it.priority + maxBaseSupplier + 1) }
 
     val suppliers = (baseSuppliers + overrideSuppliers)
 
-    val activitiesOnlyConnectedByActivities = activityOnlyConnectedByActivity(true)
-
-    return if (activitiesOnlyConnectedByActivities) CommonActivityEntityDisplay(
-        ref,
-        creator,
-        activityCreators,
+    return creator(
+        ref(),
+        definition,
+        activityCreator,
         suppliers,
         spawnLocation,
     )
-    else PlayerSpecificActivityEntityDisplay(ref, creator, activityCreators, suppliers, spawnLocation)
-}
-
-private fun List<Ref<out AudienceEntry>>.activityOnlyConnectedByActivity(
-    seenOnlySeenActivities: Boolean,
-): Boolean {
-    return all { ref ->
-        val entry = ref.get() ?: return@all true
-        when {
-            entry is EntityActivityEntry && seenOnlySeenActivities -> entry.children
-                .activityOnlyConnectedByActivity(true)
-
-            entry is EntityActivityEntry -> false
-            entry is AudienceFilterEntry -> entry.children
-                .activityOnlyConnectedByActivity(false)
-
-            else -> true
-        }
-    }
 }

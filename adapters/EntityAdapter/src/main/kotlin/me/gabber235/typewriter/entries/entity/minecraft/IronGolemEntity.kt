@@ -16,6 +16,7 @@ import me.gabber235.typewriter.entry.entity.WrapperFakeEntity
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
+import me.gabber235.typewriter.entry.entries.SharedEntityActivityEntry
 import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -47,7 +48,7 @@ class IronGolemInstance(
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
     @OnlyTags("generic_entity_data", "living_entity_data", "mob_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
-    override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
+    override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
 
 private class IronGolemEntity(player: Player) : WrapperFakeEntity(

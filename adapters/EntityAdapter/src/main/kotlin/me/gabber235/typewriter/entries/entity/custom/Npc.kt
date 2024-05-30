@@ -72,8 +72,8 @@ class NpcInstance(
     override val definition: Ref<NpcDefinition> = emptyRef(),
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
     @OnlyTags("generic_entity_data", "living_entity_data", "lines", "player_data")
-    override val data: List<Ref<EntityData<*>>>,
-    override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
+    override val data: List<Ref<EntityData<*>>> = emptyList(),
+    override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
 
 class NpcEntity(

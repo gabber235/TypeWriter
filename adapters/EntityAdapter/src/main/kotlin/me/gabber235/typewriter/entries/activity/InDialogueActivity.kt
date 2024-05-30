@@ -4,14 +4,17 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.descendants
 import me.gabber235.typewriter.entry.dialogue.currentDialogue
-import me.gabber235.typewriter.entry.entity.*
-import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.entity.ActivityContext
+import me.gabber235.typewriter.entry.entity.EntityActivity
+import me.gabber235.typewriter.entry.entity.LocationProperty
+import me.gabber235.typewriter.entry.entity.SingleChildActivity
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
+import me.gabber235.typewriter.entry.entries.GenericEntityActivityEntry
 import me.gabber235.typewriter.entry.priority
-import me.gabber235.typewriter.entry.ref
+import me.gabber235.typewriter.utils.logErrorIfNull
 import org.bukkit.entity.Player
 import java.time.Duration
 import java.util.*
@@ -28,7 +31,6 @@ import java.util.*
 class InDialogueActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    override val children: List<Ref<out AudienceEntry>> = emptyList(),
     @Help("When a player is considered to be idle in the same dialogue")
     /**
      * The duration a player can be idle in the same dialogue before the activity deactivates.
@@ -41,49 +43,57 @@ class InDialogueActivityEntry(
      * </Admonition>
      */
     val dialogueIdleDuration: Duration = Duration.ofSeconds(30),
+    @Help("The activity that will be used when the npc is in a dialogue")
+    val talkingActivity: Ref<out EntityActivityEntry> = emptyRef(),
+    @Help("The activity that will be used when the npc is not in a dialogue")
+    val idleActivity: Ref<out EntityActivityEntry> = emptyRef(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : EntityActivityEntry {
-    override fun create(context: TaskContext): EntityActivity = InDialogueActivity(
-        ref(),
-        children
-            .descendants(EntityActivityEntry::class)
-            .mapNotNull { it.get() }
-            .sortedByDescending { it.priority }
-            .map { it.create(context) },
-        dialogueIdleDuration,
-        priority,
-    )
+) : GenericEntityActivityEntry {
+    override fun create(
+        context: ActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<in ActivityContext> {
+        return InDialogueActivity(
+            dialogueIdleDuration,
+            priority,
+            talkingActivity,
+            idleActivity,
+            currentLocation,
+        )
+    }
 }
 
 class InDialogueActivity(
-    val ref: Ref<InDialogueActivityEntry>,
-    children: List<EntityActivity>,
     private val dialogueIdleDuration: Duration,
     private val priority: Int,
-) : FilterActivity(children) {
-    private var trackers = mutableMapOf<UUID, PlayerDialogueTracker>()
+    private val talkingActivity: Ref<out EntityActivityEntry>,
+    private val idleActivity: Ref<out EntityActivityEntry>,
+    startLocation: LocationProperty,
+) : SingleChildActivity<ActivityContext>(startLocation) {
+    private val trackers = mutableMapOf<UUID, PlayerDialogueTracker>()
 
-    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
-        if (!ref.canActivateFor(context)) {
-            return false
-        }
-        val definition = context.instanceRef.get()?.definition ?: return false
-        val trackingPlayers = context.viewers
-            .filter { it.currentDialogue?.speaker == definition }
+    override fun currentChild(context: ActivityContext): Ref<out EntityActivityEntry> {
+        val definition =
+            context.instanceRef.get()?.definition.logErrorIfNull("Could not find definition, this should not happen. Please report this on the TypeWriter Discord!")
+                ?: return idleActivity
+        val inDialogue = context.viewers.filter { it.currentDialogue?.speaker == definition }
 
-        val trackingPlayerIds = trackingPlayers.map { it.uniqueId }
+        trackers.keys.removeIf { uuid -> inDialogue.none { it.uniqueId == uuid } }
 
-        trackers.keys.removeAll { it !in trackingPlayerIds }
-
-        trackingPlayers.forEach { player ->
-            trackers.computeIfAbsent(player.uniqueId) { PlayerDialogueTracker(player.currentDialogue) }
-                .update(player)
+        if (inDialogue.isEmpty()) {
+            return idleActivity
         }
 
-        val canActivate =
-            !trackers.all { (_, playerLocation) -> playerLocation.canIgnore(dialogueIdleDuration) } &&
-                    super.canActivate(context, currentLocation)
-        return canActivate
+        inDialogue.forEach { player ->
+            trackers.computeIfAbsent(player.uniqueId) { PlayerDialogueTracker(player.currentDialogue) }.update(player)
+        }
+
+        val isTalking = trackers.any { (_, tracker) -> tracker.isActive(dialogueIdleDuration) }
+        return if (isTalking) {
+            talkingActivity
+        } else {
+            idleActivity
+        }
     }
 
     private inner class PlayerDialogueTracker(
@@ -97,11 +107,11 @@ class InDialogueActivity(
             dialogue = currentDialogue
         }
 
-        fun canIgnore(maxIdleDuration: Duration): Boolean {
-            if (maxIdleDuration.isZero) return false
-            val dialogue = dialogue ?: return true
-            if (dialogue.priority > priority) return false
-            return System.currentTimeMillis() - lastInteraction > maxIdleDuration.toMillis()
+        fun isActive(maxIdleDuration: Duration): Boolean {
+            if (maxIdleDuration.isZero) return true
+            val dialogue = dialogue ?: return false
+            if (dialogue.priority > priority) return true
+            return System.currentTimeMillis() - lastInteraction < maxIdleDuration.toMillis()
         }
     }
 }

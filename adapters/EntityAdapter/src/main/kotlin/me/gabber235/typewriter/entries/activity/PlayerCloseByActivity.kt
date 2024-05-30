@@ -4,12 +4,10 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.descendants
+import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
-import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
-import me.gabber235.typewriter.entry.priority
-import me.gabber235.typewriter.entry.ref
+import me.gabber235.typewriter.entry.entries.GenericEntityActivityEntry
 import java.time.Duration
 import java.util.*
 
@@ -30,57 +28,51 @@ import java.util.*
 class PlayerCloseByActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    override val children: List<Ref<out AudienceEntry>> = emptyList(),
     @Help("The range in which the player has to be close by to activate the activity.")
     val range: Double = 10.0,
     @Help("The maximum duration a player can be idle in the same range before the activity deactivates.")
     val maxIdleDuration: Duration = Duration.ofSeconds(30),
+    @Help("The activity that will be used when there is a player close by.")
+    val closeByActivity: Ref<out EntityActivityEntry> = emptyRef(),
+    @Help("The activity that will be used when there is no player close by.")
+    val idleActivity: Ref<out EntityActivityEntry> = emptyRef(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : EntityActivityEntry {
-    override fun create(context: TaskContext): EntityActivity =
-        PlayerCloseByActivity(
-            ref(),
-            children
-                .descendants(EntityActivityEntry::class)
-                .mapNotNull { it.get() }
-                .sortedByDescending { it.priority }
-                .map { it.create(context) },
-            range,
-            maxIdleDuration
-        )
+) : GenericEntityActivityEntry {
+    override fun create(
+        context: ActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<in ActivityContext> {
+        return PlayerCloseByActivity(range, maxIdleDuration, closeByActivity, idleActivity, currentLocation)
+    }
 }
 
 class PlayerCloseByActivity(
-    val ref: Ref<PlayerCloseByActivityEntry>,
-    childActivities: List<EntityActivity>,
     private val range: Double,
     private val maxIdleDuration: Duration,
-) : FilterActivity(childActivities) {
+    private val closeByActivity: Ref<out EntityActivityEntry>,
+    private val idleActivity: Ref<out EntityActivityEntry>,
+    startLocation: LocationProperty,
+) : SingleChildActivity<ActivityContext>(startLocation) {
     private var trackers = mutableMapOf<UUID, PlayerLocationTracker>()
 
-    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
-        if (!ref.canActivateFor(context)) {
-            return false
-        }
-
-        val trackingPlayers = context.viewers
+    override fun currentChild(context: ActivityContext): Ref<out EntityActivityEntry> {
+        val closeByPlayers = context.viewers
             .filter { it.isValid }
             .filter { (it.location.toProperty().distanceSqrt(currentLocation) ?: Double.MAX_VALUE) < range * range }
 
-        val trackingPlayerIds = trackingPlayers.map { it.uniqueId }
+        trackers.keys.removeAll { uuid -> closeByPlayers.none { it.uniqueId == uuid } }
 
-        trackers.keys.removeAll { it !in trackingPlayerIds }
-
-        trackingPlayers.forEach { player ->
+        closeByPlayers.forEach { player ->
             trackers.computeIfAbsent(player.uniqueId) { PlayerLocationTracker(player.location.toProperty()) }
                 .update(player.location.toProperty())
         }
 
-        val canActivate =
-            !trackers.all { (_, tracker) -> tracker.isIdle(maxIdleDuration) } &&
-                    super.canActivate(context, currentLocation)
-
-        return canActivate
+        val isActive = trackers.any { (_, tracker) -> tracker.isActive(maxIdleDuration) }
+        return if (isActive) {
+            closeByActivity
+        } else {
+            idleActivity
+        }
     }
 
     private class PlayerLocationTracker(
@@ -93,9 +85,9 @@ class PlayerCloseByActivity(
             lastSeen = System.currentTimeMillis()
         }
 
-        fun isIdle(maxIdleDuration: Duration): Boolean {
-            if (maxIdleDuration.isZero) return false
-            return System.currentTimeMillis() - lastSeen > maxIdleDuration.toMillis()
+        fun isActive(maxIdleDuration: Duration): Boolean {
+            if (maxIdleDuration.isZero) return true
+            return System.currentTimeMillis() - lastSeen < maxIdleDuration.toMillis()
         }
     }
 }

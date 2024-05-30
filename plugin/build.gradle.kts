@@ -53,8 +53,8 @@ dependencies {
     api("com.github.Tofaa2.EntityLib:spigot:2.2.0-SNAPSHOT")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
-    api("dev.jorel:commandapi-bukkit-shade:9.4.1")
-    api("dev.jorel:commandapi-bukkit-kotlin:9.4.1")
+    api("dev.jorel:commandapi-bukkit-shade:9.4.2")
+    api("dev.jorel:commandapi-bukkit-kotlin:9.4.2")
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.ktor:ktor-server-core-jvm:2.3.6")

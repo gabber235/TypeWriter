@@ -2,10 +2,7 @@ package me.gabber235.typewriter.entries.activity
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.future.await
-import me.gabber235.typewriter.entry.entity.EntityTask
-import me.gabber235.typewriter.entry.entity.LocationProperty
-import me.gabber235.typewriter.entry.entity.TaskContext
-import me.gabber235.typewriter.entry.entity.toProperty
+import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.roadNetworkMaxDistance
 import me.gabber235.typewriter.entry.roadnetwork.content.toLocation
 import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
@@ -23,28 +20,33 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 
-class NavigationActivityTask(
+class NavigationActivity(
     gps: GPS,
     startLocation: LocationProperty,
-) : EntityTask {
+) : GenericEntityActivity {
     private var path: List<GPSEdge>? = null
     private var state: NavigationActivityTaskState = NavigationActivityTaskState.Searching(gps, startLocation)
 
-    override val location: LocationProperty
+    override val currentLocation: LocationProperty
         get() = state.location()
 
-    override fun tick(context: TaskContext) {
+    override fun initialize(context: ActivityContext) {}
+
+    override fun tick(context: ActivityContext): TickResult {
         state.tick(context)
         if (state.isComplete()) {
+            if (path?.isEmpty() == true) {
+                return TickResult.IGNORED
+            }
             path = path?.subList(1, path?.size ?: 0) ?: (state as NavigationActivityTaskState.Searching).let {
-                it.path ?: return
+                it.path ?: return TickResult.IGNORED
             }
 
-            val currentEdge = path?.firstOrNull() ?: return
+            val currentEdge = path?.firstOrNull() ?: return TickResult.IGNORED
 
             state = when {
                 currentEdge.isFastTravel -> NavigationActivityTaskState.FastTravel(currentEdge)
-                context.isViewed -> NavigationActivityTaskState.Walking(currentEdge, location)
+                context.isViewed -> NavigationActivityTaskState.Walking(currentEdge, currentLocation)
 
                 else -> NavigationActivityTaskState.FakeNavigation(currentEdge)
             }
@@ -59,15 +61,13 @@ class NavigationActivityTask(
 
         // And we switch back to fake navigation when the entity is not viewed
         if (state is NavigationActivityTaskState.Walking && !context.isViewed) {
-            this.state = NavigationActivityTaskState.FakeNavigation(state.edge, location)
+            this.state = NavigationActivityTaskState.FakeNavigation(state.edge, currentLocation)
         }
+
+        return TickResult.CONSUMED
     }
 
-    override fun mayInterrupt(): Boolean = true
-
-    override fun isComplete(): Boolean = path?.isEmpty() == true && state.isComplete()
-
-    override fun dispose() {
+    override fun dispose(context: ActivityContext) {
         state.dispose()
     }
 }
@@ -76,7 +76,7 @@ class NavigationActivityTask(
 private sealed interface NavigationActivityTaskState {
     fun location(): LocationProperty
     fun isComplete(): Boolean = false
-    fun tick(context: TaskContext) {}
+    fun tick(context: ActivityContext) {}
     fun dispose() {}
 
     class Searching(
@@ -118,7 +118,7 @@ private sealed interface NavigationActivityTaskState {
 
         override fun location(): LocationProperty = location
 
-        override fun tick(context: TaskContext) {
+        override fun tick(context: ActivityContext) {
             super.tick(context)
             ticks++
         }
@@ -199,7 +199,7 @@ private sealed interface NavigationActivityTaskState {
 
         override fun location(): LocationProperty = location
 
-        override fun tick(context: TaskContext) {
+        override fun tick(context: ActivityContext) {
             val path = path ?: return
 
             val targetPoint = path[pathIndex]

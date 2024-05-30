@@ -11,14 +11,14 @@ import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-class PlayerSpecificActivityEntityDisplay(
+class IndividualActivityEntityDisplay(
     private val ref: Ref<out EntityInstanceEntry>,
     override val creator: EntityCreator,
-    private val activityCreators: List<ActivityCreator>,
+    private val activityCreator: ActivityCreator,
     private val suppliers: List<Pair<PropertySupplier<*>, Int>>,
     private val spawnLocation: Location,
 ) : AudienceFilter(ref), TickableDisplay, ActivityEntityDisplay {
-    private val activityManagers = ConcurrentHashMap<UUID, ActivityManager>()
+    private val activityManagers = ConcurrentHashMap<UUID, ActivityManager<in IndividualActivityContext>>()
     private val entities = ConcurrentHashMap<UUID, DisplayEntity>()
 
     override fun filter(player: Player): Boolean {
@@ -30,11 +30,11 @@ class PlayerSpecificActivityEntityDisplay(
 
     override fun onPlayerAdd(player: Player) {
         activityManagers.computeIfAbsent(player.uniqueId) {
-            ActivityManager(
-                ref,
-                activityCreators.map { it.create(IndividualTaskContext(ref, player, false)) },
-                spawnLocation
-            )
+            val context = IndividualActivityContext(ref, player, false)
+            val activity = activityCreator.create(context, spawnLocation.toProperty())
+            val activityManager = ActivityManager(activity)
+            activityManager.initialize(context)
+            activityManager
         }
         super.onPlayerAdd(player)
     }
@@ -53,7 +53,7 @@ class PlayerSpecificActivityEntityDisplay(
         activityManagers.forEach { (pid, manager) ->
             val player = server.getPlayer(pid) ?: return@forEach
             val isViewing = pid in this
-            manager.tick(IndividualTaskContext(ref, player, isViewing))
+            manager.tick(IndividualActivityContext(ref, player, isViewing))
         }
         entities.values.forEach { it.tick() }
     }
@@ -65,18 +65,20 @@ class PlayerSpecificActivityEntityDisplay(
 
     override fun onPlayerRemove(player: Player) {
         super.onPlayerRemove(player)
-        activityManagers.remove(player.uniqueId)?.dispose()
+        activityManagers.remove(player.uniqueId)?.dispose(IndividualActivityContext(ref, player, false))
     }
 
     override fun dispose() {
         super.dispose()
         entities.values.forEach { it.dispose() }
         entities.clear()
-        activityManagers.values.forEach { it.dispose() }
+        activityManagers.entries.forEach { (playerId, activityManager) ->
+            activityManager.dispose(IndividualActivityContext(ref, server.getPlayer(playerId) ?: return@forEach, false))
+        }
         activityManagers.clear()
     }
 
-    override fun playerHasEntity(playerId: UUID, entityId: Int): Boolean {
+    override fun playerSeesEntity(playerId: UUID, entityId: Int): Boolean {
         return entities[playerId]?.contains(entityId) ?: false
     }
 

@@ -13,14 +13,14 @@ import java.util.concurrent.ConcurrentHashMap
 
 val entityShowRange by config("entity.show-range", 50.0, "The range at which entities are shown")
 
-class CommonActivityEntityDisplay(
+class SharedActivityEntityDisplay(
     private val ref: Ref<out EntityInstanceEntry>,
     override val creator: EntityCreator,
-    private val activityCreators: List<ActivityCreator>,
+    private val activityCreators: ActivityCreator,
     private val suppliers: List<Pair<PropertySupplier<*>, Int>>,
     private val spawnLocation: Location,
 ) : AudienceFilter(ref), TickableDisplay, ActivityEntityDisplay {
-    private var activityManager: ActivityManager? = null
+    private var activityManager: ActivityManager<SharedActivityContext>? = null
     private val entities = ConcurrentHashMap<UUID, DisplayEntity>()
 
     override fun filter(player: Player): Boolean {
@@ -31,8 +31,10 @@ class CommonActivityEntityDisplay(
 
     override fun initialize() {
         super.initialize()
+        val context = SharedActivityContext(ref, players)
         activityManager =
-            ActivityManager(ref, activityCreators.map { it.create(GroupTaskContext(ref, players)) }, spawnLocation)
+            ActivityManager(activityCreators.create(context, spawnLocation.toProperty()))
+        activityManager?.initialize(context)
     }
 
     override fun onPlayerFilterAdded(player: Player) {
@@ -46,7 +48,7 @@ class CommonActivityEntityDisplay(
     override fun tick() {
         consideredPlayers.forEach { it.refresh() }
 
-        activityManager?.tick(GroupTaskContext(ref, players))
+        activityManager?.tick(SharedActivityContext(ref, players))
         entities.values.forEach { it.tick() }
     }
 
@@ -59,11 +61,11 @@ class CommonActivityEntityDisplay(
         super.dispose()
         entities.values.forEach { it.dispose() }
         entities.clear()
-        activityManager?.dispose()
+        activityManager?.dispose(SharedActivityContext(ref, players))
         activityManager = null
     }
 
-    override fun playerHasEntity(playerId: UUID, entityId: Int): Boolean {
+    override fun playerSeesEntity(playerId: UUID, entityId: Int): Boolean {
         return entities[playerId]?.contains(entityId) ?: false
     }
 
