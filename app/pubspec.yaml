@@ -43,6 +43,7 @@ dependencies:
     git:
       url: https://github.com/mchome/flutter_colorpicker
       ref: master
+  indent: ^2.0.0
 
 dev_dependencies:
   flutter_test:

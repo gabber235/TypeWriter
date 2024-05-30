@@ -73,4 +73,6 @@ class TWIcons {
   static const String accountTag = "mdi:account-tag";
   static const String url = "lucide:link";
   static const String download = "material-symbols:cloud-download";
+  static const String inclusive = "mingcute:combine-fill";
+  static const String range = "material-symbols:arrow-range";
 }

@@ -228,6 +228,7 @@ internal val customEditors by lazy {
         ObjectEditor<SkinProperty>::skin,
         ObjectEditor<Vector>::vector,
         ObjectEditor<Color>::color,
+        ObjectEditor<ClosedFloatingPointRange<Float>>::floatRange,
     )
         .mapNotNull(::objectEditorFromFunction)
         .associateBy { it.klass }

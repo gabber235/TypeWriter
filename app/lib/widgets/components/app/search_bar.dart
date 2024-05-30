@@ -808,6 +808,7 @@ class _SearchBar extends HookConsumerWidget {
           ),
           Expanded(
             child: DecoratedTextField(
+              text: search?.query,
               controller: controller,
               focus: focusNode,
               autofocus: true,

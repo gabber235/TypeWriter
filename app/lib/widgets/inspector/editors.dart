@@ -8,6 +8,7 @@ import "package:typewriter/widgets/inspector/editors/cron.dart";
 import "package:typewriter/widgets/inspector/editors/duration.dart";
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
+import "package:typewriter/widgets/inspector/editors/int_range.dart";
 import "package:typewriter/widgets/inspector/editors/item.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
 import "package:typewriter/widgets/inspector/editors/location.dart";
@@ -52,6 +53,7 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       SoundSourceEditorFilter(),
       SkinEditorFilter(),
       ColorEditorFilter(),
+      FloatRangeFilter(),
 
       // Default filters
       StringEditorFilter(),
