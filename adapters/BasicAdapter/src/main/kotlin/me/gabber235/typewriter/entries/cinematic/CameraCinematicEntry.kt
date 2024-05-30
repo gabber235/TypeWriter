@@ -194,6 +194,8 @@ class CameraCinematicAction(
                 val packet = WrapperPlayServerSetSlot(event)
                 packet.item = com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
             }
+            // If the player is a bedrock player, we don't want to modify the location.
+            if (isFloodgate) return@interceptPackets
             PacketType.Play.Server.PLAYER_POSITION_AND_LOOK { event ->
                 val packet = WrapperPlayServerPlayerPositionAndLook(event)
                 packet.y += 500
