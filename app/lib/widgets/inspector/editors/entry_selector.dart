@@ -67,7 +67,6 @@ class EntrySelectorEditor extends HookConsumerWidget {
     final id = forcedValue ?? ref.watch(fieldValueProvider(path, "")) as String;
 
     final hasEntry = ref.watch(entryExistsProvider(id));
-    final hasNonExistentEntry = id.isNotEmpty && !hasEntry;
 
     return DragTarget<EntryDrag>(
       onWillAcceptWithDetails: (details) {
