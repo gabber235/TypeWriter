@@ -40,7 +40,6 @@ class TimedActivityEntry(
     val activeActivity: Ref<out EntityActivityEntry> = emptyRef(),
     @Help("The activity that will be used when it is on cooldown.")
     val cooldownActivity: Ref<out EntityActivityEntry> = emptyRef(),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityActivityEntry {
     override fun create(
         context: ActivityContext,

@@ -37,7 +37,6 @@ class AudienceActivityEntry(
     val activities: List<AudienceActivityPair> = emptyList(),
     @Help("The activity that will be used when the player is not in any audience.")
     val defaultActivity: Ref<out EntityActivityEntry> = emptyRef(),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : IndividualEntityActivityEntry {
     override fun create(
         context: IndividualActivityContext,

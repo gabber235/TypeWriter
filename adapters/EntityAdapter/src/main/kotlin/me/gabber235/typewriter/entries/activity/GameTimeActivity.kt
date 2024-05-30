@@ -40,7 +40,6 @@ class GameTimeActivityEntry(
     val world: String = "",
     val activities: List<GameTimedActivity> = emptyList(),
     val defaultActivity: Ref<out EntityActivityEntry> = emptyRef(),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityActivityEntry {
     override fun create(
         context: ActivityContext,

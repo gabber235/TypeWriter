@@ -32,7 +32,6 @@ class TargetLocationActivityEntry(
     val targetLocation: Location = Location(null, 0.0, 0.0, 0.0),
     @Help("The activity that will be used when the entity is at the target location.")
     val idleActivity: Ref<out EntityActivityEntry> = emptyRef(),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityActivityEntry {
     override fun create(
         context: ActivityContext,

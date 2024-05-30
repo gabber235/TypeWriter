@@ -73,7 +73,7 @@ interface EntityInstanceEntry : AudienceFilterEntry {
 }
 
 @Tags("entity_activity")
-interface EntityActivityEntry : ActivityCreator, ManifestEntry, PriorityEntry
+interface EntityActivityEntry : ActivityCreator, ManifestEntry
 
 @Tags("shared_entity_activity")
 interface SharedEntityActivityEntry : EntityActivityEntry {

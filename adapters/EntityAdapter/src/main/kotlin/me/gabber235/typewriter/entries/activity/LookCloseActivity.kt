@@ -26,7 +26,6 @@ private val playerCloseLookRange by snippet("entity.activity.look_close.range", 
 class LookCloseActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityActivityEntry {
     override fun create(
         context: ActivityContext,

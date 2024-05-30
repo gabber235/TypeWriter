@@ -47,7 +47,6 @@ class InDialogueActivityEntry(
     val talkingActivity: Ref<out EntityActivityEntry> = emptyRef(),
     @Help("The activity that will be used when the npc is not in a dialogue")
     val idleActivity: Ref<out EntityActivityEntry> = emptyRef(),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityActivityEntry {
     override fun create(
         context: ActivityContext,

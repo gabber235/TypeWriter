@@ -27,7 +27,6 @@ class PatrolActivityEntry(
     override val name: String = "",
     override val roadNetwork: Ref<RoadNetworkEntry> = emptyRef(),
     override val nodes: List<RoadNodeId> = emptyList(),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityActivityEntry, RoadNodeCollectionEntry {
     override fun create(
         context: ActivityContext,

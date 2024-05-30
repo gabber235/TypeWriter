@@ -23,7 +23,6 @@ class RandomLookActivityEntry(
     val yawRange: ClosedFloatingPointRange<Float> = -180f..180f,
     @Help("The duration between each look")
     val duration: Duration = Duration.ofSeconds(2),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityActivityEntry {
     override fun create(context: ActivityContext, currentLocation: LocationProperty): EntityActivity<ActivityContext> {
         return RandomLookActivity(pitchRange, yawRange, duration, currentLocation)
