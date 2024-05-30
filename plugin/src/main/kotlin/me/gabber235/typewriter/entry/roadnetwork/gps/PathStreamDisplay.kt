@@ -147,16 +147,6 @@ private class PlayerPathStreamDisplay(
             return@launch
         }
 
-        // When the start and end location are within roadNetworkMaxDistance, we can just find the path between them.
-        if ((start.distanceSqrt(end) ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance) {
-            val result = findPath(start, end)
-            val path = result.map { it.mid().toLocation() }
-            if (path.isEmpty()) return@launch
-            lines.add(PathLine(path))
-            return@launch
-        }
-
-
         edges = gps.findPath().getOrElse { emptyList() }
         coroutineScope {
             // We only need to calculate the paths that the player will be able to see

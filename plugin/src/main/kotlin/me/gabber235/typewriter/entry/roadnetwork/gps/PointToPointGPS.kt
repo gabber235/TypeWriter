@@ -40,10 +40,10 @@ class PointToPointGPS(
         val end = endFetcher(network)
         if ((start.distanceSqrt(end) ?: Double.MAX_VALUE) < 1) return@switchContext ok(emptyList())
 
-        val startPair = getOrCreateNode(network, start, previousStart, -1, asEnd = false)
-        previousStart = startPair
-        val endPair = getOrCreateNode(network, end, previousEnd, -2, asEnd = true)
+        val endPair = getOrCreateNode(network.nodes, network.negativeNodes, end, previousEnd, -2, asEnd = true)
         previousEnd = endPair
+        val startPair = getOrCreateNode(network.nodes + endPair.first, network.negativeNodes, start, previousStart, -1, asEnd = false)
+        previousStart = startPair
 
         if (startPair.second?.isEmpty() == true || endPair.second?.isEmpty() == true) {
             return@switchContext failure("Could not find a path between $start and $end. The network is not connected.")
@@ -211,7 +211,8 @@ class PointToPointGPS(
 
 
     private suspend fun getOrCreateNode(
-        network: RoadNetwork,
+        nodes: List<RoadNode>,
+        negativeNodes: List<RoadNode>,
         location: Location,
         previous: Pair<RoadNode, List<RoadEdge>?>?,
         id: Int,
@@ -223,18 +224,23 @@ class PointToPointGPS(
             return previous
         }
 
-        val node = network.nodes.firstOrNull {
+        val node = nodes.firstOrNull {
             (it.location.distanceSqrt(location) ?: Double.MAX_VALUE) < it.radius * it.radius
         }
         if (node != null) return node to null
         val newNode = RoadNode(RoadNodeId(id), location, 0.5)
-        val additionalEdges = findAdditionalEdges(network, newNode, asEnd)
+        val additionalEdges = findAdditionalEdges(nodes, negativeNodes, newNode, asEnd)
         return newNode to additionalEdges
     }
 
-    private suspend fun findAdditionalEdges(network: RoadNetwork, node: RoadNode, asEnd: Boolean): List<RoadEdge> =
+    private suspend fun findAdditionalEdges(
+        nodes: List<RoadNode>,
+        negativeNodes: List<RoadNode>,
+        node: RoadNode,
+        asEnd: Boolean,
+    ): List<RoadEdge> =
         coroutineScope {
-            network.nodes
+            nodes
                 .filter {
                     it != node && it.location.world == node.location.world && (it.location.distanceSqrt(node.location)
                         ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance
@@ -254,10 +260,10 @@ class PointToPointGPS(
                             start.location.toPathPosition(),
                             end.location.toPathPosition(),
                             NodeAvoidPathfindingStrategy(
-                                nodeAvoidance = network.nodes - start - end,
+                                nodeAvoidance = nodes - start - end,
                                 permanentLock = true,
                                 strategy = NodeAvoidPathfindingStrategy(
-                                    nodeAvoidance = network.negativeNodes.filter {
+                                    nodeAvoidance = negativeNodes.filter {
                                         val distance = start.location.distanceSqrt(it.location) ?: 0.0
                                         distance > it.radius * it.radius && distance < roadNetworkMaxDistance * roadNetworkMaxDistance
                                     },
