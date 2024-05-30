@@ -67,6 +67,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
     final id = forcedValue ?? ref.watch(fieldValueProvider(path, "")) as String;
 
     final hasEntry = ref.watch(entryExistsProvider(id));
+    final hasNonExistentEntry = id.isNotEmpty && !hasEntry;
 
     return DragTarget<EntryDrag>(
       onWillAcceptWithDetails: (details) {
@@ -107,16 +108,17 @@ class EntrySelectorEditor extends HookConsumerWidget {
                           .navigateAndSelectEntry(ref.passing, id);
                     },
                   ),
-                  ContextMenuTile.button(
-                    title: "Remove reference",
-                    icon: TWIcons.squareMinus,
-                    color: Colors.redAccent,
-                    onTap: () {
-                      ref
-                          .read(inspectingEntryDefinitionProvider)
-                          ?.updateField(ref.passing, path, "");
-                    },
-                  ),
+                  if (id.isNotEmpty)
+                    ContextMenuTile.button(
+                      title: "Remove reference",
+                      icon: TWIcons.squareMinus,
+                      color: Colors.redAccent,
+                      onTap: () {
+                        ref
+                            .read(inspectingEntryDefinitionProvider)
+                            ?.updateField(ref.passing, path, "");
+                      },
+                    ),
                 ],
                 if (!hasEntry) ...[
                   ContextMenuTile.button(

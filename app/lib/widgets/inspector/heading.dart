@@ -70,8 +70,8 @@ class Heading extends HookConsumerWidget {
           direction: Axis.horizontal,
           alignment: WrapAlignment.start,
           children: [
-            _Type(type: type, url: url, color: color),
-            _Identifier(id: id),
+            EntryType(type: type, url: url, color: color),
+            EntryIdentifier(id: id),
           ],
         ),
         if (isDeprecated) ...[
@@ -112,9 +112,10 @@ class Title extends StatelessWidget {
   }
 }
 
-class _Identifier extends StatelessWidget {
-  const _Identifier({
+class EntryIdentifier extends StatelessWidget {
+  const EntryIdentifier({
     required this.id,
+    super.key,
   });
   final String id;
 
@@ -128,11 +129,12 @@ class _Identifier extends StatelessWidget {
   }
 }
 
-class _Type extends HookWidget {
-  const _Type({
+class EntryType extends HookWidget {
+  const EntryType({
     required this.type,
     required this.url,
     required this.color,
+    super.key,
   });
   final String type;
   final String url;
@@ -152,7 +154,7 @@ class _Type extends HookWidget {
       onEnter: (_) => hovering.value = true,
       onExit: (_) => hovering.value = false,
       child: GestureDetector(
-        onTap: _launceUrl,
+        onTap: url.isNotEmpty ? _launceUrl : null,
         child: Text(
           type.formatted,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(

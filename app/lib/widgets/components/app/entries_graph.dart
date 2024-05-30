@@ -138,14 +138,14 @@ class EntriesGraph extends HookConsumerWidget {
           ..style = PaintingStyle.stroke,
         builder: (node) {
           final id = node.key?.value as String?;
-          if (id == null) return const InvalidEntry();
+          if (id == null) return const NonExistentEntry();
 
           final entryOnPage = entryIds.contains(id);
           if (!entryOnPage) {
             final globalEntryWithPage =
                 ref.watch(globalEntryWithPageProvider(id));
             if (globalEntryWithPage == null) {
-              return const InvalidEntry();
+              return const NonExistentEntry();
             }
 
             return ExternalEntryNode(

@@ -19,10 +19,14 @@ class Ref<E : Entry>(
     val isSet: Boolean
         get() = id.isNotBlank()
 
-    fun get(): E? = Query.findById(klass, id)
+    fun get(): E? {
+        if (!isSet) return null
+        return Query.findById(klass, id)
+    }
 
 
     override fun toString(): String {
+        if (!isSet) return "Ref<${klass.simpleName}>(NOT SET)"
         return "Ref<${klass.simpleName}>($id)"
     }
 

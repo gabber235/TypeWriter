@@ -64,6 +64,7 @@ List<String> _acceptingPaths(
 
   final modifiers = ref.watch(fieldModifiersProvider(entry.type, "entry"));
   final onlyTags = ref.watch(fieldModifiersProvider(entry.type, "only_tags"));
+
   return modifiers.entries
       .where((e) {
         final onlyTagModifier = onlyTags[e.key];
@@ -92,13 +93,13 @@ class EntryNode extends HookConsumerWidget {
     final isSelected =
         ref.watch(inspectingEntryIdProvider.select((e) => e == entryId));
     final entryType = ref.watch(entryTypeProvider(entryId));
-    if (entryType == null) return const InvalidEntry();
+    if (entryType == null) return const NonExistentEntry();
 
     final entryName = ref.watch(entryNameProvider(entryId));
-    if (entryName == null) return const InvalidEntry();
+    if (entryName == null) return const NonExistentEntry();
 
     final blueprint = ref.watch(entryBlueprintProvider(entryType));
-    if (blueprint == null) return const InvalidEntry();
+    if (blueprint == null) return NoBlueprintEntry(entryId: entryId);
 
     return _EntryNode(
       id: entryId,
@@ -308,11 +309,13 @@ class _EntryNode extends HookConsumerWidget {
                   ref.read(globalEntryProvider(details.data.entryId));
               if (targetEntry == null) return;
 
+              final acceptedPaths =
+                  ref.read(_acceptingPathsProvider(id, details.data.entryId));
+
+              if (acceptedPaths.isEmpty) return;
               final path = await pathSelector(
                 context,
-                ref.read(
-                  _acceptingPathsProvider(id, details.data.entryId),
-                ),
+                acceptedPaths,
               );
               if (path == null) return;
 
@@ -439,13 +442,13 @@ class FakeEntryNode extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final type = ref.watch(entryTypeProvider(entryId));
-    if (type == null) return const InvalidEntry();
+    if (type == null) return const NonExistentEntry();
 
     final name = ref.watch(entryNameProvider(entryId));
-    if (name == null) return const InvalidEntry();
+    if (name == null) return const NonExistentEntry();
 
     final blueprint = ref.watch(entryBlueprintProvider(type));
-    if (blueprint == null) return const InvalidEntry();
+    if (blueprint == null) return const NonExistentEntry();
 
     final isDeprecated = ref.watch(isEntryDeprecatedProvider(entryId));
 
@@ -494,8 +497,80 @@ class FakeEntryNode extends HookConsumerWidget {
   }
 }
 
-class InvalidEntry extends StatelessWidget {
-  const InvalidEntry({super.key});
+class NoBlueprintEntry extends HookConsumerWidget {
+  const NoBlueprintEntry({
+    required this.entryId,
+    super.key,
+  });
+
+  final String entryId;
+
+  void _selectEntry(PassingRef ref) {
+    ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId);
+  }
+
+  void _deleteEntry(BuildContext context, PassingRef ref) {
+    final page = ref.read(currentPageProvider);
+    if (page == null) return;
+    page.deleteEntryWithConfirmation(context, ref, entryId);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entryName = ref.watch(entryNameProvider(entryId));
+    return ContextMenuRegion(
+      builder: (context) {
+        return [
+          ContextMenuTile.button(
+            title: "Delete",
+            icon: TWIcons.trash,
+            color: Colors.redAccent,
+            onTap: () => _deleteEntry(context, ref.passing),
+          ),
+        ];
+      },
+      child: Material(
+        color: Colors.redAccent,
+        borderRadius: BorderRadius.circular(4),
+        child: InkWell(
+          onTap: () => _selectEntry(ref.passing),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                const Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      entryName ?? "Non existent blueprint",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      "Blueprint for this entry does not exist",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.white70,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 11,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class NonExistentEntry extends StatelessWidget {
+  const NonExistentEntry({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -512,14 +587,18 @@ class InvalidEntry extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Unknown entry",
-                  style: TextStyle(color: Colors.white),
+                  "Non-existent entry",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                  ),
                 ),
                 Text(
-                  "(this should never happen)",
+                  "Entry reference is not an entry",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.white70,
                         fontStyle: FontStyle.italic,
+                        fontSize: 11,
                       ),
                 ),
               ],
@@ -548,7 +627,7 @@ class ExternalEntryNode extends HookConsumerWidget {
     final pageName = page?.pageName.formatted ?? "Unknown page";
 
     if (blueprint == null) {
-      return const InvalidEntry();
+      return const NonExistentEntry();
     }
 
     final isDeprecated = ref.watch(isEntryDeprecatedProvider(entry.id));

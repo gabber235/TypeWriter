@@ -144,7 +144,7 @@ fun JsonReader.parsePage(id: String, gson: Gson): Result<Page> {
         beginObject()
         while (hasNext()) {
             when (nextName()) {
-                "entries" -> page = page.copy(entries = parseEntries(gson))
+                "entries" -> page = page.copy(entries = parseEntries(gson, id))
                 "type" -> page = page.copy(type = PageType.fromId(nextString()) ?: PageType.SEQUENCE)
                 "priority" -> page = page.copy(priority = nextInt())
                 else -> skipValue()
@@ -160,12 +160,12 @@ fun JsonReader.parsePage(id: String, gson: Gson): Result<Page> {
     }
 }
 
-private fun JsonReader.parseEntries(gson: Gson): List<Entry> {
+private fun JsonReader.parseEntries(gson: Gson, pageId: String): List<Entry> {
     val entries = mutableListOf<Entry>()
 
     beginArray()
     while (hasNext()) {
-        val entry = parseEntry(gson) ?: continue
+        val entry = parseEntry(gson, pageId) ?: continue
         entries.add(entry)
     }
     endArray()
@@ -173,7 +173,7 @@ private fun JsonReader.parseEntries(gson: Gson): List<Entry> {
     return entries
 }
 
-private fun JsonReader.parseEntry(gson: Gson): Entry? {
+private fun JsonReader.parseEntry(gson: Gson, pageId: String): Entry? {
     return try {
         gson.fromJson(this, Entry::class.java)
     } catch (e: NonExistentSubtypeException) {
@@ -182,7 +182,7 @@ private fun JsonReader.parseEntry(gson: Gson): Entry? {
         logger.warning(
             """
 			|--------------------------------------------------------------------------
-			|Failed to parse entry: $subtypeName is not a valid entry type. (skipping)
+			|Failed to parse entry type '$subtypeName' on page '$pageId' is not a valid entry type. (skipping)
 			|
 			|This is either because an adapter is missing or due to having an outdated page entry. 
 			|
