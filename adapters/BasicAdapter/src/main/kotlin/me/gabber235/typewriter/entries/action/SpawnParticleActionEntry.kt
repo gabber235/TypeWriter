@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entries.action
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Negative
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
@@ -33,10 +34,13 @@ class SpawnParticleActionEntry(
     val particle: Particle = Particle.SMOKE_NORMAL,
     @Help("The amount of particles to spawn.")
     val count: Int = 1,
+    @Negative
     @Help("The offset from the location on the X axis.")
     val offsetX: Double = 0.0,
+    @Negative
     @Help("The offset from the location on the Y axis.")
     val offsetY: Double = 0.0,
+    @Negative
     @Help("The offset from the location on the Z axis.")
     val offsetZ: Double = 0.0,
 ) : ActionEntry {
