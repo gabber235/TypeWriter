@@ -25,7 +25,7 @@ val dialogueIndicator by snippet("objective.entity.indicator.dialogue", "<white>
 @Entry(
     "interaction_indicator_definition",
     "Interaction Indicator",
-    Colors.BLUE,
+    Colors.ORANGE,
     "material-symbols:move-selection-up-rounded"
 )
 /**
