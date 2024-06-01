@@ -29,8 +29,7 @@ class RegexHeaderInfo extends HookConsumerWidget {
       tooltip: "Regular expressions are supported. Click for more info.",
       icon: TWIcons.asterisk,
       color: Color(0xFFf731d6),
-      url:
-          "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions",
+      url: "https://www.autoregex.xyz/",
     );
   }
 }
