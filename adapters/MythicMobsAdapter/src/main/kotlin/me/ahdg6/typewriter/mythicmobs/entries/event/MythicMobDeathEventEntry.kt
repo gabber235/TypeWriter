@@ -7,7 +7,6 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Regex
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.ThreadType.ASYNC
 import org.bukkit.entity.Player
 
 
@@ -31,9 +30,7 @@ class MythicMobDeathEventEntry(
 @EntryListener(MythicMobDeathEventEntry::class)
 fun onMobDeath(event: MythicMobDeathEvent, query: Query<MythicMobDeathEventEntry>) {
     val player = event.killer as? Player ?: return
-    ASYNC.launch {
-        query findWhere {
-            it.mobName.toRegex(RegexOption.IGNORE_CASE).matches(event.mobType.internalName)
-        } triggerAllFor player
-    }
+    query findWhere {
+        it.mobName.toRegex(RegexOption.IGNORE_CASE).matches(event.mobType.internalName)
+    } triggerAllFor player
 }

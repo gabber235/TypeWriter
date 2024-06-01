@@ -7,7 +7,6 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Regex
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.ThreadType.ASYNC
 
 @Entry("mythicmobs_interact_event", "MythicMob Interact Event", Colors.YELLOW, "fa6-solid:dragon")
 /**
@@ -28,9 +27,7 @@ class MythicMobInteractEventEntry(
 
 @EntryListener(MythicMobInteractEventEntry::class)
 fun onMythicMobInteractEvent(event: MythicMobInteractEvent, query: Query<MythicMobInteractEventEntry>) {
-    ASYNC.launch {
-        query findWhere {
-            it.mobName.toRegex(RegexOption.IGNORE_CASE).matches(event.activeMobType.internalName)
-        } startDialogueWithOrNextDialogue event.player
-    }
+    query findWhere {
+        it.mobName.toRegex(RegexOption.IGNORE_CASE).matches(event.activeMobType.internalName)
+    } startDialogueWithOrNextDialogue event.player
 }
