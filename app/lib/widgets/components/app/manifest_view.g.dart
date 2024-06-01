@@ -6,7 +6,7 @@ part of 'manifest_view.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$manifestEntriesHash() => r'9c186fdee30d9960d12573d66cb2f060d3b3927e';
+String _$manifestEntriesHash() => r'ee26b4e5433b9b26aa63771c4915fbb90113cc31';
 
 /// See also [manifestEntries].
 @ProviderFor(manifestEntries)

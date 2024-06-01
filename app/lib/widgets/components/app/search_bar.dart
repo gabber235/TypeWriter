@@ -31,13 +31,23 @@ final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(
   name: "searchProvider",
 );
 
+final _quantifierRegex = RegExp(r"!(\w+)");
+
 @riverpod
 List<SearchElement> searchElements(SearchElementsRef ref) {
   final search = ref.watch(searchProvider);
   if (search == null) return [];
 
-  final fetchers = search.fetchers.where((f) => !f.disabled);
-  final actions = fetchers.expand((f) => f.fetch(ref.passing));
+  final quantifiers =
+      _quantifierRegex.allMatches(search.query).map((match) => match.group(0)!);
+
+  final fullQuery = search.query;
+  final query = quantifiers.fold(fullQuery, (query, quantifier) {
+    return query.replaceFirst(quantifier, "");
+  });
+
+  final fetchers = search.fetchers.where((f) => f.canFetch(fullQuery));
+  final actions = fetchers.expand((f) => f.fetch(ref.passing, query));
   final filtered =
       actions.where((e) => search.filters.every((f) => f.filter(e)));
 
@@ -105,6 +115,12 @@ class ActivateActionIntent extends Intent {
   final ShortcutActivator shortcut;
 }
 
+enum FetchStatus {
+  fetching,
+  disabled,
+  quantifierBlocked,
+}
+
 @freezed
 class Search with _$Search {
   const factory Search({
@@ -124,68 +140,11 @@ class SearchAction {
     this.onTrigger,
   });
   final String name;
-
   final String icon;
+
   final ShortcutActivator shortcut;
   final Color? color;
   final FutureOr<bool> Function(BuildContext, PassingRef ref)? onTrigger;
-}
-
-class SearchBarWrapper extends HookConsumerWidget {
-  const SearchBarWrapper({
-    required this.child,
-    super.key,
-  });
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Shortcuts(
-      shortcuts: {
-        SmartSingleActivator(LogicalKeyboardKey.keyK, control: true):
-            SearchIntent(),
-        SmartSingleActivator(LogicalKeyboardKey.space, control: true):
-            SearchIntent(),
-        const SingleActivator(LogicalKeyboardKey.keyP, control: true):
-            const PreviousFocusIntent(),
-        const SingleActivator(LogicalKeyboardKey.keyN, control: true):
-            const NextFocusIntent(),
-        SmartSingleActivator(
-          LogicalKeyboardKey.keyP,
-          control: true,
-          shift: true,
-        ): const PublishPagesIntent(),
-      },
-      child: Actions(
-        actions: {
-          SearchIntent: CallbackAction<SearchIntent>(
-            onInvoke: (intent) {
-              ref.read(searchProvider.notifier).startGlobalSearch();
-              return null;
-            },
-          ),
-          PublishPagesIntent: CallbackAction<PublishPagesIntent>(
-            onInvoke: (intent) {
-              ref.read(communicatorProvider).publish();
-              return null;
-            },
-          ),
-        },
-        child: AlwaysFocused(
-          child: ColoredBox(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: Stack(
-              children: [
-                child,
-                const SearchBar(),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class SearchBar extends HookConsumerWidget {
@@ -299,10 +258,65 @@ class SearchBar extends HookConsumerWidget {
   }
 }
 
+class SearchBarWrapper extends HookConsumerWidget {
+  const SearchBarWrapper({
+    required this.child,
+    super.key,
+  });
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Shortcuts(
+      shortcuts: {
+        SmartSingleActivator(LogicalKeyboardKey.keyK, control: true):
+            SearchIntent(),
+        SmartSingleActivator(LogicalKeyboardKey.space, control: true):
+            SearchIntent(),
+        const SingleActivator(LogicalKeyboardKey.keyP, control: true):
+            const PreviousFocusIntent(),
+        const SingleActivator(LogicalKeyboardKey.keyN, control: true):
+            const NextFocusIntent(),
+        SmartSingleActivator(
+          LogicalKeyboardKey.keyP,
+          control: true,
+          shift: true,
+        ): const PublishPagesIntent(),
+      },
+      child: Actions(
+        actions: {
+          SearchIntent: CallbackAction<SearchIntent>(
+            onInvoke: (intent) {
+              ref.read(searchProvider.notifier).startGlobalSearch();
+              return null;
+            },
+          ),
+          PublishPagesIntent: CallbackAction<PublishPagesIntent>(
+            onInvoke: (intent) {
+              ref.read(communicatorProvider).publish();
+              return null;
+            },
+          ),
+        },
+        child: AlwaysFocused(
+          child: ColoredBox(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Stack(
+              children: [
+                child,
+                const SearchBar(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class SearchBuilder {
   SearchBuilder(this.notifier);
   var _currentSearch = const Search();
-
   final SearchNotifier notifier;
 
   void fetch(SearchFetcher fetcher) {
@@ -355,14 +369,35 @@ abstract class SearchFetcher {
   Color get color => Colors.blueAccent;
   bool get disabled;
   String get icon => TWIcons.magnifyingGlass;
+
+  /// Quantifiers are used to disable the fetcher using !<quantifier>.
+  /// When a quantifier is used, the fetcher will only be used if the search contains the quantifier.
+  List<String> get quantifiers => const [];
+
   String get title;
+
+  bool canFetch(String query) {
+    return getFetchStatus(query) == FetchStatus.fetching;
+  }
 
   SearchFetcher copyWith({
     bool? disabled,
   });
 
-  List<SearchElement> fetch(PassingRef ref) {
+  List<SearchElement> fetch(PassingRef ref, String query) {
     return [];
+  }
+
+  FetchStatus getFetchStatus(String query) {
+    if (!matchesQuantifier(query)) return FetchStatus.quantifierBlocked;
+    if (disabled) return FetchStatus.disabled;
+    return FetchStatus.fetching;
+  }
+
+  bool matchesQuantifier(String query) {
+    final quantifiers =
+        _quantifierRegex.allMatches(query).map((match) => match.group(1)!);
+    return quantifiers.isEmpty || quantifiers.any(this.quantifiers.contains);
   }
 }
 
@@ -387,7 +422,6 @@ class SearchNotifier extends StateNotifier<Search?> {
     _debouncer = Debouncer<String>(duration: 200.ms, callback: _updateQuery);
   }
   final Ref ref;
-
   late Debouncer<String> _debouncer;
 
   SearchBuilder asBuilder() {
@@ -536,6 +570,69 @@ class _Modal extends HookConsumerWidget {
   }
 }
 
+class _FetcherChip extends HookConsumerWidget {
+  const _FetcherChip({
+    required this.fetcher,
+  });
+
+  final SearchFetcher fetcher;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query =
+        ref.watch(searchProvider.select((value) => value?.query ?? ""));
+
+    final status = fetcher.getFetchStatus(query);
+
+    return Material(
+      color: switch (status) {
+        FetchStatus.fetching => fetcher.color,
+        FetchStatus.quantifierBlocked => fetcher.color.withOpacity(0.3),
+        FetchStatus.disabled => Theme.of(context).cardColor,
+      },
+      borderRadius: BorderRadius.circular(30),
+      child: InkWell(
+        onTap: status != FetchStatus.quantifierBlocked
+            ? () => ref.read(searchProvider.notifier).toggleFetcher(fetcher)
+            : null,
+        borderRadius: BorderRadius.circular(30),
+        child: MouseRegion(
+          cursor: status != FetchStatus.quantifierBlocked
+              ? SystemMouseCursors.click
+              : SystemMouseCursors.forbidden,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 5,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Iconify(
+                  fetcher.icon,
+                  color: status != FetchStatus.quantifierBlocked
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.3),
+                  size: 16,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  fetcher.title,
+                  style: TextStyle(
+                    color: status != FetchStatus.quantifierBlocked
+                        ? Colors.white
+                        : Colors.white.withOpacity(0.3),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ResultTile extends HookConsumerWidget {
   const _ResultTile({
     required this.focusNode,
@@ -551,8 +648,8 @@ class _ResultTile extends HookConsumerWidget {
   final FocusNode focusNode;
   final VoidCallback onPressed;
   final Color color;
-
   final Widget icon;
+
   final Widget suffixIcon;
   final String title;
   final String description;
@@ -914,40 +1011,7 @@ class _SearchFilters extends HookConsumerWidget {
             direction: Axis.horizontal,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              for (final fetcher in fetchers)
-                Material(
-                  color: fetcher.disabled
-                      ? Theme.of(context).cardColor
-                      : fetcher.color,
-                  borderRadius: BorderRadius.circular(30),
-                  child: InkWell(
-                    onTap: () => ref
-                        .read(searchProvider.notifier)
-                        .toggleFetcher(fetcher),
-                    borderRadius: BorderRadius.circular(30),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 5,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Iconify(
-                            fetcher.icon,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            fetcher.title,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              for (final fetcher in fetchers) _FetcherChip(fetcher: fetcher),
               for (final filter in filters)
                 Material(
                   color: filter.color,

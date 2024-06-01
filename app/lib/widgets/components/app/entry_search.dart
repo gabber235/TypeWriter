@@ -199,12 +199,28 @@ class NewEntryFetcher extends SearchFetcher {
   String get title => "New Entries";
 
   @override
-  List<SearchElement> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
+  List<String> get quantifiers => [
+        "e",
+        "ne",
+        "ae",
+        "ea",
+        "entry",
+        "entries",
+        "add",
+        "add_entry",
+        "add_entries",
+        "entry_add",
+        "entries_add",
+        "new",
+        "new_entry",
+        "new_entries",
+      ];
+
+  @override
+  List<SearchElement> fetch(PassingRef ref, String query) {
     final fuzzy = ref.read(_fuzzyBlueprintsProvider);
 
-    final results = fuzzy.search(search.query);
+    final results = fuzzy.search(query);
 
     return results
         .map(
@@ -244,12 +260,14 @@ class EntryFetcher extends SearchFetcher {
   String get title => "Entries";
 
   @override
-  List<SearchElement> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
+  List<String> get quantifiers =>
+      ["e", "ee", "entry", "entries", "existing_entry", "existing_entries"];
+
+  @override
+  List<SearchElement> fetch(PassingRef ref, String query) {
     final fuzzy = ref.read(_fuzzyEntriesProvider);
 
-    final results = fuzzy.search(search.query);
+    final results = fuzzy.search(query);
 
     return results.map((result) {
       final definition = result.item;

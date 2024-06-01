@@ -20,5 +20,20 @@ final _fuzzyPagesProvider = AutoDisposeProvider<Fuzzy<Page>>.internal(
 );
 
 typedef _FuzzyPagesRef = AutoDisposeProviderRef<Fuzzy<Page>>;
+String _$fuzzyPageTypesHash() => r'aad5781007f32aede23eb6288e7666f289b2f9ab';
+
+/// See also [_fuzzyPageTypes].
+@ProviderFor(_fuzzyPageTypes)
+final _fuzzyPageTypesProvider = AutoDisposeProvider<Fuzzy<PageType>>.internal(
+  _fuzzyPageTypes,
+  name: r'_fuzzyPageTypesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$fuzzyPageTypesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _FuzzyPageTypesRef = AutoDisposeProviderRef<Fuzzy<PageType>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

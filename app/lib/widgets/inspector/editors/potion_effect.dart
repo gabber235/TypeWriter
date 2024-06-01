@@ -59,12 +59,10 @@ class PotionEffectsFetcher extends SearchFetcher {
   String get title => "Potion Effects";
 
   @override
-  List<SearchElement> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
+  List<SearchElement> fetch(PassingRef ref, String query) {
     final fuzzy = ref.read(_fuzzyPotionEffectsProvider);
 
-    final results = fuzzy.search(search.query);
+    final results = fuzzy.search(query);
 
     return results
         .map(
