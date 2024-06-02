@@ -6,6 +6,8 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
+import me.gabber235.typewriter.entries.data.minecraft.living.AgableProperty
+import me.gabber235.typewriter.entries.data.minecraft.living.applyAgeableData
 import me.gabber235.typewriter.entries.data.minecraft.living.applyLivingEntityData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
@@ -56,6 +58,10 @@ private class HuskEntity(player: Player) : WrapperFakeEntity(
     player,
 ) {
     override fun applyProperty(property: EntityProperty) {
+        when (property) {
+            is AgableProperty -> applyAgeableData(entity, property)
+            else -> {}
+        }
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
     }
