@@ -56,99 +56,93 @@ fun typeWriterCommand() = commandTree("typewriter") {
     manifestCommands()
 }
 
-private fun CommandTree.reloadCommands() {
-    literalArgument("reload") {
-        withPermission("typewriter.reload")
-        anyExecutor { sender, _ ->
-            sender.msg("Reloading configuration...")
-            TypewriterReloadEvent().callEvent()
-            sender.msg("Configuration reloaded!")
-        }
+private fun CommandTree.reloadCommands() = literalArgument("reload") {
+    withPermission("typewriter.reload")
+    anyExecutor { sender, _ ->
+        sender.msg("Reloading configuration...")
+        TypewriterReloadEvent().callEvent()
+        sender.msg("Configuration reloaded!")
     }
 }
 
-private fun CommandTree.factsCommands() {
-    literalArgument("facts") {
-        withPermission("typewriter.facts")
+private fun CommandTree.factsCommands() = literalArgument("facts") {
+    withPermission("typewriter.facts")
 
-        literalArgument("set") {
-            withPermission("typewriter.facts.set")
-            argument(entryArgument<WritableFactEntry>("fact")) {
-                integerArgument("value") {
-                    optionalTarget {
-                        anyExecutor { sender, args ->
-                            val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                            val fact = args["fact"] as WritableFactEntry
-                            val value = args["value"] as Int
-                            fact.write(target, value)
-                            sender.msg("Fact <blue>${fact.formattedName}</blue> set to $value for ${target.name}.")
-                        }
+    literalArgument("set") {
+        withPermission("typewriter.facts.set")
+        argument(entryArgument<WritableFactEntry>("fact")) {
+            integerArgument("value") {
+                optionalTarget {
+                    anyExecutor { sender, args ->
+                        val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                        val fact = args["fact"] as WritableFactEntry
+                        val value = args["value"] as Int
+                        fact.write(target, value)
+                        sender.msg("Fact <blue>${fact.formattedName}</blue> set to $value for ${target.name}.")
                     }
                 }
             }
         }
+    }
 
-        literalArgument("reset") {
-            withPermission("typewriter.facts.reset")
-            optionalTarget {
-                anyExecutor { sender, args ->
-                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                    val entries = Query.find<WritableFactEntry>().toList()
-                    if (entries.none()) {
-                        sender.msg("There are no facts available.")
-                        return@anyExecutor
-                    }
-
-                    for (entry in entries) {
-                        entry.write(target, 0)
-                    }
-                    sender.msg("All facts for ${target.name} have been reset.")
-                }
-            }
-        }
-
+    literalArgument("reset") {
+        withPermission("typewriter.facts.reset")
         optionalTarget {
             anyExecutor { sender, args ->
                 val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-
-                val factEntries = Query.find<ReadableFactEntry>().toList()
-                if (factEntries.none()) {
+                val entries = Query.find<WritableFactEntry>().toList()
+                if (entries.none()) {
                     sender.msg("There are no facts available.")
                     return@anyExecutor
                 }
 
-                sender.sendMini("\n\n")
-                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
-                sender.msg("$name has the following facts:\n")
-
-                for (entry in factEntries) {
-                    val data = entry.readForPlayersGroup(target)
-                    sender.sendMini(
-                        "<hover:show_text:'${
-                            entry.comment.replace(
-                                Regex(" +"),
-                                " "
-                            ).replace("'", "\\'")
-                        }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts $name set ${entry.name} ${data.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${data.value} <gray><i>(${
-                            formatter.format(
-                                data.lastUpdate
-                            )
-                        })</i></gray>"
-                    )
+                for (entry in entries) {
+                    entry.write(target, 0)
                 }
+                sender.msg("All facts for ${target.name} have been reset.")
+            }
+        }
+    }
+
+    optionalTarget {
+        anyExecutor { sender, args ->
+            val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+
+            val factEntries = Query.find<ReadableFactEntry>().toList()
+            if (factEntries.none()) {
+                sender.msg("There are no facts available.")
+                return@anyExecutor
+            }
+
+            sender.sendMini("\n\n")
+            val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
+            sender.msg("$name has the following facts:\n")
+
+            for (entry in factEntries) {
+                val data = entry.readForPlayersGroup(target)
+                sender.sendMini(
+                    "<hover:show_text:'${
+                        entry.comment.replace(
+                            Regex(" +"),
+                            " "
+                        ).replace("'", "\\'")
+                    }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts $name set ${entry.name} ${data.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${data.value} <gray><i>(${
+                        formatter.format(
+                            data.lastUpdate
+                        )
+                    })</i></gray>"
+                )
             }
         }
     }
 }
 
-private fun CommandTree.clearChatCommand() {
-    literalArgument("clearChat") {
-        withPermission("typewriter.clearChat")
-        playerExecutor { player, _ ->
-            player.chatHistory.let {
-                it.clear()
-                it.resendMessages(player)
-            }
+private fun CommandTree.clearChatCommand() = literalArgument("clearChat") {
+    withPermission("typewriter.clearChat")
+    playerExecutor { player, _ ->
+        player.chatHistory.let {
+            it.clear()
+            it.resendMessages(player)
         }
     }
 }
@@ -194,7 +188,6 @@ private fun CommandTree.connectCommand() {
 }
 
 private fun CommandTree.cinematicCommand() = literalArgument("cinematic") {
-
     literalArgument("start") {
         withPermission("typewriter.cinematic.start")
 
@@ -278,49 +271,43 @@ private fun CommandTree.questCommands() = literalArgument("quest") {
     }
 }
 
-private fun CommandTree.assetsCommands() {
-    literalArgument("assets") {
-        withPermission("typewriter.assets")
-        literalArgument("clean") {
-            withPermission("typewriter.assets.clean")
-            anyExecutor { sender, _ ->
-                sender.msg("Cleaning unused assets...")
-                ThreadType.DISPATCHERS_ASYNC.launch {
-                    val deleted = get<AssetManager>(AssetManager::class.java).removeUnusedAssets()
-                    sender.msg("Cleaned <blue>${deleted}</blue> assets.")
+private fun CommandTree.assetsCommands() = literalArgument("assets") {
+    literalArgument("clean") {
+        withPermission("typewriter.assets.clean")
+        anyExecutor { sender, _ ->
+            sender.msg("Cleaning unused assets...")
+            ThreadType.DISPATCHERS_ASYNC.launch {
+                val deleted = get<AssetManager>(AssetManager::class.java).removeUnusedAssets()
+                sender.msg("Cleaned <blue>${deleted}</blue> assets.")
+            }
+        }
+    }
+}
+
+private fun CommandTree.roadNetworkCommands() = literalArgument("roadNetwork") {
+    literalArgument("edit") {
+        withPermission("typewriter.roadNetwork.edit")
+
+        argument(entryArgument<RoadNetworkEntry>("network")) {
+            optionalTarget {
+                anyExecutor { sender, args ->
+                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                    val entry = args["network"] as RoadNetworkEntry
+                    val data = mapOf(
+                        "entryId" to entry.id
+                    )
+                    val context = ContentContext(data)
+                    ContentModeTrigger(
+                        context,
+                        RoadNetworkContentMode(context, target)
+                    ) triggerFor target
                 }
             }
         }
     }
 }
 
-private fun CommandTree.roadNetworkCommands() =
-    literalArgument("roadNetwork") {
-        withPermission("typewriter.roadNetwork")
-        literalArgument("edit") {
-            withPermission("typewriter.roadNetwork.edit")
-
-            argument(entryArgument<RoadNetworkEntry>("network")) {
-                optionalTarget {
-                    anyExecutor { sender, args ->
-                        val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                        val entry = args["network"] as RoadNetworkEntry
-                        val data = mapOf(
-                            "entryId" to entry.id
-                        )
-                        val context = ContentContext(data)
-                        ContentModeTrigger(
-                            context,
-                            RoadNetworkContentMode(context, target)
-                        ) triggerFor target
-                    }
-                }
-            }
-        }
-    }
-
 private fun CommandTree.manifestCommands() = literalArgument("manifest") {
-    withPermission("typewriter.manifest")
     literalArgument("inspect") {
         withPermission("typewriter.manifest.inspect")
 
@@ -329,14 +316,14 @@ private fun CommandTree.manifestCommands() = literalArgument("manifest") {
                 val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
                 val inEntries = Query.findWhere<AudienceEntry> { target.inAudience(it) }.sortedBy { it.name }.toList()
                 if (inEntries.none()) {
-                    target.msg("You are not in any audience entries.")
+                    sender.msg("You are not in any audience entries.")
                     return@anyExecutor
                 }
 
-                target.sendMini("\n\n")
-                target.msg("You are in the following audience entries:")
+                sender.sendMini("\n\n")
+                sender.msg("You are in the following audience entries:")
                 for (entry in inEntries) {
-                    target.sendMini(
+                    sender.sendMini(
                         "<hover:show_text:'<gray>${entry.id}'><click:copy_to_clipboard:${entry.id}><gray> - </gray><blue>${entry.formattedName}</blue></click></hover>"
                     )
                 }

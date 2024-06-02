@@ -2,13 +2,12 @@ import * as fields from '@site/src/components/EntryField';
 import Admonition from '@theme/Admonition';
 import Link from '@docusaurus/Link';
 
-# Holding Item Audience 
+# Item In Slot Audience 
 
-The `Holding Item Audience` entry is an audience filter that filters an audience based on if they are holding a specific item.
-The audience will only contain players that are holding the specified item.
+The `Item In Slot Audience` entry filters an audience based on if they have a specific item in a specific slot.
 
 ## How could this be used?
-Could show a path stream to a location when the player is holding a map.
+It can be used to have magnet boots which allow players to move in certain areas.
 
 
 ## Fields
@@ -17,6 +16,9 @@ Could show a path stream to a location when the player is holding a map.
 </fields.EntryField>
 <fields.EntryField name='Item' required>
      The item to check for.
+</fields.EntryField>
+<fields.EntryField name='Slot' required>
+     The slot to check.
 </fields.EntryField>
 <fields.EntryField name='Inverted' required>
 </fields.EntryField>
