@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entry.entries
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Tags
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.plugin
 import org.bukkit.entity.Player
@@ -31,6 +32,11 @@ interface AudienceEntry : ManifestEntry {
 interface AudienceFilterEntry : AudienceEntry {
     val children: List<Ref<out AudienceEntry>>
     override fun display(): AudienceFilter
+}
+
+interface Invertible {
+    @Help("The audience will be the players that do not match the criteria.")
+    val inverted: Boolean
 }
 
 interface TickableDisplay {
@@ -84,6 +90,7 @@ class PassThroughDisplay : AudienceDisplay() {
 abstract class AudienceFilter(
     private val ref: Ref<out AudienceFilterEntry>
 ) : AudienceDisplay() {
+    private val inverted = (ref.get() as? Invertible)?.inverted ?: false
     private val filteredPlayers: ConcurrentSkipListSet<UUID> = ConcurrentSkipListSet()
     override val players: List<Player> get() = server.onlinePlayers.filter { it.uniqueId in filteredPlayers }
 
@@ -92,7 +99,8 @@ abstract class AudienceFilter(
     abstract fun filter(player: Player): Boolean
 
     fun Player.updateFilter(isFiltered: Boolean) {
-        if (isFiltered) {
+        val allow = !inverted == isFiltered
+        if (allow) {
             if (filteredPlayers.add(uniqueId)) {
                 onPlayerFilterAdded(this)
                 get<AudienceManager>(AudienceManager::class.java).addPlayerToChildren(this, ref)

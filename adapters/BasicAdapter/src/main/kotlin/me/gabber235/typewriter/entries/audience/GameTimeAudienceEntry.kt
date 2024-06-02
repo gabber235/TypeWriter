@@ -4,10 +4,7 @@ import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.entries.AudienceEntry
-import me.gabber235.typewriter.entry.entries.AudienceFilter
-import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
-import me.gabber235.typewriter.entry.entries.TickableDisplay
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.logger
 import org.bukkit.entity.Player
@@ -45,7 +42,8 @@ class GameTimeAudienceEntry(
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     val world: String = "",
     val activeTimes: List<GameTimeRange> = emptyList(),
-) : AudienceFilterEntry {
+    override val inverted: Boolean = false,
+) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = GameTimeAudienceFilter(ref(), world, activeTimes)
 }
 

@@ -12,6 +12,7 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.AudienceFilter
 import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
+import me.gabber235.typewriter.entry.entries.Invertible
 import me.gabber235.typewriter.entry.ref
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -35,8 +36,10 @@ class RegionAudienceEntry(
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     @Help("The region to filter players based on")
     val region: String = "",
-) : AudienceFilterEntry {
+    override val inverted: Boolean = false,
+) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter {
+
         return RegionAudienceFilter(ref(), region)
     }
 }

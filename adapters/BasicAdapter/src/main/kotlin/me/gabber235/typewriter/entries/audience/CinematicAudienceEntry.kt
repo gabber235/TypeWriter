@@ -11,6 +11,7 @@ import me.gabber235.typewriter.entry.cinematic.isPlayingCinematic
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.AudienceFilter
 import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
+import me.gabber235.typewriter.entry.entries.Invertible
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.events.AsyncCinematicEndEvent
 import me.gabber235.typewriter.events.AsyncCinematicStartEvent
@@ -39,36 +40,33 @@ class CinematicAudienceEntry(
     @Page(PageType.CINEMATIC)
     @SerializedName("cinematic")
     val pageId: String = "",
-    @Help("When inverted, the audience will be filtered when not in a cinematic.")
-    val inverted: Boolean = false
-) : AudienceFilterEntry {
+    override val inverted: Boolean = false
+) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = CinematicAudienceFilter(
         ref(),
         pageId,
-        inverted,
     )
 }
 
 class CinematicAudienceFilter(
     ref: Ref<out AudienceFilterEntry>,
     private val pageId: String,
-    private val inverted: Boolean,
 ) : AudienceFilter(ref) {
     override fun filter(player: Player): Boolean {
         val inCinematic = if (pageId.isNotBlank()) player.isPlayingCinematic(pageId) else player.isPlayingCinematic()
-        return if (inverted) !inCinematic else inCinematic
+        return inCinematic
     }
 
     @EventHandler
     fun onCinematicStart(event: AsyncCinematicStartEvent) {
         if (pageId.isNotBlank() && event.pageId != pageId) return
-        event.player.updateFilter(!inverted)
+        event.player.updateFilter(true)
     }
 
     @EventHandler
     fun onCinematicEnd(event: AsyncCinematicEndEvent) {
         if (pageId.isNotBlank() && event.pageId != pageId) return
-        event.player.updateFilter(inverted)
+        event.player.updateFilter(false)
     }
 }
 

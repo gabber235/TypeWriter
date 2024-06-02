@@ -15,47 +15,40 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.inventory.*
 import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerItemHeldEvent
-import org.bukkit.inventory.PlayerInventory
 
 @Entry(
-    "holding_item_audience",
-    "Filters an audience based on if they are holding a specific item",
+    "item_in_slot_audience",
+    "Filters an audience based on if they have a specific item in a specific slot",
     Colors.MEDIUM_SEA_GREEN,
     "mdi:hand"
 )
 /**
- * The `Holding Item Audience` entry is an audience filter that filters an audience based on if they are holding a specific item.
- * The audience will only contain players that are holding the specified item.
+ * The `Item In Slot Audience` entry filters an audience based on if they have a specific item in a specific slot.
  *
  * ## How could this be used?
- * Could show a path stream to a location when the player is holding a map.
+ * It can be used to have magnet boots which allow players to move in certain areas.
  */
-class HoldingItemAudienceEntry(
+class ItemInSlotAudienceEntry(
     override val id: String = "",
     override val name: String = "",
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     @Help("The item to check for.")
     val item: Item = Item.Empty,
+    @Help("The slot to check.")
+    val slot: Int = 0,
     override val inverted: Boolean = false,
 ) : AudienceFilterEntry, Invertible {
-    override fun display(): AudienceFilter = HoldingItemAudienceFilter(ref(), item)
+    override fun display(): AudienceFilter = ItemInSlotAudienceFilter(ref(), item, slot)
 }
 
-class HoldingItemAudienceFilter(
+class ItemInSlotAudienceFilter(
     ref: Ref<out AudienceFilterEntry>,
     private val item: Item,
+    private val slot: Int,
 ) : AudienceFilter(ref) {
     override fun filter(player: Player): Boolean {
-        val holdingItem = player.inventory.itemInMainHand
-        return item.isSameAs(player, holdingItem)
-    }
-
-    @EventHandler
-    fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
-        val player = event.player
-        val newHoldingItem = player.inventory.getItem(event.newSlot)
-        player.updateFilter(item.isSameAs(player, newHoldingItem))
+        val itemInSlot = player.inventory.getItem(slot) ?: return false
+        return item.isSameAs(player, itemInSlot)
     }
 
     @EventHandler
