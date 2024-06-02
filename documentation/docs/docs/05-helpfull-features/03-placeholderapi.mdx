@@ -32,6 +32,18 @@ To find the entry ID, refer to the following image:
 Your placeholder for TypeWriter would be something like `%typewriter_W2X2ZbG0pzXGsS6%`.\
 Then, when calling the placeholder, it checks the ID and:
 
-- If their entry is a speaker, it gives the display name back.
+- If their entry is a speaker, it gives the displayName back.
 - If their entry is a fact, it gives the fact value back.
-- If the entry is a sound, it gives the ID of the Minecraft sound.
+- If the entry is a sound, it gives the ID of the resource pack sound.
+- If the entry is a entity, it gives the displayName of the entity
+- If the entry is a lines entry, it gives the content of the lines entry.
+- If the entry is a quest, it gives the displayName of the quest.
+- If the entry is a objective, it gives the formatted displayName of the objective.
+- If the entry is a sidebar, it gives the title of the sidebar.
+
+
+### Custom placeholders
+Typewriter also has 2 custom placeholders, these are:
+
+- `%typewriter_tracked_quest%`: Shows the displayName of the currently tracked quest.
+- `%typewriter_tracked_objectives%`: Shows the objectives displayNames for the active objectives of the tracked quest.
