@@ -17,10 +17,7 @@ import me.gabber235.typewriter.entry.entries.LinesProperty
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.Sound
-import me.gabber235.typewriter.utils.Vector
-import me.gabber235.typewriter.utils.asMini
-import me.gabber235.typewriter.utils.asMiniWithResolvers
+import me.gabber235.typewriter.utils.*
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
@@ -120,9 +117,17 @@ class NamedEntity(
     override fun spawn(location: LocationProperty) {
         baseEntity.spawn(location)
         hologram.spawn(location)
-        indicatorEntity.spawn(location)
-        baseEntity.addPassenger(hologram)
-        baseEntity.addPassenger(indicatorEntity)
+
+        // Since bedrock players don't have TextDisplay entities,
+        // we cannot show both the nameplate and the indicator at the same time.
+        // So we will only show the nameplate if the player is not using a floodgate.
+        if (player.isFloodgate) {
+            baseEntity.addPassenger(hologram)
+        } else {
+            indicatorEntity.spawn(location)
+            baseEntity.addPassenger(hologram)
+            baseEntity.addPassenger(indicatorEntity)
+        }
     }
 
     override fun addPassenger(entity: FakeEntity) {

@@ -379,6 +379,7 @@ private class TeleportCameraAction(
     }
 
     override suspend fun switchSegment(newSegment: CameraSegment) {
+        path = newSegment.path.transform(newSegment.duration, Location::clone)
     }
 
     override suspend fun stop() {

@@ -54,7 +54,7 @@ class InteractionIndicatorEntity(
         consumeProperties(LinesProperty(indicator()))
     }
 
-    private fun indicator(): String {
+    fun indicator(): String {
         val objectives = Query.findWhere<InteractEntityObjective> {
             it.entity == definition && player.inAudience(it)
         }.toList()
