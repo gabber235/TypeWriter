@@ -33,6 +33,9 @@ const config = {
         defaultLocale: 'en',
         locales: ['en'],
     },
+    markdown: {
+        mermaid: true,
+      },  themes: ['@docusaurus/theme-mermaid'],
 
     presets: [
         [
@@ -67,6 +70,12 @@ const config = {
     themeConfig:
         /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
+            mermaid: {
+                theme: {light: 'base', dark: 'base'},
+                options: {
+                    width: 150,
+                  },
+              },
             // Replace with your project's social card
             image: 'img/typewriter.png',
             navbar: {
