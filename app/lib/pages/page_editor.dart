@@ -176,10 +176,12 @@ class _Inspector extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageType = ref.watch(currentPageTypeProvider);
-    if (pageType == null) {
+    final pageId = ref
+        .watch(inspectingEntryDefinitionProvider.select((def) => def?.pageId));
+    if (pageId == null) {
       return const SizedBox();
     }
+    final pageType = ref.watch(pageTypeProvider(pageId));
 
     switch (pageType) {
       case PageType.sequence || PageType.static || PageType.manifest:

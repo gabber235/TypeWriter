@@ -95,14 +95,13 @@ class EmptyInspector extends HookConsumerWidget {
 
 @riverpod
 EntryDefinition? inspectingEntryDefinition(InspectingEntryDefinitionRef ref) {
-  final pageId = ref.watch(currentPageIdProvider);
   final entryId = ref.watch(inspectingEntryIdProvider);
 
-  if (pageId.isNullOrEmpty || entryId.isNullOrEmpty) {
+  if (entryId.isNullOrEmpty) {
     return null;
   }
 
-  return ref.watch(entryDefinitionProvider(pageId!, entryId!));
+  return ref.watch(entryDefinitionProvider(entryId!));
 }
 
 /// The content of the inspector when an dynamic entry is selected.

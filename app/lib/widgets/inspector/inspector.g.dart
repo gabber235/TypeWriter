@@ -22,7 +22,7 @@ final inspectingEntryProvider = AutoDisposeProvider<Entry?>.internal(
 
 typedef InspectingEntryRef = AutoDisposeProviderRef<Entry?>;
 String _$inspectingEntryDefinitionHash() =>
-    r'a3c771a509fe14061f2fe969813f1851afb458c6';
+    r'20a2722e89b0eccb897db82f076db9dcaf9055fa';
 
 /// See also [inspectingEntryDefinition].
 @ProviderFor(inspectingEntryDefinition)
