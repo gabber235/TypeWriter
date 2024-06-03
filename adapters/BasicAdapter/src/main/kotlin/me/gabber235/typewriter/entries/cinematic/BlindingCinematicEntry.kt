@@ -8,10 +8,11 @@ import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
-import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.EmptyCinematicAction
 import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
+import me.gabber235.typewriter.utils.isFloodgate
 import org.bukkit.entity.Player
 
 @Entry("blinding_cinematic", "Blind the player so the screen looks black", Colors.CYAN, "heroicons-solid:eye-off")
@@ -30,6 +31,8 @@ class BlindingCinematicEntry(
 ) : PrimaryCinematicEntry {
     override fun createSimulating(player: Player): CinematicAction? = null
     override fun create(player: Player): CinematicAction {
+        // Disable for bedrock players as it doesn't give the desired effect
+        if (player.isFloodgate) return EmptyCinematicAction
         return BlindingCinematicAction(
             player,
             this,
