@@ -57,6 +57,7 @@ interface ZNPCData : NpcData<NpcEntry> {
             EquipmentSlot.CHEST -> "chestplate"
             EquipmentSlot.LEGS -> "leggings"
             EquipmentSlot.FEET -> "boots"
+            EquipmentSlot.BODY -> "chestplate"
         }
 
         val property = NpcApiProvider.get().propertyRegistry.getByName(zNpcSlot, ItemStack::class.java)

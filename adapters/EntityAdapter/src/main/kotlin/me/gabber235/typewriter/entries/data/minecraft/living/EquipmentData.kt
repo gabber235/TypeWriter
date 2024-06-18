@@ -56,6 +56,7 @@ fun org.bukkit.inventory.EquipmentSlot.toPacketEquipmentSlot() = when (this) {
     org.bukkit.inventory.EquipmentSlot.CHEST -> EquipmentSlot.CHEST_PLATE
     org.bukkit.inventory.EquipmentSlot.LEGS -> EquipmentSlot.LEGGINGS
     org.bukkit.inventory.EquipmentSlot.FEET -> EquipmentSlot.BOOTS
+    org.bukkit.inventory.EquipmentSlot.BODY -> EquipmentSlot.CHEST_PLATE
 }
 
 private class EquipmentCollector(

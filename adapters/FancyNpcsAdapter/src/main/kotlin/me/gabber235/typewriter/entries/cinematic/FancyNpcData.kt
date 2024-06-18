@@ -54,6 +54,7 @@ interface FancyNpcData : NpcData<Npc> {
             EquipmentSlot.CHEST -> CHEST
             EquipmentSlot.LEGS -> LEGS
             EquipmentSlot.FEET -> FEET
+            EquipmentSlot.BODY -> CHEST
         }
         npc.data.equipment[fancySlot] = itemStack
         npc.update(player)
