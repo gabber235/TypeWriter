@@ -330,7 +330,7 @@ internal class NetworkEdgesComponent(
             for (i in 0..1) {
                 val percentage = progress - i * 0.05
                 val location = start.lerp(end, percentage)
-                player.spawnParticle(Particle.REDSTONE, location, 1, DustOptions(edge.color, 1.0f))
+                player.spawnParticle(Particle.DUST, location, 1, DustOptions(edge.color, 1.0f))
             }
         }
 

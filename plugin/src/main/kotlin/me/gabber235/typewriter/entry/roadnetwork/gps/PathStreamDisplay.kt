@@ -125,7 +125,7 @@ private class PlayerPathStreamDisplay(
         lines.retainAll { line ->
             val location = line.currentLocation ?: return@retainAll false
             player.spawnParticle(
-                Particle.TOTEM,
+                Particle.TOTEM_OF_UNDYING,
                 location.also { it.y += 0.5 },
                 1,
                 0.0,

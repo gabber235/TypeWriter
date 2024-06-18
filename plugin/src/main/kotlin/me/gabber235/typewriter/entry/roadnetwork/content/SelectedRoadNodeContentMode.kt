@@ -350,7 +350,7 @@ private class SelectedNodePathsComponent(
         paths?.forEach { (edge, path) ->
             path.forEach {
                 player.spawnParticle(
-                    Particle.REDSTONE,
+                    Particle.DUST,
                     it.x + 0.5,
                     it.y + 0.5,
                     it.z + 0.5,

@@ -119,7 +119,7 @@ fun Location.particleSphere(
             val y = radius * cos(phi)
             val z = radius * sin(phi) * sin(theta)
             player.spawnParticle(
-                Particle.REDSTONE,
+                Particle.DUST,
                 this.x + x,
                 this.y + y,
                 this.z + z,

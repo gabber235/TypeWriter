@@ -31,7 +31,7 @@ class SpawnParticleActionEntry(
     @Help("The location to spawn the particles at. (Defaults to player's location)")
     val location: Optional<Location> = Optional.empty(),
     @Help("The particle to spawn.")
-    val particle: Particle = Particle.SMOKE_NORMAL,
+    val particle: Particle = Particle.SMOKE,
     @Help("The amount of particles to spawn.")
     val count: Int = 1,
     @Negative
