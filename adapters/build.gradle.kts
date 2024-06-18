@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
     kotlin("jvm") version "1.9.22"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.github.goooler.shadow") version "8.1.7"
 }
 
 allprojects {
@@ -30,10 +30,14 @@ subprojects {
 
     apply(plugin = "java")
     apply(plugin = "kotlin")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "io.github.goooler.shadow")
 
     dependencies {
         compileOnly("com.github.gabber235:typewriter:$version")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk9:1.6.0")
+        implementation("com.github.marten-mrfc:lirandapi:main-SNAPSHOT")
+        compileOnly("com.mojang:brigadier:1.0.18")
     }
 
     tasks.withType<ShadowJar> {
@@ -45,7 +49,7 @@ subprojects {
         }
     }
 
-    val targetJavaVersion = 17
+    val targetJavaVersion = 21
     java {
         val javaVersion = JavaVersion.toVersion(targetJavaVersion)
         sourceCompatibility = javaVersion
