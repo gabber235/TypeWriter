@@ -6,10 +6,10 @@
 [![Release](https://img.shields.io/github/v/release/gabber235/Typewriter?include_prereleases&logo=github)](https://github.com/gabber235/TypeWriter/releases)
 [![License](https://img.shields.io/github/license/gabber235/Typewriter?logo=github)](LICENSE)
 
-### 1.20.5+
+# 1.20.5+
 Currently trying to add support for 1.20.5/6 and 1.21
 
-This is NOT the development branch nor the main branch do NOT pull request if it isn't about making the plugin work for 1.20.5+.
+This is **NOT** the development branch nor the main branch do NOT pull request if it isn't about making the plugin work for 1.20.5+.
 
 ### Sponsors
 
