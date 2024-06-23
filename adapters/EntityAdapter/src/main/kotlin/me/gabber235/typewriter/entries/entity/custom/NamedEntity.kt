@@ -86,7 +86,7 @@ class NamedEntity(
     }
 
     override fun applyProperties(properties: List<EntityProperty>) {
-        return baseEntity.applyProperties(properties)
+        return baseEntity.consumeProperties(properties)
     }
 
     override fun tick() {

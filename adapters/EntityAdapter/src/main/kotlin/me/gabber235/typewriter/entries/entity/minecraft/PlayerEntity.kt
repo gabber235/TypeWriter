@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entries.entity.minecraft
 
+import com.github.retrooper.packetevents.protocol.entity.pose.EntityPose
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
 import com.github.retrooper.packetevents.protocol.player.TextureProperty
 import com.github.retrooper.packetevents.protocol.player.UserProfile
@@ -8,12 +9,12 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
+import me.gabber235.typewriter.entries.data.minecraft.PoseProperty
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entries.data.minecraft.living.applyLivingEntityData
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
-import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.entry.entries.SharedEntityActivityEntry
@@ -23,6 +24,7 @@ import me.gabber235.typewriter.utils.Sound
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.types.PlayerMeta
 import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
+import me.tofaa.entitylib.wrapper.WrapperEntity
 import me.tofaa.entitylib.wrapper.WrapperPlayer
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -67,6 +69,8 @@ class PlayerInstance(
 class PlayerEntity(
     player: Player,
 ) : FakeEntity(player) {
+    private var sitEntity: WrapperEntity? = null
+
     private var entity: WrapperPlayer
     override val entityId: Int
         get() = entity.entityId
@@ -93,17 +97,25 @@ class PlayerEntity(
         }
     }
 
-
     override fun applyProperties(properties: List<EntityProperty>) {
         properties.forEach { property ->
             when (property) {
                 is LocationProperty -> {
+                    sitEntity?.teleport(property.toPacketLocation())
                     entity.teleport(property.toPacketLocation())
                     entity.rotateHead(property.yaw, property.pitch)
                 }
 
                 is SkinProperty -> entity.textureProperties =
                     listOf(TextureProperty("textures", property.texture, property.signature))
+
+                is PoseProperty -> {
+                    if (property.pose == EntityPose.SITTING) {
+                        sit()
+                    } else {
+                        unsit()
+                    }
+                }
 
                 else -> {
                 }
@@ -114,8 +126,14 @@ class PlayerEntity(
     }
 
     override fun spawn(location: LocationProperty) {
+        if (sitEntity != null) {
+            sitEntity?.spawn(location.toPacketLocation())
+            sitEntity?.addViewer(player.uniqueId)
+        }
         entity.spawn(location.toPacketLocation())
         entity.addViewer(player.uniqueId)
+
+        sitEntity?.addPassengers(this.entity)
 
         val info = WrapperPlayServerTeams.ScoreBoardTeamInfo(
             Component.empty(),
@@ -149,7 +167,12 @@ class PlayerEntity(
         this.entity.removePassenger(entity.entityId)
     }
 
-    override fun contains(entityId: Int): Boolean = this.entityId == entityId
+    override fun contains(entityId: Int): Boolean {
+        sitEntity?.let {
+            if (it.entityId == entityId) return true
+        }
+        return this.entityId == entityId
+    }
 
     override fun dispose() {
         WrapperPlayServerTeams(
@@ -159,5 +182,27 @@ class PlayerEntity(
         ) sendPacketTo player
         entity.despawn()
         entity.remove()
+
+        sitEntity?.despawn()
+        sitEntity?.remove()
+        sitEntity = null
+    }
+
+    private fun sit(location: LocationProperty? = null) {
+        if (sitEntity != null) return
+        sitEntity = EntityLib.getApi<SpigotEntityLibAPI>().createEntity(EntityTypes.BLOCK_DISPLAY)
+        val loc = location ?: property<LocationProperty>() ?: return
+        sitEntity?.spawn(loc.toPacketLocation())
+        sitEntity?.addViewer(player.uniqueId)
+        sitEntity?.addPassengers(this.entity)
+    }
+
+    private fun unsit() {
+        val entity = sitEntity ?: return
+        entity.removePassengers(this.entity)
+        entity.removeViewer(player.uniqueId)
+        entity.despawn()
+        entity.remove()
+        sitEntity = null
     }
 }

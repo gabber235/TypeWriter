@@ -36,6 +36,7 @@ import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import me.gabber235.typewriter.utils.ok
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.entity.Pose
 import org.bukkit.event.EventHandler
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -228,9 +229,10 @@ class EntityCinematicRecording(
 
     override fun captureFrame(): EntityFrame {
         val inv = player.inventory
+        val pose = if (player.isInsideVehicle) Pose.SITTING else player.pose
         val data = EntityFrame(
             location = player.location,
-            pose = player.pose.toEntityPose(),
+            pose = pose.toEntityPose(),
             swing = swing,
             mainHand = if (inv.itemInMainHand.isEmpty) null else inv.itemInMainHand,
             offHand = if (inv.itemInOffHand.isEmpty) null else inv.itemInOffHand,
