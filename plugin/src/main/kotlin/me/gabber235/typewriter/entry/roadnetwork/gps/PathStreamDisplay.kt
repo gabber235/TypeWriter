@@ -128,9 +128,9 @@ private class PlayerPathStreamDisplay(
                 Particle.TOTEM,
                 location.also { it.y += 0.5 },
                 1,
+                0.3,
                 0.0,
-                0.0,
-                0.0,
+                0.3,
                 0.0,
             )
 
