@@ -5,9 +5,9 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "2.0.0"
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.github.goooler.shadow") version "8.1.7"
     id("java-library")
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
 }
@@ -38,9 +38,9 @@ repositories {
 }
 
 val centralDependencies = listOf(
-    "org.jetbrains.kotlin:kotlin-stdlib:1.9.22",
-    "org.jetbrains.kotlin:kotlin-reflect:1.9.22",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1",
+    "org.jetbrains.kotlin:kotlin-stdlib:2.0.0",
+    "org.jetbrains.kotlin:kotlin-reflect:2.0.0",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC",
     "com.corundumstudio.socketio:netty-socketio:1.7.19", // Keep this on a lower version as the newer version breaks the ping
 )
 
@@ -50,34 +50,35 @@ dependencies {
     }
     compileOnlyApi("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
-    api("com.github.Tofaa2.EntityLib:spigot:2.2.0-SNAPSHOT")
-    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
-    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
-    api("dev.jorel:commandapi-bukkit-shade:9.4.2")
-    api("dev.jorel:commandapi-bukkit-kotlin:9.4.2")
+    api("com.github.Tofaa2.EntityLib:spigot:2.3.1-SNAPSHOT")
+    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.17.0")
+    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.17.0")
+    api("dev.jorel:commandapi-bukkit-shade:9.5.1")
+    api("dev.jorel:commandapi-bukkit-kotlin:9.5.1")
 
     // Doesn't want to load properly using the spigot api.
-    implementation("io.ktor:ktor-server-core-jvm:2.3.6")
-    implementation("io.ktor:ktor-server-netty-jvm:2.3.6")
-    api("io.insert-koin:koin-core:3.4.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
+    implementation("io.ktor:ktor-server-core-jvm:2.3.12")
+    implementation("io.ktor:ktor-server-netty-jvm:2.3.12")
+    api("io.insert-koin:koin-core:3.5.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.0")
     implementation("org.bstats:bstats-bukkit:3.0.2")
-    implementation("com.github.patheloper.pathetic:pathetic-mapping:2.4.1")
+    implementation("com.github.patheloper.pathetic:pathetic-mapping:2.4.5")
 
-    compileOnlyApi("net.kyori:adventure-api:4.15.0")
-    compileOnlyApi("net.kyori:adventure-text-minimessage:4.15.0")
-    compileOnlyApi("net.kyori:adventure-text-serializer-plain:4.15.0")
-    compileOnlyApi("net.kyori:adventure-text-serializer-legacy:4.15.0")
-    compileOnlyApi("net.kyori:adventure-text-serializer-gson:4.15.0")
-    compileOnly("me.clip:placeholderapi:2.11.3")
-    compileOnly("com.google.code.gson:gson:2.10.1")
+    val adventureVersion = "4.17.0"
+    compileOnlyApi("net.kyori:adventure-api:$adventureVersion")
+    compileOnlyApi("net.kyori:adventure-text-minimessage:$adventureVersion")
+    compileOnlyApi("net.kyori:adventure-text-serializer-plain:$adventureVersion")
+    compileOnlyApi("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
+    compileOnlyApi("net.kyori:adventure-text-serializer-gson:$adventureVersion")
+    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("com.google.code.gson:gson:2.11.0")
     compileOnlyApi("com.github.retrooper.packetevents:spigot:2.3.0")
     compileOnlyApi("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
 
-val targetJavaVersion = 17
+val targetJavaVersion = 21
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
