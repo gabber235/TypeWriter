@@ -14,27 +14,27 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("horse_rearing_data", "If the horse is rearing.", Colors.RED, "mdi:horse")
-@Tags("horse_data", "horse_rearing_data")
-class HorseRearingData (
+@Entry("rearing_data", "If the entity is rearing.", Colors.RED, "mdi:horse")
+@Tags("rearing_data")
+class RearingData(
     override val id: String = "",
     override val name: String = "",
-    @Help("If the horse is rearing.")
-    val horseRearing: Boolean = false,
+    @Help("If the entity is rearing.")
+    val rearing: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : EntityData<HorseRearingProperty> {
-    override fun type(): KClass<HorseRearingProperty> = HorseRearingProperty::class
+) : EntityData<RearingProperty> {
+    override fun type(): KClass<RearingProperty> = RearingProperty::class
 
-    override fun build(player: Player): HorseRearingProperty = HorseRearingProperty(horseRearing)
+    override fun build(player: Player): RearingProperty = RearingProperty(rearing)
 }
 
-data class HorseRearingProperty(val horseRearing: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<HorseRearingProperty>(HorseRearingProperty::class)
+data class RearingProperty(val rearing: Boolean) : EntityProperty {
+    companion object : SinglePropertyCollectorSupplier<RearingProperty>(RearingProperty::class, RearingProperty(false))
 }
 
-fun applyHorseRearingData(entity: WrapperEntity, property: HorseRearingProperty) {
+fun applyRearingData(entity: WrapperEntity, property: RearingProperty) {
     entity.metas {
-        meta<BaseHorseMeta> { isRearing = property.horseRearing }
+        meta<BaseHorseMeta> { isRearing = property.rearing }
         error("Could not apply HorseRearingData to ${entity.entityType} entity.")
     }
 }

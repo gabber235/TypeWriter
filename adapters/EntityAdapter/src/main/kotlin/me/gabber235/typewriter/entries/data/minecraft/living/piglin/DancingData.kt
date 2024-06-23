@@ -34,7 +34,7 @@ class DancingData(
 }
 
 data class DancingProperty(val dancing: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<DancingProperty>(DancingProperty::class)
+    companion object : SinglePropertyCollectorSupplier<DancingProperty>(DancingProperty::class, DancingProperty(false))
 }
 
 fun applyDancingData(entity: WrapperEntity, property: DancingProperty) {

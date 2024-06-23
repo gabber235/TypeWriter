@@ -27,7 +27,7 @@ class ArrowCountData(
 }
 
 data class ArrowCountProperty(val arrowCount: Int) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<ArrowCountProperty>(ArrowCountProperty::class)
+    companion object : SinglePropertyCollectorSupplier<ArrowCountProperty>(ArrowCountProperty::class, ArrowCountProperty(0))
 }
 
 fun applyArrowCountData(entity: WrapperEntity, property: ArrowCountProperty) {

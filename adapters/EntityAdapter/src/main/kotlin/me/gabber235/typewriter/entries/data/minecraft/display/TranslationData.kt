@@ -29,7 +29,7 @@ class TranslationData(
 }
 
 data class TranslationProperty(val vector: Vector) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<TranslationProperty>(TranslationProperty::class)
+    companion object : SinglePropertyCollectorSupplier<TranslationProperty>(TranslationProperty::class, TranslationProperty(Vector(0.0, 0.0, 0.0)))
 }
 
 fun applyTranslationData(entity: WrapperEntity, property: TranslationProperty) {

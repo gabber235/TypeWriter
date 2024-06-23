@@ -21,7 +21,7 @@ class ScaleData(
     override val id: String = "",
     override val name: String = "",
     @Help("The scale vector.")
-    val scale: Vector = Vector(0.0, 0.0, 0.0),
+    val scale: Vector = Vector(1.0, 1.0, 1.0),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<ScaleProperty> {
     override fun type(): KClass<ScaleProperty> = ScaleProperty::class
@@ -31,7 +31,7 @@ class ScaleData(
 }
 
 data class ScaleProperty(val scale: Vector) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<ScaleProperty>(ScaleProperty::class)
+    companion object : SinglePropertyCollectorSupplier<ScaleProperty>(ScaleProperty::class, ScaleProperty(Vector(1.0, 1.0, 1.0)))
 }
 
 fun applyScaleData(entity: WrapperEntity, property: ScaleProperty) {

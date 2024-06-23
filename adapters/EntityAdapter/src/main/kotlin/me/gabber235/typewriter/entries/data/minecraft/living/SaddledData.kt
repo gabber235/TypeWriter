@@ -30,7 +30,7 @@ class SaddledData (
 }
 
 data class SaddledProperty(val saddled: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<SaddledProperty>(SaddledProperty::class)
+    companion object : SinglePropertyCollectorSupplier<SaddledProperty>(SaddledProperty::class, SaddledProperty(false))
 }
 
 fun applySaddledData(entity: WrapperEntity, property: SaddledProperty) {

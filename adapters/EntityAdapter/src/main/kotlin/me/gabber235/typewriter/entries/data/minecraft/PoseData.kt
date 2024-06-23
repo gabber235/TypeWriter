@@ -10,6 +10,7 @@ import me.gabber235.typewriter.entry.entries.GenericEntityData
 import me.gabber235.typewriter.extensions.packetevents.metas
 import me.tofaa.entitylib.meta.EntityMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
+import net.kyori.adventure.text.BlockNBTComponent.Pos
 import org.bukkit.entity.Player
 import org.bukkit.entity.Pose
 import java.util.*
@@ -29,7 +30,7 @@ class PoseData(
 }
 
 data class PoseProperty(val pose: EntityPose) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<PoseProperty>(PoseProperty::class)
+    companion object : SinglePropertyCollectorSupplier<PoseProperty>(PoseProperty::class, PoseProperty(EntityPose.STANDING))
 }
 
 fun Pose.toEntityPose() = when (this) {
