@@ -1,6 +1,11 @@
 package me.gabber235.typewriter.entry.roadnetwork.content
 
+import com.github.retrooper.packetevents.protocol.particle.Particle
+import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
+import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.util.Vector3f
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import kotlinx.coroutines.future.await
 import lirand.api.dsl.menu.builders.dynamic.chest.chestMenu
 import lirand.api.dsl.menu.builders.dynamic.chest.pagination.pagination
@@ -19,6 +24,7 @@ import me.gabber235.typewriter.entry.forceTriggerFor
 import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
 import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
@@ -28,8 +34,6 @@ import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.Particle
-import org.bukkit.Particle.DustOptions
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -262,7 +266,7 @@ class SelectedRoadNodeContentMode(
 
         if (selectedNode == null) {
             // If the node is no longer in the network, we want to pop the content
-            SystemTrigger.CONTENT_POP forceTriggerFor  player
+            SystemTrigger.CONTENT_POP forceTriggerFor player
         }
 
         super.tick()
@@ -349,18 +353,17 @@ private class SelectedNodePathsComponent(
 
         paths?.forEach { (edge, path) ->
             path.forEach {
-                player.spawnParticle(
-                    Particle.REDSTONE,
-                    it.x + 0.5,
-                    it.y + 0.5,
-                    it.z + 0.5,
-                    1,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    DustOptions(NetworkEdgesComponent.colorFromHash(edge.end.hashCode()), 1.0f)
-                )
+                WrapperPlayServerParticle(
+                    Particle(
+                        ParticleTypes.DUST,
+                        ParticleDustData(1f, NetworkEdgesComponent.colorFromHash(edge.end.hashCode()).toPacketColor())
+                    ),
+                    true,
+                    Vector3d(it.x + 0.5, it.y + 0.5, it.z + 0.5),
+                    Vector3f.zero(),
+                    0f,
+                    1
+                ) sendPacketTo player
             }
         }
     }
@@ -456,16 +459,16 @@ private class ModificationComponent(
             }
         }
 
-            map[5] = ItemStack(Material.EMERALD).meta {
-                name = "<green><b>Add Fast Travel Connection"
-                loreString = """
+        map[5] = ItemStack(Material.EMERALD).meta {
+            name = "<green><b>Add Fast Travel Connection"
+            loreString = """
                     |<line> <gray>Click on a unconnected node to <green>add a fast travel connection</green> to it.
                     |<line> <gray>Click on a modified node to <red>remove the connection</red>.
                     |
                     |<line> <gray>If you only want to connect one way, hold <red>Shift</red> while clicking.
                     |""".trimMargin()
-                unClickable()
-            } onInteract {}
+            unClickable()
+        } onInteract {}
 
         val hasEdges = network.edges.any { it.start == node.id }
         if (hasEdges) {

@@ -58,6 +58,7 @@ interface CitizensNpcData : NpcData<NPC> {
             EquipmentSlot.CHEST -> CHESTPLATE
             EquipmentSlot.LEGS -> LEGGINGS
             EquipmentSlot.FEET -> BOOTS
+            else -> CHESTPLATE
         }
         equipmentTrait.set(citizensSlot, itemStack)
     }

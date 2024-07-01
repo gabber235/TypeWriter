@@ -1,6 +1,10 @@
 package me.gabber235.typewriter.entry.roadnetwork.content
 
+import com.github.retrooper.packetevents.protocol.particle.Particle
+import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
 import com.github.retrooper.packetevents.util.Vector3f
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import kotlinx.coroutines.future.await
 import lirand.api.extensions.inventory.meta
 import me.gabber235.typewriter.content.ContentComponent
@@ -13,6 +17,8 @@ import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
 import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
+import me.gabber235.typewriter.extensions.packetevents.toVector3d
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import net.kyori.adventure.bossbar.BossBar
@@ -20,8 +26,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.Particle
-import org.bukkit.Particle.DustOptions
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
@@ -330,7 +334,14 @@ internal class NetworkEdgesComponent(
             for (i in 0..1) {
                 val percentage = progress - i * 0.05
                 val location = start.lerp(end, percentage)
-                player.spawnParticle(Particle.REDSTONE, location, 1, DustOptions(edge.color, 1.0f))
+                WrapperPlayServerParticle(
+                    Particle(ParticleTypes.DUST, ParticleDustData(1f, edge.color.toPacketColor())),
+                    true,
+                    location.toVector3d(),
+                    Vector3f.zero(),
+                    0f,
+                    1
+                ) sendPacketTo player
             }
         }
 
@@ -379,7 +390,10 @@ class NegativeNodePulseComponent(
     override suspend fun tick(player: Player) {
         if (cycle == 0) {
             showingNodes = negativeNodes()
-                .filter { (it.location.distanceSqrt(player.location) ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance }
+                .filter {
+                    (it.location.distanceSqrt(player.location)
+                        ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance
+                }
                 .map { Pulse(it.location, it.radius) }
         }
 
@@ -406,4 +420,8 @@ class NegativeNodePulseComponent(
 
     override suspend fun dispose(player: Player) {
     }
+}
+
+fun Color.toPacketColor(): com.github.retrooper.packetevents.protocol.color.Color {
+    return com.github.retrooper.packetevents.protocol.color.Color(red, green, blue)
 }

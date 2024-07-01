@@ -1,5 +1,9 @@
 package me.gabber235.typewriter.entry.roadnetwork.gps
 
+import com.github.retrooper.packetevents.protocol.particle.Particle
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
+import com.github.retrooper.packetevents.util.Vector3f
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -13,12 +17,13 @@ import me.gabber235.typewriter.entry.entries.TickableDisplay
 import me.gabber235.typewriter.entry.entries.roadNetworkMaxDistance
 import me.gabber235.typewriter.entry.roadnetwork.content.toLocation
 import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
+import me.gabber235.typewriter.extensions.packetevents.toVector3d
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.distanceSqrt
 import me.gabber235.typewriter.utils.firstWalkableLocationBelow
 import org.bukkit.Location
-import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.patheloper.api.pathing.configuration.PathingRuleSet
 import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
@@ -124,15 +129,14 @@ private class PlayerPathStreamDisplay(
     private fun displayPath() {
         lines.retainAll { line ->
             val location = line.currentLocation ?: return@retainAll false
-            player.spawnParticle(
-                Particle.TOTEM,
-                location.also { it.y += 0.5 },
-                1,
-                0.3,
-                0.0,
-                0.3,
-                0.0,
-            )
+            WrapperPlayServerParticle(
+                Particle(ParticleTypes.TOTEM_OF_UNDYING),
+                true,
+                location.also { it.y += 0.5 }.toVector3d(),
+                Vector3f(0.3f, 0.0f, 0.3f),
+                0f,
+                1
+            ) sendPacketTo player
 
             line.next()
         }
