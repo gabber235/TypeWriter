@@ -7,9 +7,6 @@ import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.util.Vector3f
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import kotlinx.coroutines.future.await
-import lirand.api.dsl.menu.builders.dynamic.chest.chestMenu
-import lirand.api.dsl.menu.builders.dynamic.chest.pagination.pagination
-import lirand.api.dsl.menu.builders.dynamic.chest.pagination.slot
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
 import lirand.api.extensions.inventory.set
@@ -106,13 +103,7 @@ class SelectedRoadNodeContentMode(
             }
         }
 
-        +ModificationComponent(::selectedNode, ::network) { modification ->
-            editorComponent.updateAsync { roadNetwork ->
-                roadNetwork.copy(
-                    modifications = roadNetwork.modifications - modification
-                )
-            }
-        }
+        +ModificationComponent(::selectedNode, ::network)
 
         nodes({ network.nodes }, ::showingLocation) { node ->
             item = ItemStack(node.material(network.modifications))
@@ -441,23 +432,11 @@ class NodeRadiusComponent(
 private class ModificationComponent(
     private val nodeFetcher: () -> RoadNode?,
     private val networkFetcher: () -> RoadNetwork,
-    private val removeModification: (RoadModification) -> Unit,
 ) : ContentComponent, ItemsComponent {
     override fun items(player: Player): Map<Int, IntractableItem> {
         val map = mutableMapOf<Int, IntractableItem>()
         val node = nodeFetcher() ?: return map
         val network = networkFetcher()
-
-        val hasModification =
-            network.modifications.any { it is RoadModification.EdgeModification && it.start == node.id }
-        if (hasModification) {
-            map[4] = ItemStack(Material.BOOK).meta {
-                name = "<blue><b>Manage Modifications"
-                loreString = "<line> <gray>Click to manage the modifications of this node."
-            } onInteract {
-                openMenu(player)
-            }
-        }
 
         map[5] = ItemStack(Material.EMERALD).meta {
             name = "<green><b>Add Fast Travel Connection"
@@ -486,67 +465,6 @@ private class ModificationComponent(
         }
 
         return map
-    }
-
-    private fun openMenu(player: Player) {
-        plugin.chestMenu(6) {
-            val node = nodeFetcher() ?: return@chestMenu
-            title = "Modifications"
-            val modifications = networkFetcher().modifications
-                .filterIsInstance<RoadModification.EdgeModification>()
-                .filter { it.start == node.id }
-
-            pagination({ modifications }) {
-                slot {
-                    onRender { modification, _ ->
-                        inventory[slotIndex] = when (modification) {
-                            is RoadModification.EdgeAddition -> ItemStack(Material.EMERALD).meta {
-                                name = "<green><b>Fast Travel Connection"
-                                loreString = """
-                                    |
-                                    |<line> <gray>Target: <white>${modification.end}
-                                    |<line> <gray>Weight: <white>${modification.weight}
-                                    |
-                                    |<line> <green><b>Left Click:</b> <white>Teleport to the target node.
-                                    |<line> <red><b>Shift Right Click:</b> <white>Remove this modification.
-                                """.trimMargin()
-                            }
-
-                            is RoadModification.EdgeRemoval -> ItemStack(Material.REDSTONE).meta {
-                                name = "<red><b>Remove Edge"
-                                loreString = """
-                                    |
-                                    |<line> <gray>Target: <white>${modification.end}
-                                    |
-                                    |<line> <green><b>Left Click:</b> <white>Teleport to the target node.
-                                    |<line> <red><b>Shift Right Click:</b> <white>Remove this modification.
-                                """.trimMargin()
-                            }
-
-                            null -> ItemStack(Material.AIR)
-                        }
-                    }
-                    onInteract { modification, _ ->
-                        if (modification == null) return@onInteract
-                        when (click) {
-                            ClickType.LEFT -> {
-                                val target = networkFetcher().nodes.find { it.id == modification.end }
-                                if (target != null) {
-                                    player.teleport(target.location)
-                                }
-                            }
-
-                            ClickType.SHIFT_RIGHT -> {
-                                removeModification(modification)
-                            }
-
-                            else -> {}
-                        }
-                        close()
-                    }
-                }
-            }
-        }.open(player)
     }
 
     override suspend fun initialize(player: Player) {}

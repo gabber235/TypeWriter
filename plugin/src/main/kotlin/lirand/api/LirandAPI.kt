@@ -1,6 +1,5 @@
 package lirand.api
 
-import lirand.api.dsl.menu.MenuController
 import lirand.api.extensions.server.commands.CommandController
 import org.bukkit.plugin.Plugin
 
@@ -18,12 +17,10 @@ class LirandAPI internal constructor(internal val plugin: Plugin) {
     }
 
     internal val commandController = CommandController(plugin)
-    internal val menuController = MenuController(plugin)
 
     init {
         _instances[plugin] = this
 
         commandController.initialize()
-        menuController.initialize()
     }
 }
