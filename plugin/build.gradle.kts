@@ -79,17 +79,21 @@ dependencies {
 }
 
 val targetJavaVersion = 21
+val languageJavaVersion = 17
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    val languageVersion = JavaVersion.toVersion(languageJavaVersion)
     sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+    targetCompatibility = languageVersion
     toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     withSourcesJar()
+
+    disableAutoTargetJvm()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "$targetJavaVersion"
+        jvmTarget = "$languageJavaVersion"
     }
 }
 
