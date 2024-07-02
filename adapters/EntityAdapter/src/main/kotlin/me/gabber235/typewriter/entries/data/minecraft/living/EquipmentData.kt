@@ -43,6 +43,7 @@ data class EquipmentProperty(val data: Map<EquipmentSlot, ItemStack>) : EntityPr
 
 fun EntityEquipment.toProperty(): EquipmentProperty {
     return EquipmentProperty(org.bukkit.inventory.EquipmentSlot.entries.mapNotNull {
+        if (it == org.bukkit.inventory.EquipmentSlot.BODY) return@mapNotNull null
         val item = getItem(it)
         if (item.isEmpty) return@mapNotNull null
         it.toPacketEquipmentSlot() to getItem(it).toPacketItem()
