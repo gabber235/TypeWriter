@@ -19,9 +19,8 @@ internal class DisplayEntity(
     private var lastSoundLocation = activityManager.location
 
     init {
-        applyProperties()
-
         entity.spawn(activityManager.location)
+        applyProperties()
     }
 
     fun tick() {
