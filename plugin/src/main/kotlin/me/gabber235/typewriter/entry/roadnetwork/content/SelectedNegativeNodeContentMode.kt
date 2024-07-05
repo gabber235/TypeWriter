@@ -42,7 +42,7 @@ class SelectedNegativeNodeContentMode(
 
             title = "Editing <gray>${selectedNode?.id}</gray> node$suffix"
             color = when {
-                editorComponent.state == RoadNetworkEditorState.DIRTY -> BossBar.Color.RED
+                editorComponent.state == RoadNetworkEditorState.Dirty -> BossBar.Color.RED
                 else -> BossBar.Color.GREEN
             }
         }

@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
-    kotlin("jvm") version "1.9.22"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    kotlin("jvm") version "2.0.0"
+    id("io.github.goooler.shadow") version "8.1.7"
 }
 
 allprojects {
@@ -30,7 +30,7 @@ subprojects {
 
     apply(plugin = "java")
     apply(plugin = "kotlin")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "io.github.goooler.shadow")
 
     dependencies {
         compileOnly("com.github.gabber235:typewriter:$version")
@@ -45,7 +45,7 @@ subprojects {
         }
     }
 
-    val targetJavaVersion = 17
+    val targetJavaVersion = 21
     java {
         val javaVersion = JavaVersion.toVersion(targetJavaVersion)
         sourceCompatibility = javaVersion

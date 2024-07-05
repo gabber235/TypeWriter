@@ -6,6 +6,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Min
 import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.entry.entries.EmptyTrigger
 import me.gabber235.typewriter.entry.entries.EventEntry
 import org.bukkit.Location
 import org.bukkit.event.player.PlayerMoveEvent
@@ -40,7 +41,7 @@ fun onPlayerNearLocation(event: PlayerMoveEvent, query: Query<PlayerNearLocation
             entry.location,
             entry.range
         ) && event.to.blockLocation.isInRange(entry.location, entry.range)
-    } startDialogueWithOrNextDialogue event.player
+    } triggerAllFor event.player
 }
 
 fun Location.isInRange(location: Location, range: Double): Boolean {

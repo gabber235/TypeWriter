@@ -3,12 +3,10 @@ package me.gabber235.typewriter.entry.roadnetwork.gps
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.future.await
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
-import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFInstanceSpace
 import me.gabber235.typewriter.utils.ComputedMap
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.distanceSqrt
@@ -17,9 +15,6 @@ import me.gabber235.typewriter.utils.ok
 import org.bukkit.Location
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.patheloper.api.pathing.configuration.PathingRuleSet
-import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
-import org.patheloper.mapping.PatheticMapper
 import java.util.*
 import kotlin.collections.set
 
@@ -42,7 +37,14 @@ class PointToPointGPS(
 
         val endPair = getOrCreateNode(network.nodes, network.negativeNodes, end, previousEnd, -2, asEnd = true)
         previousEnd = endPair
-        val startPair = getOrCreateNode(network.nodes + endPair.first, network.negativeNodes, start, previousStart, -1, asEnd = false)
+        val startPair = getOrCreateNode(
+            network.nodes + endPair.first,
+            network.negativeNodes,
+            start,
+            previousStart,
+            -1,
+            asEnd = false
+        )
         previousStart = startPair
 
         if (startPair.second?.isEmpty() == true || endPair.second?.isEmpty() == true) {
@@ -240,41 +242,27 @@ class PointToPointGPS(
         asEnd: Boolean,
     ): List<RoadEdge> =
         coroutineScope {
-            nodes
+            val instance = PFInstanceSpace(node.location.world)
+            val intersectingNodes = nodes
                 .filter {
                     it != node && it.location.world == node.location.world && (it.location.distanceSqrt(node.location)
                         ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance
                 }
+            intersectingNodes
                 .map {
                     async {
-                        val pathFinder = PatheticMapper.newPathfinder(
-                            PathingRuleSet.createAsyncRuleSet()
-                                .withMaxLength(roadNetworkMaxDistance.toInt())
-                                .withLoadingChunks(true)
-                                .withAllowingDiagonal(true)
-                                .withAllowingFailFast(true)
-                        )
                         val start = if (asEnd) it else node
                         val end = if (asEnd) node else it
-                        val result = pathFinder.findPath(
-                            start.location.toPathPosition(),
-                            end.location.toPathPosition(),
-                            NodeAvoidPathfindingStrategy(
-                                nodeAvoidance = nodes - start - end,
-                                permanentLock = true,
-                                strategy = NodeAvoidPathfindingStrategy(
-                                    nodeAvoidance = negativeNodes.filter {
-                                        val distance = start.location.distanceSqrt(it.location) ?: 0.0
-                                        distance > it.radius * it.radius && distance < roadNetworkMaxDistance * roadNetworkMaxDistance
-                                    },
-                                    permanentLock = false,
-                                    strategy = WalkablePathfinderStrategy(),
-                                ),
-                            )
-                        ).await()
+                        val path =
+                            roadNetworkFindPath(
+                                start,
+                                end,
+                                instance = instance,
+                                nodes = intersectingNodes,
+                                negativeNodes = negativeNodes
+                            ) ?: return@async null
 
-                        if (result.hasFailed()) return@async null
-                        RoadEdge(start.id, end.id, result.path.length().toDouble())
+                        RoadEdge(start.id, end.id, path.length().toDouble())
                     }
                 }.awaitAll()
                 .filterNotNull()

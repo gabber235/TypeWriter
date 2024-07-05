@@ -30,7 +30,7 @@ class TremblingData(
 }
 
 data class TremblingProperty(val trembling: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<TremblingProperty>(TremblingProperty::class)
+    companion object : SinglePropertyCollectorSupplier<TremblingProperty>(TremblingProperty::class, TremblingProperty(false))
 }
 
 fun applyTremblingData(entity: WrapperEntity, property: TremblingProperty) {

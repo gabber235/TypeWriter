@@ -116,7 +116,7 @@ private fun CommandTree.factsCommands() = literalArgument("facts") {
 
             sender.sendMini("\n\n")
             val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
-            sender.msg("$name has the following facts:\n")
+            sender.msg("${target.name} has the following facts:\n")
 
             for (entry in factEntries) {
                 val data = entry.readForPlayersGroup(target)
@@ -126,7 +126,7 @@ private fun CommandTree.factsCommands() = literalArgument("facts") {
                             Regex(" +"),
                             " "
                         ).replace("'", "\\'")
-                    }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts $name set ${entry.name} ${data.value}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${data.value} <gray><i>(${
+                    }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts set ${entry.name} ${data.value} ${target.name}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${data.value} <gray><i>(${
                         formatter.format(
                             data.lastUpdate
                         )

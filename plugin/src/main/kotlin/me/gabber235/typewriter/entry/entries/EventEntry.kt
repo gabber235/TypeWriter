@@ -62,6 +62,10 @@ interface EventTrigger {
     val id: String
 }
 
+object EmptyTrigger : EventTrigger {
+    override val id: String = ""
+}
+
 data class EntryTrigger(override val id: String) : EventTrigger {
     constructor(entry: Entry) : this(entry.id)
     constructor(reference: Ref<out Entry>) : this(reference.id)

@@ -1,24 +1,29 @@
 package me.gabber235.typewriter.entry.roadnetwork.content
 
+import com.extollit.gaming.ai.path.model.IPath
+import com.github.retrooper.packetevents.protocol.particle.Particle
+import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
+import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.util.Vector3f
-import kotlinx.coroutines.future.await
-import lirand.api.dsl.menu.builders.dynamic.chest.chestMenu
-import lirand.api.dsl.menu.builders.dynamic.chest.pagination.pagination
-import lirand.api.dsl.menu.builders.dynamic.chest.pagination.slot
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
-import lirand.api.extensions.inventory.set
 import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.content.ContentComponent
 import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.content.components.*
 import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entity.toProperty
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.forceTriggerFor
-import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
+import me.gabber235.typewriter.entry.roadnetwork.gps.roadNetworkFindPath
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFEmptyEntity
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFInstanceSpace
 import me.gabber235.typewriter.entry.triggerFor
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
@@ -28,19 +33,12 @@ import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.Particle
-import org.bukkit.Particle.DustOptions
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
-import org.patheloper.api.pathing.configuration.PathingRuleSet
-import org.patheloper.api.pathing.result.Path
-import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
-import org.patheloper.mapping.PatheticMapper
 import java.util.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -70,18 +68,18 @@ class SelectedRoadNodeContentMode(
 
             title = "Editing <gray>${selectedNode?.id}</gray> node$suffix"
             color = when {
-                editorComponent.state == RoadNetworkEditorState.DIRTY -> BossBar.Color.RED
+                editorComponent.state == RoadNetworkEditorState.Dirty -> BossBar.Color.RED
                 !pathsComponent.isPathsLoaded -> BossBar.Color.PURPLE
                 else -> BossBar.Color.GREEN
             }
         }
         exit(doubleShiftExits = true)
 
-        +NodeRadiusComponent(::selectedNode, initiallyScrolling) {
+        +NodeRadiusComponent(::selectedNode, initiallyScrolling) { radiusChange ->
             editorComponent.updateAsync { roadNetwork ->
                 roadNetwork.copy(nodes = roadNetwork.nodes.map { node ->
                     if (node.id == selectedNodeId) node.copy(
-                        radius = (node.radius + it).coerceAtLeast(
+                        radius = (node.radius + radiusChange).coerceAtLeast(
                             0.5
                         )
                     ) else node
@@ -102,13 +100,7 @@ class SelectedRoadNodeContentMode(
             }
         }
 
-        +ModificationComponent(::selectedNode, ::network) { modification ->
-            editorComponent.updateAsync { roadNetwork ->
-                roadNetwork.copy(
-                    modifications = roadNetwork.modifications - modification
-                )
-            }
-        }
+        +ModificationComponent(::selectedNode, ::network)
 
         nodes({ network.nodes }, ::showingLocation) { node ->
             item = ItemStack(node.material(network.modifications))
@@ -262,7 +254,7 @@ class SelectedRoadNodeContentMode(
 
         if (selectedNode == null) {
             // If the node is no longer in the network, we want to pop the content
-            SystemTrigger.CONTENT_POP forceTriggerFor  player
+            SystemTrigger.CONTENT_POP forceTriggerFor player
         }
 
         super.tick()
@@ -287,7 +279,7 @@ private class SelectedNodePathsComponent(
     private val nodeFetcher: () -> RoadNode?,
     private val networkFetcher: () -> RoadNetwork,
 ) : ContentComponent {
-    private var paths: Map<RoadEdge, Path>? = null
+    private var paths: Map<RoadEdge, IPath>? = null
     val isPathsLoaded: Boolean
         get() = paths != null
 
@@ -297,41 +289,29 @@ private class SelectedNodePathsComponent(
         }
     }
 
-    private suspend fun loadEdgePaths(): Map<RoadEdge, Path> {
+    private fun loadEdgePaths(): Map<RoadEdge, IPath> {
         val node = nodeFetcher() ?: return emptyMap()
         val network = networkFetcher()
         val nodes = network.nodes.associateBy { it.id }
+        val instance = PFInstanceSpace(node.location.world)
         return network.edges.filter { it.start == node.id }
             .mapNotNull { edge ->
                 val start = nodes[edge.start] ?: return@mapNotNull null
                 val end = nodes[edge.end] ?: return@mapNotNull null
-                val pathFinder = PatheticMapper.newPathfinder(
-                    PathingRuleSet.createAsyncRuleSet()
-                        .withMaxLength(roadNetworkMaxDistance.toInt())
-                        .withLoadingChunks(true)
-                        .withAllowingDiagonal(true)
-                        .withAllowingFailFast(true)
-                )
-                val result = pathFinder.findPath(
-                    start.location.toPathPosition(),
-                    end.location.toPathPosition(),
-                    NodeAvoidPathfindingStrategy(
-                        nodeAvoidance = network.nodes - start - end,
-                        permanentLock = true,
-                        strategy = NodeAvoidPathfindingStrategy(
-                            nodeAvoidance = network.negativeNodes,
-                            permanentLock = false,
-                            strategy = WalkablePathfinderStrategy(),
-                        )
-                    )
-                ).await()
-                if (result.hasFailed()) return@mapNotNull null
-                edge to result.path
+
+                val path = roadNetworkFindPath(
+                    start,
+                    end,
+                    instance = instance,
+                    nodes = network.nodes,
+                    negativeNodes = network.negativeNodes
+                ) ?: return@mapNotNull null
+                edge to path
             }
             .toMap()
     }
 
-    private suspend fun refreshEdges() {
+    private fun refreshEdges() {
         val node = nodeFetcher() ?: return
         val network = networkFetcher()
         val edges = network.edges.filter { it.start == node.id }
@@ -349,18 +329,17 @@ private class SelectedNodePathsComponent(
 
         paths?.forEach { (edge, path) ->
             path.forEach {
-                player.spawnParticle(
-                    Particle.REDSTONE,
-                    it.x + 0.5,
-                    it.y + 0.5,
-                    it.z + 0.5,
-                    1,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    DustOptions(NetworkEdgesComponent.colorFromHash(edge.end.hashCode()), 1.0f)
-                )
+                WrapperPlayServerParticle(
+                    Particle(
+                        ParticleTypes.DUST,
+                        ParticleDustData(1f, NetworkEdgesComponent.colorFromHash(edge.end.hashCode()).toPacketColor())
+                    ),
+                    true,
+                    Vector3d(it.coordinates().x + 0.5, it.coordinates().y + 0.5, it.coordinates().z + 0.5),
+                    Vector3f.zero(),
+                    0f,
+                    1
+                ) sendPacketTo player
             }
         }
     }
@@ -411,10 +390,17 @@ class NodeRadiusComponent(
 
     @EventHandler
     private fun onScroll(event: PlayerItemHeldEvent) {
-        if (event.player.uniqueId != scrolling) return
+        val player = event.player
+        if (player.uniqueId != scrolling) return
         val delta = loopingDistance(event.previousSlot, event.newSlot, 8)
-        editRadius(delta * 0.5)
-        event.player.playSound("block.note_block.hat", pitch = 1f + (delta * 0.1f), volume = 0.5f)
+        val radiusMultiplier = if (player.isSneaking) 0.1 else 0.5
+        editRadius(delta * radiusMultiplier)
+        val sound = if (player.isSneaking) {
+            "block.note_block.bell"
+        } else {
+            "block.note_block.hat"
+        }
+        player.playSound(sound, pitch = 1f + (delta * 0.1f), volume = 0.5f)
         event.isCancelled = true
     }
 
@@ -438,34 +424,22 @@ class NodeRadiusComponent(
 private class ModificationComponent(
     private val nodeFetcher: () -> RoadNode?,
     private val networkFetcher: () -> RoadNetwork,
-    private val removeModification: (RoadModification) -> Unit,
 ) : ContentComponent, ItemsComponent {
     override fun items(player: Player): Map<Int, IntractableItem> {
         val map = mutableMapOf<Int, IntractableItem>()
         val node = nodeFetcher() ?: return map
         val network = networkFetcher()
 
-        val hasModification =
-            network.modifications.any { it is RoadModification.EdgeModification && it.start == node.id }
-        if (hasModification) {
-            map[4] = ItemStack(Material.BOOK).meta {
-                name = "<blue><b>Manage Modifications"
-                loreString = "<line> <gray>Click to manage the modifications of this node."
-            } onInteract {
-                openMenu(player)
-            }
-        }
-
-            map[5] = ItemStack(Material.EMERALD).meta {
-                name = "<green><b>Add Fast Travel Connection"
-                loreString = """
+        map[5] = ItemStack(Material.EMERALD).meta {
+            name = "<green><b>Add Fast Travel Connection"
+            loreString = """
                     |<line> <gray>Click on a unconnected node to <green>add a fast travel connection</green> to it.
                     |<line> <gray>Click on a modified node to <red>remove the connection</red>.
                     |
                     |<line> <gray>If you only want to connect one way, hold <red>Shift</red> while clicking.
                     |""".trimMargin()
-                unClickable()
-            } onInteract {}
+            unClickable()
+        } onInteract {}
 
         val hasEdges = network.edges.any { it.start == node.id }
         if (hasEdges) {
@@ -483,67 +457,6 @@ private class ModificationComponent(
         }
 
         return map
-    }
-
-    private fun openMenu(player: Player) {
-        plugin.chestMenu(6) {
-            val node = nodeFetcher() ?: return@chestMenu
-            title = "Modifications"
-            val modifications = networkFetcher().modifications
-                .filterIsInstance<RoadModification.EdgeModification>()
-                .filter { it.start == node.id }
-
-            pagination({ modifications }) {
-                slot {
-                    onRender { modification, _ ->
-                        inventory[slotIndex] = when (modification) {
-                            is RoadModification.EdgeAddition -> ItemStack(Material.EMERALD).meta {
-                                name = "<green><b>Fast Travel Connection"
-                                loreString = """
-                                    |
-                                    |<line> <gray>Target: <white>${modification.end}
-                                    |<line> <gray>Weight: <white>${modification.weight}
-                                    |
-                                    |<line> <green><b>Left Click:</b> <white>Teleport to the target node.
-                                    |<line> <red><b>Shift Right Click:</b> <white>Remove this modification.
-                                """.trimMargin()
-                            }
-
-                            is RoadModification.EdgeRemoval -> ItemStack(Material.REDSTONE).meta {
-                                name = "<red><b>Remove Edge"
-                                loreString = """
-                                    |
-                                    |<line> <gray>Target: <white>${modification.end}
-                                    |
-                                    |<line> <green><b>Left Click:</b> <white>Teleport to the target node.
-                                    |<line> <red><b>Shift Right Click:</b> <white>Remove this modification.
-                                """.trimMargin()
-                            }
-
-                            null -> ItemStack(Material.AIR)
-                        }
-                    }
-                    onInteract { modification, _ ->
-                        if (modification == null) return@onInteract
-                        when (click) {
-                            ClickType.LEFT -> {
-                                val target = networkFetcher().nodes.find { it.id == modification.end }
-                                if (target != null) {
-                                    player.teleport(target.location)
-                                }
-                            }
-
-                            ClickType.SHIFT_RIGHT -> {
-                                removeModification(modification)
-                            }
-
-                            else -> {}
-                        }
-                        close()
-                    }
-                }
-            }
-        }.open(player)
     }
 
     override suspend fun initialize(player: Player) {}

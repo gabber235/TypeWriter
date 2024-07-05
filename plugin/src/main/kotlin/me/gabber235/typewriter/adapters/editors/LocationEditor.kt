@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.adapters.editors
 
 import com.google.gson.JsonObject
+import lirand.api.extensions.server.mainWorld
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.CustomEditor
 import me.gabber235.typewriter.adapters.ObjectEditor
@@ -45,7 +46,7 @@ fun ObjectEditor<Location>.location() = reference {
                         ) { "'${it.name}'" }
                     }"
                 )
-            ?: server.worlds.firstOrNull()
+            ?: server.mainWorld
         Location(bukkitWorld, x, y, z, yaw, pitch)
     }
 

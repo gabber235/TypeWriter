@@ -79,7 +79,7 @@ jobs:
             paper
             purpur
           game-versions: |
-            [1.20.3, 1.20.4]
+            [1.20.3, 1.20.6]
           dependencies: |
             packetevents
 

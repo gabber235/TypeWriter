@@ -30,7 +30,7 @@ class TextSeeThroughData(
 }
 
 data class SeeThroughProperty(val seeThrough: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<SeeThroughProperty>(SeeThroughProperty::class)
+    companion object : SinglePropertyCollectorSupplier<SeeThroughProperty>(SeeThroughProperty::class, SeeThroughProperty(false))
 }
 
 fun applySeeThroughData(entity: WrapperEntity, property: SeeThroughProperty) {

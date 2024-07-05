@@ -1,7 +1,9 @@
 package me.gabber235.typewriter.utils
 
 import me.gabber235.typewriter.entry.dialogue.confirmationKey
-import net.kyori.adventure.text.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.TextReplacementConfig
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -13,7 +15,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
-import java.util.*
 
 private val mm = MiniMessage.builder()
     .tags(
@@ -144,7 +145,7 @@ fun String.limitLineLength(maxLength: Int = 40): String {
         // When \n is found we just want to add those lines to the list
         if (word.contains("\n")) {
             val wordLines = word.split("\n")
-            for (line in wordLines.subList(0, wordLines.size-1) ) {
+            for (line in wordLines.subList(0, wordLines.size - 1)) {
                 val newLines = "$currentLine$line"
                 lines.add(newLines)
                 currentLine = ""

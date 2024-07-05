@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter/utils/icons.dart";
@@ -49,7 +50,7 @@ class Dropdown<T> extends HookWidget {
           Expanded(
             child: DropdownButton<T>(
               focusNode: focusNode,
-              value: value,
+              value: values.firstWhereOrNull((e) => e == value) ?? values.first,
               icon: Container(),
               underline: Container(),
               alignment: alignment ?? AlignmentDirectional.centerStart,

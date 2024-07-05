@@ -45,7 +45,6 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
-import org.patheloper.mapping.PatheticMapper
 import java.util.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
@@ -128,7 +127,6 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         }
 
         BStatsMetrics.registerMetrics()
-        PatheticMapper.initialize(this)
 
         // We want to initialize all the adapters after all the plugins have been enabled to make
         // sure
@@ -148,7 +146,6 @@ class Typewriter : KotlinPlugin(), KoinComponent {
 
     override suspend fun onDisableAsync() {
         CommandAPI.onDisable()
-        PatheticMapper.shutdown()
         get<AdapterLoader>().shutdown()
         get<StagingManager>().shutdown()
         get<EntityHandler>().shutdown()

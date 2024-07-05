@@ -184,7 +184,8 @@ abstract class RecordingCinematicContentMode<T : Any>(
         super.initialize()
 
         // Load in the old tape if it exists
-        val oldTapeData = assetManager.fetchAsset(asset!!)
+        val asset = asset ?: throw IllegalStateException("No asset found for recording cinematic after setup, this should not happen. Asset: '${context.fieldValue}'")
+        val oldTapeData = assetManager.fetchAsset(asset)
         if (oldTapeData != null) {
             tape = gson.fromJson(oldTapeData, tape.javaClass)
         }
@@ -202,7 +203,6 @@ abstract class RecordingCinematicContentMode<T : Any>(
                 e.printStackTrace()
             }
         }
-
     }
 
     override suspend fun tick() {
@@ -290,6 +290,8 @@ abstract class RecordingCinematicContentMode<T : Any>(
     override suspend fun dispose() {
         unregister()
         player.stopBlockingActionBar()
+        super.dispose()
+        if (!::actions.isInitialized) return
         actions.forEach {
             try {
                 it.teardown()
@@ -297,7 +299,6 @@ abstract class RecordingCinematicContentMode<T : Any>(
                 e.printStackTrace()
             }
         }
-        super.dispose()
     }
 
     private fun optimizeTape(json: JsonElement) {

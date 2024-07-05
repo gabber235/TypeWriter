@@ -1,8 +1,16 @@
 package me.gabber235.typewriter.utils
 
 import com.destroystokyo.paper.profile.PlayerProfile
+import com.github.retrooper.packetevents.protocol.particle.Particle
+import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
+import com.github.retrooper.packetevents.util.Vector3d
+import com.github.retrooper.packetevents.util.Vector3f
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.Typewriter
+import me.gabber235.typewriter.entry.roadnetwork.content.toPacketColor
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.logger
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
@@ -10,8 +18,6 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import org.bukkit.Color
 import org.bukkit.Location
-import org.bukkit.Particle
-import org.bukkit.Particle.DustOptions
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
@@ -54,7 +60,6 @@ fun Audience.playSound(
     volume: Float = 1.0f,
     pitch: Float = 1.0f
 ) = playSound(Sound.sound(Key.key(sound), source, volume, pitch))
-
 
 
 val Player.isHighUp: Boolean
@@ -106,9 +111,9 @@ fun Location.particleSphere(
     player: Player,
     radius: Double,
     color: Color,
-    phiDivisions : Int = 16,
-    thetaDivisions : Int = 8,
-    ) {
+    phiDivisions: Int = 16,
+    thetaDivisions: Int = 8,
+) {
     var phi = 0.0
     while (phi < Math.PI) {
         phi += Math.PI / phiDivisions
@@ -118,18 +123,18 @@ fun Location.particleSphere(
             val x = radius * sin(phi) * cos(theta)
             val y = radius * cos(phi)
             val z = radius * sin(phi) * sin(theta)
-            player.spawnParticle(
-                Particle.REDSTONE,
-                this.x + x,
-                this.y + y,
-                this.z + z,
-                1,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                DustOptions(color, sqrt(radius/3).toFloat())
-            )
+
+            WrapperPlayServerParticle(
+                Particle(
+                    ParticleTypes.DUST,
+                    ParticleDustData(sqrt(radius / 3).toFloat(), color.toPacketColor())
+                ),
+                true,
+                Vector3d(this.x + x, this.y + y, this.z + z),
+                Vector3f.zero(),
+                0f,
+                1
+            ) sendPacketTo player
         }
     }
 }

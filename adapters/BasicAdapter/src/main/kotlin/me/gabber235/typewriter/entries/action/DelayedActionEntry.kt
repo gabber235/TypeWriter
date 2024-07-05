@@ -34,7 +34,7 @@ class DelayedActionEntry(
     override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The time to delay the action for.")
     // The duration before the next triggers are fired.
-    private val duration: Duration = Duration.ZERO, // Number of milliseconds
+    private val duration: Duration = Duration.ZERO,
 ) : CustomTriggeringActionEntry {
 
     override fun execute(player: Player) {

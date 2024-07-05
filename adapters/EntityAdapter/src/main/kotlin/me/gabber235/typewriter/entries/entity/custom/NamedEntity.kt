@@ -36,7 +36,7 @@ val namePlateOffset by snippet("entity.name.offset", 0.2)
     "named_entity_definition",
     "An entity with a name above it's head and the indicator",
     Colors.ORANGE,
-    "fa6-solid:person-walking"
+    "mdi:account-tag"
 )
 /**
  * The `NamedEntityDefinition` is an entity that has the other defined entity as the base,
@@ -48,11 +48,12 @@ val namePlateOffset by snippet("entity.name.offset", 0.2)
 class NamedEntityDefinition(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
-    override val sound: Sound = Sound.EMPTY,
-    override val data: List<Ref<EntityData<*>>>,
     val baseEntity: Ref<EntityDefinitionEntry> = emptyRef(),
 ) : SimpleEntityDefinition {
+    override val displayName: String get() = baseEntity.get()?.displayName ?: ""
+    override val sound: Sound get() = baseEntity.get()?.sound ?: Sound.EMPTY
+    override val data: List<Ref<EntityData<*>>> get() = baseEntity.get()?.data ?: emptyList()
+
     override fun create(player: Player): FakeEntity {
         val entity = baseEntity.get()?.create(player)
             ?: throw IllegalStateException("A base entity must be specified for entry $name ($id)")
@@ -86,7 +87,7 @@ class NamedEntity(
     }
 
     override fun applyProperties(properties: List<EntityProperty>) {
-        return baseEntity.applyProperties(properties)
+        return baseEntity.consumeProperties(properties)
     }
 
     override fun tick() {

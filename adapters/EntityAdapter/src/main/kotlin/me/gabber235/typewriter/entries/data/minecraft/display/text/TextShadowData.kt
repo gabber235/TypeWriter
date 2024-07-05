@@ -15,7 +15,6 @@ import kotlin.reflect.KClass
 
 @Entry("text_shadow_data", "If text in TextDisplay has shadow.", Colors.RED, "mdi:box-shadow")
 @Tags("text_shadow_data")
-
 class TextShadowData(
     override val id: String = "",
     override val name: String = "",
@@ -30,7 +29,7 @@ class TextShadowData(
 }
 
 data class ShadowProperty(val shadow: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<ShadowProperty>(ShadowProperty::class)
+    companion object : SinglePropertyCollectorSupplier<ShadowProperty>(ShadowProperty::class, ShadowProperty(false))
 }
 
 fun applyShadowData(entity: WrapperEntity, property: ShadowProperty) {

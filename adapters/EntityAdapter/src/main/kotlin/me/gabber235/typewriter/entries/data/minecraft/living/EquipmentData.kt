@@ -43,6 +43,8 @@ data class EquipmentProperty(val data: Map<EquipmentSlot, ItemStack>) : EntityPr
 
 fun EntityEquipment.toProperty(): EquipmentProperty {
     return EquipmentProperty(org.bukkit.inventory.EquipmentSlot.entries.mapNotNull {
+        // TODO: Replace this with `EquipmentSlot.BODY` when the support for 1.20.4 is dropped.
+        if (it.name.contains("BODY")) return@mapNotNull null
         val item = getItem(it)
         if (item.isEmpty) return@mapNotNull null
         it.toPacketEquipmentSlot() to getItem(it).toPacketItem()
@@ -56,6 +58,7 @@ fun org.bukkit.inventory.EquipmentSlot.toPacketEquipmentSlot() = when (this) {
     org.bukkit.inventory.EquipmentSlot.CHEST -> EquipmentSlot.CHEST_PLATE
     org.bukkit.inventory.EquipmentSlot.LEGS -> EquipmentSlot.LEGGINGS
     org.bukkit.inventory.EquipmentSlot.FEET -> EquipmentSlot.BOOTS
+    else -> EquipmentSlot.CHEST_PLATE
 }
 
 private class EquipmentCollector(

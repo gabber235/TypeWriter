@@ -32,7 +32,7 @@ class AgeableData(
 }
 
 data class AgableProperty(val baby: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<AgableProperty>(AgableProperty::class)
+    companion object : SinglePropertyCollectorSupplier<AgableProperty>(AgableProperty::class, AgableProperty(false))
 }
 
 fun applyAgeableData(entity: WrapperEntity, property: AgableProperty) {

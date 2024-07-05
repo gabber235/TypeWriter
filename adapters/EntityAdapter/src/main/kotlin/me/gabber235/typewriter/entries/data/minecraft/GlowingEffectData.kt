@@ -27,7 +27,7 @@ class GlowingEffectData(
 }
 
 data class GlowingEffectProperty(val glowing: Boolean = false) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<GlowingEffectProperty>(GlowingEffectProperty::class)
+    companion object : SinglePropertyCollectorSupplier<GlowingEffectProperty>(GlowingEffectProperty::class, GlowingEffectProperty(false))
 }
 
 fun applyGlowingEffectData(entity: WrapperEntity, property: GlowingEffectProperty) {

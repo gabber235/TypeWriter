@@ -4,6 +4,8 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Max
+import me.gabber235.typewriter.adapters.modifiers.Min
 import me.gabber235.typewriter.entry.entity.SinglePropertyCollectorSupplier
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.extensions.packetevents.metas
@@ -15,12 +17,13 @@ import kotlin.reflect.KClass
 
 @Entry("text_opacity_data", "Opacity for a TextDisplay.", Colors.RED, "mdi:opacity")
 @Tags("text_opacity_data")
-
 class TextOpacityData(
     override val id: String = "",
     override val name: String = "",
     @Help("Opacity of the TextDisplay.")
-    val opacity: Int = 0,
+    @Min(-1)
+    @Max(127)
+    val opacity: Int = -1,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : TextDisplayEntityData<TextOpacityProperty> {
     override fun type(): KClass<TextOpacityProperty> = TextOpacityProperty::class
@@ -30,7 +33,7 @@ class TextOpacityData(
 }
 
 data class TextOpacityProperty(val opacity: Byte) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<TextOpacityProperty>(TextOpacityProperty::class)
+    companion object : SinglePropertyCollectorSupplier<TextOpacityProperty>(TextOpacityProperty::class, TextOpacityProperty(-1))
 }
 
 fun applyTextOpacityData(entity: WrapperEntity, property: TextOpacityProperty) {
