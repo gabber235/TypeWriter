@@ -1,25 +1,27 @@
 package me.gabber235.typewriter.entry.roadnetwork.content
 
+import com.extollit.gaming.ai.path.model.IPath
 import com.github.retrooper.packetevents.protocol.particle.Particle
 import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.util.Vector3f
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
-import kotlinx.coroutines.future.await
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
-import lirand.api.extensions.inventory.set
 import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.content.ContentComponent
 import me.gabber235.typewriter.content.ContentContext
 import me.gabber235.typewriter.content.ContentMode
 import me.gabber235.typewriter.content.components.*
 import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entity.toProperty
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.forceTriggerFor
-import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
+import me.gabber235.typewriter.entry.roadnetwork.gps.roadNetworkFindPath
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFEmptyEntity
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFInstanceSpace
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.plugin
@@ -34,14 +36,9 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
-import org.patheloper.api.pathing.configuration.PathingRuleSet
-import org.patheloper.api.pathing.result.Path
-import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
-import org.patheloper.mapping.PatheticMapper
 import java.util.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -71,18 +68,18 @@ class SelectedRoadNodeContentMode(
 
             title = "Editing <gray>${selectedNode?.id}</gray> node$suffix"
             color = when {
-                editorComponent.state == RoadNetworkEditorState.DIRTY -> BossBar.Color.RED
+                editorComponent.state == RoadNetworkEditorState.Dirty -> BossBar.Color.RED
                 !pathsComponent.isPathsLoaded -> BossBar.Color.PURPLE
                 else -> BossBar.Color.GREEN
             }
         }
         exit(doubleShiftExits = true)
 
-        +NodeRadiusComponent(::selectedNode, initiallyScrolling) {
+        +NodeRadiusComponent(::selectedNode, initiallyScrolling) { radiusChange ->
             editorComponent.updateAsync { roadNetwork ->
                 roadNetwork.copy(nodes = roadNetwork.nodes.map { node ->
                     if (node.id == selectedNodeId) node.copy(
-                        radius = (node.radius + it).coerceAtLeast(
+                        radius = (node.radius + radiusChange).coerceAtLeast(
                             0.5
                         )
                     ) else node
@@ -282,7 +279,7 @@ private class SelectedNodePathsComponent(
     private val nodeFetcher: () -> RoadNode?,
     private val networkFetcher: () -> RoadNetwork,
 ) : ContentComponent {
-    private var paths: Map<RoadEdge, Path>? = null
+    private var paths: Map<RoadEdge, IPath>? = null
     val isPathsLoaded: Boolean
         get() = paths != null
 
@@ -292,41 +289,29 @@ private class SelectedNodePathsComponent(
         }
     }
 
-    private suspend fun loadEdgePaths(): Map<RoadEdge, Path> {
+    private fun loadEdgePaths(): Map<RoadEdge, IPath> {
         val node = nodeFetcher() ?: return emptyMap()
         val network = networkFetcher()
         val nodes = network.nodes.associateBy { it.id }
+        val instance = PFInstanceSpace(node.location.world)
         return network.edges.filter { it.start == node.id }
             .mapNotNull { edge ->
                 val start = nodes[edge.start] ?: return@mapNotNull null
                 val end = nodes[edge.end] ?: return@mapNotNull null
-                val pathFinder = PatheticMapper.newPathfinder(
-                    PathingRuleSet.createAsyncRuleSet()
-                        .withMaxLength(roadNetworkMaxDistance.toInt())
-                        .withLoadingChunks(true)
-                        .withAllowingDiagonal(true)
-                        .withAllowingFailFast(true)
-                )
-                val result = pathFinder.findPath(
-                    start.location.toPathPosition(),
-                    end.location.toPathPosition(),
-                    NodeAvoidPathfindingStrategy(
-                        nodeAvoidance = network.nodes - start - end,
-                        permanentLock = true,
-                        strategy = NodeAvoidPathfindingStrategy(
-                            nodeAvoidance = network.negativeNodes,
-                            permanentLock = false,
-                            strategy = WalkablePathfinderStrategy(),
-                        )
-                    )
-                ).await()
-                if (result.hasFailed()) return@mapNotNull null
-                edge to result.path
+
+                val path = roadNetworkFindPath(
+                    start,
+                    end,
+                    instance = instance,
+                    nodes = network.nodes,
+                    negativeNodes = network.negativeNodes
+                ) ?: return@mapNotNull null
+                edge to path
             }
             .toMap()
     }
 
-    private suspend fun refreshEdges() {
+    private fun refreshEdges() {
         val node = nodeFetcher() ?: return
         val network = networkFetcher()
         val edges = network.edges.filter { it.start == node.id }
@@ -350,7 +335,7 @@ private class SelectedNodePathsComponent(
                         ParticleDustData(1f, NetworkEdgesComponent.colorFromHash(edge.end.hashCode()).toPacketColor())
                     ),
                     true,
-                    Vector3d(it.x + 0.5, it.y + 0.5, it.z + 0.5),
+                    Vector3d(it.coordinates().x + 0.5, it.coordinates().y + 0.5, it.coordinates().z + 0.5),
                     Vector3f.zero(),
                     0f,
                     1
@@ -405,10 +390,17 @@ class NodeRadiusComponent(
 
     @EventHandler
     private fun onScroll(event: PlayerItemHeldEvent) {
-        if (event.player.uniqueId != scrolling) return
+        val player = event.player
+        if (player.uniqueId != scrolling) return
         val delta = loopingDistance(event.previousSlot, event.newSlot, 8)
-        editRadius(delta * 0.5)
-        event.player.playSound("block.note_block.hat", pitch = 1f + (delta * 0.1f), volume = 0.5f)
+        val radiusMultiplier = if (player.isSneaking) 0.1 else 0.5
+        editRadius(delta * radiusMultiplier)
+        val sound = if (player.isSneaking) {
+            "block.note_block.bell"
+        } else {
+            "block.note_block.hat"
+        }
+        player.playSound(sound, pitch = 1f + (delta * 0.1f), volume = 0.5f)
         event.isCancelled = true
     }
 

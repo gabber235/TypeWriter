@@ -1,22 +1,24 @@
 package me.gabber235.typewriter.entries.activity
 
+import com.extollit.gaming.ai.path.HydrazinePathFinder
+import com.extollit.gaming.ai.path.model.Gravitation
+import com.extollit.gaming.ai.path.model.IPath
+import com.extollit.gaming.ai.path.model.IPathingEntity
+import com.extollit.gaming.ai.path.model.Passibility
+import com.extollit.linalg.immutable.Vec3d
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.future.await
 import me.gabber235.typewriter.entry.entity.*
-import me.gabber235.typewriter.entry.entries.roadNetworkMaxDistance
-import me.gabber235.typewriter.entry.roadnetwork.content.toLocation
-import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
 import me.gabber235.typewriter.entry.roadnetwork.gps.GPS
 import me.gabber235.typewriter.entry.roadnetwork.gps.GPSEdge
+import me.gabber235.typewriter.entry.roadnetwork.gps.toVector
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFCapabilities
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFInstanceSpace
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.utils.*
 import org.bukkit.util.BoundingBox
-import org.patheloper.api.pathing.configuration.PathingRuleSet
-import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
-import org.patheloper.api.wrapper.PathPosition
-import org.patheloper.mapping.PatheticMapper
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.min
 import kotlin.math.sin
 
 
@@ -56,7 +58,7 @@ class NavigationActivity(
         // The fake navigation is used to improve the performance, it however, goes through buildings
         // So, we switch to walking when the entity is viewed
         if (state is NavigationActivityTaskState.FakeNavigation && context.isViewed) {
-            this.state = NavigationActivityTaskState.Walking(state.edge, state.percentage)
+            this.state = NavigationActivityTaskState.Walking(state.edge, currentLocation)
         }
 
         // And we switch back to fake navigation when the entity is not viewed
@@ -113,9 +115,6 @@ private sealed interface NavigationActivityTaskState {
         // Fixme: Magic number
         private val maxTicks = (location.distance(edge.end.toProperty()) * 20).toInt()
 
-        val percentage: Double
-            get() = ticks.toDouble() / maxTicks
-
         override fun location(): LocationProperty = location
 
         override fun tick(context: ActivityContext) {
@@ -133,93 +132,42 @@ private sealed interface NavigationActivityTaskState {
         override fun isComplete(): Boolean = true
     }
 
-    class Walking : NavigationActivityTaskState {
-        val edge: GPSEdge
-
-        // TODO: Have the walking speed specific to the entity. Or input it as a parameter
-        private val walkingSpeed = 0.2085
-
-        // TODO: Have bounding box specific to the entity, instead of just picking a player's bounding box
-        private val boundingBox: BoundingBox = BoundingBox(-.3, .0, -.3, 0.3, 1.8, 0.3)
-
-        private var location: LocationProperty
-        private var pathIndex: Int = 0
-        private var path: List<LocationProperty>? = null
+    class Walking(val edge: GPSEdge, startLocation: LocationProperty) : NavigationActivityTaskState, IPathingEntity {
+        private var location: LocationProperty = startLocation
+        private var path: IPath?
 
         private var velocity = Vector.ZERO
 
         private var yawVelocity = Velocity(0f)
         private var pitchVelocity = Velocity(0f)
 
-        private val job: Job
+        private val navigator: HydrazinePathFinder
 
-        constructor(edge: GPSEdge, startPercentage: Double) {
-            this.edge = edge
-            this.location = edge.start.lerp(edge.end, startPercentage).toProperty()
+        init {
+            val instance = PFInstanceSpace(startLocation.toLocation().world)
+            navigator = HydrazinePathFinder(this, instance)
 
-            job = ThreadType.DISPATCHERS_ASYNC.launch {
-                calculatePath(edge.start.toPathPosition())
-                if (path == null) return@launch
-                val index = (path!!.size * startPercentage).toInt()
-                location = path!![index]
-                pathIndex = index
-            }
-        }
-
-        constructor(edge: GPSEdge, startLocation: LocationProperty) {
-            this.edge = edge
-            this.location = startLocation
-
-            job = ThreadType.DISPATCHERS_ASYNC.launch {
-                calculatePath(startLocation.toLocation().toPathPosition())
-            }
-        }
-
-        private suspend fun calculatePath(startLocation: PathPosition) {
-            val pathFinder = PatheticMapper.newPathfinder(
-                PathingRuleSet.createAsyncRuleSet()
-                    .withMaxLength(roadNetworkMaxDistance.toInt())
-                    .withLoadingChunks(true)
-                    .withAllowingDiagonal(true)
-                    .withAllowingFailFast(true)
-            )
-
-            val result = pathFinder.findPath(
-                startLocation,
-                edge.end.toPathPosition(),
-                WalkablePathfinderStrategy(),
-            ).await()
-            if (result.hasFailed()) {
-                logger.severe("Failed to find path: ${result.pathState}. You should recalculate the edges of the road network. Skipping to next node.")
-                location = edge.end.toProperty()
-            } else {
-                path = result.path.map { it.toLocation().toProperty().mid() }
-            }
+            path = navigator.initiatePathTo(edge.end.x, edge.end.y, edge.end.z)
         }
 
         override fun location(): LocationProperty = location
 
         override fun tick(context: ActivityContext) {
-            val path = path ?: return
+            path = navigator.updatePathFor(this)
+            super.tick(context)
+        }
 
-            val targetPoint = path[pathIndex]
+        override fun moveTo(position: Vec3d, passibility: Passibility?, gravitation: Gravitation?) {
+            val target =
+                LocationProperty(location.world, position.x, position.y, position.z, location.yaw, location.pitch)
 
-
-            val velocity = calculateVelocity(targetPoint, walkingSpeed)
+            val velocity = calculateVelocity(target, capabilities().speed().toDouble())
             val result = calculateMovement(velocity)
             location = result.newPosition
             this.velocity = result.newVelocity
 
-            val (yaw, pitch) = calculateRotation(path)
+            val (yaw, pitch) = calculateRotation()
             location = location.copy(yaw = yaw, pitch = pitch)
-
-
-            // FIXME: Change magic number to be dependent on the speed.
-            if ((location.distanceSqrt(targetPoint) ?: Double.POSITIVE_INFINITY) < 0.10) {
-                pathIndex = (pathIndex + 1).coerceAtMost(path.size - 1)
-            }
-
-            super.tick(context)
         }
 
         fun calculateVelocity(target: LocationProperty, speed: Double): Vector {
@@ -241,9 +189,7 @@ private sealed interface NavigationActivityTaskState {
 
             val gravityVelocity = if (dy < 0) {
                 Vector(0.0, -0.1, 0.0)
-            } else {
-                Vector(0.0, 0.2, 0.0)
-            }
+            } else Vector.ZERO
 
             val newVelocity = (velocity + targetVelocity).normalize() * speed + gravityVelocity
 
@@ -253,7 +199,7 @@ private sealed interface NavigationActivityTaskState {
         fun calculateMovement(velocity: Vector): PhysicsResult {
             // Prevent ghosting
             return BlockCollision.handlePhysics(
-                boundingBox,
+                boundingBox(),
                 velocity,
                 location,
                 BukkitBlockGetter(
@@ -264,8 +210,10 @@ private sealed interface NavigationActivityTaskState {
             )
         }
 
-        fun calculateRotation(path: List<LocationProperty>): Pair<Float, Float> {
-            val targetLookPoint = path.getOrNull(pathIndex + 3) ?: path.last()
+        fun calculateRotation(): Pair<Float, Float> {
+            val path = path ?: return Pair(location.yaw, location.pitch)
+            val targetNode = path.at(min(path.cursor() + 3, path.length() - 1))
+            val targetLookPoint = targetNode.coordinates().toVector().mid()
             val targetYaw = getLookYaw(targetLookPoint.x - location.x, targetLookPoint.z - location.z)
             val targetPitch = getLookPitch(
                 targetLookPoint.x - location.x,
@@ -287,12 +235,28 @@ private sealed interface NavigationActivityTaskState {
         }
 
         override fun isComplete(): Boolean {
+            if (path == null) return true
             return (location.distanceSqrt(edge.end) ?: Double.POSITIVE_INFINITY) < 1
         }
 
-        override fun dispose() {
-            job.cancel()
-            super.dispose()
+        override fun coordinates(): Vec3d = Vec3d(location.x, location.y, location.z)
+
+        // TODO: Make width and height configurable for each entity
+        override fun width(): Float = 0.6f
+
+        // TODO: Make width and height configurable for each entity
+        override fun height(): Float = 1.8f
+        fun boundingBox(): BoundingBox {
+            val width = width().toDouble()
+            val height = height().toDouble()
+            val halfWidth = width / 2
+            return BoundingBox(-halfWidth, 0.0, -halfWidth, halfWidth, height, halfWidth)
         }
+
+        override fun age(): Int = 0
+        override fun bound(): Boolean = false
+        override fun searchRange(): Float = 40f
+        override fun capabilities(): IPathingEntity.Capabilities = PFCapabilities()
+
     }
 }

@@ -1,5 +1,7 @@
 package me.gabber235.typewriter.entry.roadnetwork.gps
 
+import com.extollit.gaming.ai.path.HydrazinePathFinder
+import com.extollit.linalg.immutable.Vec3d
 import com.github.retrooper.packetevents.protocol.particle.Particle
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
 import com.github.retrooper.packetevents.util.Vector3f
@@ -8,15 +10,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.future.await
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entity.toProperty
 import me.gabber235.typewriter.entry.entries.AudienceDisplay
 import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
 import me.gabber235.typewriter.entry.entries.TickableDisplay
 import me.gabber235.typewriter.entry.entries.roadNetworkMaxDistance
-import me.gabber235.typewriter.entry.roadnetwork.content.toLocation
-import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFEmptyEntity
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFInstanceSpace
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.extensions.packetevents.toVector3d
 import me.gabber235.typewriter.snippets.snippet
@@ -25,10 +27,6 @@ import me.gabber235.typewriter.utils.distanceSqrt
 import me.gabber235.typewriter.utils.firstWalkableLocationBelow
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.patheloper.api.pathing.configuration.PathingRuleSet
-import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
-import org.patheloper.api.wrapper.PathPosition
-import org.patheloper.mapping.PatheticMapper
 import java.util.*
 
 private val pathStreamRefreshTime by snippet(
@@ -107,8 +105,6 @@ private class PlayerPathStreamDisplay(
     private var gps = PointToPointGPS(ref, { startLocation(player) }, { endLocation(player) })
     private var edges = emptyList<GPSEdge>()
 
-    // The path for the last edge.
-//    private var path = emptyList<Location>()
     private val lines = mutableListOf<PathLine>()
     private var lastRefresh = 0L
 
@@ -166,30 +162,24 @@ private class PlayerPathStreamDisplay(
                 }
                 .awaitAll()
                 .flatten()
-                .map { it.mid().toLocation() }
+                .map { it.toCenterLocation() }
             if (path.isEmpty()) return@coroutineScope
             lines.add(PathLine(path))
         }
     }
 
-    private suspend fun findPath(
+    private fun findPath(
         start: Location,
         end: Location,
-    ): Iterable<PathPosition> {
-        val pathFinder = PatheticMapper.newPathfinder(
-            PathingRuleSet.createAsyncRuleSet()
-                .withLoadingChunks(true)
-                .withAllowingDiagonal(true)
-                .withAllowingFailFast(true)
-        )
-        val result = pathFinder.findPath(
-            start.toPathPosition(),
-            end.toPathPosition(),
-            WalkablePathfinderStrategy()
-        ).await()
-
-        if (result.hasFailed()) return emptyList()
-        return result.path
+    ): Iterable<Location> {
+        val entity = PFEmptyEntity(start.toProperty(), searchRange = roadNetworkMaxDistance.toFloat())
+        val instance = PFInstanceSpace(start.world)
+        val pathfinder = HydrazinePathFinder(entity, instance)
+        val path = pathfinder.computePathTo(Vec3d(end.x, end.y, end.z)) ?: return emptyList()
+        return path.map {
+            val coordinate = it.coordinates()
+            Location(start.world, coordinate.x.toDouble(), coordinate.y.toDouble(), coordinate.z.toDouble())
+        }
     }
 
     fun dispose() {

@@ -95,6 +95,7 @@ data class Vector(
         }
     }
 
+    fun mid(): Vector = add(0.5, 0.0, 0.5)
 }
 
 fun org.bukkit.util.Vector.toVector(): Vector {

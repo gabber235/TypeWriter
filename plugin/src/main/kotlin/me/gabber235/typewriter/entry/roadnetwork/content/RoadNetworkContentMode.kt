@@ -5,7 +5,6 @@ import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
 import com.github.retrooper.packetevents.util.Vector3f
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
-import kotlinx.coroutines.future.await
 import lirand.api.extensions.inventory.meta
 import me.gabber235.typewriter.content.ContentComponent
 import me.gabber235.typewriter.content.ContentContext
@@ -14,7 +13,6 @@ import me.gabber235.typewriter.content.components.*
 import me.gabber235.typewriter.content.entryId
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkEditorState
 import me.gabber235.typewriter.entry.triggerFor
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
@@ -29,11 +27,6 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
-import org.patheloper.api.pathing.configuration.PathingRuleSet
-import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
-import org.patheloper.api.wrapper.PathPosition
-import org.patheloper.mapping.PatheticMapper
-import org.patheloper.mapping.bukkit.BukkitMapper
 import java.util.*
 import kotlin.math.pow
 
@@ -57,16 +50,22 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         editorComponent = +RoadNetworkEditorComponent(ref)
 
         bossBar {
+            val componentState = editorComponent.state
             var suffix = ""
             if (highlighting) suffix += " <yellow>(highlighting)</yellow>"
-            suffix += editorComponent.state.message
+            suffix += componentState.message
 
             title = "Editing Road Network$suffix"
             color = when {
-                editorComponent.state == RoadNetworkEditorState.DIRTY -> BossBar.Color.RED
-                editorComponent.state == RoadNetworkEditorState.CALCULATING -> BossBar.Color.PURPLE
+                componentState == RoadNetworkEditorState.Dirty -> BossBar.Color.RED
+                componentState is RoadNetworkEditorState.Calculating -> BossBar.Color.PURPLE
                 highlighting -> BossBar.Color.YELLOW
                 else -> BossBar.Color.GREEN
+            }
+
+            progress = when (componentState) {
+                is RoadNetworkEditorState.Calculating -> componentState.percentage
+                else -> 1f
             }
         }
         exit()
@@ -158,51 +157,6 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         ) triggerFor player
     }
 
-    private suspend fun calculateEdgesFor(node: RoadNode) {
-        val interestingNodes = network.nodes
-            .filter { it != node && it.location.world == node.location.world && it.location.distanceSquared(node.location) < roadNetworkMaxDistance * roadNetworkMaxDistance }
-        val generatedEdges =
-            interestingNodes
-                .filter { !network.modifications.containsRemoval(node.id, it.id) }
-                .mapNotNull { target ->
-                    val pathFinder = PatheticMapper.newPathfinder(
-                        PathingRuleSet.createAsyncRuleSet()
-                            .withMaxLength(roadNetworkMaxDistance.toInt())
-                            .withLoadingChunks(true)
-                            .withAllowingDiagonal(true)
-                            .withAllowingFailFast(true)
-                    )
-                    val result = pathFinder.findPath(
-                        node.location.toPathPosition(),
-                        target.location.toPathPosition(),
-                        NodeAvoidPathfindingStrategy(
-                            nodeAvoidance = interestingNodes - node - target,
-                            permanentLock = true,
-                            strategy = NodeAvoidPathfindingStrategy(
-                                nodeAvoidance = network.negativeNodes,
-                                permanentLock = false,
-                                strategy = WalkablePathfinderStrategy(),
-                            )
-                        )
-                    ).await()
-                    if (result.hasFailed()) return@mapNotNull null
-                    val weight = result.path.length()
-                    RoadEdge(node.id, target.id, weight.toDouble())
-                }
-
-        val manualEdges = network.modifications
-            .asSequence()
-            .filterIsInstance<RoadModification.EdgeAddition>()
-            .filter { it.start == node.id }
-            .map { RoadEdge(it.start, it.end, it.weight) }
-
-        val edges = (generatedEdges + manualEdges).toList()
-
-        editorComponent.update { roadNetwork ->
-            roadNetwork.copy(edges = roadNetwork.edges.filter { it.start != node.id } + edges)
-        }
-    }
-
     override suspend fun tick() {
         super.tick()
         cycle++
@@ -216,9 +170,6 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         yaw = (cycle % 360).toFloat()
     }
 }
-
-fun Location.toPathPosition(): PathPosition = BukkitMapper.toPathPosition(this)
-fun PathPosition.toLocation(): Location = BukkitMapper.toLocation(this)
 
 fun RoadNode.material(modifications: List<RoadModification>): Material {
     val hasAdded = modifications.any { it is RoadModification.EdgeAddition && it.start == id }

@@ -62,7 +62,7 @@ dependencies {
     api("io.insert-koin:koin-core:3.5.6")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.0")
     implementation("org.bstats:bstats-bukkit:3.0.2")
-    implementation("com.github.patheloper.pathetic:pathetic-mapping:2.4.5")
+    implementation("com.github.MadMartian:hydrazine-path-finding:1.8.1")
 
     val adventureVersion = "4.17.0"
     compileOnlyApi("net.kyori:adventure-api:$adventureVersion")
