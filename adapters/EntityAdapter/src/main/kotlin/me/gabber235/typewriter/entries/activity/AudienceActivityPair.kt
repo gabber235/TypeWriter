@@ -13,7 +13,6 @@ import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
 import me.gabber235.typewriter.entry.entries.IndividualEntityActivityEntry
 import me.gabber235.typewriter.entry.inAudience
-import java.util.*
 
 @Entry(
     "audience_activity",

@@ -395,6 +395,24 @@ fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, contin
     )
 }
 
+
+/**
+ * If the player is not in a dialogue, trigger all triggers for all entries in a list.
+ * If the player is in a dialogue, only trigger the [continueTrigger].
+ *
+ * This can be useful for actions that should not be triggered again if the player is already in a dialogue.
+ * Like clicking on a npc to start a conversation. As we don't want to start the conversation again
+ * if the player is already in a dialogue.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: Sequence<SomeEntry> = ...
+ * entries.startDialogueWithOrTrigger(player, continueTrigger)
+ * ```
+ */
+fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrTrigger(player: Player, continueTrigger: EventTrigger) =
+    toList().startDialogueWithOrTrigger(player, continueTrigger)
+
 /**
  * If the player is not in a dialogue, trigger all triggers for all entries in a list.
  * If the player is in a dialogue, it will trigger the next dialogue.
