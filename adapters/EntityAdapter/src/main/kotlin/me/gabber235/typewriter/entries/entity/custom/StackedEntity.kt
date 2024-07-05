@@ -30,11 +30,11 @@ import org.bukkit.entity.Player
 class StackedEntityDefinition(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
-    override val sound: Sound = Sound.EMPTY,
     @Help("The entities that will be stacked on top of each other. First entity will be the bottom entity.")
     val definitions: List<Ref<EntityDefinitionEntry>> = emptyList(),
 ) : EntityDefinitionEntry {
+    override val displayName: String get() = definitions.firstOrNull()?.get()?.displayName ?: ""
+    override val sound: Sound get() = definitions.firstOrNull()?.get()?.sound ?: Sound.EMPTY
     override val data: List<Ref<EntityData<*>>>
         get() = definitions.mapNotNull { it.get() }.flatMap { it.data }
 
