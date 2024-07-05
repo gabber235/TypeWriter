@@ -20,11 +20,16 @@ fun CustomCommandEntry.Companion.refreshAndRegisterAll(newEntries: List<CustomCo
 }
 
 fun CustomCommandEntry.register() {
+    if (command.isBlank()) {
+        logger.warning("Command for $name is blank. Skipping registration.")
+        return
+    }
     CommandTree(command).apply { builder() }.register(plugin)
 
     logger.info("Registered command $command for $name (${id})")
 }
 
 fun CustomCommandEntry.unregister() {
+    if (command.isBlank()) return
     CommandAPI.unregister(command)
 }
