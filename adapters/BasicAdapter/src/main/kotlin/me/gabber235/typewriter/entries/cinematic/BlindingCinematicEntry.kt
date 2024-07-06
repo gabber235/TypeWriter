@@ -47,7 +47,7 @@ data class BlindingSegment(
 
 class BlindingCinematicAction(
     private val player: Player,
-    private val entry: BlindingCinematicEntry,
+    entry: BlindingCinematicEntry,
 ) : SimpleCinematicAction<BlindingSegment>() {
     override val segments: List<BlindingSegment> = entry.segments
 
