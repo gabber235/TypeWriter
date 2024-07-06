@@ -21,6 +21,7 @@ object Colors {
     const val RED = "#D32F2F"
     const val GREEN = "#4CAF50"
     const val MEDIUM_SEA_GREEN = "#3CB371"
+    const val PALATINATE_BLUE = "#3366CC"
     const val BLUE = "#1E88E5"
     const val MYRTLE_GREEN = "#297373"
     const val YELLOW = "#FBB612"

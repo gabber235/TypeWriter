@@ -19,7 +19,7 @@ import org.bukkit.entity.Player
 import java.time.Duration
 import java.util.*
 
-@Entry("in_dialogue_activity", "An in dialogue activity", Colors.BLUE, "bi:chat-square-quote-fill")
+@Entry("in_dialogue_activity", "An in dialogue activity", Colors.PALATINATE_BLUE, "bi:chat-square-quote-fill")
 /**
  * The `InDialogueActivityEntry` is an activity that activates child activities when a player is in a dialogue with the NPC.
  *

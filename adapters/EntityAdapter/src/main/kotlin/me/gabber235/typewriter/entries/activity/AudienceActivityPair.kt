@@ -17,7 +17,7 @@ import me.gabber235.typewriter.entry.inAudience
 @Entry(
     "audience_activity",
     "Select activity based on the audience a player is in",
-    Colors.BLUE,
+    Colors.PALATINATE_BLUE,
     "fluent:people-audience-32-filled"
 )
 /**

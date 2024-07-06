@@ -17,7 +17,7 @@ import java.util.*
 @Entry(
     "timed_activity",
     "Allows child activities for a limited amount of time",
-    Colors.BLUE,
+    Colors.PALATINATE_BLUE,
     "fa6-solid:hourglass"
 )
 /**

@@ -11,7 +11,7 @@ import me.gabber235.typewriter.entry.entries.GenericEntityActivityEntry
 import java.time.Duration
 import java.util.*
 
-@Entry("player_close_by_activity", "A player close by activity", Colors.BLUE, "material-symbols-light:frame-person")
+@Entry("player_close_by_activity", "A player close by activity", Colors.PALATINATE_BLUE, "material-symbols-light:frame-person")
 /**
  * The `PlayerCloseByActivityEntry` is an activity that activates child activities when a viewer is close by.
  *

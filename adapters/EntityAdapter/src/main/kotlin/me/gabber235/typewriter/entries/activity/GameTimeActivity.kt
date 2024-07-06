@@ -14,7 +14,7 @@ import me.gabber235.typewriter.entry.entries.GenericEntityActivityEntry
 import me.gabber235.typewriter.utils.logErrorIfNull
 import java.util.*
 
-@Entry("game_time_activity", "A game time activity", Colors.BLUE, "bi:clock-fill")
+@Entry("game_time_activity", "A game time activity", Colors.PALATINATE_BLUE, "bi:clock-fill")
 /**
  * The `GameTimeActivityEntry` is an activity that activates child activities at specific times in the game.
  *

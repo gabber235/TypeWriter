@@ -2,6 +2,7 @@ package me.gabber235.typewriter.entries.audience
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.emptyRef
@@ -25,7 +26,9 @@ import org.bukkit.entity.Player
 class TriggerAudienceEntry(
     override val id: String = "",
     override val name: String = "",
+    @Help("The sequence to trigger when the player enters the audience.")
     val onEnter: Ref<TriggerableEntry> = emptyRef(),
+    @Help("The sequence to trigger when the player exits the audience.")
     val onExit: Ref<TriggerableEntry> = emptyRef(),
 ) : AudienceEntry {
     override fun display(): AudienceDisplay = TriggerAudienceDisplay(onEnter, onExit)
