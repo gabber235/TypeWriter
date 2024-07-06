@@ -50,9 +50,11 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
     }
 
     private var speakerDisplayName = ""
+    private var text = ""
     override fun init() {
         super.init()
-        speakerDisplayName = entry.speakerDisplayName
+        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
+        text = entry.text.parsePlaceholders(player)
 
         confirmationKey.listen(this, player.uniqueId) {
             state = MessengerState.FINISHED
@@ -62,8 +64,8 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
     override fun tick(playTime: Duration) {
         if (state != MessengerState.RUNNING) return
         player.sendSpokenDialogue(
-            entry.text.parsePlaceholders(player),
-            speakerDisplayName.parsePlaceholders(player),
+            text,
+            speakerDisplayName,
             entry.duration,
             playTime,
             triggers.isEmpty()
