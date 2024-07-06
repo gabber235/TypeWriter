@@ -145,6 +145,12 @@ fun Player.inAudience(ref: Ref<out AudienceEntry>): Boolean {
     return manager[ref]?.let { return it.contains(this) } ?: false
 }
 
+fun Player.audienceState(entry: AudienceEntry): AudienceDisplayState = audienceState(entry.ref())
+fun Player.audienceState(ref: Ref<out AudienceEntry>): AudienceDisplayState {
+    val manager = get<AudienceManager>(AudienceManager::class.java)
+    return manager[ref]?.displayState(this) ?: AudienceDisplayState.NOT_CONSIDERED
+}
+
 val Ref<out AudienceEntry>.isActive: Boolean
     get() {
         val manager = get<AudienceManager>(AudienceManager::class.java)

@@ -55,8 +55,9 @@ class CronAudienceDisplay(
 
     override fun tick() {
         val newTime = LocalDateTime.now()
-        // If the minute has changed, we need to update the last update time
-        if (newTime.minute == lastUpdate.minute) return
+        // If the minute/second has changed, we need to update the last update time
+        if (cron.withSeconds && newTime.second == lastUpdate.second) return
+        if (!cron.withSeconds && newTime.minute == lastUpdate.minute) return
         lastUpdate = newTime
 
         val active = active

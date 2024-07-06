@@ -330,6 +330,40 @@ private fun CommandTree.manifestCommands() = literalArgument("manifest") {
             }
         }
     }
+
+    literalArgument("page") {
+        argument(pageNames("page", PageType.MANIFEST)) {
+            optionalTarget {
+                anyExecutor { sender, args ->
+                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                    val pageName = args["page"] as String
+                    val audienceEntries =
+                        Query.findWhereFromPage<AudienceEntry>(pageName) { true }.sortedBy { it.name }.toList()
+
+                    if (audienceEntries.isEmpty()) {
+                        sender.msg("No audience entries found on page $pageName")
+                        return@anyExecutor
+                    }
+
+                    val entryStates = audienceEntries.groupBy { target.audienceState(it) }
+
+                    sender.sendMini("\n\n")
+                    sender.msg("These are the audience entries on page <i>$pageName</i>:")
+                    for (state in AudienceDisplayState.entries) {
+                        val entries = entryStates[state] ?: continue
+                        val color = state.color
+                        sender.sendMini("\n<b><$color>${state.displayName}</$color></b>")
+
+                        for (entry in entries) {
+                            sender.sendMini(
+                                "<hover:show_text:'<gray>${entry.id}'><click:copy_to_clipboard:${entry.id}><gray> - </gray><$color>${entry.formattedName}</$color></click></hover>"
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun CommandArguments.targetOrSelfPlayer(commandSender: CommandSender): Player? {

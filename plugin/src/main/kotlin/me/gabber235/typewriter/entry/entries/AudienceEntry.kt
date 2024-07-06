@@ -4,7 +4,10 @@ import lirand.api.extensions.events.unregister
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.*
+import me.gabber235.typewriter.entry.AudienceManager
+import me.gabber235.typewriter.entry.ManifestEntry
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.priority
 import me.gabber235.typewriter.plugin
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
@@ -28,6 +31,7 @@ interface AudienceEntry : ManifestEntry {
     fun display(): AudienceDisplay
 }
 
+
 @Tags("audience_filter")
 interface AudienceFilterEntry : AudienceEntry {
     val children: List<Ref<out AudienceEntry>>
@@ -43,11 +47,28 @@ interface TickableDisplay {
     fun tick()
 }
 
+enum class AudienceDisplayState(val displayName: String, val color: String) {
+    // When the player is in the audience
+    IN_AUDIENCE("In Audience", "green"),
+
+    // When the player is not passing the audience filter
+    BLOCKED("Blocked", "red"),
+
+    // When all the parents block the player
+    NOT_CONSIDERED("Not Considered", "gray"),
+    ;
+}
+
 abstract class AudienceDisplay : Listener {
     var isActive = false
         private set
     private val playerIds: ConcurrentSkipListSet<UUID> = ConcurrentSkipListSet()
     open val players: List<Player> get() = server.onlinePlayers.filter { it.uniqueId in playerIds }
+
+    open fun displayState(player: Player): AudienceDisplayState {
+        if (player.uniqueId in playerIds) return AudienceDisplayState.IN_AUDIENCE
+        return AudienceDisplayState.NOT_CONSIDERED
+    }
 
     open fun initialize() {
         if (isActive) return
@@ -95,6 +116,12 @@ abstract class AudienceFilter(
     override val players: List<Player> get() = server.onlinePlayers.filter { it.uniqueId in filteredPlayers }
 
     protected val consideredPlayers: List<Player> get() = super.players
+
+    override fun displayState(player: Player): AudienceDisplayState {
+        if (player in this) return AudienceDisplayState.IN_AUDIENCE
+        if (canConsider(player)) return AudienceDisplayState.BLOCKED
+        return AudienceDisplayState.NOT_CONSIDERED
+    }
 
     abstract fun filter(player: Player): Boolean
 
@@ -146,7 +173,7 @@ class PassThroughFilter(
  * Filters and displays at most one display entry type to the player.
  * This is useful for displaying a single sidebar, or a tab list header/footer.
  */
-abstract class SingleFilter<E: AudienceFilterEntry, D : PlayerSingleDisplay<E>>(
+abstract class SingleFilter<E : AudienceFilterEntry, D : PlayerSingleDisplay<E>>(
     internal val ref: Ref<E>,
     private val createDisplay: (Player) -> D
 ) : AudienceFilter(ref), TickableDisplay {
@@ -198,6 +225,7 @@ abstract class PlayerSingleDisplay<E : AudienceFilterEntry>(
             player.updateFilter(true)
         }
     }
+
     open fun tick() {}
     open fun tearDown() {
         val filter = audienceManager[ref] as? AudienceFilter? ?: return
@@ -205,6 +233,7 @@ abstract class PlayerSingleDisplay<E : AudienceFilterEntry>(
             player.updateFilter(false)
         }
     }
+
     open fun dispose() {
         tearDown()
     }
