@@ -13,7 +13,6 @@ import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.block.data.Ageable
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import java.util.*
@@ -37,8 +36,6 @@ class BlockBreakEventEntry(
     val location: Optional<Location> = Optional.empty(),
     @Help("The item the player must be holding when the block is broken.")
     val itemInHand: Item = Item.Empty,
-    @Help("Check if a block that can age (like crops, carrots, potatoes, cocoas...) has fully grown.")
-    val ageableHasGrown : Optional<Boolean> = Optional.empty(),
 ) : EventEntry
 
 private fun hasItemInHand(player: Player, item: Item): Boolean {
@@ -56,11 +53,6 @@ fun onBlockBreak(event: BlockBreakEvent, query: Query<BlockBreakEventEntry>) {
 
         // Check if the player is holding the correct item
         if (!hasItemInHand(event.player, entry.itemInHand)) return@findWhere false
-
-        // Check if the block has fully grown
-        if (!entry.ageableHasGrown.map {
-                it == event.block.blockData is Ageable && (event.block.blockData as Ageable).age >= (event.block.blockData as Ageable).maximumAge
-        }.orElse(true)) return@findWhere false
 
         // Check if block type is correct
         entry.block.map { it == event.block.type }.orElse(true)
