@@ -11,6 +11,7 @@ import me.gabber235.typewriter.entry.entries.TickableDisplay
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.utils.CronExpression
 import org.bukkit.entity.Player
+import sun.jvm.hotspot.oops.CellTypeState.ref
 import java.time.LocalDateTime
 
 @Entry(
