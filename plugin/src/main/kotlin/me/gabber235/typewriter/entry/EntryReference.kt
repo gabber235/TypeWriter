@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entry
 
+import me.gabber235.typewriter.utils.reloadable
 import org.koin.java.KoinJavaComponent
 import kotlin.reflect.KClass
 
@@ -19,10 +20,12 @@ class Ref<E : Entry>(
     val isSet: Boolean
         get() = id.isNotBlank()
 
-    fun get(): E? {
-        if (!isSet) return null
-        return Query.findById(klass, id)
+    val entry: E? by lazy(LazyThreadSafetyMode.NONE) {
+        if (!isSet) return@lazy null
+        Query.findById(klass, id)
     }
+
+    fun get(): E? = entry
 
 
     override fun toString(): String {

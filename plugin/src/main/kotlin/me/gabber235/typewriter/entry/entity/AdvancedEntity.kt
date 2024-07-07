@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entry.entity
 
 import me.gabber235.typewriter.adapters.Tags
+import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.descendants
 import me.gabber235.typewriter.entry.entries.*
@@ -20,6 +21,26 @@ interface SharedAdvancedEntityInstance : EntityInstanceEntry {
             activityCreator,
             ::SharedActivityEntityDisplay,
         )
+    }
+}
+
+@Tags("group_entity_instance")
+interface GroupAdvancedEntityInstance : EntityInstanceEntry {
+    val activity: Ref<out SharedEntityActivityEntry>
+
+    @Help("The group that this entity instance belongs to.")
+    val group: Ref<out GroupEntry>
+
+    override fun display(): AudienceFilter {
+        val activityCreator = this.activity.get() ?: IdleActivity
+
+        val group = this.group.get() ?: throw IllegalStateException("No group found for the group entity instance.")
+
+        return toAdvancedEntityDisplay(
+            activityCreator,
+        ) { ref, definition, activityCreator, suppliers, spawnLocation ->
+            GroupActivityEntityDisplay(ref, definition, activityCreator, suppliers, spawnLocation, group)
+        }
     }
 }
 
