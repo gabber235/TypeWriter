@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entries.entity.minecraft
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entries.data.minecraft.living.CollarColorProperty
@@ -24,6 +25,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 
 @Entry("cat_definition", "A cat entity", Colors.ORANGE, "ph:cat-fill")
+@Tags("cat_definition")
 /**
  * The `CatDefinition` class is an entry that represents a cat entity.
  *

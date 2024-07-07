@@ -8,6 +8,9 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPl
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import lirand.api.extensions.events.SimpleListener
+import lirand.api.extensions.events.listen
+import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
@@ -35,6 +38,11 @@ import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityTargetEvent
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.potion.PotionEffect
@@ -118,6 +126,7 @@ class CameraCinematicAction(
 
     private var originalState: PlayerState? = null
     private var interceptor: InterceptionBundle? = null
+    private var listener: Listener? = null
 
     override suspend fun setup() {
         action = if (player.isFloodgate) {
@@ -180,6 +189,23 @@ class CameraCinematicAction(
             }
         }
 
+        listener = SimpleListener()
+        plugin.listen<EntityDamageEvent>(listener = listener!!) {
+            if (it.entity.uniqueId != player?.uniqueId) return@listen
+            it.isCancelled = true
+        }
+        plugin.listen<EntityDamageByEntityEvent>(listener = listener!!) {
+            if (it.entity.uniqueId != player?.uniqueId) return@listen
+            it.isCancelled = true
+        }
+        plugin.listen<EntityTargetEvent>(listener = listener!!) {
+            if (it.target?.uniqueId != player?.uniqueId) return@listen
+            it.isCancelled = true
+        }
+        plugin.listen<EntityTargetLivingEntityEvent>(listener = listener!!) {
+            if (it.target?.uniqueId != player?.uniqueId) return@listen
+            it.isCancelled = true
+        }
         interceptor = this.interceptPackets {
             !PacketType.Play.Client.CLICK_WINDOW
             !PacketType.Play.Client.CLICK_WINDOW_BUTTON
@@ -212,6 +238,8 @@ class CameraCinematicAction(
     }
 
     private suspend fun Player.teardown() {
+        listener?.unregister()
+        listener = null
         interceptor?.cancel()
         interceptor = null
         originalState?.let {
