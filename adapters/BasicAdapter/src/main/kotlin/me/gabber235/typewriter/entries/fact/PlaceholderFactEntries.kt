@@ -92,8 +92,9 @@ class ValuePlaceholderFactEntry(
      *  SPECTATOR: 3
      * ```
      * If the placeholder returns `CREATIVE`, the fact value will be `1`.
-     *
      * If no value matches, the fact value will be `0`.
+     *
+     * Values can have placeholders inside them.
      */
     private val values: Map<String, Int> = mapOf()
 ) : ReadableFactEntry {
@@ -103,7 +104,7 @@ class ValuePlaceholderFactEntry(
             return FactData(0)
         }
         val parsed = placeholder.parsePlaceholders(player)
-        val value = values[parsed] ?: values.entries.firstOrNull { it.key.toRegex().matches(parsed) }?.value ?: 0
+        val value = values[parsed] ?: values.entries.firstOrNull { it.key.parsePlaceholders(player).toRegex().matches(parsed) }?.value ?: 0
         return FactData(value)
     }
 }
