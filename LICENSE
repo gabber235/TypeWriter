@@ -1,8 +1,8 @@
-# TYPEWRITER SOFTWARE LICENSE AGREEMENT
+TYPEWRITER SOFTWARE LICENSE AGREEMENT
 
 Version 1.0, 10 July 2024
 
-## 1. DEFINITIONS
+1. DEFINITIONS
 
 For the purposes of this License, the following terms shall have the meanings set forth below:
 
@@ -19,7 +19,7 @@ For the purposes of this License, the following terms shall have the meanings se
 
 1.4 "Derivative Works" shall mean any work, whether in Source Code or other form, that is based on (or derived from) the Software and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship.
 
-## 2. GRANT OF RIGHTS
+2. GRANT OF RIGHTS
 
 2.1 Subject to the terms and conditions of this License, the copyright owner hereby grants to the Licensee a worldwide, non-exclusive, non-transferable, non-sublicensable license to use the Software.
 
@@ -27,7 +27,7 @@ For the purposes of this License, the following terms shall have the meanings se
 
 2.3 The Licensee may view and examine the Source Code of the Software for the purposes of studying the Software's functioning, identifying errors, and developing interoperable software. However, this right does not extend to modifying the Source Code except as expressly permitted in Section 4 of this License.
 
-## 3. RESTRICTIONS
+3. RESTRICTIONS
 
 3.1 The Licensee shall not distribute, sublicense, lease, rent, loan, sell, or otherwise make the Software available to any third party, whether for free or for a fee, without the express written consent of the copyright owner.
 
@@ -37,7 +37,7 @@ For the purposes of this License, the following terms shall have the meanings se
 
 3.4 The Licensee shall not remove, alter, cover, or obscure any copyright, trademark, patent, or other proprietary rights notices or labels contained in or on the Software. This includes, but is not limited to, any notices or labels in the user interface, Source Code, or documentation.
 
-## 4. CONTRIBUTIONS
+4. CONTRIBUTIONS
 
 4.1 The Licensee may modify the Software solely for the purpose of contributing directly to the Software as maintained by the copyright owner. Such modifications shall be made in accordance with any contribution guidelines provided by the copyright owner.
 
@@ -45,13 +45,13 @@ For the purposes of this License, the following terms shall have the meanings se
 
 4.3 The Licensee represents and warrants that they have the legal right and authority to make any contributions under these terms and that such contributions do not infringe the intellectual property rights of any third party.
 
-## 5. FEES
+5. FEES
 
 5.1 Certain functionalities of the Software may require payment of fees as determined by the copyright owner. The copyright owner reserves the right to change the fee structure at any time upon reasonable notice to the Licensee.
 
 5.2 The Licensee agrees not to attempt to circumvent, remove, alter, deactivate, degrade, or otherwise thwart any fee collection mechanisms implemented within the Software. Any such attempt shall be considered a material breach of this License.
 
-## 6. TERMINATION
+6. TERMINATION
 
 6.1 This License and the rights granted hereunder will terminate automatically and without notice upon any breach by the Licensee of the terms of this License. Upon termination, the Licensee must cease all use of the Software and destroy all copies of the Software in their possession or control.
 
@@ -59,19 +59,19 @@ For the purposes of this License, the following terms shall have the meanings se
 
 6.3 Sections 1, 7, 8, and 9 of this License shall survive any termination or expiration of this License.
 
-## 7. DISCLAIMER OF WARRANTY
+7. DISCLAIMER OF WARRANTY
 
 7.1 THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NONINFRINGEMENT. THE COPYRIGHT OWNER MAKES NO WARRANTY THAT (I) THE SOFTWARE WILL MEET THE LICENSEE'S REQUIREMENTS, (II) THE SOFTWARE WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE, (III) THE RESULTS THAT MAY BE OBTAINED FROM THE USE OF THE SOFTWARE WILL BE ACCURATE OR RELIABLE, OR (IV) ANY ERRORS IN THE SOFTWARE WILL BE CORRECTED.
 
 7.2 THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH THE LICENSEE. SHOULD THE SOFTWARE PROVE DEFECTIVE, THE LICENSEE ASSUMES THE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION.
 
-## 8. LIMITATION OF LIABILITY
+8. LIMITATION OF LIABILITY
 
 8.1 IN NO EVENT, UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SHALL THE COPYRIGHT OWNER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE SOFTWARE AS PERMITTED ABOVE, BE LIABLE TO THE LICENSEE FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY THE LICENSEE OR THIRD PARTIES OR A FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER PROGRAMS OR HARDWARE), EVEN IF SUCH PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 8.2 THE COPYRIGHT OWNER'S ENTIRE LIABILITY AND THE LICENSEE'S EXCLUSIVE REMEDY UNDER THIS LICENSE SHALL NOT EXCEED THE PRICE PAID FOR THE SOFTWARE, IF ANY.
 
-## 9. MISCELLANEOUS
+9. MISCELLANEOUS
 
 9.1 This License represents the complete agreement concerning the subject matter hereof and supersedes all prior agreements and representations between the parties. If any provision of this License is held to be unenforceable, such provision shall be reformed only to the extent necessary to make it enforceable.
 
