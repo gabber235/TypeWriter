@@ -4,7 +4,6 @@
 
 [![Discord](https://img.shields.io/discord/1054708062520360960?label=discord&logo=discord&logoColor=white)](https://discord.gg/HtbKyuDDBw)
 [![Release](https://img.shields.io/github/v/release/gabber235/Typewriter?include_prereleases&logo=github)](https://github.com/gabber235/TypeWriter/releases)
-[![License](https://img.shields.io/github/license/gabber235/Typewriter?logo=github)](LICENSE)
 
 Typewriter is a plugin for **Paper** Minecraft servers that allows for custom player interactions such as Quests,
 NPC chat, Create branching story with ease, Creating Cinematic with camera paths, and more. It is easily configurable using the web panel specifically
@@ -69,7 +68,10 @@ happy to include it in our list of ready adapters. Help us make Typewriter the b
 
 
 ## License
-GNU General Public License v3.0
+Typewriter is licensed under its own [LICENSE](LICENSE).
+
+The basic of it is that you can use the software for free, but you can't sell/redistribute/modify it.
+The only exception is if you want to contribute to the project and make it better.
 
 See [LICENSE](LICENSE) to see the full text.
 
