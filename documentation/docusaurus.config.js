@@ -35,7 +35,7 @@ const config = {
     },
     markdown: {
         mermaid: true,
-      },  themes: ['@docusaurus/theme-mermaid'],
+    }, themes: ['@docusaurus/theme-mermaid'],
 
     presets: [
         [
@@ -49,10 +49,10 @@ const config = {
                     routeBasePath: '/',
                     lastVersion: '0.4.1',
                     versions: {
-                      current: {
-                        label: 'Beta⚠️',
-                        path: 'beta',
-                      },
+                        current: {
+                            label: 'Beta⚠️',
+                            path: 'beta',
+                        },
                     },
                 },
                 blog: {
@@ -71,11 +71,11 @@ const config = {
         /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
             mermaid: {
-                theme: {light: 'base', dark: 'base'},
+                theme: { light: 'base', dark: 'base' },
                 options: {
                     width: 150,
-                  },
-              },
+                },
+            },
             // Replace with your project's social card
             image: 'img/typewriter.png',
             navbar: {
@@ -129,7 +129,7 @@ const config = {
                                 label: 'Clickup',
                                 href: 'https://sharing.clickup.com/9015308602/l/h/6-901502296591-1/e32ea9f33a22632',
                             }
-                            
+
                         ],
                     },
                     {
@@ -182,7 +182,8 @@ const config = {
             }
         }),
     plugins: [
-        "rive-loader"
+        "rive-loader",
+        require.resolve("./plugins/tailwind/tailwind-config.js"),
     ]
 };
 

@@ -1,3 +1,5 @@
+import EntryDisplay from "@site/src/components/EntryDisplay";
+
 # Questing
 
 Any interactive storytelling game is going to have quests. 
@@ -11,4 +13,12 @@ They are not required to make interactive stories, but they can be a way to guid
 To add quests to your story, we first need to have a story to add quests to.
 For this guide will make the following quest:
 
-1. The player finds a locked door and needs to find a key to open it.
+1. The player finds a chasm where the wind is to strong to walk across the bridge.
+2. The player needs to find a way to cross the chasm.
+3. The player finds magnet boots close by.
+4. When the player is wearing the magnet boots, the player can walk across the chasm.
+
+<EntryDisplay pages={[
+    require("./assets/index/quest_manifest.json"),
+    require("./assets/index/quest_sequence.json"),
+]} />
