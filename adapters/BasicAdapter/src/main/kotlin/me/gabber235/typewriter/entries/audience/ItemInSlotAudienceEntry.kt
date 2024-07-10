@@ -14,7 +14,9 @@ import me.gabber235.typewriter.utils.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.inventory.*
+import org.bukkit.event.inventory.InventoryAction.*
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
 @Entry(
     "item_in_slot_audience",
@@ -52,7 +54,27 @@ class ItemInSlotAudienceFilter(
     }
 
     @EventHandler
-    fun onInventoryClickEvent(event: InventoryClickEvent) = onInventoryEvent(event)
+    fun onInventoryClickEvent(event: InventoryClickEvent) {
+        val player = event.whoClicked as? Player ?: return
+        if (event.slot != slot) return
+        if (event.clickedInventory != player.inventory) return
+        println("${event.action}, Current item: ${event.currentItem}, Cursor: ${event.cursor}")
+        when (event.action) {
+            PICKUP_ALL, PICKUP_HALF, PICKUP_SOME, PICKUP_ONE, SWAP_WITH_CURSOR -> {
+                val itemInSlot = event.currentItem ?: return
+                if (!item.isSameAs(player, itemInSlot)) return
+                player.updateFilter(false)
+            }
+
+            PLACE_ALL, PLACE_SOME, PLACE_ONE -> {
+                val itemInCursor = event.cursor
+                if (!item.isSameAs(player, itemInCursor)) return
+                player.updateFilter(true)
+            }
+
+            else -> return
+        }
+    }
 
     @EventHandler
     fun onInventoryDragEvent(event: InventoryDragEvent) = onInventoryEvent(event)
@@ -62,6 +84,9 @@ class ItemInSlotAudienceFilter(
 
     @EventHandler
     fun onInventoryCloseEvent(event: InventoryCloseEvent) = onInventoryEvent(event)
+
+    @EventHandler
+    fun onSwapHandItems(event: PlayerSwapHandItemsEvent) = event.player.refresh()
 
     @EventHandler
     fun onInventoryEvent(event: InventoryEvent) {
