@@ -79,7 +79,7 @@ class PageSelectorEditor extends HookConsumerWidget {
                     onTap: () {
                       ref
                           .read(inspectingEntryDefinitionProvider)
-                          ?.updateField(ref.passing, path, null);
+                          ?.updateField(ref.passing, path, "");
                     },
                   ),
                 ],
