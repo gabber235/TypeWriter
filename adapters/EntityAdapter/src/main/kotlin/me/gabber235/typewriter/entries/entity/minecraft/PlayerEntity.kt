@@ -21,6 +21,7 @@ import me.gabber235.typewriter.entry.entries.SharedEntityActivityEntry
 import me.gabber235.typewriter.extensions.packetevents.meta
 import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
 import me.gabber235.typewriter.utils.Sound
+import me.gabber235.typewriter.utils.stripped
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.types.PlayerMeta
 import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
@@ -49,7 +50,7 @@ class PlayerDefinition(
     @OnlyTags("generic_entity_data", "living_entity_data", "player_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
-    override fun create(player: Player): FakeEntity = PlayerEntity(player)
+    override fun create(player: Player): FakeEntity = PlayerEntity(player, displayName)
 }
 
 @Entry("player_instance", "An instance of a player entity", Colors.YELLOW, "material-symbols:account-box")
@@ -68,6 +69,7 @@ class PlayerInstance(
 
 class PlayerEntity(
     player: Player,
+    displayName: String,
 ) : FakeEntity(player) {
     private var sitEntity: WrapperEntity? = null
 
@@ -82,7 +84,7 @@ class PlayerEntity(
             entityId = EntityLib.getPlatform().entityIdProvider.provide(uuid, EntityTypes.PLAYER)
         } while (EntityLib.getApi<SpigotEntityLibAPI>().getEntity(entityId) != null)
 
-        entity = WrapperPlayer(UserProfile(uuid, entityId.toString()), entityId)
+        entity = WrapperPlayer(UserProfile(uuid, "TW_${displayName.stripped()}"), entityId)
 
         entity.isInTablist = false
         entity.meta<PlayerMeta> {

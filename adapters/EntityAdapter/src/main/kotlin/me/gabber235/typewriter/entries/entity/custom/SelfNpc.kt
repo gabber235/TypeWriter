@@ -42,7 +42,7 @@ class SelfNpcDefinition(
 class SelfNpc(
     player: Player,
 ) : FakeEntity(player) {
-    private val playerEntity = PlayerEntity(player)
+    private val playerEntity = PlayerEntity(player, player.name)
 
     init {
         setup()
