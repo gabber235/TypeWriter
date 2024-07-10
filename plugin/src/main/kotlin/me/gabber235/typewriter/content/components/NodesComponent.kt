@@ -14,10 +14,8 @@ import me.gabber235.typewriter.extensions.packetevents.toPacketItem
 import me.gabber235.typewriter.extensions.packetevents.toPacketLocation
 import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.distanceSqrt
-import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta
 import me.tofaa.entitylib.meta.other.InteractionMeta
-import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Location
@@ -107,9 +105,9 @@ class NodeDisplayBuilder {
 
 private class NodeDisplay {
     private val itemDisplay =
-        EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity>(EntityTypes.ITEM_DISPLAY)
+        WrapperEntity(EntityTypes.ITEM_DISPLAY)
     private val interaction =
-        EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity>(EntityTypes.INTERACTION)
+        WrapperEntity(EntityTypes.INTERACTION)
     private var onInteract: () -> Unit = {}
     val entityId: Int
         get() = interaction.entityId

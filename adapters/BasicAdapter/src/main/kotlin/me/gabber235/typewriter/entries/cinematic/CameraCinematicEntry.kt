@@ -29,10 +29,8 @@ import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
-import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta
 import me.tofaa.entitylib.meta.display.TextDisplayMeta
-import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -310,7 +308,7 @@ private class DisplayCameraAction(
     }
 
     private fun createEntity(): WrapperEntity {
-        return EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity>(EntityTypes.TEXT_DISPLAY)
+        return WrapperEntity(EntityTypes.TEXT_DISPLAY)
             .meta<TextDisplayMeta> {
                 positionRotationInterpolationDuration = BASE_INTERPOLATION
             }
@@ -434,7 +432,7 @@ class SimulatedCameraCinematicAction(
         super.startSegment(segment)
         entity?.despawn()
         entity?.remove()
-        entity = EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity?>(EntityTypes.ITEM_DISPLAY)
+        entity = WrapperEntity(EntityTypes.ITEM_DISPLAY)
             .meta<ItemDisplayMeta> {
                 positionRotationInterpolationDuration = 3
                 displayType = ItemDisplayMeta.DisplayType.HEAD

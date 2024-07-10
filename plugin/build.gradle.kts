@@ -25,12 +25,13 @@ version = project.findPropertyOr("version", versionFile.readText().trim())
 
 repositories {
     mavenCentral()
+    // Floodgate
+    maven("https://repo.opencollab.dev/maven-snapshots/")
     // PacketEvents, CommandAPI
+    maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.codemc.io/repository/maven-releases/")
     // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    // Floodgate
-    maven("https://repo.opencollab.dev/maven-snapshots/")
     // PaperMC
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
     // EntityLib
@@ -50,7 +51,7 @@ dependencies {
     }
     compileOnlyApi("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
 
-    api("com.github.Tofaa2.EntityLib:spigot:2.3.1-SNAPSHOT")
+    api("com.github.Tofaa2.EntityLib:spigot:2.4.5-SNAPSHOT")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.17.0")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.17.0")
     api("dev.jorel:commandapi-bukkit-shade:9.5.1")
@@ -72,7 +73,7 @@ dependencies {
     compileOnlyApi("net.kyori:adventure-text-serializer-gson:$adventureVersion")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.google.code.gson:gson:2.11.0")
-    compileOnlyApi("com.github.retrooper.packetevents:spigot:2.3.0")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.4.0")
     compileOnlyApi("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")

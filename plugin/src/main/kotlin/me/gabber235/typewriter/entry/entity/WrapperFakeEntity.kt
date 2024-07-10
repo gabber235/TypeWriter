@@ -2,8 +2,6 @@ package me.gabber235.typewriter.entry.entity
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType
 import me.gabber235.typewriter.entry.entries.EntityProperty
-import me.tofaa.entitylib.EntityLib
-import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.entity.Player
 
@@ -11,7 +9,7 @@ abstract class WrapperFakeEntity(
     type: EntityType,
     player: Player,
 ) : FakeEntity(player) {
-    protected val entity = EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity>(type)
+    protected val entity = WrapperEntity(type)
 
     override val entityId: Int
         get() = entity.entityId

@@ -82,8 +82,7 @@ class PlayerEntity(
             entityId = EntityLib.getPlatform().entityIdProvider.provide(uuid, EntityTypes.PLAYER)
         } while (EntityLib.getApi<SpigotEntityLibAPI>().getEntity(entityId) != null)
 
-        entity = EntityLib.getApi<SpigotEntityLibAPI>()
-            .createPlayer(UserProfile(uuid, entityId.toString()), entityId)
+        entity = WrapperPlayer(UserProfile(uuid, entityId.toString()), entityId)
 
         entity.isInTablist = false
         entity.meta<PlayerMeta> {
@@ -190,7 +189,7 @@ class PlayerEntity(
 
     private fun sit(location: LocationProperty? = null) {
         if (sitEntity != null) return
-        sitEntity = EntityLib.getApi<SpigotEntityLibAPI>().createEntity(EntityTypes.BLOCK_DISPLAY)
+        sitEntity = WrapperEntity(EntityTypes.BLOCK_DISPLAY)
         val loc = location ?: property<LocationProperty>() ?: return
         sitEntity?.spawn(loc.toPacketLocation())
         sitEntity?.addViewer(player.uniqueId)
