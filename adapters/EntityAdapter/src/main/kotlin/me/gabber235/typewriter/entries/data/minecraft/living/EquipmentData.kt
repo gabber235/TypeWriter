@@ -10,6 +10,7 @@ import me.gabber235.typewriter.extensions.packetevents.toPacketItem
 import me.gabber235.typewriter.utils.Item
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EntityEquipment
 import java.util.*
@@ -74,6 +75,10 @@ private class EquipmentCollector(
             .flatMap { it.data.asSequence() }
             .filter { (slot, _) -> !data.containsKey(slot) }
             .forEach { (slot, item) -> data[slot] = item }
+
+        // Reset empty slots
+        EquipmentSlot.entries.filter { !data.containsKey(it) && EquipmentSlot.BODY != it }.forEach { data[it] = ItemStack.EMPTY }
+
         return EquipmentProperty(data)
     }
 }
