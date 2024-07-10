@@ -55,9 +55,13 @@ Fuzzy<Page> _fuzzyPages(_FuzzyPagesRef ref) {
       keys: [
         WeightedKey(
           name: "name",
-          weight: 0.8,
+          weight: 0.6,
           getter: (page) => page.pageName.formatted,
         ),
+        WeightedKey(
+            name: "chapter",
+            weight: 0.4,
+            getter: (page) => page.chapter.formatted,),
         WeightedKey(
           name: "type",
           weight: 0.2,
