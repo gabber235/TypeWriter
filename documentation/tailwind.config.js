@@ -21,7 +21,9 @@ module.exports = {
             screens: {
                 lg: "997px",
             },
-            colors: {},
+            colors: {
+                primary: 'var(--ifm-color-primary)',
+            },
         },
     },
     plugins: [],

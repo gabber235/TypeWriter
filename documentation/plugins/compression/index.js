@@ -1,21 +1,8 @@
-import { resolve } from "path";
 import { Joi } from "@docusaurus/utils-validation";
 
 export default function pluginMediaOptimizer(context, options) {
     return {
         name: "compression",
-
-        // getThemePath() {
-        //     return resolve(__dirname, "./theme");
-        // },
-        //
-        // getTypeScriptThemePath() {
-        //     return resolve(__dirname, "./theme");
-        // },
-        //
-        // getDefaultCodeTranslationMessages() {
-        //     return {};
-        // },
 
         configureWebpack(_config, isServer) {
             const { disableInDev, ...loaderOptions } = options;
@@ -41,30 +28,13 @@ export default function pluginMediaOptimizer(context, options) {
                                         name: "assets/optimized-img/[name].[hash:hex:7].[width].[ext]",
                                         sizes: [320, 640, 960, 1280, 1600, 1920],
                                         format: "avif",
+                                        progressive: true,
                                         quality: 60,
                                         ...loaderOptions.image,
                                     },
                                 },
                             ],
                         },
-                        // {
-                        //     test: /\.(mp4|webm|mkv)$/i,
-                        //     use: [
-                        //         {
-                        //             loader: require.resolve("file-loader"),
-                        //             options: {
-                        //                 name: "assets/videos/[name].[ext]",
-                        //             },
-                        //         },
-                        //         {
-                        //             loader: require.resolve("ffmpeg-loader"),
-                        //             options: {
-                        //                 formats: ["webm"],
-                        //                 ...loaderOptions.video,
-                        //             },
-                        //         },
-                        //     ],
-                        // },
                     ],
                 },
             };
@@ -74,7 +44,7 @@ export default function pluginMediaOptimizer(context, options) {
 
 export function validateOptions({ validate, options }) {
     const pluginOptionsSchema = Joi.object({
-        disableInDev: Joi.boolean().default(false),
+        disableInDev: Joi.boolean().default(true),
         image: Joi.object().default({}),
         video: Joi.object().default({}),
     });

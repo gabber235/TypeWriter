@@ -180,7 +180,7 @@ function ObjectFieldInspector({ fieldInfo, path, value, pages, ignoreFields = []
 function CustomFieldInspector({ fieldInfo, path, value, pages }: { fieldInfo: CustomField, path: string, value: any, pages: Page[] }) {
     const editor = fieldInfo.editor;
     if (editor === "entryReference") {
-        return <EntryReferenceField value={value} pages={pages} />;
+        return <EntryReferenceField entryId={value} pages={pages} />;
     }
     if (editor === "item") {
         return <ItemField {...value} />;
@@ -191,19 +191,31 @@ function CustomFieldInspector({ fieldInfo, path, value, pages }: { fieldInfo: Cu
     if (editor === "duration") {
         return <DurationField duration={value} />;
     }
+    if (editor === "soundId") {
+        return <SoundIdField {...value} />;
+    }
+    if (editor === "soundSource") {
+        return <SoundSourceField {...value} pages={pages} />;
+    }
+    if (editor === "optional") {
+        return <OptionalField value={value} field={fieldInfo} path={path} pages={pages} />;
+    }
     return <div className="text-red-500 dark:text-red-400 text-xs">
         Unknown custom editor: {editor}
     </div>;
 }
 
-function EntryReferenceField({ value, pages }: { value: any, pages: Page[] }) {
-    const entry = findEntry(pages, value);
+function EntryReferenceField({ entryId, pages }: { entryId: any, pages: Page[] }) {
+    if (!entryId) {
+        return <SimpleValueField value="No Entry Referenced" icon="material-symbols:link-off" />;
+    }
+    const entry = findEntry(pages, entryId);
     if (entry == null) return <div className="text-red-500 dark:text-red-400 text-xs">
-        Could not find entry with id {value}
+        Could not find entry with id {entryId}
     </div>;
     const blueprint = blueprints.get(entry.type);
     if (blueprint == null) return <div className="text-red-500 dark:text-red-400 text-xs">
-        Could not find blueprint for entry with id {value}
+        Could not find blueprint for entry with id {entryId}
     </div>;
 
     return <div className="text-white text-xs rounded-md p-2" style={{ backgroundColor: blueprint.color }}>
@@ -268,7 +280,7 @@ function ItemField(props: ItemFieldProps) {
 
 interface LocationFieldProps {
     value: LocationField;
-    field: FieldInfo;
+    field: FieldInfo | null;
 }
 interface LocationField {
     x: number;
@@ -280,7 +292,7 @@ interface LocationField {
 function LocationField({ value, field }: LocationFieldProps) {
     const { x, y, z, yaw, pitch } = value;
     if (isNaN(x) || isNaN(y) || isNaN(z)) return null;
-    const hasRotation = getModifier(field, "with_rotation") != null;
+    const hasRotation = field != null && getModifier(field, "with_rotation") != null;
     if (hasRotation && (isNaN(yaw) || isNaN(pitch))) return null;
     return <div className="w-full flex flex-col items-center space-y-2">
         <div className="flex items-start w-full space-x-2">
@@ -344,5 +356,50 @@ function DurationField({ duration }: { duration: number }) {
     return <div className="rounded-md bg-[#0000000d] dark:bg-[#00000033] p-2 text-gray-700 dark:text-white text-xs w-full flex items-center">
         <Icon icon="mdi:clock" className="w-5 h-5 mr-2" />
         {formatted}
+    </div>;
+}
+
+function SoundIdField({ value }: { value: string }) {
+    return <SimpleValueField value={value} icon="mdi:volume-high" />;
+}
+
+interface SoundSourceFieldProps {
+    type: "self" | "emitter" | "location";
+    entryId: string;
+    location: LocationField;
+    pages: Page[];
+}
+
+function SoundSourceField({ type, entryId, location, pages }: SoundSourceFieldProps) {
+    if (type === "self") {
+        return <SimpleValueField value="Self" icon="mdi:volume-high" />;
+    }
+    if (type === "emitter") {
+        return <EntryReferenceField entryId={entryId} pages={pages} />;
+    }
+    if (type === "location") {
+        return <LocationField value={location} field={null} />;
+    }
+    return <div className="text-red-500 dark:text-red-400 text-xs">
+        Unknown sound source type: {type}
+    </div>;
+}
+
+interface OptionalFieldProps {
+    value: { enabled: boolean, value: any };
+    field: CustomField;
+    path: string;
+    pages: Page[];
+}
+
+function OptionalField({ value, field, path, pages }: OptionalFieldProps) {
+    if (value == null) return null;
+    const fieldInfo = field.fieldInfo;
+    if (fieldInfo == null) return null;
+    const enabled = value.enabled;
+    const seperator = path.length > 0 ? "." : "";
+    return <div className={"flex flex-row" + (enabled ? "" : " opacity-50 cursor-not-allowed")}>
+        <input type="checkbox" checked={enabled} readOnly className="mr-2 accent-green-500" key={path} />
+        <FieldInspector fieldInfo={fieldInfo} path={`${path}${seperator}value`} value={value.value} pages={pages} />
     </div>;
 }

@@ -38,8 +38,6 @@
         "@iconify/react": "^5.0.1",
         "@types/react": "^18.3.3",
         "autoprefixer": "^10.4.19",
-        "ffmpeg-loader": "^1.0.0",
-        "file-loader": "^6.2.0",
         "postcss": "^8.4.39",
         "sharp": "^0.33.4",
         "tailwindcss": "^3.4.4",

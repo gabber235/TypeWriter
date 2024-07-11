@@ -1,3 +1,4 @@
+import Player from "@site/src/components/Player";
 import EntryDisplay from "@site/src/components/EntryDisplay";
 
 # Questing
@@ -18,7 +19,14 @@ For this guide will make the following quest:
 3. The player finds magnet boots close by.
 4. When the player is wearing the magnet boots, the player can walk across the chasm.
 
+The following is the setup for the quest:
+
 <EntryDisplay pages={[
     require("./assets/index/setup_manifest.json"),
     require("./assets/index/setup_sequence.json"),
 ]} />
+
+Here is a demo of the setup described above:
+<Player url={require("./assets/index/setup_demo.webm").default} />
+
+
