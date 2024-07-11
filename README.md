@@ -16,7 +16,7 @@ To get started with Typewriter, see the [Getting Started](#getting-started) sect
 ### Sponsors
 
 Thanks to the following sponsors for supporting this project:
-<!-- sponsors --><a href="https://github.com/oOBetaOo"><img src="https://github.com/oOBetaOo.png" width="60px" alt="Pier Paolo Tanzi" /></a><a href="https://github.com/PixellPioneer"><img src="https://github.com/PixellPioneer.png" width="60px" alt="PixelPioneer" /></a><!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/PixellPioneer"><img src="https://github.com/PixellPioneer.png" width="60px" alt="PixelPioneer" /></a><!-- sponsors -->
 
 ### Examples
 
