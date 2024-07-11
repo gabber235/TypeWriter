@@ -1,4 +1,5 @@
 import Player from "@site/src/components/Player";
+import Image from "@site/src/components/Image";
 
 # Layout
 
@@ -18,7 +19,7 @@ Now that we have created a sequence page, I will explain how the different layou
 
 ## Base Layout
 
-![Sequence Layout](../assets/layout/layout.png)
+<Image img={require("../assets/layout/layout.png")} alt="Sequence Page Layout" />
 
 1. **Page list**: This is where you can see all the pages that you have created. You can also create new pages here.
 2. **Action bar**: There are multiple actions that you can perform by clicking on the buttons from left to right:
@@ -41,7 +42,7 @@ Now that we have created a sequence page, I will explain how the different layou
 
 ## Cinematic layout
 
-![Cinematic Layout](../assets/layout/layout-cinematic.png)
+<Image img={require("../assets/layout/layout-cinematic.png")} alt="Cinematic Page Layout" />
 
 1. **Segments**: Inside a cinematic entry, you can create segments, which are displayed on your track. Segments can't overlap each other.
 2. **Track**: This is where you can see all the segments that you have created and edit their show duration.

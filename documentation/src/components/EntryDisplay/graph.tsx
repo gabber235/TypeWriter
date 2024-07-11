@@ -61,8 +61,10 @@ function getLayoutedElements(nodes: Node<EntryNodeProps, string>[], edges: Edge<
             const position = g.node(node.id);
             // We are shifting the dagre node position (anchor=center center) to the top left
             // so it matches the React Flow node anchor point (top left).
-            const x = position.x - node.width / 2;
-            const y = position.y - node.height / 2;
+            const x = position.x - node.width / 2 ?? 0;
+            const y = position.y - node.height / 2 ?? 0;
+
+            if (isNaN(x) || isNaN(y)) return node;
 
             return { ...node, position: { x, y } };
         }),
@@ -93,7 +95,7 @@ export function PageLayout({ page }: PageLayoutProps) {
         setEdges(layoutedEdges);
 
         window.requestAnimationFrame(() => {
-            fitView();
+            fitView({ padding: 0.2 });
         });
     }, [direction, hasSizes]);
 

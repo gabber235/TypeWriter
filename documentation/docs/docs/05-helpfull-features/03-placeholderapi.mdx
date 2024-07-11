@@ -1,3 +1,5 @@
+import Image from "@site/src/components/Image";
+
 # PlaceHolderAPI
 
 :::warning[plugin needed]
@@ -8,7 +10,7 @@ To follow this tutorial, you must have the [PlaceHolderAPI](https://www.spigotmc
 
 If you want to expand your story with PlaceHolderAPI's placeholders, you can do that by checking if the PlaceHolderAPI icon is placed above the text box (see image):
 
-![PlaceHolderAPI Icon](../assets/placeholderapi/papi-icon.png)
+<Image img={require("../assets/placeholderapi/papi-icon.png")} alt="PlaceholderAPI Icon" width={400} />
 
 By just using the PlaceHolderAPI's format, you can make them work. For example, `%player_name%` would give the name of a player.
 
@@ -27,7 +29,7 @@ Both placeholders provide the same information, but you may choose to access the
 
 To find the entry ID, refer to the following image:
 
-![PlaceHolderAPI Icon](../assets/placeholderapi/papi-factid.png)
+<Image img={require("../assets/placeholderapi/papi-factid.png")} alt="PlaceholderAPI Icon" width={500} />
 
 Your placeholder for TypeWriter would be something like `%typewriter_W2X2ZbG0pzXGsS6%`.\
 Then, when calling the placeholder, it checks the ID and:

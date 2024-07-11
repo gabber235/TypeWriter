@@ -1,4 +1,5 @@
 import Player from "@site/src/components/Player";
+import Image from "@site/src/components/Image";
 
 # Chapters
 
@@ -11,7 +12,8 @@ Easily create a chapter by right-clicking on a page and selecting `Change Chapte
 ### Setting Sub-Chapters
 Creating subchapters is super simple. Simply use the main chapter name and add a `.` for example, `hello.test` will generate a sub-chapter. As shown below:
 
-![subchapters](../assets/chapters/sub-chapters.png)
+<Image img={require("../assets/chapters/sub-chapters.png")} alt="Subchapters" width={400} />
+
 
 Feel free to extend the story with as many subchapters as needed. For instance, `hello.test.morning` would work to. TypeWriter automatically collects pages with the same chapter name and groups them together.
 

@@ -1,5 +1,6 @@
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import Image from "@site/src/components/Image";
 
 # Facts
 
@@ -43,13 +44,13 @@ In a fact you can select a group. There are 3 types of groups:
 
 In some entries, there are fields that influence the way facts are handled.
 
-![Criterion Fields](../../assets/facts/criteria_and_modifier.png)
+<Image img={require("../../assets/facts/criteria_and_modifier.png")} alt="Criteria and modifiers fields" width={400} />
 
 ### Criteria
 
 Criteria is the condition for an entry, e.g., `if fact = 10 then...`. It controls whether an entry will occur.
 
-![Criterion Fields](../../assets/facts/criteria.png)
+<Image img={require("../../assets/facts/criteria.png")} alt="Criteria field" width={400} />
 
 When using criteria, follow these steps:
 
@@ -61,7 +62,7 @@ When using criteria, follow these steps:
 
 Modifiers, as the name suggests, modify a fact.
 
-![Modifier Fields](../../assets/facts/modifier.png)
+<Image img={require("../../assets/facts/modifier.png")} alt="Modifier field" width={400} />
 
 When using modifiers, follow these steps:
 
@@ -80,7 +81,7 @@ To get you started with facts, we will use a permanent fact to track progression
 
 1. Create a new page and select it as `static`. Give it the name `Playerprogress`
 2. Click on the + icon and select `Add Permanent Fact`. Rename it to `Playerprogress` and give it a nice comment.
-   ![Static Page Button](../../assets/facts/static-page.png)
+    <Image img={require("../../assets/facts/static-page.png")} alt="Static page button" />
 3. Select the player group.
 4. On the sequence page, click on an action.
    - Set a **Criteria:** Check if `Playerprogress` == 0.
@@ -119,7 +120,7 @@ There are many possibilities with the fact's system. Here are some examples:
       **Objective:** See if a player has enough money to buy an item.
 
       **Fact Used:**
-      - **Readable Fact:** [balance fact](../../../adapters/VaultAdapter/entries/fact/balance_fact.mdx)
+      - **Readable Fact:** [Balance Fact](../../../adapters/VaultAdapter/entries/fact/balance_fact.mdx)
 
       **Scenario:**
       1. The player talks to an NPC.
@@ -129,6 +130,7 @@ There are many possibilities with the fact's system. Here are some examples:
 
    </TabItem>
 </Tabs>
+
 :::tip
 To see all the available facts, check out the [Adapters section](../../../adapters/README.mdx).
 :::

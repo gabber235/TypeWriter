@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { blueprints, CustomField, FieldInfo, findEntry, ListField, MapField, ObjectField, Page, PrimitiveField } from "./data";
+import { blueprints, CustomField, FieldInfo, findEntry, getModifier, ListField, MapField, ObjectField, Page, PrimitiveField } from "./data";
 import { EntryNodeProps } from "./graph";
 import { Node, useOnSelectionChange } from "reactflow";
 import { format } from ".";
@@ -81,7 +81,7 @@ function SingleNodeInspector({ node, pages }: { node: Node<EntryNodeProps, strin
 }
 
 function SimpleValueField({ value, icon }: { value: any, icon: string }) {
-    return <div className="rounded-md bg-gray-100 dark:bg-gray-800 p-2 text-gray-500 dark:text-gray-400 text-xs w-full flex items-center">
+    return <div className="rounded-md bg-[#0000000d] dark:bg-[#00000033] p-2 text-gray-700 dark:text-white text-xs w-full flex items-center">
         <Icon icon={icon} className="w-5 h-5 mr-2" />
         {value}
     </div>;
@@ -90,7 +90,7 @@ function SimpleValueField({ value, icon }: { value: any, icon: string }) {
 function FieldInspector({ fieldInfo, path, value, pages }: { fieldInfo: FieldInfo, path: string, value: any, pages: Page[] }) {
     const type = fieldInfo.kind;
     if (type === "primitive") {
-        return <PrimitiveFieldInspector fieldInfo={fieldInfo as PrimitiveField} value={value} />;
+        return <PrimitiveFieldInspector fieldInfo={fieldInfo as PrimitiveField} path={path} value={value} />;
     }
     if (type === "enum") {
         return <EnumFieldInspector value={value} />;
@@ -112,10 +112,10 @@ function FieldInspector({ fieldInfo, path, value, pages }: { fieldInfo: FieldInf
     </div>;
 }
 
-function PrimitiveFieldInspector({ fieldInfo, value }: { fieldInfo: PrimitiveField, value: any }) {
+function PrimitiveFieldInspector({ fieldInfo, value, path }: { fieldInfo: PrimitiveField, value: any, path: string }) {
     if (fieldInfo.type === "boolean") {
         return <div className="text-gray-500 dark:text-gray-400 text-xs w-full flex items-center">
-            <input type="checkbox" checked={value} readOnly className="mr-2 accent-green-500" />
+            <input type="checkbox" checked={value ? true : false} readOnly className="mr-2 accent-green-500" key={path} />
             {value ? <span className="text-green-500 dark:text-green-400">true</span> : <span className="text-red-500 dark:text-red-400">false</span>}
         </div>;
     }
@@ -184,6 +184,12 @@ function CustomFieldInspector({ fieldInfo, path, value, pages }: { fieldInfo: Cu
     }
     if (editor === "item") {
         return <ItemField {...value} />;
+    }
+    if (editor === "location" || editor === "vector") {
+        return <LocationField value={{ ...value }} field={fieldInfo} />;
+    }
+    if (editor === "duration") {
+        return <DurationField duration={value} />;
     }
     return <div className="text-red-500 dark:text-red-400 text-xs">
         Unknown custom editor: {editor}
@@ -257,5 +263,86 @@ function ItemField(props: ItemFieldProps) {
             NBT
             <SimpleValueField value={props.nbt.value} icon="mdi:text-box-outline" />
         </div>}
+    </div>;
+}
+
+interface LocationFieldProps {
+    value: LocationField;
+    field: FieldInfo;
+}
+interface LocationField {
+    x: number;
+    y: number;
+    z: number;
+    yaw: number;
+    pitch: number;
+}
+function LocationField({ value, field }: LocationFieldProps) {
+    const { x, y, z, yaw, pitch } = value;
+    if (isNaN(x) || isNaN(y) || isNaN(z)) return null;
+    const hasRotation = getModifier(field, "with_rotation") != null;
+    if (hasRotation && (isNaN(yaw) || isNaN(pitch))) return null;
+    return <div className="w-full flex flex-col items-center space-y-2">
+        <div className="flex items-start w-full space-x-2">
+            <CordPropertyField value={x} display="X" color="text-red-500" />
+            <CordPropertyField value={y} display="Y" color="text-green-500" />
+            <CordPropertyField value={z} display="Z" color="text-blue-500" />
+        </div>
+        {hasRotation && <div className="flex items-start w-full space-x-2">
+            <CordPropertyField value={yaw} display="Yaw" color="text-purple-500" />
+            <CordPropertyField value={pitch} display="Pitch" color="text-yellow-500" />
+        </div>}
+    </div>;
+}
+
+interface CordPropertyFieldProps {
+    value: number;
+    display: string;
+    color: string;
+}
+function CordPropertyField({ value, display, color }: CordPropertyFieldProps) {
+    return <div className="rounded-md bg-[#0000000d] dark:bg-[#00000033] p-2 text-gray-700 dark:text-white text-xs inline-flex w-full justify-center">
+        <div className={`${color}`}>
+            {display}:&nbsp;
+        </div>
+        {value}
+    </div>;
+}
+
+// Converts a duration in milliseconds to a human readable format.
+// Only shows the days, hours, minutes, and seconds and milliseconds if they are not 0.
+// Example: 1d 2h 3m 4s 5ms
+function formatDuration(duration: number): string {
+    const days = Math.floor(duration / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((duration % (1000 * 60)) / 1000);
+    const milliseconds = Math.floor(duration % 1000);
+
+    let formatted = '';
+    if (days > 0) {
+        formatted += `${days}d `;
+    }
+    if (hours > 0) {
+        formatted += `${hours}h `;
+    }
+    if (minutes > 0) {
+        formatted += `${minutes}m `;
+    }
+    if (seconds > 0) {
+        formatted += `${seconds}s `;
+    }
+    if (milliseconds > 0) {
+        formatted += `${milliseconds}ms `;
+    }
+
+    return formatted.trim();
+}
+
+function DurationField({ duration }: { duration: number }) {
+    const formatted = formatDuration(duration);
+    return <div className="rounded-md bg-[#0000000d] dark:bg-[#00000033] p-2 text-gray-700 dark:text-white text-xs w-full flex items-center">
+        <Icon icon="mdi:clock" className="w-5 h-5 mr-2" />
+        {formatted}
     </div>;
 }

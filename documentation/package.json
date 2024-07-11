@@ -30,13 +30,18 @@
         "rive-loader": "file:plugins/rive-loader"
     },
     "devDependencies": {
+        "@docusaurus/lqip-loader": "^3.4.0",
         "@docusaurus/module-type-aliases": "^3.4.0",
+        "@docusaurus/responsive-loader": "^1.7.0",
         "@docusaurus/tsconfig": "^3.4.0",
         "@docusaurus/types": "^3.4.0",
         "@iconify/react": "^5.0.1",
         "@types/react": "^18.2.29",
         "autoprefixer": "^10.4.19",
+        "ffmpeg-loader": "^1.0.0",
+        "file-loader": "^6.2.0",
         "postcss": "^8.4.39",
+        "sharp": "^0.33.4",
         "tailwindcss": "^3.4.4",
         "typescript": "^5.2.2"
     },
