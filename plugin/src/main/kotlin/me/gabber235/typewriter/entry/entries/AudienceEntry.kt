@@ -126,7 +126,7 @@ abstract class AudienceFilter(
     abstract fun filter(player: Player): Boolean
 
     fun Player.updateFilter(isFiltered: Boolean) {
-        val allow = !inverted == isFiltered
+        val allow = !inverted == isFiltered && canConsider(this)
         if (allow) {
             if (filteredPlayers.add(uniqueId)) {
                 onPlayerFilterAdded(this)
