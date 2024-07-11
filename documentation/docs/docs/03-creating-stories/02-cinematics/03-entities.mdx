@@ -4,7 +4,7 @@ import Image from "@site/src/components/Image";
 # Adding entities
 
 :::info[Before starting]
-It's best to first read [Cinematic](./index.mdx) before starting this tutorial.
+It's best to first read [Cinematics](./index.mdx) before starting this tutorial.
 :::
 
 In this tutorial, you will learn how to add entities to your interactions.
@@ -32,6 +32,9 @@ Now, back on the cinematic page, click on the camera icon in the inspector just 
 By clicking on the book, TypeWriter will start recording your movements and items that you were holding before you requested the content mode.
 
 #### Recording the NPC
+:::warning[Items in inventory]
+The items you were holding before you requested the content mode will be the items that the NPC will be holding.
+:::
 <Player url={require("../../assets/cinematics/recording.webm").default}/>
 
 #### Using the playback items
