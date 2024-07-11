@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.entries.audience
 
-import io.papermc.paper.event.player.PlayerPickItemEvent
+import com.github.shynixn.mccoroutine.bukkit.ticks
+import kotlinx.coroutines.delay
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -8,48 +9,44 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.utils.Item
+import me.gabber235.typewriter.utils.ThreadType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.*
-import org.bukkit.event.inventory.InventoryAction.*
 import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.event.player.PlayerPickupItemEvent
 
 @Entry(
-    "item_in_slot_audience",
-    "Filters an audience based on if they have a specific item in a specific slot",
+    "item_in_inventory_audience",
+    "Filters an audience based on if they have a specific item in their inventory",
     Colors.MEDIUM_SEA_GREEN,
-    "mdi:hand"
+    "mdi:bag-personal"
 )
 /**
- * The `Item In Slot Audience` entry filters an audience based on if they have a specific item in a specific slot.
+ * The `Item In Inventory Audience` entry filters an audience based on if they have a specific item in their inventory.
  *
  * ## How could this be used?
- * It can be used to have magnet boots which allow players to move in certain areas.
+ * This could show a boss bar or sidebar based on if a player has a specific item in their inventory.
  */
-class ItemInSlotAudienceEntry(
+class ItemInInventoryAudienceEntry(
     override val id: String = "",
     override val name: String = "",
     override val children: List<Ref<AudienceEntry>> = emptyList(),
-    @Help("The item to check for.")
+    @Help("The item to check for in the inventory.")
     val item: Item = Item.Empty,
-    @Help("The slot to check.")
-    val slot: Int = 0,
     override val inverted: Boolean = false,
 ) : AudienceFilterEntry, Invertible {
-    override fun display(): AudienceFilter = ItemInSlotAudienceFilter(ref(), item, slot)
+    override fun display(): AudienceFilter = ItemInInventoryAudienceFilter(ref(), item)
 }
 
-class ItemInSlotAudienceFilter(
+class ItemInInventoryAudienceFilter(
     ref: Ref<out AudienceFilterEntry>,
     private val item: Item,
-    private val slot: Int,
 ) : AudienceFilter(ref), TickableDisplay {
     override fun filter(player: Player): Boolean {
-        val itemInSlot = player.inventory.getItem(slot) ?: return false
-        return item.isSameAs(player, itemInSlot)
+        return player.inventory.contents.any { it != null && item.isSameAs(player, it) }
     }
 
     override fun tick() {
