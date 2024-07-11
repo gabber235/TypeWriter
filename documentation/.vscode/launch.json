@@ -19,6 +19,19 @@
                 "BROWSER_ARGS": "--incognito --remote-debugging-port=3000 --no-first-run --no-default-browser-check --user-data-dir=/tmp/docusaurus-chrome-profile"
             },
             "console": "integratedTerminal" // Use integrated terminal instead of debug console
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Build Production",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "serve"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "preLaunchTask": "npm run build"
         }
     ]
 }
