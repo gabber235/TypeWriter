@@ -25,7 +25,7 @@ import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("item_display_definition", "An item display entity", Colors.ORANGE, "mingcute:sword-fill")
+@Entry("item_display_definition", "An item display entity", Colors.ORANGE, "icon-park-solid:holy-sword")
 @Tags("item_display_definition")
 /**
  * The `ItemDisplayDefinition` class is an entry that represents an item display entity.

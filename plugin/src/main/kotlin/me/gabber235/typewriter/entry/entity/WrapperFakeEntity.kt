@@ -45,7 +45,7 @@ abstract class WrapperFakeEntity(
         this.entity.removePassenger(entity.entityId)
     }
 
-    override fun contains(entityId: Int): Boolean = entityId == this.entityId
+    override fun contains(entityId: Int): Boolean = entityId == entity.entityId
 
     override fun dispose() {
         super.dispose()
