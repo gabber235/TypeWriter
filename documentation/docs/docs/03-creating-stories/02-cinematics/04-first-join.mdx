@@ -1,4 +1,5 @@
 import Player from "@site/src/components/Player";
+import Image from "@site/src/components/Image";
 
 # First Join Cinematic Tutorial
 
@@ -11,7 +12,7 @@ In this tutorial, you'll learn how to create a cinematic that plays when a playe
 ## Adding the Join Entry
 First, we need to add the `Add On Player Join` entry to our sequence. This can be done by clicking on the + icon in the top right corner of the panel and searching for `Add On Player Join`. Add it to your page by clicking on the + icon.
 
-![Add-On-Player-Join](../../assets/cinematics/add-on-player-join.png)
+<Image img={require("../../assets/cinematics/add-on-player-join.png")} alt="Add-On-Player-Join" width={400} />
 
 ## Waiting for Interaction
 :::danger[Early Start Cinematic]
@@ -20,26 +21,23 @@ Before a player fully loads the server, it is possible for TypeWriter to start t
 To add an option to your sequence, it's best to read the [Options](../01-interactions/01-options.mdx) page. For this tutorial, we will have a `New Option` with a `Start Cinematic` option.
 
 ### Configuring the Criteria
-Now we need to configure the criteria for the cinematic. This can be done by clicking on the `+` icon in the inspector next to the criteria field.\
-Then, you can select the fact you want to use. For this tutorial, we will use a permanent fact called `First Join` with the group set to a player group.
+Now we need to configure the criteria for the cinematic. This can be done by clicking on the `+` icon in the inspector next to the criteria field. Then, you can select the fact you want to use. For this tutorial, we will use a permanent fact called `First Join` with the group set to a player group.
 
-![first-join-fact](../../assets/cinematics/first-join-fact.png)
+<Image img={require("../../assets/cinematics/first-join-fact.png")} alt="first-join-fact" width={400} />
 
 Inside the criteria, set the operator to `==` and the value to `0`.
 
 ### Configuring the Modifier
-You have configured the criteria, but now we need to modify the fact so that when you join again, the cinematic is not played. This can be done by clicking on the `+` icon in the inspector next to the modifier field.\
-Then, you can select the fact you want to modify. For this tutorial, we will use the same fact as the criteria. Inside the modifier, set the operator to `=` and the value to `1`.
+You have configured the criteria, but now we need to modify the fact so that when you join again, the cinematic is not played. This can be done by clicking on the `+` icon in the inspector next to the modifier field. Then, you can select the fact you want to modify. For this tutorial, we will use the same fact as the criteria. Inside the modifier, set the operator to `=` and the value to `1`.
 
 Now your inspector should look like this:
 
-![add-cinematic-fields](../../assets/cinematics/add-cinematic-fields.png)
+<Image img={require("../../assets/cinematics/add-cinematic-fields.png")} alt="add-cinematic-fields" width={400} />
 
 ## Adding the `Add Cinematic` Entry
-Now we need to add the `Add Cinematic` entry to our sequence. This can be done by right-clicking on the `New On Player Join` entry and selecting `+ Link with ...`. Then, search for `Add Cinematic` and click on the + icon to add it to your sequence.\
-Now your sequence page should look like this:
+Now we need to add the `Add Cinematic` entry to our sequence. This can be done by right-clicking on the `New On Player Join` entry and selecting `+ Link with ...`. Then, search for `Add Cinematic` and click on the + icon to add it to your sequence. Now your sequence page should look like this:
 
-![Add-Cinematic](../../assets/cinematics/add-cinematic.png)
+<Image img={require("../../assets/cinematics/add-cinematic.png")} alt="Add-Cinematic" width={400} />
 
 Inside the `New Cinematic`, select the cinematic you want to trigger via the inspector at the page field. For this tutorial, we will use the `Tutorial_Cin` cinematic.
 

@@ -8,6 +8,7 @@
     "Cinematics",
     "Clickup",
     "Playerprogress",
+    "transform",
     "triggerable"
   ],
   "todo-tree.tree.showBadges": true,
