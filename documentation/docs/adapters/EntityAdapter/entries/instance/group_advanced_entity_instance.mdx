@@ -2,15 +2,13 @@ import * as fields from '@site/src/components/EntryField';
 import Admonition from '@theme/Admonition';
 import Link from '@docusaurus/Link';
 
-# Individual Advanced Entity Instance 
+# Group Advanced Entity Instance 
 
-The `Individual Advanced Entity Instance` entry is an entity instance
-that has the activity unique to each player viewing the instance.
-
-It means that two players can see the same instance in different places.
+The `Group Advanced Entity Instance` entry is an entity instance
+that has the activity shared between a group of players viewing the instance.
 
 ## How could this be used?
-For escort quests where the player needs to follow the npc such as a guide.
+For example, having a party sees the npc in the same place.
 
 
 ## Fields
@@ -22,4 +20,6 @@ For escort quests where the player needs to follow the npc such as a guide.
 <fields.EntryField name='Children' required multiple>
 </fields.EntryField>
 <fields.EntryField name='Activity' required>
+</fields.EntryField>
+<fields.EntryField name='Group' required>
 </fields.EntryField>
