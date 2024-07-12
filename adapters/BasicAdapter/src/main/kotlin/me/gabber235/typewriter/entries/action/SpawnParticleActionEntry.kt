@@ -43,14 +43,16 @@ class SpawnParticleActionEntry(
     @Negative
     @Help("The offset from the location on the Z axis.")
     val offsetZ: Double = 0.0,
+    @Help("The speed of the particles. For some particles, this is the \"extra\" data value to control particle behavior.")
+    val speed: Double = 0.0,
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
         if (location.isPresent) {
-            location.get().world?.spawnParticle(particle, location.get(), count, offsetX, offsetY, offsetZ)
+            location.get().world?.spawnParticle(particle, location.get(), count, offsetX, offsetY, offsetZ, speed)
         } else {
-            player.world.spawnParticle(particle, player.location, count, offsetX, offsetY, offsetZ)
+            player.world.spawnParticle(particle, player.location, count, offsetX, offsetY, offsetZ, speed)
         }
 
     }
