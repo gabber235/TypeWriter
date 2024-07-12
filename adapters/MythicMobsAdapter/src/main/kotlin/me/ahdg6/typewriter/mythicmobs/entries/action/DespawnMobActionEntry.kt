@@ -37,7 +37,13 @@ class DespawnMobActionEntry(
         if (!mob.isPresent) return
 
         SYNC.launch {
-            MythicBukkit.inst().mobManager.activeMobs.removeIf { it.type == mob.get() }
+            MythicBukkit.inst().mobManager.activeMobs.removeIf {
+                if (it.type == mob.get()) {
+                    it.entity.remove()
+                    return@removeIf true
+                }
+                false
         }
     }
+}
 }

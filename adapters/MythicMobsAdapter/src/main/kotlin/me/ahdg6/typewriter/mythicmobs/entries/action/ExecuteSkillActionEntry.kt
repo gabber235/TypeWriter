@@ -5,6 +5,7 @@ import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
 import io.lumine.mythic.core.skills.SkillMetadataImpl
 import io.lumine.mythic.core.skills.SkillTriggers
+import io.lumine.mythic.core.utils.MythicUtil
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -45,7 +46,9 @@ class ExecuteSkillActionEntry(
         val skillMeta =
             SkillMetadataImpl(SkillTriggers.API, caster, trigger)
 
-        if (skill.isUsable(skillMeta)) skill.execute(skillMeta)
+        if (skill.isUsable(skillMeta)) {
+            MythicBukkit.inst().apiHelper.castSkill(player, skillName, player, player.location, listOf(MythicUtil.getTargetedEntity(player)), null, 1f)
+        }
         else logger.warning("Skill $skillName is not usable at this time (cooldown, etc.)")
     }
 }
