@@ -47,10 +47,10 @@ const config = {
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
-                    lastVersion: '0.4.1',
+                    lastVersion: '0.4.2',
                     versions: {
                         current: {
-                            label: 'Beta⚠️',
+                            label: 'Beta ⚠️',
                             path: 'beta',
                         },
                     },
