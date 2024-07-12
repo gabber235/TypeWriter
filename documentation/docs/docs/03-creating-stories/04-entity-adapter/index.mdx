@@ -1,4 +1,5 @@
 import Player from "@site/src/components/Player";
+import Image from "@site/src/components/Image";
 
 # Entities & NPC's
 
@@ -33,7 +34,7 @@ If you need more information on how to create a page, see the [Layout](../../02-
 Next, you have to define the NPC. Click the `Add Entry` button or the `+` in the top right corner,
 then search for `Add NPC Definition`, and add it to the page. You should now see the entry on your screen.
 
-![Search for NPC Definition](../../assets/entity-adapter/definition_search.png)
+<Image img={require("../../assets/entity-adapter/definition_search.png")} alt="Search for NPC Definition" width={400} />
 
 # Customizing the entity
 Now that you have defined the entity, you can customize it to your liking.
@@ -43,7 +44,7 @@ Let's rename the entry to `Oliver Definition`.
 
 To change the display name above the head, we can change the `Display Name` field to `<red><b>Oliver</b></red>`.
 
-![Rename Entry and Entity](../../assets/entity-adapter/entity_name_change.png)
+<Image img={require("../../assets/entity-adapter/entity_name_change.png")} alt="Rename Entry and Entity" width={400} />
 
 ## Setting the NPC's skin
 
@@ -65,13 +66,13 @@ To spawn the entity, we have to add an `Entity Instance` entry.
 Each type of entity has a different `Entity Instance` definition.
 For NPCs, we can use the `NPC Instance` definition.
 
-![Instance Search](../../assets/entity-adapter/search_instance.png)
+<Image img={require("../../assets/entity-adapter/search_instance.png")} alt="Instance Search" width={400} />
 
 First, select the NPC definition you want to spawn from the `Definition` dropdown.
 In this case, we will select the `Oliver Definition` we just created.
 This will act as a base for our NPC instance
 
-![Definition Select](../../assets/entity-adapter/definition_select.png)
+<Image img={require("../../assets/entity-adapter/definition_select.png")} alt="Definition Select" width={400} />
 
 Finally, we need to set the spawn location of the NPC.
 This is the location where the NPC will always spawn when the first player may view the NPC.
