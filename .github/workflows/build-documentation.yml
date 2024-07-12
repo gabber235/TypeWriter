@@ -23,7 +23,7 @@ jobs:
         run: npm ci
         working-directory: ./documentation
       - name: Build website
-        run: DEBUG=* npm run build
+        run: npm run build
         working-directory: ./documentation
 
       - name: Deploy to GitHub Pages
