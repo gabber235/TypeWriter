@@ -20,7 +20,7 @@ export default function Player({ url }: PlayerProps) {
                 height="100%"
                 progressInterval={100}
                 onProgress={(state) => setProgress(state.played * 100)}
-                className="rounded-b-lg bg-clip-border"
+                className="[&>video]:rounded-b-lg"
             />
         </div>
     );

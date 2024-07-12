@@ -131,7 +131,12 @@ function EntryNode({ data, selected }: NodeProps<EntryNodeProps>) {
         <div className="text-white rounded-md p-[0.3rem]" style={{ backgroundColor: blueprint.color }}>
             <div className="flex items-center border-3 border-solid border-white dark:border-black rounded-sm" style={{ borderStyle: selected ? "solid" : "none", padding: selected ? "0.3rem" : "0.5rem" }}>
                 <Icon icon={blueprint.icon} className="w-5 h-5 mr-2" />
-                {format(entry.name)}
+                <div className="flex flex-col">
+                    {format(entry.name)}
+                    <div className="text-xs text-white opacity-70 font-extrabold">
+                        {format(entry.type)}
+                    </div>
+                </div>
             </div>
         </div>
         <Handle type="target" position={direction === "TB" ? Position.Top : Position.Left} className="opacity-0" />
