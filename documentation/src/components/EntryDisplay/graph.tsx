@@ -94,8 +94,11 @@ export function PageLayout({ page }: PageLayoutProps) {
         setNodes(layoutedNodes);
         setEdges(layoutedEdges);
 
+        // We wait twice since the nodes are not immediately updated.
         window.requestAnimationFrame(() => {
-            fitView({ padding: 0.2 });
+            window.requestAnimationFrame(() => {
+                fitView({ padding: 0.2 });
+            });
         });
     }, [direction, hasSizes]);
 
