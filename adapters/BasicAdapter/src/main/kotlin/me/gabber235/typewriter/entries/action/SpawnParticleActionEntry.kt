@@ -54,6 +54,5 @@ class SpawnParticleActionEntry(
         } else {
             player.world.spawnParticle(particle, player.location, count, offsetX, offsetY, offsetZ, speed)
         }
-
     }
 }

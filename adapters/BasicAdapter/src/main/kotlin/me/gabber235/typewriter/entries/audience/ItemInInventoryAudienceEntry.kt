@@ -46,7 +46,7 @@ class ItemInInventoryAudienceFilter(
     private val item: Item,
 ) : AudienceFilter(ref), TickableDisplay {
     override fun filter(player: Player): Boolean {
-        return player.inventory.contents.any { it != null && item.isSameAs(player, it) }
+        return player.inventory.contents.any { it != null && item.isSameAs(player, it) } || item.isSameAs(player, player.itemOnCursor)
     }
 
     override fun tick() {
