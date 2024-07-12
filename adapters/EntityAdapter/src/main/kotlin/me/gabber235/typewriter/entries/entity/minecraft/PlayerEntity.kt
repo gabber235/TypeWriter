@@ -155,7 +155,7 @@ class PlayerEntity(
             "typewriter-$entityId",
             WrapperPlayServerTeams.TeamMode.ADD_ENTITIES,
             Optional.empty(),
-            listOf(entityId.toString())
+            listOf(entity.username)
         ) sendPacketTo player
         super.spawn(location)
     }
