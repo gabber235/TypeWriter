@@ -21,7 +21,6 @@ export interface Props extends ComponentProps<'img'> {
 }
 export default function Image(props: Props) {
     const { img, ...propsRest } = props;
-    console.log("Image", props);
 
     // In dev env just use regular img with original file
     if (typeof img === 'string' || 'default' in img) {
