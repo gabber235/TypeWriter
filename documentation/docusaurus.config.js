@@ -182,6 +182,15 @@ const config = {
             }
         }),
     plugins: [
+        [
+            "posthog-docusaurus",
+            {
+                apiKey: "phc_XjXhELHuFbPUWBfkaYiivwe1kEKVIFOJZuWfA0K9YU0",
+                appUrl: "https://eu.i.posthog.com",
+                person_profiles: "always",
+                enableInDevelopment: false,
+            },
+        ],
         "rive-loader",
         require.resolve("./plugins/tailwind/tailwind-config.js"),
         require.resolve("./plugins/compression/index.js"),
