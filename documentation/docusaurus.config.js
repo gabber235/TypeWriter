@@ -186,7 +186,7 @@ const config = {
             "posthog-docusaurus",
             {
                 apiKey: process.env.POSTHOG_API_KEY,
-                appUrl: "https://eu.i.posthog.com",
+                appUrl: "https://research.typewritermc.com",
                 person_profiles: "always",
                 enableInDevelopment: false,
             },
