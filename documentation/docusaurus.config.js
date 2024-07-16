@@ -185,7 +185,7 @@ const config = {
         [
             "posthog-docusaurus",
             {
-                apiKey: process.env.POSTHOG_API_KEY || true,
+                apiKey: process.env.POSTHOG_API_KEY ?? true,
                 appUrl: "https://research.typewritermc.com",
                 enable_heatmaps: true,
                 enableInDevelopment: false,
