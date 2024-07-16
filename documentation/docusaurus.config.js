@@ -12,7 +12,7 @@ const config = {
     favicon: 'img/favicon.ico',
 
     // Set the production url of your site here
-    url: 'https://gabber235.github.io',
+    url: 'https://docs.typewritermc.com',
     // Set the /<baseUrl>/ pathname under which your site is served
     // For GitHub pages deployment, it is often '/<projectName>/'
     baseUrl: '/',
@@ -185,9 +185,9 @@ const config = {
         [
             "posthog-docusaurus",
             {
-                apiKey: process.env.POSTHOG_API_KEY,
+                apiKey: process.env.POSTHOG_API_KEY || true,
                 appUrl: "https://research.typewritermc.com",
-                person_profiles: "always",
+                enable_heatmaps: true,
                 enableInDevelopment: false,
             },
         ],
