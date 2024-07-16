@@ -4,8 +4,8 @@
   <ShortName>Typewriter</ShortName>
   <Description>Search Typewriter</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://gabber235.github.io/img/favicon.ico</Image>
-  <Url type="text/html" method="get" template="https://gabber235.github.io/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://gabber235.github.io/opensearch.xml" />
-  <moz:SearchForm>https://gabber235.github.io/</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://docs.typewritermc.com/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://docs.typewritermc.com/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://docs.typewritermc.com/opensearch.xml" />
+  <moz:SearchForm>https://docs.typewritermc.com/</moz:SearchForm>
 </OpenSearchDescription>
