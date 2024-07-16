@@ -27,6 +27,8 @@ jobs:
         working-directory: ./documentation
         env:
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+      - name: Add CNAME
+        run: echo "docs.typewritermc.com" > ./documentation/build/CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
