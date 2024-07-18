@@ -1,5 +1,6 @@
 import Player from "@site/src/components/Player";
 import Image from "@site/src/components/Image";
+import EntrySearch from "@site/src/components/EntrySearch";
 
 # Entities & NPC's
 
@@ -34,7 +35,7 @@ If you need more information on how to create a page, see the [Layout](../../02-
 Next, you have to define the NPC. Click the `Add Entry` button or the `+` in the top right corner,
 then search for `Add NPC Definition`, and add it to the page. You should now see the entry on your screen.
 
-<Image img={require("../../assets/entity-adapter/definition_search.png")} alt="Search for NPC Definition" width={400} />
+<EntrySearch entryName='npc_definition'/>
 
 # Customizing the entity
 Now that you have defined the entity, you can customize it to your liking.
@@ -66,7 +67,7 @@ To spawn the entity, we have to add an `Entity Instance` entry.
 Each type of entity has a different `Entity Instance` definition.
 For NPCs, we can use the `NPC Instance` definition.
 
-<Image img={require("../../assets/entity-adapter/search_instance.png")} alt="Instance Search" width={400} />
+<EntrySearch entryName='npc_instance'/>
 
 First, select the NPC definition you want to spawn from the `Definition` dropdown.
 In this case, we will select the `Oliver Definition` we just created.

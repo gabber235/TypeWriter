@@ -1,9 +1,9 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import { ReactFlowProvider } from 'reactflow';
-import { PageLayout } from './graph';
-import { Page } from './data';
-import EntryInspector from './inspector';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { ReactFlowProvider } from "reactflow";
+import { PageLayout } from "./graph";
+import { Page } from "../../libs/data";
+import EntryInspector from "./inspector";
 
 interface EntryDisplayProps {
     pages: Page[];
@@ -15,8 +15,13 @@ export function capitalize(value: string) {
 }
 
 export function format(value: string) {
-    return value.split(".").map((e) => capitalize(e)).join(" | ")
-        .split("_").map((e) => capitalize(e)).join(" ");
+    return value
+        .split(".")
+        .map((e) => capitalize(e))
+        .join(" | ")
+        .split("_")
+        .map((e) => capitalize(e))
+        .join(" ");
 }
 
 export default function EntryDisplay({ pages }: EntryDisplayProps) {
@@ -36,4 +41,3 @@ export default function EntryDisplay({ pages }: EntryDisplayProps) {
         </Tabs>
     );
 }
-
