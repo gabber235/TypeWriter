@@ -13,6 +13,7 @@ import "package:typewriter/widgets/components/general/admonition.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
 import "package:typewriter/widgets/components/general/formatted_text_field.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
+import "package:typewriter/widgets/components/general/loading_button.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/header.dart";
@@ -99,12 +100,28 @@ class SkinEditor extends HookConsumerWidget {
             Image.network(
               url,
               width: 100,
+              errorBuilder: (context, error, stackTrace) => const Center(
+                child: Icon(
+                  Icons.error,
+                  size: 48,
+                  color: Colors.white,
+                ),
+              ),
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) {
                   return child;
                 }
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4,
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
                 );
               },
             ),
@@ -181,7 +198,7 @@ class _FetchFromMineSkinDialogue extends HookConsumerWidget {
           onPressed: () => Navigator.pop(context),
           child: const Text("Cancel"),
         ),
-        FilledButton.icon(
+        LoadingButton.icon(
           icon: const Iconify(TWIcons.download),
           onPressed: () async {
             final navigator = Navigator.of(context);
