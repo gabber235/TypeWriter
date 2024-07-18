@@ -58,7 +58,6 @@ fun String.asPartialFormattedMini(
 ): Component {
     return replace("\n", "\n<reset><white>")
         .limitLineLength(maxLineLength)
-        .minimalLines(minLines)
         .asMini()
         .splitPercentage(percentage)
         .addPaddingBeforeLines(padding)
@@ -123,47 +122,29 @@ private fun Component.splitText(runningText: RunningText, style: Style): Compone
 fun Component.noChildren() = this.children(mutableListOf())
 
 /**
- * Adds missing lines to a string.
- */
-private fun String.minimalLines(minLines: Int = 3): String {
-    val missingLines = (minLines - lineCount).coerceAtLeast(0)
-    val missingLinesString = "\n".repeat(missingLines)
-    return "$this$missingLinesString"
-}
-
-/**
  * Splits a string into multiple lines with a maximum length.
  */
 fun String.limitLineLength(maxLength: Int = 40): String {
     if (this.stripped().length <= maxLength) return this
 
     val words = this.split(" ")
-    val lines = mutableListOf<String>()
-    var currentLine = ""
+    var text = ""
 
     for (word in words) {
-        // When \n is found we just want to add those lines to the list
         if (word.contains("\n")) {
-            val wordLines = word.split("\n")
-            for (line in wordLines.subList(0, wordLines.size - 1)) {
-                val newLines = "$currentLine$line"
-                lines.add(newLines)
-                currentLine = ""
-            }
-            currentLine += "${wordLines.last()} "
+            text += "$word "
             continue
         }
 
-        val potentialLine = "$currentLine$word".stripped()
-
-        if (potentialLine.length > maxLength) {
-            lines.add(currentLine)
-            currentLine = ""
+        val rawText = "$text$word".stripped()
+        val lastNewLine = rawText.lastIndexOf("\n")
+        val line = rawText.substring(lastNewLine + 1)
+        if (line.length > maxLength) {
+            text += "\n"
         }
-
-        currentLine += "$word "
+        text += "$word "
     }
 
-    lines.add(currentLine.trimEnd())
-    return lines.joinToString("\n")
+    text = text.trim()
+    return text
 }
