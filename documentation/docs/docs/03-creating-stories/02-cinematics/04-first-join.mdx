@@ -1,7 +1,8 @@
 import Player from "@site/src/components/Player";
 import Image from "@site/src/components/Image";
+import EntrySearch from "@site/src/components/EntrySearch";
 
-# First Join Cinematic Tutorial
+# First Join Cinematic
 
 :::info[Before Starting]
 Before starting, it's recommended to read the following sections: [Interactions](../01-interactions/index.mdx), [Cinematics](./index.mdx), and [Facts](../03-facts/index.mdx). Ensure you have a sequence and a cinematic page created.
@@ -12,7 +13,7 @@ In this tutorial, you'll learn how to create a cinematic that plays when a playe
 ## Adding the Join Entry
 First, we need to add the `Add On Player Join` entry to our sequence. This can be done by clicking on the + icon in the top right corner of the panel and searching for `Add On Player Join`. Add it to your page by clicking on the + icon.
 
-<Image img={require("../../assets/cinematics/add-on-player-join.png")} alt="Add-On-Player-Join" width={400} />
+<EntrySearch entryName='on_player_join'/>
 
 ## Waiting for Interaction
 :::danger[Early Start Cinematic]
