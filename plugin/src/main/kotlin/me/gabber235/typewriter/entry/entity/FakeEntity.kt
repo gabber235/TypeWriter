@@ -15,6 +15,7 @@ abstract class FakeEntity(
     protected val properties = mutableMapOf<KClass<*>, EntityProperty>()
 
     abstract val entityId: Int
+    abstract val state: EntityState
 
     fun consumeProperties(vararg properties: EntityProperty) {
         consumeProperties(properties.toList())
@@ -54,3 +55,7 @@ abstract class FakeEntity(
         return property(P::class)
     }
 }
+
+data class EntityState(
+    val eyeHeight: Double = 0.0,
+)

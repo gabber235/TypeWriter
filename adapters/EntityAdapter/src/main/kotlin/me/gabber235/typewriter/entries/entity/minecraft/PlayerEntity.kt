@@ -12,6 +12,7 @@ import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.PoseProperty
 import me.gabber235.typewriter.entries.data.minecraft.applyGenericEntityData
 import me.gabber235.typewriter.entries.data.minecraft.living.applyLivingEntityData
+import me.gabber235.typewriter.entries.entity.custom.state
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
@@ -76,6 +77,9 @@ class PlayerEntity(
     private var entity: WrapperPlayer
     override val entityId: Int
         get() = entity.entityId
+
+    override val state: EntityState
+        get() = entity.entityType.state(properties)
 
     init {
         val uuid = UUID.randomUUID()

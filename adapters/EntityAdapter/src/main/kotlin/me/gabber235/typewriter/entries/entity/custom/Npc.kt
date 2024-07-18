@@ -5,23 +5,13 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
-import me.gabber235.typewriter.entries.data.minecraft.display.BillboardConstraintProperty
-import me.gabber235.typewriter.entries.data.minecraft.display.TranslationProperty
 import me.gabber235.typewriter.entries.entity.minecraft.PlayerEntity
-import me.gabber235.typewriter.entries.entity.minecraft.TextDisplayEntity
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.ref
-import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.Sound
-import me.gabber235.typewriter.utils.Vector
-import me.gabber235.typewriter.utils.asMini
-import me.gabber235.typewriter.utils.asMiniWithResolvers
-import me.tofaa.entitylib.meta.display.AbstractDisplayMeta
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -83,6 +73,9 @@ class NpcEntity(
 
     override val entityId: Int
         get() = namePlate.entityId
+
+    override val state: EntityState
+        get() = namePlate.state
 
     override fun applyProperties(properties: List<EntityProperty>) {
         if (properties.any { it is SkinProperty }) {

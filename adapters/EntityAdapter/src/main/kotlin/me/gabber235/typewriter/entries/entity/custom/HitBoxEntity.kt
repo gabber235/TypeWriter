@@ -8,7 +8,7 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.LocationProperty
-import me.gabber235.typewriter.entry.entity.WrapperFakeEntity
+import me.gabber235.typewriter.entries.entity.WrapperFakeEntity
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
 import me.gabber235.typewriter.entry.entries.EntityProperty

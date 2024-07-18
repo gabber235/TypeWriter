@@ -90,11 +90,13 @@ sealed interface ActivityContext {
     val isViewed: Boolean
 
     val viewers: List<Player>
+    val entityState: EntityState
 }
 
 class SharedActivityContext(
     override val instanceRef: Ref<out EntityInstanceEntry>,
     override val viewers: List<Player>,
+    override val entityState: EntityState = EntityState(),
 ) : ActivityContext {
     override val isViewed: Boolean
         get() = viewers.isNotEmpty()
@@ -103,7 +105,8 @@ class SharedActivityContext(
 class IndividualActivityContext(
     override val instanceRef: Ref<out EntityInstanceEntry>,
     val viewer: Player,
-    override val isViewed: Boolean,
+    override val isViewed: Boolean = false,
+    override val entityState: EntityState = EntityState(),
 ) : ActivityContext {
     override val viewers: List<Player>
         get() = listOf(viewer)

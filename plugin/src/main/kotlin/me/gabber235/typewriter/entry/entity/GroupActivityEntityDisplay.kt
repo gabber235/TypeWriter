@@ -15,7 +15,7 @@ class GroupActivityEntityDisplay(
     private val suppliers: List<Pair<PropertySupplier<*>, Int>>,
     private val spawnLocation: Location,
     private val group: GroupEntry,
-): AudienceFilter(ref), TickableDisplay, ActivityEntityDisplay {
+) : AudienceFilter(ref), TickableDisplay, ActivityEntityDisplay {
     private val activityManagers = ConcurrentHashMap<GroupId, ActivityManager<in SharedActivityContext>>()
     private val entities = ConcurrentHashMap<UUID, DisplayEntity>()
 
@@ -58,7 +58,14 @@ class GroupActivityEntityDisplay(
 
         activityManagers.forEach { (groupId, manager) ->
             val viewers = groupViewers(groupId)
-            val context = SharedActivityContext(ref, viewers)
+
+            // This is not an exact solution.
+            // When the state is different between players, it might look weird.
+            // But there is no real solution to this.
+            // So we pick the first entity's state and use to try and keep the state consistent.
+            val entityState = entities[viewers.firstOrNull()?.uniqueId]?.state ?: EntityState()
+
+            val context = SharedActivityContext(ref, viewers, entityState)
             manager.tick(context)
         }
 
@@ -98,5 +105,6 @@ class GroupActivityEntityDisplay(
         val groupId = group.groupId(player) ?: GroupId(player.uniqueId)
         return activityManagers[groupId]?.location?.toLocation()
     }
+
     override fun canView(playerId: UUID): Boolean = canConsider(playerId)
 }

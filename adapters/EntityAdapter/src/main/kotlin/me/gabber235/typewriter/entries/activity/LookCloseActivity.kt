@@ -5,9 +5,12 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.GenericEntityActivityEntry
 import me.gabber235.typewriter.snippets.snippet
+import org.bukkit.Color
 import org.bukkit.GameMode
+import org.bukkit.Particle
+import org.bukkit.Particle.DustOptions
 import org.bukkit.entity.Player
-import java.util.*
+import org.bukkit.util.Vector
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
@@ -75,7 +78,8 @@ class LookCloseActivity(
 
         this.target = target
 
-        val direction = target.location.toVector().subtract(currentLocation.toVector()).normalize()
+        val npcEyeLocation = currentLocation.toVector().add(Vector(0.0, context.entityState.eyeHeight, 0.0))
+        val direction = target.eyeLocation.toVector().subtract(npcEyeLocation).normalize()
 
 
         val targetYaw = getLookYaw(direction.x, direction.z)
@@ -110,6 +114,9 @@ class LookCloseActivity(
 
         val location: LocationProperty
             get() = player.location.toProperty()
+
+        val eyeLocation: LocationProperty
+            get() = player.eyeLocation.toProperty()
     }
 
 }

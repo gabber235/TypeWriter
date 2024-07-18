@@ -13,7 +13,7 @@ import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.SimpleEntityDefinition
 import me.gabber235.typewriter.entry.entity.SimpleEntityInstance
-import me.gabber235.typewriter.entry.entity.WrapperFakeEntity
+import me.gabber235.typewriter.entries.entity.WrapperFakeEntity
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.packetevents.meta
 import me.gabber235.typewriter.utils.Sound

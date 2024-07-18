@@ -7,10 +7,7 @@ import me.gabber235.typewriter.adapters.modifiers.OnlyTags
 import me.gabber235.typewriter.entries.data.minecraft.living.toProperty
 import me.gabber235.typewriter.entries.entity.minecraft.PlayerEntity
 import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.entity.FakeEntity
-import me.gabber235.typewriter.entry.entity.LocationProperty
-import me.gabber235.typewriter.entry.entity.SimpleEntityDefinition
-import me.gabber235.typewriter.entry.entity.skin
+import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.gabber235.typewriter.utils.Sound
@@ -43,6 +40,9 @@ class SelfNpc(
     player: Player,
 ) : FakeEntity(player) {
     private val playerEntity = PlayerEntity(player, player.name)
+
+    override val state: EntityState
+        get() = playerEntity.state
 
     init {
         setup()

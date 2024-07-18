@@ -18,6 +18,9 @@ internal class DisplayEntity(
 
     private var lastSoundLocation = activityManager.location
 
+    val state: EntityState
+        get() = entity.state
+
     init {
         entity.spawn(activityManager.location)
         applyProperties()

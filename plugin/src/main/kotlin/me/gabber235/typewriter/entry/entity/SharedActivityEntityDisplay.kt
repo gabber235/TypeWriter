@@ -48,7 +48,12 @@ class SharedActivityEntityDisplay(
     override fun tick() {
         consideredPlayers.forEach { it.refresh() }
 
-        activityManager?.tick(SharedActivityContext(ref, players))
+        // This is not an exact solution.
+        // When the state is different between players, it might look weird.
+        // But there is no real solution to this.
+        // So we pick the first entity's state and use to try and keep the state consistent.
+        val entityState = entities.values.firstOrNull()?.state ?: EntityState()
+        activityManager?.tick(SharedActivityContext(ref, players, entityState))
         entities.values.forEach { it.tick() }
     }
 

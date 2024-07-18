@@ -30,7 +30,7 @@ class IndividualActivityEntityDisplay(
 
     override fun onPlayerAdd(player: Player) {
         activityManagers.computeIfAbsent(player.uniqueId) {
-            val context = IndividualActivityContext(ref, player, false)
+            val context = IndividualActivityContext(ref, player)
             val activity = activityCreator.create(context, spawnLocation.toProperty())
             val activityManager = ActivityManager(activity)
             activityManager.initialize(context)
@@ -53,7 +53,8 @@ class IndividualActivityEntityDisplay(
         activityManagers.forEach { (pid, manager) ->
             val player = server.getPlayer(pid) ?: return@forEach
             val isViewing = pid in this
-            manager.tick(IndividualActivityContext(ref, player, isViewing))
+            val entityState = entities[pid]?.state ?: EntityState()
+            manager.tick(IndividualActivityContext(ref, player, isViewing, entityState))
         }
         entities.values.forEach { it.tick() }
     }
@@ -65,7 +66,7 @@ class IndividualActivityEntityDisplay(
 
     override fun onPlayerRemove(player: Player) {
         super.onPlayerRemove(player)
-        activityManagers.remove(player.uniqueId)?.dispose(IndividualActivityContext(ref, player, false))
+        activityManagers.remove(player.uniqueId)?.dispose(IndividualActivityContext(ref, player))
     }
 
     override fun dispose() {
@@ -73,7 +74,7 @@ class IndividualActivityEntityDisplay(
         entities.values.forEach { it.dispose() }
         entities.clear()
         activityManagers.entries.forEach { (playerId, activityManager) ->
-            activityManager.dispose(IndividualActivityContext(ref, server.getPlayer(playerId) ?: return@forEach, false))
+            activityManager.dispose(IndividualActivityContext(ref, server.getPlayer(playerId) ?: return@forEach))
         }
         activityManagers.clear()
     }

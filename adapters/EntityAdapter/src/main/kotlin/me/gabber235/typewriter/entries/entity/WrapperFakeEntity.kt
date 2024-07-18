@@ -1,18 +1,25 @@
-package me.gabber235.typewriter.entry.entity
+package me.gabber235.typewriter.entries.entity
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType
+import me.gabber235.typewriter.entries.entity.custom.state
+import me.gabber235.typewriter.entry.entity.EntityState
+import me.gabber235.typewriter.entry.entity.FakeEntity
+import me.gabber235.typewriter.entry.entity.LocationProperty
 import me.gabber235.typewriter.entry.entries.EntityProperty
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.entity.Player
 
 abstract class WrapperFakeEntity(
-    type: EntityType,
+    val type: EntityType,
     player: Player,
 ) : FakeEntity(player) {
     protected val entity = WrapperEntity(type)
 
     override val entityId: Int
         get() = entity.entityId
+
+    override val state: EntityState
+        get() = type.state(properties)
 
     override fun applyProperties(properties: List<EntityProperty>) {
         entity.entityMeta.setNotifyAboutChanges(false)

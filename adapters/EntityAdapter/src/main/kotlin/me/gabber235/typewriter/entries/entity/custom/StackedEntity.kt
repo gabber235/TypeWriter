@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entity.EntityState
 import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.LocationProperty
 import me.gabber235.typewriter.entry.entries.EntityData
@@ -48,6 +49,9 @@ class StackedEntity(
     private val entities: List<FakeEntity> = definitions.map { it.create(player) }
     override val entityId: Int
         get() = entities.firstOrNull()?.entityId ?: -1
+
+    override val state: EntityState
+        get() = entities.firstOrNull()?.state ?: EntityState()
 
     override fun applyProperties(properties: List<EntityProperty>) {
         if (entities.isEmpty()) return

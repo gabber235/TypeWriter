@@ -7,6 +7,7 @@ import me.gabber235.typewriter.entries.data.minecraft.display.TranslationPropert
 import me.gabber235.typewriter.entries.entity.minecraft.TextDisplayEntity
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.entity.EntityState
 import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.LocationProperty
 import me.gabber235.typewriter.entry.entity.SimpleEntityDefinition
@@ -72,6 +73,9 @@ class NamedEntity(
 
     override val entityId: Int
         get() = baseEntity.entityId
+
+    override val state: EntityState
+        get() = baseEntity.state
 
     init {
         val hologramText = hologram()
