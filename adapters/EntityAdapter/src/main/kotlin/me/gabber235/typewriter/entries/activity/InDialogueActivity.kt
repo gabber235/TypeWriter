@@ -5,6 +5,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.dialogue.currentDialogue
+import me.gabber235.typewriter.entry.dialogue.speakersInDialogue
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.ActivityContext
 import me.gabber235.typewriter.entry.entity.EntityActivity
@@ -12,6 +13,7 @@ import me.gabber235.typewriter.entry.entity.LocationProperty
 import me.gabber235.typewriter.entry.entity.SingleChildActivity
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
+import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
 import me.gabber235.typewriter.entry.entries.GenericEntityActivityEntry
 import me.gabber235.typewriter.entry.priority
 import me.gabber235.typewriter.utils.logErrorIfNull
@@ -75,7 +77,7 @@ class InDialogueActivity(
         val definition =
             context.instanceRef.get()?.definition.logErrorIfNull("Could not find definition, this should not happen. Please report this on the TypeWriter Discord!")
                 ?: return idleActivity
-        val inDialogue = context.viewers.filter { it.currentDialogue?.speaker == definition }
+        val inDialogue = context.viewers.filter { it.speakersInDialogue.any { it.id == definition.id } }
 
         trackers.keys.removeIf { uuid -> inDialogue.none { it.uniqueId == uuid } }
 
