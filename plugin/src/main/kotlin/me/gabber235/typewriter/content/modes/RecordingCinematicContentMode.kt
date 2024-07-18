@@ -33,22 +33,9 @@ import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.associate
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.filter
-import kotlin.collections.filterIsInstance
-import kotlin.collections.first
-import kotlin.collections.forEach
-import kotlin.collections.map
-import kotlin.collections.mapNotNull
-import kotlin.collections.mapOf
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
-import kotlin.collections.sorted
-import kotlin.collections.toList
 import kotlin.reflect.KClass
 
 inline fun <reified T : Any> ComponentContainer.recordingCinematic(
@@ -184,8 +171,9 @@ abstract class RecordingCinematicContentMode<T : Any>(
         super.initialize()
 
         // Load in the old tape if it exists
-        val asset = asset ?: throw IllegalStateException("No asset found for recording cinematic after setup, this should not happen. Asset: '${context.fieldValue}'")
-        val oldTapeData = assetManager.fetchAsset(asset)
+        val asset = asset
+            ?: throw IllegalStateException("No asset found for recording cinematic after setup, this should not happen. Asset: '${context.fieldValue}'")
+        val oldTapeData = if (assetManager.containsAsset(asset)) assetManager.fetchAsset(asset) else null
         if (oldTapeData != null) {
             tape = gson.fromJson(oldTapeData, tape.javaClass)
         }
