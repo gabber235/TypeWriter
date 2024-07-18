@@ -26,10 +26,10 @@ import org.bukkit.entity.Player
 class CinematicEntry(
     override val id: String = "",
     override val name: String = "",
-    @SerializedName("triggers")
-    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
+    @SerializedName("triggers")
+    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
     @SerializedName("page")
     @Page(PageType.CINEMATIC)
     @Help("The cinematic page to start.")

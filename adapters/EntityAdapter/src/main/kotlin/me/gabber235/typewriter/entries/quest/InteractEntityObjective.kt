@@ -33,8 +33,8 @@ class InteractEntityObjective(
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry {
     override val display: String
-        get() = overrideDisplay.orElseGet {
+        get() = overrideDisplay.orElseGet { displayTemplate }.run {
             val entityName = entity.get()?.displayName ?: ""
-            displayTemplate.replace("<entity>", entityName)
+            replace("<entity>", entityName)
         }
 }
