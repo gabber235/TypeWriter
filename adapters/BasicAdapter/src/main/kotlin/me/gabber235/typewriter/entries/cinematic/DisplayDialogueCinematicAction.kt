@@ -92,11 +92,9 @@ class DisplayDialogueCinematicAction(
         val segment = (segments activeSegmentAt frame)
 
         if (segment == null) {
-            if (player.exp > 0f || player.level > 0) {
+            if (previousSegment != null) {
                 player.exp = 0f
                 player.level = 0
-            }
-            if (previousSegment != null) {
                 reset?.invoke(player)
                 previousSegment = null
             }
