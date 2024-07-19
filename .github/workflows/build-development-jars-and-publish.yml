@@ -92,9 +92,10 @@ jobs:
           arguments: publishPluginPublicationToHangar --scan
           build-root-directory: ./plugin
       - name: Add Tag
-        uses: rickstaa/action-create-tag@v1
-        id: "tag_create"
+        uses: laputansoft/github-tag-action@v4.6
         with:
+          github_token: ${{ env.github-token }}
+          default_bump: false
           tag: "v${{ steps.vars.outputs.version }}"
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
