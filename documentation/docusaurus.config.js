@@ -192,7 +192,7 @@ const config = {
             },
         ],
         "rive-loader",
-        require.resolve("./plugins/tailwind/tailwind-config.js"),
+        require.resolve("./plugins/tailwind/index.js"),
         require.resolve("./plugins/compression/index.js"),
     ]
 };

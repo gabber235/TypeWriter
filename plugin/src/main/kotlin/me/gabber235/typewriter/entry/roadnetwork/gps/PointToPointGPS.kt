@@ -274,7 +274,7 @@ class PointToPointGPS(
 
         pairs.filter { it.second != null }.forEach { (node, edges) ->
             newNodes += node
-            newEdges += edges.orEmpty()
+            newEdges += edges!!
         }
 
         return network.copy(

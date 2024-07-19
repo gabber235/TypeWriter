@@ -7,7 +7,7 @@ module.exports = {
         container: false,
     },
     darkMode: ["class", '[data-theme="dark"]'],
-    content: ["./src/**/*.{jsx,tsx,html}"],
+    content: ["./src/**/*.{jsx,tsx,html}", "./docs/**/*.mdx"],
     theme: {
         extend: {
             fontFamily: {
@@ -23,6 +23,7 @@ module.exports = {
             },
             colors: {
                 primary: 'var(--ifm-color-primary)',
+                secondary: 'var(--ifm-color-secondary)',
             },
         },
     },
