@@ -5,7 +5,7 @@ on:
   
 jobs:
   build-publish-development:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     concurrency:
       group: build-publish-beta
       cancel-in-progress: true
@@ -91,6 +91,11 @@ jobs:
         with:
           arguments: publishPluginPublicationToHangar --scan
           build-root-directory: ./plugin
+      - name: Add Tag
+        uses: rickstaa/action-create-tag@v1
+        id: "tag_create"
+        with:
+          tag: "v${{ steps.vars.outputs.version }}"
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
         with:
