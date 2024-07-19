@@ -57,7 +57,10 @@ class PointToPointGPS(
             network = constructNewNetwork(network, startPair, endPair)
         }
 
-        val nodes = ComputedMap { id: RoadNodeId -> network.nodes.firstOrNull { it.id == id } }
+        val nodes = ComputedMap { id: RoadNodeId ->
+            network.nodes.firstOrNull { it.id == id }
+                ?: throw IllegalStateException("Could not find node $id in the network, possible nodes: ${network.nodes.map { it.id }}, edges: ${network.edges}, start: $startPair, end: $endPair")
+        }
         val path = findPath(nodes, network.edges, previousPath, startPair.first, endPair.first)
         if (path.isFailure) {
             return@switchContext path.exceptionOrNull()?.let { failure(it) }
@@ -115,7 +118,8 @@ class PointToPointGPS(
                 if (visited.containsKey(edge.end)) continue
 
 
-                val next = nodes[edge.end] ?: throw IllegalStateException("Could not find node ${edge.end} in the network, possible nodes: ${nodes.keys}")
+                val next = nodes[edge.end]
+                    ?: throw IllegalStateException("Could not find node ${edge.end} in the network, possible nodes: ${nodes.keys}")
                 insertInspecting(end.location, startEndDistance, edge, next, current, inspecting)
             }
         }
@@ -156,7 +160,8 @@ class PointToPointGPS(
                 if (edge.end != current.node) continue
                 if (visited.containsKey(edge.start)) continue
 
-                val next = nodes[edge.start] ?: throw IllegalStateException("Could not find node ${edge.start} in the network, possible nodes: ${nodes.keys}")
+                val next = nodes[edge.start]
+                    ?: throw IllegalStateException("Could not find node ${edge.start} in the network, possible nodes: ${nodes.keys}")
                 insertInspecting(start.location, startEndDistance, edge, next, current, inspecting)
             }
         }
