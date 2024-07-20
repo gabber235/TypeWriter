@@ -384,6 +384,9 @@ function CustomFieldInspector({
             />
         );
     }
+    if (editor === "floatRange") {
+        return <FloatRangeField value={value} path={path} />;
+    }
     return (
         <div className="text-red-500 dark:text-red-400 text-xs">
             Unknown custom editor: {editor}
@@ -695,6 +698,29 @@ function OptionalField({ value, field, path, pages }: OptionalFieldProps) {
                 value={value.value}
                 pages={pages}
             />
+        </div>
+    );
+}
+
+type FloatRange = { start: number, end: number };
+
+function FloatRangeField({ value, path }: { value: FloatRange, path: string }) {
+    const { start, end } = value;
+    return (
+        <div className="flex flex-col space-y-1 w-full">
+            <FieldHeader name={path} />
+            <div className="flex space-x-1 w-full">
+                <CordPropertyField
+                    value={start}
+                    display="Min"
+                    color="text-red-500"
+                />
+                <CordPropertyField
+                    value={end}
+                    display="Max"
+                    color="text-green-500"
+                />
+            </div>
         </div>
     );
 }
