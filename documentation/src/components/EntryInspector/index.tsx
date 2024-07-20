@@ -36,7 +36,7 @@ export function EntryInspector({
     if (blueprint == null) return null;
 
     return (
-        <div className="">
+        <div className="overflow-x-hidden">
             <div
                 className="text-xl font-bold mb-2"
                 style={{ color: blueprint.color }}
@@ -96,6 +96,7 @@ function SimpleValueField({
             <div className="rounded-md bg-[#0000000d] dark:bg-[#00000033] p-2 text-gray-700 dark:text-white text-xs w-full flex items-center">
                 <Icon icon={icon} className="w-5 h-5 mr-2" />
                 {value}
+                {!value && value !== 0 && <span className="text-gray-500 dark:text-gray-400 text-xs">(empty)</span>}
             </div>
         </div>
     );
@@ -387,6 +388,9 @@ function CustomFieldInspector({
     if (editor === "floatRange") {
         return <FloatRangeField value={value} path={path} />;
     }
+    if (editor === "skin") {
+        return <SkinFieldEditor path={path} value={value} />;
+    }
     return (
         <div className="text-red-500 dark:text-red-400 text-xs">
             Unknown custom editor: {editor}
@@ -650,7 +654,7 @@ function SoundSourceField({
     path,
 }: SoundSourceFieldProps) {
     if (type === "self") {
-        return <SimpleValueField value="Self" icon="mdi:volume-high" />;
+        return <SimpleValueField value="Self" icon="mdi:volume-high" name={path} />;
     }
     if (type === "emitter") {
         return <EntryReferenceField entryId={entryId} pages={pages} path={path} />;
@@ -720,6 +724,52 @@ function FloatRangeField({ value, path }: { value: FloatRange, path: string }) {
                     display="Max"
                     color="text-green-500"
                 />
+            </div>
+        </div>
+    );
+}
+
+function SkinFieldEditor({ path, value, }: { path: string, value: { texture: string, signature: string } }) {
+    const getSkinUrl = (textureData: string) => {
+        if (!textureData) return null;
+        try {
+            const bytes = atob(textureData);
+            const json = JSON.parse(bytes);
+            const url = json.textures.SKIN.url;
+            if (typeof url !== 'string') return null;
+            const id = url.replace('http://textures.minecraft.net/texture/', '');
+            return `https://nmsr.nickac.dev/fullbody/${id}`;
+        } catch (e) {
+            console.error('Error parsing skin data:', e);
+            return null;
+        }
+    };
+
+    const skinUrl = getSkinUrl(value?.texture);
+
+    return (
+        <div className="flex flex-col space-y-1">
+            <FieldHeader name={path} />
+            <div className="flex space-x-4">
+                {skinUrl && (
+                    <img
+                        src={skinUrl}
+                        alt="Skin Preview"
+                        className="w-24 h-auto"
+                    />
+                )}
+                <div className="flex-grow space-y-2">
+                    <SimpleValueField
+                        name={`${path}.texture`}
+                        value={value?.texture}
+                        icon="icon-park-solid:texture-two"
+                    />
+                    <SimpleValueField
+                        name={`${path}.signature`}
+                        value={value?.signature}
+                        icon="fa6-solid:signature"
+                    />
+                </div>
             </div>
         </div>
     );
