@@ -106,7 +106,7 @@ import java.util.regex.Pattern
  * Day-of-week field &quot;FRI-MON&quot; is invalid,but &quot;FRI-SUN,MON&quot; is valid
  *
 </P> */
-class CronExpression @JvmOverloads constructor(val expression: String, withSeconds: Boolean = true) {
+class CronExpression @JvmOverloads constructor(val expression: String, val withSeconds: Boolean = true) {
 	internal enum class CronFieldType(val from: Int, val to: Int, val names: List<String>?) {
 		SECOND(0, 59, null) {
 			override fun getValue(dateTime: ZonedDateTime): Int {

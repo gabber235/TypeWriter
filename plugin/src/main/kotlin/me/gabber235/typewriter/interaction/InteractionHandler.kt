@@ -133,14 +133,23 @@ class InteractionHandler : Listener, KoinComponent {
         }
         interactions.clear()
         interactions.putAll(server.onlinePlayers.map { it.uniqueId to Interaction(it) })
+        interactions.forEach { (_, interaction) ->
+            interaction.setup()
+        }
     }
 
     // When a player tries to execute a command, we need to end the dialogue.
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
+        val command = event.message.removePrefix("/")
+        // We don't want to end the dialogue if the player is running a typewriter command
+        if (command.startsWith("typewriter")) return
+        if (command.startsWith("tw")) return
+
+
         // If this is a custom command, we don't want to end the dialogue
         val entry = Query.firstWhere<CustomCommandEntry> {
-            it.command == event.message.removePrefix("/")
+            command.startsWith(it.command)
         }
         if (entry != null) return
         DIALOGUE_END triggerFor event.player

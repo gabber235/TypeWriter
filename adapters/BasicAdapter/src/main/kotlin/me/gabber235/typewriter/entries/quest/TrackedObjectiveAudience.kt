@@ -23,10 +23,11 @@ import org.bukkit.event.EventHandler
  * This could be used to show a boss bar or sidebar based on if a player has an objective showing.
  */
 class TrackedObjectiveAudience(
-    override val id: String,
-    override val name: String,
-    override val children: List<Ref<AudienceEntry>>
-) : AudienceFilterEntry {
+    override val id: String = "",
+    override val name: String = "",
+    override val children: List<Ref<AudienceEntry>> = emptyList(),
+    override val inverted: Boolean = false,
+) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = TrackedObjectiveAudienceFilter(
         ref()
     )

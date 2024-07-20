@@ -3,6 +3,8 @@ package me.gabber235.typewriter
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
+import dev.jorel.commandapi.CommandAPI
+import dev.jorel.commandapi.CommandAPIBukkitConfig
 import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.adapters.AdapterLoader
@@ -29,7 +31,6 @@ import me.gabber235.typewriter.ui.CommunicationHandler
 import me.gabber235.typewriter.ui.PanelHost
 import me.gabber235.typewriter.ui.Writers
 import me.gabber235.typewriter.utils.createBukkitDataParser
-import me.gabber235.typewriter.utils.syncCommands
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
@@ -44,7 +45,6 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
-import org.patheloper.mapping.PatheticMapper
 import java.util.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
@@ -91,10 +91,13 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             logger(MinecraftLogger(logger))
         }
 
+        CommandAPI.onLoad(CommandAPIBukkitConfig(this).usePluginNamespace())
+
         get<AdapterLoader>().loadAdapters()
     }
 
     override suspend fun onEnableAsync() {
+        CommandAPI.onEnable()
         typeWriterCommand()
 
         if (!server.pluginManager.isPluginEnabled("packetevents")) {
@@ -123,9 +126,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             PlaceholderExpansion.register()
         }
 
-        syncCommands()
         BStatsMetrics.registerMetrics()
-        PatheticMapper.initialize(this)
 
         // We want to initialize all the adapters after all the plugins have been enabled to make
         // sure
@@ -144,7 +145,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
     val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
 
     override suspend fun onDisableAsync() {
-        PatheticMapper.shutdown()
+        CommandAPI.onDisable()
         get<AdapterLoader>().shutdown()
         get<StagingManager>().shutdown()
         get<EntityHandler>().shutdown()

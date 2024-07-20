@@ -3,6 +3,7 @@ package me.gabber235.typewriter.entries.cinematic
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBlockChange
+import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -41,15 +42,14 @@ data class SetFakeBlockSegment(
 
 class SetFakeBlockCinematicAction(
     private val player: Player,
-    private val entry: SetFakeBlockCinematicEntry,
+    entry: SetFakeBlockCinematicEntry,
 ) : SimpleCinematicAction<SetFakeBlockSegment>() {
     override val segments: List<SetFakeBlockSegment> = entry.segments
 
     override suspend fun startSegment(segment: SetFakeBlockSegment) {
         super.startSegment(segment)
 
-        val type = StateTypes.getByName(segment.block.name)
-        val state = WrappedBlockState.getDefaultState(type)
+        val state = SpigotConversionUtil.fromBukkitBlockData(segment.block.createBlockData())
         val packet = WrapperPlayServerBlockChange(segment.location.toVector3i(), state.globalId)
         packet.sendPacketTo(player)
     }

@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entry.entries
 
+import dev.jorel.commandapi.CommandTree
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.content.ContentContext
@@ -15,19 +16,7 @@ interface CustomCommandEntry : EventEntry {
     @Help("The command to register. Do not include the leading slash.")
     val command: String
 
-    fun filter(player: Player, commandLabel: String, args: Array<out String>): CommandFilterResult =
-        CommandFilterResult.Success
-
-    fun execute(player: Player, commandLabel: String, args: Array<out String>) {
-        triggerAllFor(player)
-    }
-
-    sealed interface CommandFilterResult {
-        data object Success : CommandFilterResult
-        data object Failure : CommandFilterResult
-        data object FailureWithDefaultMessage : CommandFilterResult
-        data class FailureWithMessage(val message: String) : CommandFilterResult
-    }
+    fun CommandTree.builder()
 
     companion object
 }
@@ -71,6 +60,10 @@ class Event(val player: Player, val triggers: List<EventTrigger>) {
 
 interface EventTrigger {
     val id: String
+}
+
+object EmptyTrigger : EventTrigger {
+    override val id: String = ""
 }
 
 data class EntryTrigger(override val id: String) : EventTrigger {

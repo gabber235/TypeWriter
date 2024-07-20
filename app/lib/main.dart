@@ -39,7 +39,11 @@ class TypeWriterApp extends HookConsumerWidget {
       routerConfig: router.config(
         navigatorObservers: () => <NavigatorObserver>[
           InvalidatorNavigatorObserver(
-            () => ref.invalidate(currentRouteDataProvider),
+            () async {
+              // We don't want to invalidate during the build phase, so we wait
+              await WidgetsBinding.instance.endOfFrame;
+              ref.invalidate(currentRouteDataProvider);
+            },
           ),
         ],
       ),

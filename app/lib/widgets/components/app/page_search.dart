@@ -55,8 +55,13 @@ Fuzzy<Page> _fuzzyPages(_FuzzyPagesRef ref) {
       keys: [
         WeightedKey(
           name: "name",
-          weight: 0.8,
+          weight: 0.6,
           getter: (page) => page.pageName.formatted,
+        ),
+        WeightedKey(
+          name: "chapter",
+          weight: 0.4,
+          getter: (page) => page.chapter.formatted,
         ),
         WeightedKey(
           name: "type",
@@ -83,12 +88,14 @@ class PageFetcher extends SearchFetcher {
   String get title => "Pages";
 
   @override
-  List<SearchElement> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
+  List<String> get quantifiers =>
+      ["p", "ep", "page", "pages", "existing_page", "existing_pages"];
+
+  @override
+  List<SearchElement> fetch(PassingRef ref, String query) {
     final fuzzy = ref.read(_fuzzyPagesProvider);
 
-    final results = fuzzy.search(search.query);
+    final results = fuzzy.search(query);
 
     return results.map((result) {
       return PageSearchElement(
@@ -107,6 +114,28 @@ class PageFetcher extends SearchFetcher {
   }
 }
 
+@riverpod
+Fuzzy<PageType> _fuzzyPageTypes(_FuzzyPageTypesRef ref) {
+  const types = PageType.values;
+  return Fuzzy(
+    types,
+    options: FuzzyOptions(
+      threshold: 0.4,
+      sortFn: (a, b) => a.matches
+          .map((e) => e.score)
+          .sum
+          .compareTo(b.matches.map((e) => e.score).sum),
+      keys: [
+        WeightedKey(
+          name: "name",
+          weight: 1,
+          getter: (type) => type.name,
+        ),
+      ],
+    ),
+  );
+}
+
 class AddPageFetcher extends SearchFetcher {
   AddPageFetcher({this.onAdded, this.disabled = false});
 
@@ -119,9 +148,31 @@ class AddPageFetcher extends SearchFetcher {
   String get title => "Add Page";
 
   @override
-  List<SearchElement> fetch(PassingRef ref) {
-    return PageType.values.map((type) {
-      return AddPageSearchElement(type, onAdded: onAdded);
+  List<String> get quantifiers => [
+        "p",
+        "page",
+        "pages",
+        "np",
+        "ap",
+        "pa",
+        "add",
+        "add_page",
+        "add_pages",
+        "page_add",
+        "pages_add",
+        "new",
+        "new_page",
+        "new_pages",
+      ];
+
+  @override
+  List<SearchElement> fetch(PassingRef ref, String query) {
+    final fuzzy = ref.read(_fuzzyPageTypesProvider);
+
+    final results = fuzzy.search(query);
+
+    return results.map((result) {
+      return AddPageSearchElement(result.item, onAdded: onAdded);
     }).toList();
   }
 

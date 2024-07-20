@@ -31,7 +31,7 @@ class DisplayTypeData(
 }
 
 data class DisplayTypeProperty(val display: DisplayType) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<DisplayTypeProperty>(DisplayTypeProperty::class)
+    companion object : SinglePropertyCollectorSupplier<DisplayTypeProperty>(DisplayTypeProperty::class, DisplayTypeProperty(DisplayType.NONE))
 }
 
 fun applyDisplayTypeData(entity: WrapperEntity, property: DisplayTypeProperty) {

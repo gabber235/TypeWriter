@@ -80,12 +80,13 @@ class FactDatabase : KoinComponent {
     }
 
     private fun removeExpiredFacts() {
-        val entries = cache.keys.mapNotNull { Query.findById<ExpirableFactEntry>(it.entryId) }.associateBy { it.id }
-
-        cache.entries.removeIf { (id, data) ->
-            val entry = entries[id.entryId] ?: return@removeIf false
-            entry.hasExpired(id, data)
+        val expiredIds = cache.entries.mapNotNull { (id, data) ->
+            val entry = Query.findById<ExpirableFactEntry>(id.entryId) ?: return@mapNotNull null
+            if (!entry.hasExpired(id, data)) return@mapNotNull null
+            id
         }
+
+        expiredIds.forEach { cache.remove(it) }
     }
 
     internal operator fun get(id: FactId): FactData? = cache[id]

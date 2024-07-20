@@ -8,11 +8,12 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.AudienceEntry
 import me.gabber235.typewriter.entry.entries.AudienceFilter
 import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
+import me.gabber235.typewriter.entry.entries.Invertible
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.utils.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import org.bukkit.event.inventory.InventoryEvent
+import org.bukkit.event.inventory.*
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.inventory.PlayerInventory
@@ -36,7 +37,8 @@ class HoldingItemAudienceEntry(
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     @Help("The item to check for.")
     val item: Item = Item.Empty,
-) : AudienceFilterEntry {
+    override val inverted: Boolean = false,
+) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = HoldingItemAudienceFilter(ref(), item)
 }
 
@@ -57,10 +59,20 @@ class HoldingItemAudienceFilter(
     }
 
     @EventHandler
+    fun onInventoryClickEvent(event: InventoryClickEvent) = onInventoryEvent(event)
+
+    @EventHandler
+    fun onInventoryDragEvent(event: InventoryDragEvent) = onInventoryEvent(event)
+
+    @EventHandler
+    fun onInventoryOpenEvent(event: InventoryOpenEvent) = onInventoryEvent(event)
+
+    @EventHandler
+    fun onInventoryCloseEvent(event: InventoryCloseEvent) = onInventoryEvent(event)
+
+    @EventHandler
     fun onInventoryEvent(event: InventoryEvent) {
-        val inventory = event.inventory
-        if (inventory !is PlayerInventory) return
-        val player = inventory.holder as? Player ?: return
+        val player = event.view.player as? Player ?: return
         player.refresh()
     }
 

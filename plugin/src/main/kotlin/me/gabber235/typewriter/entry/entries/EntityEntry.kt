@@ -4,11 +4,11 @@ import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.entry.entity.ActivityCreator
-import me.gabber235.typewriter.entry.entity.EntityCreator
+import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.utils.Sound
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.checkerframework.checker.units.qual.A
 import kotlin.reflect.KClass
 
 @Tags("speaker")
@@ -73,10 +73,63 @@ interface EntityInstanceEntry : AudienceFilterEntry {
 }
 
 @Tags("entity_activity")
-@ChildOnly
-interface EntityActivityEntry : AudienceFilterEntry, ActivityCreator, PriorityEntry {
-    override val children: List<Ref<out AudienceEntry>>
-        get() = emptyList()
+interface EntityActivityEntry : ActivityCreator, ManifestEntry
 
-    override fun display(): AudienceFilter = PassThroughFilter(ref())
+@Tags("shared_entity_activity")
+interface SharedEntityActivityEntry : EntityActivityEntry {
+    override fun create(
+        context: ActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<ActivityContext> {
+        if (context !is SharedActivityContext) throw WrongActivityContextException(context, SharedActivityContext::class, this)
+        return create(context, currentLocation) as EntityActivity<ActivityContext>
+    }
+    fun create(context: SharedActivityContext, currentLocation: LocationProperty): EntityActivity<SharedActivityContext>
 }
+
+@Tags("individual_entity_activity")
+interface IndividualEntityActivityEntry : EntityActivityEntry {
+    override fun create(
+        context: ActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<ActivityContext> {
+        if (context !is IndividualActivityContext) throw WrongActivityContextException(context, IndividualActivityContext::class, this)
+        return create(context, currentLocation) as EntityActivity<ActivityContext>
+    }
+    fun create(context: IndividualActivityContext, currentLocation: LocationProperty): EntityActivity<IndividualActivityContext>
+}
+
+@Tags("generic_entity_activity")
+interface GenericEntityActivityEntry : SharedEntityActivityEntry, IndividualEntityActivityEntry {
+    override fun create(
+        context: ActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<ActivityContext>
+
+    override fun create(
+        context: SharedActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<SharedActivityContext> {
+        return create(context as ActivityContext, currentLocation) as EntityActivity<SharedActivityContext>
+    }
+
+    override fun create(
+        context: IndividualActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<IndividualActivityContext> {
+        return create(context as ActivityContext, currentLocation) as EntityActivity<IndividualActivityContext>
+    }
+}
+
+class WrongActivityContextException(context: ActivityContext, expected: KClass<out ActivityContext>, entry: EntityActivityEntry) : IllegalStateException("""
+    |The activity context for ${entry.name} is not of the expected type.
+    |Expected: $expected
+    |Actual: $context
+    |
+    |This happens when you try to mix shared and individual activities.
+    |For example, you can't use a shared activity on an individual entity.
+    |And you can't use an individual activity on a shared entity.
+    |
+    |To fix this, you need to make sure that the activity matches the entity visibility.
+    |If you need more help, please join the TypeWriter Discord! https://discord.gg/gs5QYhfv9x
+""".trimMargin())

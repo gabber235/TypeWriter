@@ -21,6 +21,10 @@ List<Entry> manifestEntries(ManifestEntriesRef ref) {
 
   return page.entries.where((entry) {
     final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
+    if (tags.isEmpty) {
+      // Entries without a blueprint are always shown. So that the user can delete them.
+      return true;
+    }
     return tags.contains("manifest");
   }).toList();
 }
@@ -120,14 +124,14 @@ class ManifestView extends HookConsumerWidget {
           ..style = PaintingStyle.stroke,
         builder: (node) {
           final id = node.key?.value as String?;
-          if (id == null) return const InvalidEntry();
+          if (id == null) return const NonExistentEntry();
 
           final entryOnPage = entryIds.contains(id);
           if (!entryOnPage) {
             final globalEntryWithPage =
                 ref.watch(globalEntryWithPageProvider(id));
             if (globalEntryWithPage == null) {
-              return const InvalidEntry();
+              return const NonExistentEntry();
             }
 
             return ExternalEntryNode(

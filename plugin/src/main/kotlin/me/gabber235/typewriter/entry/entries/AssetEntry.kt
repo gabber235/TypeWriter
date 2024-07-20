@@ -49,7 +49,7 @@ fun getAssetFromFieldValue(fieldValue: Any?): Result<AssetEntry> {
     }
 
     val artifact = Query.findById<AssetEntry>(fieldValue)
-        ?: return failure("Could not find artifact with id $fieldValue")
+        ?: return failure("Could not find artifact with id '$fieldValue'")
 
     return Result.success(artifact)
 }

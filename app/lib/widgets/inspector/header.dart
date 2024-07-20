@@ -12,8 +12,8 @@ import "package:typewriter/widgets/inspector/headers/colored_action.dart";
 import "package:typewriter/widgets/inspector/headers/content_mode_action.dart";
 import "package:typewriter/widgets/inspector/headers/help_action.dart";
 import "package:typewriter/widgets/inspector/headers/length_action.dart";
-import "package:typewriter/widgets/inspector/headers/multiline_action.dart";
 import "package:typewriter/widgets/inspector/headers/placeholder_action.dart";
+import "package:typewriter/widgets/inspector/headers/regex_action.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
 
 part "header.g.dart";

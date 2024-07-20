@@ -77,12 +77,10 @@ class MaterialsFetcher extends SearchFetcher {
   String get title => "Materials";
 
   @override
-  List<SearchElement> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
+  List<SearchElement> fetch(PassingRef ref, String query) {
     final fuzzy = ref.read(_fuzzyMaterialsProvider);
 
-    final results = fuzzy.search(search.query);
+    final results = fuzzy.search(query);
 
     return results.map((result) {
       final material = result.item;

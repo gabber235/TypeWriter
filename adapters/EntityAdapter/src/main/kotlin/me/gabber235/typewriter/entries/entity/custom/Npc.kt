@@ -5,35 +5,16 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.OnlyTags
-import me.gabber235.typewriter.entries.data.minecraft.display.BillboardConstraintProperty
-import me.gabber235.typewriter.entries.data.minecraft.display.TranslationProperty
 import me.gabber235.typewriter.entries.entity.minecraft.PlayerEntity
-import me.gabber235.typewriter.entries.entity.minecraft.TextDisplayEntity
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.ref
-import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.Sound
-import me.gabber235.typewriter.utils.Vector
-import me.gabber235.typewriter.utils.asMini
-import me.gabber235.typewriter.utils.asMiniWithResolvers
-import me.tofaa.entitylib.meta.display.AbstractDisplayMeta
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-
-val npcNamePlate by snippet(
-    "entity.npc.nameplate", """
-    <other>
-    <reset><display_name>
-""".trimIndent()
-)
-
-val npcNamePlateOffset by snippet("entity.npc.name.offset", 0.2)
 
 @Entry("npc_definition", "A simplified premade npc", Colors.ORANGE, "material-symbols:account-box")
 @Tags("npc_definition")
@@ -59,7 +40,9 @@ class NpcDefinition(
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
 
-    override fun create(player: Player): FakeEntity = NpcEntity(player, displayName, skin, ref())
+    override fun create(player: Player): FakeEntity {
+        return NpcEntity(player, displayName, skin, ref())
+    }
 }
 
 @Entry("npc_instance", "An instance of a simplified premade npc", Colors.YELLOW, "material-symbols:account-box")
@@ -72,96 +55,57 @@ class NpcInstance(
     override val definition: Ref<NpcDefinition> = emptyRef(),
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
     @OnlyTags("generic_entity_data", "living_entity_data", "lines", "player_data")
-    override val data: List<Ref<EntityData<*>>>,
-    override val activities: List<Ref<out EntityActivityEntry>> = emptyList(),
+    override val data: List<Ref<EntityData<*>>> = emptyList(),
+    override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
 
 class NpcEntity(
     player: Player,
-    private val displayName: String,
+    displayName: String,
     private val skin: SkinProperty,
     definition: Ref<out EntityDefinitionEntry>,
 ) : FakeEntity(player) {
-    private val playerEntity = PlayerEntity(player)
-    private val hologram = TextDisplayEntity(player)
-    private val indicatorEntity = InteractionIndicatorEntity(player, definition)
+    private val namePlate = NamedEntity(player, displayName, PlayerEntity(player, displayName), definition)
 
     init {
         consumeProperties(skin)
-        val hologramText = hologram()
-        hologram.consumeProperties(
-            LinesProperty(hologramText),
-            TranslationProperty(Vector(y = npcNamePlateOffset)),
-            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER)
-        )
-        indicatorEntity.consumeProperties(
-            TranslationProperty(calculateIndicatorOffset(hologramText)),
-            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER)
-        )
     }
 
     override val entityId: Int
-        get() = playerEntity.entityId
+        get() = namePlate.entityId
+
+    override val state: EntityState
+        get() = namePlate.state
 
     override fun applyProperties(properties: List<EntityProperty>) {
         if (properties.any { it is SkinProperty }) {
-            playerEntity.consumeProperties(properties)
+            namePlate.consumeProperties(properties)
             return
         }
-        playerEntity.consumeProperties(properties + skin)
+        namePlate.consumeProperties(properties + skin)
     }
 
     override fun tick() {
-        playerEntity.tick()
-        val hologramText = hologram()
-        hologram.consumeProperties(LinesProperty(hologramText))
-        hologram.tick()
-        indicatorEntity.consumeProperties(TranslationProperty(calculateIndicatorOffset(hologramText)))
-        indicatorEntity.tick()
-    }
-
-    private fun hologram(): String {
-        val other = property(LinesProperty::class)?.lines ?: ""
-        val displayName = this.displayName
-
-        return npcNamePlate.parsePlaceholders(player).asMiniWithResolvers(
-            Placeholder.parsed("other", other),
-            Placeholder.parsed("display_name", displayName.parsePlaceholders(player)),
-        ).asMini().trim()
-    }
-
-    private fun calculateIndicatorOffset(hologramText: String): Vector {
-        val lines = hologramText.count { it == '\n' } + 1
-        val height = lines * 0.3 + npcNamePlateOffset
-        return Vector(y = height)
+        namePlate.tick()
     }
 
     override fun spawn(location: LocationProperty) {
-        playerEntity.spawn(location)
-        hologram.spawn(location)
-        indicatorEntity.spawn(location)
-        playerEntity.addPassenger(hologram)
-        playerEntity.addPassenger(indicatorEntity)
+        namePlate.spawn(location)
     }
 
     override fun addPassenger(entity: FakeEntity) {
-        playerEntity.addPassenger(entity)
+        namePlate.addPassenger(entity)
     }
 
     override fun removePassenger(entity: FakeEntity) {
-        playerEntity.removePassenger(entity)
+        namePlate.removePassenger(entity)
     }
 
     override fun contains(entityId: Int): Boolean {
-        if (playerEntity.contains(entityId)) return true
-        if (hologram.contains(entityId)) return true
-        if (indicatorEntity.contains(entityId)) return true
-        return false
+        return namePlate.contains(entityId)
     }
 
     override fun dispose() {
-        playerEntity.dispose()
-        hologram.dispose()
-        indicatorEntity.dispose()
+        namePlate.dispose()
     }
 }

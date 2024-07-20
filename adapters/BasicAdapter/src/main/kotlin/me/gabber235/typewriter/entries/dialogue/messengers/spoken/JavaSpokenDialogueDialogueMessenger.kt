@@ -50,9 +50,11 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
     }
 
     private var speakerDisplayName = ""
+    private var text = ""
     override fun init() {
         super.init()
-        speakerDisplayName = entry.speakerDisplayName
+        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
+        text = entry.text.parsePlaceholders(player)
 
         confirmationKey.listen(this, player.uniqueId) {
             state = MessengerState.FINISHED
@@ -61,7 +63,13 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
 
     override fun tick(playTime: Duration) {
         if (state != MessengerState.RUNNING) return
-        player.sendSpokenDialogue(entry.text, speakerDisplayName, entry.duration, playTime, triggers.isEmpty())
+        player.sendSpokenDialogue(
+            text,
+            speakerDisplayName,
+            entry.duration,
+            playTime,
+            triggers.isEmpty()
+        )
     }
 }
 
@@ -72,7 +80,7 @@ fun Player.sendSpokenDialogue(
     playTime: Duration,
     canFinish: Boolean
 ) {
-    val rawText = text.parsePlaceholders(this).stripped()
+    val rawText = text.stripped()
     val playedTicks = playTime.toTicks()
     val durationInTicks = typingDurationType.totalDuration(rawText, duration).toTicks()
 
@@ -97,7 +105,7 @@ fun Player.sendSpokenDialogue(
 
     val resultingLines = rawText.limitLineLength(spokenMaxLineLength).lineCount
 
-    val message = text.parsePlaceholders(this).asPartialFormattedMini(
+    val message = text.asPartialFormattedMini(
         percentage,
         padding = spokenPadding,
         minLines = spokenMinLines.coerceAtLeast(resultingLines),
@@ -105,7 +113,7 @@ fun Player.sendSpokenDialogue(
     )
 
     val component = spokenFormat.asMiniWithResolvers(
-        Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(this)),
+        Placeholder.parsed("speaker", speakerDisplayName),
         Placeholder.component("message", message),
         Placeholder.parsed("next_color", nextColor),
         Placeholder.parsed("finish_text", continueOrFinish),

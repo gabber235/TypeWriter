@@ -2,14 +2,15 @@ package me.gabber235.typewriter.entries.activity
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entity.*
-import me.gabber235.typewriter.entry.entries.EntityActivityEntry
-import me.gabber235.typewriter.entry.ref
+import me.gabber235.typewriter.entry.entries.GenericEntityActivityEntry
 import me.gabber235.typewriter.snippets.snippet
+import org.bukkit.Color
 import org.bukkit.GameMode
+import org.bukkit.Particle
+import org.bukkit.Particle.DustOptions
 import org.bukkit.entity.Player
-import java.util.*
+import org.bukkit.util.Vector
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
@@ -28,58 +29,34 @@ private val playerCloseLookRange by snippet("entity.activity.look_close.range", 
 class LookCloseActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    override val priorityOverride: Optional<Int> = Optional.empty(),
-) : EntityActivityEntry {
-    override fun create(context: TaskContext): EntityActivity = LookCloseActivity(ref())
-}
-
-class LookCloseActivity(val ref: Ref<LookCloseActivityEntry>) : EntityActivity {
-    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
-        if (!ref.canActivateFor(context)) {
-            return false
-        }
-
-        // Only if there is someone to look at
-        return context.viewers.any { player ->
-            val distance = currentLocation.distanceSqrt(player.location) ?: return@any false
-            distance <= playerCloseLookRange * playerCloseLookRange
-        }
-    }
-
-    override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
-        return LookCloseActivityTask(currentLocation)
+) : GenericEntityActivityEntry {
+    override fun create(
+        context: ActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<in ActivityContext> {
+        return LookCloseActivity(currentLocation)
     }
 }
 
-class LookCloseActivityTask(
-    override var location: LocationProperty,
-) : EntityTask {
-    inner class Target(val player: Player, private val lookupTime: Long = System.currentTimeMillis()) {
-        val shouldRefresh: Boolean
-            get() {
-                if (!player.isValid) return true
-                if (player.location.world.uid != this@LookCloseActivityTask.location.world) return true
-                if (this@LookCloseActivityTask.location.distanceSquared(player.location.toProperty()) > playerCloseLookRange * playerCloseLookRange) return true
-                return System.currentTimeMillis() - lookupTime > 1000
-            }
-
-        val location: LocationProperty
-            get() = player.location.toProperty()
-    }
-
+class LookCloseActivity(
+    override var currentLocation: LocationProperty,
+) : EntityActivity<ActivityContext> {
     private var target: Target? = null
     private val yawVelocity = Velocity(0f)
     private val pitchVelocity = Velocity(0f)
 
-    private fun findNewTarget(context: TaskContext): Target? {
+
+    override fun initialize(context: ActivityContext) {}
+
+    private fun findNewTarget(context: ActivityContext): Target? {
         val closestTarget = context.viewers
             .filter { it.isValid && it.gameMode != GameMode.SPECTATOR && !it.isInvisible }
-            .minByOrNull { location.distanceSqrt(it.location) ?: Double.POSITIVE_INFINITY }
+            .minByOrNull { currentLocation.distanceSqrt(it.location) ?: Double.POSITIVE_INFINITY }
 
         if (closestTarget == null) {
             return null
         }
-        val distance = location.distanceSqrt(closestTarget.location)
+        val distance = currentLocation.distanceSqrt(closestTarget.location)
 
         if (distance == null || distance > playerCloseLookRange * playerCloseLookRange) {
             return null
@@ -88,46 +65,86 @@ class LookCloseActivityTask(
         return Target(closestTarget)
     }
 
-    override fun tick(context: TaskContext) {
+    override fun tick(context: ActivityContext): TickResult {
         if (!context.isViewed) {
             this.target = null
-            return
+            return TickResult.CONSUMED
         }
+        if (target?.shouldRefresh == true) this.target = null
+
         var target = target
         if (target == null) target = findNewTarget(context)
-        if (target == null) return
-
-        if (target.shouldRefresh) {
-            this.target = null
-            return
-        }
+        if (target == null) return TickResult.IGNORED
 
         this.target = target
 
-        val direction = target.location.toVector().subtract(location.toVector()).normalize()
+        val npcEyeLocation = currentLocation.toVector().add(Vector(0.0, context.entityState.eyeHeight, 0.0))
+        val direction = target.eyeLocation.toVector().subtract(npcEyeLocation).normalize()
 
 
         val targetYaw = getLookYaw(direction.x, direction.z)
         val targetPitch = getLookPitch(direction.x, direction.y, direction.z)
 
-        val currentYaw = if (location.yaw - targetYaw > 180) {
-            location.yaw - 360
-        } else if (location.yaw - targetYaw < -180) {
-            location.yaw + 360
-        } else {
-            location.yaw
-        }
-        val currentPitch = location.pitch
+        val (yaw, pitch) = updateLookDirection(
+            LookDirection(currentLocation.yaw, currentLocation.pitch),
+            LookDirection(targetYaw, targetPitch),
+            yawVelocity,
+            pitchVelocity
+        )
 
-        val yaw = smoothDamp(currentYaw, targetYaw, yawVelocity, 0.2f)
-        val pitch = smoothDamp(currentPitch, targetPitch, pitchVelocity, 0.2f)
-
-        location = LocationProperty(location.world, location.x, location.y, location.z, yaw, pitch)
+        currentLocation =
+            LocationProperty(currentLocation.world, currentLocation.x, currentLocation.y, currentLocation.z, yaw, pitch)
+        return TickResult.CONSUMED
     }
 
-    override fun mayInterrupt(): Boolean = true
+    override fun dispose(context: ActivityContext) {
+        target = null
+        yawVelocity.value = 0f
+        pitchVelocity.value = 0f
+    }
 
-    override fun isComplete(): Boolean = target == null
+    inner class Target(val player: Player, private val lookupTime: Long = System.currentTimeMillis()) {
+        val shouldRefresh: Boolean
+            get() {
+                if (!player.isValid) return true
+                if (player.location.world.uid != this@Target.location.world) return true
+                if (this@Target.location.distanceSquared(player.location.toProperty()) > playerCloseLookRange * playerCloseLookRange) return true
+                return System.currentTimeMillis() - lookupTime > 1000
+            }
+
+        val location: LocationProperty
+            get() = player.location.toProperty()
+
+        val eyeLocation: LocationProperty
+            get() = player.eyeLocation.toProperty()
+    }
+
+}
+
+data class LookDirection(
+    val yaw: Float,
+    val pitch: Float,
+)
+
+fun updateLookDirection(
+    current: LookDirection,
+    target: LookDirection,
+    yawVelocity: Velocity,
+    pitchVelocity: Velocity,
+    smoothTime: Float = 0.2f
+): Pair<Float, Float> {
+    val correctedYaw = if (current.yaw - target.yaw > 180) {
+        current.yaw - 360
+    } else if (current.yaw - target.yaw < -180) {
+        current.yaw + 360
+    } else {
+        current.yaw
+    }
+
+    val yaw = smoothDamp(correctedYaw, target.yaw, yawVelocity, smoothTime)
+    val pitch = smoothDamp(current.pitch, target.pitch, pitchVelocity, smoothTime)
+
+    return yaw to pitch
 }
 
 class Velocity(var value: Float)

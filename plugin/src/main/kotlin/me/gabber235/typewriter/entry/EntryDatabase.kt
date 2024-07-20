@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.google.gson.stream.JsonReader
+import kotlinx.coroutines.runBlocking
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.customEditors
@@ -12,10 +13,7 @@ import me.gabber235.typewriter.events.PublishedBookEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.NonExistentSubtypeException
-import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
-import me.gabber235.typewriter.utils.get
-import me.gabber235.typewriter.utils.refreshAndRegisterAll
+import me.gabber235.typewriter.utils.*
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -65,7 +63,12 @@ class EntryDatabaseImpl : EntryDatabase, KoinComponent {
         val pages = readPages(gson)
 
         val newCommandEvents = pages.flatMap { it.entries.filterIsInstance<CustomCommandEntry>() }
-        this.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
+        // CommandAPI crashes when we try to register commands not on the main thread
+        runBlocking {
+            ThreadType.SYNC.switchContext {
+                this@EntryDatabaseImpl.commandEvents = CustomCommandEntry.refreshAndRegisterAll(newCommandEvents)
+            }
+        }
 
         this.entries = pages.flatMap { it.entries }
         this.entryPriority = pages.flatMap { page ->
@@ -141,7 +144,7 @@ fun JsonReader.parsePage(id: String, gson: Gson): Result<Page> {
         beginObject()
         while (hasNext()) {
             when (nextName()) {
-                "entries" -> page = page.copy(entries = parseEntries(gson))
+                "entries" -> page = page.copy(entries = parseEntries(gson, id))
                 "type" -> page = page.copy(type = PageType.fromId(nextString()) ?: PageType.SEQUENCE)
                 "priority" -> page = page.copy(priority = nextInt())
                 else -> skipValue()
@@ -157,12 +160,12 @@ fun JsonReader.parsePage(id: String, gson: Gson): Result<Page> {
     }
 }
 
-private fun JsonReader.parseEntries(gson: Gson): List<Entry> {
+private fun JsonReader.parseEntries(gson: Gson, pageId: String): List<Entry> {
     val entries = mutableListOf<Entry>()
 
     beginArray()
     while (hasNext()) {
-        val entry = parseEntry(gson) ?: continue
+        val entry = parseEntry(gson, pageId) ?: continue
         entries.add(entry)
     }
     endArray()
@@ -170,7 +173,7 @@ private fun JsonReader.parseEntries(gson: Gson): List<Entry> {
     return entries
 }
 
-private fun JsonReader.parseEntry(gson: Gson): Entry? {
+private fun JsonReader.parseEntry(gson: Gson, pageId: String): Entry? {
     return try {
         gson.fromJson(this, Entry::class.java)
     } catch (e: NonExistentSubtypeException) {
@@ -179,7 +182,7 @@ private fun JsonReader.parseEntry(gson: Gson): Entry? {
         logger.warning(
             """
 			|--------------------------------------------------------------------------
-			|Failed to parse entry: $subtypeName is not a valid entry type. (skipping)
+			|Failed to parse entry type '$subtypeName' on page '$pageId' is not a valid entry type. (skipping)
 			|
 			|This is either because an adapter is missing or due to having an outdated page entry. 
 			|

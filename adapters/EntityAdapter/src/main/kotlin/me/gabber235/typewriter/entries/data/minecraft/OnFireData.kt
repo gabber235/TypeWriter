@@ -27,7 +27,7 @@ class OnFireData(
 }
 
 data class OnFireProperty(val onFire: Boolean = false) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<OnFireProperty>(OnFireProperty::class)
+    companion object : SinglePropertyCollectorSupplier<OnFireProperty>(OnFireProperty::class, OnFireProperty(false))
 }
 
 fun applyOnFireData(entity: WrapperEntity, property: OnFireProperty) {

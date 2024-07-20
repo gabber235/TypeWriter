@@ -56,7 +56,7 @@ class Operations extends HookConsumerWidget {
         ],
         const _MoveEntry(),
         const SizedBox(height: 8),
-        const _DeleteEntry(),
+        const DeleteEntry(),
         const SizedBox(height: 8),
       ],
     );
@@ -136,8 +136,8 @@ class _MoveEntry extends HookConsumerWidget {
   }
 }
 
-class _DeleteEntry extends HookConsumerWidget {
-  const _DeleteEntry();
+class DeleteEntry extends HookConsumerWidget {
+  const DeleteEntry({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

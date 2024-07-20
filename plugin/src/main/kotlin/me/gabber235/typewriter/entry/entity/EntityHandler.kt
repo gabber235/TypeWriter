@@ -41,7 +41,7 @@ class EntityHandler : PacketListenerAbstract(), KoinComponent {
 
         val display = audienceManager
             .findDisplays(ActivityEntityDisplay::class)
-            .firstOrNull { it.playerHasEntity(event.user.uuid, entityId) } ?: return
+            .firstOrNull { it.playerSeesEntity(event.user.uuid, entityId) } ?: return
 
         val definition = display.definition ?: return
         AsyncEntityDefinitionInteract(player, entityId, definition, packet.hand, packet.action).callEvent()

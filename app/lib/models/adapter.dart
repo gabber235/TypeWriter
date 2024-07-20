@@ -262,7 +262,13 @@ extension EntryBlueprintExt on EntryBlueprint {
   }
 }
 
-final _customEditorCustomLayout = ["optional", "item", "skin", "color"];
+final _customEditorCustomLayout = [
+  "optional",
+  "item",
+  "skin",
+  "color",
+  "floatRange",
+];
 
 /// Since freezed does not support methods on data models, we have to create a separate extension class.
 extension FieldTypeExtension on FieldInfo {

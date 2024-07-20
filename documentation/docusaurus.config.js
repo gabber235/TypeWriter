@@ -12,10 +12,10 @@ const config = {
     favicon: 'img/favicon.ico',
 
     // Set the production url of your site here
-    url: 'https://gabber235.github.io',
+    url: 'https://docs.typewritermc.com',
     // Set the /<baseUrl>/ pathname under which your site is served
     // For GitHub pages deployment, it is often '/<projectName>/'
-    baseUrl: '/TypeWriter/',
+    baseUrl: '/',
 
     // GitHub pages deployment config.
     // If you aren't using GitHub pages, you don't need these.
@@ -33,6 +33,9 @@ const config = {
         defaultLocale: 'en',
         locales: ['en'],
     },
+    markdown: {
+        mermaid: true,
+    }, themes: ['@docusaurus/theme-mermaid'],
 
     presets: [
         [
@@ -44,12 +47,12 @@ const config = {
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
-                    lastVersion: '0.4.1',
+                    lastVersion: '0.4.2',
                     versions: {
-                      current: {
-                        label: 'Beta⚠️',
-                        path: 'beta',
-                      },
+                        current: {
+                            label: 'Beta ⚠️',
+                            path: 'beta',
+                        },
                     },
                 },
                 blog: {
@@ -67,6 +70,12 @@ const config = {
     themeConfig:
         /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
+            mermaid: {
+                theme: { light: 'base', dark: 'base' },
+                options: {
+                    width: 150,
+                },
+            },
             // Replace with your project's social card
             image: 'img/typewriter.png',
             navbar: {
@@ -110,12 +119,17 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Docs',
+                        title: 'Information',
                         items: [
                             {
                                 label: 'Documentation',
                                 to: '/docs/home',
                             },
+                            {
+                                label: 'Clickup',
+                                href: 'https://sharing.clickup.com/9015308602/l/h/6-901502296591-1/e32ea9f33a22632',
+                            }
+
                         ],
                     },
                     {
@@ -168,7 +182,18 @@ const config = {
             }
         }),
     plugins: [
-        "rive-loader"
+        [
+            "posthog-docusaurus",
+            {
+                apiKey: process.env.POSTHOG_API_KEY ?? true,
+                appUrl: "https://research.typewritermc.com",
+                enable_heatmaps: true,
+                enableInDevelopment: false,
+            },
+        ],
+        "rive-loader",
+        require.resolve("./plugins/tailwind/index.js"),
+        require.resolve("./plugins/compression/index.js"),
     ]
 };
 

@@ -5,14 +5,16 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPosition
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerPositionAndLook
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import lirand.api.extensions.events.SimpleListener
+import lirand.api.extensions.events.listen
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.inventory.meta
-import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
-import me.gabber235.typewriter.entries.cinematic.DisplayCameraAction.Companion.BASE_INTERPOLATION
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.*
@@ -27,21 +29,18 @@ import me.gabber235.typewriter.plugin
 import me.gabber235.typewriter.utils.*
 import me.gabber235.typewriter.utils.GenericPlayerStateProvider.*
 import me.gabber235.typewriter.utils.ThreadType.SYNC
-import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta
 import me.tofaa.entitylib.meta.display.TextDisplayMeta
-import me.tofaa.entitylib.spigot.SpigotEntityLibAPI
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerAttemptPickupItemEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityTargetEvent
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.potion.PotionEffect
@@ -119,12 +118,13 @@ data class PathPoint(
 class CameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
-) : CinematicAction, Listener {
+) : CinematicAction {
     private var previousSegment: CameraSegment? = null
     private lateinit var action: CameraAction
 
     private var originalState: PlayerState? = null
     private var interceptor: InterceptionBundle? = null
+    private var listener: Listener? = null
 
     override suspend fun setup() {
         action = if (player.isFloodgate) {
@@ -132,7 +132,6 @@ class CameraCinematicAction(
         } else {
             DisplayCameraAction(player)
         }
-        plugin.registerEvents(this)
         super.setup()
     }
 
@@ -188,11 +187,39 @@ class CameraCinematicAction(
             }
         }
 
+        listener = SimpleListener()
+        plugin.listen<EntityDamageEvent>(listener = listener!!) {
+            if (it.entity.uniqueId != player?.uniqueId) return@listen
+            it.isCancelled = true
+        }
+        plugin.listen<EntityDamageByEntityEvent>(listener = listener!!) {
+            if (it.entity.uniqueId != player?.uniqueId) return@listen
+            it.isCancelled = true
+        }
+        plugin.listen<EntityTargetEvent>(listener = listener!!) {
+            if (it.target?.uniqueId != player?.uniqueId) return@listen
+            it.isCancelled = true
+        }
+        plugin.listen<EntityTargetLivingEntityEvent>(listener = listener!!) {
+            if (it.target?.uniqueId != player?.uniqueId) return@listen
+            it.isCancelled = true
+        }
         interceptor = this.interceptPackets {
             !PacketType.Play.Client.CLICK_WINDOW
             !PacketType.Play.Client.CLICK_WINDOW_BUTTON
             !PacketType.Play.Client.USE_ITEM
             !PacketType.Play.Client.INTERACT_ENTITY
+            !PacketType.Play.Client.PLAYER_DIGGING
+            PacketType.Play.Server.WINDOW_ITEMS { event ->
+                val packet = WrapperPlayServerWindowItems(event)
+                packet.items = packet.items.map { com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY }
+            }
+            PacketType.Play.Server.SET_SLOT { event ->
+                val packet = WrapperPlayServerSetSlot(event)
+                packet.item = com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
+            }
+            // If the player is a bedrock player, we don't want to modify the location.
+            if (isFloodgate) return@interceptPackets
             PacketType.Play.Server.PLAYER_POSITION_AND_LOOK { event ->
                 val packet = WrapperPlayServerPlayerPositionAndLook(event)
                 packet.y += 500
@@ -209,7 +236,10 @@ class CameraCinematicAction(
     }
 
     private suspend fun Player.teardown() {
+        listener?.unregister()
+        listener = null
         interceptor?.cancel()
+        interceptor = null
         originalState?.let {
             SYNC.switchContext {
                 restore(it)
@@ -225,22 +255,6 @@ class CameraCinematicAction(
         super.teardown()
         action.stop()
         player.teardown()
-        unregister()
-    }
-
-    @EventHandler
-    private fun onSwapHand(event: PlayerSwapHandItemsEvent) {
-        event.isCancelled = true
-    }
-
-    @EventHandler
-    private fun onDrop(event: PlayerDropItemEvent) {
-        event.isCancelled = true
-    }
-
-    @EventHandler
-    private fun onPickup(event: PlayerAttemptPickupItemEvent) {
-        event.isCancelled = true
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
@@ -261,7 +275,9 @@ private suspend inline fun Player.teleportIfNeeded(
     frame: Int,
     location: Location,
 ) {
-    if (frame % 10 == 0 || (location.distanceSqrt(location) ?: Double.MAX_VALUE) > MAX_DISTANCE_SQUARED) SYNC.switchContext {
+    if (frame % 10 == 0 || (location.distanceSqrt(location)
+            ?: Double.MAX_VALUE) > MAX_DISTANCE_SQUARED
+    ) SYNC.switchContext {
         teleport(location)
         allowFlight = true
         isFlying = true
@@ -292,7 +308,7 @@ private class DisplayCameraAction(
     }
 
     private fun createEntity(): WrapperEntity {
-        return EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity>(EntityTypes.TEXT_DISPLAY)
+        return WrapperEntity(EntityTypes.TEXT_DISPLAY)
             .meta<TextDisplayMeta> {
                 positionRotationInterpolationDuration = BASE_INTERPOLATION
             }
@@ -389,6 +405,7 @@ private class TeleportCameraAction(
     }
 
     override suspend fun switchSegment(newSegment: CameraSegment) {
+        path = newSegment.path.transform(newSegment.duration, Location::clone)
     }
 
     override suspend fun stop() {
@@ -415,7 +432,7 @@ class SimulatedCameraCinematicAction(
         super.startSegment(segment)
         entity?.despawn()
         entity?.remove()
-        entity = EntityLib.getApi<SpigotEntityLibAPI>().createEntity<WrapperEntity?>(EntityTypes.ITEM_DISPLAY)
+        entity = WrapperEntity(EntityTypes.ITEM_DISPLAY)
             .meta<ItemDisplayMeta> {
                 positionRotationInterpolationDuration = 3
                 displayType = ItemDisplayMeta.DisplayType.HEAD

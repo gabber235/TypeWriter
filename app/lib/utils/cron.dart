@@ -90,7 +90,14 @@ import "package:typewriter/utils/extensions.dart";
 /// |-----------------------------------------------------------------------------|
 ///
 class CronExpression {
-  const CronExpression(this.seconds, this.minutes, this.hours, this.dayOfMonth, this.month, this.dayOfWeek);
+  const CronExpression(
+    this.seconds,
+    this.minutes,
+    this.hours,
+    this.dayOfMonth,
+    this.month,
+    this.dayOfWeek,
+  );
 
   /// The cron expression string
   final SimpleField? seconds;
@@ -147,14 +154,15 @@ class CronExpression {
     final hasSeconds = parts.length == 6;
     final iter = parts.iterator;
 
-    final seconds = hasSeconds ? SimpleField.parse(iter.nextOrNull, 0, 59) : null;
+    final seconds =
+        hasSeconds ? SimpleField.parse(iter.nextOrNull, 0, 59) : null;
     final minutes = SimpleField.parse(iter.nextOrNull, 0, 59);
     final hours = SimpleField.parse(iter.nextOrNull, 0, 23);
     final dayOfMonth = DayOfMonthField.parse(iter.nextOrNull);
     final month = MonthField.parse(iter.nextOrNull);
     final dayOfWeek = DayOfWeekField.parse(iter.nextOrNull);
 
-    if (seconds == null ||
+    if ((hasSeconds && seconds == null) ||
         minutes == null ||
         hours == null ||
         dayOfMonth == null ||
@@ -163,7 +171,14 @@ class CronExpression {
       return null;
     }
 
-    return CronExpression(seconds, minutes, hours, dayOfMonth, month, dayOfWeek);
+    return CronExpression(
+      seconds,
+      minutes,
+      hours,
+      dayOfMonth,
+      month,
+      dayOfWeek,
+    );
   }
 }
 
@@ -175,14 +190,18 @@ abstract class CronPart {
 
   /// Parses a part from a string.
   static CronPart? parse(String value) {
-    return WildcardPart.parse(value) ?? ValuePart.parse(value) ?? RangePart.parse(value) ?? IncrementPart.parse(value);
+    return WildcardPart.parse(value) ??
+        ValuePart.parse(value) ??
+        RangePart.parse(value) ??
+        IncrementPart.parse(value);
   }
 }
 
 class WildcardPart extends CronPart {
   const WildcardPart();
 
-  static WildcardPart? parse(String value) => value == "*" || value == "?" ? const WildcardPart() : null;
+  static WildcardPart? parse(String value) =>
+      value == "*" || value == "?" ? const WildcardPart() : null;
 }
 
 class ValuePart extends CronPart {
@@ -228,7 +247,8 @@ class IncrementPart extends CronPart {
   final int increment;
 
   @override
-  bool valid(int min, int max) => part.valid(min, max) && increment > 0 && increment <= max;
+  bool valid(int min, int max) =>
+      part.valid(min, max) && increment > 0 && increment <= max;
 
   static IncrementPart? parse(String value) {
     final parts = value.split("/");
@@ -546,7 +566,9 @@ abstract class DayOfWeekField {
   String toHumanReadableString();
 
   static DayOfWeekField? parse(String? value) {
-    return LastDayOfWeekField.parse(value) ?? NthDayOfWeekField.parse(value) ?? SimpleDayOfWeekField.parse(value);
+    return LastDayOfWeekField.parse(value) ??
+        NthDayOfWeekField.parse(value) ??
+        SimpleDayOfWeekField.parse(value);
   }
 }
 

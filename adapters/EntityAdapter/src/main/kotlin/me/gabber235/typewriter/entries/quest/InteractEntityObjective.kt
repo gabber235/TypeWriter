@@ -28,12 +28,13 @@ class InteractEntityObjective(
     override val criteria: List<Criteria> = emptyList(),
     @Help("The entity that the player needs to interact with.")
     val entity: Ref<out EntityDefinitionEntry> = emptyRef(),
+    @Help("The objective display that will be shown to the player. Use &lt;entity&gt; to replace the entity name.")
     val overrideDisplay: Optional<String> = Optional.empty(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry {
     override val display: String
-        get() = overrideDisplay.orElseGet {
+        get() = overrideDisplay.orElseGet { displayTemplate }.run {
             val entityName = entity.get()?.displayName ?: ""
-            displayTemplate.replace("<entity>", entityName)
+            replace("<entity>", entityName)
         }
 }

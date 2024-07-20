@@ -2,7 +2,6 @@ package me.gabber235.typewriter.entry.dialogue
 
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
-import me.gabber235.typewriter.entry.cinematic.CinematicSequence
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.entry.entries.SystemTrigger.DIALOGUE_END
@@ -23,6 +22,9 @@ import org.koin.java.KoinJavaComponent
 import java.time.Duration
 
 class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) : KoinComponent {
+    private val _speakers: MutableSet<Ref<SpeakerEntry>> = mutableSetOf()
+    val speakers: Set<Ref<SpeakerEntry>> by ::_speakers
+
     private val messengerFinder: MessengerFinder by inject()
     private val factDatabase: FactDatabase by inject()
 
@@ -50,6 +52,7 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
         isActive = true
         playTime = Duration.ZERO
         currentMessenger.init()
+        _speakers.add(currentEntry.speaker)
         player.playSpeakerSound(currentEntry.speaker.get())
         player.startBlockingMessages()
         player.startBlockingActionBar()
@@ -113,6 +116,12 @@ val Player.currentDialogue: DialogueEntry?
         val sequence = dialogueSequence ?: return null
         if (!sequence.isActive) return null
         return sequence.currentEntry
+    }
+
+val Player.speakersInDialogue: Set<Ref<SpeakerEntry>>
+    get() {
+        val sequence = dialogueSequence ?: return emptySet()
+        return sequence.speakers
     }
 
 fun Player.playSpeakerSound(speaker: SpeakerEntry?) {

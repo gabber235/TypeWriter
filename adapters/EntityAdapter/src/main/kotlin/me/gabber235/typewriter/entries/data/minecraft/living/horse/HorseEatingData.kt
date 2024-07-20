@@ -14,27 +14,27 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("horse_eating_data", "If the horse is eating.", Colors.RED, "mdi:horse")
-@Tags("horse_data", "horse_eating_data")
-class HorseEatingData (
+@Entry("eating_data", "If the entity is eating.", Colors.RED, "mdi:horse")
+@Tags("eating_data")
+class HorseEatingData(
     override val id: String = "",
     override val name: String = "",
     @Help("If the horse is eating.")
-    val horseEating: Boolean = false,
+    val eating: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityData<EatingProperty> {
     override fun type(): KClass<EatingProperty> = EatingProperty::class
 
-    override fun build(player: Player): EatingProperty = EatingProperty(horseEating)
+    override fun build(player: Player): EatingProperty = EatingProperty(eating)
 }
 
-data class EatingProperty(val horseEating: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<EatingProperty>(EatingProperty::class)
+data class EatingProperty(val eating: Boolean) : EntityProperty {
+    companion object : SinglePropertyCollectorSupplier<EatingProperty>(EatingProperty::class, EatingProperty(false))
 }
 
 fun applyHorseEatingData(entity: WrapperEntity, property: EatingProperty) {
     entity.metas {
-        meta<BaseHorseMeta> { isEating = property.horseEating }
+        meta<BaseHorseMeta> { isEating = property.eating }
         error("Could not apply BaseHorseEatingData to ${entity.entityType} entity.")
     }
 }

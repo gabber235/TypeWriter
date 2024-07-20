@@ -4,6 +4,7 @@ import io.lumine.mythic.bukkit.events.MythicMobDeathEvent
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Regex
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
 import org.bukkit.entity.Player
@@ -22,11 +23,14 @@ class MythicMobDeathEventEntry(
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("Only trigger when a specific mob dies.")
+    @Regex
     val mobName: String = "",
 ) : EventEntry
 
 @EntryListener(MythicMobDeathEventEntry::class)
 fun onMobDeath(event: MythicMobDeathEvent, query: Query<MythicMobDeathEventEntry>) {
     val player = event.killer as? Player ?: return
-    query findWhere { it.mobName == event.mobType.internalName } triggerAllFor player
+    query findWhere {
+        it.mobName.toRegex(RegexOption.IGNORE_CASE).matches(event.mobType.internalName)
+    } triggerAllFor player
 }

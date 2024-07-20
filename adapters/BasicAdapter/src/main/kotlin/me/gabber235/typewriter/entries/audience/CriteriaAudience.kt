@@ -4,10 +4,7 @@ import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.entry.entries.AudienceEntry
-import me.gabber235.typewriter.entry.entries.AudienceFilter
-import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
-import me.gabber235.typewriter.entry.entries.ReadableFactEntry
+import me.gabber235.typewriter.entry.entries.*
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -23,8 +20,9 @@ class CriteriaAudience(
     override val id: String = "",
     override val name: String = "",
     override val children: List<Ref<out AudienceEntry>> = emptyList(),
-    val criteria: List<Criteria> = emptyList()
-) : AudienceFilterEntry{
+    val criteria: List<Criteria> = emptyList(),
+    override val inverted: Boolean = false,
+) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = CriteriaAudienceFilter(ref(), criteria)
 }
 

@@ -31,15 +31,6 @@ object PlaceholderExpansion : PlaceholderExpansion(), KoinComponent {
     override fun persist(): Boolean = true
 
     override fun onPlaceholderRequest(player: Player?, params: String): String? {
-        // TODO: Replace placeholder
-        if (params.startsWith("speaker_")) {
-            val speakerName = params.substring(8)
-            logger.warning("Speaker specific placeholder is deprecated, move to the generic entry placeholder: %typewriter_${params}% -> %typewriter_${speakerName}%")
-            val speaker: SpeakerEntry = Query.findById(speakerName) ?: Query.findByName(speakerName) ?: return null
-
-            return speaker.displayName
-        }
-
         if (params == "tracked_quest") {
             if (player == null) return null
             return player.trackedQuest()?.get()?.display(player) ?: noneTracked

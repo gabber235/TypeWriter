@@ -10,7 +10,9 @@ import me.gabber235.typewriter.extensions.packetevents.toPacketItem
 import me.gabber235.typewriter.utils.Item
 import me.tofaa.entitylib.wrapper.WrapperEntity
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity
+import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EntityEquipment
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -28,8 +30,7 @@ class EquipmentData(
         EquipmentProperty(equipment.mapValues { (_, item) -> item.build(player).toPacketItem() })
 }
 
-data class EquipmentProperty
-    (val data: Map<EquipmentSlot, ItemStack>) : EntityProperty {
+data class EquipmentProperty(val data: Map<EquipmentSlot, ItemStack>) : EntityProperty {
     constructor(equipmentSlot: EquipmentSlot, item: ItemStack) : this(mapOf(equipmentSlot to item))
 
     companion object : PropertyCollectorSupplier<EquipmentProperty> {
@@ -39,6 +40,26 @@ data class EquipmentProperty
             return EquipmentCollector(suppliers.filterIsInstance<PropertySupplier<EquipmentProperty>>())
         }
     }
+}
+
+fun EntityEquipment.toProperty(): EquipmentProperty {
+    return EquipmentProperty(org.bukkit.inventory.EquipmentSlot.entries.mapNotNull {
+        // TODO: Replace this with `EquipmentSlot.BODY` when the support for 1.20.4 is dropped.
+        if (it.name.contains("BODY")) return@mapNotNull null
+        val item = getItem(it)
+        if (item.isEmpty) return@mapNotNull null
+        it.toPacketEquipmentSlot() to getItem(it).toPacketItem()
+    }.toMap())
+}
+
+fun org.bukkit.inventory.EquipmentSlot.toPacketEquipmentSlot() = when (this) {
+    org.bukkit.inventory.EquipmentSlot.HAND -> EquipmentSlot.MAIN_HAND
+    org.bukkit.inventory.EquipmentSlot.OFF_HAND -> EquipmentSlot.OFF_HAND
+    org.bukkit.inventory.EquipmentSlot.HEAD -> EquipmentSlot.HELMET
+    org.bukkit.inventory.EquipmentSlot.CHEST -> EquipmentSlot.CHEST_PLATE
+    org.bukkit.inventory.EquipmentSlot.LEGS -> EquipmentSlot.LEGGINGS
+    org.bukkit.inventory.EquipmentSlot.FEET -> EquipmentSlot.BOOTS
+    else -> EquipmentSlot.CHEST_PLATE
 }
 
 private class EquipmentCollector(
@@ -54,6 +75,10 @@ private class EquipmentCollector(
             .flatMap { it.data.asSequence() }
             .filter { (slot, _) -> !data.containsKey(slot) }
             .forEach { (slot, item) -> data[slot] = item }
+
+        // Reset empty slots
+        EquipmentSlot.entries.filter { !data.containsKey(it) && EquipmentSlot.BODY != it }.forEach { data[it] = ItemStack.EMPTY }
+
         return EquipmentProperty(data)
     }
 }
@@ -64,6 +89,7 @@ fun org.bukkit.inventory.ItemStack.toProperty(equipmentSlot: EquipmentSlot) =
 fun applyEquipmentData(entity: WrapperEntity, property: EquipmentProperty) {
     if (entity !is WrapperLivingEntity) return
     property.data.forEach { (slot, item) ->
-        entity.equipment.setItem(slot, item)
+        if (item.isEmpty) entity.equipment.setItem(slot, null)
+        else entity.equipment.setItem(slot, item)
     }
 }

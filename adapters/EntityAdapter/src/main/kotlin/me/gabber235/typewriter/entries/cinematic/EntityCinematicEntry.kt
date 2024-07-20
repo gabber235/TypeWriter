@@ -28,12 +28,15 @@ import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.FakeEntity
+import me.gabber235.typewriter.entry.entity.withPriority
+import me.gabber235.typewriter.entry.entity.toCollectors
 import me.gabber235.typewriter.entry.entity.toProperty
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.extensions.packetevents.ArmSwing
 import me.gabber235.typewriter.utils.ok
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.entity.Pose
 import org.bukkit.event.EventHandler
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -102,7 +105,9 @@ class EntityCinematicAction(
         get() = entry.segments
 
     private var entity: FakeEntity? = null
+    private var collectors: List<PropertyCollector<EntityProperty>> = emptyList()
     private var recordings: Map<String, Tape<EntityFrame>> = emptyMap()
+
     override suspend fun setup() {
         super.setup()
 
@@ -117,12 +122,17 @@ class EntityCinematicAction(
     override suspend fun startSegment(segment: EntityRecordedSegment) {
         super.startSegment(segment)
         val recording = recordings[segment.artifact.id] ?: return
-        this.entity = entry.definition.get()?.create(player)
+        val definition = entry.definition.get() ?: return
+        this.entity = definition.create(player)
+
+        this.collectors = definition.data.withPriority().toCollectors()
 
         val startLocation = recording.firstNotNullWhere { it.location } ?: return
         val firstFrame = recording.firstFrame ?: return
 
-        this.entity?.consumeProperties(firstFrame.toProperties())
+        val collectedProperties = collectors.mapNotNull { it.collect(player) }
+
+        this.entity?.consumeProperties(collectedProperties + firstFrame.toProperties())
         this.entity?.spawn(startLocation.toProperty())
     }
 
@@ -131,7 +141,8 @@ class EntityCinematicAction(
         val relativeFrame = frame - segment.startFrame
         val recording = recordings[segment.artifact.id] ?: return
         val frameData = recording.getFrame(relativeFrame) ?: return
-        this.entity?.consumeProperties(frameData.toProperties())
+        val collectedProperties = collectors.mapNotNull { it.collect(player) }
+        this.entity?.consumeProperties(collectedProperties + frameData.toProperties())
     }
 
     override suspend fun stopSegment(segment: EntityRecordedSegment) {
@@ -218,9 +229,10 @@ class EntityCinematicRecording(
 
     override fun captureFrame(): EntityFrame {
         val inv = player.inventory
+        val pose = if (player.isInsideVehicle) Pose.SITTING else player.pose
         val data = EntityFrame(
             location = player.location,
-            pose = player.pose.toEntityPose(),
+            pose = pose.toEntityPose(),
             swing = swing,
             mainHand = if (inv.itemInMainHand.isEmpty) null else inv.itemInMainHand,
             offHand = if (inv.itemInOffHand.isEmpty) null else inv.itemInOffHand,

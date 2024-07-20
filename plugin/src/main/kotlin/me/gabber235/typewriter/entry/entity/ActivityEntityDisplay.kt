@@ -8,7 +8,8 @@ interface ActivityEntityDisplay {
     val creator: EntityCreator
     val definition: EntityDefinitionEntry?
         get() = creator as? EntityDefinitionEntry
-    fun playerHasEntity(playerId: UUID, entityId: Int): Boolean
+
+    fun playerSeesEntity(playerId: UUID, entityId: Int): Boolean
 
     /**
      * The location of the entity for the player.

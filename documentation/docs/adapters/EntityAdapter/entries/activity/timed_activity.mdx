@@ -15,13 +15,15 @@ This could be used to make an entity do something for a limited amount of time.
 
 ## Fields
 
-<fields.EntryField name='Children' required multiple>
-</fields.EntryField>
 <fields.EntryField name='Duration' required duration>
      The duration child activities will be active for.
 </fields.EntryField>
 <fields.EntryField name='Cooldown' required duration>
      The cooldown time before the activity can be activated again.
 </fields.EntryField>
-<fields.EntryField name='Priority Override' optional>
+<fields.EntryField name='Active Activity' required>
+     The activity that will be used when the duration is active.
+</fields.EntryField>
+<fields.EntryField name='Cooldown Activity' required>
+     The activity that will be used when it is on cooldown.
 </fields.EntryField>

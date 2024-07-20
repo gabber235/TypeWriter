@@ -4,6 +4,7 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entity.EntityState
 import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.LocationProperty
 import me.gabber235.typewriter.entry.entries.EntityData
@@ -30,11 +31,11 @@ import org.bukkit.entity.Player
 class StackedEntityDefinition(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
-    override val sound: Sound = Sound.EMPTY,
     @Help("The entities that will be stacked on top of each other. First entity will be the bottom entity.")
     val definitions: List<Ref<EntityDefinitionEntry>> = emptyList(),
 ) : EntityDefinitionEntry {
+    override val displayName: String get() = definitions.firstOrNull()?.get()?.displayName ?: ""
+    override val sound: Sound get() = definitions.firstOrNull()?.get()?.sound ?: Sound.EMPTY
     override val data: List<Ref<EntityData<*>>>
         get() = definitions.mapNotNull { it.get() }.flatMap { it.data }
 
@@ -48,6 +49,9 @@ class StackedEntity(
     private val entities: List<FakeEntity> = definitions.map { it.create(player) }
     override val entityId: Int
         get() = entities.firstOrNull()?.entityId ?: -1
+
+    override val state: EntityState
+        get() = entities.firstOrNull()?.state ?: EntityState()
 
     override fun applyProperties(properties: List<EntityProperty>) {
         if (entities.isEmpty()) return

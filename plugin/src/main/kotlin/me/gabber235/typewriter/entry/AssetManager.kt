@@ -11,6 +11,7 @@ import java.io.StringReader
 
 interface AssetStorage {
     suspend fun storeAsset(path: String, content: String)
+    suspend fun containsAsset(path: String): Boolean
     suspend fun fetchAsset(path: String): Result<String>
     suspend fun deleteAsset(path: String)
 
@@ -70,6 +71,10 @@ class AssetManager : KoinComponent {
         storage.storeAsset(entry.path, content)
     }
 
+    suspend fun containsAsset(entry: AssetEntry): Boolean {
+        return storage.containsAsset(entry.path)
+    }
+
     suspend fun fetchAsset(entry: AssetEntry): String? {
         val result = storage.fetchAsset(entry.path)
         if (result.isFailure) {
@@ -88,6 +93,10 @@ class LocalAssetStorage : AssetStorage {
         val file = plugin.dataFolder.resolve("assets/$path")
         file.parentFile.mkdirs()
         file.writeText(content)
+    }
+
+    override suspend fun containsAsset(path: String): Boolean {
+        return plugin.dataFolder.resolve("assets/$path").exists()
     }
 
     override suspend fun fetchAsset(path: String): Result<String> {

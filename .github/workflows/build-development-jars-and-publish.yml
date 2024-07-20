@@ -5,7 +5,7 @@ on:
   
 jobs:
   build-publish-development:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     concurrency:
       group: build-publish-beta
       cancel-in-progress: true
@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
       - name: Get version
         id: vars
         run: |
@@ -79,7 +79,7 @@ jobs:
             paper
             purpur
           game-versions: |
-            [1.20.3, 1.20.4]
+            [1.20.3, 1.20.6]
           dependencies: |
             packetevents
 
@@ -91,6 +91,12 @@ jobs:
         with:
           arguments: publishPluginPublicationToHangar --scan
           build-root-directory: ./plugin
+      - name: Add Tag
+        uses: laputansoft/github-tag-action@v4.6
+        with:
+          github_token: ${{ env.github-token }}
+          default_bump: false
+          tag: "v${{ steps.vars.outputs.version }}"
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
         with:

@@ -5,16 +5,12 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entity.*
-import me.gabber235.typewriter.entry.entries.EntityActivityEntry
-import me.gabber235.typewriter.entry.entries.RoadNetworkEntry
-import me.gabber235.typewriter.entry.entries.RoadNodeCollectionEntry
-import me.gabber235.typewriter.entry.entries.RoadNodeId
-import me.gabber235.typewriter.entry.ref
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
 import me.gabber235.typewriter.entry.roadnetwork.gps.PointToPointGPS
+import me.gabber235.typewriter.utils.distanceSqrt
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent
-import java.util.*
 
 
 @Entry("patrol_activity", "Moving around a set of locations", Colors.BLUE, "fa6-solid:route")
@@ -31,45 +27,83 @@ class PatrolActivityEntry(
     override val name: String = "",
     override val roadNetwork: Ref<RoadNetworkEntry> = emptyRef(),
     override val nodes: List<RoadNodeId> = emptyList(),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
-) : EntityActivityEntry, RoadNodeCollectionEntry {
-    override fun create(context: TaskContext): EntityActivity = PatrolActivity(ref(), roadNetwork, nodes)
+) : GenericEntityActivityEntry, RoadNodeCollectionEntry {
+    override fun create(
+        context: ActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<ActivityContext> {
+        if (nodes.isEmpty()) return IdleActivity.create(context, currentLocation)
+        return PatrolActivity(roadNetwork, nodes, currentLocation)
+    }
 }
 
 private class PatrolActivity(
-    val ref: Ref<PatrolActivityEntry>,
     private val roadNetwork: Ref<RoadNetworkEntry>,
     private val nodes: List<RoadNodeId>,
-) : EntityActivity, KoinComponent {
-    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
-        if (!ref.canActivateFor(context)) {
-            return false
-        }
-
-        return nodes.isNotEmpty()
-    }
-
+    private val startLocation: LocationProperty,
+) : EntityActivity<ActivityContext>, KoinComponent {
     private var currentLocationIndex = 0
+    private var activity: EntityActivity<in ActivityContext>? = null
 
-    override fun currentTask(context: TaskContext, currentLocation: LocationProperty): EntityTask {
-        val network =
-            KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)
-                ?: return IdleTask(currentLocation)
+    fun refreshActivity(context: ActivityContext, network: RoadNetwork) {
+        val targetNodeId = nodes.getOrNull(currentLocationIndex)
+            ?: throw IllegalStateException("Could not find any node in the nodes list for the patrol activity.")
+        val targetNode = network.nodes.find { it.id == targetNodeId }
+            ?: throw IllegalStateException("Could not find any node in the nodes list for the patrol activity.")
 
-        val nodeId = nodes.getOrNull(currentLocationIndex) ?: return IdleTask(currentLocation)
-        val currentTargetNode = network.nodes.find { it.id == nodeId }
-            ?: return IdleTask(currentLocation)
-
-        // Only move to the next location if the entity is close to the current location
-        if (currentLocation.toLocation().distanceSquared(currentTargetNode.location) < 1.0) {
-            currentLocationIndex = (currentLocationIndex + 1) % nodes.size
-        }
-
-        val gps = PointToPointGPS(
+        activity?.dispose(context)
+        activity = NavigationActivity(PointToPointGPS(
             roadNetwork,
             { currentLocation.toLocation() }) {
-            it.nodes.find { node -> node.id == nodeId }?.location ?: currentLocation.toLocation()
-        }
-        return NavigationActivityTask(gps, currentLocation)
+            targetNode.location
+        }, currentLocation
+        )
+        activity?.initialize(context)
     }
+
+    override fun initialize(context: ActivityContext) = setup(context)
+
+    private fun setup(context: ActivityContext) {
+        val network =
+            KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)
+                ?: return
+
+        // Get the closest node to the start location
+        val closestNode = network.nodes
+            .filter { it.id in nodes }
+            .minByOrNull { it.location.distanceSqrt(startLocation.toLocation()) ?: Double.MAX_VALUE }
+            ?: throw IllegalStateException("Could not find any node in the nodes list for the patrol activity.")
+
+        val index = nodes.indexOf(closestNode.id)
+        currentLocationIndex = (index + 1) % nodes.size
+        refreshActivity(context, network)
+    }
+
+
+    override fun tick(context: ActivityContext): TickResult {
+        if (activity == null) {
+            setup(context)
+            return TickResult.CONSUMED
+        }
+
+        val network =
+            KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)
+                ?: return TickResult.IGNORED
+
+        val result = activity?.tick(context)
+        if (result == TickResult.IGNORED) {
+            currentLocationIndex = (currentLocationIndex + 1) % nodes.size
+            refreshActivity(context, network)
+        }
+
+        return TickResult.CONSUMED
+    }
+
+    override fun dispose(context: ActivityContext) {
+        activity?.dispose(context)
+        activity = null
+    }
+
+    override val currentLocation: LocationProperty
+        get() = activity?.currentLocation ?: startLocation
 }

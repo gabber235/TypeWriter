@@ -19,13 +19,15 @@ When the npc is walking, and a player comes in range Stand still.
 
 ## Fields
 
-<fields.EntryField name='Children' required multiple>
-</fields.EntryField>
 <fields.EntryField name='Range' required>
      The range in which the player has to be close by to activate the activity.
 </fields.EntryField>
 <fields.EntryField name='Max Idle Duration' required duration>
      The maximum duration a player can be idle in the same range before the activity deactivates.
 </fields.EntryField>
-<fields.EntryField name='Priority Override' optional>
+<fields.EntryField name='Close By Activity' required>
+     The activity that will be used when there is a player close by.
+</fields.EntryField>
+<fields.EntryField name='Idle Activity' required>
+     The activity that will be used when there is no player close by.
 </fields.EntryField>

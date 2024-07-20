@@ -5,10 +5,7 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.emptyRef
-import me.gabber235.typewriter.entry.entries.AudienceEntry
-import me.gabber235.typewriter.entry.entries.AudienceFilter
-import me.gabber235.typewriter.entry.entries.AudienceFilterEntry
-import me.gabber235.typewriter.entry.entries.QuestEntry
+import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.quest.isQuestTracked
 import me.gabber235.typewriter.entry.ref
 import me.gabber235.typewriter.events.AsyncTrackedQuestUpdate
@@ -36,7 +33,8 @@ class TrackedQuestAudience(
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     @Help("When not set it will filter based on if any quest is tracked.")
     val quest: Ref<QuestEntry> = emptyRef(),
-) : AudienceFilterEntry {
+    override val inverted: Boolean = false,
+) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = TrackedQuestAudienceFilter(
         ref(),
         quest

@@ -1,5 +1,6 @@
 package me.gabber235.typewriter.entries.action
 
+import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
@@ -9,6 +10,7 @@ import me.gabber235.typewriter.entry.Modifier
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
+import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -26,16 +28,17 @@ class TeleportActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
+    @SerializedName("triggers")
+    override val customTriggers: List<Ref<TriggerableEntry>>,
     @WithRotation
     @Help("The location to teleport the player to.")
     val location: Location = Location(null, 0.0, 0.0, 0.0),
-) : ActionEntry {
+) : CustomTriggeringActionEntry {
     override fun execute(player: Player) {
-        super.execute(player)
-
         SYNC.launch {
             player.teleport(location)
+            super.execute(player)
+            player.triggerCustomTriggers()
         }
     }
 }

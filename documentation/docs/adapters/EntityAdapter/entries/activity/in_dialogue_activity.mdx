@@ -14,8 +14,6 @@ This can be used to stop a npc from moving when a player is in a dialogue with i
 
 ## Fields
 
-<fields.EntryField name='Children' required multiple>
-</fields.EntryField>
 <fields.EntryField name='Dialogue Idle Duration' required duration>
      The duration a player can be idle in the same dialogue before the activity deactivates.
 
@@ -26,5 +24,9 @@ When the dialogue priority is higher than this activity's priority, this timer w
 And will only exit when the dialogue is finished.
 </Admonition>
 </fields.EntryField>
-<fields.EntryField name='Priority Override' optional>
+<fields.EntryField name='Talking Activity' required>
+     The activity that will be used when the npc is in a dialogue
+</fields.EntryField>
+<fields.EntryField name='Idle Activity' required>
+     The activity that will be used when the npc is not in a dialogue
 </fields.EntryField>

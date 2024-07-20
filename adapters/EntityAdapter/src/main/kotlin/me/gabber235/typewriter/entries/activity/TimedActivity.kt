@@ -4,19 +4,20 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Ref
-import me.gabber235.typewriter.entry.descendants
-import me.gabber235.typewriter.entry.entity.*
-import me.gabber235.typewriter.entry.entries.AudienceEntry
+import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.entity.ActivityContext
+import me.gabber235.typewriter.entry.entity.EntityActivity
+import me.gabber235.typewriter.entry.entity.LocationProperty
+import me.gabber235.typewriter.entry.entity.SingleChildActivity
 import me.gabber235.typewriter.entry.entries.EntityActivityEntry
-import me.gabber235.typewriter.entry.priority
-import me.gabber235.typewriter.entry.ref
+import me.gabber235.typewriter.entry.entries.GenericEntityActivityEntry
 import java.time.Duration
 import java.util.*
 
 @Entry(
     "timed_activity",
     "Allows child activities for a limited amount of time",
-    Colors.BLUE,
+    Colors.PALATINATE_BLUE,
     "fa6-solid:hourglass"
 )
 /**
@@ -31,70 +32,60 @@ import java.util.*
 class TimedActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    override val children: List<Ref<out AudienceEntry>> = emptyList(),
     @Help("The duration child activities will be active for.")
     val duration: Duration = Duration.ofSeconds(10),
     @Help("The cooldown time before the activity can be activated again.")
     val cooldown: Duration = Duration.ofSeconds(1),
-    override val priorityOverride: Optional<Int> = Optional.empty(),
-) : EntityActivityEntry {
-    override fun create(context: TaskContext): EntityActivity {
-        return TimedActivity(
-            ref(),
-            children
-                .descendants(EntityActivityEntry::class)
-                .mapNotNull { it.get() }
-                .sortedByDescending { it.priority }
-                .map { it.create(context) },
-            duration,
-            cooldown,
-        )
+    @Help("The activity that will be used when the duration is active.")
+    val activeActivity: Ref<out EntityActivityEntry> = emptyRef(),
+    @Help("The activity that will be used when it is on cooldown.")
+    val cooldownActivity: Ref<out EntityActivityEntry> = emptyRef(),
+) : GenericEntityActivityEntry {
+    override fun create(
+        context: ActivityContext,
+        currentLocation: LocationProperty
+    ): EntityActivity<in ActivityContext> {
+        return TimedActivity(duration, cooldown, activeActivity, cooldownActivity, currentLocation)
     }
 }
 
 class TimedActivity(
-    val ref: Ref<TimedActivityEntry>,
-    children: List<EntityActivity>,
     private val duration: Duration,
     private val cooldown: Duration,
-) : FilterActivity(children) {
-    private var trackers = mutableMapOf<UUID, PlayerTimeTracker>()
+    private val activeActivity: Ref<out EntityActivityEntry>,
+    private val cooldownActivity: Ref<out EntityActivityEntry>,
+    startLocation: LocationProperty,
+) : SingleChildActivity<ActivityContext>(startLocation) {
+    private var state: TimedActivityState = Active(System.currentTimeMillis())
 
-    override fun canActivate(context: TaskContext, currentLocation: LocationProperty): Boolean {
-        if (!ref.canActivateFor(context)) {
-            return false
+    override fun currentChild(context: ActivityContext): Ref<out EntityActivityEntry> {
+        if (state.hasExpired) {
+            state = state.nextState
         }
 
-        if (!super.canActivate(context, currentLocation)) {
-            return false
+        return when (state) {
+            is Active -> activeActivity
+            is Cooldown -> cooldownActivity
+            else -> cooldownActivity
         }
-
-        context.viewers.forEach { player ->
-            val tracker = trackers.computeIfAbsent(player.uniqueId) {
-                PlayerTimeTracker(duration, cooldown)
-            }
-            tracker.update()
-        }
-
-        return !trackers.all { (_, tracker) -> tracker.isActive }
     }
 
-    private inner class PlayerTimeTracker(
-        private val duration: Duration,
-        private val cooldown: Duration,
-    ) {
-        private var lastStart = System.currentTimeMillis()
+    interface TimedActivityState {
+        val hasExpired: Boolean
+        val nextState: TimedActivityState
+    }
 
-        val isActive: Boolean
-            get() = System.currentTimeMillis() - lastStart < duration.toMillis()
+    inner class Active(private val startTime: Long) : TimedActivityState {
+        override val hasExpired: Boolean
+            get() = System.currentTimeMillis() - startTime > duration.toMillis()
+        override val nextState: TimedActivityState
+            get() = Cooldown(System.currentTimeMillis())
+    }
 
-        val isCooldown: Boolean
-            get() = System.currentTimeMillis() - lastStart < cooldown.toMillis() + duration.toMillis()
-
-        fun update() {
-            if (!isCooldown) {
-                lastStart = System.currentTimeMillis()
-            }
-        }
+    inner class Cooldown(private val startTime: Long) : TimedActivityState {
+        override val hasExpired: Boolean
+            get() = System.currentTimeMillis() - startTime > cooldown.toMillis()
+        override val nextState: TimedActivityState
+            get() = Active(System.currentTimeMillis())
     }
 }

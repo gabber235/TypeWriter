@@ -15,6 +15,7 @@ abstract class FakeEntity(
     protected val properties = mutableMapOf<KClass<*>, EntityProperty>()
 
     abstract val entityId: Int
+    abstract val state: EntityState
 
     fun consumeProperties(vararg properties: EntityProperty) {
         consumeProperties(properties.toList())
@@ -26,10 +27,10 @@ abstract class FakeEntity(
         }
         if (changedProperties.isEmpty()) return
 
-        applyProperties(changedProperties)
         changedProperties.forEach {
             this.properties[it::class] = it
         }
+        applyProperties(changedProperties)
     }
 
     abstract fun applyProperties(properties: List<EntityProperty>)
@@ -37,6 +38,7 @@ abstract class FakeEntity(
     open fun tick() {}
 
     open fun spawn(location: LocationProperty) {
+        properties[LocationProperty::class] = location
     }
 
     abstract fun addPassenger(entity: FakeEntity)
@@ -48,4 +50,12 @@ abstract class FakeEntity(
     fun <P : EntityProperty> property(type: KClass<P>): P? {
         return type.safeCast(properties[type])
     }
+
+    inline fun <reified P : EntityProperty> property(): P? {
+        return property(P::class)
+    }
 }
+
+data class EntityState(
+    val eyeHeight: Double = 0.0,
+)

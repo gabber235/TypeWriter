@@ -16,6 +16,7 @@ import kotlin.math.sign
 
 
 object BlockCollision {
+    private const val STEP_HEIGHT = 0.5
     /**
      * Moves an entity with physics applied (ie checking against blocks)
      *
@@ -39,7 +40,7 @@ object BlockCollision {
         getter: BukkitBlockGetter, singleCollision: Boolean
     ): PhysicsResult {
         // Allocate once and update values
-        val finalResult = SweepResult(1 - Vector.EPSILON, 0.0, 0.0, 0.0, null, null)
+        val finalResult = SweepResult(1 - Vector.EPSILON, 0.0, 0.0, 0.0, 0.0, null, null)
 
         var foundCollisionX = false
         var foundCollisionY = false
@@ -61,6 +62,7 @@ object BlockCollision {
             finalResult.normalX = 0.0
             finalResult.normalY = 0.0
             finalResult.normalZ = 0.0
+            finalResult.collidedHeightDiff = 0.0
 
             if (result.collisionX) {
                 foundCollisionX = true
@@ -115,7 +117,8 @@ object BlockCollision {
 
     private fun computePhysics(
         boundingBox: BoundingBox,
-        velocity: Vector, entityPosition: LocationProperty,
+        velocity: Vector,
+        entityPosition: LocationProperty,
         getter: BukkitBlockGetter,
         allFaces: Array<Vector?>,
         finalResult: SweepResult
@@ -140,11 +143,19 @@ object BlockCollision {
         if (abs(deltaY) < Vector.EPSILON) deltaY = 0.0
         if (abs(deltaZ) < Vector.EPSILON) deltaZ = 0.0
 
-        val finalPos: LocationProperty = entityPosition.add(deltaX, deltaY, deltaZ)
+        var finalPos: LocationProperty = entityPosition.add(deltaX, deltaY, deltaZ)
+
+        val hasHorizontalOnlyCollision = (collisionX || collisionZ) && !collisionY
+        var step = hasHorizontalOnlyCollision && finalResult.collidedHeightDiff > 0 && finalResult.collidedHeightDiff <= STEP_HEIGHT
+        // If the entity is colliding with x or z and the block is below step height, we move the entity up to the block
+        if (step) {
+            finalPos = finalPos.add(0.0, finalResult.collidedHeightDiff + Vector.EPSILON, 0.0)
+        }
 
         val remainingX: Double = if (collisionX) 0.0 else velocity.x - deltaX
-        val remainingY: Double = if (collisionY) 0.0 else velocity.y - deltaY
+        val remainingY: Double = if (collisionY || step) 0.0 else velocity.y - deltaY
         val remainingZ: Double = if (collisionZ) 0.0 else velocity.z - deltaZ
+
 
         return PhysicsResult(
             finalPos, Vector(remainingX, remainingY, remainingZ),
@@ -155,7 +166,8 @@ object BlockCollision {
 
     private fun slowPhysics(
         boundingBox: BoundingBox,
-        velocity: Vector, entityPosition: LocationProperty,
+        velocity: Vector,
+        entityPosition: LocationProperty,
         getter: BukkitBlockGetter,
         allFaces: Array<Vector?>,
         finalResult: SweepResult
@@ -190,7 +202,8 @@ object BlockCollision {
 
     private fun fastPhysics(
         boundingBox: BoundingBox,
-        velocity: Vector, entityPosition: LocationProperty,
+        velocity: Vector,
+        entityPosition: LocationProperty,
         getter: BukkitBlockGetter,
         allFaces: Array<Vector?>,
         finalResult: SweepResult
@@ -444,7 +457,6 @@ object BlockCollision {
         entityVelocity: Vector, entityPosition: LocationProperty, boundingBox: BoundingBox,
         getter: BukkitBlockGetter, finalResult: SweepResult,
     ): Boolean {
-        // Don't step if chunk isn't loaded yet
         val currentBlock: Block = getter.getBlock(blockX, blockY, blockZ)
         val currentShape: Shape = currentBlock.collisionShape()
 
@@ -707,8 +719,9 @@ data class SweepResult(
     var normalX: Double,
     var normalY: Double,
     var normalZ: Double,
+    var collidedHeightDiff: Double,
     var collidedShape: Shape?,
-    var collidedPos: Point?
+    var collidedPos: Point?,
 )
 
 interface Shape {
@@ -728,6 +741,13 @@ interface Shape {
     ): Boolean
 
     /**
+     * Get the bounding boxes of the shape
+     *
+     * @return the bounding boxes of the shape
+     */
+    fun boundingBoxes(): Collection<BoundingBox>
+
+    /**
      * Relative End
      *
      * @return End of shape
@@ -738,7 +758,7 @@ interface Shape {
 class BukkitBlockShape(
     val block: Block
 ) : Shape {
-    private val collidedShape = block.collisionShape
+    private val collidedShape by lazy(LazyThreadSafetyMode.NONE) { block.collisionShape }
 
     override fun intersectBoxSwept(
         rayStart: Point,
@@ -747,7 +767,6 @@ class BukkitBlockShape(
         moving: BoundingBox,
         finalResult: SweepResult
     ): Boolean {
-
         var hitBlock = false
         for (blockSection in collidedShape.boundingBoxes) {
             // Update final result if the temp result collision is sooner than the current final result
@@ -760,13 +779,19 @@ class BukkitBlockShape(
                     finalResult
                 )
             ) {
-                finalResult.collidedPos = rayStart.add(rayDirection.mul(finalResult.res))
                 finalResult.collidedShape = this
+                val collidedPos = rayStart.add(rayDirection.mul(finalResult.res))
+                finalResult.collidedPos = collidedPos
+                val relativePos = collidedPos.sub(shapePos)
+                finalResult.collidedHeightDiff = blockSection.maxY - relativePos.y
+
                 hitBlock = true
             }
         }
         return hitBlock
     }
+
+    override fun boundingBoxes(): Collection<BoundingBox> = collidedShape.boundingBoxes
 
     override fun relativeEnd(): Point {
         var maxX = 0.0

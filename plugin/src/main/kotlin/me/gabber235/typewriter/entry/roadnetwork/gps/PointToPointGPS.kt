@@ -3,12 +3,10 @@ package me.gabber235.typewriter.entry.roadnetwork.gps
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.future.await
 import me.gabber235.typewriter.entry.Ref
 import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.entry.roadnetwork.NodeAvoidPathfindingStrategy
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
-import me.gabber235.typewriter.entry.roadnetwork.content.toPathPosition
+import me.gabber235.typewriter.entry.roadnetwork.pathfinding.PFInstanceSpace
 import me.gabber235.typewriter.utils.ComputedMap
 import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import me.gabber235.typewriter.utils.distanceSqrt
@@ -17,9 +15,6 @@ import me.gabber235.typewriter.utils.ok
 import org.bukkit.Location
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.patheloper.api.pathing.configuration.PathingRuleSet
-import org.patheloper.api.pathing.strategy.strategies.WalkablePathfinderStrategy
-import org.patheloper.mapping.PatheticMapper
 import java.util.*
 import kotlin.collections.set
 
@@ -40,10 +35,17 @@ class PointToPointGPS(
         val end = endFetcher(network)
         if ((start.distanceSqrt(end) ?: Double.MAX_VALUE) < 1) return@switchContext ok(emptyList())
 
-        val startPair = getOrCreateNode(network, start, previousStart, -1, asEnd = false)
-        previousStart = startPair
-        val endPair = getOrCreateNode(network, end, previousEnd, -2, asEnd = true)
+        val endPair = getOrCreateNode(network.nodes, network.negativeNodes, end, previousEnd, -2, asEnd = true)
         previousEnd = endPair
+        val startPair = getOrCreateNode(
+            network.nodes + endPair.first,
+            network.negativeNodes,
+            start,
+            previousStart,
+            -1,
+            asEnd = false
+        )
+        previousStart = startPair
 
         if (startPair.second?.isEmpty() == true || endPair.second?.isEmpty() == true) {
             return@switchContext failure("Could not find a path between $start and $end. The network is not connected.")
@@ -55,7 +57,10 @@ class PointToPointGPS(
             network = constructNewNetwork(network, startPair, endPair)
         }
 
-        val nodes = ComputedMap { id: RoadNodeId -> network.nodes.firstOrNull { it.id == id } }
+        val nodes = ComputedMap { id: RoadNodeId ->
+            network.nodes.firstOrNull { it.id == id }
+                ?: throw IllegalStateException("Could not find node $id in the network, possible nodes: ${network.nodes.map { it.id }}, edges: ${network.edges}, start: $startPair, end: $endPair")
+        }
         val path = findPath(nodes, network.edges, previousPath, startPair.first, endPair.first)
         if (path.isFailure) {
             return@switchContext path.exceptionOrNull()?.let { failure(it) }
@@ -113,7 +118,8 @@ class PointToPointGPS(
                 if (visited.containsKey(edge.end)) continue
 
 
-                val next = nodes[edge.end]!!
+                val next = nodes[edge.end]
+                    ?: throw IllegalStateException("Could not find node ${edge.end} in the network, possible nodes: ${nodes.keys}")
                 insertInspecting(end.location, startEndDistance, edge, next, current, inspecting)
             }
         }
@@ -154,7 +160,8 @@ class PointToPointGPS(
                 if (edge.end != current.node) continue
                 if (visited.containsKey(edge.start)) continue
 
-                val next = nodes[edge.start]!!
+                val next = nodes[edge.start]
+                    ?: throw IllegalStateException("Could not find node ${edge.start} in the network, possible nodes: ${nodes.keys}")
                 insertInspecting(start.location, startEndDistance, edge, next, current, inspecting)
             }
         }
@@ -211,7 +218,8 @@ class PointToPointGPS(
 
 
     private suspend fun getOrCreateNode(
-        network: RoadNetwork,
+        nodes: List<RoadNode>,
+        negativeNodes: List<RoadNode>,
         location: Location,
         previous: Pair<RoadNode, List<RoadEdge>?>?,
         id: Int,
@@ -223,52 +231,43 @@ class PointToPointGPS(
             return previous
         }
 
-        val node = network.nodes.firstOrNull {
+        val node = nodes.firstOrNull {
             (it.location.distanceSqrt(location) ?: Double.MAX_VALUE) < it.radius * it.radius
         }
         if (node != null) return node to null
         val newNode = RoadNode(RoadNodeId(id), location, 0.5)
-        val additionalEdges = findAdditionalEdges(network, newNode, asEnd)
+        val additionalEdges = findAdditionalEdges(nodes, negativeNodes, newNode, asEnd)
         return newNode to additionalEdges
     }
 
-    private suspend fun findAdditionalEdges(network: RoadNetwork, node: RoadNode, asEnd: Boolean): List<RoadEdge> =
+    private suspend fun findAdditionalEdges(
+        nodes: List<RoadNode>,
+        negativeNodes: List<RoadNode>,
+        node: RoadNode,
+        asEnd: Boolean,
+    ): List<RoadEdge> =
         coroutineScope {
-            network.nodes
+            val instance = PFInstanceSpace(node.location.world)
+            val intersectingNodes = nodes
                 .filter {
                     it != node && it.location.world == node.location.world && (it.location.distanceSqrt(node.location)
                         ?: Double.MAX_VALUE) < roadNetworkMaxDistance * roadNetworkMaxDistance
                 }
+            intersectingNodes
                 .map {
                     async {
-                        val pathFinder = PatheticMapper.newPathfinder(
-                            PathingRuleSet.createAsyncRuleSet()
-                                .withMaxLength(roadNetworkMaxDistance.toInt())
-                                .withLoadingChunks(true)
-                                .withAllowingDiagonal(true)
-                                .withAllowingFailFast(true)
-                        )
                         val start = if (asEnd) it else node
                         val end = if (asEnd) node else it
-                        val result = pathFinder.findPath(
-                            start.location.toPathPosition(),
-                            end.location.toPathPosition(),
-                            NodeAvoidPathfindingStrategy(
-                                nodeAvoidance = network.nodes - start - end,
-                                permanentLock = true,
-                                strategy = NodeAvoidPathfindingStrategy(
-                                    nodeAvoidance = network.negativeNodes.filter {
-                                        val distance = start.location.distanceSqrt(it.location) ?: 0.0
-                                        distance > it.radius * it.radius && distance < roadNetworkMaxDistance * roadNetworkMaxDistance
-                                    },
-                                    permanentLock = false,
-                                    strategy = WalkablePathfinderStrategy(),
-                                ),
-                            )
-                        ).await()
+                        val path =
+                            roadNetworkFindPath(
+                                start,
+                                end,
+                                instance = instance,
+                                nodes = intersectingNodes,
+                                negativeNodes = negativeNodes
+                            ) ?: return@async null
 
-                        if (result.hasFailed()) return@async null
-                        RoadEdge(start.id, end.id, result.path.length().toDouble())
+                        RoadEdge(start.id, end.id, path.length().toDouble())
                     }
                 }.awaitAll()
                 .filterNotNull()
@@ -280,7 +279,7 @@ class PointToPointGPS(
 
         pairs.filter { it.second != null }.forEach { (node, edges) ->
             newNodes += node
-            newEdges += edges.orEmpty()
+            newEdges += edges!!
         }
 
         return network.copy(

@@ -25,7 +25,7 @@ val dialogueIndicator by snippet("objective.entity.indicator.dialogue", "<white>
 @Entry(
     "interaction_indicator_definition",
     "Interaction Indicator",
-    Colors.BLUE,
+    Colors.ORANGE,
     "material-symbols:move-selection-up-rounded"
 )
 /**
@@ -54,7 +54,7 @@ class InteractionIndicatorEntity(
         consumeProperties(LinesProperty(indicator()))
     }
 
-    private fun indicator(): String {
+    fun indicator(): String {
         val objectives = Query.findWhere<InteractEntityObjective> {
             it.entity == definition && player.inAudience(it)
         }.toList()

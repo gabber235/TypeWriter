@@ -1,35 +1,38 @@
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
-import styles from "./styles.module.css";
 
 interface PlayerProps {
-  url: string;
+    url: string;
 }
 
 export default function Player({ url }: PlayerProps) {
-  let [progress, setProgress] = useState(0);
-  return (
-    <div className={styles.player}>
-      <Bar progress={progress} />
-      <ReactPlayer
-        url={url}
-        playing
-        loop
-        muted
-        width="100%"
-        height="100%"
-        progressInterval={100}
-        onProgress={(state) => setProgress(state.played * 100)}
-        className={styles.player}
-      />
-    </div>
-  );
+    let [progress, setProgress] = useState(0);
+    return (
+        <div className="relative">
+            <Bar progress={progress} />
+            <ReactPlayer
+                url={url}
+                playing
+                loop
+                muted
+                controls
+                width="100%"
+                height="100%"
+                progressInterval={100}
+                onProgress={(state) => setProgress(state.played * 100)}
+                className="[&>video]:rounded-b-lg"
+            />
+        </div>
+    );
 }
 
 function Bar({ progress }: { progress: number }) {
-  return (
-    <div className={styles.bar}>
-      <div className={styles.progress} style={{ width: `${progress}%` }} />
-    </div>
-  );
+    return (
+        <div className="h-[5px] bg-gray-200 bg-opacity-25 rounded-t-lg overflow-hidden">
+            <div
+                className="h-full bg-primary transition-width duration-200"
+                style={{ width: `${progress}%` }}
+            />
+        </div>
+    );
 }

@@ -11,17 +11,19 @@ import kotlin.reflect.full.companionObjectInstance
 internal class DisplayEntity(
     private val player: Player,
     creator: EntityCreator,
-    private val activityManager: ActivityManager,
+    private val activityManager: ActivityManager<*>,
     private val collectors: List<PropertyCollector<*>>,
 ) {
     private val entity = creator.create(player)
 
     private var lastSoundLocation = activityManager.location
 
-    init {
-        applyProperties()
+    val state: EntityState
+        get() = entity.state
 
+    init {
         entity.spawn(activityManager.location)
+        applyProperties()
     }
 
     fun tick() {
@@ -57,7 +59,7 @@ internal class DisplayEntity(
 /**
  * Group suppliers to collectors based on what they supply.
  */
-internal fun List<Pair<PropertySupplier<*>, Int>>.into(): List<PropertyCollector<EntityProperty>> {
+fun List<Pair<PropertySupplier<*>, Int>>.toCollectors(): List<PropertyCollector<EntityProperty>> {
     return groupBy { it.first.type() }
         .map { (type, suppliers) ->
             val typeSuppliers = suppliers.sortedByDescending { it.second }

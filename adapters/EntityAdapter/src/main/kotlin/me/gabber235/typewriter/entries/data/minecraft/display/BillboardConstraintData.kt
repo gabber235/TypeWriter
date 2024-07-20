@@ -30,7 +30,7 @@ class BillboardConstraintData(
 }
 
 data class BillboardConstraintProperty(val constraint: BillboardConstraints) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<BillboardConstraintProperty>(BillboardConstraintProperty::class)
+    companion object : SinglePropertyCollectorSupplier<BillboardConstraintProperty>(BillboardConstraintProperty::class, BillboardConstraintProperty(BillboardConstraints.CENTER))
 }
 
 fun applyBillboardConstraintData(entity: WrapperEntity, property: BillboardConstraintProperty) {

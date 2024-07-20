@@ -23,9 +23,9 @@ class CordPropertyEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useTextEditingController();
-    final focus = useFocusNode();
     final value = ref.watch(fieldValueProvider(path, 0.0));
+    final controller = useTextEditingController(text: value.toString());
+    final focus = useFocusNode();
 
     useFocusedChange(focus, ({required hasFocus}) {
       if (!hasFocus) return;

@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.extensions.packetevents
 
 import com.github.retrooper.packetevents.PacketEvents
+import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.util.Vector3i
 import com.github.retrooper.packetevents.wrapper.PacketWrapper
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerCamera
@@ -30,6 +31,7 @@ private fun Player.setCamera(entityId: Int) = WrapperPlayServerCamera(entityId).
 
 enum class ArmSwing {
     LEFT, RIGHT, BOTH;
+
     val swingLeft: Boolean get() = this == LEFT || this == BOTH
     val swingRight: Boolean get() = this == RIGHT || this == BOTH
 }
@@ -85,3 +87,6 @@ fun ItemStack.toPacketItem() = SpigotConversionUtil.fromBukkitItemStack(this)
 
 fun Location.toVector3i() =
     Vector3i(blockX, blockY, blockZ)
+
+fun Location.toVector3d() =
+    Vector3d(x, y, z)
