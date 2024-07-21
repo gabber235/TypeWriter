@@ -173,6 +173,16 @@ const config = {
                         line: 'highlight-green', // For single line
                         block: { start: 'highlight-green-start', end: 'highlight-green-end' }, // For block
                     },
+                    {
+                        className: 'highlight-blue',
+                        line: 'highlight-blue', // For single line
+                        block: { start: 'highlight-blue-start', end: 'highlight-blue-end' }, // For block
+                    },
+                    {
+                        className: 'highlight-line',
+                        line: 'highlight-next-line', // For single line
+                        block: { start: 'highlight-start', end: 'highlight-end' }, // For block
+                    },
                 ]
             },
             algolia: {
@@ -194,6 +204,7 @@ const config = {
         "rive-loader",
         require.resolve("./plugins/tailwind/index.js"),
         require.resolve("./plugins/compression/index.js"),
+        require.resolve("./plugins/code-snippets/index.js"),
     ]
 };
 
