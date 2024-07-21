@@ -1,6 +1,6 @@
-import Image, { ImageProps } from "../Image";
+import Image, { Props } from "../Image";
 
-interface FigureProps extends ImageProps {
+interface FigureProps extends Props {
     title: string;
 }
 

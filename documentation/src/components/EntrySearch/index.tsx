@@ -10,7 +10,11 @@ const EntrySearch: React.FC<EntryProps> = ({ entryName }) => {
     const parsedEntry = blueprints.get(entryName);
 
     if (!parsedEntry) {
-        return <div className="bg-red-500 text-white p-4 rounded">Invalid entry, please report this in the TypeWriter Discord. {entryName}</div>;;
+        return (
+            <Admonition type="danger" title="Invalid Entry">
+                Invalid entry, please report this in the <a href="https://discord.gg/gs5QYhfv9x">TypeWriter Discord</a>. {entryName}
+            </Admonition>
+        );
     }
 
     const { name, description, color, icon } = parsedEntry;
