@@ -28,7 +28,8 @@
         "react-dom": "^18.3.1",
         "react-player": "^2.16.0",
         "reactflow": "^11.11.4",
-        "rive-loader": "file:plugins/rive-loader"
+        "rive-loader": "file:plugins/rive-loader",
+        "screenfull": "^6.0.2"
     },
     "devDependencies": {
         "@docusaurus/lqip-loader": "^3.4.0",
