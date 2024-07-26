@@ -1,38 +1,102 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import ReactPlayer from "react-player";
-
+import { Icon } from "@iconify/react";
+import fullscreen from "screenfull";
 interface PlayerProps {
-    url: string;
+  url: string;
 }
 
 export default function Player({ url }: PlayerProps) {
-    let [progress, setProgress] = useState(0);
-    return (
-        <div className="relative">
-            <Bar progress={progress} />
-            <ReactPlayer
-                url={url}
-                playing
-                loop
-                muted
-                controls
-                width="100%"
-                height="100%"
-                progressInterval={100}
-                onProgress={(state) => setProgress(state.played * 100)}
-                className="[&>video]:rounded-b-lg"
-            />
+  const [progress, setProgress] = useState(0);
+  const [playing, setPlaying] = useState(true);
+  const playerRef = useRef<ReactPlayer>(null);
+  const playerContainerRef = useRef(null);
+
+  const togglePlayPause = () => {
+    setPlaying((prev) => !prev);
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newProgress = parseFloat(e.target.value);
+    setProgress(newProgress);
+    playerRef.current?.seekTo(newProgress / 100, "fraction");
+  };
+
+  return (
+    <div ref={playerContainerRef} className="relative w-full h-full">
+        <ProgressBar progress={progress} onSeek={handleSeek} />
+        <ReactPlayer
+            ref={playerRef}
+            url={url}
+            playing={playing}
+            loop
+            muted
+            controls={false}
+            width="100%"
+            height="100%"
+            progressInterval={100}
+            onProgress={(state) => setProgress(state.played * 100)}
+        />
+        <div className="opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-default">
+            <div className="absolute inset-2 flex items-center justify-center">
+                <Icon
+                    onClick={togglePlayPause}
+                    className="cursor-pointer"
+                    icon={playing ? "mdi:pause-circle" : "mdi:play-circle"}
+                    fontSize={50}
+                    color="white"
+                />
+            </div>
+            <div className="absolute bottom-2 right-2 p-2">
+                <Icon
+                    onClick={() => fullscreen.toggle(playerContainerRef.current)}
+                    className="cursor-pointer m-100"
+                    icon="mdi:fullscreen"
+                    fontSize={40}
+                    color="white"
+                />
+            </div>
         </div>
-    );
+    </div>
+);
+
+}
+interface ProgressBarProps {
+  progress: number;
+  onSeek: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-function Bar({ progress }: { progress: number }) {
-    return (
-        <div className="h-[5px] bg-gray-200 bg-opacity-25 rounded-t-lg overflow-hidden">
-            <div
-                className="h-full bg-primary transition-width duration-200"
-                style={{ width: `${progress}%` }}
-            />
-        </div>
-    );
+function ProgressBar({ progress, onSeek }: ProgressBarProps) {
+  return (
+    <div className="w-full flex items-center text-white">
+      <div className="flex-grow">
+        <Bar progress={progress} onSeek={onSeek} />
+      </div>
+    </div>
+  );
+}
+
+interface BarProps {
+  progress: number;
+  onSeek: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function Bar({ progress, onSeek }: BarProps) {
+  return (
+    <div className="relative h-[5px] rounded-t-lg overflow-hidden pb-2">
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={progress}
+        onChange={onSeek}
+        className="absolute top-0 left-0 w-full h-[5px] opacity-0 cursor-pointer"
+        style={{ WebkitAppearance: "none" }}
+      />
+      <div
+        className="h-full bg-primary transition-width duration-200 pb-2"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
 }
