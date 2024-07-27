@@ -34,8 +34,23 @@ const EntrySearch: React.FC<EntryProps> = ({ entryName }) => {
         );
     }
 
-    const { name, description, color, icon } = parsedEntry;
+    const { name, description, color, icon, tags } = parsedEntry;
     const finalName = name.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    
+    const wikiBaseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const wikiCategories = [
+        "action", "dialogue", "event", "fact", "sound", "audience", "quest",
+        "instance", "entity", "data", "activity", "group", "static", "cinematic"
+    ];
+    const category = tags.find(tag => wikiCategories.includes(tag));
+    const wikiUrl = category
+        ? `${wikiBaseUrl}/beta/adapters/${parsedEntry.adapter}Adapter/entries/${category}/${name}`
+        : `${wikiBaseUrl}/beta/adapters/${parsedEntry.adapter}Adapter`;
+
+    const handleOpenWiki = () => {
+        window.open(wikiUrl, '_blank');
+    };
+
     return (
             <div className="w-full h-full flex justify-center items-center select-none pt-5 pb-10">
             <div className={`p-3 rounded-[12px] select-none shadow-md shadow-[#252525] ${colors.background}`}>
@@ -79,6 +94,7 @@ const EntrySearch: React.FC<EntryProps> = ({ entryName }) => {
                 </div>
                 <div
                     className={`flex items-center rounded-lg cursor-pointer text-white w-96 mt-2 text-lg ${colors.accent} ${colors.hover}`}
+                    onClick={handleOpenWiki}
                 >
                     <div
                         className="flex items-center justify-center mr-2 p-4 rounded"
