@@ -1,4 +1,4 @@
-import { ComponentProps, Suspense } from "react";
+import { ComponentProps } from "react";
 
 export type SrcType = {
     width: number;
