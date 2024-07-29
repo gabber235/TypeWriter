@@ -1,7 +1,3 @@
----
-title: Home
----
-
 # What is Typewriter?
 
 Typewriter is a plugin that allows you to create and manage player interactions on your server. It allows you to create
