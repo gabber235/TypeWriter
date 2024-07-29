@@ -18,7 +18,7 @@
                 "CI": "true",
                 "BROWSER_ARGS": "--incognito --remote-debugging-port=3000 --no-first-run --no-default-browser-check --user-data-dir=/tmp/docusaurus-chrome-profile"
             },
-            "console": "integratedTerminal" // Use integrated terminal instead of debug console
+            "console": "integratedTerminal"
         },
         {
             "type": "node",
@@ -32,6 +32,28 @@
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "preLaunchTask": "npm run build"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Downsize videos",
+            "runtimeExecutable": "cmd.exe",
+            "runtimeArgs": [
+                "/c",
+                "${workspaceFolder}\\.vscode\\converter.bat",
+                "${input:folder}",
+                "${workspaceFolder}"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
-    ]
+    ],
+    "inputs": [
+        {
+            "id": "folder",
+            "type": "promptString",
+            "description": "Enter the folder name"
+        }
+    ],
 }
