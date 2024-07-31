@@ -48,6 +48,8 @@ const config = {
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
                     lastVersion: '0.4.2',
+                    showLastUpdateAuthor: true,
+                    showLastUpdateTime: true,
                     versions: {
                         current: {
                             label: 'Beta ⚠️',
