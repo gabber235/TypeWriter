@@ -92,7 +92,7 @@ const config = {
                 {name: 'og:description', content: 'The next generation of Player Interactions'},
                 {name: 'og:image', content: 'img/typewriter.png'},
                 {name: 'twitter:card', content: 'summary_large_image'},
-                {name: 'twitter:url', content: 'https://metatags.io/'},
+                {name: 'twitter:url', content: 'https://docs.typewritermc.com/'},
                 {name: 'twitter:title', content: 'TypeWriter'},
                 {name: 'twitter:description', content: 'The next generation of Player Interactions'},
                 {name: 'twitter:image', content: 'img/typewriter.png'},
