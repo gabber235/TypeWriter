@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import ReactPlayer from "react-player";
 import { Icon } from "@iconify/react";
 import fullscreen from "screenfull";
+
 interface PlayerProps {
   url: string;
 }
@@ -24,43 +25,46 @@ export default function Player({ url }: PlayerProps) {
 
   return (
     <div ref={playerContainerRef} className="relative w-full h-full">
-        <ProgressBar progress={progress} onSeek={handleSeek} />
-        <ReactPlayer
-            ref={playerRef}
-            url={url}
-            playing={playing}
-            loop
-            muted
-            controls={false}
-            width="100%"
-            height="100%"
-            progressInterval={100}
-            onProgress={(state) => setProgress(state.played * 100)}
+      <ProgressBar progress={progress} onSeek={handleSeek} />
+      <ReactPlayer
+        ref={playerRef}
+        url={url}
+        playing={playing}
+        loop
+        muted
+        controls={false}
+        width="100%"
+        height="100%"
+        progressInterval={100}
+        onProgress={(state) => setProgress(state.played * 100)}
+      />
+      <div className="opacity-0 hover:opacity-100 transition-opacity duration-300 w-full h-full flex items-center justify-center">
+          <div
+      className="absolute bottom-0 left-0 right-0 flex items-center justify-center cursor-pointer h-[97%]"
+      onClick={togglePlayPause}
+    >
+      <div className="">
+        <Icon
+          icon={playing ? "mdi:pause-circle" : "mdi:play-circle"}
+          fontSize={50}
+          color="white"
         />
-        <div className="opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-default">
-            <div className="absolute inset-2 flex items-center justify-center">
-                <Icon
-                    onClick={togglePlayPause}
-                    className="cursor-pointer"
-                    icon={playing ? "mdi:pause-circle" : "mdi:play-circle"}
-                    fontSize={50}
-                    color="white"
-                />
-            </div>
-            <div className="absolute bottom-2 right-2 p-2">
-                <Icon
-                    onClick={() => fullscreen.toggle(playerContainerRef.current)}
-                    className="cursor-pointer m-100"
-                    icon="mdi:fullscreen"
-                    fontSize={40}
-                    color="white"
-                />
-            </div>
-        </div>
+      </div>
     </div>
-);
-
+      <div className="absolute bottom-2 right-2 p-2">
+        <Icon
+          onClick={() => fullscreen.toggle(playerContainerRef.current)}
+          className="cursor-pointer hover:scale-110 transition duration-150"
+          icon={fullscreen.isFullscreen ? "mdi:fullscreen-exit" : "mdi:fullscreen"}
+          fontSize={40}
+          color="white"
+        />
+      </div>
+      </div>
+    </div>
+  );
 }
+
 interface ProgressBarProps {
   progress: number;
   onSeek: (e: React.ChangeEvent<HTMLInputElement>) => void;
