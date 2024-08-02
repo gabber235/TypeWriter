@@ -1,4 +1,5 @@
 import Player from "@site/src/components/Player";
+import Image from "@site/src/components/Image";
 
 # First Interaction
 
@@ -27,7 +28,7 @@ To do this, run `/typewriter connect` in game. Then clicking the link that is gi
 
 ![connect-command](./assets/first-interaction/connect-command.gif)
 
-![connect-book](./assets/first-interaction/connect-book.png)
+<Image img={require("./assets/first-interaction/connect-book.png")} alt="connect-book" width={400} />
 
 :::caution
 If you're getting a message along the lines of "The server is not hosting the websocket. Try enabling it in the config", please refer to [Configuring the Web Panel](02-installation-guide.md#configuring-the-web-panel)
@@ -36,7 +37,7 @@ If you're getting a message along the lines of "The server is not hosting the we
 This will give you a link to the web panel. Once you have opened the web panel, it should look something like
 this:
 
-![panel-empty](./assets/first-interaction/panel-empty.png)
+<Image img={require("./assets/first-interaction/panel-empty.png")} alt="panel-empty" />
 
 ## Creating a page
 
@@ -55,7 +56,7 @@ For now, we will leave the page type on `Sequence`.
 
 Let's have a look at everything that is on the panel.
 
-![panel-layout](./assets/first-interaction/panel-layout.png)
+<Image img={require("./assets/first-interaction/panel-layout.png")} alt="panel-layout" />
 
 1. **The page lists**: This is where you can see all the pages that you have created. You can also create new
    pages here.
@@ -93,7 +94,7 @@ things that we can change. Let's change the name of the entry to `on_flower_clic
 that we want to interact with. To do this, click on the `Block` field. This will open a modal where you can
 select a block. Let's select the red tulip. After this the inspector should look like this:
 
-![inspector-1](./assets/first-interaction/inspector-1.png)
+<Image img={require("./assets/first-interaction/inspector-1.png")} alt="inspector-1" width={400} />
 
 ## Creating an option
 
@@ -105,7 +106,7 @@ tulip. To do this, click on the `+` button in the action bar, and add an `option
 Then change the name of the entry to `inspect_flower`. Then change the text of the option to `What do you want
 to do?`. After this the inspector should look like this:
 
-![inspector-2](./assets/first-interaction/inspector-2.png)
+<Image img={require("./assets/first-interaction/inspector-2.png")} alt="inspector-2" width={400} />
 
 ### Adding a speaker
 
@@ -131,7 +132,7 @@ next to the options drop down to add a new option. Then change the text of the o
 then add another option with the text `Touch the flower`. After this the inspector
 should look like this:
 
-![inspector-3](./assets/first-interaction/inspector-3.png)
+<Image img={require("./assets/first-interaction/inspector-3.png")} alt="inspector-3" width={400} />
 
 ## Connecting the entries
 
@@ -172,7 +173,7 @@ It is important that you use the specific trigger from the correct option. The f
 global triggers.
 :::
 
-![inspector-4](./assets/first-interaction/inspector-4.png)
+<Image img={require("./assets/first-interaction/inspector-4.png")} alt="inspector-4" width={400} />
 
 When you publish the changes in the game, it should look something like this:
 
@@ -200,7 +201,7 @@ To create a fact, head over to a static page such as `Flower Static`, click on t
 of the entry to `smelled_flower`. We can add a comment describing the fact and how it is used. After this the
 inspector should look like this:
 
-![inspector-5](./assets/first-interaction/inspector-5.png)
+<Image img={require("./assets/first-interaction/inspector-5.png")} alt="inspector-5" width={400} />
 
 #### Adding criteria to the dialogue
 
@@ -211,9 +212,8 @@ this fact when the dialogue gets triggered. To do this, click on the `+` button 
 down. Then select the `smelled_flower` fact, make the modification `=` and the value `1`. After this the
 inspector should look like this:
 
-![inspector-6](./assets/first-interaction/inspector-6.png)
+<Image img={require("./assets/first-interaction/inspector-6.png")} alt="inspector-6" width={400} />
 
-Now we can create a new `spoken` dialogue entry that will be triggered when the player smells the flower for
 subsequent times. Rename it to `smell_flower_second_time`, add the text `You smell the flower again. It still smells <blue><bold>fragrant</bold></blue>.`, select our `flower` speaker we created earlier, and finally specify a
 duration of `1s` that the message will be animated. Connect it to the `inspect_flower` entry as a trigger for
 the `smell the flower` option.
@@ -228,7 +228,7 @@ So `smell_flower_initialy` will be picked when the player has not smelled the fl
 
 The UI should look something like this:
 
-![panel-looked](./assets/first-interaction/panel-looked.png)
+<Image img={require("./assets/first-interaction/panel-looked.png")} alt="panel-looked" />
 
 When you publish the changes. In the game it should look something like this:
 
@@ -250,7 +250,7 @@ If you are not able to make it work, try reading parts again or go to our
 
 Finally, the UI should look something like this:
 
-![panel-final](./assets/first-interaction/panel-final.png)
+<Image img={require("./assets/first-interaction/panel-final.png")} alt="panel-final" />
 
 When you publish the changes. In the game it should look something like this:
 

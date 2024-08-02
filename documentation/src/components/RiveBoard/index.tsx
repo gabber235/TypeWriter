@@ -1,4 +1,4 @@
-import Rive, { useRive } from '@rive-app/react-canvas';
+import { useRive } from '@rive-app/react-canvas';
 import { useEffect, useRef, useState } from 'react';
 
 interface RiveBoardProps {
@@ -10,7 +10,7 @@ interface RiveBoardProps {
 export default function RiveBoard(props: RiveBoardProps) {
     const ref = useRef();
     const { width } = useContainerDimensions(ref);
-    const { rive, RiveComponent } = useRive({
+    const { RiveComponent } = useRive({
         src: props.src,
         artboard: props.artboard,
         stateMachines: props.stateMachines,

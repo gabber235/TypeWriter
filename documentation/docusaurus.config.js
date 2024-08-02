@@ -48,6 +48,8 @@ const config = {
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
                     lastVersion: '0.4.2',
+                    showLastUpdateAuthor: true,
+                    showLastUpdateTime: true,
                     versions: {
                         current: {
                             label: 'Beta ⚠️',
@@ -76,6 +78,25 @@ const config = {
                     width: 150,
                 },
             },
+            metadata: [
+                {name: 'title', content: 'Typewriter'},
+                {name: 'description', content: 'The next generation of Player Interactions'},
+                {name: 'keywords', content: 'Minecraft, Questing, NPC\'s, Manifests, Cinematics, sequences, Road-network, Interactions, player interactions, plugin, papermc'},
+                {name: 'robots', content: 'index, follow'},
+                {name: 'Content-Type', content: 'text/html; charset=utf-8'},
+                {name: 'language', content: 'English'},
+                {name: 'author', content: 'Gabber235, Marten_mrfcyt'},
+                {name: 'og:type', content: 'website'},
+                {name: 'og:url', content: 'img/typewriter.png'},
+                {name: 'og:title', content: 'TypeWriter'},
+                {name: 'og:description', content: 'The next generation of Player Interactions'},
+                {name: 'og:image', content: 'img/typewriter.png'},
+                {name: 'twitter:card', content: 'summary_large_image'},
+                {name: 'twitter:url', content: 'https://docs.typewritermc.com/'},
+                {name: 'twitter:title', content: 'TypeWriter'},
+                {name: 'twitter:description', content: 'The next generation of Player Interactions'},
+                {name: 'twitter:image', content: 'img/typewriter.png'},
+            ],
             // Replace with your project's social card
             image: 'img/typewriter.png',
             navbar: {
@@ -173,6 +194,16 @@ const config = {
                         line: 'highlight-green', // For single line
                         block: { start: 'highlight-green-start', end: 'highlight-green-end' }, // For block
                     },
+                    {
+                        className: 'highlight-blue',
+                        line: 'highlight-blue', // For single line
+                        block: { start: 'highlight-blue-start', end: 'highlight-blue-end' }, // For block
+                    },
+                    {
+                        className: 'highlight-line',
+                        line: 'highlight-next-line', // For single line
+                        block: { start: 'highlight-start', end: 'highlight-end' }, // For block
+                    },
                 ]
             },
             algolia: {
@@ -194,6 +225,7 @@ const config = {
         "rive-loader",
         require.resolve("./plugins/tailwind/index.js"),
         require.resolve("./plugins/compression/index.js"),
+        require.resolve("./plugins/code-snippets/index.js"),
     ]
 };
 

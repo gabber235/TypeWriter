@@ -28,7 +28,6 @@ repositories {
     // Floodgate
     maven("https://repo.opencollab.dev/maven-snapshots/")
     // PacketEvents, CommandAPI
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.codemc.io/repository/maven-releases/")
     // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -95,12 +94,6 @@ java {
 
 kotlin {
     jvmToolchain(languageJavaVersion)
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "$languageJavaVersion"
-    }
 }
 
 tasks.test {
