@@ -22,7 +22,7 @@ class PacketInterceptor : PacketListenerAbstract() {
 
     override fun onPacketReceive(event: PacketReceiveEvent?) {
         if (event == null) return
-        val player = event.getPlayer<Player>() // kotlin interop fix
+        val player = event.player
         if (player !is Player) return
         val interceptor = blockers[player.uniqueId] ?: return
         interceptor.trigger(event)
@@ -30,7 +30,7 @@ class PacketInterceptor : PacketListenerAbstract() {
 
     override fun onPacketSend(event: PacketSendEvent?) {
         if (event == null) return
-        val player = event.getPlayer<Player>() // kotlin interop fix
+        val player = event.player
         if (player !is Player) return
         val interceptor = blockers[player.uniqueId] ?: return
         interceptor.trigger(event)
@@ -74,7 +74,8 @@ private data class PlayerPacketInterceptor(
         interceptions.remove(subscription)
         return interceptions.isEmpty()
     }
-    fun trigger(event: ProtocolPacketEvent) {
+
+    fun trigger(event: ProtocolPacketEvent<Any>) {
         interceptions.values
             .asSequence()
             .filter { it.type == event.packetType }
@@ -88,13 +89,13 @@ data class PacketInterceptionSubscription(
 
 interface PacketInterception {
     val type: PacketTypeCommon
-    fun onIntercept(event: ProtocolPacketEvent)
+    fun onIntercept(event: ProtocolPacketEvent<Any>)
 }
 
 class PacketBlocker(
     override val type: PacketTypeCommon,
 ) : PacketInterception {
-    override fun onIntercept(event: ProtocolPacketEvent) {
+    override fun onIntercept(event: ProtocolPacketEvent<Any>) {
         event.isCancelled = true
     }
 }
@@ -103,7 +104,7 @@ class CustomPacketReceiveInterception(
     override val type: PacketTypeCommon,
     private val intercept: (PacketReceiveEvent) -> Unit
 ) : PacketInterception {
-    override fun onIntercept(event: ProtocolPacketEvent) {
+    override fun onIntercept(event: ProtocolPacketEvent<Any>) {
         if (event !is PacketReceiveEvent) return
         intercept(event)
     }
@@ -113,7 +114,7 @@ class CustomPacketSendInterception(
     override val type: PacketTypeCommon,
     private val intercept: (PacketSendEvent) -> Unit
 ) : PacketInterception {
-    override fun onIntercept(event: ProtocolPacketEvent) {
+    override fun onIntercept(event: ProtocolPacketEvent<Any>) {
         if (event !is PacketSendEvent) return
         intercept(event)
     }
