@@ -1,6 +1,8 @@
 jdk:
   - openjdk21
 before_install:
+  - sdk install java 21.0.4-open
+  - sdk use java 21.0.4-open
   - echo "Before install"
     # Delete all folders and files, except .git,  plugin/, version.txt and move the content of `plugin` folder to the root
   - find . ! -name '.git' ! -name 'plugin' ! -name 'version.txt' -maxdepth 1 -exec rm -rf {} \;
