@@ -88,7 +88,7 @@ class PlayerEntity(
             entityId = EntityLib.getPlatform().entityIdProvider.provide(uuid, EntityTypes.PLAYER)
         } while (EntityLib.getApi<SpigotEntityLibAPI>().getEntity(entityId) != null)
 
-        entity = WrapperPlayer(UserProfile(uuid, "TW_${displayName.stripped()}"), entityId)
+        entity = WrapperPlayer(UserProfile(uuid, "\u2063${displayName.stripped()}"), entityId)
 
         entity.isInTablist = false
         entity.meta<PlayerMeta> {
@@ -159,7 +159,7 @@ class PlayerEntity(
             "typewriter-$entityId",
             WrapperPlayServerTeams.TeamMode.ADD_ENTITIES,
             Optional.empty(),
-            listOf(entity.username)
+            listOf(entity.username.take(16))
         ) sendPacketTo player
         super.spawn(location)
     }

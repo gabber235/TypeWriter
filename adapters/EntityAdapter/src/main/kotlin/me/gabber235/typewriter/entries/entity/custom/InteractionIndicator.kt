@@ -14,6 +14,7 @@ import me.gabber235.typewriter.entry.entries.EntityData
 import me.gabber235.typewriter.entry.entries.EntityDefinitionEntry
 import me.gabber235.typewriter.entry.entries.LinesProperty
 import me.gabber235.typewriter.entry.quest.trackedQuest
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.snippets.snippet
 import me.gabber235.typewriter.utils.Sound
 import org.bukkit.entity.Player
@@ -60,7 +61,7 @@ class InteractionIndicatorEntity(
         }.toList()
         if (objectives.isEmpty()) {
             if (hasInteractionEntry()) {
-                return dialogueIndicator
+                return dialogueIndicator.parsePlaceholders(player)
             }
             return ""
         }
@@ -72,7 +73,7 @@ class InteractionIndicatorEntity(
             interactIndicator
         }
 
-        return icon
+        return icon.parsePlaceholders(player)
     }
 
     private fun hasInteractionEntry(): Boolean {

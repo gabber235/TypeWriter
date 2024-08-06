@@ -7,7 +7,7 @@ on:
 
 jobs:
   changes:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       plugin: ${{ steps.changes.outputs.plugin }}
     steps:

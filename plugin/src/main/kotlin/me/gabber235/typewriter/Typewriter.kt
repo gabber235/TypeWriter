@@ -91,7 +91,7 @@ class Typewriter : KotlinPlugin(), KoinComponent {
             logger(MinecraftLogger(logger))
         }
 
-        CommandAPI.onLoad(CommandAPIBukkitConfig(this).usePluginNamespace())
+        CommandAPI.onLoad(CommandAPIBukkitConfig(this).usePluginNamespace().skipReloadDatapacks(true))
 
         get<AdapterLoader>().loadAdapters()
     }

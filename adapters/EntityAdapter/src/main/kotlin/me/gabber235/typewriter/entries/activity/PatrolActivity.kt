@@ -8,6 +8,7 @@ import me.gabber235.typewriter.entry.entity.*
 import me.gabber235.typewriter.entry.entries.*
 import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
 import me.gabber235.typewriter.entry.roadnetwork.gps.PointToPointGPS
+import me.gabber235.typewriter.utils.distanceSqrt
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent
 
@@ -70,7 +71,7 @@ private class PatrolActivity(
         // Get the closest node to the start location
         val closestNode = network.nodes
             .filter { it.id in nodes }
-            .minByOrNull { it.location.distanceSquared(startLocation.toLocation()) }
+            .minByOrNull { it.location.distanceSqrt(startLocation.toLocation()) ?: Double.MAX_VALUE }
             ?: throw IllegalStateException("Could not find any node in the nodes list for the patrol activity.")
 
         val index = nodes.indexOf(closestNode.id)

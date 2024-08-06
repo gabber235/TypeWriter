@@ -1,4 +1,5 @@
 import Player from "@site/src/components/Player";
+import Image from "@site/src/components/Image";
 
 # First Cinematic
 This guide will lead you through making your first cinematic.
@@ -41,7 +42,7 @@ Let's rename the entry to `camera_view`. Then, click `Add Segment` to add a new 
 
 You'll now see a lot of new fields that aren't in the other pages. Let's go through those.
 
-![Cinematics Layout](./assets/first-cinematic/cinematic-layout.png)
+<Image img={require("./assets/first-cinematic/cinematic-layout.png")} alt="Cinematics Layout" />
 
 > #### Track Duration (1)
 The track duration field is where you decide the duration of the entire cinematic.
@@ -69,7 +70,7 @@ We now need to decide on two locations. To more easily continue the guide later 
 around a red tulip. We then fill in `Path #1`'s location, and expand `Path #2` and add the location of that path.
 Remember to add two different locations. You can see example paths in the screenshot below.
 
-![Example Camera Paths](./assets/first-cinematic/camera-paths-example.png)
+<Image img={require("./assets/first-cinematic/camera-paths-example.png")} alt="Example Camera Paths" width={400} />
 
 You should now have a functioning cinematic!
 Let's `Publish` and check it out. Type `/tw cinematic start flower_cinematic` in chat, and

@@ -1,5 +1,6 @@
 jdk:
-  - openjdk21
+  - temurin-21
+  - temurin-17
 before_install:
   - sdk install java 21.0.4-open
   - sdk use java 21.0.4-open

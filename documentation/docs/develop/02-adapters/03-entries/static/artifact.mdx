@@ -1,3 +1,5 @@
+import CodeSnippet from "@site/src/components/CodeSnippet";
+
 # ArtifactEntry
 
 The `ArtifactEntry` is a specialized interface derived from `AssetEntry`.
@@ -14,25 +16,11 @@ Here's a generic example of creating and using an `ArtifactEntry`:
 
 ### Defining an ArtifactEntry
 
-```kotlin
-@Entry("example_artifact", "An example artifact entry.", Colors.BLUE, Icons.ARROW)
-class ExampleArtifactEntry(
-    override val id: String = "",
-    override val name: String = "",
-    override val artifactId: String = "",
-) : ArtifactEntry
-```
+<CodeSnippet tag="artifact_entry" />
 
 ### Accessing the Artifact's Content
-```kotlin
-import org.koin.java.KoinJavaComponent.get
+<CodeSnippet tag="artifact_access" />
 
-val assetManager = get<AssetManager>(AssetManager::class.java)
-
-val id = // ID of the entry
-val entry = Query.findById<ExampleArtifactEntry>(id)
-val content: String = assetManager.fetchAsset(entry)
-```
-
-In this example, `ExampleArtifactEntry` is defined as an artifact with a unique identifier. The `assetManager.fetchAsset` method is then used to retrieve the content of the artifact, based on its `artifactId`.
+In this example, we get the content of the given artifact reference by using the `AssetManager`.
+The `assetManager.fetchAsset` method is then used to retrieve the content of the artifact, based the `entry`.
 

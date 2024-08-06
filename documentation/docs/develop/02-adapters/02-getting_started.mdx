@@ -2,22 +2,28 @@
 title: Getting Started
 ---
 
+import CodeSnippet from "@site/src/components/CodeSnippet";
+
+
 # Creating an Adapter
 ## Introduction
-TypeWriter is a dynamic platform that supports the development of adapters, which are modular components enhancing the overall functionality. Adapters are self-contained, easily shareable, and integrate smoothly into the TypeWriter system. This guide is tailored to guide you through the process of creating an adapter, suitable for both beginners and experienced developers.
+Typewriter is a dynamic platform that supports the development of adapters, which are modular components enhancing the overall functionality.
+Adapters are self-contained, easily shareable, and integrate smoothly into the TypeWriter system.
+They allow you to create custom entries and have them show up in the web panel.
+This guide is tailored to guide you through the process of creating an adapter, suitable for both beginners and experienced developers.
 
 ## Prerequisites
- - Java Development Kit (JDK) 17 or higher.
+ - Java Development Kit (JDK) 21 or higher.
  - An Integrated Development Environment (IDE) such as IntelliJ IDEA or Eclipse.
  - A basic understanding of Gradle and the Spigot API.
 
 ## Step 1: Setting Up a Gradle Project
-Begin by establishing a Gradle project for your TypeWriter adapter. Below is a comprehensive setup for your `build.gradle.kts`:
+Begin by establishing a Gradle project for your Typewriter adapter. Below is a comprehensive setup for your `build.gradle.kts`:
 
 ```kotlin title="build.gradle.kts"
 plugins {
-    kotlin("jvm") version "1.8.20"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    kotlin("jvm") version "2.0.0"
+    id("io.github.goooler.shadow") version "8.1.7"
 }
 
 // Replace with your own information
@@ -25,35 +31,33 @@ group = "me.yourusername"
 version = "0.0.1"
 
 repositories {
-    maven("https://jitpack.io")
+    // Typewriter required repositories
     mavenCentral()
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://libraries.minecraft.net/")
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
+    maven("https://repo.codemc.io/repository/maven-releases/")
     maven("https://repo.opencollab.dev/maven-snapshots/")
+    maven("https://jitpack.io")
 
     // Add other necessary repositories
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
-    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("com.github.gabber235:typewriter:main-SNAPSHOT") // Latest release version
-
-    // Already included in the TypeWriter plugin but still needed for compilation
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
-    compileOnly("com.github.dyam0:LirandAPI:96cc59d4fb")
-    compileOnly("net.kyori:adventure-api:4.13.1")
-    compileOnly("net.kyori:adventure-text-minimessage:4.13.1")
 
     // Add other dependencies as needed
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+tasks.withType<ShadowJar> {
+    exclude("kotlin/**")
+    exclude("META-INF/maven/**")
+    // Important: Use the relocated commandapi which is shadowed by the plugin
+    relocate("dev.jorel.commandapi", "com.github.gabber235.typewriter.extensions.commandapi") {
+        include("dev.jorel.commandapi.**")
+    }
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 ```
 
@@ -77,19 +81,8 @@ If you need a specific version, visit the [JitPack page](https://jitpack.io/#gab
 
 ## Step 2: Creating an Adapter Class
 After setting up your project, create an adapter class. Here's an example:
-kotlin title="ExampleAdapter.kt"
-```kotlin
-import me.gabber235.typewriter.adapters.Adapter
-import me.gabber235.typewriter.adapters.TypewriteAdapter
 
-@Adapter("Example", "An example adapter for documentation purposes", "0.0.1")
-object ExampleAdapter : TypewriteAdapter() {
-    override fun initialize() {
-        // Any initializations needed to run the adapter.
-    }
-}
-```
-
+<CodeSnippet tag="adapter" />
 
 ## Step 3: Building the Adapter
 After creating the adapter class, build the adapter. This can be done by running the `shadowJar` Gradle task.

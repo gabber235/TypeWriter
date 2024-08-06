@@ -28,12 +28,11 @@ repositories {
     // Floodgate
     maven("https://repo.opencollab.dev/maven-snapshots/")
     // PacketEvents, CommandAPI
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.codemc.io/repository/maven-releases/")
     // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     // PaperMC
-    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+    maven("https://repo.papermc.io/repository/maven-public/")
     // EntityLib
     maven("https://jitpack.io")
 }
@@ -51,7 +50,7 @@ dependencies {
     }
     compileOnlyApi("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
 
-    api("com.github.Tofaa2.EntityLib:spigot:2.4.5-SNAPSHOT")
+    api("com.github.Tofaa2.EntityLib:spigot:2.4.6-SNAPSHOT")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.17.0")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.17.0")
     api("dev.jorel:commandapi-bukkit-shade:9.5.1")
@@ -63,7 +62,7 @@ dependencies {
     api("io.insert-koin:koin-core:3.5.6")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.0")
     implementation("org.bstats:bstats-bukkit:3.0.2")
-    implementation("com.github.MadMartian:hydrazine-path-finding:1.8.1")
+    implementation("com.extollit.gaming:hydrazine-path-engine:1.8.1")
 
     val adventureVersion = "4.17.0"
     compileOnlyApi("net.kyori:adventure-api:$adventureVersion")
@@ -95,12 +94,6 @@ java {
 
 kotlin {
     jvmToolchain(languageJavaVersion)
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "$languageJavaVersion"
-    }
 }
 
 tasks.test {
