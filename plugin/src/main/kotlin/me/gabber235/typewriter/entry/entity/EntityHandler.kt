@@ -36,7 +36,7 @@ class EntityHandler : PacketListenerAbstract(), KoinComponent {
 
         val entityId = packet.entityId
         // for some reason Kotlin-Java interop doesn't make this getter a val, possibly because of the generic?
-        val player = event.getPlayer() as? Player ?: server.getPlayer(event.user.uuid) ?: return
+        val player = event.player as? Player ?: server.getPlayer(event.user.uuid) ?: return
 
         AsyncFakeEntityInteract(player, entityId, packet.hand, packet.action).callEvent()
 
