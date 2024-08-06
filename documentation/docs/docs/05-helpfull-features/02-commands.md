@@ -1,3 +1,7 @@
+---
+difficulty: Easy
+---
+
 # Commands
 
 The TypeWriter plugin has some handy commands. Below is a table of these commands:

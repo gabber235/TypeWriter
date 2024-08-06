@@ -56,7 +56,7 @@ class SelfNpc(
         get() = playerEntity.entityId
 
     override fun applyProperties(properties: List<EntityProperty>) {
-        playerEntity.applyProperties(properties)
+        playerEntity.consumeProperties(properties)
     }
 
     override fun tick() {
@@ -65,6 +65,7 @@ class SelfNpc(
 
     override fun spawn(location: LocationProperty) {
         // When in a cinematic, the equipment will be reset to empty. We want to keep the player's equipment.
+        super.spawn(location)
         setup()
         playerEntity.spawn(location)
     }
@@ -80,6 +81,7 @@ class SelfNpc(
     override fun contains(entityId: Int): Boolean = playerEntity.contains(entityId)
 
     override fun dispose() {
+        super.dispose()
         playerEntity.dispose()
     }
 }

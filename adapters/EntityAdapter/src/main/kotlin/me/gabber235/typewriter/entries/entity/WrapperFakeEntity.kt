@@ -6,14 +6,29 @@ import me.gabber235.typewriter.entry.entity.EntityState
 import me.gabber235.typewriter.entry.entity.FakeEntity
 import me.gabber235.typewriter.entry.entity.LocationProperty
 import me.gabber235.typewriter.entry.entries.EntityProperty
+import me.tofaa.entitylib.EntityLib
+import me.tofaa.entitylib.meta.EntityMeta
+import me.tofaa.entitylib.meta.projectile.ThrownExpBottleMeta
+import me.tofaa.entitylib.meta.types.LivingEntityMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
+import me.tofaa.entitylib.wrapper.WrapperExperienceOrbEntity
+import me.tofaa.entitylib.wrapper.WrapperLivingEntity
 import org.bukkit.entity.Player
 
 abstract class WrapperFakeEntity(
     val type: EntityType,
     player: Player,
 ) : FakeEntity(player) {
-    protected val entity = WrapperEntity(type)
+    protected val entity: WrapperEntity by lazy(LazyThreadSafetyMode.NONE) {
+        val uuid = EntityLib.getPlatform().entityUuidProvider.provide(type)
+        val entityId = EntityLib.getPlatform().entityIdProvider.provide(uuid, type)
+        val metaData = EntityMeta.createMeta(entityId, type)
+        when (metaData) {
+            is LivingEntityMeta -> WrapperLivingEntity(entityId, uuid, type, metaData)
+            is ThrownExpBottleMeta -> WrapperExperienceOrbEntity(entityId, uuid, type, metaData)
+            else -> WrapperEntity(type)
+        }
+    }
 
     override val entityId: Int
         get() = entity.entityId

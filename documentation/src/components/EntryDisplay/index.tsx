@@ -4,9 +4,14 @@ import { ReactFlowProvider } from "reactflow";
 import { PageLayout } from "./graph";
 import { Page } from "../../libs/data";
 import EntryInspector from "./inspector";
+import { useMemo } from "react";
 
 interface EntryDisplayProps {
     pages: Page[];
+    /**
+    * Pages that are not shown as a graph, but where entries can be referenced.
+    */
+    referencePages: Page[];
 }
 
 export function capitalize(value: string) {
@@ -24,7 +29,8 @@ export function format(value: string) {
         .join(" ");
 }
 
-export default function EntryDisplay({ pages }: EntryDisplayProps) {
+export default function EntryDisplay({ pages = [], referencePages = [] }: EntryDisplayProps) {
+    const totalPages = useMemo(() => pages.concat(referencePages), [pages, referencePages]);
     return (
         <Tabs lazy>
             {pages.map((page) => (
@@ -33,7 +39,7 @@ export default function EntryDisplay({ pages }: EntryDisplayProps) {
                         <div className="flex flex-col sm:flex-row">
                             <PageLayout page={page} />
                             <div className="w-full h-1 sm:h-[35em] sm:w-1 bg-[#0000001F] dark:bg-[#FFFFFF1F] rounded-sm" />
-                            <EntryInspector pages={pages} />
+                            <EntryInspector pages={totalPages} />
                         </div>
                     </ReactFlowProvider>
                 </TabItem>

@@ -1,3 +1,5 @@
+import CodeSnippet from "@site/src/components/CodeSnippet";
+
 # CinematicEntry
 
 The `CinematicEntry` does not have any decentends, but is very customizable. When a entry is needed in a cinematic page, it needs to inherid this.
@@ -20,39 +22,16 @@ If you need this, reach out to me on [Discord](https://discord.gg/HtbKyuDDBw).
 As entries are not allowed to have any state, we create a `CinematicAction` everytime a entry is used in a cinematic for a player.
 
 ## Usage
-```kotlin
-@Entry("example_cinematic", "An example cinematic entry.", Colors.CYAN, Icons.TERMINAL)
-class ExampleCinematicEntry(
-    override val id: String,
-    override val name: String,
-    override val criteria: List<Criteria>,
-    @Segments(Colors.CYAN, Icons.TERMINAL)
-    override val segments: List<ExampleSegment>,
-): CinematicEntry {
-    override fun create(player: Player): CinematicAction {
-        return ExampleCinematicAction(player, this)
-    }
-}
-```
+<CodeSnippet tag="cinematic_entry" />
 
 Segments sometimes need a minimum or maximum duration. This can be done using the `@InnerMin` and `@InnerMax` annotations. 
 
-```kotlin
-@Segments(Colors.CYAN, Icons.TERMINAL)
-@InnerMin(Min(10))
-@InnerMax(Max(20))
-override val segments: List<ExampleSegment>,
-```
+<CodeSnippet tag="cinematic_segment_with_min_max" />
 
 This will make sure that the segment will be at least 10 frames long and at most 20 frames long.
 
-### ExampleSegment
-```kotlin
-data class ExampleSegment(
-    override val startFrame: Int,
-    override val endFrame: Int,
-): Segment
-```
+### ExampleSegment 
+<CodeSnippet tag="cinematic_segment" />
 
 ### ExampleCinematicAction
 
@@ -66,48 +45,28 @@ There are a few different lifecycle methods that can be used.
 
 If you need all the customization, you can can implement the `CinematicAction` directly:
 
-```kotlin
-class ExampleCinematicAction(
-    override val player: Player,
-    override val entry: ExampleCinematicEntry,
-): CinematicAction {
-    override fun setup() {
-        // Initialize variables, spawn entities, etc.
-    }
-
-    override fun tick(frame: Int) {
-        val segment = entry.segments activeSegmentAt frame
-        // Can be null if no segment is active
-
-        // Execute segments
-    }
-
-    override fun teardown() {
-        // Remove entities, etc.
-    }
-
-    override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame
-}
-```
+<CodeSnippet tag="cinematic_action" />
 
 ### SimpleCinematicAction
 Sometimes you don't need all the customization and flexiblity. If you only care about 1 segment track, and only need to do something when a segment starts or ends, you can use the `SimpleCinematicAction`.
 
-```kotlin
-class ExampleCinematicAction(
-    override val player: Player,
-    override val entry: ExampleCinematicEntry,
-): SimpleCinematicAction<ExampleSegment>() {
-    override val segments: List<ExampleSegment> = entry.segments
+<CodeSnippet tag="cinematic_simple_action" />
 
-    override suspend fun startSegment(segment: ExampleSegment) {
-        // Called when a segment starts
-    }
+## Ticking 
 
-    override suspend fun endSegment(segment: ExampleSegment) {
-        // Called when a segment ends
-    }
-}
-```
+One important detail is that the `tick` methods are not necessarily called in order.
+It is important that the tick method should show the state of the action at the given frame.
 
+One place where this is definitely the case is when the player is viewing the cinematic in content mode.
+As the player is able to scroll through the cinematic, it might be the case that multiple frames are skipped, or rewinded.
 
+## Simulation & Recording
+
+Sometimes the cinematic should be different when it is being recorded or simulated.
+Like the blinding cinematic, where you don't want to be blinded during simulation/recording.
+Or you want to show a different thing during simulation/recording.
+Like the camera which displays the camera in the world, instead of setting the player's camera.
+
+To do this, there are 2 additional methods that can be implemented on the `CinematicEntry` that can return a different `CinematicAction` for recording and simulation.
+
+<CodeSnippet tag="cinematic_create_actions" />
