@@ -33,7 +33,7 @@ class SlimeDefinition(
     override val name: String = "",
     override val displayName: String = "",
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "slime_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "slime_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = SlimeEntity(player)
@@ -52,7 +52,7 @@ class SlimeInstance(
     override val name: String = "",
     override val definition: Ref<SlimeDefinition> = emptyRef(),
     override val spawnLocation: Location = Location(null, 0.0, 0.0, 0.0),
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "slime_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "slime_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
