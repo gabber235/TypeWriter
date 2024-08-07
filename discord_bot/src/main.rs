@@ -127,7 +127,7 @@ async fn startup_discord_bot() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![create_task(), close_ticket()],
+            commands: vec![create_task(), close_ticket(), support_answering()],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
         })
