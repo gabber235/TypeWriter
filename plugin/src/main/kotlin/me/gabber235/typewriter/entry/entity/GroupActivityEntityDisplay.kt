@@ -63,7 +63,8 @@ class GroupActivityEntityDisplay(
             // When the state is different between players, it might look weird.
             // But there is no real solution to this.
             // So we pick the first entity's state and use to try and keep the state consistent.
-            val entityState = entities[viewers.firstOrNull()?.uniqueId]?.state ?: EntityState()
+            val viewerId = viewers.firstOrNull()?.uniqueId
+            val entityState = if (viewerId != null) entities[viewerId]?.state ?: EntityState() else EntityState()
 
             val context = SharedActivityContext(ref, viewers, entityState)
             manager.tick(context)
