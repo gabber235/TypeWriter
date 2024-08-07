@@ -170,7 +170,7 @@ async fn schedule_task() {
         } else {
             println!("Cleanup task completed");
             fail_count = 0;
-            60 * 60 * 12
+            60 * 60
         };
         println!("Waiting for {} seconds before running again", wait_time);
         tokio::time::sleep(std::time::Duration::from_secs(wait_time)).await;
