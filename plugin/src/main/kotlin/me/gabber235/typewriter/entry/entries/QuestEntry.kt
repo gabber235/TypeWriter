@@ -49,8 +49,8 @@ class QuestAudienceFilter(
     }
 }
 
-private val inactiveObjectiveDisplay by snippet("quest.objective.inactive", "<gray><display></gray>")
-private val showingObjectiveDisplay by snippet("quest.objective.showing", "<white><display></white>")
+val inactiveObjectiveDisplay by snippet("quest.objective.inactive", "<gray><display></gray>")
+val showingObjectiveDisplay by snippet("quest.objective.showing", "<white><display></white>")
 
 @Tags("objective")
 interface ObjectiveEntry : AudienceFilterEntry, PlaceholderEntry, PriorityEntry {
