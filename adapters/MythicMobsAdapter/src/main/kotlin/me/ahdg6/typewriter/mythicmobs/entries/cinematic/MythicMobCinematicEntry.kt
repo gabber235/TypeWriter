@@ -10,6 +10,7 @@ import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
@@ -17,6 +18,7 @@ import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -45,6 +47,7 @@ data class MythicMobSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @Help("The name of the mob to spawn")
+    @Placeholder
     val mobName: String = "",
     @Help("The location to spawn the mob at")
     @WithRotation
@@ -63,7 +66,7 @@ class MobCinematicAction(
         super.startSegment(segment)
 
         SYNC.switchContext {
-            val mob = MythicBukkit.inst().mobManager.spawnMob(segment.mobName, segment.location)
+            val mob = MythicBukkit.inst().mobManager.spawnMob(segment.mobName.parsePlaceholders(player), segment.location)
             this@MobCinematicAction.mob = mob
             val hideMechanic = MythicBukkit.inst().skillManager.getMechanic("hide")
 
