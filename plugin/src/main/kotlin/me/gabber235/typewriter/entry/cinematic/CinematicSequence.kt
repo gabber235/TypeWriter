@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.cinematic.CinematicState.*
 import me.gabber235.typewriter.entry.entries.CinematicAction
+import me.gabber235.typewriter.entry.entries.CinematicSettings
 import me.gabber235.typewriter.entry.entries.SystemTrigger.CINEMATIC_END
 import me.gabber235.typewriter.events.AsyncCinematicEndEvent
 import me.gabber235.typewriter.events.AsyncCinematicStartEvent
@@ -22,6 +23,7 @@ class CinematicSequence(
     private val player: Player,
     private val actions: List<CinematicAction>,
     private val triggers: List<Ref<TriggerableEntry>>,
+    private val settings: CinematicSettings,
 ) {
     private var state = STARTING
     private var playTime = Duration.ofMillis(-1)
@@ -32,8 +34,8 @@ class CinematicSequence(
     suspend fun start() {
         if (state != STARTING) return
 
-        player.startBlockingMessages()
-        player.startBlockingActionBar()
+        if (settings.blockChatMessages) player.startBlockingMessages()
+        if (settings.blockActionBarMessages) player.startBlockingActionBar()
 
         actions.forEach {
             try {
@@ -83,8 +85,8 @@ class CinematicSequence(
         state = ENDING
         val originalFrame = frame
 
-        player.stopBlockingMessages()
-        player.stopBlockingActionBar()
+        if (settings.blockChatMessages) player.stopBlockingMessages()
+        if (settings.blockActionBarMessages) player.stopBlockingActionBar()
 
         actions.forEach {
             try {

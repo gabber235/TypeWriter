@@ -90,12 +90,18 @@ enum class SystemTrigger : EventTrigger {
 data class CinematicStartTrigger(
     val pageId: String,
     val triggers: List<Ref<TriggerableEntry>> = emptyList(),
+    val settings: CinematicSettings = CinematicSettings(),
 ) : EventTrigger {
     val priority: Int = KoinJavaComponent.get<EntryDatabase>(EntryDatabase::class.java).pagePriority(pageId)
 
     override val id: String
         get() = "system.cinematic.start.$pageId"
 }
+
+data class CinematicSettings(
+    val blockChatMessages: Boolean = true,
+    val blockActionBarMessages: Boolean = true,
+)
 
 open class ContentModeTrigger(
     val context: ContentContext,
