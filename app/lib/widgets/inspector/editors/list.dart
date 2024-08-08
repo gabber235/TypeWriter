@@ -139,33 +139,36 @@ class _ListItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final type = field.type;
     final childPath = "$path.$index";
-    return FieldHeader(
-      field: type,
-      path: childPath,
-      canExpand: true,
-      leading: [
-        MouseRegion(
-          cursor: SystemMouseCursors.grab,
-          child: ReorderableDragStartListener(
-            index: index,
-            child: const Iconify(
-              TWIcons.barsStaggered,
-              size: 12,
-              color: Colors.grey,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: FieldHeader(
+        field: type,
+        path: childPath,
+        canExpand: true,
+        leading: [
+          MouseRegion(
+            cursor: SystemMouseCursors.grab,
+            child: ReorderableDragStartListener(
+              index: index,
+              child: const Iconify(
+                TWIcons.barsStaggered,
+                size: 12,
+                color: Colors.grey,
+              ),
             ),
           ),
-        ),
-      ],
-      actions: [
-        DuplicateListItemAction(path, childPath, type),
-        RemoveHeaderAction(
+        ],
+        actions: [
+          DuplicateListItemAction(path, childPath, type),
+          RemoveHeaderAction(
+            path: "$path.$index",
+            onRemove: () => _remove(ref.passing, index),
+          ),
+        ],
+        child: FieldEditor(
           path: "$path.$index",
-          onRemove: () => _remove(ref.passing, index),
+          type: field.type,
         ),
-      ],
-      child: FieldEditor(
-        path: "$path.$index",
-        type: field.type,
       ),
     );
   }

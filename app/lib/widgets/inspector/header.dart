@@ -58,68 +58,83 @@ class FieldHeader extends HookConsumerWidget {
         ref.watch(pathDisplayNameProvider(path)).nullIfEmpty ?? "Fields";
 
     final expanded = useState(defaultExpanded);
+    final depth = (parent?.depth ?? -1) + 1;
 
     return Header(
       key: ValueKey(path),
       path: path,
       expanded: expanded,
       canExpand: canExpand,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Material(
-            borderRadius: BorderRadius.circular(4),
-            clipBehavior: Clip.none,
-            child: InkWell(
+      depth: depth,
+      child: Material(
+        color: canExpand
+            ? depth.isEven
+                ? Theme.of(context).colorScheme.surface
+                : Theme.of(context).colorScheme.surfaceContainer
+            : Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Material(
               borderRadius: BorderRadius.circular(4),
-              onTap: canExpand ? () => expanded.value = !expanded.value : null,
-              child: WritersIndicator(
-                enabled: canExpand && !expanded.value,
-                provider: fieldWritersProvider(path),
-                offset: canExpand ? const Offset(50, 25) : const Offset(15, 15),
-                child: Row(
-                  children: [
-                    if (canExpand)
-                      Icon(
-                        expanded.value ? Icons.expand_less : Icons.expand_more,
+              clipBehavior: Clip.none,
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(4),
+                onTap:
+                    canExpand ? () => expanded.value = !expanded.value : null,
+                child: WritersIndicator(
+                  enabled: canExpand && !expanded.value,
+                  provider: fieldWritersProvider(path),
+                  offset:
+                      canExpand ? const Offset(50, 25) : const Offset(15, 15),
+                  child: Row(
+                    children: [
+                      if (canExpand)
+                        Icon(
+                          expanded.value
+                              ? Icons.expand_less
+                              : Icons.expand_more,
+                        ),
+                      ...createActions(
+                        availableActions,
+                        HeaderActionLocation.leading,
                       ),
-                    ...createActions(
-                      availableActions,
-                      HeaderActionLocation.leading,
-                    ),
-                    SectionTitle(
-                      title: name,
-                    ),
-                    ...createActions(
-                      availableActions,
-                      HeaderActionLocation.trailing,
-                    ),
-                    const Spacer(),
-                    ...createActions(
-                      availableActions,
-                      HeaderActionLocation.actions,
-                    ),
-                  ],
+                      SectionTitle(
+                        title: name,
+                      ),
+                      ...createActions(
+                        availableActions,
+                        HeaderActionLocation.trailing,
+                      ),
+                      const Spacer(),
+                      ...createActions(
+                        availableActions,
+                        HeaderActionLocation.actions,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          if (canExpand)
-            Collapsible(
-              collapsed: !expanded.value,
-              axis: CollapsibleAxis.vertical,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: child,
-              ),
-            )
-          else
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: child,
-            ),
-        ],
+            if (canExpand)
+              Collapsible(
+                collapsed: !expanded.value,
+                axis: CollapsibleAxis.vertical,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                  child: child,
+                ),
+              )
+            else
+              child,
+          ],
+        ),
       ),
     );
   }
@@ -154,12 +169,14 @@ class Header extends InheritedWidget {
     required this.expanded,
     required this.canExpand,
     required super.child,
+    required this.depth,
     super.key,
   });
 
   final String path;
   final ValueNotifier<bool> expanded;
   final bool canExpand;
+  final int depth;
 
   @override
   bool updateShouldNotify(covariant Header oldWidget) => path != oldWidget.path;

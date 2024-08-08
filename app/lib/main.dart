@@ -93,6 +93,9 @@ class TypeWriterApp extends HookConsumerWidget {
         primary: Colors.blueAccent,
         brightness: brightness,
         error: Colors.redAccent,
+        surfaceContainer: brightness == Brightness.light
+            ? const Color(0xFFF3EDF7)
+            : const Color(0xFF1f1d23),
       ),
     );
   }

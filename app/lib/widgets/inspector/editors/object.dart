@@ -34,22 +34,25 @@ class ObjectEditor extends HookConsumerWidget {
       path: path,
       canExpand: true,
       defaultExpanded: defaultExpanded,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (final field in object.fields.entries)
-            if (!ignoreFields.contains(field.key)) ...[
-              const SizedBox(height: 12),
-              if (!field.value.hasCustomLayout)
-                FieldHeader(
-                  field: field.value,
-                  path: path.isNotEmpty ? "$path.${field.key}" : field.key,
-                  child: buildFieldEditor(field),
-                )
-              else
-                buildFieldEditor(field),
-            ],
-        ],
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final field in object.fields.entries)
+              if (!ignoreFields.contains(field.key)) ...[
+                const SizedBox(height: 12),
+                if (!field.value.hasCustomLayout)
+                  FieldHeader(
+                    field: field.value,
+                    path: path.isNotEmpty ? "$path.${field.key}" : field.key,
+                    child: buildFieldEditor(field),
+                  )
+                else
+                  buildFieldEditor(field),
+              ],
+          ],
+        ),
       ),
     );
   }
