@@ -60,8 +60,7 @@ See [First Interaction](https://docs.typewritermc.com/docs/first-interaction) fo
 
 As an administrator, you can easily configure Typewriter using the custom web panel. 
 Simply input your desired interactions and let the plugin handle the rest. 
-You can also take advantage of the pre-made adapters or create your own custom
-adapters to further customize the plugin for your server.
+You can also take advantage of the pre-made adapters or create your own custom adapters to further customize the plugin for your server.
 
 ## For developers
 
