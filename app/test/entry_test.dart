@@ -132,6 +132,7 @@ void main() {
     test("When an entry is updated, expect the original entry to be unchanged",
         () {
       final entry = Entry(rawDynamicEntry);
+      // ignore: cascade_invocations
       entry.copyWith("complex_map.key2.inner_list.1.name", "new_name");
       expect(entry.get("complex_map.key2.inner_list.1.name"), "test_b");
     });
@@ -288,6 +289,59 @@ void main() {
         {"id": "1", "name": "test_a"},
         {"id": "2", "name": "test_b"},
         {"id": "3", "name": "test_c"},
+      ]);
+    });
+  });
+
+  group("New Paths", () {
+    test("Static path returns only that path", () {
+      final entry = Entry(rawDynamicEntry);
+      final paths = entry.newPaths("simple_map.key1");
+
+      expect(paths, ["simple_map.key1"]);
+    });
+    test("Simple list returns path with next index", () {
+      final entry = Entry(rawDynamicEntry);
+      final paths = entry.newPaths("simple_list.*");
+
+      expect(paths, ["simple_list.3"]);
+    });
+    test("Complex list with fixed ending returns all paths", () {
+      final entry = Entry(rawDynamicEntry);
+      final paths = entry.newPaths("complex_list.*.name");
+
+      expect(paths, [
+        "complex_list.0.name",
+        "complex_list.1.name",
+        "complex_list.2.name",
+      ]);
+    });
+    test("Simple map with wildcard ending returns all paths", () {
+      final entry = Entry(rawDynamicEntry);
+      final paths = entry.newPaths("simple_map.*");
+
+      expect(paths, ["simple_map.key1", "simple_map.key2"]);
+    });
+    test("Complex map with ending list returns next index", () {
+      final entry = Entry(rawDynamicEntry);
+      final paths = entry.newPaths("complex_map.*.inner_list.*");
+
+      expect(paths, [
+        "complex_map.key1.inner_list.3",
+        "complex_map.key2.inner_list.3",
+      ]);
+    });
+    test("Multi wildcard path with fixed ending returns all paths", () {
+      final entry = Entry(rawDynamicEntry);
+      final paths = entry.newPaths("complex_map.*.inner_list.*.name");
+
+      expect(paths, [
+        "complex_map.key1.inner_list.0.name",
+        "complex_map.key1.inner_list.1.name",
+        "complex_map.key1.inner_list.2.name",
+        "complex_map.key2.inner_list.0.name",
+        "complex_map.key2.inner_list.1.name",
+        "complex_map.key2.inner_list.2.name",
       ]);
     });
   });

@@ -172,7 +172,7 @@ annotation class NeedsMigrationIfNotParsable
 sealed interface NeedsMigration {
     fun needsMigration(migrator: EntryMigrator, json: JsonObject, context: EntryMigratorContext): Boolean
 
-    object Always : NeedsMigration {
+    data object Always : NeedsMigration {
         override fun needsMigration(migrator: EntryMigrator, json: JsonObject, context: EntryMigratorContext): Boolean =
             true
     }
@@ -189,7 +189,7 @@ sealed interface NeedsMigration {
         }
     }
 
-    object NotParsable : NeedsMigration {
+    data object NotParsable : NeedsMigration {
         override fun needsMigration(migrator: EntryMigrator, json: JsonObject, context: EntryMigratorContext): Boolean {
             return try {
                 context.gson.fromJson(json, migrator.klass.java)

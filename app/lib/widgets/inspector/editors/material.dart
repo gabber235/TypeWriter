@@ -1,15 +1,16 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/materials.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -76,12 +77,10 @@ class MaterialsFetcher extends SearchFetcher {
   String get title => "Materials";
 
   @override
-  List<SearchElement> fetch(PassingRef ref) {
-    final search = ref.read(searchProvider);
-    if (search == null) return [];
+  List<SearchElement> fetch(PassingRef ref, String query) {
     final fuzzy = ref.read(_fuzzyMaterialsProvider);
 
-    final results = fuzzy.search(search.query);
+    final results = fuzzy.search(query);
 
     return results.map((result) {
       final material = result.item;
@@ -129,7 +128,7 @@ class MaterialSearchElement extends SearchElement {
 
   @override
   Widget suffixIcon(BuildContext context) =>
-      const Icon(FontAwesomeIcons.upRightFromSquare);
+      const Iconify(TWIcons.externalLink);
 
   @override
   String description(BuildContext context) => material.key;
@@ -139,7 +138,7 @@ class MaterialSearchElement extends SearchElement {
     return [
       const SearchAction(
         "Select",
-        FontAwesomeIcons.check,
+        TWIcons.check,
         SingleActivator(LogicalKeyboardKey.enter),
       ),
     ];
@@ -165,7 +164,7 @@ class MaterialPropertyFilter extends SearchFilter {
   @override
   Color get color => property.color;
   @override
-  IconData get icon => property.icon;
+  String get icon => property.icon;
 }
 
 extension _SearchBuilderX on SearchBuilder {
@@ -253,8 +252,8 @@ class MaterialEditor extends HookConsumerWidget {
                   ),
                 ),
               const SizedBox(width: 12),
-              FaIcon(
-                FontAwesomeIcons.caretDown,
+              Iconify(
+                TWIcons.caretDown,
                 size: 16,
                 color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
               ),

@@ -1,7 +1,8 @@
 package me.gabber235.typewriter.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import kotlinx.coroutines.withContext
+import com.github.retrooper.packetevents.protocol.player.Equipment
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEquipment
+import lirand.api.extensions.inventory.meta
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Segments
@@ -9,22 +10,32 @@ import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.extensions.packetevents.sendPacketTo
+import me.gabber235.typewriter.extensions.packetevents.toPacketItem
+import me.gabber235.typewriter.utils.name
+import me.gabber235.typewriter.utils.unClickable
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
-@Entry("pumpkin_hat_cinematic", "Show a pumpkin hat during a cinematic", Colors.CYAN, Icons.HAT_COWBOY_SIDE)
+@Entry("pumpkin_hat_cinematic", "Show a pumpkin hat during a cinematic", Colors.CYAN, "mingcute:hat-fill")
+/**
+ * The `Pumpkin Hat Cinematic` is a cinematic that shows a pumpkin hat on the player's head.
+ *
+ * ## How could this be used?
+ * When you have a resource pack, you can re-texture the pumpkin overlay to make it look like cinematic black bars.
+ */
 class PumpkinHatCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(icon = Icons.HAT_COWBOY_SIDE)
+    @Segments(icon = "mingcute:hat-fill")
     val segments: List<PumpkinHatSegment> = emptyList(),
-) : CinematicEntry {
+    ) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return PumpkinHatCinematicAction(
             player,
@@ -44,29 +55,36 @@ class PumpkinHatCinematicAction(
 ) : SimpleCinematicAction<PumpkinHatSegment>() {
     override val segments: List<PumpkinHatSegment> = entry.segments
 
-    private var playerState: PlayerState? = null
-
     override suspend fun startSegment(segment: PumpkinHatSegment) {
         super.startSegment(segment)
 
-        playerState = player.state(EquipmentSlotStateProvider(EquipmentSlot.HEAD))
-
-        player.equipment.helmet = ItemStack(Material.CARVED_PUMPKIN)
+        WrapperPlayServerEntityEquipment(
+            player.entityId,
+            listOf(
+                Equipment(
+                    com.github.retrooper.packetevents.protocol.player.EquipmentSlot.HELMET,
+                    ItemStack(Material.CARVED_PUMPKIN)
+                        .meta {
+                            name = " "
+                            unClickable()
+                        }
+                        .toPacketItem()
+                )
+            )
+        ) sendPacketTo player
     }
 
     override suspend fun stopSegment(segment: PumpkinHatSegment) {
         super.stopSegment(segment)
-
-        withContext(plugin.minecraftDispatcher) {
-            player.restore(playerState)
-            playerState = null
-        }
-    }
-
-    override suspend fun teardown() {
-        super.teardown()
-        withContext(plugin.minecraftDispatcher) {
-            player.restore(playerState)
-        }
+        WrapperPlayServerEntityEquipment(
+            player.entityId,
+            listOf(
+                Equipment(
+                    com.github.retrooper.packetevents.protocol.player.EquipmentSlot.HELMET,
+                    player.inventory.helmet?.toPacketItem()
+                        ?: com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
+                )
+            )
+        ) sendPacketTo player
     }
 }

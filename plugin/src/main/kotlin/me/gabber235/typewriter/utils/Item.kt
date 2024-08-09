@@ -16,29 +16,29 @@ import kotlin.contracts.contract
 
 open class Item(
     @MaterialProperties(MaterialProperty.ITEM)
-    @Icon(Icons.CUBE)
+    @Icon("fa6-solid:cube")
     @Help("The material of the item.")
     private val material: Optional<Material> = Optional.empty(),
     @InnerMin(Min(0))
-    @Icon(Icons.HASHTAG)
+    @Icon("fa6-solid:hashtag")
     @Help("The amount of items.")
     val amount: Optional<Int> = Optional.empty(),
     @Placeholder
     @Colored
-    @Icon(Icons.TAG)
+    @Icon("fa6-solid:tag")
     @Help("The display name of the item.")
     private val name: Optional<String> = Optional.empty(),
     @Placeholder
     @Colored
     @MultiLine
-    @Icon(Icons.SOLID_FILE_LINES)
+    @Icon("flowbite:file-lines-solid")
     @Help("The lore of the item.")
     private val lore: Optional<String> = Optional.empty(),
 //    private val enchantments: Optional<Map<Enchantment, Int>>,
-    @Icon(Icons.SOLID_FLAG)
+    @Icon("fa6-solid:flag")
     @Help("Special flags for the item.")
     private val flags: Optional<List<ItemFlag>> = Optional.empty(),
-    @Icon(Icons.CODE)
+    @Icon("mingcute:code-fill")
     @Help("The serialized NBT data of the item.")
     private val nbt: Optional<String> = Optional.empty(),
 ) {
@@ -54,7 +54,9 @@ open class Item(
     )
 
     fun build(player: Player?): ItemStack {
-        val item = ItemStack(material.orElse(Material.STONE), amount.orElse(1))
+        val material = material.orElse(Material.STONE)
+        if (material == Material.AIR) return ItemStack.empty()
+        val item = ItemStack(material, amount.orElse(1))
         // Nbt needs to be done first because it will not include the display name and lore.
         // Otherwise, it will overwrite the display name and lore.
         if (nbt.isPresent) {
@@ -62,8 +64,8 @@ open class Item(
         }
         item
             .meta<ItemMeta> {
-                if (name.isPresent) {
-                    displayName(name.get().parsePlaceholders(player).asMini())
+                if (this@Item.name.isPresent) {
+                    displayName(this@Item.name.get().parsePlaceholders(player).asMini())
                 }
                 if (this@Item.lore.isPresent) {
                     lore(this@Item.lore.get().parsePlaceholders(player).split("\n").map { it.asMini() })

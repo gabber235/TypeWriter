@@ -2,14 +2,11 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.entry.EntryListener
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.triggerAllFor
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.event.player.PlayerJoinEvent
 
-@Entry("on_player_join", "When the player joins the server", Colors.YELLOW, Icons.PERSON_CIRCLE_PLUS)
+@Entry("on_player_join", "When the player joins the server", Colors.YELLOW, "fluent:person-add-20-filled")
 /**
  * The `Player Join Event` event is called when a player joins the server.
  *
@@ -20,7 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 class PlayerJoinEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
 ) : EventEntry
 
 @EntryListener(PlayerJoinEventEntry::class)

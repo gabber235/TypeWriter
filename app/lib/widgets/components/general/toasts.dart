@@ -5,14 +5,15 @@ import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:tinycolor2/tinycolor2.dart";
 import "package:typewriter/hooks/text_size.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/utils/fonts.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 part "toasts.freezed.dart";
 
@@ -23,7 +24,7 @@ class Toast with _$Toast {
     required String message,
     String? description,
     @Default(Colors.blue) Color color,
-    @Default(FontAwesomeIcons.exclamation) IconData icon,
+    @Default(TWIcons.exclamation) String icon,
     DateTime? shownAt,
   }) = _Toast;
 
@@ -32,7 +33,7 @@ class Toast with _$Toast {
     required String message,
     String? description,
     @Default(Colors.blue) Color color,
-    @Default(FontAwesomeIcons.exclamation) IconData icon,
+    @Default(TWIcons.exclamation) String icon,
     @Default(Duration(seconds: 10)) Duration duration,
     DateTime? shownAt,
   }) = TemporaryToast;
@@ -130,7 +131,7 @@ class Toasts extends StateNotifier<List<Toast>> {
             message: message,
             description: description,
             color: Colors.green,
-            icon: FontAwesomeIcons.circleCheck,
+            icon: TWIcons.checkCircle,
             duration: duration,
           ),
         );
@@ -148,7 +149,7 @@ class Toasts extends StateNotifier<List<Toast>> {
             message: message,
             description: description,
             color: Colors.orange,
-            icon: FontAwesomeIcons.circleExclamation,
+            icon: TWIcons.exlamationCircle,
             duration: duration,
           ),
         );
@@ -166,7 +167,7 @@ class Toasts extends StateNotifier<List<Toast>> {
             message: message,
             description: description,
             color: Colors.red,
-            icon: FontAwesomeIcons.triangleExclamation,
+            icon: TWIcons.warning,
             duration: duration,
           ),
         );
@@ -294,7 +295,7 @@ class _TemporaryToast extends HookConsumerWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
+                    Iconify(
                       toast.icon,
                       color: toast.darkenColor,
                       size: 28.0,

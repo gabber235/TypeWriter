@@ -3,18 +3,16 @@ package me.gabber235.typewriter.adapters
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
-import me.gabber235.typewriter.adapters.editors.ItemFieldCapturer
-import me.gabber235.typewriter.adapters.editors.LocationFieldCapturer
-import me.gabber235.typewriter.capture.Capturer
-import me.gabber235.typewriter.capture.CapturerCreator
 import me.gabber235.typewriter.entry.EntryMigrations
 import me.gabber235.typewriter.entry.EntryMigrator
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.entries.DialogueEntry
-import me.gabber235.typewriter.entry.entries.NpcRecordedDataCapturer
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.RuntimeTypeAdapterFactory
+import me.gabber235.typewriter.utils.digits
+import me.gabber235.typewriter.utils.get
+import me.gabber235.typewriter.utils.rightPad
 import org.koin.core.component.KoinComponent
 import java.io.File
 import java.net.URLClassLoader
@@ -24,7 +22,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.isSuperclassOf
 
 private val gson =
     GsonBuilder().registerTypeAdapterFactory(
@@ -38,23 +35,16 @@ private val gson =
     ).enableComplexMapKeySerialization()
         .create()
 
-val staticCaptureClasses by lazy {
-    listOf(
-        LocationFieldCapturer::class,
-        ItemFieldCapturer::class,
-        NpcRecordedDataCapturer::class,
-    )
-}
 
 interface AdapterLoader {
     val adapters: List<AdapterData>
     val adaptersJson: JsonArray
+    val loader: URLClassLoader?
 
     fun loadAdapters()
     fun initializeAdapters()
+    fun shutdown()
     fun getEntryBlueprint(type: String): EntryBlueprint?
-
-    fun getCaptureClasses(): List<KClass<out Capturer<*>>>
 
     fun getEntryMigrators(): List<EntryMigrator>
 }
@@ -63,25 +53,33 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
     override var adapters = listOf<AdapterData>()
     override var adaptersJson: JsonArray = JsonArray()
 
+    override var loader: URLClassLoader? = null
+        private set
+
     override fun loadAdapters() {
         val dir = plugin.dataFolder["adapters"]
         if (!dir.exists()) {
             dir.mkdirs()
         }
 
-        adapters = dir.listFiles()?.filter { it.extension == "jar" }?.mapNotNull {
+        val jars = dir.listFiles()?.filter { it.extension == "jar" } ?: listOf()
+
+        loader = URLClassLoader(jars.map { it.toURI().toURL() }.toTypedArray(), plugin.javaClass.classLoader)
+
+        adapters = jars.mapNotNull {
             logger.info("Loading adapter ${it.nameWithoutExtension}")
             try {
                 loadAdapter(it)
             } catch (e: ClassNotFoundException) {
                 logger.warning("Failed to load adapter ${it.nameWithoutExtension}. Error: ${e.message}. This is likely due to a missing dependency. Skipping...")
+                e.printStackTrace()
                 null
             } catch (e: Exception) {
                 logger.warning("Failed to load adapter ${it.nameWithoutExtension}. Skipping...")
                 e.printStackTrace()
                 null
             }
-        } ?: listOf()
+        }
 
         val jsonArray = JsonArray()
 
@@ -102,6 +100,12 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
                 """.trimMargin()
             )
         } else {
+            val unsupportedMessage = if (adapters.any { it.flags.contains(AdapterFlag.Unsupported) }) {
+                "\nThere are unsupported adapters loaded. You won't get any support for these.\n"
+            } else {
+                ""
+            }
+
             val maxAdapterLength = adapters.maxOf { it.name.length }
             val maxVersionLength = adapters.maxOf { it.version.length }
             val maxDigits = adapters.maxOf { it.entries.size.digits }
@@ -111,7 +115,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
                 |${"-".repeat(15)}{ Loaded Adapters }${"-".repeat(15)}
                 |
                 |${adapters.joinToString("\n") { it.displayString(maxAdapterLength, maxVersionLength, maxDigits) }}
-                |
+                |$unsupportedMessage
                 |${"-".repeat(50)}
                 """.trimMargin()
             )
@@ -122,19 +126,35 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
     override fun initializeAdapters() {
         adapters.forEach {
-            if (TypewriteAdapter::class.isSuperclassOf(it.clazz.kotlin)) {
-                val objectInstance = it.clazz.kotlin.objectInstance
-                if (objectInstance == null) {
-                    try {
-                        it.clazz.getConstructor().newInstance()
-                    } catch (e: Exception) {
-                        logger.warning("Failed to initialize adapter ${it.name}. It is both not a kotlin object and has no empty constructor. Skipping initialization...")
-                        return@forEach
-                    }
-                }
-                TypewriteAdapter::class.cast(objectInstance).initialize()
+            try {
+                it.adapter.initialize()
+            } catch (e: Exception) {
+                logger.warning("Failed to initialize adapter ${it.name}. Error: ${e.message}")
+                e.printStackTrace()
             }
         }
+    }
+
+    override fun shutdown() {
+        adapters.forEach {
+            try {
+                it.adapter.shutdown()
+            } catch (e: Exception) {
+                logger.warning("Failed to shutdown adapter ${it.name}. Error: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun instantiateAdapter(adapterClass: Class<*>): TypewriterAdapter {
+        if (!TypewriterAdapter::class.java.isAssignableFrom(adapterClass)) {
+            throw IllegalArgumentException("Adapter class must be a subclass of TypewriteAdapter")
+        }
+        val objectInstance = adapterClass.kotlin.objectInstance
+        if (objectInstance != null) {
+            return TypewriterAdapter::class.cast(objectInstance)
+        }
+        return adapterClass.getConstructor().newInstance() as TypewriterAdapter
     }
 
     private val ignorePrefixes = listOf("kotlin", "java", "META-INF", "org/bukkit", "org/intellij", "org/jetbrains")
@@ -145,23 +165,20 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         val adapterClass: Class<*> = classes.firstOrNull { it.hasAnnotation(Adapter::class) }
             ?: throw IllegalArgumentException("No adapter class found in ${file.name}")
 
+        val adapterInstance = instantiateAdapter(adapterClass)
+
         val entryClasses = classes.filter { it.hasAnnotation(Entry::class) }
         val messengerClasses = classes.filter { it.hasAnnotation(Messenger::class) }
-        val captureClasses = classes.filter {
-            Capturer::class.java.isAssignableFrom(it) &&
-                    it.kotlin.companionObject?.isSubclassOf(CapturerCreator::class) == true
-        }
 
-
-        return constructAdapter(classes, adapterClass, entryClasses, messengerClasses, captureClasses)
+        return constructAdapter(classes, adapterClass, adapterInstance, entryClasses, messengerClasses)
     }
 
     private fun constructAdapter(
         classes: List<Class<*>>,
         adapterClass: Class<*>,
+        adapterInstance: TypewriterAdapter,
         entryClasses: List<Class<*>>,
         messengerClasses: List<Class<*>>,
-        captureClasses: List<Class<*>>,
     ): AdapterData {
         val adapterAnnotation = adapterClass.getAnnotation(Adapter::class.java)
 
@@ -175,8 +192,6 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
         val adapterListeners = AdapterListeners.constructAdapterListeners(classes)
 
-        val capturers = constructCapturers(captureClasses)
-
         val entryMigrators = EntryMigrations.constructEntryMigrators(classes)
 
         // Create the adapter data
@@ -188,9 +203,9 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             blueprints,
             messengers,
             adapterListeners,
-            capturers,
             entryMigrators,
             adapterClass,
+            adapterInstance,
         )
     }
 
@@ -199,6 +214,12 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
 
         if (adapterClass.hasAnnotation(Untested::class)) {
             flags.add(AdapterFlag.Untested)
+        }
+        if (adapterClass.isAnnotationPresent(Deprecated::class.java)) {
+            flags.add(AdapterFlag.Deprecated)
+        }
+        if (adapterClass.hasAnnotation(Unsupported::class)) {
+            flags.add(AdapterFlag.Unsupported)
         }
 
         return flags
@@ -216,7 +237,7 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
                     adapter.name,
                     ObjectField.fromTypeToken(TypeToken.get(entryClass)),
                     entryAnnotation.color,
-                    entryAnnotation.icon.id,
+                    entryAnnotation.icon,
                     getTags(entryClass),
                     entryClass,
                 )
@@ -236,11 +257,6 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
             )
         }
 
-    private fun constructCapturers(captureClasses: List<Class<*>>) =
-        captureClasses.map { captureClass ->
-            captureClass.kotlin as KClass<out Capturer<*>>
-        }
-
     //TODO: Make compatible with java.
     private fun findFilterForMessenger(messengerClass: Class<*>) =
         if (messengerClass.kotlin.companionObject?.isSubclassOf(MessengerFilter::class) == true) {
@@ -250,8 +266,8 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         }
 
     private fun loadClasses(file: File): List<Class<*>> {
+        val loader = this.loader ?: throw IllegalStateException("Loader is not initialized")
         val jarFile = JarFile(file)
-        val loader = URLClassLoader(arrayOf(file.toURI().toURL()), plugin.javaClass.classLoader)
         val entries = jarFile.entries()
 
         val classes = mutableListOf<Class<*>>()
@@ -278,10 +294,6 @@ class AdapterLoaderImpl : AdapterLoader, KoinComponent {
         return adapters.asSequence().flatMap { it.entries }.firstOrNull { it.name == type }
     }
 
-    override fun getCaptureClasses(): List<KClass<out Capturer<*>>> {
-        return adapters.asSequence().flatMap { it.captureClasses }.toList() + staticCaptureClasses
-    }
-
     override fun getEntryMigrators(): List<EntryMigrator> {
         return adapters.asSequence().flatMap { it.entryMigrators }.toList()
     }
@@ -298,11 +310,11 @@ data class AdapterData(
     @Transient
     val eventListeners: List<AdapterListener>,
     @Transient
-    val captureClasses: List<KClass<out Capturer<*>>>,
-    @Transient
     val entryMigrators: List<EntryMigrator>,
     @Transient
     val clazz: Class<*>,
+    @Transient
+    val adapter: TypewriterAdapter
 ) {
     /**
      * Returns a string that can be used to display information about the adapter.
@@ -314,7 +326,6 @@ data class AdapterData(
         display += padCount("📚", entries.size, maxDigits)
         display += padCount("👂", eventListeners.size, maxDigits)
         display += padCount("💬", messengers.size, maxDigits)
-        display += padCount("📸", captureClasses.size, maxDigits)
         display += padCount("🚚", entryMigrators.size, maxDigits)
 
         flags.filter { it.warning.isNotBlank() }.joinToString { it.warning }.let {
@@ -336,6 +347,16 @@ enum class AdapterFlag(val warning: String) {
      * The adapter is not tested and may not work.
      */
     Untested("⚠\uFE0F UNTESTED"),
+
+    /**
+     * The adapter is deprecated and should not be used.
+     */
+    Deprecated("⚠\uFE0F DEPRECATED"),
+
+    /**
+     * The adapter is not supported and should be migrated away from.
+     */
+    Unsupported("⚠\uFE0F UNSUPPORTED"),
 }
 
 // Annotation for marking a class as an adapter
@@ -351,7 +372,7 @@ annotation class Entry(
     val name: String,
     val description: String,
     val color: String, // Hex color
-    val icon: Icons, // Font awesome icon
+    val icon: String, // Any https://icon-sets.iconify.design/ icon
 )
 
 @Target(AnnotationTarget.CLASS)
@@ -362,3 +383,6 @@ annotation class Messenger(
 
 @Target(AnnotationTarget.CLASS)
 annotation class Untested
+
+@Target(AnnotationTarget.CLASS)
+annotation class Unsupported

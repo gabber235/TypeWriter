@@ -28,8 +28,13 @@ class HelpHeaderAction extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final help = field.getModifier("help");
     final helpText = help?.data as String?;
+    if (helpText == null) {
+      return const SizedBox();
+    }
+    final formattedHelp =
+        helpText.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
     return Tooltip(
-      message: helpText,
+      message: formattedHelp,
       child: Icon(
         Icons.help_outline,
         size: 16,

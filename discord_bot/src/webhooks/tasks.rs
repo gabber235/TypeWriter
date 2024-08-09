@@ -8,9 +8,9 @@ use poise::serenity_prelude::{
 };
 
 use crate::{
-    clickup::{get_task_from_clickup, TaskStatus},
+    clickup::{get_task_from_clickup, TaskStatus, TaskType},
     get_discord,
-    webhook::{TaskCreated, TaskStatusUpdated, TaskTag, TaskUpdated},
+    webhook::{TaskCreated, TaskStatusUpdated, TaskUpdated},
     WinstonError,
 };
 
@@ -42,6 +42,7 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
     };
 
     let status: TaskStatus = (&task.status).into();
+    let task_type = (task.custom_item_id).into();
 
     let channel: ChannelId = channel_id.parse::<u64>()?.into();
 
@@ -62,17 +63,15 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
     let available_tags = parent_channel.available_tags;
 
     let status_tags = get_status_tags(&available_tags);
+    let type_tags = get_type_tags(&available_tags);
 
     let mut new_tags = Vec::new();
 
     new_tags.push(status_tags[&status].clone());
+    new_tags.push(type_tags[&task_type].clone());
 
     if TaskStatus::InProduction == status {
-        if let Some(resolved_tag) = available_tags
-            .iter()
-            .find(|tag| tag.name == "Resolved")
-            .map(|tag| tag.id.clone())
-        {
+        if let Some(resolved_tag) = available_tags.get_tag_id("Resolved") {
             new_tags.push(resolved_tag);
         }
     }
@@ -81,12 +80,7 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
         task.tags
             .iter()
             .map(|tag| tag.name.to_string())
-            .filter_map(|name| {
-                available_tags
-                    .iter()
-                    .find(|tag| tag.name.to_lowercase() == name.to_lowercase())
-            })
-            .map(|tag| tag.id.clone()),
+            .filter_map(|name| available_tags.get_tag_id(&name)),
     );
 
     new_tags = new_tags.into_iter().unique().collect::<Vec<_>>();
@@ -135,20 +129,25 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
         let _ = channel
             .send_message(
                 &discord,
-                create_development_message(task_id, &owner, &task.tags),
+                create_beta_message(task_id, &owner, &task.custom_item_id.into()),
             )
             .await?;
     }
 
+    // Need to run it again as the message send may unarchive the thread
+    channel
+        .edit_thread(&discord, EditThread::default().locked(lock).archived(lock))
+        .await?;
+
     Ok(())
 }
 
-fn create_development_message(task_id: &str, owner: &UserId, tags: &[TaskTag]) -> CreateMessage {
-    if tags.iter().any(|tag| tag.name == "bug") {
+fn create_beta_message(task_id: &str, owner: &UserId, task_type: &TaskType) -> CreateMessage {
+    if task_type == &TaskType::Bug {
         return                 CreateMessage::default()
                     .content(formatdoc! {"
-                        # In Development
-                        This task has been marked as **In Development**.
+                        # In Beta
+                        This task has been published to **Beta**.
                         You can download latest build [here]({}). 
                         
                         __{}: Please verify that this task is fixed or still broken, and indicate by clicking the button below.__
@@ -165,11 +164,11 @@ fn create_development_message(task_id: &str, owner: &UserId, tags: &[TaskTag]) -
                             .style(ButtonStyle::Danger)
                             .emoji(ReactionType::Unicode("🚧".to_string())),
                     );
-    } else if tags.iter().any(|tag| tag.name == "feature") {
+    } else if task_type == &TaskType::Feature {
         return CreateMessage::default()
                     .content(formatdoc! {"
-                        # In Development
-                        This task has been marked as **In Development**.
+                        # In Beta
+                        This task has been published to **Beta**.
                         You can download latest build [here]({}). 
                         
                         __{}: Please verify that this task is correctly implemented or if it is broken, and indicate by clicking the button below.__
@@ -189,8 +188,8 @@ fn create_development_message(task_id: &str, owner: &UserId, tags: &[TaskTag]) -
     }
 
     return CreateMessage::default().content(formatdoc! {"
-                        # In Development
-                        This task has been marked as **In Development**.
+                        # In Beta
+                        This task has been published to **Beta**.
                         You can download latest build [here]({}). 
                         ", "https://modrinth.com/plugin/typewriter/versions?c=beta"});
 }
@@ -201,9 +200,34 @@ fn get_status_tags(available_tags: &[ForumTag]) -> HashMap<TaskStatus, ForumTagI
         .filter_map(|tag| match tag.name.as_str() {
             "Backlog" => Some((TaskStatus::Backlog, tag.id.clone())),
             "In Progress" => Some((TaskStatus::InProgress, tag.id.clone())),
-            "In Development" => Some((TaskStatus::InBeta, tag.id.clone())),
+            "Done" => Some((TaskStatus::Done, tag.id.clone())),
+            "In Beta" => Some((TaskStatus::InBeta, tag.id.clone())),
             "In Production" => Some((TaskStatus::InProduction, tag.id.clone())),
             _ => None,
         })
         .collect::<HashMap<_, _>>()
+}
+
+fn get_type_tags(available_tags: &[ForumTag]) -> HashMap<TaskType, ForumTagId> {
+    available_tags
+        .into_iter()
+        .filter_map(|tag| match tag.name.as_str() {
+            "Bug" => Some((TaskType::Bug, tag.id.clone())),
+            "Feature" => Some((TaskType::Feature, tag.id.clone())),
+            "Documentation" => Some((TaskType::Documentation, tag.id.clone())),
+            _ => None,
+        })
+        .collect::<HashMap<_, _>>()
+}
+
+pub trait GetTagId {
+    fn get_tag_id(&self, name: &str) -> Option<ForumTagId>;
+}
+
+impl GetTagId for [ForumTag] {
+    fn get_tag_id(&self, name: &str) -> Option<ForumTagId> {
+        self.iter()
+            .find(|tag| tag.name.to_lowercase() == name.to_lowercase())
+            .map(|tag| tag.id.clone())
+    }
 }

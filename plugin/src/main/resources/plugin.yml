@@ -1,11 +1,11 @@
 name: Typewriter
 version: '${version}'
 main: me.gabber235.typewriter.Typewriter
-api-version: "1.19"
+api-version: "1.20"
 softdepend:
   - PlaceholderAPI
   - floodgate
-depend: [ ProtocolLib ]
+depend: [ packetevents ]
 authors: [ gabber235 ]
 description: Minecraft's Real Quest Plugin
 libraries: ${libraries}

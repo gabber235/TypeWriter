@@ -2,87 +2,123 @@ package me.gabber235.typewriter.entry
 
 import com.google.gson.annotations.SerializedName
 import me.gabber235.typewriter.adapters.Tags
-import me.gabber235.typewriter.adapters.modifiers.*
-import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.facts.Fact
+import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Negative
+import me.gabber235.typewriter.entry.entries.ReadableFactEntry
+import me.gabber235.typewriter.entry.entries.WritableFactEntry
+import me.gabber235.typewriter.facts.FactData
+import org.bukkit.entity.Player
+import java.util.*
+
+val Entry.formattedName: String
+    get() = name.split(".")
+        .joinToString(" | ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+        .split("_")
+        .joinToString(" ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
 
 interface Entry {
-	val id: String
-	val name: String
+    val id: String
+    val name: String
+}
+
+interface PriorityEntry : Entry {
+    /**
+     * Normally, the priority of an entry is determined by the priority of the page it is on.
+     * Subtypes may want to allow the user to override the priority for that specific entry.
+     * This is useful when entries need to have fine-grained control over their priority.
+     */
+    @Help("The priority of the entry. If not set, the priority of the page will be used.")
+    val priorityOverride: Optional<Int>
 }
 
 @Tags("static")
 interface StaticEntry : Entry
 
+@Tags("manifest")
+interface ManifestEntry : Entry
+
 @Tags("trigger")
 interface TriggerEntry : Entry {
-	@Triggers
-	@EntryIdentifier(TriggerableEntry::class)
-	@Help("The entries that will be fired after this entry.")
-	val triggers: List<String>
+    @Help("The entries that will be fired after this entry.")
+    val triggers: List<Ref<TriggerableEntry>>
 }
 
 @Tags("triggerable")
 interface TriggerableEntry : TriggerEntry {
-	@Help("The criteria that must be met before this entry is triggered")
-	val criteria: List<Criteria>
+    @Help("The criteria that must be met before this entry is triggered")
+    val criteria: List<Criteria>
 
-	@Help("The modifiers that will be applied when this entry is triggered")
-	val modifiers: List<Modifier>
+    @Help("The modifiers that will be applied when this entry is triggered")
+    val modifiers: List<Modifier>
+}
+
+@Tags("placeholder")
+interface PlaceholderEntry : Entry {
+    fun display(player: Player?): String?
 }
 
 enum class CriteriaOperator {
-	@SerializedName("==")
-	EQUALS,
+    @SerializedName("==")
+    EQUALS,
 
-	@SerializedName("<")
-	LESS_THAN,
+    @SerializedName("<")
+    LESS_THAN,
 
-	@SerializedName(">")
-	GREATER_THAN,
+    @SerializedName(">")
+    GREATER_THAN,
 
-	@SerializedName("<=")
-	LESS_THAN_OR_EQUALS,
+    @SerializedName("<=")
+    LESS_THAN_OR_EQUALS,
 
-	@SerializedName(">=")
-	GREATER_THAN_OR_EQUAL,
+    @SerializedName(">=")
+    GREATER_THAN_OR_EQUAL,
+
+    @SerializedName("!=")
+    NOT_EQUALS
+
+    ;
+
+    fun isValid(value: Double, criteria: Double): Boolean {
+        return when (this) {
+            EQUALS -> value == criteria
+            LESS_THAN -> value < criteria
+            GREATER_THAN -> value > criteria
+            LESS_THAN_OR_EQUALS -> value <= criteria
+            GREATER_THAN_OR_EQUAL -> value >= criteria
+            NOT_EQUALS -> value != criteria
+        }
+    }
 }
 
 data class Criteria(
-	@Help("The fact to check before triggering the entry")
-	@EntryIdentifier(ReadableFactEntry::class)
-	val fact: String = "",
-	@Help("The operator to use when comparing the fact value to the criteria value")
-	val operator: CriteriaOperator = CriteriaOperator.EQUALS,
-	@Help("The value to compare the fact value to")
-	val value: Int = 0,
+    @Help("The fact to check before triggering the entry")
+    val fact: Ref<ReadableFactEntry> = emptyRef(),
+    @Help("The operator to use when comparing the fact value to the criteria value")
+    val operator: CriteriaOperator = CriteriaOperator.EQUALS,
+    @Help("The value to compare the fact value to")
+    @Negative
+    val value: Int = 0,
 ) {
-	fun isValid(fact: Fact?): Boolean {
-		val value = fact?.value ?: 0
-		return when (operator) {
-			CriteriaOperator.EQUALS                -> value == this.value
-			CriteriaOperator.LESS_THAN             -> value < this.value
-			CriteriaOperator.GREATER_THAN          -> value > this.value
-			CriteriaOperator.LESS_THAN_OR_EQUALS   -> value <= this.value
-			CriteriaOperator.GREATER_THAN_OR_EQUAL -> value >= this.value
-		}
-	}
+    fun isValid(fact: FactData?): Boolean {
+        val value = fact?.value ?: 0
+        return operator.isValid(value.toDouble(), this.value.toDouble())
+    }
 }
 
 enum class ModifierOperator {
-	@SerializedName("=")
-	SET,
+    @SerializedName("=")
+    SET,
 
-	@SerializedName("+")
-	ADD;
+    @SerializedName("+")
+    ADD;
 }
 
 data class Modifier(
-	@Help("The fact to modify when the entry is triggered")
-	@EntryIdentifier(WritableFactEntry::class)
-	val fact: String = "",
-	@Help("The operator to use when modifying the fact value")
-	val operator: ModifierOperator = ModifierOperator.ADD,
-	@Help("The value to modify the fact value by")
-	val value: Int = 0,
+    @Help("The fact to modify when the entry is triggered")
+    val fact: Ref<WritableFactEntry> = emptyRef(),
+    @Help("The operator to use when modifying the fact value")
+    val operator: ModifierOperator = ModifierOperator.ADD,
+    @Help("The value to modify the fact value by")
+    @Negative
+    val value: Int = 0,
 )

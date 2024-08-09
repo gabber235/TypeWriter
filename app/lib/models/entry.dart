@@ -10,13 +10,20 @@ import "package:typewriter/utils/passing_reference.dart";
 part "entry.g.dart";
 
 @riverpod
-EntryDefinition? entryDefinition(EntryDefinitionRef ref, String pageId, String entryId) {
-  final entry = ref.watch(entryProvider(pageId, entryId));
-  final adapterEntry = ref.watch(entryBlueprintProvider(entry?.type ?? ""));
-  if (entry == null || adapterEntry == null) {
+EntryDefinition? entryDefinition(
+  EntryDefinitionRef ref,
+  String entryId,
+) {
+  final pageId = ref.watch(entryPageIdProvider(entryId));
+  if (pageId == null) {
     return null;
   }
-  return EntryDefinition(pageId: pageId, entry: entry, blueprint: adapterEntry);
+  final entry = ref.watch(entryProvider(pageId, entryId));
+  final blueprint = ref.watch(entryBlueprintProvider(entry?.type ?? ""));
+  if (entry == null || blueprint == null) {
+    return null;
+  }
+  return EntryDefinition(pageId: pageId, entry: entry, blueprint: blueprint);
 }
 
 @riverpod
@@ -31,6 +38,12 @@ String? entryType(EntryTypeRef ref, String entryId) {
   return entry?.type;
 }
 
+@riverpod
+bool isEntryDeprecated(IsEntryDeprecatedRef ref, String entryId) {
+  final entryTags = ref.watch(entryTagsProvider(entryId));
+  return entryTags.contains("deprecated");
+}
+
 class EntryDefinition {
   EntryDefinition({
     required this.pageId,
@@ -41,10 +54,10 @@ class EntryDefinition {
   final Entry entry;
   final EntryBlueprint blueprint;
 
-  void updateField(PassingRef ref, String path, dynamic value) {
+  Future<void> updateField(PassingRef ref, String path, dynamic value) async {
     final page = ref.read(pageProvider(pageId));
     if (page == null) return;
-    page.updateEntryValue(ref, entry, path, value);
+    await page.updateEntryValue(ref, entry, path, value);
   }
 }
 
@@ -260,7 +273,11 @@ class Entry {
     }
   }
 
-  void _updateSingleValue(dynamic item, String last, dynamic Function(dynamic) mapper) {
+  void _updateSingleValue(
+    dynamic item,
+    String last,
+    dynamic Function(dynamic) mapper,
+  ) {
     if (item is Map && item.containsKey(last)) {
       final value = mapper(item[last]);
       if (value == null) {
@@ -283,11 +300,70 @@ class Entry {
     }
   }
 
+  /// Find paths for the entry that can be set.
+  /// When the ending path is a list, a path with a new index is returned.
+  List<String> newPaths(String path) {
+    return _newPaths(path, data);
+  }
+
+  List<String> _newPaths(String path, dynamic data) {
+    if (data is Map) {
+      return _newPathsInMap(path, data.cast<String, dynamic>());
+    }
+    if (data is List) {
+      return _newPathsInList(path, data);
+    }
+    return [];
+  }
+
+  List<String> _newPathsInMap(String path, Map<String, dynamic> map) {
+    final parts = path.split(".");
+    final first = parts.removeAt(0);
+    final newPath = parts.join(".");
+
+    if (first == "*") {
+      final keys = map.keys.toList();
+
+      if (parts.isEmpty) return keys;
+
+      return keys.expand((key) {
+        return _newPaths(newPath, map[key]).map((p) => "$key.$p");
+      }).toList();
+    } else if (map.containsKey(first)) {
+      if (parts.isEmpty) return [first];
+      return _newPaths(newPath, map[first]).map((p) => "$first.$p").toList();
+    }
+    return [];
+  }
+
+  List<String> _newPathsInList(String path, List<dynamic> list) {
+    final parts = path.split(".");
+    final first = parts.removeAt(0);
+    final newPath = parts.join(".");
+
+    if (first == "*") {
+      if (parts.isEmpty) return ["${list.length}"];
+
+      return list.indices.expand((index) {
+        return _newPaths(newPath, list[index]).map((p) => "$index.$p");
+      }).toList();
+    } else if (int.tryParse(first) != null) {
+      final index = int.parse(first);
+      if (index < list.length) {
+        if (parts.isEmpty) return ["$index"];
+        return _newPaths(newPath, list[index]).map((p) => "$index.$p").toList();
+      }
+    }
+
+    return [];
+  }
+
   @override
   String toString() => "Entry{data: $data}";
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Entry && data == other.data;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Entry && data == other.data;
 
   @override
   int get hashCode => data.hashCode;

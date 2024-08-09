@@ -4,10 +4,11 @@ purpose in crafting immersive player experiences.
 This documentation explains the roles and functionalities of these entry types, providing clear guidance for developers on how to effectively use them.
 
 ## Base Entry Interfaces
-There are three base interfaces that all entries extend one of. These are:
+There are four base interfaces that all entries extend one of. These are:
 1. **StaticEntry**: Represents static pages. These are used for content that does not change dynamically or trigger any actions. Examples include static text or images.
 2. **TriggerEntry**: Designed for entries that initiate other actions or events. These entries can trigger one or more additional entries, making them crucial for interactive sequences.
 3. **CinematicEntry**: Used for cinematic experiences. These entries are ideal for creating immersive story-driven sequences that engage players in a more visually dynamic way.
+4. **ManifestEntry**: Used for creating manifest pages, which are used to display statful content to the player.
 
 
 ### 1. StaticEntry
@@ -32,6 +33,22 @@ These are entries that can be triggered by other entries. They are the most comm
 ### 3. CinematicEntry
    - Primarily used for crafting cinematic experiences in-game, this base interface doesn't have listed specialized interfaces, but it's pivotal for creating story-driven, visually dynamic sequences.
 
+### 4. ManifestEntry
+The biggest `ManifestEntry` is the `AudienceEntry`.
+It is used to define audiences that can be used to show stateful content to players.
+Almost all other `ManifestEntry` are sub-types of `AudienceEntry`.
+Though this is not required.
+An example of an entry that is not a sub-type of `AudienceEntry` is the `EntityDefinitionEntry`.
+
+The following are the sub-types of `AudienceEntry`:
+    - **AudienceFilterEntry**: A variant of AudienceEntry that filters the audience passed to the children of the entry.
+    - **QuestEntry**: Specifies quest types.
+    - **ObjectiveEntry**: Base for objectives in quests.
+    - **LinesEntry**: Displays lines of text in things like sidebars or tablist.
+
+A whole nother category of `ManifestEntry` is meant for **Entities**.
+This has it's seperate page in the documentation.
+
 
 ## Implementation and Usage
 Each interface is designed with specific tags and methods to facilitate unique interactions within the TypeWriter plugin.
@@ -54,12 +71,13 @@ The `@Entry` annotation is used to define the entry's type, name, and other prop
 - **name**: The name of the entry. This is used to identify the entry.
 - **description**: A short description of the entry.
 - **color**: The color of the entry in the editor. It can be one from the `Colors` class or a hex color code string.
-- **icon**: The icon of the entry in the editor. It can be one from the `Icons` class. All icons are from [Font Awesome](https://fontawesome.com/search?o=r&m=free) free collection.
+- **icon**: The icon of the entry in the editor. All available icons can be found on [Iconify](https://icones.js.org/). It needs to be the name of the icon.
 
 To find out specific requirements for each entry type, check the documentation for the entry's interface.
 
 :::caution
 Enties are not allowed to have any state. This means that there can't be any fields that are not final.
+If you need to have state, use a `AudienceEntry`.
 :::
 
 ---

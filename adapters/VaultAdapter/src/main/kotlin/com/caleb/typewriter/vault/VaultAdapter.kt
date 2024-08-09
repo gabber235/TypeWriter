@@ -3,7 +3,7 @@ package com.caleb.typewriter.vault
 import App
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Adapter
-import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.TypewriterAdapter
 import me.gabber235.typewriter.logger
 import net.milkbowl.vault.chat.Chat
 import net.milkbowl.vault.economy.Economy
@@ -15,7 +15,7 @@ import org.bukkit.plugin.RegisteredServiceProvider
 /**
  * The Vault Adapter is an adapter for the Vault plugin. It allows you to use Vault's economy system in your dialogue.
  */
-object VaultAdapter : TypewriteAdapter() {
+object VaultAdapter : TypewriterAdapter() {
     var economy: Economy? = null
         private set
 

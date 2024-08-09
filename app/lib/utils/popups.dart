@@ -2,9 +2,10 @@ import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:typewriter/hooks/timer.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/general/filled_button.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 class ConfirmationDialogue extends HookWidget {
   const ConfirmationDialogue({
@@ -31,7 +32,7 @@ class ConfirmationDialogue extends HookWidget {
   final String confirmText;
 
   /// An icon to display on the confirm button
-  final IconData confirmIcon;
+  final String confirmIcon;
 
   /// The color of the confirm button
   final Color confirmColor;
@@ -44,7 +45,7 @@ class ConfirmationDialogue extends HookWidget {
   final String cancelText;
 
   /// An icon to display on the cancel button
-  final IconData cancelIcon;
+  final String cancelIcon;
 
   /// The action to perform when the user confirms the action.
   final Function onConfirm;
@@ -72,7 +73,7 @@ class ConfirmationDialogue extends HookWidget {
       content: Text(content),
       actions: [
         TextButton.icon(
-          icon: Icon(cancelIcon),
+          icon: Iconify(cancelIcon),
           label: Text(cancelText),
           onPressed: () {
             Navigator.of(context).pop(false);
@@ -83,7 +84,7 @@ class ConfirmationDialogue extends HookWidget {
           ),
         ),
         FilledButton.icon(
-          icon: Icon(confirmIcon),
+          icon: Iconify(confirmIcon),
           label: Text(
             canConfirm ? confirmText : "$confirmText (${secondsLeft.value})",
           ),
@@ -106,17 +107,17 @@ Future<bool> showConfirmationDialogue({
   String title = "Are you sure?",
   String content = "This action cannot be undone.",
   String confirmText = "Confirm",
-  IconData confirmIcon = FontAwesomeIcons.trash,
+  String confirmIcon = TWIcons.trash,
   Color confirmColor = Colors.redAccent,
   Duration delayConfirm = Duration.zero,
   String cancelText = "Cancel",
-  IconData cancelIcon = FontAwesomeIcons.xmark,
+  String cancelIcon = TWIcons.x,
   Function? onCancel,
 }) async {
   // If the user has its shift key pressed, we skip the confirmation dialogue.
   // But only if the delay is 0.
-  final hasShiftDown =
-      RawKeyboard.instance.keysPressed.contains(LogicalKeyboardKey.shiftLeft);
+  final hasShiftDown = HardwareKeyboard.instance
+      .isLogicalKeyPressed(LogicalKeyboardKey.shiftLeft);
   if (hasShiftDown && delayConfirm.inSeconds == 0) {
     onConfirm();
     return true;

@@ -1,10 +1,14 @@
 package me.gabber235.typewriter.utils
 
 import me.gabber235.typewriter.entry.dialogue.confirmationKey
-import net.kyori.adventure.text.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.TextReplacementConfig
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.Tag
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
@@ -17,6 +21,7 @@ private val mm = MiniMessage.builder()
         TagResolver.builder()
             .resolver(StandardTags.defaults())
             .tag("confirmation_key") { _, _ -> Tag.preProcessParsed(confirmationKey.keybind) }
+            .resolver(Placeholder.parsed("line", "<#ECFFF8><bold>│</bold></#ECFFF8><white>"))
             .build()
     )
     .build()
@@ -53,7 +58,6 @@ fun String.asPartialFormattedMini(
 ): Component {
     return replace("\n", "\n<reset><white>")
         .limitLineLength(maxLineLength)
-        .minimalLines(minLines)
         .asMini()
         .splitPercentage(percentage)
         .addPaddingBeforeLines(padding)
@@ -78,53 +82,44 @@ fun Component.addPaddingBeforeLines(padding: String = "    "): Component {
 }
 
 fun Component.splitPercentage(percentage: Double): Component {
-    val components = iterable(ComponentIteratorType.DEPTH_FIRST)
+    if (percentage >= 1.0) return this
 
-    val message = components.first().plainText()
+    val message = plainText()
     val totalLength = message.length
     val subLength = (totalLength * percentage.coerceIn(.0, 1.0)).toInt().coerceIn(0, totalLength)
 
-    val substringComponents = mutableListOf<Component>(Component.empty())
-
-    var textRemaining = subLength
-    val componentIterator = components.iterator()
-    while (componentIterator.hasNext() && textRemaining > 0) {
-        val component = componentIterator.next()
-        // If the component is not a text component, it can't be split.
-        if (component !is TextComponent) {
-            substringComponents.add(component)
-            continue
-        }
-
-        val text = component.content()
-        val size = text.length
-
-        // If the text is longer than the remaining text, this is the last component.
-        if (size > textRemaining) {
-            val newText = text.substring(0, textRemaining)
-            val newComponent = component.content(newText).noChildren()
-            substringComponents.add(newComponent)
-            break
-        }
-
-        substringComponents.add(component.noChildren())
-        textRemaining -= size
-    }
-
-    return Component.join(JoinConfiguration.noSeparators(), substringComponents)
+    val textRemaining = RunningText(subLength)
+    return splitText(textRemaining, Style.empty())
 }
+
+private data class RunningText(var textRemaining: Int)
+
+private fun Component.splitText(runningText: RunningText, style: Style): Component {
+    if (runningText.textRemaining <= 0) return Component.empty()
+
+    if (this !is TextComponent) return this
+
+    val mergedStyle = this.style().merge(style, Style.Merge.Strategy.IF_ABSENT_ON_TARGET)
+
+    val text = this.content()
+    val size = text.length
+
+    // If the text is longer than the remaining text, this is the last component.
+    if (size > runningText.textRemaining) {
+        val newText = text.substring(0, runningText.textRemaining)
+        runningText.textRemaining = 0
+        return this.content(newText).style(mergedStyle)
+            .noChildren()
+    }
+    runningText.textRemaining -= size
+
+    val children = this.children().map { it.splitText(runningText, mergedStyle) }
+
+    return this.style(mergedStyle).children(children)
+}
+
 
 fun Component.noChildren() = this.children(mutableListOf())
-
-/**
- * Adds missing lines to a string.
- */
-private fun String.minimalLines(minLines: Int = 3): String {
-    val lineCount = count { it == '\n' } + 1
-    val missingLines = (minLines - lineCount).coerceAtLeast(0)
-    val missingLinesString = "\n".repeat(missingLines)
-    return "$this$missingLinesString"
-}
 
 /**
  * Splits a string into multiple lines with a maximum length.
@@ -133,20 +128,23 @@ fun String.limitLineLength(maxLength: Int = 40): String {
     if (this.stripped().length <= maxLength) return this
 
     val words = this.split(" ")
-    val lines = mutableListOf<String>()
-    var currentLine = ""
+    var text = ""
 
     for (word in words) {
-        val potentialLine = "$currentLine$word".stripped()
-
-        if (potentialLine.length > maxLength) {
-            lines.add(currentLine)
-            currentLine = ""
+        if (word.contains("\n")) {
+            text += "$word "
+            continue
         }
 
-        currentLine += "$word "
+        val rawText = "$text$word".stripped()
+        val lastNewLine = rawText.lastIndexOf("\n")
+        val line = rawText.substring(lastNewLine + 1)
+        if (line.length > maxLength) {
+            text += "\n"
+        }
+        text += "$word "
     }
 
-    lines.add(currentLine)
-    return lines.joinToString("\n")
+    text = text.trim()
+    return text
 }

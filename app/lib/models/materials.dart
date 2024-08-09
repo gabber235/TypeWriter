@@ -1,31 +1,31 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:typewriter/utils/icons.dart";
 
 part "materials.freezed.dart";
 part "materials.g.dart";
 
 enum MaterialProperty {
-  item(FontAwesomeIcons.wandMagic, Colors.blue, "Item"),
-  block(FontAwesomeIcons.cube, Colors.green, "Block"),
-  solid(FontAwesomeIcons.solidSquare, Colors.brown, "Solid"),
-  transparent(FontAwesomeIcons.square, Colors.white, "Transparent"),
-  intractable(FontAwesomeIcons.handPointUp, Colors.pink, "Intractable"),
-  occluding(FontAwesomeIcons.eye, Colors.black, "Occluding"),
-  record(FontAwesomeIcons.recordVinyl, Colors.grey, "Record"),
-  tool(FontAwesomeIcons.hammer, Colors.teal, "Tool"),
-  weapon(FontAwesomeIcons.gun, Colors.red, "Weapon"),
-  armor(FontAwesomeIcons.shieldHalved, Colors.blue, "Armor"),
-  flammable(FontAwesomeIcons.fire, Colors.red, "Flammable"),
-  burnable(FontAwesomeIcons.houseFire, Colors.orange, "Burnable"),
-  edible(FontAwesomeIcons.burger, Colors.yellow, "Edible"),
-  fuel(FontAwesomeIcons.gasPump, Colors.purple, "Fuel"),
-  ore(FontAwesomeIcons.coins, Colors.amber, "Ore"),
+  item(TWIcons.magicWand, Colors.blue, "Item"),
+  block(TWIcons.cube, Colors.green, "Block"),
+  solid(TWIcons.square, Colors.brown, "Solid"),
+  transparent(TWIcons.squareOutline, Colors.white, "Transparent"),
+  intractable(TWIcons.handPointUp, Colors.pink, "Intractable"),
+  occluding(TWIcons.eye, Colors.black, "Occluding"),
+  record(TWIcons.recordVinyl, Colors.grey, "Record"),
+  tool(TWIcons.hammer, Colors.teal, "Tool"),
+  weapon(TWIcons.swords, Colors.red, "Weapon"),
+  armor(TWIcons.armor, Colors.blue, "Armor"),
+  flammable(TWIcons.fire, Colors.red, "Flammable"),
+  burnable(TWIcons.wallFire, Colors.orange, "Burnable"),
+  edible(TWIcons.burger, Colors.yellow, "Edible"),
+  fuel(TWIcons.gasPump, Colors.purple, "Fuel"),
+  ore(TWIcons.ore, Colors.amber, "Ore"),
   ;
 
   const MaterialProperty(this.icon, this.color, this.name);
 
-  final IconData icon;
+  final String icon;
   final Color color;
 
   final String name;
@@ -34,117 +34,231 @@ enum MaterialProperty {
 const Map<String, MinecraftMaterial> materials = {
   "air": MinecraftMaterial(
     name: "Air",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/air.png",
   ),
   "stone": MinecraftMaterial(
     name: "Stone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stone.png",
   ),
   "granite": MinecraftMaterial(
     name: "Granite",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/granite.png",
   ),
   "polished_granite": MinecraftMaterial(
     name: "Polished Granite",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_granite.png",
   ),
   "diorite": MinecraftMaterial(
     name: "Diorite",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/diorite.png",
   ),
   "polished_diorite": MinecraftMaterial(
     name: "Polished Diorite",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_diorite.png",
   ),
   "andesite": MinecraftMaterial(
     name: "Andesite",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/andesite.png",
   ),
   "polished_andesite": MinecraftMaterial(
     name: "Polished Andesite",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_andesite.png",
   ),
   "deepslate": MinecraftMaterial(
     name: "Deepslate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate.png",
   ),
   "cobbled_deepslate": MinecraftMaterial(
     name: "Cobbled Deepslate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cobbled_deepslate.png",
   ),
   "polished_deepslate": MinecraftMaterial(
     name: "Polished Deepslate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_deepslate.png",
   ),
   "calcite": MinecraftMaterial(
     name: "Calcite",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/calcite.png",
   ),
   "tuff": MinecraftMaterial(
     name: "Tuff",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/tuff.png",
   ),
   "dripstone_block": MinecraftMaterial(
     name: "Dripstone Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dripstone_block.png",
   ),
   "grass_block": MinecraftMaterial(
     name: "Grass Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/grass_block.png",
   ),
   "dirt": MinecraftMaterial(
     name: "Dirt",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dirt.png",
   ),
   "coarse_dirt": MinecraftMaterial(
     name: "Coarse Dirt",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/coarse_dirt.png",
   ),
   "podzol": MinecraftMaterial(
     name: "Podzol",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/podzol.png",
   ),
   "rooted_dirt": MinecraftMaterial(
     name: "Rooted Dirt",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/rooted_dirt.png",
   ),
   "mud": MinecraftMaterial(
     name: "Mud",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mud.png",
   ),
   "crimson_nylium": MinecraftMaterial(
     name: "Crimson Nylium",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_nylium.png",
   ),
   "warped_nylium": MinecraftMaterial(
     name: "Warped Nylium",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_nylium.png",
   ),
   "cobblestone": MinecraftMaterial(
     name: "Cobblestone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cobblestone.png",
   ),
   "oak_planks": MinecraftMaterial(
@@ -240,67 +354,131 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_planks": MinecraftMaterial(
     name: "Crimson Planks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_planks.png",
   ),
   "warped_planks": MinecraftMaterial(
     name: "Warped Planks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_planks.png",
   ),
   "oak_sapling": MinecraftMaterial(
     name: "Oak Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/oak_sapling.png",
   ),
   "spruce_sapling": MinecraftMaterial(
     name: "Spruce Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/spruce_sapling.png",
   ),
   "birch_sapling": MinecraftMaterial(
     name: "Birch Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/birch_sapling.png",
   ),
   "jungle_sapling": MinecraftMaterial(
     name: "Jungle Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/jungle_sapling.png",
   ),
   "acacia_sapling": MinecraftMaterial(
     name: "Acacia Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/acacia_sapling.png",
   ),
   "dark_oak_sapling": MinecraftMaterial(
     name: "Dark Oak Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/dark_oak_sapling.png",
   ),
   "mangrove_propagule": MinecraftMaterial(
     name: "Mangrove Propagule",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+    ],
     icon: "assets/materials/mangrove_propagule.png",
   ),
   "bedrock": MinecraftMaterial(
     name: "Bedrock",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/bedrock.png",
   ),
   "sand": MinecraftMaterial(
     name: "Sand",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sand.png",
   ),
   "red_sand": MinecraftMaterial(
     name: "Red Sand",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_sand.png",
   ),
   "gravel": MinecraftMaterial(
     name: "Gravel",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gravel.png",
   ),
   "coal_ore": MinecraftMaterial(
@@ -505,7 +683,12 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "ancient_debris": MinecraftMaterial(
     name: "Ancient Debris",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/ancient_debris.png",
   ),
   "coal_block": MinecraftMaterial(
@@ -522,207 +705,404 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "raw_iron_block": MinecraftMaterial(
     name: "Raw Iron Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/raw_iron_block.png",
   ),
   "raw_copper_block": MinecraftMaterial(
     name: "Raw Copper Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/raw_copper_block.png",
   ),
   "raw_gold_block": MinecraftMaterial(
     name: "Raw Gold Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/raw_gold_block.png",
   ),
   "amethyst_block": MinecraftMaterial(
     name: "Amethyst Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/amethyst_block.png",
   ),
   "budding_amethyst": MinecraftMaterial(
     name: "Budding Amethyst",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/budding_amethyst.png",
   ),
   "iron_block": MinecraftMaterial(
     name: "Iron Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/iron_block.png",
   ),
   "copper_block": MinecraftMaterial(
     name: "Copper Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/copper_block.png",
   ),
   "gold_block": MinecraftMaterial(
     name: "Gold Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gold_block.png",
   ),
   "diamond_block": MinecraftMaterial(
     name: "Diamond Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/diamond_block.png",
   ),
   "netherite_block": MinecraftMaterial(
     name: "Netherite Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/netherite_block.png",
   ),
   "exposed_copper": MinecraftMaterial(
     name: "Exposed Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/exposed_copper.png",
   ),
   "weathered_copper": MinecraftMaterial(
     name: "Weathered Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/weathered_copper.png",
   ),
   "oxidized_copper": MinecraftMaterial(
     name: "Oxidized Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/oxidized_copper.png",
   ),
   "cut_copper": MinecraftMaterial(
     name: "Cut Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cut_copper.png",
   ),
   "exposed_cut_copper": MinecraftMaterial(
     name: "Exposed Cut Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/exposed_cut_copper.png",
   ),
   "weathered_cut_copper": MinecraftMaterial(
     name: "Weathered Cut Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/weathered_cut_copper.png",
   ),
   "oxidized_cut_copper": MinecraftMaterial(
     name: "Oxidized Cut Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/oxidized_cut_copper.png",
   ),
   "cut_copper_stairs": MinecraftMaterial(
     name: "Cut Copper Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cut_copper_stairs.png",
   ),
   "exposed_cut_copper_stairs": MinecraftMaterial(
     name: "Exposed Cut Copper Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/exposed_cut_copper_stairs.png",
   ),
   "weathered_cut_copper_stairs": MinecraftMaterial(
     name: "Weathered Cut Copper Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/weathered_cut_copper_stairs.png",
   ),
   "oxidized_cut_copper_stairs": MinecraftMaterial(
     name: "Oxidized Cut Copper Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/oxidized_cut_copper_stairs.png",
   ),
   "cut_copper_slab": MinecraftMaterial(
     name: "Cut Copper Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cut_copper_slab.png",
   ),
   "exposed_cut_copper_slab": MinecraftMaterial(
     name: "Exposed Cut Copper Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/exposed_cut_copper_slab.png",
   ),
   "weathered_cut_copper_slab": MinecraftMaterial(
     name: "Weathered Cut Copper Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/weathered_cut_copper_slab.png",
   ),
   "oxidized_cut_copper_slab": MinecraftMaterial(
     name: "Oxidized Cut Copper Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/oxidized_cut_copper_slab.png",
   ),
   "waxed_copper_block": MinecraftMaterial(
     name: "Waxed Copper Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_copper_block.png",
   ),
   "waxed_exposed_copper": MinecraftMaterial(
     name: "Waxed Exposed Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_exposed_copper.png",
   ),
   "waxed_weathered_copper": MinecraftMaterial(
     name: "Waxed Weathered Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_weathered_copper.png",
   ),
   "waxed_oxidized_copper": MinecraftMaterial(
     name: "Waxed Oxidized Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_oxidized_copper.png",
   ),
   "waxed_cut_copper": MinecraftMaterial(
     name: "Waxed Cut Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_cut_copper.png",
   ),
   "waxed_exposed_cut_copper": MinecraftMaterial(
     name: "Waxed Exposed Cut Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_exposed_cut_copper.png",
   ),
   "waxed_weathered_cut_copper": MinecraftMaterial(
     name: "Waxed Weathered Cut Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_weathered_cut_copper.png",
   ),
   "waxed_oxidized_cut_copper": MinecraftMaterial(
     name: "Waxed Oxidized Cut Copper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_oxidized_cut_copper.png",
   ),
   "waxed_cut_copper_stairs": MinecraftMaterial(
     name: "Waxed Cut Copper Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_cut_copper_stairs.png",
   ),
   "waxed_exposed_cut_copper_stairs": MinecraftMaterial(
     name: "Waxed Exposed Cut Copper Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_exposed_cut_copper_stairs.png",
   ),
   "waxed_weathered_cut_copper_stairs": MinecraftMaterial(
     name: "Waxed Weathered Cut Copper Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_weathered_cut_copper_stairs.png",
   ),
   "waxed_oxidized_cut_copper_stairs": MinecraftMaterial(
     name: "Waxed Oxidized Cut Copper Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_oxidized_cut_copper_stairs.png",
   ),
   "waxed_cut_copper_slab": MinecraftMaterial(
     name: "Waxed Cut Copper Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_cut_copper_slab.png",
   ),
   "waxed_exposed_cut_copper_slab": MinecraftMaterial(
     name: "Waxed Exposed Cut Copper Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_exposed_cut_copper_slab.png",
   ),
   "waxed_weathered_cut_copper_slab": MinecraftMaterial(
     name: "Waxed Weathered Cut Copper Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_weathered_cut_copper_slab.png",
   ),
   "waxed_oxidized_cut_copper_slab": MinecraftMaterial(
     name: "Waxed Oxidized Cut Copper Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/waxed_oxidized_cut_copper_slab.png",
   ),
   "oak_log": MinecraftMaterial(
@@ -831,17 +1211,32 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "muddy_mangrove_roots": MinecraftMaterial(
     name: "Muddy Mangrove Roots",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/muddy_mangrove_roots.png",
   ),
   "crimson_stem": MinecraftMaterial(
     name: "Crimson Stem",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_stem.png",
   ),
   "warped_stem": MinecraftMaterial(
     name: "Warped Stem",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_stem.png",
   ),
   "stripped_oak_log": MinecraftMaterial(
@@ -937,12 +1332,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "stripped_crimson_stem": MinecraftMaterial(
     name: "Stripped Crimson Stem",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stripped_crimson_stem.png",
   ),
   "stripped_warped_stem": MinecraftMaterial(
     name: "Stripped Warped Stem",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stripped_warped_stem.png",
   ),
   "stripped_oak_wood": MinecraftMaterial(
@@ -1038,12 +1443,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "stripped_crimson_hyphae": MinecraftMaterial(
     name: "Stripped Crimson Hyphae",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stripped_crimson_hyphae.png",
   ),
   "stripped_warped_hyphae": MinecraftMaterial(
     name: "Stripped Warped Hyphae",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stripped_warped_hyphae.png",
   ),
   "oak_wood": MinecraftMaterial(
@@ -1139,12 +1554,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_hyphae": MinecraftMaterial(
     name: "Crimson Hyphae",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_hyphae.png",
   ),
   "warped_hyphae": MinecraftMaterial(
     name: "Warped Hyphae",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_hyphae.png",
   ),
   "oak_leaves": MinecraftMaterial(
@@ -1248,42 +1673,80 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "sponge": MinecraftMaterial(
     name: "Sponge",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sponge.png",
   ),
   "wet_sponge": MinecraftMaterial(
     name: "Wet Sponge",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/wet_sponge.png",
   ),
   "glass": MinecraftMaterial(
     name: "Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/glass.png",
   ),
   "tinted_glass": MinecraftMaterial(
     name: "Tinted Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/tinted_glass.png",
   ),
   "lapis_block": MinecraftMaterial(
     name: "Lapis Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lapis_block.png",
   ),
   "sandstone": MinecraftMaterial(
     name: "Sandstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sandstone.png",
   ),
   "chiseled_sandstone": MinecraftMaterial(
     name: "Chiseled Sandstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chiseled_sandstone.png",
   ),
   "cut_sandstone": MinecraftMaterial(
     name: "Cut Sandstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cut_sandstone.png",
   ),
   "cobweb": MinecraftMaterial(
@@ -1315,12 +1778,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "azalea": MinecraftMaterial(
     name: "Azalea",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/azalea.png",
   ),
   "flowering_azalea": MinecraftMaterial(
     name: "Flowering Azalea",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/flowering_azalea.png",
   ),
   "dead_bush": MinecraftMaterial(
@@ -1655,32 +2128,56 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "cornflower": MinecraftMaterial(
     name: "Cornflower",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/cornflower.png",
   ),
   "lily_of_the_valley": MinecraftMaterial(
     name: "Lily Of The Valley",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/lily_of_the_valley.png",
   ),
   "wither_rose": MinecraftMaterial(
     name: "Wither Rose",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/wither_rose.png",
   ),
   "spore_blossom": MinecraftMaterial(
     name: "Spore Blossom",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/spore_blossom.png",
   ),
   "brown_mushroom": MinecraftMaterial(
     name: "Brown Mushroom",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/brown_mushroom.png",
   ),
   "red_mushroom": MinecraftMaterial(
     name: "Red Mushroom",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/red_mushroom.png",
   ),
   "crimson_fungus": MinecraftMaterial(
@@ -1720,7 +2217,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "sugar_cane": MinecraftMaterial(
     name: "Sugar Cane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/sugar_cane.png",
   ),
   "kelp": MinecraftMaterial(
@@ -1735,22 +2236,40 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "moss_block": MinecraftMaterial(
     name: "Moss Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/moss_block.png",
   ),
   "hanging_roots": MinecraftMaterial(
     name: "Hanging Roots",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.burnable, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.burnable,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/hanging_roots.png",
   ),
   "big_dripleaf": MinecraftMaterial(
     name: "Big Dripleaf",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/big_dripleaf.png",
   ),
   "small_dripleaf": MinecraftMaterial(
     name: "Small Dripleaf",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/small_dripleaf.png",
   ),
   "bamboo": MinecraftMaterial(
@@ -1851,122 +2370,223 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_slab": MinecraftMaterial(
     name: "Crimson Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_slab.png",
   ),
   "warped_slab": MinecraftMaterial(
     name: "Warped Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_slab.png",
   ),
   "stone_slab": MinecraftMaterial(
     name: "Stone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stone_slab.png",
   ),
   "smooth_stone_slab": MinecraftMaterial(
     name: "Smooth Stone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_stone_slab.png",
   ),
   "sandstone_slab": MinecraftMaterial(
     name: "Sandstone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sandstone_slab.png",
   ),
   "cut_sandstone_slab": MinecraftMaterial(
     name: "Cut Sandstone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cut_sandstone_slab.png",
   ),
   "petrified_oak_slab": MinecraftMaterial(
     name: "Petrified Oak Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/petrified_oak_slab.png",
   ),
   "cobblestone_slab": MinecraftMaterial(
     name: "Cobblestone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cobblestone_slab.png",
   ),
   "brick_slab": MinecraftMaterial(
     name: "Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brick_slab.png",
   ),
   "stone_brick_slab": MinecraftMaterial(
     name: "Stone Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stone_brick_slab.png",
   ),
   "mud_brick_slab": MinecraftMaterial(
     name: "Mud Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mud_brick_slab.png",
   ),
   "nether_brick_slab": MinecraftMaterial(
     name: "Nether Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/nether_brick_slab.png",
   ),
   "quartz_slab": MinecraftMaterial(
     name: "Quartz Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/quartz_slab.png",
   ),
   "red_sandstone_slab": MinecraftMaterial(
     name: "Red Sandstone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_sandstone_slab.png",
   ),
   "cut_red_sandstone_slab": MinecraftMaterial(
     name: "Cut Red Sandstone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cut_red_sandstone_slab.png",
   ),
   "purpur_slab": MinecraftMaterial(
     name: "Purpur Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purpur_slab.png",
   ),
   "prismarine_slab": MinecraftMaterial(
     name: "Prismarine Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/prismarine_slab.png",
   ),
   "prismarine_brick_slab": MinecraftMaterial(
     name: "Prismarine Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/prismarine_brick_slab.png",
   ),
   "dark_prismarine_slab": MinecraftMaterial(
     name: "Dark Prismarine Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dark_prismarine_slab.png",
   ),
   "smooth_quartz": MinecraftMaterial(
     name: "Smooth Quartz",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_quartz.png",
   ),
   "smooth_red_sandstone": MinecraftMaterial(
     name: "Smooth Red Sandstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_red_sandstone.png",
   ),
   "smooth_sandstone": MinecraftMaterial(
     name: "Smooth Sandstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_sandstone.png",
   ),
   "smooth_stone": MinecraftMaterial(
     name: "Smooth Stone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_stone.png",
   ),
   "bricks": MinecraftMaterial(
     name: "Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/bricks.png",
   ),
   "bookshelf": MinecraftMaterial(
@@ -1984,52 +2604,98 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "mossy_cobblestone": MinecraftMaterial(
     name: "Mossy Cobblestone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mossy_cobblestone.png",
   ),
   "obsidian": MinecraftMaterial(
     name: "Obsidian",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/obsidian.png",
   ),
   "torch": MinecraftMaterial(
     name: "Torch",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/torch.png",
   ),
   "end_rod": MinecraftMaterial(
     name: "End Rod",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/end_rod.png",
   ),
   "chorus_plant": MinecraftMaterial(
     name: "Chorus Plant",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/chorus_plant.png",
   ),
   "chorus_flower": MinecraftMaterial(
     name: "Chorus Flower",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/chorus_flower.png",
   ),
   "purpur_block": MinecraftMaterial(
     name: "Purpur Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purpur_block.png",
   ),
   "purpur_pillar": MinecraftMaterial(
     name: "Purpur Pillar",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purpur_pillar.png",
   ),
   "purpur_stairs": MinecraftMaterial(
     name: "Purpur Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purpur_stairs.png",
   ),
   "spawner": MinecraftMaterial(
     name: "Spawner",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/spawner.png",
   ),
   "chest": MinecraftMaterial(
@@ -2059,7 +2725,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "farmland": MinecraftMaterial(
     name: "Farmland",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/farmland.png",
   ),
   "furnace": MinecraftMaterial(
@@ -2075,37 +2745,69 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "ladder": MinecraftMaterial(
     name: "Ladder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/ladder.png",
   ),
   "cobblestone_stairs": MinecraftMaterial(
     name: "Cobblestone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cobblestone_stairs.png",
   ),
   "snow": MinecraftMaterial(
     name: "Snow",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/snow.png",
   ),
   "ice": MinecraftMaterial(
     name: "Ice",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/ice.png",
   ),
   "snow_block": MinecraftMaterial(
     name: "Snow Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/snow_block.png",
   ),
   "cactus": MinecraftMaterial(
     name: "Cactus",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cactus.png",
   ),
   "clay": MinecraftMaterial(
     name: "Clay",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/clay.png",
   ),
   "jukebox": MinecraftMaterial(
@@ -2214,12 +2916,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_fence": MinecraftMaterial(
     name: "Crimson Fence",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_fence.png",
   ),
   "warped_fence": MinecraftMaterial(
     name: "Warped Fence",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_fence.png",
   ),
   "pumpkin": MinecraftMaterial(
@@ -2235,42 +2947,82 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "carved_pumpkin": MinecraftMaterial(
     name: "Carved Pumpkin",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/carved_pumpkin.png",
   ),
   "jack_o_lantern": MinecraftMaterial(
     name: "Jack O Lantern",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/jack_o_lantern.png",
   ),
   "netherrack": MinecraftMaterial(
     name: "Netherrack",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/netherrack.png",
   ),
   "soul_sand": MinecraftMaterial(
     name: "Soul Sand",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/soul_sand.png",
   ),
   "soul_soil": MinecraftMaterial(
     name: "Soul Soil",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/soul_soil.png",
   ),
   "basalt": MinecraftMaterial(
     name: "Basalt",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/basalt.png",
   ),
   "polished_basalt": MinecraftMaterial(
     name: "Polished Basalt",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_basalt.png",
   ),
   "smooth_basalt": MinecraftMaterial(
     name: "Smooth Basalt",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_basalt.png",
   ),
   "soul_torch": MinecraftMaterial(
@@ -2280,102 +3032,201 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "glowstone": MinecraftMaterial(
     name: "Glowstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/glowstone.png",
   ),
   "infested_stone": MinecraftMaterial(
     name: "Infested Stone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/infested_stone.png",
   ),
   "infested_cobblestone": MinecraftMaterial(
     name: "Infested Cobblestone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/infested_cobblestone.png",
   ),
   "infested_stone_bricks": MinecraftMaterial(
     name: "Infested Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/infested_stone_bricks.png",
   ),
   "infested_mossy_stone_bricks": MinecraftMaterial(
     name: "Infested Mossy Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/infested_mossy_stone_bricks.png",
   ),
   "infested_cracked_stone_bricks": MinecraftMaterial(
     name: "Infested Cracked Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/infested_cracked_stone_bricks.png",
   ),
   "infested_chiseled_stone_bricks": MinecraftMaterial(
     name: "Infested Chiseled Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/infested_chiseled_stone_bricks.png",
   ),
   "infested_deepslate": MinecraftMaterial(
     name: "Infested Deepslate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/infested_deepslate.png",
   ),
   "stone_bricks": MinecraftMaterial(
     name: "Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stone_bricks.png",
   ),
   "mossy_stone_bricks": MinecraftMaterial(
     name: "Mossy Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mossy_stone_bricks.png",
   ),
   "cracked_stone_bricks": MinecraftMaterial(
     name: "Cracked Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cracked_stone_bricks.png",
   ),
   "chiseled_stone_bricks": MinecraftMaterial(
     name: "Chiseled Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chiseled_stone_bricks.png",
   ),
   "packed_mud": MinecraftMaterial(
     name: "Packed Mud",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/packed_mud.png",
   ),
   "mud_bricks": MinecraftMaterial(
     name: "Mud Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mud_bricks.png",
   ),
   "deepslate_bricks": MinecraftMaterial(
     name: "Deepslate Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate_bricks.png",
   ),
   "cracked_deepslate_bricks": MinecraftMaterial(
     name: "Cracked Deepslate Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cracked_deepslate_bricks.png",
   ),
   "deepslate_tiles": MinecraftMaterial(
     name: "Deepslate Tiles",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate_tiles.png",
   ),
   "cracked_deepslate_tiles": MinecraftMaterial(
     name: "Cracked Deepslate Tiles",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cracked_deepslate_tiles.png",
   ),
   "chiseled_deepslate": MinecraftMaterial(
     name: "Chiseled Deepslate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chiseled_deepslate.png",
   ),
   "reinforced_deepslate": MinecraftMaterial(
     name: "Reinforced Deepslate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/reinforced_deepslate.png",
   ),
   "brown_mushroom_block": MinecraftMaterial(
@@ -2413,22 +3264,39 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "iron_bars": MinecraftMaterial(
     name: "Iron Bars",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/iron_bars.png",
   ),
   "chain": MinecraftMaterial(
     name: "Chain",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chain.png",
   ),
   "glass_pane": MinecraftMaterial(
     name: "Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/glass_pane.png",
   ),
   "melon": MinecraftMaterial(
     name: "Melon",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/melon.png",
   ),
   "vine": MinecraftMaterial(
@@ -2444,117 +3312,228 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "glow_lichen": MinecraftMaterial(
     name: "Glow Lichen",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.burnable, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.burnable,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/glow_lichen.png",
   ),
   "brick_stairs": MinecraftMaterial(
     name: "Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brick_stairs.png",
   ),
   "stone_brick_stairs": MinecraftMaterial(
     name: "Stone Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stone_brick_stairs.png",
   ),
   "mud_brick_stairs": MinecraftMaterial(
     name: "Mud Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mud_brick_stairs.png",
   ),
   "mycelium": MinecraftMaterial(
     name: "Mycelium",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mycelium.png",
   ),
   "lily_pad": MinecraftMaterial(
     name: "Lily Pad",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/lily_pad.png",
   ),
   "nether_bricks": MinecraftMaterial(
     name: "Nether Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/nether_bricks.png",
   ),
   "cracked_nether_bricks": MinecraftMaterial(
     name: "Cracked Nether Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cracked_nether_bricks.png",
   ),
   "chiseled_nether_bricks": MinecraftMaterial(
     name: "Chiseled Nether Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chiseled_nether_bricks.png",
   ),
   "nether_brick_fence": MinecraftMaterial(
     name: "Nether Brick Fence",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/nether_brick_fence.png",
   ),
   "nether_brick_stairs": MinecraftMaterial(
     name: "Nether Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/nether_brick_stairs.png",
   ),
   "sculk": MinecraftMaterial(
     name: "Sculk",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sculk.png",
   ),
   "sculk_vein": MinecraftMaterial(
     name: "Sculk Vein",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sculk_vein.png",
   ),
   "sculk_catalyst": MinecraftMaterial(
     name: "Sculk Catalyst",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sculk_catalyst.png",
   ),
   "sculk_shrieker": MinecraftMaterial(
     name: "Sculk Shrieker",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sculk_shrieker.png",
   ),
   "enchanting_table": MinecraftMaterial(
     name: "Enchanting Table",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/enchanting_table.png",
   ),
   "end_portal_frame": MinecraftMaterial(
     name: "End Portal Frame",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/end_portal_frame.png",
   ),
   "end_stone": MinecraftMaterial(
     name: "End Stone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/end_stone.png",
   ),
   "end_stone_bricks": MinecraftMaterial(
     name: "End Stone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/end_stone_bricks.png",
   ),
   "dragon_egg": MinecraftMaterial(
     name: "Dragon Egg",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dragon_egg.png",
   ),
   "sandstone_stairs": MinecraftMaterial(
     name: "Sandstone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sandstone_stairs.png",
   ),
   "ender_chest": MinecraftMaterial(
     name: "Ender Chest",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/ender_chest.png",
   ),
   "emerald_block": MinecraftMaterial(
     name: "Emerald Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/emerald_block.png",
   ),
   "oak_stairs": MinecraftMaterial(
@@ -2650,12 +3629,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_stairs": MinecraftMaterial(
     name: "Crimson Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_stairs.png",
   ),
   "warped_stairs": MinecraftMaterial(
     name: "Warped Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_stairs.png",
   ),
   "command_block": MinecraftMaterial(
@@ -2671,237 +3660,450 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "beacon": MinecraftMaterial(
     name: "Beacon",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/beacon.png",
   ),
   "cobblestone_wall": MinecraftMaterial(
     name: "Cobblestone Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cobblestone_wall.png",
   ),
   "mossy_cobblestone_wall": MinecraftMaterial(
     name: "Mossy Cobblestone Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mossy_cobblestone_wall.png",
   ),
   "brick_wall": MinecraftMaterial(
     name: "Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brick_wall.png",
   ),
   "prismarine_wall": MinecraftMaterial(
     name: "Prismarine Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/prismarine_wall.png",
   ),
   "red_sandstone_wall": MinecraftMaterial(
     name: "Red Sandstone Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_sandstone_wall.png",
   ),
   "mossy_stone_brick_wall": MinecraftMaterial(
     name: "Mossy Stone Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mossy_stone_brick_wall.png",
   ),
   "granite_wall": MinecraftMaterial(
     name: "Granite Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/granite_wall.png",
   ),
   "stone_brick_wall": MinecraftMaterial(
     name: "Stone Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stone_brick_wall.png",
   ),
   "mud_brick_wall": MinecraftMaterial(
     name: "Mud Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mud_brick_wall.png",
   ),
   "nether_brick_wall": MinecraftMaterial(
     name: "Nether Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/nether_brick_wall.png",
   ),
   "andesite_wall": MinecraftMaterial(
     name: "Andesite Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/andesite_wall.png",
   ),
   "red_nether_brick_wall": MinecraftMaterial(
     name: "Red Nether Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_nether_brick_wall.png",
   ),
   "sandstone_wall": MinecraftMaterial(
     name: "Sandstone Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sandstone_wall.png",
   ),
   "end_stone_brick_wall": MinecraftMaterial(
     name: "End Stone Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/end_stone_brick_wall.png",
   ),
   "diorite_wall": MinecraftMaterial(
     name: "Diorite Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/diorite_wall.png",
   ),
   "blackstone_wall": MinecraftMaterial(
     name: "Blackstone Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blackstone_wall.png",
   ),
   "polished_blackstone_wall": MinecraftMaterial(
     name: "Polished Blackstone Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone_wall.png",
   ),
   "polished_blackstone_brick_wall": MinecraftMaterial(
     name: "Polished Blackstone Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone_brick_wall.png",
   ),
   "cobbled_deepslate_wall": MinecraftMaterial(
     name: "Cobbled Deepslate Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cobbled_deepslate_wall.png",
   ),
   "polished_deepslate_wall": MinecraftMaterial(
     name: "Polished Deepslate Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_deepslate_wall.png",
   ),
   "deepslate_brick_wall": MinecraftMaterial(
     name: "Deepslate Brick Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate_brick_wall.png",
   ),
   "deepslate_tile_wall": MinecraftMaterial(
     name: "Deepslate Tile Wall",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate_tile_wall.png",
   ),
   "anvil": MinecraftMaterial(
     name: "Anvil",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/anvil.png",
   ),
   "chipped_anvil": MinecraftMaterial(
     name: "Chipped Anvil",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chipped_anvil.png",
   ),
   "damaged_anvil": MinecraftMaterial(
     name: "Damaged Anvil",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/damaged_anvil.png",
   ),
   "chiseled_quartz_block": MinecraftMaterial(
     name: "Chiseled Quartz Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chiseled_quartz_block.png",
   ),
   "quartz_block": MinecraftMaterial(
     name: "Quartz Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/quartz_block.png",
   ),
   "quartz_bricks": MinecraftMaterial(
     name: "Quartz Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/quartz_bricks.png",
   ),
   "quartz_pillar": MinecraftMaterial(
     name: "Quartz Pillar",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/quartz_pillar.png",
   ),
   "quartz_stairs": MinecraftMaterial(
     name: "Quartz Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/quartz_stairs.png",
   ),
   "white_terracotta": MinecraftMaterial(
     name: "White Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/white_terracotta.png",
   ),
   "orange_terracotta": MinecraftMaterial(
     name: "Orange Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/orange_terracotta.png",
   ),
   "magenta_terracotta": MinecraftMaterial(
     name: "Magenta Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/magenta_terracotta.png",
   ),
   "light_blue_terracotta": MinecraftMaterial(
     name: "Light Blue Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_blue_terracotta.png",
   ),
   "yellow_terracotta": MinecraftMaterial(
     name: "Yellow Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/yellow_terracotta.png",
   ),
   "lime_terracotta": MinecraftMaterial(
     name: "Lime Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lime_terracotta.png",
   ),
   "pink_terracotta": MinecraftMaterial(
     name: "Pink Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pink_terracotta.png",
   ),
   "gray_terracotta": MinecraftMaterial(
     name: "Gray Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gray_terracotta.png",
   ),
   "light_gray_terracotta": MinecraftMaterial(
     name: "Light Gray Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_gray_terracotta.png",
   ),
   "cyan_terracotta": MinecraftMaterial(
     name: "Cyan Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cyan_terracotta.png",
   ),
   "purple_terracotta": MinecraftMaterial(
     name: "Purple Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purple_terracotta.png",
   ),
   "blue_terracotta": MinecraftMaterial(
     name: "Blue Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blue_terracotta.png",
   ),
   "brown_terracotta": MinecraftMaterial(
     name: "Brown Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brown_terracotta.png",
   ),
   "green_terracotta": MinecraftMaterial(
     name: "Green Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/green_terracotta.png",
   ),
   "red_terracotta": MinecraftMaterial(
     name: "Red Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_terracotta.png",
   ),
   "black_terracotta": MinecraftMaterial(
     name: "Black Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/black_terracotta.png",
   ),
   "barrier": MinecraftMaterial(
@@ -2917,7 +4119,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "light": MinecraftMaterial(
     name: "Light",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/light.png",
   ),
   "hay_block": MinecraftMaterial(
@@ -3125,17 +4331,31 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "terracotta": MinecraftMaterial(
     name: "Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/terracotta.png",
   ),
   "packed_ice": MinecraftMaterial(
     name: "Packed Ice",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/packed_ice.png",
   ),
   "dirt_path": MinecraftMaterial(
     name: "Dirt Path",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dirt_path.png",
   ),
   "sunflower": MinecraftMaterial(
@@ -3206,217 +4426,399 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "white_stained_glass": MinecraftMaterial(
     name: "White Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/white_stained_glass.png",
   ),
   "orange_stained_glass": MinecraftMaterial(
     name: "Orange Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/orange_stained_glass.png",
   ),
   "magenta_stained_glass": MinecraftMaterial(
     name: "Magenta Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/magenta_stained_glass.png",
   ),
   "light_blue_stained_glass": MinecraftMaterial(
     name: "Light Blue Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_blue_stained_glass.png",
   ),
   "yellow_stained_glass": MinecraftMaterial(
     name: "Yellow Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/yellow_stained_glass.png",
   ),
   "lime_stained_glass": MinecraftMaterial(
     name: "Lime Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lime_stained_glass.png",
   ),
   "pink_stained_glass": MinecraftMaterial(
     name: "Pink Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pink_stained_glass.png",
   ),
   "gray_stained_glass": MinecraftMaterial(
     name: "Gray Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gray_stained_glass.png",
   ),
   "light_gray_stained_glass": MinecraftMaterial(
     name: "Light Gray Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_gray_stained_glass.png",
   ),
   "cyan_stained_glass": MinecraftMaterial(
     name: "Cyan Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cyan_stained_glass.png",
   ),
   "purple_stained_glass": MinecraftMaterial(
     name: "Purple Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purple_stained_glass.png",
   ),
   "blue_stained_glass": MinecraftMaterial(
     name: "Blue Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blue_stained_glass.png",
   ),
   "brown_stained_glass": MinecraftMaterial(
     name: "Brown Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brown_stained_glass.png",
   ),
   "green_stained_glass": MinecraftMaterial(
     name: "Green Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/green_stained_glass.png",
   ),
   "red_stained_glass": MinecraftMaterial(
     name: "Red Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_stained_glass.png",
   ),
   "black_stained_glass": MinecraftMaterial(
     name: "Black Stained Glass",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/black_stained_glass.png",
   ),
   "white_stained_glass_pane": MinecraftMaterial(
     name: "White Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/white_stained_glass_pane.png",
   ),
   "orange_stained_glass_pane": MinecraftMaterial(
     name: "Orange Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/orange_stained_glass_pane.png",
   ),
   "magenta_stained_glass_pane": MinecraftMaterial(
     name: "Magenta Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/magenta_stained_glass_pane.png",
   ),
   "light_blue_stained_glass_pane": MinecraftMaterial(
     name: "Light Blue Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_blue_stained_glass_pane.png",
   ),
   "yellow_stained_glass_pane": MinecraftMaterial(
     name: "Yellow Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/yellow_stained_glass_pane.png",
   ),
   "lime_stained_glass_pane": MinecraftMaterial(
     name: "Lime Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lime_stained_glass_pane.png",
   ),
   "pink_stained_glass_pane": MinecraftMaterial(
     name: "Pink Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pink_stained_glass_pane.png",
   ),
   "gray_stained_glass_pane": MinecraftMaterial(
     name: "Gray Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gray_stained_glass_pane.png",
   ),
   "light_gray_stained_glass_pane": MinecraftMaterial(
     name: "Light Gray Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_gray_stained_glass_pane.png",
   ),
   "cyan_stained_glass_pane": MinecraftMaterial(
     name: "Cyan Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cyan_stained_glass_pane.png",
   ),
   "purple_stained_glass_pane": MinecraftMaterial(
     name: "Purple Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purple_stained_glass_pane.png",
   ),
   "blue_stained_glass_pane": MinecraftMaterial(
     name: "Blue Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blue_stained_glass_pane.png",
   ),
   "brown_stained_glass_pane": MinecraftMaterial(
     name: "Brown Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brown_stained_glass_pane.png",
   ),
   "green_stained_glass_pane": MinecraftMaterial(
     name: "Green Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/green_stained_glass_pane.png",
   ),
   "red_stained_glass_pane": MinecraftMaterial(
     name: "Red Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_stained_glass_pane.png",
   ),
   "black_stained_glass_pane": MinecraftMaterial(
     name: "Black Stained Glass Pane",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/black_stained_glass_pane.png",
   ),
   "prismarine": MinecraftMaterial(
     name: "Prismarine",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/prismarine.png",
   ),
   "prismarine_bricks": MinecraftMaterial(
     name: "Prismarine Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/prismarine_bricks.png",
   ),
   "dark_prismarine": MinecraftMaterial(
     name: "Dark Prismarine",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dark_prismarine.png",
   ),
   "prismarine_stairs": MinecraftMaterial(
     name: "Prismarine Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/prismarine_stairs.png",
   ),
   "prismarine_brick_stairs": MinecraftMaterial(
     name: "Prismarine Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/prismarine_brick_stairs.png",
   ),
   "dark_prismarine_stairs": MinecraftMaterial(
     name: "Dark Prismarine Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dark_prismarine_stairs.png",
   ),
   "sea_lantern": MinecraftMaterial(
     name: "Sea Lantern",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sea_lantern.png",
   ),
   "red_sandstone": MinecraftMaterial(
     name: "Red Sandstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_sandstone.png",
   ),
   "chiseled_red_sandstone": MinecraftMaterial(
     name: "Chiseled Red Sandstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chiseled_red_sandstone.png",
   ),
   "cut_red_sandstone": MinecraftMaterial(
     name: "Cut Red Sandstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cut_red_sandstone.png",
   ),
   "red_sandstone_stairs": MinecraftMaterial(
     name: "Red Sandstone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_sandstone_stairs.png",
   ),
   "repeating_command_block": MinecraftMaterial(
@@ -3443,32 +4845,61 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "magma_block": MinecraftMaterial(
     name: "Magma Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/magma_block.png",
   ),
   "nether_wart_block": MinecraftMaterial(
     name: "Nether Wart Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/nether_wart_block.png",
   ),
   "warped_wart_block": MinecraftMaterial(
     name: "Warped Wart Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_wart_block.png",
   ),
   "red_nether_bricks": MinecraftMaterial(
     name: "Red Nether Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_nether_bricks.png",
   ),
   "bone_block": MinecraftMaterial(
     name: "Bone Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/bone_block.png",
   ),
   "structure_void": MinecraftMaterial(
     name: "Structure Void",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/structure_void.png",
   ),
   "shulker_box": MinecraftMaterial(
@@ -3660,297 +5091,591 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "white_glazed_terracotta": MinecraftMaterial(
     name: "White Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/white_glazed_terracotta.png",
   ),
   "orange_glazed_terracotta": MinecraftMaterial(
     name: "Orange Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/orange_glazed_terracotta.png",
   ),
   "magenta_glazed_terracotta": MinecraftMaterial(
     name: "Magenta Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/magenta_glazed_terracotta.png",
   ),
   "light_blue_glazed_terracotta": MinecraftMaterial(
     name: "Light Blue Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_blue_glazed_terracotta.png",
   ),
   "yellow_glazed_terracotta": MinecraftMaterial(
     name: "Yellow Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/yellow_glazed_terracotta.png",
   ),
   "lime_glazed_terracotta": MinecraftMaterial(
     name: "Lime Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lime_glazed_terracotta.png",
   ),
   "pink_glazed_terracotta": MinecraftMaterial(
     name: "Pink Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pink_glazed_terracotta.png",
   ),
   "gray_glazed_terracotta": MinecraftMaterial(
     name: "Gray Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gray_glazed_terracotta.png",
   ),
   "light_gray_glazed_terracotta": MinecraftMaterial(
     name: "Light Gray Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_gray_glazed_terracotta.png",
   ),
   "cyan_glazed_terracotta": MinecraftMaterial(
     name: "Cyan Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cyan_glazed_terracotta.png",
   ),
   "purple_glazed_terracotta": MinecraftMaterial(
     name: "Purple Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purple_glazed_terracotta.png",
   ),
   "blue_glazed_terracotta": MinecraftMaterial(
     name: "Blue Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blue_glazed_terracotta.png",
   ),
   "brown_glazed_terracotta": MinecraftMaterial(
     name: "Brown Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brown_glazed_terracotta.png",
   ),
   "green_glazed_terracotta": MinecraftMaterial(
     name: "Green Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/green_glazed_terracotta.png",
   ),
   "red_glazed_terracotta": MinecraftMaterial(
     name: "Red Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_glazed_terracotta.png",
   ),
   "black_glazed_terracotta": MinecraftMaterial(
     name: "Black Glazed Terracotta",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/black_glazed_terracotta.png",
   ),
   "white_concrete": MinecraftMaterial(
     name: "White Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/white_concrete.png",
   ),
   "orange_concrete": MinecraftMaterial(
     name: "Orange Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/orange_concrete.png",
   ),
   "magenta_concrete": MinecraftMaterial(
     name: "Magenta Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/magenta_concrete.png",
   ),
   "light_blue_concrete": MinecraftMaterial(
     name: "Light Blue Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_blue_concrete.png",
   ),
   "yellow_concrete": MinecraftMaterial(
     name: "Yellow Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/yellow_concrete.png",
   ),
   "lime_concrete": MinecraftMaterial(
     name: "Lime Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lime_concrete.png",
   ),
   "pink_concrete": MinecraftMaterial(
     name: "Pink Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pink_concrete.png",
   ),
   "gray_concrete": MinecraftMaterial(
     name: "Gray Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gray_concrete.png",
   ),
   "light_gray_concrete": MinecraftMaterial(
     name: "Light Gray Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_gray_concrete.png",
   ),
   "cyan_concrete": MinecraftMaterial(
     name: "Cyan Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cyan_concrete.png",
   ),
   "purple_concrete": MinecraftMaterial(
     name: "Purple Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purple_concrete.png",
   ),
   "blue_concrete": MinecraftMaterial(
     name: "Blue Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blue_concrete.png",
   ),
   "brown_concrete": MinecraftMaterial(
     name: "Brown Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brown_concrete.png",
   ),
   "green_concrete": MinecraftMaterial(
     name: "Green Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/green_concrete.png",
   ),
   "red_concrete": MinecraftMaterial(
     name: "Red Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_concrete.png",
   ),
   "black_concrete": MinecraftMaterial(
     name: "Black Concrete",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/black_concrete.png",
   ),
   "white_concrete_powder": MinecraftMaterial(
     name: "White Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/white_concrete_powder.png",
   ),
   "orange_concrete_powder": MinecraftMaterial(
     name: "Orange Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/orange_concrete_powder.png",
   ),
   "magenta_concrete_powder": MinecraftMaterial(
     name: "Magenta Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/magenta_concrete_powder.png",
   ),
   "light_blue_concrete_powder": MinecraftMaterial(
     name: "Light Blue Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_blue_concrete_powder.png",
   ),
   "yellow_concrete_powder": MinecraftMaterial(
     name: "Yellow Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/yellow_concrete_powder.png",
   ),
   "lime_concrete_powder": MinecraftMaterial(
     name: "Lime Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lime_concrete_powder.png",
   ),
   "pink_concrete_powder": MinecraftMaterial(
     name: "Pink Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pink_concrete_powder.png",
   ),
   "gray_concrete_powder": MinecraftMaterial(
     name: "Gray Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gray_concrete_powder.png",
   ),
   "light_gray_concrete_powder": MinecraftMaterial(
     name: "Light Gray Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_gray_concrete_powder.png",
   ),
   "cyan_concrete_powder": MinecraftMaterial(
     name: "Cyan Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cyan_concrete_powder.png",
   ),
   "purple_concrete_powder": MinecraftMaterial(
     name: "Purple Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purple_concrete_powder.png",
   ),
   "blue_concrete_powder": MinecraftMaterial(
     name: "Blue Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blue_concrete_powder.png",
   ),
   "brown_concrete_powder": MinecraftMaterial(
     name: "Brown Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brown_concrete_powder.png",
   ),
   "green_concrete_powder": MinecraftMaterial(
     name: "Green Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/green_concrete_powder.png",
   ),
   "red_concrete_powder": MinecraftMaterial(
     name: "Red Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_concrete_powder.png",
   ),
   "black_concrete_powder": MinecraftMaterial(
     name: "Black Concrete Powder",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/black_concrete_powder.png",
   ),
   "turtle_egg": MinecraftMaterial(
     name: "Turtle Egg",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/turtle_egg.png",
   ),
   "dead_tube_coral_block": MinecraftMaterial(
     name: "Dead Tube Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_tube_coral_block.png",
   ),
   "dead_brain_coral_block": MinecraftMaterial(
     name: "Dead Brain Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_brain_coral_block.png",
   ),
   "dead_bubble_coral_block": MinecraftMaterial(
     name: "Dead Bubble Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_bubble_coral_block.png",
   ),
   "dead_fire_coral_block": MinecraftMaterial(
     name: "Dead Fire Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_fire_coral_block.png",
   ),
   "dead_horn_coral_block": MinecraftMaterial(
     name: "Dead Horn Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_horn_coral_block.png",
   ),
   "tube_coral_block": MinecraftMaterial(
     name: "Tube Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/tube_coral_block.png",
   ),
   "brain_coral_block": MinecraftMaterial(
     name: "Brain Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brain_coral_block.png",
   ),
   "bubble_coral_block": MinecraftMaterial(
     name: "Bubble Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/bubble_coral_block.png",
   ),
   "fire_coral_block": MinecraftMaterial(
     name: "Fire Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/fire_coral_block.png",
   ),
   "horn_coral_block": MinecraftMaterial(
     name: "Horn Coral Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/horn_coral_block.png",
   ),
   "tube_coral": MinecraftMaterial(
@@ -3980,27 +5705,47 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "dead_brain_coral": MinecraftMaterial(
     name: "Dead Brain Coral",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_brain_coral.png",
   ),
   "dead_bubble_coral": MinecraftMaterial(
     name: "Dead Bubble Coral",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_bubble_coral.png",
   ),
   "dead_fire_coral": MinecraftMaterial(
     name: "Dead Fire Coral",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_fire_coral.png",
   ),
   "dead_horn_coral": MinecraftMaterial(
     name: "Dead Horn Coral",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_horn_coral.png",
   ),
   "dead_tube_coral": MinecraftMaterial(
     name: "Dead Tube Coral",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_tube_coral.png",
   ),
   "tube_coral_fan": MinecraftMaterial(
@@ -4030,217 +5775,409 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "dead_tube_coral_fan": MinecraftMaterial(
     name: "Dead Tube Coral Fan",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_tube_coral_fan.png",
   ),
   "dead_brain_coral_fan": MinecraftMaterial(
     name: "Dead Brain Coral Fan",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_brain_coral_fan.png",
   ),
   "dead_bubble_coral_fan": MinecraftMaterial(
     name: "Dead Bubble Coral Fan",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_bubble_coral_fan.png",
   ),
   "dead_fire_coral_fan": MinecraftMaterial(
     name: "Dead Fire Coral Fan",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_fire_coral_fan.png",
   ),
   "dead_horn_coral_fan": MinecraftMaterial(
     name: "Dead Horn Coral Fan",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/dead_horn_coral_fan.png",
   ),
   "blue_ice": MinecraftMaterial(
     name: "Blue Ice",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blue_ice.png",
   ),
   "conduit": MinecraftMaterial(
     name: "Conduit",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/conduit.png",
   ),
   "polished_granite_stairs": MinecraftMaterial(
     name: "Polished Granite Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_granite_stairs.png",
   ),
   "smooth_red_sandstone_stairs": MinecraftMaterial(
     name: "Smooth Red Sandstone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_red_sandstone_stairs.png",
   ),
   "mossy_stone_brick_stairs": MinecraftMaterial(
     name: "Mossy Stone Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mossy_stone_brick_stairs.png",
   ),
   "polished_diorite_stairs": MinecraftMaterial(
     name: "Polished Diorite Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_diorite_stairs.png",
   ),
   "mossy_cobblestone_stairs": MinecraftMaterial(
     name: "Mossy Cobblestone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mossy_cobblestone_stairs.png",
   ),
   "end_stone_brick_stairs": MinecraftMaterial(
     name: "End Stone Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/end_stone_brick_stairs.png",
   ),
   "stone_stairs": MinecraftMaterial(
     name: "Stone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stone_stairs.png",
   ),
   "smooth_sandstone_stairs": MinecraftMaterial(
     name: "Smooth Sandstone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_sandstone_stairs.png",
   ),
   "smooth_quartz_stairs": MinecraftMaterial(
     name: "Smooth Quartz Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_quartz_stairs.png",
   ),
   "granite_stairs": MinecraftMaterial(
     name: "Granite Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/granite_stairs.png",
   ),
   "andesite_stairs": MinecraftMaterial(
     name: "Andesite Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/andesite_stairs.png",
   ),
   "red_nether_brick_stairs": MinecraftMaterial(
     name: "Red Nether Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_nether_brick_stairs.png",
   ),
   "polished_andesite_stairs": MinecraftMaterial(
     name: "Polished Andesite Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_andesite_stairs.png",
   ),
   "diorite_stairs": MinecraftMaterial(
     name: "Diorite Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/diorite_stairs.png",
   ),
   "cobbled_deepslate_stairs": MinecraftMaterial(
     name: "Cobbled Deepslate Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cobbled_deepslate_stairs.png",
   ),
   "polished_deepslate_stairs": MinecraftMaterial(
     name: "Polished Deepslate Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_deepslate_stairs.png",
   ),
   "deepslate_brick_stairs": MinecraftMaterial(
     name: "Deepslate Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate_brick_stairs.png",
   ),
   "deepslate_tile_stairs": MinecraftMaterial(
     name: "Deepslate Tile Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate_tile_stairs.png",
   ),
   "polished_granite_slab": MinecraftMaterial(
     name: "Polished Granite Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_granite_slab.png",
   ),
   "smooth_red_sandstone_slab": MinecraftMaterial(
     name: "Smooth Red Sandstone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_red_sandstone_slab.png",
   ),
   "mossy_stone_brick_slab": MinecraftMaterial(
     name: "Mossy Stone Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mossy_stone_brick_slab.png",
   ),
   "polished_diorite_slab": MinecraftMaterial(
     name: "Polished Diorite Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_diorite_slab.png",
   ),
   "mossy_cobblestone_slab": MinecraftMaterial(
     name: "Mossy Cobblestone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/mossy_cobblestone_slab.png",
   ),
   "end_stone_brick_slab": MinecraftMaterial(
     name: "End Stone Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/end_stone_brick_slab.png",
   ),
   "smooth_sandstone_slab": MinecraftMaterial(
     name: "Smooth Sandstone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_sandstone_slab.png",
   ),
   "smooth_quartz_slab": MinecraftMaterial(
     name: "Smooth Quartz Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/smooth_quartz_slab.png",
   ),
   "granite_slab": MinecraftMaterial(
     name: "Granite Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/granite_slab.png",
   ),
   "andesite_slab": MinecraftMaterial(
     name: "Andesite Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/andesite_slab.png",
   ),
   "red_nether_brick_slab": MinecraftMaterial(
     name: "Red Nether Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_nether_brick_slab.png",
   ),
   "polished_andesite_slab": MinecraftMaterial(
     name: "Polished Andesite Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_andesite_slab.png",
   ),
   "diorite_slab": MinecraftMaterial(
     name: "Diorite Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/diorite_slab.png",
   ),
   "cobbled_deepslate_slab": MinecraftMaterial(
     name: "Cobbled Deepslate Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cobbled_deepslate_slab.png",
   ),
   "polished_deepslate_slab": MinecraftMaterial(
     name: "Polished Deepslate Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_deepslate_slab.png",
   ),
   "deepslate_brick_slab": MinecraftMaterial(
     name: "Deepslate Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate_brick_slab.png",
   ),
   "deepslate_tile_slab": MinecraftMaterial(
     name: "Deepslate Tile Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/deepslate_tile_slab.png",
   ),
   "scaffolding": MinecraftMaterial(
     name: "Scaffolding",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/scaffolding.png",
   ),
   "redstone": MinecraftMaterial(
@@ -4250,12 +6187,20 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "redstone_torch": MinecraftMaterial(
     name: "Redstone Torch",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/redstone_torch.png",
   ),
   "redstone_block": MinecraftMaterial(
     name: "Redstone Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/redstone_block.png",
   ),
   "repeater": MinecraftMaterial(
@@ -4280,32 +6225,58 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "piston": MinecraftMaterial(
     name: "Piston",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/piston.png",
   ),
   "sticky_piston": MinecraftMaterial(
     name: "Sticky Piston",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sticky_piston.png",
   ),
   "slime_block": MinecraftMaterial(
     name: "Slime Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/slime_block.png",
   ),
   "honey_block": MinecraftMaterial(
     name: "Honey Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/honey_block.png",
   ),
   "observer": MinecraftMaterial(
     name: "Observer",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/observer.png",
   ),
   "hopper": MinecraftMaterial(
     name: "Hopper",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/hopper.png",
   ),
   "dispenser": MinecraftMaterial(
@@ -4366,7 +6337,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "lightning_rod": MinecraftMaterial(
     name: "Lightning Rod",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lightning_rod.png",
   ),
   "daylight_detector": MinecraftMaterial(
@@ -4383,12 +6358,20 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "sculk_sensor": MinecraftMaterial(
     name: "Sculk Sensor",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/sculk_sensor.png",
   ),
   "tripwire_hook": MinecraftMaterial(
     name: "Tripwire Hook",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/tripwire_hook.png",
   ),
   "trapped_chest": MinecraftMaterial(
@@ -4417,7 +6400,12 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "redstone_lamp": MinecraftMaterial(
     name: "Redstone Lamp",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/redstone_lamp.png",
   ),
   "note_block": MinecraftMaterial(
@@ -4445,7 +6433,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "polished_blackstone_button": MinecraftMaterial(
     name: "Polished Blackstone Button",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/polished_blackstone_button.png",
   ),
   "oak_button": MinecraftMaterial(
@@ -4516,37 +6508,66 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "mangrove_button": MinecraftMaterial(
     name: "Mangrove Button",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/mangrove_button.png",
   ),
   "crimson_button": MinecraftMaterial(
     name: "Crimson Button",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/crimson_button.png",
   ),
   "warped_button": MinecraftMaterial(
     name: "Warped Button",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/warped_button.png",
   ),
   "stone_pressure_plate": MinecraftMaterial(
     name: "Stone Pressure Plate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stone_pressure_plate.png",
   ),
   "polished_blackstone_pressure_plate": MinecraftMaterial(
     name: "Polished Blackstone Pressure Plate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone_pressure_plate.png",
   ),
   "light_weighted_pressure_plate": MinecraftMaterial(
     name: "Light Weighted Pressure Plate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_weighted_pressure_plate.png",
   ),
   "heavy_weighted_pressure_plate": MinecraftMaterial(
     name: "Heavy Weighted Pressure Plate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/heavy_weighted_pressure_plate.png",
   ),
   "oak_pressure_plate": MinecraftMaterial(
@@ -4628,17 +6649,30 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_pressure_plate": MinecraftMaterial(
     name: "Crimson Pressure Plate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_pressure_plate.png",
   ),
   "warped_pressure_plate": MinecraftMaterial(
     name: "Warped Pressure Plate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_pressure_plate.png",
   ),
   "iron_door": MinecraftMaterial(
     name: "Iron Door",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/iron_door.png",
   ),
   "oak_door": MinecraftMaterial(
@@ -4727,17 +6761,32 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_door": MinecraftMaterial(
     name: "Crimson Door",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_door.png",
   ),
   "warped_door": MinecraftMaterial(
     name: "Warped Door",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_door.png",
   ),
   "iron_trapdoor": MinecraftMaterial(
     name: "Iron Trapdoor",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/iron_trapdoor.png",
   ),
   "oak_trapdoor": MinecraftMaterial(
@@ -4826,12 +6875,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_trapdoor": MinecraftMaterial(
     name: "Crimson Trapdoor",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_trapdoor.png",
   ),
   "warped_trapdoor": MinecraftMaterial(
     name: "Warped Trapdoor",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_trapdoor.png",
   ),
   "oak_fence_gate": MinecraftMaterial(
@@ -4927,32 +6986,58 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_fence_gate": MinecraftMaterial(
     name: "Crimson Fence Gate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_fence_gate.png",
   ),
   "warped_fence_gate": MinecraftMaterial(
     name: "Warped Fence Gate",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_fence_gate.png",
   ),
   "powered_rail": MinecraftMaterial(
     name: "Powered Rail",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/powered_rail.png",
   ),
   "detector_rail": MinecraftMaterial(
     name: "Detector Rail",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/detector_rail.png",
   ),
   "rail": MinecraftMaterial(
     name: "Rail",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/rail.png",
   ),
   "activator_rail": MinecraftMaterial(
     name: "Activator Rail",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/activator_rail.png",
   ),
   "saddle": MinecraftMaterial(
@@ -5199,32 +7284,57 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "wooden_sword": MinecraftMaterial(
     name: "Wooden Sword",
-    properties: [MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.weapon, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.weapon,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/wooden_sword.png",
   ),
   "wooden_shovel": MinecraftMaterial(
     name: "Wooden Shovel",
-    properties: [MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/wooden_shovel.png",
   ),
   "wooden_pickaxe": MinecraftMaterial(
     name: "Wooden Pickaxe",
-    properties: [MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/wooden_pickaxe.png",
   ),
   "wooden_axe": MinecraftMaterial(
     name: "Wooden Axe",
-    properties: [MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/wooden_axe.png",
   ),
   "wooden_hoe": MinecraftMaterial(
     name: "Wooden Hoe",
-    properties: [MaterialProperty.item, MaterialProperty.fuel, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.fuel,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/wooden_hoe.png",
   ),
   "stone_sword": MinecraftMaterial(
     name: "Stone Sword",
-    properties: [MaterialProperty.item, MaterialProperty.weapon, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.weapon,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/stone_sword.png",
   ),
   "stone_shovel": MinecraftMaterial(
@@ -5249,7 +7359,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "golden_sword": MinecraftMaterial(
     name: "Golden Sword",
-    properties: [MaterialProperty.item, MaterialProperty.weapon, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.weapon,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/golden_sword.png",
   ),
   "golden_shovel": MinecraftMaterial(
@@ -5274,7 +7388,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "iron_sword": MinecraftMaterial(
     name: "Iron Sword",
-    properties: [MaterialProperty.item, MaterialProperty.weapon, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.weapon,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/iron_sword.png",
   ),
   "iron_shovel": MinecraftMaterial(
@@ -5299,7 +7417,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "diamond_sword": MinecraftMaterial(
     name: "Diamond Sword",
-    properties: [MaterialProperty.item, MaterialProperty.weapon, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.weapon,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/diamond_sword.png",
   ),
   "diamond_shovel": MinecraftMaterial(
@@ -5324,7 +7446,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "netherite_sword": MinecraftMaterial(
     name: "Netherite Sword",
-    properties: [MaterialProperty.item, MaterialProperty.weapon, MaterialProperty.tool],
+    properties: [
+      MaterialProperty.item,
+      MaterialProperty.weapon,
+      MaterialProperty.tool,
+    ],
     icon: "assets/materials/netherite_sword.png",
   ),
   "netherite_shovel": MinecraftMaterial(
@@ -5384,7 +7510,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "wheat": MinecraftMaterial(
     name: "Wheat",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/wheat.png",
   ),
   "bread": MinecraftMaterial(
@@ -5628,12 +7758,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_sign": MinecraftMaterial(
     name: "Crimson Sign",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_sign.png",
   ),
   "warped_sign": MinecraftMaterial(
     name: "Warped Sign",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_sign.png",
   ),
   "bucket": MinecraftMaterial(
@@ -5920,7 +8060,12 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "cake": MinecraftMaterial(
     name: "Cake",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cake.png",
   ),
   "white_bed": MinecraftMaterial(
@@ -6181,7 +8326,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "nether_wart": MinecraftMaterial(
     name: "Nether Wart",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/nether_wart.png",
   ),
   "potion": MinecraftMaterial(
@@ -6216,12 +8365,22 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "brewing_stand": MinecraftMaterial(
     name: "Brewing Stand",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brewing_stand.png",
   ),
   "cauldron": MinecraftMaterial(
     name: "Cauldron",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cauldron.png",
   ),
   "ender_eye": MinecraftMaterial(
@@ -6661,32 +8820,56 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "skeleton_skull": MinecraftMaterial(
     name: "Skeleton Skull",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/skeleton_skull.png",
   ),
   "wither_skeleton_skull": MinecraftMaterial(
     name: "Wither Skeleton Skull",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/wither_skeleton_skull.png",
   ),
   "player_head": MinecraftMaterial(
     name: "Player Head",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/player_head.png",
   ),
   "zombie_head": MinecraftMaterial(
     name: "Zombie Head",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/zombie_head.png",
   ),
   "creeper_head": MinecraftMaterial(
     name: "Creeper Head",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/creeper_head.png",
   ),
   "dragon_head": MinecraftMaterial(
     name: "Dragon Head",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/dragon_head.png",
   ),
   "nether_star": MinecraftMaterial(
@@ -7299,7 +9482,12 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "grindstone": MinecraftMaterial(
     name: "Grindstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/grindstone.png",
   ),
   "smithing_table": MinecraftMaterial(
@@ -7317,22 +9505,40 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "stonecutter": MinecraftMaterial(
     name: "Stonecutter",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/stonecutter.png",
   ),
   "bell": MinecraftMaterial(
     name: "Bell",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/bell.png",
   ),
   "lantern": MinecraftMaterial(
     name: "Lantern",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lantern.png",
   ),
   "soul_lantern": MinecraftMaterial(
     name: "Soul Lantern",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/soul_lantern.png",
   ),
   "sweet_berries": MinecraftMaterial(
@@ -7369,7 +9575,12 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "shroomlight": MinecraftMaterial(
     name: "Shroomlight",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/shroomlight.png",
   ),
   "honeycomb": MinecraftMaterial(
@@ -7410,77 +9621,149 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "honeycomb_block": MinecraftMaterial(
     name: "Honeycomb Block",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/honeycomb_block.png",
   ),
   "lodestone": MinecraftMaterial(
     name: "Lodestone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lodestone.png",
   ),
   "crying_obsidian": MinecraftMaterial(
     name: "Crying Obsidian",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crying_obsidian.png",
   ),
   "blackstone": MinecraftMaterial(
     name: "Blackstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blackstone.png",
   ),
   "blackstone_slab": MinecraftMaterial(
     name: "Blackstone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blackstone_slab.png",
   ),
   "blackstone_stairs": MinecraftMaterial(
     name: "Blackstone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blackstone_stairs.png",
   ),
   "gilded_blackstone": MinecraftMaterial(
     name: "Gilded Blackstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gilded_blackstone.png",
   ),
   "polished_blackstone": MinecraftMaterial(
     name: "Polished Blackstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone.png",
   ),
   "polished_blackstone_slab": MinecraftMaterial(
     name: "Polished Blackstone Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone_slab.png",
   ),
   "polished_blackstone_stairs": MinecraftMaterial(
     name: "Polished Blackstone Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone_stairs.png",
   ),
   "chiseled_polished_blackstone": MinecraftMaterial(
     name: "Chiseled Polished Blackstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/chiseled_polished_blackstone.png",
   ),
   "polished_blackstone_bricks": MinecraftMaterial(
     name: "Polished Blackstone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone_bricks.png",
   ),
   "polished_blackstone_brick_slab": MinecraftMaterial(
     name: "Polished Blackstone Brick Slab",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone_brick_slab.png",
   ),
   "polished_blackstone_brick_stairs": MinecraftMaterial(
     name: "Polished Blackstone Brick Stairs",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/polished_blackstone_brick_stairs.png",
   ),
   "cracked_polished_blackstone_bricks": MinecraftMaterial(
     name: "Cracked Polished Blackstone Bricks",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cracked_polished_blackstone_bricks.png",
   ),
   "respawn_anchor": MinecraftMaterial(
@@ -7496,127 +9779,230 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "candle": MinecraftMaterial(
     name: "Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/candle.png",
   ),
   "white_candle": MinecraftMaterial(
     name: "White Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/white_candle.png",
   ),
   "orange_candle": MinecraftMaterial(
     name: "Orange Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/orange_candle.png",
   ),
   "magenta_candle": MinecraftMaterial(
     name: "Magenta Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/magenta_candle.png",
   ),
   "light_blue_candle": MinecraftMaterial(
     name: "Light Blue Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/light_blue_candle.png",
   ),
   "yellow_candle": MinecraftMaterial(
     name: "Yellow Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/yellow_candle.png",
   ),
   "lime_candle": MinecraftMaterial(
     name: "Lime Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/lime_candle.png",
   ),
   "pink_candle": MinecraftMaterial(
     name: "Pink Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/pink_candle.png",
   ),
   "gray_candle": MinecraftMaterial(
     name: "Gray Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/gray_candle.png",
   ),
   "light_gray_candle": MinecraftMaterial(
     name: "Light Gray Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/light_gray_candle.png",
   ),
   "cyan_candle": MinecraftMaterial(
     name: "Cyan Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/cyan_candle.png",
   ),
   "purple_candle": MinecraftMaterial(
     name: "Purple Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/purple_candle.png",
   ),
   "blue_candle": MinecraftMaterial(
     name: "Blue Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/blue_candle.png",
   ),
   "brown_candle": MinecraftMaterial(
     name: "Brown Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/brown_candle.png",
   ),
   "green_candle": MinecraftMaterial(
     name: "Green Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/green_candle.png",
   ),
   "red_candle": MinecraftMaterial(
     name: "Red Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/red_candle.png",
   ),
   "black_candle": MinecraftMaterial(
     name: "Black Candle",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.intractable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.intractable,
+    ],
     icon: "assets/materials/black_candle.png",
   ),
   "small_amethyst_bud": MinecraftMaterial(
     name: "Small Amethyst Bud",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/small_amethyst_bud.png",
   ),
   "medium_amethyst_bud": MinecraftMaterial(
     name: "Medium Amethyst Bud",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/medium_amethyst_bud.png",
   ),
   "large_amethyst_bud": MinecraftMaterial(
     name: "Large Amethyst Bud",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/large_amethyst_bud.png",
   ),
   "amethyst_cluster": MinecraftMaterial(
     name: "Amethyst Cluster",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/amethyst_cluster.png",
   ),
   "pointed_dripstone": MinecraftMaterial(
     name: "Pointed Dripstone",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pointed_dripstone.png",
   ),
   "ochre_froglight": MinecraftMaterial(
     name: "Ochre Froglight",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/ochre_froglight.png",
   ),
   "verdant_froglight": MinecraftMaterial(
     name: "Verdant Froglight",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/verdant_froglight.png",
   ),
   "pearlescent_froglight": MinecraftMaterial(
     name: "Pearlescent Froglight",
-    properties: [MaterialProperty.block, MaterialProperty.item, MaterialProperty.occluding, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.item,
+      MaterialProperty.occluding,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pearlescent_froglight.png",
   ),
   "frogspawn": MinecraftMaterial(
@@ -7651,7 +10037,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "moving_piston": MinecraftMaterial(
     name: "Moving Piston",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/moving_piston.png",
   ),
   "wall_torch": MinecraftMaterial(
@@ -7671,7 +10061,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "redstone_wire": MinecraftMaterial(
     name: "Redstone Wire",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/redstone_wire.webp",
   ),
   "oak_wall_sign": MinecraftMaterial(
@@ -7781,17 +10175,29 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "water_cauldron": MinecraftMaterial(
     name: "Water Cauldron",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/water_cauldron.webp",
   ),
   "lava_cauldron": MinecraftMaterial(
     name: "Lava Cauldron",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lava_cauldron.webp",
   ),
   "powder_snow_cauldron": MinecraftMaterial(
     name: "Powder Snow Cauldron",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/powder_snow_cauldron.webp",
   ),
   "end_portal": MinecraftMaterial(
@@ -7811,32 +10217,56 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "potted_oak_sapling": MinecraftMaterial(
     name: "Potted Oak Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_oak_sapling.png",
   ),
   "potted_spruce_sapling": MinecraftMaterial(
     name: "Potted Spruce Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_spruce_sapling.webp",
   ),
   "potted_birch_sapling": MinecraftMaterial(
     name: "Potted Birch Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_birch_sapling.webp",
   ),
   "potted_jungle_sapling": MinecraftMaterial(
     name: "Potted Jungle Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_jungle_sapling.webp",
   ),
   "potted_acacia_sapling": MinecraftMaterial(
     name: "Potted Acacia Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_acacia_sapling.webp",
   ),
   "potted_dark_oak_sapling": MinecraftMaterial(
     name: "Potted Dark Oak Sapling",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_dark_oak_sapling.webp",
   ),
   "potted_mangrove_propagule": MinecraftMaterial(
@@ -7846,57 +10276,101 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "potted_fern": MinecraftMaterial(
     name: "Potted Fern",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_fern.webp",
   ),
   "potted_dandelion": MinecraftMaterial(
     name: "Potted Dandelion",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_dandelion.png",
   ),
   "potted_poppy": MinecraftMaterial(
     name: "Potted Poppy",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_poppy.webp",
   ),
   "potted_blue_orchid": MinecraftMaterial(
     name: "Potted Blue Orchid",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_blue_orchid.webp",
   ),
   "potted_allium": MinecraftMaterial(
     name: "Potted Allium",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_allium.webp",
   ),
   "potted_azure_bluet": MinecraftMaterial(
     name: "Potted Azure Bluet",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_azure_bluet.webp",
   ),
   "potted_red_tulip": MinecraftMaterial(
     name: "Potted Red Tulip",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_red_tulip.webp",
   ),
   "potted_orange_tulip": MinecraftMaterial(
     name: "Potted Orange Tulip",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_orange_tulip.png",
   ),
   "potted_white_tulip": MinecraftMaterial(
     name: "Potted White Tulip",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_white_tulip.png",
   ),
   "potted_pink_tulip": MinecraftMaterial(
     name: "Potted Pink Tulip",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_pink_tulip.webp",
   ),
   "potted_oxeye_daisy": MinecraftMaterial(
     name: "Potted Oxeye Daisy",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_oxeye_daisy.png",
   ),
   "potted_cornflower": MinecraftMaterial(
@@ -7916,22 +10390,38 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "potted_red_mushroom": MinecraftMaterial(
     name: "Potted Red Mushroom",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_red_mushroom.png",
   ),
   "potted_brown_mushroom": MinecraftMaterial(
     name: "Potted Brown Mushroom",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_brown_mushroom.webp",
   ),
   "potted_dead_bush": MinecraftMaterial(
     name: "Potted Dead Bush",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_dead_bush.webp",
   ),
   "potted_cactus": MinecraftMaterial(
     name: "Potted Cactus",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_cactus.webp",
   ),
   "carrots": MinecraftMaterial(
@@ -7976,82 +10466,146 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "white_wall_banner": MinecraftMaterial(
     name: "White Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/white_wall_banner.png",
   ),
   "orange_wall_banner": MinecraftMaterial(
     name: "Orange Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/orange_wall_banner.png",
   ),
   "magenta_wall_banner": MinecraftMaterial(
     name: "Magenta Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/magenta_wall_banner.png",
   ),
   "light_blue_wall_banner": MinecraftMaterial(
     name: "Light Blue Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/light_blue_wall_banner.png",
   ),
   "yellow_wall_banner": MinecraftMaterial(
     name: "Yellow Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/yellow_wall_banner.png",
   ),
   "lime_wall_banner": MinecraftMaterial(
     name: "Lime Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/lime_wall_banner.png",
   ),
   "pink_wall_banner": MinecraftMaterial(
     name: "Pink Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/pink_wall_banner.png",
   ),
   "gray_wall_banner": MinecraftMaterial(
     name: "Gray Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/gray_wall_banner.png",
   ),
   "light_gray_wall_banner": MinecraftMaterial(
     name: "Light Gray Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/light_gray_wall_banner.png",
   ),
   "cyan_wall_banner": MinecraftMaterial(
     name: "Cyan Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/cyan_wall_banner.png",
   ),
   "purple_wall_banner": MinecraftMaterial(
     name: "Purple Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/purple_wall_banner.png",
   ),
   "blue_wall_banner": MinecraftMaterial(
     name: "Blue Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/blue_wall_banner.png",
   ),
   "brown_wall_banner": MinecraftMaterial(
     name: "Brown Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/brown_wall_banner.png",
   ),
   "green_wall_banner": MinecraftMaterial(
     name: "Green Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/green_wall_banner.png",
   ),
   "red_wall_banner": MinecraftMaterial(
     name: "Red Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/red_wall_banner.png",
   ),
   "black_wall_banner": MinecraftMaterial(
     name: "Black Wall Banner",
-    properties: [MaterialProperty.block, MaterialProperty.solid, MaterialProperty.flammable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.solid,
+      MaterialProperty.flammable,
+    ],
     icon: "assets/materials/black_wall_banner.png",
   ),
   "beetroots": MinecraftMaterial(
@@ -8151,7 +10705,11 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "sweet_berry_bush": MinecraftMaterial(
     name: "Sweet Berry Bush",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/sweet_berry_bush.webp",
   ),
   "weeping_vines_plant": MinecraftMaterial(
@@ -8166,12 +10724,20 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "crimson_wall_sign": MinecraftMaterial(
     name: "Crimson Wall Sign",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/crimson_wall_sign.png",
   ),
   "warped_wall_sign": MinecraftMaterial(
     name: "Warped Wall Sign",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/warped_wall_sign.png",
   ),
   "potted_crimson_fungus": MinecraftMaterial(
@@ -8196,87 +10762,155 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "candle_cake": MinecraftMaterial(
     name: "Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/candle_cake.webp",
   ),
   "white_candle_cake": MinecraftMaterial(
     name: "White Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/white_candle_cake.webp",
   ),
   "orange_candle_cake": MinecraftMaterial(
     name: "Orange Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/orange_candle_cake.webp",
   ),
   "magenta_candle_cake": MinecraftMaterial(
     name: "Magenta Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/magenta_candle_cake.webp",
   ),
   "light_blue_candle_cake": MinecraftMaterial(
     name: "Light Blue Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_blue_candle_cake.webp",
   ),
   "yellow_candle_cake": MinecraftMaterial(
     name: "Yellow Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/yellow_candle_cake.png",
   ),
   "lime_candle_cake": MinecraftMaterial(
     name: "Lime Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/lime_candle_cake.webp",
   ),
   "pink_candle_cake": MinecraftMaterial(
     name: "Pink Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/pink_candle_cake.webp",
   ),
   "gray_candle_cake": MinecraftMaterial(
     name: "Gray Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/gray_candle_cake.webp",
   ),
   "light_gray_candle_cake": MinecraftMaterial(
     name: "Light Gray Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/light_gray_candle_cake.webp",
   ),
   "cyan_candle_cake": MinecraftMaterial(
     name: "Cyan Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/cyan_candle_cake.webp",
   ),
   "purple_candle_cake": MinecraftMaterial(
     name: "Purple Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/purple_candle_cake.webp",
   ),
   "blue_candle_cake": MinecraftMaterial(
     name: "Blue Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/blue_candle_cake.webp",
   ),
   "brown_candle_cake": MinecraftMaterial(
     name: "Brown Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/brown_candle_cake.webp",
   ),
   "green_candle_cake": MinecraftMaterial(
     name: "Green Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/green_candle_cake.webp",
   ),
   "red_candle_cake": MinecraftMaterial(
     name: "Red Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/red_candle_cake.webp",
   ),
   "black_candle_cake": MinecraftMaterial(
     name: "Black Candle Cake",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.solid],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.solid,
+    ],
     icon: "assets/materials/black_candle_cake.webp",
   ),
   "powder_snow": MinecraftMaterial(
@@ -8286,12 +10920,20 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "cave_vines": MinecraftMaterial(
     name: "Cave Vines",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/cave_vines.webp",
   ),
   "cave_vines_plant": MinecraftMaterial(
     name: "Cave Vines Plant",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.burnable],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.burnable,
+    ],
     icon: "assets/materials/cave_vines_plant.webp",
   ),
   "big_dripleaf_stem": MinecraftMaterial(
@@ -8301,12 +10943,20 @@ const Map<String, MinecraftMaterial> materials = {
   ),
   "potted_azalea_bush": MinecraftMaterial(
     name: "Potted Azalea Bush",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_azalea_bush.webp",
   ),
   "potted_flowering_azalea_bush": MinecraftMaterial(
     name: "Potted Flowering Azalea Bush",
-    properties: [MaterialProperty.block, MaterialProperty.intractable, MaterialProperty.transparent],
+    properties: [
+      MaterialProperty.block,
+      MaterialProperty.intractable,
+      MaterialProperty.transparent,
+    ],
     icon: "assets/materials/potted_flowering_azalea_bush.png",
   ),
 };
@@ -8319,5 +10969,6 @@ class MinecraftMaterial with _$MinecraftMaterial {
     required String icon,
   }) = _MinecraftMaterial;
 
-  factory MinecraftMaterial.fromJson(Map<String, dynamic> json) => _$MinecraftMaterialFromJson(json);
+  factory MinecraftMaterial.fromJson(Map<String, dynamic> json) =>
+      _$MinecraftMaterialFromJson(json);
 }

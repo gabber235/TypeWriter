@@ -1,7 +1,5 @@
 package me.gabber235.typewriter.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import kotlinx.coroutines.withContext
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.*
@@ -11,15 +9,19 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 
 interface CinematicCommandEntry : CinematicEntry {
     val segments: List<CommandSegment>
 }
 
-@Entry("cinematic_console_command", "Runs command as the console at a specific frame.", Colors.YELLOW, Icons.TERMINAL)
+@Entry(
+    "cinematic_console_command",
+    "Runs command as the console at a specific frame.",
+    Colors.YELLOW,
+    "mingcute:terminal-fill"
+)
 /**
  * The `Cinematic Console Command` entry runs a command as the console at a specific frame.
  *
@@ -31,7 +33,7 @@ class CinematicConsoleCommandEntry(
     override val id: String,
     override val name: String,
     override val criteria: List<Criteria>,
-    @Segments(Colors.YELLOW, Icons.TERMINAL)
+    @Segments(Colors.YELLOW, "mingcute:terminal-fill")
     @InnerMax(Max(1))
     // Run commands on different segments
     override val segments: List<CommandSegment>,
@@ -46,7 +48,12 @@ class CinematicConsoleCommandEntry(
     }
 }
 
-@Entry("cinematic_player_command", "Runs command as the player at a specific frame.", Colors.YELLOW, Icons.TERMINAL)
+@Entry(
+    "cinematic_player_command",
+    "Runs command as the player at a specific frame.",
+    Colors.YELLOW,
+    "mingcute:terminal-fill"
+)
 /**
  * The `Cinematic Player Command` entry runs a command as the player at a specific frame.
  *
@@ -58,7 +65,7 @@ class CinematicPlayerCommandEntry(
     override val id: String,
     override val name: String,
     override val criteria: List<Criteria>,
-    @Segments(Colors.YELLOW, Icons.TERMINAL)
+    @Segments(Colors.YELLOW, "mingcute:terminal-fill")
     @InnerMax(Max(1))
     // Run commands on different segments
     override val segments: List<CommandSegment>,
@@ -92,7 +99,7 @@ class CommandAction(
 
     override suspend fun startSegment(segment: CommandSegment) {
         super.startSegment(segment)
-        withContext(plugin.minecraftDispatcher) {
+        SYNC.switchContext {
             val commands = segment.command.parsePlaceholders(player).lines()
             commands.forEach(run)
         }

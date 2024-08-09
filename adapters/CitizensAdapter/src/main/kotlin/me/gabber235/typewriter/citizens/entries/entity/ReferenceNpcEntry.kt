@@ -5,6 +5,7 @@ import lirand.api.extensions.other.set
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.Tags
+import me.gabber235.typewriter.adapters.Unsupported
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.utils.*
@@ -13,7 +14,7 @@ import kotlin.jvm.optionals.getOrDefault
 import net.kyori.adventure.sound.Sound as AdventureSound
 
 @Tags("reference_npc")
-@Entry("reference_npc", "When the npc is not managed by TypeWriter", Colors.ORANGE, Icons.PERSON)
+@Entry("reference_npc", "When the npc is not managed by TypeWriter", Colors.ORANGE, "fa-solid:user-tie")
 /**
  * An identifier that references an NPC in the Citizens plugin. But does not manage the NPC.
  *
@@ -31,7 +32,7 @@ class ReferenceNpcEntry(
 ) : CitizensNpc {
     override fun getEmitter(): AdventureSound.Emitter {
         val npc = CitizensAPI.getNPCRegistry().getById(npcId) ?: return AdventureSound.Emitter.self()
-        return npc.entity
+        return npc.entity ?: AdventureSound.Emitter.self()
     }
 }
 

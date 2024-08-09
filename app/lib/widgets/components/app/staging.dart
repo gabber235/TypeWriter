@@ -2,12 +2,13 @@ import "package:dotted_border/dotted_border.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:rive/rive.dart";
 import "package:typewriter/hooks/rive_statemachines.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/staging.dart";
+import "package:typewriter/utils/icons.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 class StagingIndicator extends HookConsumerWidget {
   const StagingIndicator({super.key});
@@ -20,7 +21,8 @@ class StagingIndicator extends HookConsumerWidget {
       children: [
         DottedBorder(
           borderType: BorderType.RRect,
-          color: state == StagingState.staging ? state.color : Colors.transparent,
+          color:
+              state == StagingState.staging ? state.color : Colors.transparent,
           strokeWidth: 2,
           dashPattern: const [5, 5],
           radius: const Radius.circular(8),
@@ -40,7 +42,8 @@ class StagingIndicator extends HookConsumerWidget {
             ],
           ),
         ),
-        if (state == StagingState.staging) const Positioned.fill(child: _PublishButton()),
+        if (state == StagingState.staging)
+          const Positioned.fill(child: _PublishButton()),
       ],
     );
   }
@@ -74,7 +77,7 @@ class _Icon extends HookConsumerWidget {
 }
 
 class _PublishButton extends HookConsumerWidget {
-  const _PublishButton({super.key});
+  const _PublishButton();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -101,8 +104,8 @@ class _PublishButton extends HookConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        FontAwesomeIcons.cloudArrowUp,
+                      Iconify(
+                        TWIcons.cloudUpload,
                         size: 16,
                       ),
                       SizedBox(width: 12),

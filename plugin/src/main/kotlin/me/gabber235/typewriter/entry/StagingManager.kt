@@ -1,8 +1,6 @@
 package me.gabber235.typewriter.entry
 
 import com.google.gson.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.entry.StagingState.*
 import me.gabber235.typewriter.events.PublishedBookEvent
@@ -10,10 +8,13 @@ import me.gabber235.typewriter.events.StagingChangeEvent
 import me.gabber235.typewriter.events.TypewriterReloadEvent
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.ui.ClientSynchronizer
 import me.gabber235.typewriter.utils.*
+import me.gabber235.typewriter.utils.ThreadType.DISPATCHERS_ASYNC
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
@@ -27,6 +28,7 @@ interface StagingManager {
     fun renamePage(oldName: String, newName: String): Result<String>
     fun changePageValue(pageId: String, path: String, value: JsonElement): Result<String>
     fun deletePage(name: String): Result<String>
+    fun moveEntry(entryId: String, fromPage: String, toPage: String): Result<String>
     fun createEntry(pageId: String, data: JsonObject): Result<String>
     fun updateEntryField(pageId: String, entryId: String, path: String, value: JsonElement): Result<String>
     fun updateEntry(pageId: String, data: JsonObject): Result<String>
@@ -147,6 +149,20 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return ok("Successfully deleted page with name $name")
     }
 
+    override fun moveEntry(entryId: String, fromPage: String, toPage: String): Result<String> {
+        val from = pages[fromPage] ?: return failure("Page '$fromPage' does not exist")
+        val to = pages[toPage] ?: return failure("Page '$toPage' does not exist")
+
+        val entry = from["entries"].asJsonArray.find { it.asJsonObject["id"].asString == entryId }
+            ?: return failure("Entry does not exist in page '$fromPage'")
+
+        from["entries"].asJsonArray.remove(entry)
+        to["entries"].asJsonArray.add(entry)
+
+        autoSaver()
+        return ok("Successfully moved entry")
+    }
+
     override fun createEntry(pageId: String, data: JsonObject): Result<String> {
         val page = getPage(pageId) onFail { return it }
         val entries = page["entries"] as? JsonArray ?: JsonArray()
@@ -253,7 +269,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     override suspend fun publish(): Result<String> {
         if (stagingState != STAGING) return failure("Can only publish when in staging")
         autoSaver.cancel()
-        return withContext(Dispatchers.IO) {
+        return DISPATCHERS_ASYNC.switchContext {
             stagingState = PUBLISHING
 
             try {
@@ -330,4 +346,25 @@ enum class StagingState {
     PUBLISHING,
     STAGING,
     PUBLISHED
+}
+
+fun Ref<out Entry>.fieldValue(path: String, value: Any) {
+    val stagingManager = KoinJavaComponent.get<StagingManager>(StagingManager::class.java)
+    val gson = KoinJavaComponent.get<Gson>(Gson::class.java, named("entryParser"))
+
+    val pageId = pageId
+    if (pageId == null) {
+        logger.warning("No pageId found for $this. Did you forgot to publish?")
+        return
+    }
+
+    val json = gson.toJsonTree(value)
+    val result = stagingManager.updateEntryField(pageId, id, path, json)
+    if (result.isFailure) {
+        logger.warning("Failed to update field: ${result.exceptionOrNull()}")
+        return
+    }
+
+    val clientSynchronizer = KoinJavaComponent.get<ClientSynchronizer>(ClientSynchronizer::class.java)
+    clientSynchronizer.sendEntryFieldUpdate(pageId, id, path, json)
 }

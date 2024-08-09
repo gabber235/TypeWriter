@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.jvm.optionals.getOrDefault
 
-@Entry("play_sound", "Play sound at player, or location", Colors.RED, Icons.MUSIC)
+@Entry("play_sound", "Play sound at player, or location", Colors.RED, "fa6-solid:volume-high")
 /**
  * The `Play Sound Action` is an action that plays a sound for the player. This action provides you with the ability to play any sound that is available in Minecraft, at a specified location.
  *
@@ -26,7 +26,7 @@ class PlaySoundActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The sound to play.")
     val sound: Sound = Sound.EMPTY,
 ) : ActionEntry {

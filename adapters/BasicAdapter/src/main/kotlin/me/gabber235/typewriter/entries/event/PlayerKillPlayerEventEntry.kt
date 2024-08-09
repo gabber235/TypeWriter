@@ -2,16 +2,13 @@ package me.gabber235.typewriter.entries.event
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.adapters.modifiers.Triggers
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDeathEvent
 
-@Entry("on_player_kill_player", "When a player kills a player", Colors.YELLOW, Icons.SKULL)
+@Entry("on_player_kill_player", "When a player kills a player", Colors.YELLOW, "fa6-solid:skull")
 /**
  * The `Player Kill Player Event` is triggered when a player kills another player. If you want to detect when a player kills some thing else, use the [`Player Kill Entity Event`](on_player_kill_entity) instead.
  *
@@ -22,12 +19,10 @@ import org.bukkit.event.entity.EntityDeathEvent
 class PlayerKillPlayerEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
-    @Triggers
-    @EntryIdentifier(TriggerableEntry::class)
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The triggers to be executed for the player who was killed.")
     // The entries connected tho this field will be triggered for the player who was killed.
-    val killedTriggers: List<String> = emptyList(),
+    val killedTriggers: List<Ref<TriggerableEntry>> = emptyList(),
 ) : EventEntry
 
 

@@ -24,6 +24,6 @@ jobs:
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: main
+          branch: develop
           # As we're deploying changes to our markdown files, this needs to be . to push the root directory back to the repository.
           folder: '.'

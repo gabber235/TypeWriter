@@ -1,39 +1,40 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
-/// Creates a [MaterialStatesController] that will be disposed automatically.
+/// Creates a [WidgetStatesController] that will be disposed automatically.
 ///
 /// See also:
-/// - [MaterialStatesController]
-MaterialStatesController useStatesController({
+/// - [WidgetStatesController]
+WidgetStatesController useStatesController({
   List<Object?>? keys,
-  Set<MaterialState>? value,
-}) => use(
-    _StatesControllerHook(
-      keys: keys,
-      value: value,
-    ),
-  );
+  Set<WidgetState>? value,
+}) =>
+    use(
+      _StatesControllerHook(
+        keys: keys,
+        value: value,
+      ),
+    );
 
-class _StatesControllerHook extends Hook<MaterialStatesController> {
+class _StatesControllerHook extends Hook<WidgetStatesController> {
   const _StatesControllerHook({
     super.keys,
     this.value,
   }) : super();
 
-  final Set<MaterialState>? value;
+  final Set<WidgetState>? value;
 
   @override
-  HookState<MaterialStatesController, Hook<MaterialStatesController>>
+  HookState<WidgetStatesController, Hook<WidgetStatesController>>
       createState() => _StatesControllerHookState();
 }
 
 class _StatesControllerHookState
-    extends HookState<MaterialStatesController, _StatesControllerHook> {
-  late final controller = MaterialStatesController(hook.value);
+    extends HookState<WidgetStatesController, _StatesControllerHook> {
+  late final controller = WidgetStatesController(hook.value);
 
   @override
-  MaterialStatesController build(BuildContext context) => controller;
+  WidgetStatesController build(BuildContext context) => controller;
 
   @override
   void dispose() => controller.dispose();

@@ -11,6 +11,7 @@ pub struct EntryClass {
     pub comment: Option<String>,
     pub entry_types: Vec<String>,
     pub fields: Vec<EntryField>,
+    pub annotations: Vec<FieldAnnotation>,
 }
 
 impl EntryClass {
@@ -79,8 +80,27 @@ impl FromStr for EntryClass {
     type Err = EntryParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let annotation = get_annotation(s)?;
-        let (name, description) = parse_annotation(&annotation)?;
+        let annotations = get_annotations(s)?;
+
+        if annotations.len() == 0 {
+            return Err(EntryParseError::NotEntryClass);
+        }
+
+        let Some(annotation) = annotations
+            .iter()
+            .find(|annotation| annotation.name == "Entry")
+        else {
+            return Err(EntryParseError::NotEntryClass);
+        };
+
+        if annotation.arguments.len() < 2 {
+            return Err(EntryParseError::AnnotationParse(
+                "Expected at least 2 arguments for Entry annotation".to_string(),
+            ));
+        }
+
+        let name = annotation.arguments[0].clone();
+        let description = annotation.arguments[1].clone();
 
         return Ok(EntryClass {
             name,
@@ -89,8 +109,20 @@ impl FromStr for EntryClass {
             comment: parse_comment(s).ok(),
             entry_types: parse_entry_types(s)?,
             fields: parse_entry_field(s)?,
+            annotations,
         });
     }
+}
+
+fn get_annotations(code: &str) -> Result<Vec<FieldAnnotation>, EntryParseError> {
+    let annotation_code: QueryResult = query(&code, "(modifiers (annotation) @annotation)")?;
+
+    annotation_code
+        .captures
+        .iter()
+        .map(|cap| cap.code.clone())
+        .map(|code| code.parse())
+        .collect()
 }
 
 fn get_annotation(code: &str) -> Result<String, EntryParseError> {

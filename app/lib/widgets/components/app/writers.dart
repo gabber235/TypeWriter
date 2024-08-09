@@ -18,7 +18,7 @@ class GlobalWriters extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final writers = ref.watch(writersProvider);
 
-    return Writers(writers: writers);
+    return Writers(writers: writers, direction: direction);
   }
 }
 
@@ -31,8 +31,14 @@ class WritersIndicator extends HookConsumerWidget {
     this.offset,
     this.enabled = true,
     super.key,
-  })  : assert(child != null || builder != null),
-        assert(!(shift != null && offset != null));
+  })  : assert(
+          child != null || builder != null,
+          "Either child or builder must be provided",
+        ),
+        assert(
+          !(shift != null && offset != null),
+          "Only one of shift or offset can be provided",
+        );
 
   final ProviderBase<List<Writer>> provider;
   final Widget? child;
@@ -152,8 +158,12 @@ class WriterIcon extends HookWidget {
 
   Widget _icon(Color color) {
     if (writer.iconUrl == null) {
+      // We want to remove the opacity from the color which is the first two characters
+      final colorValue = color.value & 0xFFFFFF;
+      final url =
+          "https://api.dicebear.com/8.x/adventurer-neutral/svg?backgroundColor=${colorValue.toRadixString(16)}&seed=${writer.id}";
       return SvgPicture.network(
-        "https://avatars.dicebear.com/api/adventurer-neutral/${writer.id}.svg?b=%23${color.value.toRadixString(16)}",
+        url,
         height: 25,
       );
     }

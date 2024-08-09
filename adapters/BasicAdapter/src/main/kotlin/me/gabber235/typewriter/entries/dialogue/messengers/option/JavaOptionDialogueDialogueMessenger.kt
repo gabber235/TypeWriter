@@ -5,22 +5,25 @@ import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entries.dialogue.Option
 import me.gabber235.typewriter.entries.dialogue.OptionDialogueEntry
 import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.dialogue.confirmationKey
+import me.gabber235.typewriter.entry.dialogue.typingDurationType
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.entry.matches
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.asMini
-import me.gabber235.typewriter.utils.asMiniWithResolvers
+import me.gabber235.typewriter.utils.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerItemHeldEvent
-import kotlin.math.max
+import java.time.Duration
 import kotlin.math.min
 
 val optionFormat: String by snippet(
@@ -56,49 +59,56 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
     }
 
+    private val typeDuration = entry.duration
+
     private var selectedIndex = 0
     private val selected get() = usableOptions.getOrNull(selectedIndex)
 
     private var usableOptions: List<Option> = emptyList()
     private var speakerDisplayName = ""
+    private var parsedText = ""
+    private var lastPlayTime = Duration.ZERO
 
-    override val triggers: List<String>
+    override val triggers: List<Ref<out TriggerableEntry>>
         get() = entry.triggers + (selected?.triggers ?: emptyList())
 
     override val modifiers: List<Modifier>
         get() = entry.modifiers + (selected?.modifiers ?: emptyList())
 
     override fun init() {
-        super.init()
         usableOptions =
-            entry.options.filter { it.criteria.matches(player.uniqueId) }
+            entry.options.filter { it.criteria.matches(player) }
 
-        speakerDisplayName = entry.speakerDisplayName
+        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
+        parsedText = entry.text.parsePlaceholders(player)
 
         if (usableOptions.isEmpty()) {
             return
         }
 
-        confirmationKey.listen(listener, player.uniqueId) {
+        super.init()
+        confirmationKey.listen(this, player.uniqueId) {
             state = MessengerState.FINISHED
-        }
-
-        listen<PlayerItemHeldEvent> { event ->
-            if (event.player.uniqueId == player.uniqueId) {
-                val curSlot = event.previousSlot
-                val newSlot = event.newSlot
-                val dif = loopingDistance(curSlot, newSlot, 8)
-                val index = selectedIndex
-                event.isCancelled = true
-                var newIndex = (index + dif) % usableOptions.size
-                while (newIndex < 0) newIndex += usableOptions.size
-                selectedIndex = newIndex
-                tick(0)
-            }
         }
     }
 
-    override fun tick(cycle: Int) {
+    @EventHandler
+    private fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
+        if (event.player.uniqueId != player.uniqueId) return
+        val curSlot = event.previousSlot
+        val newSlot = event.newSlot
+        val dif = loopingDistance(curSlot, newSlot, 8)
+        val index = selectedIndex
+        event.isCancelled = true
+        var newIndex = (index + dif) % usableOptions.size
+        while (newIndex < 0) newIndex += usableOptions.size
+        selectedIndex = newIndex
+        displayMessage(lastPlayTime)
+    }
+
+    override fun tick(playTime: Duration) {
+        super.tick(playTime)
+        lastPlayTime = playTime
         if (state != MessengerState.RUNNING) return
 
         // When there are no options, just go to the next dialogue
@@ -107,14 +117,28 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             return
         }
 
-        if (cycle % 100 > 0) {
+        val rawText = parsedText.stripped()
+        val totalDuration = typingDurationType.totalDuration(rawText, typeDuration)
+        if (playTime.toTicks() % 100 > 0 && playTime > totalDuration * 1.1) {
             // Only update periodically to avoid spamming the player
             return
         }
+        displayMessage(playTime, rawText)
+    }
+
+    private fun displayMessage(playTime: Duration, rawMessage: String? = null) {
+        val rawText = rawMessage ?: parsedText.stripped()
+
+        val typePercentage =
+            if (typeDuration.isZero) {
+                1.0
+            } else typingDurationType.calculatePercentage(playTime, typeDuration, rawText)
+
+        val text = parsedText.asMini().splitPercentage(typePercentage)
 
         val message = optionFormat.asMiniWithResolvers(
-            Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(player)),
-            Placeholder.parsed("text", entry.text.parsePlaceholders(player)),
+            Placeholder.parsed("speaker", speakerDisplayName),
+            Placeholder.component("text", text),
             Placeholder.component("options", formatOptions()),
         )
 
@@ -127,11 +151,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
         val lines = mutableListOf<Component>()
 
-        for (i in 0..3) {
-            if (i >= around.size) {
-                lines.add("\n".asMini())
-                continue
-            }
+        for (i in 0 until min(4, around.size)) {
             val option = around[i]
             val isSelected = selected == option
 
@@ -148,25 +168,5 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         }
 
         return Component.join(JoinConfiguration.noSeparators(), lines)
-    }
-
-
-    private fun loopingDistance(x: Int, y: Int, n: Int): Int {
-        val max = max(x, y)
-        val min = min(x, y)
-        val first = max - min
-        val second = n - (max - min - 1)
-        return if (x < y) {
-            if (first < second) first else -second
-        } else {
-            if (first < second) -first else second
-        }
-    }
-
-    private fun <T> List<T>.around(index: Int, before: Int = 1, after: Int = 1): List<T> {
-        val total = before + after + 1
-        return if (index <= before) subList(0, min(size, total))
-        else if (size - index <= after) subList(max(0, size - total), size)
-        else subList(index - before, index + after + 1)
     }
 }

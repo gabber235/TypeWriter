@@ -1,29 +1,29 @@
 package me.ahdg6.typewriter.mythicmobs.entries.cinematic
 
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import io.lumine.mythic.api.mobs.GenericCaster
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
 import io.lumine.mythic.core.mobs.ActiveMob
 import io.lumine.mythic.core.skills.SkillMetadataImpl
 import io.lumine.mythic.core.skills.SkillTriggers
-import kotlinx.coroutines.withContext
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
+import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.adapters.modifiers.Segments
+import me.gabber235.typewriter.adapters.modifiers.WithRotation
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.cinematic.SimpleCinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
-import me.gabber235.typewriter.plugin
-import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-@Entry("mythicmob_cinematic", "Spawn a MythicMob during a cinematic", Colors.PURPLE, Icons.DRAGON)
+@Entry("mythicmob_cinematic", "Spawn a MythicMob during a cinematic", Colors.PURPLE, "fa6-solid:dragon")
 /**
  * The `Spawn MythicMob Cinematic` cinematic entry spawns a MythicMob during a cinematic.
  *
@@ -35,7 +35,7 @@ class MythicMobCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(Colors.PURPLE, Icons.DRAGON)
+    @Segments(Colors.PURPLE, "fa6-solid:dragon")
     val segments: List<MythicMobSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
@@ -47,8 +47,10 @@ data class MythicMobSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @Help("The name of the mob to spawn")
+    @Placeholder
     val mobName: String = "",
     @Help("The location to spawn the mob at")
+    @WithRotation
     val location: Location = Location(null, 0.0, 0.0, 0.0),
 ) : Segment
 
@@ -63,8 +65,8 @@ class MobCinematicAction(
     override suspend fun startSegment(segment: MythicMobSegment) {
         super.startSegment(segment)
 
-        withContext(plugin.minecraftDispatcher) {
-            val mob = MythicBukkit.inst().mobManager.spawnMob(segment.mobName, segment.location)
+        SYNC.switchContext {
+            val mob = MythicBukkit.inst().mobManager.spawnMob(segment.mobName.parsePlaceholders(player), segment.location)
             this@MobCinematicAction.mob = mob
             val hideMechanic = MythicBukkit.inst().skillManager.getMechanic("hide")
 

@@ -19,7 +19,8 @@ which could be used as an audit log for your admins.
 
 ## Fields
 
-<fields.TriggersField />
+<fields.EntryField name='Triggers' required multiple>
+</fields.EntryField>
 <fields.EntryField name='Command' required regex>
      The command to listen for.
 This can be partial, so if you wanted to listen for any warp command,
@@ -32,4 +33,7 @@ wanted to listen if the player warps to spawn, you could use
 Do not include the <code>/</code> at the start of the command.
 This will be added automatically.
 </Admonition>
+</fields.EntryField>
+<fields.EntryField name='Cancel' required>
+     Cancel the event when triggered
 </fields.EntryField>

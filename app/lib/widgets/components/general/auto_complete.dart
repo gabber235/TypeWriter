@@ -19,7 +19,7 @@ class AutoCompleteField extends StatelessWidget {
 
   final String text;
   final String hintText;
-  final IconData? icon;
+  final String? icon;
 
   final Iterable<String> Function(String) onQuery;
   final Function(String) onChanged;
@@ -74,7 +74,7 @@ class _TextField extends HookConsumerWidget {
 
   final Function(String value) onChanged;
   final List<TextInputFormatter>? inputFormatters;
-  final IconData? icon;
+  final String? icon;
   final String text;
   final String hintText;
 

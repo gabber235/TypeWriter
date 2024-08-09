@@ -1,12 +1,14 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/adapter.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
+import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
@@ -32,7 +34,7 @@ class MapEditor extends HookConsumerWidget {
   final String path;
   final MapField field;
 
-  void _addNew(WidgetRef ref, Map<String, dynamic> value) {
+  void _addNew(PassingRef ref, Map<String, dynamic> value) {
     final key = field.key is EnumField
         ? (field.key as EnumField)
             .values
@@ -41,7 +43,7 @@ class MapEditor extends HookConsumerWidget {
     if (key == null) return;
     final val = field.value.defaultValue;
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
-      ref.passing,
+      ref,
       path,
       {
         ...value.map(MapEntry.new),
@@ -52,6 +54,7 @@ class MapEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ignore: provider_parameters
     final rawValue = ref.watch(fieldValueProvider(path, {}));
 
     // Since the map will be of the form {dynamic: dynamic}, we
@@ -77,7 +80,7 @@ class MapEditor extends HookConsumerWidget {
       actions: [
         AddHeaderAction(
           path: path,
-          onAdd: () => _addNew(ref, value),
+          onAdd: () => _addNew(ref.passing, value),
         ),
       ],
       child: Column(
@@ -133,15 +136,15 @@ class _MapEntry extends HookConsumerWidget {
     String key,
   ) async {
     if (_alreadyContainsKey(key)) {
-      showConfirmationDialogue(
+      final confirm = await showConfirmationDialogue(
         context: context,
         title: "Override key?",
         content:
             "The key '$key' already exists.\nThis will delete all the data from the existing key.",
-        confirmIcon: FontAwesomeIcons.triangleExclamation,
+        confirmIcon: TWIcons.warning,
         onConfirm: () => _changeKeyField(ref, key),
       );
-      return;
+      if (!confirm) return;
     }
     _changeKeyField(ref, key);
   }
@@ -181,6 +184,17 @@ class _MapEntry extends HookConsumerWidget {
       );
     }
 
+    if (field.key.hasModifier("entry")) {
+      return Flexible(
+        child: _EntryKey(
+          path: path,
+          field: field.key,
+          value: entry.key,
+          onChanged: (value) => _changeKey(context, ref.passing, value),
+        ),
+      );
+    }
+
     return Text(name);
   }
 
@@ -193,11 +207,11 @@ class _MapEntry extends HookConsumerWidget {
         children: [
           Row(
             children: [
-              const Icon(FontAwesomeIcons.barsStaggered, size: 12),
+              const Iconify(TWIcons.barsStaggered, size: 12),
               const SizedBox(width: 8),
               _keyEditor(context, ref, name),
               IconButton(
-                icon: const Icon(FontAwesomeIcons.trash, size: 12),
+                icon: const Iconify(TWIcons.trash, size: 12),
                 color: Theme.of(context).colorScheme.error,
                 onPressed: () => _delete(ref.passing, map, entry.key),
               ),
@@ -236,7 +250,7 @@ class _StringKey extends HookConsumerWidget {
       path: path,
       field: field,
       forcedValue: value,
-      icon: FontAwesomeIcons.key,
+      icon: TWIcons.key,
       hint: "Enter a key",
       onChanged: onChanged,
     );
@@ -261,7 +275,30 @@ class _EnumKey extends HookConsumerWidget {
       path: path,
       field: field,
       forcedValue: value,
-      icon: FontAwesomeIcons.key,
+      icon: TWIcons.key,
+      onChanged: onChanged,
+    );
+  }
+}
+
+class _EntryKey extends HookConsumerWidget {
+  const _EntryKey({
+    required this.path,
+    required this.field,
+    required this.value,
+    required this.onChanged,
+  });
+  final String path;
+  final FieldInfo field;
+  final String value;
+  final Function(String) onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return EntrySelectorEditor(
+      path: path,
+      field: field,
+      forcedValue: value,
       onChanged: onChanged,
     );
   }

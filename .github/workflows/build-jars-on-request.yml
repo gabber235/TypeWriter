@@ -26,6 +26,12 @@ jobs:
     with:
       adapter: CombatLogXAdapter
 
+  build-adapter-entity:
+    name: Build EntityAdapter
+    uses: ./.github/workflows/build-adapter.yml
+    with:
+      adapter: EntityAdapter
+
   build-adapter-mythic-mobs:
     name: Build MythicMobs Adapter
     uses: ./.github/workflows/build-adapter.yml

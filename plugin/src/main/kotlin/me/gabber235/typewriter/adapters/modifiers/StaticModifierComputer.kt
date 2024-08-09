@@ -1,6 +1,7 @@
 package me.gabber235.typewriter.adapters.modifiers
 
 import me.gabber235.typewriter.adapters.*
+import me.gabber235.typewriter.utils.ok
 import java.lang.reflect.Field
 import kotlin.reflect.full.findAnnotations
 import kotlin.reflect.full.findParameterByName
@@ -27,15 +28,15 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
     val annotationClass: Class<A>
     val innerAnnotationFinders: List<InnerAnnotationFinder<A, Annotation>> get() = emptyList()
 
-    fun computeModifier(annotation: A, info: FieldInfo): FieldModifier?
+    fun computeModifier(annotation: A, info: FieldInfo): Result<FieldModifier?>
 
-    override fun compute(field: Field, info: FieldInfo): FieldModifier? {
+    override fun compute(field: Field, info: FieldInfo): Result<FieldModifier?> {
         findAnnotation(field, annotationClass)?.let { annotation ->
             return computeModifier(annotation, info)
         }
 
         if (info !is ListField && info !is MapField && info !is ObjectField) {
-            return null
+            return ok(null)
         }
 
         innerAnnotationFinders.forEach { finder ->
@@ -43,19 +44,26 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
             val innerAnnotation = finder.transformer(annotation)
 
             if (info is ListField && finder.types.contains(InnerModifierType.LIST)) {
-                computeModifier(innerAnnotation, info.type)?.let { return FieldModifier.InnerListModifier(it) }
+                computeModifier(innerAnnotation, info.type).onSuccess { modifier ->
+                    return ok(modifier?.let { FieldModifier.InnerListModifier(it) })
+                }
+                    .onFailure { return ok(null) }
             }
             if (info is MapField && finder.types.contains(InnerModifierType.MAP)) {
-                val keyModifier = computeModifier(innerAnnotation, info.key)
-                val valueModifier = computeModifier(innerAnnotation, info.value)
+                val keyModifier = computeModifier(innerAnnotation, info.key).onFailure { return ok(null) }.getOrNull()
+                val valueModifier =
+                    computeModifier(innerAnnotation, info.value).onFailure { return ok(null) }.getOrNull()
 
-                return FieldModifier.InnerMapModifier(keyModifier, valueModifier)
+                return ok(FieldModifier.InnerMapModifier(keyModifier, valueModifier))
             }
             if (info is ObjectField && finder.types.contains(InnerModifierType.OBJECT)) {
-                computeModifier(innerAnnotation, info)?.let { return FieldModifier.InnerCustomModifier(it) }
+                computeModifier(innerAnnotation, info).onSuccess { modifier ->
+                    return ok(modifier?.let { FieldModifier.InnerCustomModifier(it) })
+                }
+                    .onFailure { return ok(null) }
             }
         }
-        return null
+        return ok(null)
     }
 
     fun <T : Annotation> findAnnotation(field: Field, annotationClass: Class<T>): T? {
@@ -85,7 +93,8 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
      */
     fun innerComputeForList(annotation: A, info: FieldInfo): FieldModifier? {
         if (info !is ListField) return null
-        return computeModifier(annotation, info.type)?.let { FieldModifier.InnerListModifier(it) }
+        val modifier = computeModifier(annotation, info.type).getOrNull() ?: return null
+        return FieldModifier.InnerListModifier(modifier)
     }
 
     /**
@@ -97,8 +106,8 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
      */
     fun innerComputeForMap(annotation: A, info: FieldInfo): FieldModifier? {
         if (info !is MapField) return null
-        val keyModifier = computeModifier(annotation, info.key)
-        val valueModifier = computeModifier(annotation, info.value)
+        val keyModifier = computeModifier(annotation, info.key).getOrNull()
+        val valueModifier = computeModifier(annotation, info.value).getOrNull()
 
         if (keyModifier == null && valueModifier == null) return null
         return FieldModifier.InnerMapModifier(keyModifier, valueModifier)
@@ -114,7 +123,8 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
     fun innerComputeForCustom(annotation: A, info: FieldInfo): FieldModifier? {
         if (info !is CustomField) return null
         val customInfo = info.fieldInfo ?: return null
-        return computeModifier(annotation, customInfo)?.let { FieldModifier.InnerCustomModifier(it) }
+        val modifier = computeModifier(annotation, customInfo).getOrNull() ?: return null
+        return FieldModifier.InnerCustomModifier(modifier)
     }
 
     /**
@@ -125,9 +135,12 @@ interface StaticModifierComputer<A : Annotation> : ModifierComputer {
      * @param info The info of the field
      */
     fun innerCompute(annotation: A, info: FieldInfo): FieldModifier? {
-        return innerComputeForList(annotation, info)
-            ?: innerComputeForMap(annotation, info)
-            ?: innerComputeForCustom(annotation, info)
+        return when (info) {
+            is ListField -> innerComputeForList(annotation, info)
+            is MapField -> innerComputeForMap(annotation, info)
+            is CustomField -> innerComputeForCustom(annotation, info)
+            else -> null
+        }
     }
 
 }

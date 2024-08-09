@@ -1,26 +1,17 @@
+import CodeSnippet from "@site/src/components/CodeSnippet";
+
 # ActionEntry
 
 The `ActionEntry` defines an action to take. When it is triggered, it will run it's `execute` method.
 After which it will trigger all the next entries in the chain.
 
-## Usage
+:::danger Immutable Entry
+It is important to stress that the entry must be immutable.
+**It cannot have any mutable state.**
+:::
 
-```kotlin
-@Entry("example_action", "An example action entry.", Colors.RED, Icons.PERSON_RUNNING)
-class ExampleActionEntry(
-    override val id: String = "",
-    override val name: String = "",
-    override val criteria: List<Criteria>,
-    override val modifiers: List<Modifier>,
-    override val triggers: List<String> = emptyList(),
-): ActionEntry {
-    override fun execute(player: Player) {
-        // Do something
-        super.execute(player) // This will apply all the modifiers.
-    }
-}
-```
+## Usage
+<CodeSnippet tag="action_entry" />
 
 Typewriter will automatically trigger the next entries in the chain after the `execute` method is called.
-If you want to call the next entries in the chain manually, you can should the `CustomTriggeringActionEntry`.
-
+If you want to call the next entries in the chain manually, you can should the [CustomTriggeringActionEntry](./custom_triggering_action.mdx).

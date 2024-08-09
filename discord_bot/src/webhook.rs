@@ -3,11 +3,39 @@ use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 
+use crate::clickup::move_done_to_beta;
+
 type HmacSha256 = Hmac<Sha256>;
 
 #[actix_web::get("/")]
-pub async fn clickup_webhook_get() -> impl Responder {
+pub async fn webhook_get() -> impl Responder {
     HttpResponse::Ok().body("ok")
+}
+
+#[actix_web::get("/publishbeta")]
+pub async fn publish_beta_version(req: HttpRequest) -> impl Responder {
+    let secret =
+        std::env::var("GITHUB_WEBHOOK_SIGNATURE").expect("missing GITHUB_WEBHOOK_SIGNATURE");
+    let headers = req.headers();
+    let signature = headers
+        .get("X-Signature")
+        .expect("missing X-Signature header")
+        .to_str()
+        .expect("failed to convert X-Signature header to str")
+        .trim();
+
+    // Check if the signature is equal to the expected signature
+    if signature != secret {
+        return HttpResponse::Unauthorized().body("invalid signature");
+    }
+
+    match move_done_to_beta().await {
+        Ok(_) => HttpResponse::Ok().body("ok"),
+        Err(e) => {
+            eprintln!("failed to move tasks to beta: {}", e);
+            HttpResponse::InternalServerError().body(format!("failed to move tasks to beta: {}", e))
+        }
+    }
 }
 
 #[actix_web::post("/")]
@@ -33,17 +61,21 @@ pub async fn clickup_webhook(req: HttpRequest, bytes: Bytes) -> impl Responder {
     };
 
     let Ok(signature) = hex::decode(new_signature.trim()) else {
+        eprintln!("failed to decode signature");
         return HttpResponse::BadRequest()
             .body("failed to decode signature")
             .into();
     };
     if let Err(_) = mac.verify_slice(&signature) {
+        eprintln!("invalid signature: {:?}", signature);
         return HttpResponse::Unauthorized()
             .body("invalid signature")
             .into();
     }
 
     let event: Event = serde_json::from_slice(&bytes).expect("failed to deserialize event");
+
+    println!("Received Event: {:?}", event);
 
     let result = match event {
         Event::TaskCreated(e) => crate::webhooks::handle_task_created(e).await,

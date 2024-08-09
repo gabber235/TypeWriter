@@ -9,7 +9,6 @@ import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.BLOCK
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Location
@@ -19,7 +18,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
 
-@Entry("on_interact_with_block", "When the player interacts with a block", Colors.YELLOW, Icons.HAND_POINTER)
+@Entry("on_interact_with_block", "When the player interacts with a block", Colors.YELLOW, "mingcute:finger-tap-fill")
 /**
  * The `Interact Block Event` is triggered when a player interacts with a block by right-clicking it.
  *
@@ -30,7 +29,7 @@ import java.util.*
 class InteractBlockEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @MaterialProperties(BLOCK)
     @Help("The block that was interacted with.")
     val block: Material = Material.AIR,
@@ -90,7 +89,7 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
     // The even triggers twice. Both for the main hand and offhand.
     // We only want to trigger once.
     if (event.hand != org.bukkit.inventory.EquipmentSlot.HAND) return // Disable off-hand interactions
-    val entries = query findWhere { entry ->
+    val entries = query.findWhere { entry ->
         // Check if the player is sneaking
         if (!entry.shiftType.isApplicable(event.player)) return@findWhere false
 
@@ -105,7 +104,7 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
         if (!hasItemInHand(event.player, entry.itemInHand)) return@findWhere false
 
         entry.block == event.clickedBlock!!.type
-    }
+    }.toList()
     if (entries.isEmpty()) return
 
     entries startDialogueWithOrNextDialogue event.player

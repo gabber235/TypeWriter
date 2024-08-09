@@ -2,17 +2,17 @@ package me.gabber235.typewriter.entries.cinematic
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Segments
 import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
+import me.gabber235.typewriter.entry.entries.PrimaryCinematicEntry
 import me.gabber235.typewriter.entry.entries.SpeakerEntry
 import me.gabber235.typewriter.interaction.acceptActionBarMessage
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMini
 import me.gabber235.typewriter.utils.asMiniWithResolvers
 import me.gabber235.typewriter.utils.splitPercentage
@@ -24,7 +24,7 @@ import net.kyori.adventure.title.Title.Times
 import org.bukkit.entity.Player
 import java.time.Duration
 
-@Entry("subtitle_dialogue_cinematic", "Show an action bar message", Colors.CYAN, Icons.DIAGRAM_NEXT)
+@Entry("subtitle_dialogue_cinematic", "Show an subtitle message", Colors.CYAN, "fa6-solid:diagram-next")
 /**
  * The `Subtitle Dialogue Cinematic Entry` is a cinematic entry that displays an animated subtitle message.
  * The speaker is displayed in the action bar, and the dialogue is displayed in the subtitle.
@@ -38,18 +38,15 @@ class SubtitleDialogueCinematicEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
-    @EntryIdentifier(SpeakerEntry::class)
-    val speaker: String = "",
-    @Segments(icon = Icons.MESSAGE)
-    val segments: List<DisplayDialogueSegment> = emptyList(),
+    val speaker: Ref<SpeakerEntry> = emptyRef(),
+    @Segments(icon = "fa6-solid:diagram-next")
+    val segments: List<SingleLineDisplayDialogueSegment> = emptyList(),
 ) : CinematicEntry {
-    val speakerEntry: SpeakerEntry?
-        get() = Query.findById(speaker)
 
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,
-            speakerEntry,
+            speaker.get(),
             segments,
             subtitlePercentage,
             reset = {
@@ -61,24 +58,20 @@ class SubtitleDialogueCinematicEntry(
     }
 }
 
-@Entry("random_subtitle_dialogue_cinematic", "Show a random action bar message", Colors.CYAN, Icons.DIAGRAM_NEXT)
+@Entry("random_subtitle_dialogue_cinematic", "Show a random action bar message", Colors.CYAN, "fa6-solid:diagram-next")
 data class RandomSubtitleDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     @Help("The speaker of the dialogue")
-    @EntryIdentifier(SpeakerEntry::class)
-    val speaker: String = "",
-    @Segments(icon = Icons.MESSAGE)
-    val segments: List<RandomDisplayDialogueSegment> = emptyList(),
-) : CinematicEntry {
-    val speakerEntry: SpeakerEntry?
-        get() = Query.findById(speaker)
-
+    val speaker: Ref<SpeakerEntry> = emptyRef(),
+    @Segments(icon = "fa6-solid:diagram-next")
+    val segments: List<SingleLineRandomDisplayDialogueSegment> = emptyList(),
+) : PrimaryCinematicEntry {
     override fun create(player: Player): CinematicAction {
         return DisplayDialogueCinematicAction(
             player,
-            speakerEntry,
+            speaker.get(),
             segments.toDisplaySegments(),
             subtitlePercentage,
             reset = {
@@ -108,7 +101,6 @@ private val times = Times.times(Duration.ZERO, Duration.ofDays(1), Duration.ZERO
 private fun displaySubTitle(player: Player, speakerName: String, text: String, displayPercentage: Double) {
     val message = text.asMini()
         .splitPercentage(displayPercentage)
-        .color(NamedTextColor.WHITE)
 
     val component = subtitleFormat.asMiniWithResolvers(
         Placeholder.component("message", message),

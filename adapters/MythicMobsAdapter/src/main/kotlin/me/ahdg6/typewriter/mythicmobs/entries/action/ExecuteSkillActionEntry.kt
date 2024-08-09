@@ -5,17 +5,19 @@ import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
 import io.lumine.mythic.core.skills.SkillMetadataImpl
 import io.lumine.mythic.core.skills.SkillTriggers
+import io.lumine.mythic.core.utils.MythicUtil
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.logger
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("execute_mythicmob_skill", "Executes a MythicMobs skill", Colors.RED, Icons.BOLT_LIGHTNING)
+@Entry("execute_mythicmob_skill", "Executes a MythicMobs skill", Colors.RED, "fa6-solid:bolt-lightning")
 /**
  * The `Execute Skill Action` action executes a MythicMobs skill.
  *
@@ -26,7 +28,7 @@ import org.bukkit.entity.Player
 class ExecuteSkillActionEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     @Help("The name of the skill to execute")
@@ -44,7 +46,9 @@ class ExecuteSkillActionEntry(
         val skillMeta =
             SkillMetadataImpl(SkillTriggers.API, caster, trigger)
 
-        if (skill.isUsable(skillMeta)) skill.execute(skillMeta)
+        if (skill.isUsable(skillMeta)) {
+            MythicBukkit.inst().apiHelper.castSkill(player, skillName, player, player.location, listOf(MythicUtil.getTargetedEntity(player)), null, 1f)
+        }
         else logger.warning("Skill $skillName is not usable at this time (cooldown, etc.)")
     }
 }

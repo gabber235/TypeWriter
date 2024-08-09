@@ -109,6 +109,13 @@ extension ListExtensions<T> on List<T> {
     return where((element) => !other.contains(element)).toList()
       ..addAll(other.where((element) => !contains(element)).toSet());
   }
+
+  bool containsAny(Iterable<T> elements) {
+    for (final element in elements) {
+      if (contains(element)) return true;
+    }
+    return false;
+  }
 }
 
 TextInputFormatter snakeCaseFormatter() => TextInputFormatter.withFunction(
@@ -136,6 +143,12 @@ extension RandomColor on String {
 
 extension IteratorExt<E> on Iterator<E> {
   E? get nextOrNull => moveNext() ? current : null;
+}
+
+extension EntriesIterable<K, V> on Iterable<MapEntry<K, V>> {
+  Map<K, V> toMap() {
+    return Map<K, V>.fromEntries(this);
+  }
 }
 
 extension ListExt<E> on List<E> {

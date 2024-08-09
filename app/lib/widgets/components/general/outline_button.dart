@@ -18,7 +18,7 @@ class OutlineButton extends HookConsumerWidget {
     required Widget label,
     required VoidCallback? onPressed,
     Color? color,
-    MaterialStatesController? controller,
+    WidgetStatesController? controller,
     Key? key,
   }) = _OutlineButtonIcon;
 
@@ -27,7 +27,7 @@ class OutlineButton extends HookConsumerWidget {
 
   final Color? color;
 
-  final MaterialStatesController? controller;
+  final WidgetStatesController? controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => OutlinedButton(
@@ -75,7 +75,8 @@ class _OutlineButtonWithIconChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scale = MediaQuery.maybeOf(context)?.textScaleFactor ?? 1;
+    // ignore: deprecated_member_use
+    final scale = MediaQuery.textScalerOf(context).textScaleFactor;
     final gap = scale <= 1 ? 8.0 : lerpDouble(8, 4, min(scale - 1, 1))!;
     return Row(
       mainAxisSize: MainAxisSize.min,

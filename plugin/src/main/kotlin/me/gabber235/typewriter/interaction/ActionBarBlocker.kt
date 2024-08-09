@@ -1,64 +1,55 @@
 package me.gabber235.typewriter.interaction
 
-import com.comphenix.protocol.PacketType.Play.Server.SET_ACTION_BAR_TEXT
-import com.comphenix.protocol.PacketType.Play.Server.SYSTEM_CHAT
-import com.comphenix.protocol.ProtocolLibrary
-import com.comphenix.protocol.events.ListenerPriority
-import com.comphenix.protocol.events.PacketAdapter
-import com.comphenix.protocol.events.PacketContainer
-import com.comphenix.protocol.events.PacketEvent
-import com.comphenix.protocol.reflect.StructureModifier
+import com.github.retrooper.packetevents.PacketEvents
+import com.github.retrooper.packetevents.event.PacketListenerAbstract
+import com.github.retrooper.packetevents.event.PacketListenerPriority
+import com.github.retrooper.packetevents.event.PacketSendEvent
+import com.github.retrooper.packetevents.protocol.packettype.PacketType.Play
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerActionBar
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import lirand.api.extensions.server.server
+import me.gabber235.typewriter.plugin
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.plugin.Plugin
 import org.koin.java.KoinJavaComponent.get
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class ActionBarBlockerHandler(plugin: Plugin) :
-    PacketAdapter(
-        plugin,
-        ListenerPriority.NORMAL,
-        SYSTEM_CHAT,
-        SET_ACTION_BAR_TEXT
-    ), Listener {
+class ActionBarBlockerHandler :
+    PacketListenerAbstract(PacketListenerPriority.HIGH), Listener {
     fun initialize() {
-        ProtocolLibrary.getProtocolManager().addPacketListener(this)
+        PacketEvents.getAPI().eventManager.registerListener(this)
         server.pluginManager.registerSuspendingEvents(this, plugin)
     }
 
     private val blockers = mutableMapOf<UUID, ActionBarBlocker>()
 
-    override fun onPacketSending(event: PacketEvent) {
-        val blocker = blockers[event.player.uniqueId] ?: return
+    override fun onPacketSend(event: PacketSendEvent?) {
+        if (event == null) return
+        val blocker = blockers[event.user.uuid] ?: return
 
-        if (event.packet.type == SYSTEM_CHAT && !event.packet.isActionBar()) return
+        val component = when (event.packetType) {
+            Play.Server.SYSTEM_CHAT_MESSAGE -> {
+                val packet = WrapperPlayServerSystemChatMessage(event)
+                if (!packet.isOverlay) return
+                packet.message
+            }
 
-        val component =
-            event.packet.getComponent() ?: return
+            Play.Server.ACTION_BAR -> {
+                val packet = WrapperPlayServerActionBar(event)
+                packet.actionBarText ?: return
+            }
+
+            else -> return
+        }
 
         if (blocker.isMessageAccepted(component)) return
-
         event.isCancelled = true
-    }
-
-    private fun PacketContainer.getComponent(): Component? {
-        return if (type == SYSTEM_CHAT) {
-            getChatComponent()
-        } else if (type == SET_ACTION_BAR_TEXT) {
-            val adventureModifier: StructureModifier<Component>? = getSpecificModifier(Component::class.java)
-            adventureModifier?.readSafely(0)
-                ?: chatComponentArrays?.readSafely(0)?.firstOrNull()
-                    ?.let { GsonComponentSerializer.gson().deserialize(it.json) }
-                ?: chatComponents?.readSafely(0)?.json?.let { GsonComponentSerializer.gson().deserialize(it) }
-        } else null
     }
 
     fun acceptMessage(player: Player, message: Component) {
@@ -81,7 +72,7 @@ class ActionBarBlockerHandler(plugin: Plugin) :
     }
 
     fun shutdown() {
-        ProtocolLibrary.getProtocolManager().removePacketListener(this)
+        PacketEvents.getAPI().eventManager.unregisterListener(this)
     }
 }
 

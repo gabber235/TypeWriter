@@ -20,7 +20,7 @@ List<Entry> graphableEntries(GraphableEntriesRef ref) {
   if (page == null) return [];
 
   return page.entries.where((entry) {
-    final tags = ref.watch(entryTagsProvider(entry.type));
+    final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
     return tags.contains("trigger");
   }).toList();
 }
@@ -36,12 +36,8 @@ bool isTriggerEntry(IsTriggerEntryRef ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return false;
 
-  final tags = ref.watch(entryTagsProvider(entry.type));
-  if (!tags.contains("trigger")) return false;
-
-  final modifiers = ref.watch(modifierPathsProvider(entry.type, "trigger"));
-
-  return modifiers.contains("triggers.*");
+  final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
+  return tags.contains("trigger");
 }
 
 @riverpod
@@ -49,7 +45,7 @@ bool isTriggerableEntry(IsTriggerableEntryRef ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return false;
 
-  final tags = ref.watch(entryTagsProvider(entry.type));
+  final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
   return tags.contains("triggerable");
 }
 
@@ -61,7 +57,8 @@ Set<String>? entryTriggers(EntryTriggersRef ref, String entryId) {
   // Check if this entry is a trigger
   if (!ref.read(isTriggerEntryProvider(entryId))) return null;
 
-  final modifiers = ref.watch(modifierPathsProvider(entry.type, "trigger"));
+  final modifiers =
+      ref.watch(modifierPathsProvider(entry.type, "entry", "triggerable"));
   return modifiers
       .expand(entry.getAll)
       .map((id) => id as String)
@@ -141,14 +138,14 @@ class EntriesGraph extends HookConsumerWidget {
           ..style = PaintingStyle.stroke,
         builder: (node) {
           final id = node.key?.value as String?;
-          if (id == null) return const InvalidEntry();
+          if (id == null) return const NonExistentEntry();
 
           final entryOnPage = entryIds.contains(id);
           if (!entryOnPage) {
             final globalEntryWithPage =
                 ref.watch(globalEntryWithPageProvider(id));
             if (globalEntryWithPage == null) {
-              return const InvalidEntry();
+              return const NonExistentEntry();
             }
 
             return ExternalEntryNode(

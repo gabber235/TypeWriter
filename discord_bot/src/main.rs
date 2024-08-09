@@ -2,23 +2,23 @@ use std::sync::Arc;
 
 use actix_web::{middleware::Logger, App, HttpServer};
 use once_cell::sync::Lazy;
-use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::{self as serenity, GatewayIntents};
 use tokio::signal;
 use tokio_util::sync::CancellationToken;
 
 mod clickup;
-mod commands;
+mod discord;
 mod webhook;
 mod webhooks;
 
-use commands::*;
+use discord::*;
 use reqwest::{
     header::{HeaderMap, HeaderValue, AUTHORIZATION},
     Client,
 };
 use webhook::clickup_webhook;
 
-use crate::webhook::clickup_webhook_get;
+use crate::webhook::{publish_beta_version, webhook_get};
 
 pub struct Data {} // User data, which is stored and accessible in all command invocations
 pub type Context<'a> = poise::Context<'a, Data, WinstonError>;
@@ -26,6 +26,7 @@ pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, WinstonErr
 
 const GUILD_ID: serenity::GuildId = serenity::GuildId::new(1054708062520360960);
 const CONTRIBUTOR_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1054708457535713350);
+const TICKET_FORUM_ID: u64 = 1199700329948782613;
 
 const CLICKUP_LIST_ID: &str = "901502296591";
 const CLICKUP_USER_ID: u32 = 62541886;
@@ -63,6 +64,7 @@ async fn main() {
     let token = CancellationToken::new();
     let webhook_token = token.clone();
     let discord_token = token.clone();
+    let schedule_token = token.clone();
 
     let webhook_task = tokio::spawn(async move {
         tokio::select! {
@@ -78,6 +80,13 @@ async fn main() {
         }
     });
 
+    let schedule_task = tokio::spawn(async move {
+        tokio::select! {
+            _ = schedule_token.cancelled() => {}
+            _ = schedule_task() => {}
+        }
+    });
+
     match signal::ctrl_c().await {
         Ok(()) => {
             println!("\nShutting down...");
@@ -89,7 +98,9 @@ async fn main() {
         }
     }
 
-    tokio::join!(webhook_task, discord_task).0.unwrap();
+    tokio::join!(webhook_task, discord_task, schedule_task)
+        .0
+        .unwrap();
 }
 
 async fn startup_webhook() {
@@ -98,7 +109,8 @@ async fn startup_webhook() {
     HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
-            .service(clickup_webhook_get)
+            .service(webhook_get)
+            .service(publish_beta_version)
             .service(clickup_webhook)
     })
     .bind("0.0.0.0:8080")
@@ -110,11 +122,12 @@ async fn startup_webhook() {
 
 async fn startup_discord_bot() {
     let discord_token = std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN");
-    let intents = serenity::GatewayIntents::non_privileged();
+    let intents =
+        GatewayIntents::MESSAGE_CONTENT | GatewayIntents::GUILD_MESSAGES | GatewayIntents::GUILDS;
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![create_task()],
+            commands: vec![create_task(), close_ticket(), support_answering()],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
         })
@@ -129,6 +142,11 @@ async fn startup_discord_bot() {
 
     let client = serenity::ClientBuilder::new(discord_token, intents)
         .event_handler(TaskFixedHandler)
+        .event_handler(TicketReopenHandler)
+        .event_handler(ThreadArchivingHandler)
+        .event_handler(ThreadPostedHandler)
+        .event_handler(SupportAnsweringHandler)
+        .event_handler(ThreadClosedBlockerHandler)
         .framework(framework)
         .await;
 
@@ -141,24 +159,51 @@ async fn startup_discord_bot() {
         .expect("failed to start discord bot");
 }
 
+async fn schedule_task() {
+    let mut fail_count = 0;
+    loop {
+        println!("Running schedule task...");
+        let wait_time = if let Err(e) = cleanup_threads().await {
+            eprintln!("Failed to run cleanup task: {}", e);
+            fail_count += 1;
+            30 * 2u64.pow(fail_count)
+        } else {
+            println!("Cleanup task completed");
+            fail_count = 0;
+            60 * 60
+        };
+        println!("Waiting for {} seconds before running again", wait_time);
+        tokio::time::sleep(std::time::Duration::from_secs(wait_time)).await;
+    }
+}
+
 async fn on_error(error: poise::FrameworkError<'_, Data, WinstonError>) {
     match error {
         poise::FrameworkError::Setup { error, .. } => panic!("Failed to start bot: {:?}", error),
         poise::FrameworkError::Command { error, ctx, .. } => {
-            println!("Error in command `{}`: {:?}", ctx.command().name, error,);
+            eprintln!("Error in command `{}`: {:?}", ctx.command().name, error,);
         }
         error => {
             if let Err(e) = poise::builtins::on_error(error).await {
-                println!("Error while handling error: {}", e)
+                eprintln!("Error while handling error: {}", e)
             }
         }
     }
 }
 pub async fn check_is_contributor(ctx: Context<'_>) -> Result<bool, WinstonError> {
-    Ok(ctx
+    let has_role = ctx
         .author()
         .has_role(ctx, GUILD_ID, CONTRIBUTOR_ROLE_ID)
-        .await?)
+        .await?;
+
+    if !has_role {
+        eprintln!(
+            "User {} is not a contributor and tried to run command",
+            ctx.author().name
+        );
+        return Ok(false);
+    }
+    return Ok(true);
 }
 
 pub fn get_discord() -> Result<serenity::Context, WinstonError> {
@@ -188,9 +233,18 @@ pub enum WinstonError {
     #[error("Not a guild channel")]
     NotAGuildChannel,
 
+    #[error("Not a thread channel")]
+    NotAThreadChannel,
+
     #[error("Failed to parse int: {0}")]
     ParseInt(#[from] std::num::ParseIntError),
 
     #[error("Failed to parse json: {0}")]
     ParseJson(#[from] serde_json::Error),
+
+    #[error("Failed to parse url: {0}")]
+    ParseUrl(#[from] url::ParseError),
+
+    #[error("Tag not found: {0}")]
+    TagNotFound(String),
 }

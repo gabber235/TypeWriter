@@ -48,7 +48,6 @@ annotation class EntryListener(
  */
 class EntryListeners : KoinComponent {
     private val adapterLoader: AdapterLoader by inject()
-    private val entryDatabase: EntryDatabase by inject()
 
     private val listener = object : Listener {}
 
@@ -71,7 +70,7 @@ class EntryListeners : KoinComponent {
 
         val entryListeners = adapterLoader.adapters.flatMap { it.eventListeners }
 
-        val activeEventEntries = entryDatabase.events.map { it::class }.distinct()
+        val activeEventEntries = Query.find<EventEntry>().map { it::class }.distinct()
 
         entryListeners.filter {
             activeEventEntries.any { activeEventEntry -> it.entry.isSuperclassOf(activeEventEntry) }

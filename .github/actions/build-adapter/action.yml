@@ -12,11 +12,11 @@ runs:
       - name: Test Adapter
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: test --scan
-          build-root-directory: ./adapters/${{ inputs.adapter }}
+          arguments: :${{ inputs.adapter }}:test --scan
+          build-root-directory: ./adapters
       - name: Build Adapter
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: buildRelease --scan
-          build-root-directory: ./adapters/${{ inputs.adapter }}
+          arguments: :${{ inputs.adapter }}:buildRelease --scan
+          build-root-directory: ./adapters
 

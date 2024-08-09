@@ -10,45 +10,47 @@ import java.util.*
 
 @CustomEditor(Optional::class)
 fun ObjectEditor<Optional<*>>.optional() = reference {
-	default {
-		val obj = JsonObject()
+    default {
+        val obj = JsonObject()
 
-		obj.addProperty("enabled", false)
+        obj.addProperty("enabled", false)
 
-		val default = generateFieldInfo(it)?.default() ?: JsonNull.INSTANCE
-		obj.add("value", default)
+        val default = generateFieldInfo(it)?.default() ?: JsonNull.INSTANCE
+        obj.add("value", default)
 
-		obj
-	}
+        obj
+    }
 
-	jsonDeserialize { element, type, context ->
-		val obj = element.asJsonObject
-		val enabled = obj.get("enabled").asBoolean
-		if (!enabled) return@jsonDeserialize Optional.empty<Any>()
+    jsonDeserialize { element, type, context ->
+        val obj = element.asJsonObject
+        val enabled = obj.get("enabled").asBoolean
+        if (!enabled) return@jsonDeserialize Optional.empty<Any>()
 
-		val valueElement = obj.get("value")
+        val valueElement = obj.get("value")
 
-		val value: Any? = context.deserialize(valueElement, (type as ParameterizedType).actualTypeArguments[0])
-		Optional.ofNullable(value)
-	}
+        val value: Any? = context.deserialize(valueElement, (type as ParameterizedType).actualTypeArguments[0])
+        Optional.ofNullable(value)
+    }
 
-	jsonSerialize { src, _, context ->
-		val obj = JsonObject()
+    jsonSerialize { src, _, context ->
+        val obj = JsonObject()
 
-		obj.addProperty("enabled", src.isPresent)
+        obj.addProperty("enabled", src.isPresent)
 
-		if (src.isPresent) {
-			val value = src.get()
-			val valueElement = context.serialize(value)
-			obj.add("value", valueElement)
-		}
+        if (src.isPresent) {
+            val value = src.get()
+            val valueElement = context.serialize(value)
+            obj.add("value", valueElement)
+        }
 
-		obj
-	}
+        obj
+    }
 
-	fieldInfo {
-		val type = it.type as ParameterizedType
-		val actualType = type.actualTypeArguments[0]
-		FieldInfo.fromTypeToken(TypeToken.get(actualType))
-	}
+    fieldInfo {
+        val type = it.type as ParameterizedType
+        val actualType = type.actualTypeArguments[0]
+        FieldInfo.fromTypeToken(TypeToken.get(actualType))
+    }
+
+
 }

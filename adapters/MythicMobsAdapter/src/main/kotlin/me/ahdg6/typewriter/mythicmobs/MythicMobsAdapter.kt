@@ -3,7 +3,7 @@ package me.ahdg6.typewriter.mythicmobs
 import App
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Adapter
-import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.TypewriterAdapter
 import me.gabber235.typewriter.adapters.Untested
 import me.gabber235.typewriter.logger
 
@@ -12,7 +12,7 @@ import me.gabber235.typewriter.logger
 /**
  * The MythicMobs Adapter is an adapter for the MythicMobs plugin. It allows you handle mob-related things in TypeWriter.
  */
-object MythicMobsAdapter : TypewriteAdapter() {
+object MythicMobsAdapter : TypewriterAdapter() {
 
     override fun initialize() {
         if (!server.pluginManager.isPluginEnabled("MythicMobs")) {

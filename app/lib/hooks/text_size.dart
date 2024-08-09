@@ -6,17 +6,11 @@ Size useTextSize(BuildContext context, String text, [TextStyle? style]) {
   return useMemoized(
     () {
       final defaultTextStyle = DefaultTextStyle.of(context).style;
-      final defaultFontFamily = defaultTextStyle.fontFamily;
 
       final textPainter = TextPainter(
         text: TextSpan(
           text: text,
-          style: style?.copyWith(
-                fontFamily: style.fontFamily ?? defaultFontFamily,
-                letterSpacing:
-                    style.letterSpacing ?? defaultTextStyle.letterSpacing,
-              ) ??
-              DefaultTextStyle.of(context).style,
+          style: defaultTextStyle.merge(style),
         ),
         maxLines: 1,
         textScaler: MediaQuery.of(context).textScaler,

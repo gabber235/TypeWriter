@@ -5,8 +5,10 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
 import "package:typewriter/models/book.dart";
-import "package:typewriter/models/icons.dart";
+import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/color_converter.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
@@ -30,8 +32,31 @@ EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String blueprintName) =>
         .firstWhereOrNull((e) => e.name == blueprintName);
 
 @riverpod
-List<String> entryTags(EntryTagsRef ref, String blueprintName) =>
+List<String> entryBlueprintTags(
+  EntryBlueprintTagsRef ref,
+  String blueprintName,
+) =>
     ref.watch(entryBlueprintProvider(blueprintName))?.tags ?? [];
+
+@riverpod
+List<String> entryTags(
+  EntryTagsRef ref,
+  String entryId,
+) {
+  final blueprint = ref.watch(entryTypeProvider(entryId));
+  if (blueprint == null) return [];
+  return ref.watch(entryBlueprintTagsProvider(blueprint));
+}
+
+@riverpod
+PageType entryBlueprintPageType(
+  EntryBlueprintPageTypeRef ref,
+  String blueprintName,
+) {
+  final blueprint = ref.watch(entryBlueprintProvider(blueprintName));
+  if (blueprint == null) return PageType.static;
+  return PageType.fromBlueprint(blueprint);
+}
 
 /// Gets all the modifiers with a given name.
 @riverpod
@@ -51,11 +76,14 @@ Map<String, Modifier> fieldModifiers(
 List<String> modifierPaths(
   ModifierPathsRef ref,
   String blueprintName,
-  String modifierName,
-) {
+  String modifierName, [
+  String? data,
+]) {
   return ref
       .watch(fieldModifiersProvider(blueprintName, modifierName))
-      .keys
+      .entries
+      .where((e) => data == null || e.value.data == data)
+      .map((e) => e.key)
       .toList();
 }
 
@@ -83,7 +111,7 @@ class EntryBlueprint with _$EntryBlueprint {
     required ObjectField fields,
     @Default(<String>[]) List<String> tags,
     @ColorConverter() @Default(Colors.grey) Color color,
-    @IconConverter() @Default(Icons.help) IconData icon,
+    @Default(TWIcons.help) String icon,
   }) = _EntryBlueprint;
 
   factory EntryBlueprint.fromJson(Map<String, dynamic> json) =>
@@ -234,7 +262,13 @@ extension EntryBlueprintExt on EntryBlueprint {
   }
 }
 
-final _customEditorCustomLayout = ["optional", "item"];
+final _customEditorCustomLayout = [
+  "optional",
+  "item",
+  "skin",
+  "color",
+  "floatRange",
+];
 
 /// Since freezed does not support methods on data models, we have to create a separate extension class.
 extension FieldTypeExtension on FieldInfo {
@@ -311,19 +345,4 @@ enum PrimitiveFieldType {
 
   /// The default value for this field type.
   final dynamic defaultValue;
-}
-
-class IconConverter extends JsonConverter<IconData, String> {
-  const IconConverter();
-
-  @override
-  IconData fromJson(String json) {
-    return icons[json] ?? Icons.question_mark;
-  }
-
-  // This should not be used.
-  @override
-  String toJson(IconData object) {
-    throw Exception("Icon data cannot be converted to JSON");
-  }
 }

@@ -1,17 +1,21 @@
 package me.gabber235.typewriter.entry.dialogue
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import kotlinx.coroutines.delay
 import lirand.api.extensions.events.listen
+import lirand.api.extensions.events.unregister
+import lirand.api.extensions.server.registerEvents
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.MessengerData
 import me.gabber235.typewriter.adapters.MessengerFilter
 import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.gabber235.typewriter.utils.config
 import me.gabber235.typewriter.utils.reloadable
 import org.bukkit.entity.Player
@@ -21,6 +25,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.Duration
 import java.util.*
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.primaryConstructor
@@ -60,20 +65,18 @@ enum class MessengerState {
     CANCELLED,
 }
 
-open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: DE) {
-
-    protected val listener: Listener = object : Listener {}
-
+open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: DE) : Listener {
     open var state: MessengerState = MessengerState.RUNNING
         protected set
 
     open fun init() {
+        plugin.registerEvents(this)
     }
 
-    open fun tick(cycle: Int) {}
+    open fun tick(playTime: Duration) {}
 
     open fun dispose() {
-        HandlerList.unregisterAll(listener)
+        unregister()
     }
 
     open fun end() {
@@ -81,25 +84,17 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
         player.chatHistory.resendMessages(player)
 
         // Resend the chat history again after a delay to make sure that the dialogue chat is fully cleared
-        plugin.launch {
+        SYNC.launch {
             delay(1.ticks)
             player.chatHistory.resendMessages(player)
         }
     }
 
-    open val triggers: List<String>
+    open val triggers: List<Ref<out TriggerableEntry>>
         get() = entry.triggers
 
     open val modifiers: List<Modifier>
         get() = entry.modifiers
-
-    protected inline fun <reified E : Event> listen(
-        priority: EventPriority = EventPriority.NORMAL,
-        ignoreCancelled: Boolean = false,
-        noinline block: (event: E) -> Unit,
-    ) {
-        plugin.listen(listener, priority, ignoreCancelled, block)
-    }
 }
 
 class EmptyDialogueMessenger(player: Player, entry: DialogueEntry) : DialogueMessenger<DialogueEntry>(player, entry) {
@@ -111,7 +106,7 @@ class EmptyDialogueMessenger(player: Player, entry: DialogueEntry) : DialogueMes
 private val confirmationKeyString by config(
     "confirmationKey", ConfirmationKey.SWAP_HANDS.name, comment = """
     |The key that should be pressed to confirm a dialogue option.
-    |Possible values: ${ConfirmationKey.values().joinToString(", ") { it.name }}
+    |Possible values: ${ConfirmationKey.entries.joinToString(", ") { it.name }}
 """.trimMargin()
 )
 
@@ -157,7 +152,46 @@ enum class ConfirmationKey(val keybind: String) {
 
     companion object {
         fun fromString(string: String): ConfirmationKey? {
-            return values().find { it.name.equals(string, true) }
+            return entries.find { it.name.equals(string, true) }
+        }
+    }
+}
+
+private val typingDurationTypeString by config(
+    "typingDurationType", TypingDurationType.TOTAL.name, comment = """
+    |The type of typing duration that should be used.
+    |Possible values: ${TypingDurationType.entries.joinToString(", ") { it.name }}
+""".trimMargin()
+)
+
+val typingDurationType: TypingDurationType by reloadable {
+    val type = TypingDurationType.fromString(typingDurationTypeString)
+    if (type == null) {
+        plugin.logger.warning("Invalid typing duration type '$typingDurationTypeString'. Using default type '${TypingDurationType.TOTAL.name}' instead.")
+        return@reloadable TypingDurationType.TOTAL
+    }
+    type
+}
+
+enum class TypingDurationType {
+    TOTAL,
+    CHARACTER,
+    ;
+
+    fun calculatePercentage(playTime: Duration, duration: Duration, text: String): Double {
+        return playTime.toMillis().toDouble() / totalDuration(text, duration).toMillis()
+    }
+
+    fun totalDuration(text: String, duration: Duration): Duration {
+        return when (this) {
+            TOTAL -> duration
+            CHARACTER -> Duration.ofMillis(text.length * duration.toMillis())
+        }
+    }
+
+    companion object {
+        fun fromString(string: String): TypingDurationType? {
+            return entries.find { it.name.equals(string, true) }
         }
     }
 }

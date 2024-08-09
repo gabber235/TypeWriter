@@ -1,10 +1,10 @@
-import "package:collection/collection.dart";
-import "package:flutter/material.dart";
+import "package:flutter/material.dart" hide Title;
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:indent/indent.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/entry.dart";
-import "package:typewriter/pages/page_editor.dart";
+import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/cinematic_view.dart";
@@ -32,8 +32,8 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
   }
 
   Future<void> navigateAndSelectEntry(PassingRef ref, String entryId) async {
-    selectEntry(entryId);
     await ref.read(appRouter).navigateToEntry(ref, entryId);
+    selectEntry(entryId);
   }
 }
 
@@ -46,8 +46,8 @@ final inspectingEntryIdProvider =
 @riverpod
 Entry? inspectingEntry(InspectingEntryRef ref) {
   final selectedEntryId = ref.watch(inspectingEntryIdProvider);
-  final page = ref.watch(currentPageProvider);
-  return page?.entries.firstWhereOrNull((e) => e.id == selectedEntryId);
+  if (selectedEntryId == null) return null;
+  return ref.watch(globalEntryProvider(selectedEntryId));
 }
 
 class GenericInspector extends HookConsumerWidget {
@@ -94,14 +94,13 @@ class EmptyInspector extends HookConsumerWidget {
 
 @riverpod
 EntryDefinition? inspectingEntryDefinition(InspectingEntryDefinitionRef ref) {
-  final pageId = ref.watch(currentPageIdProvider);
   final entryId = ref.watch(inspectingEntryIdProvider);
 
-  if (pageId.isNullOrEmpty || entryId.isNullOrEmpty) {
+  if (entryId.isNullOrEmpty) {
     return null;
   }
 
-  return ref.watch(entryDefinitionProvider(pageId!, entryId!));
+  return ref.watch(entryDefinitionProvider(entryId!));
 }
 
 /// The content of the inspector when an dynamic entry is selected.
@@ -126,7 +125,7 @@ class EntryInspector extends HookConsumerWidget {
     );
 
     if (object == null) {
-      return const SizedBox();
+      return const NoBlueprintEntryInspector();
     }
 
     return SingleChildScrollView(
@@ -153,6 +152,57 @@ class EntryInspector extends HookConsumerWidget {
           const SizedBox(height: 30),
         ],
       ),
+    );
+  }
+}
+
+class NoBlueprintEntryInspector extends HookConsumerWidget {
+  const NoBlueprintEntryInspector({
+    super.key,
+  }) : super();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entry = ref.watch(inspectingEntryProvider);
+
+    if (entry == null) return const SizedBox();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Title(
+          color: Colors.redAccent,
+          title: entry.formattedName,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 2,
+          direction: Axis.horizontal,
+          alignment: WrapAlignment.start,
+          children: [
+            EntryType(type: entry.type, url: "", color: Colors.redAccent),
+            EntryIdentifier(id: entry.id),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          """
+          |The blueprint for this entry does not exist.
+          |
+          |This can happen if the adapter for this entry is no longer installed.
+          |Or if the adapter removed the entry type.
+          |
+          |To fix this, you can either:
+          | - Install the adapter again.
+          | - Remove the entry.
+        """
+              .trimMargin(),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
+        ),
+        const SizedBox(height: 12),
+        const DeleteEntry(),
+      ],
     );
   }
 }

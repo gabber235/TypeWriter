@@ -15,7 +15,8 @@ This action can be useful in a variety of situations. You can use it to create v
 
 <fields.CriteriaField />
 <fields.ModifiersField />
-<fields.TriggersField />
+<fields.EntryField name='Triggers' required multiple>
+</fields.EntryField>
 <fields.EntryField name='Location' optional>
      The location to spawn the particles at. (Defaults to player's location
 </fields.EntryField>
@@ -33,4 +34,7 @@ This action can be useful in a variety of situations. You can use it to create v
 </fields.EntryField>
 <fields.EntryField name='Offset Z' required>
      The offset from the location on the Z axis.
+</fields.EntryField>
+<fields.EntryField name='Speed' required>
+     The speed of the particles. For some particles, this is the \"extra\" data value to control particle behavior.
 </fields.EntryField>

@@ -4,13 +4,10 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.entries.CinematicAction
-import me.gabber235.typewriter.entry.entries.NpcCinematicAction
-import me.gabber235.typewriter.entry.entries.NpcCinematicEntry
-import me.gabber235.typewriter.entry.entries.NpcRecordedSegment
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("fancy_self_npc_cinematic", "The player itself as an cinematic npc", Colors.PINK, Icons.USER)
+@Deprecated("Use the EntityAdapter instead")
+@Entry("fancy_self_npc_cinematic", "The player itself as an cinematic npc", Colors.PINK, "heroicons:user-16-solid")
 /**
  * The `Self NPC Cinematic` entry that plays a recorded animation back on the player with an NPC with the player's skin.
  * If the NPC recording does not have any armor, the player's armor when starting the cinematic will be used.

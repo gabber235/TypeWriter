@@ -43,5 +43,6 @@ class Debouncer<T> {
   void cancel() {
     _timer?.cancel();
     _timer = null;
+    _value = null;
   }
 }

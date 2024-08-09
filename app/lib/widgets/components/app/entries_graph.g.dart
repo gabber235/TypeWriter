@@ -6,7 +6,7 @@ part of 'entries_graph.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$graphableEntriesHash() => r'4ca3712feee7d5ce0a1fc89332a04a993a2fed2f';
+String _$graphableEntriesHash() => r'6cc6e3449a4e3b2c4399cb8dff2349c5e8663828';
 
 /// See also [graphableEntries].
 @ProviderFor(graphableEntries)
@@ -36,7 +36,7 @@ final graphableEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef GraphableEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$isTriggerEntryHash() => r'917683e8c329400c0068ea5a34a064cb729e32ab';
+String _$isTriggerEntryHash() => r'913bdd694fd2f0903ef873779513b53ba59f44d9';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -186,7 +186,7 @@ class _IsTriggerEntryProviderElement extends AutoDisposeProviderElement<bool>
 }
 
 String _$isTriggerableEntryHash() =>
-    r'4b5b533dee75d07eb970a077785ab5defb6dcfe6';
+    r'1414ae3da6c21972cdaeba7cd92a90ad5ace0a30';
 
 /// See also [isTriggerableEntry].
 @ProviderFor(isTriggerableEntry)
@@ -314,7 +314,7 @@ class _IsTriggerableEntryProviderElement
   String get entryId => (origin as IsTriggerableEntryProvider).entryId;
 }
 
-String _$entryTriggersHash() => r'2cdd643e8ce0f19c5b6dea06b5574c03276aad76';
+String _$entryTriggersHash() => r'202d6329486245dd0f1be929ab5f6c076a237fc4';
 
 /// See also [entryTriggers].
 @ProviderFor(entryTriggers)
@@ -442,7 +442,7 @@ class _EntryTriggersProviderElement
   String get entryId => (origin as EntryTriggersProvider).entryId;
 }
 
-String _$graphHash() => r'95895c4970adb0f53701f0bce28678009313d140';
+String _$graphHash() => r'177f6ba5a8480b0e1c89f0214809b14cdf70eecc';
 
 /// See also [graph].
 @ProviderFor(graph)

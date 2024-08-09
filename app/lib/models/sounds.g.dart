@@ -9,7 +9,7 @@ part of 'sounds.dart';
 _$SoundDataImpl _$$SoundDataImplFromJson(Map<String, dynamic> json) =>
     _$SoundDataImpl(
       name: json['name'] as String? ?? "",
-      weight: json['weight'] as int? ?? 1,
+      weight: (json['weight'] as num?)?.toInt() ?? 1,
       volume: (json['volume'] as num?)?.toDouble() ?? 1,
     );
 

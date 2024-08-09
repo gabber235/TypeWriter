@@ -86,7 +86,7 @@ class EntrySoundId(val entryId: String) : SoundId {
 
 sealed interface SoundSource
 
-object SelfSoundSource : SoundSource
+data object SelfSoundSource : SoundSource
 class EmitterSoundSource(val entryId: String) : SoundSource
 
 class LocationSoundSource(val location: Location) : SoundSource

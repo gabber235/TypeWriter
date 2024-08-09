@@ -5,13 +5,10 @@ import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.EntryListener
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.triggerAllFor
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("on_exit_region", "When a player exits a WorldGuard region", Colors.YELLOW, Icons.SQUARE_XMARK)
+@Entry("on_exit_region", "When a player exits a WorldGuard region", Colors.YELLOW, "fa6-solid:door-closed")
 /**
  * The `Exit Region Event` is triggered when a player leaves a region.
  *
@@ -23,7 +20,7 @@ import me.gabber235.typewriter.utils.Icons
 class ExitRegionEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The region to check for.")
     // The region the player must leave to trigger the event.
     val region: String = "",

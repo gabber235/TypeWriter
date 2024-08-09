@@ -1,6 +1,5 @@
 package me.gabber235.typewriter.extensions.modrinth
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.delay
@@ -9,6 +8,7 @@ import lirand.api.extensions.events.SimpleListener
 import lirand.api.extensions.events.listen
 import me.gabber235.typewriter.entry.v
 import me.gabber235.typewriter.plugin
+import me.gabber235.typewriter.utils.ThreadType.SYNC
 import me.gabber235.typewriter.utils.asMini
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
@@ -29,7 +29,7 @@ object Modrinth {
     suspend fun initialize() {
         plugin.listen<PlayerJoinEvent>(listener) {
             if (!canSendNotification(it.player)) return@listen
-            plugin.launch {
+            SYNC.launch {
                 delay(5.seconds)
                 notifyPlayer(it.player)
             }

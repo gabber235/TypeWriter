@@ -3,14 +3,14 @@ package me.gabber235.typewriter.adapters.editors
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.*
-import me.gabber235.typewriter.adapters.modifiers.Capture
-import me.gabber235.typewriter.adapters.modifiers.CaptureModifierComputer
-import me.gabber235.typewriter.capture.CapturerCreator
-import me.gabber235.typewriter.capture.ImmediateFieldCapturer
-import me.gabber235.typewriter.capture.RecorderRequestContext
-import me.gabber235.typewriter.capture.capturers.ItemSnapshotCapturer
+import me.gabber235.typewriter.adapters.modifiers.ContentEditor
+import me.gabber235.typewriter.adapters.modifiers.ContentEditorModifierComputer
+import me.gabber235.typewriter.content.ContentContext
+import me.gabber235.typewriter.content.contentEditorCachedInventory
+import me.gabber235.typewriter.content.modes.ImmediateFieldValueContentMode
 import me.gabber235.typewriter.utils.Item
-import me.gabber235.typewriter.utils.ok
+import me.gabber235.typewriter.utils.toItem
+import org.bukkit.entity.Player
 import java.lang.reflect.Modifier
 
 @CustomEditor(Item::class)
@@ -46,15 +46,14 @@ fun ObjectEditor<Item>.item() = reference {
         ObjectField(fields)
     }
 
-    CaptureModifierComputer with Capture(ItemFieldCapturer::class)
+    ContentEditorModifierComputer with ContentEditor(HoldingItemContentMode::class)
 }
 
-class ItemFieldCapturer(title: String, entryId: String, fieldPath: String) :
-    ImmediateFieldCapturer<Item>(title, entryId, fieldPath, ItemSnapshotCapturer(title)) {
-    companion object : CapturerCreator<ItemFieldCapturer> {
-        override fun create(context: RecorderRequestContext): Result<ItemFieldCapturer> {
-            return ok(ItemFieldCapturer(context.title, context.entryId, context.fieldPath))
-        }
-
+class HoldingItemContentMode(context: ContentContext, player: Player) :
+    ImmediateFieldValueContentMode<Item>(context, player) {
+    override fun value(): Item {
+        val slot = player.inventory.heldItemSlot
+        val item = player.contentEditorCachedInventory?.get(slot) ?: return Item()
+        return item.toItem()
     }
 }

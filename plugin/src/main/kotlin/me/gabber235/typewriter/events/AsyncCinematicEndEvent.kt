@@ -4,7 +4,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 
-class AsyncCinematicEndEvent(player: Player, val frame: Int) : PlayerEvent(player, true) {
+class AsyncCinematicEndEvent(player: Player, val frame: Int, val pageId: String) : PlayerEvent(player, true) {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 
     companion object {

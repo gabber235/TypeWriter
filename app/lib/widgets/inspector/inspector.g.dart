@@ -6,7 +6,7 @@ part of 'inspector.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$inspectingEntryHash() => r'84ccfbfca0da9b171e8f509e02c225094ff4636c';
+String _$inspectingEntryHash() => r'b411aee990e39a0dbcee5aee43a8b40d7a5c63f6';
 
 /// See also [inspectingEntry].
 @ProviderFor(inspectingEntry)
@@ -22,7 +22,7 @@ final inspectingEntryProvider = AutoDisposeProvider<Entry?>.internal(
 
 typedef InspectingEntryRef = AutoDisposeProviderRef<Entry?>;
 String _$inspectingEntryDefinitionHash() =>
-    r'a3c771a509fe14061f2fe969813f1851afb458c6';
+    r'20a2722e89b0eccb897db82f076db9dcaf9055fa';
 
 /// See also [inspectingEntryDefinition].
 @ProviderFor(inspectingEntryDefinition)
