@@ -5,9 +5,10 @@ import TabItem from "@theme/TabItem";
 
 This document lists all the API changes introduced in version `0.5.0` of the TypeWriter plugin. If you are upgrading from an older version, please read this document before upgrading.
 
-## New type: ref
+## New type: Ref
 
-To streamline the api more, I created a new type called Ref. It is a much nicer api.
+To streamline the api more, I created a new type called Ref. 
+It provides a much nicer api for referencing entries.
 
 <Tabs>
   <TabItem value="old" label="Old">
@@ -41,7 +42,10 @@ To streamline the api more, I created a new type called Ref. It is a much nicer 
   </TabItem>
 </Tabs>
 
-## change to facts interface
+## Change to facts interface
+
+Since `Facts` can now be applied to groups of players, the `read` function no longer works.
+A simple migration is to use the `readSinglePlayer` function instead.
 
 <Tabs>
   <TabItem value="old" label="Old">
@@ -78,4 +82,23 @@ To streamline the api more, I created a new type called Ref. It is a much nicer 
     }
     ```
   </TabItem>
+</Tabs>
+
+## Entry Icon Changes
+
+The icon set has changed from only allowing Font Awesome icons, to allowing any icon from [Iconify](https://iconify.design/).
+This means that entries can use any icon from [Iconify](https://iconify.design/).
+Since the icon set is so big, there no longer is a nice `Icon` class. Instead, you just pass the icon name to the icon parameter.
+
+<Tabs>
+    <TabItem value="old" label="Old">
+        ```kotlin showLineNumbers
+        @Entry("add_potion_effect", "Add a potion effect to the player", Colors.RED, Icons.FLASK_VIAL)
+        ```
+    </TabItem>
+    <TabItem value="new" label="New" default>
+        ```kotlin showLineNumbers
+        @Entry("add_potion_effect", "Add a potion effect to the player", Colors.RED, "fa6-solid:flask-vial")
+        ```
+    </TabItem>
 </Tabs>
