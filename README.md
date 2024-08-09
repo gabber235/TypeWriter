@@ -5,10 +5,12 @@
 [![Discord](https://img.shields.io/discord/1054708062520360960?label=discord&logo=discord&logoColor=white)](https://discord.gg/HtbKyuDDBw)
 
 Typewriter is a plugin for **Paper** Minecraft servers that allows for custom player interactions such as Quests,
-NPC chat, Create branching story with ease, Creating Cinematic with camera paths, and more. It is easily configurable using the web panel specifically
-designed for this plugin.
+NPC chat, Create branching story with ease, Creating Cinematic with camera paths, creating NPC's with intelligent behaviour, and more. 
+It is easily configurable using the web panel specifically designed for this plugin.
 
-The plugin can also be extended using adapters, which are [pre-made](https://docs.typewritermc.com/docs/adapters#pre-made-adapters) or can be custom-made by developers.
+The power of Typewriter comes from the fact that it is extensible using adapters. 
+Adapters are self-contained modular components that allow you to create custom content for Typewriter.
+Some adapters are already made by the developers of Typewriter, but anyone can create their own custom adapters.
 
 To get started with Typewriter, see the [Getting Started](#getting-started) section.
 
@@ -20,9 +22,9 @@ Thanks to the following sponsors for supporting this project:
 
 ### Examples
 
-![cinematic](https://raw.githubusercontent.com/gabber235/TypeWriter/develop/readme/cinematic.gif)
+[![cinematic](https://raw.githubusercontent.com/gabber235/TypeWriter/develop/readme/cinematic.gif)](https://youtu.be/1pGBtJleEuQ)
 
-A cinematic fully in vanilla minecraft using Typewriter. View a demo [here](https://youtu.be/1pGBtJleEuQ).
+A cinematic fully in vanilla Minecraft using Typewriter. View a demo [here](https://youtu.be/1pGBtJleEuQ).
 
 ![dialogue sequence](https://raw.githubusercontent.com/gabber235/TypeWriter/develop/readme/chat-messages.gif)
 
@@ -36,10 +38,9 @@ The web panel for Typewriter, where you can create quests, NPCs, and more.
 
 - Create custom player interactions, including quests and NPC chat, branching story, and more...
 - Create cinematic sequences with camera movements, dialogue, animated NPCs, and more...
+- Create NPC's with intelligent behaviour, that can walk around your world, change their appearance and visibility, and more...
 - Configure interactions using a custom written visual interface
-- Extend the plugin using adapters
-  - [Pre-made adapters](https://docs.typewritermc.com/docs/adapters#pre-made-adapters) available for popular plugins
-  - Custom adapters can be made by developers
+- Extend the plugin using adapters to integrate Typewriter with your custom plugins
 
 ## Getting started
 
@@ -50,22 +51,22 @@ Also be sure to download PacketEvents from [here](https://modrinth.com/plugin/pa
 
 Then, use the app to configure your custom interactions as desired.
 
-You can also utilize the [pre-made adapters](https://docs.typewritermc.com/docs/adapters#pre-made-adapters) or create your own custom adapters to extend the
-capabilities of the plugin. See [First Interaction](https://docs.typewritermc.com/docs/first-interaction) for more information.
+You can also utilize the pre-made adapters or create your own custom adapters to extend the capabilities of the plugin. 
+See [First Interaction](https://docs.typewritermc.com/docs/first-interaction) for more information.
 
 ## For administrators
 
 As an administrator, you can easily configure Typewriter using the custom web panel. 
 Simply input your desired interactions and let the plugin handle the rest. 
-You can also take advantage of the [pre-made adapters](https://docs.typewritermc.com/docs/adapters#pre-made-adapters) or create your own custom
+You can also take advantage of the pre-made adapters or create your own custom
 adapters to further customize the plugin for your server.
 
 ## For developers
 
-Are you a developer looking to contribute to Typewriter? We welcome any custom adapters you may create! Simply make a
-pull request to add your adapter to our repository. If you create an adapter for an open source plugin, we would be
-happy to include it in our list of ready adapters. Help us make Typewriter the best it can be!
-
+Typewriter can be extended using adapters.
+Adapters are self-contained modular components that allow you to create custom content for Typewriter.
+Allowing you to create custom building blocks that can be used inside the web panel to interact with your custom plugins.
+To learn more about creating adapters, or any other development related questions, visit the [Development Documentation](https://docs.typewritermc.com/develop).
 
 ## License
 Typewriter is licensed under its own [LICENSE](LICENSE).
