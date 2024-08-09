@@ -479,6 +479,7 @@ fn find_adapters_names() -> Result<Vec<String>, OrchestrationError> {
         .filter(|path| path.is_dir())
         .map(|path| path.file_name().unwrap().to_str().unwrap().to_string())
         .filter(|adapter| adapter.ends_with("Adapter"))
+        .filter(|adapter| !adapter.starts_with("_"))
         .collect::<Vec<String>>();
 
     return Ok(adapters);

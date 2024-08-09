@@ -1,4 +1,4 @@
-use std::{cmp::min, sync::Arc};
+use std::sync::Arc;
 
 use actix_web::{middleware::Logger, App, HttpServer};
 use once_cell::sync::Lazy;
