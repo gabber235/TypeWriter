@@ -41,7 +41,7 @@ class NavigationActivity(
                 return TickResult.IGNORED
             }
             path = path?.subList(1, path?.size ?: 0) ?: (state as NavigationActivityTaskState.Searching).let {
-                it.path ?: return TickResult.IGNORED
+                it.path ?: return TickResult.CONSUMED
             }
 
             val currentEdge = path?.firstOrNull() ?: return TickResult.IGNORED
