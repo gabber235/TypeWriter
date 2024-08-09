@@ -16,7 +16,7 @@ To get started with Typewriter, see the [Getting Started](#getting-started) sect
 
 ### Sponsors
 
-Thanks to the following sponsors for supporting this project
+Thanks to the following sponsors for supporting this project.
 Without their support, this project would not be possible.
 If you are using Typewriter for your server, and are making money from it, please consider [sponsoring](https://github.com/sponsors/gabber235) the project.
 
