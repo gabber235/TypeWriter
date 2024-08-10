@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 
 @Entry("in_rpg_region_fact", "If the player is in a RPGRegions region", Colors.PURPLE, "fa6-solid:road-barrier")
 /**
- * A [fact](/docs/facts) that checks if the player is in a specific region. The value will be `0` if the player is not in the region, and `1` if the player is in the region.
+ * A [fact](/docs/creating-stories/facts) that checks if the player is in a specific region. The value will be `0` if the player is not in the region, and `1` if the player is in the region.
  *
  * <fields.ReadonlyFactInfo />
  *

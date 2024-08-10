@@ -17,7 +17,7 @@ import org.bukkit.entity.Player
 
 @Entry("number_placeholder", "Computed Fact for a placeholder number", Colors.PURPLE, "ph:placeholder-fill")
 /**
- * A [fact](/docs/facts) that is computed from a placeholder.
+ * A [fact](/docs/creating-stories/facts) that is computed from a placeholder.
  * This placeholder is evaluated when the fact is read and must return a number or boolean.
  *
  * <fields.ReadonlyFactInfo />
@@ -60,7 +60,7 @@ fun Boolean.toInt() = if (this) 1 else 0
 
 @Entry("value_placeholder", "Fact for a placeholder value", Colors.PURPLE, "fa6-solid:user-tag")
 /**
- * A [fact](/docs/facts) that is computed from a placeholder.
+ * A [fact](/docs/creating-stories/facts) that is computed from a placeholder.
  * This placeholder is evaluated when the fact is read and can return anything.
  * The value will be computed based on the `values` specified.
  * <fields.ReadonlyFactInfo/>

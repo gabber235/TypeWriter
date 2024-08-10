@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent
  *
  * ## How could this be used?
  *
- * This could be used with [facts](/docs/facts) to give a new player a welcome message, or welcome back new players. You can also use it to give new players a starting item, or to give them a starting amount of money with the [Vault adapter](/adapters/VaultAdapter).
+ * This could be used with [facts](/docs/creating-stories/facts) to give a new player a welcome message, or welcome back new players. You can also use it to give new players a starting item, or to give them a starting amount of money with the [Vault adapter](/adapters/VaultAdapter).
  */
 class PlayerJoinEventEntry(
     override val id: String = "",

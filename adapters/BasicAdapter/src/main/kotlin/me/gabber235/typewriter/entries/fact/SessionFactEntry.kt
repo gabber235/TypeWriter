@@ -9,7 +9,7 @@ import me.gabber235.typewriter.entry.entries.GroupEntry
 
 @Entry("session_fact", "Saved until a player logouts of the server", Colors.PURPLE, "fa6-solid:user-clock")
 /**
- * This [fact](/docs/facts) is stored until the player logs out.
+ * This [fact](/docs/creating-stories/facts) is stored until the player logs out.
  *
  * ## How could this be used?
  *

@@ -21,7 +21,7 @@ import org.bukkit.entity.Player
  * ## How could this be used?
  *
  * This action can be useful in situations where you want to start a cinematic.
- * See the [Cinematic](/docs/first-cinematic) tutorial for more information.
+ * See the [Cinematic](/docs/creating-stories/cinematics) tutorial for more information.
  */
 class CinematicEntry(
     override val id: String = "",

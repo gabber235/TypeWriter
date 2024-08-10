@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 
 @Entry("cron_fact", "Saved until a specified date, like (0 0 * * 1)", Colors.PURPLE, "mingcute:calendar-time-add-fill")
 /**
- * A [fact](/docs/facts) that is saved until a specified date, like (0 0 \* \* 1).
+ * A [fact](/docs/creating-stories/facts) that is saved until a specified date, like (0 0 \* \* 1).
  *
  * ## How could this be used?
  *

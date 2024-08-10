@@ -12,7 +12,7 @@ import org.bukkit.entity.Player
 
 @Entry("balance_fact", "The balance of a player's account", Colors.PURPLE, "fa6-solid:money-bill-wave")
 /**
- * A [fact](/docs/facts) that represents a player's balance.
+ * A [fact](/docs/creating-stories/facts) that represents a player's balance.
  *
  * <fields.ReadonlyFactInfo />
  *

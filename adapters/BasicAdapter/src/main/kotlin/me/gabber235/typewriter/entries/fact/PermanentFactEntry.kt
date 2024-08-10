@@ -9,7 +9,7 @@ import me.gabber235.typewriter.entry.entries.PersistableFactEntry
 
 @Entry("permanent_fact", "Saved permanently, it never gets removed", Colors.PURPLE, "fa6-solid:database")
 /**
- * This [fact](/docs/facts) is permanent and never expires.
+ * This [fact](/docs/creating-stories/facts) is permanent and never expires.
  *
  * ## How could this be used?
  *

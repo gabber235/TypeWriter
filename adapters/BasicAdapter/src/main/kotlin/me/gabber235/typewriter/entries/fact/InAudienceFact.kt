@@ -17,6 +17,14 @@ import org.bukkit.entity.Player
     Colors.PURPLE,
     "material-symbols:person-pin"
 )
+/**
+ * The `In Audience Fact` is a fact that the value specified if the player is in the audience.
+ *
+ * <fields.ReadonlyFactInfo />
+ *
+ * ## How could this be used?
+ * This can be used to filter players if they are in a specific audience.
+ */
 class InAudienceFact(
     override val id: String = "",
     override val name: String = "",

@@ -12,7 +12,7 @@ import org.bukkit.entity.Player
 
 @Entry("combat_fact", "If the player is in combat", Colors.PURPLE, "fa6-solid:shield-halved")
 /**
- * A [fact](/docs/facts) that tells whether a player is in combat.
+ * A [fact](/docs/creating-stories/facts) that tells whether a player is in combat.
  *
  * <fields.ReadonlyFactInfo/>
  *

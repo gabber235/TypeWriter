@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
     "mingcute:counter-fill"
 )
 /**
- * A [fact](/docs/facts) that represents how many specific MythicMobs mob are in the world.
+ * A [fact](/docs/creating-stories/facts) that represents how many specific MythicMobs mob are in the world.
  *
  * <fields.ReadonlyFactInfo />
  *

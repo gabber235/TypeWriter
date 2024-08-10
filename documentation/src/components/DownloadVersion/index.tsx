@@ -1,14 +1,15 @@
 import React from "react";
 import {
-    useDocsVersion,
-    useDocsPreferredVersion,
+    useActiveVersion,
+    useLatestVersion,
 } from "@docusaurus/plugin-content-docs/client";
 import Link from "@docusaurus/Link";
 
 export default function DownloadVersion(): JSX.Element {
-    const versionLabel = useDocsVersion().label;
+    const activeVersion = useActiveVersion(undefined)?.name;
+    const latestVersion = useLatestVersion(undefined)?.name;
 
-    if (versionLabel === "Beta ⚠️") {
+    if (activeVersion === "current") {
         return (
             <span>
                 the <b>Beta</b> version via
@@ -19,14 +20,14 @@ export default function DownloadVersion(): JSX.Element {
             </span>
         );
     } else if (
-        useDocsPreferredVersion().preferredVersion.label === versionLabel
+        latestVersion === activeVersion
     ) {
         return (
             <span>
                 The <b>Latest</b> version via
                 <Link
                     to={`https://modrinth.com/plugin/typewriter/version/${encodeURIComponent(
-                        versionLabel
+                        activeVersion
                     )}`}
                 >
                     {" "}
@@ -37,10 +38,10 @@ export default function DownloadVersion(): JSX.Element {
     } else {
         return (
             <span>
-                The <b>Outdated</b> version {versionLabel} via
+                The <b>Outdated</b> version {activeVersion} via
                 <Link
                     to={`https://modrinth.com/plugin/typewriter/version/${encodeURIComponent(
-                        versionLabel
+                        activeVersion
                     )}`}
                 >
                     {" "}

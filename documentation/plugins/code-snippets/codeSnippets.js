@@ -71,5 +71,9 @@ module.exports = function() {
 
     this.cacheable(false);
 
+    const code = `${JSON.stringify(snippets, null, 2)}`;
+
+    fs.writeSync(fs.openSync(path.resolve(__dirname, 'snippets.json'), 'w'), code);
+
     return `export default ${JSON.stringify(snippets, null, 2)}`;
 };

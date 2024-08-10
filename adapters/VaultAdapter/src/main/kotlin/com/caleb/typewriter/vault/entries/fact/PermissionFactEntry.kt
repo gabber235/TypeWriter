@@ -14,9 +14,7 @@ import org.bukkit.entity.Player
 
 @Entry("permission_fact", "If the player has a permission", Colors.PURPLE, "fa6-solid:user-shield")
 /**
- * A [fact](/docs/facts) that checks if the player has a certain permission.
- *
-
+ * A [fact](/docs/creating-stories/facts) that checks if the player has a certain permission.
  *
  * ## How could this be used?
  *
