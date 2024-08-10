@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[38947],{56600:e=>{e.exports=JSON.parse('{"authors":[{"name":"Gabber235","title":"TypeWriter Maintainer","url":"https://github.com/gabber235","imageURL":"https://github.com/gabber235.png","key":"gabber235","page":null,"count":1}]}')}}]);
