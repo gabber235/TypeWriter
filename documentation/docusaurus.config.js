@@ -59,6 +59,7 @@ const config = {
                 },
                 blog: {
                     showReadingTime: true,
+                    onUntruncatedBlogPosts: 'ignore',
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                 },
