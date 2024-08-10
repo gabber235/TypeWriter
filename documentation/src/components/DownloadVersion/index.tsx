@@ -2,7 +2,7 @@ import React from "react";
 import {
     useDocsVersion,
     useDocsPreferredVersion,
-} from "@docusaurus/theme-common/internal";
+} from "@docusaurus/plugin-content-docs/client";
 import Link from "@docusaurus/Link";
 
 export default function DownloadVersion(): JSX.Element {

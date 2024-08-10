@@ -1,6 +1,6 @@
-import { useDoc } from '@docusaurus/theme-common/internal';
+import { useDoc } from '@docusaurus/plugin-content-docs/client';
 
 export default function useDifficulty() {
-  const { frontMatter } = useDoc();
-  return frontMatter.difficulty;
+    const { frontMatter } = useDoc();
+    return frontMatter.difficulty;
 }

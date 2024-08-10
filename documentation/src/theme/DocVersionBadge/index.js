@@ -1,7 +1,7 @@
 import React from 'react';
 import Translate from '@docusaurus/Translate';
 import { ThemeClassNames } from '@docusaurus/theme-common';
-import { useDocsVersion } from '@docusaurus/theme-common/internal';
+import { useDocsVersion } from '@docusaurus/plugin-content-docs/client';
 import useDifficulty from '../../hooks/useDifficulty'; // Import the custom hook
 
 export default function DocVersionBadge() {
