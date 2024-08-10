@@ -2,6 +2,7 @@ package me.gabber235.typewriter.adapters.modifiers
 
 import me.gabber235.typewriter.adapters.FieldInfo
 import me.gabber235.typewriter.adapters.FieldModifier
+import me.gabber235.typewriter.utils.ok
 
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 annotation class Min(val value: Int)
@@ -23,8 +24,8 @@ object MinModifierComputer : StaticModifierComputer<Min> {
     ) as List<InnerAnnotationFinder<Min, Annotation>>
 
 
-    override fun computeModifier(annotation: Min, info: FieldInfo): FieldModifier {
-        return FieldModifier.DynamicModifier("min", annotation.value)
+    override fun computeModifier(annotation: Min, info: FieldInfo): Result<FieldModifier?> {
+        return ok(FieldModifier.DynamicModifier("min", annotation.value))
     }
 }
 
@@ -35,7 +36,7 @@ object MaxModifierComputer : StaticModifierComputer<Max> {
         InnerAnnotationFinder(InnerMax::class.java, InnerMax::annotation)
     ) as List<InnerAnnotationFinder<Max, Annotation>>
 
-    override fun computeModifier(annotation: Max, info: FieldInfo): FieldModifier {
-        return FieldModifier.DynamicModifier("max", annotation.value)
+    override fun computeModifier(annotation: Max, info: FieldInfo): Result<FieldModifier?> {
+        return ok(FieldModifier.DynamicModifier("max", annotation.value))
     }
 }

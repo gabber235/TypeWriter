@@ -12,10 +12,10 @@ const config = {
     favicon: 'img/favicon.ico',
 
     // Set the production url of your site here
-    url: 'https://gabber235.github.io',
+    url: 'https://docs.typewritermc.com',
     // Set the /<baseUrl>/ pathname under which your site is served
     // For GitHub pages deployment, it is often '/<projectName>/'
-    baseUrl: '/TypeWriter/',
+    baseUrl: '/',
 
     // GitHub pages deployment config.
     // If you aren't using GitHub pages, you don't need these.
@@ -33,6 +33,9 @@ const config = {
         defaultLocale: 'en',
         locales: ['en'],
     },
+    markdown: {
+        mermaid: true,
+    }, themes: ['@docusaurus/theme-mermaid'],
 
     presets: [
         [
@@ -42,13 +45,22 @@ const config = {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl:
-                        'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
+                        'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
+                    lastVersion: '0.5.0',
+                    showLastUpdateAuthor: true,
+                    showLastUpdateTime: true,
+                    versions: {
+                        current: {
+                            label: 'Beta ⚠️',
+                            path: 'beta',
+                        },
+                    },
                 },
                 blog: {
                     showReadingTime: true,
                     editUrl:
-                        'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
+                        'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
@@ -60,6 +72,31 @@ const config = {
     themeConfig:
         /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
+            mermaid: {
+                theme: { light: 'base', dark: 'base' },
+                options: {
+                    width: 150,
+                },
+            },
+            metadata: [
+                { name: 'title', content: 'Typewriter' },
+                { name: 'description', content: 'The next generation of Player Interactions' },
+                { name: 'keywords', content: 'Minecraft, Questing, NPC\'s, Manifests, Cinematics, sequences, Road-network, Interactions, player interactions, plugin, papermc' },
+                { name: 'robots', content: 'index, follow' },
+                { name: 'Content-Type', content: 'text/html; charset=utf-8' },
+                { name: 'language', content: 'English' },
+                { name: 'author', content: 'Gabber235, Marten_mrfcyt' },
+                { name: 'og:type', content: 'website' },
+                { name: 'og:url', content: 'img/typewriter.png' },
+                { name: 'og:title', content: 'TypeWriter' },
+                { name: 'og:description', content: 'The next generation of Player Interactions' },
+                { name: 'og:image', content: 'img/typewriter.png' },
+                { name: 'twitter:card', content: 'summary_large_image' },
+                { name: 'twitter:url', content: 'https://docs.typewritermc.com/' },
+                { name: 'twitter:title', content: 'TypeWriter' },
+                { name: 'twitter:description', content: 'The next generation of Player Interactions' },
+                { name: 'twitter:image', content: 'img/typewriter.png' },
+            ],
             // Replace with your project's social card
             image: 'img/typewriter.png',
             navbar: {
@@ -89,6 +126,10 @@ const config = {
                     },
                     { to: '/blog', label: 'Blog', position: 'left' },
                     {
+                        type: 'docsVersionDropdown',
+                        position: 'right',
+                    },
+                    {
                         href: 'https://github.com/gabber235/TypeWriter',
                         label: 'GitHub',
                         position: 'right',
@@ -99,12 +140,17 @@ const config = {
                 style: 'dark',
                 links: [
                     {
-                        title: 'Docs',
+                        title: 'Information',
                         items: [
                             {
                                 label: 'Documentation',
                                 to: '/docs/home',
                             },
+                            {
+                                label: 'Clickup',
+                                href: 'https://sharing.clickup.com/9015308602/l/h/6-901502296591-1/e32ea9f33a22632',
+                            }
+
                         ],
                     },
                     {
@@ -148,6 +194,16 @@ const config = {
                         line: 'highlight-green', // For single line
                         block: { start: 'highlight-green-start', end: 'highlight-green-end' }, // For block
                     },
+                    {
+                        className: 'highlight-blue',
+                        line: 'highlight-blue', // For single line
+                        block: { start: 'highlight-blue-start', end: 'highlight-blue-end' }, // For block
+                    },
+                    {
+                        className: 'highlight-line',
+                        line: 'highlight-next-line', // For single line
+                        block: { start: 'highlight-start', end: 'highlight-end' }, // For block
+                    },
                 ]
             },
             algolia: {
@@ -157,18 +213,19 @@ const config = {
             }
         }),
     plugins: [
+        [
+            "posthog-docusaurus",
+            {
+                apiKey: process.env.POSTHOG_API_KEY ?? true,
+                appUrl: "https://research.typewritermc.com",
+                enable_heatmaps: true,
+                enableInDevelopment: false,
+            },
+        ],
         "rive-loader",
-        // [
-        //     '@docusaurus/plugin-content-docs',
-        //     {
-        //         id: 'adapters',
-        //         path: 'adapters',
-        //         routeBasePath: 'adapters',
-        //         sidebarPath: require.resolve('./sidebars.js'),
-        //         editUrl:
-        //             'https://github.com/gabber235/TypeWriter/tree/main/documentation/',
-        //     },
-        // ]
+        require.resolve("./plugins/tailwind/index.js"),
+        require.resolve("./plugins/compression/index.js"),
+        require.resolve("./plugins/code-snippets/index.js"),
     ]
 };
 

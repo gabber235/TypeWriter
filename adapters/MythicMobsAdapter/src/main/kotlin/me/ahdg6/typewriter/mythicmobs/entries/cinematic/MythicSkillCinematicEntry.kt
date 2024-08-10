@@ -17,19 +17,18 @@ import me.gabber235.typewriter.entry.entries.CinematicAction
 import me.gabber235.typewriter.entry.entries.CinematicEntry
 import me.gabber235.typewriter.entry.entries.Segment
 import me.gabber235.typewriter.logger
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
-@Entry("mythicskill_cinematic", "Spawn a MythicMob during a cinematic", Colors.PURPLE, Icons.BOLT_LIGHTNING)
+@Entry("mythicskill_cinematic", "Trigger a MythicSkill during a cinematic", Colors.PURPLE, "fa6-solid:bolt-lightning")
 /**
  * The `Mythic Skill Cinematic` cinematic entry triggers a skill during a cinematic.
  *
  * :::caution
- * A skill itself needs to define the audience to be self using `audience=self`
+ * A skill itself needs to define the group to be self using `group=self`
  *
  * ### Example:
  * ```
- * - effect:particlesphere{particle=flame;amount=200;radius=2;audience=self} @self
+ * - effect:particlesphere{particle=flame;amount=200;radius=2;group=self} @self
  * ```
  * :::
  *
@@ -41,7 +40,7 @@ class MythicSkillCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    @Segments(Colors.PURPLE, Icons.BOLT_LIGHTNING)
+    @Segments(Colors.PURPLE, "fa6-solid:bolt-lightning")
     @InnerMax(Max(1))
     val segments: List<MythicSkillSegment> = emptyList(),
 ) : CinematicEntry {

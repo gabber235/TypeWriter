@@ -28,6 +28,7 @@ class BookNotifier extends StateNotifier<Book> {
   BookNotifier(super.state, {required this.ref});
   final Ref<Book> ref;
 
+  Book get book => state;
   set book(Book book) => state = book;
 
   @override
@@ -37,8 +38,11 @@ class BookNotifier extends StateNotifier<Book> {
   Future<void> createPage(
     String name, [
     PageType type = PageType.static,
+    String chapter = "",
+    int priority = 0,
   ]) async {
-    final page = Page(pageName: name, type: type);
+    final page =
+        Page(pageName: name, type: type, chapter: chapter, priority: priority);
     await ref.read(communicatorProvider).createPage(page);
     state = state.copyWith(
       pages: [...state.pages, page],
@@ -69,6 +73,13 @@ class BookNotifier extends StateNotifier<Book> {
     syncDeletePage(name);
   }
 
+  ///Moves an entry from one page to another.
+  Future<void> moveEntry(String entryId, String fromPage, String toPage) async {
+    if (fromPage == toPage) return;
+    await ref.read(communicatorProvider).moveEntry(entryId, fromPage, toPage);
+    syncMoveEntry(entryId, fromPage, toPage);
+  }
+
   /// Reloads the book from the server.
   Future<void> reload() async {
     return ref.read(communicatorProvider).fetchBook();
@@ -95,6 +106,26 @@ class BookNotifier extends StateNotifier<Book> {
           .where((p) => p.pageName != name)
           .map((p) => _fixPage(p, name, null))
           .toList(),
+    );
+  }
+
+  /// Only for internal use.
+  void syncMoveEntry(String entryId, String fromPage, String toPage) {
+    final from = state.pages.firstWhereOrNull((p) => p.pageName == fromPage);
+    final to = state.pages.firstWhereOrNull((p) => p.pageName == toPage);
+    if (from == null || to == null) return;
+
+    final entry = from.entries.firstWhereOrNull((e) => e.id == entryId);
+    if (entry == null) return;
+    state = state.copyWith(
+      pages: [
+        ...state.pages
+            .where((p) => p.pageName != fromPage && p.pageName != toPage),
+        from.copyWith(
+          entries: from.entries.where((e) => e.id != entryId).toList(),
+        ),
+        to.copyWith(entries: [...to.entries, entry]),
+      ],
     );
   }
 

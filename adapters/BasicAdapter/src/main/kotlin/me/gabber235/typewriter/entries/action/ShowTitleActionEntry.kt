@@ -7,16 +7,17 @@ import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.Placeholder
 import me.gabber235.typewriter.entry.Criteria
 import me.gabber235.typewriter.entry.Modifier
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.TriggerableEntry
 import me.gabber235.typewriter.entry.entries.ActionEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.asMini
 import net.kyori.adventure.title.Title
 import org.bukkit.entity.Player
 import java.time.Duration
 import java.util.*
 
-@Entry("show_title", "Show a title to a player", Colors.RED, Icons.ALIGN_CENTER)
+@Entry("show_title", "Show a title to a player", Colors.RED, "fluent:align-center-vertical-32-filled")
 /**
  * The `Show Title Action` is an action that shows a title to a player. You can specify the subtitle, and durations if needed.
  *
@@ -29,7 +30,7 @@ class ShowTitleActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Placeholder
     @Colored
     @Help("The title text to show.")

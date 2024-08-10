@@ -6,9 +6,8 @@ import lol.pyr.znpcsplus.api.npc.NpcEntry
 import lol.pyr.znpcsplus.api.skin.SkinDescriptor
 import lol.pyr.znpcsplus.util.NpcLocation
 import lol.pyr.znpcsplus.util.NpcPose
-import me.gabber235.typewriter.capture.capturers.ArmSwing
-import me.gabber235.typewriter.entry.entries.NpcData
-import me.gabber235.typewriter.extensions.protocollib.swingArm
+import me.gabber235.typewriter.extensions.packetevents.ArmSwing
+import me.gabber235.typewriter.logger
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
@@ -17,6 +16,15 @@ import java.util.*
 
 interface ZNPCData : NpcData<NpcEntry> {
     override fun spawn(player: Player, npc: NpcEntry, location: Location) {
+        if (player.world != location.world) {
+            logger.severe(
+                """|
+                |Player and NPC are not in the same world! Cannot spawn NPC. 
+                |(Player: ${player.world}, NPC: ${location.world})
+                |Make sure that the player is teleported before the NPC is spawned. 
+            """.trimMargin()
+            )
+        }
         npc.npc.location = NpcLocation(location)
         npc.isProcessed = false
         npc.isSave = false
@@ -38,9 +46,7 @@ interface ZNPCData : NpcData<NpcEntry> {
     }
 
     override fun handlePunching(player: Player, npc: NpcEntry, punching: ArmSwing) {
-        // TODD: Wait for ZNPCs API to add punching
-        // For now we directly send the packet
-        player.swingArm(npc.npc.packetEntityId, punching)
+        npc.npc.swingHand(punching.swingLeft)
     }
 
     override fun handleInventory(player: Player, npc: NpcEntry, slot: EquipmentSlot, itemStack: ItemStack) {
@@ -51,10 +57,11 @@ interface ZNPCData : NpcData<NpcEntry> {
             EquipmentSlot.CHEST -> "chestplate"
             EquipmentSlot.LEGS -> "leggings"
             EquipmentSlot.FEET -> "boots"
+            else -> "chestplate"
         }
 
         val property = NpcApiProvider.get().propertyRegistry.getByName(zNpcSlot, ItemStack::class.java)
-        npc.npc.setProperty(property, itemStack)
+        npc.npc.setItemProperty(property, itemStack)
     }
 
     override fun teardown(player: Player, npc: NpcEntry) {

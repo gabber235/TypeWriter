@@ -1,13 +1,13 @@
-name: Build Development Jars and Publish
+name: Build Beta Jars and Publish
 
 on: 
   workflow_dispatch:
   
 jobs:
   build-publish-development:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     concurrency:
-      group: build-publish-development
+      group: build-publish-beta
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
@@ -15,13 +15,13 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
       - name: Get version
         id: vars
         run: |
           version=$(cat version.txt)
           run_number=${{ github.run_number }}
-          full_version="${version}-dev-${run_number}"
+          full_version="${version}-beta-${run_number}"
           echo $full_version > version.txt
           echo "version=$full_version" >> $GITHUB_OUTPUT
       - name: Build Plugin
@@ -42,6 +42,10 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: MythicMobsAdapter
+      - name: Build EntityAdapter
+        uses: ./.github/actions/build-adapter
+        with:
+          adapter: EntityAdapter
       - name: Build RPGRegions Adapter
         uses: ./.github/actions/build-adapter
         with:
@@ -58,15 +62,7 @@ jobs:
         uses: ./.github/actions/build-adapter
         with:
           adapter: WorldGuardAdapter
-      - name: Build ZNPCsPlus Adapter
-        uses: ./.github/actions/build-adapter
-        with:
-          adapter: ZNPCsPlusAdapter
-      - name: Build FancyNpcs Adapter
-        uses: ./.github/actions/build-adapter
-        with:
-          adapter: FancyNpcsAdapter
-      - name: Publish Development Jars
+      - name: Publish Modrinth
         uses: Kir-Antipov/mc-publish@v3.3
         id: publish
         with:
@@ -83,10 +79,24 @@ jobs:
             paper
             purpur
           game-versions: |
-            1.19.4
-            [1.20, 1.20.4]
+            [1.20.3, 1.20.6]
           dependencies: |
             packetevents
+
+      - name: Publish Hangar
+        uses: gradle/gradle-build-action@v2
+        continue-on-error: true
+        env:
+          HANGAR_API_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}
+        with:
+          arguments: publishPluginPublicationToHangar --scan
+          build-root-directory: ./plugin
+      - name: Add Tag
+        uses: laputansoft/github-tag-action@v4.6
+        with:
+          github_token: ${{ env.github-token }}
+          default_bump: false
+          tag: "v${{ steps.vars.outputs.version }}"
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
         with:

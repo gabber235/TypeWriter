@@ -4,10 +4,15 @@ import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import me.gabber235.typewriter.adapters.editors.*
 import me.gabber235.typewriter.adapters.modifiers.StaticModifierComputer
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.entity.SkinProperty
+import me.gabber235.typewriter.logger
+import me.gabber235.typewriter.utils.Color
 import me.gabber235.typewriter.utils.CronExpression
 import me.gabber235.typewriter.utils.Item
 import me.gabber235.typewriter.utils.SoundId
 import me.gabber235.typewriter.utils.SoundSource
+import me.gabber235.typewriter.utils.Vector
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.potion.PotionEffectType
@@ -25,7 +30,7 @@ typealias GsonSerializer<T> = (T, Type, JsonSerializationContext) -> JsonElement
 typealias FieInfoGenerator = (TypeToken<*>) -> FieldInfo
 
 typealias DefaultGenerator = (TypeToken<*>) -> JsonElement
-typealias FieldModifierGenerator = (FieldInfo) -> FieldModifier?
+typealias FieldModifierGenerator = (TypeToken<*>, FieldInfo) -> FieldModifier?
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class CustomEditor(val klass: KClass<*>)
@@ -144,7 +149,7 @@ class ObjectEditor<T : Any>(val klass: KClass<T>, val name: String) {
     private var defaultGenerator: DefaultGenerator? = null
 
     /**
-     * Custom editors need a default value to be able to create new instances of the class they are editing.
+     * Custom editors need a default value to be able to create new instance of the class they are editing.
      *
      * Example:
      * ```kotlin
@@ -183,19 +188,28 @@ class ObjectEditor<T : Any>(val klass: KClass<T>, val name: String) {
      */
     operator fun FieldModifier?.unaryPlus() {
         if (this == null) return
-        modifiers.add { this }
+        modifiers.add { _, _ -> this }
     }
 
     infix fun <A : Annotation> StaticModifierComputer<A>.with(annotation: A) {
-        modifiers.add { this.computeModifier(annotation, it) }
+        modifiers.add { _, info ->
+            this.computeModifier(annotation, info).onFailure {
+                logger.warning("Failed to compute modifier for ${this.annotationClass::class.simpleName} with annotation $annotation: $it")
+                return@add null
+            }.getOrNull()
+        }
+    }
+
+    fun modifier(supplier: FieldModifierGenerator) {
+        modifiers.add(supplier)
     }
 
     /**
      * Generates the modifiers for this editor.
      * NOTE: This method is used internally and should not be accessed directly.
      */
-    internal fun generateModifiers(info: FieldInfo): List<FieldModifier> {
-        return modifiers.mapNotNull { it(info) }
+    internal fun generateModifiers(token: TypeToken<*>, info: FieldInfo): List<FieldModifier> {
+        return modifiers.mapNotNull { it(token, info) }
     }
 }
 
@@ -210,6 +224,11 @@ internal val customEditors by lazy {
         ObjectEditor<Item>::item,
         ObjectEditor<SoundId>::soundId,
         ObjectEditor<SoundSource>::soundSource,
+        ObjectEditor<Ref<*>>::entryReference,
+        ObjectEditor<SkinProperty>::skin,
+        ObjectEditor<Vector>::vector,
+        ObjectEditor<Color>::color,
+        ObjectEditor<ClosedFloatingPointRange<Float>>::floatRange,
     )
         .mapNotNull(::objectEditorFromFunction)
         .associateBy { it.klass }

@@ -33,7 +33,7 @@ sealed class FieldInfo {
                     fieldInfo = customEditor.generateFieldInfo(token),
                     default = customEditor.generateDefault(token),
                 ).apply {
-                    customEditor.generateModifiers(this).forEach { it.appendModifier(this) }
+                    customEditor.generateModifiers(token, this).forEach { it.appendModifier(this) }
                 }
             }
 

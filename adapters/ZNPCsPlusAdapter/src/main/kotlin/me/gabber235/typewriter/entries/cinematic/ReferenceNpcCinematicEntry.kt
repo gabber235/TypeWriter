@@ -2,23 +2,20 @@ package me.gabber235.typewriter.entries.cinematic
 
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entries.entity.ReferenceNpcEntry
 import me.gabber235.typewriter.entry.Criteria
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
 import me.gabber235.typewriter.entry.entries.CinematicAction
-import me.gabber235.typewriter.entry.entries.NpcCinematicAction
-import me.gabber235.typewriter.entry.entries.NpcCinematicEntry
-import me.gabber235.typewriter.entry.entries.NpcRecordedSegment
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 
+@Deprecated("Use the EntityAdapter instead")
 @Entry(
     "znpc_reference_npc_cinematic",
     "A reference to an existing npc specifically for cinematic",
     Colors.PINK,
-    Icons.USER_TIE
+    "fa-solid:user-tie"
 )
 /**
  * The `Reference NPC Cinematic` entry that plays a recorded animation back on a reference NPC.
@@ -35,12 +32,11 @@ class ReferenceNpcCinematicEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val recordedSegments: List<NpcRecordedSegment> = emptyList(),
     @Help("Reference npc to clone")
-    @EntryIdentifier(ReferenceNpcEntry::class)
-    val referenceNpc: String = "",
+    val referenceNpc: Ref<ReferenceNpcEntry> = emptyRef(),
 ) : NpcCinematicEntry {
     override fun create(player: Player): CinematicAction {
-        val referenceNpc =
-            Query.findById<ReferenceNpcEntry>(this.referenceNpc) ?: throw Exception("Reference npc not found")
+        if (!referenceNpc.isSet) throw Exception("Reference npc is not set for $id ($name)")
+        val referenceNpc = referenceNpc.get() ?: throw Exception("Reference npc '$referenceNpc' not found")
 
         return NpcCinematicAction(
             player,

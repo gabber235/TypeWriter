@@ -3,16 +3,13 @@ package me.gabber235.typewriter.entries.event
 import lol.pyr.znpcsplus.api.event.NpcInteractEvent
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
-import me.gabber235.typewriter.adapters.modifiers.EntryIdentifier
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entries.entity.ZNPC
-import me.gabber235.typewriter.entry.EntryListener
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.startDialogueWithOrNextDialogue
-import me.gabber235.typewriter.utils.Icons
 
-@Entry("znpc_on_npc_interact", "When a player clicks on an NPC", Colors.YELLOW, Icons.PEOPLE_ROBBERY)
+@Deprecated("Use the EntityAdapter instead")
+@Entry("znpc_on_npc_interact", "When a player clicks on an NPC", Colors.YELLOW, "fa6-solid:people-robbery")
 /**
  * The `NPC Interact Event` is fired when a player interacts with an NPC.
  *
@@ -23,20 +20,19 @@ import me.gabber235.typewriter.utils.Icons
 class NpcInteractEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
-    @EntryIdentifier(ZNPC::class)
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The identifier of the NPC.")
     // The NPC that needs to be interacted with.
-    val identifier: String = "",
+    val identifier: Ref<ZNPC> = emptyRef()
 ) : EventEntry
 
 
 @EntryListener(NpcInteractEventEntry::class)
 fun onNpcInteract(event: NpcInteractEvent, query: Query<NpcInteractEventEntry>) {
-    val entries: List<ZNPC> = Query findWhere { it.id == event.entry.id }
-    val identifiers = entries.map { it.id }
+    val entries: Sequence<ZNPC> = Query findWhere { it.id == event.entry.id }
+    val identifiers = entries.map { it.id }.toList()
 
     query findWhere {
-        it.identifier in identifiers
+        it.identifier.id in identifiers
     } startDialogueWithOrNextDialogue event.player
 }

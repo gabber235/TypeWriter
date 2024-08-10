@@ -8,13 +8,12 @@ import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
-import "package:typewriter/widgets/inspector/headers/capture_action.dart";
 import "package:typewriter/widgets/inspector/headers/colored_action.dart";
-import "package:typewriter/widgets/inspector/headers/entry_selector_action.dart";
+import "package:typewriter/widgets/inspector/headers/content_mode_action.dart";
 import "package:typewriter/widgets/inspector/headers/help_action.dart";
 import "package:typewriter/widgets/inspector/headers/length_action.dart";
-import "package:typewriter/widgets/inspector/headers/multiline_action.dart";
 import "package:typewriter/widgets/inspector/headers/placeholder_action.dart";
+import "package:typewriter/widgets/inspector/headers/regex_action.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
 
 part "header.g.dart";
@@ -44,7 +43,7 @@ class FieldHeader extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final parent = Header.of(context);
+    final parent = Header.maybeOf(context);
 
     // If there already is a header for this path, we don't need to create a new
     if (parent?.path == path) {
@@ -59,66 +58,83 @@ class FieldHeader extends HookConsumerWidget {
         ref.watch(pathDisplayNameProvider(path)).nullIfEmpty ?? "Fields";
 
     final expanded = useState(defaultExpanded);
+    final depth = (parent?.depth ?? -1) + 1;
 
     return Header(
+      key: ValueKey(path),
       path: path,
       expanded: expanded,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Material(
-            borderRadius: BorderRadius.circular(4),
-            clipBehavior: Clip.none,
-            child: InkWell(
+      canExpand: canExpand,
+      depth: depth,
+      child: Material(
+        color: canExpand
+            ? depth.isEven
+                ? Theme.of(context).colorScheme.surface
+                : Theme.of(context).colorScheme.surfaceContainer
+            : Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Material(
               borderRadius: BorderRadius.circular(4),
-              onTap: canExpand ? () => expanded.value = !expanded.value : null,
-              child: WritersIndicator(
-                enabled: canExpand && !expanded.value,
-                provider: fieldWritersProvider(path),
-                offset: canExpand ? const Offset(50, 25) : const Offset(15, 15),
-                child: Row(
-                  children: [
-                    if (canExpand)
-                      Icon(
-                        expanded.value ? Icons.expand_less : Icons.expand_more,
+              clipBehavior: Clip.none,
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(4),
+                onTap:
+                    canExpand ? () => expanded.value = !expanded.value : null,
+                child: WritersIndicator(
+                  enabled: canExpand && !expanded.value,
+                  provider: fieldWritersProvider(path),
+                  offset:
+                      canExpand ? const Offset(50, 25) : const Offset(15, 15),
+                  child: Row(
+                    children: [
+                      if (canExpand)
+                        Icon(
+                          expanded.value
+                              ? Icons.expand_less
+                              : Icons.expand_more,
+                        ),
+                      ...createActions(
+                        availableActions,
+                        HeaderActionLocation.leading,
                       ),
-                    ...createActions(
-                      availableActions,
-                      HeaderActionLocation.leading,
-                    ),
-                    SectionTitle(
-                      title: name,
-                    ),
-                    ...createActions(
-                      availableActions,
-                      HeaderActionLocation.trailing,
-                    ),
-                    const Spacer(),
-                    ...createActions(
-                      availableActions,
-                      HeaderActionLocation.actions,
-                    ),
-                  ],
+                      SectionTitle(
+                        title: name,
+                      ),
+                      ...createActions(
+                        availableActions,
+                        HeaderActionLocation.trailing,
+                      ),
+                      const Spacer(),
+                      ...createActions(
+                        availableActions,
+                        HeaderActionLocation.actions,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          if (canExpand)
-            Collapsible(
-              collapsed: !expanded.value,
-              axis: CollapsibleAxis.vertical,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: child,
-              ),
-            )
-          else
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: child,
-            ),
-        ],
+            if (canExpand)
+              Collapsible(
+                collapsed: !expanded.value,
+                axis: CollapsibleAxis.vertical,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                  child: child,
+                ),
+              )
+            else
+              child,
+          ],
+        ),
       ),
     );
   }
@@ -151,17 +167,21 @@ class Header extends InheritedWidget {
   const Header({
     required this.path,
     required this.expanded,
+    required this.canExpand,
     required super.child,
+    required this.depth,
     super.key,
   });
 
   final String path;
   final ValueNotifier<bool> expanded;
+  final bool canExpand;
+  final int depth;
 
   @override
   bool updateShouldNotify(covariant Header oldWidget) => path != oldWidget.path;
 
-  static Header? of(BuildContext context) =>
+  static Header? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<Header>();
 }
 
@@ -172,8 +192,7 @@ List<HeaderActionFilter> headerActionFilters(HeaderActionFiltersRef ref) => [
       PlaceholderHeaderActionFilter(),
       RegexHeaderActionFilter(),
       LengthHeaderActionFilter(),
-      EntrySelectorHeaderActionFilter(),
-      CaptureHeaderActionFilter(),
+      ContentModeHeaderActionFilter(),
     ];
 
 abstract class HeaderActionFilter {

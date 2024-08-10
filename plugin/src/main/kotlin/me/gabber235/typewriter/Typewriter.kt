@@ -1,29 +1,38 @@
 package me.gabber235.typewriter
 
+import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
+import dev.jorel.commandapi.CommandAPI
+import dev.jorel.commandapi.CommandAPIBukkitConfig
 import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
 import me.gabber235.typewriter.adapters.AdapterLoader
 import me.gabber235.typewriter.adapters.AdapterLoaderImpl
-import me.gabber235.typewriter.capture.Recorders
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.dialogue.MessengerFinder
+import me.gabber235.typewriter.entry.entity.EntityHandler
+import me.gabber235.typewriter.entry.entries.createRoadNetworkParser
+import me.gabber235.typewriter.entry.roadnetwork.RoadNetworkManager
 import me.gabber235.typewriter.extensions.bstats.BStatsMetrics
 import me.gabber235.typewriter.extensions.modrinth.Modrinth
-import me.gabber235.typewriter.extensions.placeholderapi.TypewriteExpansion
+import me.gabber235.typewriter.extensions.placeholderapi.PlaceholderExpansion
 import me.gabber235.typewriter.facts.FactDatabase
 import me.gabber235.typewriter.facts.FactStorage
 import me.gabber235.typewriter.facts.storage.FileFactStorage
 import me.gabber235.typewriter.interaction.ActionBarBlockerHandler
 import me.gabber235.typewriter.interaction.ChatHistoryHandler
 import me.gabber235.typewriter.interaction.InteractionHandler
+import me.gabber235.typewriter.interaction.PacketInterceptor
 import me.gabber235.typewriter.snippets.SnippetDatabase
 import me.gabber235.typewriter.snippets.SnippetDatabaseImpl
-import me.gabber235.typewriter.ui.*
+import me.gabber235.typewriter.ui.ClientSynchronizer
+import me.gabber235.typewriter.ui.CommunicationHandler
+import me.gabber235.typewriter.ui.PanelHost
+import me.gabber235.typewriter.ui.Writers
 import me.gabber235.typewriter.utils.createBukkitDataParser
-import me.gabber235.typewriter.utils.syncCommands
 import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.context.GlobalContext.startKoin
@@ -48,48 +57,57 @@ class Typewriter : KotlinPlugin(), KoinComponent {
                     {
                         named("plugin")
                         bind<Plugin>()
+                        bind<JavaPlugin>()
                         createdAtStart()
                     }
 
             singleOf<AdapterLoader>(::AdapterLoaderImpl)
             singleOf<EntryDatabase>(::EntryDatabaseImpl)
             singleOf<StagingManager>(::StagingManagerImpl)
-            singleOf<ClientSynchronizer>(::ClientSynchronizerImpl)
-            singleOf<InteractionHandler>(::InteractionHandler)
-            singleOf<MessengerFinder>(::MessengerFinder)
-            singleOf<CommunicationHandler>(::CommunicationHandler)
-            singleOf<Writers>(::Writers)
-            singleOf<PanelHost>(::PanelHost)
+            singleOf(::ClientSynchronizer)
+            singleOf(::InteractionHandler)
+            singleOf(::MessengerFinder)
+            singleOf(::CommunicationHandler)
+            singleOf(::Writers)
+            singleOf(::PanelHost)
             singleOf<SnippetDatabase>(::SnippetDatabaseImpl)
-            singleOf<FactDatabase>(::FactDatabase)
+            singleOf(::FactDatabase)
             singleOf<FactStorage>(::FileFactStorage)
-            singleOf<EntryListeners>(::EntryListeners)
-            singleOf<Recorders>(::Recorders)
+            singleOf(::EntryListeners)
+            singleOf(::AudienceManager)
             singleOf<AssetStorage>(::LocalAssetStorage)
             singleOf<AssetManager>(::AssetManager)
-            single { ChatHistoryHandler(get()) }
-            single { ActionBarBlockerHandler(get()) }
+            singleOf(::ChatHistoryHandler)
+            singleOf(::ActionBarBlockerHandler)
+            singleOf(::PacketInterceptor)
+            singleOf(::EntityHandler)
+            singleOf(::RoadNetworkManager)
             factory<Gson>(named("entryParser")) { createEntryParserGson(get()) }
             factory<Gson>(named("bukkitDataParser")) { createBukkitDataParser() }
+            factory<Gson>(named("roadNetworkParser")) { createRoadNetworkParser() }
         }
         startKoin {
             modules(modules)
             logger(MinecraftLogger(logger))
         }
 
+        CommandAPI.onLoad(CommandAPIBukkitConfig(this).usePluginNamespace().skipReloadDatapacks(true))
+
         get<AdapterLoader>().loadAdapters()
     }
 
     override suspend fun onEnableAsync() {
+        CommandAPI.onEnable()
         typeWriterCommand()
 
-        if (!server.pluginManager.isPluginEnabled("ProtocolLib")) {
-            logger.warning(
-                "ProtocolLib is not enabled, Typewriter will not work without it. Shutting down..."
-            )
+        if (!server.pluginManager.isPluginEnabled("packetevents")) {
+            logger.warning("PacketEvents is not enabled, Typewriter will not work without it. Shutting down...")
             server.pluginManager.disablePlugin(this)
             return
         }
+
+        PacketEvents.getAPI().settings.downsampleColors(false)
+
 
         get<EntryDatabase>().initialize()
         get<StagingManager>().initialize()
@@ -98,13 +116,16 @@ class Typewriter : KotlinPlugin(), KoinComponent {
         get<MessengerFinder>().initialize()
         get<ChatHistoryHandler>().initialize()
         get<ActionBarBlockerHandler>().initialize()
+        get<PacketInterceptor>().initialize()
         get<AssetManager>().initialize()
+        get<EntityHandler>().initialize()
+        get<AudienceManager>().initialize()
+        get<RoadNetworkManager>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
-            TypewriteExpansion.register()
+            PlaceholderExpansion.register()
         }
 
-        syncCommands()
         BStatsMetrics.registerMetrics()
 
         // We want to initialize all the adapters after all the plugins have been enabled to make
@@ -124,14 +145,20 @@ class Typewriter : KotlinPlugin(), KoinComponent {
     val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
 
     override suspend fun onDisableAsync() {
+        CommandAPI.onDisable()
+        get<AdapterLoader>().shutdown()
         get<StagingManager>().shutdown()
+        get<EntityHandler>().shutdown()
+        get<RoadNetworkManager>().shutdown()
         get<ChatHistoryHandler>().shutdown()
         get<ActionBarBlockerHandler>().shutdown()
+        get<PacketInterceptor>().shutdown()
         get<CommunicationHandler>().shutdown()
         get<InteractionHandler>().shutdown()
         get<EntryListeners>().unregister()
         get<FactDatabase>().shutdown()
         get<AssetManager>().shutdown()
+        get<AudienceManager>().shutdown()
     }
 }
 
@@ -163,4 +190,4 @@ fun java.util.logging.Level?.convertLogger(): Level {
 
 val logger: Logger by lazy { plugin.logger }
 
-val plugin: Plugin by lazy { KoinJavaComponent.get(Plugin::class.java) }
+val plugin: JavaPlugin by lazy { KoinJavaComponent.get(JavaPlugin::class.java) }

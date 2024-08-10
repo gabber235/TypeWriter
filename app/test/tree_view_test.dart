@@ -20,6 +20,7 @@ void main() {
 
     final innerNode = node.children.first as InnerTreeNode<Pair>;
     expect(innerNode.name, equals("some.simple.path"));
+    expect(innerNode.path, equals("some.simple.path"));
     expect(innerNode.children, hasLength(1));
     expect(innerNode.children.first, isA<LeafTreeNode<Pair>>());
 
@@ -58,6 +59,7 @@ void main() {
 
     final innerNode = node.children.first as InnerTreeNode<Pair>;
     expect(innerNode.name, equals("some.simple.path"));
+    expect(innerNode.path, equals("some.simple.path"));
     expect(innerNode.children, hasLength(2));
     expect(innerNode.children.first, isA<LeafTreeNode<Pair>>());
     expect(innerNode.children.last, isA<LeafTreeNode<Pair>>());
@@ -82,6 +84,7 @@ void main() {
 
     final innerNode1 = node.children.first as InnerTreeNode<Pair>;
     expect(innerNode1.name, equals("simple.path"));
+    expect(innerNode1.path, equals("simple.path"));
     expect(innerNode1.children, hasLength(1));
     expect(innerNode1.children.first, isA<LeafTreeNode<Pair>>());
 
@@ -90,6 +93,7 @@ void main() {
 
     final innerNode2 = node.children.last as InnerTreeNode<Pair>;
     expect(innerNode2.name, equals("other.path"));
+    expect(innerNode2.path, equals("other.path"));
     expect(innerNode2.children, hasLength(1));
     expect(innerNode2.children.first, isA<LeafTreeNode<Pair>>());
 
@@ -110,12 +114,14 @@ void main() {
     final innerNode = node.children.first as InnerTreeNode<Pair>;
 
     expect(innerNode.name, equals("some"));
+    expect(innerNode.path, equals("some"));
     expect(innerNode.children, hasLength(2));
     expect(innerNode.children.first, isA<InnerTreeNode<Pair>>());
     expect(innerNode.children.last, isA<InnerTreeNode<Pair>>());
 
     final innerNode1 = innerNode.children.first as InnerTreeNode<Pair>;
     expect(innerNode1.name, equals("simple.path"));
+    expect(innerNode1.path, equals("some.simple.path"));
     expect(innerNode1.children, hasLength(1));
     expect(innerNode1.children.first, isA<LeafTreeNode<Pair>>());
 
@@ -124,6 +130,7 @@ void main() {
 
     final innerNode2 = innerNode.children.last as InnerTreeNode<Pair>;
     expect(innerNode2.name, equals("other.path"));
+    expect(innerNode2.path, equals("some.other.path"));
     expect(innerNode2.children, hasLength(1));
     expect(innerNode2.children.first, isA<LeafTreeNode<Pair>>());
 
@@ -148,6 +155,7 @@ void main() {
     final innerNode = node.children.first as InnerTreeNode<Pair>;
 
     expect(innerNode.name, equals("some.simple.path"));
+    expect(innerNode.path, equals("some.simple.path"));
     expect(innerNode.children, hasLength(2));
     expect(innerNode.children.first, isA<LeafTreeNode<Pair>>());
     expect(innerNode.children.last, isA<InnerTreeNode<Pair>>());
@@ -157,6 +165,7 @@ void main() {
 
     final innerNode2 = innerNode.children.last as InnerTreeNode<Pair>;
     expect(innerNode2.name, equals("other"));
+    expect(innerNode2.path, equals("some.simple.path.other"));
     expect(innerNode2.children, hasLength(1));
     expect(innerNode2.children.first, isA<LeafTreeNode<Pair>>());
 
@@ -181,6 +190,7 @@ void main() {
     final innerNode = node.children.first as InnerTreeNode<Pair>;
 
     expect(innerNode.name, equals("some.simple.path"));
+    expect(innerNode.path, equals("some.simple.path"));
     expect(innerNode.children, hasLength(2));
     expect(innerNode.children.first, isA<InnerTreeNode<Pair>>());
     expect(innerNode.children.last, isA<LeafTreeNode<Pair>>());
@@ -190,6 +200,7 @@ void main() {
 
     final innerNode2 = innerNode.children.first as InnerTreeNode<Pair>;
     expect(innerNode2.name, equals("other"));
+    expect(innerNode2.path, equals("some.simple.path.other"));
     expect(innerNode2.children, hasLength(1));
     expect(innerNode2.children.first, isA<LeafTreeNode<Pair>>());
 

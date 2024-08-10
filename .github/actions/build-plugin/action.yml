@@ -12,6 +12,10 @@ runs:
         run: flutter pub get
         shell: bash
         working-directory: ./app
+      - name: Run Lint
+        run: flutter analyze
+        shell: bash
+        working-directory: ./app
       - name: Run tests
         run: flutter test
         shell: bash

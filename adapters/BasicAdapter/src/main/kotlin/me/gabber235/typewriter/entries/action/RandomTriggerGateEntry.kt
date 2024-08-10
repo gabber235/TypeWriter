@@ -5,11 +5,10 @@ import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
-import me.gabber235.typewriter.entry.entries.*
-import me.gabber235.typewriter.utils.Icons
+import me.gabber235.typewriter.entry.entries.CustomTriggeringActionEntry
 import org.bukkit.entity.Player
 
-@Entry("random_trigger", "Randomly selects its connected triggers", Colors.PINK, Icons.CLOVER)
+@Entry("random_trigger", "Randomly selects its connected triggers", Colors.PINK, "mdi:clover")
 /**
  * The `Random Trigger Gate` is a gate that triggers a specified number of entries randomly. This gate provides you with the ability to randomly select and trigger a set number of entries in response to a specific event.
  *
@@ -21,7 +20,7 @@ class RandomTriggerGateEntry(
     override val id: String,
     override val name: String,
     @SerializedName("triggers")
-    override val customTriggers: List<String> = emptyList(),
+    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
     override val criteria: List<Criteria>,
     override val modifiers: List<Modifier>,
     @Help("The amount of triggers to fire.")
@@ -29,7 +28,7 @@ class RandomTriggerGateEntry(
 ) : CustomTriggeringActionEntry {
 
     override fun execute(player: Player) {
-        val selectedTriggers = mutableListOf<String>()
+        val selectedTriggers = mutableListOf<Ref<TriggerableEntry>>()
 
         if (customTriggers.isNotEmpty()) {
             val randomIndices = (customTriggers.indices).shuffled().take(amount)

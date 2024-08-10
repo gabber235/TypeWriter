@@ -1,17 +1,18 @@
 package com.caleb.typewriter.combatlogx.entries.fact
 
 import com.caleb.typewriter.combatlogx.CombatLogXAdapter
-import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
+import me.gabber235.typewriter.entry.Ref
+import me.gabber235.typewriter.entry.emptyRef
+import me.gabber235.typewriter.entry.entries.GroupEntry
 import me.gabber235.typewriter.entry.entries.ReadableFactEntry
-import me.gabber235.typewriter.facts.Fact
-import me.gabber235.typewriter.utils.Icons
-import java.util.*
+import me.gabber235.typewriter.facts.FactData
+import org.bukkit.entity.Player
 
-@Entry("combat_fact", "If the player is in combat", Colors.PURPLE, Icons.SHIELD_HALVED)
+@Entry("combat_fact", "If the player is in combat", Colors.PURPLE, "fa6-solid:shield-halved")
 /**
- * A [fact](/docs/facts) that tells whether a player is in combat.
+ * A [fact](/docs/creating-stories/facts) that tells whether a player is in combat.
  *
  * <fields.ReadonlyFactInfo/>
  *
@@ -23,12 +24,12 @@ class CombatFactEntry(
     override val id: String = "",
     override val name: String = "",
     override val comment: String = "",
+    override val group: Ref<GroupEntry> = emptyRef(),
 ) : ReadableFactEntry {
-    override fun read(playerId: UUID): Fact {
-        val combatLogger = CombatLogXAdapter.getAPI() ?: return Fact(id, 0)
-        val player = server.getPlayer(playerId) ?: return Fact(id, 0)
+    override fun readSinglePlayer(player: Player): FactData {
+        val combatLogger = CombatLogXAdapter.getAPI() ?: return FactData(0)
         val value = if (combatLogger.combatManager.isInCombat(player)) 1 else 0
 
-        return Fact(id, value)
+        return FactData(value)
     }
 }

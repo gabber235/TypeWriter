@@ -3,17 +3,14 @@ package me.gabber235.typewriter.entries.event
 import me.gabber235.typewriter.adapters.Colors
 import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
-import me.gabber235.typewriter.entry.EntryListener
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.triggerAllFor
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause
 import org.bukkit.event.entity.EntityDeathEvent
 import java.util.*
 
-@Entry("on_player_death", "When a player dies", Colors.YELLOW, Icons.SKULL_CROSSBONES)
+@Entry("on_player_death", "When a player dies", Colors.YELLOW, "fa6-solid:skull-crossbones")
 /**
  * The `Player Death Event` is fired when any player dies. This event allows you to select the cause of death if you wish. If you want to detect when another player kills a player, use the [`Player Kill Player Event`](on_player_kill_player).
  *
@@ -24,7 +21,7 @@ import java.util.*
 class PlayerDeathEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The cause of the death.")
     // If specified, the death cause must match the cause of death in order for the event to trigger.
     val deathCause: Optional<DamageCause> = Optional.empty()

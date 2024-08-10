@@ -6,13 +6,12 @@ import me.gabber235.typewriter.entries.dialogue.SpokenDialogueEntry
 import me.gabber235.typewriter.entry.dialogue.DialogueMessenger
 import me.gabber235.typewriter.entry.dialogue.MessengerState
 import me.gabber235.typewriter.entry.dialogue.confirmationKey
+import me.gabber235.typewriter.entry.dialogue.typingDurationType
 import me.gabber235.typewriter.entry.entries.DialogueEntry
 import me.gabber235.typewriter.extensions.placeholderapi.parsePlaceholders
 import me.gabber235.typewriter.interaction.chatHistory
 import me.gabber235.typewriter.snippets.snippet
-import me.gabber235.typewriter.utils.asMiniWithResolvers
-import me.gabber235.typewriter.utils.asPartialFormattedMini
-import me.gabber235.typewriter.utils.toTicks
+import me.gabber235.typewriter.utils.*
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -38,8 +37,8 @@ val spokenInstructionHighlightColor: String by snippet("dialogue.spoken.instruct
 val spokenPadding: String by snippet("dialogue.spoken.padding", "    ")
 val spokenMinLines: Int by snippet("dialogue.spoken.minLines", 3)
 val spokenMaxLineLength: Int by snippet("dialogue.spoken.maxLineLength", 40)
-val spokenInstructionTicksHighlighted: Int by snippet("dialogue.spoken.instruction.ticks.highlighted", 10)
-val spokenInstructionTicksBase: Int by snippet("dialogue.spoken.instruction.ticks.base", 30)
+val spokenInstructionTicksHighlighted: Long by snippet("dialogue.spoken.instruction.ticks.highlighted", 10)
+val spokenInstructionTicksBase: Long by snippet("dialogue.spoken.instruction.ticks.base", 30)
 
 
 @Messenger(SpokenDialogueEntry::class)
@@ -51,18 +50,26 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
     }
 
     private var speakerDisplayName = ""
+    private var text = ""
     override fun init() {
         super.init()
-        speakerDisplayName = entry.speakerDisplayName
+        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
+        text = entry.text.parsePlaceholders(player)
 
-        confirmationKey.listen(listener, player.uniqueId) {
+        confirmationKey.listen(this, player.uniqueId) {
             state = MessengerState.FINISHED
         }
     }
 
-    override fun tick(cycle: Int) {
+    override fun tick(playTime: Duration) {
         if (state != MessengerState.RUNNING) return
-        player.sendSpokenDialogue(entry.text, speakerDisplayName, entry.duration, cycle, triggers.isEmpty())
+        player.sendSpokenDialogue(
+            text,
+            speakerDisplayName,
+            entry.duration,
+            playTime,
+            triggers.isEmpty()
+        )
     }
 }
 
@@ -70,37 +77,43 @@ fun Player.sendSpokenDialogue(
     text: String,
     speakerDisplayName: String,
     duration: Duration,
-    cycle: Int,
+    playTime: Duration,
     canFinish: Boolean
 ) {
-    val durationInTicks = duration.toTicks()
+    val rawText = text.stripped()
+    val playedTicks = playTime.toTicks()
+    val durationInTicks = typingDurationType.totalDuration(rawText, duration).toTicks()
 
-    val percentage = (cycle / durationInTicks.toDouble())
+    val percentage = typingDurationType.calculatePercentage(playTime, duration, rawText)
 
     val totalInstructionDuration = spokenInstructionTicksHighlighted + spokenInstructionTicksBase
-    val instructionCycle = cycle % totalInstructionDuration
-    if (percentage > 1) {
+    val instructionCycle = playedTicks % totalInstructionDuration
+    // When the messages is send we don't want to keep sending the message every tick.
+    // However, we only start reducing after the message has been displayed fully.
+    if (percentage > 1.1) {
         // Change in highlight color
-        val shouldDisplay = instructionCycle == 0 || instructionCycle == spokenInstructionTicksHighlighted
+        val shouldDisplay = instructionCycle == 0L || instructionCycle == spokenInstructionTicksHighlighted
         if (!shouldDisplay) return
     }
 
-    val highlightStarted = cycle > durationInTicks * 2.5
+    val highlightStarted = playedTicks > durationInTicks * 2.5
     val needsHighlight = instructionCycle < spokenInstructionTicksHighlighted
     val nextColor =
         if (highlightStarted && needsHighlight) spokenInstructionHighlightColor else spokenInstructionBaseColor
 
     val continueOrFinish = if (canFinish) spokenInstructionFinishText else spokenInstructionNextText
 
-    val message = text.parsePlaceholders(this).asPartialFormattedMini(
+    val resultingLines = rawText.limitLineLength(spokenMaxLineLength).lineCount
+
+    val message = text.asPartialFormattedMini(
         percentage,
         padding = spokenPadding,
-        minLines = spokenMinLines,
+        minLines = spokenMinLines.coerceAtLeast(resultingLines),
         maxLineLength = spokenMaxLineLength
     )
 
     val component = spokenFormat.asMiniWithResolvers(
-        Placeholder.parsed("speaker", speakerDisplayName.parsePlaceholders(this)),
+        Placeholder.parsed("speaker", speakerDisplayName),
         Placeholder.component("message", message),
         Placeholder.parsed("next_color", nextColor),
         Placeholder.parsed("finish_text", continueOrFinish),

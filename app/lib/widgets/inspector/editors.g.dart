@@ -172,7 +172,7 @@ class _FieldValueProviderElement extends AutoDisposeProviderElement<dynamic>
   dynamic get defaultValue => (origin as FieldValueProvider).defaultValue;
 }
 
-String _$editorFiltersHash() => r'd65a7ab818dcdaa709c8817d39a28e9fb1157851';
+String _$editorFiltersHash() => r'257c04ecec1da6467c1e408a9bdae5f78a62aceb';
 
 /// See also [editorFilters].
 @ProviderFor(editorFilters)

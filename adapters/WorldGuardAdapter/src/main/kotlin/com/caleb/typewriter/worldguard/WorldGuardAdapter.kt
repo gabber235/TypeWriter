@@ -4,14 +4,14 @@ import App
 import com.sk89q.worldguard.WorldGuard
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.Adapter
-import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.TypewriterAdapter
 import me.gabber235.typewriter.logger
 
 @Adapter("WorldGuard", "For Using WorldGuard", App.VERSION)
 /**
  * The WorldGuard Adapter allows you to create dialogue that is triggered by WorldGuard regions.
  */
-object WorldGuardAdapter : TypewriteAdapter() {
+object WorldGuardAdapter : TypewriterAdapter() {
 
     override fun initialize() {
         if (!server.pluginManager.isPluginEnabled("WorldGuard")) {

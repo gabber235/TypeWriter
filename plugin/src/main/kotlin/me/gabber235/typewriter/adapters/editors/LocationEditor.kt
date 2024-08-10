@@ -1,18 +1,18 @@
 package me.gabber235.typewriter.adapters.editors
 
 import com.google.gson.JsonObject
+import lirand.api.extensions.server.mainWorld
 import lirand.api.extensions.server.server
 import me.gabber235.typewriter.adapters.CustomEditor
 import me.gabber235.typewriter.adapters.ObjectEditor
-import me.gabber235.typewriter.adapters.modifiers.Capture
-import me.gabber235.typewriter.adapters.modifiers.CaptureModifierComputer
-import me.gabber235.typewriter.capture.CapturerCreator
-import me.gabber235.typewriter.capture.ImmediateFieldCapturer
-import me.gabber235.typewriter.capture.RecorderRequestContext
-import me.gabber235.typewriter.capture.capturers.LocationSnapshotCapturer
+import me.gabber235.typewriter.adapters.modifiers.ContentEditor
+import me.gabber235.typewriter.adapters.modifiers.ContentEditorModifierComputer
+import me.gabber235.typewriter.content.ContentContext
+import me.gabber235.typewriter.content.modes.ImmediateFieldValueContentMode
 import me.gabber235.typewriter.utils.logErrorIfNull
-import me.gabber235.typewriter.utils.ok
+import me.gabber235.typewriter.utils.round
 import org.bukkit.Location
+import org.bukkit.entity.Player
 
 @CustomEditor(Location::class)
 fun ObjectEditor<Location>.location() = reference {
@@ -46,7 +46,7 @@ fun ObjectEditor<Location>.location() = reference {
                         ) { "'${it.name}'" }
                     }"
                 )
-            ?: server.worlds.firstOrNull()
+            ?: server.mainWorld
         Location(bukkitWorld, x, y, z, yaw, pitch)
     }
 
@@ -62,14 +62,20 @@ fun ObjectEditor<Location>.location() = reference {
         obj
     }
 
-    CaptureModifierComputer with Capture(LocationFieldCapturer::class)
+    ContentEditorModifierComputer with ContentEditor(LocationContentMode::class)
 }
 
-class LocationFieldCapturer(title: String, entryId: String, fieldPath: String) :
-    ImmediateFieldCapturer<Location>(title, entryId, fieldPath, LocationSnapshotCapturer(title)) {
-    companion object : CapturerCreator<LocationFieldCapturer> {
-        override fun create(context: RecorderRequestContext): Result<LocationFieldCapturer> {
-            return ok(LocationFieldCapturer(context.title, context.entryId, context.fieldPath))
-        }
+class LocationContentMode(context: ContentContext, player: Player) :
+    ImmediateFieldValueContentMode<Location>(context, player) {
+    override fun value(): Location {
+        val location = player.location
+        val world = location.world
+        val x = location.x.round(2)
+        val y = location.y.round(2)
+        val z = location.z.round(2)
+        val yaw = location.yaw.round(2)
+        val pitch = location.pitch.round(2)
+
+        return Location(world, x, y, z, yaw, pitch)
     }
 }

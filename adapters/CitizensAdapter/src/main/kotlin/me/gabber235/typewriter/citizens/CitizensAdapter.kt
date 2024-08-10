@@ -2,7 +2,8 @@ package me.gabber235.typewriter.citizens
 
 import App
 import me.gabber235.typewriter.adapters.Adapter
-import me.gabber235.typewriter.adapters.TypewriteAdapter
+import me.gabber235.typewriter.adapters.TypewriterAdapter
+import me.gabber235.typewriter.adapters.Unsupported
 import me.gabber235.typewriter.logger
 import me.gabber235.typewriter.plugin
 import net.citizensnpcs.api.CitizensAPI
@@ -12,11 +13,12 @@ import net.citizensnpcs.api.npc.NPCDataStore
 import net.citizensnpcs.api.npc.NPCRegistry
 import net.citizensnpcs.api.trait.TraitInfo
 
+@Unsupported
 @Adapter("Citizens", "For the Citizens plugin", App.VERSION)
 /**
  * The Citizens adapter allows you to create custom interactions with NPCs.
  */
-object CitizensAdapter : TypewriteAdapter() {
+object CitizensAdapter : TypewriterAdapter() {
     private var tmpRegistry: NPCRegistry? = null
     val temporaryRegistry: NPCRegistry
         get() = tmpRegistry ?: CitizensAPI.createAnonymousNPCRegistry(MemoryNPCDataStore()).also { tmpRegistry = it }
@@ -32,6 +34,8 @@ object CitizensAdapter : TypewriteAdapter() {
     }
 
     override fun shutdown() {
+        // If citizens is not enabled, we don't need to do anything
+        if (!CitizensAPI.hasImplementation()) return
         CitizensAPI.getTraitFactory().deregisterTrait(TraitInfo.create(TypewriterTrait::class.java))
         tmpRegistry?.deregisterAll()
         tmpRegistry = null

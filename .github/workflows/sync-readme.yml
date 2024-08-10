@@ -1,0 +1,20 @@
+name: Sync README
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/sync-readme.yml
+      - README.md
+
+jobs:
+  modrinth-desc:
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: actions/checkout@v3
+    - uses: funnyboy-roks/modrinth-auto-desc@v1.5
+      with:
+        auth-token: ${{ secrets.MODRINTH_TOKEN }}
+        slug: 'typewriter'

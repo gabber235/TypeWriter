@@ -4,7 +4,9 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/current_editing_field.dart";
 
 /// The current state of the duration editor
@@ -37,7 +39,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
     this.controller,
     this.focusNode,
     this.name = "",
-    this.icon = Icons.text_fields,
+    this.icon = TWIcons.textFields,
     this.inputFormatters = const [],
     this.keepValidVisibleWhileFocused = false,
     this.deserialize,
@@ -52,7 +54,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final String name;
-  final IconData icon;
+  final String icon;
   final List<TextInputFormatter> inputFormatters;
   final bool keepValidVisibleWhileFocused;
   final String Function(T)? deserialize;
@@ -88,7 +90,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
 
     final formattedValue = deserialize?.call(value) ?? value.toString();
 
-    useFocusedChange(focus, (hasFocus) {
+    useFocusedChange(focus, ({required hasFocus}) {
       if (!hasFocus) state.value = _initial;
 
       if (hasFocus && keepValidVisibleWhileFocused && state.value == _initial) {
@@ -106,10 +108,13 @@ class ValidatedTextField<T> extends HookConsumerWidget {
           text: formattedValue,
           inputFormatters: inputFormatters,
           decoration: InputDecoration(
-            prefixIcon: Icon(
-              icon,
-              size: 18,
-              color: state.value is _Invalid ? Colors.redAccent : null,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Iconify(
+                icon,
+                size: 18,
+                color: state.value is _Invalid ? Colors.redAccent : null,
+              ),
             ),
             hintText: "Enter a $name",
             errorText: state.value.cast<_Invalid>()?.message,
@@ -155,7 +160,10 @@ class _StateText extends HookWidget {
       padding: const EdgeInsets.only(left: 8.0, top: 4.0),
       child: Text(
         value ?? state.cast<_Valid>()?.message ?? "",
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.green),
+        style: Theme.of(context)
+            .textTheme
+            .bodySmall
+            ?.copyWith(color: Colors.green),
       ),
     )
         .animate()
@@ -166,8 +174,17 @@ class _StateText extends HookWidget {
         .addEffects([
       if (!keepValidVisible) ...[
         ThenEffect(delay: 300.ms),
-        MoveEffect(end: const Offset(0, -4), duration: 300.ms, curve: Curves.easeOut),
-        FadeEffect(begin: 1.0, end: 0.0, duration: 300.ms, curve: Curves.easeOut),
+        MoveEffect(
+          end: const Offset(0, -4),
+          duration: 300.ms,
+          curve: Curves.easeOut,
+        ),
+        FadeEffect(
+          begin: 1.0,
+          end: 0.0,
+          duration: 300.ms,
+          curve: Curves.easeOut,
+        ),
         SwapEffect(builder: (_, __) => Container()),
       ],
     ]);

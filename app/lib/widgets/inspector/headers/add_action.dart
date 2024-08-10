@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/utils/icons.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 
@@ -18,12 +19,12 @@ class AddHeaderAction extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
-      icon: const Icon(FontAwesomeIcons.plus, size: 16),
+      icon: const Iconify(TWIcons.plus, size: 16),
       tooltip: "Add new ${ref.watch(pathDisplayNameProvider(path)).singular}",
       onPressed: () {
         onAdd();
         // If we add a new item, we probably want to edit it.
-        Header.of(context)?.expanded.value = true;
+        Header.maybeOf(context)?.expanded.value = true;
       },
     );
   }

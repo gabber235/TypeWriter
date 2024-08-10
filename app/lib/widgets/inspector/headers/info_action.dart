@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
 class InfoHeaderAction extends HookConsumerWidget {
@@ -13,7 +13,7 @@ class InfoHeaderAction extends HookConsumerWidget {
   }) : super();
 
   final String tooltip;
-  final IconData icon;
+  final String icon;
   final Color color;
   final String url;
 
@@ -27,13 +27,13 @@ class InfoHeaderAction extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
       tooltip: tooltip,
-      icon: FaIcon(
+      icon: Iconify(
         icon,
         size: 14,
         color: color,
       ),
       hoverColor: color.withOpacity(0.2),
-      padding: const EdgeInsets.all(0),
+      padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       onPressed: () => _launchUrl(url),
     );

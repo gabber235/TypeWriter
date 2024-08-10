@@ -21,7 +21,7 @@ final _fuzzyEntriesProvider =
 );
 
 typedef _FuzzyEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryDefinition>>;
-String _$fuzzyBlueprintsHash() => r'cd3bea161be0048b6305acf681f3ac26c16d52b9';
+String _$fuzzyBlueprintsHash() => r'1ea916702687026ad211c8ee1ba9e4986288d67c';
 
 /// See also [_fuzzyBlueprints].
 @ProviderFor(_fuzzyBlueprints)

@@ -7,14 +7,14 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.ActionEntry
-import me.gabber235.typewriter.utils.Icons
 import me.gabber235.typewriter.utils.Item
+import me.gabber235.typewriter.utils.ThreadType
 import me.gabber235.typewriter.utils.optional
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import java.util.*
 
-@Entry("remove_item", "Remove an item from the players inventory", Colors.RED, Icons.WAND_SPARKLES)
+@Entry("remove_item", "Remove an item from the players inventory", Colors.RED, "icomoon-free:user-minus")
 /**
  * The `Remove Item Action` is an action that removes an item from the player's inventory.
  * This action provides you with the ability to remove items from the player's inventory in response to specific events.
@@ -34,7 +34,7 @@ class RemoveItemActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria>,
     override val modifiers: List<Modifier>,
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The item to remove.")
     val item: Item = Item.Empty,
 ) : ActionEntry {
@@ -50,21 +50,21 @@ class RemoveItemActionEntry(
             itemWithoutAmount.isSameAs(player, it.value)
         }.iterator()
 
-        println(items)
-
         var toRemove = item.amount.orElse(1)
 
-        while (toRemove > 0 && items.hasNext()) {
-            val (index, item) = items.next()
-            if (item == null) continue
-            val amount = item.amount
-            if (amount > toRemove) {
-                item.amount = amount - toRemove
-                player.inventory.setItem(index, item)
-                break
-            } else {
-                toRemove -= amount
-                player.inventory.setItem(index, null)
+        ThreadType.SYNC.launch {
+            while (toRemove > 0 && items.hasNext()) {
+                val (index, item) = items.next()
+                if (item == null) continue
+                val amount = item.amount
+                if (amount > toRemove) {
+                    item.amount = amount - toRemove
+                    player.inventory.setItem(index, item)
+                    break
+                } else {
+                    toRemove -= amount
+                    player.inventory.setItem(index, null)
+                }
             }
         }
     }

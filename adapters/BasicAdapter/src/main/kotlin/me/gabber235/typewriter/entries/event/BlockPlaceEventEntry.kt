@@ -5,17 +5,14 @@ import me.gabber235.typewriter.adapters.Entry
 import me.gabber235.typewriter.adapters.modifiers.Help
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperties
 import me.gabber235.typewriter.adapters.modifiers.MaterialProperty.BLOCK
-import me.gabber235.typewriter.entry.EntryListener
-import me.gabber235.typewriter.entry.Query
+import me.gabber235.typewriter.entry.*
 import me.gabber235.typewriter.entry.entries.EventEntry
-import me.gabber235.typewriter.entry.startDialogueWithOrNextDialogue
-import me.gabber235.typewriter.utils.Icons
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.event.block.BlockPlaceEvent
 import java.util.*
 
-@Entry("on_place_block", "When the player places a block", Colors.YELLOW, Icons.CUBES_STACKED)
+@Entry("on_place_block", "When the player places a block", Colors.YELLOW, "fluent:cube-add-20-filled")
 /**
  * The `Block Place Event` is called when a block is placed in the world.
  *
@@ -26,7 +23,7 @@ import java.util.*
 class BlockPlaceEventEntry(
     override val id: String = "",
     override val name: String = "",
-    override val triggers: List<String> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The location of the block that was placed.")
     val location: Optional<Location> = Optional.empty(),
     @MaterialProperties(BLOCK)

@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
 import kotlin.jvm.optionals.getOrDefault
 import net.kyori.adventure.sound.Sound as AdventureSound
 
-@Entry("sound_cinematic", "Play a sound during a cinematic", Colors.YELLOW, Icons.MUSIC)
+@Entry("sound_cinematic", "Play a sound during a cinematic", Colors.YELLOW, "fa6-solid:music")
 /**
  * The `Sound Cinematic` entry plays a sound during a cinematic.
  *
@@ -30,7 +30,7 @@ class SoundCinematicEntry(
     override val id: String,
     override val name: String,
     override val criteria: List<Criteria>,
-    @Segments(icon = Icons.MUSIC)
+    @Segments(icon = "fa6-solid:music", color = Colors.YELLOW)
     val segments: List<SoundSegment>,
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {

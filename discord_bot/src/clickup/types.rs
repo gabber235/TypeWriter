@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use strum::EnumIter;
+use strum::{EnumIter, IntoEnumIterator};
 
 pub trait ClickupIdentifiable {
     fn clickup_id(&self) -> String;
@@ -12,6 +12,8 @@ pub enum TaskStatus {
     Backlog,
     #[name = "🏗 In progress"]
     InProgress,
+    #[name = "✅ Done"]
+    Done,
     #[name = "👀 In beta"]
     InBeta,
     #[name = "🚀 In production"]
@@ -23,6 +25,7 @@ impl TaskStatus {
         match self {
             TaskStatus::Backlog => "backlog".to_string(),
             TaskStatus::InProgress => "in progress".to_string(),
+            TaskStatus::Done => "done".to_string(),
             TaskStatus::InBeta => "in beta".to_string(),
             TaskStatus::InProduction => "in production".to_string(),
         }
@@ -34,6 +37,7 @@ impl Display for TaskStatus {
         match self {
             TaskStatus::Backlog => write!(f, "📋 Backlog"),
             TaskStatus::InProgress => write!(f, "🏗 In progress"),
+            TaskStatus::Done => write!(f, "✅ Done"),
             TaskStatus::InBeta => write!(f, "👀 In beta"),
             TaskStatus::InProduction => write!(f, "🚀 In production"),
         }
@@ -45,14 +49,15 @@ impl ClickupIdentifiable for TaskStatus {
         match self {
             TaskStatus::Backlog => "p90150987376_OOQuHfTS".to_string(),
             TaskStatus::InProgress => "p90150987376_2VuuCTca".to_string(),
+            TaskStatus::Done => "p90150987376_i5JDI7b8".to_string(),
             TaskStatus::InBeta => "p90150987376_rgJ7Kpgr".to_string(),
             TaskStatus::InProduction => "p90150987376_gaWBoToF".to_string(),
         }
     }
 }
 
-#[derive(Debug, poise::ChoiceParameter)]
-pub enum TaskTag {
+#[derive(Debug, poise::ChoiceParameter, EnumIter, Hash, PartialEq, Eq, Clone)]
+pub enum TaskType {
     #[name = "🐛 Bug"]
     Bug,
     #[name = "🎁 Feature"]
@@ -61,23 +66,31 @@ pub enum TaskTag {
     Documentation,
 }
 
-impl Display for TaskTag {
+impl Display for TaskType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            TaskTag::Bug => write!(f, "🐛 Bug"),
-            TaskTag::Feature => write!(f, "🎁 Feature"),
-            TaskTag::Documentation => write!(f, "📖 Documentation"),
+            TaskType::Bug => write!(f, "🐛 Bug"),
+            TaskType::Feature => write!(f, "🎁 Feature"),
+            TaskType::Documentation => write!(f, "📖 Documentation"),
         }
     }
 }
 
-impl TaskTag {
-    pub fn raw_string(&self) -> String {
+impl TaskType {
+    pub fn clickup_id(&self) -> u16 {
         match self {
-            TaskTag::Bug => "bug".to_string(),
-            TaskTag::Feature => "feature".to_string(),
-            TaskTag::Documentation => "documentation".to_string(),
+            TaskType::Bug => 1001,
+            TaskType::Feature => 1003,
+            TaskType::Documentation => 1002,
         }
+    }
+}
+
+impl From<u16> for TaskType {
+    fn from(id: u16) -> Self {
+        TaskType::iter()
+            .find(|t| t.clickup_id() == id)
+            .unwrap_or(TaskType::Feature)
     }
 }
 

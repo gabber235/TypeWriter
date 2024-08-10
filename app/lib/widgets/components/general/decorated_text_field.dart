@@ -57,11 +57,17 @@ class DecoratedTextField extends HookWidget {
       [text],
     );
 
-    useFocusedChange(focus, (hasFocus) {
-      if (!hasFocus) {
-        onDone?.call(controller.text);
-      }
-    });
+    useFocusedChange(
+      focus,
+      ({required hasFocus}) {
+        if (hasFocus) {
+          controller.text = text ?? "";
+        } else {
+          onDone?.call(controller.text);
+        }
+      },
+      [text],
+    );
 
     return TextField(
       focusNode: focus,
@@ -79,7 +85,8 @@ class DecoratedTextField extends HookWidget {
       onChanged: onChanged,
       style: style,
       textCapitalization: TextCapitalization.none,
-      textInputAction: TextInputAction.done,
+      textInputAction:
+          maxLines == 1 ? TextInputAction.done : TextInputAction.newline,
       textAlign: textAlign,
       maxLines: maxLines,
       autofocus: autofocus,

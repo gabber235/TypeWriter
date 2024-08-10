@@ -117,7 +117,7 @@ run/
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
-server
+/plugin/server
 .DS_Store
 
 # Rust
@@ -126,3 +126,7 @@ adapters/TeraCoreAdapter/
 
 # Flutter web resource
 /plugin/src/main/resources/web/
+plugin/qodana.yaml
+code_generator/EntityEyeHeightProperty.kt
+code_generator/EntityHeightProperty.kt
+code_generator/EntityWidthProperty.kt

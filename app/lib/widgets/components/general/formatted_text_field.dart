@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter/widgets/components/general/decorated_text_field.dart";
+import "package:typewriter/widgets/components/general/iconify.dart";
 
 class FormattedTextField extends HookWidget {
   const FormattedTextField({
@@ -27,7 +28,7 @@ class FormattedTextField extends HookWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType keyboardType;
   final String? hintText;
-  final IconData? icon;
+  final String? icon;
   final bool singleLine;
 
   @override
@@ -46,7 +47,12 @@ class FormattedTextField extends HookWidget {
         if (inputFormatters != null) ...inputFormatters!,
       ],
       decoration: InputDecoration(
-        prefixIcon: icon != null ? Icon(icon, size: 18) : null,
+        prefixIcon: icon != null
+            ? Padding(
+                padding: const EdgeInsets.all(8),
+                child: Iconify(icon, size: 18),
+              )
+            : null,
         hintText: hintText,
         contentPadding: singleLine
             ? null
