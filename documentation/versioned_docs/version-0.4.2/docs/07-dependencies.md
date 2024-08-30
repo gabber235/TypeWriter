@@ -1,9 +1,12 @@
 # Dependencies
+
 For the plugin to properly work you need to have the dependencies of the plugin installed these are:
+
 - **ProtocolLib**: [download](https://www.spigotmc.org/resources/protocollib.1997/)
 - **PlaceholderAPI** _(Optional)_: [download](https://www.spigotmc.org/resources/placeholderapi.6245/) **NOTE**: run the command: `/papi ecloud install player` after installation to let it correctly work.
 
 ## Soft-dependencies
+
 If you want to add extra features or make other adapters work, you can install plugins like:
 
 - **Citizens**: [download](https://www.spigotmc.org/resources/citizens.13811/)
@@ -19,5 +22,7 @@ If you want to add extra features or make other adapters work, you can install p
 In order for the dependencies to be recognized by Typewriter, you need to install the accompanying [Adapter](adapters).
 
 ## Plugin-breakers
+
 These plugins are known to break the plugin so they should **NOT** be installed.
+
 - **interactivechat**: [link](https://www.spigotmc.org/resources/interactivechat-show-items-inventory-in-chat-custom-chat-keywords-bungee-velocity-support.75870/)
