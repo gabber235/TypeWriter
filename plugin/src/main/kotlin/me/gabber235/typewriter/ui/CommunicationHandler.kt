@@ -36,7 +36,7 @@ class CommunicationHandler : KoinComponent {
         8080,
         comment = "The port of the web panel. Make sure this port is open."
     )
-    private val BASE_URL get() = "http://${hostName}:${panelPort}/#"
+    private val BASE_URL get() = "https://${hostName}/#"
     private val enabled: Boolean by config(
         "enabled",
         false,
