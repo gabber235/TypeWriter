@@ -20,7 +20,7 @@ Thanks to the following sponsors for supporting this project.
 Without their support, this project would not be possible.
 If you are using Typewriter for your server, and are making money from it, please consider [sponsoring](https://github.com/sponsors/gabber235) the project.
 
-<!-- sponsors --><a href="https://github.com/PixellPioneer"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;170333706?u&#x3D;e25b0eb17ffce6a0f72f50c9b26fedb94de9b6dc&amp;v&#x3D;4" width="60px" alt="PixelPioneer" /></a><!-- sponsors -->
+<!-- sponsors --><!-- sponsors -->
 
 ### Examples
 
