@@ -60,7 +60,11 @@ class _OutlineButtonIcon extends OutlineButton {
     super.color,
     super.key,
   }) : super(
-          child: _OutlineButtonWithIconChild(label: label, icon: icon),
+          child: _OutlineButtonWithIconChild(
+            label: label,
+            icon: icon,
+            color: color,
+          ),
         );
 }
 
@@ -68,10 +72,12 @@ class _OutlineButtonWithIconChild extends StatelessWidget {
   const _OutlineButtonWithIconChild({
     required this.label,
     required this.icon,
+    required this.color,
   });
 
   final Widget label;
   final Widget icon;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +90,7 @@ class _OutlineButtonWithIconChild extends StatelessWidget {
         IconTheme(
           data: IconThemeData(
             size: 18,
-            color: IconTheme.of(context).color,
+            color: color ?? IconTheme.of(context).color,
           ),
           child: icon,
         ),

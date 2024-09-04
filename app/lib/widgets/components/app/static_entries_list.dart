@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
@@ -17,7 +17,7 @@ List<String> _staticEntryIds(_StaticEntryIdsRef ref) {
 
   return page.entries
       .where((entry) {
-        final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
+        final tags = ref.watch(entryBlueprintTagsProvider(entry.blueprintId));
         return tags.contains("static");
       })
       .map((entry) => entry.id)

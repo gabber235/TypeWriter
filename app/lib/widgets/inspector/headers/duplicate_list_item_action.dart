@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
@@ -9,20 +9,21 @@ import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 class DuplicateListItemAction extends HookConsumerWidget {
-  const DuplicateListItemAction(
-    this.parentPath,
-    this.path,
-    this.field, {
+  const DuplicateListItemAction({
+    required this.parentPath,
+    required this.path,
+    required this.dataBlueprint,
     super.key,
   });
 
   final String parentPath;
   final String path;
-  final FieldInfo field;
+  final DataBlueprint dataBlueprint;
 
   void _duplicate(PassingRef ref) {
     final parentValue = ref.read(fieldValueProvider(parentPath, []));
-    final value = ref.read(fieldValueProvider(path, field.defaultValue));
+    final value =
+        ref.read(fieldValueProvider(path, dataBlueprint.defaultValue()));
 
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
       ref,

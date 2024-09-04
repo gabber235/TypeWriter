@@ -3,8 +3,8 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/general/admonition.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
@@ -27,7 +27,7 @@ String _entryName(_EntryNameRef ref) {
 @riverpod
 String _entryType(_EntryTypeRef ref) {
   final def = ref.watch(inspectingEntryDefinitionProvider);
-  return def?.blueprint.name ?? "";
+  return def?.blueprint.id ?? "";
 }
 
 @riverpod
@@ -70,7 +70,7 @@ class Heading extends HookConsumerWidget {
           direction: Axis.horizontal,
           alignment: WrapAlignment.start,
           children: [
-            EntryType(type: type, url: url, color: color),
+            EntryBlueprintDisplay(blueprintId: type, url: url, color: color),
             EntryIdentifier(id: id),
           ],
         ),
@@ -129,14 +129,14 @@ class EntryIdentifier extends StatelessWidget {
   }
 }
 
-class EntryType extends HookWidget {
-  const EntryType({
-    required this.type,
+class EntryBlueprintDisplay extends HookConsumerWidget {
+  const EntryBlueprintDisplay({
+    required this.blueprintId,
     required this.url,
     required this.color,
     super.key,
   });
-  final String type;
+  final String blueprintId;
   final String url;
   final Color color;
 
@@ -147,7 +147,11 @@ class EntryType extends HookWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final blueprintName =
+        ref.watch(entryBlueprintProvider(blueprintId).select((e) => e?.name));
+    if (blueprintName == null) return const SizedBox();
+
     final hovering = useState(false);
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -156,7 +160,7 @@ class EntryType extends HookWidget {
       child: GestureDetector(
         onTap: url.isNotEmpty ? _launceUrl : null,
         child: Text(
-          type.formatted,
+          blueprintName.formatted,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: color.withOpacity(0.9),
                 decoration: hovering.value ? TextDecoration.underline : null,

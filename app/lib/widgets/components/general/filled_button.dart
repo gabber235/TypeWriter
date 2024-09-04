@@ -78,9 +78,9 @@ class _FilledButtonWithIconChild extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         IconTheme(
-          data: IconThemeData(
+          data: const IconThemeData(
             size: 18,
-            color: IconTheme.of(context).color,
+            color: Colors.white,
           ),
           child: icon,
         ),

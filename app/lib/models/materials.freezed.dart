@@ -24,8 +24,12 @@ mixin _$MinecraftMaterial {
   List<MaterialProperty> get properties => throw _privateConstructorUsedError;
   String get icon => throw _privateConstructorUsedError;
 
+  /// Serializes this MinecraftMaterial to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of MinecraftMaterial
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $MinecraftMaterialCopyWith<MinecraftMaterial> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +53,8 @@ class _$MinecraftMaterialCopyWithImpl<$Res, $Val extends MinecraftMaterial>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of MinecraftMaterial
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -92,6 +98,8 @@ class __$$MinecraftMaterialImplCopyWithImpl<$Res>
       $Res Function(_$MinecraftMaterialImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of MinecraftMaterial
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -157,12 +165,14 @@ class _$MinecraftMaterialImpl implements _MinecraftMaterial {
             (identical(other.icon, icon) || other.icon == icon));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name,
       const DeepCollectionEquality().hash(_properties), icon);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of MinecraftMaterial
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$MinecraftMaterialImplCopyWith<_$MinecraftMaterialImpl> get copyWith =>
@@ -192,8 +202,11 @@ abstract class _MinecraftMaterial implements MinecraftMaterial {
   List<MaterialProperty> get properties;
   @override
   String get icon;
+
+  /// Create a copy of MinecraftMaterial
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MinecraftMaterialImplCopyWith<_$MinecraftMaterialImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

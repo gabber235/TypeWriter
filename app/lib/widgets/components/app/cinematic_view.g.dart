@@ -21,7 +21,7 @@ final inspectingSegmentProvider = AutoDisposeProvider<Segment?>.internal(
 );
 
 typedef InspectingSegmentRef = AutoDisposeProviderRef<Segment?>;
-String _$allSegmentsHash() => r'00ddff554f166898f9bb911168a5c18e369887ef';
+String _$allSegmentsHash() => r'cd0016ec442c5c46570cedbdde8893c1a52890df';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -729,7 +729,7 @@ final _ignoreEntryFieldsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef _IgnoreEntryFieldsRef = AutoDisposeProviderRef<List<String>>;
-String _$longestEntryNameHash() => r'5279a4a558d828a7316e5f78a1744316d08b1d7f';
+String _$longestEntryNameHash() => r'e28faa48892dbb64da18b39177390e09c73dc820';
 
 /// See also [_longestEntryName].
 @ProviderFor(_longestEntryName)
@@ -744,11 +744,11 @@ final _longestEntryNameProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef _LongestEntryNameRef = AutoDisposeProviderRef<String>;
-String _$segmentFieldsHash() => r'50de8ece747eb6fbdd3c504f30873d7546d54b50';
+String _$segmentFieldsHash() => r'bf02df2288101b0055b4c2376e4f4336b36c8f37';
 
 /// See also [_segmentFields].
 @ProviderFor(_segmentFields)
-final _segmentFieldsProvider = AutoDisposeProvider<ObjectField?>.internal(
+final _segmentFieldsProvider = AutoDisposeProvider<ObjectBlueprint?>.internal(
   _segmentFields,
   name: r'_segmentFieldsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -758,8 +758,8 @@ final _segmentFieldsProvider = AutoDisposeProvider<ObjectField?>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _SegmentFieldsRef = AutoDisposeProviderRef<ObjectField?>;
-String _$segmentPathsHash() => r'4456836fe10ea7d1100810e16b819ad4e2f0339c';
+typedef _SegmentFieldsRef = AutoDisposeProviderRef<ObjectBlueprint?>;
+String _$segmentPathsHash() => r'14d0fa46d736eab350f85a54908b939acd3562fd';
 
 /// See also [_segmentPaths].
 @ProviderFor(_segmentPaths)
@@ -888,7 +888,7 @@ class _SegmentPathsProviderElement
   String get entryId => (origin as _SegmentPathsProvider).entryId;
 }
 
-String _$segmentsHash() => r'f49571f7d75d0070fcbb69cef364a7cc5c5af448';
+String _$segmentsHash() => r'4b38fe7227d758ce63b80733b122cf3a9676212f';
 
 /// See also [_segments].
 @ProviderFor(_segments)
@@ -1499,7 +1499,7 @@ class _TimePointOffsetProviderElement extends AutoDisposeProviderElement<double>
 }
 
 String _$totalSequenceFramesHash() =>
-    r'448efbdd8b67500a4a9578b7bf46f83f14456e91';
+    r'd4b107ec84c284c4ccc7b90e657979daf30ea139';
 
 /// See also [_totalSequenceFrames].
 @ProviderFor(_totalSequenceFrames)

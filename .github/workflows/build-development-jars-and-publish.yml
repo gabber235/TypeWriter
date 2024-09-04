@@ -24,44 +24,62 @@ jobs:
           full_version="${version}-beta-${run_number}"
           echo $full_version > version.txt
           echo "version=$full_version" >> $GITHUB_OUTPUT
-      - name: Build Plugin
-        uses: ./.github/actions/build-plugin
-      - name: Build Basic Adapter
-        uses: ./.github/actions/build-adapter
+      - name: Build Engine
+        uses: ./.github/actions/build-engine
+#  ----------------------------------------------------------------------------------------------------
+      - name: Build Basic Extension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: BasicAdapter
-      - name: Build Citizens Adapter
-        uses: ./.github/actions/build-adapter
+          extension: BasicExtension
+      - name: Build Citizens Extension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: CitizensAdapter
-      - name: Build CombatLogX Adapter
-        uses: ./.github/actions/build-adapter
+          extension: CitizensExtension
+      - name: Build CombatLogX Extension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: CombatLogXAdapter
-      - name: Build MythicMobs Adapter
-        uses: ./.github/actions/build-adapter
+          extension: CombatLogXExtension
+      - name: Build MythicMobs Extension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: MythicMobsAdapter
-      - name: Build EntityAdapter
-        uses: ./.github/actions/build-adapter
+          extension: MythicMobsExtension
+      - name: Build EntityExtension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: EntityAdapter
-      - name: Build RPGRegions Adapter
-        uses: ./.github/actions/build-adapter
+          extension: EntityExtension
+      - name: Build RPGRegions Extension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: RPGRegionsAdapter
-      - name: Build SuperiorSkyblock Adapter
-        uses: ./.github/actions/build-adapter
+          extension: RPGRegionsExtension
+      - name: Build SuperiorSkyblock Extension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: SuperiorSkyblockAdapter
-      - name: Build Vault Adapter
-        uses: ./.github/actions/build-adapter
+          extension: SuperiorSkyblockExtension
+      - name: Build Vault Extension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: VaultAdapter
-      - name: Build WorldGuard Adapter
-        uses: ./.github/actions/build-adapter
+          extension: VaultExtension
+      - name: Build WorldGuard Extension
+        uses: ./.github/actions/build-extension
         with:
-          adapter: WorldGuardAdapter
+          extension: WorldGuardExtension
+#  ----------------------------------------------------------------------------------------------------
+      - name: Publish Engine to Beta Maven Repository
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publishAllPublicationsToTypewriterBetaRepository -PTypewriterBetaUsername=${{ secrets.MAVEN_USERNAME }} -PTypewriterBetaPassword=${{ secrets.MAVEN_PASSWORD }} --scan
+          build-root-directory: ./engine
+      - name: Publish All Extensions to Beta Maven Repository
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publishAllPublicationsToTypewriterBetaRepository -PTypewriterBetaUsername=${{ secrets.MAVEN_USERNAME }} -PTypewriterBetaPassword=${{ secrets.MAVEN_PASSWORD }} --scan
+          build-root-directory: ./extensions
+      - name: Publish Module-Plugin to Beta Maven Repository
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publishAllPublicationsToTypewriterBetaRepository -PTypewriterBetaUsername=${{ secrets.MAVEN_USERNAME }} -PTypewriterBetaPassword=${{ secrets.MAVEN_PASSWORD }} --scan
+          build-root-directory: ./module-plugin
+#  ----------------------------------------------------------------------------------------------------
       - name: Publish Modrinth
         uses: Kir-Antipov/mc-publish@v3.3
         id: publish
@@ -71,13 +89,12 @@ jobs:
           modrinth-featured: false
           files: |
             plugin/build/libs/typewriter.jar
-            adapters/**/build/libs/*.jar
+            extensions/**/build/libs/*.jar
           name: "Typewriter v${{ steps.vars.outputs.version }} Development Build"
           version: "${{ steps.vars.outputs.version }}"
           version-type: "beta"
           loaders: |
             paper
-            purpur
           game-versions: |
             [1.21]
           dependencies: |
@@ -92,11 +109,12 @@ jobs:
           arguments: publishPluginPublicationToHangar --scan
           build-root-directory: ./plugin
       - name: Add Tag
-        uses: laputansoft/github-tag-action@v4.6
+        uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ env.github-token }}
           default_bump: false
-          tag: "v${{ steps.vars.outputs.version }}"
+          custom_tag: "${{ steps.vars.outputs.version }}"
+          release_branches: develop
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
         with:
