@@ -1,7 +1,7 @@
 import "package:flutter/material.dart" hide Page;
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
@@ -16,24 +16,25 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class EntrySelectorEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info.hasModifier("entry");
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint.hasModifier("entry");
 
   @override
-  Widget build(String path, FieldInfo info) =>
-      EntrySelectorEditor(path: path, field: info);
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      EntrySelectorEditor(path: path, dataBlueprint: dataBlueprint);
 }
 
 class EntrySelectorEditor extends HookConsumerWidget {
   const EntrySelectorEditor({
     required this.path,
-    required this.field,
+    required this.dataBlueprint,
     this.forcedValue,
     this.onChanged,
     super.key,
   }) : super();
 
   final String path;
-  final FieldInfo field;
+  final DataBlueprint dataBlueprint;
 
   final String? forcedValue;
   final void Function(String)? onChanged;
@@ -62,8 +63,8 @@ class EntrySelectorEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tag = field.get<String>("entry") ?? "";
-    final onlyTags = field.get<String>("only_tags")?.split(",") ?? [];
+    final tag = dataBlueprint.get<String>("entry") ?? "";
+    final onlyTags = dataBlueprint.get<String>("only_tags")?.split(",") ?? [];
     final id = forcedValue ?? ref.watch(fieldValueProvider(path, "")) as String;
 
     final hasEntry = ref.watch(entryExistsProvider(id));
@@ -74,7 +75,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
 
         final entry = ref.read(globalEntryProvider(details.data.entryId));
         if (entry == null) return false;
-        final blueprint = ref.read(entryBlueprintProvider(entry.type));
+        final blueprint = ref.read(entryBlueprintProvider(entry.blueprintId));
         if (blueprint == null) return false;
 
         return blueprint.tags.contains(tag);

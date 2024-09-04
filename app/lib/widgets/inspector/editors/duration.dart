@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
@@ -12,21 +12,23 @@ import "package:typewriter/widgets/inspector/validated_inspector_text_field.dart
 
 class DurationEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "duration";
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "duration";
   @override
-  Widget build(String path, FieldInfo info) =>
-      DurationEditor(path: path, field: info as CustomField);
+  Widget build(String path, DataBlueprint dataBlueprint) => DurationEditor(
+        path: path,
+        customBlueprint: dataBlueprint as CustomBlueprint,
+      );
 }
 
 class DurationEditor extends HookConsumerWidget {
   const DurationEditor({
     required this.path,
-    required this.field,
+    required this.customBlueprint,
     super.key,
   });
   final String path;
-  final CustomField field;
+  final CustomBlueprint customBlueprint;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return WritersIndicator(

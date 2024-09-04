@@ -10,8 +10,8 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/hooks/global_key.dart";
 import "package:typewriter/hooks/text_size.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/segment.dart";
 import "package:typewriter/models/writers.dart";
@@ -108,10 +108,10 @@ String? _addSegment(
   final segments = ref.read(_segmentsProvider(entryId, segmentPath));
   final page = ref.read(currentPageProvider);
   if (page == null) return null;
-  final entry = ref.read(entryProvider(page.pageName, entryId));
+  final entry = ref.read(entryProvider(page.id, entryId));
   if (entry == null) return null;
 
-  final blueprint = ref.read(entryBlueprintProvider(entry.type));
+  final blueprint = ref.read(entryBlueprintProvider(entry.blueprintId));
   if (blueprint == null) return null;
   final segmentField = blueprint.getField(segmentPath);
   if (segmentField == null) return null;
@@ -139,7 +139,7 @@ String? _addSegment(
 
   final (:startFrame, :endFrame) = timings;
 
-  final segment = segmentField.defaultValue;
+  final segment = segmentField.defaultValue();
   if (segment == null) return null;
 
   final newSegment = {
@@ -163,7 +163,7 @@ List<Segment> _allSegments(_AllSegmentsRef ref, String entryId) {
   final paths = ref.watch(_segmentPathsProvider(entryId));
   return paths.keys
       .map((path) => ref.watch(_segmentsProvider(entryId, path)))
-      .whereNotNull()
+      .nonNulls
       .expand((x) => x)
       .toList();
 }
@@ -186,7 +186,7 @@ void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
     );
     return;
   }
-  final entry = ref.read(entryProvider(page.pageName, entryId));
+  final entry = ref.read(entryProvider(page.id, entryId));
   if (entry == null) {
     Toasts.showError(
       ref,
@@ -196,7 +196,7 @@ void _deleteSegment(PassingRef ref, String entryId, String segmentPath) {
     return;
   }
 
-  final blueprint = ref.read(entryBlueprintProvider(entry.type));
+  final blueprint = ref.read(entryBlueprintProvider(entry.blueprintId));
   if (blueprint == null) {
     Toasts.showError(
       ref,
@@ -386,7 +386,7 @@ String _longestEntryName(_LongestEntryNameRef ref) {
   final entryIds = ref.watch(_cinematicEntryIdsProvider);
   final names = entryIds
           .map((entryId) => ref.watch(entryNameProvider(entryId)))
-          .whereNotNull()
+          .nonNulls
           .toList() +
       ["Track Duration"];
   return names.isEmpty
@@ -395,7 +395,7 @@ String _longestEntryName(_LongestEntryNameRef ref) {
 }
 
 @riverpod
-ObjectField? _segmentFields(_SegmentFieldsRef ref) {
+ObjectBlueprint? _segmentFields(_SegmentFieldsRef ref) {
   final blueprint = ref.watch(
     inspectingEntryDefinitionProvider
         .select((definition) => definition?.blueprint),
@@ -403,17 +403,17 @@ ObjectField? _segmentFields(_SegmentFieldsRef ref) {
   if (blueprint == null) return null;
   final segmentId = ref.watch(inspectingSegmentIdProvider);
   if (segmentId == null) return null;
-  final fieldInfo = blueprint.getField(segmentId);
-  if (fieldInfo is! ObjectField) return null;
-  return fieldInfo;
+  final dataBlueprint = blueprint.getField(segmentId);
+  if (dataBlueprint is! ObjectBlueprint) return null;
+  return dataBlueprint;
 }
 
 //<editor-fold desc="Entry & Track & Segment States">
 @riverpod
 Map<String, Modifier> _segmentPaths(_SegmentPathsRef ref, String entryId) {
-  final type = ref.watch(entryTypeProvider(entryId));
-  if (type == null) return {};
-  final blueprint = ref.watch(entryBlueprintProvider(type));
+  final blueprintId = ref.watch(entryBlueprintIdProvider(entryId));
+  if (blueprintId == null) return {};
+  final blueprint = ref.watch(entryBlueprintProvider(blueprintId));
   if (blueprint == null) return {};
 
   return blueprint.fieldsWithModifier("segment");
@@ -428,7 +428,7 @@ List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return [];
 
-  final blueprint = ref.watch(entryBlueprintProvider(entry.type));
+  final blueprint = ref.watch(entryBlueprintProvider(entry.blueprintId));
   if (blueprint == null) return [];
 
   final segmentModifierData = modifier.data;
@@ -534,7 +534,7 @@ int _totalSequenceFrames(_TotalSequenceFramesRef ref) {
   final entryIds = ref.watch(_cinematicEntryIdsProvider);
   final frames = entryIds
       .map((entryId) => ref.watch(_endingFrameProvider(entryId)))
-      .whereNotNull()
+      .nonNulls
       .toList();
   return frames.map((frame) => frame).maxOrNull ?? 0;
 }
@@ -1102,12 +1102,12 @@ class _InspectorContents extends HookConsumerWidget {
     final segmentId = ref.watch(inspectingSegmentIdProvider);
     if (segmentId == null) return const SizedBox.shrink();
 
-    final object = ref.watch(_segmentFieldsProvider);
-    if (object == null) return const SizedBox.shrink();
+    final objectBlueprint = ref.watch(_segmentFieldsProvider);
+    if (objectBlueprint == null) return const SizedBox.shrink();
 
     return ObjectEditor(
       path: segmentId,
-      object: object,
+      objectBlueprint: objectBlueprint,
       defaultExpanded: true,
       ignoreFields: const [
         "startFrame",
@@ -1266,7 +1266,7 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
   void _updateEntry(String entryId, String path, dynamic value) {
     final page = ref.read(currentPageProvider);
     if (page == null) return;
-    final entry = ref.read(entryProvider(page.pageName, entryId));
+    final entry = ref.read(entryProvider(page.id, entryId));
     if (entry == null) return;
     page.updateEntryValue(ref.passing, entry, path, value);
   }

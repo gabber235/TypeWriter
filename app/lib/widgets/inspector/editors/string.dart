@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
@@ -14,18 +14,21 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class StringEditorFilter extends EditorFilter {
   @override
-  Widget build(String path, FieldInfo info) =>
-      StringEditor(path: path, field: info as PrimitiveField);
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is PrimitiveBlueprint &&
+      dataBlueprint.type == PrimitiveType.string;
 
   @override
-  bool canEdit(FieldInfo info) =>
-      info is PrimitiveField && info.type == PrimitiveFieldType.string;
+  Widget build(String path, DataBlueprint dataBlueprint) => StringEditor(
+        path: path,
+        primitiveBlueprint: dataBlueprint as PrimitiveBlueprint,
+      );
 }
 
 class StringEditor extends HookConsumerWidget {
   const StringEditor({
     required this.path,
-    required this.field,
+    required this.primitiveBlueprint,
     this.forcedValue,
     this.icon = TWIcons.pencil,
     this.hint = "",
@@ -34,7 +37,7 @@ class StringEditor extends HookConsumerWidget {
   }) : super();
 
   final String path;
-  final PrimitiveField field;
+  final PrimitiveBlueprint primitiveBlueprint;
   final String? forcedValue;
 
   final String icon;
@@ -47,7 +50,7 @@ class StringEditor extends HookConsumerWidget {
     useFocusedBasedCurrentEditingField(focus, ref.passing, path);
     final value = ref.watch(fieldValueProvider(path, ""));
 
-    final singleLine = !field.hasModifier("multiline");
+    final singleLine = !primitiveBlueprint.hasModifier("multiline");
 
     return WritersIndicator(
       provider: fieldWritersProvider(path, exact: true),
@@ -55,12 +58,14 @@ class StringEditor extends HookConsumerWidget {
       child: FormattedTextField(
         focus: focus,
         icon: icon,
-        hintText: hint.isNotEmpty ? hint : "Enter a ${field.type.name}",
+        hintText:
+            hint.isNotEmpty ? hint : "Enter a ${primitiveBlueprint.type.name}",
         text: forcedValue ?? value,
         singleLine: singleLine,
         keyboardType: singleLine ? TextInputType.text : TextInputType.multiline,
         inputFormatters: [
-          if (field.hasModifier("snake_case")) snakeCaseFormatter(),
+          if (primitiveBlueprint.hasModifier("snake_case"))
+            snakeCaseFormatter(),
         ],
         onChanged: onChanged ??
             (value) => ref

@@ -4,7 +4,7 @@ import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:http/http.dart" as http;
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
@@ -21,22 +21,23 @@ import "package:typewriter/widgets/inspector/section_title.dart";
 
 class SkinEditorFilter extends EditorFilter {
   @override
-  Widget build(String path, FieldInfo info) =>
-      SkinEditor(path: path, field: info as CustomField);
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "skin";
 
   @override
-  bool canEdit(FieldInfo info) => info is CustomField && info.editor == "skin";
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      SkinEditor(path: path, customBlueprint: dataBlueprint as CustomBlueprint);
 }
 
 class SkinEditor extends HookConsumerWidget {
   const SkinEditor({
     required this.path,
-    required this.field,
+    required this.customBlueprint,
     super.key,
   });
 
   final String path;
-  final CustomField field;
+  final CustomBlueprint customBlueprint;
 
   String? _getSkinUrl(String textureData) {
     if (textureData.isEmpty) return null;
@@ -61,7 +62,7 @@ class SkinEditor extends HookConsumerWidget {
     final url = useMemoized(() => _getSkinUrl(texture), [texture]);
     return FieldHeader(
       path: path,
-      field: field,
+      dataBlueprint: customBlueprint,
       canExpand: true,
       actions: [
         HeaderButton(
@@ -136,14 +137,16 @@ class SkinEditor extends HookConsumerWidget {
                 const SizedBox(height: 8),
                 StringEditor(
                   path: "$path.texture",
-                  field: const PrimitiveField(type: PrimitiveFieldType.string),
+                  primitiveBlueprint:
+                      const PrimitiveBlueprint(type: PrimitiveType.string),
                 ),
                 const SizedBox(height: 8),
                 const SectionTitle(title: "Signature"),
                 const SizedBox(height: 8),
                 StringEditor(
                   path: "$path.signature",
-                  field: const PrimitiveField(type: PrimitiveFieldType.string),
+                  primitiveBlueprint:
+                      const PrimitiveBlueprint(type: PrimitiveType.string),
                 ),
               ],
             ),

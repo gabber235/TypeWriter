@@ -1,31 +1,31 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/headers/info_action.dart";
 
 class ColoredHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, FieldInfo field) =>
-      field.getModifier("colored") != null;
+  bool shouldShow(String path, DataBlueprint dataBlueprint) =>
+      dataBlueprint.getModifier("colored") != null;
 
   @override
-  HeaderActionLocation location(String path, FieldInfo field) =>
+  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
       HeaderActionLocation.trailing;
 
   @override
-  Widget build(String path, FieldInfo field) =>
-      ColoredHeaderAction(field: field);
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      ColoredHeaderAction(dataBlueprint: dataBlueprint);
 }
 
 class ColoredHeaderAction extends HookConsumerWidget {
   const ColoredHeaderAction({
-    required this.field,
+    required this.dataBlueprint,
     super.key,
   }) : super();
 
-  final FieldInfo field;
+  final DataBlueprint dataBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

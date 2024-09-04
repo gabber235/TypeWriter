@@ -73,7 +73,9 @@ mixin _$Toast {
   }) =>
       throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Toast
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ToastCopyWith<Toast> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -101,6 +103,8 @@ class _$ToastCopyWithImpl<$Res, $Val extends Toast>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Toast
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -164,6 +168,8 @@ class __$$ToastImplCopyWithImpl<$Res>
       _$ToastImpl _value, $Res Function(_$ToastImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Toast
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -252,7 +258,9 @@ class _$ToastImpl implements _Toast {
   int get hashCode =>
       Object.hash(runtimeType, id, message, description, color, icon, shownAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Toast
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ToastImplCopyWith<_$ToastImpl> get copyWith =>
@@ -354,8 +362,11 @@ abstract class _Toast implements Toast {
   String get icon;
   @override
   DateTime? get shownAt;
+
+  /// Create a copy of Toast
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ToastImplCopyWith<_$ToastImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -386,6 +397,8 @@ class __$$TemporaryToastImplCopyWithImpl<$Res>
       _$TemporaryToastImpl _value, $Res Function(_$TemporaryToastImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Toast
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -485,7 +498,9 @@ class _$TemporaryToastImpl implements TemporaryToast {
   int get hashCode => Object.hash(
       runtimeType, id, message, description, color, icon, duration, shownAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Toast
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TemporaryToastImplCopyWith<_$TemporaryToastImpl> get copyWith =>
@@ -592,8 +607,11 @@ abstract class TemporaryToast implements Toast {
   Duration get duration;
   @override
   DateTime? get shownAt;
+
+  /// Create a copy of Toast
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TemporaryToastImplCopyWith<_$TemporaryToastImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

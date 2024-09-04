@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/header.dart";
@@ -8,30 +8,33 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class BooleanEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is PrimitiveField && info.type == PrimitiveFieldType.boolean;
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is PrimitiveBlueprint &&
+      dataBlueprint.type == PrimitiveType.boolean;
 
   @override
-  Widget build(String path, FieldInfo info) =>
-      BooleanEditor(path: path, field: info as PrimitiveField);
+  Widget build(String path, DataBlueprint dataBlueprint) => BooleanEditor(
+        path: path,
+        primitiveBlueprint: dataBlueprint as PrimitiveBlueprint,
+      );
 }
 
 class BooleanEditor extends HookConsumerWidget {
   const BooleanEditor({
     required this.path,
-    required this.field,
+    required this.primitiveBlueprint,
     super.key,
   }) : super();
   final String path;
-  final PrimitiveField field;
+  final PrimitiveBlueprint primitiveBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(fieldValueProvider(path, false));
 
     return FieldHeader(
-      field: field,
       path: path,
+      dataBlueprint: primitiveBlueprint,
       trailing: [
         Row(
           children: [

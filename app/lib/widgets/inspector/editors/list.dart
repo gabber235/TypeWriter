@@ -2,7 +2,7 @@ import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
@@ -18,11 +18,11 @@ part "list.g.dart";
 
 class ListEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info is ListField;
+  bool canEdit(DataBlueprint dataBlueprint) => dataBlueprint is ListBlueprint;
 
   @override
-  Widget build(String path, FieldInfo info) =>
-      ListEditor(path: path, field: info as ListField);
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      ListEditor(path: path, listBlueprint: dataBlueprint as ListBlueprint);
 }
 
 @riverpod
@@ -33,11 +33,11 @@ int _listValueLength(_ListValueLengthRef ref, String path) {
 class ListEditor extends HookConsumerWidget {
   const ListEditor({
     required this.path,
-    required this.field,
+    required this.listBlueprint,
     super.key,
   }) : super();
   final String path;
-  final ListField field;
+  final ListBlueprint listBlueprint;
 
   List<dynamic> _get(PassingRef ref) {
     return ref.read(fieldValueProvider(path)) as List<dynamic>? ?? [];
@@ -47,7 +47,7 @@ class ListEditor extends HookConsumerWidget {
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
       ref,
       path,
-      [..._get(ref), field.type.defaultValue],
+      [..._get(ref), listBlueprint.type.defaultValue()],
     );
   }
 
@@ -87,8 +87,8 @@ class ListEditor extends HookConsumerWidget {
     );
 
     return FieldHeader(
-      field: field,
       path: path,
+      dataBlueprint: listBlueprint,
       canExpand: true,
       actions: [
         AddHeaderAction(
@@ -107,7 +107,7 @@ class ListEditor extends HookConsumerWidget {
           key: globalKeys[index],
           index: index,
           path: path,
-          field: field,
+          listBlueprint: listBlueprint,
         ),
       ),
     );
@@ -118,13 +118,13 @@ class _ListItem extends HookConsumerWidget {
   const _ListItem({
     required this.index,
     required this.path,
-    required this.field,
+    required this.listBlueprint,
     super.key,
   }) : super();
 
   final int index;
   final String path;
-  final ListField field;
+  final ListBlueprint listBlueprint;
 
   void _remove(PassingRef ref, int index) {
     final value = ref.read(fieldValueProvider(path)) as List<dynamic>? ?? [];
@@ -137,12 +137,12 @@ class _ListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final type = field.type;
+    final dataBlueprint = listBlueprint.type;
     final childPath = "$path.$index";
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: FieldHeader(
-        field: type,
+        dataBlueprint: dataBlueprint,
         path: childPath,
         canExpand: true,
         leading: [
@@ -159,7 +159,11 @@ class _ListItem extends HookConsumerWidget {
           ),
         ],
         actions: [
-          DuplicateListItemAction(path, childPath, type),
+          DuplicateListItemAction(
+            parentPath: path,
+            path: childPath,
+            dataBlueprint: dataBlueprint,
+          ),
           RemoveHeaderAction(
             path: "$path.$index",
             onRemove: () => _remove(ref.passing, index),
@@ -167,7 +171,7 @@ class _ListItem extends HookConsumerWidget {
         ],
         child: FieldEditor(
           path: "$path.$index",
-          type: field.type,
+          dataBlueprint: dataBlueprint,
         ),
       ),
     );

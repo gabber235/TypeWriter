@@ -26,8 +26,12 @@ mixin _$Writer {
   String? get entryId => throw _privateConstructorUsedError;
   String? get field => throw _privateConstructorUsedError;
 
+  /// Serializes this Writer to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Writer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WriterCopyWith<Writer> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -54,6 +58,8 @@ class _$WriterCopyWithImpl<$Res, $Val extends Writer>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Writer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -111,6 +117,8 @@ class __$$WriterImplCopyWithImpl<$Res>
       _$WriterImpl _value, $Res Function(_$WriterImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Writer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -182,12 +190,14 @@ class _$WriterImpl implements _Writer {
             (identical(other.field, field) || other.field == field));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, id, iconUrl, pageId, entryId, field);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Writer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WriterImplCopyWith<_$WriterImpl> get copyWith =>
@@ -221,8 +231,11 @@ abstract class _Writer implements Writer {
   String? get entryId;
   @override
   String? get field;
+
+  /// Create a copy of Writer
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WriterImplCopyWith<_$WriterImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

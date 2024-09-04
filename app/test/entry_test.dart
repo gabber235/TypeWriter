@@ -5,7 +5,7 @@ void main() {
   final rawDynamicEntry = {
     "id": "1",
     "name": "test",
-    "type": "test_type",
+    "type": "test_blueprint_id",
     "simple_list": [1, 2, 3],
     "complex_list": [
       {"id": "1", "name": "test1"},
@@ -42,7 +42,7 @@ void main() {
 
       expect(entry.id, "1");
       expect(entry.name, "test");
-      expect(entry.type, "test_type");
+      expect(entry.blueprintId, "test_blueprint_id");
 
       expect(entry.get("simple_list"), [1, 2, 3]);
       expect(entry.get("simple_list.1"), 2);

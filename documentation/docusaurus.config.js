@@ -123,7 +123,7 @@ const config = {
                         type: 'docSidebar',
                         sidebarId: 'adapters',
                         position: 'left',
-                        label: 'Adapters',
+                        label: 'Extensions',
                     },
                     {
                         type: 'docSidebar',

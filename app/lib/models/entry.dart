@@ -2,7 +2,7 @@ import "dart:convert";
 
 import "package:collection/collection.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
@@ -19,7 +19,7 @@ EntryDefinition? entryDefinition(
     return null;
   }
   final entry = ref.watch(entryProvider(pageId, entryId));
-  final blueprint = ref.watch(entryBlueprintProvider(entry?.type ?? ""));
+  final blueprint = ref.watch(entryBlueprintProvider(entry?.blueprintId ?? ""));
   if (entry == null || blueprint == null) {
     return null;
   }
@@ -33,9 +33,9 @@ String? entryName(EntryNameRef ref, String entryId) {
 }
 
 @riverpod
-String? entryType(EntryTypeRef ref, String entryId) {
+String? entryBlueprintId(EntryBlueprintIdRef ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
-  return entry?.type;
+  return entry?.blueprintId;
 }
 
 @riverpod
@@ -68,10 +68,10 @@ class Entry {
     required String id,
     required EntryBlueprint blueprint,
   }) : data = {
-          ...blueprint.fields.defaultValue,
+          ...blueprint.dataBlueprint.defaultValue(),
           "id": id,
           "name": "new_${blueprint.name}",
-          "type": blueprint.name,
+          "type": blueprint.id,
         };
 
   factory Entry.fromJson(Map<String, dynamic> json) => Entry(json);
@@ -85,7 +85,15 @@ class Entry {
 
   String get formattedName => name.formatted;
 
-  String get type => data["type"] as String;
+  /// Returns the blueprint id of the entry.
+  /// TODO: Remove the old `type` field.
+  String get blueprintId {
+    final blueprintId = data["blueprintId"];
+    if (blueprintId is String) return blueprintId;
+    final type = data["type"];
+    if (type is String) return type;
+    throw Exception("Could not find blueprint id or type in entry data");
+  }
 
   /// Returns the values in [map] that match [path].
   ///
@@ -269,7 +277,7 @@ class Entry {
       }
     }
     if (item is List) {
-      item.replaceRange(0, item.length, item.map(mapper).whereNotNull());
+      item.replaceRange(0, item.length, item.map(mapper).nonNulls);
     }
   }
 

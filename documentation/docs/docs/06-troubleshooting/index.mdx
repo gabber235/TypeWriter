@@ -22,20 +22,20 @@ For more detailed troubleshooting steps, refer to: [Panel not loading](troublesh
 
 <Image img={require("../assets/troubleshooting/no-entries.png")} alt="No Entries" />
 
-This issue typically occurs when no adapters are installed. To resolve this, ensure that adapters are correctly installed by following the steps outlined in the **[Basic Adapter Installation Tutorial](../02-getting-started/01-installation.mdx#basic-adapter)**.
+This issue typically occurs when no extensions are installed. To resolve this, ensure that extensions are correctly installed by following the steps outlined in the **[Basic Extension Installation Tutorial](../02-getting-started/01-installation.mdx#basic-extension)**.
 
-## Error: "plugin.yml not found" When Installing an Adapter
+## Error: "plugin.yml not found" When Installing an Extension
 
-If you encounter an error message similar to the following when installing an adapter:
+If you encounter an error message similar to the following when installing an extension:
 
 ```log
-[08:49:35 ERROR]: [DirectoryProviderSource] Error loading plugin: Directory 'plugins/BasicAdapter.jar' failed to load!
-java.lang.RuntimeException: Directory 'plugins/BasicAdapter.jar' failed to load!
+[08:49:35 ERROR]: [DirectoryProviderSource] Error loading plugin: Directory 'plugins/BasicExtension.jar' failed to load!
+java.lang.RuntimeException: Directory 'plugins/BasicExtension.jar' failed to load!
         ...
-Caused by: java.lang.IllegalArgumentException: Directory 'plugins/BasicAdapter.jar' does not contain a paper-plugin.yml or plugin.yml! Could not determine plugin type, cannot load a plugin from it!
+Caused by: java.lang.IllegalArgumentException: Directory 'plugins/BasicExtension.jar' does not contain a paper-plugin.yml or plugin.yml! Could not determine plugin type, cannot load a plugin from it!
 ```
 
-This typically indicates that the adapter is not placed in the correct folder. For instructions on proper placement, see [Correct Adapter Placement](./adapters.mdx#correct-adapter-placement).
+This typically indicates that the extension is not placed in the correct folder. For instructions on proper placement, see [Correct Extension Placement](./extensions.mdx#correct-extension-placement).
 
 ## Placeholders Not Parsing Correctly
 

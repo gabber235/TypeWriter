@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
@@ -14,24 +14,26 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class NumberEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is PrimitiveField &&
-      (info.type == PrimitiveFieldType.integer ||
-          info.type == PrimitiveFieldType.double);
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is PrimitiveBlueprint &&
+      (dataBlueprint.type == PrimitiveType.integer ||
+          dataBlueprint.type == PrimitiveType.double);
 
   @override
-  Widget build(String path, FieldInfo info) =>
-      NumberEditor(path: path, field: info as PrimitiveField);
+  Widget build(String path, DataBlueprint dataBlueprint) => NumberEditor(
+        path: path,
+        primitiveBlueprint: dataBlueprint as PrimitiveBlueprint,
+      );
 }
 
 class NumberEditor extends HookConsumerWidget {
   const NumberEditor({
     required this.path,
-    required this.field,
+    required this.primitiveBlueprint,
     super.key,
   }) : super();
   final String path;
-  final PrimitiveField field;
+  final PrimitiveBlueprint primitiveBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,7 +42,8 @@ class NumberEditor extends HookConsumerWidget {
 
     final value = ref.watch(fieldValueProvider(path, 0));
 
-    final isNegativeAllowed = field.get("negative") as bool? ?? true;
+    final isNegativeAllowed =
+        primitiveBlueprint.get("negative") as bool? ?? true;
 
     return WritersIndicator(
       provider: fieldWritersProvider(path),
@@ -48,24 +51,24 @@ class NumberEditor extends HookConsumerWidget {
       child: FormattedTextField(
         focus: focus,
         icon: TWIcons.hashtag,
-        hintText: "Enter a ${field.type.name}",
+        hintText: "Enter a ${primitiveBlueprint.type.name}",
         text: "$value",
         keyboardType: TextInputType.number,
         inputFormatters: [
           if (!isNegativeAllowed) ...[
-            if (field.type == PrimitiveFieldType.integer)
+            if (primitiveBlueprint.type == PrimitiveType.integer)
               FilteringTextInputFormatter.digitsOnly,
-            if (field.type == PrimitiveFieldType.double)
+            if (primitiveBlueprint.type == PrimitiveType.double)
               FilteringTextInputFormatter.allow(RegExp(r"^\d+\.?\d*")),
           ] else ...[
-            if (field.type == PrimitiveFieldType.integer)
+            if (primitiveBlueprint.type == PrimitiveType.integer)
               FilteringTextInputFormatter.allow(RegExp(r"^-?\d*")),
-            if (field.type == PrimitiveFieldType.double)
+            if (primitiveBlueprint.type == PrimitiveType.double)
               FilteringTextInputFormatter.allow(RegExp(r"^-?\d*\.?\d*")),
           ],
         ],
         onChanged: (value) {
-          final number = field.type == PrimitiveFieldType.integer
+          final number = primitiveBlueprint.type == PrimitiveType.integer
               ? int.tryParse(value)
               : double.tryParse(value);
           ref
