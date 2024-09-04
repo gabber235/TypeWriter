@@ -67,6 +67,8 @@ mixin _$SoundId {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
+
+  /// Serializes this SoundId to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 }
 
@@ -85,6 +87,9 @@ class _$SoundIdCopyWithImpl<$Res, $Val extends SoundId>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of SoundId
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -104,6 +109,8 @@ class __$$DefaultSoundIdImplCopyWithImpl<$Res>
       _$DefaultSoundIdImpl _value, $Res Function(_$DefaultSoundIdImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SoundId
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -148,11 +155,13 @@ class _$DefaultSoundIdImpl implements DefaultSoundId {
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SoundId
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$DefaultSoundIdImplCopyWith<_$DefaultSoundIdImpl> get copyWith =>
@@ -239,7 +248,10 @@ abstract class DefaultSoundId implements SoundId {
 
   @JsonKey(name: "value")
   String get id;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SoundId
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DefaultSoundIdImplCopyWith<_$DefaultSoundIdImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -261,6 +273,8 @@ class __$$EntrySoundIdImplCopyWithImpl<$Res>
       _$EntrySoundIdImpl _value, $Res Function(_$EntrySoundIdImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SoundId
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -305,11 +319,13 @@ class _$EntrySoundIdImpl implements EntrySoundId {
             (identical(other.entryId, entryId) || other.entryId == entryId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, entryId);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SoundId
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$EntrySoundIdImplCopyWith<_$EntrySoundIdImpl> get copyWith =>
@@ -395,7 +411,10 @@ abstract class EntrySoundId implements SoundId {
 
   @JsonKey(name: "value")
   String get entryId;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SoundId
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EntrySoundIdImplCopyWith<_$EntrySoundIdImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

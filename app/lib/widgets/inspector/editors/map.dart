@@ -2,7 +2,7 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
@@ -18,30 +18,30 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class MapEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info is MapField;
+  bool canEdit(DataBlueprint dataBlueprint) => dataBlueprint is MapBlueprint;
 
   @override
-  Widget build(String path, FieldInfo info) =>
-      MapEditor(path: path, field: info as MapField);
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      MapEditor(path: path, mapBlueprint: dataBlueprint as MapBlueprint);
 }
 
 class MapEditor extends HookConsumerWidget {
   const MapEditor({
     required this.path,
-    required this.field,
+    required this.mapBlueprint,
     super.key,
   }) : super();
   final String path;
-  final MapField field;
+  final MapBlueprint mapBlueprint;
 
   void _addNew(PassingRef ref, Map<String, dynamic> value) {
-    final key = field.key is EnumField
-        ? (field.key as EnumField)
+    final key = mapBlueprint.key is EnumBlueprint
+        ? (mapBlueprint.key as EnumBlueprint)
             .values
             .firstWhereOrNull((e) => !value.containsKey(e))
-        : field.key.defaultValue;
+        : mapBlueprint.key.defaultValue();
     if (key == null) return;
-    final val = field.value.defaultValue;
+    final val = mapBlueprint.value.defaultValue();
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
       ref,
       path,
@@ -74,8 +74,8 @@ class MapEditor extends HookConsumerWidget {
     );
 
     return FieldHeader(
-      field: field,
       path: path,
+      dataBlueprint: mapBlueprint,
       canExpand: true,
       actions: [
         AddHeaderAction(
@@ -92,7 +92,7 @@ class MapEditor extends HookConsumerWidget {
                 map: value,
                 entry: MapEntry(entry.key, entry.value),
                 path: path,
-                field: field,
+                mapBlueprint: mapBlueprint,
               ),
             )
             .toList(),
@@ -107,14 +107,14 @@ class _MapEntry extends HookConsumerWidget {
     required this.map,
     required this.entry,
     required this.path,
-    required this.field,
+    required this.mapBlueprint,
     super.key,
   }) : super();
   final int index;
   final Map<String, dynamic> map;
   final MapEntry<String, dynamic> entry;
   final String path;
-  final MapField field;
+  final MapBlueprint mapBlueprint;
 
   void _changeKeyField(PassingRef ref, String key) {
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
@@ -162,33 +162,33 @@ class _MapEntry extends HookConsumerWidget {
   }
 
   Widget _keyEditor(BuildContext context, WidgetRef ref, String name) {
-    if (field.key is PrimitiveField &&
-        (field.key as PrimitiveField).type == PrimitiveFieldType.string) {
+    if (mapBlueprint.key is PrimitiveBlueprint &&
+        (mapBlueprint.key as PrimitiveBlueprint).type == PrimitiveType.string) {
       return Flexible(
         child: _StringKey(
           path: path,
-          field: field.key as PrimitiveField,
+          field: mapBlueprint.key as PrimitiveBlueprint,
           value: entry.key,
           onChanged: (value) => _changeKey(context, ref.passing, value),
         ),
       );
     }
-    if (field.key is EnumField) {
+    if (mapBlueprint.key is EnumBlueprint) {
       return Flexible(
         child: _EnumKey(
           path: path,
-          field: field.key as EnumField,
+          enumBlueprint: mapBlueprint.key as EnumBlueprint,
           value: entry.key,
           onChanged: (value) => _changeKey(context, ref.passing, value),
         ),
       );
     }
 
-    if (field.key.hasModifier("entry")) {
+    if (mapBlueprint.key.hasModifier("entry")) {
       return Flexible(
         child: _EntryKey(
           path: path,
-          field: field.key,
+          dataBlueprint: mapBlueprint.key,
           value: entry.key,
           onChanged: (value) => _changeKey(context, ref.passing, value),
         ),
@@ -223,7 +223,7 @@ class _MapEntry extends HookConsumerWidget {
             child: FieldEditor(
               key: ValueKey("map-$index"),
               path: "$path.${entry.key}",
-              type: field.value,
+              dataBlueprint: mapBlueprint.value,
             ),
           ),
         ],
@@ -240,7 +240,7 @@ class _StringKey extends HookConsumerWidget {
     required this.onChanged,
   }) : super();
   final String path;
-  final PrimitiveField field;
+  final PrimitiveBlueprint field;
   final String value;
   final Function(String) onChanged;
 
@@ -248,7 +248,7 @@ class _StringKey extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return StringEditor(
       path: path,
-      field: field,
+      primitiveBlueprint: field,
       forcedValue: value,
       icon: TWIcons.key,
       hint: "Enter a key",
@@ -260,12 +260,12 @@ class _StringKey extends HookConsumerWidget {
 class _EnumKey extends HookConsumerWidget {
   const _EnumKey({
     required this.path,
-    required this.field,
+    required this.enumBlueprint,
     required this.value,
     required this.onChanged,
   });
   final String path;
-  final EnumField field;
+  final EnumBlueprint enumBlueprint;
   final String value;
   final Function(String) onChanged;
 
@@ -273,7 +273,7 @@ class _EnumKey extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return EnumEditor(
       path: path,
-      field: field,
+      enumBlueprint: enumBlueprint,
       forcedValue: value,
       icon: TWIcons.key,
       onChanged: onChanged,
@@ -284,12 +284,12 @@ class _EnumKey extends HookConsumerWidget {
 class _EntryKey extends HookConsumerWidget {
   const _EntryKey({
     required this.path,
-    required this.field,
+    required this.dataBlueprint,
     required this.value,
     required this.onChanged,
   });
   final String path;
-  final FieldInfo field;
+  final DataBlueprint dataBlueprint;
   final String value;
   final Function(String) onChanged;
 
@@ -297,7 +297,7 @@ class _EntryKey extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return EntrySelectorEditor(
       path: path,
-      field: field,
+      dataBlueprint: dataBlueprint,
       forcedValue: value,
       onChanged: onChanged,
     );

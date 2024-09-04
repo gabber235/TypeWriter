@@ -3,73 +3,61 @@ name: Build Jars on Request
 on: [workflow_dispatch]
   
 jobs:
-  build-plugin:
-    name: Build Typewriter Plugin
-    uses: ./.github/workflows/build-plugin.yml
+  build-engine:
+    name: Build Typewriter Engine
+    uses: ./.github/workflows/build-engine.yml
 
-  build-adapter-basic:
-    name: Build Basic Adapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-basic:
+    name: Build Basic Extension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: BasicAdapter
+      extension: BasicExtension
 
-  build-adapter-citizens:
-    name: Build Citizens Adapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-citizens:
+    name: Build Citizens Extension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: CitizensAdapter
+      extension: CitizensExtension
 
 
-  build-adapter-combat-log-x:
-    name: Build CombatLogX Adapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-combat-log-x:
+    name: Build CombatLogX Extension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: CombatLogXAdapter
+      extension: CombatLogXExtension
 
-  build-adapter-entity:
-    name: Build EntityAdapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-entity:
+    name: Build EntityExtension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: EntityAdapter
+      extension: EntityExtension
 
-  build-adapter-mythic-mobs:
-    name: Build MythicMobs Adapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-mythic-mobs:
+    name: Build MythicMobs Extension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: MythicMobsAdapter
+      extension: MythicMobsExtension
 
-  build-adapter-rpg-regions:
-    name: Build RPGRegions Adapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-rpg-regions:
+    name: Build RPGRegions Extension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: RPGRegionsAdapter
+      extension: RPGRegionsExtension
 
-  build-adapter-superior-skyblock:
-    name: Build SuperiorSkyblock Adapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-superior-skyblock:
+    name: Build SuperiorSkyblock Extension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: SuperiorSkyblockAdapter
+      extension: SuperiorSkyblockExtension
 
-  build-adapter-vault:
-    name: Build Vault Adapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-vault:
+    name: Build Vault Extension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: VaultAdapter
+      extension: VaultExtension
 
-  build-adapter-worldguard:
-    name: Build WorldGuard Adapter
-    uses: ./.github/workflows/build-adapter.yml
+  build-extension-worldguard:
+    name: Build WorldGuard Extension
+    uses: ./.github/workflows/build-extension.yml
     with:
-      adapter: WorldGuardAdapter
-
-  build-adapter-znpcs:
-    name: Build ZNPCsPlus Adapter
-    uses: ./.github/workflows/build-adapter.yml
-    with:
-      adapter: ZNPCsPlusAdapter
-
-  build-adapter-fancynpcs:
-    name: Build FancyNpcs Adapter
-    uses: ./.github/workflows/build-adapter.yml
-    with:
-      adapter: FancyNpcsAdapter
+      extension: WorldGuardExtension

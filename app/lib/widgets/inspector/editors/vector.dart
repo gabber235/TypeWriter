@@ -1,28 +1,29 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/widgets/components/app/cord_property.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 
 class VectorEditorFilter extends EditorFilter {
   @override
-  Widget build(String path, FieldInfo info) =>
-      VectorEditor(path: path, field: info as CustomField);
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "vector";
 
   @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "vector";
+  Widget build(String path, DataBlueprint dataBlueprint) => VectorEditor(
+        path: path,
+        customBlueprint: dataBlueprint as CustomBlueprint,
+      );
 }
 
 class VectorEditor extends HookConsumerWidget {
   const VectorEditor({
     required this.path,
-    required this.field,
+    required this.customBlueprint,
     super.key,
   });
   final String path;
-
-  final CustomField field;
+  final CustomBlueprint customBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector/editors/boolean.dart";
 import "package:typewriter/widgets/inspector/editors/color.dart";
@@ -43,7 +43,7 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       // Custom Editors
       MaterialEditorFilter(),
       OptionalEditorFilter(),
-      LocationEditorFilter(),
+      PositionEditorFilter(),
       VectorEditorFilter(),
       DurationEditorFilter(),
       CronEditorFilter(),
@@ -66,9 +66,9 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
     ];
 
 abstract class EditorFilter {
-  bool canEdit(FieldInfo info);
+  bool canEdit(DataBlueprint dataBlueprint);
 
-  Widget build(String path, FieldInfo info);
+  Widget build(String path, DataBlueprint dataBlueprint);
 }
 
 @riverpod

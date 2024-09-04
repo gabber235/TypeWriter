@@ -4,7 +4,7 @@ import "package:flutter/services.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/materials.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
@@ -184,22 +184,24 @@ extension _SearchBuilderX on SearchBuilder {
 
 class MaterialEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "material";
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "material";
   @override
-  Widget build(String path, FieldInfo info) =>
-      MaterialEditor(path: path, field: info as CustomField);
+  Widget build(String path, DataBlueprint dataBlueprint) => MaterialEditor(
+        path: path,
+        customBlueprint: dataBlueprint as CustomBlueprint,
+      );
 }
 
 class MaterialEditor extends HookConsumerWidget {
   const MaterialEditor({
     required this.path,
-    required this.field,
+    required this.customBlueprint,
     super.key,
   }) : super();
 
   final String path;
-  final CustomField field;
+  final CustomBlueprint customBlueprint;
 
   bool? _update(WidgetRef ref, String value) {
     ref
@@ -218,7 +220,8 @@ class MaterialEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(fieldValueProvider(path, ""));
-    final propertiesModifier = field.getModifier("material_properties");
+    final propertiesModifier =
+        customBlueprint.getModifier("material_properties");
     final properties = propertiesModifier != null
         ? ref.watch(materialPropertiesProvider(propertiesModifier.data))
         : <MaterialProperty>[];

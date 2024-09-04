@@ -6,7 +6,7 @@ part of 'manifest_view.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$manifestEntriesHash() => r'ee26b4e5433b9b26aa63771c4915fbb90113cc31';
+String _$manifestEntriesHash() => r'000665d0b4cf549b1875bda9c92ef01b64f1b5ce';
 
 /// See also [manifestEntries].
 @ProviderFor(manifestEntries)
@@ -36,7 +36,7 @@ final manifestEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef ManifestEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$entryReferencesHash() => r'3586d5429538084a11cd4329d4547dd2346ba02c';
+String _$entryReferencesHash() => r'cde5b6567d34b8c894d75ef53f8a87d5920545b5';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -185,7 +185,7 @@ class _EntryReferencesProviderElement
   String get entryId => (origin as EntryReferencesProvider).entryId;
 }
 
-String _$manifestGraphHash() => r'8feed62d6e7aacf18404b8159c32080eb9fdd7b3';
+String _$manifestGraphHash() => r'91959e287dc268b2a07695aceb531654673aa878';
 
 /// See also [manifestGraph].
 @ProviderFor(manifestGraph)

@@ -3,8 +3,8 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:graphview/GraphView.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
@@ -20,7 +20,7 @@ List<Entry> manifestEntries(ManifestEntriesRef ref) {
   if (page == null) return [];
 
   return page.entries.where((entry) {
-    final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
+    final tags = ref.watch(entryBlueprintTagsProvider(entry.blueprintId));
     if (tags.isEmpty) {
       // Entries without a blueprint are always shown. So that the user can delete them.
       return true;
@@ -40,7 +40,8 @@ Set<String>? entryReferences(EntryReferencesRef ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return null;
 
-  final modifiers = ref.watch(modifierPathsProvider(entry.type, "entry"));
+  final modifiers =
+      ref.watch(modifierPathsProvider(entry.blueprintId, "entry"));
   return modifiers
       .expand(entry.getAll)
       .map((id) => id as String)
@@ -62,8 +63,8 @@ Graph manifestGraph(ManifestGraphRef ref) {
     final referenceEntryIds = ref.watch(entryReferencesProvider(entry.id));
     if (referenceEntryIds == null) continue;
 
-    final color =
-        ref.watch(entryBlueprintProvider(entry.type))?.color ?? Colors.grey;
+    final color = ref.watch(entryBlueprintProvider(entry.blueprintId))?.color ??
+        Colors.grey;
 
     for (final referenceEntryId in referenceEntryIds) {
       final referenceTags = ref.watch(entryTagsProvider(referenceEntryId));

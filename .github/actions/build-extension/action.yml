@@ -1,0 +1,22 @@
+name: "Build Extension"
+description: "Builds the extension"
+
+inputs:
+  extension:
+    required: true
+    description: "Name of the extension to build"
+
+runs:
+  using: "composite"
+  steps:
+      - name: Test extension
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: :${{ inputs.extension }}:test --scan
+          build-root-directory: ./extensions
+      - name: Build Adapter
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: :${{ inputs.extension }}:buildRelease --scan
+          build-root-directory: ./extensions
+

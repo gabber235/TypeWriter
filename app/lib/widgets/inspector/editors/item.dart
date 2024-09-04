@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/general/error_box.dart";
@@ -14,44 +14,46 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class ItemEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info is CustomField && info.editor == "item";
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "item";
   @override
-  Widget build(String path, FieldInfo info) =>
-      ItemEditor(path: path, info: info as CustomField);
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      ItemEditor(path: path, customBlueprint: dataBlueprint as CustomBlueprint);
 }
 
 class ItemEditor extends HookConsumerWidget {
   const ItemEditor({
     required this.path,
-    required this.info,
+    required this.customBlueprint,
     super.key,
   });
 
   final String path;
-  final CustomField info;
+  final CustomBlueprint customBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final value = ref.watch(fieldValueProvider(path));
-    final objectField =
-        info.fieldInfo is ObjectField ? info.fieldInfo as ObjectField? : null;
-    if (objectField == null) {
+    final objectBlueprint = customBlueprint.shape is ObjectBlueprint
+        ? customBlueprint.shape as ObjectBlueprint?
+        : null;
+    if (objectBlueprint == null) {
       return ErrorBox(
         message: "Could not find subfields for item field: $path",
       );
     }
     return FieldHeader(
       path: path,
-      field: info,
+      dataBlueprint: customBlueprint,
       canExpand: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          _FieldSelector(path: path, objectField: objectField),
-          _ItemEditors(path: path, objectField: objectField),
+          _FieldSelector(path: path, objectBlueprint: objectBlueprint),
+          _ItemEditors(path: path, objectBlueprint: objectBlueprint),
           // Text("Item: $value"),
-          // Text("Info: ${info.fieldInfo}"),
+          // Text("Info: ${info.DataBlueprint}"),
         ],
       ),
     );
@@ -61,16 +63,16 @@ class ItemEditor extends HookConsumerWidget {
 class _FieldSelector extends HookConsumerWidget {
   const _FieldSelector({
     required this.path,
-    required this.objectField,
+    required this.objectBlueprint,
   });
 
   final String path;
-  final ObjectField objectField;
+  final ObjectBlueprint objectBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hovering = useState(false);
-    final selected = objectField.fields.keys
+    final selected = objectBlueprint.fields.keys
         .where(
           (id) =>
               ref.watch(fieldValueProvider("$path.$id.enabled", false)) == true,
@@ -93,15 +95,10 @@ class _FieldSelector extends HookConsumerWidget {
             spacing: 6,
             runSpacing: 6,
             children: [
-              for (final MapEntry(key: id, value: info)
-                  in objectField.fields.entries)
+              for (final MapEntry(key: id, value: dataBlueprint)
+                  in objectBlueprint.fields.entries)
                 if (showAll || selected.contains(id))
-                  _ItemChip(
-                    key: ValueKey(id),
-                    path: "$path.$id",
-                    id: id,
-                    info: info,
-                  ),
+                    _chip(id, dataBlueprint),
             ].animate(interval: 40.ms).fadeIn(duration: 250.ms).scaleXY(
                   begin: 0.6,
                   end: 1.0,
@@ -113,19 +110,34 @@ class _FieldSelector extends HookConsumerWidget {
       ),
     );
   }
+
+  Widget _chip(String id, DataBlueprint dataBlueprint) {
+      if (dataBlueprint is! CustomBlueprint) return const SizedBox();
+      final shapeBlueprint = dataBlueprint.shape;
+      if (shapeBlueprint is! ObjectBlueprint) return const SizedBox();
+      if (!shapeBlueprint.fields.containsKey("value")) return const SizedBox();
+      final valueBlueprint = shapeBlueprint.fields["value"];
+      if (valueBlueprint == null) return const SizedBox();
+      return _ItemChip(
+        key: ValueKey(id),
+        path: "$path.$id",
+        id: id,
+        dataBlueprint: valueBlueprint,
+      );
+  }
 }
 
 class _ItemChip extends HookConsumerWidget {
   const _ItemChip({
     required this.path,
     required this.id,
-    required this.info,
+    required this.dataBlueprint,
     super.key,
   });
 
   final String path;
   final String id;
-  final FieldInfo info;
+  final DataBlueprint dataBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -138,7 +150,7 @@ class _ItemChip extends HookConsumerWidget {
     return InputChip(
       label: Text(id.capitalize, style: TextStyle(color: foregroundColor)),
       avatar: Iconify(
-        info.get("icon"),
+        dataBlueprint.get("icon"),
         size: 14,
         color: foregroundColor,
       ),
@@ -159,11 +171,11 @@ class _ItemChip extends HookConsumerWidget {
 class _ItemEditors extends HookConsumerWidget {
   const _ItemEditors({
     required this.path,
-    required this.objectField,
+    required this.objectBlueprint,
   });
 
   final String path;
-  final ObjectField objectField;
+  final ObjectBlueprint objectBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -174,15 +186,25 @@ class _ItemEditors extends HookConsumerWidget {
       clipBehavior: Clip.none,
       child: Column(
         children: [
-          for (final MapEntry(key: id, value: info)
-              in objectField.fields.entries)
-            _ItemEditor(
-              key: ValueKey(id),
-              path: "$path.$id",
-              field: info,
-            ),
+          for (final MapEntry(key: id, value: dataBlueprint)
+              in objectBlueprint.fields.entries)
+            _editor(id, dataBlueprint),
         ],
       ),
+    );
+  }
+
+  Widget _editor(String id, DataBlueprint dataBlueprint) {
+    if (dataBlueprint is! CustomBlueprint) return const SizedBox();
+    final shapeBlueprint = dataBlueprint.shape;
+    if (shapeBlueprint is! ObjectBlueprint) return const SizedBox();
+    if (!shapeBlueprint.fields.containsKey("value")) return const SizedBox();
+    final valueBlueprint = shapeBlueprint.fields["value"];
+    if (valueBlueprint == null) return const SizedBox();
+    return _ItemEditor(
+      key: ValueKey(id),
+      path: "$path.$id",
+      dataBlueprint: valueBlueprint,
     );
   }
 }
@@ -190,12 +212,12 @@ class _ItemEditors extends HookConsumerWidget {
 class _ItemEditor extends HookConsumerWidget {
   const _ItemEditor({
     required this.path,
-    required this.field,
+    required this.dataBlueprint,
     super.key,
   });
 
   final String path;
-  final FieldInfo field;
+  final DataBlueprint dataBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -209,9 +231,9 @@ class _ItemEditor extends HookConsumerWidget {
       children: [
         const SizedBox(height: 8),
         FieldHeader(
-          field: field,
+          dataBlueprint: dataBlueprint,
           path: path,
-          child: FieldEditor(path: "$path.value", type: field),
+          child: FieldEditor(path: "$path.value", dataBlueprint: dataBlueprint),
         ),
       ],
     ).animate().fadeIn(duration: 250.ms).moveY(

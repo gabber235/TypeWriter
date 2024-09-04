@@ -20,7 +20,9 @@ mixin _$FrameLine {
   double get offset => throw _privateConstructorUsedError;
   bool get primary => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _FrameLine
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$FrameLineCopyWith<_FrameLine> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -44,6 +46,8 @@ class __$FrameLineCopyWithImpl<$Res, $Val extends _FrameLine>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of _FrameLine
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -87,6 +91,8 @@ class __$$$__FrameLineImplCopyWithImpl<$Res>
       _$$__FrameLineImpl _value, $Res Function(_$$__FrameLineImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of _FrameLine
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -142,7 +148,9 @@ class _$$__FrameLineImpl implements _$__FrameLine {
   @override
   int get hashCode => Object.hash(runtimeType, frame, offset, primary);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _FrameLine
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$$__FrameLineImplCopyWith<_$$__FrameLineImpl> get copyWith =>
@@ -161,8 +169,11 @@ abstract class _$__FrameLine implements _FrameLine {
   double get offset;
   @override
   bool get primary;
+
+  /// Create a copy of _FrameLine
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$$__FrameLineImplCopyWith<_$$__FrameLineImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -173,7 +184,9 @@ mixin _$MoveState {
   Segment? get nextSegment => throw _privateConstructorUsedError;
   double get innerPercent => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _MoveState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$MoveStateCopyWith<_MoveState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -201,6 +214,8 @@ class __$MoveStateCopyWithImpl<$Res, $Val extends _MoveState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of _MoveState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -224,6 +239,8 @@ class __$MoveStateCopyWithImpl<$Res, $Val extends _MoveState>
     ) as $Val);
   }
 
+  /// Create a copy of _MoveState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SegmentCopyWith<$Res>? get previousSegment {
@@ -236,6 +253,8 @@ class __$MoveStateCopyWithImpl<$Res, $Val extends _MoveState>
     });
   }
 
+  /// Create a copy of _MoveState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SegmentCopyWith<$Res>? get nextSegment {
@@ -274,6 +293,8 @@ class __$$$__MoveStateImplCopyWithImpl<$Res>
       _$$__MoveStateImpl _value, $Res Function(_$$__MoveStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of _MoveState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -336,7 +357,9 @@ class _$$__MoveStateImpl implements _$__MoveState {
   int get hashCode =>
       Object.hash(runtimeType, previousSegment, nextSegment, innerPercent);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _MoveState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$$__MoveStateImplCopyWith<_$$__MoveStateImpl> get copyWith =>
@@ -355,8 +378,11 @@ abstract class _$__MoveState implements _MoveState {
   Segment? get nextSegment;
   @override
   double get innerPercent;
+
+  /// Create a copy of _MoveState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$$__MoveStateImplCopyWith<_$$__MoveStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -372,7 +398,9 @@ mixin _$TrackState {
       throw _privateConstructorUsedError; // ignore: unused_element
   double get width => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _TrackState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$TrackStateCopyWith<_TrackState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -396,6 +424,8 @@ class __$TrackStateCopyWithImpl<$Res, $Val extends _TrackState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of _TrackState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -444,6 +474,8 @@ class __$$$__TrackStateImplCopyWithImpl<$Res>
       _$$__TrackStateImpl _value, $Res Function(_$$__TrackStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of _TrackState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -516,7 +548,9 @@ class _$$__TrackStateImpl implements _$__TrackState {
   @override
   int get hashCode => Object.hash(runtimeType, start, end, totalFrames, width);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _TrackState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$$__TrackStateImplCopyWith<_$$__TrackStateImpl> get copyWith =>
@@ -530,16 +564,20 @@ abstract class _$__TrackState implements _TrackState {
       final int totalFrames,
       final double width]) = _$$__TrackStateImpl;
 
-  @override // ignore: unused_element
-  double get start;
-  @override // ignore: unused_element
-  double get end;
-  @override // ignore: unused_element
-  int get totalFrames;
-  @override // ignore: unused_element
-  double get width;
+// ignore: unused_element
   @override
-  @JsonKey(ignore: true)
+  double get start; // ignore: unused_element
+  @override
+  double get end; // ignore: unused_element
+  @override
+  int get totalFrames; // ignore: unused_element
+  @override
+  double get width;
+
+  /// Create a copy of _TrackState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$$__TrackStateImplCopyWith<_$$__TrackStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

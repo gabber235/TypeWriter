@@ -7,6 +7,7 @@ part of 'page.dart';
 // **************************************************************************
 
 _$PageImpl _$$PageImplFromJson(Map<String, dynamic> json) => _$PageImpl(
+      id: json['id'] as String,
       pageName: json['name'] as String,
       type: $enumDecode(_$PageTypeEnumMap, json['type']),
       entries: (json['entries'] as List<dynamic>?)
@@ -19,6 +20,7 @@ _$PageImpl _$$PageImplFromJson(Map<String, dynamic> json) => _$PageImpl(
 
 Map<String, dynamic> _$$PageImplToJson(_$PageImpl instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'name': instance.pageName,
       'type': _$PageTypeEnumMap[instance.type]!,
       'entries': instance.entries,
@@ -51,7 +53,7 @@ final pagesProvider = AutoDisposeProvider<List<Page>>.internal(
 );
 
 typedef PagesRef = AutoDisposeProviderRef<List<Page>>;
-String _$pageHash() => r'0c5240a645e0582f10cb6e594f6fd35bb2d48c1a';
+String _$pageHash() => r'884d7b74470acd1d1cd7aefeb91f51364a14ba89';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -85,10 +87,10 @@ class PageFamily extends Family<Page?> {
 
   /// See also [page].
   PageProvider call(
-    String pageName,
+    String pageId,
   ) {
     return PageProvider(
-      pageName,
+      pageId,
     );
   }
 
@@ -97,7 +99,7 @@ class PageFamily extends Family<Page?> {
     covariant PageProvider provider,
   ) {
     return call(
-      provider.pageName,
+      provider.pageId,
     );
   }
 
@@ -120,11 +122,11 @@ class PageFamily extends Family<Page?> {
 class PageProvider extends AutoDisposeProvider<Page?> {
   /// See also [page].
   PageProvider(
-    String pageName,
+    String pageId,
   ) : this._internal(
           (ref) => page(
             ref as PageRef,
-            pageName,
+            pageId,
           ),
           from: pageProvider,
           name: r'pageProvider',
@@ -132,7 +134,7 @@ class PageProvider extends AutoDisposeProvider<Page?> {
               const bool.fromEnvironment('dart.vm.product') ? null : _$pageHash,
           dependencies: PageFamily._dependencies,
           allTransitiveDependencies: PageFamily._allTransitiveDependencies,
-          pageName: pageName,
+          pageId: pageId,
         );
 
   PageProvider._internal(
@@ -142,10 +144,10 @@ class PageProvider extends AutoDisposeProvider<Page?> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.pageName,
+    required this.pageId,
   }) : super.internal();
 
-  final String pageName;
+  final String pageId;
 
   @override
   Override overrideWith(
@@ -160,7 +162,7 @@ class PageProvider extends AutoDisposeProvider<Page?> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        pageName: pageName,
+        pageId: pageId,
       ),
     );
   }
@@ -172,21 +174,21 @@ class PageProvider extends AutoDisposeProvider<Page?> {
 
   @override
   bool operator ==(Object other) {
-    return other is PageProvider && other.pageName == pageName;
+    return other is PageProvider && other.pageId == pageId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, pageName.hashCode);
+    hash = _SystemHash.combine(hash, pageId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin PageRef on AutoDisposeProviderRef<Page?> {
-  /// The parameter `pageName` of this provider.
-  String get pageName;
+  /// The parameter `pageId` of this provider.
+  String get pageId;
 }
 
 class _PageProviderElement extends AutoDisposeProviderElement<Page?>
@@ -194,10 +196,10 @@ class _PageProviderElement extends AutoDisposeProviderElement<Page?>
   _PageProviderElement(super.provider);
 
   @override
-  String get pageName => (origin as PageProvider).pageName;
+  String get pageId => (origin as PageProvider).pageId;
 }
 
-String _$pageExistsHash() => r'1c42a5607890607b3818f12bb68d98196ccab59d';
+String _$pageExistsHash() => r'68e3ea46a1e212bb9bc01ac653a749e9668d47f3';
 
 /// See also [pageExists].
 @ProviderFor(pageExists)
@@ -210,10 +212,10 @@ class PageExistsFamily extends Family<bool> {
 
   /// See also [pageExists].
   PageExistsProvider call(
-    String pageName,
+    String pageId,
   ) {
     return PageExistsProvider(
-      pageName,
+      pageId,
     );
   }
 
@@ -222,7 +224,7 @@ class PageExistsFamily extends Family<bool> {
     covariant PageExistsProvider provider,
   ) {
     return call(
-      provider.pageName,
+      provider.pageId,
     );
   }
 
@@ -245,11 +247,11 @@ class PageExistsFamily extends Family<bool> {
 class PageExistsProvider extends AutoDisposeProvider<bool> {
   /// See also [pageExists].
   PageExistsProvider(
-    String pageName,
+    String pageId,
   ) : this._internal(
           (ref) => pageExists(
             ref as PageExistsRef,
-            pageName,
+            pageId,
           ),
           from: pageExistsProvider,
           name: r'pageExistsProvider',
@@ -260,7 +262,7 @@ class PageExistsProvider extends AutoDisposeProvider<bool> {
           dependencies: PageExistsFamily._dependencies,
           allTransitiveDependencies:
               PageExistsFamily._allTransitiveDependencies,
-          pageName: pageName,
+          pageId: pageId,
         );
 
   PageExistsProvider._internal(
@@ -270,10 +272,10 @@ class PageExistsProvider extends AutoDisposeProvider<bool> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.pageName,
+    required this.pageId,
   }) : super.internal();
 
-  final String pageName;
+  final String pageId;
 
   @override
   Override overrideWith(
@@ -288,7 +290,7 @@ class PageExistsProvider extends AutoDisposeProvider<bool> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        pageName: pageName,
+        pageId: pageId,
       ),
     );
   }
@@ -300,21 +302,21 @@ class PageExistsProvider extends AutoDisposeProvider<bool> {
 
   @override
   bool operator ==(Object other) {
-    return other is PageExistsProvider && other.pageName == pageName;
+    return other is PageExistsProvider && other.pageId == pageId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, pageName.hashCode);
+    hash = _SystemHash.combine(hash, pageId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin PageExistsRef on AutoDisposeProviderRef<bool> {
-  /// The parameter `pageName` of this provider.
-  String get pageName;
+  /// The parameter `pageId` of this provider.
+  String get pageId;
 }
 
 class _PageExistsProviderElement extends AutoDisposeProviderElement<bool>
@@ -322,10 +324,10 @@ class _PageExistsProviderElement extends AutoDisposeProviderElement<bool>
   _PageExistsProviderElement(super.provider);
 
   @override
-  String get pageName => (origin as PageExistsProvider).pageName;
+  String get pageId => (origin as PageExistsProvider).pageId;
 }
 
-String _$pageTypeHash() => r'6912833664c34d2689d328d901719f479be512ac';
+String _$pageTypeHash() => r'e22516e95c00d6723256e425e31624dc3beccddb';
 
 /// See also [pageType].
 @ProviderFor(pageType)
@@ -338,10 +340,10 @@ class PageTypeFamily extends Family<PageType> {
 
   /// See also [pageType].
   PageTypeProvider call(
-    String pageName,
+    String pageId,
   ) {
     return PageTypeProvider(
-      pageName,
+      pageId,
     );
   }
 
@@ -350,7 +352,7 @@ class PageTypeFamily extends Family<PageType> {
     covariant PageTypeProvider provider,
   ) {
     return call(
-      provider.pageName,
+      provider.pageId,
     );
   }
 
@@ -373,11 +375,11 @@ class PageTypeFamily extends Family<PageType> {
 class PageTypeProvider extends AutoDisposeProvider<PageType> {
   /// See also [pageType].
   PageTypeProvider(
-    String pageName,
+    String pageId,
   ) : this._internal(
           (ref) => pageType(
             ref as PageTypeRef,
-            pageName,
+            pageId,
           ),
           from: pageTypeProvider,
           name: r'pageTypeProvider',
@@ -387,7 +389,7 @@ class PageTypeProvider extends AutoDisposeProvider<PageType> {
                   : _$pageTypeHash,
           dependencies: PageTypeFamily._dependencies,
           allTransitiveDependencies: PageTypeFamily._allTransitiveDependencies,
-          pageName: pageName,
+          pageId: pageId,
         );
 
   PageTypeProvider._internal(
@@ -397,10 +399,10 @@ class PageTypeProvider extends AutoDisposeProvider<PageType> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.pageName,
+    required this.pageId,
   }) : super.internal();
 
-  final String pageName;
+  final String pageId;
 
   @override
   Override overrideWith(
@@ -415,7 +417,7 @@ class PageTypeProvider extends AutoDisposeProvider<PageType> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        pageName: pageName,
+        pageId: pageId,
       ),
     );
   }
@@ -427,21 +429,21 @@ class PageTypeProvider extends AutoDisposeProvider<PageType> {
 
   @override
   bool operator ==(Object other) {
-    return other is PageTypeProvider && other.pageName == pageName;
+    return other is PageTypeProvider && other.pageId == pageId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, pageName.hashCode);
+    hash = _SystemHash.combine(hash, pageId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin PageTypeRef on AutoDisposeProviderRef<PageType> {
-  /// The parameter `pageName` of this provider.
-  String get pageName;
+  /// The parameter `pageId` of this provider.
+  String get pageId;
 }
 
 class _PageTypeProviderElement extends AutoDisposeProviderElement<PageType>
@@ -449,10 +451,10 @@ class _PageTypeProviderElement extends AutoDisposeProviderElement<PageType>
   _PageTypeProviderElement(super.provider);
 
   @override
-  String get pageName => (origin as PageTypeProvider).pageName;
+  String get pageId => (origin as PageTypeProvider).pageId;
 }
 
-String _$pageChapterHash() => r'9cdd570d02d94300415088471aa61037d66464eb';
+String _$pageChapterHash() => r'c8725780b13e27c6bfb7ade62625aabb4d7ca392';
 
 /// See also [pageChapter].
 @ProviderFor(pageChapter)
@@ -465,10 +467,10 @@ class PageChapterFamily extends Family<String> {
 
   /// See also [pageChapter].
   PageChapterProvider call(
-    String pageName,
+    String pageId,
   ) {
     return PageChapterProvider(
-      pageName,
+      pageId,
     );
   }
 
@@ -477,7 +479,7 @@ class PageChapterFamily extends Family<String> {
     covariant PageChapterProvider provider,
   ) {
     return call(
-      provider.pageName,
+      provider.pageId,
     );
   }
 
@@ -500,11 +502,11 @@ class PageChapterFamily extends Family<String> {
 class PageChapterProvider extends AutoDisposeProvider<String> {
   /// See also [pageChapter].
   PageChapterProvider(
-    String pageName,
+    String pageId,
   ) : this._internal(
           (ref) => pageChapter(
             ref as PageChapterRef,
-            pageName,
+            pageId,
           ),
           from: pageChapterProvider,
           name: r'pageChapterProvider',
@@ -515,7 +517,7 @@ class PageChapterProvider extends AutoDisposeProvider<String> {
           dependencies: PageChapterFamily._dependencies,
           allTransitiveDependencies:
               PageChapterFamily._allTransitiveDependencies,
-          pageName: pageName,
+          pageId: pageId,
         );
 
   PageChapterProvider._internal(
@@ -525,10 +527,10 @@ class PageChapterProvider extends AutoDisposeProvider<String> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.pageName,
+    required this.pageId,
   }) : super.internal();
 
-  final String pageName;
+  final String pageId;
 
   @override
   Override overrideWith(
@@ -543,7 +545,7 @@ class PageChapterProvider extends AutoDisposeProvider<String> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        pageName: pageName,
+        pageId: pageId,
       ),
     );
   }
@@ -555,21 +557,21 @@ class PageChapterProvider extends AutoDisposeProvider<String> {
 
   @override
   bool operator ==(Object other) {
-    return other is PageChapterProvider && other.pageName == pageName;
+    return other is PageChapterProvider && other.pageId == pageId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, pageName.hashCode);
+    hash = _SystemHash.combine(hash, pageId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin PageChapterRef on AutoDisposeProviderRef<String> {
-  /// The parameter `pageName` of this provider.
-  String get pageName;
+  /// The parameter `pageId` of this provider.
+  String get pageId;
 }
 
 class _PageChapterProviderElement extends AutoDisposeProviderElement<String>
@@ -577,10 +579,10 @@ class _PageChapterProviderElement extends AutoDisposeProviderElement<String>
   _PageChapterProviderElement(super.provider);
 
   @override
-  String get pageName => (origin as PageChapterProvider).pageName;
+  String get pageId => (origin as PageChapterProvider).pageId;
 }
 
-String _$pagePriorityHash() => r'6d67e3c592c0e5656c4c26213da90d64691825b5';
+String _$pagePriorityHash() => r'340f23a4c9b80bbd159ea066d79044424a8e4692';
 
 /// See also [pagePriority].
 @ProviderFor(pagePriority)
@@ -593,10 +595,10 @@ class PagePriorityFamily extends Family<int> {
 
   /// See also [pagePriority].
   PagePriorityProvider call(
-    String pageName,
+    String pageId,
   ) {
     return PagePriorityProvider(
-      pageName,
+      pageId,
     );
   }
 
@@ -605,7 +607,7 @@ class PagePriorityFamily extends Family<int> {
     covariant PagePriorityProvider provider,
   ) {
     return call(
-      provider.pageName,
+      provider.pageId,
     );
   }
 
@@ -628,11 +630,11 @@ class PagePriorityFamily extends Family<int> {
 class PagePriorityProvider extends AutoDisposeProvider<int> {
   /// See also [pagePriority].
   PagePriorityProvider(
-    String pageName,
+    String pageId,
   ) : this._internal(
           (ref) => pagePriority(
             ref as PagePriorityRef,
-            pageName,
+            pageId,
           ),
           from: pagePriorityProvider,
           name: r'pagePriorityProvider',
@@ -643,7 +645,7 @@ class PagePriorityProvider extends AutoDisposeProvider<int> {
           dependencies: PagePriorityFamily._dependencies,
           allTransitiveDependencies:
               PagePriorityFamily._allTransitiveDependencies,
-          pageName: pageName,
+          pageId: pageId,
         );
 
   PagePriorityProvider._internal(
@@ -653,10 +655,10 @@ class PagePriorityProvider extends AutoDisposeProvider<int> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.pageName,
+    required this.pageId,
   }) : super.internal();
 
-  final String pageName;
+  final String pageId;
 
   @override
   Override overrideWith(
@@ -671,7 +673,7 @@ class PagePriorityProvider extends AutoDisposeProvider<int> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        pageName: pageName,
+        pageId: pageId,
       ),
     );
   }
@@ -683,21 +685,21 @@ class PagePriorityProvider extends AutoDisposeProvider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is PagePriorityProvider && other.pageName == pageName;
+    return other is PagePriorityProvider && other.pageId == pageId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, pageName.hashCode);
+    hash = _SystemHash.combine(hash, pageId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin PagePriorityRef on AutoDisposeProviderRef<int> {
-  /// The parameter `pageName` of this provider.
-  String get pageName;
+  /// The parameter `pageId` of this provider.
+  String get pageId;
 }
 
 class _PagePriorityProviderElement extends AutoDisposeProviderElement<int>
@@ -705,10 +707,10 @@ class _PagePriorityProviderElement extends AutoDisposeProviderElement<int>
   _PagePriorityProviderElement(super.provider);
 
   @override
-  String get pageName => (origin as PagePriorityProvider).pageName;
+  String get pageId => (origin as PagePriorityProvider).pageId;
 }
 
-String _$entryPageIdHash() => r'ceb41cef3f8d8b1f0a28e5de7aead8969f03d6ac';
+String _$entryPageIdHash() => r'a317d09f9de338ebefec45be649af4dc1c60a22d';
 
 /// See also [entryPageId].
 @ProviderFor(entryPageId)
@@ -1107,7 +1109,7 @@ class _EntryProviderElement extends AutoDisposeProviderElement<Entry?>
   String get entryId => (origin as EntryProvider).entryId;
 }
 
-String _$globalEntryHash() => r'df6937f53ba0fe88ed629630eb2b366d2ed3a540';
+String _$globalEntryHash() => r'f304c143cc53b98eeccb7696c4c1152464820b93';
 
 /// See also [globalEntry].
 @ProviderFor(globalEntry)

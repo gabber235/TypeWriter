@@ -1,7 +1,7 @@
 import "package:flutter/material.dart" hide Page;
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/app_router.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/pages_list.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -15,19 +15,33 @@ import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
+class PageSelectorEditorFilter extends EditorFilter {
+  @override
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is PrimitiveBlueprint &&
+      dataBlueprint.type == PrimitiveType.string &&
+      dataBlueprint.hasModifier("page");
+
+  @override
+  Widget build(String path, DataBlueprint dataBlueprint) => PageSelectorEditor(
+        path: path,
+        primitiveBlueprint: dataBlueprint as PrimitiveBlueprint,
+      );
+}
+
 class PageSelectorEditor extends HookConsumerWidget {
   const PageSelectorEditor({
     required this.path,
-    required this.field,
+    required this.primitiveBlueprint,
     super.key,
   });
   final String path;
 
-  final PrimitiveField field;
+  final PrimitiveBlueprint primitiveBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final typeTag = field.get("page");
+    final typeTag = primitiveBlueprint.get("page");
     final type = typeTag == null ? null : PageType.fromName(typeTag);
 
     if (type == null) {
@@ -197,21 +211,9 @@ class PageSelectorEditor extends HookConsumerWidget {
     if (page == null) return false;
     ref
         .read(inspectingEntryDefinitionProvider)
-        ?.updateField(ref, path, page.pageName);
+        ?.updateField(ref, path, page.id);
     return true;
   }
-}
-
-class PageSelectorEditorFilter extends EditorFilter {
-  @override
-  Widget build(String path, FieldInfo info) =>
-      PageSelectorEditor(path: path, field: info as PrimitiveField);
-
-  @override
-  bool canEdit(FieldInfo info) =>
-      info is PrimitiveField &&
-      info.type == PrimitiveFieldType.string &&
-      info.hasModifier("page");
 }
 
 class _SelectedPage extends HookConsumerWidget {

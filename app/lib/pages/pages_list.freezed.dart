@@ -16,11 +16,14 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$PageData {
+  String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   PageType get type => throw _privateConstructorUsedError;
   String get chapter => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _PageData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$PageDataCopyWith<_PageData> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -30,7 +33,7 @@ abstract class _$PageDataCopyWith<$Res> {
   factory _$PageDataCopyWith(_PageData value, $Res Function(_PageData) then) =
       __$PageDataCopyWithImpl<$Res, _PageData>;
   @useResult
-  $Res call({String name, PageType type, String chapter});
+  $Res call({String id, String name, PageType type, String chapter});
 }
 
 /// @nodoc
@@ -43,14 +46,21 @@ class __$PageDataCopyWithImpl<$Res, $Val extends _PageData>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of _PageData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? type = null,
     Object? chapter = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -75,7 +85,7 @@ abstract class _$$$__PageDataImplCopyWith<$Res>
       __$$$__PageDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, PageType type, String chapter});
+  $Res call({String id, String name, PageType type, String chapter});
 }
 
 /// @nodoc
@@ -86,14 +96,21 @@ class __$$$__PageDataImplCopyWithImpl<$Res>
       _$$__PageDataImpl _value, $Res Function(_$$__PageDataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of _PageData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? type = null,
     Object? chapter = null,
   }) {
     return _then(_$$__PageDataImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -114,8 +131,13 @@ class __$$$__PageDataImplCopyWithImpl<$Res>
 
 class _$$__PageDataImpl implements _$__PageData {
   const _$$__PageDataImpl(
-      {required this.name, required this.type, required this.chapter});
+      {required this.id,
+      required this.name,
+      required this.type,
+      required this.chapter});
 
+  @override
+  final String id;
   @override
   final String name;
   @override
@@ -125,7 +147,7 @@ class _$$__PageDataImpl implements _$__PageData {
 
   @override
   String toString() {
-    return '_PageData(name: $name, type: $type, chapter: $chapter)';
+    return '_PageData(id: $id, name: $name, type: $type, chapter: $chapter)';
   }
 
   @override
@@ -133,15 +155,18 @@ class _$$__PageDataImpl implements _$__PageData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$$__PageDataImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.chapter, chapter) || other.chapter == chapter));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, type, chapter);
+  int get hashCode => Object.hash(runtimeType, id, name, type, chapter);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _PageData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$$__PageDataImplCopyWith<_$$__PageDataImpl> get copyWith =>
@@ -150,18 +175,24 @@ class _$$__PageDataImpl implements _$__PageData {
 
 abstract class _$__PageData implements _PageData {
   const factory _$__PageData(
-      {required final String name,
+      {required final String id,
+      required final String name,
       required final PageType type,
       required final String chapter}) = _$$__PageDataImpl;
 
+  @override
+  String get id;
   @override
   String get name;
   @override
   PageType get type;
   @override
   String get chapter;
+
+  /// Create a copy of _PageData
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$$__PageDataImplCopyWith<_$$__PageDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

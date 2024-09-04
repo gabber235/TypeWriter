@@ -1,32 +1,33 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 
 class LengthHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, FieldInfo field) {
-    return field is ListField || field is MapField;
+  bool shouldShow(String path, DataBlueprint dataBlueprint) {
+    return dataBlueprint is ListBlueprint || dataBlueprint is MapBlueprint;
   }
 
   @override
-  HeaderActionLocation location(String path, FieldInfo field) =>
+  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
       HeaderActionLocation.trailing;
 
   @override
-  Widget build(String path, FieldInfo field) => LengthHeaderAction(path, field);
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      LengthHeaderAction(path: path, dataBlueprint: dataBlueprint);
 }
 
 class LengthHeaderAction extends HookConsumerWidget {
-  const LengthHeaderAction(
-    this.path,
-    this.field, {
+  const LengthHeaderAction({
+    required this.path,
+    required this.dataBlueprint,
     super.key,
   });
 
   final String path;
-  final FieldInfo field;
+  final DataBlueprint dataBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

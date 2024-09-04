@@ -2,16 +2,18 @@ import "package:collection/collection.dart";
 import "package:collection_ext/all.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
+import "package:typewriter/models/extension.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/utils/extensions.dart";
 
 part "book.freezed.dart";
 
 final bookProvider = StateNotifierProvider<BookNotifier, Book>(
   (ref) =>
-      BookNotifier(const Book(name: "", adapters: [], pages: []), ref: ref),
+      BookNotifier(const Book(name: "", extensions: [], pages: []), ref: ref),
   name: "bookProvider",
 );
 
@@ -19,7 +21,7 @@ final bookProvider = StateNotifierProvider<BookNotifier, Book>(
 class Book with _$Book {
   const factory Book({
     required String name,
-    required List<Adapter> adapters,
+    required List<Extension> extensions,
     required List<Page> pages,
   }) = _Book;
 }
@@ -35,49 +37,59 @@ class BookNotifier extends StateNotifier<Book> {
   bool updateShouldNotify(Book old, Book current) => old != current;
 
   /// Creates a new page.
-  Future<void> createPage(
+  Future<Page> createPage(
     String name, [
     PageType type = PageType.static,
     String chapter = "",
     int priority = 0,
   ]) async {
-    final page =
-        Page(pageName: name, type: type, chapter: chapter, priority: priority);
+    final page = Page(
+      id: getRandomString(),
+      pageName: name,
+      type: type,
+      chapter: chapter,
+      priority: priority,
+    );
     await ref.read(communicatorProvider).createPage(page);
     state = state.copyWith(
       pages: [...state.pages, page],
     );
+    return page;
   }
 
   /// Inserts a page. If the page already exists, it will be replaced.
   void insertPage(Page page) {
     state = state.copyWith(
-      pages: state.pages
-          .map((p) => p.pageName == page.pageName ? page : p)
-          .toList(),
+      pages: state.pages.map((p) => p.id == page.id ? page : p).toList(),
     );
   }
 
   /// Rename a page.
   /// If the page does not exist, it will be added.
-  Future<void> renamePage(String old, String newName) async {
-    final page = state.pages.firstWhereOrNull((p) => p.pageName == old);
+  Future<void> renamePage(String pageId, String newName) async {
+    final page = state.pages.firstWhereOrNull((p) => p.id == pageId);
     if (page == null) return;
-    await ref.read(communicatorProvider).renamePage(old, newName);
-    syncRenamePage(old, newName);
+    await ref.read(communicatorProvider).renamePage(pageId, newName);
+    syncRenamePage(pageId, newName);
   }
 
   /// Deletes a page.
-  Future<void> deletePage(String name) async {
-    await ref.read(communicatorProvider).deletePage(name);
-    syncDeletePage(name);
+  Future<void> deletePage(String pageId) async {
+    await ref.read(communicatorProvider).deletePage(pageId);
+    syncDeletePage(pageId);
   }
 
   ///Moves an entry from one page to another.
-  Future<void> moveEntry(String entryId, String fromPage, String toPage) async {
-    if (fromPage == toPage) return;
-    await ref.read(communicatorProvider).moveEntry(entryId, fromPage, toPage);
-    syncMoveEntry(entryId, fromPage, toPage);
+  Future<void> moveEntry(
+    String entryId,
+    String fromPageId,
+    String toPageId,
+  ) async {
+    if (fromPageId == toPageId) return;
+    await ref
+        .read(communicatorProvider)
+        .moveEntry(entryId, fromPageId, toPageId);
+    syncMoveEntry(entryId, fromPageId, toPageId);
   }
 
   /// Reloads the book from the server.
@@ -86,41 +98,33 @@ class BookNotifier extends StateNotifier<Book> {
   }
 
   /// Only for internal use.
-  void syncRenamePage(String old, String newName) {
-    final page = state.pages.firstWhereOrNull((p) => p.pageName == old);
+  void syncRenamePage(String pageId, String newName) {
+    final page = state.pages.firstWhereOrNull((p) => p.id == pageId);
     if (page == null) return;
-    state = state.copyWith(
-      pages: [
-        ...state.pages
-            .where((p) => p.pageName != old)
-            .map((p) => _fixPage(p, old, newName)),
-        _fixPage(page, old, newName).copyWith(pageName: newName),
-      ],
-    );
+    insertPage(page.copyWith(pageName: newName));
   }
 
   /// Only for internal use.
-  void syncDeletePage(String name) {
+  void syncDeletePage(String pageId) {
     state = state.copyWith(
       pages: state.pages
-          .where((p) => p.pageName != name)
-          .map((p) => _fixPage(p, name, null))
+          .where((p) => p.id != pageId)
+          .map((p) => _removePageReferences(p, pageId))
           .toList(),
     );
   }
 
   /// Only for internal use.
-  void syncMoveEntry(String entryId, String fromPage, String toPage) {
-    final from = state.pages.firstWhereOrNull((p) => p.pageName == fromPage);
-    final to = state.pages.firstWhereOrNull((p) => p.pageName == toPage);
+  void syncMoveEntry(String entryId, String fromPageId, String toPageId) {
+    final from = state.pages.firstWhereOrNull((p) => p.id == fromPageId);
+    final to = state.pages.firstWhereOrNull((p) => p.id == toPageId);
     if (from == null || to == null) return;
 
     final entry = from.entries.firstWhereOrNull((e) => e.id == entryId);
     if (entry == null) return;
     state = state.copyWith(
       pages: [
-        ...state.pages
-            .where((p) => p.pageName != fromPage && p.pageName != toPage),
+        ...state.pages.where((p) => p.id != fromPageId && p.id != toPageId),
         from.copyWith(
           entries: from.entries.where((e) => e.id != entryId).toList(),
         ),
@@ -129,11 +133,11 @@ class BookNotifier extends StateNotifier<Book> {
     );
   }
 
-  /// Fix page references. This is called for all other pages when a page is renamed or deleted.
-  Page _fixPage(Page page, String targetId, String? newId) {
+  /// Remove page references from entries.
+  Page _removePageReferences(Page page, String targetPageId) {
     final newEntries = page.entries
         .map(
-          (entry) => _removedReferencesFromEntry(page, entry, targetId, newId),
+          (entry) => _removedReferencesFromEntry(page, entry, targetPageId),
         )
         .toList();
     return page.copyWith(entries: newEntries);
@@ -143,12 +147,11 @@ class BookNotifier extends StateNotifier<Book> {
   Entry _removedReferencesFromEntry(
     Page page,
     Entry entry,
-    String targetId,
-    String? newId,
+    String targetPageId,
   ) {
-    final referenceEntryPaths = state.adapters
-            .flatMap((adapter) => adapter.entries)
-            .firstWhereOrNull((blueprint) => blueprint.name == entry.type)
+    final referenceEntryPaths = state.extensions
+            .flatMap((extension) => extension.entries)
+            .firstWhereOrNull((blueprint) => blueprint.id == entry.blueprintId)
             ?.fieldsWithModifier("page")
             .keys
             .toList() ??
@@ -158,7 +161,7 @@ class BookNotifier extends StateNotifier<Book> {
         .expand((path) => entry.getAll(path))
         .whereType<String>()
         .toList();
-    if (!referenceEntryIds.contains(targetId)) {
+    if (!referenceEntryIds.contains(targetPageId)) {
       return entry;
     }
 
@@ -166,11 +169,11 @@ class BookNotifier extends StateNotifier<Book> {
       entry,
       (previousEntry, path) => previousEntry.copyMapped(
         path,
-        (value) => value == targetId ? newId : value,
+        (value) => value == targetPageId ? null : value,
       ),
     );
 
-    ref.read(communicatorProvider).updateEntireEntry(page.pageName, newEntry);
+    ref.read(communicatorProvider).updateEntireEntry(page.id, newEntry);
 
     return newEntry;
   }

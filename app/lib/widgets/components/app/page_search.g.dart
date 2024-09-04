@@ -6,7 +6,7 @@ part of 'page_search.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fuzzyPagesHash() => r'ddc5e584006a43f6159387453a42f260697990c4';
+String _$fuzzyPagesHash() => r'835da172df554f740abdb580832d5be1a90aba00';
 
 /// See also [_fuzzyPages].
 @ProviderFor(_fuzzyPages)

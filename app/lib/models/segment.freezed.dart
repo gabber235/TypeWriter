@@ -26,7 +26,9 @@ mixin _$Segment {
   int? get maxFrames => throw _privateConstructorUsedError;
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Segment
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SegmentCopyWith<Segment> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -57,6 +59,8 @@ class _$SegmentCopyWithImpl<$Res, $Val extends Segment>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Segment
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -138,6 +142,8 @@ class __$$SegmentImplCopyWithImpl<$Res>
       _$SegmentImpl _value, $Res Function(_$SegmentImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Segment
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -276,7 +282,9 @@ class _$SegmentImpl implements _Segment {
       maxFrames,
       const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Segment
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SegmentImplCopyWith<_$SegmentImpl> get copyWith =>
@@ -313,8 +321,11 @@ abstract class _Segment implements Segment {
   int? get maxFrames;
   @override
   Map<String, dynamic> get data;
+
+  /// Create a copy of Segment
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SegmentImplCopyWith<_$SegmentImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

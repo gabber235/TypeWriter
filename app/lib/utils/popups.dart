@@ -73,7 +73,10 @@ class ConfirmationDialogue extends HookWidget {
       content: Text(content),
       actions: [
         TextButton.icon(
-          icon: Iconify(cancelIcon),
+          icon: Iconify(
+            cancelIcon,
+            color: Theme.of(context).textTheme.bodySmall?.color,
+          ),
           label: Text(cancelText),
           onPressed: () {
             Navigator.of(context).pop(false);

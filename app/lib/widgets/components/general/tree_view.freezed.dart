@@ -82,6 +82,9 @@ class _$TreeNodeCopyWithImpl<T, $Res, $Val extends TreeNode<T>>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -101,6 +104,8 @@ class __$$RootTreeNodeImplCopyWithImpl<T, $Res>
       _$RootTreeNodeImpl<T> _value, $Res Function(_$RootTreeNodeImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -146,7 +151,9 @@ class _$RootTreeNodeImpl<T> implements RootTreeNode<T> {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_children));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$RootTreeNodeImplCopyWith<T, _$RootTreeNodeImpl<T>> get copyWith =>
@@ -231,7 +238,10 @@ abstract class RootTreeNode<T> implements TreeNode<T> {
       _$RootTreeNodeImpl<T>;
 
   List<TreeNode<T>> get children;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RootTreeNodeImplCopyWith<T, _$RootTreeNodeImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -253,6 +263,8 @@ class __$$InnerTreeNodeImplCopyWithImpl<T, $Res>
       $Res Function(_$InnerTreeNodeImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -317,7 +329,9 @@ class _$InnerTreeNodeImpl<T> implements InnerTreeNode<T> {
   int get hashCode => Object.hash(
       runtimeType, name, path, const DeepCollectionEquality().hash(_children));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$InnerTreeNodeImplCopyWith<T, _$InnerTreeNodeImpl<T>> get copyWith =>
@@ -406,7 +420,10 @@ abstract class InnerTreeNode<T> implements TreeNode<T> {
   String get name;
   String get path;
   List<TreeNode<T>> get children;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$InnerTreeNodeImplCopyWith<T, _$InnerTreeNodeImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -428,6 +445,8 @@ class __$$LeafTreeNodeImplCopyWithImpl<T, $Res>
       _$LeafTreeNodeImpl<T> _value, $Res Function(_$LeafTreeNodeImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -467,7 +486,9 @@ class _$LeafTreeNodeImpl<T> implements LeafTreeNode<T> {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(value));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LeafTreeNodeImplCopyWith<T, _$LeafTreeNodeImpl<T>> get copyWith =>
@@ -551,7 +572,10 @@ abstract class LeafTreeNode<T> implements TreeNode<T> {
   const factory LeafTreeNode({required final T value}) = _$LeafTreeNodeImpl<T>;
 
   T get value;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of TreeNode
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LeafTreeNodeImplCopyWith<T, _$LeafTreeNodeImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -621,6 +645,9 @@ class __$TreeModificationCopyWithImpl<T, $Res,
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -642,6 +669,8 @@ class __$$TreeAddImplCopyWithImpl<T, $Res>
       _$TreeAddImpl<T> _value, $Res Function(_$TreeAddImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -655,6 +684,8 @@ class __$$TreeAddImplCopyWithImpl<T, $Res>
     ));
   }
 
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $TreeNodeCopyWith<T, $Res> get node {
@@ -688,7 +719,9 @@ class _$TreeAddImpl<T> implements _TreeAdd<T> {
   @override
   int get hashCode => Object.hash(runtimeType, node);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TreeAddImplCopyWith<T, _$TreeAddImpl<T>> get copyWith =>
@@ -767,7 +800,10 @@ abstract class _TreeAdd<T> implements _TreeModification<T> {
   const factory _TreeAdd({required final TreeNode<T> node}) = _$TreeAddImpl<T>;
 
   TreeNode<T> get node;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TreeAddImplCopyWith<T, _$TreeAddImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -791,6 +827,8 @@ class __$$TreeUpdateImplCopyWithImpl<T, $Res>
       _$TreeUpdateImpl<T> _value, $Res Function(_$TreeUpdateImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -809,6 +847,8 @@ class __$$TreeUpdateImplCopyWithImpl<T, $Res>
     ));
   }
 
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $TreeNodeCopyWith<T, $Res> get node {
@@ -845,7 +885,9 @@ class _$TreeUpdateImpl<T> implements _TreeUpdate<T> {
   @override
   int get hashCode => Object.hash(runtimeType, path, node);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TreeUpdateImplCopyWith<T, _$TreeUpdateImpl<T>> get copyWith =>
@@ -927,7 +969,10 @@ abstract class _TreeUpdate<T> implements _TreeModification<T> {
 
   String get path;
   TreeNode<T> get node;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TreeUpdateImplCopyWith<T, _$TreeUpdateImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -949,6 +994,8 @@ class __$$TreeRemoveImplCopyWithImpl<T, $Res>
       _$TreeRemoveImpl<T> _value, $Res Function(_$TreeRemoveImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -987,7 +1034,9 @@ class _$TreeRemoveImpl<T> implements _TreeRemove<T> {
   @override
   int get hashCode => Object.hash(runtimeType, path);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TreeRemoveImplCopyWith<T, _$TreeRemoveImpl<T>> get copyWith =>
@@ -1066,7 +1115,10 @@ abstract class _TreeRemove<T> implements _TreeModification<T> {
   const factory _TreeRemove({required final String path}) = _$TreeRemoveImpl<T>;
 
   String get path;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of _TreeModification
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TreeRemoveImplCopyWith<T, _$TreeRemoveImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }

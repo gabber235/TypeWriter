@@ -1,0 +1,30 @@
+name: Build Specified Extension
+
+on:
+  workflow_call:
+    inputs:
+      extension:
+        required: true
+        type: string
+        description: The name of the extension to build
+
+jobs:
+  build-adapter:
+    name: Build ${{ inputs.extension }} Extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Java 
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Build Adapter
+        uses: ./.github/actions/build-extension
+        with:
+          extension: ${{ inputs.extension }}
+      - name: Upload Extension
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.extension }}.jar
+          path: adapters/${{ inputs.extension }}/build/libs/${{ inputs.extension }}.jar
