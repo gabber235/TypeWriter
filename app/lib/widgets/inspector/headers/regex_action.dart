@@ -1,21 +1,22 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/headers/info_action.dart";
 
 class RegexHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, FieldInfo field) =>
-      field.getModifier("regex") != null;
+  bool shouldShow(String path, DataBlueprint dataBlueprint) =>
+      dataBlueprint.getModifier("regex") != null;
 
   @override
-  HeaderActionLocation location(String path, FieldInfo field) =>
+  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
       HeaderActionLocation.trailing;
 
   @override
-  Widget build(String path, FieldInfo field) => const RegexHeaderInfo();
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      const RegexHeaderInfo();
 }
 
 class RegexHeaderInfo extends HookConsumerWidget {

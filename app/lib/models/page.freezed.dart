@@ -20,6 +20,7 @@ Page _$PageFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Page {
+  String get id => throw _privateConstructorUsedError;
   @JsonKey(name: "name")
   String get pageName => throw _privateConstructorUsedError;
   PageType get type => throw _privateConstructorUsedError;
@@ -27,8 +28,12 @@ mixin _$Page {
   String get chapter => throw _privateConstructorUsedError;
   int get priority => throw _privateConstructorUsedError;
 
+  /// Serializes this Page to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Page
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PageCopyWith<Page> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -38,7 +43,8 @@ abstract class $PageCopyWith<$Res> {
       _$PageCopyWithImpl<$Res, Page>;
   @useResult
   $Res call(
-      {@JsonKey(name: "name") String pageName,
+      {String id,
+      @JsonKey(name: "name") String pageName,
       PageType type,
       List<Entry> entries,
       String chapter,
@@ -55,9 +61,12 @@ class _$PageCopyWithImpl<$Res, $Val extends Page>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Page
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? pageName = null,
     Object? type = null,
     Object? entries = null,
@@ -65,6 +74,10 @@ class _$PageCopyWithImpl<$Res, $Val extends Page>
     Object? priority = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       pageName: null == pageName
           ? _value.pageName
           : pageName // ignore: cast_nullable_to_non_nullable
@@ -97,7 +110,8 @@ abstract class _$$PageImplCopyWith<$Res> implements $PageCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: "name") String pageName,
+      {String id,
+      @JsonKey(name: "name") String pageName,
       PageType type,
       List<Entry> entries,
       String chapter,
@@ -111,9 +125,12 @@ class __$$PageImplCopyWithImpl<$Res>
   __$$PageImplCopyWithImpl(_$PageImpl _value, $Res Function(_$PageImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Page
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? pageName = null,
     Object? type = null,
     Object? entries = null,
@@ -121,6 +138,10 @@ class __$$PageImplCopyWithImpl<$Res>
     Object? priority = null,
   }) {
     return _then(_$PageImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       pageName: null == pageName
           ? _value.pageName
           : pageName // ignore: cast_nullable_to_non_nullable
@@ -149,7 +170,8 @@ class __$$PageImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PageImpl implements _Page {
   const _$PageImpl(
-      {@JsonKey(name: "name") required this.pageName,
+      {required this.id,
+      @JsonKey(name: "name") required this.pageName,
       required this.type,
       final List<Entry> entries = const [],
       this.chapter = "",
@@ -159,6 +181,8 @@ class _$PageImpl implements _Page {
   factory _$PageImpl.fromJson(Map<String, dynamic> json) =>
       _$$PageImplFromJson(json);
 
+  @override
+  final String id;
   @override
   @JsonKey(name: "name")
   final String pageName;
@@ -182,7 +206,7 @@ class _$PageImpl implements _Page {
 
   @override
   String toString() {
-    return 'Page(pageName: $pageName, type: $type, entries: $entries, chapter: $chapter, priority: $priority)';
+    return 'Page(id: $id, pageName: $pageName, type: $type, entries: $entries, chapter: $chapter, priority: $priority)';
   }
 
   @override
@@ -190,6 +214,7 @@ class _$PageImpl implements _Page {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PageImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.pageName, pageName) ||
                 other.pageName == pageName) &&
             (identical(other.type, type) || other.type == type) &&
@@ -199,12 +224,14 @@ class _$PageImpl implements _Page {
                 other.priority == priority));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, pageName, type,
+  int get hashCode => Object.hash(runtimeType, id, pageName, type,
       const DeepCollectionEquality().hash(_entries), chapter, priority);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Page
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PageImplCopyWith<_$PageImpl> get copyWith =>
@@ -220,7 +247,8 @@ class _$PageImpl implements _Page {
 
 abstract class _Page implements Page {
   const factory _Page(
-      {@JsonKey(name: "name") required final String pageName,
+      {required final String id,
+      @JsonKey(name: "name") required final String pageName,
       required final PageType type,
       final List<Entry> entries,
       final String chapter,
@@ -228,6 +256,8 @@ abstract class _Page implements Page {
 
   factory _Page.fromJson(Map<String, dynamic> json) = _$PageImpl.fromJson;
 
+  @override
+  String get id;
   @override
   @JsonKey(name: "name")
   String get pageName;
@@ -239,8 +269,11 @@ abstract class _Page implements Page {
   String get chapter;
   @override
   int get priority;
+
+  /// Create a copy of Page
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PageImplCopyWith<_$PageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

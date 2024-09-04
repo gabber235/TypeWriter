@@ -5,7 +5,7 @@ import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/potion_effects.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
@@ -150,22 +150,26 @@ extension PotionEffectSearchBuilderX on SearchBuilder {
 
 class PotionEffectEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "potionEffectType";
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint &&
+      dataBlueprint.editor == "potionEffectType";
+
   @override
-  Widget build(String path, FieldInfo info) =>
-      PotionEffectEditor(path: path, field: info as CustomField);
+  Widget build(String path, DataBlueprint dataBlueprint) => PotionEffectEditor(
+        path: path,
+        customBlueprint: dataBlueprint as CustomBlueprint,
+      );
 }
 
 class PotionEffectEditor extends HookConsumerWidget {
   const PotionEffectEditor({
     required this.path,
-    required this.field,
+    required this.customBlueprint,
     super.key,
   });
 
   final String path;
-  final CustomField field;
+  final CustomBlueprint customBlueprint;
 
   bool? _update(WidgetRef ref, String value) {
     ref

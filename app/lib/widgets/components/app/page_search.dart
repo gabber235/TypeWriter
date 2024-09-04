@@ -239,7 +239,8 @@ class PageSearchElement extends SearchElement {
         onTrigger: (context, __) async =>
             await showDialog<bool>(
               context: context,
-              builder: (_) => RenamePageDialogue(old: page.pageName),
+              builder: (_) =>
+                  RenamePageDialogue(pageId: page.id, oldName: page.pageName),
             ) ??
             false,
       ),
@@ -251,7 +252,7 @@ class PageSearchElement extends SearchElement {
             await showDialog<bool>(
               context: context,
               builder: (_) => ChangeChapterDialogue(
-                pageId: page.pageName,
+                pageId: page.id,
                 chapter: page.chapter,
               ),
             ) ??
@@ -263,7 +264,7 @@ class PageSearchElement extends SearchElement {
         SmartSingleActivator(LogicalKeyboardKey.backspace, control: true),
         color: Colors.red,
         onTrigger: (context, ref) =>
-            showPageDeletionDialogue(context, ref, page.pageName),
+            showPageDeletionDialogue(context, ref, page.id),
       ),
     ];
   }
@@ -278,7 +279,7 @@ class PageSearchElement extends SearchElement {
 
     ref.read(searchProvider.notifier).endSearch();
 
-    await navigator.navigateToPage(ref, page.pageName);
+    await navigator.navigateToPage(ref, page.id);
     return false;
   }
 }
@@ -317,21 +318,21 @@ class AddPageSearchElement extends SearchElement {
 
   @override
   Future<bool> activate(BuildContext context, PassingRef ref) async {
-    final pageName = await showDialog<String>(
+    final pageId = await showDialog<String>(
       context: context,
       builder: (context) =>
           AddPageDialogue(fixedType: type, autoNavigate: false),
     );
 
-    if (pageName == null) return false;
-    final page = ref.read(pageProvider(pageName));
+    if (pageId == null) return false;
+    final page = ref.read(pageProvider(pageId));
     if (page == null) return false;
 
     if (onAdded != null) {
       onAdded?.call(page);
     }
 
-    await ref.read(appRouter).navigateToPage(ref, pageName);
+    await ref.read(appRouter).navigateToPage(ref, pageId);
     return true;
   }
 }

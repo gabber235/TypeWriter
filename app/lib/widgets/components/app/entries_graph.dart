@@ -3,8 +3,8 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:graphview/GraphView.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/widgets/components/app/empty_screen.dart";
@@ -20,7 +20,7 @@ List<Entry> graphableEntries(GraphableEntriesRef ref) {
   if (page == null) return [];
 
   return page.entries.where((entry) {
-    final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
+    final tags = ref.watch(entryBlueprintTagsProvider(entry.blueprintId));
     return tags.contains("trigger");
   }).toList();
 }
@@ -36,7 +36,7 @@ bool isTriggerEntry(IsTriggerEntryRef ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return false;
 
-  final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
+  final tags = ref.watch(entryBlueprintTagsProvider(entry.blueprintId));
   return tags.contains("trigger");
 }
 
@@ -45,7 +45,7 @@ bool isTriggerableEntry(IsTriggerableEntryRef ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return false;
 
-  final tags = ref.watch(entryBlueprintTagsProvider(entry.type));
+  final tags = ref.watch(entryBlueprintTagsProvider(entry.blueprintId));
   return tags.contains("triggerable");
 }
 
@@ -57,11 +57,12 @@ Set<String>? entryTriggers(EntryTriggersRef ref, String entryId) {
   // Check if this entry is a trigger
   if (!ref.read(isTriggerEntryProvider(entryId))) return null;
 
-  final modifiers =
-      ref.watch(modifierPathsProvider(entry.type, "entry", "triggerable"));
+  final modifiers = ref
+      .watch(modifierPathsProvider(entry.blueprintId, "entry", "triggerable"));
   return modifiers
       .expand(entry.getAll)
-      .map((id) => id as String)
+      .map((id) => id as String?)
+      .nonNulls
       .where((id) => id.isNotEmpty)
       .toSet();
 }
@@ -80,8 +81,8 @@ Graph graph(GraphRef ref) {
     final triggeredEntryIds = ref.watch(entryTriggersProvider(entry.id));
     if (triggeredEntryIds == null) continue;
 
-    final color =
-        ref.watch(entryBlueprintProvider(entry.type))?.color ?? Colors.grey;
+    final color = ref.watch(entryBlueprintProvider(entry.blueprintId))?.color ??
+        Colors.grey;
 
     for (final triggeredEntryId in triggeredEntryIds) {
       graph.addEdge(

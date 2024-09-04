@@ -6,7 +6,7 @@ part of 'entry.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$entryDefinitionHash() => r'2c725143bba770203fbcda73a8e2e479698e3cee';
+String _$entryDefinitionHash() => r'5604a6f065efbc96ada8aa30cb33b9ec653b361d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -283,29 +283,29 @@ class _EntryNameProviderElement extends AutoDisposeProviderElement<String?>
   String get entryId => (origin as EntryNameProvider).entryId;
 }
 
-String _$entryTypeHash() => r'467b4a9545b746b07f721913e6c480ee100eedb1';
+String _$entryBlueprintIdHash() => r'5cac165b3797bad6ce6518cd948251f1107d7a2d';
 
-/// See also [entryType].
-@ProviderFor(entryType)
-const entryTypeProvider = EntryTypeFamily();
+/// See also [entryBlueprintId].
+@ProviderFor(entryBlueprintId)
+const entryBlueprintIdProvider = EntryBlueprintIdFamily();
 
-/// See also [entryType].
-class EntryTypeFamily extends Family<String?> {
-  /// See also [entryType].
-  const EntryTypeFamily();
+/// See also [entryBlueprintId].
+class EntryBlueprintIdFamily extends Family<String?> {
+  /// See also [entryBlueprintId].
+  const EntryBlueprintIdFamily();
 
-  /// See also [entryType].
-  EntryTypeProvider call(
+  /// See also [entryBlueprintId].
+  EntryBlueprintIdProvider call(
     String entryId,
   ) {
-    return EntryTypeProvider(
+    return EntryBlueprintIdProvider(
       entryId,
     );
   }
 
   @override
-  EntryTypeProvider getProviderOverride(
-    covariant EntryTypeProvider provider,
+  EntryBlueprintIdProvider getProviderOverride(
+    covariant EntryBlueprintIdProvider provider,
   ) {
     return call(
       provider.entryId,
@@ -324,31 +324,32 @@ class EntryTypeFamily extends Family<String?> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'entryTypeProvider';
+  String? get name => r'entryBlueprintIdProvider';
 }
 
-/// See also [entryType].
-class EntryTypeProvider extends AutoDisposeProvider<String?> {
-  /// See also [entryType].
-  EntryTypeProvider(
+/// See also [entryBlueprintId].
+class EntryBlueprintIdProvider extends AutoDisposeProvider<String?> {
+  /// See also [entryBlueprintId].
+  EntryBlueprintIdProvider(
     String entryId,
   ) : this._internal(
-          (ref) => entryType(
-            ref as EntryTypeRef,
+          (ref) => entryBlueprintId(
+            ref as EntryBlueprintIdRef,
             entryId,
           ),
-          from: entryTypeProvider,
-          name: r'entryTypeProvider',
+          from: entryBlueprintIdProvider,
+          name: r'entryBlueprintIdProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$entryTypeHash,
-          dependencies: EntryTypeFamily._dependencies,
-          allTransitiveDependencies: EntryTypeFamily._allTransitiveDependencies,
+                  : _$entryBlueprintIdHash,
+          dependencies: EntryBlueprintIdFamily._dependencies,
+          allTransitiveDependencies:
+              EntryBlueprintIdFamily._allTransitiveDependencies,
           entryId: entryId,
         );
 
-  EntryTypeProvider._internal(
+  EntryBlueprintIdProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -362,12 +363,12 @@ class EntryTypeProvider extends AutoDisposeProvider<String?> {
 
   @override
   Override overrideWith(
-    String? Function(EntryTypeRef provider) create,
+    String? Function(EntryBlueprintIdRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: EntryTypeProvider._internal(
-        (ref) => create(ref as EntryTypeRef),
+      override: EntryBlueprintIdProvider._internal(
+        (ref) => create(ref as EntryBlueprintIdRef),
         from: from,
         name: null,
         dependencies: null,
@@ -380,12 +381,12 @@ class EntryTypeProvider extends AutoDisposeProvider<String?> {
 
   @override
   AutoDisposeProviderElement<String?> createElement() {
-    return _EntryTypeProviderElement(this);
+    return _EntryBlueprintIdProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is EntryTypeProvider && other.entryId == entryId;
+    return other is EntryBlueprintIdProvider && other.entryId == entryId;
   }
 
   @override
@@ -397,17 +398,17 @@ class EntryTypeProvider extends AutoDisposeProvider<String?> {
   }
 }
 
-mixin EntryTypeRef on AutoDisposeProviderRef<String?> {
+mixin EntryBlueprintIdRef on AutoDisposeProviderRef<String?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
 }
 
-class _EntryTypeProviderElement extends AutoDisposeProviderElement<String?>
-    with EntryTypeRef {
-  _EntryTypeProviderElement(super.provider);
+class _EntryBlueprintIdProviderElement
+    extends AutoDisposeProviderElement<String?> with EntryBlueprintIdRef {
+  _EntryBlueprintIdProviderElement(super.provider);
 
   @override
-  String get entryId => (origin as EntryTypeProvider).entryId;
+  String get entryId => (origin as EntryBlueprintIdProvider).entryId;
 }
 
 String _$isEntryDeprecatedHash() => r'f7417cbbc63faac9f66342e4170f30e7466c646a';

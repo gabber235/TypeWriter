@@ -11,9 +11,9 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/hooks/delayed_execution.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
@@ -38,6 +38,7 @@ part "pages_list.g.dart";
 @freezed
 class _PageData with _$PageData {
   const factory _PageData({
+    required String id,
     required String name,
     required PageType type,
     required String chapter,
@@ -51,6 +52,7 @@ List<_PageData> _pagesData(_PagesDataRef ref) {
       .pages
       .map(
         (page) => _PageData(
+          id: page.id,
           name: page.pageName,
           type: page.type,
           chapter: page.chapter,
@@ -374,7 +376,8 @@ class _PageTile extends HookConsumerWidget {
   });
   final _PageData pageData;
 
-  String get pageId => pageData.name;
+  String get pageId => pageData.id;
+  String get name => pageData.name;
   String get chapter => pageData.chapter;
 
   bool _needsShift(int amount) {
@@ -394,7 +397,10 @@ class _PageTile extends HookConsumerWidget {
         icon: TWIcons.pencil,
         onTap: () => showDialog(
           context: context,
-          builder: (_) => RenamePageDialogue(old: pageId),
+          builder: (_) => RenamePageDialogue(
+            pageId: pageId,
+            oldName: name,
+          ),
         ),
       ),
       ContextMenuTile.button(
@@ -444,7 +450,7 @@ class _PageTile extends HookConsumerWidget {
           child: DragTarget<EntryDrag>(
             onWillAcceptWithDetails: (details) {
               final entryId = details.data.entryId;
-              final entryType = ref.read(entryTypeProvider(entryId));
+              final entryType = ref.read(entryBlueprintIdProvider(entryId));
               if (entryType == null) return false;
               final entryPageType =
                   ref.read(entryBlueprintPageTypeProvider(entryType));
@@ -682,19 +688,20 @@ class AddPageDialogue extends HookConsumerWidget {
   final PageType? fixedType;
   final bool autoNavigate;
 
-  Future<void> _addPage(
+  Future<String> _addPage(
     WidgetRef ref,
     String name,
     PageType type,
     String chapter,
     int priority,
   ) async {
-    await ref
+    final page = await ref
         .read(bookProvider.notifier)
         .createPage(name, type, chapter, priority);
 
-    if (!autoNavigate) return;
+    if (!autoNavigate) return page.id;
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));
+    return page.id;
   }
 
   /// Validates the proposed name for a page.
@@ -822,14 +829,14 @@ class AddPageDialogue extends HookConsumerWidget {
               ? null
               : () async {
                   final navigator = Navigator.of(context);
-                  await _addPage(
+                  final pageId = await _addPage(
                     ref,
                     nameController.text,
                     type.value,
                     chapterController.text,
                     int.tryParse(priorityController.text) ?? 0,
                   );
-                  navigator.pop(nameController.text);
+                  navigator.pop(pageId);
                 },
           label: const Text("Add"),
           icon: const Iconify(TWIcons.plus),
@@ -841,14 +848,16 @@ class AddPageDialogue extends HookConsumerWidget {
 
 class RenamePageDialogue extends HookConsumerWidget {
   const RenamePageDialogue({
-    required this.old,
+    required this.pageId,
+    required this.oldName,
     super.key,
   });
 
-  final String old;
+  final String pageId;
+  final String oldName;
 
   Future<void> _renamePage(WidgetRef ref, String newName) async {
-    await ref.read(bookProvider.notifier).renamePage(old, newName);
+    await ref.read(bookProvider.notifier).renamePage(pageId, newName);
     unawaited(ref.read(appRouter).push(PageEditorRoute(id: newName)));
   }
 
@@ -862,7 +871,7 @@ class RenamePageDialogue extends HookConsumerWidget {
       return "Name cannot be empty";
     }
 
-    if (text == old) {
+    if (text == oldName) {
       return "Name cannot be the same";
     }
 
@@ -876,13 +885,13 @@ class RenamePageDialogue extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pagesNames = ref.watch(_pageNamesProvider);
-    final controller = useTextEditingController(text: old);
+    final controller = useTextEditingController(text: oldName);
     final isNameValid = useState(false);
 
     return AlertDialog(
-      title: Text("Rename ${old.formatted}"),
+      title: Text("Rename ${oldName.formatted}"),
       content: ValidatedTextField<String>(
-        value: old,
+        value: oldName,
         controller: controller,
         name: "Page Name",
         icon: TWIcons.book,

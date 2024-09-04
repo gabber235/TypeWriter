@@ -5,7 +5,6 @@ import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
-import "package:typewriter/models/book.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -38,9 +37,9 @@ String currentPageLabel(CurrentPageLabelRef ref) {
 @riverpod
 Page? currentPage(CurrentPageRef ref) {
   final id = ref.watch(currentPageIdProvider);
-  final book = ref.watch(bookProvider);
+  final pages = ref.watch(pagesProvider);
 
-  return book.pages.firstWhereOrNull((element) => element.pageName == id);
+  return pages.firstWhereOrNull((element) => element.id == id);
 }
 
 @riverpod

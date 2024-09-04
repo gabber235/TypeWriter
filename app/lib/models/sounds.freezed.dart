@@ -24,8 +24,12 @@ mixin _$SoundData {
   int get weight => throw _privateConstructorUsedError;
   double get volume => throw _privateConstructorUsedError;
 
+  /// Serializes this SoundData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SoundData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SoundDataCopyWith<SoundData> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +52,8 @@ class _$SoundDataCopyWithImpl<$Res, $Val extends SoundData>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SoundData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -91,6 +97,8 @@ class __$$SoundDataImplCopyWithImpl<$Res>
       _$SoundDataImpl _value, $Res Function(_$SoundDataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SoundData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -148,11 +156,13 @@ class _$SoundDataImpl implements _SoundData {
             (identical(other.volume, volume) || other.volume == volume));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, weight, volume);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SoundData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SoundDataImplCopyWith<_$SoundDataImpl> get copyWith =>
@@ -181,8 +191,11 @@ abstract class _SoundData implements SoundData {
   int get weight;
   @override
   double get volume;
+
+  /// Create a copy of SoundData
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SoundDataImplCopyWith<_$SoundDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

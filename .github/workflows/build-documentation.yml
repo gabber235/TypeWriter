@@ -11,7 +11,7 @@ on:
 jobs:
   deploy:
     name: Deploy to GitHub Pages
-    runs-on: self-hosted
+    runs-on: arc-runner-set
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3

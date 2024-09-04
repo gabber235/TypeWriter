@@ -3,8 +3,8 @@ import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/pages/page_editor.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -87,14 +87,14 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
   final pages = ref.watch(pagesProvider);
   final definitions = pages.expand((page) {
     return page.entries.map((entry) {
-      final blueprint = ref.watch(entryBlueprintProvider(entry.type));
+      final blueprint = ref.watch(entryBlueprintProvider(entry.blueprintId));
       if (blueprint == null) return null;
       return EntryDefinition(
-        pageId: page.pageName,
+        pageId: page.id,
         blueprint: blueprint,
         entry: entry,
       );
-    }).whereNotNull();
+    }).nonNulls;
   }).toList();
 
   return Fuzzy(
@@ -121,8 +121,8 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
           weight: 0.15,
         ),
         WeightedKey(
-          name: "type",
-          getter: (definition) => definition.entry.type,
+          name: "blueprint",
+          getter: (definition) => definition.blueprint.name.formatted,
           weight: 0.4,
         ),
         WeightedKey(
@@ -131,8 +131,8 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
           weight: 0.3,
         ),
         WeightedKey(
-          name: "adapter",
-          getter: (definition) => definition.blueprint.adapter,
+          name: "extension",
+          getter: (definition) => definition.blueprint.extension,
           weight: 0.1,
         ),
       ],
@@ -173,8 +173,8 @@ Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
           weight: 0.4,
         ),
         WeightedKey(
-          name: "adapter",
-          getter: (blueprint) => blueprint.adapter,
+          name: "extension",
+          getter: (blueprint) => blueprint.extension,
           weight: 0.2,
         ),
       ],
@@ -454,7 +454,7 @@ class AddEntrySearchElement extends SearchElement {
 
     final currentPage = ref.read(currentPageProvider);
     // Had to create/select a new page for the entry
-    if (page.pageName != currentPage?.pageName) {
+    if (page.id != currentPage?.id) {
       ref.read(searchProvider.notifier).endSearch();
     }
 

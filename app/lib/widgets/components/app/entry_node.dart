@@ -5,9 +5,9 @@ import "package:flutter/material.dart" hide ContextMenuController;
 import "package:flutter_animate/flutter_animate.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/entry.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/pages/page_editor.dart";
@@ -31,7 +31,8 @@ List<String> linkablePaths(
   final entry = ref.read(globalEntryProvider(entryId));
   if (entry == null) return [];
 
-  final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
+  final modifiers =
+      ref.read(fieldModifiersProvider(entry.blueprintId, "entry"));
   return modifiers.entries.expand((e) => entry.newPaths(e.key)).toList();
 }
 
@@ -44,7 +45,8 @@ List<String> linkableDuplicatePaths(
   if (entry == null) return [];
   final tags = ref.watch(entryTagsProvider(entryId));
 
-  final modifiers = ref.read(fieldModifiersProvider(entry.type, "entry"));
+  final modifiers =
+      ref.read(fieldModifiersProvider(entry.blueprintId, "entry"));
   return modifiers.entries
       .where((e) => tags.contains(e.value.data))
       .expand((e) => entry.newPaths(e.key))
@@ -62,8 +64,10 @@ List<String> _acceptingPaths(
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return [];
 
-  final modifiers = ref.watch(fieldModifiersProvider(entry.type, "entry"));
-  final onlyTags = ref.watch(fieldModifiersProvider(entry.type, "only_tags"));
+  final modifiers =
+      ref.watch(fieldModifiersProvider(entry.blueprintId, "entry"));
+  final onlyTags =
+      ref.watch(fieldModifiersProvider(entry.blueprintId, "only_tags"));
 
   return modifiers.entries
       .where((e) {
@@ -92,18 +96,18 @@ class EntryNode extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isSelected =
         ref.watch(inspectingEntryIdProvider.select((e) => e == entryId));
-    final entryType = ref.watch(entryTypeProvider(entryId));
-    if (entryType == null) return const NonExistentEntry();
+    final blueprintId = ref.watch(entryBlueprintIdProvider(entryId));
+    if (blueprintId == null) return const NonExistentEntry();
 
     final entryName = ref.watch(entryNameProvider(entryId));
     if (entryName == null) return const NonExistentEntry();
 
-    final blueprint = ref.watch(entryBlueprintProvider(entryType));
+    final blueprint = ref.watch(entryBlueprintProvider(blueprintId));
     if (blueprint == null) return NoBlueprintEntry(entryId: entryId);
 
     return _EntryNode(
       id: entryId,
-      type: entryType,
+      type: blueprintId,
       backgroundColor: blueprint.color,
       name: entryName.formatted,
       icon: SizedBox(
@@ -170,22 +174,22 @@ void moveEntryToSelectingPage(PassingRef ref, String entryId) {
   final from = ref.read(entryPageIdProvider(entryId));
   if (from == null) return;
 
-  final entryType = ref.read(entryTypeProvider(entryId));
-  if (entryType == null) return;
+  final blueprintId = ref.read(entryBlueprintIdProvider(entryId));
+  if (blueprintId == null) return;
 
-  final pageType = ref.read(entryBlueprintPageTypeProvider(entryType));
+  final pageType = ref.read(entryBlueprintPageTypeProvider(blueprintId));
 
   ref.read(searchProvider.notifier).asBuilder()
     ..pageType(pageType)
     ..fetchPage(
       onSelect: (page) {
-        ref.read(bookProvider.notifier).moveEntry(entryId, from, page.pageName);
+        ref.read(bookProvider.notifier).moveEntry(entryId, from, page.id);
         return true;
       },
     )
     ..fetchAddPage(
       onAdded: (page) {
-        ref.read(bookProvider.notifier).moveEntry(entryId, from, page.pageName);
+        ref.read(bookProvider.notifier).moveEntry(entryId, from, page.id);
       },
     )
     ..open();
@@ -441,13 +445,13 @@ class FakeEntryNode extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final type = ref.watch(entryTypeProvider(entryId));
-    if (type == null) return const NonExistentEntry();
+    final blueprintId = ref.watch(entryBlueprintIdProvider(entryId));
+    if (blueprintId == null) return const NonExistentEntry();
 
     final name = ref.watch(entryNameProvider(entryId));
     if (name == null) return const NonExistentEntry();
 
-    final blueprint = ref.watch(entryBlueprintProvider(type));
+    final blueprint = ref.watch(entryBlueprintProvider(blueprintId));
     if (blueprint == null) return const NonExistentEntry();
 
     final isDeprecated = ref.watch(isEntryDeprecatedProvider(entryId));
@@ -477,7 +481,7 @@ class FakeEntryNode extends HookConsumerWidget {
                   ),
                 ),
                 Text(
-                  type.formatted,
+                  blueprintId.formatted,
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 11,
@@ -622,7 +626,7 @@ class ExternalEntryNode extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final blueprint = ref.watch(entryBlueprintProvider(entry.type));
+    final blueprint = ref.watch(entryBlueprintProvider(entry.blueprintId));
     final page = ref.watch(pageProvider(pageId));
     final pageName = page?.pageName.formatted ?? "Unknown page";
 

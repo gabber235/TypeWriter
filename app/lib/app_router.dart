@@ -95,29 +95,29 @@ extension AppRouterX on AppRouter {
   /// containing the entry and then navigate to the entry.
   /// Returns true if the page was changed.
   Future<void> navigateToEntry(PassingRef ref, String entryId) async {
-    final entryPage = ref.read(globalEntryWithPageProvider(entryId))?.key;
+    final entryPageId = ref.read(entryPageIdProvider(entryId));
 
-    if (entryPage == null) {
+    if (entryPageId == null) {
       return;
     }
-    await navigateToPage(ref, entryPage);
+    await navigateToPage(ref, entryPageId);
   }
 
-  /// Navigate to the given [pageName].
+  /// Navigate to the given [pageId].
   /// Returns true if the page was changed.
-  Future<void> navigateToPage(PassingRef ref, String pageName) async {
+  Future<void> navigateToPage(PassingRef ref, String pageId) async {
     final currentPage = ref.read(currentPageProvider);
 
-    if (currentPage?.pageName == pageName) {
+    if (currentPage?.id == pageId) {
       return;
     }
 
     // Sometimes the app router does not complete the future and it gets stuck.
     unawaited(
       ref.read(appRouter).push(
-            PageEditorRoute(id: pageName),
+            PageEditorRoute(id: pageId),
             onFailure: (e) =>
-                debugPrint("Failed to navigate to page $pageName: $e"),
+                debugPrint("Failed to navigate to page $pageId: $e"),
           ),
     );
   }

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/cron.dart";
 import "package:typewriter/utils/icons.dart";
@@ -11,21 +11,22 @@ import "package:typewriter/widgets/inspector/validated_inspector_text_field.dart
 
 class CronEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info is CustomField && info.editor == "cron";
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "cron";
 
   @override
-  Widget build(String path, FieldInfo info) =>
-      CronEditor(path: path, field: info as CustomField);
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      CronEditor(path: path, customBlueprint: dataBlueprint as CustomBlueprint);
 }
 
 class CronEditor extends HookConsumerWidget {
   const CronEditor({
     required this.path,
-    required this.field,
+    required this.customBlueprint,
     super.key,
   });
   final String path;
-  final CustomField field;
+  final CustomBlueprint customBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
