@@ -1,69 +1,70 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 
 class ObjectEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) => info is ObjectField;
+  bool canEdit(DataBlueprint dataBlueprint) => dataBlueprint is ObjectBlueprint;
 
   @override
-  Widget build(String path, FieldInfo info) =>
-      ObjectEditor(path: path, object: info as ObjectField);
+  Widget build(String path, DataBlueprint dataBlueprint) => ObjectEditor(
+        path: path,
+        objectBlueprint: dataBlueprint as ObjectBlueprint,
+      );
 }
 
 class ObjectEditor extends HookConsumerWidget {
   const ObjectEditor({
     required this.path,
-    required this.object,
+    required this.objectBlueprint,
     this.ignoreFields = const [],
     this.defaultExpanded = false,
     super.key,
   }) : super();
   final String path;
-  final ObjectField object;
+  final ObjectBlueprint objectBlueprint;
   final List<String> ignoreFields;
   final bool defaultExpanded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FieldHeader(
-      field: object,
       path: path,
+      dataBlueprint: objectBlueprint,
       canExpand: true,
       defaultExpanded: defaultExpanded,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final field in object.fields.entries)
-              if (!ignoreFields.contains(field.key)) ...[
-                const SizedBox(height: 12),
-                if (!field.value.hasCustomLayout)
-                  FieldHeader(
-                    field: field.value,
-                    path: path.isNotEmpty ? "$path.${field.key}" : field.key,
-                    child: buildFieldEditor(field),
-                  )
-                else
-                  buildFieldEditor(field),
-              ],
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
+        children: [
+          for (final fieldBlueprint in objectBlueprint.fields.entries)
+            if (!ignoreFields.contains(fieldBlueprint.key)) ...[
+              if (!fieldBlueprint.value.hasCustomLayout)
+                FieldHeader(
+                  dataBlueprint: fieldBlueprint.value,
+                  path: path.isNotEmpty
+                      ? "$path.${fieldBlueprint.key}"
+                      : fieldBlueprint.key,
+                  child: buildFieldEditor(fieldBlueprint),
+                )
+              else
+                buildFieldEditor(fieldBlueprint),
+            ],
+        ],
       ),
     );
   }
 
-  FieldEditor buildFieldEditor(MapEntry<String, FieldInfo> field) {
+  FieldEditor buildFieldEditor(MapEntry<String, DataBlueprint> field) {
     return FieldEditor(
       key: ValueKey(
         path.isNotEmpty ? "$path.${field.key}" : field.key,
       ),
       path: path.isNotEmpty ? "$path.${field.key}" : field.key,
-      type: field.value,
+      dataBlueprint: field.value,
     );
   }
 }

@@ -34,7 +34,7 @@ final _entryNameProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef _EntryNameRef = AutoDisposeProviderRef<String>;
-String _$entryTypeHash() => r'bd6249329b29f059236a50796065cf9ed6b51b5c';
+String _$entryTypeHash() => r'b8db383dacb169526f823865fb2c90e478a4b4ee';
 
 /// See also [_entryType].
 @ProviderFor(_entryType)

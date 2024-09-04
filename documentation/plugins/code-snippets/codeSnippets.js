@@ -64,7 +64,7 @@ module.exports = function() {
     }
 
     // Assuming the adapters directory is at the root of your project
-    const adaptersDir = path.resolve(__dirname, '../../../adapters/_DocsAdapter');
+    const adaptersDir = path.resolve(__dirname, '../../../extensions/_DocsExtension');
     traverseDirectory(adaptersDir, adaptersDir);
 
     // console.log(`Exporting ${Object.keys(snippets).length} snippets: ${Object.keys(snippets)}`);

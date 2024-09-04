@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
@@ -12,33 +12,35 @@ import "package:typewriter/widgets/inspector/current_editing_field.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
-class LocationEditorFilter extends EditorFilter {
+class PositionEditorFilter extends EditorFilter {
   @override
-  Widget build(String path, FieldInfo info) =>
-      LocationEditor(path: path, field: info as CustomField);
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "position";
 
   @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "location";
+  Widget build(String path, DataBlueprint dataBlueprint) => PositionEditor(
+        path: path,
+        customBlueprint: dataBlueprint as CustomBlueprint,
+      );
 }
 
-class LocationEditor extends HookConsumerWidget {
-  const LocationEditor({
+class PositionEditor extends HookConsumerWidget {
+  const PositionEditor({
     required this.path,
-    required this.field,
+    required this.customBlueprint,
     super.key,
   });
   final String path;
 
-  final CustomField field;
+  final CustomBlueprint customBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final withRotation = field.hasModifier("with_rotation");
+    final withRotation = customBlueprint.hasModifier("with_rotation");
 
     return Column(
       children: [
-        _LocationWorldEditor(path: "$path.world"),
+        _WorldEditor(path: "$path.world"),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -84,8 +86,8 @@ class LocationEditor extends HookConsumerWidget {
   }
 }
 
-class _LocationWorldEditor extends HookConsumerWidget {
-  const _LocationWorldEditor({
+class _WorldEditor extends HookConsumerWidget {
+  const _WorldEditor({
     required this.path,
   });
 

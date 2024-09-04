@@ -1,7 +1,7 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
@@ -10,17 +10,30 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class SoundSourceEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "soundSource";
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "soundSource";
   @override
-  Widget build(String path, FieldInfo info) =>
-      SoundSourceEditor(path, info as CustomField);
+  Widget build(String path, DataBlueprint dataBlueprint) => SoundSourceEditor(
+        path: path,
+        customBlueprint: dataBlueprint as CustomBlueprint,
+      );
 }
 
 class SoundSourceEditor extends HookConsumerWidget {
-  const SoundSourceEditor(this.path, this.info, {super.key});
+  const SoundSourceEditor({
+    required this.path,
+    required this.customBlueprint,
+    super.key,
+  });
   final String path;
-  final CustomField info;
+  final CustomBlueprint customBlueprint;
+
+  DataBlueprint? get locationShape {
+    final shape = customBlueprint.shape;
+    if (shape is! ObjectBlueprint) return null;
+    if (!shape.fields.containsKey("location")) return null;
+    return shape.fields["location"];
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,17 +62,19 @@ class SoundSourceEditor extends HookConsumerWidget {
           if (sourceType == SoundSourceType.emitter)
             EntrySelectorEditor(
               path: "$path.entryId",
-              field: const PrimitiveField(
-                type: PrimitiveFieldType.string,
+              dataBlueprint: const PrimitiveBlueprint(
+                type: PrimitiveType.string,
                 modifiers: [Modifier(name: "entry", data: "sound_source")],
               ),
             ),
           if (sourceType == SoundSourceType.location)
-            LocationEditor(
+            PositionEditor(
               path: "$path.location",
-              field: CustomField(
+              customBlueprint: CustomBlueprint(
                 editor: "location",
-                defaultValue: info.defaultValue["location"] ?? {},
+                internalDefaultValue:
+                    customBlueprint.defaultValue()["location"] ?? {},
+                shape: locationShape!,
               ),
             ),
         ],

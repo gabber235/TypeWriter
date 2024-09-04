@@ -6,7 +6,7 @@ part of 'entry_node.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$linkablePathsHash() => r'884f9f6cc3e0c6e6c97dba3088c2d824ff2c1be4';
+String _$linkablePathsHash() => r'3c9be167013d314d75a71729712e367a5a890149';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -156,7 +156,7 @@ class _LinkablePathsProviderElement
 }
 
 String _$linkableDuplicatePathsHash() =>
-    r'b2c2a0a1159773985a764adf969dbb3706ceb56a';
+    r'8c2866db6d24ba1adfbdf5db004701b73bf1d54f';
 
 /// See also [linkableDuplicatePaths].
 @ProviderFor(linkableDuplicatePaths)
@@ -285,7 +285,7 @@ class _LinkableDuplicatePathsProviderElement
   String get entryId => (origin as LinkableDuplicatePathsProvider).entryId;
 }
 
-String _$acceptingPathsHash() => r'76724dcc043808279bdf1f4aa92687fe87f54446';
+String _$acceptingPathsHash() => r'dc9a8e21fa7a4a25a51c810ac31f7bdc5e804e3c';
 
 /// See also [_acceptingPaths].
 @ProviderFor(_acceptingPaths)

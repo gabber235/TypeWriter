@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/writers.dart";
@@ -21,7 +21,7 @@ part "header.g.dart";
 class FieldHeader extends HookConsumerWidget {
   const FieldHeader({
     required this.child,
-    required this.field,
+    required this.dataBlueprint,
     required this.path,
     this.leading = const [],
     this.trailing = const [],
@@ -32,7 +32,7 @@ class FieldHeader extends HookConsumerWidget {
   }) : super();
 
   final Widget child;
-  final FieldInfo field;
+  final DataBlueprint dataBlueprint;
   final String path;
 
   final List<Widget> leading;
@@ -52,7 +52,7 @@ class FieldHeader extends HookConsumerWidget {
 
     final headerActionFilters = ref.watch(headerActionFiltersProvider);
     final availableActions = headerActionFilters
-        .where((filter) => filter.shouldShow(path, field))
+        .where((filter) => filter.shouldShow(path, dataBlueprint))
         .toList();
     final name =
         ref.watch(pathDisplayNameProvider(path)).nullIfEmpty ?? "Fields";
@@ -104,8 +104,12 @@ class FieldHeader extends HookConsumerWidget {
                         availableActions,
                         HeaderActionLocation.leading,
                       ),
-                      SectionTitle(
-                        title: name,
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: canExpand ? 10 : 0),
+                        child: SectionTitle(
+                          title: name,
+                        ),
                       ),
                       ...createActions(
                         availableActions,
@@ -147,7 +151,8 @@ class FieldHeader extends HookConsumerWidget {
       if (location == HeaderActionLocation.leading) ...leading,
       if (location == HeaderActionLocation.trailing) ...trailing,
       for (final filter in filters)
-        if (filter.location(path, field) == location) filter.build(path, field),
+        if (filter.location(path, dataBlueprint) == location)
+          filter.build(path, dataBlueprint),
       if (location == HeaderActionLocation.actions) ...actions,
     ].joinWith(() => const SizedBox(width: 8));
 
@@ -196,10 +201,10 @@ List<HeaderActionFilter> headerActionFilters(HeaderActionFiltersRef ref) => [
     ];
 
 abstract class HeaderActionFilter {
-  bool shouldShow(String path, FieldInfo field);
+  bool shouldShow(String path, DataBlueprint dataBlueprint);
 
-  HeaderActionLocation location(String path, FieldInfo field);
-  Widget build(String path, FieldInfo field);
+  HeaderActionLocation location(String path, DataBlueprint dataBlueprint);
+  Widget build(String path, DataBlueprint dataBlueprint);
 }
 
 enum HeaderActionLocation {

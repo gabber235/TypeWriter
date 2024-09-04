@@ -17,10 +17,12 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$Book {
   String get name => throw _privateConstructorUsedError;
-  List<Adapter> get adapters => throw _privateConstructorUsedError;
+  List<Extension> get extensions => throw _privateConstructorUsedError;
   List<Page> get pages => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Book
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BookCopyWith<Book> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -29,7 +31,7 @@ abstract class $BookCopyWith<$Res> {
   factory $BookCopyWith(Book value, $Res Function(Book) then) =
       _$BookCopyWithImpl<$Res, Book>;
   @useResult
-  $Res call({String name, List<Adapter> adapters, List<Page> pages});
+  $Res call({String name, List<Extension> extensions, List<Page> pages});
 }
 
 /// @nodoc
@@ -42,11 +44,13 @@ class _$BookCopyWithImpl<$Res, $Val extends Book>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Book
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? name = null,
-    Object? adapters = null,
+    Object? extensions = null,
     Object? pages = null,
   }) {
     return _then(_value.copyWith(
@@ -54,10 +58,10 @@ class _$BookCopyWithImpl<$Res, $Val extends Book>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      adapters: null == adapters
-          ? _value.adapters
-          : adapters // ignore: cast_nullable_to_non_nullable
-              as List<Adapter>,
+      extensions: null == extensions
+          ? _value.extensions
+          : extensions // ignore: cast_nullable_to_non_nullable
+              as List<Extension>,
       pages: null == pages
           ? _value.pages
           : pages // ignore: cast_nullable_to_non_nullable
@@ -73,7 +77,7 @@ abstract class _$$BookImplCopyWith<$Res> implements $BookCopyWith<$Res> {
       __$$BookImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, List<Adapter> adapters, List<Page> pages});
+  $Res call({String name, List<Extension> extensions, List<Page> pages});
 }
 
 /// @nodoc
@@ -83,11 +87,13 @@ class __$$BookImplCopyWithImpl<$Res>
   __$$BookImplCopyWithImpl(_$BookImpl _value, $Res Function(_$BookImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Book
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? name = null,
-    Object? adapters = null,
+    Object? extensions = null,
     Object? pages = null,
   }) {
     return _then(_$BookImpl(
@@ -95,10 +101,10 @@ class __$$BookImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      adapters: null == adapters
-          ? _value._adapters
-          : adapters // ignore: cast_nullable_to_non_nullable
-              as List<Adapter>,
+      extensions: null == extensions
+          ? _value._extensions
+          : extensions // ignore: cast_nullable_to_non_nullable
+              as List<Extension>,
       pages: null == pages
           ? _value._pages
           : pages // ignore: cast_nullable_to_non_nullable
@@ -112,19 +118,19 @@ class __$$BookImplCopyWithImpl<$Res>
 class _$BookImpl implements _Book {
   const _$BookImpl(
       {required this.name,
-      required final List<Adapter> adapters,
+      required final List<Extension> extensions,
       required final List<Page> pages})
-      : _adapters = adapters,
+      : _extensions = extensions,
         _pages = pages;
 
   @override
   final String name;
-  final List<Adapter> _adapters;
+  final List<Extension> _extensions;
   @override
-  List<Adapter> get adapters {
-    if (_adapters is EqualUnmodifiableListView) return _adapters;
+  List<Extension> get extensions {
+    if (_extensions is EqualUnmodifiableListView) return _extensions;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_adapters);
+    return EqualUnmodifiableListView(_extensions);
   }
 
   final List<Page> _pages;
@@ -137,7 +143,7 @@ class _$BookImpl implements _Book {
 
   @override
   String toString() {
-    return 'Book(name: $name, adapters: $adapters, pages: $pages)';
+    return 'Book(name: $name, extensions: $extensions, pages: $pages)';
   }
 
   @override
@@ -146,7 +152,8 @@ class _$BookImpl implements _Book {
         (other.runtimeType == runtimeType &&
             other is _$BookImpl &&
             (identical(other.name, name) || other.name == name) &&
-            const DeepCollectionEquality().equals(other._adapters, _adapters) &&
+            const DeepCollectionEquality()
+                .equals(other._extensions, _extensions) &&
             const DeepCollectionEquality().equals(other._pages, _pages));
   }
 
@@ -154,10 +161,12 @@ class _$BookImpl implements _Book {
   int get hashCode => Object.hash(
       runtimeType,
       name,
-      const DeepCollectionEquality().hash(_adapters),
+      const DeepCollectionEquality().hash(_extensions),
       const DeepCollectionEquality().hash(_pages));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Book
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$BookImplCopyWith<_$BookImpl> get copyWith =>
@@ -167,17 +176,20 @@ class _$BookImpl implements _Book {
 abstract class _Book implements Book {
   const factory _Book(
       {required final String name,
-      required final List<Adapter> adapters,
+      required final List<Extension> extensions,
       required final List<Page> pages}) = _$BookImpl;
 
   @override
   String get name;
   @override
-  List<Adapter> get adapters;
+  List<Extension> get extensions;
   @override
   List<Page> get pages;
+
+  /// Create a copy of Book
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$BookImplCopyWith<_$BookImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

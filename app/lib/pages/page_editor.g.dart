@@ -36,7 +36,7 @@ final currentPageLabelProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef CurrentPageLabelRef = AutoDisposeProviderRef<String>;
-String _$currentPageHash() => r'e4061bc62721be6ea098919cee27392d81d8de10';
+String _$currentPageHash() => r'99dc4a27dceb05b9ee1022d03e314f029969ed16';
 
 /// See also [currentPage].
 @ProviderFor(currentPage)

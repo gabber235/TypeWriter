@@ -7,7 +7,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:fuzzy/fuzzy.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
-import "package:typewriter/models/adapter.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/sound.dart";
 import "package:typewriter/models/sounds.dart";
 import "package:typewriter/utils/audio_player.dart";
@@ -241,23 +241,25 @@ extension _SearchBuilderX on SearchBuilder {
 
 class SoundIdEditorFilter extends EditorFilter {
   @override
-  bool canEdit(FieldInfo info) =>
-      info is CustomField && info.editor == "soundId";
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint && dataBlueprint.editor == "soundId";
 
   @override
-  Widget build(String path, FieldInfo info) =>
-      SoundSelectorEditor(path: path, field: info as CustomField);
+  Widget build(String path, DataBlueprint dataBlueprint) => SoundSelectorEditor(
+        path: path,
+        customBlueprint: dataBlueprint as CustomBlueprint,
+      );
 }
 
 class SoundSelectorEditor extends HookConsumerWidget {
   const SoundSelectorEditor({
     required this.path,
-    required this.field,
+    required this.customBlueprint,
     super.key,
   });
 
   final String path;
-  final CustomField field;
+  final CustomBlueprint customBlueprint;
 
   bool? _update(PassingRef ref, SoundId soundId) {
     ref

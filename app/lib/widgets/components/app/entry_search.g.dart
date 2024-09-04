@@ -6,7 +6,7 @@ part of 'entry_search.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fuzzyEntriesHash() => r'1d568c290f729be65ce227d120a07a4b08b69880';
+String _$fuzzyEntriesHash() => r'687dbe4174b0e52b9966a9bc3a28a869a9d96f13';
 
 /// See also [_fuzzyEntries].
 @ProviderFor(_fuzzyEntries)
@@ -21,7 +21,7 @@ final _fuzzyEntriesProvider =
 );
 
 typedef _FuzzyEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryDefinition>>;
-String _$fuzzyBlueprintsHash() => r'1ea916702687026ad211c8ee1ba9e4986288d67c';
+String _$fuzzyBlueprintsHash() => r'121f5fcc11a1c7a82c2af498947c42f95d9bce69';
 
 /// See also [_fuzzyBlueprints].
 @ProviderFor(_fuzzyBlueprints)

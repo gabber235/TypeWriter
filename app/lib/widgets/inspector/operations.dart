@@ -23,8 +23,6 @@ class Operations extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final type = ref.watch(inspectingEntryProvider.select((e) => e?.type));
-    if (type == null) return const SizedBox();
     final entryId = ref.read(inspectingEntryIdProvider);
     if (entryId == null) return const SizedBox();
     final linkablePaths = ref.watch(linkablePathsProvider(entryId));

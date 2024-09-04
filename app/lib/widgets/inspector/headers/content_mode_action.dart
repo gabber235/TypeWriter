@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:typewriter/models/adapter.dart";
 import "package:typewriter/models/communicator.dart";
+import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/segment.dart";
 import "package:typewriter/models/staging.dart";
 import "package:typewriter/pages/page_editor.dart";
@@ -16,31 +16,31 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class ContentModeHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, FieldInfo field) =>
-      (field.getModifier("contentMode")?.data as String?) != null;
+  bool shouldShow(String path, DataBlueprint dataBlueprint) =>
+      (dataBlueprint.getModifier("contentMode")?.data as String?) != null;
 
   @override
-  HeaderActionLocation location(String path, FieldInfo field) =>
+  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
       HeaderActionLocation.actions;
 
   @override
-  Widget build(String path, FieldInfo field) =>
-      ContentModeHeaderAction(path, field);
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      ContentModeHeaderAction(path: path, dataBlueprint: dataBlueprint);
 }
 
 class ContentModeHeaderAction extends HookConsumerWidget {
-  const ContentModeHeaderAction(
-    this.path,
-    this.field, {
+  const ContentModeHeaderAction({
+    required this.path,
+    required this.dataBlueprint,
     super.key,
   });
 
   final String path;
-  final FieldInfo field;
+  final DataBlueprint dataBlueprint;
 
   Future<void> _requestContentMode(PassingRef ref, Header? header) async {
     final contentModeClassPath =
-        field.getModifier("contentMode")?.data as String?;
+        dataBlueprint.getModifier("contentMode")?.data as String?;
     if (contentModeClassPath == null) return;
 
     /// ------- Entry ID -------
