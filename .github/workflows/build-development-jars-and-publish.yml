@@ -82,8 +82,8 @@ jobs:
         env:
           HANGAR_API_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}
         with:
-          arguments: publishPluginPublicationToHangar --scan
-          build-root-directory: ./plugin
+          arguments: engine-paper:publishPluginPublicationToHangar --scan
+          build-root-directory: ./engine
       - name: Add Tag
         uses: mathieudutour/github-tag-action@v6.2
         with:
