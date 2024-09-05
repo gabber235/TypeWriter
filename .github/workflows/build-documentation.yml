@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Documentation
 
 on:
   push:
@@ -11,7 +11,9 @@ on:
 jobs:
   deploy:
     name: Deploy to GitHub Pages
-    runs-on: arc-runner-set
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/gabber235/typewriter-runner:latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
