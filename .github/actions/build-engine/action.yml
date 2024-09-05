@@ -27,11 +27,11 @@ runs:
       - name: Test Paper Engine
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: paper-engine:test --scan
+          arguments: engine-paper:test --scan
           build-root-directory: ./engine
       - name: Build Plugin
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: paper-engine:buildRelease --scan
+          arguments: engine-paper:buildRelease --scan
           build-root-directory: ./engine
 
