@@ -12,10 +12,9 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/gabber235/typewriter-runner:latest
     steps:
       - uses: actions/checkout@v3
+      - run: apt update && apt install libvips-dev -y
       - uses: actions/setup-node@v3
         with:
           node-version: 18
