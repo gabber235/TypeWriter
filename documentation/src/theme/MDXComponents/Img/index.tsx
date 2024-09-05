@@ -10,7 +10,7 @@ function transformImgClassName(className?: string): string {
 
 export default function MDXImg(props: Props): JSX.Element {
     // If the type is not gif. We should use the Image component
-    if (!props.src.endsWith(".gif")) {
+    if (!(props.src ?? "").endsWith(".gif")) {
         return (
             <Admonition type="danger" title="Invalid image">
                 Image component not found, please report this in the <a href="https://discord.gg/gs5QYhfv9x">TypeWriter Discord</a>.

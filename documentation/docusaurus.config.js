@@ -120,9 +120,9 @@ const config = {
                         label: 'Documentation',
                     },
                     {
-                        type: 'docsVersion',
+                        type: 'docSidebar',
                         label: 'Extensions',
-                        to: '/adapters',
+                        sidebarId: 'adapters',
                         position: 'left',
                     },
                     {
