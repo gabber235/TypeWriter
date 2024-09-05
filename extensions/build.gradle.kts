@@ -78,10 +78,6 @@ subprojects {
             }
         }
 
-        tasks.withType<PublishToMavenRepository> {
-            dependsOn("clean")
-        }
-
         publishing {
             repositories {
                 maven {
