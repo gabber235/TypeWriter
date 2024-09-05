@@ -66,13 +66,13 @@ jobs:
           files: |
             engine/engine-paper/build/libs/Typewriter.jar
             extensions/**/build/libs/*.jar
-          name: "Typewriter v${{ steps.vars.outputs.version }} Beta Build"
+          name: "Typewriter v${{ steps.vars.outputs.version }} Build"
           version: "${{ steps.vars.outputs.version }}"
           version-type: "beta"
           loaders: |
             paper
           game-versions: |
-            [1.21]
+            [1.21, 1.21.1]
           dependencies: |
             packetevents
 
@@ -96,9 +96,9 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nodetail: true
-          title: Published Development Build
+          title: Published Beta Build
           description: |
-            I have published a development build of Typewriter.
+            I have published a beta build of Typewriter.
             Version: ${{ steps.vars.outputs.version }}
             [Download](https://modrinth.com/plugin/typewriter/version/${{ steps.publish.outputs.modrinth-version }})
       - name: Notify Winston
