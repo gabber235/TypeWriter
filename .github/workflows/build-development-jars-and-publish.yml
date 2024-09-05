@@ -27,42 +27,11 @@ jobs:
       - name: Build Engine
         uses: ./.github/actions/build-engine
 #  ----------------------------------------------------------------------------------------------------
-      - name: Build Basic Extension
-        uses: ./.github/actions/build-extension
+      - name: Build Extensions
+        uses: gradle/gradle-build-action@v2
         with:
-          extension: BasicExtension
-      - name: Build Citizens Extension
-        uses: ./.github/actions/build-extension
-        with:
-          extension: CitizensExtension
-      - name: Build CombatLogX Extension
-        uses: ./.github/actions/build-extension
-        with:
-          extension: CombatLogXExtension
-      - name: Build MythicMobs Extension
-        uses: ./.github/actions/build-extension
-        with:
-          extension: MythicMobsExtension
-      - name: Build EntityExtension
-        uses: ./.github/actions/build-extension
-        with:
-          extension: EntityExtension
-      - name: Build RPGRegions Extension
-        uses: ./.github/actions/build-extension
-        with:
-          extension: RPGRegionsExtension
-      - name: Build SuperiorSkyblock Extension
-        uses: ./.github/actions/build-extension
-        with:
-          extension: SuperiorSkyblockExtension
-      - name: Build Vault Extension
-        uses: ./.github/actions/build-extension
-        with:
-          extension: VaultExtension
-      - name: Build WorldGuard Extension
-        uses: ./.github/actions/build-extension
-        with:
-          extension: WorldGuardExtension
+          arguments: test buildRelease --scan
+          build-root-directory: ./extensions
 #  ----------------------------------------------------------------------------------------------------
       - name: Publish Engine to Beta Maven Repository
         uses: gradle/gradle-build-action@v2

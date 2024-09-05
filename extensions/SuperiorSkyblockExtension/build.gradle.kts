@@ -10,7 +10,7 @@ dependencies {
 
 typewriter {
     engine {
-        version = file("../../version.txt").readText().trim()
+        version = file("../../version.txt").readText().trim().substringBefore("-beta")
         channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
     }
     namespace = "typewritermc"
