@@ -1,23 +1,22 @@
-import { ComponentProps } from "react";
+import { ComponentProps, useState } from "react";
 
 export type SrcType = {
     width: number;
     path?: string;
-    size?: number;
-    format?: 'webp' | 'jpeg' | 'png' | 'gif';
+    height?: number;
 };
 
 export type SrcImage = {
     height?: number;
     width?: number;
-    preSrc: string;
     src: string;
     srcSet: string;
+    placeholder?: string;
     images: SrcType[];
 };
 
 export interface Props extends ComponentProps<'img'> {
-    readonly img: { default: string } | { src: SrcImage; preSrc: string } | string;
+    readonly img: { default: string } | SrcImage | string;
 }
 export default function Image(props: Props) {
     const { img, ...propsRest } = props;
@@ -32,15 +31,28 @@ export default function Image(props: Props) {
         );
     }
 
+    const [loaded, setLoaded] = useState(false);
+
+
     return (
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="w-full h-full flex justify-center items-center relative">
             <img
-                src={img.src.src}
-                srcSet={img.src.srcSet}
+                src={img.src}
+                srcSet={img.srcSet}
+                sizes="(max-width: 320px) 280px, (max-width: 640px) 600px, 1200px"
                 loading="lazy"
                 decoding="async"
-                className="rounded-md"
-                {...propsRest} />
+                onLoad={() => setLoaded(true)}
+                className={`rounded-md transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'
+                    }`}
+                {...propsRest}
+            />
+            {!loaded && (
+                <div
+                    className="absolute inset-0 bg-cover bg-center rounded-md"
+                    style={{ backgroundImage: `url(${img.placeholder})` }}
+                />
+            )}
         </div>
     );
 }
