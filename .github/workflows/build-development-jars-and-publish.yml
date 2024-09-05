@@ -27,10 +27,10 @@ jobs:
       - name: Build Engine
         uses: ./.github/actions/build-engine
 #  ----------------------------------------------------------------------------------------------------
-      - name: Build Extensions
+      - name: Test Extensions
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: test buildRelease --scan
+          arguments: test --scan
           build-root-directory: ./extensions
 #  ----------------------------------------------------------------------------------------------------
       - name: Publish Engine to Beta Maven Repository
@@ -48,6 +48,13 @@ jobs:
         with:
           arguments: publishAllPublicationsToTypewriterBetaRepository -PTypewriterBetaUsername=${{ secrets.MAVEN_USERNAME }} -PTypewriterBetaPassword=${{ secrets.MAVEN_PASSWORD }} --scan
           build-root-directory: ./module-plugin
+#  ----------------------------------------------------------------------------------------------------
+      # Has to be after the publish, because it needs to delete the slim jars and only keep the shadowed jars for the modrinth upload
+      - name: Build Extensions
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: buildRelease --scan
+          build-root-directory: ./extensions
 #  ----------------------------------------------------------------------------------------------------
       - name: Publish Modrinth
         uses: Kir-Antipov/mc-publish@v3.3
