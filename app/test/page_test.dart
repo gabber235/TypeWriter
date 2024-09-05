@@ -53,18 +53,16 @@ const entryBlueprintFields = ObjectBlueprint(
 void main() {
   test("When creating an entry expect the entry to be created", () async {
     final container = ProviderContainer();
-    await container.read(bookProvider.notifier).createPage("test_page");
+    final page =
+        await container.read(bookProvider.notifier).createPage("test_page");
 
-    final page = container.read(pageProvider("test_page"));
-
-    expect(page, isNotNull, reason: "The page has not been created");
-    expect(page!.entries.length, 0);
+    expect(page.entries.length, 0);
 
     final entry = Entry(testEntryData);
 
     await page.createEntry(container.passing, entry);
 
-    final newPage = container.read(pageProvider("test_page"));
+    final newPage = container.read(pageProvider(page.id));
 
     expect(newPage!.entries.length, 1);
     expect(newPage.entries[0].id, "test");
@@ -73,12 +71,10 @@ void main() {
   test("When creating an entry form a blueprint expect the entry to be created",
       () async {
     final container = ProviderContainer();
-    await container.read(bookProvider.notifier).createPage("test_page");
+    final page =
+        await container.read(bookProvider.notifier).createPage("test_page");
 
-    final page = container.read(pageProvider("test_page"));
-
-    expect(page, isNotNull, reason: "The page has not been created");
-    expect(page!.entries.length, 0);
+    expect(page.entries.length, 0);
 
     const entry = EntryBlueprint(
       id: "test",
@@ -90,7 +86,7 @@ void main() {
 
     await page.createEntryFromBlueprint(container.passing, entry);
 
-    final newPage = container.read(pageProvider("test_page"));
+    final newPage = container.read(pageProvider(page.id));
 
     expect(newPage!.entries.length, 1);
     expect(newPage.entries[0].id, isNot("test"));
