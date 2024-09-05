@@ -47,63 +47,66 @@ subprojects {
         }
     }
 
-    tasks.register("buildAndMove") {
-        dependsOn("shadowJar")
+    if (!project.name.startsWith("_")) {
+        tasks.register("buildAndMove") {
+            dependsOn("shadowJar")
 
-        group = "build"
-        description = "Builds the jar and moves it to the server folder"
-        outputs.upToDateWhen { false }
+            group = "build"
+            description = "Builds the jar and moves it to the server folder"
+            outputs.upToDateWhen { false }
 
-        // Move the jar from the build/libs folder to the server/plugins folder
-        doLast {
-            val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
-            val server =
-                file("../../server/plugins/Typewriter/extensions/%s.jar".format(project.name.capitalizeAsciiOnly()))
-            jar.copyTo(server, overwrite = true)
-        }
-    }
-
-    tasks.register("buildRelease") {
-        dependsOn("shadowJar")
-        group = "build"
-        description = "Builds the jar and renames it"
-
-        doLast {
-            // Rename the jar to remove the version and -all
-            val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
-            jar.renameTo(file("build/libs/%s.jar".format(project.name)))
-            file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
-        }
-    }
-
-    publishing {
-        repositories {
-            maven {
-                name = "TypewriterReleases"
-                url = uri("https://maven.typewritermc.com/releases")
-                credentials(PasswordCredentials::class)
-                authentication {
-                    create<BasicAuthentication>("basic")
-                }
-            }
-            maven {
-                name = "TypewriterBeta"
-                url = uri("https://maven.typewritermc.com/beta")
-                credentials(PasswordCredentials::class)
-                authentication {
-                    create<BasicAuthentication>("basic")
-                }
+            // Move the jar from the build/libs folder to the server/plugins folder
+            doLast {
+                val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+                val server =
+                    file("../../server/plugins/Typewriter/extensions/%s.jar".format(project.name.capitalizeAsciiOnly()))
+                jar.copyTo(server, overwrite = true)
             }
         }
-        publications {
-            create<MavenPublication>("maven") {
-                group = project.group
-                // Remove everything after the beta. So 1.0.0-beta-1 becomes 1.0.0
-                version = project.version.toString().substringBefore("-beta")
-                artifactId = project.name
 
-                from(components["kotlin"])
-                artifact(tasks["shadowJar"])
+        tasks.register("buildRelease") {
+            onlyIf { !project.name.startsWith("_") }
+            dependsOn("shadowJar")
+            group = "build"
+            description = "Builds the jar and renames it"
+
+            doLast {
+                // Rename the jar to remove the version and -all
+                val jar = file("build/libs/%s-%s-all.jar".format(project.name, project.version))
+                jar.renameTo(file("build/libs/%s.jar".format(project.name)))
+                file("build/libs/%s-%s.jar".format(project.name, project.version)).delete()
+            }
+        }
+
+        publishing {
+            repositories {
+                maven {
+                    name = "TypewriterReleases"
+                    url = uri("https://maven.typewritermc.com/releases")
+                    credentials(PasswordCredentials::class)
+                    authentication {
+                        create<BasicAuthentication>("basic")
+                    }
+                }
+                maven {
+                    name = "TypewriterBeta"
+                    url = uri("https://maven.typewritermc.com/beta")
+                    credentials(PasswordCredentials::class)
+                    authentication {
+                        create<BasicAuthentication>("basic")
+                    }
+                }
+            }
+            publications {
+                create<MavenPublication>("maven") {
+                    group = project.group
+                    // Remove everything after the beta. So 1.0.0-beta-1 becomes 1.0.0
+                    version = project.version.toString().substringBefore("-beta")
+                    artifactId = project.name
+
+                    from(components["kotlin"])
+                    artifact(tasks["shadowJar"])
+                }
             }
         }
     }
