@@ -1,7 +1,6 @@
 package com.typewritermc.moduleplugin
 
 import com.typewritermc.loader.ExtensionFlag
-import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -109,6 +108,7 @@ private const val MIN_SHORT_DESCRIPTION_LENGTH = 10
 private const val MAX_SHORT_DESCRIPTION_LENGTH = 80
 private const val MIN_DESCRIPTION_LENGTH = 100
 private const val MAX_DESCRIPTION_LENGTH = 2000
+private val FORBIDDEN_WORDS = listOf("Adapter", "Extension")
 
 internal fun TypewriterExtensionConfiguration.validate() {
     if (name.isBlank()) {
@@ -120,8 +120,10 @@ internal fun TypewriterExtensionConfiguration.validate() {
     if (!Regex("^[a-zA-Z0-9]+$").matches(name)) {
         throw IllegalArgumentException("Extension name '$name' must be alphanumeric.")
     }
-    if (name.contains("Extension")) {
-        throw IllegalArgumentException("Extension name '$name' cannot contain 'Extension'")
+    for (word in FORBIDDEN_WORDS) {
+        if (name.contains(word, ignoreCase = true)) {
+            throw IllegalArgumentException("Extension name '$name' cannot contain '$word'")
+        }
     }
 
     if (shortDescription.isBlank()) {
