@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use poise::serenity_prelude::{Context, EditThread, EventHandler, GuildChannel};
 
-use crate::{CloseReason, TICKET_FORUM_ID};
+use crate::{CloseReason, QUESTIONS_FORUM_ID};
 
 pub struct ThreadArchivingHandler;
 
@@ -39,7 +39,7 @@ impl EventHandler for ThreadArchivingHandler {
             return;
         };
 
-        if parent.id != TICKET_FORUM_ID {
+        if parent.id != QUESTIONS_FORUM_ID {
             return;
         }
 

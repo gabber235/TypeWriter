@@ -1,5 +1,6 @@
 mod close_ticket;
 mod create_task;
+mod post_in_questions;
 mod support_answering;
 mod task_fixed;
 mod thread_archiving;
@@ -11,6 +12,7 @@ mod ticket_reopen;
 
 pub use close_ticket::*;
 pub use create_task::*;
+pub use post_in_questions::*;
 pub use support_answering::*;
 pub use task_fixed::*;
 pub use thread_archiving::*;
