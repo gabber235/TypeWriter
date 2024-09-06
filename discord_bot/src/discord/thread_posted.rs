@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use poise::serenity_prelude::{Context, EditThread, EventHandler, GuildChannel};
 
-use crate::{webhooks::GetTagId, TICKET_FORUM_ID};
+use crate::{webhooks::GetTagId, QUESTIONS_FORUM_ID};
 
 pub struct ThreadPostedHandler;
 
@@ -23,7 +23,7 @@ impl EventHandler for ThreadPostedHandler {
             return;
         };
 
-        if parent.id != TICKET_FORUM_ID {
+        if parent.id != QUESTIONS_FORUM_ID {
             return;
         }
 

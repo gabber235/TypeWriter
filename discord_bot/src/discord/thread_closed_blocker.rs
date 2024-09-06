@@ -4,7 +4,7 @@ use poise::serenity_prelude::{
     Context, CreateMessage, EditMessage, EventHandler, Mentionable, Message,
 };
 
-use crate::{CloseReason, TICKET_FORUM_ID};
+use crate::{CloseReason, QUESTIONS_FORUM_ID};
 
 pub struct ThreadClosedBlockerHandler;
 
@@ -40,7 +40,7 @@ impl EventHandler for ThreadClosedBlockerHandler {
             return;
         };
 
-        if parent.id != TICKET_FORUM_ID {
+        if parent.id != QUESTIONS_FORUM_ID {
             return;
         }
 

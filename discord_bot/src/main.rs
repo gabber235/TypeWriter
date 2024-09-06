@@ -26,7 +26,8 @@ pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, WinstonErr
 
 const GUILD_ID: serenity::GuildId = serenity::GuildId::new(1054708062520360960);
 const CONTRIBUTOR_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1054708457535713350);
-const TICKET_FORUM_ID: u64 = 1199700329948782613;
+const QUESTIONS_FORUM_ID: u64 = 1199700329948782613;
+const QUESTIONS_CHANNEL: serenity::ChannelId = serenity::ChannelId::new(QUESTIONS_FORUM_ID);
 
 const CLICKUP_LIST_ID: &str = "901502296591";
 const CLICKUP_USER_ID: u32 = 62541886;
@@ -127,7 +128,12 @@ async fn startup_discord_bot() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![create_task(), close_ticket(), support_answering()],
+            commands: vec![
+                create_task(),
+                close_ticket(),
+                support_answering(),
+                post_in_questions(),
+            ],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
         })
