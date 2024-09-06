@@ -6,10 +6,15 @@ import com.extollit.gaming.ai.path.model.IPath
 import com.extollit.gaming.ai.path.model.IPathingEntity
 import com.extollit.gaming.ai.path.model.Passibility
 import com.extollit.linalg.immutable.Vec3d
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.entity.*
+import com.typewritermc.engine.paper.entry.entries.RoadNetworkEntry
+import com.typewritermc.engine.paper.entry.entries.roadNetworkMaxDistance
+import com.typewritermc.engine.paper.entry.roadnetwork.RoadNetworkManager
 import com.typewritermc.engine.paper.entry.roadnetwork.gps.GPS
 import com.typewritermc.engine.paper.entry.roadnetwork.gps.GPSEdge
+import com.typewritermc.engine.paper.entry.roadnetwork.gps.isInRangeOf
 import com.typewritermc.engine.paper.entry.roadnetwork.gps.toVector
 import com.typewritermc.engine.paper.entry.roadnetwork.pathfinding.PFCapabilities
 import com.typewritermc.engine.paper.entry.roadnetwork.pathfinding.PFInstanceSpace
@@ -17,6 +22,7 @@ import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.utils.*
 import kotlinx.coroutines.Job
 import org.bukkit.util.BoundingBox
+import org.koin.java.KoinJavaComponent.get
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.min
@@ -24,7 +30,7 @@ import kotlin.math.sin
 
 
 class NavigationActivity(
-    gps: GPS,
+    private val gps: GPS,
     startLocation: PositionProperty,
 ) : GenericEntityActivity {
     private var path: List<GPSEdge>? = null
@@ -49,7 +55,7 @@ class NavigationActivity(
 
             state = when {
                 currentEdge.isFastTravel -> NavigationActivityTaskState.FastTravel(currentEdge)
-                context.isViewed -> NavigationActivityTaskState.Walking(currentEdge, currentPosition)
+                context.isViewed -> NavigationActivityTaskState.Walking(gps.roadNetwork, currentEdge, currentPosition)
 
                 else -> NavigationActivityTaskState.FakeNavigation(currentEdge)
             }
@@ -59,7 +65,7 @@ class NavigationActivity(
         // The fake navigation is used to improve the performance, it however, goes through buildings
         // So, we switch to walking when the entity is viewed
         if (state is NavigationActivityTaskState.FakeNavigation && context.isViewed) {
-            this.state = NavigationActivityTaskState.Walking(state.edge, currentPosition)
+            this.state = NavigationActivityTaskState.Walking(gps.roadNetwork, state.edge, currentPosition)
         }
 
         // And we switch back to fake navigation when the entity is not viewed
@@ -133,7 +139,11 @@ private sealed interface NavigationActivityTaskState {
         override fun isComplete(): Boolean = true
     }
 
-    class Walking(val edge: GPSEdge, startLocation: PositionProperty) : NavigationActivityTaskState, IPathingEntity {
+    class Walking(
+        roadNetwork: Ref<RoadNetworkEntry>,
+        val edge: GPSEdge,
+        startLocation: PositionProperty
+    ) : NavigationActivityTaskState, IPathingEntity {
         private var location: PositionProperty = startLocation
         private var path: IPath?
 
@@ -148,7 +158,25 @@ private sealed interface NavigationActivityTaskState {
             val instance = PFInstanceSpace(startLocation.toBukkitLocation().world)
             navigator = HydrazinePathFinder(this, instance)
 
-            path = navigator.initiatePathTo(edge.end.x, edge.end.y, edge.end.z)
+            // We want to avoid going through negative nodes
+            // Since we just queried the network, it is likely that the network is already loaded.
+            get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)?.let { network ->
+                val interestingNegativeNodes = network.negativeNodes.filter {
+                    val distance = edge.start.distanceSqrt(it.location) ?: 0.0
+                    distance > it.radius * it.radius && distance < roadNetworkMaxDistance * roadNetworkMaxDistance
+                }
+                val additionalRadius = navigator.subject().width().toDouble()
+
+                navigator.withGraphNodeFilter { node ->
+                    if (node.isInRangeOf(interestingNegativeNodes, additionalRadius)) {
+                        return@withGraphNodeFilter Passibility.dangerous
+                    }
+                    node.passibility()
+                }
+            }
+
+
+            path = navigator.computePathTo(edge.end.x, edge.end.y, edge.end.z)
         }
 
         override fun location(): PositionProperty = location
