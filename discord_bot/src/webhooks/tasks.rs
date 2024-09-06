@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use indoc::formatdoc;
 use itertools::Itertools;
 use poise::serenity_prelude::{
-    ButtonStyle, ChannelId, CreateButton, CreateMessage, EditThread, ForumTag, ForumTagId,
-    Mentionable, ReactionType, UserId,
+    futures::TryFutureExt, ButtonStyle, ChannelId, CreateButton, CreateMessage, EditThread,
+    ForumTag, ForumTagId, Mentionable, ReactionType, UserId,
 };
 
 use crate::{
@@ -87,16 +87,23 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
 
     let lock = status == TaskStatus::InProduction;
 
-    channel
-        .edit_thread(
-            &discord,
-            EditThread::default()
-                .name(task.name)
-                .applied_tags(new_tags)
-                .locked(lock)
-                .archived(lock),
-        )
-        .await?;
+    let mut edit_thread = EditThread::default()
+        .applied_tags(new_tags)
+        .locked(lock)
+        .archived(lock);
+
+    // Since discord sends a message in the thread when the name is changed, even if the name is the same.
+    // We only want to change the name if it is different.
+    if task.name
+        != channel
+            .name(&discord)
+            .await
+            .unwrap_or_else(|_| "".to_string())
+    {
+        edit_thread = edit_thread.name(task.name);
+    }
+
+    channel.edit_thread(&discord, edit_thread).await?;
 
     if !moved {
         return Ok(());
