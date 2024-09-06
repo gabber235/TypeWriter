@@ -91,6 +91,7 @@ async fn update_discord_channel(task_id: &str, moved: bool) -> Result<(), Winsto
         .edit_thread(
             &discord,
             EditThread::default()
+                .name(task.name)
                 .applied_tags(new_tags)
                 .locked(lock)
                 .archived(lock),
