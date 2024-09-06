@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use poise::serenity_prelude::{Context, EditThread, EventHandler, Message};
 
-use crate::{webhooks::GetTagId, CONTRIBUTOR_ROLE_ID, GUILD_ID, TICKET_FORUM_ID};
+use crate::{webhooks::GetTagId, CONTRIBUTOR_ROLE_ID, GUILD_ID, QUESTIONS_FORUM_ID};
 
 pub struct SupportAnsweringHandler;
 
@@ -37,7 +37,7 @@ impl EventHandler for SupportAnsweringHandler {
             return;
         };
 
-        if parent.id != TICKET_FORUM_ID {
+        if parent.id != QUESTIONS_FORUM_ID {
             return;
         }
 
