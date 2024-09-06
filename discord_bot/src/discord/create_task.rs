@@ -4,7 +4,7 @@ use crate::{
     Context, WinstonError,
 };
 use poise::{
-    serenity_prelude::{CreateEmbed, CreateMessage},
+    serenity_prelude::{CreateEmbed, CreateMessage, EditThread},
     CreateReply,
 };
 
@@ -77,6 +77,10 @@ pub async fn create_task(
                         .url(url),
                 ),
         )
+        .await?;
+
+    channel
+        .edit_thread(ctx, EditThread::default().name(title))
         .await?;
 
     Ok(())
