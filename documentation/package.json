@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "docusaurus": "docusaurus",
-        "start": "docusaurus start",
+        "start": "docusaurus start --no-open",
         "build": "docusaurus build",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
@@ -22,6 +22,7 @@
         "@mdx-js/react": "^3.0.1",
         "@rive-app/react-canvas": "^4.14.4",
         "clsx": "^2.1.1",
+        "documentation": "file:",
         "posthog-docusaurus": "^2.0.1",
         "prism-react-renderer": "^2.4.0",
         "react": "^18.3.1",
