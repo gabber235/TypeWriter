@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use indoc::formatdoc;
 use itertools::Itertools;
 use poise::serenity_prelude::{
-    futures::TryFutureExt, ButtonStyle, ChannelId, CreateButton, CreateMessage, EditThread,
-    ForumTag, ForumTagId, Mentionable, ReactionType, UserId,
+    ButtonStyle, ChannelId, CreateButton, CreateMessage, EditThread, ForumTag, ForumTagId,
+    Mentionable, ReactionType, UserId,
 };
 
 use crate::{

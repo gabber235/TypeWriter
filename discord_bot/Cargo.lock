@@ -691,6 +691,7 @@ dependencies = [
  "itertools",
  "once_cell",
  "poise",
+ "rand",
  "reqwest",
  "serde",
  "serde_json",

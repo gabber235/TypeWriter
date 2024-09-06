@@ -6,14 +6,13 @@ use poise::serenity_prelude::{
 };
 
 use crate::{
-    get_discord, webhooks::GetTagId, CloseReason, WinstonError, GUILD_ID, TICKET_FORUM_ID,
+    get_discord, webhooks::GetTagId, CloseReason, WinstonError, GUILD_ID, QUESTIONS_CHANNEL, QUESTIONS_FORUM_ID
 };
 
 pub async fn cleanup_threads() -> Result<(), WinstonError> {
     let discord = get_discord()?;
 
-    let channel_id: ChannelId = TICKET_FORUM_ID.into();
-    let guild_channel = channel_id
+    let guild_channel = QUESTIONS_CHANNEL
         .to_channel(&discord)
         .await?
         .guild()
@@ -64,7 +63,7 @@ async fn is_ticket_forum_thread(channel: &channel::GuildChannel) -> bool {
         return false;
     };
 
-    parent.get() == TICKET_FORUM_ID
+    parent.get() == QUESTIONS_FORUM_ID
 }
 
 async fn archive_thread(
@@ -109,6 +108,16 @@ async fn resolve_answered_thread(
 
     println!("Auto Resolving thread {} ({})", thread.id, thread.name());
 
+
+    // Close the thread
+    let Some(resolved_tag) = available_tags.get_tag_id("resolved") else {
+        return Err(WinstonError::TagNotFound("resolved".to_string()));
+    };
+
+    thread
+        .edit_thread(&discord, EditThread::default().applied_tags([resolved_tag]))
+        .await?;
+
     let owner_id = thread.owner_id.ok_or(WinstonError::NotAThreadChannel)?;
 
     thread
@@ -133,15 +142,6 @@ async fn resolve_answered_thread(
                 .disabled(false)),
 
         )
-        .await?;
-
-    // Close the thread
-    let Some(resolved_tag) = available_tags.get_tag_id("resolved") else {
-        return Err(WinstonError::TagNotFound("resolved".to_string()));
-    };
-
-    thread
-        .edit_thread(&discord, EditThread::default().applied_tags([resolved_tag]))
         .await?;
 
     Ok(())

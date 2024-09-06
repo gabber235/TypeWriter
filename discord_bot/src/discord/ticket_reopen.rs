@@ -5,7 +5,7 @@ use poise::serenity_prelude::{
     CreateQuickModal, EditThread, EventHandler, Interaction, Timestamp,
 };
 
-use crate::{check_permissions, webhooks::GetTagId, CONTRIBUTOR_ROLE_ID, TICKET_FORUM_ID};
+use crate::{check_permissions, webhooks::GetTagId, CONTRIBUTOR_ROLE_ID, QUESTIONS_FORUM_ID};
 
 pub struct TicketReopenHandler;
 
@@ -79,7 +79,7 @@ impl EventHandler for TicketReopenHandler {
             return;
         };
 
-        if parent.id != TICKET_FORUM_ID {
+        if parent.id != QUESTIONS_FORUM_ID {
             return;
         }
 
