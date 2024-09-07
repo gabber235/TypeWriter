@@ -148,7 +148,7 @@ class InteractionHandler : Listener, KoinComponent {
         // If no dialogue is active, we don't want to cancel any who would be triggered by this.
         val inDialogue = event.player.interaction?.hasDialogue ?: false
         if (!inDialogue) return
-        
+
         DIALOGUE_END triggerFor event.player
     }
 

@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.collections.set
 
 class PointToPointGPS(
-    private val network: Ref<RoadNetworkEntry>,
+    override val roadNetwork: Ref<RoadNetworkEntry>,
     private val startFetcher: suspend (RoadNetwork) -> Location,
     private val endFetcher: suspend (RoadNetwork) -> Location,
 ) : GPS, KoinComponent {
@@ -29,7 +29,7 @@ class PointToPointGPS(
     private var previousPath: List<RoadEdge> = emptyList()
 
     override suspend fun findPath(): Result<List<GPSEdge>> = DISPATCHERS_ASYNC.switchContext {
-        var network = roadNetworkManager.getNetwork(network)
+        var network = roadNetworkManager.getNetwork(roadNetwork)
 
         val start = startFetcher(network)
         val end = endFetcher(network)
