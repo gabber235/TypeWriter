@@ -1,7 +1,6 @@
 package com.typewritermc.core
 
 import com.typewritermc.core.entries.Library
-import com.typewritermc.core.extension.Initializable
 import com.typewritermc.core.extension.InitializableManager
 import com.typewritermc.core.utils.Reloadable
 import com.typewritermc.loader.ExtensionLoader
@@ -17,7 +16,11 @@ class TypewriterCore : KoinComponent, Reloadable {
     private val initializableManager by inject<InitializableManager>()
 
     override fun load() {
-        val extensionJars = directory.resolve("extensions").listFiles()?.filter { it.name.endsWith(".jar") } ?: emptyList()
+        val extensionsDirectory = directory.resolve("extensions")
+        if (!extensionsDirectory.exists()) {
+            extensionsDirectory.mkdirs()
+        }
+        val extensionJars = extensionsDirectory.listFiles()?.filter { it.name.endsWith(".jar") } ?: emptyList()
         // Needs to be loaded first as it will load the classLoader
         extensionLoader.load(extensionJars)
         library.load()
