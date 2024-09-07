@@ -4,13 +4,16 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerAbstract
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.retrooper.packetevents.event.PacketSendEvent
+import com.github.retrooper.packetevents.protocol.chat.message.ChatMessage_v1_19_3
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChatMessage
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import lirand.api.extensions.server.server
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.plainText
+import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
@@ -40,18 +43,29 @@ class ChatHistoryHandler :
     // When the serer sends a message to the player
     override fun onPacketSend(event: PacketSendEvent?) {
         if (event == null) return
-        if (event.packetType != PacketType.Play.Server.SYSTEM_CHAT_MESSAGE) return
-
-        val packet = WrapperPlayServerSystemChatMessage(event)
-        if (packet.isOverlay) return
-
-        val component = packet.message
+        val component = findMessage(event) ?: return
         if (component is TextComponent && component.content() == "no-index") return
         val history = getHistory(event.user.uuid)
         history.addMessage(component)
 
         if (history.isBlocking()) {
             event.isCancelled = true
+        }
+    }
+
+    private fun findMessage(event: PacketSendEvent): Component? {
+        return when (event.packetType) {
+            PacketType.Play.Server.CHAT_MESSAGE -> {
+                val packet = WrapperPlayServerChatMessage(event)
+                val message = packet.message as? ChatMessage_v1_19_3 ?: return packet.message.chatContent
+                message.unsignedChatContent.orElseGet { message.chatContent }
+            }
+            PacketType.Play.Server.SYSTEM_CHAT_MESSAGE -> {
+                val packet = WrapperPlayServerSystemChatMessage(event)
+                if (packet.isOverlay) return null
+                packet.message
+            }
+            else -> null
         }
     }
 
