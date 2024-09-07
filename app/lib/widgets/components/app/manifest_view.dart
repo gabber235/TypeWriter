@@ -44,7 +44,8 @@ Set<String>? entryReferences(EntryReferencesRef ref, String entryId) {
       ref.watch(modifierPathsProvider(entry.blueprintId, "entry"));
   return modifiers
       .expand(entry.getAll)
-      .map((id) => id as String)
+      .map((id) => id as String?)
+      .nonNulls
       .where((id) => id.isNotEmpty)
       .toSet();
 }
