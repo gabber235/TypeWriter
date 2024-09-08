@@ -31,7 +31,7 @@ String? currentPageId(CurrentPageIdRef ref) {
 
 @riverpod
 String currentPageLabel(CurrentPageLabelRef ref) {
-  return ref.watch(currentPageIdProvider)?.formatted ?? "";
+  return ref.watch(currentPageProvider)?.pageName.formatted ?? "";
 }
 
 @riverpod

@@ -520,7 +520,7 @@ class _PageTile extends HookConsumerWidget {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    pageId.formatted,
+                                    pageData.name.formatted,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
@@ -552,7 +552,7 @@ class _PageTile extends HookConsumerWidget {
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    pageId.formatted,
+                                    pageData.name.formatted,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
@@ -708,20 +708,15 @@ class AddPageDialogue extends HookConsumerWidget {
   /// A name is invalid if it is empty or if it already exists.
   String? _validateName(
     String text,
-    List<String> pagesNames,
   ) {
     if (text.isEmpty) {
       return "Name cannot be empty";
-    }
-    if (pagesNames.contains(text)) {
-      return "Page already exists";
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pagesNames = ref.watch(_pageNamesProvider);
     final nameController = useTextEditingController();
     final isNameValid = useState(false);
     final type = useState(fixedType ?? PageType.sequence);
@@ -742,12 +737,12 @@ class AddPageDialogue extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ValidatedTextField<String>(
-            value: "",
+            value: nameController.text,
             controller: nameController,
             name: "Page Name",
             icon: TWIcons.book,
             validator: (value) {
-              final validation = _validateName(value, pagesNames);
+              final validation = _validateName(value);
               isNameValid.value = validation == null;
               return validation;
             },
@@ -858,14 +853,14 @@ class RenamePageDialogue extends HookConsumerWidget {
 
   Future<void> _renamePage(WidgetRef ref, String newName) async {
     await ref.read(bookProvider.notifier).renamePage(pageId, newName);
-    unawaited(ref.read(appRouter).push(PageEditorRoute(id: newName)));
+    if (ref.read(currentPageIdProvider) == pageId) return;
+    unawaited(ref.read(appRouter).push(PageEditorRoute(id: pageId)));
   }
 
   /// Validates the proposed name for a page.
   /// A name is invalid if it is empty or if it already exists.
   String? _validateName(
     String text,
-    List<String> pagesNames,
   ) {
     if (text.isEmpty) {
       return "Name cannot be empty";
@@ -874,29 +869,22 @@ class RenamePageDialogue extends HookConsumerWidget {
     if (text == oldName) {
       return "Name cannot be the same";
     }
-
-    if (pagesNames.contains(text)) {
-      return "Page already exists";
-    }
-
     return null;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pagesNames = ref.watch(_pageNamesProvider);
-    final controller = useTextEditingController(text: oldName);
+    final name = useState(oldName);
     final isNameValid = useState(false);
 
     return AlertDialog(
       title: Text("Rename ${oldName.formatted}"),
       content: ValidatedTextField<String>(
-        value: oldName,
-        controller: controller,
+        value: name.value,
         name: "Page Name",
         icon: TWIcons.book,
         validator: (value) {
-          final validation = _validateName(value, pagesNames);
+          final validation = _validateName(value);
           isNameValid.value = validation == null;
           return validation;
         },
@@ -905,6 +893,7 @@ class RenamePageDialogue extends HookConsumerWidget {
           FilteringTextInputFormatter.singleLineFormatter,
           FilteringTextInputFormatter.allow(RegExp("[a-z0-9_]")),
         ],
+        onChanged: (value) => name.value = value,
         onSubmitted: (value) async {
           final navigator = Navigator.of(context);
           await _renamePage(ref, value);
@@ -925,7 +914,7 @@ class RenamePageDialogue extends HookConsumerWidget {
               ? null
               : () async {
                   final navigator = Navigator.of(context);
-                  await _renamePage(ref, controller.text);
+                  await _renamePage(ref, name.value);
                   navigator.pop(true);
                 },
           label: const Text("Rename"),
