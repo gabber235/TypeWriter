@@ -287,6 +287,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
             try {
                 pages.forEach { (name, page) ->
                     val file = publishedDir["$name.json"]
+                    file.createNewFile()
                     file.writeText(page.toString())
                 }
 
