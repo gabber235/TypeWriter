@@ -86,6 +86,7 @@ jobs:
           build-root-directory: ./engine
       - name: Add Tag
         uses: mathieudutour/github-tag-action@v6.2
+        continue-on-error: true
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: false
