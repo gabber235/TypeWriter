@@ -49,7 +49,7 @@ class DecoratedTextField extends HookWidget {
     // However, when we are focused, we don't want to update the controller as this causes the cursor to jump.
     useEffect(
       () {
-        if (!focus.hasFocus) {
+        if (!focus.hasFocus && text != null) {
           controller.text = text ?? "";
         }
         return null;
@@ -61,7 +61,9 @@ class DecoratedTextField extends HookWidget {
       focus,
       ({required hasFocus}) {
         if (hasFocus) {
-          controller.text = text ?? "";
+          if (text != null) {
+            controller.text = text!;
+          }
         } else {
           onDone?.call(controller.text);
         }
