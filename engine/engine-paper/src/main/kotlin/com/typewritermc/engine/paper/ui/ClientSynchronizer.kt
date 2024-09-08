@@ -54,7 +54,7 @@ class ClientSynchronizer : KoinComponent {
 
     fun handleRenamePage(client: SocketIOClient, data: String, ackRequest: AckRequest) {
         val json = gson.fromJson(data, PageRename::class.java)
-        val result = stagingManager.renamePage(json.old, json.new)
+        val result = stagingManager.renamePage(json.pageId, json.new)
 
         ackRequest.sendResult(result) {
             communicationHandler.server?.broadcastOperations?.sendEvent("renamePage", client, data)
@@ -223,7 +223,7 @@ inline fun AckRequest.sendResult(result: Result<String>, onSuccess: () -> Unit) 
     }
 }
 
-private data class PageRename(val old: String, val new: String)
+private data class PageRename(val pageId: String, val new: String)
 
 private data class PageValueUpdate(
     val pageId: String,

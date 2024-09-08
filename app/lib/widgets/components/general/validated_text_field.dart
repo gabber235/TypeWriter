@@ -47,6 +47,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
     this.formatted,
     this.validator,
     this.onChanged,
+    this.onDone,
     this.onSubmitted,
     super.key,
   });
@@ -62,6 +63,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
   final String Function(T)? formatted;
   final String? Function(T)? validator;
   final void Function(T)? onChanged;
+  final void Function(T)? onDone;
   final void Function(T)? onSubmitted;
 
   _State _parse(String value) {
@@ -124,6 +126,10 @@ class ValidatedTextField<T> extends HookConsumerWidget {
             if (object != null) onChanged?.call(object);
           },
           onDone: (value) {
+            final object = _updateState(value, state);
+            if (object != null) onDone?.call(object);
+          },
+          onSubmitted: (value) {
             final object = _updateState(value, state);
             if (object != null) onSubmitted?.call(object);
           },
