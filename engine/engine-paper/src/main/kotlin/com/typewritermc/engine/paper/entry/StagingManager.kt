@@ -284,6 +284,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         return DISPATCHERS_ASYNC.switchContext {
             stagingState = PUBLISHING
 
+            if (!publishedDir.exists()) publishedDir.mkdirs()
+
             try {
                 pages.forEach { (name, page) ->
                     val file = publishedDir["$name.json"]
