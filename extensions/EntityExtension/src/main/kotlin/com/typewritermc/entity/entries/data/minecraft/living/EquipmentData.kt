@@ -84,8 +84,7 @@ private class EquipmentCollector(
 fun org.bukkit.inventory.ItemStack.toProperty(equipmentSlot: EquipmentSlot) =
     EquipmentProperty(equipmentSlot, this.toPacketItem())
 
-fun applyEquipmentData(entity: WrapperEntity, property: EquipmentProperty) {
-    if (entity !is WrapperLivingEntity) return
+fun applyEquipmentData(entity: WrapperLivingEntity, property: EquipmentProperty) {
     property.data.forEach { (slot, item) ->
         if (item.isEmpty) entity.equipment.setItem(slot, null)
         else entity.equipment.setItem(slot, item)
