@@ -1,6 +1,7 @@
 package com.typewritermc.entity.entries.data.minecraft.living
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.entry.entity.SinglePropertyCollectorSupplier
@@ -19,6 +20,7 @@ import kotlin.reflect.KClass
 class SizeData(
     override val id: String = "",
     override val name: String = "",
+    @Default("1")
     val size: Int = 1,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityData<SizeProperty> {
