@@ -3,6 +3,7 @@ package com.typewritermc.entity.entries.data.minecraft
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
+import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.entry.entity.SinglePropertyCollectorSupplier
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.engine.paper.entry.entries.GenericEntityData
@@ -14,6 +15,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("glowing_effect_data", "If the entity is glowing", Colors.RED, "bi:lightbulb-fill")
+@Tags("glowing_effect_data")
 class GlowingEffectData(
     override val id: String = "",
     override val name: String = "",
