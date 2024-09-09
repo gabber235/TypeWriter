@@ -1,6 +1,7 @@
 package com.typewritermc.engine.paper.utils
 
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTimeUpdate
 import io.github.retrooper.packetevents.util.SpigotReflectionUtil
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.plugin
@@ -29,6 +30,10 @@ enum class GenericPlayerStateProvider(private val store: Player.() -> Any, priva
     LEVEL({ level }, { level = it as Int }),
     ALLOW_FLIGHT({ allowFlight }, { allowFlight = it as Boolean }),
     FLYING({ isFlying }, { isFlying = it as Boolean }),
+    GAME_TIME({ playerTime }, {
+        resetPlayerTime()
+        WrapperPlayServerTimeUpdate(world.gameTime, playerTime).sendPacketTo(this)
+    }),
 
     // All Players that are visible to the player
     VISIBLE_PLAYERS({
