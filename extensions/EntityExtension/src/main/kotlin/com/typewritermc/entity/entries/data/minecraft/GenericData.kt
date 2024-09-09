@@ -1,6 +1,8 @@
 package com.typewritermc.entity.entries.data.minecraft
 
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
+import com.typewritermc.entity.entries.data.minecraft.living.SizeProperty
+import com.typewritermc.entity.entries.data.minecraft.living.applySizeData
 import me.tofaa.entitylib.wrapper.WrapperEntity
 
 
@@ -11,6 +13,7 @@ fun applyGenericEntityData(entity: WrapperEntity, property: EntityProperty): Boo
         is PoseProperty -> applyPoseData(entity, property)
         is CustomNameProperty -> applyCustomNameData(entity, property)
         is ArmSwingProperty -> applyArmSwingData(entity, property)
+        is SizeProperty -> applySizeData(entity, property)
         else -> return false
     }
 
