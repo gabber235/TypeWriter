@@ -425,8 +425,7 @@ class AddEntrySearchElement extends SearchElement {
       return await onAdd?.call(blueprint) ?? true;
     }
     final page = ref.read(currentPageProvider);
-    if (page == null) return false;
-    if (page.canHave(blueprint)) {
+    if (page != null && page.canHave(blueprint)) {
       return _createAndNavigate(ref, page, blueprint);
     }
 
