@@ -700,7 +700,7 @@ class AddPageDialogue extends HookConsumerWidget {
         .createPage(name, type, chapter, priority);
 
     if (!autoNavigate) return page.id;
-    unawaited(ref.read(appRouter).push(PageEditorRoute(id: name)));
+    unawaited(ref.read(appRouter).push(PageEditorRoute(id: page.id)));
     return page.id;
   }
 
