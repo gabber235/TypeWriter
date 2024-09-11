@@ -1,6 +1,7 @@
 package com.typewritermc.entity.entries.activity
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.entity.*
@@ -18,8 +19,10 @@ import kotlin.random.Random
 class RandomLookActivityEntry(
     override val id: String = "",
     override val name: String = "",
-    val pitchRange: ClosedFloatingPointRange<Float> = -90f..90f,
-    val yawRange: ClosedFloatingPointRange<Float> = -180f..180f,
+    @Default("{\"start\": -90.0, \"end\": 90.0}")
+    val pitchRange: ClosedRange<Float> = -90f..90f,
+    @Default("{\"start\": -180.0, \"end\": 180.0}")
+    val yawRange: ClosedRange<Float> = -180f..180f,
     @Help("The duration between each look")
     val duration: Duration = Duration.ofSeconds(2),
 ) : GenericEntityActivityEntry {
@@ -29,8 +32,8 @@ class RandomLookActivityEntry(
 }
 
 class RandomLookActivity(
-    private val pitchRange: ClosedFloatingPointRange<Float>,
-    private val yawRange: ClosedFloatingPointRange<Float>,
+    private val pitchRange: ClosedRange<Float>,
+    private val yawRange: ClosedRange<Float>,
     private val duration: Duration,
     override var currentPosition: PositionProperty,
 ) : GenericEntityActivity {
@@ -69,6 +72,6 @@ class RandomLookActivity(
     override fun dispose(context: ActivityContext) {}
 }
 
-fun ClosedFloatingPointRange<Float>.random(): Float {
+fun ClosedRange<Float>.random(): Float {
     return start + (endInclusive - start) * Random.nextFloat()
 }
