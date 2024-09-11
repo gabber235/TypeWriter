@@ -95,6 +95,7 @@ sealed class DataBlueprint {
 
                 val values = clazz.declarations
                     .filterIsInstance<KSClassDeclaration>()
+                    .filter { it.classKind == ClassKind.ENUM_ENTRY }
                     .map { it.serializedName }
                     .toList()
 
@@ -324,11 +325,8 @@ enum class PrimitiveType {
         }
 }
 
-class CouldNotFindBlueprintException(val property: String, val parameter: KSType, val location: Location) :
+class CouldNotFindBlueprintException(property: String, parameter: KSType, location: Location) :
     Exception("Could not find blueprint for $property with type ${parameter.fullName} at ${location.format}")
-
-class CouldNotFindArgumentTypeException(parameter: String, argument: KSTypeArgument) :
-    Exception("Could not find argument type for type $parameter $argument at ${argument.location.format}, Generics are not yet supported")
 
 class InvalidDefaultValueException(message: String) : Exception(message)
 
