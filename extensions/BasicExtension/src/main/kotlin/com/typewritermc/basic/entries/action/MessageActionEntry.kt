@@ -2,6 +2,7 @@ package com.typewritermc.basic.entries.action
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.*
+import com.typewritermc.core.extension.annotations.Colored
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.MultiLine
 import com.typewritermc.core.extension.annotations.Placeholder
@@ -17,7 +18,7 @@ import com.typewritermc.engine.paper.utils.sendMiniWithResolvers
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed
 import org.bukkit.entity.Player
 
-val messageFormat: String by snippet(
+private val messageFormat: String by snippet(
     "action.message.format",
     "\n<gray> [ <bold><speaker></bold><reset><gray> ]\n<reset><white> <message>\n"
 )
@@ -44,6 +45,7 @@ class MessageActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Placeholder
+    @Colored
     @MultiLine
     val message: String = "",
 ) : ActionEntry {
