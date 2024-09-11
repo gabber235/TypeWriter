@@ -116,7 +116,11 @@ class EntrySelectorEditor extends HookConsumerWidget {
                       onTap: () {
                         ref
                             .read(inspectingEntryDefinitionProvider)
-                            ?.updateField(ref.passing, path, "");
+                            ?.updateField(
+                              ref.passing,
+                              path,
+                              dataBlueprint.defaultValue(),
+                            );
                       },
                     ),
                 ],
