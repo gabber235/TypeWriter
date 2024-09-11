@@ -2,12 +2,14 @@ package com.typewritermc.engine.paper.entry.entries
 
 import com.typewritermc.core.entries.PriorityEntry
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.WithRotation
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entity.*
+import com.typewritermc.engine.paper.utils.EmitterSoundSource
 import com.typewritermc.engine.paper.utils.Sound
 import org.bukkit.entity.Player
 import kotlin.reflect.KClass
@@ -66,11 +68,17 @@ interface EntityDefinitionEntry : ManifestEntry, SpeakerEntry, EntityCreator {
 }
 
 @Tags("entity_instance")
-interface EntityInstanceEntry : AudienceFilterEntry {
+interface EntityInstanceEntry : AudienceFilterEntry, SoundSourceEntry {
     val definition: Ref<out EntityDefinitionEntry>
 
     @WithRotation
     val spawnLocation: Position
+
+    override fun getEmitter(player: Player): SoundEmitter {
+        val display = ref().findDisplay() as? ActivityEntityDisplay ?: return SoundEmitter(player.entityId)
+        val entityId = display.entityId(player.uniqueId)
+        return SoundEmitter(entityId)
+    }
 }
 
 @Tags("entity_activity")

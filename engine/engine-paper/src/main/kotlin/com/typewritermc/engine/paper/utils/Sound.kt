@@ -1,30 +1,39 @@
 package com.typewritermc.engine.paper.utils
 
+import com.github.retrooper.packetevents.protocol.sound.SoundCategory
+import com.github.retrooper.packetevents.protocol.sound.Sounds
+import com.github.retrooper.packetevents.protocol.sound.StaticSound
+import com.github.retrooper.packetevents.resources.ResourceLocation
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntitySoundEffect
 import com.typewritermc.core.entries.Query
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entries.SoundIdEntry
 import com.typewritermc.engine.paper.entry.entries.SoundSourceEntry
+import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.logger
 import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.sound.SoundStop
 import org.bukkit.NamespacedKey
+import org.bukkit.entity.Player
 import net.kyori.adventure.sound.Sound as AdventureSound
 
 
 data class Sound(
-    @Help("The sound to play.")
     val soundId: SoundId = SoundId.EMPTY,
     @Help("The source of the location to play the sound from. (Defaults to player's location)")
     val soundSource: SoundSource = SelfSoundSource,
-    @Help("The track to play the sound on. (Corresponds to the Minecraft sound category)")
+    @Help("Corresponds to the Minecraft sound category")
     val track: AdventureSound.Source = AdventureSound.Source.MASTER,
-    @Help("The volume of the sound. A value of 1.0 is normal volume.")
+    @Help("A value of 1.0 is normal volume.")
+    @Default("1.0")
     val volume: Float = 1.0f,
-    @Help("The pitch of the sound. A value of 1.0 is normal pitch.")
+    @Help("A value of 1.0 is normal pitch.")
+    @Default("1.0")
     val pitch: Float = 1.0f,
 ) {
-
     companion object {
         val EMPTY = Sound()
     }
@@ -45,8 +54,12 @@ data class Sound(
                     logger.warning("Could not find sound source entry with id $entryId")
                     return
                 }
-                val emitter = entry.getEmitter()
-                audience.playSound(sound, emitter)
+                audience.viewers.forEach { viewer ->
+                    val emitter = entry.getEmitter(viewer)
+                    val packetSound = StaticSound(ResourceLocation(key.namespace, key.key), 16f)
+                    val category = SoundCategory.fromId(track.ordinal)
+                    WrapperPlayServerEntitySoundEffect(packetSound, category, emitter.entityId, volume, pitch) sendPacketTo viewer
+                }
             }
 
             is LocationSoundSource -> {
@@ -90,3 +103,10 @@ data object SelfSoundSource : SoundSource
 class EmitterSoundSource(val entryId: String) : SoundSource
 
 class LocationSoundSource(val position: Position) : SoundSource
+
+val Audience.viewers: List<Player>
+    get() = when (this) {
+        is Player -> listOf(this)
+        is ForwardingAudience -> audiences().flatMap { it.viewers }
+        else -> throw IllegalArgumentException("Cannot get viewers from audience of type ${this::class.simpleName}")
+    }

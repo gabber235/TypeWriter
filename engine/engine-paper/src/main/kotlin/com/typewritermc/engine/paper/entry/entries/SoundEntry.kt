@@ -15,5 +15,7 @@ interface SoundIdEntry : StaticEntry, PlaceholderEntry {
 
 @Tags("sound_source")
 interface SoundSourceEntry : StaticEntry {
-    fun getEmitter(): Sound.Emitter
+    fun getEmitter(player: Player): SoundEmitter
 }
+
+class SoundEmitter(val entityId: Int)

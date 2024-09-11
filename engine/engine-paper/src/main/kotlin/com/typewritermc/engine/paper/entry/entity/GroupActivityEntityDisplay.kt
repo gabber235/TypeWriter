@@ -108,4 +108,8 @@ class GroupActivityEntityDisplay(
     }
 
     override fun canView(playerId: UUID): Boolean = canConsider(playerId)
+
+    override fun entityId(playerId: UUID): Int {
+        return entities[playerId]?.entityId ?: 0
+    }
 }
