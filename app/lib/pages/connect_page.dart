@@ -15,13 +15,13 @@ import "package:typewriter/widgets/components/general/text_scroller.dart";
 class ConnectPage extends HookConsumerWidget {
   const ConnectPage({
     @QueryParam("host") this.hostname = "",
-    @QueryParam() this.port = 9092,
+    @QueryParam() this.port,
     @QueryParam() this.token = "",
     super.key,
   });
 
   final String hostname;
-  final int port;
+  final int? port;
   final String token;
 
   @override

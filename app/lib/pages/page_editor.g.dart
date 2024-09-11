@@ -21,7 +21,7 @@ final currentPageIdProvider = Provider<String?>.internal(
 );
 
 typedef CurrentPageIdRef = ProviderRef<String?>;
-String _$currentPageLabelHash() => r'3a0685c6033a322a1538a72ce9f77abd6add0ab9';
+String _$currentPageLabelHash() => r'c151e5e2c16b7898a651f065a7977975b413e9fe';
 
 /// See also [currentPageLabel].
 @ProviderFor(currentPageLabel)
