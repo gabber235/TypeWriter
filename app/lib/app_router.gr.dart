@@ -29,10 +29,7 @@ abstract class _$AppRouter extends RootStackRouter {
                   'host',
                   "",
                 ),
-                port: queryParams.getInt(
-                  'port',
-                  9092,
-                ),
+                port: queryParams.optInt('port'),
                 token: queryParams.getString(
                   'token',
                   "",
@@ -106,7 +103,7 @@ class BookRoute extends PageRouteInfo<void> {
 class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
   ConnectRoute({
     String hostname = "",
-    int port = 9092,
+    int? port,
     String token = "",
     Key? key,
     List<PageRouteInfo>? children,
@@ -135,14 +132,14 @@ class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
 class ConnectRouteArgs {
   const ConnectRouteArgs({
     this.hostname = "",
-    this.port = 9092,
+    this.port,
     this.token = "",
     this.key,
   });
 
   final String hostname;
 
-  final int port;
+  final int? port;
 
   final String token;
 
