@@ -64,10 +64,10 @@ class TypeWriterApp extends HookConsumerWidget {
           borderSide: BorderSide.none,
         ),
         fillColor: brightness == Brightness.light
-            ? Colors.black.withOpacity(0.05)
-            : Colors.black.withOpacity(0.2),
+            ? Colors.black.withValues(alpha: 0.05)
+            : Colors.black.withValues(alpha: 0.2),
         filled: true,
-        hoverColor: Colors.black.withOpacity(0.1),
+        hoverColor: Colors.black.withValues(alpha: 0.1),
         errorStyle: const TextStyle(
           color: Colors.redAccent,
           fontSize: 12,
@@ -88,7 +88,7 @@ class TypeWriterApp extends HookConsumerWidget {
           borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
       ),
-      hoverColor: Colors.black.withOpacity(0.1),
+      hoverColor: Colors.black.withValues(alpha: 0.1),
       colorScheme: baseTheme.colorScheme.copyWith(
         primary: Colors.blueAccent,
         brightness: brightness,
