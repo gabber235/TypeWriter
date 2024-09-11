@@ -3,12 +3,12 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector/editors/boolean.dart";
+import "package:typewriter/widgets/inspector/editors/closed_range.dart";
 import "package:typewriter/widgets/inspector/editors/color.dart";
 import "package:typewriter/widgets/inspector/editors/cron.dart";
 import "package:typewriter/widgets/inspector/editors/duration.dart";
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
-import "package:typewriter/widgets/inspector/editors/float_range.dart";
 import "package:typewriter/widgets/inspector/editors/item.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
 import "package:typewriter/widgets/inspector/editors/location.dart";
@@ -47,13 +47,13 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       VectorEditorFilter(),
       DurationEditorFilter(),
       CronEditorFilter(),
+      ClosedRangeFilter(),
       PotionEffectEditorFilter(),
       ItemEditorFilter(),
       SoundIdEditorFilter(),
       SoundSourceEditorFilter(),
       SkinEditorFilter(),
       ColorEditorFilter(),
-      FloatRangeFilter(),
 
       // Default filters
       StringEditorFilter(),
