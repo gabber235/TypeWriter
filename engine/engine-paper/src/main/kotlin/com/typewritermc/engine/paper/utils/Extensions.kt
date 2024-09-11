@@ -68,18 +68,6 @@ fun Audience.playSound(
 ) = playSound(Sound.sound(Key.key(sound), source, volume, pitch))
 
 
-val Player.isHighUp: Boolean
-    get() = this.location.isHighUp
-val Location.isHighUp: Boolean
-    get() = this.y >= highUpLocation.y
-
-val Location.highUpLocation: Location
-    get() {
-        val location = toHighestLocation()
-        location.y += 200
-        return location
-    }
-
 fun Location.distanceSqrt(other: Location): Double? {
     if (world != other.world) return null
     val dx = x - other.x
@@ -98,9 +86,6 @@ fun Location.lerp(other: Location, amount: Double): Location {
 
 val Location.up: Location
     get() = clone().apply { y += 1 }
-
-val Location.down: Location
-    get() = clone().apply { y -= 1 }
 
 val Location.firstWalkableLocationBelow: Location
     get() = clone().apply {

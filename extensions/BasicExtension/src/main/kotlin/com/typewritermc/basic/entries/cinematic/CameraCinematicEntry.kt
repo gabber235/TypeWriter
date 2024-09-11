@@ -236,14 +236,15 @@ class CameraCinematicAction(
     private suspend fun Player.teardown() {
         listener?.unregister()
         listener = null
-        interceptor?.cancel()
-        interceptor = null
-        originalState?.let {
-            SYNC.switchContext {
+        SYNC.switchContext {
+            interceptor?.cancel()
+            interceptor = null
+
+            originalState?.let {
                 restore(it)
-                if (gameMode != GameMode.CREATIVE) {
-                    restoreInventory()
-                }
+            }
+            if (gameMode != GameMode.CREATIVE) {
+                restoreInventory()
             }
         }
         originalState = null
