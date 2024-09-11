@@ -712,7 +712,7 @@ class _BackgroundLinePainter extends CustomPainter {
       ..strokeWidth = 1;
 
     final secondaryPaint = Paint()
-      ..color = Colors.grey.shade700.withOpacity(0.5)
+      ..color = Colors.grey.shade700.withValues(alpha:0.5)
       ..strokeWidth = 1;
 
     for (final line in lines) {
@@ -1298,7 +1298,7 @@ class _SegmentDurationDisplay extends HookConsumerWidget {
       "Total Duration: $secondsWithDecimal seconds ($totalTime frames)",
       style: Theme.of(context).textTheme.bodySmall?.apply(
             color:
-                Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.8),
+                Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha:0.8),
             fontStyle: FontStyle.italic,
           ),
     );
@@ -1487,8 +1487,8 @@ class _SegmentSelectorTile extends HookConsumerWidget {
                     segment.icon,
                     size: 16,
                     color: color.computeLuminance() > 0.5
-                        ? Colors.black.withOpacity(0.6)
-                        : Colors.white.withOpacity(0.6),
+                        ? Colors.black.withValues(alpha:0.6)
+                        : Colors.white.withValues(alpha:0.6),
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -1505,8 +1505,8 @@ class _SegmentSelectorTile extends HookConsumerWidget {
                     TWIcons.angleRight,
                     size: 12,
                     color: color.computeLuminance() > 0.5
-                        ? Colors.black.withOpacity(0.5)
-                        : Colors.white.withOpacity(0.5),
+                        ? Colors.black.withValues(alpha:0.5)
+                        : Colors.white.withValues(alpha:0.5),
                   ),
                 ],
               ),
@@ -1608,7 +1608,7 @@ class _SegmentWidget extends HookConsumerWidget {
                 ? Border.all(
                     color: context.isDark
                         ? Colors.white
-                        : Colors.black.withOpacity(0.4),
+                        : Colors.black.withValues(alpha:0.4),
                     width: 2,
                   )
                 : Border.all(color: Colors.transparent, width: 2),

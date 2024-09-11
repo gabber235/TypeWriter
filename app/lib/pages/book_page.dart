@@ -177,7 +177,7 @@ class _RailButton extends HookConsumerWidget {
     final tabRouter = context.tabsRouter;
     final isSelected = tabRouter.activeIndex == index;
     return Material(
-      color: isSelected ? Colors.white.withOpacity(0.15) : Colors.transparent,
+      color: isSelected ? Colors.white.withValues(alpha:0.15) : Colors.transparent,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: () => tabRouter.setActiveIndex(index),

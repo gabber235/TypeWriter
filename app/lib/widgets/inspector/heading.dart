@@ -162,7 +162,7 @@ class EntryBlueprintDisplay extends HookConsumerWidget {
         child: Text(
           blueprintName.formatted,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: color.withOpacity(0.9),
+                color: color.withValues(alpha: 0.9),
                 decoration: hovering.value ? TextDecoration.underline : null,
               ),
         ),

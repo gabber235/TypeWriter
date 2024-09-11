@@ -6,7 +6,6 @@ import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/components/general/filled_button.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/components/general/outline_button.dart";
 import "package:typewriter/widgets/inspector/editors.dart";

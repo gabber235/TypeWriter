@@ -9,81 +9,6 @@
 
 part of 'app_router.dart';
 
-abstract class _$AppRouter extends RootStackRouter {
-  // ignore: unused_element
-  _$AppRouter({super.navigatorKey});
-
-  @override
-  final Map<String, PageFactory> pagesMap = {
-    BookRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const BookPage(),
-      );
-    },
-    ConnectRoute.name: (routeData) {
-      final queryParams = routeData.queryParams;
-      final args = routeData.argsAs<ConnectRouteArgs>(
-          orElse: () => ConnectRouteArgs(
-                hostname: queryParams.getString(
-                  'host',
-                  "",
-                ),
-                port: queryParams.optInt('port'),
-                token: queryParams.getString(
-                  'token',
-                  "",
-                ),
-              ));
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: ConnectPage(
-          hostname: args.hostname,
-          port: args.port,
-          token: args.token,
-          key: args.key,
-        ),
-      );
-    },
-    EmptyPageEditorRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const EmptyPageEditor(),
-      );
-    },
-    ErrorConnectRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const ErrorConnectPage(),
-      );
-    },
-    HomeRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const HomePage(),
-      );
-    },
-    PageEditorRoute.name: (routeData) {
-      final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<PageEditorRouteArgs>(
-          orElse: () => PageEditorRouteArgs(id: pathParams.getString('id')));
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: PageEditor(
-          id: args.id,
-          key: args.key,
-        ),
-      );
-    },
-    PagesListRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const PagesList(),
-      );
-    },
-  };
-}
-
 /// generated route for
 /// [BookPage]
 class BookRoute extends PageRouteInfo<void> {
@@ -95,7 +20,12 @@ class BookRoute extends PageRouteInfo<void> {
 
   static const String name = 'BookRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const BookPage();
+    },
+  );
 }
 
 /// generated route for
@@ -125,8 +55,30 @@ class ConnectRoute extends PageRouteInfo<ConnectRouteArgs> {
 
   static const String name = 'ConnectRoute';
 
-  static const PageInfo<ConnectRouteArgs> page =
-      PageInfo<ConnectRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final queryParams = data.queryParams;
+      final args = data.argsAs<ConnectRouteArgs>(
+          orElse: () => ConnectRouteArgs(
+                hostname: queryParams.getString(
+                  'host',
+                  "",
+                ),
+                port: queryParams.optInt('port'),
+                token: queryParams.getString(
+                  'token',
+                  "",
+                ),
+              ));
+      return ConnectPage(
+        hostname: args.hostname,
+        port: args.port,
+        token: args.token,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class ConnectRouteArgs {
@@ -162,7 +114,12 @@ class EmptyPageEditorRoute extends PageRouteInfo<void> {
 
   static const String name = 'EmptyPageEditorRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EmptyPageEditor();
+    },
+  );
 }
 
 /// generated route for
@@ -176,7 +133,12 @@ class ErrorConnectRoute extends PageRouteInfo<void> {
 
   static const String name = 'ErrorConnectRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ErrorConnectPage();
+    },
+  );
 }
 
 /// generated route for
@@ -190,7 +152,12 @@ class HomeRoute extends PageRouteInfo<void> {
 
   static const String name = 'HomeRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HomePage();
+    },
+  );
 }
 
 /// generated route for
@@ -212,8 +179,18 @@ class PageEditorRoute extends PageRouteInfo<PageEditorRouteArgs> {
 
   static const String name = 'PageEditorRoute';
 
-  static const PageInfo<PageEditorRouteArgs> page =
-      PageInfo<PageEditorRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<PageEditorRouteArgs>(
+          orElse: () => PageEditorRouteArgs(id: pathParams.getString('id')));
+      return PageEditor(
+        id: args.id,
+        key: args.key,
+      );
+    },
+  );
 }
 
 class PageEditorRouteArgs {
@@ -243,5 +220,10 @@ class PagesListRoute extends PageRouteInfo<void> {
 
   static const String name = 'PagesListRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PagesList();
+    },
+  );
 }
