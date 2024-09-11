@@ -170,7 +170,7 @@ class CommunicationHandler : KoinComponent {
 
         if (panelAppendPort != false) url += ":${panelPort}"
         url += "/#/connect?host=${websocketHostname ?: hostName}"
-        if (websocketAppendPort != false) url += "?port=${webSocketPort}"
+        if (websocketAppendPort != false) url += "&port=${webSocketPort}"
         if (auth == "session") url += "&token=${generateSessionToken(playerId)}"
 
         return url
