@@ -1,5 +1,6 @@
 import "dart:math";
 
+import "package:dart_casing/dart_casing.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
@@ -8,19 +9,14 @@ extension BuildContextExtension on BuildContext {
 }
 
 extension StringExtension on String {
-  String get capitalize {
+  String titleCase() {
     if (isEmpty) return this;
-    return "${this[0].toUpperCase()}${substring(1)}";
+    return Casing.titleCase(this);
   }
 
   String get formatted {
     if (isEmpty) return this;
-    return split(".")
-        .map((e) => e.capitalize)
-        .join(" | ")
-        .split("_")
-        .map((e) => e.capitalize)
-        .join(" ");
+    return split(".").map(Casing.titleCase).join(" | ").titleCase();
   }
 
   String get singular {

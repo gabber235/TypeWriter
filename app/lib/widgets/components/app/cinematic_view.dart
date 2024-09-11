@@ -258,7 +258,7 @@ List<ContextMenuTile> _entryContextActions(
             .split(".")
             .lastOrNull
             ?.singular
-            .capitalize ??
+            .titleCase() ??
         path;
 
     final modifierData = modifier.data;
