@@ -17,7 +17,7 @@
     "dependencies": {
         "@dagrejs/dagre": "^1.1.4",
         "@docusaurus/core": "^3.5.2",
-        "@docusaurus/preset-classic": "^3.5.1",
+        "@docusaurus/preset-classic": "^3.5.2",
         "@docusaurus/theme-mermaid": "^3.5.2",
         "@mdx-js/react": "^3.0.1",
         "@rive-app/react-canvas": "^4.13.7",
