@@ -42,11 +42,11 @@ fun <A : Annotation> DataModifierComputer<A>.computeModifier(annotation: A, type
 }
 
 val customEditors = listOf(
+    ClosedRangeEditor,
     ColorEditor,
     CoordinateEditor,
     CronEditor,
     DurationEditor,
-    FloatRangeEditor,
     ItemEditor,
     MaterialEditor,
     OptionalEditor,
