@@ -100,7 +100,7 @@ class SocketNotifier extends StateNotifier<Socket?> {
         state == ConnectionState.connected;
   }
 
-  void init(String hostname, int port, [String? token]) {
+  void init(String hostname, int? port, [String? token]) {
     if (state != null) return;
     if (_connectionState != ConnectionState.none) return;
     _connectionState = ConnectionState.connecting;
@@ -112,7 +112,8 @@ class SocketNotifier extends StateNotifier<Socket?> {
       return;
     }
 
-    var url = "//$hostname:$port";
+    var url = "//$hostname";
+    if (port != null) url += ":$port";
     if (token != null) url += "?token=$token";
 
     debugPrint("Initializing socket");
