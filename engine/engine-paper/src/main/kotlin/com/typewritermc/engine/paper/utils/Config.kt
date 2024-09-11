@@ -36,3 +36,23 @@ class ConfigPropertyDelegate<T : Any>(
 
     operator fun getValue(thisRef: Any, property: KProperty<*>): T = getValue(null, property)
 }
+
+inline fun <reified T : Any> optionalConfig(key: String) =
+    OptionalConfigPropertyDelegate(key, T::class)
+
+class OptionalConfigPropertyDelegate<T : Any>(
+    private val key: String,
+    private val klass: KClass<T>,
+) {
+    operator fun getValue(thisRef: Nothing?, property: KProperty<*>): T? {
+        val value = plugin.config.get(key) ?: return null
+        val t = klass.safeCast(value)
+        if (t == null) {
+            logger.warning("Invalid value for config key '$key', expected ${klass.simpleName}, got ${value::class.simpleName}")
+            return null
+        }
+        return t
+    }
+
+    operator fun getValue(thisRef: Any, property: KProperty<*>): T? = getValue(null, property)
+}

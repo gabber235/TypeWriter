@@ -36,7 +36,7 @@ final manifestEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 );
 
 typedef ManifestEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$entryReferencesHash() => r'cde5b6567d34b8c894d75ef53f8a87d5920545b5';
+String _$entryReferencesHash() => r'b8ca36aa7d61848c32cf0ae6af8de3fcb49a8fa2';
 
 /// Copied from Dart SDK
 class _SystemHash {
