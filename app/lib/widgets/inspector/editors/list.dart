@@ -3,9 +3,12 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/entry_blueprint.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/general/filled_button.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
+import "package:typewriter/widgets/components/general/outline_button.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/header.dart";
@@ -96,18 +99,60 @@ class ListEditor extends HookConsumerWidget {
           onAdd: () => _addNew(ref.passing),
         ),
       ],
-      child: ReorderableList(
-        itemCount: length,
-        onReorder: (oldIndex, newIndex) {
-          _reorder(ref.passing, oldIndex, newIndex);
-          _reorderList(globalKeys, oldIndex, newIndex);
-        },
-        shrinkWrap: true,
-        itemBuilder: (context, index) => _ListItem(
-          key: globalKeys[index],
-          index: index,
-          path: path,
-          listBlueprint: listBlueprint,
+      child: length > 0
+          ? ReorderableList(
+              itemCount: length,
+              onReorder: (oldIndex, newIndex) {
+                _reorder(ref.passing, oldIndex, newIndex);
+                _reorderList(globalKeys, oldIndex, newIndex);
+              },
+              shrinkWrap: true,
+              itemBuilder: (context, index) => _ListItem(
+                key: globalKeys[index],
+                index: index,
+                path: path,
+                listBlueprint: listBlueprint,
+              ),
+            )
+          : _NoElements(
+              path: path,
+              addNew: () => _addNew(ref.passing),
+            ),
+    );
+  }
+}
+
+class _NoElements extends HookConsumerWidget {
+  const _NoElements({
+    required this.path,
+    required this.addNew,
+  });
+
+  final String path;
+  final VoidCallback addNew;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final name =
+        ref.watch(pathDisplayNameProvider(path)).nullIfEmpty ?? "Fields";
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          spacing: 8,
+          children: [
+            Text(
+              "No $name found",
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            OutlineButton.icon(
+              onPressed: addNew,
+              icon: const Iconify(TWIcons.plus),
+              label: Text("Add ${name.singular}"),
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ],
         ),
       ),
     );
