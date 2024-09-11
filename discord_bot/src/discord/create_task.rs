@@ -79,10 +79,6 @@ pub async fn create_task(
         )
         .await?;
 
-    channel
-        .edit_thread(ctx, EditThread::default().name(title))
-        .await?;
-
     Ok(())
 }
 
