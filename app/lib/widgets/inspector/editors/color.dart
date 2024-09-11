@@ -51,6 +51,7 @@ class ColorEditor extends HookConsumerWidget {
               onColorChanged: (color) {
                 ref
                     .read(inspectingEntryDefinitionProvider)
+                    // ignore: deprecated_member_use
                     ?.updateField(ref.passing, path, color.value);
               },
             );

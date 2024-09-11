@@ -517,7 +517,7 @@ class _Barrier extends HookConsumerWidget {
     return Positioned.fill(
       child: ModalBarrier(
         dismissible: true,
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         onDismiss: () {
           ref.read(searchProvider.notifier).endSearch();
         },
@@ -587,7 +587,7 @@ class _FetcherChip extends HookConsumerWidget {
     return Material(
       color: switch (status) {
         FetchStatus.fetching => fetcher.color,
-        FetchStatus.quantifierBlocked => fetcher.color.withOpacity(0.3),
+        FetchStatus.quantifierBlocked => fetcher.color.withValues(alpha: 0.3),
         FetchStatus.disabled => Theme.of(context).cardColor,
       },
       borderRadius: BorderRadius.circular(30),
@@ -612,7 +612,7 @@ class _FetcherChip extends HookConsumerWidget {
                   fetcher.icon,
                   color: status != FetchStatus.quantifierBlocked
                       ? Colors.white
-                      : Colors.white.withOpacity(0.3),
+                      : Colors.white.withValues(alpha: 0.3),
                   size: 16,
                 ),
                 const SizedBox(width: 8),
@@ -621,7 +621,7 @@ class _FetcherChip extends HookConsumerWidget {
                   style: TextStyle(
                     color: status != FetchStatus.quantifierBlocked
                         ? Colors.white
-                        : Colors.white.withOpacity(0.3),
+                        : Colors.white.withValues(alpha: 0.3),
                   ),
                 ),
               ],
@@ -694,8 +694,9 @@ class _ResultTile extends HookConsumerWidget {
                 curve: Curves.fastLinearToSlowEaseIn,
                 height: 56.0,
                 width: 400,
-                color:
-                    focused.value ? color.withOpacity(0.6) : Colors.transparent,
+                color: focused.value
+                    ? color.withValues(alpha: 0.6)
+                    : Colors.transparent,
                 child: Focus(
                   focusNode: focusNode,
                   autofocus: true,
@@ -711,8 +712,9 @@ class _ResultTile extends HookConsumerWidget {
                         children: [
                           Container(
                             height: double.infinity,
-                            color:
-                                color.withOpacity(color.opacity.clamp(0, 0.8)),
+                            color: color.withValues(
+                              alpha: color.a.clamp(0, 0.8),
+                            ),
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 16.0),

@@ -32,7 +32,7 @@ class InfoHeaderAction extends HookConsumerWidget {
         size: 14,
         color: color,
       ),
-      hoverColor: color.withOpacity(0.2),
+      hoverColor: color.withValues(alpha:0.2),
       padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       onPressed: () => _launchUrl(url),

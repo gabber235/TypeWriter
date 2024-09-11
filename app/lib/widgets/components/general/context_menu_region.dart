@@ -278,9 +278,9 @@ class _ContextMenuButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: tile.onTap,
-        hoverColor: tile.color?.withOpacity(0.15),
-        highlightColor: tile.color?.withOpacity(0.2),
-        splashColor: tile.color?.withOpacity(0.3),
+        hoverColor: tile.color?.withValues(alpha:0.15),
+        highlightColor: tile.color?.withValues(alpha:0.2),
+        splashColor: tile.color?.withValues(alpha:0.3),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

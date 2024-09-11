@@ -144,7 +144,7 @@ class _ItemChip extends HookConsumerWidget {
 
     final foregroundColor = enabled
         ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.onSurface.withOpacity(0.7);
+        : Theme.of(context).colorScheme.onSurface.withValues(alpha:0.7);
 
     return InputChip(
       label: Text(id.titleCase(), style: TextStyle(color: foregroundColor)),
@@ -153,8 +153,8 @@ class _ItemChip extends HookConsumerWidget {
         size: 14,
         color: foregroundColor,
       ),
-      backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+      backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha:0.1),
+      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha:0.1),
       side: BorderSide.none,
       showCheckmark: false,
       selected: enabled,

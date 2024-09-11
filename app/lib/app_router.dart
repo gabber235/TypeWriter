@@ -21,7 +21,7 @@ final appRouter = Provider<AppRouter>((ref) => AppRouter(ref: ref.passing));
 @AutoRouterConfig(
   replaceInRouteName: "Page,Route",
 )
-class AppRouter extends _$AppRouter {
+class AppRouter extends RootStackRouter {
   AppRouter({
     required this.ref,
   });

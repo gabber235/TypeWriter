@@ -39,7 +39,7 @@ class HelpHeaderAction extends HookConsumerWidget {
       child: Icon(
         Icons.help_outline,
         size: 16,
-        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+        color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha:0.6),
       ),
     );
   }
