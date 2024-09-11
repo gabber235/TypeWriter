@@ -22,6 +22,9 @@ internal class DisplayEntity(
     val state: EntityState
         get() = entity.state
 
+    val entityId: Int
+        get() = entity.entityId
+
     init {
         entity.spawn(activityManager.position)
         applyProperties()

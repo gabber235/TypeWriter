@@ -161,6 +161,11 @@ val Ref<out AudienceEntry>.isActive: Boolean
         return manager[this]?.isActive ?: false
     }
 
+fun Ref<out AudienceEntry>.findDisplay(): AudienceDisplay? {
+    val manager = get<AudienceManager>(AudienceManager::class.java)
+    return manager[this]
+}
+
 fun <E : AudienceEntry> List<Ref<out AudienceEntry>>.descendants(klass: KClass<E>): List<Ref<E>> {
     return flatMap {
         val child = it.get() ?: return@flatMap emptyList<Ref<E>>()
