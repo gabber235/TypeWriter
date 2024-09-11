@@ -53,6 +53,13 @@ class PacketInterceptor : PacketListenerAbstract() {
         }
     }
 
+    fun cancel(player: UUID, bundle: InterceptionBundle) {
+        blockers.compute(player) { _, blocker ->
+            val newBlocker = blocker ?: return@compute null
+            if (newBlocker.cancel(bundle)) null else newBlocker
+        }
+    }
+
     fun shutdown() {
         PacketEvents.getAPI().eventManager.unregisterListener(this)
         blockers.clear()
@@ -72,6 +79,11 @@ private data class PlayerPacketInterceptor(
 
     fun cancel(subscription: PacketInterceptionSubscription): Boolean {
         interceptions.remove(subscription)
+        return interceptions.isEmpty()
+    }
+
+    fun cancel(bundle: InterceptionBundle): Boolean {
+        bundle.subscriptions.forEach { cancel(it) }
         return interceptions.isEmpty()
     }
 
@@ -127,7 +139,7 @@ fun Player.interceptPackets(block: InterceptionBundle.() -> Unit): InterceptionB
 }
 
 class InterceptionBundle(private val playerId: UUID) {
-    private val subscriptions = mutableListOf<PacketInterceptionSubscription>()
+    internal val subscriptions = mutableListOf<PacketInterceptionSubscription>()
 
     private fun intercept(interception: PacketInterception) {
         val subscription = get<PacketInterceptor>(PacketInterceptor::class.java).interceptPacket(playerId, interception)
@@ -150,7 +162,6 @@ class InterceptionBundle(private val playerId: UUID) {
 
     fun cancel() {
         val interceptor = get<PacketInterceptor>(PacketInterceptor::class.java)
-        subscriptions.forEach { interceptor.cancel(playerId, it) }
-        subscriptions.clear()
+        interceptor.cancel(playerId, this)
     }
 }

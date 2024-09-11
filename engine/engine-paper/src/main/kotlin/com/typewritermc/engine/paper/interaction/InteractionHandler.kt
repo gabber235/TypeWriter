@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
 import kotlinx.coroutines.runBlocking
+import lirand.api.extensions.server.registerEvents
 import lirand.api.extensions.server.registerSuspendingEvents
 import lirand.api.extensions.server.server
 import org.bukkit.entity.Player
@@ -97,7 +98,7 @@ class InteractionHandler : Listener, KoinComponent {
     }
 
     fun initialize() {
-        plugin.registerSuspendingEvents(this)
+        plugin.registerEvents(this)
     }
 
     // When a player joins the server, we need to create an interaction for them.
