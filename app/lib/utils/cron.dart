@@ -141,7 +141,7 @@ class CronExpression {
       text += dayOfWeek.toHumanReadableString();
     }
 
-    return text.capitalize;
+    return text.titleCase();
   }
 
   /// Parses a cron expression from a string.
