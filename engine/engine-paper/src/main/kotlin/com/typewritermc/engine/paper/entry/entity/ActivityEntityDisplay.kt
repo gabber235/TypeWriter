@@ -25,4 +25,13 @@ interface ActivityEntityDisplay {
      * @param playerId The player to check.
      */
     fun canView(playerId: UUID): Boolean
+
+    /**
+     * Get the base entity id of the entity.
+     * This might not be all of the entity ids that are displayed.
+     * For example, the entity might be a child of another entity.
+     *
+     * If you need to check if the entity is visible to the player, use [playerSeesEntity].
+     */
+    fun entityId(playerId: UUID): Int
 }

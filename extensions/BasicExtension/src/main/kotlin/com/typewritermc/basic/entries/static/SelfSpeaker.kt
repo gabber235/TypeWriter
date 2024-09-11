@@ -2,9 +2,11 @@ package com.typewritermc.basic.entries.static
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
+import com.typewritermc.engine.paper.entry.entries.SoundEmitter
 import com.typewritermc.engine.paper.entry.entries.SoundSourceEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
 import com.typewritermc.engine.paper.utils.Sound
+import org.bukkit.entity.Player
 import java.util.*
 
 @Entry("self_speaker", "The player themself", Colors.ORANGE, "bi:person-fill")
@@ -26,7 +28,5 @@ class SelfSpeaker(
     override val displayName: String
         get() = overrideName.orElseGet { "%player_name%" }
 
-    override fun getEmitter(): net.kyori.adventure.sound.Sound.Emitter {
-        return net.kyori.adventure.sound.Sound.Emitter.self()
-    }
+    override fun getEmitter(player: Player): SoundEmitter = SoundEmitter(player.entityId)
 }
