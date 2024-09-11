@@ -462,37 +462,43 @@ class FakeEntryNode extends HookConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Iconify(blueprint.icon, color: Colors.white, size: 18),
             const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name.formatted,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    decoration:
-                        isDeprecated ? TextDecoration.lineThrough : null,
-                    decorationThickness: 2.8,
-                    decorationColor: Theme.of(context).scaffoldBackgroundColor,
-                    decorationStyle: TextDecorationStyle.wavy,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name.formatted,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      decoration:
+                          isDeprecated ? TextDecoration.lineThrough : null,
+                      decorationThickness: 2.8,
+                      decorationColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      decorationStyle: TextDecorationStyle.wavy,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Text(
-                  blueprintId.formatted,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 11,
-                    decoration:
-                        isDeprecated ? TextDecoration.lineThrough : null,
-                    decorationThickness: 2.5,
-                    decorationColor: Theme.of(context).scaffoldBackgroundColor,
-                    decorationStyle: TextDecorationStyle.wavy,
+                  Text(
+                    blueprintId.formatted,
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 11,
+                      decoration:
+                          isDeprecated ? TextDecoration.lineThrough : null,
+                      decorationThickness: 2.5,
+                      decorationColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      decorationStyle: TextDecorationStyle.wavy,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
