@@ -45,6 +45,7 @@ dependencies:
       url: https://github.com/mchome/flutter_colorpicker
       ref: master
   indent: ^2.0.0
+  dart_casing: ^3.0.1
 
 dev_dependencies:
   flutter_test:
