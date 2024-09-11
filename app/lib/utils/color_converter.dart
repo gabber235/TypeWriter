@@ -30,6 +30,7 @@ class NullableColorConverter extends JsonConverter<Color?, String?> {
   String? toJson(Color? object) {
     if (object == null) return null;
 
+    // ignore: deprecated_member_use
     final hex = object.value.toRadixString(16).padLeft(8, "0");
     return "#$hex";
   }

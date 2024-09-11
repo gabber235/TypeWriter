@@ -21,7 +21,7 @@ dependencies:
   # google_fonts: ^4.0.4
   rive: ^0.13.12
   fuzzy: ^0.5.1
-  auto_route: ^8.0.3
+  auto_route: ^9.2.2
   collapsible: ^1.0.0
   riverpod_annotation:
   ktx: ^1.1.6
