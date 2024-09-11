@@ -17,6 +17,7 @@ import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/entry_node.dart";
 import "package:typewriter/widgets/components/app/entry_search.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
+import "package:typewriter/widgets/components/general/context_menu_region.dart";
 import "package:typewriter/widgets/components/general/focused_notifier.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -283,6 +284,12 @@ class SoundSelectorEditor extends HookConsumerWidget {
       ..open();
   }
 
+  void _unselect(PassingRef ref) {
+    ref
+        .read(inspectingEntryDefinitionProvider)
+        ?.updateField(ref, path, customBlueprint.defaultValue());
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(fieldValueProvider(path));
@@ -293,10 +300,12 @@ class SoundSelectorEditor extends HookConsumerWidget {
       (soundId) => _DefaultSoundIdSelector(
         soundId: soundId,
         select: () => _select(ref.passing),
+        unselect: () => _unselect(ref.passing),
       ),
       entry: (soundId) => _EntrySoundIdSelector(
         soundId: soundId,
         select: () => _select(ref.passing),
+        unselect: () => _unselect(ref.passing),
       ),
     );
   }
@@ -306,10 +315,12 @@ class _DefaultSoundIdSelector extends HookConsumerWidget {
   const _DefaultSoundIdSelector({
     required this.soundId,
     required this.select,
+    required this.unselect,
   });
 
   final DefaultSoundId soundId;
   final VoidCallback select;
+  final VoidCallback unselect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -319,7 +330,11 @@ class _DefaultSoundIdSelector extends HookConsumerWidget {
       data: (data) {
         final value = data.value;
         if (value == null) return _EmptySelector(select: select);
-        return _MinecraftSelector(sound: value, select: select);
+        return _MinecraftSelector(
+          sound: value,
+          select: select,
+          unselect: unselect,
+        );
       },
       loading: (_) => const _LoadingSelector(),
       error: (error) {
@@ -329,7 +344,7 @@ class _DefaultSoundIdSelector extends HookConsumerWidget {
           maxFrames: 10,
           stackTrace: error.stackTrace,
         );
-        return _ErrorSelector(select: select);
+        return _ErrorSelector(select: select, unselect: unselect);
       },
     );
   }
@@ -339,15 +354,18 @@ class _EntrySoundIdSelector extends HookConsumerWidget {
   const _EntrySoundIdSelector({
     required this.soundId,
     required this.select,
+    required this.unselect,
   });
 
   final EntrySoundId soundId;
   final VoidCallback select;
+  final VoidCallback unselect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return _Selector(
       select: select,
+      unselect: unselect,
       child: Padding(
         padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
         child: Row(
@@ -370,9 +388,11 @@ class _Selector extends HookConsumerWidget {
   const _Selector({
     required this.select,
     required this.child,
+    required this.unselect,
   });
 
   final VoidCallback? select;
+  final VoidCallback? unselect;
   final Widget child;
 
   @override
@@ -380,12 +400,29 @@ class _Selector extends HookConsumerWidget {
     return Material(
       color: Theme.of(context).inputDecorationTheme.fillColor,
       borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: select,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: child,
+      child: ContextMenuRegion(
+        builder: (context) => [
+          if (select != null)
+            ContextMenuTile.button(
+              title: "Select Sound",
+              icon: TWIcons.checkSquare,
+              onTap: select,
+            ),
+          if (unselect != null)
+            ContextMenuTile.button(
+              title: "Removm Sound",
+              icon: TWIcons.squareMinus,
+              onTap: unselect,
+              color: Colors.redAccent,
+            ),
+        ],
+        child: InkWell(
+          onTap: select,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: child,
+          ),
         ),
       ),
     );
@@ -403,6 +440,7 @@ class _EmptySelector extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _Selector(
       select: select,
+      unselect: null,
       child: Row(
         children: [
           Expanded(
@@ -443,6 +481,7 @@ class _LoadingSelector extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _Selector(
       select: null,
+      unselect: null,
       child: Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 12, left: 16),
         child: Row(
@@ -469,14 +508,17 @@ class _LoadingSelector extends HookConsumerWidget {
 class _ErrorSelector extends HookConsumerWidget {
   const _ErrorSelector({
     required this.select,
+    required this.unselect,
   });
 
   final VoidCallback select;
+  final VoidCallback? unselect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return _Selector(
       select: select,
+      unselect: unselect,
       child: Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 12, left: 16),
         child: Row(
@@ -509,15 +551,18 @@ class _MinecraftSelector extends HookConsumerWidget {
   const _MinecraftSelector({
     required this.sound,
     required this.select,
+    required this.unselect,
   });
 
   final MinecraftSound sound;
   final VoidCallback select;
+  final VoidCallback unselect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return _Selector(
       select: select,
+      unselect: unselect,
       child: Row(
         children: [
           Expanded(child: _ChosenSound(sound: sound)),
