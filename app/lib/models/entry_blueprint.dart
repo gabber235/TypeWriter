@@ -260,7 +260,7 @@ final _customEditorCustomLayout = [
   "item",
   "skin",
   "color",
-  "floatRange",
+  "closedRange",
 ];
 
 /// Since freezed does not support methods on data models, we have to create a separate extension class.
@@ -270,7 +270,7 @@ extension DataBlueprintExtension on DataBlueprint {
         (_) => null,
         primitive: (data) {
           if (data.type.validate(data.internalDefaultValue)) {
-            return data.defaultValue;
+            return data.internalDefaultValue;
           }
           return _defaultPrimitiveValue(data.type);
         },
