@@ -4,6 +4,7 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.entries.priority
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.dialogue.currentDialogue
@@ -32,6 +33,7 @@ import java.util.*
 class InDialogueActivityEntry(
     override val id: String = "",
     override val name: String = "",
+    @Default("30000")
     @Help("When a player is considered to be idle in the same dialogue")
     /**
      * The duration a player can be idle in the same dialogue before the activity deactivates.
