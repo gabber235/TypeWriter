@@ -41,19 +41,24 @@ class SkinEditor extends HookConsumerWidget {
 
   String? _getSkinUrl(String textureData) {
     if (textureData.isEmpty) return null;
-    // Decode base64 string
-    final bytes = base64Decode(textureData);
-    // Convert to a string and read the json
-    final json = jsonDecode(utf8.decode(bytes));
+    try {
+      // Decode base64 string
+      final bytes = base64Decode(textureData);
+      // Convert to a string and read the json
+      final json = jsonDecode(utf8.decode(bytes));
 
-    // Read the textures.SKIN.url field
-    final url = json["textures"]["SKIN"]["url"];
-    if (url is! String) {
+      // Read the textures.SKIN.url field
+      final url = json["textures"]["SKIN"]["url"];
+      if (url is! String) {
+        return null;
+      }
+
+      final id =
+          url.replacePrefix("http://textures.minecraft.net/texture/", "");
+      return "https://nmsr.nickac.dev/fullbody/$id";
+    } on Exception catch (_) {
       return null;
     }
-
-    final id = url.replacePrefix("http://textures.minecraft.net/texture/", "");
-    return "https://nmsr.nickac.dev/fullbody/$id";
   }
 
   @override
