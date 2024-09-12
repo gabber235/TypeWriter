@@ -6,6 +6,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.basic.entries.dialogue.Option
 import com.typewritermc.basic.entries.dialogue.OptionDialogueEntry
+import com.typewritermc.basic.entries.dialogue.messengers.spoken.spokenMaxLineLength
 import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.dialogue.*
@@ -48,6 +49,10 @@ private val unselectedOption: String by snippet(
     "dialogue.option.unselected",
     " <prefix> <#5d6c78>[ <grey><option_text> <#5d6c78>]\n"
 )
+
+val optionMaxLineLength: Int by snippet("dialogue.option.maxLineLength", 40)
+
+private val delayOptionShow: Int by snippet("dialogue.option.delay", 100, "The delay in milliseconds between each option being shown.")
 
 @Messenger(OptionDialogueEntry::class)
 class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
@@ -117,7 +122,9 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         }
 
         val rawText = parsedText.stripped()
-        val totalDuration = typingDurationType.totalDuration(rawText, typeDuration)
+        val typingDuration = typingDurationType.totalDuration(rawText, typeDuration)
+        val optionsShowingDuration = Duration.ofMillis(usableOptions.size * delayOptionShow.toLong())
+        val totalDuration = typingDuration + optionsShowingDuration
         if (playTime.toTicks() % 100 > 0 && playTime > totalDuration * 1.1 && !isFirst) {
             // Only update periodically to avoid spamming the player
             return
@@ -133,24 +140,32 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
                 1.0
             } else typingDurationType.calculatePercentage(playTime, typeDuration, rawText)
 
-        val text = parsedText.asMini().splitPercentage(typePercentage)
+        val resultingLines = rawText.limitLineLength(optionMaxLineLength).lineCount
+        val text = parsedText.asPartialFormattedMini(typePercentage, minLines = resultingLines, padding = "", maxLineLength = optionMaxLineLength)
 
         val message = optionFormat.asMiniWithResolvers(
             Placeholder.parsed("speaker", speakerDisplayName),
             Placeholder.component("text", text),
-            Placeholder.component("options", formatOptions()),
+            Placeholder.component("options", formatOptions(rawText)),
         )
 
         val component = player.chatHistory.composeDarkMessage(message)
         player.sendMessage(component)
     }
 
-    private fun formatOptions(): Component {
+    private fun formatOptions(rawText: String): Component {
         val around = usableOptions.around(selectedIndex, 1, 2)
 
         val lines = mutableListOf<Component>()
 
-        for (i in 0 until min(4, around.size)) {
+        val totalDuration = typingDurationType.totalDuration(rawText, typeDuration)
+        val timeAfterTyping = lastPlayTime - totalDuration
+        val limitedOptions = (timeAfterTyping.toMillis() / delayOptionShow).toInt().coerceAtLeast(0)
+
+        val maxOptions = min(4, around.size)
+        val showingOptions = min(maxOptions, limitedOptions)
+
+        for (i in 0 until showingOptions) {
             val option = around[i]
             val isSelected = selected == option
 
@@ -164,6 +179,10 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
                 Placeholder.parsed("prefix", prefix),
                 Placeholder.parsed("option_text", option.text.parsePlaceholders(player))
             )
+        }
+
+        for (i in showingOptions until maxOptions) {
+            lines += Component.text(" \n")
         }
 
         return Component.join(JoinConfiguration.noSeparators(), lines)
