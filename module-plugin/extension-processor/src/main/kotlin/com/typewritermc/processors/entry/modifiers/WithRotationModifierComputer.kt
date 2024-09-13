@@ -12,9 +12,6 @@ object WithRotationModifierComputer : DataModifierComputer<WithRotation> {
     override val annotationClass: KClass<WithRotation> = WithRotation::class
 
     override fun compute(blueprint: DataBlueprint, annotation: WithRotation): Result<DataModifier> {
-        // If the field is wrapped in a list or other container, we try if the inner type can be modified
-        innerCompute(blueprint, annotation)?.let { return ok(it) }
-
         if (blueprint !is DataBlueprint.CustomBlueprint) {
             return failure("WithRotation annotation can only be used on positions or coordinates (including in lists or maps)!")
         }
