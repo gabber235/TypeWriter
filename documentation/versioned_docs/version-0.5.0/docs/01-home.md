@@ -9,5 +9,5 @@ can follow the [First Interaction](./03-creating-stories/01-interactions/index.m
 
 :::caution[In beta]
 Typewriter is currently in beta. This means that the plugin is still in development and may contain bugs. If you find
-any bugs, please report them in our [discord](https://discord.gg/p7WH9VvdMQ)
+any bugs, please report them in our [discord](https://discord.gg/HtbKyuDDBw)
 :::
