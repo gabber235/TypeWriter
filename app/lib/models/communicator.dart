@@ -112,7 +112,8 @@ class SocketNotifier extends StateNotifier<Socket?> {
       return;
     }
 
-    var url = "//$hostname";
+    final protocol = Uri.base.scheme == "https" ? "https:" : "http:";
+    var url = "$protocol//$hostname";
     if (port != null) url += ":$port";
     if (token != null) url += "?token=$token";
 
