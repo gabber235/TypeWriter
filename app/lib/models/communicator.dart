@@ -16,6 +16,7 @@ import "package:typewriter/models/staging.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/general/toasts.dart";
+import "package:web/web.dart";
 
 part "communicator.g.dart";
 part "communicator.freezed.dart";
@@ -112,7 +113,9 @@ class SocketNotifier extends StateNotifier<Socket?> {
       return;
     }
 
-    var url = "//$hostname";
+    // `io` uses wss or ws if `uri` begins with https or http respectively
+    final protocol = document.location?.protocol ?? "http:";
+    var url = "$protocol//$hostname";
     if (port != null) url += ":$port";
     if (token != null) url += "?token=$token";
 

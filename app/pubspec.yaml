@@ -46,6 +46,7 @@ dependencies:
       ref: master
   indent: ^2.0.0
   dart_casing: ^3.0.1
+  web: ^1.0.0
 
 dev_dependencies:
   flutter_test:
