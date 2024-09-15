@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { Icon } from "@iconify/react";
 import screenfull from "screenfull";
-import debounce from "lodash.debounce";
 
 interface PlayerProps {
   url: string;
@@ -19,11 +18,11 @@ export default function Player({ url }: PlayerProps) {
     setPlaying((prev) => !prev);
   };
 
-  const handleSeek = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newProgress = parseFloat(e.target.value);
     setProgress(newProgress);
     playerRef.current?.seekTo(newProgress / 100, "fraction");
-  }, 200);
+  };
 
   const handleFullscreenToggle = () => {
     if (screenfull.isEnabled) {
@@ -55,6 +54,7 @@ export default function Player({ url }: PlayerProps) {
         loop
         muted
         playsInline={true}
+        playsinline={true}
         controls={false}
         width="100%"
         height="100%"
@@ -125,7 +125,7 @@ function Bar({ progress, onSeek }: BarProps) {
         }}
       />
       <div
-        className="h-full bg-primary transition-width duration-200"
+        className="h-full bg-primary transition-width duration-200 pb-2"
         style={{ width: `${progress}%` }}
       />
     </div>
