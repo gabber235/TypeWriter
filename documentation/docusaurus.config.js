@@ -47,7 +47,7 @@ const config = {
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
-                    lastVersion: '0.5.0',
+                    lastVersion: '0.5.1',
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,
                     versions: {
@@ -76,7 +76,7 @@ const config = {
             announcementBar: {
                 id: 'support_us',
                 content:
-                  'TypeWriter 0.5.0 is out!',
+                  'TypeWriter 0.5.1 is out!',
                 isCloseable: true,
               },
             mermaid: {
