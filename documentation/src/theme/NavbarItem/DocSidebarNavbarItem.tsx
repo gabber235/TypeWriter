@@ -26,7 +26,7 @@ export default function DocSidebarNavbarItem({
 
   // Adjust label based on the active version
   const adjustedLabel =
-    label === 'Extensions' && activeVersion && activeVersion <= '0.5.0'
+    label === 'Extensions' && activeVersion && activeVersion <= '0.5.2'
       ? 'Adapters'
       : label;
 
