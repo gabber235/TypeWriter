@@ -35,7 +35,7 @@ import com.typewritermc.engine.paper.utils.registerAll
 import com.typewritermc.engine.paper.utils.unregisterAll
 import com.typewritermc.loader.DependencyChecker
 import com.typewritermc.loader.ExtensionLoader
-import com.typewritermc.loader.createDataSerializerGson
+import com.typewritermc.core.serialization.createDataSerializerGson
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import kotlinx.coroutines.delay
