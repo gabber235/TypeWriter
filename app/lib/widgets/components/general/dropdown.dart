@@ -55,6 +55,7 @@ class Dropdown<T> extends HookWidget {
               underline: Container(),
               alignment: alignment ?? AlignmentDirectional.centerStart,
               style: TextStyle(
+                fontFamily: Theme.of(context).textTheme.bodyLarge?.fontFamily,
                 color: Theme.of(context).textTheme.bodyLarge!.color,
               ),
               focusColor: Colors.transparent,

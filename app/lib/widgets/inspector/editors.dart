@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
+import "package:typewriter/widgets/inspector/editors/algebraic.dart";
 import "package:typewriter/widgets/inspector/editors/boolean.dart";
 import "package:typewriter/widgets/inspector/editors/closed_range.dart";
 import "package:typewriter/widgets/inspector/editors/color.dart";
@@ -41,6 +42,7 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       PageSelectorEditorFilter(),
 
       // Custom Editors
+      AlgebraicEditorFilter(),
       MaterialEditorFilter(),
       OptionalEditorFilter(),
       PositionEditorFilter(),
@@ -50,6 +52,7 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       ClosedRangeFilter(),
       PotionEffectEditorFilter(),
       ItemEditorFilter(),
+      SerializedItemEditorFilter(),
       SoundIdEditorFilter(),
       SoundSourceEditorFilter(),
       SkinEditorFilter(),

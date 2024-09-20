@@ -2,7 +2,7 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
-import "package:typewriter/widgets/components/general/error_box.dart";
+import "package:typewriter/widgets/components/general/admonition.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 
 class FieldEditor extends HookConsumerWidget {
@@ -22,19 +22,25 @@ class FieldEditor extends HookConsumerWidget {
         .firstWhereOrNull((filter) => filter.canEdit(dataBlueprint))
         ?.build(path, dataBlueprint);
 
-    return editor ?? _NoEditorFound(path: path);
+    return editor ?? _NoEditorFound(path: path, dataBlueprint: dataBlueprint);
   }
 }
 
 class _NoEditorFound extends StatelessWidget {
   const _NoEditorFound({
     required this.path,
+    required this.dataBlueprint,
   });
 
   final String path;
+  final DataBlueprint dataBlueprint;
 
   @override
   Widget build(BuildContext context) {
-    return ErrorBox(message: "Could not find a editor for $path");
+    return Admonition.danger(
+      child: Text(
+        "Could not find a editor for $path, with data blueprint ${dataBlueprint.runtimeType}",
+      ),
+    );
   }
 }

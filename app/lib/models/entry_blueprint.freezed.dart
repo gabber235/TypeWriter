@@ -364,6 +364,8 @@ DataBlueprint _$DataBlueprintFromJson(Map<String, dynamic> json) {
       return MapBlueprint.fromJson(json);
     case 'object':
       return ObjectBlueprint.fromJson(json);
+    case 'algebraic':
+      return AlgebraicBlueprint.fromJson(json);
     case 'custom':
       return CustomBlueprint.fromJson(json);
 
@@ -410,6 +412,11 @@ mixin _$DataBlueprint {
             List<Modifier> modifiers)
         object,
     required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -448,6 +455,11 @@ mixin _$DataBlueprint {
             @JsonKey(name: "default") dynamic internalDefaultValue,
             List<Modifier> modifiers)?
         object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
     TResult? Function(
             String editor,
             DataBlueprint shape,
@@ -488,6 +500,11 @@ mixin _$DataBlueprint {
             List<Modifier> modifiers)?
         object,
     TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -504,6 +521,7 @@ mixin _$DataBlueprint {
     required TResult Function(ListBlueprint value) list,
     required TResult Function(MapBlueprint value) map,
     required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
     required TResult Function(CustomBlueprint value) custom,
   }) =>
       throw _privateConstructorUsedError;
@@ -515,6 +533,7 @@ mixin _$DataBlueprint {
     TResult? Function(ListBlueprint value)? list,
     TResult? Function(MapBlueprint value)? map,
     TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
     TResult? Function(CustomBlueprint value)? custom,
   }) =>
       throw _privateConstructorUsedError;
@@ -526,6 +545,7 @@ mixin _$DataBlueprint {
     TResult Function(ListBlueprint value)? list,
     TResult Function(MapBlueprint value)? map,
     TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
     TResult Function(CustomBlueprint value)? custom,
     required TResult orElse(),
   }) =>
@@ -729,6 +749,11 @@ class _$DataBlueprintTypeImpl
             List<Modifier> modifiers)
         object,
     required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -770,6 +795,11 @@ class _$DataBlueprintTypeImpl
             @JsonKey(name: "default") dynamic internalDefaultValue,
             List<Modifier> modifiers)?
         object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
     TResult? Function(
             String editor,
             DataBlueprint shape,
@@ -813,6 +843,11 @@ class _$DataBlueprintTypeImpl
             List<Modifier> modifiers)?
         object,
     TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -835,6 +870,7 @@ class _$DataBlueprintTypeImpl
     required TResult Function(ListBlueprint value) list,
     required TResult Function(MapBlueprint value) map,
     required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
     required TResult Function(CustomBlueprint value) custom,
   }) {
     return $default(this);
@@ -849,6 +885,7 @@ class _$DataBlueprintTypeImpl
     TResult? Function(ListBlueprint value)? list,
     TResult? Function(MapBlueprint value)? map,
     TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
     TResult? Function(CustomBlueprint value)? custom,
   }) {
     return $default?.call(this);
@@ -863,6 +900,7 @@ class _$DataBlueprintTypeImpl
     TResult Function(ListBlueprint value)? list,
     TResult Function(MapBlueprint value)? map,
     TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
     TResult Function(CustomBlueprint value)? custom,
     required TResult orElse(),
   }) {
@@ -1060,6 +1098,11 @@ class _$PrimitiveBlueprintImpl
             List<Modifier> modifiers)
         object,
     required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -1101,6 +1144,11 @@ class _$PrimitiveBlueprintImpl
             @JsonKey(name: "default") dynamic internalDefaultValue,
             List<Modifier> modifiers)?
         object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
     TResult? Function(
             String editor,
             DataBlueprint shape,
@@ -1144,6 +1192,11 @@ class _$PrimitiveBlueprintImpl
             List<Modifier> modifiers)?
         object,
     TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -1166,6 +1219,7 @@ class _$PrimitiveBlueprintImpl
     required TResult Function(ListBlueprint value) list,
     required TResult Function(MapBlueprint value) map,
     required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
     required TResult Function(CustomBlueprint value) custom,
   }) {
     return primitive(this);
@@ -1180,6 +1234,7 @@ class _$PrimitiveBlueprintImpl
     TResult? Function(ListBlueprint value)? list,
     TResult? Function(MapBlueprint value)? map,
     TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
     TResult? Function(CustomBlueprint value)? custom,
   }) {
     return primitive?.call(this);
@@ -1194,6 +1249,7 @@ class _$PrimitiveBlueprintImpl
     TResult Function(ListBlueprint value)? list,
     TResult Function(MapBlueprint value)? map,
     TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
     TResult Function(CustomBlueprint value)? custom,
     required TResult orElse(),
   }) {
@@ -1399,6 +1455,11 @@ class _$EnumBlueprintImpl
             List<Modifier> modifiers)
         object,
     required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -1440,6 +1501,11 @@ class _$EnumBlueprintImpl
             @JsonKey(name: "default") dynamic internalDefaultValue,
             List<Modifier> modifiers)?
         object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
     TResult? Function(
             String editor,
             DataBlueprint shape,
@@ -1483,6 +1549,11 @@ class _$EnumBlueprintImpl
             List<Modifier> modifiers)?
         object,
     TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -1505,6 +1576,7 @@ class _$EnumBlueprintImpl
     required TResult Function(ListBlueprint value) list,
     required TResult Function(MapBlueprint value) map,
     required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
     required TResult Function(CustomBlueprint value) custom,
   }) {
     return enumBlueprint(this);
@@ -1519,6 +1591,7 @@ class _$EnumBlueprintImpl
     TResult? Function(ListBlueprint value)? list,
     TResult? Function(MapBlueprint value)? map,
     TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
     TResult? Function(CustomBlueprint value)? custom,
   }) {
     return enumBlueprint?.call(this);
@@ -1533,6 +1606,7 @@ class _$EnumBlueprintImpl
     TResult Function(ListBlueprint value)? list,
     TResult Function(MapBlueprint value)? map,
     TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
     TResult Function(CustomBlueprint value)? custom,
     required TResult orElse(),
   }) {
@@ -1743,6 +1817,11 @@ class _$ListBlueprintImpl
             List<Modifier> modifiers)
         object,
     required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -1784,6 +1863,11 @@ class _$ListBlueprintImpl
             @JsonKey(name: "default") dynamic internalDefaultValue,
             List<Modifier> modifiers)?
         object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
     TResult? Function(
             String editor,
             DataBlueprint shape,
@@ -1827,6 +1911,11 @@ class _$ListBlueprintImpl
             List<Modifier> modifiers)?
         object,
     TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -1849,6 +1938,7 @@ class _$ListBlueprintImpl
     required TResult Function(ListBlueprint value) list,
     required TResult Function(MapBlueprint value) map,
     required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
     required TResult Function(CustomBlueprint value) custom,
   }) {
     return list(this);
@@ -1863,6 +1953,7 @@ class _$ListBlueprintImpl
     TResult? Function(ListBlueprint value)? list,
     TResult? Function(MapBlueprint value)? map,
     TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
     TResult? Function(CustomBlueprint value)? custom,
   }) {
     return list?.call(this);
@@ -1877,6 +1968,7 @@ class _$ListBlueprintImpl
     TResult Function(ListBlueprint value)? list,
     TResult Function(MapBlueprint value)? map,
     TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
     TResult Function(CustomBlueprint value)? custom,
     required TResult orElse(),
   }) {
@@ -2108,6 +2200,11 @@ class _$MapBlueprintImpl with DiagnosticableTreeMixin implements MapBlueprint {
             List<Modifier> modifiers)
         object,
     required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -2149,6 +2246,11 @@ class _$MapBlueprintImpl with DiagnosticableTreeMixin implements MapBlueprint {
             @JsonKey(name: "default") dynamic internalDefaultValue,
             List<Modifier> modifiers)?
         object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
     TResult? Function(
             String editor,
             DataBlueprint shape,
@@ -2192,6 +2294,11 @@ class _$MapBlueprintImpl with DiagnosticableTreeMixin implements MapBlueprint {
             List<Modifier> modifiers)?
         object,
     TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -2214,6 +2321,7 @@ class _$MapBlueprintImpl with DiagnosticableTreeMixin implements MapBlueprint {
     required TResult Function(ListBlueprint value) list,
     required TResult Function(MapBlueprint value) map,
     required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
     required TResult Function(CustomBlueprint value) custom,
   }) {
     return map(this);
@@ -2228,6 +2336,7 @@ class _$MapBlueprintImpl with DiagnosticableTreeMixin implements MapBlueprint {
     TResult? Function(ListBlueprint value)? list,
     TResult? Function(MapBlueprint value)? map,
     TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
     TResult? Function(CustomBlueprint value)? custom,
   }) {
     return map?.call(this);
@@ -2242,6 +2351,7 @@ class _$MapBlueprintImpl with DiagnosticableTreeMixin implements MapBlueprint {
     TResult Function(ListBlueprint value)? list,
     TResult Function(MapBlueprint value)? map,
     TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
     TResult Function(CustomBlueprint value)? custom,
     required TResult orElse(),
   }) {
@@ -2450,6 +2560,11 @@ class _$ObjectBlueprintImpl
             List<Modifier> modifiers)
         object,
     required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -2491,6 +2606,11 @@ class _$ObjectBlueprintImpl
             @JsonKey(name: "default") dynamic internalDefaultValue,
             List<Modifier> modifiers)?
         object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
     TResult? Function(
             String editor,
             DataBlueprint shape,
@@ -2534,6 +2654,11 @@ class _$ObjectBlueprintImpl
             List<Modifier> modifiers)?
         object,
     TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -2556,6 +2681,7 @@ class _$ObjectBlueprintImpl
     required TResult Function(ListBlueprint value) list,
     required TResult Function(MapBlueprint value) map,
     required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
     required TResult Function(CustomBlueprint value) custom,
   }) {
     return object(this);
@@ -2570,6 +2696,7 @@ class _$ObjectBlueprintImpl
     TResult? Function(ListBlueprint value)? list,
     TResult? Function(MapBlueprint value)? map,
     TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
     TResult? Function(CustomBlueprint value)? custom,
   }) {
     return object?.call(this);
@@ -2584,6 +2711,7 @@ class _$ObjectBlueprintImpl
     TResult Function(ListBlueprint value)? list,
     TResult Function(MapBlueprint value)? map,
     TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
     TResult Function(CustomBlueprint value)? custom,
     required TResult orElse(),
   }) {
@@ -2622,6 +2750,364 @@ abstract class ObjectBlueprint implements DataBlueprint {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ObjectBlueprintImplCopyWith<_$ObjectBlueprintImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$AlgebraicBlueprintImplCopyWith<$Res>
+    implements $DataBlueprintCopyWith<$Res> {
+  factory _$$AlgebraicBlueprintImplCopyWith(_$AlgebraicBlueprintImpl value,
+          $Res Function(_$AlgebraicBlueprintImpl) then) =
+      __$$AlgebraicBlueprintImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {Map<String, DataBlueprint> cases,
+      @JsonKey(name: "default") dynamic internalDefaultValue,
+      List<Modifier> modifiers});
+}
+
+/// @nodoc
+class __$$AlgebraicBlueprintImplCopyWithImpl<$Res>
+    extends _$DataBlueprintCopyWithImpl<$Res, _$AlgebraicBlueprintImpl>
+    implements _$$AlgebraicBlueprintImplCopyWith<$Res> {
+  __$$AlgebraicBlueprintImplCopyWithImpl(_$AlgebraicBlueprintImpl _value,
+      $Res Function(_$AlgebraicBlueprintImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DataBlueprint
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? cases = null,
+    Object? internalDefaultValue = freezed,
+    Object? modifiers = null,
+  }) {
+    return _then(_$AlgebraicBlueprintImpl(
+      cases: null == cases
+          ? _value._cases
+          : cases // ignore: cast_nullable_to_non_nullable
+              as Map<String, DataBlueprint>,
+      internalDefaultValue: freezed == internalDefaultValue
+          ? _value.internalDefaultValue
+          : internalDefaultValue // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<Modifier>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AlgebraicBlueprintImpl
+    with DiagnosticableTreeMixin
+    implements AlgebraicBlueprint {
+  const _$AlgebraicBlueprintImpl(
+      {required final Map<String, DataBlueprint> cases,
+      @JsonKey(name: "default") this.internalDefaultValue,
+      final List<Modifier> modifiers = const [],
+      final String? $type})
+      : _cases = cases,
+        _modifiers = modifiers,
+        $type = $type ?? 'algebraic';
+
+  factory _$AlgebraicBlueprintImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AlgebraicBlueprintImplFromJson(json);
+
+  final Map<String, DataBlueprint> _cases;
+  @override
+  Map<String, DataBlueprint> get cases {
+    if (_cases is EqualUnmodifiableMapView) return _cases;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_cases);
+  }
+
+  @override
+  @JsonKey(name: "default")
+  final dynamic internalDefaultValue;
+  final List<Modifier> _modifiers;
+  @override
+  @JsonKey()
+  List<Modifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
+
+  @JsonKey(name: 'kind')
+  final String $type;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'DataBlueprint.algebraic(cases: $cases, internalDefaultValue: $internalDefaultValue, modifiers: $modifiers)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'DataBlueprint.algebraic'))
+      ..add(DiagnosticsProperty('cases', cases))
+      ..add(DiagnosticsProperty('internalDefaultValue', internalDefaultValue))
+      ..add(DiagnosticsProperty('modifiers', modifiers));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AlgebraicBlueprintImpl &&
+            const DeepCollectionEquality().equals(other._cases, _cases) &&
+            const DeepCollectionEquality()
+                .equals(other.internalDefaultValue, internalDefaultValue) &&
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_cases),
+      const DeepCollectionEquality().hash(internalDefaultValue),
+      const DeepCollectionEquality().hash(_modifiers));
+
+  /// Create a copy of DataBlueprint
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AlgebraicBlueprintImplCopyWith<_$AlgebraicBlueprintImpl> get copyWith =>
+      __$$AlgebraicBlueprintImplCopyWithImpl<_$AlgebraicBlueprintImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(@JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        $default, {
+    required TResult Function(
+            PrimitiveType type,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        primitive,
+    required TResult Function(
+            List<String> values,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        enumBlueprint,
+    required TResult Function(
+            DataBlueprint type,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        list,
+    required TResult Function(
+            DataBlueprint key,
+            DataBlueprint value,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        map,
+    required TResult Function(
+            Map<String, DataBlueprint> fields,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        object,
+    required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
+            String editor,
+            DataBlueprint shape,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        custom,
+  }) {
+    return algebraic(cases, internalDefaultValue, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(@JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        $default, {
+    TResult? Function(
+            PrimitiveType type,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        primitive,
+    TResult? Function(
+            List<String> values,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        enumBlueprint,
+    TResult? Function(
+            DataBlueprint type,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        list,
+    TResult? Function(
+            DataBlueprint key,
+            DataBlueprint value,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        map,
+    TResult? Function(
+            Map<String, DataBlueprint> fields,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult? Function(
+            String editor,
+            DataBlueprint shape,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        custom,
+  }) {
+    return algebraic?.call(cases, internalDefaultValue, modifiers);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(@JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        $default, {
+    TResult Function(
+            PrimitiveType type,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        primitive,
+    TResult Function(
+            List<String> values,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        enumBlueprint,
+    TResult Function(
+            DataBlueprint type,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        list,
+    TResult Function(
+            DataBlueprint key,
+            DataBlueprint value,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        map,
+    TResult Function(
+            Map<String, DataBlueprint> fields,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        object,
+    TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
+            String editor,
+            DataBlueprint shape,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        custom,
+    required TResult orElse(),
+  }) {
+    if (algebraic != null) {
+      return algebraic(cases, internalDefaultValue, modifiers);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_DataBlueprintType value) $default, {
+    required TResult Function(PrimitiveBlueprint value) primitive,
+    required TResult Function(EnumBlueprint value) enumBlueprint,
+    required TResult Function(ListBlueprint value) list,
+    required TResult Function(MapBlueprint value) map,
+    required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
+    required TResult Function(CustomBlueprint value) custom,
+  }) {
+    return algebraic(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_DataBlueprintType value)? $default, {
+    TResult? Function(PrimitiveBlueprint value)? primitive,
+    TResult? Function(EnumBlueprint value)? enumBlueprint,
+    TResult? Function(ListBlueprint value)? list,
+    TResult? Function(MapBlueprint value)? map,
+    TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
+    TResult? Function(CustomBlueprint value)? custom,
+  }) {
+    return algebraic?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_DataBlueprintType value)? $default, {
+    TResult Function(PrimitiveBlueprint value)? primitive,
+    TResult Function(EnumBlueprint value)? enumBlueprint,
+    TResult Function(ListBlueprint value)? list,
+    TResult Function(MapBlueprint value)? map,
+    TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
+    TResult Function(CustomBlueprint value)? custom,
+    required TResult orElse(),
+  }) {
+    if (algebraic != null) {
+      return algebraic(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AlgebraicBlueprintImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class AlgebraicBlueprint implements DataBlueprint {
+  const factory AlgebraicBlueprint(
+      {required final Map<String, DataBlueprint> cases,
+      @JsonKey(name: "default") final dynamic internalDefaultValue,
+      final List<Modifier> modifiers}) = _$AlgebraicBlueprintImpl;
+
+  factory AlgebraicBlueprint.fromJson(Map<String, dynamic> json) =
+      _$AlgebraicBlueprintImpl.fromJson;
+
+  Map<String, DataBlueprint> get cases;
+  @override
+  @JsonKey(name: "default")
+  dynamic get internalDefaultValue;
+  @override
+  List<Modifier> get modifiers;
+
+  /// Create a copy of DataBlueprint
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AlgebraicBlueprintImplCopyWith<_$AlgebraicBlueprintImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -2807,6 +3293,11 @@ class _$CustomBlueprintImpl
             List<Modifier> modifiers)
         object,
     required TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)
+        algebraic,
+    required TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -2848,6 +3339,11 @@ class _$CustomBlueprintImpl
             @JsonKey(name: "default") dynamic internalDefaultValue,
             List<Modifier> modifiers)?
         object,
+    TResult? Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
     TResult? Function(
             String editor,
             DataBlueprint shape,
@@ -2891,6 +3387,11 @@ class _$CustomBlueprintImpl
             List<Modifier> modifiers)?
         object,
     TResult Function(
+            Map<String, DataBlueprint> cases,
+            @JsonKey(name: "default") dynamic internalDefaultValue,
+            List<Modifier> modifiers)?
+        algebraic,
+    TResult Function(
             String editor,
             DataBlueprint shape,
             @JsonKey(name: "default") dynamic internalDefaultValue,
@@ -2913,6 +3414,7 @@ class _$CustomBlueprintImpl
     required TResult Function(ListBlueprint value) list,
     required TResult Function(MapBlueprint value) map,
     required TResult Function(ObjectBlueprint value) object,
+    required TResult Function(AlgebraicBlueprint value) algebraic,
     required TResult Function(CustomBlueprint value) custom,
   }) {
     return custom(this);
@@ -2927,6 +3429,7 @@ class _$CustomBlueprintImpl
     TResult? Function(ListBlueprint value)? list,
     TResult? Function(MapBlueprint value)? map,
     TResult? Function(ObjectBlueprint value)? object,
+    TResult? Function(AlgebraicBlueprint value)? algebraic,
     TResult? Function(CustomBlueprint value)? custom,
   }) {
     return custom?.call(this);
@@ -2941,6 +3444,7 @@ class _$CustomBlueprintImpl
     TResult Function(ListBlueprint value)? list,
     TResult Function(MapBlueprint value)? map,
     TResult Function(ObjectBlueprint value)? object,
+    TResult Function(AlgebraicBlueprint value)? algebraic,
     TResult Function(CustomBlueprint value)? custom,
     required TResult orElse(),
   }) {

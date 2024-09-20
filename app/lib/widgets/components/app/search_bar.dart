@@ -241,6 +241,7 @@ class SearchBar extends HookConsumerWidget {
 
   void _changeFocusDown(BuildContext context, PassingRef ref) {
     final focusNodes = ref.read(searchFocusNodesProvider);
+    if (focusNodes.isEmpty) return;
     var index = focusNodes.indexWhere((n) => n.hasFocus);
 
     index = (index + 1) % focusNodes.length;
@@ -250,6 +251,7 @@ class SearchBar extends HookConsumerWidget {
 
   void _changeFocusUp(BuildContext context, PassingRef ref) {
     final focusNodes = ref.read(searchFocusNodesProvider);
+    if (focusNodes.isEmpty) return;
     var index = focusNodes.indexWhere((n) => n.hasFocus);
     if (index == -1) index = 0;
 

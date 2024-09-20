@@ -6,7 +6,7 @@ import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.entry.entity.SinglePropertyCollectorSupplier
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.engine.paper.extensions.packetevents.metas
-import com.typewritermc.engine.paper.utils.Item
+import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.entity.entries.data.minecraft.display.DisplayEntityData
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta

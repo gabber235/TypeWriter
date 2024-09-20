@@ -9,6 +9,7 @@ import "package:typewriter/models/materials.dart";
 import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
+import "package:typewriter/widgets/components/app/input_field.dart";
 import "package:typewriter/widgets/components/app/search_bar.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
@@ -230,9 +231,7 @@ class MaterialEditor extends HookConsumerWidget {
     final currentMaterial = materials[currentValue];
     final hasMaterial = currentMaterial != null;
 
-    return Material(
-      color: Theme.of(context).inputDecorationTheme.fillColor,
-      borderRadius: BorderRadius.circular(8),
+    return InputField(
       child: InkWell(
         onTap: () => _select(ref, properties),
         borderRadius: BorderRadius.circular(8),
@@ -242,7 +241,7 @@ class MaterialEditor extends HookConsumerWidget {
             children: [
               if (hasMaterial)
                 Expanded(
-                  child: _MaterialItem(
+                  child: MaterialItem(
                     id: currentValue,
                     material: currentMaterial,
                   ),
@@ -268,8 +267,8 @@ class MaterialEditor extends HookConsumerWidget {
   }
 }
 
-class _MaterialItem extends StatelessWidget {
-  const _MaterialItem({required this.id, required this.material});
+class MaterialItem extends StatelessWidget {
+  const MaterialItem({required this.id, required this.material, super.key});
 
   final String id;
   final MinecraftMaterial material;
