@@ -167,6 +167,30 @@ Map<String, dynamic> _$$ObjectBlueprintImplToJson(
       'kind': instance.$type,
     };
 
+_$AlgebraicBlueprintImpl _$$AlgebraicBlueprintImplFromJson(
+        Map<String, dynamic> json) =>
+    _$AlgebraicBlueprintImpl(
+      cases: (json['cases'] as Map<String, dynamic>).map(
+        (k, e) =>
+            MapEntry(k, DataBlueprint.fromJson(e as Map<String, dynamic>)),
+      ),
+      internalDefaultValue: json['default'],
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      $type: json['kind'] as String?,
+    );
+
+Map<String, dynamic> _$$AlgebraicBlueprintImplToJson(
+        _$AlgebraicBlueprintImpl instance) =>
+    <String, dynamic>{
+      'cases': instance.cases,
+      'default': instance.internalDefaultValue,
+      'modifiers': instance.modifiers,
+      'kind': instance.$type,
+    };
+
 _$CustomBlueprintImpl _$$CustomBlueprintImplFromJson(
         Map<String, dynamic> json) =>
     _$CustomBlueprintImpl(

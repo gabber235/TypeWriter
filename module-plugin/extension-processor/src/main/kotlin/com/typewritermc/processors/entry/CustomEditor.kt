@@ -53,6 +53,7 @@ val customEditors = listOf(
     PositionEditor,
     PotionEffectTypeEditor,
     RefEditor,
+    SerializedItemEditor,
     SkinEditor,
     SoundIdEditor,
     SoundSourceEditor,

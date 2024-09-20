@@ -16,10 +16,12 @@ import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.logger
 import org.bukkit.entity.Player
+import java.lang.reflect.Type
 import kotlin.time.Duration.Companion.milliseconds
 
 abstract class ImmediateFieldValueContentMode<T : Any>(context: ContentContext, player: Player) :
     ContentMode(context, player) {
+        abstract val type: Type
 
     override suspend fun setup(): Result<Unit> {
         val entryId = context.entryId
@@ -33,7 +35,7 @@ abstract class ImmediateFieldValueContentMode<T : Any>(context: ContentContext, 
             delay(200.milliseconds)
             try {
                 val value = value()
-                Ref(entryId, Entry::class).fieldValue(fieldPath, value)
+                Ref(entryId, Entry::class).fieldValue(fieldPath, value, type)
             } catch (e: Exception) {
                 logger.severe("Failed to set field value for ${this::class.simpleName}, with context: $context. This is a bug. Please report it.")
                 e.printStackTrace()

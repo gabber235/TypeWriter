@@ -7,8 +7,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
-import com.typewritermc.engine.paper.utils.Item
-import me.tofaa.entitylib.wrapper.WrapperEntity
+import com.typewritermc.engine.paper.utils.item.Item
 import me.tofaa.entitylib.wrapper.WrapperLivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EntityEquipment

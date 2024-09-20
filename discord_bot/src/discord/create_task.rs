@@ -4,7 +4,7 @@ use crate::{
     Context, WinstonError,
 };
 use poise::{
-    serenity_prelude::{CreateEmbed, CreateMessage, EditThread},
+    serenity_prelude::{CreateEmbed, CreateMessage},
     CreateReply,
 };
 

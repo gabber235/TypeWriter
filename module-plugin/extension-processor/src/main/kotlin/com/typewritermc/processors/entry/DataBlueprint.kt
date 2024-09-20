@@ -6,6 +6,7 @@ import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
 import com.typewritermc.core.extension.annotations.Default
+import com.typewritermc.core.extension.annotations.AlgebraicTypeInfo
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
 import com.typewritermc.processors.format
@@ -34,6 +35,7 @@ sealed class DataBlueprint {
             MapBlueprint.blueprint(type)?.let { return it }
 
             ObjectBlueprint.blueprint(type)?.let { return it }
+            AlgebraicBlueprint.blueprint(type)?.let { return it }
             return null
         }
     }
@@ -259,6 +261,48 @@ sealed class DataBlueprint {
         override fun default(): JsonElement {
             if (default != JsonNull) return default
             return JsonObject(emptyMap())
+        }
+    }
+
+    @Serializable
+    @SerialName("algebraic")
+    data class AlgebraicBlueprint(val cases: Map<String, DataBlueprint>) : DataBlueprint() {
+        companion object {
+            context(KSPLogger)
+            @OptIn(KspExperimental::class)
+            fun blueprint(type: KSType): DataBlueprint? {
+                val clazz = type.declaration as? KSClassDeclaration ?: return null
+                if (clazz.classKind != ClassKind.INTERFACE) return null
+                val possibilities = clazz.getSealedSubclasses()
+                    .associate {
+                        val annotation = it.getAnnotationsByType(AlgebraicTypeInfo::class).firstOrNull() ?: throw IllegalArgumentException("Could not find `@AlgebraicTypeInfo` annotation for ${it.simpleName}")
+                        val name = annotation.name
+                        val color = annotation.color
+                        val icon = annotation.icon
+                        val blueprint = DataBlueprint.blueprint(it.asStarProjectedType()) ?: throw IllegalArgumentException("Could not find blueprint for $name")
+
+                        blueprint.modifiers.add(DataModifier.Modifier("color", color))
+                        blueprint.modifiers.add(DataModifier.Modifier("icon", icon))
+
+                        name to blueprint
+                    }
+
+                return AlgebraicBlueprint(possibilities)
+            }
+        }
+
+        override fun validateDefault(default: JsonElement): Result<Unit> {
+            val json = default as? JsonObject ?: return failure("Default value for ${this::class.simpleName} should be an object!")
+            val case = json["case"] as? JsonPrimitive ?: return failure("Default value for ${this::class.simpleName} should have a case field!")
+            val blueprint = cases[case.content] ?: return failure("Default value for ${this::class.simpleName} has an invalid case '$case', possible values are ${cases.keys}")
+            return blueprint.validateDefault(json["value"] ?: JsonNull)
+        }
+
+        override fun default(): JsonElement {
+            if (default != JsonNull) return default
+            val case = cases.keys.first()
+            val blueprint = cases[case] ?: throw IllegalStateException("Could not find blueprint for case '$case'")
+            return JsonObject(mapOf("case" to JsonPrimitive(case), "value" to blueprint.default()))
         }
     }
 

@@ -20,25 +20,13 @@ import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent
 import java.io.File
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.Map
-import kotlin.collections.any
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.emptyList
-import kotlin.collections.filter
-import kotlin.collections.find
-import kotlin.collections.forEach
-import kotlin.collections.forEachIndexed
-import kotlin.collections.indexOfFirst
-import kotlin.collections.isNotEmpty
-import kotlin.collections.joinToString
-import kotlin.collections.mutableMapOf
-import kotlin.collections.removeAll
 import kotlin.collections.set
-import kotlin.collections.toList
 import kotlin.time.Duration.Companion.seconds
 
 interface StagingManager {
@@ -362,7 +350,8 @@ enum class StagingState {
     PUBLISHED
 }
 
-fun Ref<out Entry>.fieldValue(path: String, value: Any) {
+inline fun <reified T : Any> Ref<out Entry>.fieldValue(path: String, value: T) = fieldValue(path, value, T::class.java)
+fun Ref<out Entry>.fieldValue(path: String, value: Any, type: Type) {
     val stagingManager = KoinJavaComponent.get<StagingManager>(StagingManager::class.java)
     val gson = KoinJavaComponent.get<Gson>(Gson::class.java, named("dataSerializer"))
 
@@ -372,7 +361,7 @@ fun Ref<out Entry>.fieldValue(path: String, value: Any) {
         return
     }
 
-    val json = gson.toJsonTree(value)
+    val json = gson.toJsonTree(value, type)
     val result = stagingManager.updateEntryField(pageId, id, path, json)
     if (result.isFailure) {
         logger.warning("Failed to update field: ${result.exceptionOrNull()}")

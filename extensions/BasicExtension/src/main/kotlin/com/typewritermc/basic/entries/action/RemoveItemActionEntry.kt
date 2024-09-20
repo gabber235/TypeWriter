@@ -1,16 +1,15 @@
 package com.typewritermc.basic.entries.action
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
-import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
-import com.typewritermc.engine.paper.utils.Item
 import com.typewritermc.engine.paper.utils.ThreadType
+import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
-import java.util.*
 
 @Entry("remove_item", "Remove an item from the players inventory", Colors.RED, "icomoon-free:user-minus")
 /**
@@ -38,31 +37,8 @@ class RemoveItemActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        // Because item.build() can return a identical looking item but with different data,
-        // we need to compare the items
-
-        val itemWithoutAmount = item.copy(amount = Optional.empty())
-
-        val items = player.inventory.contents.withIndex().filter {
-            itemWithoutAmount.isSameAs(player, it.value)
-        }.iterator()
-
-        var toRemove = item.amount.orElse(1)
-
         ThreadType.SYNC.launch {
-            while (toRemove > 0 && items.hasNext()) {
-                val (index, item) = items.next()
-                if (item == null) continue
-                val amount = item.amount
-                if (amount > toRemove) {
-                    item.amount = amount - toRemove
-                    player.inventory.setItem(index, item)
-                    break
-                } else {
-                    toRemove -= amount
-                    player.inventory.setItem(index, null)
-                }
-            }
+            player.inventory.removeItemAnySlot(item.build(player).clone())
         }
     }
 }
