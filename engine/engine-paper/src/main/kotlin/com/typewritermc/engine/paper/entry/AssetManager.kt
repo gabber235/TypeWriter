@@ -31,7 +31,7 @@ class AssetManager : KoinComponent {
     suspend fun fetchAsset(entry: AssetEntry): String? {
         val result = storage.fetchAsset(entry.path)
         if (result.isFailure) {
-            plugin.logger.severe("Failed to fetch asset ${entry.path}")
+            plugin.logger.severe("Failed to fetch asset ${entry.path}: ${result.exceptionOrNull()?.message}")
             return null
         }
         return result.getOrNull()

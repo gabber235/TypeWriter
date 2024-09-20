@@ -4,16 +4,16 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.gson.Gson
 import com.typewritermc.core.entries.Query
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entries.RoadNetwork
 import com.typewritermc.engine.paper.entry.entries.RoadNetworkEntry
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -51,7 +51,7 @@ class RoadNetworkManager : KoinComponent {
             val network = try {
                 Query.findById<RoadNetworkEntry>(id)?.loadRoadNetwork(gson)
             } catch (e: Exception) {
-                logger.severe("Failed to load road network with id $id")
+                logger.severe("Failed to load road network with id $id: ${e.message}")
                 null
             } ?: RoadNetwork()
 
@@ -77,7 +77,12 @@ class RoadNetworkManager : KoinComponent {
             return
         }
         entry.saveRoadNetwork(gson, network)
-        networks.put(ref.id, CompletableDeferred(network))
+        val old = networks.getIfPresent(ref.id)
+        if (old != null) {
+            old.complete(network)
+        } else {
+            networks.put(ref.id, CompletableDeferred(network))
+        }
     }
 
     private fun createEditor(ref: Ref<out RoadNetworkEntry>): RoadNetworkEditor {
@@ -88,8 +93,8 @@ class RoadNetworkManager : KoinComponent {
 
     suspend fun shutdown() {
         job?.cancel()
-        networks.invalidateAll()
         editors.asMap().values.forEach { it.dispose() }
         editors.invalidateAll()
+        networks.invalidateAll()
     }
 }
