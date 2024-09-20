@@ -342,7 +342,7 @@ class _TreeCategory extends HookConsumerWidget {
                         width: 6,
                         margin: EdgeInsets.only(left: showFull ? 14 : 10),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha:0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),

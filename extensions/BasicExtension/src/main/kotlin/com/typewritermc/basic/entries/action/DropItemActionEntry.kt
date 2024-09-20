@@ -9,7 +9,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
-import com.typewritermc.engine.paper.utils.Item
+import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.utils.toBukkitLocation
 import org.bukkit.entity.Player

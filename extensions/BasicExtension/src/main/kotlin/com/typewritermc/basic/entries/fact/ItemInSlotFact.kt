@@ -7,7 +7,7 @@ import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.engine.paper.entry.entries.GroupEntry
 import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
 import com.typewritermc.engine.paper.facts.FactData
-import com.typewritermc.engine.paper.utils.Item
+import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
 
 @Entry(

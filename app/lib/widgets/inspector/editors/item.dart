@@ -1,16 +1,17 @@
+import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
-import "package:flutter_animate/flutter_animate.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
-import "package:typewriter/utils/extensions.dart";
-import "package:typewriter/utils/passing_reference.dart";
-import "package:typewriter/widgets/components/general/error_box.dart";
+import "package:typewriter/models/materials.dart";
+import "package:typewriter/utils/icons.dart";
+import "package:typewriter/widgets/components/app/input_field.dart";
+import "package:typewriter/widgets/components/general/admonition.dart";
 import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/editors/material.dart";
 import "package:typewriter/widgets/inspector/header.dart";
-import "package:typewriter/widgets/inspector/inspector.dart";
+import "package:typewriter/widgets/inspector/section_title.dart";
 
 class ItemEditorFilter extends EditorFilter {
   @override
@@ -34,212 +35,102 @@ class ItemEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final value = ref.watch(fieldValueProvider(path));
-    final objectBlueprint = customBlueprint.shape is ObjectBlueprint
-        ? customBlueprint.shape as ObjectBlueprint?
+    final algebraicBlueprint = customBlueprint.shape is AlgebraicBlueprint
+        ? customBlueprint.shape as AlgebraicBlueprint?
         : null;
-    if (objectBlueprint == null) {
-      return ErrorBox(
-        message: "Could not find subfields for item field: $path",
+    if (algebraicBlueprint == null) {
+      return Admonition.danger(
+        child:
+            Text("Shape for item field is not an algebraic blueprint: $path"),
       );
     }
     return FieldHeader(
       path: path,
       dataBlueprint: customBlueprint,
       canExpand: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          _FieldSelector(path: path, objectBlueprint: objectBlueprint),
-          _ItemEditors(path: path, objectBlueprint: objectBlueprint),
-          // Text("Item: $value"),
-          // Text("Info: ${info.DataBlueprint}"),
-        ],
-      ),
+      child: FieldEditor(path: path, dataBlueprint: algebraicBlueprint),
     );
   }
 }
 
-class _FieldSelector extends HookConsumerWidget {
-  const _FieldSelector({
-    required this.path,
-    required this.objectBlueprint,
-  });
-
-  final String path;
-  final ObjectBlueprint objectBlueprint;
+class SerializedItemEditorFilter extends EditorFilter {
+  @override
+  bool canEdit(DataBlueprint dataBlueprint) =>
+      dataBlueprint is CustomBlueprint &&
+      dataBlueprint.editor == "serialized_item";
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hovering = useState(false);
-    final selected = objectBlueprint.fields.keys
-        .where(
-          (id) =>
-              ref.watch(fieldValueProvider("$path.$id.enabled", false)) == true,
-        )
-        .toList();
-
-    final showAll = hovering.value || selected.isEmpty;
-
-    return MouseRegion(
-      onEnter: (_) => hovering.value = true,
-      onExit: (_) => hovering.value = false,
-      child: SizedBox(
-        width: double.infinity,
-        child: AnimatedSize(
-          duration: 1200.ms,
-          curve: Curves.elasticOut,
-          alignment: Alignment.topCenter,
-          clipBehavior: Clip.none,
-          child: Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final MapEntry(key: id, value: dataBlueprint)
-                  in objectBlueprint.fields.entries)
-                if (showAll || selected.contains(id)) _chip(id, dataBlueprint),
-            ].animate(interval: 40.ms).fadeIn(duration: 250.ms).scaleXY(
-                  begin: 0.6,
-                  end: 1.0,
-                  duration: 800.ms,
-                  curve: Curves.elasticOut,
-                ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _chip(String id, DataBlueprint dataBlueprint) {
-    if (dataBlueprint is! CustomBlueprint) return const SizedBox();
-    final shapeBlueprint = dataBlueprint.shape;
-    if (shapeBlueprint is! ObjectBlueprint) return const SizedBox();
-    if (!shapeBlueprint.fields.containsKey("value")) return const SizedBox();
-    final valueBlueprint = shapeBlueprint.fields["value"];
-    if (valueBlueprint == null) return const SizedBox();
-    return _ItemChip(
-      key: ValueKey(id),
-      path: "$path.$id",
-      id: id,
-      dataBlueprint: valueBlueprint,
-    );
-  }
+  Widget build(String path, DataBlueprint dataBlueprint) =>
+      SerializedItemEditor(
+        path: path,
+        customBlueprint: dataBlueprint as CustomBlueprint,
+      );
 }
 
-class _ItemChip extends HookConsumerWidget {
-  const _ItemChip({
+class SerializedItemEditor extends HookConsumerWidget {
+  const SerializedItemEditor({
     required this.path,
-    required this.id,
-    required this.dataBlueprint,
+    required this.customBlueprint,
     super.key,
   });
 
   final String path;
-  final String id;
-  final DataBlueprint dataBlueprint;
+  final CustomBlueprint customBlueprint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final enabled = ref.watch(fieldValueProvider("$path.enabled", false));
+    final value =
+        ref.watch(fieldValueProvider(path)) ?? customBlueprint.defaultValue();
 
-    final foregroundColor = enabled
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.onSurface.withValues(alpha:0.7);
-
-    return InputChip(
-      label: Text(id.titleCase(), style: TextStyle(color: foregroundColor)),
-      avatar: Iconify(
-        dataBlueprint.get("icon"),
-        size: 14,
-        color: foregroundColor,
-      ),
-      backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha:0.1),
-      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha:0.1),
-      side: BorderSide.none,
-      showCheckmark: false,
-      selected: enabled,
-      onSelected: (value) {
-        ref
-            .read(inspectingEntryDefinitionProvider)
-            ?.updateField(ref.passing, "$path.enabled", value);
-      },
-    );
-  }
-}
-
-class _ItemEditors extends HookConsumerWidget {
-  const _ItemEditors({
-    required this.path,
-    required this.objectBlueprint,
-  });
-
-  final String path;
-  final ObjectBlueprint objectBlueprint;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return AnimatedSize(
-      duration: 200.ms,
-      curve: Curves.easeOutCubic,
-      alignment: Alignment.topCenter,
-      clipBehavior: Clip.none,
-      child: Column(
-        children: [
-          for (final MapEntry(key: id, value: dataBlueprint)
-              in objectBlueprint.fields.entries)
-            _editor(id, dataBlueprint),
-        ],
-      ),
-    );
-  }
-
-  Widget _editor(String id, DataBlueprint dataBlueprint) {
-    if (dataBlueprint is! CustomBlueprint) return const SizedBox();
-    final shapeBlueprint = dataBlueprint.shape;
-    if (shapeBlueprint is! ObjectBlueprint) return const SizedBox();
-    if (!shapeBlueprint.fields.containsKey("value")) return const SizedBox();
-    final valueBlueprint = shapeBlueprint.fields["value"];
-    if (valueBlueprint == null) return const SizedBox();
-    return _ItemEditor(
-      key: ValueKey(id),
-      path: "$path.$id",
-      dataBlueprint: valueBlueprint,
-    );
-  }
-}
-
-class _ItemEditor extends HookConsumerWidget {
-  const _ItemEditor({
-    required this.path,
-    required this.dataBlueprint,
-    super.key,
-  });
-
-  final String path;
-  final DataBlueprint dataBlueprint;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final enabled = ref.watch(fieldValueProvider("$path.enabled", false));
-
-    if (!enabled) {
-      return const SizedBox();
+    if (value is! Map<String, dynamic>) {
+      return Admonition.danger(
+        child: Text("Value for serialized item field is not a map: $path"),
+      );
     }
 
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        FieldHeader(
-          dataBlueprint: dataBlueprint,
-          path: path,
-          child: FieldEditor(path: "$path.value", dataBlueprint: dataBlueprint),
+    final material = value["material"] as String? ?? "AIR";
+    final name = value["name"] as String? ?? "";
+    final bytes = value["bytes"] as String? ?? "";
+
+    if (bytes.isEmpty) {
+      return const Admonition.warning(
+        child: Text(
+          "You have not yet captured the item. Click on the blue camera icon to capture the item you are holding in game.",
         ),
+      );
+    }
+
+    final minecraftMaterial = materials[material.toLowerCase()];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        if (minecraftMaterial != null) ...[
+          const SectionTitle(title: "Material"),
+          InputField(
+            child: MaterialItem(
+              id: material.toLowerCase(),
+              material: minecraftMaterial,
+            ),
+          ),
+        ],
+        if (name.isNotEmpty) ...[
+          const SectionTitle(title: "Item Name"),
+          InputField.icon(
+            icon: const Iconify(TWIcons.book),
+            child: AutoSizeText(
+              name,
+              maxLines: 1,
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+          const SizedBox(height: 0),
+          const Text(
+            "This item has been captured from in game. If you want to change it, you can re-capture the item.",
+          ),
+        ],
       ],
-    ).animate().fadeIn(duration: 250.ms).moveY(
-          begin: 20,
-          end: 0,
-          duration: 500.ms,
-          curve: Curves.easeOutCubic,
-        );
+    );
   }
 }
