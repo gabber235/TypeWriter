@@ -14,16 +14,21 @@ EntryDefinition? entryDefinition(
   EntryDefinitionRef ref,
   String entryId,
 ) {
-  final pageId = ref.watch(entryPageIdProvider(entryId));
-  if (pageId == null) {
+  final page = ref.watch(entryPageProvider(entryId));
+  if (page == null) {
     return null;
   }
-  final entry = ref.watch(entryProvider(pageId, entryId));
+  final entry = ref.watch(entryProvider(page.id, entryId));
   final blueprint = ref.watch(entryBlueprintProvider(entry?.blueprintId ?? ""));
   if (entry == null || blueprint == null) {
     return null;
   }
-  return EntryDefinition(pageId: pageId, entry: entry, blueprint: blueprint);
+  return EntryDefinition(
+    pageId: page.id,
+    pageName: page.pageName,
+    entry: entry,
+    blueprint: blueprint,
+  );
 }
 
 @riverpod
@@ -47,10 +52,12 @@ bool isEntryDeprecated(IsEntryDeprecatedRef ref, String entryId) {
 class EntryDefinition {
   EntryDefinition({
     required this.pageId,
+    required this.pageName,
     required this.entry,
     required this.blueprint,
   });
   final String pageId;
+  final String pageName;
   final Entry entry;
   final EntryBlueprint blueprint;
 
