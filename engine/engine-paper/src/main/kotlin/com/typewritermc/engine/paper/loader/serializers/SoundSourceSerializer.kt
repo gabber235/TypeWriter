@@ -6,7 +6,7 @@ import com.typewritermc.engine.paper.utils.EmitterSoundSource
 import com.typewritermc.engine.paper.utils.LocationSoundSource
 import com.typewritermc.engine.paper.utils.SelfSoundSource
 import com.typewritermc.engine.paper.utils.SoundSource
-import com.typewritermc.loader.DataSerializer
+import com.typewritermc.core.serialization.DataSerializer
 import java.lang.reflect.Type
 
 class SoundSourceSerializer : DataSerializer<SoundSource> {

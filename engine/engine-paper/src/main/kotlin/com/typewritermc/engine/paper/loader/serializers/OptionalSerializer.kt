@@ -4,8 +4,7 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonSerializationContext
-import com.google.gson.reflect.TypeToken
-import com.typewritermc.loader.DataSerializer
+import com.typewritermc.core.serialization.DataSerializer
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.util.*
