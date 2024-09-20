@@ -25,8 +25,12 @@ class SnippetDatabaseImpl : SnippetDatabase, KoinComponent {
     }
 
     private val ymlConfiguration by reloadable { YamlConfiguration.loadConfiguration(file) }
+    private val cache by reloadable { mutableMapOf<String, Any>() }
 
     override fun get(path: String, default: Any, comment: String): Any {
+        val cached = cache[path]
+        if (cached != null) return cached
+
         val value = ymlConfiguration.get(path)
 
         if (value == null) {
@@ -38,11 +42,12 @@ class SnippetDatabaseImpl : SnippetDatabase, KoinComponent {
             return default
         }
 
+        cache[path] = value
         return value
     }
 
     override fun <T : Any> getSnippet(path: String, klass: KClass<T>, default: T, comment: String): T {
-        val value = get(path, default)
+        val value = get(path, default, comment)
 
         val casted = klass.safeCast(value)
 
