@@ -36,7 +36,7 @@ class RoadNetworkManager : KoinComponent {
         }
         .build(CacheLoader.from(::createEditor))
 
-    fun initialize() {
+    fun load() {
         job = DISPATCHERS_ASYNC.launch {
             while (plugin.isEnabled) {
                 delay(500)
@@ -78,7 +78,7 @@ class RoadNetworkManager : KoinComponent {
         }
         entry.saveRoadNetwork(gson, network)
         val old = networks.getIfPresent(ref.id)
-        if (old != null) {
+        if (old != null && !old.isCompleted) {
             old.complete(network)
         } else {
             networks.put(ref.id, CompletableDeferred(network))
@@ -91,7 +91,7 @@ class RoadNetworkManager : KoinComponent {
 
     fun getEditorNetwork(ref: Ref<out RoadNetworkEntry>): RoadNetworkEditor = editors.get(ref)
 
-    suspend fun shutdown() {
+    suspend fun unload() {
         job?.cancel()
         editors.asMap().values.forEach { it.dispose() }
         editors.invalidateAll()

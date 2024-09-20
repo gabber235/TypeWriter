@@ -8,6 +8,7 @@ import com.typewritermc.core.extension.annotations.ContentEditor
 import com.typewritermc.engine.paper.entry.entries.RoadNetwork
 import com.typewritermc.engine.paper.entry.entries.RoadNetworkEntry
 import com.typewritermc.engine.paper.entry.entries.data
+import com.typewritermc.engine.paper.entry.entries.hasData
 import com.typewritermc.engine.paper.entry.roadnetwork.content.RoadNetworkContentMode
 
 @Entry("base_road_network", "A definition of the words road network", Colors.YELLOW, "material-symbols:map")
@@ -26,6 +27,7 @@ class BaseRoadNetworkEntry(
     override val artifactId: String,
 ) : RoadNetworkEntry {
     override suspend fun loadRoadNetwork(gson: Gson): RoadNetwork {
+        if (!hasData()) return RoadNetwork()
         return gson.fromJson(data(), object : TypeToken<RoadNetwork>() {}.type)
     }
 

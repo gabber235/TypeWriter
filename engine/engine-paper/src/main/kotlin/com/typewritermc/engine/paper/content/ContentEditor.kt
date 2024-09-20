@@ -16,6 +16,7 @@ import com.typewritermc.engine.paper.utils.playSound
 import lirand.api.extensions.events.unregister
 import lirand.api.extensions.server.registerEvents
 import lirand.api.extensions.world.clearAll
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -74,7 +75,7 @@ class ContentEditor(
         val removedSlots = previousSlots - currentSlots
         SYNC.switchContext {
             newSlots.forEach { slot ->
-                val originalItem = player.inventory.getItem(slot) ?: return@forEach
+                val originalItem = player.inventory.getItem(slot) ?: ItemStack.empty()
                 cachedOriginalItems.putIfAbsent(slot, originalItem)
             }
             items.forEach { (slot, item) ->
@@ -114,6 +115,10 @@ class ContentEditor(
 
     suspend fun dispose() {
         unregister()
+        cachedOriginalItems.forEach { (slot, item) ->
+            player.inventory.setItem(slot, item)
+        }
+        cachedOriginalItems.clear()
         val cache = stack.toList()
         stack.clear()
         cache.forEach { it.dispose() }

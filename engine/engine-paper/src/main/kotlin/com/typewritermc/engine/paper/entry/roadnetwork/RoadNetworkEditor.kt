@@ -2,18 +2,18 @@ package com.typewritermc.engine.paper.entry.roadnetwork
 
 import co.touchlab.stately.concurrency.AtomicInt
 import com.github.shynixn.mccoroutine.bukkit.launch
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.roadnetwork.gps.roadNetworkFindPath
 import com.typewritermc.engine.paper.entry.roadnetwork.pathfinding.PFInstanceSpace
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.Executors
@@ -34,7 +34,11 @@ class RoadNetworkEditor(
 
     val state: RoadNetworkEditorState
         get() = when {
-            jobRecalculateEdges != null -> RoadNetworkEditorState.Calculating(recalculateEdges.get(), network.nodes.size)
+            jobRecalculateEdges != null -> RoadNetworkEditorState.Calculating(
+                recalculateEdges.get(),
+                network.nodes.size
+            )
+
             lastChange < 0 -> RoadNetworkEditorState.Loading
             job != null -> RoadNetworkEditorState.Saving
             lastChange != Long.MAX_VALUE -> RoadNetworkEditorState.Dirty
@@ -112,20 +116,20 @@ class RoadNetworkEditor(
 
     fun refresh() {
         if (lastChange < 0) return
-        if (lastChange + 3_000 < System.currentTimeMillis() && job == null) {
-            job = DISPATCHERS_ASYNC.launch {
-                val network = mutex.withLock {
-                    lastChange = Long.MAX_VALUE
-                    network = network.copy(
-                        nodes = network.nodes.distinct(),
-                        edges = network.edges.distinct(),
-                        modifications = network.modifications.distinct(),
-                    )
-                    network
-                }
-                networkManager.saveRoadNetwork(ref, network)
-                job = null
+        if (lastChange + 3_000 > System.currentTimeMillis()) return
+        if (job != null) return
+        job = DISPATCHERS_ASYNC.launch {
+            val network = mutex.withLock {
+                lastChange = Long.MAX_VALUE
+                network = network.copy(
+                    nodes = network.nodes.distinct(),
+                    edges = network.edges.distinct(),
+                    modifications = network.modifications.distinct(),
+                )
+                network
             }
+            networkManager.saveRoadNetwork(ref, network)
+            job = null
         }
     }
 
@@ -145,7 +149,8 @@ sealed class RoadNetworkEditorState(val message: String) {
     data object Dirty : RoadNetworkEditorState(" <gray><i>(unsaved changes)</i></gray>")
     data object Saving : RoadNetworkEditorState(" <red><i>(saving)</i></red>")
 
-    class Calculating(val nodesTodo: Int, val max: Int) : RoadNetworkEditorState(" <red><i>(calculating ${max-nodesTodo}/$max)</i></red>") {
+    class Calculating(val nodesTodo: Int, val max: Int) :
+        RoadNetworkEditorState(" <red><i>(calculating ${max - nodesTodo}/$max)</i></red>") {
         val percentage: Float
             get() = (max - nodesTodo) / max.toFloat()
     }
