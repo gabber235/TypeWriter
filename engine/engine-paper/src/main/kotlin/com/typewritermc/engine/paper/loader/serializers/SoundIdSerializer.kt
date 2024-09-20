@@ -7,7 +7,7 @@ import com.google.gson.JsonSerializationContext
 import com.typewritermc.engine.paper.utils.DefaultSoundId
 import com.typewritermc.engine.paper.utils.EntrySoundId
 import com.typewritermc.engine.paper.utils.SoundId
-import com.typewritermc.loader.DataSerializer
+import com.typewritermc.core.serialization.DataSerializer
 import java.lang.reflect.Type
 
 class SoundIdSerializer : DataSerializer<SoundId> {

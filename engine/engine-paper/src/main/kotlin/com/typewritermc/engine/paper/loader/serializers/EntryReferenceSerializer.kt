@@ -7,7 +7,7 @@ import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.typewritermc.core.entries.Entry
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.loader.DataSerializer
+import com.typewritermc.core.serialization.DataSerializer
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import kotlin.reflect.KClass

@@ -5,7 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.typewritermc.core.utils.point.World
-import com.typewritermc.loader.DataSerializer
+import com.typewritermc.core.serialization.DataSerializer
 import lirand.api.extensions.server.server
 import java.lang.reflect.Type
 

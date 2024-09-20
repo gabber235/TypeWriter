@@ -1,4 +1,4 @@
-package com.typewritermc.loader
+package com.typewritermc.core.serialization
 
 import com.google.gson.*
 import com.google.gson.internal.Streams
@@ -14,6 +14,7 @@ interface DataSerializer<T : Any> : JsonSerializer<T>, JsonDeserializer<T> {
 fun createDataSerializerGson(serializers: List<DataSerializer<*>>): Gson {
     var builder = GsonBuilder()
         .serializeNulls()
+        .registerTypeAdapterFactory(AlgebraicSerializationFactory())
 
     serializers.forEach {
         val typeToken = TypeToken.get(it.type)

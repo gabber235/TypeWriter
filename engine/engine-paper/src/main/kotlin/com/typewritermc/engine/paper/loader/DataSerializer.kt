@@ -1,7 +1,7 @@
 package com.typewritermc.engine.paper.loader
 
+import com.typewritermc.core.serialization.DataSerializer
 import com.typewritermc.engine.paper.loader.serializers.*
-import com.typewritermc.loader.DataSerializer
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 
