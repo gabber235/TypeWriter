@@ -144,7 +144,6 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent, Listener {
         get<AssetManager>().initialize()
         get<EntityHandler>().initialize()
         get<AudienceManager>().initialize()
-        get<RoadNetworkManager>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
             PlaceholderExpansion.register()
@@ -170,6 +169,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent, Listener {
         get<TypewriterCore>().load()
 
         get<StagingManager>().loadState()
+        get<RoadNetworkManager>().load()
         get<InteractionHandler>().load()
         get<EntryListeners>().load()
         get<AudienceManager>().load()
@@ -184,6 +184,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent, Listener {
         get<AudienceManager>().unload()
         get<EntryListeners>().unload()
         get<InteractionHandler>().unload()
+        get<RoadNetworkManager>().unload()
         get<StagingManager>().unload()
 
         // Needs to be last, as it will unload the classLoader
@@ -202,7 +203,6 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent, Listener {
         CommandAPI.onDisable()
         get<StagingManager>().shutdown()
         get<EntityHandler>().shutdown()
-        get<RoadNetworkManager>().shutdown()
         get<ChatHistoryHandler>().shutdown()
         get<ActionBarBlockerHandler>().shutdown()
         get<PacketInterceptor>().shutdown()

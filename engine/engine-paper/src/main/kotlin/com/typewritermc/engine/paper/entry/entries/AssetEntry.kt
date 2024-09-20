@@ -15,6 +15,10 @@ interface AssetEntry : StaticEntry {
     val path: String
 }
 
+suspend fun AssetEntry.hasData(): Boolean {
+    return KoinJavaComponent.get<AssetManager>(AssetManager::class.java).containsAsset(this)
+}
+
 suspend fun AssetEntry.data(): String? {
     return KoinJavaComponent.get<AssetManager>(AssetManager::class.java).fetchAsset(this)
 }
