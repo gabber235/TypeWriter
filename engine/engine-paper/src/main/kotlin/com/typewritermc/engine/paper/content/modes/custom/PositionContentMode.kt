@@ -6,9 +6,12 @@ import com.typewritermc.engine.paper.content.ContentContext
 import com.typewritermc.engine.paper.content.modes.ImmediateFieldValueContentMode
 import com.typewritermc.engine.paper.utils.round
 import org.bukkit.entity.Player
+import java.lang.reflect.Type
 
 class PositionContentMode(context: ContentContext, player: Player) :
     ImmediateFieldValueContentMode<Position>(context, player) {
+    override val type: Type = Position::class.java
+
     override fun value(): Position {
         val location = player.location
         return Position(

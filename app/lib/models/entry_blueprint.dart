@@ -147,6 +147,13 @@ class DataBlueprint with _$DataBlueprint {
     @Default([]) List<Modifier> modifiers,
   }) = ObjectBlueprint;
 
+  /// Algebraic blueprint, such as a sum type.
+  const factory DataBlueprint.algebraic({
+    required Map<String, DataBlueprint> cases,
+    @JsonKey(name: "default") dynamic internalDefaultValue,
+    @Default([]) List<Modifier> modifiers,
+  }) = AlgebraicBlueprint;
+
   /// Custom blueprint, where a custom editor is used.
   const factory DataBlueprint.custom({
     required String editor,
@@ -299,6 +306,13 @@ extension DataBlueprintExtension on DataBlueprint {
 
           return data.fields
               .map((key, value) => MapEntry(key, value.defaultValue()));
+        },
+        algebraic: (data) {
+          final first = data.cases.entries.first;
+          return {
+            "case": first.key,
+            "value": first.value.defaultValue(),
+          };
         },
         custom: (data) => data.internalDefaultValue,
       );

@@ -75,4 +75,5 @@ class TWIcons {
   static const String download = "material-symbols:cloud-download";
   static const String inclusive = "mingcute:combine-fill";
   static const String range = "material-symbols:arrow-range";
+  static const String recycle = "mdi:recycle";
 }

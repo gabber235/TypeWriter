@@ -9,7 +9,7 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
-import com.typewritermc.engine.paper.utils.Item
+import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.engine.paper.utils.toPosition
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener

@@ -6,7 +6,7 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.core.entries.ref
-import com.typewritermc.engine.paper.utils.Item
+import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
 
 @Entry(
