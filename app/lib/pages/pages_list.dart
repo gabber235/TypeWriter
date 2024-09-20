@@ -1082,9 +1082,10 @@ Future<bool> showPageDeletionDialogue(
   PassingRef ref,
   String pageId,
 ) {
+  final pageName = ref.read(pageProvider(pageId))?.pageName ?? "Page";
   return showConfirmationDialogue(
     context: context,
-    title: "Delete ${pageId.formatted}?",
+    title: "Delete ${pageName.formatted}?",
     content:
         "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
     delayConfirm: 3.seconds,

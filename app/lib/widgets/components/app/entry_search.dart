@@ -91,6 +91,7 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
       if (blueprint == null) return null;
       return EntryDefinition(
         pageId: page.id,
+        pageName: page.pageName,
         blueprint: blueprint,
         entry: entry,
       );
@@ -342,7 +343,7 @@ class EntrySearchElement extends SearchElement {
       const Iconify(TWIcons.externalLink);
 
   @override
-  String description(BuildContext context) => definition.pageId.formatted;
+  String description(BuildContext context) => definition.pageName.formatted;
 
   @override
   List<SearchAction> actions(PassingRef ref) {
