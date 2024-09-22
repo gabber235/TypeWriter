@@ -15,7 +15,7 @@ jobs:
       - name: Build Engine
         uses: ./.github/actions/build-engine
       - name: Upload Plugin
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Typewriter.jar
           path: engine/engine-paper/build/libs/Typewriter.jar
