@@ -1,22 +1,19 @@
 package com.typewritermc.engine.paper.entry.roadnetwork.gps
 
 import com.extollit.gaming.ai.path.HydrazinePathFinder
+import com.extollit.gaming.ai.path.model.Passibility
 import com.extollit.linalg.immutable.Vec3d
 import com.github.retrooper.packetevents.protocol.particle.Particle
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
 import com.github.retrooper.packetevents.util.Vector3f
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import lirand.api.extensions.server.server
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entity.toProperty
 import com.typewritermc.engine.paper.entry.entries.AudienceDisplay
 import com.typewritermc.engine.paper.entry.entries.RoadNetworkEntry
 import com.typewritermc.engine.paper.entry.entries.TickableDisplay
 import com.typewritermc.engine.paper.entry.entries.roadNetworkMaxDistance
+import com.typewritermc.engine.paper.entry.roadnetwork.RoadNetworkManager
 import com.typewritermc.engine.paper.entry.roadnetwork.pathfinding.PFEmptyEntity
 import com.typewritermc.engine.paper.entry.roadnetwork.pathfinding.PFInstanceSpace
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
@@ -25,8 +22,15 @@ import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
 import com.typewritermc.engine.paper.utils.distanceSqrt
 import com.typewritermc.engine.paper.utils.firstWalkableLocationBelow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import lirand.api.extensions.server.server
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 private val pathStreamRefreshTime by snippet(
@@ -101,7 +105,9 @@ private class PlayerPathStreamDisplay(
     private val player: Player,
     private val startLocation: (Player) -> Location,
     private val endLocation: (Player) -> Location,
-) {
+) : KoinComponent {
+    private val roadNetworkManager: RoadNetworkManager by inject()
+
     private var gps = PointToPointGPS(ref, { startLocation(player) }, { endLocation(player) })
     private var edges = emptyList<GPSEdge>()
 
@@ -168,13 +174,31 @@ private class PlayerPathStreamDisplay(
         }
     }
 
-    private fun findPath(
+    private suspend fun findPath(
         start: Location,
         end: Location,
     ): Iterable<Location> {
+        val roadNetwork = roadNetworkManager.getNetwork(gps.roadNetwork)
+
+        val interestingNegativeNodes = roadNetwork.negativeNodes.filter {
+            val distance = start.distanceSqrt(it.location) ?: 0.0
+            distance > it.radius * it.radius && distance < roadNetworkMaxDistance * roadNetworkMaxDistance
+        }
+
         val entity = PFEmptyEntity(start.toProperty(), searchRange = roadNetworkMaxDistance.toFloat())
         val instance = PFInstanceSpace(start.world)
         val pathfinder = HydrazinePathFinder(entity, instance)
+
+        val additionalRadius = pathfinder.subject().width().toDouble()
+
+        // We want to avoid going through negative nodes
+        pathfinder.withGraphNodeFilter { node ->
+            if (node.isInRangeOf(interestingNegativeNodes, additionalRadius)) {
+                return@withGraphNodeFilter Passibility.dangerous
+            }
+            node.passibility()
+        }
+
         val path = pathfinder.computePathTo(Vec3d(end.x, end.y, end.z)) ?: return emptyList()
         return path.map {
             val coordinate = it.coordinates()
