@@ -9,7 +9,7 @@ use poise::{
     CreateReply, ReplyHandle,
 };
 
-use crate::{check_is_contributor, webhooks::GetTagId, Context, WinstonError};
+use crate::{check_is_support, webhooks::GetTagId, Context, WinstonError};
 
 #[derive(Debug, poise::ChoiceParameter)]
 pub enum CloseReason {
@@ -61,7 +61,7 @@ impl Display for CloseReason {
     }
 }
 
-#[poise::command(slash_command, ephemeral, check = "check_is_contributor")]
+#[poise::command(slash_command, ephemeral, check = "check_is_support")]
 pub async fn close_ticket(
     ctx: Context<'_>,
     #[description = "The reason for closing the ticket"] reason: CloseReason,
