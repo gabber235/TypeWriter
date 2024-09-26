@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use poise::serenity_prelude::{Context, EditThread, EventHandler, Message};
 
-use crate::{webhooks::GetTagId, CONTRIBUTOR_ROLE_ID, GUILD_ID, QUESTIONS_FORUM_ID};
+use crate::{webhooks::GetTagId, GUILD_ID, QUESTIONS_FORUM_ID, SUPPORT_ROLE_ID};
 
 pub struct SupportAnsweringHandler;
 
@@ -61,9 +61,9 @@ impl EventHandler for SupportAnsweringHandler {
             return;
         };
 
-        let is_contributor = match new_message
+        let is_support = match new_message
             .author
-            .has_role(&ctx, GUILD_ID, CONTRIBUTOR_ROLE_ID)
+            .has_role(&ctx, GUILD_ID, SUPPORT_ROLE_ID)
             .await
         {
             Ok(true) => true,
@@ -74,7 +74,7 @@ impl EventHandler for SupportAnsweringHandler {
             }
         };
 
-        let new_tags = if is_contributor {
+        let new_tags = if is_support {
             vec![support_tag, answered_tag]
         } else {
             vec![support_tag, pending_tag]

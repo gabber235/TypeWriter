@@ -25,7 +25,7 @@ pub type Context<'a> = poise::Context<'a, Data, WinstonError>;
 pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, WinstonError>;
 
 const GUILD_ID: serenity::GuildId = serenity::GuildId::new(1054708062520360960);
-const CONTRIBUTOR_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1054708457535713350);
+const SUPPORT_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1288764206191218711);
 const QUESTIONS_FORUM_ID: u64 = 1199700329948782613;
 const QUESTIONS_CHANNEL: serenity::ChannelId = serenity::ChannelId::new(QUESTIONS_FORUM_ID);
 
@@ -133,6 +133,8 @@ async fn startup_discord_bot() {
                 close_ticket(),
                 support_answering(),
                 post_in_questions(),
+                post_bug_in_questions(),
+                post_suggestion_in_questions(),
             ],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
@@ -196,15 +198,15 @@ async fn on_error(error: poise::FrameworkError<'_, Data, WinstonError>) {
         }
     }
 }
-pub async fn check_is_contributor(ctx: Context<'_>) -> Result<bool, WinstonError> {
+pub async fn check_is_support(ctx: Context<'_>) -> Result<bool, WinstonError> {
     let has_role = ctx
         .author()
-        .has_role(ctx, GUILD_ID, CONTRIBUTOR_ROLE_ID)
+        .has_role(ctx, GUILD_ID, SUPPORT_ROLE_ID)
         .await?;
 
     if !has_role {
         eprintln!(
-            "User {} is not a contributor and tried to run command",
+            "User {} is not a support and tried to run command",
             ctx.author().name
         );
         return Ok(false);
