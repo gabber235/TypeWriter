@@ -1,7 +1,6 @@
 package com.typewritermc.engine.paper.utils.item.components
 
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Icon
 import com.typewritermc.core.extension.annotations.AlgebraicTypeInfo
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag

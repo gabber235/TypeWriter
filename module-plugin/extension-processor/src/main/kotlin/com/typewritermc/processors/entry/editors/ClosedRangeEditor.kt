@@ -4,8 +4,8 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.processors.entry.CustomEditor
 import com.typewritermc.processors.entry.DataBlueprint
-import com.typewritermc.processors.entry.whenClassIs
 import com.typewritermc.processors.fullName
+import com.typewritermc.processors.whenClassIs
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 

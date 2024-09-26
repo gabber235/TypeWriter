@@ -20,7 +20,7 @@ class EquipmentData(
     override val id: String = "",
     override val name: String = "",
     val equipment: Map<EquipmentSlot, Item> = emptyMap(),
-    override val priorityOverride: Optional<Int>,
+    override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : LivingEntityData<EquipmentProperty> {
     override fun type(): KClass<EquipmentProperty> = EquipmentProperty::class
 

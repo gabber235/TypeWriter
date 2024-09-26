@@ -1,10 +1,10 @@
 package com.typewritermc.basic.entries.quest
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entries.AudienceEntry
 import com.typewritermc.engine.paper.entry.entries.QuestEntry
 import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
@@ -30,15 +30,16 @@ class SimpleQuestEntry(
     override val id: String = "",
     override val name: String = "",
     override val children: List<Ref<AudienceEntry>> = emptyList(),
-    override val displayName: String,
+    override val displayName: String = "",
     @Help("When the criteria is met, it considers the quest to be active.")
-    val activeCriteria: List<Criteria>,
+    val activeCriteria: List<Criteria> = emptyList(),
 
     @Help("When the criteria is met, it considers the quest to be completed.")
-    val completedCriteria: List<Criteria>,
+    val completedCriteria: List<Criteria> = emptyList(),
 ) : QuestEntry {
     override val facts: List<Ref<ReadableFactEntry>>
         get() = (activeCriteria + completedCriteria).map { it.fact }
+
     override fun questStatus(player: Player): QuestStatus {
         return when {
             completedCriteria matches player -> QuestStatus.COMPLETED

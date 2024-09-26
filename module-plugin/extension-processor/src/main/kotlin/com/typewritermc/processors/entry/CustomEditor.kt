@@ -28,14 +28,6 @@ interface CustomEditor {
     }
 }
 
-infix fun KSType.whenClassNameIs(className: String): Boolean {
-    return this.declaration.qualifiedName?.asString() == className
-}
-
-infix fun KSType.whenClassIs(kclass: KClass<*>): Boolean {
-    return this.declaration.qualifiedName?.asString() == kclass.qualifiedName
-}
-
 context(KSPLogger)
 fun <A : Annotation> DataModifierComputer<A>.computeModifier(annotation: A, type: KSType): DataModifier {
     return this.compute(DataBlueprint.blueprint(type)!!, annotation).getOrThrow()

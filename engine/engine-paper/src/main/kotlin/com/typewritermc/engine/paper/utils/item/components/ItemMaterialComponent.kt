@@ -1,10 +1,9 @@
 package com.typewritermc.engine.paper.utils.item.components
 
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Icon
+import com.typewritermc.core.extension.annotations.AlgebraicTypeInfo
 import com.typewritermc.core.extension.annotations.MaterialProperties
 import com.typewritermc.core.extension.annotations.MaterialProperty
-import com.typewritermc.core.extension.annotations.AlgebraicTypeInfo
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

@@ -23,8 +23,8 @@ import org.bukkit.entity.Player
 class SwitchServerActionEntry(
     override val id: String = "",
     override val name: String = "",
-    override val criteria: List<Criteria>,
-    override val modifiers: List<Modifier>,
+    override val criteria: List<Criteria> = emptyList(),
+    override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The server the player will connect to.")
     val server: String = "",
