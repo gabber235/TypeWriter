@@ -199,9 +199,9 @@ class PlayerEntity(
     }
 
     private fun sit(location: PositionProperty? = null) {
+        val loc = location ?: property<PositionProperty>() ?: return
         if (sitEntity != null) return
         sitEntity = WrapperEntity(EntityTypes.BLOCK_DISPLAY)
-        val loc = location ?: property<PositionProperty>() ?: return
         sitEntity?.spawn(loc.toPacketLocation())
         sitEntity?.addViewer(player.uniqueId)
         if (entity.isSpawned) {
@@ -211,7 +211,9 @@ class PlayerEntity(
 
     private fun unsit() {
         val entity = sitEntity ?: return
-        entity.removePassengers(this.entity)
+        if (entity.hasPassenger(this.entity)) {
+            entity.removePassengers(this.entity)
+        }
         entity.removeViewer(player.uniqueId)
         entity.despawn()
         entity.remove()
