@@ -2,11 +2,13 @@ package com.typewritermc.engine.paper.entry.cinematic
 
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.cinematic.CinematicState.*
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicSettings
 import com.typewritermc.engine.paper.entry.entries.SystemTrigger.CINEMATIC_END
+import com.typewritermc.engine.paper.entry.triggerEntriesFor
+import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.events.AsyncCinematicEndEvent
 import com.typewritermc.engine.paper.events.AsyncCinematicStartEvent
 import com.typewritermc.engine.paper.events.AsyncCinematicTickEvent
@@ -27,7 +29,8 @@ class CinematicSequence(
     private val triggers: List<Ref<TriggerableEntry>>,
     private val settings: CinematicSettings,
 ) {
-    private var state = STARTING
+    internal var state = STARTING
+        private set
     private var playTime = Duration.ofMillis(-1)
     private val frame: Int get() = (playTime.toMillis() / 50).toInt()
 
@@ -105,9 +108,14 @@ class CinematicSequence(
             AsyncCinematicEndEvent(player, originalFrame, pageId).callEvent()
         }
     }
+
+    fun playTime(playTime: Duration) {
+        if (state != PLAYING) return
+        this.playTime = playTime
+    }
 }
 
-private enum class CinematicState {
+internal enum class CinematicState {
     STARTING, PLAYING, ENDING
 }
 
@@ -119,3 +127,8 @@ private val Player.cinematicSequence: CinematicSequence?
 fun Player.isPlayingCinematic(pageId: String): Boolean = cinematicSequence?.pageId == pageId
 
 fun Player.isPlayingCinematic(): Boolean = cinematicSequence != null
+
+fun Player.setCinematicFrame(frame: Int) {
+    val sequence = cinematicSequence ?: return
+    sequence.playTime(Duration.ofMillis(frame * 50L))
+}
