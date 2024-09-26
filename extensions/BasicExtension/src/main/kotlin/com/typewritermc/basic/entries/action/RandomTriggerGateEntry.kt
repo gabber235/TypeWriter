@@ -21,12 +21,12 @@ import org.bukkit.entity.Player
  * This gate can be useful in a variety of situations. You can use it to create a mini-game that randomly selects events to occur, or to trigger a set number of actions randomly in response to a specific event. The possibilities are endless!
  */
 class RandomTriggerGateEntry(
-    override val id: String,
-    override val name: String,
+    override val id: String = "",
+    override val name: String = "",
     @SerializedName("triggers")
     override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
-    override val criteria: List<Criteria>,
-    override val modifiers: List<Modifier>,
+    override val criteria: List<Criteria> = emptyList(),
+    override val modifiers: List<Modifier> = emptyList(),
     @Help("The number of triggers to fire next.")
     private val amount: Int = 1,
 ) : CustomTriggeringActionEntry {

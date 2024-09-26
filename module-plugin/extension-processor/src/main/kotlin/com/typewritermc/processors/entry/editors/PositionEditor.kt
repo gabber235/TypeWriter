@@ -8,6 +8,7 @@ import com.typewritermc.processors.entry.*
 import com.typewritermc.processors.entry.DataBlueprint.ObjectBlueprint
 import com.typewritermc.processors.entry.DataBlueprint.PrimitiveBlueprint
 import com.typewritermc.processors.entry.modifiers.ContentEditorModifierComputer
+import com.typewritermc.processors.whenClassIs
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive

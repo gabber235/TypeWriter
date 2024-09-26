@@ -50,7 +50,7 @@ class IslandFactEntry(
     override val name: String = "",
     override val comment: String = "",
     override val group: Ref<GroupEntry> = emptyRef(),
-    val fact: IslandFacts,
+    val fact: IslandFacts = IslandFacts.LEVEL,
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
         val sPlayer = SuperiorSkyblockAPI.getPlayer(player)

@@ -10,6 +10,7 @@ import com.typewritermc.core.utils.ok
 import com.typewritermc.processors.entry.*
 import com.typewritermc.processors.entry.DataBlueprint.PrimitiveBlueprint
 import com.typewritermc.processors.fullName
+import com.typewritermc.processors.whenClassIs
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 

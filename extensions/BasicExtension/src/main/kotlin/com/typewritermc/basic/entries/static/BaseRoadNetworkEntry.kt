@@ -21,10 +21,10 @@ import com.typewritermc.engine.paper.entry.roadnetwork.content.RoadNetworkConten
  * And to let players navigate the world by showing them the way to go.
  */
 class BaseRoadNetworkEntry(
-    override val id: String,
-    override val name: String,
+    override val id: String = "",
+    override val name: String = "",
     @ContentEditor(RoadNetworkContentMode::class)
-    override val artifactId: String,
+    override val artifactId: String = "",
 ) : RoadNetworkEntry {
     override suspend fun loadRoadNetwork(gson: Gson): RoadNetwork {
         if (!hasData()) return RoadNetwork()

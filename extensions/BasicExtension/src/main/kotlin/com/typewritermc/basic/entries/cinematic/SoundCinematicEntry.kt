@@ -20,11 +20,11 @@ import org.bukkit.entity.Player
  * This entry could be used to play a sound during a cinematic, such as a sound effect for a cutscene.
  */
 class SoundCinematicEntry(
-    override val id: String,
-    override val name: String,
-    override val criteria: List<Criteria>,
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
     @Segments(icon = "fa6-solid:music", color = Colors.YELLOW)
-    val segments: List<SoundSegment>,
+    val segments: List<SoundSegment> = emptyList(),
 ) : CinematicEntry {
     override fun create(player: Player): CinematicAction {
         return SoundCinematicAction(

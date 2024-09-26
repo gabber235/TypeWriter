@@ -28,7 +28,7 @@ class TeleportActionEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     @SerializedName("triggers")
-    override val customTriggers: List<Ref<TriggerableEntry>>,
+    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
     @WithRotation
     val location: Position = Position.ORIGIN,
 ) : CustomTriggeringActionEntry {
