@@ -14,31 +14,36 @@ class TypewriterModulePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.pluginManager.apply("com.google.devtools.ksp")
 
+        project.extensions
         val extension = project.extensions.create("typewriter", TypewriterModuleConfiguration::class.java)
 
-        project.checkExtension(extension)
-
-        project.registerRepositories(extension)
         project.registerKsp(extension)
+        project.afterEvaluate {
+            project.checkExtension(extension)
+
+            project.registerRepositories(extension)
+        }
     }
 
     /**
      * Checks if the extension is valid.
      */
     private fun Project.checkExtension(extension: TypewriterModuleConfiguration) {
-        afterEvaluate {
-            try {
-                extension.validate()
-            } catch (e: Exception) {
-                throw GradleException("Invalid module configuration for $name", e)
-            }
+        if (extension.namespace.isBlank() && extension.flags.isEmpty() && extension.engine == null && extension.extension == null) {
+            logger.warn("No extension configuration found in module $name. The typewriter plugin will not work.")
+            return
+        }
+        try {
+            extension.validate()
+        } catch (e: Exception) {
+            throw GradleException("Invalid module configuration for $name", e)
         }
     }
 
     /**
      * Registers repositories that are required for typewriter to work.
      */
-    private fun Project.registerRepositories(extension: TypewriterModuleConfiguration) = afterEvaluate {
+    private fun Project.registerRepositories(extension: TypewriterModuleConfiguration) {
         // Add Maven Central repository
         repositories.mavenCentral()
 
@@ -91,6 +96,7 @@ class TypewriterModulePlugin : Plugin<Project> {
                 )
                 it.arg("pluginVersion", pluginVersion)
                 it.arg("version", version.toString())
+                it.arg("buildDir", buildDir.absolutePath)
             }
         }
     }

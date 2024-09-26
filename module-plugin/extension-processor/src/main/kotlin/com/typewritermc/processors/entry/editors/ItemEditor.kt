@@ -5,8 +5,8 @@ import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.processors.entry.CustomEditor
 import com.typewritermc.processors.entry.DataBlueprint
 import com.typewritermc.processors.entry.DataModifier
-import com.typewritermc.processors.entry.whenClassNameIs
 import com.typewritermc.processors.fullName
+import com.typewritermc.processors.whenClassNameIs
 import kotlinx.serialization.json.JsonElement
 
 object ItemEditor : CustomEditor {

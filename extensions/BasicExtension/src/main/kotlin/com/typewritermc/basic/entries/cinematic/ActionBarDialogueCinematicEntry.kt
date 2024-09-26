@@ -6,6 +6,7 @@ import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.core.extension.annotations.Icon
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
@@ -53,7 +54,7 @@ class ActionBarDialogueCinematicEntry(
     Colors.CYAN,
     "fa6-solid:xmarks-lines"
 )
-data class RandomActionBarDialogueCinematicEntry(
+class RandomActionBarDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),

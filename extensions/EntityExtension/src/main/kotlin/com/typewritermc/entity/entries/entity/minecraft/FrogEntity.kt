@@ -20,7 +20,7 @@ import com.typewritermc.entity.entries.data.minecraft.living.*
 import com.typewritermc.entity.entries.entity.WrapperFakeEntity
 import org.bukkit.entity.Player
 
-@Entry("frog_definition", "A frog entity", Colors.ORANGE, "ph:frog-fill")
+@Entry("frog_definition", "A frog entity", Colors.ORANGE, "icon-park-solid:frog")
 @Tags("frog_definition")
 /**
  * The `FrogDefinition` class is an entry that represents a frog entity.
@@ -39,7 +39,7 @@ class FrogDefinition(
     override fun create(player: Player): FakeEntity = FrogEntity(player)
 }
 
-@Entry("frog_instance", "An instance of a frog entity", Colors.YELLOW, "ph:frog-fill")
+@Entry("frog_instance", "An instance of a frog entity", Colors.YELLOW, "icon-park-solid:frog")
 /**
  * The `FrogInstance` class is an entry that represents an instance of a frog entity.
  *

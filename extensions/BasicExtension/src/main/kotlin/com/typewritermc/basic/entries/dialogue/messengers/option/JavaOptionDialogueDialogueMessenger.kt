@@ -1,13 +1,12 @@
 package com.typewritermc.basic.entries.dialogue.messengers.option
 
+import com.typewritermc.basic.entries.dialogue.Option
+import com.typewritermc.basic.entries.dialogue.OptionDialogueEntry
+import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.core.utils.around
 import com.typewritermc.core.utils.loopingDistance
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.core.entries.Ref
-import com.typewritermc.basic.entries.dialogue.Option
-import com.typewritermc.basic.entries.dialogue.OptionDialogueEntry
-import com.typewritermc.basic.entries.dialogue.messengers.spoken.spokenMaxLineLength
-import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.dialogue.*
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
@@ -52,7 +51,11 @@ private val unselectedOption: String by snippet(
 
 val optionMaxLineLength: Int by snippet("dialogue.option.maxLineLength", 40)
 
-private val delayOptionShow: Int by snippet("dialogue.option.delay", 100, "The delay in milliseconds between each option being shown.")
+private val delayOptionShow: Int by snippet(
+    "dialogue.option.delay",
+    100,
+    "The delay in milliseconds between each option being shown."
+)
 
 @Messenger(OptionDialogueEntry::class)
 class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
@@ -141,7 +144,12 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             } else typingDurationType.calculatePercentage(playTime, typeDuration, rawText)
 
         val resultingLines = rawText.limitLineLength(optionMaxLineLength).lineCount
-        val text = parsedText.asPartialFormattedMini(typePercentage, minLines = resultingLines, padding = "", maxLineLength = optionMaxLineLength)
+        val text = parsedText.asPartialFormattedMini(
+            typePercentage,
+            minLines = resultingLines,
+            padding = "",
+            maxLineLength = optionMaxLineLength
+        )
 
         val message = optionFormat.asMiniWithResolvers(
             Placeholder.parsed("speaker", speakerDisplayName),

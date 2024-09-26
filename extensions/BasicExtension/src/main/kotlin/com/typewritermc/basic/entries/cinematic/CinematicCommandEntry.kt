@@ -30,13 +30,13 @@ interface CinematicCommandEntry : CinematicEntry {
  * You can use a different plugin to animate blocks, hide a scoreboard, or trigger something in another plugin.
  */
 class CinematicConsoleCommandEntry(
-    override val id: String,
-    override val name: String,
-    override val criteria: List<Criteria>,
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
     @Segments(Colors.YELLOW, "mingcute:terminal-fill")
     @InnerMax(Max(1))
     // Run commands on different segments
-    override val segments: List<CommandSegment>,
+    override val segments: List<CommandSegment> = emptyList(),
 ) : CinematicCommandEntry {
     override fun create(player: Player): CinematicAction {
         return CommandAction(
@@ -62,13 +62,13 @@ class CinematicConsoleCommandEntry(
  * You can use a different plugin to animate blocks, hide a scoreboard, or trigger something in another plugin.
  */
 class CinematicPlayerCommandEntry(
-    override val id: String,
-    override val name: String,
-    override val criteria: List<Criteria>,
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
     @Segments(Colors.YELLOW, "mingcute:terminal-fill")
     @InnerMax(Max(1))
     // Run commands on different segments
-    override val segments: List<CommandSegment>,
+    override val segments: List<CommandSegment> = emptyList(),
 ) : CinematicCommandEntry {
     override fun create(player: Player): CinematicAction {
         return CommandAction(

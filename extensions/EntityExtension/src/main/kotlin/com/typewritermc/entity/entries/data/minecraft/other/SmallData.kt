@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("small_data", "Whether the entity is small", Colors.RED, "mdi:small")
+@Entry("small_data", "Whether the entity is small", Colors.RED, "streamline:arrow-shrink-diagonal-1-solid")
 @Tags("small_data", "armor_stand_data")
 class SmallData(
     override val id: String = "",

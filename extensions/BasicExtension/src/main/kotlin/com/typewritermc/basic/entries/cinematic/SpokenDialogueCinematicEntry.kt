@@ -59,7 +59,7 @@ class SpokenDialogueCinematicEntry(
     Colors.CYAN,
     "mingcute:message-4-fill"
 )
-data class RandomSpokenDialogueCinematicEntry(
+class RandomSpokenDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
