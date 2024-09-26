@@ -82,6 +82,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
         // Read the pages from the file
         val dir = if (stagingState == STAGING) stagingDir else publishedDir
+        pages.clear()
         pages.putAll(fetchPages(dir))
     }
 
@@ -104,7 +105,6 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
     override fun unload() {
         autoSaver.force()
-        pages.clear()
     }
 
     override fun createPage(data: JsonObject): Result<String> {
@@ -251,8 +251,8 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         if (stagingState == PUBLISHING) return
         val dir = stagingDir
 
-        pages.forEach { (name, page) ->
-            val file = dir["$name.json"]
+        pages.forEach { (id, page) ->
+            val file = dir["$id.json"]
             if (!file.exists()) {
                 file.parentFile.mkdirs()
                 file.createNewFile()
