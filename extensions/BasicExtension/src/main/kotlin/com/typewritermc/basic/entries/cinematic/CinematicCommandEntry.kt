@@ -1,7 +1,6 @@
 package com.typewritermc.basic.entries.cinematic
 
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
@@ -98,9 +97,12 @@ class CommandAction(
 
     override suspend fun startSegment(segment: CommandSegment) {
         super.startSegment(segment)
+        if (segment.command.isBlank()) return
         SYNC.switchContext {
-            val commands = segment.command.parsePlaceholders(player).lines()
-            commands.forEach(run)
+            segment.command.parsePlaceholders(player)
+                .lines()
+                .filter { it.isNotBlank() }
+                .forEach(run)
         }
     }
 }

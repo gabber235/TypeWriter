@@ -43,6 +43,7 @@ class PlayerCommandActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
         // Run in main thread
+        if (command.isBlank()) return
         SYNC.launch {
             val commands = command.parsePlaceholders(player).lines()
             for (cmd in commands) {
