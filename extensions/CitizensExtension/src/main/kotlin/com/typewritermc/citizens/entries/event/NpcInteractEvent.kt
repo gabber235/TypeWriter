@@ -7,6 +7,7 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.citizens.entries.entity.ReferenceNpcEntry
 import com.typewritermc.core.entries.Query
+import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
@@ -29,7 +30,7 @@ class NpcInteractEventEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The identifier of the NPC.")
     // The NPC that needs to be interacted with.
-    val identifier: Ref<ReferenceNpcEntry>,
+    val identifier: Ref<ReferenceNpcEntry> = emptyRef(),
 ) : EventEntry
 
 private fun onReferenceNpcInteract(player: Player, npcId: Int, query: Query<NpcInteractEventEntry>) {

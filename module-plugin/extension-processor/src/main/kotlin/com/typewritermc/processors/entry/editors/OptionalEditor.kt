@@ -2,10 +2,13 @@ package com.typewritermc.processors.entry.editors
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSType
-import com.typewritermc.processors.entry.*
+import com.typewritermc.processors.entry.CustomEditor
+import com.typewritermc.processors.entry.DataBlueprint
 import com.typewritermc.processors.entry.DataBlueprint.ObjectBlueprint
 import com.typewritermc.processors.entry.DataBlueprint.PrimitiveBlueprint
+import com.typewritermc.processors.entry.PrimitiveType
 import com.typewritermc.processors.fullName
+import com.typewritermc.processors.whenClassIs
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive

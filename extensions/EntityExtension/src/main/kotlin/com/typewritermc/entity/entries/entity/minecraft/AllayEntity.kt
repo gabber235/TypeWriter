@@ -20,7 +20,7 @@ import com.typewritermc.entity.entries.data.minecraft.living.applyLivingEntityDa
 import com.typewritermc.entity.entries.entity.WrapperFakeEntity
 import org.bukkit.entity.Player
 
-@Entry("allay_definition", "A allay entity", Colors.ORANGE, "ph:allay-fill")
+@Entry("allay_definition", "A allay entity", Colors.ORANGE, "ph:flying-saucer-fill")
 @Tags("allay_definition")
 /**
  * The `AllayDefinition` class is an entry that represents an allay entity.
@@ -39,7 +39,7 @@ class AllayDefinition(
     override fun create(player: Player): FakeEntity = AllayEntity(player)
 }
 
-@Entry("allay_instance", "An instance of a allay entity", Colors.YELLOW, "ph:allay-fill")
+@Entry("allay_instance", "An instance of a allay entity", Colors.YELLOW, "ph:flying-saucer-fill")
 /**
  * The `Allay Instance` class is an entry that represents an instance of an allay entity.
  *

@@ -56,7 +56,7 @@ class SubtitleDialogueCinematicEntry(
 }
 
 @Entry("random_subtitle_dialogue_cinematic", "Show a random action bar message", Colors.CYAN, "fa6-solid:diagram-next")
-data class RandomSubtitleDialogueCinematicEntry(
+class RandomSubtitleDialogueCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),

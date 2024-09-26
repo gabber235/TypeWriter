@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("puff_state_data", "State of the Puf entity", Colors.BLUE, "mdi:state")
+@Entry("puff_state_data", "State of the Puf entity", Colors.BLUE, "mdi:state-machine")
 @Tags("puff_state_data", "puffer_fish_data")
 class PuffStateData(
     override val id: String = "",

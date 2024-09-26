@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("llama_carpet_color_data", "The color of the llama's carpet.", Colors.RED, "mdi:llama")
+@Entry("llama_carpet_color_data", "The color of the llama's carpet.", Colors.RED, "simple-icons:ollama")
 @Tags("llama_data", "carpet_color_data")
 class LlamaCarpetColorData(
     override val id: String = "",

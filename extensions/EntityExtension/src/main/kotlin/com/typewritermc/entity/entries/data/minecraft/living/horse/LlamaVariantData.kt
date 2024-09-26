@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("llama_variant_data", "The variant of the Llama.", Colors.RED, "mdi:llama")
+@Entry("llama_variant_data", "The variant of the Llama.", Colors.RED, "simple-icons:ollama")
 @Tags("llama_data", "variant_data")
 class LlamaVariantData(
     override val id: String = "",

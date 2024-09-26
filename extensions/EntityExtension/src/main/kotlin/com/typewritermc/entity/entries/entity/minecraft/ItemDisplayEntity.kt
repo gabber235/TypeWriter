@@ -24,7 +24,7 @@ import com.typewritermc.entity.entries.data.minecraft.display.item.applyItemData
 import com.typewritermc.entity.entries.entity.WrapperFakeEntity
 import org.bukkit.entity.Player
 
-@Entry("item_display_definition", "An item display entity", Colors.ORANGE, "icon-park-solid:holy-sword")
+@Entry("item_display_definition", "An item display entity", Colors.ORANGE, "streamline:podium-solid")
 @Tags("item_display_definition")
 /**
  * The `ItemDisplayDefinition` class is an entry that represents an item display entity.
@@ -47,7 +47,7 @@ class ItemDisplayDefinition(
     "item_display_instance",
     "An instance of an item display entity",
     Colors.YELLOW,
-    "material-symbols:aspect_ratio"
+    "streamline:podium-solid"
 )
 
 class ItemDisplayInstance(

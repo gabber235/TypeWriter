@@ -7,7 +7,7 @@ import com.typewritermc.processors.entry.DataBlueprint
 import com.typewritermc.processors.entry.DataBlueprint.ObjectBlueprint
 import com.typewritermc.processors.entry.DataBlueprint.PrimitiveBlueprint
 import com.typewritermc.processors.entry.PrimitiveType
-import com.typewritermc.processors.entry.whenClassNameIs
+import com.typewritermc.processors.whenClassNameIs
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive

@@ -23,11 +23,11 @@ import org.bukkit.entity.Player
  * Make the screen look black for the player during a cinematic.
  */
 class BlindingCinematicEntry(
-    override val id: String,
-    override val name: String,
-    override val criteria: List<Criteria>,
+    override val id: String = "",
+    override val name: String = "",
+    override val criteria: List<Criteria> = emptyList(),
     @Segments(icon = "heroicons-solid:eye-off")
-    val segments: List<BlindingSegment>,
+    val segments: List<BlindingSegment> = emptyList(),
 ) : PrimaryCinematicEntry {
     override fun createSimulating(player: Player): CinematicAction? = null
     override fun create(player: Player): CinematicAction {
