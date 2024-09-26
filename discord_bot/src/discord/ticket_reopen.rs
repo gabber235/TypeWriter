@@ -5,7 +5,7 @@ use poise::serenity_prelude::{
     CreateQuickModal, EditThread, EventHandler, Interaction, Timestamp,
 };
 
-use crate::{check_permissions, webhooks::GetTagId, CONTRIBUTOR_ROLE_ID, QUESTIONS_FORUM_ID};
+use crate::{check_permissions, webhooks::GetTagId, SUPPORT_ROLE_ID, QUESTIONS_FORUM_ID};
 
 pub struct TicketReopenHandler;
 
@@ -118,7 +118,7 @@ impl EventHandler for TicketReopenHandler {
 
                 **Reason**: 
                 {}
-                ", CONTRIBUTOR_ROLE_ID, reason})
+                ", SUPPORT_ROLE_ID, reason})
             .timestamp(Timestamp::now());
 
         if let Err(e) = component
@@ -128,7 +128,7 @@ impl EventHandler for TicketReopenHandler {
                 &ctx,
                 CreateMessage::default()
                     .embed(embed)
-                    .content(format!("<@&{}>", CONTRIBUTOR_ROLE_ID)),
+                    .content(format!("<@&{}>", SUPPORT_ROLE_ID)),
             )
             .await
         {

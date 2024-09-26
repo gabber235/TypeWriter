@@ -8,7 +8,7 @@ use poise::serenity_prelude::{
 
 use crate::{
     clickup::{add_tag_to_task, update_task, TaskStatus, UpdateTask},
-    WinstonError, CONTRIBUTOR_ROLE_ID,
+    WinstonError, SUPPORT_ROLE_ID,
 };
 
 pub struct TaskFixedHandler;
@@ -179,7 +179,7 @@ async fn mark_task_as_broken(
                     # Broken <@&{}>
                     This task has been marked as **Broken**. And has been moved back to the **In Progress**.
                     __Please indicate what is still broken, and what needs to be fixed.__
-                  ", CONTRIBUTOR_ROLE_ID
+                  ", SUPPORT_ROLE_ID
                 }),
         )
         .await?;
@@ -238,14 +238,14 @@ pub async fn check_permissions(
         return None;
     };
 
-    let is_contributor = component
+    let is_support = component
         .user
-        .has_role(&ctx, guild_channel.guild_id, CONTRIBUTOR_ROLE_ID)
+        .has_role(&ctx, guild_channel.guild_id, SUPPORT_ROLE_ID)
         .await
         .unwrap_or(false);
 
     // Only allow the owner to change the status, or a contributor
-    if component.user.id != owner_id && !is_contributor {
+    if component.user.id != owner_id && !is_support {
         update_response(
             &ctx,
             &component,
