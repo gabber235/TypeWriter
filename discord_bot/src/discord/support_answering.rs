@@ -1,8 +1,8 @@
 use poise::{serenity_prelude::EditThread, CreateReply};
 
-use crate::{check_is_contributor, webhooks::GetTagId, Context, WinstonError};
+use crate::{check_is_support, webhooks::GetTagId, Context, WinstonError};
 
-#[poise::command(slash_command, ephemeral, check = "check_is_contributor")]
+#[poise::command(slash_command, ephemeral, check = "check_is_support")]
 pub async fn support_answering(
     ctx: Context<'_>,
     #[description = "If the post has been answered"] answered: bool,
