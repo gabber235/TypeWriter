@@ -1,9 +1,7 @@
 package com.typewritermc.basic.entries.cinematic
 
 import com.github.retrooper.packetevents.protocol.packettype.PacketType.Play
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientClickWindow
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientHeldItemChange
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
@@ -108,7 +106,8 @@ class SkipCinematicAction(
     }
 }
 
-class CinematicSkippableEvent(player: Player, val canSkip: Boolean, val confirmationKey: SkipConfirmationKey) : PlayerEvent(player, !Bukkit.isPrimaryThread()) {
+class CinematicSkippableEvent(player: Player, val canSkip: Boolean, val confirmationKey: SkipConfirmationKey) :
+    PlayerEvent(player, !Bukkit.isPrimaryThread()) {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 
     companion object {

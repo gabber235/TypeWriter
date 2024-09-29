@@ -9,11 +9,10 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChatMessage
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import lirand.api.extensions.server.server
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.plainText
-import io.papermc.paper.event.player.AsyncChatEvent
+import lirand.api.extensions.server.server
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
@@ -27,7 +26,11 @@ import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
 
-private val darkenLimit by snippet("chat.darken-limit", 12, "The amount of messages displayed in the chat history during a dialogue")
+private val darkenLimit by snippet(
+    "chat.darken-limit",
+    12,
+    "The amount of messages displayed in the chat history during a dialogue"
+)
 private val spacing by snippet("chat.spacing", 3, "The amount of padding between the dialogue and the chat history")
 
 class ChatHistoryHandler :
@@ -60,11 +63,13 @@ class ChatHistoryHandler :
                 val message = packet.message as? ChatMessage_v1_19_3 ?: return packet.message.chatContent
                 message.unsignedChatContent.orElseGet { message.chatContent }
             }
+
             PacketType.Play.Server.SYSTEM_CHAT_MESSAGE -> {
                 val packet = WrapperPlayServerSystemChatMessage(event)
                 if (packet.isOverlay) return null
                 packet.message
             }
+
             else -> null
         }
     }
