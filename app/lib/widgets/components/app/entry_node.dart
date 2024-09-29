@@ -676,7 +676,7 @@ class ExternalEntryNode extends HookConsumerWidget {
           color: Theme.of(context).scaffoldBackgroundColor,
           child: Material(
             animationDuration: 300.ms,
-            color: blueprint.color.withValues(alpha:0.6),
+            color: blueprint.color.withValues(alpha: 0.6),
             shape: RoundedRectangleBorder(
               side: BorderSide(color: blueprint.color, width: 3),
               borderRadius: BorderRadius.circular(4),
@@ -730,7 +730,7 @@ class ExternalEntryNode extends HookConsumerWidget {
               Text(
                 pageName,
                 style: TextStyle(
-                  color: color.withValues(alpha:0.7),
+                  color: color.withValues(alpha: 0.7),
                   fontSize: 11,
                 ),
               ),
