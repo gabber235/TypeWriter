@@ -1,6 +1,7 @@
 package com.typewritermc.entity.entries.data.minecraft
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.entity.SinglePropertyCollectorSupplier
@@ -18,7 +19,8 @@ class OnFireData(
     override val id: String = "",
     override val name: String = "",
     @Help("Whether the entity is on fire.")
-    val onFire: Boolean = false,
+    @Default("true")
+    val onFire: Boolean = true,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<OnFireProperty> {
     override fun type(): KClass<OnFireProperty> = OnFireProperty::class
