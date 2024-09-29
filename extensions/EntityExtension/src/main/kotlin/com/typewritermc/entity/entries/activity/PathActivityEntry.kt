@@ -53,9 +53,9 @@ private class PathActivity(
         }
 
         val targetNodeId = nodes.getOrNull(currentLocationIndex)
-            ?: throw IllegalStateException("Could not find any node in the nodes list for the path activity.")
+            ?: return
         val targetNode = network.nodes.find { it.id == targetNodeId }
-            ?: throw IllegalStateException("Could not find any node in the nodes list for the path activity.")
+            ?: return
 
         activity?.dispose(context)
         activity = NavigationActivity(
@@ -79,7 +79,7 @@ private class PathActivity(
         val closestNode = network.nodes
             .filter { it.id in nodes }
             .minByOrNull { it.location.distanceSquared(startLocation.toBukkitLocation()) }
-            ?: throw IllegalStateException("Could not find any node in the nodes list for the patrol activity.")
+            ?: return
 
         val index = nodes.indexOf(closestNode.id)
         currentLocationIndex = (index + 1)

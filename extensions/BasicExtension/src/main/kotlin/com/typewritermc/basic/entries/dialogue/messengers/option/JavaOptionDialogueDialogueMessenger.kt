@@ -100,7 +100,6 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
         parsedText = entry.text.parsePlaceholders(player)
 
-
         val rawText = parsedText.stripped()
         val typingDuration = typingDurationType.totalDuration(rawText, typeDuration)
         val optionsShowingDuration = Duration.ofMillis(usableOptions.size * delayOptionShow.toLong())
