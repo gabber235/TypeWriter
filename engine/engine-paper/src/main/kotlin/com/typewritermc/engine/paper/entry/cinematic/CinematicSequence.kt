@@ -90,7 +90,10 @@ class CinematicSequence(
         state = ENDING
         val originalFrame = frame
 
-        if (settings.blockChatMessages) player.stopBlockingMessages()
+        if (settings.blockChatMessages) {
+            player.stopBlockingMessages()
+            player.chatHistory.resendMessages(player)
+        }
         if (settings.blockActionBarMessages) player.stopBlockingActionBar()
 
         actions.forEach {
