@@ -357,7 +357,9 @@ extension PageX on Page {
     final lastPart = parts.last;
     if (int.tryParse(lastPart) == null) {
       // We are setting an exact value. Not a list. So we just overwrite it.
-      await updateEntryValue(ref, baseEntry, path, targetEntry.id);
+      final value =
+          baseEntry.get(path) == targetEntry.id ? null : targetEntry.id;
+      await updateEntryValue(ref, baseEntry, path, value);
       return;
     }
 
