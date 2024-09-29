@@ -10,6 +10,7 @@ import "package:typewriter/widgets/components/general/iconify.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/editors/material.dart";
+import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
 
@@ -77,6 +78,18 @@ class SerializedItemEditor extends HookConsumerWidget {
   final String path;
   final CustomBlueprint customBlueprint;
 
+  PrimitiveBlueprint get amountBlueprint {
+    final shape = customBlueprint.shape;
+    if (shape is! ObjectBlueprint) {
+      return const PrimitiveBlueprint(type: PrimitiveType.integer);
+    }
+    final field = shape.fields["amount"];
+    if (field == null || field is! PrimitiveBlueprint) {
+      return const PrimitiveBlueprint(type: PrimitiveType.integer);
+    }
+    return field;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value =
@@ -108,22 +121,33 @@ class SerializedItemEditor extends HookConsumerWidget {
       children: [
         if (minecraftMaterial != null) ...[
           const SectionTitle(title: "Material"),
-          InputField(
-            child: MaterialItem(
-              id: material.toLowerCase(),
-              material: minecraftMaterial,
+          Opacity(
+            opacity: 0.5,
+            child: InputField(
+              child: MaterialItem(
+                id: material.toLowerCase(),
+                material: minecraftMaterial,
+              ),
             ),
           ),
         ],
         if (name.isNotEmpty) ...[
           const SectionTitle(title: "Item Name"),
-          InputField.icon(
-            icon: const Iconify(TWIcons.book),
-            child: AutoSizeText(
-              name,
-              maxLines: 1,
-              style: const TextStyle(fontSize: 14),
+          Opacity(
+            opacity: 0.5,
+            child: InputField.icon(
+              icon: const Iconify(TWIcons.book),
+              child: AutoSizeText(
+                name,
+                maxLines: 1,
+                style: const TextStyle(fontSize: 14),
+              ),
             ),
+          ),
+          const SectionTitle(title: "Amount"),
+          NumberEditor(
+            path: "$path.amount",
+            primitiveBlueprint: amountBlueprint,
           ),
           const SizedBox(height: 0),
           const Text(
