@@ -14,8 +14,6 @@ object ContentEditorModifierComputer : DataModifierComputer<ContentEditor> {
     override val annotationClass: KClass<ContentEditor> = ContentEditor::class
 
     override fun compute(blueprint: DataBlueprint, annotation: ContentEditor): Result<DataModifier> {
-        innerCompute(blueprint, annotation)?.let { return ok(it) }
-
         val contentMode = annotation.annotationClassValue { capturer }
         val className = contentMode.declaration.qualifiedName?.asString()
             ?: return failure("ContentEditor ${contentMode.fullName} does not have a qualified name! It must be a non-local non-anonymous class.")
