@@ -146,7 +146,13 @@ class Interaction(val player: Player) : KoinComponent {
             return
         }
 
-        if (DIALOGUE_NEXT in event) {
+        if (DIALOGUE_NEXT_OR_COMPLETE in event) {
+            if (!dialogueComplete()) return
+            onDialogueNext()
+            return
+        }
+
+        if (DIALOGUE_FORCE_NEXT in event) {
             onDialogueNext()
             return
         }
@@ -185,6 +191,17 @@ class Interaction(val player: Player) : KoinComponent {
             // sequence
             DIALOGUE_END triggerFor player
         }
+    }
+
+    /**
+     * Check if the dialogue is complete, and if not, complete it.
+     * @return true if the dialogue was not completed, false otherwise.
+     */
+    private fun dialogueComplete(): Boolean {
+        val dialogue = dialogue ?: return true
+        if (dialogue.isCompleted) return true
+        dialogue.isCompleted = true
+        return false
     }
 
     /**

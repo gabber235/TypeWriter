@@ -247,7 +247,7 @@ fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrTrigger(player: Player, co
  * ```
  */
 infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player) =
-    startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
+    startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT_OR_COMPLETE)
 
 
 /**
@@ -266,6 +266,6 @@ infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Pla
  * ```
  */
 infix fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrNextDialogue(player: Player) =
-    toList().startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT)
+    toList().startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT_OR_COMPLETE)
 
 
