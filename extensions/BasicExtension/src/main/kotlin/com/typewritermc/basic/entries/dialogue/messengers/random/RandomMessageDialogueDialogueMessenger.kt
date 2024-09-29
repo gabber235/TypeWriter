@@ -6,6 +6,7 @@ import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
+import com.typewritermc.engine.paper.entry.dialogue.TickContext
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -18,8 +19,8 @@ class RandomMessageDialogueDialogueMessenger(player: Player, entry: RandomMessag
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
     }
 
-    override fun tick(playTime: Duration) {
-        super.tick(playTime)
+    override fun tick(context: TickContext) {
+        super.tick(context)
         if (state != MessengerState.RUNNING) return
         state = MessengerState.FINISHED
         val message = entry.messages.randomOrNull() ?: return

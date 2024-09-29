@@ -5,6 +5,7 @@ import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
+import com.typewritermc.engine.paper.entry.dialogue.TickContext
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.snippets.snippet
@@ -31,8 +32,8 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
     }
 
-    override fun tick(playTime: Duration) {
-        super.tick(playTime)
+    override fun tick(context: TickContext) {
+        super.tick(context)
         if (state != MessengerState.RUNNING) return
         state = MessengerState.FINISHED
         player.sendMessageDialogue(entry.text, entry.speakerDisplayName)

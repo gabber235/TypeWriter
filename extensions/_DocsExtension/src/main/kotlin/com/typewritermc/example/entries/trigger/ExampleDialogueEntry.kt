@@ -10,6 +10,7 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
+import com.typewritermc.engine.paper.entry.dialogue.TickContext
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
@@ -45,8 +46,8 @@ class ExampleDialogueDialogueMessenger(player: Player, entry: ExampleDialogueEnt
 
     // Called every game tick (20 times per second).
     // The cycle is a parameter that is incremented every tick, starting at 0.
-    override fun tick(playTime: Duration) {
-        super.tick(playTime)
+    override fun tick(context: TickContext) {
+        super.tick(context)
         if (state != MessengerState.RUNNING) return
 
         player.sendMessage("${entry.speakerDisplayName}: ${entry.text}".parsePlaceholders(player).asMini())

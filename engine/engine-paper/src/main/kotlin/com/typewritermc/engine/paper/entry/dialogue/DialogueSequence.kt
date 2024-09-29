@@ -4,9 +4,10 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.priority
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
+import com.typewritermc.engine.paper.entry.entries.EmptyCinematicAction.setup
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
 import com.typewritermc.engine.paper.entry.entries.SystemTrigger.DIALOGUE_END
-import com.typewritermc.engine.paper.entry.entries.SystemTrigger.DIALOGUE_NEXT
+import com.typewritermc.engine.paper.entry.entries.SystemTrigger.DIALOGUE_NEXT_OR_COMPLETE
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.events.AsyncDialogueEndEvent
 import com.typewritermc.engine.paper.events.AsyncDialogueStartEvent
@@ -39,6 +40,13 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
     val priority: Int
         get() = currentEntry.priority
 
+    var isCompleted: Boolean
+        get() = currentMessenger.isCompleted
+        set(value) {
+            currentMessenger.isCompleted = value
+        }
+
+
 
     fun init() {
         setup()
@@ -64,13 +72,13 @@ class DialogueSequence(private val player: Player, initialEntry: DialogueEntry) 
 
         if (currentMessenger.state == MessengerState.FINISHED) {
             isActive = false
-            DIALOGUE_NEXT triggerFor player
+            DIALOGUE_NEXT_OR_COMPLETE triggerFor player
         } else if (currentMessenger.state == MessengerState.CANCELLED) {
             isActive = false
             DIALOGUE_END triggerFor player
         }
 
-        currentMessenger.tick(playTime)
+        currentMessenger.tick(TickContext(playTime, deltaTime))
     }
 
     fun next(nextEntry: DialogueEntry) {
