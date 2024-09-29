@@ -1,6 +1,7 @@
 package com.typewritermc.entity.entries.data.minecraft
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Tags
@@ -20,7 +21,8 @@ class GlowingEffectData(
     override val id: String = "",
     override val name: String = "",
     @Help("Whether the entity is glowing.")
-    val glowing: Boolean = false,
+    @Default("true")
+    val glowing: Boolean = true,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<GlowingEffectProperty> {
     override fun type(): KClass<GlowingEffectProperty> = GlowingEffectProperty::class
