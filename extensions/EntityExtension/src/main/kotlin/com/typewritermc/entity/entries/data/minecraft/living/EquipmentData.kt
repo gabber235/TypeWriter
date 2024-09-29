@@ -28,6 +28,17 @@ class EquipmentData(
         EquipmentProperty(equipment.mapValues { (_, item) -> item.build(player).toPacketItem() })
 }
 
+@Entry("viewer_equipment_data", "The equipment of the viewer", Colors.RED, "mdi:account-multiple-outline")
+class ViewerEquipmentData(
+    override val id: String = "",
+    override val name: String = "",
+    override val priorityOverride: Optional<Int> = Optional.empty(),
+) : LivingEntityData<EquipmentProperty> {
+    override fun type(): KClass<EquipmentProperty> = EquipmentProperty::class
+
+    override fun build(player: Player): EquipmentProperty = player.equipment.toProperty()
+}
+
 data class EquipmentProperty(val data: Map<EquipmentSlot, ItemStack>) : EntityProperty {
     constructor(equipmentSlot: EquipmentSlot, item: ItemStack) : this(mapOf(equipmentSlot to item))
 
@@ -79,9 +90,6 @@ private class EquipmentCollector(
         return EquipmentProperty(data)
     }
 }
-
-fun org.bukkit.inventory.ItemStack.toProperty(equipmentSlot: EquipmentSlot) =
-    EquipmentProperty(equipmentSlot, this.toPacketItem())
 
 fun applyEquipmentData(entity: WrapperLivingEntity, property: EquipmentProperty) {
     property.data.forEach { (slot, item) ->

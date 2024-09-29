@@ -17,18 +17,12 @@ import com.typewritermc.engine.paper.content.modes.*
 import com.typewritermc.engine.paper.entry.AssetManager
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
-import com.typewritermc.engine.paper.entry.entity.FakeEntity
-import com.typewritermc.engine.paper.entry.entity.toCollectors
-import com.typewritermc.engine.paper.entry.entity.toProperty
-import com.typewritermc.engine.paper.entry.entity.withPriority
+import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.packetevents.ArmSwing
-import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.entity.entries.data.minecraft.ArmSwingProperty
-import com.typewritermc.entity.entries.data.minecraft.PoseProperty
-import com.typewritermc.entity.entries.data.minecraft.living.toProperty
-import com.typewritermc.entity.entries.data.minecraft.toBukkitPose
-import com.typewritermc.entity.entries.data.minecraft.toEntityPose
+import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
+import com.typewritermc.entity.entries.data.minecraft.*
+import com.typewritermc.entity.entries.data.minecraft.living.EquipmentProperty
 import io.papermc.paper.event.player.PlayerArmSwingEvent
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -38,6 +32,8 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
 @Entry("entity_cinematic", "Use an animated entity in a cinematic", Colors.PINK, "material-symbols:identity-platform")
@@ -104,6 +100,8 @@ class EntityCinematicAction(
     private var collectors: List<PropertyCollector<EntityProperty>> = emptyList()
     private var recordings: Map<String, Tape<EntityFrame>> = emptyMap()
 
+    private var currentData: EntityFrame = EntityFrame()
+
     override suspend fun setup() {
         super.setup()
 
@@ -121,15 +119,44 @@ class EntityCinematicAction(
         val definition = entry.definition.get() ?: return
         this.entity = definition.create(player)
 
-        this.collectors = definition.data.withPriority().toCollectors()
+        val prioritizedPropertySuppliers = definition.data.withPriority() +
+                (FakeProvider(PositionProperty::class) { currentData.location?.toProperty() } to Int.MAX_VALUE) +
+                (FakeProvider(PoseProperty::class) { currentData.pose?.toProperty() } to Int.MAX_VALUE) +
+                (FakeProvider(ArmSwingProperty::class) { currentData.swing?.toProperty() } to Int.MAX_VALUE) +
+                (FakeProvider(EquipmentProperty::class) {
+                    val equipment =
+                        mutableMapOf<com.github.retrooper.packetevents.protocol.player.EquipmentSlot, com.github.retrooper.packetevents.protocol.item.ItemStack>()
+                    currentData.mainHand?.let { equipment[MAIN_HAND] = it.toPacketItem() }
+                    currentData.offHand?.let { equipment[OFF_HAND] = it.toPacketItem() }
+                    currentData.helmet?.let { equipment[HELMET] = it.toPacketItem() }
+                    currentData.chestplate?.let { equipment[CHEST_PLATE] = it.toPacketItem() }
+                    currentData.leggings?.let { equipment[LEGGINGS] = it.toPacketItem() }
+                    currentData.boots?.let { equipment[BOOTS] = it.toPacketItem() }
+
+                    EquipmentProperty(equipment)
+                } to Int.MAX_VALUE)
+
+        this.collectors = prioritizedPropertySuppliers.toCollectors()
 
         val startLocation = recording.firstNotNullWhere { it.location } ?: return
         val firstFrame = recording.firstFrame ?: return
+        currentData = EntityFrame(
+            location = startLocation,
+            pose = firstFrame.pose,
+            swing = firstFrame.swing,
+            mainHand = if (firstFrame.mainHand.isNullOrEmpty()) null else firstFrame.mainHand,
+            offHand = if (firstFrame.offHand.isNullOrEmpty()) null else firstFrame.offHand,
+            helmet = if (firstFrame.helmet.isNullOrEmpty()) null else firstFrame.helmet,
+            chestplate = if (firstFrame.chestplate.isNullOrEmpty()) null else firstFrame.chestplate,
+            leggings = if (firstFrame.leggings.isNullOrEmpty()) null else firstFrame.leggings,
+            boots = if (firstFrame.boots.isNullOrEmpty()) null else firstFrame.boots,
+        )
+
 
         val collectedProperties = collectors.mapNotNull { it.collect(player) }
 
-        this.entity?.consumeProperties(collectedProperties + firstFrame.toProperties())
         this.entity?.spawn(startLocation.toProperty())
+        this.entity?.consumeProperties(collectedProperties)
     }
 
     override suspend fun tickSegment(segment: EntityRecordedSegment, frame: Int) {
@@ -137,8 +164,10 @@ class EntityCinematicAction(
         val relativeFrame = frame - segment.startFrame
         val recording = recordings[segment.artifact.id] ?: return
         val frameData = recording.getFrame(relativeFrame) ?: return
+        currentData = currentData.merge(frameData)
+
         val collectedProperties = collectors.mapNotNull { it.collect(player) }
-        this.entity?.consumeProperties(collectedProperties + frameData.toProperties())
+        this.entity?.consumeProperties(collectedProperties)
     }
 
     override suspend fun stopSegment(segment: EntityRecordedSegment) {
@@ -158,32 +187,51 @@ class EntityCinematicViewing(context: ContentContext, player: Player) : ContentM
     }
 }
 
+@OptIn(ExperimentalContracts::class)
+fun ItemStack?.isNullOrEmpty(): Boolean {
+    contract {
+        returns(false) implies (this@isNullOrEmpty != null)
+    }
+    return this == null || this.isEmpty
+}
+
 data class EntityFrame(
-    val location: Location?,
-    val pose: EntityPose?,
-    val swing: ArmSwing?,
+    val location: Location? = null,
+    val pose: EntityPose? = null,
+    val swing: ArmSwing? = null,
 
-    val mainHand: ItemStack?,
-    val offHand: ItemStack?,
-    val helmet: ItemStack?,
-    val chestplate: ItemStack?,
-    val leggings: ItemStack?,
-    val boots: ItemStack?,
+    val mainHand: ItemStack? = null,
+    val offHand: ItemStack? = null,
+    val helmet: ItemStack? = null,
+    val chestplate: ItemStack? = null,
+    val leggings: ItemStack? = null,
+    val boots: ItemStack? = null,
 ) {
-    fun toProperties(): List<EntityProperty> {
-        val properties = mutableListOf<EntityProperty>()
+    fun merge(next: EntityFrame): EntityFrame {
+        return EntityFrame(
+            location = next.location ?: location,
+            pose = next.pose ?: pose,
+            swing = next.swing ?: swing,
+            mainHand = next.mainHand ?: mainHand,
+            offHand = next.offHand ?: offHand,
+            helmet = next.helmet ?: helmet,
+            chestplate = next.chestplate ?: chestplate,
+            leggings = next.leggings ?: leggings,
+            boots = next.boots ?: boots,
+        )
+    }
+}
 
-        location?.let { properties.add(it.toProperty()) }
-        pose?.let { properties.add(PoseProperty(it)) }
-        swing?.let { properties.add(ArmSwingProperty(it)) }
-        mainHand?.let { properties.add(it.toProperty(MAIN_HAND)) }
-        offHand?.let { properties.add(it.toProperty(OFF_HAND)) }
-        helmet?.let { properties.add(it.toProperty(HELMET)) }
-        chestplate?.let { properties.add(it.toProperty(CHEST_PLATE)) }
-        leggings?.let { properties.add(it.toProperty(LEGGINGS)) }
-        boots?.let { properties.add(it.toProperty(BOOTS)) }
+private class FakeProvider<P : EntityProperty>(private val klass: KClass<P>, private val supplier: () -> P?) :
+    PropertySupplier<P> {
+    override fun type(): KClass<P> = klass
 
-        return properties
+    override fun build(player: Player): P {
+        return supplier() ?: throw IllegalStateException("Could not build property $klass")
+    }
+
+    override fun canApply(player: Player): Boolean {
+        return supplier() != null
     }
 }
 
