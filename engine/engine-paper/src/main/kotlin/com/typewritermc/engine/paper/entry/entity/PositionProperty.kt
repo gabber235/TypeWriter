@@ -88,6 +88,8 @@ class PositionProperty(
         yaw,
         pitch
     )
+
+    companion object : SinglePropertyCollectorSupplier<PositionProperty>(PositionProperty::class)
 }
 
 fun org.bukkit.Location.toProperty(): PositionProperty {
