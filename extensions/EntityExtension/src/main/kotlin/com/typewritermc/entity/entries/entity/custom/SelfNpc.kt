@@ -49,7 +49,7 @@ class SelfNpc(
     }
 
     private fun setup() {
-        consumeProperties(player.skin, player.equipment.toProperty())
+        consumeProperties(player.skin)
     }
 
     override val entityId: Int

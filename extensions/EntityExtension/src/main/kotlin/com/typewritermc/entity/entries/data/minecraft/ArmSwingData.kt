@@ -14,6 +14,8 @@ data class ArmSwingProperty(val armSwing: ArmSwing) : EntityProperty {
     override fun hashCode(): Int = javaClass.hashCode()
 }
 
+fun ArmSwing.toProperty() = ArmSwingProperty(this)
+
 fun applyArmSwingData(entity: WrapperEntity, property: ArmSwingProperty) {
     if (property.armSwing.swingLeft) {
         entity.sendPacketsToViewers(

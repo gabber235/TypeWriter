@@ -42,6 +42,8 @@ fun EntityPose.toBukkitPose() = when (this) {
     else -> Pose.valueOf(this.name)
 }
 
+fun EntityPose.toProperty() = PoseProperty(this)
+
 fun applyPoseData(entity: WrapperEntity, property: PoseProperty) {
     entity.metas {
         meta<EntityMeta> { pose = property.pose }
