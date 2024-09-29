@@ -74,11 +74,13 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
     open var state: MessengerState = MessengerState.RUNNING
         protected set
 
+    open var isCompleted = true
+
     open fun init() {
         plugin.registerEvents(this)
     }
 
-    open fun tick(playTime: Duration) {}
+    open fun tick(context: TickContext) {}
 
     open fun dispose() {
         unregister()
@@ -100,7 +102,20 @@ open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: 
 
     open val modifiers: List<Modifier>
         get() = entry.modifiers
+
+    fun completeOrFinish() {
+        if (isCompleted) {
+            state = MessengerState.FINISHED
+        } else {
+            isCompleted = true
+        }
+    }
 }
+
+class TickContext(
+    val playTime: Duration,
+    val deltaTime: Duration,
+)
 
 class MessengerData(
     val messenger: KClass<out DialogueMessenger<*>>,

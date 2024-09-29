@@ -47,27 +47,40 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
 
     private var speakerDisplayName = ""
     private var text = ""
+    private var typingDuration = Duration.ZERO
+    private var playedTime = Duration.ZERO
+
+    override var isCompleted: Boolean
+        get() = playedTime >= typingDuration
+        set(value) {
+            playedTime = if (!value) Duration.ZERO
+            else typingDuration
+        }
+
     override fun init() {
         super.init()
         speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
         text = entry.text.parsePlaceholders(player)
+        typingDuration = typingDurationType.totalDuration(text.stripped(), entry.duration)
 
         confirmationKey.listen(this, player.uniqueId) {
-            state = MessengerState.FINISHED
+            completeOrFinish()
         }
     }
 
-    override fun tick(playTime: Duration) {
+    override fun tick(context: TickContext) {
         if (state != MessengerState.RUNNING) return
+        playedTime += context.deltaTime
         player.sendSpokenDialogue(
             text,
             speakerDisplayName,
             entry.duration,
-            playTime,
+            playedTime,
             triggers.isEmpty()
         )
     }
 }
+
 
 fun Player.sendSpokenDialogue(
     text: String,
