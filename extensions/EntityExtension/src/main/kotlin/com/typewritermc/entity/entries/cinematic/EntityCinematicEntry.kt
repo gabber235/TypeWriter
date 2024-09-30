@@ -211,7 +211,7 @@ data class EntityFrame(
         return EntityFrame(
             location = next.location ?: location,
             pose = next.pose ?: pose,
-            swing = next.swing ?: swing,
+            swing = next.swing,
             mainHand = next.mainHand ?: mainHand,
             offHand = next.offHand ?: offHand,
             helmet = next.helmet ?: helmet,
