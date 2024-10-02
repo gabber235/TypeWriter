@@ -82,6 +82,9 @@ abstract class SingleChildActivity<Context : ActivityContext>(
     override val currentPosition: PositionProperty
         get() = currentActivity?.currentPosition ?: startLocation
 
+    override val currentProperties: List<EntityProperty>
+        get() = currentActivity?.currentProperties ?: emptyList()
+
     abstract fun currentChild(context: Context): Ref<out EntityActivityEntry>
 }
 

@@ -5,9 +5,9 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.EntityActivityEntry
+import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.engine.paper.entry.entries.GenericEntityActivityEntry
 
 @Entry("look_at_pitch_yaw_activity", "A look at pitch and yaw activity", Colors.BLUE, "fa6-solid:compass")
@@ -31,42 +31,48 @@ class LookAtPitchYawActivityEntry(
         context: ActivityContext,
         currentLocation: PositionProperty
     ): EntityActivity<in ActivityContext> {
-        return LookAtPitchYawActivity(currentLocation, yaw, pitch)
+        val activity = childActivity.get() ?: IdleActivity
+        return LookAtPitchYawActivity(currentLocation, yaw, pitch, activity.create(context, currentLocation))
     }
 }
 
 class LookAtPitchYawActivity(
-    private val startLocation: PositionProperty,
+    startLocation: PositionProperty,
     private val targetYaw: Float,
-    private val targetPitch: Float
+    private val targetPitch: Float,
+    private val childActivity: EntityActivity<ActivityContext>,
 ) : EntityActivity<ActivityContext> {
     private val yawVelocity = Velocity(0f)
     private val pitchVelocity = Velocity(0f)
-    private var currentLocation: PositionProperty = startLocation
+    private var currentDirection: LookDirection = LookDirection(startLocation.yaw, startLocation.pitch)
 
-    override fun initialize(context: ActivityContext) {}
+    override fun initialize(context: ActivityContext) {
+        childActivity.initialize(context)
+    }
 
     override fun tick(context: ActivityContext): TickResult {
-        // Update entity's yaw and pitch smoothly
         val (yaw, pitch) = updateLookDirection(
-            LookDirection(currentLocation.yaw, currentLocation.pitch),
+            currentDirection,
             LookDirection(targetYaw, targetPitch),
             yawVelocity,
             pitchVelocity
         )
 
-        // Update the current position with the new yaw and pitch
-        currentLocation = PositionProperty(currentLocation.world, currentLocation.x, currentLocation.y, currentLocation.z, yaw, pitch)
+        currentDirection = LookDirection(yaw, pitch)
 
-        return TickResult.CONSUMED
+        return childActivity.tick(context)
     }
 
     override fun dispose(context: ActivityContext) {
         yawVelocity.value = 0f
         pitchVelocity.value = 0f
+
+        childActivity.dispose(context)
     }
 
-    // Return the current position
     override val currentPosition: PositionProperty
-        get() = currentLocation
+        get() = childActivity.currentPosition.copy(yaw = currentDirection.yaw, pitch = currentDirection.pitch)
+
+    override val currentProperties: List<EntityProperty>
+        get() = childActivity.currentProperties.filter { it !is PositionProperty } + currentPosition
 }
