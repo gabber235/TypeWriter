@@ -8,6 +8,7 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.EntityActivityEntry
+import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.engine.paper.entry.entries.GenericEntityActivityEntry
 import com.typewritermc.engine.paper.utils.toBukkitVector
 
@@ -29,19 +30,23 @@ class LookAtBlockActivityEntry(
         context: ActivityContext,
         currentLocation: PositionProperty
     ): EntityActivity<in ActivityContext> {
-        return LookAtBlockActivity(currentLocation, blockPosition.add(0.0, -1.0, 0.0))
+        val activity = childActivity.get() ?: IdleActivity
+        return LookAtBlockActivity(currentLocation, blockPosition.add(0.0, -1.0, 0.0), activity.create(context, currentLocation))
     }
 }
 
 class LookAtBlockActivity(
     private val startLocation: PositionProperty,
-    private val blockPosition: Position
+    private val blockPosition: Position,
+    private val childActivity: EntityActivity<ActivityContext>,
 ) : EntityActivity<ActivityContext> {
     private val yawVelocity = Velocity(0f)
     private val pitchVelocity = Velocity(0f)
     private var currentLocation: PositionProperty = startLocation
 
-    override fun initialize(context: ActivityContext) {}
+    override fun initialize(context: ActivityContext) {
+        childActivity.initialize(context)
+    }
 
     override fun tick(context: ActivityContext): TickResult {
         // Convert block position to Bukkit vector
@@ -67,15 +72,20 @@ class LookAtBlockActivity(
         // Update the current position
         currentLocation = PositionProperty(currentLocation.world, currentLocation.x, currentLocation.y, currentLocation.z, yaw, pitch)
 
-        return TickResult.CONSUMED
+        // Delegate tick result to child activity
+        return childActivity.tick(context)
     }
 
     override fun dispose(context: ActivityContext) {
         yawVelocity.value = 0f
         pitchVelocity.value = 0f
+        childActivity.dispose(context)
     }
 
     // Return the current position
     override val currentPosition: PositionProperty
         get() = currentLocation
+
+    override val currentProperties: List<EntityProperty>
+        get() = childActivity.currentProperties.filter { it !is PositionProperty } + currentPosition
 }
