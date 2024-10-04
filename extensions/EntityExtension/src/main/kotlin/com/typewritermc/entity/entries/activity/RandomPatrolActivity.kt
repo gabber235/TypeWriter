@@ -12,7 +12,6 @@ import com.typewritermc.engine.paper.utils.distanceSqrt
 import com.typewritermc.engine.paper.utils.toBukkitLocation
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent
-import kotlin.random.Random
 
 @Entry("random_patrol_activity", "Moving around a set of locations randomly", Colors.GREEN, "fa6-solid:shuffle")
 /**
@@ -33,8 +32,32 @@ class RandomPatrolActivityEntry(
         currentLocation: PositionProperty
     ): EntityActivity<ActivityContext> {
         if (nodes.isEmpty()) return IdleActivity.create(context, currentLocation)
-        return RandomPatrolActivity(roadNetwork, nodes, currentLocation)
+        val childActivity = RandomPatrolActivity(roadNetwork, nodes, currentLocation)
+        return RandomPatrolActivityWrapper(childActivity)
     }
+}
+
+private class RandomPatrolActivityWrapper(
+    private val childActivity: RandomPatrolActivity
+) : EntityActivity<ActivityContext> {
+
+    override fun initialize(context: ActivityContext) {
+        childActivity.initialize(context)
+    }
+
+    override fun tick(context: ActivityContext): TickResult {
+        return childActivity.tick(context)
+    }
+
+    override fun dispose(context: ActivityContext) {
+        childActivity.dispose(context)
+    }
+
+    override val currentPosition: PositionProperty
+        get() = childActivity.currentPosition
+
+    override val currentProperties: List<EntityProperty>
+        get() = childActivity.currentProperties
 }
 
 private class RandomPatrolActivity(
@@ -79,7 +102,6 @@ private class RandomPatrolActivity(
         refreshActivity(context, network)
     }
 
-
     override fun tick(context: ActivityContext): TickResult {
         if (activity == null) {
             setup(context)
@@ -105,4 +127,7 @@ private class RandomPatrolActivity(
 
     override val currentPosition: PositionProperty
         get() = activity?.currentPosition ?: startLocation
+
+    override val currentProperties: List<EntityProperty>
+        get() = activity?.currentProperties?.filter { it !is PositionProperty } ?: listOf()
 }
