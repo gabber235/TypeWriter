@@ -70,9 +70,9 @@ private class RandomPatrolActivity(
 
     fun refreshActivity(context: ActivityContext, network: RoadNetwork) {
         val randomNodeId = nodes.randomOrNull()
-            ?: throw IllegalStateException("Could not find any node in the nodes list for the random patrol activity.")
+            ?: throw IllegalStateException("Node list is empty for the random patrol activity.")
         val targetNode = network.nodes.find { it.id == randomNodeId }
-            ?: throw IllegalStateException("Could not find any node in the nodes list for the random patrol activity.")
+            ?: throw IllegalStateException("Target node with ID '$randomNodeId' not found in the network for the random patrol activity.")
 
         activity?.dispose(context)
         activity = NavigationActivity(PointToPointGPS(
