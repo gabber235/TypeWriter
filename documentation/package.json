@@ -20,7 +20,7 @@
         "@docusaurus/preset-classic": "^3.5.2",
         "@docusaurus/theme-mermaid": "^3.5.2",
         "@mdx-js/react": "^3.0.1",
-        "@rive-app/react-canvas": "^4.13.8",
+        "@rive-app/react-canvas": "^4.13.9",
         "clsx": "^2.1.1",
         "posthog-docusaurus": "^2.0.1",
         "prism-react-renderer": "^2.4.0",
