@@ -125,6 +125,10 @@ class ChatHistory {
         }
     }
 
+    fun hasMessage(message: Component): Boolean {
+        return messages.any { it.message == message }
+    }
+
     fun clear() {
         messages.clear()
     }
