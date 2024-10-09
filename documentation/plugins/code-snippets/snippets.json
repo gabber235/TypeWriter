@@ -25,7 +25,7 @@
   },
   "audience_entry": {
     "file": "src\\main\\kotlin\\com\\typewritermc\\example\\entries\\manifest\\ExampleAudienceEntry.kt",
-    "content": "@Entry(\"example_audience\", \"An example audience entry.\", Colors.GREEN, \"material-symbols:chat-rounded\")\nclass ExampleAudienceEntry(\n    override val id: String,\n    override val name: String,\n) : AudienceEntry {\n    override fun display(): AudienceDisplay {\n        return ExampleAudienceDisplay()\n    }\n}"
+    "content": "@Entry(\"example_audience\", \"An example audience entry.\", Colors.GREEN, \"material-symbols:chat-rounded\")\nclass ExampleAudienceEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n) : AudienceEntry {\n    override fun display(): AudienceDisplay {\n        return ExampleAudienceDisplay()\n    }\n}"
   },
   "audience_display": {
     "file": "src\\main\\kotlin\\com\\typewritermc\\example\\entries\\manifest\\ExampleAudienceEntry.kt",
@@ -61,7 +61,7 @@
   },
   "sound_source_entry": {
     "file": "src\\main\\kotlin\\com\\typewritermc\\example\\entries\\static\\ExampleSoundSourceEntry.kt",
-    "content": "@Entry(\"example_sound_source\", \"An example sound source entry.\", Colors.BLUE, \"ic:round-spatial-audio-off\")\nclass ExampleSoundSourceEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n) : SoundSourceEntry {\n    override fun getEmitter(): Sound.Emitter {\n        // Return the emitter that should be used for the sound.\n        // A bukkit entity can be used here.\n        return Sound.Emitter.self()\n    }\n}"
+    "content": "@Entry(\"example_sound_source\", \"An example sound source entry.\", Colors.BLUE, \"ic:round-spatial-audio-off\")\nclass ExampleSoundSourceEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n) : SoundSourceEntry {\n    override fun getEmitter(player: Player): SoundEmitter {\n        // Return the emitter that should be used for the sound.\n        // An entity should be provided.\n        return SoundEmitter(player.entityId)\n    }\n}"
   },
   "speaker_entry": {
     "file": "src\\main\\kotlin\\com\\typewritermc\\example\\entries\\static\\ExampleSpeakerEntry.kt",
@@ -81,7 +81,7 @@
   },
   "dialogue_messenger": {
     "file": "src\\main\\kotlin\\com\\typewritermc\\example\\entries\\trigger\\ExampleDialogueEntry.kt",
-    "content": "@Messenger(ExampleDialogueEntry::class)\nclass ExampleDialogueDialogueMessenger(player: Player, entry: ExampleDialogueEntry) :\n    DialogueMessenger<ExampleDialogueEntry>(player, entry) {\n\n    companion object : MessengerFilter {\n        override fun filter(player: Player, entry: DialogueEntry): Boolean = true\n    }\n\n    // Called every game tick (20 times per second).\n    // The cycle is a parameter that is incremented every tick, starting at 0.\n    override fun tick(playTime: Duration) {\n        super.tick(playTime)\n        if (state != MessengerState.RUNNING) return\n\n        player.sendMessage(\"${entry.speakerDisplayName}: ${entry.text}\".parsePlaceholders(player).asMini())\n\n        // When we want the dialogue to end, we can set the state to FINISHED.\n        state = MessengerState.FINISHED\n    }\n}"
+    "content": "@Messenger(ExampleDialogueEntry::class)\nclass ExampleDialogueDialogueMessenger(player: Player, entry: ExampleDialogueEntry) :\n    DialogueMessenger<ExampleDialogueEntry>(player, entry) {\n\n    companion object : MessengerFilter {\n        override fun filter(player: Player, entry: DialogueEntry): Boolean = true\n    }\n\n    // Called every game tick (20 times per second).\n    // The cycle is a parameter that is incremented every tick, starting at 0.\n    override fun tick(context: TickContext) {\n        super.tick(context)\n        if (state != MessengerState.RUNNING) return\n\n        player.sendMessage(\"${entry.speakerDisplayName}: ${entry.text}\".parsePlaceholders(player).asMini())\n\n        // When we want the dialogue to end, we can set the state to FINISHED.\n        state = MessengerState.FINISHED\n    }\n}"
   },
   "event_entry": {
     "file": "src\\main\\kotlin\\com\\typewritermc\\example\\entries\\trigger\\ExampleEventEntry.kt",
