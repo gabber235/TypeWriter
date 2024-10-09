@@ -20,7 +20,7 @@
         "@docusaurus/preset-classic": "^3.5.2",
         "@docusaurus/theme-mermaid": "^3.5.2",
         "@mdx-js/react": "^3.0.1",
-        "@rive-app/react-canvas": "^4.13.5",
+        "@rive-app/react-canvas": "^4.14.4",
         "clsx": "^2.1.1",
         "documentation": "file:",
         "posthog-docusaurus": "^2.0.1",
@@ -38,12 +38,12 @@
         "@docusaurus/tsconfig": "^3.5.2",
         "@docusaurus/types": "^3.5.2",
         "@iconify/react": "^5.0.2",
-        "@types/react": "^18.3.3",
+        "@types/react": "^18.3.11",
         "autoprefixer": "^10.4.20",
         "postcss": "^8.4.41",
         "responsive-loader": "^3.1.2",
         "sharp": "^0.33.5",
-        "tailwindcss": "^3.4.9",
+        "tailwindcss": "^3.4.13",
         "typescript": "^5.5.4"
     },
     "browserslist": {
