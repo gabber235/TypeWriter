@@ -68,6 +68,11 @@ private class RandomPatrolActivity(
     private var currentLocationIndex = 0
     private var activity: EntityActivity<in ActivityContext>? = null
 
+    private fun getNetwork(): RoadNetwork? {
+        return KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java)
+            .getNetworkOrNull(roadNetwork)
+    }
+
     fun refreshActivity(context: ActivityContext, network: RoadNetwork) {
         val randomNodeId = nodes.randomOrNull()
             ?: throw IllegalStateException("Node list is empty for the random patrol activity.")
@@ -87,9 +92,7 @@ private class RandomPatrolActivity(
     override fun initialize(context: ActivityContext) = setup(context)
 
     private fun setup(context: ActivityContext) {
-        val network =
-            KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)
-                ?: return
+        val network = getNetwork() ?: return
 
         // Get the closest node to the start location
         val closestNode = network.nodes
@@ -108,9 +111,7 @@ private class RandomPatrolActivity(
             return TickResult.CONSUMED
         }
 
-        val network =
-            KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork)
-                ?: return TickResult.IGNORED
+        val network = getNetwork() ?: return TickResult.IGNORED
 
         val result = activity?.tick(context)
         if (result == TickResult.IGNORED) {
@@ -129,5 +130,5 @@ private class RandomPatrolActivity(
         get() = activity?.currentPosition ?: startLocation
 
     override val currentProperties: List<EntityProperty>
-        get() = activity?.currentProperties?.filter { it !is PositionProperty } ?: listOf()
+        get() = activity?.currentProperties ?: listOf()
 }
