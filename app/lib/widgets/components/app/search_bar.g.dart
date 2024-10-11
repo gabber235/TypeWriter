@@ -6,6 +6,21 @@ part of 'search_bar.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$searchBarFocusHash() => r'6c71ae13ae8438aae434c6aba9dc6e1bc575a252';
+
+/// See also [searchBarFocus].
+@ProviderFor(searchBarFocus)
+final searchBarFocusProvider = AutoDisposeProvider<FocusNode>.internal(
+  searchBarFocus,
+  name: r'searchBarFocusProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$searchBarFocusHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef SearchBarFocusRef = AutoDisposeProviderRef<FocusNode>;
 String _$searchElementsHash() => r'27e44baceaa5af3207c348ebea9bcc1ac2a63672';
 
 /// See also [searchElements].
