@@ -34,6 +34,11 @@ final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(
 final _quantifierRegex = RegExp(r"!(\w+)");
 
 @riverpod
+FocusNode searchBarFocus(SearchBarFocusRef ref) {
+  return FocusNode();
+}
+
+@riverpod
 List<SearchElement> searchElements(SearchElementsRef ref) {
   final search = ref.watch(searchProvider);
   if (search == null) return [];
@@ -182,10 +187,6 @@ class SearchBar extends HookConsumerWidget {
               ),
               PreviousFocusIntent: CallbackAction<PreviousFocusIntent>(
                 onInvoke: (intent) => _changeFocusUp(context, ref.passing),
-              ),
-              DismissIntent: CallbackAction<DismissIntent>(
-                onInvoke: (intent) =>
-                    ref.read(searchProvider.notifier).endSearch(),
               ),
               ActivateIntent: CallbackAction<ActivateIntent>(
                 onInvoke: (intent) => _activateItem(
@@ -680,6 +681,10 @@ class _ResultTile extends HookConsumerWidget {
       },
       child: Actions(
         actions: {
+          DismissIntent: CallbackAction<DismissIntent>(
+            onInvoke: (intent) =>
+                ref.read(searchBarFocusProvider).requestFocus(),
+          ),
           ActivateActionIntent: CallbackAction<ActivateActionIntent>(
             onInvoke: (intent) => _invokeAction(context, ref.passing, intent),
           ),
@@ -878,7 +883,7 @@ class _SearchBar extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final search = ref.watch(searchProvider);
     final controller = useTextEditingController(text: search?.query ?? "");
-    final focusNode = useFocusNode();
+    final focusNode = ref.watch(searchBarFocusProvider);
 
     useEffect(
       () {
@@ -894,43 +899,50 @@ class _SearchBar extends HookConsumerWidget {
       [focusNode],
     );
 
-    return Material(
-      elevation: 3.0,
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 12),
-          Iconify(
-            TWIcons.magnifyingGlass,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          Expanded(
-            child: DecoratedTextField(
-              text: search?.query,
-              controller: controller,
-              focus: focusNode,
-              autofocus: true,
-              decoration: const InputDecoration(
-                hintText: "Enter search query...",
-                border: InputBorder.none,
-                filled: false,
-              ),
-              onChanged: (query) {
-                ref.read(searchProvider.notifier).updateQuery(query);
-              },
-              onSubmitted: (query) =>
-                  ref.read(searchProvider.notifier).endSearch(),
+    return Actions(
+      actions: {
+        DismissIntent: CallbackAction<DismissIntent>(
+          onInvoke: (intent) => ref.read(searchProvider.notifier).endSearch(),
+        ),
+      },
+      child: Material(
+        elevation: 3.0,
+        color: Theme.of(context).cardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 12),
+            Iconify(
+              TWIcons.magnifyingGlass,
+              color: Theme.of(context).iconTheme.color,
             ),
-          ),
-          IconButton(
-            icon: const Iconify(TWIcons.x),
-            onPressed: () => ref.read(searchProvider.notifier).endSearch(),
-          ),
-          const SizedBox(width: 4),
-        ],
+            Expanded(
+              child: DecoratedTextField(
+                text: search?.query,
+                controller: controller,
+                focus: focusNode,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: "Enter search query...",
+                  border: InputBorder.none,
+                  filled: false,
+                ),
+                onChanged: (query) {
+                  ref.read(searchProvider.notifier).updateQuery(query);
+                },
+                onSubmitted: (query) =>
+                    ref.read(searchProvider.notifier).endSearch(),
+              ),
+            ),
+            IconButton(
+              icon: const Iconify(TWIcons.x),
+              onPressed: () => ref.read(searchProvider.notifier).endSearch(),
+            ),
+            const SizedBox(width: 4),
+          ],
+        ),
       ),
     );
   }
