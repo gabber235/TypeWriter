@@ -6,7 +6,7 @@ part of 'entry_search.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fuzzyEntriesHash() => r'687dbe4174b0e52b9966a9bc3a28a869a9d96f13';
+String _$fuzzyEntriesHash() => r'74ae5c41869bc19020a441c2435809bc9670fa7f';
 
 /// See also [_fuzzyEntries].
 @ProviderFor(_fuzzyEntries)
