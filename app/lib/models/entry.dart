@@ -347,6 +347,8 @@ class Entry {
     } else if (map.containsKey(first)) {
       if (parts.isEmpty) return [first];
       return _newPaths(newPath, map[first]).map((p) => "$first.$p").toList();
+    } else if (parts.isEmpty) {
+      return [first];
     }
     return [];
   }
