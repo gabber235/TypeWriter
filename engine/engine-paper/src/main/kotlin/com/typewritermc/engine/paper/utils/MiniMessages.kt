@@ -19,7 +19,25 @@ import org.bukkit.command.CommandSender
 private val mm = MiniMessage.builder()
     .tags(
         TagResolver.builder()
-            .resolver(StandardTags.defaults())
+            .resolvers(
+                StandardTags.decorations(),
+                StandardTags.color(),
+                StandardTags.hoverEvent(),
+                StandardTags.clickEvent(),
+                StandardTags.keybind(),
+                StandardTags.translatable(),
+                StandardTags.translatableFallback(),
+                StandardTags.insertion(),
+                StandardTags.font(),
+                StandardTags.gradient(),
+                StandardTags.rainbow(),
+                StandardTags.transition(),
+                StandardTags.reset(),
+//                StandardTags.newline(), // Disable because breaks most formatting
+                StandardTags.selector(),
+                StandardTags.score(),
+                StandardTags.nbt(),
+            )
             .tag("confirmation_key") { _, _ -> Tag.preProcessParsed(confirmationKey.keybind) }
             .resolver(Placeholder.parsed("line", "<#ECFFF8><bold>│</bold></#ECFFF8><white>"))
             .build()
