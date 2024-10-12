@@ -25,10 +25,6 @@ class InspectingEntryNotifier extends StateNotifier<String?> {
       ref.read(inspectingSegmentIdProvider.notifier).clear();
     }
     state = id;
-
-    print(
-      "Selected entry $id, data: ${ref.read(inspectingEntryProvider)?.data}",
-    );
   }
 
   void clearSelection() {

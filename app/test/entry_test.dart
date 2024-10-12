@@ -300,6 +300,12 @@ void main() {
 
       expect(paths, ["simple_map.key1"]);
     });
+    test("Static non-existing path returns path", () {
+      final entry = Entry(rawDynamicEntry);
+      final paths = entry.newPaths("non_existing");
+
+      expect(paths, ["non_existing"]);
+    });
     test("Simple list returns path with next index", () {
       final entry = Entry(rawDynamicEntry);
       final paths = entry.newPaths("simple_list.*");
