@@ -32,103 +32,12 @@ class RandomPatrolActivityEntry(
         currentLocation: PositionProperty
     ): EntityActivity<ActivityContext> {
         if (nodes.isEmpty()) return IdleActivity.create(context, currentLocation)
-        val childActivity = RandomPatrolActivity(roadNetwork, nodes, currentLocation)
-        return RandomPatrolActivityWrapper(childActivity)
-    }
-}
-
-private class RandomPatrolActivityWrapper(
-    private val childActivity: RandomPatrolActivity
-) : EntityActivity<ActivityContext> {
-
-    override fun initialize(context: ActivityContext) {
-        childActivity.initialize(context)
-    }
-
-    override fun tick(context: ActivityContext): TickResult {
-        return childActivity.tick(context)
-    }
-
-    override fun dispose(context: ActivityContext) {
-        childActivity.dispose(context)
-    }
-
-    override val currentPosition: PositionProperty
-        get() = childActivity.currentPosition
-
-    override val currentProperties: List<EntityProperty>
-        get() = childActivity.currentProperties
-}
-
-private class RandomPatrolActivity(
-    private val roadNetwork: Ref<RoadNetworkEntry>,
-    private val nodes: List<RoadNodeId>,
-    private val startLocation: PositionProperty,
-) : EntityActivity<ActivityContext>, KoinComponent {
-    private var currentLocationIndex = 0
-    private var activity: EntityActivity<in ActivityContext>? = null
-
-    private fun getNetwork(): RoadNetwork? {
-        return KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java)
-            .getNetworkOrNull(roadNetwork)
-    }
-
-    fun refreshActivity(context: ActivityContext, network: RoadNetwork) {
-        val randomNodeId = nodes.randomOrNull()
-            ?: throw IllegalStateException("Node list is empty for the random patrol activity.")
-        val targetNode = network.nodes.find { it.id == randomNodeId }
-            ?: throw IllegalStateException("Target node with ID '$randomNodeId' not found in the network for the random patrol activity.")
-
-        activity?.dispose(context)
-        activity = NavigationActivity(PointToPointGPS(
-            roadNetwork,
-            { currentPosition.toBukkitLocation() }) {
-            targetNode.location
-        }, currentPosition
-        )
-        activity?.initialize(context)
-    }
-
-    override fun initialize(context: ActivityContext) = setup(context)
-
-    private fun setup(context: ActivityContext) {
-        val network = getNetwork() ?: return
-
-        // Get the closest node to the start location
-        val closestNode = network.nodes
-            .filter { it.id in nodes }
-            .minByOrNull { it.location.distanceSqrt(startLocation.toBukkitLocation()) ?: Double.MAX_VALUE }
-            ?: throw IllegalStateException("Could not find any node in the nodes list for the random patrol activity.")
-
-        val index = nodes.indexOf(closestNode.id)
-        currentLocationIndex = (index + 1) % nodes.size
-        refreshActivity(context, network)
-    }
-
-    override fun tick(context: ActivityContext): TickResult {
-        if (activity == null) {
-            setup(context)
-            return TickResult.CONSUMED
+        return PatrolActivity(roadNetwork, nodes, currentLocation) { nodes, index ->
+            var nextIndex: Int
+            do {
+                nextIndex = nodes.indices.random()
+            } while (nextIndex == index)
+            nextIndex
         }
-
-        val network = getNetwork() ?: return TickResult.IGNORED
-
-        val result = activity?.tick(context)
-        if (result == TickResult.IGNORED) {
-            refreshActivity(context, network) // Select a random node
-        }
-
-        return TickResult.CONSUMED
     }
-
-    override fun dispose(context: ActivityContext) {
-        activity?.dispose(context)
-        activity = null
-    }
-
-    override val currentPosition: PositionProperty
-        get() = activity?.currentPosition ?: startLocation
-
-    override val currentProperties: List<EntityProperty>
-        get() = activity?.currentProperties ?: listOf()
 }

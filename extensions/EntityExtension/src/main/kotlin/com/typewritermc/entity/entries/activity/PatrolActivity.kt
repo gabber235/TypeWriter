@@ -34,14 +34,17 @@ class PatrolActivityEntry(
         currentLocation: PositionProperty
     ): EntityActivity<ActivityContext> {
         if (nodes.isEmpty()) return IdleActivity.create(context, currentLocation)
-        return PatrolActivity(roadNetwork, nodes, currentLocation)
+        return PatrolActivity(roadNetwork, nodes, currentLocation) { nodes, index ->
+            (index + 1) % nodes.size
+        }
     }
 }
 
-private class PatrolActivity(
+class PatrolActivity(
     private val roadNetwork: Ref<RoadNetworkEntry>,
     private val nodes: List<RoadNodeId>,
     private val startLocation: PositionProperty,
+    private val nextNodeIndexFetcher: (List<RoadNodeId>, Int) -> Int,
 ) : EntityActivity<ActivityContext>, KoinComponent {
     private var currentLocationIndex = 0
     private var activity: EntityActivity<in ActivityContext>? = null
@@ -76,7 +79,7 @@ private class PatrolActivity(
             ?: return
 
         val index = nodes.indexOf(closestNode.id)
-        currentLocationIndex = (index + 1) % nodes.size
+        currentLocationIndex = nextNodeIndexFetcher(nodes, index)
         refreshActivity(context, network)
     }
 
@@ -93,7 +96,7 @@ private class PatrolActivity(
 
         val result = activity?.tick(context)
         if (result == TickResult.IGNORED) {
-            currentLocationIndex = (currentLocationIndex + 1) % nodes.size
+            currentLocationIndex = nextNodeIndexFetcher(nodes, currentLocationIndex)
             refreshActivity(context, network)
         }
 
