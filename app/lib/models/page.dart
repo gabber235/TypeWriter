@@ -28,6 +28,11 @@ Page? page(PageRef ref, String pageId) {
 }
 
 @riverpod
+String? pageName(PageNameRef ref, String pageId) {
+  return ref.watch(pageProvider(pageId))?.pageName;
+}
+
+@riverpod
 bool pageExists(PageExistsRef ref, String pageId) {
   return ref.watch(pageProvider(pageId)) != null;
 }

@@ -199,6 +199,133 @@ class _PageProviderElement extends AutoDisposeProviderElement<Page?>
   String get pageId => (origin as PageProvider).pageId;
 }
 
+String _$pageNameHash() => r'c1089bcbebabddfc3bb11a9ba52b4019a761cd11';
+
+/// See also [pageName].
+@ProviderFor(pageName)
+const pageNameProvider = PageNameFamily();
+
+/// See also [pageName].
+class PageNameFamily extends Family<String?> {
+  /// See also [pageName].
+  const PageNameFamily();
+
+  /// See also [pageName].
+  PageNameProvider call(
+    String pageId,
+  ) {
+    return PageNameProvider(
+      pageId,
+    );
+  }
+
+  @override
+  PageNameProvider getProviderOverride(
+    covariant PageNameProvider provider,
+  ) {
+    return call(
+      provider.pageId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'pageNameProvider';
+}
+
+/// See also [pageName].
+class PageNameProvider extends AutoDisposeProvider<String?> {
+  /// See also [pageName].
+  PageNameProvider(
+    String pageId,
+  ) : this._internal(
+          (ref) => pageName(
+            ref as PageNameRef,
+            pageId,
+          ),
+          from: pageNameProvider,
+          name: r'pageNameProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$pageNameHash,
+          dependencies: PageNameFamily._dependencies,
+          allTransitiveDependencies: PageNameFamily._allTransitiveDependencies,
+          pageId: pageId,
+        );
+
+  PageNameProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.pageId,
+  }) : super.internal();
+
+  final String pageId;
+
+  @override
+  Override overrideWith(
+    String? Function(PageNameRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PageNameProvider._internal(
+        (ref) => create(ref as PageNameRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        pageId: pageId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<String?> createElement() {
+    return _PageNameProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PageNameProvider && other.pageId == pageId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, pageId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin PageNameRef on AutoDisposeProviderRef<String?> {
+  /// The parameter `pageId` of this provider.
+  String get pageId;
+}
+
+class _PageNameProviderElement extends AutoDisposeProviderElement<String?>
+    with PageNameRef {
+  _PageNameProviderElement(super.provider);
+
+  @override
+  String get pageId => (origin as PageNameProvider).pageId;
+}
+
 String _$pageExistsHash() => r'68e3ea46a1e212bb9bc01ac653a749e9668d47f3';
 
 /// See also [pageExists].
