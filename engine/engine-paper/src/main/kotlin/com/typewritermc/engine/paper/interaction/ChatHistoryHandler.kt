@@ -11,11 +11,13 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSy
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.snippets.snippet
+import com.typewritermc.engine.paper.utils.asMiniWithResolvers
 import com.typewritermc.engine.paper.utils.plainText
 import lirand.api.extensions.server.server
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -61,7 +63,13 @@ class ChatHistoryHandler :
             PacketType.Play.Server.CHAT_MESSAGE -> {
                 val packet = WrapperPlayServerChatMessage(event)
                 val message = packet.message as? ChatMessage_v1_19_3 ?: return packet.message.chatContent
-                message.unsignedChatContent.orElseGet { message.chatContent }
+                message.unsignedChatContent.orElseGet {
+                    // Use the default minecraft formatting
+                    "\\<<name>> <message>".asMiniWithResolvers(
+                        Placeholder.component("name", message.chatFormatting.name),
+                        Placeholder.component("message", message.chatContent)
+                    )
+                }
             }
 
             PacketType.Play.Server.SYSTEM_CHAT_MESSAGE -> {
