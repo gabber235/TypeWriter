@@ -265,7 +265,10 @@ class _TreeCategory extends HookConsumerWidget {
           },
           child: DragTarget<PageDrag>(
             onWillAcceptWithDetails: (details) {
-              return ref.read(_pageNamesProvider).contains(details.data.pageId);
+              return ref
+                  .read(_pagesDataProvider)
+                  .map((page) => page.id)
+                  .contains(details.data.pageId);
             },
             onAcceptWithDetails: (details) {
               final pageId = details.data.pageId;
@@ -468,7 +471,8 @@ class _PageTile extends HookConsumerWidget {
               return DragTarget<PageDrag>(
                 onWillAcceptWithDetails: (details) {
                   return ref
-                      .read(_pageNamesProvider)
+                      .read(_pagesDataProvider)
+                      .map((page) => page.id)
                       .contains(details.data.pageId);
                 },
                 onAcceptWithDetails: (details) {
@@ -720,8 +724,8 @@ class AddPageDialogue extends HookConsumerWidget {
     final name = useState("");
     final isNameValid = useState(false);
     final type = useState(fixedType ?? PageType.sequence);
-    final chapterController = useTextEditingController(text: chapter);
-    final priorityController = useTextEditingController(text: "0");
+    final chapter = useState(this.chapter);
+    final priority = useState(0);
 
     final chapterFocus = useFocusNode();
     final priorityFocus = useFocusNode();
@@ -778,8 +782,7 @@ class AddPageDialogue extends HookConsumerWidget {
               const SizedBox(height: 12),
               FormattedTextField(
                 focus: chapterFocus,
-                controller: chapterController,
-                text: chapter,
+                text: chapter.value,
                 hintText: "Chapter Name",
                 icon: TWIcons.book,
                 inputFormatters: [
@@ -795,16 +798,18 @@ class AddPageDialogue extends HookConsumerWidget {
                   FilteringTextInputFormatter.singleLineFormatter,
                   FilteringTextInputFormatter.allow(RegExp("[a-z0-9.]")),
                 ],
+                onChanged: (value) => chapter.value = value,
               ),
               const SizedBox(height: 12),
               FormattedTextField(
                 focus: priorityFocus,
-                controller: priorityController,
+                text: priority.value.toString(),
                 hintText: "Priority",
                 icon: TWIcons.priority,
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r"^-?\d*")),
                 ],
+                onChanged: (value) => priority.value = int.parse(value),
               ),
             ],
           ),
@@ -828,8 +833,8 @@ class AddPageDialogue extends HookConsumerWidget {
                     ref,
                     name.value,
                     type.value,
-                    chapterController.text,
-                    int.tryParse(priorityController.text) ?? 0,
+                    chapter.value,
+                    priority.value,
                   );
                   navigator.pop(pageId);
                 },
@@ -947,7 +952,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useTextEditingController();
+    final chapter = useState(this.chapter);
     final focusNode = useFocusNode();
     final changed = useState(false);
 
@@ -956,9 +961,8 @@ class ChangeChapterDialogue extends HookConsumerWidget {
     return AlertDialog(
       title: Text("Change chapter of ${ref.watch(pageNameProvider(pageId))}"),
       content: FormattedTextField(
-        controller: controller,
         focus: focusNode,
-        text: chapter,
+        text: chapter.value,
         hintText: "Chapter Name",
         icon: TWIcons.book,
         inputFormatters: [
@@ -974,6 +978,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
           FilteringTextInputFormatter.singleLineFormatter,
           FilteringTextInputFormatter.allow(RegExp("[a-z0-9.]")),
         ],
+        onChanged: (value) => chapter.value = value,
         onSubmitted: (value) async =>
             _changeChapter(context, ref.passing, value, changed),
       ),
@@ -990,7 +995,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
           onPressed: () async => _changeChapter(
             context,
             ref.passing,
-            controller.text,
+            chapter.value,
             changed,
           ),
           label: const Text("Change"),
