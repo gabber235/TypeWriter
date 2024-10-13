@@ -8,12 +8,15 @@ import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
 import com.typewritermc.engine.paper.utils.Color
+import com.typewritermc.engine.paper.utils.ThreadType
 import com.typewritermc.engine.paper.utils.toPacketLocation
+import kotlinx.coroutines.delay
 import me.tofaa.entitylib.EntityLib
 import me.tofaa.entitylib.meta.Metadata
 import me.tofaa.entitylib.meta.other.FireworkRocketMeta
@@ -23,6 +26,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.FireworkMeta
+import java.time.Duration
 import java.util.*
 
 private const val FIREWORK_EXPLOSION_STATUS = 17
@@ -42,7 +46,8 @@ class FireworkActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     val location: Position = Position.ORIGIN,
     val effects: List<FireworkEffectConfig> = emptyList(),
-    val power: Int = 0,
+    @Default("0")
+    val flightDuration: Duration = Duration.ZERO,
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
@@ -52,7 +57,6 @@ class FireworkActionEntry(
             this@FireworkActionEntry.effects.forEach { effect ->
                 meta.addEffect(effect.toBukkitEffect())
             }
-            meta.power = this@FireworkActionEntry.power
         }
 
         val uuid = UUID.randomUUID()
@@ -63,8 +67,16 @@ class FireworkActionEntry(
         val entity = WrapperEntity(entityId, uuid, EntityTypes.FIREWORK_ROCKET, meta)
         entity.addViewer(player.uniqueId)
         entity.spawn(location.toPacketLocation())
-        WrapperPlayServerEntityStatus(entityId, FIREWORK_EXPLOSION_STATUS) sendPacketTo player
-        entity.despawn()
+        if (flightDuration.isZero) {
+            WrapperPlayServerEntityStatus(entityId, FIREWORK_EXPLOSION_STATUS) sendPacketTo player
+            entity.despawn()
+            return
+        }
+        ThreadType.DISPATCHERS_ASYNC.launch {
+            delay(flightDuration.toMillis())
+            WrapperPlayServerEntityStatus(entityId, FIREWORK_EXPLOSION_STATUS) sendPacketTo player
+            entity.despawn()
+        }
     }
 }
 
