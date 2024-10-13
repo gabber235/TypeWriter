@@ -39,7 +39,7 @@ class VindicatorDefinition(
     override fun create(player: Player): FakeEntity = VindicatorEntity(player)
 }
 
-@Entry("vindicator_instance", "An instance of a vindicator entity", Colors.YELLOW, "game-icons:memory:axe")
+@Entry("vindicator_instance", "An instance of a vindicator entity", Colors.YELLOW, "memory:axe")
 class VindicatorInstance(
     override val id: String = "",
     override val name: String = "",
