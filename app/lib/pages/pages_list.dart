@@ -954,7 +954,7 @@ class ChangeChapterDialogue extends HookConsumerWidget {
     useDelayedExecution(focusNode.requestFocus);
 
     return AlertDialog(
-      title: Text("Change chapter of ${pageId.formatted}"),
+      title: Text("Change chapter of ${ref.watch(pageNameProvider(pageId))}"),
       content: FormattedTextField(
         controller: controller,
         focus: focusNode,
