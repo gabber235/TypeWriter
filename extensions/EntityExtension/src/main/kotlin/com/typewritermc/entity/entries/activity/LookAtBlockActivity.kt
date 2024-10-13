@@ -6,11 +6,11 @@ import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.utils.point.Position
+import com.typewritermc.core.utils.point.toVector
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.EntityActivityEntry
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.engine.paper.entry.entries.GenericEntityActivityEntry
-import com.typewritermc.engine.paper.utils.toBukkitVector
 
 @Entry("look_at_block_activity", "A look at block activity", Colors.BLUE, "fa6-solid:cube")
 /**
@@ -31,7 +31,11 @@ class LookAtBlockActivityEntry(
         currentLocation: PositionProperty
     ): EntityActivity<in ActivityContext> {
         val activity = childActivity.get() ?: IdleActivity
-        return LookAtBlockActivity(currentLocation, blockPosition.add(0.0, -1.0, 0.0), activity.create(context, currentLocation))
+        return LookAtBlockActivity(
+            currentLocation,
+            blockPosition.add(0.0, -1.0, 0.0),
+            activity.create(context, currentLocation)
+        )
     }
 }
 
@@ -42,37 +46,29 @@ class LookAtBlockActivity(
 ) : EntityActivity<ActivityContext> {
     private val yawVelocity = Velocity(0f)
     private val pitchVelocity = Velocity(0f)
-    private var currentLocation: PositionProperty = startLocation
+    private var currentDirection: LookDirection = LookDirection(startLocation.yaw, startLocation.pitch)
 
     override fun initialize(context: ActivityContext) {
         childActivity.initialize(context)
     }
 
     override fun tick(context: ActivityContext): TickResult {
-        // Convert block position to Bukkit vector
-        val blockVector = blockPosition.toBukkitVector()
-        // Convert NPC's eye position to Bukkit vector
-        val npcEyeVector = currentLocation.toBukkitVector()
+        val npcEyeVector = currentPosition.add(y = context.entityState.eyeHeight)
 
-        // Calculate direction to the block
-        val direction = blockVector.clone().subtract(npcEyeVector).normalize()
+        val direction = blockPosition.minus(npcEyeVector).toVector().normalize()
 
-        // Calculate target yaw and pitch
         val targetYaw = getLookYaw(direction.x, direction.z)
-        val targetPitch = getLookPitch(0.0, direction.y, direction.length()) // Use length for pitch
+        val targetPitch = getLookPitch(direction.x, direction.y, direction.z)
 
-        // Update entity's yaw and pitch smoothly
         val (yaw, pitch) = updateLookDirection(
-            LookDirection(currentLocation.yaw, currentLocation.pitch),
+            currentDirection,
             LookDirection(targetYaw, targetPitch),
             yawVelocity,
             pitchVelocity
         )
 
-        // Update the current position
-        currentLocation = PositionProperty(currentLocation.world, currentLocation.x, currentLocation.y, currentLocation.z, yaw, pitch)
+        currentDirection = LookDirection(yaw, pitch)
 
-        // Delegate tick result to child activity
         return childActivity.tick(context)
     }
 
@@ -82,9 +78,8 @@ class LookAtBlockActivity(
         childActivity.dispose(context)
     }
 
-    // Return the current position
     override val currentPosition: PositionProperty
-        get() = currentLocation
+        get() = childActivity.currentPosition.copy(yaw = currentDirection.yaw, pitch = currentDirection.pitch)
 
     override val currentProperties: List<EntityProperty>
         get() = childActivity.currentProperties.filter { it !is PositionProperty } + currentPosition
