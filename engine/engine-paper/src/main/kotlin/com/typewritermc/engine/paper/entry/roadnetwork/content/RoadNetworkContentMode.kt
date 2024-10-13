@@ -18,6 +18,7 @@ import com.typewritermc.engine.paper.entry.roadnetwork.RoadNetworkEditorState
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.extensions.packetevents.toVector3d
+import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.*
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
 import net.kyori.adventure.bossbar.BossBar
@@ -30,6 +31,8 @@ import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
 import java.util.*
 import kotlin.math.pow
+
+private val showEdgeDistance by snippet("content.road_network.show_edge_distance", 30.0, "The distance at which the edge particles will still be shown")
 
 class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentMode(context, player), KoinComponent {
     private lateinit var ref: Ref<RoadNetworkEntry>
@@ -273,7 +276,7 @@ internal class NetworkEdgesComponent(
         showingEdges = fetchEdges()
             .filter {
                 (nodes[it.start]?.location?.distanceSqrt(player.location)
-                    ?: Double.MAX_VALUE) < (roadNetworkMaxDistance * roadNetworkMaxDistance)
+                    ?: Double.MAX_VALUE) < (showEdgeDistance * showEdgeDistance)
             }
             .mapNotNull { edge ->
                 val start = nodes[edge.start]?.location ?: return@mapNotNull null
