@@ -39,7 +39,7 @@ internal class DisplayEntity(
         if ((lastSoundLocation.distanceSqrt(activityManager.position) ?: 0.0) > 1.7) {
             lastSoundLocation = activityManager.position
             val sound = lastSoundLocation.toBukkitLocation().block.blockData.soundGroup.stepSound
-            player.playSound(lastSoundLocation.toBukkitLocation(), sound, SoundCategory.PLAYERS, 0.4f, 1.0f)
+            player.playSound(lastSoundLocation.toBukkitLocation(), sound, SoundCategory.NEUTRAL, 0.4f, 1.0f)
         }
     }
 

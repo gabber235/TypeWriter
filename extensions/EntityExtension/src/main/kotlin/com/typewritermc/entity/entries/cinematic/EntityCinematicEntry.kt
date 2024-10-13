@@ -21,10 +21,12 @@ import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.packetevents.ArmSwing
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
+import com.typewritermc.engine.paper.utils.toBukkitLocation
 import com.typewritermc.entity.entries.data.minecraft.*
 import com.typewritermc.entity.entries.data.minecraft.living.EquipmentProperty
 import io.papermc.paper.event.player.PlayerArmSwingEvent
 import org.bukkit.Location
+import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
 import org.bukkit.entity.Pose
 import org.bukkit.event.EventHandler
@@ -168,10 +170,36 @@ class EntityCinematicAction(
 
         val collectedProperties = collectors.mapNotNull { it.collect(player) }
         this.entity?.consumeProperties(collectedProperties)
+
+        trackStepSound()
+    }
+
+    private var lastSoundLocation: PositionProperty? = null
+    private fun trackStepSound() {
+        val location = entity?.property<PositionProperty>() ?: return
+        val lastLocation = lastSoundLocation
+        if (lastLocation == null) {
+            lastSoundLocation = location
+            return
+        }
+
+        val distance = location.distanceSqrt(lastLocation) ?: 0.0
+        if (distance < 1.7) return
+        playStepSound()
+        lastSoundLocation = location
+    }
+
+    private fun playStepSound() {
+        val location = entity?.property<PositionProperty>() ?: return
+        val sound = location.toBukkitLocation().block.blockData.soundGroup.stepSound
+        player.playSound(location.toBukkitLocation(), sound, SoundCategory.NEUTRAL, 0.4f, 1.0f)
     }
 
     override suspend fun stopSegment(segment: EntityRecordedSegment) {
         super.stopSegment(segment)
+
+        lastSoundLocation = null
+
         this.entity?.dispose()
         this.entity = null
     }
