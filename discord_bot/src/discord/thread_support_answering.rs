@@ -74,6 +74,13 @@ impl EventHandler for SupportAnsweringHandler {
             }
         };
 
+        println!(
+            "Marking thread {} ({}) as {}",
+            thread.id,
+            thread.name(),
+            if is_support { "Answered" } else { "Pending" }
+        );
+
         let new_tags = if is_support {
             vec![support_tag, answered_tag]
         } else {
