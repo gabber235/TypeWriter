@@ -1,23 +1,31 @@
 use async_openai::{
     error::OpenAIError,
     types::{
-        ChatCompletionRequestAssistantMessageArgs, ChatCompletionRequestMessage,
-        ChatCompletionRequestSystemMessageArgs, ChatCompletionRequestUserMessageArgs,
-        ChatCompletionToolArgs, ChatCompletionToolType, CreateChatCompletionRequestArgs,
-        FunctionObjectArgs,
+        ChatCompletionRequestAssistantMessageArgs, ChatCompletionRequestAssistantMessageContent,
+        ChatCompletionRequestMessage, ChatCompletionRequestSystemMessageArgs,
+        ChatCompletionRequestUserMessageArgs, ChatCompletionRequestUserMessageContent,
+        ChatCompletionToolArgs, ChatCompletionToolType, CreateChatCompletionRequest,
+        CreateChatCompletionRequestArgs, FunctionObjectArgs,
     },
     Client,
 };
 use async_trait::async_trait;
 use indoc::formatdoc;
+use itertools::Itertools;
 use once_cell::sync::Lazy;
-use poise::serenity_prelude::{
-    Context, CreateEmbed, CreateMessage, EditThread, EventHandler, GetMessages, GuildChannel,
-    Mentionable, Message,
+use poise::{
+    serenity_prelude::{
+        CacheHttp, Context, CreateAttachment, CreateEmbed, CreateMessage, EditThread, EventHandler,
+        GetMessages, GuildChannel, Mentionable, Message,
+    },
+    CreateReply,
 };
 use serde_json::json;
+use std::{fs, path::Path};
 
-use crate::{webhooks::GetTagId, QUESTIONS_FORUM_ID, SUPPORT_ROLE_ID};
+use crate::{
+    check_is_support, webhooks::GetTagId, WinstonError, QUESTIONS_FORUM_ID, SUPPORT_ROLE_ID,
+};
 
 pub struct ThreadIntakeHandler;
 
@@ -54,7 +62,7 @@ impl EventHandler for ThreadIntakeHandler {
             .await
             .ok();
 
-        send_intake_reply(&ctx, &mut thread).await;
+        println!("Started intake process for {}", thread.name());
     }
 
     async fn message(&self, ctx: Context, new_message: Message) {
@@ -97,18 +105,24 @@ impl EventHandler for ThreadIntakeHandler {
             return;
         };
 
-        if !thread.applied_tags.iter().any(|tag| *tag == intake_tag) {
+        if !thread.applied_tags.iter().any(|tag| *tag == intake_tag)
+            && thread.applied_tags.len() > 1
+        {
             return;
         }
 
         // We want to have a few safety checks to make sure we don't get a super high open AI bill.
 
         if thread.message_count.unwrap_or(0) > 10 {
-            complete_intake(&ctx, &mut thread, IntakeCompletion::TooManyMessages).await;
+            println!(
+                "Force close intake process for {} because of to many messages",
+                thread.name()
+            );
+            complete_intake_with(&ctx, &mut thread, IntakeCompletion::TooManyMessages).await;
             return;
         }
 
-        send_intake_reply(&ctx, &mut thread).await;
+        send_intake_reply(&ctx, &mut thread, &new_message).await;
     }
 }
 
@@ -154,7 +168,11 @@ impl IntakeCompletion {
     }
 }
 
-async fn complete_intake(ctx: &Context, thread: &mut GuildChannel, completion: IntakeCompletion) {
+async fn complete_intake_with(
+    ctx: &impl CacheHttp,
+    thread: &mut GuildChannel,
+    completion: IntakeCompletion,
+) {
     let Some(parent) = thread.parent_id else {
         return;
     };
@@ -216,89 +234,52 @@ async fn complete_intake(ctx: &Context, thread: &mut GuildChannel, completion: I
     }
 }
 
-static INTAKE_SYSTEM_MESSAGE: Lazy<String> =
-    Lazy::new(|| std::fs::read_to_string("ai/intake_system_message.md").unwrap());
+fn get_system_message() -> String {
+    let mut system_message = fs::read_to_string("/usr/local/bin/ai/intake_system_message.md")
+        .expect("Failed to read intake system message");
 
-async fn send_intake_reply(ctx: &Context, thread: &mut GuildChannel) {
-    thread.broadcast_typing(&ctx).await;
+    let mut examples = String::new();
+    let examples_folder = Path::new("/usr/local/bin/ai/intake_examples");
 
-    let discord_messages = match thread
-        .messages(&ctx, GetMessages::default().limit(11))
-        .await
-    {
-        Ok(messages) => messages,
-        Err(e) => {
-            eprintln!("Error getting messages: {}", e);
-            return;
+    if examples_folder.exists() {
+        for entry in fs::read_dir(examples_folder).expect("Failed to read examples folder") {
+            let entry = entry.expect("Failed to read directory entry");
+            let path = entry.path();
+
+            if path.is_file() {
+                let content =
+                    fs::read_to_string(&path).expect(&format!("Failed to read file: {:?}", path));
+                examples.push_str(&formatdoc! {"
+                    <example>
+                    {}
+                    </example>
+                    ", content.trim_end_matches('\n')
+                });
+            }
         }
+    } else {
+        panic!("Examples folder does not exist.");
+    }
+
+    system_message =
+        system_message.replace("<#include_examples>", &examples.trim_end_matches('\n'));
+
+    system_message
+}
+
+static INTAKE_SYSTEM_MESSAGE: Lazy<String> = Lazy::new(get_system_message);
+
+async fn send_intake_reply(ctx: &Context, thread: &mut GuildChannel, message: &Message) {
+    let _ = thread.broadcast_typing(&ctx).await;
+
+    let Some(request) = create_ai_request(&ctx, &thread).await else {
+        return;
     };
-
-    let mut messages = discord_messages
-        .iter()
-        .filter_map(|message| ai_message(message).ok())
-        .collect::<Vec<_>>();
-
-    messages.insert(
-        0,
-        ChatCompletionRequestSystemMessageArgs::default()
-            .content(INTAKE_SYSTEM_MESSAGE.as_str())
-            .build()
-            .unwrap_or_default()
-            .into(),
-    );
-
-    messages.insert(
-        1,
-        ChatCompletionRequestUserMessageArgs::default()
-            .content(format!("# {}", thread.name()))
-            .build()
-            .unwrap_or_default()
-            .into(),
-    );
-
-    let request = match CreateChatCompletionRequestArgs::default()
-        .max_tokens(512u32)
-        .model("gpt-4o-mini")
-        .messages(messages)
-        .temperature(0.6)
-        .tools(vec![ChatCompletionToolArgs::default()
-            .r#type(ChatCompletionToolType::Function)
-            .function(
-                FunctionObjectArgs::default()
-                    .name("complete_intake")
-                    .description("Complete the intake process, indicating success or failure.")
-                    .strict(true)
-                    .parameters(json!({
-                        "type": "object",
-                        "required": [
-                          "success"
-                        ],
-                        "properties": {
-                          "success": {
-                            "type": "boolean",
-                            "description": "Indicates whether the users has provided the required information or not."
-                          }
-                        },
-                        "additionalProperties": false
-                    }))
-                    .build()
-                    .unwrap_or_default(),
-            )
-            .build()
-            .unwrap_or_default()])
-            .build()
-            {
-                Ok(request) => request,
-                Err(e) => {
-                    eprintln!("Error creating chat completion request: {}", e);
-                    return;
-                }
-            };
 
     let client = Client::new();
 
     let response = client.chat().create(request).await;
-    let message = match response {
+    let ai_message = match response {
         Ok(response) => response
             .choices
             .first()
@@ -309,7 +290,7 @@ async fn send_intake_reply(ctx: &Context, thread: &mut GuildChannel) {
         }
     };
 
-    let message = match message {
+    let ai_message = match ai_message {
         Some(message) => message,
         None => {
             eprintln!("No message in chat completion response");
@@ -317,13 +298,15 @@ async fn send_intake_reply(ctx: &Context, thread: &mut GuildChannel) {
         }
     };
 
-    if let Some(content) = message.content {
-        if let Err(err) = thread.say(&ctx, content).await {
+    println!("Got message back from AI: {:?}", ai_message);
+
+    if let Some(content) = ai_message.content {
+        if let Err(err) = message.reply(&ctx, content).await {
             eprintln!("Error sending intake reply: {}", err);
         }
     }
 
-    let Some(tool_calls) = message.tool_calls else {
+    let Some(tool_calls) = ai_message.tool_calls else {
         return;
     };
 
@@ -345,10 +328,10 @@ async fn send_intake_reply(ctx: &Context, thread: &mut GuildChannel) {
             }
         };
 
-    complete_intake(
+    complete_intake_with(
         &ctx,
         thread,
-        if args.success {
+        if args.provided_inquiry {
             IntakeCompletion::Success
         } else {
             IntakeCompletion::InquiryNotProvided
@@ -357,9 +340,90 @@ async fn send_intake_reply(ctx: &Context, thread: &mut GuildChannel) {
     .await;
 }
 
+async fn create_ai_request(
+    ctx: &impl CacheHttp,
+    thread: &GuildChannel,
+) -> Option<CreateChatCompletionRequest> {
+    let discord_messages = match thread
+        .messages(&ctx, GetMessages::default().limit(11))
+        .await
+    {
+        Ok(messages) => messages,
+        Err(e) => {
+            eprintln!("Error getting messages: {}", e);
+            return None;
+        }
+    };
+
+    let mut messages = discord_messages
+        .iter()
+        .sorted_by(|a, b| a.timestamp.cmp(&b.timestamp))
+        .filter_map(|message| ai_message(message).ok())
+        .collect::<Vec<_>>();
+
+    messages.insert(
+        0,
+        ChatCompletionRequestSystemMessageArgs::default()
+            .content(INTAKE_SYSTEM_MESSAGE.to_string())
+            .build()
+            .unwrap_or_default()
+            .into(),
+    );
+
+    messages.insert(
+        1,
+        ChatCompletionRequestUserMessageArgs::default()
+            .content(format!("# {}", thread.name()))
+            .build()
+            .unwrap_or_default()
+            .into(),
+    );
+
+    let request = match CreateChatCompletionRequestArgs::default()
+        .max_tokens(512u32)
+        .model("gpt-4o-mini")
+        .messages(messages)
+        .temperature(0.5)
+        .tools(vec![ChatCompletionToolArgs::default()
+            .r#type(ChatCompletionToolType::Function)
+            .function(
+                FunctionObjectArgs::default()
+                    .name("complete_intake")
+                    .description("Complete the intake process, indicating success or failure.")
+                    .strict(true)
+                    .parameters(json!({
+                        "type": "object",
+                        "required": [
+                          "provided_inquiry"
+                        ],
+                        "properties": {
+                          "provided_inquiry": {
+                            "type": "boolean",
+                            "description": "Indicates whether the users has provided the required information or not."
+                          }
+                        },
+                        "additionalProperties": false
+                    }))
+                    .build()
+                    .unwrap_or_default(),
+            )
+            .build()
+            .unwrap_or_default()])
+            .build()
+            {
+                Ok(request) => request,
+                Err(e) => {
+                    eprintln!("Error creating chat completion request: {}", e);
+                    return None;
+                }
+            };
+
+    Some(request)
+}
+
 #[derive(serde::Deserialize)]
 struct IntakeCompletionArguments {
-    success: bool,
+    provided_inquiry: bool,
 }
 
 fn ai_message(message: &Message) -> Result<ChatCompletionRequestMessage, OpenAIError> {
@@ -374,4 +438,124 @@ fn ai_message(message: &Message) -> Result<ChatCompletionRequestMessage, OpenAIE
             .build()?
             .into())
     }
+}
+
+#[poise::command(slash_command, ephemeral, check = "check_is_support")]
+pub async fn complete_intake(ctx: crate::Context<'_>) -> Result<(), WinstonError> {
+    let handle = ctx
+        .send(CreateReply::default().content("Manually Completing Intake"))
+        .await?;
+
+    let mut channel = ctx
+        .channel_id()
+        .to_channel(ctx)
+        .await?
+        .guild()
+        .ok_or(WinstonError::NotAGuildChannel)?;
+
+    let parent_channel = channel
+        .parent_id
+        .ok_or(WinstonError::NotAGuildChannel)?
+        .to_channel(&ctx)
+        .await?
+        .guild()
+        .ok_or(WinstonError::NotAGuildChannel)?;
+
+    let available_tags = parent_channel.available_tags;
+
+    let Some(intake_tag) = available_tags.get_tag_id("intake") else {
+        eprintln!("Intake tag not found in available tags");
+        return Err(WinstonError::TagNotFound("intake".to_string()));
+    };
+
+    if !channel.applied_tags.iter().any(|tag| *tag == intake_tag) {
+        handle
+            .edit(
+                ctx,
+                CreateReply::default().content(format!(
+                    "Cannot complete intake for thread {}, as it is not an intake thread.",
+                    channel.name()
+                )),
+            )
+            .await?;
+        return Ok(());
+    }
+
+    complete_intake_with(&ctx, &mut channel, IntakeCompletion::Manual).await;
+
+    // Because we forcefully closed the ticket. We likely want to edit and add it to the examples.
+    // So lets create a <tread_name>.md file with the template to download
+
+    let Some(attachment) = create_example_attachment(&ctx, &channel).await else {
+        return Err(WinstonError::AttachmentError(channel.name().to_string()));
+    };
+
+    handle
+        .edit(
+            ctx,
+            CreateReply::default()
+                .attachment(attachment)
+                .content("Created the attachment for you."),
+        )
+        .await?;
+
+    Ok(())
+}
+
+#[poise::command(slash_command, ephemeral, check = "check_is_support")]
+pub async fn example_attachment(ctx: crate::Context<'_>) -> Result<(), WinstonError> {
+    let channel = ctx
+        .channel_id()
+        .to_channel(ctx)
+        .await?
+        .guild()
+        .ok_or(WinstonError::NotAGuildChannel)?;
+
+    let Some(attachment) = create_example_attachment(&ctx, &channel).await else {
+        return Err(WinstonError::AttachmentError(channel.name().to_string()));
+    };
+
+    ctx.send(
+        CreateReply::default()
+            .attachment(attachment)
+            .content("Created the attachment for you."),
+    )
+    .await?;
+
+    Ok(())
+}
+
+async fn create_example_attachment(
+    ctx: &impl CacheHttp,
+    channel: &GuildChannel,
+) -> Option<CreateAttachment> {
+    let Some(request) = create_ai_request(&ctx, &channel).await else {
+        return None;
+    };
+
+    let content: String = request
+        .messages
+        .iter()
+        .map(|message| match message {
+            ChatCompletionRequestMessage::User(info) => match &info.content {
+                ChatCompletionRequestUserMessageContent::Text(string) => {
+                    format!("<user>\n{}\n</user>", string)
+                }
+                _ => String::new(),
+            },
+            ChatCompletionRequestMessage::Assistant(info) => match &info.content {
+                Some(ChatCompletionRequestAssistantMessageContent::Text(string)) => {
+                    format!("<assistant>\n{}\n</assistant>", string)
+                }
+                _ => String::new(),
+            },
+            _ => String::new(),
+        })
+        .filter(|s| !s.is_empty())
+        .join("\n");
+
+    Some(CreateAttachment::bytes(
+        content.as_bytes(),
+        format!("{}.md", channel.name().to_lowercase().replace(" ", "_")),
+    ))
 }
