@@ -227,6 +227,7 @@ class _SelectedPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageType = ref.watch(pageTypeProvider(id));
     final chapter = ref.watch(pageChapterProvider(id));
+    final pageName = ref.watch(pageNameProvider(id)) ?? "";
     return Material(
       borderRadius: BorderRadius.circular(4),
       color: pageType.color,
@@ -243,7 +244,7 @@ class _SelectedPage extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    id.formatted,
+                    pageName.formatted,
                     style: const TextStyle(color: Colors.white, fontSize: 13),
                   ),
                   if (chapter.isNotEmpty)
