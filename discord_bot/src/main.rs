@@ -135,6 +135,8 @@ async fn startup_discord_bot() {
                 post_in_questions(),
                 post_bug_in_questions(),
                 post_suggestion_in_questions(),
+                complete_intake(),
+                example_attachment(),
             ],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
@@ -255,4 +257,7 @@ pub enum WinstonError {
 
     #[error("Tag not found: {0}")]
     TagNotFound(String),
+
+    #[error("Attachent could not be created: {0}")]
+    AttachmentError(String),
 }
