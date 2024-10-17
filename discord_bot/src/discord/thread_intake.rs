@@ -32,6 +32,11 @@ pub struct ThreadIntakeHandler;
 #[async_trait]
 impl EventHandler for ThreadIntakeHandler {
     async fn thread_create(&self, ctx: Context, mut thread: GuildChannel) {
+        // When tags are already applied, the bot is added later not on creation. Like at closing
+        // the channel.
+        if !thread.applied_tags.is_empty() {
+            return;
+        }
         let Some(parent) = thread.parent_id else {
             return;
         };
