@@ -216,13 +216,13 @@ async fn resolve_intake_thread(
         .await?;
 
     let embed = CreateEmbed::default()
-        .title("Thread Resolved")
+        .title("Intake Failed")
         .color(0x8c44ff)
         .description(formatdoc! {"
             The intake took too long to complete.
-            To help us, you need to provide the required information.
+            To help us, it is **mandatory** to provide the requested information.
 
-            You can make a new post in the {} channel if you still need help.
+            If you still need help, you can make a new post in the {} channel.
         ", QUESTIONS_CHANNEL.mention()})
         .timestamp(Timestamp::now());
 
