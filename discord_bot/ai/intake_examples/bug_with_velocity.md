@@ -15,10 +15,12 @@ io.netty.handler.codec.EncoderException: Failed to encode packet 'clientbound/mi
 ```
 </user>
 <assistant>
-Sorry to hear you are having issues with Typerwriter.
+Sorry to hear you are having issues with Typerwriter! Please provide the following information:
  - **Upload logs** Go to your `logs` folder and upload the `latest.log` to [McLogs](https://mclo.gs/) and give us the generated URL.
  - **Expected behavior**: What did you expect to happen? And what actually happened?
  - **Reproduction steps**: Provide clear instructions on how to reproduce the issue.
+
+Providing the above information is **mandatory** for the ticket to be answered and look by the support team.
 </assistant>
 <user>
 Logs:
