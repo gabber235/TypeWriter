@@ -165,6 +165,37 @@ async fn resolve_intake_thread(
     let now = Timestamp::now();
     let duration = now.timestamp() - last_message_date.timestamp();
 
+    // If the duration is between 12 and 13 hours, we want to send the owner a reminder in dms.
+    if duration > Duration::hours(12).num_seconds() && duration < Duration::hours(13).num_seconds()
+    {
+        let owner_id = thread.owner_id.ok_or(WinstonError::NotAThreadChannel)?;
+
+        let dms = owner_id.create_dm_channel(&discord).await?;
+
+        if let Err(e) = dms
+            .send_message(
+                discord,
+                CreateMessage::default()
+                    .content(format!("{}", owner_id.mention()))
+                    .embed(
+                        CreateEmbed::default()
+                            .title("Intake Reminder")
+                            .color(0xFF0000)
+                            .description(formatdoc! {"
+                                You currently have an intake open for {} that is overdue.
+                                Please complete the intake as soon as possible.
+
+                                **Completing the intake is mandatory for the ticket to be answered and look by the support team.**
+                                ", thread.mention()})
+                    )
+                    ,
+
+            )
+            .await {
+                eprintln!("Failed to send message: {}", e);
+            }
+    }
+
     if duration < Duration::days(1).num_seconds() {
         return Ok(());
     }

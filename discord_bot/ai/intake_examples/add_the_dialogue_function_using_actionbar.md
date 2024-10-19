@@ -5,10 +5,12 @@
 Can we add Actionbar-based dialogue and selection functions? Due to the limited space of Chat, in some cases, the option function occupies part of the space, so it is difficult to fully display the content expressed.
 </user>
 <assistant>
-To help you with this, we need to understand the problem you are facing.
+To get a support person to help you better, please provide the following information:
  - **Could you describe the problem clearly?** Maybe make a drawing or annotate a screenshot? Specify what is in this screenshot and what you want to achieve.
  - **How would other users usse this feature?** What are the use cases for this feature?
  - **What would be the advantages of this feature?** Why should this feature be added? How would it enhance the user experience?
+
+ Providing the above information is **mandatory** for the ticket to be answered and look by the support team.
 </assistant>
 <user>
 Currently, things like option dialogue can only be displayed in the chat. But I want to display it in the action bar.
