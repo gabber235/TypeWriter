@@ -32,9 +32,19 @@ Here are a few examples of typewriter:
 
 A complete demo of almost all features that typewriter has to offer.
 
+![TW-Panel-demo](https://github.com/user-attachments/assets/7c7442bf-be2c-47d7-9f6d-a60d02836cdf)
+
+A demo of the panel itself
+
 <details><summary><h3>💡Show more</h3></summary>
 
   ![TW-Dialogue](https://github.com/user-attachments/assets/3790df6a-c5e3-4357-90a6-cb529ae7c65d)
+  ![TW-Sequence](https://github.com/user-attachments/assets/792bc93e-cfa6-4804-8ee0-5cb623a822d1)
+  ![TW-Static](https://github.com/user-attachments/assets/24c30f91-3a8f-4091-916f-ba227539813d)
+  ![TW-Panel](https://github.com/user-attachments/assets/c61088b5-19d7-44a4-959a-a7bcd2070720)
+
+
+
 </details>
 
 ## For Administrators
