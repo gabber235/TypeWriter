@@ -118,7 +118,7 @@ impl EventHandler for ThreadIntakeHandler {
 
         // We want to have a few safety checks to make sure we don't get a super high open AI bill.
 
-        if thread.message_count.unwrap_or(0) > 10 {
+        if thread.message_count.unwrap_or(0) > 5 {
             println!(
                 "Force close intake process for {} because of to many messages",
                 thread.name()
