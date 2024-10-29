@@ -1,0 +1,17 @@
+name: Questions via discord
+description: Please ask your questions in our Discord.
+title: "Questions via Discord!"
+labels: [question]
+
+body:
+  - type: checkboxes
+    id: i-have-checked
+    attributes:
+      label: I
+      options:
+      - label: "Stopped typing this issue and am going to the discord."
+        required: true
+  - type: markdown
+    attributes:
+      value: |
+        [Join our Discord](https://discord.gg/gs5QYhfv9x)
