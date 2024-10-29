@@ -165,9 +165,12 @@ async fn resolve_intake_thread(
     let now = Timestamp::now();
     let duration = now.timestamp() - last_message_date.timestamp();
 
-    // If the duration is between 12 and 13 hours, we want to send the owner a reminder in dms.
-    if duration > Duration::hours(12).num_seconds() && duration < Duration::hours(13).num_seconds()
-    {
+    let hours = [3, 12, 22];
+    // If the intake is not completed, we want to send the owner a reminder in dms.
+    if hours.iter().any(|h| {
+        duration > Duration::hours(*h).num_seconds()
+            && duration < Duration::hours(h + 1).num_seconds()
+    }) {
         let owner_id = thread.owner_id.ok_or(WinstonError::NotAThreadChannel)?;
 
         let dms = owner_id.create_dm_channel(&discord).await?;
@@ -191,9 +194,12 @@ async fn resolve_intake_thread(
                     ,
 
             )
-            .await {
-                eprintln!("Failed to send message: {}", e);
-            }
+            .await
+        {
+            eprintln!("Failed to send message: {}", e);
+        } else {
+            println!("Sent reminder message to {}", owner_id.mention());
+        }
     }
 
     if duration < Duration::days(1).num_seconds() {
