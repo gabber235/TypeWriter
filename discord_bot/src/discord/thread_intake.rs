@@ -24,7 +24,8 @@ use serde_json::json;
 use std::{fs, path::Path};
 
 use crate::{
-    check_is_support, webhooks::GetTagId, WinstonError, QUESTIONS_FORUM_ID, SUPPORT_ROLE_ID,
+    check_is_contributer, check_is_support, webhooks::GetTagId, WinstonError, QUESTIONS_FORUM_ID,
+    SUPPORT_ROLE_ID,
 };
 
 pub struct ThreadIntakeHandler;
@@ -445,7 +446,7 @@ fn ai_message(message: &Message) -> Result<ChatCompletionRequestMessage, OpenAIE
     }
 }
 
-#[poise::command(slash_command, ephemeral, check = "check_is_support")]
+#[poise::command(slash_command, ephemeral, check = "check_is_contributer")]
 pub async fn complete_intake(ctx: crate::Context<'_>) -> Result<(), WinstonError> {
     let handle = ctx
         .send(CreateReply::default().content("Manually Completing Intake"))

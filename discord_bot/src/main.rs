@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use actix_web::{middleware::Logger, App, HttpServer};
 use once_cell::sync::Lazy;
-use poise::serenity_prelude::{self as serenity, GatewayIntents};
+use poise::serenity_prelude::{self as serenity, GatewayIntents, Mentionable};
 use tokio::signal;
 use tokio_util::sync::CancellationToken;
 
@@ -26,6 +26,7 @@ pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, WinstonErr
 
 const GUILD_ID: serenity::GuildId = serenity::GuildId::new(1054708062520360960);
 const SUPPORT_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1288764206191218711);
+const CONTRIBUTE_ROLE_ID: serenity::RoleId = serenity::RoleId::new(1054708457535713350);
 const QUESTIONS_FORUM_ID: u64 = 1199700329948782613;
 const QUESTIONS_CHANNEL: serenity::ChannelId = serenity::ChannelId::new(QUESTIONS_FORUM_ID);
 
@@ -200,16 +201,26 @@ async fn on_error(error: poise::FrameworkError<'_, Data, WinstonError>) {
         }
     }
 }
+
 pub async fn check_is_support(ctx: Context<'_>) -> Result<bool, WinstonError> {
-    let has_role = ctx
-        .author()
-        .has_role(ctx, GUILD_ID, SUPPORT_ROLE_ID)
-        .await?;
+    check_has_role(ctx, SUPPORT_ROLE_ID).await
+}
+
+pub async fn check_is_contributer(ctx: Context<'_>) -> Result<bool, WinstonError> {
+    check_has_role(ctx, CONTRIBUTE_ROLE_ID).await
+}
+
+pub async fn check_has_role(
+    ctx: Context<'_>,
+    role_id: serenity::RoleId,
+) -> Result<bool, WinstonError> {
+    let has_role = ctx.author().has_role(ctx, GUILD_ID, role_id).await?;
 
     if !has_role {
         eprintln!(
-            "User {} is not a support and tried to run command",
-            ctx.author().name
+            "User {} is not a {} and tried to run command",
+            ctx.author().name,
+            role_id.mention(),
         );
         return Ok(false);
     }
