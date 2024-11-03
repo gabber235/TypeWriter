@@ -27,8 +27,7 @@ Thanks to the following sponsors for supporting this project. Without their supp
 ### Examples
 
 Here are a few examples of typewriter:
-
-<https://github.com/user-attachments/assets/b5c7ecb7-557b-41ac-ba7b-82c6a46b79a8>
+<video src="https://github.com/user-attachments/assets/b5c7ecb7-557b-41ac-ba7b-82c6a46b79a8" width="55%" height="auto" controls>Your browser does not support the video tag or the video doesn't exist anymore. <a href="https://github.com/user-attachments/assets/b5c7ecb7-557b-41ac-ba7b-82c6a46b79a8">Click here to view the video</a></video>
 
 A complete demo of almost all features that typewriter has to offer.
 
