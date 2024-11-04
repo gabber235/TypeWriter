@@ -8,7 +8,7 @@ const darkTheme = themes.vsDark;
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'Typewriter',
-    tagline: 'The next generation of Minecraft Questing',
+    tagline: 'The next generation of Player Interactions',
     favicon: 'img/favicon.ico',
 
     // Set the production url of your site here
@@ -233,7 +233,10 @@ const config = {
         require.resolve("./plugins/tailwind/index.js"),
         require.resolve("./plugins/compression/index.js"),
         require.resolve("./plugins/code-snippets/index.js"),
-    ]
+    ],
+    future: {
+        experimental_faster: true,
+    },
 };
 
 export default config;
