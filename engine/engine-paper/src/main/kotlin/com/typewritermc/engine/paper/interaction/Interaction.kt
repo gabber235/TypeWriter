@@ -15,6 +15,7 @@ import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
+import com.typewritermc.engine.paper.utils.msg
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
@@ -258,6 +259,7 @@ class Interaction(val player: Player) : KoinComponent {
             val content = content ?: return
             this.content = null
             content.dispose()
+            return
         }
 
         if (CONTENT_POP in event) {
@@ -273,15 +275,22 @@ class Interaction(val player: Player) : KoinComponent {
 
         val content = content
         if (content != null) {
-            if (trigger is ContentModeSwapTrigger) {
+            val result = if (trigger is ContentModeSwapTrigger) {
                 content.swapMode(trigger.mode)
             } else {
                 content.pushMode(trigger.mode)
             }
+            if (result.isFailure) {
+                handleContent(Event(player, listOf(CONTENT_END)))
+            }
             return
         }
-        this.content = ContentEditor(trigger.context, player, trigger.mode).also {
-            it.initialize()
+        val editor = ContentEditor(trigger.context, player, trigger.mode)
+        val result = editor.initialize()
+        if (result.isFailure) {
+            editor.dispose()
+        } else {
+            this.content = editor
         }
     }
 
