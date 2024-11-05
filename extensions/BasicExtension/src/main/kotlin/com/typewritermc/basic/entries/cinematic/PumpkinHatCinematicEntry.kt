@@ -1,7 +1,9 @@
 package com.typewritermc.basic.entries.cinematic
 
+import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.protocol.player.Equipment
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEquipment
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
@@ -12,6 +14,8 @@ import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
+import com.typewritermc.engine.paper.interaction.InterceptionBundle
+import com.typewritermc.engine.paper.interaction.interceptPackets
 import com.typewritermc.engine.paper.utils.name
 import com.typewritermc.engine.paper.utils.unClickable
 import org.bukkit.Material
@@ -51,29 +55,37 @@ class PumpkinHatCinematicAction(
 ) : SimpleCinematicAction<PumpkinHatSegment>() {
     override val segments: List<PumpkinHatSegment> = entry.segments
 
+    private var interceptor: InterceptionBundle? = null
+
     override suspend fun startSegment(segment: PumpkinHatSegment) {
         super.startSegment(segment)
+        val item = ItemStack(Material.CARVED_PUMPKIN)
+            .apply {
+                editMeta { meta ->
+                    meta.name = " "
+                    meta.unClickable()
+                }
+            }
+            .toPacketItem()
+        interceptor = player.interceptPackets {
+            PacketType.Play.Server.SET_SLOT { event ->
+                val packet = WrapperPlayServerSetSlot(event)
+                if (packet.slot != 39) return@SET_SLOT
+                packet.item = item
+            }
+        }
 
         WrapperPlayServerEntityEquipment(
             player.entityId,
-            listOf(
-                Equipment(
-                    com.github.retrooper.packetevents.protocol.player.EquipmentSlot.HELMET,
-                    ItemStack(Material.CARVED_PUMPKIN)
-                        .apply {
-                            editMeta { meta ->
-                                meta.name = " "
-                                meta.unClickable()
-                            }
-                        }
-                        .toPacketItem()
-                )
-            )
+            listOf(Equipment(com.github.retrooper.packetevents.protocol.player.EquipmentSlot.HELMET, item))
         ) sendPacketTo player
+
     }
 
     override suspend fun stopSegment(segment: PumpkinHatSegment) {
         super.stopSegment(segment)
+        interceptor?.cancel()
+        interceptor = null
         WrapperPlayServerEntityEquipment(
             player.entityId,
             listOf(
