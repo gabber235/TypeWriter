@@ -1,10 +1,13 @@
 package com.typewritermc.engine.paper.content
 
+import com.typewritermc.core.utils.failure
+import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.content.components.IntractableItem
 import com.typewritermc.engine.paper.content.components.ItemInteraction
 import com.typewritermc.engine.paper.content.components.ItemInteractionType
 import com.typewritermc.engine.paper.entry.entries.SystemTrigger
 import com.typewritermc.engine.paper.entry.forceTriggerFor
+import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.events.ContentEditorEndEvent
 import com.typewritermc.engine.paper.events.ContentEditorStartEvent
 import com.typewritermc.engine.paper.interaction.InteractionHandler
@@ -39,7 +42,7 @@ class ContentEditor(
     private val mode: ContentMode?
         get() = stack.peek()
 
-    suspend fun initialize() {
+    suspend fun initialize(): Result<Unit> {
         player.playSound("block.beacon.activate")
         SYNC.switchContext {
             ContentEditorStartEvent(player).callEvent()
@@ -48,16 +51,16 @@ class ContentEditor(
         val mode = mode
         if (mode == null) {
             SystemTrigger.CONTENT_END forceTriggerFor player
-            return
+            return failure("No content mode found")
         }
         val result = mode.setup()
         if (result.isFailure) {
             logger.severe("Failed to setup content mode for player ${player.name}: ${result.exceptionOrNull()?.message}")
-            player.msg("<red><b>Failed to setup content mode. Please report this to the server administrator.")
-            SystemTrigger.CONTENT_END forceTriggerFor player
-            return
+            player.msg("<red><b>Failed to setup content mode. Please see the console for more details.")
+            return result
         }
         mode.initialize()
+        return ok(Unit)
     }
 
     suspend fun tick() {
@@ -86,22 +89,34 @@ class ContentEditor(
         }
     }
 
-    suspend fun pushMode(newMode: ContentMode) {
+    suspend fun pushMode(newMode: ContentMode): Result<Unit> {
         player.playSound("ui.loom.take_result")
         val previous = mode
-        newMode.setup()
+        val result = newMode.setup()
         stack.push(newMode)
         previous?.dispose()
+        if (result.isFailure) {
+            logger.severe("Failed to setup content mode: ${result.exceptionOrNull()?.message}")
+            player.msg("<red><bold>Failed to setup content mode. Please see the console for more details.")
+            return result
+        }
         newMode.initialize()
+        return ok(Unit)
     }
 
-    suspend fun swapMode(newMode: ContentMode) {
+    suspend fun swapMode(newMode: ContentMode): Result<Unit> {
         player.playSound("ui.loom.take_result")
         val previous = stack.pop()
-        newMode.setup()
+        val result = newMode.setup()
         stack.push(newMode)
         previous.dispose()
+        if (result.isFailure) {
+            logger.severe("Failed to setup content mode: ${result.exceptionOrNull()?.message}")
+            player.msg("<red><bold>Failed to setup content mode. Please see the console for more details.")
+            return result
+        }
         newMode.initialize()
+        return ok(Unit)
     }
 
     suspend fun popMode(): Boolean {
