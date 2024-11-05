@@ -11,10 +11,16 @@ import com.typewritermc.engine.paper.entry.entries.EntityActivityEntry
 import com.typewritermc.engine.paper.entry.entries.GenericEntityActivityEntry
 import com.typewritermc.engine.paper.utils.Sound
 import java.time.Duration
+import kotlin.math.max
 import kotlin.random.Random
 
 
-@Entry("ambient_sound_activity", "Play an ambient sound for an entity", Colors.PALATINATE_BLUE, "mingcute:shuffle-2-fill")
+@Entry(
+    "ambient_sound_activity",
+    "Play an ambient sound for an entity",
+    Colors.PALATINATE_BLUE,
+    "mingcute:shuffle-2-fill"
+)
 /**
  * The `AmbientSoundActivityEntry` is an activity that plays an ambient sound for an entity.
  *
@@ -75,7 +81,7 @@ fun List<AmbientSound>.weightedRandom(): AmbientSound {
     if (isEmpty()) return AmbientSound(Sound.EMPTY)
     if (size == 1) return this[0]
 
-    val discreteCumulativeWeights = this.scan(0.0) { acc, sound -> acc + sound.weight }.toList()
+    val discreteCumulativeWeights = this.scan(0.0) { acc, sound -> acc + max(sound.weight, 1.0) }.toList().drop(1)
     val random = Random.nextDouble() * discreteCumulativeWeights.last()
     return this.zip(discreteCumulativeWeights).first { (_, cumulativeWeight) ->
         cumulativeWeight > random
