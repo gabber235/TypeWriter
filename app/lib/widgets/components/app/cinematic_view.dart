@@ -712,7 +712,7 @@ class _BackgroundLinePainter extends CustomPainter {
       ..strokeWidth = 1;
 
     final secondaryPaint = Paint()
-      ..color = Colors.grey.shade700.withValues(alpha:0.5)
+      ..color = Colors.grey.shade700.withValues(alpha: 0.5)
       ..strokeWidth = 1;
 
     for (final line in lines) {
@@ -1217,10 +1217,12 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
     if (frame == segment.endFrame) return;
     if (frame < segment.startFrame) return;
 
-    if (segment.minFrames != null &&
-        frame - segment.startFrame < segment.minFrames!) return;
-    if (segment.maxFrames != null &&
-        frame - segment.startFrame > segment.maxFrames!) return;
+    if (segment.minFrames != null && frame - segment.startFrame < segment.minFrames!) {
+      return;
+    }
+    if (segment.maxFrames != null && frame - segment.startFrame > segment.maxFrames!) {
+      return;
+    }
 
     final nextSegment = state?.nextSegment;
     if (nextSegment != null && frame > nextSegment.startFrame) return;
@@ -1237,10 +1239,12 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
     if (frame == segment.startFrame) return;
     if (frame > segment.endFrame) return;
 
-    if (segment.minFrames != null &&
-        segment.endFrame - frame < segment.minFrames!) return;
-    if (segment.maxFrames != null &&
-        segment.endFrame - frame > segment.maxFrames!) return;
+    if (segment.minFrames != null && segment.endFrame - frame < segment.minFrames!) {
+      return;
+    }
+    if (segment.maxFrames != null && segment.endFrame - frame > segment.maxFrames!) {
+      return;
+    }
 
     final previousSegment = state?.previousSegment;
     if (previousSegment != null && frame < previousSegment.endFrame) return;
@@ -1297,8 +1301,11 @@ class _SegmentDurationDisplay extends HookConsumerWidget {
     return Text(
       "Total Duration: $secondsWithDecimal seconds ($totalTime frames)",
       style: Theme.of(context).textTheme.bodySmall?.apply(
-            color:
-                Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha:0.8),
+            color: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.color
+                ?.withValues(alpha: 0.8),
             fontStyle: FontStyle.italic,
           ),
     );
@@ -1487,8 +1494,8 @@ class _SegmentSelectorTile extends HookConsumerWidget {
                     segment.icon,
                     size: 16,
                     color: color.computeLuminance() > 0.5
-                        ? Colors.black.withValues(alpha:0.6)
-                        : Colors.white.withValues(alpha:0.6),
+                        ? Colors.black.withValues(alpha: 0.6)
+                        : Colors.white.withValues(alpha: 0.6),
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -1505,8 +1512,8 @@ class _SegmentSelectorTile extends HookConsumerWidget {
                     TWIcons.angleRight,
                     size: 12,
                     color: color.computeLuminance() > 0.5
-                        ? Colors.black.withValues(alpha:0.5)
-                        : Colors.white.withValues(alpha:0.5),
+                        ? Colors.black.withValues(alpha: 0.5)
+                        : Colors.white.withValues(alpha: 0.5),
                   ),
                 ],
               ),
@@ -1608,7 +1615,7 @@ class _SegmentWidget extends HookConsumerWidget {
                 ? Border.all(
                     color: context.isDark
                         ? Colors.white
-                        : Colors.black.withValues(alpha:0.4),
+                        : Colors.black.withValues(alpha: 0.4),
                     width: 2,
                   )
                 : Border.all(color: Colors.transparent, width: 2),
