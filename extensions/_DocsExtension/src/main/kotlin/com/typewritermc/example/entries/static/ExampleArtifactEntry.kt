@@ -1,9 +1,9 @@
 package com.typewritermc.example.entries.static
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.AssetManager
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entries.ArtifactEntry
 import org.koin.java.KoinJavaComponent
 
