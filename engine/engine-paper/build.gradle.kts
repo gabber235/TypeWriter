@@ -22,8 +22,8 @@ repositories {
 }
 
 val centralDependencies = listOf(
-    "org.jetbrains.kotlin:kotlin-stdlib:2.0.20",
-    "org.jetbrains.kotlin:kotlin-reflect:2.0.20",
+    "org.jetbrains.kotlin:kotlin-stdlib:2.0.21",
+    "org.jetbrains.kotlin:kotlin-reflect:2.0.21",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0",
     "com.corundumstudio.socketio:netty-socketio:1.7.19", // Keep this on a lower version as the newer version breaks the ping
 )
@@ -37,17 +37,17 @@ dependencies {
     api(project(":engine-core"))
     api(project(":engine-loader"))
 
-    api("me.tofaa.entitylib:spigot:2.4.9-SNAPSHOT")
-    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.19.0")
-    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.19.0")
-    api("dev.jorel:commandapi-bukkit-shade:9.5.3")
-    api("dev.jorel:commandapi-bukkit-kotlin:9.5.3")
+    api("me.tofaa.entitylib:spigot:2.4.11-SNAPSHOT")
+    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.20.0")
+    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.20.0")
+    api("dev.jorel:commandapi-bukkit-shade:9.6.1")
+    api("dev.jorel:commandapi-bukkit-kotlin:9.6.1")
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.ktor:ktor-server-core-jvm:2.3.12")
     implementation("io.ktor:ktor-server-netty-jvm:2.3.12")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.0")
-    implementation("org.bstats:bstats-bukkit:3.0.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3")
+    implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("com.extollit.gaming:hydrazine-path-engine:1.8.1")
 
     val adventureVersion = "4.17.0"
@@ -57,9 +57,9 @@ dependencies {
     compileOnlyApi("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
     compileOnlyApi("net.kyori:adventure-text-serializer-gson:$adventureVersion")
 
-    compileOnlyApi("com.github.retrooper:packetevents-api:2.5.0-SNAPSHOT")
+    compileOnlyApi("com.github.retrooper:packetevents-api:2.6.0-SNAPSHOT")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.6.0-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.5.0-SNAPSHOT")
     compileOnlyApi("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
