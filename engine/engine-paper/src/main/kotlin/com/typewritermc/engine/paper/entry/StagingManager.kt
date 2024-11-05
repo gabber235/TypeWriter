@@ -31,10 +31,10 @@ import kotlin.time.Duration.Companion.seconds
 
 interface StagingManager {
     val stagingState: StagingState
+    val pages: Map<String, JsonObject>
 
     fun loadState()
     fun unload()
-    fun fetchPages(): Map<String, JsonObject>
     fun createPage(data: JsonObject): Result<String>
     fun renamePage(pageId: String, newName: String): Result<String>
     fun changePageValue(pageId: String, path: String, value: JsonElement): Result<String>
@@ -54,7 +54,9 @@ interface StagingManager {
 class StagingManagerImpl : StagingManager, KoinComponent {
     private val gson: Gson by inject(named("bukkitDataParser"))
 
-    private val pages = ConcurrentHashMap<String, JsonObject>()
+    private var _pages: ConcurrentHashMap<String, JsonObject>? = null
+    override val pages: Map<String, JsonObject>
+        get() = _pages ?: emptyMap()
 
     private val autoSaver =
         Timeout(
@@ -82,8 +84,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
         // Read the pages from the file
         val dir = if (stagingState == STAGING) stagingDir else publishedDir
-        pages.clear()
-        pages.putAll(fetchPages(dir))
+        _pages = ConcurrentHashMap(fetchPages(dir))
     }
 
     private fun fetchPages(dir: File): Map<String, JsonObject> {
@@ -96,10 +97,6 @@ class StagingManagerImpl : StagingManager, KoinComponent {
             pageJson.addProperty("id", pageId)
             pages[pageId] = pageJson
         }
-        return pages
-    }
-
-    override fun fetchPages(): Map<String, JsonObject> {
         return pages
     }
 
@@ -119,7 +116,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         // Add the version of this page to track migrations
         data.addProperty("version", plugin.pluginMeta.version)
 
-        pages[id] = data
+        _pages?.put(id, data)
         autoSaver()
         return ok("Successfully created page with name $id")
     }
@@ -143,7 +140,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     }
 
     override fun deletePage(pageId: String): Result<String> {
-        pages.remove(pageId) ?: return failure("Page does not exist")
+        _pages?.remove(pageId) ?: return failure("Page does not exist")
 
         autoSaver()
         return ok("Successfully deleted page with name $pageId")
@@ -248,7 +245,9 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
     private fun saveStaging() {
         // If we are already publishing, we don't want to save the staging
-        if (stagingState == PUBLISHING) return
+        if (stagingState != PUBLISHING) return
+        // Data is not loaded yet, so we can't save it
+        val pages = this._pages ?: return
         val dir = stagingDir
 
         pages.forEach { (id, page) ->
@@ -268,6 +267,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     // Save the page to the file
     override suspend fun publish(): Result<String> {
         if (stagingState != STAGING) return failure("Can only publish when in staging")
+        if (this._pages == null) return failure("Pages are not loaded yet")
         autoSaver.cancel()
         return DISPATCHERS_ASYNC.switchContext {
             stagingState = PUBLISHING
