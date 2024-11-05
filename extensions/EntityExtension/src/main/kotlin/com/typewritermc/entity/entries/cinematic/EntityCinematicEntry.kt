@@ -8,11 +8,13 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.*
+import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.content.ContentContext
 import com.typewritermc.engine.paper.content.ContentMode
 import com.typewritermc.engine.paper.content.components.cinematic
 import com.typewritermc.engine.paper.content.components.exit
+import com.typewritermc.engine.paper.content.fieldValue
 import com.typewritermc.engine.paper.content.modes.*
 import com.typewritermc.engine.paper.entry.AssetManager
 import com.typewritermc.engine.paper.entry.Criteria
@@ -207,6 +209,16 @@ class EntityCinematicAction(
 
 class EntityCinematicViewing(context: ContentContext, player: Player) : ContentMode(context, player) {
     override suspend fun setup(): Result<Unit> {
+        val result = getAssetFromFieldValue(context.fieldValue)
+        if (result.isFailure) {
+            return failure(
+                """
+                    |You forgot to specify the EntityCinematicArtifact.
+                    |It is required for recording the cinematic.
+            """.trimMargin()
+            )
+        }
+
         exit()
         val cinematic = cinematic(context)
         recordingCinematic(context, 4, cinematic::frame, ::EntityCinematicRecording)
