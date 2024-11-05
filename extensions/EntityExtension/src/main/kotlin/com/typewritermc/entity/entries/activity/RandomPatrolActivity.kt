@@ -13,7 +13,7 @@ import com.typewritermc.engine.paper.utils.toBukkitLocation
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent
 
-@Entry("random_patrol_activity", "Moving around a set of locations randomly", Colors.GREEN, "fa6-solid:shuffle")
+@Entry("random_patrol_activity", "Moving around a set of locations randomly", Colors.BLUE, "fa6-solid:shuffle")
 /**
  * The `RandomPatrolActivity` is an activity that makes the entity move randomly around a set of locations.
  * The entity will move to each location in a random order.
