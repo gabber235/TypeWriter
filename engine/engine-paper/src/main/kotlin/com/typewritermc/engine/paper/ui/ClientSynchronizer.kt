@@ -32,7 +32,7 @@ class ClientSynchronizer : KoinComponent {
     fun handleFetchRequest(client: SocketIOClient, data: String, ack: AckRequest) {
         if (data == "pages") {
             val array = JsonArray()
-            stagingManager.fetchPages().forEach { (_, page) ->
+            stagingManager.pages.forEach { (_, page) ->
                 array.add(page)
             }
             ack.sendAckData(array.toString())
