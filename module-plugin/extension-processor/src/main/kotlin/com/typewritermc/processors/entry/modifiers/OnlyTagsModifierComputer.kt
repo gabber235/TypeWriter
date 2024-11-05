@@ -19,7 +19,7 @@ object OnlyTagsModifierComputer : DataModifierComputer<OnlyTags> {
             return failure("OnlyTags annotation can only be used on Refs (including in lists or maps)!")
         }
 
-        if (blueprint.editor != "entryReference") {
+        if (blueprint.editor != "ref") {
             return failure("OnlyTags annotation can only be used on Refs (including in lists or maps)!")
         }
 
