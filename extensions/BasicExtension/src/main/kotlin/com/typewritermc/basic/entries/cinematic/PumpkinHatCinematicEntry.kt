@@ -42,6 +42,8 @@ class PumpkinHatCinematicEntry(
             this,
         )
     }
+
+    override fun createSimulating(player: Player): CinematicAction? = null
 }
 
 data class PumpkinHatSegment(
