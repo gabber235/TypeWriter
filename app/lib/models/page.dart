@@ -478,6 +478,7 @@ extension PageX on Page {
           return null;
         },
       )
+      ..excludeEntry(entryId, canRemove: false)
       ..open();
   }
 
