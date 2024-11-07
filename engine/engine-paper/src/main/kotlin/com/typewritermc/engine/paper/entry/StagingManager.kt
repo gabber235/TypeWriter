@@ -293,8 +293,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
                             ) { it.nameWithoutExtension }
                         })"
                     )
-                    deletedPages.backup()
-                    deletedPages.forEach { it.delete() }
+                    deletedPages.backupAndMove()
                 }
 
                 // Delete the staging folder
@@ -372,7 +371,7 @@ fun Ref<out Entry>.fieldValue(path: String, value: Any, type: Type) {
     clientSynchronizer.sendEntryFieldUpdate(pageId, id, path, json)
 }
 
-fun List<File>.backup() {
+fun List<File>.backupAndMove() {
     if (isEmpty()) {
         // Nothing to back up
         return
@@ -385,6 +384,6 @@ fun List<File>.backup() {
     forEach {
         val file = it
         val backupFile = File(backupFolder, file.name)
-        file.copyTo(backupFile, overwrite = true)
+        file.renameTo(backupFile)
     }
 }
