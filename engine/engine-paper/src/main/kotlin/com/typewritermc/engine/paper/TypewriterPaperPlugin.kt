@@ -150,7 +150,6 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         }
 
         BStatsMetrics.registerMetrics()
-        server.pluginManager.registerSuspendingEvents(this, this)
 
         // We want to initialize all the extensions after all the plugins have been enabled to make sure
         // that all the plugins are loaded.
