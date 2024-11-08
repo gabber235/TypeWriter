@@ -250,6 +250,9 @@ class StagingManagerImpl : StagingManager, KoinComponent {
         val pages = this._pages ?: return
         val dir = stagingDir
 
+        // If there are no pages, there is nothing to save.
+        if (pages.isEmpty()) return
+
         pages.forEach { (id, page) ->
             val file = dir["$id.json"]
             if (!file.exists()) {
