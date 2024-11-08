@@ -11,6 +11,7 @@ import com.typewritermc.engine.paper.utils.isFloodgate
 import com.typewritermc.engine.paper.utils.legacy
 import org.bukkit.entity.Player
 
+@Deprecated("Use RandomVariable entry with a normal SpokenDialogue instead")
 @Messenger(RandomSpokenDialogueEntry::class, priority = 5)
 class BedrockRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpokenDialogueEntry) :
     DialogueMessenger<RandomSpokenDialogueEntry>(player, entry) {

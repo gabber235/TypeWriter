@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
 import java.time.Duration
 
+@Deprecated("Use RandomVariable entry with a normal SpokenDialogue instead")
 @Entry(
     "random_spoken",
     "Display a random selected animated message to the player",

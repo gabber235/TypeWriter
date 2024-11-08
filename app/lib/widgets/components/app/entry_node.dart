@@ -25,7 +25,7 @@ part "entry_node.g.dart";
 
 @riverpod
 List<String> linkablePaths(
-  LinkablePathsRef ref,
+  Ref ref,
   String entryId,
 ) {
   final entry = ref.read(globalEntryProvider(entryId));
@@ -38,7 +38,7 @@ List<String> linkablePaths(
 
 @riverpod
 List<String> linkableDuplicatePaths(
-  LinkableDuplicatePathsRef ref,
+  Ref ref,
   String entryId,
 ) {
   final entry = ref.watch(globalEntryProvider(entryId));
@@ -55,7 +55,7 @@ List<String> linkableDuplicatePaths(
 
 @riverpod
 List<String> _acceptingPaths(
-  _AcceptingPathsRef ref,
+  Ref ref,
   String entryId,
   String targetId,
 ) {
@@ -124,7 +124,7 @@ class EntryNode extends HookConsumerWidget {
 }
 
 @riverpod
-List<Writer> _writers(_WritersRef ref, String id) {
+List<Writer> _writers(Ref ref, String id) {
   final selectedEntryId = ref.watch(inspectingEntryIdProvider);
 
   return ref.watch(writersProvider).where((writer) {

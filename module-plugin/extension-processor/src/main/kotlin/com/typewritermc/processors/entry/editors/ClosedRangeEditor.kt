@@ -1,6 +1,7 @@
 package com.typewritermc.processors.entry.editors
 
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.processors.entry.CustomEditor
 import com.typewritermc.processors.entry.DataBlueprint
@@ -16,7 +17,7 @@ object ClosedRangeEditor : CustomEditor {
         return type whenClassIs ClosedRange::class
     }
 
-    context(KSPLogger) override fun default(type: KSType): JsonElement {
+    context(KSPLogger, Resolver) override fun default(type: KSType): JsonElement {
         val argumentType = type.arguments.firstOrNull()?.type?.resolve()
             ?: throw IllegalStateException("Expected ClosedRange to have a single argument")
         val blueprint = DataBlueprint.blueprint(argumentType)
@@ -30,7 +31,7 @@ object ClosedRangeEditor : CustomEditor {
         )
     }
 
-    context(KSPLogger) override fun shape(type: KSType): DataBlueprint {
+    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint {
         val argumentType = type.arguments.firstOrNull()?.type?.resolve()
             ?: throw IllegalStateException("Expected ClosedRange to have a single argument")
         val blueprint = DataBlueprint.blueprint(argumentType)

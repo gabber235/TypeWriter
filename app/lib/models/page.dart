@@ -349,10 +349,14 @@ extension PageExtension on Page {
 extension PageX on Page {
   Future<Entry> createEntryFromBlueprint(
     PassingRef ref,
-    EntryBlueprint blueprint,
-  ) async {
-    final entry =
-        Entry.fromBlueprint(id: getRandomString(), blueprint: blueprint);
+    EntryBlueprint blueprint, {
+    required DataBlueprint? genericBlueprint,
+  }) async {
+    final entry = Entry.fromBlueprint(
+      id: getRandomString(),
+      blueprint: blueprint,
+      genericBlueprint: genericBlueprint,
+    );
     await createEntry(ref, entry);
     return entry;
   }
@@ -501,9 +505,14 @@ extension PageX on Page {
 
     ref.read(searchProvider.notifier).asBuilder()
       ..anyTag(tags, canRemove: false)
+      ..nonGenericAddEntry()
       ..fetchNewEntry(
         onAdd: (blueprint) async {
-          final newEntry = await createEntryFromBlueprint(ref, blueprint);
+          final newEntry = await createEntryFromBlueprint(
+            ref,
+            blueprint,
+            genericBlueprint: null,
+          );
           await wireEntryToOtherEntry(ref, entry, newEntry, path);
           await ref
               .read(inspectingEntryIdProvider.notifier)

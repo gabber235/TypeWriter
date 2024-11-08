@@ -22,7 +22,11 @@ class DialogueMessengerProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(Messenger::class.qualifiedName!!)
         val messengers = symbols.filterIsInstance<KSClassDeclaration>()
-            .map { generateMessengerBlueprint(it) }
+            .map {
+                with(resolver) {
+                    generateMessengerBlueprint(it)
+                }
+            }
             .toList()
 
         logger.warn("Generated blueprints for ${messengers.size} messengers")
@@ -31,6 +35,7 @@ class DialogueMessengerProcessor(
         return symbols.toList()
     }
 
+    context(Resolver)
     @OptIn(KspExperimental::class)
     private fun generateMessengerBlueprint(clazz: KSClassDeclaration): JsonElement {
         logger.info("Generating messenger blueprint for ${clazz.simpleName.asString()}")

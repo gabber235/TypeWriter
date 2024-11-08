@@ -52,6 +52,8 @@ final pagesProvider = AutoDisposeProvider<List<Page>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef PagesRef = AutoDisposeProviderRef<List<Page>>;
 String _$pageHash() => r'884d7b74470acd1d1cd7aefeb91f51364a14ba89';
 
@@ -186,6 +188,8 @@ class PageProvider extends AutoDisposeProvider<Page?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin PageRef on AutoDisposeProviderRef<Page?> {
   /// The parameter `pageId` of this provider.
   String get pageId;
@@ -313,6 +317,8 @@ class PageNameProvider extends AutoDisposeProvider<String?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin PageNameRef on AutoDisposeProviderRef<String?> {
   /// The parameter `pageId` of this provider.
   String get pageId;
@@ -441,6 +447,8 @@ class PageExistsProvider extends AutoDisposeProvider<bool> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin PageExistsRef on AutoDisposeProviderRef<bool> {
   /// The parameter `pageId` of this provider.
   String get pageId;
@@ -568,6 +576,8 @@ class PageTypeProvider extends AutoDisposeProvider<PageType> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin PageTypeRef on AutoDisposeProviderRef<PageType> {
   /// The parameter `pageId` of this provider.
   String get pageId;
@@ -696,6 +706,8 @@ class PageChapterProvider extends AutoDisposeProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin PageChapterRef on AutoDisposeProviderRef<String> {
   /// The parameter `pageId` of this provider.
   String get pageId;
@@ -824,6 +836,8 @@ class PagePriorityProvider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin PagePriorityRef on AutoDisposeProviderRef<int> {
   /// The parameter `pageId` of this provider.
   String get pageId;
@@ -952,6 +966,8 @@ class EntryPageIdProvider extends AutoDisposeProvider<String?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryPageIdRef on AutoDisposeProviderRef<String?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -1079,6 +1095,8 @@ class EntryPageProvider extends AutoDisposeProvider<Page?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryPageRef on AutoDisposeProviderRef<Page?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -1218,6 +1236,8 @@ class EntryProvider extends AutoDisposeProvider<Entry?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryRef on AutoDisposeProviderRef<Entry?> {
   /// The parameter `pageId` of this provider.
   String get pageId;
@@ -1351,6 +1371,8 @@ class GlobalEntryProvider extends AutoDisposeProvider<Entry?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin GlobalEntryRef on AutoDisposeProviderRef<Entry?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -1481,6 +1503,8 @@ class GlobalEntryWithPageProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin GlobalEntryWithPageRef
     on AutoDisposeProviderRef<MapEntry<String, Entry>?> {
   /// The parameter `entryId` of this provider.
@@ -1611,6 +1635,8 @@ class EntryExistsProvider extends AutoDisposeProvider<bool> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryExistsRef on AutoDisposeProviderRef<bool> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -1624,4 +1650,4 @@ class _EntryExistsProviderElement extends AutoDisposeProviderElement<bool>
   String get entryId => (origin as EntryExistsProvider).entryId;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

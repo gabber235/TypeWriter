@@ -1,5 +1,6 @@
 package com.typewritermc.engine.paper.entry.entity
 
+import com.typewritermc.core.utils.point.Coordinate
 import com.typewritermc.core.utils.point.Point
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.core.utils.point.World
@@ -101,5 +102,9 @@ fun org.bukkit.Location.toProperty(): PositionProperty {
 }
 
 fun Position.toProperty(): PositionProperty {
+    return PositionProperty(world, x, y, z, yaw, pitch)
+}
+
+fun Coordinate.toProperty(world: World): PositionProperty {
     return PositionProperty(world, x, y, z, yaw, pitch)
 }

@@ -6,7 +6,7 @@ part of 'page_editor.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentPageIdHash() => r'129e6ddb01a02d157dec946020e529c65e901b85';
+String _$currentPageIdHash() => r'9442a56c441884a942b6a28d352693b7832793b5';
 
 /// See also [currentPageId].
 @ProviderFor(currentPageId)
@@ -20,8 +20,10 @@ final currentPageIdProvider = Provider<String?>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CurrentPageIdRef = ProviderRef<String?>;
-String _$currentPageLabelHash() => r'c151e5e2c16b7898a651f065a7977975b413e9fe';
+String _$currentPageLabelHash() => r'5555a842f854d2bb41328655fb41c9387f7c4902';
 
 /// See also [currentPageLabel].
 @ProviderFor(currentPageLabel)
@@ -35,8 +37,10 @@ final currentPageLabelProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CurrentPageLabelRef = AutoDisposeProviderRef<String>;
-String _$currentPageHash() => r'99dc4a27dceb05b9ee1022d03e314f029969ed16';
+String _$currentPageHash() => r'ca655b0b587ace37449e3ce57022c1a8ad9c0184';
 
 /// See also [currentPage].
 @ProviderFor(currentPage)
@@ -49,8 +53,10 @@ final currentPageProvider = AutoDisposeProvider<Page?>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CurrentPageRef = AutoDisposeProviderRef<Page?>;
-String _$currentPageTypeHash() => r'821ebef02de6cd3330c8c4fb1426d72a1d9d9586';
+String _$currentPageTypeHash() => r'cc67b9a56c7abe2e82a90687ad1d87f1ea7a8e1c';
 
 /// See also [currentPageType].
 @ProviderFor(currentPageType)
@@ -64,8 +70,10 @@ final currentPageTypeProvider = AutoDisposeProvider<PageType?>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CurrentPageTypeRef = AutoDisposeProviderRef<PageType?>;
-String _$writersHash() => r'9c6cafb1a013526500fb7518776c0d1e7a93f479';
+String _$writersHash() => r'eb8dad235050807b77379f0644b5cd9e2b67db75';
 
 /// See also [_writers].
 @ProviderFor(_writers)
@@ -78,6 +86,8 @@ final _writersProvider = AutoDisposeProvider<List<Writer>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _WritersRef = AutoDisposeProviderRef<List<Writer>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

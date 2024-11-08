@@ -154,6 +154,8 @@ class FieldValueProvider extends AutoDisposeProvider<dynamic> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FieldValueRef on AutoDisposeProviderRef<dynamic> {
   /// The parameter `path` of this provider.
   String get path;
@@ -186,6 +188,8 @@ final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef EditorFiltersRef = AutoDisposeProviderRef<List<EditorFilter>>;
 String _$pathDisplayNameHash() => r'c772e17ed429169ba903826d0a5605d60b129a31';
 
@@ -302,6 +306,8 @@ class PathDisplayNameProvider extends AutoDisposeProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin PathDisplayNameRef on AutoDisposeProviderRef<String> {
   /// The parameter `path` of this provider.
   String get path;
@@ -315,4 +321,4 @@ class _PathDisplayNameProviderElement extends AutoDisposeProviderElement<String>
   String get path => (origin as PathDisplayNameProvider).path;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

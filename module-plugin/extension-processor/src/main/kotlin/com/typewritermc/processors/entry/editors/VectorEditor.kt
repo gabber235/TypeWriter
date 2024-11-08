@@ -1,6 +1,7 @@
 package com.typewritermc.processors.entry.editors
 
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.processors.entry.CustomEditor
@@ -20,7 +21,7 @@ object VectorEditor : CustomEditor {
         return type whenClassIs Vector::class
     }
 
-    context(KSPLogger) override fun default(type: KSType): JsonElement {
+    context(KSPLogger, Resolver) override fun default(type: KSType): JsonElement {
         return JsonObject(
             mapOf(
                 "x" to JsonPrimitive(0.0),
@@ -30,7 +31,7 @@ object VectorEditor : CustomEditor {
         )
     }
 
-    context(KSPLogger) override fun shape(type: KSType): DataBlueprint {
+    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint {
         return ObjectBlueprint(
             mapOf(
                 "x" to PrimitiveBlueprint(PrimitiveType.DOUBLE),

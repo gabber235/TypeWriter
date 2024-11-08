@@ -35,6 +35,7 @@ interface DisplayDialogueSegment : Segment {
     val text: String
 }
 
+@Deprecated("Replaced with RandomVariable")
 data class SingleLineRandomDisplayDialogueSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
@@ -45,6 +46,7 @@ data class SingleLineRandomDisplayDialogueSegment(
     }
 }
 
+@Deprecated("Replaced with RandomVariable")
 data class MultiLineRandomDisplayDialogueSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
@@ -56,6 +58,7 @@ data class MultiLineRandomDisplayDialogueSegment(
     }
 }
 
+@Deprecated("Replaced with RandomVariable")
 interface RandomDisplayDialogueSegment : Segment {
     @Help("One of the possible texts is chosen randomly, and displayed to the player.")
     val texts: List<String>

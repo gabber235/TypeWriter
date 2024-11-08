@@ -19,6 +19,8 @@ final _pagesDataProvider = AutoDisposeProvider<List<_PageData>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _PagesDataRef = AutoDisposeProviderRef<List<_PageData>>;
 String _$pagesTreeHash() => r'019eebde840b5af25aae49b4b3af4db61c5ac7a1';
 
@@ -34,6 +36,8 @@ final _pagesTreeProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _PagesTreeRef = AutoDisposeProviderRef<RootTreeNode<_PageData>>;
 String _$pageNamesHash() => r'd834681c3a622b64fd2562eb17db3434db172946';
 
@@ -48,6 +52,8 @@ final _pageNamesProvider = AutoDisposeProvider<List<String>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _PageNamesRef = AutoDisposeProviderRef<List<String>>;
 String _$writersHash() => r'49be74d2cb1d297d1af054c85976d3f6c4251713';
 
@@ -184,6 +190,8 @@ class _WritersProvider extends AutoDisposeProvider<List<Writer>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _WritersRef on AutoDisposeProviderRef<List<Writer>> {
   /// The parameter `pageId` of this provider.
   String get pageId;
@@ -197,4 +205,4 @@ class _WritersProviderElement extends AutoDisposeProviderElement<List<Writer>>
   String get pageId => (origin as _WritersProvider).pageId;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

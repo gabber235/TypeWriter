@@ -1,7 +1,9 @@
 package com.typewritermc.vault.entries.group
 
+import com.google.gson.annotations.SerializedName
 import com.typewritermc.vault.VaultInitializer
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.CriteriaOperator
 import com.typewritermc.engine.paper.entry.entries.GroupEntry
@@ -32,6 +34,40 @@ class BalanceGroupEntry(
 
 data class BalanceGroup(
     val audience: String = "",
-    val operator: CriteriaOperator = CriteriaOperator.GREATER_THAN,
+    @Default("\">=\"")
+    val operator: Operator = Operator.GREATER_THAN,
     val value: Double = 0.0,
 )
+
+enum class Operator {
+    @SerializedName("==")
+    EQUALS,
+
+    @SerializedName("<")
+    LESS_THAN,
+
+    @SerializedName(">")
+    GREATER_THAN,
+
+    @SerializedName("<=")
+    LESS_THAN_OR_EQUALS,
+
+    @SerializedName(">=")
+    GREATER_THAN_OR_EQUAL,
+
+    @SerializedName("!=")
+    NOT_EQUALS
+
+    ;
+
+    fun isValid(value: Double, criteria: Double): Boolean {
+        return when (this) {
+            EQUALS -> value == criteria
+            LESS_THAN -> value < criteria
+            GREATER_THAN -> value > criteria
+            LESS_THAN_OR_EQUALS -> value <= criteria
+            GREATER_THAN_OR_EQUAL -> value >= criteria
+            NOT_EQUALS -> value != criteria
+        }
+    }
+}

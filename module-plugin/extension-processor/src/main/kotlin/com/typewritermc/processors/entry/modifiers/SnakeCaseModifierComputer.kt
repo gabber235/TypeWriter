@@ -1,5 +1,6 @@
 package com.typewritermc.processors.entry.modifiers
 
+import com.google.devtools.ksp.processing.Resolver
 import com.typewritermc.core.extension.annotations.SnakeCase
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
@@ -9,6 +10,7 @@ import kotlin.reflect.KClass
 object SnakeCaseModifierComputer : DataModifierComputer<SnakeCase> {
     override val annotationClass: KClass<SnakeCase> = SnakeCase::class
 
+    context(Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: SnakeCase): Result<DataModifier> {
         // If the field is wrapped in a list or other container we try if the inner type can be modified
         innerCompute(blueprint, annotation)?.let { return ok(it) }

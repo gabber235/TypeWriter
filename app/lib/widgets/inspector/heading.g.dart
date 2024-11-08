@@ -19,6 +19,8 @@ final _entryIdProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _EntryIdRef = AutoDisposeProviderRef<String>;
 String _$entryNameHash() => r'5b97f6d0bfdb17369f3c4fec5aafcba45e1244a0';
 
@@ -33,6 +35,8 @@ final _entryNameProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _EntryNameRef = AutoDisposeProviderRef<String>;
 String _$entryTypeHash() => r'b8db383dacb169526f823865fb2c90e478a4b4ee';
 
@@ -47,6 +51,8 @@ final _entryTypeProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _EntryTypeRef = AutoDisposeProviderRef<String>;
 String _$entryUrlHash() => r'694a800667fd4e4be38e5ae6535f605833cda12e';
 
@@ -61,6 +67,8 @@ final _entryUrlProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _EntryUrlRef = AutoDisposeProviderRef<String>;
 String _$entryColorHash() => r'7bdd0ca948f969fd17f3b33c020f20585847b543';
 
@@ -75,6 +83,8 @@ final _entryColorProvider = AutoDisposeProvider<Color>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _EntryColorRef = AutoDisposeProviderRef<Color>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

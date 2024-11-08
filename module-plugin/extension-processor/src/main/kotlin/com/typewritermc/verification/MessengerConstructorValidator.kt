@@ -32,7 +32,7 @@ class MessengerConstructorValidator : SymbolProcessor {
                 }
 
                 val annotation = classDeclaration.getAnnotationsByType(Messenger::class).firstOrNull()!!
-                val entryClass = annotation.annotationClassValue { dialogue }
+                val entryClass = with(resolver) { annotation.annotationClassValue { dialogue } }
                 if (!parameters.hasParameter(entryClass.fullName)) {
                     issues.add("Missing 'entry' parameter of type '${entryClass.fullName}'")
                 }

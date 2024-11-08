@@ -53,6 +53,7 @@ class SpokenDialogueCinematicEntry(
     }
 }
 
+@Deprecated("Use RandomVariable entry with a normal SpokenDialogueCinematic instead")
 @Entry(
     "random_spoken_dialogue_cinematic",
     "Play a random spoken dialogue cinematic",

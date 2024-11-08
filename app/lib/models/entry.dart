@@ -1,6 +1,7 @@
 import "dart:convert";
 
 import "package:collection/collection.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
@@ -11,7 +12,7 @@ part "entry.g.dart";
 
 @riverpod
 EntryDefinition? entryDefinition(
-  EntryDefinitionRef ref,
+  Ref ref,
   String entryId,
 ) {
   final page = ref.watch(entryPageProvider(entryId));
@@ -32,19 +33,19 @@ EntryDefinition? entryDefinition(
 }
 
 @riverpod
-String? entryName(EntryNameRef ref, String entryId) {
+String? entryName(Ref ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   return entry?.formattedName;
 }
 
 @riverpod
-String? entryBlueprintId(EntryBlueprintIdRef ref, String entryId) {
+String? entryBlueprintId(Ref ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   return entry?.blueprintId;
 }
 
 @riverpod
-bool isEntryDeprecated(IsEntryDeprecatedRef ref, String entryId) {
+bool isEntryDeprecated(Ref ref, String entryId) {
   final entryTags = ref.watch(entryTagsProvider(entryId));
   return entryTags.contains("deprecated");
 }
@@ -74,15 +75,28 @@ class Entry {
   Entry.fromBlueprint({
     required String id,
     required EntryBlueprint blueprint,
-  }) : data = {
+    DataBlueprint? genericBlueprint,
+  })  : assert(
+          blueprint.isGeneric == (genericBlueprint != null),
+          blueprint.isGeneric
+              ? "Blueprint is generic but no generic blueprint was provided"
+              : "Blueprint is not generic but a generic blueprint was provided",
+        ),
+        assert(
+          !blueprint.isGeneric || blueprint.allowsGeneric(genericBlueprint),
+          "Generic blueprint given is not allowed for this blueprint, blueprint: ${blueprint.id}, allowed: ${blueprint.genericConstraints}, genericBlueprint: $genericBlueprint",
+        ),
+        data = {
           ...blueprint.dataBlueprint.defaultValue(),
           "id": id,
           "name": "new_${blueprint.name}",
           "type": blueprint.id,
+          "_genericBlueprint": genericBlueprint?.toJson(),
         };
 
   factory Entry.fromJson(Map<String, dynamic> json) => Entry(json);
   final Map<String, dynamic> data;
+  DataBlueprint? _genericBlueprint;
 
   Map<String, dynamic> toJson() => data;
 
@@ -100,6 +114,21 @@ class Entry {
     final type = data["type"];
     if (type is String) return type;
     throw Exception("Could not find blueprint id or type in entry data");
+  }
+
+  /// Returns the generic blueprint of the entry.
+  DataBlueprint? get genericBlueprint {
+    if (_genericBlueprint != null) return _genericBlueprint;
+    final genericBlueprint = data["_genericBlueprint"];
+    if (genericBlueprint == null) return null;
+
+    if (genericBlueprint is! Map<String, dynamic>) {
+      throw Exception("Generic blueprint is not a map");
+    }
+
+    final blueprint = DataBlueprint.fromJson(genericBlueprint);
+    _genericBlueprint = blueprint;
+    return blueprint;
   }
 
   /// Returns the values in [map] that match [path].

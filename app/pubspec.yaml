@@ -31,7 +31,7 @@ dependencies:
   dotted_border: ^2.1.0
   flutter_svg: ^2.0.10
   color: ^3.0.0
-  duration: ^3.0.13
+  duration: 
   flutter_animate: ^4.3.0
   text_scroll: ^0.2.0
   url_launcher: 

@@ -20,6 +20,8 @@ final graphableEntriesProvider = AutoDisposeProvider<List<Entry>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef GraphableEntriesRef = AutoDisposeProviderRef<List<Entry>>;
 String _$graphableEntryIdsHash() => r'30455b17b0966f3f06dc65644daa50f2b50b510a';
 
@@ -35,6 +37,8 @@ final graphableEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef GraphableEntryIdsRef = AutoDisposeProviderRef<List<String>>;
 String _$isTriggerEntryHash() => r'adf2eb9cfca1541c9f2fa769d4e5d80da3216cbe';
 
@@ -172,6 +176,8 @@ class IsTriggerEntryProvider extends AutoDisposeProvider<bool> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin IsTriggerEntryRef on AutoDisposeProviderRef<bool> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -301,6 +307,8 @@ class IsTriggerableEntryProvider extends AutoDisposeProvider<bool> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin IsTriggerableEntryRef on AutoDisposeProviderRef<bool> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -429,6 +437,8 @@ class EntryTriggersProvider extends AutoDisposeProvider<Set<String>?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryTriggersRef on AutoDisposeProviderRef<Set<String>?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -455,6 +465,8 @@ final graphProvider = AutoDisposeProvider<Graph>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef GraphRef = AutoDisposeProviderRef<Graph>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -6,7 +6,7 @@ part of 'entry.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$entryDefinitionHash() => r'48daba0fcb38d6f4c72fe2fe06680bed39074626';
+String _$entryDefinitionHash() => r'3db66db468e0d5ba6bc0041201174dfd2189955e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -142,6 +142,8 @@ class EntryDefinitionProvider extends AutoDisposeProvider<EntryDefinition?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryDefinitionRef on AutoDisposeProviderRef<EntryDefinition?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -156,7 +158,7 @@ class _EntryDefinitionProviderElement
   String get entryId => (origin as EntryDefinitionProvider).entryId;
 }
 
-String _$entryNameHash() => r'7e19e3e55767e19fe015a69c99f4af9173872ef2';
+String _$entryNameHash() => r'c24fb19c761064f9dfb5cf881d78a213d5bee5de';
 
 /// See also [entryName].
 @ProviderFor(entryName)
@@ -270,6 +272,8 @@ class EntryNameProvider extends AutoDisposeProvider<String?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryNameRef on AutoDisposeProviderRef<String?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -283,7 +287,7 @@ class _EntryNameProviderElement extends AutoDisposeProviderElement<String?>
   String get entryId => (origin as EntryNameProvider).entryId;
 }
 
-String _$entryBlueprintIdHash() => r'5cac165b3797bad6ce6518cd948251f1107d7a2d';
+String _$entryBlueprintIdHash() => r'7706260dfec68caabf7d9ae4c7d151548d3abef8';
 
 /// See also [entryBlueprintId].
 @ProviderFor(entryBlueprintId)
@@ -398,6 +402,8 @@ class EntryBlueprintIdProvider extends AutoDisposeProvider<String?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryBlueprintIdRef on AutoDisposeProviderRef<String?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -411,7 +417,7 @@ class _EntryBlueprintIdProviderElement
   String get entryId => (origin as EntryBlueprintIdProvider).entryId;
 }
 
-String _$isEntryDeprecatedHash() => r'f7417cbbc63faac9f66342e4170f30e7466c646a';
+String _$isEntryDeprecatedHash() => r'f68cc9e8e0bf8eed671f49d5ceadc1d45e4da8a0';
 
 /// See also [isEntryDeprecated].
 @ProviderFor(isEntryDeprecated)
@@ -526,6 +532,8 @@ class IsEntryDeprecatedProvider extends AutoDisposeProvider<bool> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin IsEntryDeprecatedRef on AutoDisposeProviderRef<bool> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -539,4 +547,4 @@ class _IsEntryDeprecatedProviderElement extends AutoDisposeProviderElement<bool>
   String get entryId => (origin as IsEntryDeprecatedProvider).entryId;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
