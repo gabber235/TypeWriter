@@ -62,7 +62,7 @@ import kotlin.time.Duration.Companion.seconds
 import com.typewritermc.core.extension.InitializableManager
 import com.typewritermc.engine.paper.loader.PaperDependencyChecker
 
-class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent, Listener {
+class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
     override fun onLoad() {
         super.onLoad()
         val modules = module {
@@ -136,14 +136,14 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent, Listener {
 
         PacketEvents.getAPI().settings.downsampleColors(false)
 
-        get<InteractionHandler>().initialize()
         get<FactDatabase>().initialize()
+        get<AssetManager>().initialize()
+        get<InteractionHandler>().initialize()
         get<ChatHistoryHandler>().initialize()
         get<ActionBarBlockerHandler>().initialize()
         get<PacketInterceptor>().initialize()
-        get<AssetManager>().initialize()
-        get<EntityHandler>().initialize()
         get<AudienceManager>().initialize()
+        get<EntityHandler>().initialize()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
             PlaceholderExpansion.register()
@@ -199,18 +199,18 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent, Listener {
     val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
 
     override suspend fun onDisableAsync() {
-        HandlerList.unregisterAll(this as Listener)
         CommandAPI.onDisable()
+
         get<StagingManager>().shutdown()
-        get<EntityHandler>().shutdown()
+        get<FactDatabase>().shutdown()
         get<ChatHistoryHandler>().shutdown()
         get<ActionBarBlockerHandler>().shutdown()
         get<PacketInterceptor>().shutdown()
         get<CommunicationHandler>().shutdown()
         get<InteractionHandler>().shutdown()
-        get<FactDatabase>().shutdown()
         get<AssetManager>().shutdown()
         get<AudienceManager>().shutdown()
+        get<EntityHandler>().shutdown()
 
         unload()
     }
