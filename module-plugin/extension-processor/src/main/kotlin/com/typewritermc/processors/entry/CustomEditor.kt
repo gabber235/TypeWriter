@@ -1,6 +1,7 @@
 package com.typewritermc.processors.entry
 
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.processors.entry.editors.*
 import kotlinx.serialization.json.JsonElement
@@ -12,13 +13,13 @@ interface CustomEditor {
 
     fun accept(type: KSType): Boolean
 
-    context(KSPLogger)
+    context(KSPLogger, Resolver)
     fun default(type: KSType): JsonElement
 
-    context(KSPLogger)
+    context(KSPLogger, Resolver)
     fun shape(type: KSType): DataBlueprint
 
-    context(KSPLogger)
+    context(KSPLogger, Resolver)
     fun validateDefault(type: KSType, default: JsonElement): Result<Unit> {
         return shape(type).validateDefault(default)
     }
@@ -28,7 +29,7 @@ interface CustomEditor {
     }
 }
 
-context(KSPLogger)
+context(KSPLogger, Resolver)
 fun <A : Annotation> DataModifierComputer<A>.computeModifier(annotation: A, type: KSType): DataModifier {
     return this.compute(DataBlueprint.blueprint(type)!!, annotation).getOrThrow()
 }
@@ -39,6 +40,7 @@ val customEditors = listOf(
     CoordinateEditor,
     CronEditor,
     DurationEditor,
+    GenericEditor,
     ItemEditor,
     MaterialEditor,
     OptionalEditor,
@@ -49,6 +51,7 @@ val customEditors = listOf(
     SkinEditor,
     SoundIdEditor,
     SoundSourceEditor,
+    VarEditor,
     VectorEditor,
     WorldEditor
 )

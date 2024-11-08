@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -6,37 +7,40 @@ import "package:typewriter/widgets/inspector/editors/algebraic.dart";
 import "package:typewriter/widgets/inspector/editors/boolean.dart";
 import "package:typewriter/widgets/inspector/editors/closed_range.dart";
 import "package:typewriter/widgets/inspector/editors/color.dart";
+import "package:typewriter/widgets/inspector/editors/coordinate.dart";
 import "package:typewriter/widgets/inspector/editors/cron.dart";
 import "package:typewriter/widgets/inspector/editors/duration.dart";
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
+import "package:typewriter/widgets/inspector/editors/generic.dart";
 import "package:typewriter/widgets/inspector/editors/item.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
-import "package:typewriter/widgets/inspector/editors/location.dart";
 import "package:typewriter/widgets/inspector/editors/map.dart";
 import "package:typewriter/widgets/inspector/editors/material.dart";
 import "package:typewriter/widgets/inspector/editors/number.dart";
 import "package:typewriter/widgets/inspector/editors/object.dart";
 import "package:typewriter/widgets/inspector/editors/optional.dart";
 import "package:typewriter/widgets/inspector/editors/page_selector.dart";
+import "package:typewriter/widgets/inspector/editors/position.dart";
 import "package:typewriter/widgets/inspector/editors/potion_effect.dart";
 import "package:typewriter/widgets/inspector/editors/skin.dart";
 import "package:typewriter/widgets/inspector/editors/sound_id.dart";
 import "package:typewriter/widgets/inspector/editors/sound_source.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
+import "package:typewriter/widgets/inspector/editors/variable.dart";
 import "package:typewriter/widgets/inspector/editors/vector.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "editors.g.dart";
 
 @riverpod
-dynamic fieldValue(FieldValueRef ref, String path, [dynamic defaultValue]) {
+dynamic fieldValue(Ref ref, String path, [dynamic defaultValue]) {
   final entry = ref.watch(inspectingEntryProvider);
   return entry?.get(path, defaultValue) ?? defaultValue;
 }
 
 @riverpod
-List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
+List<EditorFilter> editorFilters(Ref ref) => [
       // Modifier Editors
       EntrySelectorEditorFilter(),
       PageSelectorEditorFilter(),
@@ -46,6 +50,7 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       MaterialEditorFilter(),
       OptionalEditorFilter(),
       PositionEditorFilter(),
+      CoordinateEditorFilter(),
       VectorEditorFilter(),
       DurationEditorFilter(),
       CronEditorFilter(),
@@ -57,6 +62,8 @@ List<EditorFilter> editorFilters(EditorFiltersRef ref) => [
       SoundSourceEditorFilter(),
       SkinEditorFilter(),
       ColorEditorFilter(),
+      VariableEditorFilter(),
+      GenericEditorFilter(),
 
       // Default filters
       StringEditorFilter(),
@@ -75,7 +82,7 @@ abstract class EditorFilter {
 }
 
 @riverpod
-String pathDisplayName(PathDisplayNameRef ref, String path) {
+String pathDisplayName(Ref ref, String path) {
   final parts = path.split(".");
   final name = parts.removeLast();
 

@@ -14,6 +14,7 @@ import "package:typewriter/widgets/inspector/headers/help_action.dart";
 import "package:typewriter/widgets/inspector/headers/length_action.dart";
 import "package:typewriter/widgets/inspector/headers/placeholder_action.dart";
 import "package:typewriter/widgets/inspector/headers/regex_action.dart";
+import "package:typewriter/widgets/inspector/headers/variable_action.dart";
 import "package:typewriter/widgets/inspector/section_title.dart";
 
 part "header.g.dart";
@@ -191,13 +192,14 @@ class Header extends InheritedWidget {
 }
 
 @riverpod
-List<HeaderActionFilter> headerActionFilters(HeaderActionFiltersRef ref) => [
+List<HeaderActionFilter> headerActionFilters(Ref ref) => [
       HelpHeaderActionFilter(),
       ColoredHeaderActionFilter(),
       PlaceholderHeaderActionFilter(),
       RegexHeaderActionFilter(),
       LengthHeaderActionFilter(),
       ContentModeHeaderActionFilter(),
+      VariableHeaderActionFilter(),
     ];
 
 abstract class HeaderActionFilter {

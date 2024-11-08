@@ -48,6 +48,7 @@ class ActionBarDialogueCinematicEntry(
     }
 }
 
+@Deprecated("Use RandomVariable entry with a normal ActionBarDialogue instead")
 @Entry(
     "random_actionbar_dialogue_cinematic",
     "Show a random action bar typed dialogue",

@@ -7,7 +7,9 @@ import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Negative
 import com.typewritermc.core.extension.annotations.Tags
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.entry.entries.WritableFactEntry
 import com.typewritermc.engine.paper.facts.FactData
 import org.bukkit.entity.Player
@@ -40,7 +42,7 @@ enum class CriteriaOperator {
 
     ;
 
-    fun isValid(value: Double, criteria: Double): Boolean {
+    fun isValid(value: Int, criteria: Int): Boolean {
         return when (this) {
             EQUALS -> value == criteria
             LESS_THAN -> value < criteria
@@ -59,18 +61,18 @@ data class Criteria(
     val operator: CriteriaOperator = CriteriaOperator.EQUALS,
     @Help("The value to compare the fact value to")
     @Negative
-    val value: Int = 0,
+    val value: Var<Int> = ConstVar(0),
 ) {
-    fun isValid(fact: FactData?): Boolean {
+    fun isValid(fact: FactData?, player: Player): Boolean {
         val value = fact?.value ?: 0
-        return operator.isValid(value.toDouble(), this.value.toDouble())
+        return operator.isValid(value, this.value.get(player))
     }
 }
 
 infix fun Iterable<Criteria>.matches(player: Player): Boolean = all {
     val entry = it.fact.get()
     val fact = entry?.readForPlayersGroup(player)
-    it.isValid(fact)
+    it.isValid(fact, player)
 }
 
 enum class ModifierOperator {
@@ -88,5 +90,5 @@ data class Modifier(
     val operator: ModifierOperator = ModifierOperator.ADD,
     @Help("The value to modify the fact value by")
     @Negative
-    val value: Int = 0,
+    val value: Var<Int> = ConstVar(0),
 )

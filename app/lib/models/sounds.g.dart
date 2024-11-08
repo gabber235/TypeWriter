@@ -39,6 +39,8 @@ final minecraftSoundsProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef MinecraftSoundsRef = FutureProviderRef<Map<String, List<SoundData>>>;
 String _$minecraftSoundHash() => r'360718281dd98a11b4669309eee983425b822717';
 
@@ -177,6 +179,8 @@ class MinecraftSoundProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin MinecraftSoundRef on AutoDisposeFutureProviderRef<MinecraftSound?> {
   /// The parameter `id` of this provider.
   String get id;
@@ -191,4 +195,4 @@ class _MinecraftSoundProviderElement
   String get id => (origin as MinecraftSoundProvider).id;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

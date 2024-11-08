@@ -1,6 +1,5 @@
 package com.typewritermc.basic.entries.dialogue.messengers.spoken
 
-import com.github.retrooper.packetevents.protocol.packettype.PacketType.Play
 import com.typewritermc.basic.entries.dialogue.SpokenDialogueEntry
 import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
@@ -26,7 +25,7 @@ class BedrockSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialog
             player.uniqueId,
             org.geysermc.cumulus.form.SimpleForm.builder()
                 .title("<bold>${entry.speakerDisplayName}</bold>".legacy())
-                .content("${entry.text.parsePlaceholders(player).legacy()}\n\n")
+                .content("${entry.text.get(player).parsePlaceholders(player).legacy()}\n\n")
                 .button("Continue")
                 .closedOrInvalidResultHandler { _, _ ->
                     state = MessengerState.CANCELLED

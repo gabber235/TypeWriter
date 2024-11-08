@@ -122,10 +122,10 @@ class FactDatabase : KoinComponent {
                         }
 
                         val fact = entry.readForPlayersGroup(player)
-                        modifier.value + fact.value
+                        modifier.value.get(player) + fact.value
                     }
 
-                    ModifierOperator.SET -> modifier.value
+                    ModifierOperator.SET -> modifier.value.get(player)
                 }
             }
         }

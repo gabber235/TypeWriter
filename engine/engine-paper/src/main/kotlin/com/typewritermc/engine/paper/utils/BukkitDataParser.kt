@@ -1,6 +1,8 @@
 package com.typewritermc.engine.paper.utils
 
 import com.google.gson.*
+import com.typewritermc.core.utils.point.Coordinate
+import com.typewritermc.engine.paper.loader.serializers.CoordinateSerializer
 import com.typewritermc.engine.paper.logger
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -13,6 +15,7 @@ import java.util.*
 fun createBukkitDataParser(): Gson = GsonBuilder()
     .registerTypeAdapter(Location::class.java, LocationSerializer())
     .registerTypeHierarchyAdapter(ItemStack::class.java, ItemStackSerializer())
+    .registerTypeAdapter(Coordinate::class.java, CoordinateSerializer())
     .create()
 
 

@@ -20,6 +20,8 @@ final inspectingSegmentProvider = AutoDisposeProvider<Segment?>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef InspectingSegmentRef = AutoDisposeProviderRef<Segment?>;
 String _$allSegmentsHash() => r'cd0016ec442c5c46570cedbdde8893c1a52890df';
 
@@ -157,6 +159,8 @@ class _AllSegmentsProvider extends AutoDisposeProvider<List<Segment>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _AllSegmentsRef on AutoDisposeProviderRef<List<Segment>> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -184,6 +188,8 @@ final _cinematicEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _CinematicEntryIdsRef = AutoDisposeProviderRef<List<String>>;
 String _$endingFrameHash() => r'b1ee54645a8ea133a3e35488b84aeb79b9701544';
 
@@ -300,6 +306,8 @@ class _EndingFrameProvider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _EndingFrameRef on AutoDisposeProviderRef<int> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -430,6 +438,8 @@ class _EntryContextActionsProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _EntryContextActionsRef on AutoDisposeProviderRef<List<ContextMenuTile>> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -559,6 +569,8 @@ class _FrameEndOffsetProvider extends AutoDisposeProvider<double> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _FrameEndOffsetRef on AutoDisposeProviderRef<double> {
   /// The parameter `frame` of this provider.
   int get frame;
@@ -585,6 +597,8 @@ final _frameSpacingProvider = AutoDisposeProvider<double>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _FrameSpacingRef = AutoDisposeProviderRef<double>;
 String _$frameStartOffsetHash() => r'13381822c602dddec85110a9b1c3855a47c07172';
 
@@ -701,6 +715,8 @@ class _FrameStartOffsetProvider extends AutoDisposeProvider<double> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _FrameStartOffsetRef on AutoDisposeProviderRef<double> {
   /// The parameter `frame` of this provider.
   int get frame;
@@ -728,6 +744,8 @@ final _ignoreEntryFieldsProvider = AutoDisposeProvider<List<String>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _IgnoreEntryFieldsRef = AutoDisposeProviderRef<List<String>>;
 String _$longestEntryNameHash() => r'e28faa48892dbb64da18b39177390e09c73dc820';
 
@@ -743,6 +761,8 @@ final _longestEntryNameProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _LongestEntryNameRef = AutoDisposeProviderRef<String>;
 String _$segmentFieldsHash() => r'bf02df2288101b0055b4c2376e4f4336b36c8f37';
 
@@ -758,6 +778,8 @@ final _segmentFieldsProvider = AutoDisposeProvider<ObjectBlueprint?>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _SegmentFieldsRef = AutoDisposeProviderRef<ObjectBlueprint?>;
 String _$segmentPathsHash() => r'14d0fa46d736eab350f85a54908b939acd3562fd';
 
@@ -874,6 +896,8 @@ class _SegmentPathsProvider extends AutoDisposeProvider<Map<String, Modifier>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _SegmentPathsRef on AutoDisposeProviderRef<Map<String, Modifier>> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -1014,6 +1038,8 @@ class _SegmentsProvider extends AutoDisposeProvider<List<Segment>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _SegmentsRef on AutoDisposeProviderRef<List<Segment>> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -1159,6 +1185,8 @@ class _ShowThumbsProvider extends AutoDisposeProvider<bool> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _ShowThumbsRef on AutoDisposeProviderRef<bool> {
   /// The parameter `startFrame` of this provider.
   int get startFrame;
@@ -1191,6 +1219,8 @@ final _sliderEndOffsetProvider = AutoDisposeProvider<double>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _SliderEndOffsetRef = AutoDisposeProviderRef<double>;
 String _$sliderStartOffsetHash() => r'cea351bd17cd435ff70e20ce48f4b6e53b370445';
 
@@ -1206,6 +1236,8 @@ final _sliderStartOffsetProvider = AutoDisposeProvider<double>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _SliderStartOffsetRef = AutoDisposeProviderRef<double>;
 String _$timeFractionFramesHash() =>
     r'8015741ea21a16f837d627eefe543fbc6236db0f';
@@ -1324,6 +1356,8 @@ class _TimeFractionFramesProvider extends AutoDisposeProvider<List<int>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _TimeFractionFramesRef on AutoDisposeProviderRef<List<int>> {
   /// The parameter `fractionModifier` of this provider.
   double get fractionModifier;
@@ -1352,6 +1386,8 @@ final _timeFractionsProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _TimeFractionsRef = AutoDisposeProviderRef<int>;
 String _$timePointOffsetHash() => r'7498c13cafb7517b374493ac38ab8e5e3a3441d0';
 
@@ -1480,6 +1516,8 @@ class _TimePointOffsetProvider extends AutoDisposeProvider<double> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin _TimePointOffsetRef on AutoDisposeProviderRef<double> {
   /// The parameter `frame` of this provider.
   int get frame;
@@ -1513,6 +1551,8 @@ final _totalSequenceFramesProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _TotalSequenceFramesRef = AutoDisposeProviderRef<int>;
 String _$trackBackgroundFractionModifierHash() =>
     r'e0aaee2ac472bad0bf9777a0ca67ead08a2351b3';
@@ -1530,6 +1570,8 @@ final _trackBackgroundFractionModifierProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _TrackBackgroundFractionModifierRef = AutoDisposeProviderRef<double>;
 String _$trackBackgroundLinesHash() =>
     r'20ac7bd3700f1f91bd9053fb793ae6382fe9b073';
@@ -1547,6 +1589,8 @@ final _trackBackgroundLinesProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _TrackBackgroundLinesRef = AutoDisposeProviderRef<List<_FrameLine>>;
 String _$trackOffsetHash() => r'1f1ac2cb0fe819222d8ea488e86c896374f631a5';
 
@@ -1561,6 +1605,8 @@ final _trackOffsetProvider = AutoDisposeProvider<double>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _TrackOffsetRef = AutoDisposeProviderRef<double>;
 String _$trackSizeHash() => r'9a61b99bd973ee4a896e962cb8b9fa690e2423a9';
 
@@ -1575,6 +1621,8 @@ final _trackSizeProvider = AutoDisposeProvider<double>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _TrackSizeRef = AutoDisposeProviderRef<double>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

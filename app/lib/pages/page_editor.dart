@@ -24,18 +24,18 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 part "page_editor.g.dart";
 
 @Riverpod(keepAlive: true)
-String? currentPageId(CurrentPageIdRef ref) {
+String? currentPageId(Ref ref) {
   final routeData = ref.watch(currentRouteDataProvider(PageEditorRoute.name));
   return routeData?.pathParams.getString("id");
 }
 
 @riverpod
-String currentPageLabel(CurrentPageLabelRef ref) {
+String currentPageLabel(Ref ref) {
   return ref.watch(currentPageProvider)?.pageName.formatted ?? "";
 }
 
 @riverpod
-Page? currentPage(CurrentPageRef ref) {
+Page? currentPage(Ref ref) {
   final id = ref.watch(currentPageIdProvider);
   final pages = ref.watch(pagesProvider);
 
@@ -43,7 +43,7 @@ Page? currentPage(CurrentPageRef ref) {
 }
 
 @riverpod
-PageType? currentPageType(CurrentPageTypeRef ref) {
+PageType? currentPageType(Ref ref) {
   return ref.watch(currentPageProvider.select((page) => page?.type));
 }
 
@@ -83,7 +83,7 @@ class PageEditor extends HookConsumerWidget {
 }
 
 @riverpod
-List<Writer> _writers(_WritersRef ref) {
+List<Writer> _writers(Ref ref) {
   final pageId = ref.watch(currentPageIdProvider);
   return ref
       .watch(writersProvider)

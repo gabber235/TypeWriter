@@ -6,7 +6,7 @@ class TWIcons {
   static const String duplicate = "ion:duplicate";
   static const String camera = "ph:camera-fill";
   static const String subscript = "fa6-solid:subscript";
-  static const String asterisk = "fa:asterisk";
+  static const String asterisk = "clarity:asterisk-solid";
   static const String paintBrush = "fa6-solid:paintbrush";
   static const String filter = "fa6-solid:filter";
   static const String magnifyingGlass = "fa6-solid:magnifying-glass";
@@ -76,4 +76,6 @@ class TWIcons {
   static const String inclusive = "mingcute:combine-fill";
   static const String range = "material-symbols:arrow-range";
   static const String recycle = "mdi:recycle";
+  static const String blocked = "fluent:presence-blocked-24-regular";
+  static const String variable = "mingcute:braces-fill";
 }

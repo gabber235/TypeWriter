@@ -417,6 +417,18 @@ abstract class SearchFilter {
   }
 }
 
+abstract class HiddenSearchFilter extends SearchFilter {
+  const HiddenSearchFilter();
+  @override
+  Color get color => Colors.transparent;
+
+  @override
+  String get icon => TWIcons.asterisk;
+
+  @override
+  String get title => "";
+}
+
 /// When the user wants to search for nodes.
 class SearchIntent extends Intent {}
 
@@ -456,6 +468,7 @@ class SearchNotifier extends StateNotifier<Search?> {
   void startAddSearch() => asBuilder()
     ..fetchNewEntry()
     ..fetchAddPage()
+    ..nonGenericAddEntry(canRemove: false)
     ..open();
 
   void startGlobalSearch() => asBuilder()
@@ -463,6 +476,7 @@ class SearchNotifier extends StateNotifier<Search?> {
     ..fetchEntry()
     ..fetchPage()
     ..fetchAddPage()
+    ..nonGenericAddEntry(canRemove: false)
     ..open();
 
   void toggleFetcher(SearchFetcher fetcher) {
@@ -1028,7 +1042,8 @@ class _SearchFilters extends HookConsumerWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               for (final fetcher in fetchers) _FetcherChip(fetcher: fetcher),
-              for (final filter in filters)
+              for (final filter
+                  in filters.where((f) => f is! HiddenSearchFilter))
                 Material(
                   color: filter.color,
                   borderRadius: BorderRadius.circular(30),

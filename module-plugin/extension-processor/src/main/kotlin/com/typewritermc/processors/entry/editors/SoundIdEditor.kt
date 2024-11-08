@@ -1,6 +1,7 @@
 package com.typewritermc.processors.entry.editors
 
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.processors.entry.CustomEditor
 import com.typewritermc.processors.entry.DataBlueprint
@@ -19,7 +20,7 @@ object SoundIdEditor : CustomEditor {
         return type whenClassNameIs "com.typewritermc.engine.paper.utils.SoundId"
     }
 
-    context(KSPLogger) override fun default(type: KSType): JsonElement {
+    context(KSPLogger, Resolver) override fun default(type: KSType): JsonElement {
         return JsonObject(
             mapOf(
                 "type" to JsonPrimitive("default"),
@@ -28,7 +29,7 @@ object SoundIdEditor : CustomEditor {
         )
     }
 
-    context(KSPLogger) override fun shape(type: KSType): DataBlueprint {
+    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint {
         return ObjectBlueprint(
             mapOf(
                 "type" to PrimitiveBlueprint(PrimitiveType.STRING),

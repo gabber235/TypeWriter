@@ -104,6 +104,7 @@ class ManifestView extends HookConsumerWidget {
         buttonText: "Add Entry",
         onButtonPressed: () => ref.read(searchProvider.notifier).asBuilder()
           ..fetchNewEntry()
+          ..nonGenericAddEntry()
           ..tag("manifest")
           ..open(),
       );

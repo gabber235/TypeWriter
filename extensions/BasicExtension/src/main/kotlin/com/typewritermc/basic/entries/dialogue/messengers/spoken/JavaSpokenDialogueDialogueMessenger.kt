@@ -60,7 +60,7 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
     override fun init() {
         super.init()
         speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
-        text = entry.text.parsePlaceholders(player)
+        text = entry.text.get(player).parsePlaceholders(player)
         typingDuration = typingDurationType.totalDuration(text.stripped(), entry.duration)
 
         confirmationKey.listen(this, player.uniqueId) {

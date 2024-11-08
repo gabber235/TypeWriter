@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/extension.dart";
@@ -17,25 +18,25 @@ part "entry_blueprint.g.dart";
 
 /// A generated provider to fetch and cache a list of all the [EntryBlueprint]s.
 @riverpod
-List<EntryBlueprint> entryBlueprints(EntryBlueprintsRef ref) =>
+List<EntryBlueprint> entryBlueprints(Ref ref) =>
     ref.watch(extensionsProvider).expand((e) => e.entries).toList();
 
 /// A generated provider to fetch and cache a specific [EntryBlueprint] by its [blueprintId].
 @riverpod
-EntryBlueprint? entryBlueprint(EntryBlueprintRef ref, String blueprintId) => ref
+EntryBlueprint? entryBlueprint(Ref ref, String blueprintId) => ref
     .watch(entryBlueprintsProvider)
     .firstWhereOrNull((e) => e.id == blueprintId);
 
 @riverpod
 List<String> entryBlueprintTags(
-  EntryBlueprintTagsRef ref,
+  Ref ref,
   String blueprintId,
 ) =>
     ref.watch(entryBlueprintProvider(blueprintId))?.tags ?? [];
 
 @riverpod
 List<String> entryTags(
-  EntryTagsRef ref,
+  Ref ref,
   String entryId,
 ) {
   final blueprintId = ref.watch(entryBlueprintIdProvider(entryId));
@@ -45,7 +46,7 @@ List<String> entryTags(
 
 @riverpod
 PageType entryBlueprintPageType(
-  EntryBlueprintPageTypeRef ref,
+  Ref ref,
   String blueprintId,
 ) {
   final blueprint = ref.watch(entryBlueprintProvider(blueprintId));
@@ -56,7 +57,7 @@ PageType entryBlueprintPageType(
 /// Gets all the modifiers with a given name.
 @riverpod
 Map<String, Modifier> fieldModifiers(
-  FieldModifiersRef ref,
+  Ref ref,
   String blueprintId,
   String modifierName,
 ) {
@@ -69,7 +70,7 @@ Map<String, Modifier> fieldModifiers(
 /// Gets all the paths from fields with a given modifier.
 @riverpod
 List<String> modifierPaths(
-  ModifierPathsRef ref,
+  Ref ref,
   String blueprintId,
   String modifierName, [
   String? data,
@@ -92,6 +93,8 @@ class EntryBlueprint with _$EntryBlueprint {
     required String extension,
     required ObjectBlueprint dataBlueprint,
     @Default(<String>[]) List<String> tags,
+    @Default(null) List<DataBlueprint>? genericConstraints,
+    @Default(null) DataBlueprint? variableDataBlueprint,
     @ColorConverter() @Default(Colors.grey) Color color,
     @Default(TWIcons.help) String icon,
   }) = _EntryBlueprint;
@@ -182,6 +185,17 @@ const wikiBaseUrl = kDebugMode
     : "https://gabber235.github.io/TypeWriter";
 
 extension EntryBlueprintExt on EntryBlueprint {
+  bool get isGeneric => genericConstraints != null;
+
+  bool allowsGeneric(DataBlueprint? genericBlueprint) {
+    if (genericBlueprint == null) return false;
+    final blueprints = genericConstraints;
+    if (blueprints == null) return false;
+    // If the blueprints is empty, all blueprints are allowed.
+    if (blueprints.isEmpty) return true;
+    return blueprints.contains(genericBlueprint);
+  }
+
   Map<String, Modifier> fieldsWithModifier(String name) =>
       _fieldsWithModifier(name, "", dataBlueprint);
 

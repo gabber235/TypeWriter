@@ -10,6 +10,7 @@ import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
+import com.typewritermc.core.utils.point.Coordinate
 import com.typewritermc.engine.paper.content.ContentContext
 import com.typewritermc.engine.paper.content.ContentMode
 import com.typewritermc.engine.paper.content.components.cinematic
@@ -24,10 +25,11 @@ import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.packetevents.ArmSwing
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
 import com.typewritermc.engine.paper.utils.toBukkitLocation
+import com.typewritermc.engine.paper.utils.toCoordinate
+import com.typewritermc.engine.paper.utils.toWorld
 import com.typewritermc.entity.entries.data.minecraft.*
 import com.typewritermc.entity.entries.data.minecraft.living.EquipmentProperty
 import io.papermc.paper.event.player.PlayerArmSwingEvent
-import org.bukkit.Location
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
 import org.bukkit.entity.Pose
@@ -124,7 +126,7 @@ class EntityCinematicAction(
         this.entity = definition.create(player)
 
         val prioritizedPropertySuppliers = definition.data.withPriority() +
-                (FakeProvider(PositionProperty::class) { currentData.location?.toProperty() } to Int.MAX_VALUE) +
+                (FakeProvider(PositionProperty::class) { currentData.location?.toProperty(player.world.toWorld()) } to Int.MAX_VALUE) +
                 (FakeProvider(PoseProperty::class) { currentData.pose?.toProperty() } to Int.MAX_VALUE) +
                 (FakeProvider(ArmSwingProperty::class) { currentData.swing?.toProperty() } to Int.MAX_VALUE) +
                 (FakeProvider(EquipmentProperty::class) {
@@ -159,7 +161,7 @@ class EntityCinematicAction(
 
         val collectedProperties = collectors.mapNotNull { it.collect(player) }
 
-        this.entity?.spawn(startLocation.toProperty())
+        this.entity?.spawn(startLocation.toProperty(player.world.toWorld()))
         this.entity?.consumeProperties(collectedProperties)
     }
 
@@ -236,7 +238,7 @@ fun ItemStack?.isNullOrEmpty(): Boolean {
 }
 
 data class EntityFrame(
-    val location: Location? = null,
+    val location: Coordinate? = null,
     val pose: EntityPose? = null,
     val swing: ArmSwing? = null,
 
@@ -308,7 +310,7 @@ class EntityCinematicRecording(
         val inv = player.inventory
         val pose = if (player.isInsideVehicle) Pose.SITTING else player.pose
         val data = EntityFrame(
-            location = player.location,
+            location = player.location.toCoordinate(),
             pose = pose.toEntityPose(),
             swing = swing,
             mainHand = if (inv.itemInMainHand.isEmpty) null else inv.itemInMainHand,
@@ -323,7 +325,7 @@ class EntityCinematicRecording(
     }
 
     override fun applyState(value: EntityFrame) {
-        value.location?.let { player.teleport(it) }
+        value.location?.let { player.teleport(it.toBukkitLocation(player.world)) }
         value.pose?.let { player.pose = it.toBukkitPose() }
         value.swing?.let { swing ->
             when (swing) {

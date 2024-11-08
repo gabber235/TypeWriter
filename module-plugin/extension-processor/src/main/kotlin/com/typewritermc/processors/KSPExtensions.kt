@@ -1,9 +1,7 @@
 package com.typewritermc.processors
 
-import com.google.devtools.ksp.KSTypeNotPresentException
-import com.google.devtools.ksp.KspExperimental
-import com.google.devtools.ksp.getAllSuperTypes
-import com.google.devtools.ksp.getAnnotationsByType
+import com.google.devtools.ksp.*
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import com.google.gson.annotations.SerializedName
 import kotlin.reflect.KClass
@@ -56,14 +54,17 @@ infix fun KSDeclaration.isOrExtends(className: String): Boolean {
 
 infix fun KSType.isOrExtends(className: String): Boolean = declaration isOrExtends className
 
+context(Resolver)
 @OptIn(KspExperimental::class)
 inline fun <reified T : Annotation> KSAnnotated.annotationClassValue(f: T.() -> KClass<*>) =
     getAnnotationsByType(T::class).first().annotationClassValue(f)
 
+context(Resolver)
 @OptIn(KspExperimental::class)
-inline fun <reified T : Annotation> T.annotationClassValue(f: T.() -> KClass<*>) = try {
-    f()
-    throw Exception("Expected to get a KSTypeNotPresentException")
+inline fun <reified T : Annotation> T.annotationClassValue(f: T.() -> KClass<*>): KSType = try {
+    val klass = f()
+    val declaration = getKotlinClassByName(klass.qualifiedName!!) ?: throw ClassNotFoundException(klass.qualifiedName!!)
+    declaration.asStarProjectedType()
 } catch (e: KSTypeNotPresentException) {
     e.ksType
 }

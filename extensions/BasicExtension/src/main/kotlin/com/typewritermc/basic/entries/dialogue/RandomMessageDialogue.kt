@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
 
+@Deprecated("Use RandomVariable entry with a normal MessageDialogue instead")
 @Entry("random_message", "Display a random message from a list to a player", "#1c4da3", "ic:baseline-comment-bank")
 /**
  * The `Random Message Dialogue` action displays a random message from a list to the player. This action provides you with the ability to create interactive dialogues with randomized responses.

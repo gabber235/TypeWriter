@@ -641,6 +641,7 @@ class CinematicView extends HookConsumerWidget {
         buttonText: "Add Entry",
         onButtonPressed: () => ref.read(searchProvider.notifier).asBuilder()
           ..fetchNewEntry()
+          ..nonGenericAddEntry()
           ..tag("cinematic", canRemove: false)
           ..open(),
       );
@@ -1217,10 +1218,12 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
     if (frame == segment.endFrame) return;
     if (frame < segment.startFrame) return;
 
-    if (segment.minFrames != null && frame - segment.startFrame < segment.minFrames!) {
+    if (segment.minFrames != null &&
+        frame - segment.startFrame < segment.minFrames!) {
       return;
     }
-    if (segment.maxFrames != null && frame - segment.startFrame > segment.maxFrames!) {
+    if (segment.maxFrames != null &&
+        frame - segment.startFrame > segment.maxFrames!) {
       return;
     }
 
@@ -1239,10 +1242,12 @@ class _MoveNotifier extends StateNotifier<_MoveState?> {
     if (frame == segment.startFrame) return;
     if (frame > segment.endFrame) return;
 
-    if (segment.minFrames != null && segment.endFrame - frame < segment.minFrames!) {
+    if (segment.minFrames != null &&
+        segment.endFrame - frame < segment.minFrames!) {
       return;
     }
-    if (segment.maxFrames != null && segment.endFrame - frame > segment.maxFrames!) {
+    if (segment.maxFrames != null &&
+        segment.endFrame - frame > segment.maxFrames!) {
       return;
     }
 

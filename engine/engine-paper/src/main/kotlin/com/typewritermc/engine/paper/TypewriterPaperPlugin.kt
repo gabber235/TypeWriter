@@ -2,10 +2,11 @@ package com.typewritermc.engine.paper
 
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.google.gson.Gson
 import com.typewritermc.core.TypewriterCore
 import com.typewritermc.core.entries.Library
+import com.typewritermc.core.extension.InitializableManager
+import com.typewritermc.core.serialization.createDataSerializerGson
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFinder
 import com.typewritermc.engine.paper.entry.entity.EntityHandler
@@ -23,6 +24,7 @@ import com.typewritermc.engine.paper.interaction.ActionBarBlockerHandler
 import com.typewritermc.engine.paper.interaction.ChatHistoryHandler
 import com.typewritermc.engine.paper.interaction.InteractionHandler
 import com.typewritermc.engine.paper.interaction.PacketInterceptor
+import com.typewritermc.engine.paper.loader.PaperDependencyChecker
 import com.typewritermc.engine.paper.loader.dataSerializers
 import com.typewritermc.engine.paper.snippets.SnippetDatabase
 import com.typewritermc.engine.paper.snippets.SnippetDatabaseImpl
@@ -35,13 +37,10 @@ import com.typewritermc.engine.paper.utils.registerAll
 import com.typewritermc.engine.paper.utils.unregisterAll
 import com.typewritermc.loader.DependencyChecker
 import com.typewritermc.loader.ExtensionLoader
-import com.typewritermc.core.serialization.createDataSerializerGson
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import kotlinx.coroutines.delay
 import lirand.api.architecture.KotlinPlugin
-import org.bukkit.event.HandlerList
-import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
@@ -59,8 +58,6 @@ import org.koin.java.KoinJavaComponent
 import java.io.File
 import java.util.logging.Logger
 import kotlin.time.Duration.Companion.seconds
-import com.typewritermc.core.extension.InitializableManager
-import com.typewritermc.engine.paper.loader.PaperDependencyChecker
 
 class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
     override fun onLoad() {

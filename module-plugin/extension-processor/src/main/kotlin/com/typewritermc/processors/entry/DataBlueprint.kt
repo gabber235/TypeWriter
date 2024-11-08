@@ -4,6 +4,7 @@ import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.AlgebraicTypeInfo
@@ -26,7 +27,7 @@ val blueprintJson = Json {
 @Serializable
 sealed class DataBlueprint {
     companion object {
-        context(KSPLogger)
+        context(KSPLogger, Resolver)
         fun blueprint(type: KSType): DataBlueprint? {
             CustomBlueprint.blueprint(type)?.let { return it }
             PrimitiveBlueprint.blueprint(type)?.let { return it }
@@ -91,7 +92,7 @@ sealed class DataBlueprint {
         companion object {
             context(KSPLogger)
             fun blueprint(type: KSType): DataBlueprint? {
-                // Check if it is an enum. And if so get the values.
+                // Check if it is an enum. And if so, get the values.
                 val clazz = type.declaration as? KSClassDeclaration ?: return null
                 if (clazz.classKind != ClassKind.ENUM_CLASS) return null
 
@@ -127,7 +128,7 @@ sealed class DataBlueprint {
     @SerialName("list")
     data class ListBlueprint(val type: DataBlueprint) : DataBlueprint() {
         companion object {
-            context(KSPLogger)
+            context(KSPLogger, Resolver)
             fun blueprint(type: KSType): ListBlueprint? {
                 when (type.declaration.qualifiedName?.asString()) {
                     "kotlin.collections.List" -> {}
@@ -159,7 +160,7 @@ sealed class DataBlueprint {
     @SerialName("map")
     data class MapBlueprint(val key: DataBlueprint, val value: DataBlueprint) : DataBlueprint() {
         companion object {
-            context(KSPLogger)
+            context(KSPLogger, Resolver)
             fun blueprint(type: KSType): MapBlueprint? {
                 when (type.declaration.qualifiedName?.asString()) {
                     "kotlin.collections.Map" -> {}
@@ -209,7 +210,7 @@ sealed class DataBlueprint {
     @SerialName("object")
     data class ObjectBlueprint(val fields: Map<String, DataBlueprint>) : DataBlueprint() {
         companion object {
-            context(KSPLogger)
+            context(KSPLogger, Resolver)
             fun blueprint(type: KSType): ObjectBlueprint? {
                 val clazz = type.declaration as? KSClassDeclaration ?: return null
                 if (clazz.classKind != ClassKind.CLASS) return null
@@ -268,7 +269,7 @@ sealed class DataBlueprint {
     @SerialName("algebraic")
     data class AlgebraicBlueprint(val cases: Map<String, DataBlueprint>) : DataBlueprint() {
         companion object {
-            context(KSPLogger)
+            context(KSPLogger, Resolver)
             @OptIn(KspExperimental::class)
             fun blueprint(type: KSType): DataBlueprint? {
                 val clazz = type.declaration as? KSClassDeclaration ?: return null
@@ -315,7 +316,7 @@ sealed class DataBlueprint {
         val validator: (JsonElement) -> Result<Unit> = { ok(Unit) }
     ) : DataBlueprint() {
         companion object {
-            context(KSPLogger)
+            context(KSPLogger, Resolver)
             fun blueprint(type: KSType): CustomBlueprint? {
                 val editor = customEditors.firstOrNull { it.accept(type) } ?: return null
                 return CustomBlueprint(editor.id, editor.shape(type)) {
@@ -343,6 +344,19 @@ private fun KSPropertyDeclaration.defaultValue(): JsonElement? {
     } catch (e: SerializationException) {
         error("The default value for ${this.fullName} is not a valid JSON value, JSON: `$default`", this)
         throw e
+    }
+}
+
+fun DataBlueprint.walkAny(visitor: (DataBlueprint) -> Boolean): Boolean {
+    if (visitor(this)) return true
+    return when (this) {
+        is DataBlueprint.PrimitiveBlueprint -> false
+        is DataBlueprint.EnumBlueprint -> false
+        is DataBlueprint.ListBlueprint -> type.walkAny(visitor)
+        is DataBlueprint.MapBlueprint -> key.walkAny(visitor) || value.walkAny(visitor)
+        is DataBlueprint.ObjectBlueprint -> fields.values.any { it.walkAny(visitor) }
+        is DataBlueprint.AlgebraicBlueprint -> cases.values.any { it.walkAny(visitor) }
+        is DataBlueprint.CustomBlueprint -> shape.walkAny(visitor)
     }
 }
 

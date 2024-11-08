@@ -1,6 +1,7 @@
 package com.typewritermc.processors.entry.editors
 
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.processors.entry.CustomEditor
 import com.typewritermc.processors.entry.DataBlueprint
@@ -16,6 +17,6 @@ object MaterialEditor : CustomEditor {
         return type whenClassNameIs "org.bukkit.Material"
     }
 
-    context(KSPLogger) override fun default(type: KSType): JsonElement = JsonPrimitive("AIR")
-    context(KSPLogger) override fun shape(type: KSType): DataBlueprint = PrimitiveBlueprint(PrimitiveType.STRING)
+    context(KSPLogger, Resolver) override fun default(type: KSType): JsonElement = JsonPrimitive("AIR")
+    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint = PrimitiveBlueprint(PrimitiveType.STRING)
 }

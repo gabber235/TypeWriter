@@ -20,6 +20,8 @@ final inspectingEntryProvider = AutoDisposeProvider<Entry?>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef InspectingEntryRef = AutoDisposeProviderRef<Entry?>;
 String _$inspectingEntryDefinitionHash() =>
     r'20a2722e89b0eccb897db82f076db9dcaf9055fa';
@@ -37,6 +39,8 @@ final inspectingEntryDefinitionProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef InspectingEntryDefinitionRef = AutoDisposeProviderRef<EntryDefinition?>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

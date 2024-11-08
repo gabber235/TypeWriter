@@ -20,6 +20,8 @@ final manifestEntriesProvider = AutoDisposeProvider<List<Entry>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ManifestEntriesRef = AutoDisposeProviderRef<List<Entry>>;
 String _$manifestEntryIdsHash() => r'a54b8e8a32fe603b535a9a30af0e4fd39d6a24ee';
 
@@ -35,6 +37,8 @@ final manifestEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ManifestEntryIdsRef = AutoDisposeProviderRef<List<String>>;
 String _$entryReferencesHash() => r'b8ca36aa7d61848c32cf0ae6af8de3fcb49a8fa2';
 
@@ -172,6 +176,8 @@ class EntryReferencesProvider extends AutoDisposeProvider<Set<String>?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryReferencesRef on AutoDisposeProviderRef<Set<String>?> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -199,6 +205,8 @@ final manifestGraphProvider = AutoDisposeProvider<Graph>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ManifestGraphRef = AutoDisposeProviderRef<Graph>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,5 +1,6 @@
 package com.typewritermc.processors.entry.modifiers
 
+import com.google.devtools.ksp.processing.Resolver
 import com.typewritermc.core.extension.annotations.MaterialProperties
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
@@ -9,6 +10,7 @@ import kotlin.reflect.KClass
 object MaterialPropertiesModifierComputer : DataModifierComputer<MaterialProperties> {
     override val annotationClass: KClass<MaterialProperties> = MaterialProperties::class
 
+    context(Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: MaterialProperties): Result<DataModifier> {
         // If the field is wrapped in a list or other container, we try if the inner type can be modified
         innerCompute(blueprint, annotation)?.let { return ok(it) }
