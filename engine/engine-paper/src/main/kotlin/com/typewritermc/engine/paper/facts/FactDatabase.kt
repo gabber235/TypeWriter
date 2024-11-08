@@ -72,6 +72,9 @@ class FactDatabase : KoinComponent {
         val entries =
             cache.keys.mapNotNull { Query.findById<PersistableFactEntry>(it.entryId) }.associateBy { it.id }
 
+        // If there are no entries, we don't need to store anything.
+        if (entries.isEmpty()) return
+
         val facts = cache.entries.filter { (id, data) ->
             val entry = entries[id.entryId] ?: return@filter false
 
