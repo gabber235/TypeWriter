@@ -1,5 +1,6 @@
 package com.typewritermc.processors.entry.modifiers
 
+import com.google.devtools.ksp.processing.Resolver
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
@@ -11,6 +12,7 @@ import kotlin.reflect.KClass
 object SegmentModifierComputer : DataModifierComputer<Segments> {
     override val annotationClass: KClass<Segments> = Segments::class
 
+    context(Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: Segments): Result<DataModifier> {
         if (blueprint !is DataBlueprint.ListBlueprint) {
             return failure("Segment annotation can only be used on lists")

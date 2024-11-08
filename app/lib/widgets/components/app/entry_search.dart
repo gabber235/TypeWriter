@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
 import "package:fuzzy/fuzzy.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/entry_blueprint.dart";
@@ -57,7 +58,7 @@ class AddOnlyTagFilter extends TagFilter {
   }
 }
 
-class ExcludeEntryFilter extends SearchFilter {
+class ExcludeEntryFilter extends HiddenSearchFilter {
   const ExcludeEntryFilter(this.entryId, {this.canRemove = true});
 
   final String entryId;
@@ -82,8 +83,60 @@ class ExcludeEntryFilter extends SearchFilter {
   }
 }
 
+class GenericEntryFilter extends SearchFilter {
+  const GenericEntryFilter(this.blueprint, {this.canRemove = true});
+
+  final DataBlueprint blueprint;
+  @override
+  final bool canRemove;
+
+  @override
+  String get title => "Generic";
+
+  @override
+  Color get color => Colors.green;
+
+  @override
+  String get icon => TWIcons.asterisk;
+
+  @override
+  bool filter(SearchElement action) {
+    if (action is EntrySearchElement) {
+      return action.entry.genericBlueprint == blueprint;
+    }
+    if (action is AddEntrySearchElement) {
+      return action.blueprint.allowsGeneric(blueprint);
+    }
+    return true;
+  }
+}
+
+class NonGenericAddEntryFilter extends HiddenSearchFilter {
+  const NonGenericAddEntryFilter({this.canRemove = true});
+
+  @override
+  final bool canRemove;
+
+  @override
+  String get title => "Non-Generic";
+
+  @override
+  Color get color => Colors.red;
+
+  @override
+  String get icon => TWIcons.blocked;
+
+  @override
+  bool filter(SearchElement action) {
+    if (action is AddEntrySearchElement) {
+      return !action.blueprint.isGeneric;
+    }
+    return true;
+  }
+}
+
 @riverpod
-Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
+Fuzzy<EntryDefinition> _fuzzyEntries(Ref ref) {
   final pages = ref.watch(pagesProvider);
   final definitions = pages.expand((page) {
     return page.entries.map((entry) {
@@ -147,7 +200,7 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
 }
 
 @riverpod
-Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
+Fuzzy<EntryBlueprint> _fuzzyBlueprints(Ref ref) {
   // If the blueprint has the "deprecated" tag, we don't want to show it.
   final blueprints = ref
       .watch(entryBlueprintsProvider)
@@ -190,11 +243,13 @@ Fuzzy<EntryBlueprint> _fuzzyBlueprints(_FuzzyBlueprintsRef ref) {
 
 class NewEntryFetcher extends SearchFetcher {
   const NewEntryFetcher({
+    this.genericBlueprint,
     this.onAdd,
     this.onAdded,
     this.disabled = false,
   });
 
+  final DataBlueprint? genericBlueprint;
   final FutureOr<bool?> Function(EntryBlueprint)? onAdd;
   final FutureOr<bool?> Function(Entry)? onAdded;
 
@@ -232,6 +287,7 @@ class NewEntryFetcher extends SearchFetcher {
         .map(
           (result) => AddEntrySearchElement(
             result.item,
+            genericBlueprint: genericBlueprint,
             onAdd: onAdd,
             onAdded: onAdded,
           ),
@@ -244,6 +300,7 @@ class NewEntryFetcher extends SearchFetcher {
     bool? disabled,
   }) {
     return NewEntryFetcher(
+      genericBlueprint: genericBlueprint,
       onAdd: onAdd,
       onAdded: onAdded,
       disabled: disabled ?? this.disabled,
@@ -313,11 +370,26 @@ extension SearchBuilderX on SearchBuilder {
     filter(ExcludeEntryFilter(entryId, canRemove: canRemove));
   }
 
+  void genericEntry(DataBlueprint blueprint, {bool canRemove = false}) {
+    filter(GenericEntryFilter(blueprint, canRemove: canRemove));
+  }
+
+  void nonGenericAddEntry({bool canRemove = false}) {
+    filter(NonGenericAddEntryFilter(canRemove: canRemove));
+  }
+
   void fetchNewEntry({
+    DataBlueprint? genericBlueprint,
     FutureOr<bool?> Function(EntryBlueprint)? onAdd,
     FutureOr<bool?> Function(Entry)? onAdded,
   }) {
-    fetch(NewEntryFetcher(onAdd: onAdd, onAdded: onAdded));
+    fetch(
+      NewEntryFetcher(
+        genericBlueprint: genericBlueprint,
+        onAdd: onAdd,
+        onAdded: onAdded,
+      ),
+    );
   }
 
   void fetchEntry({FutureOr<bool?> Function(Entry)? onSelect}) {
@@ -384,8 +456,14 @@ class EntrySearchElement extends SearchElement {
 }
 
 class AddEntrySearchElement extends SearchElement {
-  const AddEntrySearchElement(this.blueprint, {this.onAdd, this.onAdded});
+  const AddEntrySearchElement(
+    this.blueprint, {
+    this.genericBlueprint,
+    this.onAdd,
+    this.onAdded,
+  });
   final EntryBlueprint blueprint;
+  final DataBlueprint? genericBlueprint;
   final FutureOr<bool?> Function(EntryBlueprint)? onAdd;
   final FutureOr<bool?> Function(Entry)? onAdded;
 
@@ -453,7 +531,11 @@ class AddEntrySearchElement extends SearchElement {
     Page page,
     EntryBlueprint blueprint,
   ) async {
-    final entry = await page.createEntryFromBlueprint(ref, blueprint);
+    final entry = await page.createEntryFromBlueprint(
+      ref,
+      blueprint,
+      genericBlueprint: genericBlueprint,
+    );
     onAdded?.call(entry);
     final notifier = ref.read(inspectingEntryIdProvider.notifier);
 

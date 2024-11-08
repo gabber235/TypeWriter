@@ -10,6 +10,7 @@ import com.typewritermc.engine.paper.utils.stripped
 import org.bukkit.entity.Player
 import java.time.Duration
 
+@Deprecated("Use RandomVariable entry with a normal SpokenDialogue instead")
 @Messenger(RandomSpokenDialogueEntry::class)
 class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpokenDialogueEntry) :
     DialogueMessenger<RandomSpokenDialogueEntry>(player, entry) {

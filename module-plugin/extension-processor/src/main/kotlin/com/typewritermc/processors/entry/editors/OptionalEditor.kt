@@ -1,6 +1,7 @@
 package com.typewritermc.processors.entry.editors
 
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.processors.entry.CustomEditor
 import com.typewritermc.processors.entry.DataBlueprint
@@ -21,7 +22,7 @@ object OptionalEditor : CustomEditor {
         return type whenClassIs Optional::class
     }
 
-    context(KSPLogger) override fun default(type: KSType): JsonElement {
+    context(KSPLogger, Resolver) override fun default(type: KSType): JsonElement {
         val argumentType = type.arguments.firstOrNull()?.type?.resolve()
             ?: throw IllegalStateException("Expected Optional to have a single argument")
         val blueprint = DataBlueprint.blueprint(argumentType)
@@ -34,7 +35,7 @@ object OptionalEditor : CustomEditor {
         )
     }
 
-    context(KSPLogger) override fun shape(type: KSType): DataBlueprint {
+    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint {
         val argumentType = type.arguments.firstOrNull()?.type?.resolve()
             ?: throw IllegalStateException("Expected Optional to have a single argument")
         val blueprint = DataBlueprint.blueprint(argumentType)

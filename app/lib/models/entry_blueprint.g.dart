@@ -17,6 +17,14 @@ _$EntryBlueprintImpl _$$EntryBlueprintImplFromJson(Map<String, dynamic> json) =>
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const <String>[],
+      genericConstraints: (json['genericConstraints'] as List<dynamic>?)
+              ?.map((e) => DataBlueprint.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          null,
+      variableDataBlueprint: json['variableDataBlueprint'] == null
+          ? null
+          : DataBlueprint.fromJson(
+              json['variableDataBlueprint'] as Map<String, dynamic>),
       color: json['color'] == null
           ? Colors.grey
           : const ColorConverter().fromJson(json['color'] as String),
@@ -32,6 +40,8 @@ Map<String, dynamic> _$$EntryBlueprintImplToJson(
       'extension': instance.extension,
       'dataBlueprint': instance.dataBlueprint,
       'tags': instance.tags,
+      'genericConstraints': instance.genericConstraints,
+      'variableDataBlueprint': instance.variableDataBlueprint,
       'color': const ColorConverter().toJson(instance.color),
       'icon': instance.icon,
     };
@@ -230,7 +240,7 @@ Map<String, dynamic> _$$ModifierImplToJson(_$ModifierImpl instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
-String _$entryBlueprintsHash() => r'f0fa147f0decf8c831c0f3aa4d33530002a2b51b';
+String _$entryBlueprintsHash() => r'7c332657f0558d980c13827627ce297ca4263865';
 
 /// A generated provider to fetch and cache a list of all the [EntryBlueprint]s.
 ///
@@ -247,8 +257,10 @@ final entryBlueprintsProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef EntryBlueprintsRef = AutoDisposeProviderRef<List<EntryBlueprint>>;
-String _$entryBlueprintHash() => r'6823811ab4f61b543b7b06c4069f224179cec055';
+String _$entryBlueprintHash() => r'7db7dd388f5998fccd421ff822e75b951c8047b0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -396,6 +408,8 @@ class EntryBlueprintProvider extends AutoDisposeProvider<EntryBlueprint?> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryBlueprintRef on AutoDisposeProviderRef<EntryBlueprint?> {
   /// The parameter `blueprintId` of this provider.
   String get blueprintId;
@@ -410,7 +424,7 @@ class _EntryBlueprintProviderElement
 }
 
 String _$entryBlueprintTagsHash() =>
-    r'dc8074c390aabc3d6ff2b7778ee679d343c8ddac';
+    r'd4fb86b5fc8d9a206c4140b770b50d799923565c';
 
 /// See also [entryBlueprintTags].
 @ProviderFor(entryBlueprintTags)
@@ -526,6 +540,8 @@ class EntryBlueprintTagsProvider extends AutoDisposeProvider<List<String>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryBlueprintTagsRef on AutoDisposeProviderRef<List<String>> {
   /// The parameter `blueprintId` of this provider.
   String get blueprintId;
@@ -540,7 +556,7 @@ class _EntryBlueprintTagsProviderElement
   String get blueprintId => (origin as EntryBlueprintTagsProvider).blueprintId;
 }
 
-String _$entryTagsHash() => r'26e764a45dae73ed8e21ac9affbe0c3c524e59ef';
+String _$entryTagsHash() => r'8e3671fafea112b0c5718862f6cac60872444179';
 
 /// See also [entryTags].
 @ProviderFor(entryTags)
@@ -654,6 +670,8 @@ class EntryTagsProvider extends AutoDisposeProvider<List<String>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryTagsRef on AutoDisposeProviderRef<List<String>> {
   /// The parameter `entryId` of this provider.
   String get entryId;
@@ -668,7 +686,7 @@ class _EntryTagsProviderElement extends AutoDisposeProviderElement<List<String>>
 }
 
 String _$entryBlueprintPageTypeHash() =>
-    r'7ea4a3693045d74a338e7a2fe7de83c915b23137';
+    r'de37953ce77af7052651105704e4f829f4753e71';
 
 /// See also [entryBlueprintPageType].
 @ProviderFor(entryBlueprintPageType)
@@ -784,6 +802,8 @@ class EntryBlueprintPageTypeProvider extends AutoDisposeProvider<PageType> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin EntryBlueprintPageTypeRef on AutoDisposeProviderRef<PageType> {
   /// The parameter `blueprintId` of this provider.
   String get blueprintId;
@@ -799,7 +819,7 @@ class _EntryBlueprintPageTypeProviderElement
       (origin as EntryBlueprintPageTypeProvider).blueprintId;
 }
 
-String _$fieldModifiersHash() => r'356ae9f89ffe0ab87b1d27055284326ee202e770';
+String _$fieldModifiersHash() => r'3568ba69f15d904253ba445e8f5b7740823d8246';
 
 /// Gets all the modifiers with a given name.
 ///
@@ -939,6 +959,8 @@ class FieldModifiersProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FieldModifiersRef on AutoDisposeProviderRef<Map<String, Modifier>> {
   /// The parameter `blueprintId` of this provider.
   String get blueprintId;
@@ -958,7 +980,7 @@ class _FieldModifiersProviderElement
   String get modifierName => (origin as FieldModifiersProvider).modifierName;
 }
 
-String _$modifierPathsHash() => r'a493a5169c9cf43cf8611369477bcbe968f50fd4';
+String _$modifierPathsHash() => r'0d2ddb4b557172710e792a47651f26c346c1edbf';
 
 /// Gets all the paths from fields with a given modifier.
 ///
@@ -1108,6 +1130,8 @@ class ModifierPathsProvider extends AutoDisposeProvider<List<String>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ModifierPathsRef on AutoDisposeProviderRef<List<String>> {
   /// The parameter `blueprintId` of this provider.
   String get blueprintId;
@@ -1131,4 +1155,4 @@ class _ModifierPathsProviderElement
   String? get data => (origin as ModifierPathsProvider).data;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

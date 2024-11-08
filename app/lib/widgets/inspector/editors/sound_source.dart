@@ -5,7 +5,7 @@ import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
-import "package:typewriter/widgets/inspector/editors/location.dart";
+import "package:typewriter/widgets/inspector/editors/position.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 class SoundSourceEditorFilter extends EditorFilter {

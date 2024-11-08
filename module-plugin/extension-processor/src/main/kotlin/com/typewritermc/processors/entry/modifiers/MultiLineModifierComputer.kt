@@ -1,5 +1,6 @@
 package com.typewritermc.processors.entry.modifiers
 
+import com.google.devtools.ksp.processing.Resolver
 import com.typewritermc.core.extension.annotations.MultiLine
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
@@ -12,6 +13,7 @@ import kotlin.reflect.KClass
 object MultiLineModifierComputer : DataModifierComputer<MultiLine> {
     override val annotationClass: KClass<MultiLine> = MultiLine::class
 
+    context(Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: MultiLine): Result<DataModifier> {
         // If the field is wrapped in a list or other container, we try if the inner type can be modified
         innerCompute(blueprint, annotation)?.let { return ok(it) }

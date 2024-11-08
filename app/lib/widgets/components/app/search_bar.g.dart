@@ -20,6 +20,8 @@ final searchBarFocusProvider = AutoDisposeProvider<FocusNode>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SearchBarFocusRef = AutoDisposeProviderRef<FocusNode>;
 String _$searchElementsHash() => r'27e44baceaa5af3207c348ebea9bcc1ac2a63672';
 
@@ -36,6 +38,8 @@ final searchElementsProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SearchElementsRef = AutoDisposeProviderRef<List<SearchElement>>;
 String _$searchFetchersHash() => r'2d5cadf196e4124536a572332a4fee5e52f107e1';
 
@@ -52,6 +56,8 @@ final searchFetchersProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SearchFetchersRef = AutoDisposeProviderRef<List<SearchFetcher>>;
 String _$searchFiltersHash() => r'7f0eaee452766397d6cbd49a4a6389c2df9ee84e';
 
@@ -67,6 +73,8 @@ final searchFiltersProvider = AutoDisposeProvider<List<SearchFilter>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SearchFiltersRef = AutoDisposeProviderRef<List<SearchFilter>>;
 String _$searchFocusNodesHash() => r'e8f229dddc824b6f24244adcd4193ae40daed175';
 
@@ -82,6 +90,8 @@ final searchFocusNodesProvider = AutoDisposeProvider<List<FocusNode>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SearchFocusNodesRef = AutoDisposeProviderRef<List<FocusNode>>;
 String _$searchGlobalKeysHash() => r'bdabd3beff37b339bab7032a03c48a3714ac500f';
 
@@ -97,6 +107,8 @@ final searchGlobalKeysProvider = AutoDisposeProvider<List<GlobalKey>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SearchGlobalKeysRef = AutoDisposeProviderRef<List<GlobalKey>>;
 String _$focusedElementHash() => r'30e569a4d12a0f28f496a0e235319f5e5e44e433';
 
@@ -112,6 +124,8 @@ final _focusedElementProvider = AutoDisposeProvider<SearchElement?>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _FocusedElementRef = AutoDisposeProviderRef<SearchElement?>;
 String _$searchActionsHash() => r'b5542c6b01dc4d9186c38a2ef1453cbb8bc2eede';
 
@@ -127,6 +141,8 @@ final _searchActionsProvider = AutoDisposeProvider<List<SearchAction>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _SearchActionsRef = AutoDisposeProviderRef<List<SearchAction>>;
 String _$searchActionShortcutsHash() =>
     r'e3fbc98277d831182b5690cae7d29278bb67ccdc';
@@ -144,7 +160,9 @@ final _searchActionShortcutsProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _SearchActionShortcutsRef
     = AutoDisposeProviderRef<Set<ShortcutActivator>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

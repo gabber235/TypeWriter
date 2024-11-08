@@ -26,6 +26,10 @@ mixin _$EntryBlueprint {
   String get extension => throw _privateConstructorUsedError;
   ObjectBlueprint get dataBlueprint => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
+  List<DataBlueprint>? get genericConstraints =>
+      throw _privateConstructorUsedError;
+  DataBlueprint? get variableDataBlueprint =>
+      throw _privateConstructorUsedError;
   @ColorConverter()
   Color get color => throw _privateConstructorUsedError;
   String get icon => throw _privateConstructorUsedError;
@@ -53,8 +57,12 @@ abstract class $EntryBlueprintCopyWith<$Res> {
       String extension,
       ObjectBlueprint dataBlueprint,
       List<String> tags,
+      List<DataBlueprint>? genericConstraints,
+      DataBlueprint? variableDataBlueprint,
       @ColorConverter() Color color,
       String icon});
+
+  $DataBlueprintCopyWith<$Res>? get variableDataBlueprint;
 }
 
 /// @nodoc
@@ -78,6 +86,8 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
     Object? extension = null,
     Object? dataBlueprint = freezed,
     Object? tags = null,
+    Object? genericConstraints = freezed,
+    Object? variableDataBlueprint = freezed,
     Object? color = null,
     Object? icon = null,
   }) {
@@ -106,6 +116,14 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      genericConstraints: freezed == genericConstraints
+          ? _value.genericConstraints
+          : genericConstraints // ignore: cast_nullable_to_non_nullable
+              as List<DataBlueprint>?,
+      variableDataBlueprint: freezed == variableDataBlueprint
+          ? _value.variableDataBlueprint
+          : variableDataBlueprint // ignore: cast_nullable_to_non_nullable
+              as DataBlueprint?,
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
@@ -115,6 +133,20 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
           : icon // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
+  }
+
+  /// Create a copy of EntryBlueprint
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DataBlueprintCopyWith<$Res>? get variableDataBlueprint {
+    if (_value.variableDataBlueprint == null) {
+      return null;
+    }
+
+    return $DataBlueprintCopyWith<$Res>(_value.variableDataBlueprint!, (value) {
+      return _then(_value.copyWith(variableDataBlueprint: value) as $Val);
+    });
   }
 }
 
@@ -133,8 +165,13 @@ abstract class _$$EntryBlueprintImplCopyWith<$Res>
       String extension,
       ObjectBlueprint dataBlueprint,
       List<String> tags,
+      List<DataBlueprint>? genericConstraints,
+      DataBlueprint? variableDataBlueprint,
       @ColorConverter() Color color,
       String icon});
+
+  @override
+  $DataBlueprintCopyWith<$Res>? get variableDataBlueprint;
 }
 
 /// @nodoc
@@ -156,6 +193,8 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
     Object? extension = null,
     Object? dataBlueprint = freezed,
     Object? tags = null,
+    Object? genericConstraints = freezed,
+    Object? variableDataBlueprint = freezed,
     Object? color = null,
     Object? icon = null,
   }) {
@@ -184,6 +223,14 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      genericConstraints: freezed == genericConstraints
+          ? _value._genericConstraints
+          : genericConstraints // ignore: cast_nullable_to_non_nullable
+              as List<DataBlueprint>?,
+      variableDataBlueprint: freezed == variableDataBlueprint
+          ? _value.variableDataBlueprint
+          : variableDataBlueprint // ignore: cast_nullable_to_non_nullable
+              as DataBlueprint?,
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
@@ -208,9 +255,12 @@ class _$EntryBlueprintImpl
       required this.extension,
       required this.dataBlueprint,
       final List<String> tags = const <String>[],
+      final List<DataBlueprint>? genericConstraints = null,
+      this.variableDataBlueprint = null,
       @ColorConverter() this.color = Colors.grey,
       this.icon = TWIcons.help})
-      : _tags = tags;
+      : _tags = tags,
+        _genericConstraints = genericConstraints;
 
   factory _$EntryBlueprintImpl.fromJson(Map<String, dynamic> json) =>
       _$$EntryBlueprintImplFromJson(json);
@@ -234,6 +284,21 @@ class _$EntryBlueprintImpl
     return EqualUnmodifiableListView(_tags);
   }
 
+  final List<DataBlueprint>? _genericConstraints;
+  @override
+  @JsonKey()
+  List<DataBlueprint>? get genericConstraints {
+    final value = _genericConstraints;
+    if (value == null) return null;
+    if (_genericConstraints is EqualUnmodifiableListView)
+      return _genericConstraints;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  @JsonKey()
+  final DataBlueprint? variableDataBlueprint;
   @override
   @JsonKey()
   @ColorConverter()
@@ -244,7 +309,7 @@ class _$EntryBlueprintImpl
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'EntryBlueprint(id: $id, name: $name, description: $description, extension: $extension, dataBlueprint: $dataBlueprint, tags: $tags, color: $color, icon: $icon)';
+    return 'EntryBlueprint(id: $id, name: $name, description: $description, extension: $extension, dataBlueprint: $dataBlueprint, tags: $tags, genericConstraints: $genericConstraints, variableDataBlueprint: $variableDataBlueprint, color: $color, icon: $icon)';
   }
 
   @override
@@ -258,6 +323,8 @@ class _$EntryBlueprintImpl
       ..add(DiagnosticsProperty('extension', extension))
       ..add(DiagnosticsProperty('dataBlueprint', dataBlueprint))
       ..add(DiagnosticsProperty('tags', tags))
+      ..add(DiagnosticsProperty('genericConstraints', genericConstraints))
+      ..add(DiagnosticsProperty('variableDataBlueprint', variableDataBlueprint))
       ..add(DiagnosticsProperty('color', color))
       ..add(DiagnosticsProperty('icon', icon));
   }
@@ -276,6 +343,10 @@ class _$EntryBlueprintImpl
             const DeepCollectionEquality()
                 .equals(other.dataBlueprint, dataBlueprint) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
+            const DeepCollectionEquality()
+                .equals(other._genericConstraints, _genericConstraints) &&
+            (identical(other.variableDataBlueprint, variableDataBlueprint) ||
+                other.variableDataBlueprint == variableDataBlueprint) &&
             (identical(other.color, color) || other.color == color) &&
             (identical(other.icon, icon) || other.icon == icon));
   }
@@ -290,6 +361,8 @@ class _$EntryBlueprintImpl
       extension,
       const DeepCollectionEquality().hash(dataBlueprint),
       const DeepCollectionEquality().hash(_tags),
+      const DeepCollectionEquality().hash(_genericConstraints),
+      variableDataBlueprint,
       color,
       icon);
 
@@ -318,6 +391,8 @@ abstract class _EntryBlueprint implements EntryBlueprint {
       required final String extension,
       required final ObjectBlueprint dataBlueprint,
       final List<String> tags,
+      final List<DataBlueprint>? genericConstraints,
+      final DataBlueprint? variableDataBlueprint,
       @ColorConverter() final Color color,
       final String icon}) = _$EntryBlueprintImpl;
 
@@ -336,6 +411,10 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   ObjectBlueprint get dataBlueprint;
   @override
   List<String> get tags;
+  @override
+  List<DataBlueprint>? get genericConstraints;
+  @override
+  DataBlueprint? get variableDataBlueprint;
   @override
   @ColorConverter()
   Color get color;

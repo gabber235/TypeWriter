@@ -11,7 +11,7 @@ import "package:typewriter/widgets/components/app/search_bar.dart";
 part "static_entries_list.g.dart";
 
 @riverpod
-List<String> _staticEntryIds(_StaticEntryIdsRef ref) {
+List<String> _staticEntryIds(Ref ref) {
   final page = ref.watch(currentPageProvider);
   if (page == null) return [];
 
@@ -37,6 +37,7 @@ class StaticEntriesList extends HookConsumerWidget {
         buttonText: "Add Entry",
         onButtonPressed: () => ref.read(searchProvider.notifier).asBuilder()
           ..fetchNewEntry()
+          ..nonGenericAddEntry()
           ..tag("static", canRemove: false)
           ..open(),
       );

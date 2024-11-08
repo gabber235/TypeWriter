@@ -56,6 +56,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
     ref.read(searchProvider.notifier).asBuilder()
       ..anyTag(tags, canRemove: false)
       ..excludeEntry(selectedEntryId ?? "", canRemove: false)
+      ..nonGenericAddEntry()
       ..fetchEntry(onSelect: (entry) => _update(ref, entry))
       ..fetchNewEntry(onAdded: (entry) => _update(ref, entry))
       ..open();

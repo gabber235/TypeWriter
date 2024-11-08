@@ -13,31 +13,31 @@ import "package:url_launcher/url_launcher_string.dart";
 part "heading.g.dart";
 
 @riverpod
-String _entryId(_EntryIdRef ref) {
+String _entryId(Ref ref) {
   final def = ref.watch(inspectingEntryDefinitionProvider);
   return def?.entry.id ?? "";
 }
 
 @riverpod
-String _entryName(_EntryNameRef ref) {
+String _entryName(Ref ref) {
   final def = ref.watch(inspectingEntryDefinitionProvider);
   return def?.entry.formattedName ?? "";
 }
 
 @riverpod
-String _entryType(_EntryTypeRef ref) {
+String _entryType(Ref ref) {
   final def = ref.watch(inspectingEntryDefinitionProvider);
   return def?.blueprint.id ?? "";
 }
 
 @riverpod
-String _entryUrl(_EntryUrlRef ref) {
+String _entryUrl(Ref ref) {
   final def = ref.watch(inspectingEntryDefinitionProvider);
   return def?.blueprint.wikiUrl ?? "";
 }
 
 @riverpod
-Color _entryColor(_EntryColorRef ref) {
+Color _entryColor(Ref ref) {
   final def = ref.watch(inspectingEntryDefinitionProvider);
   return def?.blueprint.color ?? Colors.grey;
 }

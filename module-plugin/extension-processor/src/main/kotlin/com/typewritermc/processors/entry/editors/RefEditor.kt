@@ -3,6 +3,7 @@ package com.typewritermc.processors.entry.editors
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Tags
@@ -19,12 +20,12 @@ object RefEditor : CustomEditor {
 
     override fun accept(type: KSType): Boolean = type whenClassIs Ref::class
 
-    context(KSPLogger) override fun default(type: KSType): JsonElement = JsonNull
-    context(KSPLogger) override fun shape(type: KSType): DataBlueprint {
+    context(KSPLogger, Resolver) override fun default(type: KSType): JsonElement = JsonNull
+    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint {
         return PrimitiveBlueprint(PrimitiveType.STRING)
     }
 
-    context(KSPLogger)
+    context(KSPLogger, Resolver)
     override fun validateDefault(type: KSType, default: JsonElement): Result<Unit> {
         if (default is JsonNull) return ok(Unit)
         return super.validateDefault(type, default)

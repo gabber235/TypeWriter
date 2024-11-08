@@ -55,6 +55,7 @@ class SubtitleDialogueCinematicEntry(
     }
 }
 
+@Deprecated("Use RandomVariable entry with a normal SubtitleDialogue instead")
 @Entry("random_subtitle_dialogue_cinematic", "Show a random action bar message", Colors.CYAN, "fa6-solid:diagram-next")
 class RandomSubtitleDialogueCinematicEntry(
     override val id: String = "",

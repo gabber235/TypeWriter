@@ -1,5 +1,6 @@
 package com.typewritermc.processors.entry.modifiers
 
+import com.google.devtools.ksp.processing.Resolver
 import com.typewritermc.core.extension.annotations.ContentEditor
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
@@ -13,6 +14,7 @@ import kotlin.reflect.KClass
 object ContentEditorModifierComputer : DataModifierComputer<ContentEditor> {
     override val annotationClass: KClass<ContentEditor> = ContentEditor::class
 
+    context(Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: ContentEditor): Result<DataModifier> {
         val contentMode = annotation.annotationClassValue { capturer }
         val className = contentMode.declaration.qualifiedName?.asString()

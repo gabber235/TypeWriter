@@ -272,6 +272,7 @@ class SoundSelectorEditor extends HookConsumerWidget {
   void _select(PassingRef ref) {
     ref.read(searchProvider.notifier).asBuilder()
       ..tag("sound_id", canRemove: false)
+      ..nonGenericAddEntry()
       ..fetchEntry(
         onSelect: (entry) => _update(ref, SoundId.entry(entryId: entry.id)),
       )

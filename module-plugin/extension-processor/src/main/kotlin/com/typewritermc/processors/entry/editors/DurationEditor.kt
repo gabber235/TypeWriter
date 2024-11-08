@@ -1,6 +1,7 @@
 package com.typewritermc.processors.entry.editors
 
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
@@ -22,10 +23,10 @@ object DurationEditor : CustomEditor {
         return type whenClassIs Duration::class
     }
 
-    context(KSPLogger) override fun default(type: KSType): JsonElement = JsonPrimitive(1000)
-    context(KSPLogger) override fun shape(type: KSType): DataBlueprint = PrimitiveBlueprint(PrimitiveType.INTEGER)
+    context(KSPLogger, Resolver) override fun default(type: KSType): JsonElement = JsonPrimitive(1000)
+    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint = PrimitiveBlueprint(PrimitiveType.INTEGER)
 
-    context(KSPLogger) override fun validateDefault(type: KSType, default: JsonElement): Result<Unit> {
+    context(KSPLogger, Resolver) override fun validateDefault(type: KSType, default: JsonElement): Result<Unit> {
         val result = super.validateDefault(type, default)
         if (result.isFailure) return result
         val duration = Duration.ofMillis(default.jsonPrimitive.long)

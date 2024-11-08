@@ -24,7 +24,11 @@ class EntryListenerProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(EntryListener::class.qualifiedName!!)
         val listeners = symbols.filterIsInstance<KSFunctionDeclaration>()
-            .map { generateListenerBlueprint(it) }
+            .map {
+                with(resolver) {
+                    generateListenerBlueprint(it)
+                }
+            }
             .toList()
 
         logger.warn("Generated blueprints for ${listeners.size} entry listeners")
@@ -33,6 +37,7 @@ class EntryListenerProcessor(
         return symbols.toList()
     }
 
+    context(Resolver)
     @OptIn(KspExperimental::class)
     private fun generateListenerBlueprint(function: KSFunctionDeclaration): JsonElement {
         logger.info("Generating entry listener blueprint for ${function.fullName}")
@@ -42,7 +47,8 @@ class EntryListenerProcessor(
 
         val listener = function.getAnnotationsByType(EntryListener::class).first()
         val entry = listener.annotationClassValue { entry }
-        val entryAnnotation = entry.declaration.getAnnotationsByType(Entry::class).firstOrNull() ?: throw EntryNotFoundException("Listener", function.fullName, entry.fullName)
+        val entryAnnotation = entry.declaration.getAnnotationsByType(Entry::class).firstOrNull()
+            ?: throw EntryNotFoundException("Listener", function.fullName, entry.fullName)
 
         val blueprint = EntryListenerBlueprint(
             entryBlueprintId = entryAnnotation.name,

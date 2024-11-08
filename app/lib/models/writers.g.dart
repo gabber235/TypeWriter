@@ -193,6 +193,8 @@ class FieldWritersProvider extends AutoDisposeProvider<List<Writer>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FieldWritersRef on AutoDisposeProviderRef<List<Writer>> {
   /// The parameter `path` of this provider.
   String get path;
@@ -211,4 +213,4 @@ class _FieldWritersProviderElement
   bool get exact => (origin as FieldWritersProvider).exact;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
