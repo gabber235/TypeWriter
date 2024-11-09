@@ -48,9 +48,4 @@ jobs:
         with:
           arguments: publishAllPublicationsToTypewriterReleasesRepository -PTypewriterReleasesUsername=${{ secrets.MAVEN_USERNAME }} -PTypewriterReleasesPassword=${{ secrets.MAVEN_PASSWORD }} --scan
           build-root-directory: ./extensions
-      - name: Publish Module-Plugin to Beta Maven Repository
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publishAllPublicationsToTypewriterReleasesRepository -PTypewriterReleasesUsername=${{ secrets.MAVEN_USERNAME }} -PTypewriterReleasesPassword=${{ secrets.MAVEN_PASSWORD }} --scan
-          build-root-directory: ./module-plugin
 #  ----------------------------------------------------------------------------------------------------
