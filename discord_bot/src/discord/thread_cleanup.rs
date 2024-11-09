@@ -109,7 +109,7 @@ async fn resolve_answered_thread(
     let now = Timestamp::now();
     let duration = now.timestamp() - last_message_date.timestamp();
 
-    if duration < Duration::days(3).num_seconds() {
+    if duration < Duration::days(1).num_seconds() {
         return Ok(());
     }
 
