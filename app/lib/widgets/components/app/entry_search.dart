@@ -136,6 +136,11 @@ Fuzzy<EntryDefinition> _fuzzyEntries(_FuzzyEntriesRef ref) {
           getter: (definition) => definition.blueprint.extension,
           weight: 0.1,
         ),
+        WeightedKey(
+          name: "id",
+          getter: (definition) => definition.entry.id,
+          weight: 0.1,
+        ),
       ],
     ),
   );
