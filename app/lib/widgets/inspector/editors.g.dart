@@ -6,7 +6,7 @@ part of 'editors.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fieldValueHash() => r'aabeadcbd5808e51610fd3651d159472f99afb18';
+String _$fieldValueHash() => r'a3fbbd771e487619c7f511e3b1ebc1869503c737';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -174,7 +174,7 @@ class _FieldValueProviderElement extends AutoDisposeProviderElement<dynamic>
   dynamic get defaultValue => (origin as FieldValueProvider).defaultValue;
 }
 
-String _$editorFiltersHash() => r'b229025b172d9a4bbbf2494345af40da5b0fab2b';
+String _$editorFiltersHash() => r'7ed797b514356c77a02d55339c996599c23fae36';
 
 /// See also [editorFilters].
 @ProviderFor(editorFilters)
@@ -191,7 +191,7 @@ final editorFiltersProvider = AutoDisposeProvider<List<EditorFilter>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef EditorFiltersRef = AutoDisposeProviderRef<List<EditorFilter>>;
-String _$pathDisplayNameHash() => r'c772e17ed429169ba903826d0a5605d60b129a31';
+String _$pathDisplayNameHash() => r'4cb4a7c76014fdfb5b467087fff861b000a9b4f2';
 
 /// See also [pathDisplayName].
 @ProviderFor(pathDisplayName)

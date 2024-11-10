@@ -50,6 +50,7 @@ class VariableHeaderAction extends HookConsumerWidget {
       )
       ..fetchEntry(onSelect: (entry) => _update(ref, entry))
       ..genericEntry(customBlueprint.shape)
+      ..tag("variable", canRemove: false)
       ..open();
   }
 

@@ -188,9 +188,9 @@ extension EntryBlueprintExt on EntryBlueprint {
   bool get isGeneric => genericConstraints != null;
 
   bool allowsGeneric(DataBlueprint? genericBlueprint) {
-    if (genericBlueprint == null) return false;
     final blueprints = genericConstraints;
-    if (blueprints == null) return false;
+    if (blueprints == null) return true;
+    if (genericBlueprint == null) return false;
     // If the blueprints is empty, all blueprints are allowed.
     if (blueprints.isEmpty) return true;
     return blueprints.contains(genericBlueprint);
