@@ -1,6 +1,7 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/communicator.dart";
@@ -18,7 +19,7 @@ part "page.freezed.dart";
 part "page.g.dart";
 
 @riverpod
-List<Page> pages(PagesRef ref) {
+List<Page> pages(Ref ref) {
   return ref.watch(bookProvider).pages;
 }
 
@@ -111,15 +112,21 @@ bool entryExists(EntryExistsRef ref, String entryId) {
 }
 
 enum PageType {
-  sequence("trigger", TWIcons.projectDiagram, Colors.blue),
-  static("static", TWIcons.pin, Colors.deepPurple),
-  cinematic("cinematic", TWIcons.film, Colors.orange),
-  manifest("manifest", TWIcons.treeGraph, Colors.green),
+  sequence("trigger", ["triggerable"], TWIcons.projectDiagram, Colors.blue),
+  static("static", [], TWIcons.pin, Colors.deepPurple),
+  cinematic("cinematic", [], TWIcons.film, Colors.orange),
+  manifest(
+    "manifest",
+    ["manifest", "audience"],
+    TWIcons.treeGraph,
+    Colors.green,
+  ),
   ;
 
-  const PageType(this.tag, this.icon, this.color);
+  const PageType(this.tag, this.linkingTags, this.icon, this.color);
 
   final String tag;
+  final List<String> linkingTags;
   final String icon;
   final Color color;
 
@@ -391,12 +398,44 @@ extension PageX on Page {
     await updateEntryValue(ref, baseEntry, parentPath, newTriggers);
   }
 
+  Future<void> duplicateEntry(PassingRef ref, String entryId) async {
+    final entry = ref.read(globalEntryProvider(entryId));
+    if (entry == null) return;
+
+    final modifiers =
+        ref.read(fieldModifiersProvider(entry.blueprintId, "entry"));
+
+    final blueprint = ref.read(entryBlueprintProvider(entry.blueprintId));
+    if (blueprint == null) return;
+
+    final pageType = PageType.fromBlueprint(blueprint);
+
+    final tags = pageType.linkingTags;
+
+    // Remove the paths with the same modifier.
+    final resetPaths = modifiers.entries
+        .where((e) => tags.contains(e.value.data))
+        .map((e) => e.key)
+        .toList();
+
+    final newEntry = resetPaths
+        .fold(
+          entry.copyWith("id", getRandomString()),
+          (previousEntry, path) => previousEntry.copyMapped(
+            path,
+            (_) => null,
+          ), // Remove all triggers
+        )
+        .copyWith("name", entry.name.incrementedName);
+    await createEntry(ref, newEntry);
+  }
+
   Future<void> linkWithDuplicate(
     PassingRef ref,
     String entryId,
     String path,
   ) async {
-    final entry = ref.read(entryProvider(id, entryId));
+    final entry = ref.read(globalEntryProvider(entryId));
     if (entry == null) return;
 
     final modifiers =
