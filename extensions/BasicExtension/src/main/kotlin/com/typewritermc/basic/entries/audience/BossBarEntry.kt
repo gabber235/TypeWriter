@@ -5,11 +5,10 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Colored
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Placeholder
-import com.typewritermc.engine.paper.entry.entries.AudienceDisplay
-import com.typewritermc.engine.paper.entry.entries.AudienceEntry
-import com.typewritermc.engine.paper.entry.entries.TickableDisplay
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.asMini
+import lirand.api.extensions.server.server
 import net.kyori.adventure.bossbar.BossBar
 import org.bukkit.entity.Player
 import java.util.*
@@ -28,13 +27,13 @@ class BossBarEntry(
     @Colored
     @Placeholder
     @Help("The title of the boss bar")
-    val title: String = "",
+    val title: Var<String> = ConstVar(""),
     @Help("How filled up the bar is. 0.0 is empty, 1.0 is full.")
-    val progress: Double = 1.0,
+    val progress: Var<Double> = ConstVar(1.0),
     @Help("The color of the boss bar")
-    val color: BossBar.Color = BossBar.Color.WHITE,
+    val color: Var<BossBar.Color> = ConstVar(BossBar.Color.WHITE),
     @Help("If the bossbar has notches")
-    val style: BossBar.Overlay = BossBar.Overlay.PROGRESS,
+    val style: Var<BossBar.Overlay> = ConstVar(BossBar.Overlay.PROGRESS),
     @Help("Any flags to apply to the boss bar")
     val flags: List<BossBar.Flag> = emptyList(),
 ) : AudienceEntry {
@@ -44,26 +43,30 @@ class BossBarEntry(
 }
 
 class BossBarDisplay(
-    private val title: String,
-    private val progress: Double,
-    private val color: BossBar.Color,
-    private val style: BossBar.Overlay,
+    private val title: Var<String>,
+    private val progress: Var<Double>,
+    private val color: Var<BossBar.Color>,
+    private val style: Var<BossBar.Overlay>,
     private val flags: List<BossBar.Flag>,
 ) : AudienceDisplay(), TickableDisplay {
     private val bars = ConcurrentHashMap<UUID, BossBar>()
 
     override fun tick() {
         for ((id, bar) in bars) {
-            bar.name(title.parsePlaceholders(id).asMini())
+            val player = server.getPlayer(id) ?: continue
+            bar.name(title.get(player).parsePlaceholders(id).asMini())
+            bar.progress(progress.get(player).toFloat())
+            bar.color(color.get(player))
+            bar.overlay(style.get(player))
         }
     }
 
     override fun onPlayerAdd(player: Player) {
         val bar = BossBar.bossBar(
-            title.parsePlaceholders(player).asMini(),
-            progress.toFloat(),
-            color,
-            style,
+            title.get(player).parsePlaceholders(player).asMini(),
+            progress.get(player).toFloat(),
+            color.get(player),
+            style.get(player),
             flags.toSet()
         )
         bars[player.uniqueId] = bar

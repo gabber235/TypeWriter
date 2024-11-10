@@ -8,7 +8,9 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EventEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerFishEvent
@@ -25,8 +27,8 @@ class FishEventEntry (
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The item the player must be holding when the fish or item is caught.")
-    val itemInHand: Item = Item.Empty,
-    val caught: Item = Item.Empty,
+    val itemInHand: Var<Item> = ConstVar(Item.Empty),
+    val caught: Var<Item> = ConstVar(Item.Empty),
 ) : EventEntry
 
 
@@ -40,13 +42,14 @@ private fun hasItemInHand(player: Player, item: Item): Boolean {
 @EntryListener(FishEventEntry::class)
 fun onPlayerFish(event: PlayerFishEvent, query: Query<FishEventEntry>) {
     if (event.state != PlayerFishEvent.State.CAUGHT_FISH) return
+    val player = event.player
 
     query findWhere { entry ->
         // Check if the player is holding the correct item
-        if (!hasItemInHand(event.player, entry.itemInHand)) return@findWhere false
+        if (!hasItemInHand(player, entry.itemInHand.get(player))) return@findWhere false
 
         // Check if the player caught the correct item
         val caughtItem = event.caught as? org.bukkit.entity.Item ?: return@findWhere false
-        return@findWhere entry.caught.isSameAs(event.player, caughtItem.itemStack)
+        return@findWhere entry.caught.get(player).isSameAs(player, caughtItem.itemStack)
     } triggerAllFor event.player
 }

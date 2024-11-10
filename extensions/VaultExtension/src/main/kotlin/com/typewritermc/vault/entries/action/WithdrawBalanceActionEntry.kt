@@ -9,6 +9,8 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.entity.Player
 
@@ -27,13 +29,13 @@ class WithdrawBalanceActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The amount of money to withdraw.")
-    private val amount: Double = 0.0,
+    private val amount: Var<Double> = ConstVar(0.0),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
         val economy: Economy = VaultInitializer.economy ?: return
 
-        economy.withdrawPlayer(player, amount)
+        economy.withdrawPlayer(player, amount.get(player))
     }
 }

@@ -32,6 +32,6 @@ class LocationObjectivesPathStream(
 ) : AudienceEntry {
     override fun display(): AudienceDisplay = MultiPathStreamDisplay(road, endLocations = { player ->
         player.trackedShowingObjectives().filterIsInstance<LocationObjectiveEntry>()
-            .map { it.targetLocation.toBukkitLocation() }.toList()
+            .map { it.targetLocation.get(player).toBukkitLocation() }.toList()
     })
 }

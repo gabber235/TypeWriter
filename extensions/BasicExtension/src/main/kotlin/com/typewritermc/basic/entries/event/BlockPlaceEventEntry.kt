@@ -11,6 +11,7 @@ import com.typewritermc.core.extension.annotations.MaterialProperty.BLOCK
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.toPosition
 import org.bukkit.Material
 import org.bukkit.event.block.BlockPlaceEvent
@@ -28,18 +29,19 @@ class BlockPlaceEventEntry(
     override val id: String = "",
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val location: Optional<Position> = Optional.empty(),
+    val location: Optional<Var<Position>> = Optional.empty(),
     @MaterialProperties(BLOCK)
     val block: Material = Material.STONE,
 ) : EventEntry
 
 @EntryListener(BlockPlaceEventEntry::class)
 fun onPlaceBlock(event: BlockPlaceEvent, query: Query<BlockPlaceEventEntry>) {
+    val player = event.player
     val position = event.block.location.toPosition()
     query findWhere { entry ->
         // Check if the player clicked on the correct location
-        if (!entry.location.map { it == position }.orElse(true)) return@findWhere false
+        if (!entry.location.map { it.get(player) == position }.orElse(true)) return@findWhere false
 
         entry.block == event.block.type
-    } startDialogueWithOrNextDialogue event.player
+    } startDialogueWithOrNextDialogue player
 }

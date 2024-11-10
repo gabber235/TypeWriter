@@ -10,10 +10,7 @@ import com.typewritermc.core.extension.annotations.OnlyTags
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entity.*
-import com.typewritermc.engine.paper.entry.entries.EntityData
-import com.typewritermc.engine.paper.entry.entries.EntityDefinitionEntry
-import com.typewritermc.engine.paper.entry.entries.EntityProperty
-import com.typewritermc.engine.paper.entry.entries.SharedEntityActivityEntry
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.entity.entries.entity.minecraft.PlayerEntity
 import org.bukkit.entity.Player
@@ -35,7 +32,7 @@ import org.bukkit.entity.Player
 class NpcDefinition(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
+    override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
     @Help("The skin of the npc.")
     val skin: SkinProperty = SkinProperty(),
@@ -64,7 +61,7 @@ class NpcInstance(
 
 class NpcEntity(
     player: Player,
-    displayName: String,
+    displayName: Var<String>,
     private val skin: SkinProperty,
     definition: Ref<out EntityDefinitionEntry>,
 ) : FakeEntity(player) {

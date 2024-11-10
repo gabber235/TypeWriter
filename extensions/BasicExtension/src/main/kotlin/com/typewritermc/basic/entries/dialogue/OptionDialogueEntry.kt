@@ -8,8 +8,10 @@ import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import java.time.Duration
 
 @Entry("option", "Display a list of options to the player", "#4CAF50", "fa6-solid:list")
@@ -29,15 +31,15 @@ class OptionDialogueEntry(
     override val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Placeholder
     @Colored
-    val text: String = "",
+    val text: Var<String> = ConstVar(""),
     val options: List<Option> = emptyList(),
     @Help("The duration it takes to type out the message. If the duration is zero, the message will be displayed instantly.")
-    val duration: Duration = Duration.ZERO,
+    val duration: Var<Duration> = ConstVar(Duration.ZERO),
 ) : DialogueEntry
 
 data class Option(
     @Help("Text for this option.")
-    val text: String = "",
+    val text: Var<String> = ConstVar(""),
     @Help("The criteria that must be met for this option to show.")
     val criteria: List<Criteria> = emptyList(),
     @Help("The modifiers to apply when this option is chosen.")

@@ -6,9 +6,7 @@ import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
-import com.typewritermc.engine.paper.entry.entries.AudienceEntry
-import com.typewritermc.engine.paper.entry.entries.ObjectiveEntry
-import com.typewritermc.engine.paper.entry.entries.QuestEntry
+import com.typewritermc.engine.paper.entry.entries.*
 import java.util.*
 
 @Entry("location_objective", "A location objective definition", Colors.BLUE_VIOLET, "streamline:target-solid")
@@ -34,7 +32,7 @@ class LocationObjectiveEntry(
     override val quest: Ref<QuestEntry> = emptyRef(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
-    override val display: String = "",
-    val targetLocation: Position = Position.ORIGIN,
+    override val display: Var<String> = ConstVar(""),
+    val targetLocation: Var<Position> = ConstVar(Position.ORIGIN),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry

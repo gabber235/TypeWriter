@@ -5,9 +5,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
-import com.typewritermc.engine.paper.entry.entries.AudienceEntry
-import com.typewritermc.engine.paper.entry.entries.ObjectiveEntry
-import com.typewritermc.engine.paper.entry.entries.QuestEntry
+import com.typewritermc.engine.paper.entry.entries.*
 import java.util.*
 
 @Entry("objective", "An objective definition", Colors.BLUE_VIOLET, "streamline:target-solid")
@@ -30,6 +28,6 @@ class SimpleObjectiveEntry(
     override val quest: Ref<QuestEntry> = emptyRef(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
-    override val display: String = "",
+    override val display: Var<String> = ConstVar(""),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry

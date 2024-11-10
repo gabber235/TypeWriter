@@ -8,6 +8,8 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.toBukkitVector
 import org.bukkit.entity.Player
 
@@ -25,11 +27,11 @@ class ApplyVelocityActionEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val force: Vector = Vector(0.0, 0.0, 0.0),
+    val force: Var<Vector> = ConstVar(Vector(0.0, 0.0, 0.0)),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
-        player.velocity = player.velocity.add(force.toBukkitVector())
+        player.velocity = player.velocity.add(force.get(player).toBukkitVector())
     }
 }

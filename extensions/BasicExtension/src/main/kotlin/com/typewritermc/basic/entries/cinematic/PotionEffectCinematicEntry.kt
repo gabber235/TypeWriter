@@ -7,9 +7,7 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicAction
-import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
-import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.EffectStateProvider
 import com.typewritermc.engine.paper.utils.PlayerState
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
@@ -51,9 +49,9 @@ class PotionEffectCinematicEntry(
 data class PotionEffectSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
-    val potionEffectType: PotionEffectType = PotionEffectType.BLINDNESS,
+    val potionEffectType: Var<PotionEffectType> = ConstVar(PotionEffectType.BLINDNESS),
     @Default("1")
-    val strength: Int = 1,
+    val strength: Var<Int> = ConstVar(1),
     val ambient: Boolean = false,
     val particles: Boolean = false,
     @Help("Whether the icon should be displayed in the top left corner of the screen.")
@@ -71,14 +69,15 @@ class PotionEffectCinematicAction(
 
     override suspend fun startSegment(segment: PotionEffectSegment) {
         super.startSegment(segment)
-        state = player.state(EffectStateProvider(segment.potionEffectType))
+        val potionEffectType = segment.potionEffectType.get(player)
+        state = player.state(EffectStateProvider(potionEffectType))
 
         SYNC.switchContext {
             player.addPotionEffect(
                 PotionEffect(
-                    segment.potionEffectType,
+                    potionEffectType,
                     10000000,
-                    segment.strength,
+                    segment.strength.get(player),
                     segment.ambient,
                     segment.particles,
                     segment.icon

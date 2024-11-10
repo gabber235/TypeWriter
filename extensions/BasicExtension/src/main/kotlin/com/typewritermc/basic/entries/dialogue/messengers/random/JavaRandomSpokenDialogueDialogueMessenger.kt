@@ -26,7 +26,7 @@ class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpo
 
     override fun init() {
         super.init()
-        speakerDisplayName = entry.speakerDisplayName
+        speakerDisplayName = entry.speakerDisplayName.get(player)
         text = entry.messages.randomOrNull() ?: ""
         typingDuration = typingDurationType.totalDuration(text.stripped(), entry.duration)
 

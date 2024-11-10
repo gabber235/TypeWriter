@@ -10,10 +10,7 @@ import com.typewritermc.engine.paper.entry.entity.EntityState
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.PositionProperty
 import com.typewritermc.engine.paper.entry.entity.SimpleEntityDefinition
-import com.typewritermc.engine.paper.entry.entries.EntityData
-import com.typewritermc.engine.paper.entry.entries.EntityDefinitionEntry
-import com.typewritermc.engine.paper.entry.entries.EntityProperty
-import com.typewritermc.engine.paper.entry.entries.LinesProperty
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.Sound
@@ -55,7 +52,7 @@ class NamedEntityDefinition(
     override val name: String = "",
     val baseEntity: Ref<EntityDefinitionEntry> = emptyRef(),
 ) : SimpleEntityDefinition {
-    override val displayName: String get() = baseEntity.get()?.displayName ?: ""
+    override val displayName: Var<String> get() = baseEntity.get()?.displayName ?: ConstVar("")
     override val sound: Sound get() = baseEntity.get()?.sound ?: Sound.EMPTY
     override val data: List<Ref<EntityData<*>>> get() = baseEntity.get()?.data ?: emptyList()
 
@@ -68,7 +65,7 @@ class NamedEntityDefinition(
 
 class NamedEntity(
     player: Player,
-    private val displayName: String,
+    private val displayName: Var<String>,
     private val baseEntity: FakeEntity,
     definition: Ref<out EntityDefinitionEntry>,
 ) : FakeEntity(player) {
@@ -113,7 +110,7 @@ class NamedEntity(
 
         return namePlate.parsePlaceholders(player).asMiniWithResolvers(
             Placeholder.parsed("other", other),
-            Placeholder.parsed("display_name", displayName.parsePlaceholders(player)),
+            Placeholder.parsed("display_name", displayName.get(player).parsePlaceholders(player)),
         ).asMini().trim()
     }
 

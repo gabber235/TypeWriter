@@ -12,7 +12,6 @@ import com.typewritermc.engine.paper.entry.entries.AudienceFilterEntry
 import com.typewritermc.engine.paper.entry.entries.Invertible
 import com.typewritermc.worldguard.RegionsEnterEvent
 import com.typewritermc.worldguard.RegionsExitEvent
-import lirand.api.extensions.server.server
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 

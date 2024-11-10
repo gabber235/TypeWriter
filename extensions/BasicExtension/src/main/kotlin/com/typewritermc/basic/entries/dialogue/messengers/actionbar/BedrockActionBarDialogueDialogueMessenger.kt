@@ -25,7 +25,7 @@ class BedrockActionBarDialogueDialogueMessenger(player: Player, entry: ActionBar
             player.uniqueId,
             org.geysermc.cumulus.form.SimpleForm.builder()
                 .title("<bold>${entry.speakerDisplayName}</bold>".legacy())
-                .content("${entry.text.parsePlaceholders(player).legacy()}\n\n")
+                .content("${entry.text.get(player).parsePlaceholders(player).legacy()}\n\n")
                 .button("Continue")
                 .closedOrInvalidResultHandler { _, _ ->
                     state = MessengerState.CANCELLED

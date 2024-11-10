@@ -7,9 +7,7 @@ import com.typewritermc.core.extension.annotations.Max
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicEntry
-import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.logger
 import io.lumine.mythic.api.mobs.GenericCaster
 import io.lumine.mythic.bukkit.BukkitAdapter
@@ -51,7 +49,7 @@ class MythicSkillCinematicEntry(
 data class MythicSkillSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
-    val skillName: String = "",
+    val skillName: Var<String> = ConstVar(""),
 ) : Segment
 
 class SkillCinematicAction(
@@ -63,8 +61,9 @@ class SkillCinematicAction(
     override suspend fun startSegment(segment: MythicSkillSegment) {
         super.startSegment(segment)
 
-        val skill = MythicBukkit.inst().skillManager.getSkill(segment.skillName).orElseGet {
-            throw IllegalArgumentException("Skill ${segment.skillName} not found")
+        val skillName = segment.skillName.get(player)
+        val skill = MythicBukkit.inst().skillManager.getSkill(skillName).orElseGet {
+            throw IllegalArgumentException("Skill $skillName not found")
         }
 
         val trigger = BukkitAdapter.adapt(player)

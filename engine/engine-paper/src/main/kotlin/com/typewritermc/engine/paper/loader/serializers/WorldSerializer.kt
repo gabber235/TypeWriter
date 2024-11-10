@@ -13,12 +13,12 @@ import java.lang.reflect.Type
 class WorldSerializer : DataSerializer<World> {
     override val type: Type = World::class.java
 
-    override fun serialize(src: World?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
-        return JsonPrimitive(src?.identifier ?: "")
+    override fun serialize(src: World, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
+        return JsonPrimitive(src.identifier)
     }
 
-    override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): World {
-        val world = json?.asString ?: ""
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): World {
+        val world = json.asString
 
         val bukkitWorld = server.getWorld(world)
             ?: server.worlds.firstOrNull { it.name.equals(world, true) }

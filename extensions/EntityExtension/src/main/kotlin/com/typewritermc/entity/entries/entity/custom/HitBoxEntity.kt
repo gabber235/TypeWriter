@@ -5,13 +5,10 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.PositionProperty
-import com.typewritermc.engine.paper.entry.entries.EntityData
-import com.typewritermc.engine.paper.entry.entries.EntityDefinitionEntry
-import com.typewritermc.engine.paper.entry.entries.EntityProperty
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.packetevents.meta
 import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.engine.paper.utils.toPacketLocation
@@ -39,7 +36,7 @@ class HitBoxDefinition(
     val width: Double = 1.0,
     val height: Double = 1.0,
 ) : EntityDefinitionEntry {
-    override val displayName: String get() = baseEntity.get()?.displayName ?: ""
+    override val displayName: Var<String> get() = baseEntity.get()?.displayName ?: ConstVar("")
     override val sound: Sound get() = baseEntity.get()?.sound ?: Sound.EMPTY
     override val data: List<Ref<EntityData<*>>> get() = baseEntity.get()?.data ?: emptyList()
 

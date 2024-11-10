@@ -1,5 +1,6 @@
 package com.typewritermc.basic.entries.quest
 
+import com.sun.org.apache.bcel.internal.Const
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
@@ -46,7 +47,7 @@ class CompletableObjective(
     val showCriteria: List<Criteria> = emptyList(),
     @Help("The criteria to display the objective as completed.")
     val completedCriteria: List<Criteria> = emptyList(),
-    override val display: String = "",
+    override val display: Var<String> = ConstVar(""),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : ObjectiveEntry {
     override val criteria: List<Criteria> get() = showCriteria
@@ -58,6 +59,6 @@ class CompletableObjective(
             showCriteria.matches(player) -> showingObjectiveDisplay
             else -> inactiveObjectiveDisplay
         }
-        return text.asMiniWithResolvers(parsed("display", display)).asMini().parsePlaceholders(player)
+        return text.asMiniWithResolvers(parsed("display", display.get(player) ?: "")).asMini().parsePlaceholders(player)
     }
 }

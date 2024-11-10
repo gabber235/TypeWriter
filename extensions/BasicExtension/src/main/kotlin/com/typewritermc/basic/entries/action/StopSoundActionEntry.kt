@@ -8,6 +8,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.SoundId
 import net.kyori.adventure.sound.SoundStop
 import org.bukkit.entity.Player
@@ -29,13 +30,13 @@ class StopSoundActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The sound to stop. If this field is left blank, all sounds will be stopped.")
-    val sound: Optional<SoundId> = Optional.empty(),
+    val sound: Optional<Var<SoundId>> = Optional.empty(),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
         if (sound.isPresent) {
-            val sound = sound.get()
+            val sound = sound.get().get(player)
             val soundStop = sound.namespacedKey?.let { SoundStop.named(it) } ?: return
 
             player.stopSound(soundStop)

@@ -8,9 +8,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.OnlyTags
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.SimpleEntityDefinition
-import com.typewritermc.engine.paper.entry.entries.EntityData
-import com.typewritermc.engine.paper.entry.entries.EntityDefinitionEntry
-import com.typewritermc.engine.paper.entry.entries.LinesProperty
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.inAudience
 import com.typewritermc.engine.paper.entry.matches
 import com.typewritermc.engine.paper.entry.quest.trackedQuest
@@ -39,7 +37,7 @@ val dialogueIndicator by snippet("objective.entity.indicator.dialogue", "<white>
 class InteractionIndicatorDefinition(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
+    override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
     val definition: Ref<EntityDefinitionEntry> = emptyRef(),
     @OnlyTags("generic_entity_data", "display_data", "text_display_data")

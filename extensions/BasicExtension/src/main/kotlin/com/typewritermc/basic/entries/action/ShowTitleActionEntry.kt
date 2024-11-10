@@ -10,6 +10,8 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.asMini
 import net.kyori.adventure.title.Title
@@ -33,10 +35,10 @@ class ShowTitleActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Placeholder
     @Colored
-    val title: String = "",
+    val title: Var<String> = ConstVar(""),
     @Placeholder
     @Colored
-    val subtitle: String = "",
+    val subtitle: Var<String> = ConstVar(""),
     @Help("Optional duration settings for the title. Duration of the title: Fade in, how long it stays, fade out.")
     val durations: Optional<TitleDurations> = Optional.empty(),
 ) : ActionEntry {
@@ -45,8 +47,8 @@ class ShowTitleActionEntry(
 
         val adventureTitle: Title = durations.map { durations ->
             Title.title(
-                title.parsePlaceholders(player).asMini(),
-                subtitle.parsePlaceholders(player).asMini(),
+                title.get(player).parsePlaceholders(player).asMini(),
+                subtitle.get(player).parsePlaceholders(player).asMini(),
 
                 Title.Times.times(
                     Duration.ofMillis(durations.fadeIn.toMillis()),
@@ -56,8 +58,8 @@ class ShowTitleActionEntry(
             )
         }.orElseGet {
             Title.title(
-                title.parsePlaceholders(player).asMini(),
-                subtitle.parsePlaceholders(player).asMini(),
+                title.get(player).parsePlaceholders(player).asMini(),
+                subtitle.get(player).parsePlaceholders(player).asMini()
             )
         }
 

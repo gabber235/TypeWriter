@@ -5,9 +5,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicEntry
-import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.*
 import org.bukkit.entity.Player
 
@@ -35,24 +33,26 @@ class SoundCinematicEntry(
 }
 
 data class SoundSegment(
-    override val startFrame: Int,
-    override val endFrame: Int,
-    val sound: Sound,
+    override val startFrame: Int = 0,
+    override val endFrame: Int = 0,
+    val sound: Var<Sound> = ConstVar(Sound.EMPTY),
 ) : Segment
 
 class SoundCinematicAction(
     private val player: Player,
-    private val entry: SoundCinematicEntry,
+    entry: SoundCinematicEntry,
 ) : SimpleCinematicAction<SoundSegment>() {
     override val segments: List<SoundSegment> = entry.segments
+    private var previousSound: Sound? = null
 
     override suspend fun startSegment(segment: SoundSegment) {
         super.startSegment(segment)
-        player.playSound(segment.sound)
+        previousSound = segment.sound.get(player)
+        player.playSound(previousSound!!)
     }
 
     override suspend fun stopSegment(segment: SoundSegment) {
         super.stopSegment(segment)
-        player.stopSound(segment.sound)
+        previousSound?.let { player.stopSound(it) }
     }
 }
