@@ -7,7 +7,6 @@ import com.typewritermc.engine.paper.entry.entity.EntityState
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.entity.entries.data.minecraft.PoseProperty
 import com.typewritermc.entity.entries.data.minecraft.living.AgableProperty
-import com.typewritermc.entity.entries.data.minecraft.living.ScaleData
 import com.typewritermc.entity.entries.data.minecraft.living.ScaleProperty
 import com.typewritermc.entity.entries.data.minecraft.living.SizeProperty
 import com.typewritermc.entity.entries.data.minecraft.living.pufferfish.PuffStateProperty

@@ -5,11 +5,10 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.utils.point.Position
-import com.typewritermc.engine.paper.entry.entries.AudienceDisplay
-import com.typewritermc.engine.paper.entry.entries.AudienceEntry
-import com.typewritermc.engine.paper.entry.entries.RoadNetworkEntry
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.roadnetwork.gps.PathStreamDisplay
 import com.typewritermc.engine.paper.utils.toBukkitLocation
+import io.github.retrooper.packetevents.util.SpigotConversionUtil.toBukkitLocation
 
 @Entry(
     "direct_location_path_stream",
@@ -28,7 +27,7 @@ class DirectLocationPathStream(
     override val id: String = "",
     override val name: String = "",
     val road: Ref<RoadNetworkEntry> = emptyRef(),
-    val targetLocation: Position = Position.ORIGIN,
+    val targetLocation: Var<Position> = ConstVar(Position.ORIGIN),
 ) : AudienceEntry {
-    override fun display(): AudienceDisplay = PathStreamDisplay(road, endLocation = { targetLocation.toBukkitLocation() })
+    override fun display(): AudienceDisplay = PathStreamDisplay(road, endLocation = { targetLocation.get(it).toBukkitLocation() })
 }

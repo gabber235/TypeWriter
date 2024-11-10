@@ -10,7 +10,7 @@ interface DialogueEntry : TriggerableEntry {
     @Help("The speaker of the dialogue")
     val speaker: Ref<SpeakerEntry>
 
-    val speakerDisplayName: String
-        get() = speaker.get()?.displayName ?: ""
+    val speakerDisplayName: Var<String>
+        get() = speaker.get()?.displayName ?: ConstVar("")
 }
 

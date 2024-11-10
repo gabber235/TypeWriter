@@ -32,5 +32,5 @@ class SpokenDialogueEntry(
     @MultiLine
     val text: Var<String> = ConstVar(""),
     @Help("The duration it takes to type out the message.")
-    val duration: Duration = Duration.ZERO,
+    val duration: Var<Duration> = ConstVar(Duration.ZERO),
 ) : DialogueEntry

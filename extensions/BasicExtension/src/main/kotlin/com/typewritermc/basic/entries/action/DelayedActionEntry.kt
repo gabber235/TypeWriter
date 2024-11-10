@@ -9,7 +9,9 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.CustomTriggeringActionEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import java.time.Duration
@@ -31,11 +33,11 @@ class DelayedActionEntry(
     @SerializedName("triggers")
     override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The duration before the next triggers are fired.")
-    private val duration: Duration = Duration.ZERO,
+    private val duration: Var<Duration> = ConstVar(Duration.ZERO),
 ) : CustomTriggeringActionEntry {
     override fun execute(player: Player) {
         DISPATCHERS_ASYNC.launch {
-            delay(duration.toMillis())
+            delay(duration.get(player).toMillis())
             super.execute(player)
             player.triggerCustomTriggers()
         }

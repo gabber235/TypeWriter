@@ -26,9 +26,9 @@ class ItemInSlotAudienceEntry(
     override val name: String = "",
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     @Help("The item to check for.")
-    val item: Item = Item.Empty,
+    val item: Var<Item> = ConstVar(Item.Empty),
     @Help("The slot to check.")
-    val slot: Int = 0,
+    val slot: Var<Int> = ConstVar(0),
     override val inverted: Boolean = false,
 ) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = ItemInSlotAudienceFilter(ref(), item, slot)
@@ -36,12 +36,12 @@ class ItemInSlotAudienceEntry(
 
 class ItemInSlotAudienceFilter(
     ref: Ref<out AudienceFilterEntry>,
-    private val item: Item,
-    private val slot: Int,
+    private val item: Var<Item>,
+    private val slot: Var<Int>,
 ) : AudienceFilter(ref), TickableDisplay {
     override fun filter(player: Player): Boolean {
-        val itemInSlot = player.inventory.getItem(slot) ?: return false
-        return item.isSameAs(player, itemInSlot)
+        val itemInSlot = player.inventory.getItem(slot.get(player)) ?: return false
+        return item.get(player).isSameAs(player, itemInSlot)
     }
 
     override fun tick() {

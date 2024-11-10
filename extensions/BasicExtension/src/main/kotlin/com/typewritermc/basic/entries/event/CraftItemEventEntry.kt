@@ -7,7 +7,9 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EventEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.CraftItemEvent
@@ -24,12 +26,12 @@ class CraftItemEventEntry(
     override val id: String = "",
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val craftedItem: Item = Item.Empty,
+    val craftedItem: Var<Item> = ConstVar(Item.Empty),
 ): EventEntry
 
 @EntryListener(CraftItemEventEntry::class)
 fun onCraftItem(event: CraftItemEvent, query: Query<CraftItemEventEntry>) {
     val player = event.whoClicked
     if (player !is Player) return
-    query.findWhere { it.craftedItem.isSameAs(player, event.recipe.result) } triggerAllFor player
+    query.findWhere { it.craftedItem.get(player).isSameAs(player, event.recipe.result) } triggerAllFor player
 }

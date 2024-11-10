@@ -1,15 +1,17 @@
 package com.typewritermc.basic.entries.action
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.core.extension.annotations.Negative
 import com.typewritermc.core.utils.point.Position
+import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.toBukkitLocation
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -30,26 +32,37 @@ class SpawnParticleActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The location to spawn the particles at. (Defaults to player's location)")
-    val location: Optional<Position> = Optional.empty(),
-    val particle: Particle = Particle.FLAME,
-    val count: Int = 1,
-    @Negative
-    val offsetX: Double = 0.0,
-    @Negative
-    val offsetY: Double = 0.0,
-    @Negative
-    val offsetZ: Double = 0.0,
+    val location: Optional<Var<Position>> = Optional.empty(),
+    val particle: Var<Particle> = ConstVar(Particle.FLAME),
+    val count: Var<Int> = ConstVar(1),
+    val offset: Var<Vector> = ConstVar(Vector.ZERO),
     @Help("The speed of the particles. For some particles, this is the \"extra\" data value to control particle behavior.")
-    val speed: Double = 0.0,
+    val speed: Var<Double> = ConstVar(0.0),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
         if (location.isPresent) {
-            val bukkitLocation = location.get().toBukkitLocation()
-            bukkitLocation.world?.spawnParticle(particle, bukkitLocation, count, offsetX, offsetY, offsetZ, speed)
+            val bukkitLocation = location.get().get(player).toBukkitLocation()
+            bukkitLocation.world?.spawnParticle(
+                particle.get(player),
+                bukkitLocation,
+                count.get(player),
+                offset.get(player).x,
+                offset.get(player).y,
+                offset.get(player).z,
+                speed.get(player)
+            )
         } else {
-            player.world.spawnParticle(particle, player.location, count, offsetX, offsetY, offsetZ, speed)
+            player.world.spawnParticle(
+                particle.get(player),
+                player.location,
+                count.get(player),
+                offset.get(player).x,
+                offset.get(player).y,
+                offset.get(player).z,
+                speed.get(player)
+            )
         }
     }
 }

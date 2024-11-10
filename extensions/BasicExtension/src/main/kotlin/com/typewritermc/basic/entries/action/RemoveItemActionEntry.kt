@@ -7,6 +7,8 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.ThreadType
 import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
@@ -32,13 +34,13 @@ class RemoveItemActionEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val item: Item = Item.Empty,
+    val item: Var<Item> = ConstVar(Item.Empty),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
         ThreadType.SYNC.launch {
-            player.inventory.removeItemAnySlot(item.build(player).clone())
+            player.inventory.removeItemAnySlot(item.get(player).build(player).clone())
         }
     }
 }

@@ -9,7 +9,9 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.CustomTriggeringActionEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import org.bukkit.entity.Player
 
 @Entry("random_trigger", "Randomly selects its connected triggers", Colors.PINK, "mdi:clover")
@@ -28,14 +30,14 @@ class RandomTriggerGateEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     @Help("The number of triggers to fire next.")
-    private val amount: Int = 1,
+    private val amount: Var<Int> = ConstVar(1),
 ) : CustomTriggeringActionEntry {
 
     override fun execute(player: Player) {
         val selectedTriggers = mutableListOf<Ref<TriggerableEntry>>()
 
         if (customTriggers.isNotEmpty()) {
-            val randomIndices = (customTriggers.indices).shuffled().take(amount)
+            val randomIndices = (customTriggers.indices).shuffled().take(amount.get(player))
             for (index in randomIndices) {
                 selectedTriggers.add(customTriggers[index])
             }

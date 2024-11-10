@@ -9,9 +9,12 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.utils.toBukkitLocation
+import io.github.retrooper.packetevents.util.SpigotConversionUtil.toBukkitLocation
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -32,9 +35,9 @@ class DropItemActionEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val item: Item = Item.Empty,
+    val item: Var<Item> = ConstVar(Item.Empty),
     @Help("The location to drop the item. (Defaults to the player's location)")
-    private val location: Optional<Position> = Optional.empty(),
+    private val location: Optional<Var<Position>> = Optional.empty(),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
@@ -42,10 +45,10 @@ class DropItemActionEntry(
         SYNC.launch {
             if (location.isPresent) {
                 val position = location.get()
-                val bukkitLocation = position.toBukkitLocation()
-                bukkitLocation.world.dropItem(bukkitLocation, item.build(player))
+                val bukkitLocation = position.get(player).toBukkitLocation()
+                bukkitLocation.world.dropItem(bukkitLocation, item.get(player).build(player))
             } else {
-                player.location.world.dropItem(player.location, item.build(player))
+                player.location.world.dropItem(player.location, item.get(player).build(player))
             }
         }
     }

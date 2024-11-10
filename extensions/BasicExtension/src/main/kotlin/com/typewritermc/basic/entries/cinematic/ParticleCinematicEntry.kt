@@ -3,9 +3,9 @@ package com.typewritermc.basic.entries.cinematic
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.core.extension.annotations.Negative
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.core.utils.point.Position
+import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.toBukkitLocation
@@ -26,18 +26,13 @@ class ParticleCinematicEntry(
     override val id: String = "",
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
-    val location: Position = Position.ORIGIN,
-    val particle: Particle = Particle.FLAME,
+    val location: Var<Position> = ConstVar(Position.ORIGIN),
+    val particle: Var<Particle> = ConstVar(Particle.FLAME),
     @Help("The amount of particles to spawn every tick.")
-    val count: Int = 1,
-    @Negative
-    val offsetX: Double = 0.0,
-    @Negative
-    val offsetY: Double = 0.0,
-    @Negative
-    val offsetZ: Double = 0.0,
+    val count: Var<Int> = ConstVar(1),
+    val offset: Var<Vector> = ConstVar(Vector.ZERO),
     @Help("The speed of the particles. For some particles, this is the \"extra\" data value to control particle behavior.")
-    val speed: Double = 0.0,
+    val speed: Var<Double> = ConstVar(0.0),
     @Segments(icon = "fa6-solid:fire-flame-simple")
     val segments: List<ParticleSegment> = emptyList(),
 ) : CinematicEntry {
@@ -64,13 +59,13 @@ class ParticleCinematicAction(
         (entry.segments activeSegmentAt frame) ?: return
 
         player.spawnParticle(
-            entry.particle,
-            entry.location.toBukkitLocation(),
-            entry.count,
-            entry.offsetX,
-            entry.offsetY,
-            entry.offsetZ,
-            entry.speed
+            entry.particle.get(player),
+            entry.location.get(player).toBukkitLocation(),
+            entry.count.get(player),
+            entry.offset.get(player).x,
+            entry.offset.get(player).y,
+            entry.offset.get(player).z,
+            entry.speed.get(player),
         )
 
     }

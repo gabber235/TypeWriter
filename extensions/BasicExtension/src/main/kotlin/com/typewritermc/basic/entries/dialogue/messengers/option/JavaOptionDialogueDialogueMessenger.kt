@@ -65,7 +65,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
     }
 
-    private val typeDuration = entry.duration
+    private val typeDuration = entry.duration.get(player)
 
     private var selectedIndex = 0
     private val selected get() = usableOptions.getOrNull(selectedIndex)
@@ -99,8 +99,8 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             return
         }
 
-        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
-        parsedText = entry.text.parsePlaceholders(player)
+        speakerDisplayName = entry.speakerDisplayName.get(player).parsePlaceholders(player)
+        parsedText = entry.text.get(player).parsePlaceholders(player)
 
         val rawText = parsedText.stripped()
         val typingDuration = typingDurationType.totalDuration(rawText, typeDuration)
@@ -199,7 +199,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             val format = if (isSelected) selectedOption else unselectedOption
             lines += format.asMiniWithResolvers(
                 Placeholder.parsed("prefix", prefix),
-                Placeholder.parsed("option_text", option.text.parsePlaceholders(player))
+                Placeholder.parsed("option_text", option.text.get(player).parsePlaceholders(player))
             )
         }
 

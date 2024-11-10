@@ -5,9 +5,11 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.core.utils.point.Position
-import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.ManifestEntry
+import com.typewritermc.engine.paper.entry.PlaceholderEntry
 import com.typewritermc.engine.paper.entry.entity.*
-import com.typewritermc.engine.paper.utils.EmitterSoundSource
+import com.typewritermc.engine.paper.entry.findDisplay
+import com.typewritermc.engine.paper.entry.inAudience
 import com.typewritermc.engine.paper.utils.Sound
 import org.bukkit.entity.Player
 import kotlin.reflect.KClass
@@ -17,12 +19,12 @@ interface SpeakerEntry : PlaceholderEntry {
     @Colored
     @Placeholder
     @Help("The name of the entity that will be displayed in the chat (e.g. 'Steve' or 'Alex').")
-    val displayName: String
+    val displayName: Var<String>
 
     @Help("The sound that will be played when the entity speaks.")
     val sound: Sound
 
-    override fun display(player: Player?): String? = displayName
+    override fun display(player: Player?): String? = displayName.get(player)
 }
 
 /**
@@ -90,9 +92,14 @@ interface SharedEntityActivityEntry : EntityActivityEntry {
         context: ActivityContext,
         currentLocation: PositionProperty
     ): EntityActivity<ActivityContext> {
-        if (context !is SharedActivityContext) throw WrongActivityContextException(context, SharedActivityContext::class, this)
+        if (context !is SharedActivityContext) throw WrongActivityContextException(
+            context,
+            SharedActivityContext::class,
+            this
+        )
         return create(context, currentLocation) as EntityActivity<ActivityContext>
     }
+
     fun create(context: SharedActivityContext, currentLocation: PositionProperty): EntityActivity<SharedActivityContext>
 }
 
@@ -102,10 +109,18 @@ interface IndividualEntityActivityEntry : EntityActivityEntry {
         context: ActivityContext,
         currentLocation: PositionProperty
     ): EntityActivity<ActivityContext> {
-        if (context !is IndividualActivityContext) throw WrongActivityContextException(context, IndividualActivityContext::class, this)
+        if (context !is IndividualActivityContext) throw WrongActivityContextException(
+            context,
+            IndividualActivityContext::class,
+            this
+        )
         return create(context, currentLocation) as EntityActivity<ActivityContext>
     }
-    fun create(context: IndividualActivityContext, currentLocation: PositionProperty): EntityActivity<IndividualActivityContext>
+
+    fun create(
+        context: IndividualActivityContext,
+        currentLocation: PositionProperty
+    ): EntityActivity<IndividualActivityContext>
 }
 
 @Tags("generic_entity_activity")
@@ -130,7 +145,12 @@ interface GenericEntityActivityEntry : SharedEntityActivityEntry, IndividualEnti
     }
 }
 
-class WrongActivityContextException(context: ActivityContext, expected: KClass<out ActivityContext>, entry: EntityActivityEntry) : IllegalStateException("""
+class WrongActivityContextException(
+    context: ActivityContext,
+    expected: KClass<out ActivityContext>,
+    entry: EntityActivityEntry
+) : IllegalStateException(
+    """
     |The activity context for ${entry.name} is not of the expected type.
     |Expected: $expected
     |Actual: $context
@@ -141,4 +161,5 @@ class WrongActivityContextException(context: ActivityContext, expected: KClass<o
     |
     |To fix this, you need to make sure that the activity matches the entity visibility.
     |If you need more help, please join the TypeWriter Discord! https://discord.gg/gs5QYhfv9x
-""".trimMargin())
+""".trimMargin()
+)

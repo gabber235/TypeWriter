@@ -1,16 +1,17 @@
 package com.typewritermc.entity.entries.entity.custom
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.OnlyTags
-import com.typewritermc.entity.entries.data.minecraft.living.toProperty
-import com.typewritermc.entity.entries.entity.minecraft.PlayerEntity
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entity.*
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EntityData
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.Sound
+import com.typewritermc.entity.entries.entity.minecraft.PlayerEntity
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -25,13 +26,13 @@ class SelfNpcDefinition(
     override val id: String = "",
     override val name: String = "",
     @Help("Overrides the display name of the speaker")
-    val overrideName: Optional<String> = Optional.empty(),
+    val overrideName: Optional<Var<String>> = Optional.empty(),
     override val sound: Sound = Sound.EMPTY,
     @OnlyTags("generic_entity_data", "living_entity_data", "player_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
-    override val displayName: String
-        get() = overrideName.orElseGet { "%player_name%" }
+    override val displayName: Var<String>
+        get() = overrideName.orElseGet { ConstVar("%player_name%") }
 
     override fun create(player: Player): FakeEntity = SelfNpc(player)
 }
@@ -39,7 +40,7 @@ class SelfNpcDefinition(
 class SelfNpc(
     player: Player,
 ) : FakeEntity(player) {
-    private val playerEntity = PlayerEntity(player, player.name)
+    private val playerEntity = PlayerEntity(player, ConstVar(player.name))
 
     override val state: EntityState
         get() = playerEntity.state

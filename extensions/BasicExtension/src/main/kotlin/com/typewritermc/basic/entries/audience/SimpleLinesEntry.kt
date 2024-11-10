@@ -6,7 +6,9 @@ import com.typewritermc.core.extension.annotations.Colored
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.MultiLine
 import com.typewritermc.core.extension.annotations.Placeholder
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.LinesEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -26,8 +28,8 @@ class SimpleLinesEntry(
     @Colored
     @Placeholder
     @MultiLine
-    val lines: String = "",
+    val lines: Var<String> = ConstVar(""),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : LinesEntry {
-    override fun lines(player: Player): String = lines
+    override fun lines(player: Player): String = lines.get(player)
 }

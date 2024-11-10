@@ -7,9 +7,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entity.EntityState
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.PositionProperty
-import com.typewritermc.engine.paper.entry.entries.EntityData
-import com.typewritermc.engine.paper.entry.entries.EntityDefinitionEntry
-import com.typewritermc.engine.paper.entry.entries.EntityProperty
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.Sound
 import org.bukkit.entity.Player
 
@@ -34,7 +32,7 @@ class StackedEntityDefinition(
     @Help("The entities that will be stacked on top of each other. First entity will be the bottom entity.")
     val definitions: List<Ref<EntityDefinitionEntry>> = emptyList(),
 ) : EntityDefinitionEntry {
-    override val displayName: String get() = definitions.firstOrNull()?.get()?.displayName ?: ""
+    override val displayName: Var<String> get() = definitions.firstOrNull()?.get()?.displayName ?: ConstVar("")
     override val sound: Sound get() = definitions.firstOrNull()?.get()?.sound ?: Sound.EMPTY
     override val data: List<Ref<EntityData<*>>>
         get() = definitions.mapNotNull { it.get() }.flatMap { it.data }

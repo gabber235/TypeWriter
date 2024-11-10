@@ -25,6 +25,6 @@ class RandomMessageDialogueDialogueMessenger(player: Player, entry: RandomMessag
         if (state != MessengerState.RUNNING) return
         state = MessengerState.FINISHED
         val message = entry.messages.randomOrNull() ?: return
-        player.sendMessageDialogue(message, entry.speakerDisplayName)
+        player.sendMessageDialogue(message, entry.speakerDisplayName.get(player))
     }
 }

@@ -1,11 +1,10 @@
 package com.typewritermc.engine.paper.entry.entries
 
 import com.typewritermc.core.entries.*
-import lirand.api.extensions.server.server
-import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.extension.annotations.Colored
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Placeholder
+import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.quest.QuestStatus
 import com.typewritermc.engine.paper.entry.quest.isQuestActive
@@ -16,6 +15,7 @@ import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.asMini
 import com.typewritermc.engine.paper.utils.asMiniWithResolvers
+import lirand.api.extensions.server.server
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -27,12 +27,12 @@ interface QuestEntry : AudienceFilterEntry, PlaceholderEntry {
     @Help("The name to display to the player.")
     @Colored
     @Placeholder
-    val displayName: String
+    val displayName: Var<String>
 
     val facts: List<Ref<ReadableFactEntry>> get() = emptyList()
     fun questStatus(player: Player): QuestStatus
 
-    override fun display(player: Player?): String = displayName.parsePlaceholders(player)
+    override fun display(player: Player?): String = displayName.get(player)?.parsePlaceholders(player) ?: ""
     override fun display(): AudienceFilter = QuestAudienceFilter(
         ref()
     )
@@ -64,7 +64,7 @@ interface ObjectiveEntry : AudienceFilterEntry, PlaceholderEntry, PriorityEntry 
     @Help("The name to display to the player.")
     @Colored
     @Placeholder
-    val display: String
+    val display: Var<String>
 
     override fun display(): AudienceFilter {
         return ObjectiveAudienceFilter(
@@ -79,6 +79,8 @@ interface ObjectiveEntry : AudienceFilterEntry, PlaceholderEntry, PriorityEntry 
             criteria.matches(player) -> showingObjectiveDisplay
             else -> inactiveObjectiveDisplay
         }
+        val display = display.get(player) ?: ""
+
         return text.asMiniWithResolvers(parsed("display", display)).asMini().parsePlaceholders(player)
     }
 }

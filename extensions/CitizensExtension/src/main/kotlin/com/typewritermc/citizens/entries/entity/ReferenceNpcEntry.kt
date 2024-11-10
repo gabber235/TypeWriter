@@ -4,13 +4,10 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Tags
-import com.typewritermc.engine.paper.entry.entries.SoundEmitter
-import com.typewritermc.engine.paper.entry.entries.SoundSourceEntry
-import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
-import com.typewritermc.engine.paper.utils.*
+import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.utils.Sound
 import net.citizensnpcs.api.CitizensAPI
 import org.bukkit.entity.Player
-import net.kyori.adventure.sound.Sound as AdventureSound
 
 @Tags("reference_npc")
 @Entry("reference_npc", "When the npc is not managed by TypeWriter", Colors.ORANGE, "fa-solid:user-tie")
@@ -24,7 +21,7 @@ import net.kyori.adventure.sound.Sound as AdventureSound
 class ReferenceNpcEntry(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
+    override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
     @Help("The id of the NPC in the Citizens plugin.")
     val npcId: Int = 0,

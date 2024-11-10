@@ -11,7 +11,9 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.dialogue.playSpeakerSound
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.sendMiniWithResolvers
@@ -47,7 +49,7 @@ class MessageActionEntry(
     @Placeholder
     @Colored
     @MultiLine
-    val message: String = "",
+    val message: Var<String> = ConstVar(""),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
@@ -58,11 +60,11 @@ class MessageActionEntry(
             messageFormat,
             parsed(
                 "speaker",
-                speakerEntry?.displayName ?: ""
+                speakerEntry?.displayName?.get(player) ?: ""
             ),
             parsed(
                 "message",
-                message.parsePlaceholders(player).replace("\n", "\n ")
+                message.get(player).parsePlaceholders(player).replace("\n", "\n ")
             )
         )
     }

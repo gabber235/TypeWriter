@@ -9,8 +9,10 @@ import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import java.time.Duration
 
 @Entry("action_bar_dialogue", "An action bar dialogue", "#1E88E5", "fa6-solid:xmarks-lines")
@@ -30,7 +32,7 @@ class ActionBarDialogueEntry(
     override val speaker: Ref<SpeakerEntry> = emptyRef(),
     @Colored
     @Placeholder
-    val text: String = "",
+    val text: Var<String> = ConstVar(""),
     @Help("The duration it takes to type out the message.")
-    val duration: Duration = Duration.ZERO,
+    val duration: Var<Duration> = ConstVar(Duration.ZERO),
 ) : DialogueEntry

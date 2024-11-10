@@ -6,7 +6,6 @@ import com.typewritermc.core.extension.annotations.GenericConstraint
 import com.typewritermc.core.extension.annotations.VariableData
 import com.typewritermc.core.utils.point.Coordinate
 import com.typewritermc.core.utils.point.Position
-import com.typewritermc.core.utils.point.toPosition
 import com.typewritermc.engine.paper.entry.entries.VarContext
 import com.typewritermc.engine.paper.entry.entries.VariableEntry
 import com.typewritermc.engine.paper.entry.entries.getData
@@ -14,21 +13,21 @@ import com.typewritermc.engine.paper.utils.position
 import kotlin.reflect.safeCast
 
 @Entry(
-    "player_world_position_variable",
-    "Absolute Position in the players world",
+    "relative_location_variable",
+    "A variable that returns the location relative to the player",
     Colors.GREEN,
-    "material-symbols:person-pin-circle-rounded"
+    "streamline:target-solid"
 )
 @GenericConstraint(Position::class)
-@VariableData(PlayerWorldPositionVariableData::class)
+@VariableData(RelativeLocationVariableData::class)
 /**
- * The `PlayerWorldPositionVariable` is a variable that returns the player's position in the world.
+ * The `RelativeLocationVariable` is a variable that returns the location relative to the player.
+ * The location is calculated by adding the coordinate to the player's position.
  *
  * ## How could this be used?
- * This could be used in dungeons where the players will be in a different world for paper,
- * but the world coordinates are the same.
+ * This could be used to make a death cinematic that shows at player's location after they die.
  */
-class PlayerWorldPositionVariable(
+class RelativeLocationVariable(
     override val id: String = "",
     override val name: String = "",
 ) : VariableEntry {
@@ -36,13 +35,13 @@ class PlayerWorldPositionVariable(
         val player = context.player
         val data = context.getData<PlayerWorldPositionVariableData>()
             ?: throw IllegalStateException("Could not find data for ${context.klass}, data: ${context.data}")
-        val position = data.coordinate.toPosition(player.position.world)
 
+        val position = player.position + data.coordinate
         return context.klass.safeCast(position)
             ?: throw IllegalStateException("Could not cast position to ${context.klass}, PlayerWorldPositionVariable is only compatible with Position fields")
     }
 }
 
-data class PlayerWorldPositionVariableData(
+data class RelativeLocationVariableData(
     val coordinate: Coordinate = Coordinate.ORIGIN,
 )

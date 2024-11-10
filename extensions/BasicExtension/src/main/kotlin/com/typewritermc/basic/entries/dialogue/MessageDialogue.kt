@@ -8,8 +8,10 @@ import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 
 @Entry("message", "Display a single message to the player", "#1c4da3", "ic:baseline-comment-bank")
 /**
@@ -29,5 +31,5 @@ class MessageDialogueEntry(
     @MultiLine
     @Placeholder
     @Colored
-    val text: String = "",
+    val text: Var<String> = ConstVar(""),
 ) : DialogueEntry

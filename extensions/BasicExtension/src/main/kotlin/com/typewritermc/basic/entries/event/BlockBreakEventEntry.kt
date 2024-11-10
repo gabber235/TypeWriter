@@ -13,6 +13,8 @@ import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.engine.paper.utils.toPosition
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
@@ -32,9 +34,9 @@ class BlockBreakEventEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @MaterialProperties(MaterialProperty.BLOCK)
     val block: Optional<Material> = Optional.empty(),
-    val location: Optional<Position> = Optional.empty(),
+    val location: Optional<Var<Position>> = Optional.empty(),
     @Help("The item the player must be holding when the block is broken.")
-    val itemInHand: Item = Item.Empty,
+    val itemInHand: Var<Item> = ConstVar(Item.Empty),
 ) : EventEntry
 
 private fun hasItemInHand(player: Player, item: Item): Boolean {
@@ -46,15 +48,16 @@ private fun hasItemInHand(player: Player, item: Item): Boolean {
 
 @EntryListener(BlockBreakEventEntry::class)
 fun onBlockBreak(event: BlockBreakEvent, query: Query<BlockBreakEventEntry>) {
+    val player = event.player
     val position = event.block.location.toPosition()
     query findWhere { entry ->
         // Check if the player clicked on the correct location
-        if (!entry.location.map { it == position }.orElse(true)) return@findWhere false
+        if (!entry.location.map { it.get(player) == position }.orElse(true)) return@findWhere false
 
         // Check if the player is holding the correct item
-        if (!hasItemInHand(event.player, entry.itemInHand)) return@findWhere false
+        if (!hasItemInHand(player, entry.itemInHand.get(player))) return@findWhere false
 
         // Check if block type is correct
         entry.block.map { it == event.block.type }.orElse(true)
-    } startDialogueWithOrNextDialogue event.player
+    } startDialogueWithOrNextDialogue player
 }

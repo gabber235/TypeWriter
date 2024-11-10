@@ -9,6 +9,8 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.plugin
 import org.bukkit.entity.Player
 
@@ -27,7 +29,7 @@ class SwitchServerActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Help("The server the player will connect to.")
-    val server: String = "",
+    val server: Var<String> = ConstVar(""),
 ): ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
@@ -36,7 +38,7 @@ class SwitchServerActionEntry(
 
         val out = ByteStreams.newDataOutput()
         out.writeUTF("Connect")
-        out.writeUTF(server)
+        out.writeUTF(server.get(player))
         player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray())
 
         plugin.server.messenger.unregisterOutgoingPluginChannel(plugin, "BungeeCord")

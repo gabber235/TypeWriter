@@ -24,7 +24,7 @@ class ItemInInventoryAudienceEntry(
     override val id: String = "",
     override val name: String = "",
     override val children: List<Ref<AudienceEntry>> = emptyList(),
-    val item: Item = Item.Empty,
+    val item: Var<Item> = ConstVar(Item.Empty),
     override val inverted: Boolean = false,
 ) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = ItemInInventoryAudienceFilter(ref(), item)
@@ -32,9 +32,10 @@ class ItemInInventoryAudienceEntry(
 
 class ItemInInventoryAudienceFilter(
     ref: Ref<out AudienceFilterEntry>,
-    private val item: Item,
+    private val item: Var<Item>,
 ) : AudienceFilter(ref), TickableDisplay {
     override fun filter(player: Player): Boolean {
+        val item = item.get(player)
         return player.inventory.contents.any { it != null && item.isSameAs(player, it) } || item.isSameAs(player, player.itemOnCursor)
     }
 

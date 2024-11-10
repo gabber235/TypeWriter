@@ -31,9 +31,11 @@ interface SidebarEntry : AudienceFilterEntry, PlaceholderEntry, PriorityEntry {
     @Help("The title of the sidebar")
     @Colored
     @Placeholder
-    val title: String
+    val title: Var<String>
 
-    override fun display(player: Player?): String? = title.parsePlaceholders(player)
+    override fun display(player: Player?): String? {
+        return title.get(player)?.parsePlaceholders(player) ?: ""
+    }
 
     override fun display(): AudienceFilter = SidebarFilter(ref()) { player ->
         PlayerSidebarDisplay(player, SidebarFilter::class, ref())

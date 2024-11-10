@@ -10,13 +10,18 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.entry.entries.get
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.utils.toBukkitLocation
+import io.github.retrooper.packetevents.util.SpigotConversionUtil.toBukkitLocation
 import io.lumine.mythic.api.mobs.entities.SpawnReason
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
+import io.lumine.mythic.core.skills.placeholders.PlaceholderExecutor.parsePlaceholders
 import org.bukkit.entity.Player
 
 
@@ -35,20 +40,20 @@ class SpawnMobActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Placeholder
-    private val mobName: String = "",
-    private val level: Double = 1.0,
+    private val mobName: Var<String> = ConstVar(""),
+    private val level: Var<Double> = ConstVar(1.0),
     private val onlyVisibleForPlayer: Boolean = false,
     @WithRotation
-    private var spawnLocation: Position = Position.ORIGIN,
+    private var spawnLocation: Var<Position> = ConstVar(Position.ORIGIN),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
-        val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName.parsePlaceholders(player))
+        val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName.get(player).parsePlaceholders(player))
         if (!mob.isPresent) return
 
         SYNC.launch {
-            mob.get().spawn(BukkitAdapter.adapt(spawnLocation.toBukkitLocation()), level, SpawnReason.OTHER) {
+            mob.get().spawn(BukkitAdapter.adapt(spawnLocation.get(player).toBukkitLocation()), level.get(player), SpawnReason.OTHER) {
                 if (onlyVisibleForPlayer) {
                     it.isVisibleByDefault = false
                     player.showEntity(plugin, it)

@@ -3,7 +3,9 @@ package com.typewritermc.basic.entries.static
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.StaticEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.Sound
 
 @Entry("simple_speaker", "The most basic speaker", Colors.ORANGE, "bi:person-fill")
@@ -17,6 +19,6 @@ import com.typewritermc.engine.paper.utils.Sound
 class SimpleSpeakerEntry(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
+    override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
 ) : SpeakerEntry, StaticEntry

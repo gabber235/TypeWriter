@@ -9,6 +9,8 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.engine.paper.entry.entries.AudienceDisplay
 import com.typewritermc.engine.paper.entry.entries.AudienceEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.utils.ThreadType
@@ -35,19 +37,20 @@ import java.util.*
 class TimerAudienceEntry(
     override val id: String = "",
     override val name: String = "",
-    val duration: Duration = Duration.ofSeconds(1),
+    val duration: Var<Duration> = ConstVar(Duration.ofSeconds(1)),
     val onTimer: Ref<TriggerableEntry> = emptyRef(),
 ) : AudienceEntry {
     override fun display(): AudienceDisplay = TimerAudienceDisplay(duration, onTimer)
 }
 
 class TimerAudienceDisplay(
-    private val duration: Duration,
+    private val duration: Var<Duration>,
     private val onTimer: Ref<TriggerableEntry>,
 ) : AudienceDisplay() {
     private val jobs = mutableMapOf<UUID, Job>()
 
     override fun onPlayerAdd(player: Player) {
+        val duration = duration.get(player)
         if (duration.isZero || duration.isNegative) {
             logger.warning("Timer duration must be positive, otherwise it will infinitely trigger.")
             return

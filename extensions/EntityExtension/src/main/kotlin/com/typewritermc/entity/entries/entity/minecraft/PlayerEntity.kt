@@ -13,9 +13,7 @@ import com.typewritermc.core.extension.annotations.OnlyTags
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entity.*
-import com.typewritermc.engine.paper.entry.entries.EntityData
-import com.typewritermc.engine.paper.entry.entries.EntityProperty
-import com.typewritermc.engine.paper.entry.entries.SharedEntityActivityEntry
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.packetevents.meta
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.utils.Sound
@@ -47,7 +45,7 @@ import java.util.*
 class PlayerDefinition(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
+    override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
     @OnlyTags("generic_entity_data", "living_entity_data", "player_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
@@ -71,7 +69,7 @@ class PlayerInstance(
 
 class PlayerEntity(
     player: Player,
-    displayName: String,
+    displayName: Var<String>,
 ) : FakeEntity(player) {
     private var sitEntity: WrapperEntity? = null
 
@@ -89,7 +87,7 @@ class PlayerEntity(
             entityId = EntityLib.getPlatform().entityIdProvider.provide(uuid, EntityTypes.PLAYER)
         } while (EntityLib.getApi<SpigotEntityLibAPI>().getEntity(entityId) != null)
 
-        entity = WrapperPlayer(UserProfile(uuid, "\u2063${displayName.stripped().replace(" ", "_")}"), entityId)
+        entity = WrapperPlayer(UserProfile(uuid, "\u2063${displayName.get(player).stripped().replace(" ", "_")}"), entityId)
 
         entity.isInTablist = false
         entity.meta<PlayerMeta> {

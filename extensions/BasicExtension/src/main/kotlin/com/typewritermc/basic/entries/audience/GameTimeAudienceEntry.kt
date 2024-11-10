@@ -6,6 +6,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.core.entries.ref
+import com.typewritermc.core.utils.point.World
 import com.typewritermc.engine.paper.logger
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -40,7 +41,7 @@ class GameTimeAudienceEntry(
     override val id: String = "",
     override val name: String = "",
     override val children: List<Ref<AudienceEntry>> = emptyList(),
-    val world: String = "",
+    val world: Var<World> = ConstVar(World.Empty),
     val activeTimes: List<GameTimeRange> = emptyList(),
     override val inverted: Boolean = false,
 ) : AudienceFilterEntry, Invertible {
@@ -49,11 +50,11 @@ class GameTimeAudienceEntry(
 
 class GameTimeAudienceFilter(
     val ref: Ref<out AudienceFilterEntry>,
-    private val world: String,
+    private val world: Var<World>,
     private val activeTimes: List<GameTimeRange>,
 ) : AudienceFilter(ref), TickableDisplay {
     override fun filter(player: Player): Boolean {
-        if (player.world.name != world) return false
+        if (player.world.uid.toString() != world.get(player).identifier) return false
         val worldTime = player.world.time % 24000
         return activeTimes.any { worldTime in it }
     }
@@ -63,19 +64,16 @@ class GameTimeAudienceFilter(
         event.player.refresh()
     }
 
-    override fun tick() {
-        val world = server.getWorld(world)
+    override fun onPlayerAdd(player: Player) {
+        super.onPlayerAdd(player)
+        val world = server.getWorld(world.get(player).identifier)
         if (world == null) {
             logger.warning("World '${this.world}' does not exist, $ref will not work.")
-            return
         }
+    }
 
-        val isActive = activeTimes.any { world.time % 24000 in it }
-        if (isActive && consideredPlayers.isNotEmpty() && players.isEmpty()) {
-            consideredPlayers.forEach { it.refresh() }
-        } else if (!isActive && players.isNotEmpty()) {
-            players.forEach { it.updateFilter(false) }
-        }
+    override fun tick() {
+        consideredPlayers.forEach { it.refresh() }
     }
 }
 

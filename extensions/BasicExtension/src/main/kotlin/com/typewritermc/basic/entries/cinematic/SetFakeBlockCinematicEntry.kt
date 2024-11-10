@@ -8,9 +8,7 @@ import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicEntry
-import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.utils.toBukkitLocation
 import com.typewritermc.engine.paper.utils.toPacketVector3i
@@ -35,8 +33,8 @@ class SetFakeBlockCinematicEntry(
 data class SetFakeBlockSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
-    val location: Position = Position.ORIGIN,
-    val block: Material = Material.AIR,
+    val location: Var<Position> = ConstVar(Position.ORIGIN),
+    val block: Var<Material> = ConstVar(Material.AIR),
 ) : Segment
 
 class SetFakeBlockCinematicAction(
@@ -44,19 +42,21 @@ class SetFakeBlockCinematicAction(
     entry: SetFakeBlockCinematicEntry,
 ) : SimpleCinematicAction<SetFakeBlockSegment>() {
     override val segments: List<SetFakeBlockSegment> = entry.segments
+    private var lastLocation: Position? = null
 
     override suspend fun startSegment(segment: SetFakeBlockSegment) {
         super.startSegment(segment)
 
-        val state = SpigotConversionUtil.fromBukkitBlockData(segment.block.createBlockData())
-        val packet = WrapperPlayServerBlockChange(segment.location.toPacketVector3i(), state.globalId)
+        lastLocation = segment.location.get(player)
+        val state = SpigotConversionUtil.fromBukkitBlockData(segment.block.get(player).createBlockData())
+        val packet = WrapperPlayServerBlockChange(lastLocation!!.toPacketVector3i(), state.globalId)
         packet.sendPacketTo(player)
     }
 
     override suspend fun stopSegment(segment: SetFakeBlockSegment) {
         super.stopSegment(segment)
 
-        val bukkitLocation = segment.location.toBukkitLocation()
+        val bukkitLocation = lastLocation?.toBukkitLocation() ?: return
         player.sendBlockChange(bukkitLocation, bukkitLocation.block.blockData)
     }
 }

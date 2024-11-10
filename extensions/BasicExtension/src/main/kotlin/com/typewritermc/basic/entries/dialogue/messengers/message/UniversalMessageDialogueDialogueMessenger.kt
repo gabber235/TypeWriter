@@ -36,7 +36,7 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
         super.tick(context)
         if (state != MessengerState.RUNNING) return
         state = MessengerState.FINISHED
-        player.sendMessageDialogue(entry.text, entry.speakerDisplayName)
+        player.sendMessageDialogue(entry.text.get(player), entry.speakerDisplayName.get(player))
     }
 }
 
