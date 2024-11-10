@@ -17,8 +17,8 @@ _$ExtensionImpl _$$ExtensionImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ExtensionImplToJson(_$ExtensionImpl instance) =>
     <String, dynamic>{
-      'extension': instance.extension,
-      'entries': instance.entries,
+      'extension': instance.extension.toJson(),
+      'entries': instance.entries.map((e) => e.toJson()).toList(),
     };
 
 _$ExtensionInfoImpl _$$ExtensionInfoImplFromJson(Map<String, dynamic> json) =>

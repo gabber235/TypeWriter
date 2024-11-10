@@ -6,7 +6,7 @@ part of 'heading.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$entryIdHash() => r'aae409d674bee6b65c432d6810f2f3ad299e8a26';
+String _$entryIdHash() => r'cb034bcfd96c294238c7daa47f670e170b120069';
 
 /// See also [_entryId].
 @ProviderFor(_entryId)
@@ -22,7 +22,7 @@ final _entryIdProvider = AutoDisposeProvider<String>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _EntryIdRef = AutoDisposeProviderRef<String>;
-String _$entryNameHash() => r'5b97f6d0bfdb17369f3c4fec5aafcba45e1244a0';
+String _$entryNameHash() => r'1c1c30e4aca4781396b565ea6dcb27c5c2f85eed';
 
 /// See also [_entryName].
 @ProviderFor(_entryName)
@@ -38,7 +38,7 @@ final _entryNameProvider = AutoDisposeProvider<String>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _EntryNameRef = AutoDisposeProviderRef<String>;
-String _$entryTypeHash() => r'b8db383dacb169526f823865fb2c90e478a4b4ee';
+String _$entryTypeHash() => r'5fe9ddb320ee741eaf36c4495f00129115274178';
 
 /// See also [_entryType].
 @ProviderFor(_entryType)
@@ -54,7 +54,7 @@ final _entryTypeProvider = AutoDisposeProvider<String>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _EntryTypeRef = AutoDisposeProviderRef<String>;
-String _$entryUrlHash() => r'694a800667fd4e4be38e5ae6535f605833cda12e';
+String _$entryUrlHash() => r'8ce4ee0f3a1fd70f7d7306f37c71a641f44736de';
 
 /// See also [_entryUrl].
 @ProviderFor(_entryUrl)
@@ -70,7 +70,7 @@ final _entryUrlProvider = AutoDisposeProvider<String>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _EntryUrlRef = AutoDisposeProviderRef<String>;
-String _$entryColorHash() => r'7bdd0ca948f969fd17f3b33c020f20585847b543';
+String _$entryColorHash() => r'cd9fce8fca82748da1c8b18df77f400ec9a8c63b';
 
 /// See also [_entryColor].
 @ProviderFor(_entryColor)

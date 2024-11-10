@@ -23,7 +23,7 @@ Map<String, dynamic> _$$PageImplToJson(_$PageImpl instance) =>
       'id': instance.id,
       'name': instance.pageName,
       'type': _$PageTypeEnumMap[instance.type]!,
-      'entries': instance.entries,
+      'entries': instance.entries.map((e) => e.toJson()).toList(),
       'chapter': instance.chapter,
       'priority': instance.priority,
     };
@@ -39,7 +39,7 @@ const _$PageTypeEnumMap = {
 // RiverpodGenerator
 // **************************************************************************
 
-String _$pagesHash() => r'ea54e231325c749b3affb60c0d7c761cce4f78c6';
+String _$pagesHash() => r'ee119218fa64832cac0391104a4c70960534ec13';
 
 /// See also [pages].
 @ProviderFor(pages)
