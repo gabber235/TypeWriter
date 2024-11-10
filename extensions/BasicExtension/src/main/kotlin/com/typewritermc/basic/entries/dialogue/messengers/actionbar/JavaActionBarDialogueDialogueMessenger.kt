@@ -44,9 +44,9 @@ class JavaActionBarDialogueDialogueMessenger(player: Player, entry: ActionBarDia
 
     override fun init() {
         super.init()
-        speakerDisplayName = entry.speakerDisplayName.parsePlaceholders(player)
-        text = entry.text.parsePlaceholders(player)
-        typingDuration = typingDurationType.totalDuration(text.stripped(), entry.duration)
+        speakerDisplayName = entry.speakerDisplayName.get(player).parsePlaceholders(player)
+        text = entry.text.get(player).parsePlaceholders(player)
+        typingDuration = typingDurationType.totalDuration(text.stripped(), entry.duration.get(player))
 
         confirmationKey.listen(this, player.uniqueId) {
             completeOrFinish()
@@ -60,7 +60,7 @@ class JavaActionBarDialogueDialogueMessenger(player: Player, entry: ActionBarDia
         playTime += context.deltaTime
 
         val rawText = text.stripped()
-        val percentage = typingDurationType.calculatePercentage(playTime, entry.duration, rawText)
+        val percentage = typingDurationType.calculatePercentage(playTime, entry.duration.get(player), rawText)
 
         // After the message is finished typing, we don't need to send it as often anymore.
         if (percentage > 1.1 && playTime.toTicks() % 40 > 0) {

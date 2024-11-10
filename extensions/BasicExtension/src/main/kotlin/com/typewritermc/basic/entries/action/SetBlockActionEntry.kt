@@ -8,8 +8,11 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.utils.toBukkitLocation
+import io.github.retrooper.packetevents.util.SpigotConversionUtil.toBukkitLocation
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
@@ -32,15 +35,15 @@ class SetBlockActionEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val material: Material = Material.AIR,
-    val location: Position = Position.ORIGIN,
+    val material: Var<Material> = ConstVar(Material.AIR),
+    val location: Var<Position> = ConstVar(Position.ORIGIN),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
         SYNC.launch {
-            val bukkitLocation = location.toBukkitLocation()
-            bukkitLocation.block.type = material
+            val bukkitLocation = location.get(player).toBukkitLocation()
+            bukkitLocation.block.type = material.get(player)
         }
     }
 }

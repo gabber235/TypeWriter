@@ -2,13 +2,12 @@ package com.typewritermc.basic.entries.cinematic
 
 import io.papermc.paper.util.Tick
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicAction
-import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
-import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.asMini
 import net.kyori.adventure.title.Title
@@ -41,9 +40,11 @@ class TitleCinematicEntry(
 data class TitleSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
-    val title: String = "",
-    val subtitle: String = "",
+    val title: Var<String> = ConstVar(""),
+    val subtitle: Var<String> = ConstVar(""),
+    @Default("20")
     val fadeIn: Long = 20,
+    @Default("20")
     val fadeOut: Long = 20,
 ) : Segment
 
@@ -67,8 +68,8 @@ class TitleCinematicAction(
         )
 
         val title: Title = Title.title(
-            segment.title.parsePlaceholders(player).asMini(),
-            segment.subtitle.parsePlaceholders(player).asMini(),
+            segment.title.get(player).parsePlaceholders(player).asMini(),
+            segment.subtitle.get(player).parsePlaceholders(player).asMini(),
             times
         )
 

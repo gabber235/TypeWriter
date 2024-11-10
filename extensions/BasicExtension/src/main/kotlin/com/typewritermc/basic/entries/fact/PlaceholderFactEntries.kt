@@ -7,8 +7,10 @@ import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.core.extension.annotations.Regex
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.GroupEntry
 import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.isPlaceholder
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.facts.FactData
@@ -44,9 +46,10 @@ class NumberPlaceholderFactEntry(
      *      use the <Link to='value_placeholder'>ValuePlaceholderFactEntry</Link> instead.
      * </Admonition>
      */
-    private val placeholder: String = "",
+    private val placeholder: Var<String> = ConstVar(""),
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
+        val placeholder = placeholder.get(player)
         if (!placeholder.isPlaceholder) {
             logger.warning("Placeholder '$placeholder' is not a valid placeholder! Make sure it is only a placeholder starting & ending with %")
             return FactData(0)
@@ -77,7 +80,7 @@ class ValuePlaceholderFactEntry(
     override val group: Ref<GroupEntry> = emptyRef(),
     @Placeholder
     @Help("Placeholder to parse (e.g. %player_gamemode%)")
-    private val placeholder: String = "",
+    private val placeholder: Var<String> = ConstVar(""),
     @Regex
     @Help("Values to match the placeholder with and their corresponding fact value. Regex is supported.")
     /**
@@ -99,6 +102,7 @@ class ValuePlaceholderFactEntry(
     private val values: Map<String, Int> = mapOf()
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
+        val placeholder = placeholder.get(player)
         if (!placeholder.isPlaceholder) {
             logger.warning("Placeholder '$placeholder' is not a valid placeholder! Make sure it is only a placeholder starting & ending with %")
             return FactData(0)

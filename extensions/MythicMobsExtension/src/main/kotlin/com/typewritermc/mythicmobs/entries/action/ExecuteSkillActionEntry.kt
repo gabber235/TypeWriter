@@ -7,6 +7,8 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.logger
 import io.lumine.mythic.api.mobs.GenericCaster
 import io.lumine.mythic.bukkit.BukkitAdapter
@@ -30,11 +32,12 @@ class ExecuteSkillActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    val skillName: String = "",
+    val skillName: Var<String> = ConstVar(""),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
+        val skillName = skillName.get(player)
         val skill = MythicBukkit.inst().skillManager.getSkill(skillName).orElseGet {
             throw IllegalArgumentException("Skill $skillName not found")
         }

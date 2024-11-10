@@ -18,21 +18,21 @@ import org.bukkit.entity.Player
 data class SingleLineDisplayDialogueSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
-    override val text: String = "",
+    override val text: Var<String> = ConstVar(""),
 ) : DisplayDialogueSegment
 
 data class MultiLineDisplayDialogueSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @MultiLine
-    override val text: String = "",
+    override val text: Var<String> = ConstVar(""),
 ) : DisplayDialogueSegment
 
 interface DisplayDialogueSegment : Segment {
     @Placeholder
     @Colored
     @Help("The text to display to the player.")
-    val text: String
+    val text: Var<String>
 }
 
 @Deprecated("Replaced with RandomVariable")
@@ -40,9 +40,9 @@ data class SingleLineRandomDisplayDialogueSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     override val texts: List<String> = emptyList(),
-): RandomDisplayDialogueSegment {
+) : RandomDisplayDialogueSegment {
     override fun toDisplaySegment(): DisplayDialogueSegment {
-        return SingleLineDisplayDialogueSegment(startFrame, endFrame, texts.random())
+        return SingleLineDisplayDialogueSegment(startFrame, endFrame, ConstVar(texts.random()))
     }
 }
 
@@ -52,9 +52,9 @@ data class MultiLineRandomDisplayDialogueSegment(
     override val endFrame: Int = 0,
     @MultiLine
     override val texts: List<String> = emptyList(),
-): RandomDisplayDialogueSegment {
+) : RandomDisplayDialogueSegment {
     override fun toDisplaySegment(): DisplayDialogueSegment {
-        return MultiLineDisplayDialogueSegment(startFrame, endFrame, texts.random())
+        return MultiLineDisplayDialogueSegment(startFrame, endFrame, ConstVar(texts.random()))
     }
 }
 
@@ -83,6 +83,7 @@ class DisplayDialogueCinematicAction(
 ) : CinematicAction {
     private var previousSegment: DisplayDialogueSegment? = null
     private var state: PlayerState? = null
+    private var displayText = ""
 
     override suspend fun setup() {
         super.setup()
@@ -101,6 +102,7 @@ class DisplayDialogueCinematicAction(
                 player.exp = 0f
                 player.level = 0
                 reset?.invoke(player)
+                displayText = ""
                 previousSegment = null
             }
             return
@@ -110,6 +112,7 @@ class DisplayDialogueCinematicAction(
             player.exp = 1f
             player.playSpeakerSound(speaker)
             previousSegment = segment
+            displayText = segment.text.get(player).parsePlaceholders(player)
         }
 
         val percentage = segment percentageAt frame
@@ -125,9 +128,7 @@ class DisplayDialogueCinematicAction(
             if (!needsDisplay) return
         }
 
-        val text = segment.text.parsePlaceholders(player)
-
-        display(player, speaker?.displayName?.parsePlaceholders(player) ?: "", text, displayPercentage)
+        display(player, speaker?.displayName?.get(player)?.parsePlaceholders(player) ?: "", displayText, displayPercentage)
     }
 
     override suspend fun teardown() {

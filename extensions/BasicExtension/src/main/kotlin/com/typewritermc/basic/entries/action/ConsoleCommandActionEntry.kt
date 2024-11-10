@@ -10,6 +10,8 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import lirand.api.extensions.server.server
@@ -33,10 +35,11 @@ class ConsoleCommandActionEntry(
     @Placeholder
     @MultiLine
     @Help("Every line is a different command. Commands should not be prefixed with <code>/</code>.")
-    private val command: String = "",
+    private val command: Var<String> = ConstVar(""),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
+        val command = command.get(player)
         // Run in the main thread
         if (command.isBlank()) return
         SYNC.launch {

@@ -4,8 +4,10 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.entity.SinglePropertyCollectorSupplier
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.engine.paper.entry.entries.GenericEntityData
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.packetevents.metas
 import com.typewritermc.engine.paper.utils.asMini
 import me.tofaa.entitylib.meta.EntityMeta
@@ -20,12 +22,12 @@ class CustomNameData(
     override val id: String = "",
     override val name: String = "",
     @Help("The custom name of the entity.")
-    val customName: String = "",
+    val customName: Var<String> = ConstVar(""),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : GenericEntityData<CustomNameProperty> {
     override fun type(): KClass<CustomNameProperty> = CustomNameProperty::class
 
-    override fun build(player: Player): CustomNameProperty = CustomNameProperty(customName)
+    override fun build(player: Player): CustomNameProperty = CustomNameProperty(customName.get(player))
 }
 
 data class CustomNameProperty(val customName: String) : EntityProperty {

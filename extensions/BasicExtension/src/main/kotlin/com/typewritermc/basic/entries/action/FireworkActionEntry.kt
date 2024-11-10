@@ -11,6 +11,8 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
 import com.typewritermc.engine.paper.utils.Color
@@ -44,10 +46,10 @@ class FireworkActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    val location: Position = Position.ORIGIN,
-    val effects: List<FireworkEffectConfig> = emptyList(),
+    val location: Var<Position> = ConstVar(Position.ORIGIN),
+    val effects: List<Var<FireworkEffectConfig>> = emptyList(),
     @Default("0")
-    val flightDuration: Duration = Duration.ZERO,
+    val flightDuration: Var<Duration> = ConstVar(Duration.ZERO),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
@@ -55,7 +57,7 @@ class FireworkActionEntry(
         val item = ItemStack(Material.FIREWORK_ROCKET)
             item.editMeta (FireworkMeta::class.java) { meta ->
             this@FireworkActionEntry.effects.forEach { effect ->
-                meta.addEffect(effect.toBukkitEffect())
+                meta.addEffect(effect.get(player).toBukkitEffect())
             }
         }
 
@@ -66,7 +68,8 @@ class FireworkActionEntry(
         }
         val entity = WrapperEntity(entityId, uuid, EntityTypes.FIREWORK_ROCKET, meta)
         entity.addViewer(player.uniqueId)
-        entity.spawn(location.toPacketLocation())
+        entity.spawn(location.get(player).toPacketLocation())
+        val flightDuration = flightDuration.get(player)
         if (flightDuration.isZero) {
             WrapperPlayServerEntityStatus(entityId, FIREWORK_EXPLOSION_STATUS) sendPacketTo player
             entity.despawn()

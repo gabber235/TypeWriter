@@ -43,10 +43,10 @@ class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialog
             player.uniqueId,
             org.geysermc.cumulus.form.CustomForm.builder()
                 .title("<bold>${entry.speakerDisplayName}</bold>".legacy())
-                .label("${entry.text.parsePlaceholders(player).legacy()}\n\n\n")
+                .label("${entry.text.get(player).parsePlaceholders(player).legacy()}\n\n\n")
                 .dropdown(
                     "Select Response",
-                    usableOptions.map { it.text.parsePlaceholders(player).legacy() })
+                    usableOptions.map { it.text.get(player).parsePlaceholders(player).legacy() })
                 .label("\n\n\n\n")
                 .closedOrInvalidResultHandler { _, _ ->
                     state = MessengerState.CANCELLED

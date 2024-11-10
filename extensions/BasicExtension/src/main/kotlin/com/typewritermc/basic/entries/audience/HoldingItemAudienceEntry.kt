@@ -5,11 +5,8 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.entries.AudienceEntry
-import com.typewritermc.engine.paper.entry.entries.AudienceFilter
-import com.typewritermc.engine.paper.entry.entries.AudienceFilterEntry
-import com.typewritermc.engine.paper.entry.entries.Invertible
 import com.typewritermc.core.entries.ref
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -35,7 +32,7 @@ class HoldingItemAudienceEntry(
     override val name: String = "",
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     @Help("The item to check for.")
-    val item: Item = Item.Empty,
+    val item: Var<Item> = ConstVar(Item.Empty),
     override val inverted: Boolean = false,
 ) : AudienceFilterEntry, Invertible {
     override fun display(): AudienceFilter = HoldingItemAudienceFilter(ref(), item)
@@ -43,18 +40,18 @@ class HoldingItemAudienceEntry(
 
 class HoldingItemAudienceFilter(
     ref: Ref<out AudienceFilterEntry>,
-    private val item: Item,
+    private val item: Var<Item>,
 ) : AudienceFilter(ref) {
     override fun filter(player: Player): Boolean {
         val holdingItem = player.inventory.itemInMainHand
-        return item.isSameAs(player, holdingItem)
+        return item.get(player).isSameAs(player, holdingItem)
     }
 
     @EventHandler
     fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
         val player = event.player
         val newHoldingItem = player.inventory.getItem(event.newSlot)
-        player.updateFilter(item.isSameAs(player, newHoldingItem))
+        player.updateFilter(item.get(player).isSameAs(player, newHoldingItem))
     }
 
     @EventHandler

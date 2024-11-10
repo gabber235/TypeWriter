@@ -8,9 +8,13 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.entry.entries.get
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import io.lumine.mythic.bukkit.MythicBukkit
+import io.lumine.mythic.core.skills.placeholders.PlaceholderExecutor.parsePlaceholders
 import org.bukkit.entity.Player
 
 
@@ -29,12 +33,12 @@ class DespawnMobActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @Placeholder
-    private val mobName: String = "",
+    private val mobName: Var<String> = ConstVar(""),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
-        val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName.parsePlaceholders(player))
+        val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName.get(player).parsePlaceholders(player))
         if (!mob.isPresent) return
 
         SYNC.launch {

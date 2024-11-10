@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.CustomTriggeringActionEntry
 import com.typewritermc.engine.paper.entry.entries.GroupEntry
 import com.typewritermc.engine.paper.entry.entries.GroupId
+import com.typewritermc.engine.paper.entry.entries.Var
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -42,7 +43,7 @@ class GroupTriggerActionEntry(
     override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
     val group: Ref<GroupEntry> = emptyRef(),
     @Help("The group to trigger the next entries for. If not set, the action will trigger for the group of the player that triggered the action.")
-    val forceGroup: Optional<String> = Optional.empty(),
+    val forceGroup: Optional<Var<String>> = Optional.empty(),
 ) : CustomTriggeringActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
@@ -50,7 +51,7 @@ class GroupTriggerActionEntry(
         val groupEntry = group.get() ?: return
 
         val group = forceGroup
-            .map { groupEntry.group(GroupId(it)) }
+            .map { groupEntry.group(GroupId(it.get(player))) }
             .orElseGet { groupEntry.group(player) } ?: return
 
         group.players.forEach {

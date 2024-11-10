@@ -7,7 +7,9 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EventEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityPickupItemEvent
@@ -24,7 +26,7 @@ class PickupItemEventEntry(
     override val id: String = "",
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val item: Item = Item.Empty,
+    val item: Var<Item> = ConstVar(Item.Empty),
 ) : EventEntry
 
 @EntryListener(PickupItemEventEntry::class)
@@ -34,6 +36,6 @@ fun onPickupItem(event: EntityPickupItemEvent, query: Query<PickupItemEventEntry
     val player = event.entity as Player
 
     query findWhere { entry ->
-        entry.item.isSameAs(player, event.item.itemStack)
+        entry.item.get(player).isSameAs(player, event.item.itemStack)
     } startDialogueWithOrNextDialogue player
 }

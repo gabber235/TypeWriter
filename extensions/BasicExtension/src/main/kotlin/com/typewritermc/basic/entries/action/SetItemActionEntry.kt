@@ -7,6 +7,8 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
@@ -25,14 +27,14 @@ class SetItemActionEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val item: Item = Item.Empty,
-    val slot: Int = 0,
+    val item: Var<Item> = ConstVar(Item.Empty),
+    val slot: Var<Int> = ConstVar(0),
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
 
         SYNC.launch {
-            player.inventory.setItem(slot, item.build(player))
+            player.inventory.setItem(slot.get(player), item.get(player).build(player))
         }
     }
 }

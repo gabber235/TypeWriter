@@ -33,7 +33,7 @@ import org.bukkit.entity.Player
 class TextDisplayDefinition(
     override val id: String = "",
     override val name: String = "",
-    override val displayName: String = "",
+    override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
     @OnlyTags("generic_entity_data", "display_data", "lines", "text_display_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),

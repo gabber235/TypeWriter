@@ -11,7 +11,9 @@ import com.typewritermc.core.extension.annotations.MaterialProperties
 import com.typewritermc.core.extension.annotations.MaterialProperty.BLOCK
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EventEntry
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.engine.paper.utils.toPosition
 import org.bukkit.Location
@@ -35,9 +37,9 @@ class InteractBlockEventEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @MaterialProperties(BLOCK)
     val block: Material = Material.AIR,
-    val location: Optional<Position> = Optional.empty(),
+    val location: Optional<Var<Position>> = Optional.empty(),
     @Help("The item the player must be holding when the block is interacted with.")
-    val itemInHand: Item = Item.Empty,
+    val itemInHand: Var<Item> = ConstVar(Item.Empty),
     @Help("""
         Cancel the event when triggered.
         It will only cancel the event if all the criteria are met.
@@ -83,28 +85,29 @@ fun Location.isSameBlock(location: Location): Boolean {
 
 @EntryListener(InteractBlockEventEntry::class)
 fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventEntry>) {
+    val player = event.player
     if (event.clickedBlock == null) return
     // The even triggers twice. Both for the main hand and offhand.
     // We only want to trigger once.
     if (event.hand != org.bukkit.inventory.EquipmentSlot.HAND) return // Disable off-hand interactions
     val entries = query.findWhere { entry ->
         // Check if the player is sneaking
-        if (!entry.shiftType.isApplicable(event.player)) return@findWhere false
+        if (!entry.shiftType.isApplicable(player)) return@findWhere false
 
         // Check if the player is interacting with the block in the correct way
         if (!entry.interactionType.actions.contains(event.action)) return@findWhere false
 
         // Check if the player clicked on the correct location
-        if (!entry.location.map { it.sameBlock(event.clickedBlock!!.location.toPosition()) }
+        if (!entry.location.map { it.get(player).sameBlock(event.clickedBlock!!.location.toPosition()) }
                 .orElse(true)) return@findWhere false
 
         // Check if the player is holding the correct item
-        if (!hasItemInHand(event.player, entry.itemInHand)) return@findWhere false
+        if (!hasItemInHand(player, entry.itemInHand.get(player))) return@findWhere false
 
         entry.block == event.clickedBlock!!.type
     }.toList()
     if (entries.isEmpty()) return
 
-    entries startDialogueWithOrNextDialogue event.player
+    entries startDialogueWithOrNextDialogue player
     if (entries.any { it.cancel }) event.isCancelled = true
 }

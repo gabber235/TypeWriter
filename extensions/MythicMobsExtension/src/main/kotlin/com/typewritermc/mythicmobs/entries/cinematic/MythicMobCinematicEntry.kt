@@ -8,18 +8,18 @@ import com.typewritermc.core.extension.annotations.WithRotation
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicAction
-import com.typewritermc.engine.paper.entry.entries.CinematicEntry
-import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.utils.toBukkitLocation
+import io.github.retrooper.packetevents.util.SpigotConversionUtil.toBukkitLocation
 import io.lumine.mythic.api.mobs.GenericCaster
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
 import io.lumine.mythic.core.mobs.ActiveMob
 import io.lumine.mythic.core.skills.SkillMetadataImpl
 import io.lumine.mythic.core.skills.SkillTriggers
+import io.lumine.mythic.core.skills.placeholders.PlaceholderExecutor.parsePlaceholders
 import lirand.api.extensions.server.server
 import org.bukkit.entity.Player
 
@@ -47,9 +47,9 @@ data class MythicMobSegment(
     override val startFrame: Int = 0,
     override val endFrame: Int = 0,
     @Placeholder
-    val mobName: String = "",
+    val mobName: Var<String> = ConstVar(""),
     @WithRotation
-    val location: Position = Position.ORIGIN,
+    val location: Var<Position> = ConstVar(Position.ORIGIN),
 ) : Segment
 
 class MobCinematicAction(
@@ -66,8 +66,8 @@ class MobCinematicAction(
         SYNC.switchContext {
             val mob =
                 MythicBukkit.inst().mobManager.spawnMob(
-                    segment.mobName.parsePlaceholders(player),
-                    segment.location.toBukkitLocation()
+                    segment.mobName.get(player).parsePlaceholders(player),
+                    segment.location.get(player).toBukkitLocation()
                 )
             this@MobCinematicAction.mob = mob
             val hideMechanic = MythicBukkit.inst().skillManager.getMechanic("hide")
