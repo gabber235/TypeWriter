@@ -257,6 +257,7 @@ class _EntryNode extends HookConsumerWidget {
     return WritersIndicator(
       provider: _writersProvider(id),
       child: LongPressDraggable(
+        delay: 200.ms,
         data: EntryDrag(entryId: id),
         feedback: FakeEntryNode(entryId: id),
         childWhenDragging: ColoredBox(
