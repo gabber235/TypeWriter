@@ -83,7 +83,7 @@ class Entry {
               : "Blueprint is not generic but a generic blueprint was provided",
         ),
         assert(
-          !blueprint.isGeneric || blueprint.allowsGeneric(genericBlueprint),
+          blueprint.allowsGeneric(genericBlueprint),
           "Generic blueprint given is not allowed for this blueprint, blueprint: ${blueprint.id}, allowed: ${blueprint.genericConstraints}, genericBlueprint: $genericBlueprint",
         ),
         data = {
@@ -120,6 +120,7 @@ class Entry {
   DataBlueprint? get genericBlueprint {
     if (_genericBlueprint != null) return _genericBlueprint;
     final genericBlueprint = data["_genericBlueprint"];
+    print("Generic blueprint: $genericBlueprint");
     if (genericBlueprint == null) return null;
 
     if (genericBlueprint is! Map<String, dynamic>) {

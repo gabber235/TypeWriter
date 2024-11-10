@@ -38,10 +38,11 @@ Map<String, dynamic> _$$EntryBlueprintImplToJson(
       'name': instance.name,
       'description': instance.description,
       'extension': instance.extension,
-      'dataBlueprint': instance.dataBlueprint,
+      'dataBlueprint': instance.dataBlueprint.toJson(),
       'tags': instance.tags,
-      'genericConstraints': instance.genericConstraints,
-      'variableDataBlueprint': instance.variableDataBlueprint,
+      'genericConstraints':
+          instance.genericConstraints?.map((e) => e.toJson()).toList(),
+      'variableDataBlueprint': instance.variableDataBlueprint?.toJson(),
       'color': const ColorConverter().toJson(instance.color),
       'icon': instance.icon,
     };
@@ -61,7 +62,7 @@ Map<String, dynamic> _$$DataBlueprintTypeImplToJson(
         _$DataBlueprintTypeImpl instance) =>
     <String, dynamic>{
       'default': instance.internalDefaultValue,
-      'modifiers': instance.modifiers,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
       'kind': instance.$type,
     };
 
@@ -82,7 +83,7 @@ Map<String, dynamic> _$$PrimitiveBlueprintImplToJson(
     <String, dynamic>{
       'type': _$PrimitiveTypeEnumMap[instance.type]!,
       'default': instance.internalDefaultValue,
-      'modifiers': instance.modifiers,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
       'kind': instance.$type,
     };
 
@@ -109,7 +110,7 @@ Map<String, dynamic> _$$EnumBlueprintImplToJson(_$EnumBlueprintImpl instance) =>
     <String, dynamic>{
       'values': instance.values,
       'default': instance.internalDefaultValue,
-      'modifiers': instance.modifiers,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
       'kind': instance.$type,
     };
 
@@ -126,9 +127,9 @@ _$ListBlueprintImpl _$$ListBlueprintImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ListBlueprintImplToJson(_$ListBlueprintImpl instance) =>
     <String, dynamic>{
-      'type': instance.type,
+      'type': instance.type.toJson(),
       'default': instance.internalDefaultValue,
-      'modifiers': instance.modifiers,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
       'kind': instance.$type,
     };
 
@@ -146,10 +147,10 @@ _$MapBlueprintImpl _$$MapBlueprintImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$MapBlueprintImplToJson(_$MapBlueprintImpl instance) =>
     <String, dynamic>{
-      'key': instance.key,
-      'value': instance.value,
+      'key': instance.key.toJson(),
+      'value': instance.value.toJson(),
       'default': instance.internalDefaultValue,
-      'modifiers': instance.modifiers,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
       'kind': instance.$type,
     };
 
@@ -171,9 +172,9 @@ _$ObjectBlueprintImpl _$$ObjectBlueprintImplFromJson(
 Map<String, dynamic> _$$ObjectBlueprintImplToJson(
         _$ObjectBlueprintImpl instance) =>
     <String, dynamic>{
-      'fields': instance.fields,
+      'fields': instance.fields.map((k, e) => MapEntry(k, e.toJson())),
       'default': instance.internalDefaultValue,
-      'modifiers': instance.modifiers,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
       'kind': instance.$type,
     };
 
@@ -195,9 +196,9 @@ _$AlgebraicBlueprintImpl _$$AlgebraicBlueprintImplFromJson(
 Map<String, dynamic> _$$AlgebraicBlueprintImplToJson(
         _$AlgebraicBlueprintImpl instance) =>
     <String, dynamic>{
-      'cases': instance.cases,
+      'cases': instance.cases.map((k, e) => MapEntry(k, e.toJson())),
       'default': instance.internalDefaultValue,
-      'modifiers': instance.modifiers,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
       'kind': instance.$type,
     };
 
@@ -218,9 +219,9 @@ Map<String, dynamic> _$$CustomBlueprintImplToJson(
         _$CustomBlueprintImpl instance) =>
     <String, dynamic>{
       'editor': instance.editor,
-      'shape': instance.shape,
+      'shape': instance.shape.toJson(),
       'default': instance.internalDefaultValue,
-      'modifiers': instance.modifiers,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
       'kind': instance.$type,
     };
 

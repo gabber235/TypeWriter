@@ -45,6 +45,8 @@ class GenericEditor extends HookConsumerWidget {
       blueprint = generic.dataBlueprint;
     }
 
+    print("Generic blueprint: $blueprint");
+
     return FieldEditor(path: path, dataBlueprint: blueprint);
   }
 

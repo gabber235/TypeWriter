@@ -118,8 +118,8 @@ class VariableEditor extends HookConsumerWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  if (variableDataBlueprint != null)
+                  if (variableDataBlueprint != null) ...[
+                    const SizedBox(height: 8),
                     Header(
                       expanded: ValueNotifier(true),
                       canExpand: false,
@@ -130,6 +130,7 @@ class VariableEditor extends HookConsumerWidget {
                         dataBlueprint: variableDataBlueprint,
                       ),
                     ),
+                  ],
                 ],
               ),
             ),
