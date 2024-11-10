@@ -69,7 +69,27 @@
   },
   "speaker_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/static/ExampleSpeakerEntry.kt",
-    "content": "@Entry(\"example_speaker\", \"An example speaker entry.\", Colors.BLUE, \"ic:round-spatial-audio-off\")\nclass ExampleSpeakerEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val displayName: String = \"\",\n    override val sound: Sound = Sound.EMPTY,\n) : SpeakerEntry"
+    "content": "@Entry(\"example_speaker\", \"An example speaker entry.\", Colors.BLUE, \"ic:round-spatial-audio-off\")\nclass ExampleSpeakerEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val displayName: Var<String> = ConstVar(\"\"),\n    override val sound: Sound = Sound.EMPTY,\n) : SpeakerEntry"
+  },
+  "variable_entry": {
+    "file": "src/main/kotlin/com/typewritermc/example/entries/static/ExampleVariableEntry.kt",
+    "content": "@Entry(\"example_variable\", \"An example variable entry.\", Colors.GREEN, \"mdi:code-tags\")\nclass ExampleVariableEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n) : VariableEntry {\n    override fun <T : Any> get(context: VarContext<T>): T {\n        val player = context.player\n        val klass = context.klass\n\n        TODO(\"Do something with the player and the klass\")\n    }\n}"
+  },
+  "variable_entry_with_data": {
+    "file": "src/main/kotlin/com/typewritermc/example/entries/static/ExampleVariableEntry.kt",
+    "content": "@Entry(\"example_variable_with_data\", \"An example variable entry with data.\", Colors.GREEN, \"mdi:code-tags\")\n// Register the variable data associated with this variable.\n@VariableData(ExampleVariableWithData::class)\nclass ExampleVariableWithDataEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    // This data will be the same for all uses of this variable.\n    val someString: String = \"\",\n) : VariableEntry {\n    override fun <T : Any> get(context: VarContext<T>): T {\n        val player = context.player\n        val klass = context.klass\n        this.someString\n        val data = context.getData<ExampleVariableWithData>() ?: throw IllegalStateException(\"Could not find data for ${context.klass}, data: ${context.data}\")\n\n        TODO(\"Do something with the player, the klass, and the data\")\n    }\n}\n\nclass ExampleVariableWithData(\n    // This data can change at the place where the variable is used.\n    val otherInfo: Int = 0,\n)"
+  },
+  "generic_variable_entry": {
+    "file": "src/main/kotlin/com/typewritermc/example/entries/static/ExampleVariableEntry.kt",
+    "content": "@Entry(\"example_generic_variable\", \"An example generic variable entry.\", Colors.GREEN, \"mdi:code-tags\")\nclass ExampleGenericVariableEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    // We determine how to parse this during runtime.\n    val generic: Generic = Generic.Empty,\n) : VariableEntry {\n    override fun <T : Any> get(context: VarContext<T>): T {\n        val player = context.player\n        val klass = context.klass\n\n        // Parse the generic data to the correct type.\n        val data = generic.get(klass)\n\n        TODO(\"Do something with the player, the klass, and the generic\")\n    }\n}\n\nclass ExampleGenericVariableData(\n    // Generic data will always be the same as the generic type in the variable.\n    val otherGeneric: Generic,\n)"
+  },
+  "constraint_variable_entry": {
+    "file": "src/main/kotlin/com/typewritermc/example/entries/static/ExampleVariableEntry.kt",
+    "content": "@Entry(\"example_constraint_variable\", \"An example constraint variable entry.\", Colors.GREEN, \"mdi:code-tags\")\n@GenericConstraint(String::class)\n@GenericConstraint(Int::class)\nclass ExampleConstraintVariableEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    // We determine how to parse this during runtime.\n    val generic: Generic = Generic.Empty,\n) : VariableEntry {\n    override fun <T : Any> get(context: VarContext<T>): T {\n        val player = context.player\n        // This can only be a String or an Int.\n        val klass = context.klass\n\n        // Parse the generic data to the correct type.\n        val data = generic.get(klass)\n\n        TODO(\"Do something with the player, the klass, and the generic\")\n    }\n}"
+  },
+  "variable_usage": {
+    "file": "src/main/kotlin/com/typewritermc/example/entries/static/ExampleVariableEntry.kt",
+    "content": "@Entry(\"example_action_using_variable\", \"An example action that uses a variable.\", Colors.RED, \"material-symbols:touch-app-rounded\")\nclass ExampleActionUsingVariableEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),\n    override val criteria: List<Criteria> = emptyList(),\n    override val modifiers: List<Modifier> = emptyList(),\n    val someString: Var<String> = ConstVar(\"\"),\n    val someInt: Var<Int> = ConstVar(0),\n) : ActionEntry {\n    override fun execute(player: Player) {\n        val someString = someString.get(player)\n        val someInt = someInt.get(player)\n\n        // Do something with the variables\n    }\n}"
   },
   "action_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleActionEntry.kt",
