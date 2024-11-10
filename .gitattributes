@@ -1,2 +1,3 @@
 # Auto detect text files and perform LF normalization
+/extensions/_DocsExtension/**/*.kt text eol=lf
 * text=auto
