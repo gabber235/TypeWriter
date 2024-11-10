@@ -243,6 +243,12 @@ class _EntryNode extends HookConsumerWidget {
     await page.linkWithDuplicate(ref, id, path);
   }
 
+  Future<void> _duplicateEntry(PassingRef ref) async {
+    final page = ref.read(entryPageProvider(id));
+    if (page == null) return;
+    await page.duplicateEntry(ref, id);
+  }
+
   void _deleteEntry(BuildContext context, PassingRef ref) {
     final page = ref.read(currentPageProvider);
     if (page == null) return;
@@ -284,6 +290,11 @@ class _EntryNode extends HookConsumerWidget {
                     linkableDuplicatePaths,
                   ),
                 ),
+              ContextMenuTile.button(
+                title: "Duplicate",
+                icon: TWIcons.duplicate,
+                onTap: () => _duplicateEntry(ref.passing),
+              ),
               ContextMenuTile.button(
                 title: "Move to ...",
                 icon: TWIcons.moveEntry,
