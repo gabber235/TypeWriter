@@ -15,7 +15,7 @@ import "package:typewriter/widgets/components/app/search_bar.dart";
 part "entries_graph.g.dart";
 
 @riverpod
-List<Entry> graphableEntries(GraphableEntriesRef ref) {
+List<Entry> graphableEntries(Ref ref) {
   final page = ref.watch(currentPageProvider);
   if (page == null) return [];
 
@@ -26,13 +26,13 @@ List<Entry> graphableEntries(GraphableEntriesRef ref) {
 }
 
 @riverpod
-List<String> graphableEntryIds(GraphableEntryIdsRef ref) {
+List<String> graphableEntryIds(Ref ref) {
   final entries = ref.watch(graphableEntriesProvider);
   return entries.map((entry) => entry.id).toList();
 }
 
 @riverpod
-bool isTriggerEntry(IsTriggerEntryRef ref, String entryId) {
+bool isTriggerEntry(Ref ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return false;
 
@@ -41,7 +41,7 @@ bool isTriggerEntry(IsTriggerEntryRef ref, String entryId) {
 }
 
 @riverpod
-bool isTriggerableEntry(IsTriggerableEntryRef ref, String entryId) {
+bool isTriggerableEntry(Ref ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return false;
 
@@ -50,7 +50,7 @@ bool isTriggerableEntry(IsTriggerableEntryRef ref, String entryId) {
 }
 
 @riverpod
-Set<String>? entryTriggers(EntryTriggersRef ref, String entryId) {
+Set<String>? entryTriggers(Ref ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return null;
 
@@ -68,7 +68,7 @@ Set<String>? entryTriggers(EntryTriggersRef ref, String entryId) {
 }
 
 @riverpod
-Graph graph(GraphRef ref) {
+Graph graph(Ref ref) {
   final entries = ref.watch(graphableEntriesProvider);
   final graph = Graph();
 

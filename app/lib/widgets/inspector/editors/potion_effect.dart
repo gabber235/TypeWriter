@@ -22,7 +22,7 @@ String _potionEffectIconUrl(String potionEffect) {
 }
 
 @riverpod
-Fuzzy<String> _fuzzyPotionEffects(_FuzzyPotionEffectsRef ref) {
+Fuzzy<String> _fuzzyPotionEffects(Ref ref) {
   final provider = ref.watch(potionEffectsProvider);
   final effects = provider.map(
     data: (data) => data.value,

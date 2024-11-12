@@ -44,7 +44,7 @@ final inspectingEntryIdProvider =
 );
 
 @riverpod
-Entry? inspectingEntry(InspectingEntryRef ref) {
+Entry? inspectingEntry(Ref ref) {
   final selectedEntryId = ref.watch(inspectingEntryIdProvider);
   if (selectedEntryId == null) return null;
   return ref.watch(globalEntryProvider(selectedEntryId));
@@ -93,7 +93,7 @@ class EmptyInspector extends HookConsumerWidget {
 }
 
 @riverpod
-EntryDefinition? inspectingEntryDefinition(InspectingEntryDefinitionRef ref) {
+EntryDefinition? inspectingEntryDefinition(Ref ref) {
   final entryId = ref.watch(inspectingEntryIdProvider);
 
   if (entryId.isNullOrEmpty) {

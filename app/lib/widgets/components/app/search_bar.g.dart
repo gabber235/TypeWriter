@@ -6,11 +6,11 @@ part of 'search_bar.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$searchBarFocusHash() => r'6c71ae13ae8438aae434c6aba9dc6e1bc575a252';
+String _$searchBarFocusHash() => r'53f335a0b446f290510ba4846f6770a24e7bfdf8';
 
 /// See also [searchBarFocus].
 @ProviderFor(searchBarFocus)
-final searchBarFocusProvider = AutoDisposeProvider<FocusNode>.internal(
+final searchBarFocusProvider = AutoDisposeProvider<Raw<FocusNode>>.internal(
   searchBarFocus,
   name: r'searchBarFocusProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,8 +22,8 @@ final searchBarFocusProvider = AutoDisposeProvider<FocusNode>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SearchBarFocusRef = AutoDisposeProviderRef<FocusNode>;
-String _$searchElementsHash() => r'27e44baceaa5af3207c348ebea9bcc1ac2a63672';
+typedef SearchBarFocusRef = AutoDisposeProviderRef<Raw<FocusNode>>;
+String _$searchElementsHash() => r'ec61a24143ff846911649d995c31476e9fdded7e';
 
 /// See also [searchElements].
 @ProviderFor(searchElements)
@@ -41,7 +41,7 @@ final searchElementsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SearchElementsRef = AutoDisposeProviderRef<List<SearchElement>>;
-String _$searchFetchersHash() => r'2d5cadf196e4124536a572332a4fee5e52f107e1';
+String _$searchFetchersHash() => r'59f2abe2be8f801461e8e097a61651fdd1885913';
 
 /// See also [searchFetchers].
 @ProviderFor(searchFetchers)
@@ -59,7 +59,7 @@ final searchFetchersProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SearchFetchersRef = AutoDisposeProviderRef<List<SearchFetcher>>;
-String _$searchFiltersHash() => r'7f0eaee452766397d6cbd49a4a6389c2df9ee84e';
+String _$searchFiltersHash() => r'a46fcda7bd526da1154e9efdd5e24a69a69ae924';
 
 /// See also [searchFilters].
 @ProviderFor(searchFilters)
@@ -76,7 +76,7 @@ final searchFiltersProvider = AutoDisposeProvider<List<SearchFilter>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SearchFiltersRef = AutoDisposeProviderRef<List<SearchFilter>>;
-String _$searchFocusNodesHash() => r'e8f229dddc824b6f24244adcd4193ae40daed175';
+String _$searchFocusNodesHash() => r'7ff4c000a2349a964ff56d6390e3520c912c217c';
 
 /// See also [searchFocusNodes].
 @ProviderFor(searchFocusNodes)
@@ -93,7 +93,7 @@ final searchFocusNodesProvider = AutoDisposeProvider<List<FocusNode>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SearchFocusNodesRef = AutoDisposeProviderRef<List<FocusNode>>;
-String _$searchGlobalKeysHash() => r'bdabd3beff37b339bab7032a03c48a3714ac500f';
+String _$searchGlobalKeysHash() => r'b7d07803139dfa9fd0249a16527402e80c99d0b7';
 
 /// See also [searchGlobalKeys].
 @ProviderFor(searchGlobalKeys)
@@ -110,7 +110,7 @@ final searchGlobalKeysProvider = AutoDisposeProvider<List<GlobalKey>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SearchGlobalKeysRef = AutoDisposeProviderRef<List<GlobalKey>>;
-String _$focusedElementHash() => r'30e569a4d12a0f28f496a0e235319f5e5e44e433';
+String _$focusedElementHash() => r'680f35cbfe9c48b0ac86cdf5dad00e897a42cd11';
 
 /// See also [_focusedElement].
 @ProviderFor(_focusedElement)
@@ -127,7 +127,7 @@ final _focusedElementProvider = AutoDisposeProvider<SearchElement?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _FocusedElementRef = AutoDisposeProviderRef<SearchElement?>;
-String _$searchActionsHash() => r'b5542c6b01dc4d9186c38a2ef1453cbb8bc2eede';
+String _$searchActionsHash() => r'2ff49d3c872ae2d9db7ef13696761fa7fa4b2a88';
 
 /// See also [_searchActions].
 @ProviderFor(_searchActions)
@@ -145,7 +145,7 @@ final _searchActionsProvider = AutoDisposeProvider<List<SearchAction>>.internal(
 // ignore: unused_element
 typedef _SearchActionsRef = AutoDisposeProviderRef<List<SearchAction>>;
 String _$searchActionShortcutsHash() =>
-    r'e3fbc98277d831182b5690cae7d29278bb67ccdc';
+    r'c40d8abbd6ba50fbe0fcace8ab587dca55e10c54';
 
 /// See also [_searchActionShortcuts].
 @ProviderFor(_searchActionShortcuts)

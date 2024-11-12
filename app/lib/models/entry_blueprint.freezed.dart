@@ -25,14 +25,15 @@ mixin _$EntryBlueprint {
   String get description => throw _privateConstructorUsedError;
   String get extension => throw _privateConstructorUsedError;
   ObjectBlueprint get dataBlueprint => throw _privateConstructorUsedError;
+  @ColorConverter()
+  Color get color => throw _privateConstructorUsedError;
+  String get icon => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
   List<DataBlueprint>? get genericConstraints =>
       throw _privateConstructorUsedError;
   DataBlueprint? get variableDataBlueprint =>
       throw _privateConstructorUsedError;
-  @ColorConverter()
-  Color get color => throw _privateConstructorUsedError;
-  String get icon => throw _privateConstructorUsedError;
+  List<EntryModifier> get modifiers => throw _privateConstructorUsedError;
 
   /// Serializes this EntryBlueprint to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -56,11 +57,12 @@ abstract class $EntryBlueprintCopyWith<$Res> {
       String description,
       String extension,
       ObjectBlueprint dataBlueprint,
+      @ColorConverter() Color color,
+      String icon,
       List<String> tags,
       List<DataBlueprint>? genericConstraints,
       DataBlueprint? variableDataBlueprint,
-      @ColorConverter() Color color,
-      String icon});
+      List<EntryModifier> modifiers});
 
   $DataBlueprintCopyWith<$Res>? get variableDataBlueprint;
 }
@@ -85,11 +87,12 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
     Object? description = null,
     Object? extension = null,
     Object? dataBlueprint = freezed,
+    Object? color = null,
+    Object? icon = null,
     Object? tags = null,
     Object? genericConstraints = freezed,
     Object? variableDataBlueprint = freezed,
-    Object? color = null,
-    Object? icon = null,
+    Object? modifiers = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -112,6 +115,14 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
           ? _value.dataBlueprint
           : dataBlueprint // ignore: cast_nullable_to_non_nullable
               as ObjectBlueprint,
+      color: null == color
+          ? _value.color
+          : color // ignore: cast_nullable_to_non_nullable
+              as Color,
+      icon: null == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
+              as String,
       tags: null == tags
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -124,14 +135,10 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
           ? _value.variableDataBlueprint
           : variableDataBlueprint // ignore: cast_nullable_to_non_nullable
               as DataBlueprint?,
-      color: null == color
-          ? _value.color
-          : color // ignore: cast_nullable_to_non_nullable
-              as Color,
-      icon: null == icon
-          ? _value.icon
-          : icon // ignore: cast_nullable_to_non_nullable
-              as String,
+      modifiers: null == modifiers
+          ? _value.modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<EntryModifier>,
     ) as $Val);
   }
 
@@ -164,11 +171,12 @@ abstract class _$$EntryBlueprintImplCopyWith<$Res>
       String description,
       String extension,
       ObjectBlueprint dataBlueprint,
+      @ColorConverter() Color color,
+      String icon,
       List<String> tags,
       List<DataBlueprint>? genericConstraints,
       DataBlueprint? variableDataBlueprint,
-      @ColorConverter() Color color,
-      String icon});
+      List<EntryModifier> modifiers});
 
   @override
   $DataBlueprintCopyWith<$Res>? get variableDataBlueprint;
@@ -192,11 +200,12 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
     Object? description = null,
     Object? extension = null,
     Object? dataBlueprint = freezed,
+    Object? color = null,
+    Object? icon = null,
     Object? tags = null,
     Object? genericConstraints = freezed,
     Object? variableDataBlueprint = freezed,
-    Object? color = null,
-    Object? icon = null,
+    Object? modifiers = null,
   }) {
     return _then(_$EntryBlueprintImpl(
       id: null == id
@@ -219,6 +228,14 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
           ? _value.dataBlueprint
           : dataBlueprint // ignore: cast_nullable_to_non_nullable
               as ObjectBlueprint,
+      color: null == color
+          ? _value.color
+          : color // ignore: cast_nullable_to_non_nullable
+              as Color,
+      icon: null == icon
+          ? _value.icon
+          : icon // ignore: cast_nullable_to_non_nullable
+              as String,
       tags: null == tags
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -231,14 +248,10 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
           ? _value.variableDataBlueprint
           : variableDataBlueprint // ignore: cast_nullable_to_non_nullable
               as DataBlueprint?,
-      color: null == color
-          ? _value.color
-          : color // ignore: cast_nullable_to_non_nullable
-              as Color,
-      icon: null == icon
-          ? _value.icon
-          : icon // ignore: cast_nullable_to_non_nullable
-              as String,
+      modifiers: null == modifiers
+          ? _value._modifiers
+          : modifiers // ignore: cast_nullable_to_non_nullable
+              as List<EntryModifier>,
     ));
   }
 }
@@ -254,13 +267,15 @@ class _$EntryBlueprintImpl
       required this.description,
       required this.extension,
       required this.dataBlueprint,
+      @ColorConverter() this.color = Colors.grey,
+      this.icon = TWIcons.help,
       final List<String> tags = const <String>[],
       final List<DataBlueprint>? genericConstraints = null,
       this.variableDataBlueprint = null,
-      @ColorConverter() this.color = Colors.grey,
-      this.icon = TWIcons.help})
+      final List<EntryModifier> modifiers = const []})
       : _tags = tags,
-        _genericConstraints = genericConstraints;
+        _genericConstraints = genericConstraints,
+        _modifiers = modifiers;
 
   factory _$EntryBlueprintImpl.fromJson(Map<String, dynamic> json) =>
       _$$EntryBlueprintImplFromJson(json);
@@ -275,6 +290,13 @@ class _$EntryBlueprintImpl
   final String extension;
   @override
   final ObjectBlueprint dataBlueprint;
+  @override
+  @JsonKey()
+  @ColorConverter()
+  final Color color;
+  @override
+  @JsonKey()
+  final String icon;
   final List<String> _tags;
   @override
   @JsonKey()
@@ -299,17 +321,18 @@ class _$EntryBlueprintImpl
   @override
   @JsonKey()
   final DataBlueprint? variableDataBlueprint;
+  final List<EntryModifier> _modifiers;
   @override
   @JsonKey()
-  @ColorConverter()
-  final Color color;
-  @override
-  @JsonKey()
-  final String icon;
+  List<EntryModifier> get modifiers {
+    if (_modifiers is EqualUnmodifiableListView) return _modifiers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_modifiers);
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'EntryBlueprint(id: $id, name: $name, description: $description, extension: $extension, dataBlueprint: $dataBlueprint, tags: $tags, genericConstraints: $genericConstraints, variableDataBlueprint: $variableDataBlueprint, color: $color, icon: $icon)';
+    return 'EntryBlueprint(id: $id, name: $name, description: $description, extension: $extension, dataBlueprint: $dataBlueprint, color: $color, icon: $icon, tags: $tags, genericConstraints: $genericConstraints, variableDataBlueprint: $variableDataBlueprint, modifiers: $modifiers)';
   }
 
   @override
@@ -322,11 +345,12 @@ class _$EntryBlueprintImpl
       ..add(DiagnosticsProperty('description', description))
       ..add(DiagnosticsProperty('extension', extension))
       ..add(DiagnosticsProperty('dataBlueprint', dataBlueprint))
+      ..add(DiagnosticsProperty('color', color))
+      ..add(DiagnosticsProperty('icon', icon))
       ..add(DiagnosticsProperty('tags', tags))
       ..add(DiagnosticsProperty('genericConstraints', genericConstraints))
       ..add(DiagnosticsProperty('variableDataBlueprint', variableDataBlueprint))
-      ..add(DiagnosticsProperty('color', color))
-      ..add(DiagnosticsProperty('icon', icon));
+      ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
   @override
@@ -342,13 +366,15 @@ class _$EntryBlueprintImpl
                 other.extension == extension) &&
             const DeepCollectionEquality()
                 .equals(other.dataBlueprint, dataBlueprint) &&
+            (identical(other.color, color) || other.color == color) &&
+            (identical(other.icon, icon) || other.icon == icon) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             const DeepCollectionEquality()
                 .equals(other._genericConstraints, _genericConstraints) &&
             (identical(other.variableDataBlueprint, variableDataBlueprint) ||
                 other.variableDataBlueprint == variableDataBlueprint) &&
-            (identical(other.color, color) || other.color == color) &&
-            (identical(other.icon, icon) || other.icon == icon));
+            const DeepCollectionEquality()
+                .equals(other._modifiers, _modifiers));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -360,11 +386,12 @@ class _$EntryBlueprintImpl
       description,
       extension,
       const DeepCollectionEquality().hash(dataBlueprint),
+      color,
+      icon,
       const DeepCollectionEquality().hash(_tags),
       const DeepCollectionEquality().hash(_genericConstraints),
       variableDataBlueprint,
-      color,
-      icon);
+      const DeepCollectionEquality().hash(_modifiers));
 
   /// Create a copy of EntryBlueprint
   /// with the given fields replaced by the non-null parameter values.
@@ -390,11 +417,12 @@ abstract class _EntryBlueprint implements EntryBlueprint {
       required final String description,
       required final String extension,
       required final ObjectBlueprint dataBlueprint,
+      @ColorConverter() final Color color,
+      final String icon,
       final List<String> tags,
       final List<DataBlueprint>? genericConstraints,
       final DataBlueprint? variableDataBlueprint,
-      @ColorConverter() final Color color,
-      final String icon}) = _$EntryBlueprintImpl;
+      final List<EntryModifier> modifiers}) = _$EntryBlueprintImpl;
 
   factory _EntryBlueprint.fromJson(Map<String, dynamic> json) =
       _$EntryBlueprintImpl.fromJson;
@@ -410,16 +438,18 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   @override
   ObjectBlueprint get dataBlueprint;
   @override
+  @ColorConverter()
+  Color get color;
+  @override
+  String get icon;
+  @override
   List<String> get tags;
   @override
   List<DataBlueprint>? get genericConstraints;
   @override
   DataBlueprint? get variableDataBlueprint;
   @override
-  @ColorConverter()
-  Color get color;
-  @override
-  String get icon;
+  List<EntryModifier> get modifiers;
 
   /// Create a copy of EntryBlueprint
   /// with the given fields replaced by the non-null parameter values.
@@ -3739,5 +3769,385 @@ abstract class _Modifier implements Modifier {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ModifierImplCopyWith<_$ModifierImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+EntryModifier _$EntryModifierFromJson(Map<String, dynamic> json) {
+  switch (json['kind']) {
+    case 'default':
+      return _EmptyModifier.fromJson(json);
+    case 'deprecated':
+      return DeprecatedModifier.fromJson(json);
+
+    default:
+      throw CheckedFromJsonException(json, 'kind', 'EntryModifier',
+          'Invalid union type "${json['kind']}"!');
+  }
+}
+
+/// @nodoc
+mixin _$EntryModifier {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function() $default, {
+    required TResult Function(String reason) deprecated,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function()? $default, {
+    TResult? Function(String reason)? deprecated,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function()? $default, {
+    TResult Function(String reason)? deprecated,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_EmptyModifier value) $default, {
+    required TResult Function(DeprecatedModifier value) deprecated,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_EmptyModifier value)? $default, {
+    TResult? Function(DeprecatedModifier value)? deprecated,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_EmptyModifier value)? $default, {
+    TResult Function(DeprecatedModifier value)? deprecated,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+
+  /// Serializes this EntryModifier to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $EntryModifierCopyWith<$Res> {
+  factory $EntryModifierCopyWith(
+          EntryModifier value, $Res Function(EntryModifier) then) =
+      _$EntryModifierCopyWithImpl<$Res, EntryModifier>;
+}
+
+/// @nodoc
+class _$EntryModifierCopyWithImpl<$Res, $Val extends EntryModifier>
+    implements $EntryModifierCopyWith<$Res> {
+  _$EntryModifierCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of EntryModifier
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+abstract class _$$EmptyModifierImplCopyWith<$Res> {
+  factory _$$EmptyModifierImplCopyWith(
+          _$EmptyModifierImpl value, $Res Function(_$EmptyModifierImpl) then) =
+      __$$EmptyModifierImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$EmptyModifierImplCopyWithImpl<$Res>
+    extends _$EntryModifierCopyWithImpl<$Res, _$EmptyModifierImpl>
+    implements _$$EmptyModifierImplCopyWith<$Res> {
+  __$$EmptyModifierImplCopyWithImpl(
+      _$EmptyModifierImpl _value, $Res Function(_$EmptyModifierImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of EntryModifier
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$EmptyModifierImpl
+    with DiagnosticableTreeMixin
+    implements _EmptyModifier {
+  const _$EmptyModifierImpl({final String? $type}) : $type = $type ?? 'default';
+
+  factory _$EmptyModifierImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EmptyModifierImplFromJson(json);
+
+  @JsonKey(name: 'kind')
+  final String $type;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'EntryModifier()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('type', 'EntryModifier'));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$EmptyModifierImpl);
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function() $default, {
+    required TResult Function(String reason) deprecated,
+  }) {
+    return $default();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function()? $default, {
+    TResult? Function(String reason)? deprecated,
+  }) {
+    return $default?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function()? $default, {
+    TResult Function(String reason)? deprecated,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_EmptyModifier value) $default, {
+    required TResult Function(DeprecatedModifier value) deprecated,
+  }) {
+    return $default(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_EmptyModifier value)? $default, {
+    TResult? Function(DeprecatedModifier value)? deprecated,
+  }) {
+    return $default?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_EmptyModifier value)? $default, {
+    TResult Function(DeprecatedModifier value)? deprecated,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$EmptyModifierImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _EmptyModifier implements EntryModifier {
+  const factory _EmptyModifier() = _$EmptyModifierImpl;
+
+  factory _EmptyModifier.fromJson(Map<String, dynamic> json) =
+      _$EmptyModifierImpl.fromJson;
+}
+
+/// @nodoc
+abstract class _$$DeprecatedModifierImplCopyWith<$Res> {
+  factory _$$DeprecatedModifierImplCopyWith(_$DeprecatedModifierImpl value,
+          $Res Function(_$DeprecatedModifierImpl) then) =
+      __$$DeprecatedModifierImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String reason});
+}
+
+/// @nodoc
+class __$$DeprecatedModifierImplCopyWithImpl<$Res>
+    extends _$EntryModifierCopyWithImpl<$Res, _$DeprecatedModifierImpl>
+    implements _$$DeprecatedModifierImplCopyWith<$Res> {
+  __$$DeprecatedModifierImplCopyWithImpl(_$DeprecatedModifierImpl _value,
+      $Res Function(_$DeprecatedModifierImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of EntryModifier
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? reason = null,
+  }) {
+    return _then(_$DeprecatedModifierImpl(
+      reason: null == reason
+          ? _value.reason
+          : reason // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DeprecatedModifierImpl
+    with DiagnosticableTreeMixin
+    implements DeprecatedModifier {
+  const _$DeprecatedModifierImpl({this.reason = "", final String? $type})
+      : $type = $type ?? 'deprecated';
+
+  factory _$DeprecatedModifierImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DeprecatedModifierImplFromJson(json);
+
+  @override
+  @JsonKey()
+  final String reason;
+
+  @JsonKey(name: 'kind')
+  final String $type;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'EntryModifier.deprecated(reason: $reason)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'EntryModifier.deprecated'))
+      ..add(DiagnosticsProperty('reason', reason));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DeprecatedModifierImpl &&
+            (identical(other.reason, reason) || other.reason == reason));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, reason);
+
+  /// Create a copy of EntryModifier
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DeprecatedModifierImplCopyWith<_$DeprecatedModifierImpl> get copyWith =>
+      __$$DeprecatedModifierImplCopyWithImpl<_$DeprecatedModifierImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function() $default, {
+    required TResult Function(String reason) deprecated,
+  }) {
+    return deprecated(reason);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function()? $default, {
+    TResult? Function(String reason)? deprecated,
+  }) {
+    return deprecated?.call(reason);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function()? $default, {
+    TResult Function(String reason)? deprecated,
+    required TResult orElse(),
+  }) {
+    if (deprecated != null) {
+      return deprecated(reason);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_EmptyModifier value) $default, {
+    required TResult Function(DeprecatedModifier value) deprecated,
+  }) {
+    return deprecated(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_EmptyModifier value)? $default, {
+    TResult? Function(DeprecatedModifier value)? deprecated,
+  }) {
+    return deprecated?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_EmptyModifier value)? $default, {
+    TResult Function(DeprecatedModifier value)? deprecated,
+    required TResult orElse(),
+  }) {
+    if (deprecated != null) {
+      return deprecated(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DeprecatedModifierImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class DeprecatedModifier implements EntryModifier {
+  const factory DeprecatedModifier({final String reason}) =
+      _$DeprecatedModifierImpl;
+
+  factory DeprecatedModifier.fromJson(Map<String, dynamic> json) =
+      _$DeprecatedModifierImpl.fromJson;
+
+  String get reason;
+
+  /// Create a copy of EntryModifier
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DeprecatedModifierImplCopyWith<_$DeprecatedModifierImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

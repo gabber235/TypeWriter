@@ -7,7 +7,7 @@ part of 'sound_id.dart';
 // **************************************************************************
 
 String _$fuzzyMinecraftSoundsHash() =>
-    r'0399119149fbb7dede77651afb4ce9f0dd6220c6';
+    r'5819dd8cd552203ef558bc138611509bd4f68388';
 
 /// See also [_fuzzyMinecraftSounds].
 @ProviderFor(_fuzzyMinecraftSounds)

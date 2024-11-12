@@ -92,11 +92,12 @@ class EntryBlueprint with _$EntryBlueprint {
     required String description,
     required String extension,
     required ObjectBlueprint dataBlueprint,
+    @ColorConverter() @Default(Colors.grey) Color color,
+    @Default(TWIcons.help) String icon,
     @Default(<String>[]) List<String> tags,
     @Default(null) List<DataBlueprint>? genericConstraints,
     @Default(null) DataBlueprint? variableDataBlueprint,
-    @ColorConverter() @Default(Colors.grey) Color color,
-    @Default(TWIcons.help) String icon,
+    @Default([]) List<EntryModifier> modifiers,
   }) = _EntryBlueprint;
 
   factory EntryBlueprint.fromJson(Map<String, dynamic> json) =>
@@ -178,6 +179,18 @@ class Modifier with _$Modifier {
 
   factory Modifier.fromJson(Map<String, dynamic> json) =>
       _$ModifierFromJson(json);
+}
+
+@Freezed(unionKey: "kind")
+class EntryModifier with _$EntryModifier {
+  const factory EntryModifier() = _EmptyModifier;
+
+  const factory EntryModifier.deprecated({
+    @Default("") String reason,
+  }) = DeprecatedModifier;
+
+  factory EntryModifier.fromJson(Map<String, dynamic> json) =>
+      _$EntryModifierFromJson(json);
 }
 
 const wikiBaseUrl = kDebugMode

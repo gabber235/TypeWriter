@@ -11,6 +11,7 @@ import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 import java.io.File
 import java.util.logging.Logger
+import kotlin.reflect.full.findAnnotations
 
 class Library : KoinComponent, Reloadable {
     internal var pages: List<Page> = emptyList()
@@ -78,11 +79,23 @@ class Library : KoinComponent, Reloadable {
         val clazz = extensionLoader.entryClass(blueprintId)
             .logErrorIfNull("Could not find entry class for '$id' on page '${pageName}' with type '$blueprintId' in any extension.") ?: return null
         try {
-            return gson.fromJson<Entry>(obj, clazz)
+            val entry = gson.fromJson<Entry>(obj, clazz)
+            entryValidation(entry, pageName, blueprintId)
+            return entry
         } catch (e: Exception) {
             logger.warning("Failed to parse entry '$id' with blueprintId '$blueprintId' on page '${pageName}': ${e.message}")
             return null
         }
+    }
+
+    private fun entryValidation(entry: Entry, pageName: String, blueprintId: String) {
+        deprecatedEntryValidation(entry, pageName, blueprintId)
+    }
+
+    private fun deprecatedEntryValidation(entry: Entry, pageName: String, blueprintId: String) {
+        // If the entry has the @Deprecated annotation, we want to warn the user about it.
+        val deprecated = entry::class.findAnnotations<Deprecated>().firstOrNull() ?: return
+        logger.warning("Entry '${entry.id}' on page '${pageName}' with blueprintId '$blueprintId' is deprecated and will be removed in the future. Reason: ${deprecated.message}")
     }
 
     private fun <T : Any> T?.logErrorIfNull(message: String): T? {

@@ -6,7 +6,7 @@ part of 'entries_graph.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$graphableEntriesHash() => r'973172ce3b5839b1749880a2b05113cdbb69dc75';
+String _$graphableEntriesHash() => r'c6bd6ba93e2c2e3c07874b6762a1657826dd45b5';
 
 /// See also [graphableEntries].
 @ProviderFor(graphableEntries)
@@ -23,7 +23,7 @@ final graphableEntriesProvider = AutoDisposeProvider<List<Entry>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GraphableEntriesRef = AutoDisposeProviderRef<List<Entry>>;
-String _$graphableEntryIdsHash() => r'30455b17b0966f3f06dc65644daa50f2b50b510a';
+String _$graphableEntryIdsHash() => r'80228ea635d8a323eb54cfc0e07ea895fc2fbb5c';
 
 /// See also [graphableEntryIds].
 @ProviderFor(graphableEntryIds)
@@ -40,7 +40,7 @@ final graphableEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GraphableEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$isTriggerEntryHash() => r'adf2eb9cfca1541c9f2fa769d4e5d80da3216cbe';
+String _$isTriggerEntryHash() => r'593a29e659e942fc5a781652ba28e472d7f4d38a';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -192,7 +192,7 @@ class _IsTriggerEntryProviderElement extends AutoDisposeProviderElement<bool>
 }
 
 String _$isTriggerableEntryHash() =>
-    r'6b76b8651cf5d6a4765bbbf6c667960a3b251c83';
+    r'0f48f6ff2df4d56a552745a4b59c3dd471de033c';
 
 /// See also [isTriggerableEntry].
 @ProviderFor(isTriggerableEntry)
@@ -322,7 +322,7 @@ class _IsTriggerableEntryProviderElement
   String get entryId => (origin as IsTriggerableEntryProvider).entryId;
 }
 
-String _$entryTriggersHash() => r'4ec3a031e89297970f17d2449e2ebb01022596ee';
+String _$entryTriggersHash() => r'21953b1975c1f75cb810c577c82acc59654c5555';
 
 /// See also [entryTriggers].
 @ProviderFor(entryTriggers)
@@ -452,7 +452,7 @@ class _EntryTriggersProviderElement
   String get entryId => (origin as EntryTriggersProvider).entryId;
 }
 
-String _$graphHash() => r'9bc252c6c79cef4f4b7f6e52ad1bba2e72e6c769';
+String _$graphHash() => r'e4f41f9d103b480b2d1ef7d1ba2aa3264777a45b';
 
 /// See also [graph].
 @ProviderFor(graph)

@@ -24,37 +24,37 @@ List<Page> pages(Ref ref) {
 }
 
 @riverpod
-Page? page(PageRef ref, String pageId) {
+Page? page(Ref ref, String pageId) {
   return ref.watch(pagesProvider).firstWhereOrNull((page) => page.id == pageId);
 }
 
 @riverpod
-String? pageName(PageNameRef ref, String pageId) {
+String? pageName(Ref ref, String pageId) {
   return ref.watch(pageProvider(pageId))?.pageName;
 }
 
 @riverpod
-bool pageExists(PageExistsRef ref, String pageId) {
+bool pageExists(Ref ref, String pageId) {
   return ref.watch(pageProvider(pageId)) != null;
 }
 
 @riverpod
-PageType pageType(PageTypeRef ref, String pageId) {
+PageType pageType(Ref ref, String pageId) {
   return ref.watch(pageProvider(pageId))?.type ?? PageType.sequence;
 }
 
 @riverpod
-String pageChapter(PageChapterRef ref, String pageId) {
+String pageChapter(Ref ref, String pageId) {
   return ref.watch(pageProvider(pageId))?.chapter ?? "";
 }
 
 @riverpod
-int pagePriority(PagePriorityRef ref, String pageId) {
+int pagePriority(Ref ref, String pageId) {
   return ref.watch(pageProvider(pageId))?.priority ?? 0;
 }
 
 @riverpod
-String? entryPageId(EntryPageIdRef ref, String entryId) {
+String? entryPageId(Ref ref, String entryId) {
   return ref
       .watch(pagesProvider)
       .firstWhereOrNull(
@@ -64,14 +64,14 @@ String? entryPageId(EntryPageIdRef ref, String entryId) {
 }
 
 @riverpod
-Page? entryPage(EntryPageRef ref, String entryId) {
+Page? entryPage(Ref ref, String entryId) {
   return ref.watch(pagesProvider).firstWhereOrNull(
         (page) => page.entries.any((entry) => entry.id == entryId),
       );
 }
 
 @riverpod
-Entry? entry(EntryRef ref, String pageId, String entryId) {
+Entry? entry(Ref ref, String pageId, String entryId) {
   return ref
       .watch(pageProvider(pageId))
       ?.entries
@@ -79,7 +79,7 @@ Entry? entry(EntryRef ref, String pageId, String entryId) {
 }
 
 @riverpod
-Entry? globalEntry(GlobalEntryRef ref, String entryId) {
+Entry? globalEntry(Ref ref, String entryId) {
   final pages = ref.watch(pagesProvider);
   for (final page in pages) {
     final entry = page.entries.firstWhereOrNull((entry) => entry.id == entryId);
@@ -92,7 +92,7 @@ Entry? globalEntry(GlobalEntryRef ref, String entryId) {
 
 @riverpod
 MapEntry<String, Entry>? globalEntryWithPage(
-  GlobalEntryWithPageRef ref,
+  Ref ref,
   String entryId,
 ) {
   final pageId = ref.watch(entryPageIdProvider(entryId));
@@ -107,7 +107,7 @@ MapEntry<String, Entry>? globalEntryWithPage(
 }
 
 @riverpod
-bool entryExists(EntryExistsRef ref, String entryId) {
+bool entryExists(Ref ref, String entryId) {
   return ref.watch(entryPageIdProvider(entryId)) != null;
 }
 

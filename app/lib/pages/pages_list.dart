@@ -46,7 +46,7 @@ class _PageData with _$PageData {
 }
 
 @riverpod
-List<_PageData> _pagesData(_PagesDataRef ref) {
+List<_PageData> _pagesData(Ref ref) {
   return ref
       .watch(bookProvider)
       .pages
@@ -62,7 +62,7 @@ List<_PageData> _pagesData(_PagesDataRef ref) {
 }
 
 @riverpod
-RootTreeNode<_PageData> _pagesTree(_PagesTreeRef ref) {
+RootTreeNode<_PageData> _pagesTree(Ref ref) {
   return createTreeNode(
     ref.watch(_pagesDataProvider),
     (e) => e.chapter,
@@ -70,7 +70,7 @@ RootTreeNode<_PageData> _pagesTree(_PagesTreeRef ref) {
 }
 
 @riverpod
-List<String> _pageNames(_PageNamesRef ref) {
+List<String> _pageNames(Ref ref) {
   return ref.watch(
     _pagesDataProvider
         .select((pages) => pages.map((page) => page.name).toList()),
@@ -366,7 +366,7 @@ class _TreeCategory extends HookConsumerWidget {
 }
 
 @riverpod
-List<Writer> _writers(_WritersRef ref, String pageId) {
+List<Writer> _writers(Ref ref, String pageId) {
   return ref
       .watch(writersProvider)
       .where((writer) => writer.pageId.hasValue && writer.pageId == pageId)

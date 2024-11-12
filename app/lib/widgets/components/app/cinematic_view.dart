@@ -88,7 +88,7 @@ void deleteSegmentConfirmation(
 }
 
 @riverpod
-Segment? inspectingSegment(InspectingSegmentRef ref) {
+Segment? inspectingSegment(Ref ref) {
   final segmentId = ref.watch(inspectingSegmentIdProvider);
   if (segmentId == null) return null;
 
@@ -159,7 +159,7 @@ String? _addSegment(
 }
 
 @riverpod
-List<Segment> _allSegments(_AllSegmentsRef ref, String entryId) {
+List<Segment> _allSegments(Ref ref, String entryId) {
   final paths = ref.watch(_segmentPathsProvider(entryId));
   return paths.keys
       .map((path) => ref.watch(_segmentsProvider(entryId, path)))
@@ -169,7 +169,7 @@ List<Segment> _allSegments(_AllSegmentsRef ref, String entryId) {
 }
 
 @riverpod
-List<String> _cinematicEntryIds(_CinematicEntryIdsRef ref) {
+List<String> _cinematicEntryIds(Ref ref) {
   final page = ref.watch(currentPageProvider);
   if (page == null) return [];
 
@@ -237,14 +237,14 @@ void _duplicateSelectedSegment(PassingRef ref) {
 }
 
 @riverpod
-int _endingFrame(_EndingFrameRef ref, String entryId) {
+int _endingFrame(Ref ref, String entryId) {
   final segments = ref.watch(_allSegmentsProvider(entryId));
   return segments.map((segment) => segment.endFrame).maxOrNull ?? 0;
 }
 
 @riverpod
 List<ContextMenuTile> _entryContextActions(
-  _EntryContextActionsRef ref,
+  Ref ref,
   String entryId,
 ) {
   final paths = ref.watch(_segmentPathsProvider(entryId));
@@ -330,14 +330,14 @@ List<ContextMenuTile> _entryContextActions(
 }
 
 @riverpod
-double _frameEndOffset(_FrameEndOffsetRef ref, int frame) {
+double _frameEndOffset(Ref ref, int frame) {
   final trackSize = ref.watch(_trackSizeProvider);
   final frameSpacing = ref.watch(_frameSpacingProvider);
   return trackSize - frame * frameSpacing;
 }
 
 @riverpod
-double _frameSpacing(_FrameSpacingRef ref) {
+double _frameSpacing(Ref ref) {
   final trackState = ref.watch(_trackStateProvider);
   final totalFrames = trackState.totalFrames;
   final width = trackState.width - 16;
@@ -351,13 +351,13 @@ double _frameSpacing(_FrameSpacingRef ref) {
 }
 
 @riverpod
-double _frameStartOffset(_FrameStartOffsetRef ref, int frame) {
+double _frameStartOffset(Ref ref, int frame) {
   final frameSpacing = ref.watch(_frameSpacingProvider);
   return frame * frameSpacing;
 }
 
 @riverpod
-List<String> _ignoreEntryFields(_IgnoreEntryFieldsRef ref) {
+List<String> _ignoreEntryFields(Ref ref) {
   final entryId = ref.watch(inspectingEntryIdProvider);
   if (entryId == null) return [];
 
@@ -382,7 +382,7 @@ Segment? _includesSegment(
 
 //<editor-fold desc="Entry Display Prefix">
 @riverpod
-String _longestEntryName(_LongestEntryNameRef ref) {
+String _longestEntryName(Ref ref) {
   final entryIds = ref.watch(_cinematicEntryIdsProvider);
   final names = entryIds
           .map((entryId) => ref.watch(entryNameProvider(entryId)))
@@ -395,7 +395,7 @@ String _longestEntryName(_LongestEntryNameRef ref) {
 }
 
 @riverpod
-ObjectBlueprint? _segmentFields(_SegmentFieldsRef ref) {
+ObjectBlueprint? _segmentFields(Ref ref) {
   final blueprint = ref.watch(
     inspectingEntryDefinitionProvider
         .select((definition) => definition?.blueprint),
@@ -410,7 +410,7 @@ ObjectBlueprint? _segmentFields(_SegmentFieldsRef ref) {
 
 //<editor-fold desc="Entry & Track & Segment States">
 @riverpod
-Map<String, Modifier> _segmentPaths(_SegmentPathsRef ref, String entryId) {
+Map<String, Modifier> _segmentPaths(Ref ref, String entryId) {
   final blueprintId = ref.watch(entryBlueprintIdProvider(entryId));
   if (blueprintId == null) return {};
   final blueprint = ref.watch(entryBlueprintProvider(blueprintId));
@@ -420,7 +420,7 @@ Map<String, Modifier> _segmentPaths(_SegmentPathsRef ref, String entryId) {
 }
 
 @riverpod
-List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
+List<Segment> _segments(Ref ref, String entryId, String path) {
   final paths = ref.watch(_segmentPathsProvider(entryId));
   final modifier = paths.findModifier(path);
   if (modifier == null) return [];
@@ -464,7 +464,7 @@ List<Segment> _segments(_SegmentsRef ref, String entryId, String path) {
 }
 
 @riverpod
-bool _showThumbs(_ShowThumbsRef ref, int startFrame, int endFrame) {
+bool _showThumbs(Ref ref, int startFrame, int endFrame) {
   if (startFrame == endFrame) return false;
   final startOffset = ref.watch(_frameStartOffsetProvider(startFrame));
   // We want to use the start offset provider here as we want the offset from the start of the track to the end of the frame.
@@ -474,14 +474,14 @@ bool _showThumbs(_ShowThumbsRef ref, int startFrame, int endFrame) {
 }
 
 @riverpod
-double _sliderEndOffset(_SliderEndOffsetRef ref) {
+double _sliderEndOffset(Ref ref) {
   final end = ref.watch(_trackStateProvider.select((state) => state.end));
   final width = ref.watch(_trackStateProvider.select((state) => state.width));
   return (1 - end) * width;
 }
 
 @riverpod
-double _sliderStartOffset(_SliderStartOffsetRef ref) {
+double _sliderStartOffset(Ref ref) {
   final start = ref.watch(_trackStateProvider.select((state) => state.start));
   final width = ref.watch(_trackStateProvider.select((state) => state.width));
   return start * width;
@@ -489,7 +489,7 @@ double _sliderStartOffset(_SliderStartOffsetRef ref) {
 
 @riverpod
 List<int> _timeFractionFrames(
-  _TimeFractionFramesRef ref, {
+  Ref ref, {
   double fractionModifier = 1.0,
 }) {
   final startFrame =
@@ -504,7 +504,7 @@ List<int> _timeFractionFrames(
 }
 
 @riverpod
-int _timeFractions(_TimeFractionsRef ref) {
+int _timeFractions(Ref ref) {
   final duration =
       ref.watch(_trackStateProvider.select((state) => state.duration));
   final width = ref.watch(_trackStateProvider.select((state) => state.width));
@@ -516,7 +516,7 @@ int _timeFractions(_TimeFractionsRef ref) {
 
 @riverpod
 double _timePointOffset(
-  _TimePointOffsetRef ref,
+  Ref ref,
   int frame,
   double widgetWidth,
 ) {
@@ -530,7 +530,7 @@ double _timePointOffset(
 }
 
 @riverpod
-int _totalSequenceFrames(_TotalSequenceFramesRef ref) {
+int _totalSequenceFrames(Ref ref) {
   final entryIds = ref.watch(_cinematicEntryIdsProvider);
   final frames = entryIds
       .map((entryId) => ref.watch(_endingFrameProvider(entryId)))
@@ -541,7 +541,7 @@ int _totalSequenceFrames(_TotalSequenceFramesRef ref) {
 
 @riverpod
 double _trackBackgroundFractionModifier(
-  _TrackBackgroundFractionModifierRef ref,
+  Ref ref,
 ) {
   final fractions = ref.watch(_timeFractionsProvider);
   if (fractions == 1) return 1.0;
@@ -550,7 +550,7 @@ double _trackBackgroundFractionModifier(
 }
 
 @riverpod
-List<_FrameLine> _trackBackgroundLines(_TrackBackgroundLinesRef ref) {
+List<_FrameLine> _trackBackgroundLines(Ref ref) {
   final fractions = ref.watch(_timeFractionsProvider);
   final fractionModifier = ref.watch(_trackBackgroundFractionModifierProvider);
   final fractionFrames = ref
@@ -573,7 +573,7 @@ List<_FrameLine> _trackBackgroundLines(_TrackBackgroundLinesRef ref) {
 }
 
 @riverpod
-double _trackOffset(_TrackOffsetRef ref) {
+double _trackOffset(Ref ref) {
   final trackState = ref.watch(_trackStateProvider);
   final totalFrames = trackState.totalFrames;
 
@@ -585,7 +585,7 @@ double _trackOffset(_TrackOffsetRef ref) {
 }
 
 @riverpod
-double _trackSize(_TrackSizeRef ref) {
+double _trackSize(Ref ref) {
   final totalFrames =
       ref.watch(_trackStateProvider.select((state) => state.totalFrames));
   final spacing = ref.watch(_frameSpacingProvider);
@@ -2032,8 +2032,7 @@ class _TrackStateProvider extends StateNotifier<_TrackState> {
     );
   }
   static const _minWidth = 40;
-  final AutoDisposeStateNotifierProviderRef<_TrackStateProvider, _TrackState>
-      ref;
+  final Ref ref;
   double calculateDelta(double delta) => delta / state.width;
 
   void changeTotalFrames(int totalFrames) {

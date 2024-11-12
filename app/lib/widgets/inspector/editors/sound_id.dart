@@ -26,7 +26,7 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 part "sound_id.g.dart";
 
 @riverpod
-Fuzzy<MinecraftSound> _fuzzyMinecraftSounds(_FuzzyMinecraftSoundsRef ref) {
+Fuzzy<MinecraftSound> _fuzzyMinecraftSounds(Ref ref) {
   final provider = ref.watch(minecraftSoundsProvider);
   final sounds = provider.map(
     data: (data) => data.value.entries.toList(),

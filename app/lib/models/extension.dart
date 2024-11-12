@@ -1,5 +1,6 @@
 import "package:flutter/foundation.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/book.dart";
 import "package:typewriter/models/entry_blueprint.dart";
@@ -9,8 +10,7 @@ part "extension.g.dart";
 
 /// A generated provider to fetch and cache a list of [Extension]s.
 @riverpod
-List<Extension> extensions(ExtensionsRef ref) =>
-    ref.watch(bookProvider).extensions;
+List<Extension> extensions(Ref ref) => ref.watch(bookProvider).extensions;
 
 /// A data model that represents an extension.
 @freezed

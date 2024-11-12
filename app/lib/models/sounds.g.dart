@@ -24,7 +24,7 @@ Map<String, dynamic> _$$SoundDataImplToJson(_$SoundDataImpl instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
-String _$minecraftSoundsHash() => r'057ac7e0ea33c9ed26f63e57a67091721811fd50';
+String _$minecraftSoundsHash() => r'8b076052ce4f7820879dbc7a58a7cd2c88e18daa';
 
 /// See also [minecraftSounds].
 @ProviderFor(minecraftSounds)
@@ -42,7 +42,7 @@ final minecraftSoundsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef MinecraftSoundsRef = FutureProviderRef<Map<String, List<SoundData>>>;
-String _$minecraftSoundHash() => r'360718281dd98a11b4669309eee983425b822717';
+String _$minecraftSoundHash() => r'd72a6c9ec2a8ff432008b0d42e1367b248e64b87';
 
 /// Copied from Dart SDK
 class _SystemHash {

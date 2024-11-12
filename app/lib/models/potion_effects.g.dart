@@ -6,7 +6,7 @@ part of 'potion_effects.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$potionEffectsHash() => r'7d4bca2a7f53566cc2fa18c241b7e0e8080da1ee';
+String _$potionEffectsHash() => r'cff5a428c3adf9861c2cc4c1929b697b918cf22f';
 
 /// See also [potionEffects].
 @ProviderFor(potionEffects)

@@ -55,7 +55,7 @@ final pagesProvider = AutoDisposeProvider<List<Page>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef PagesRef = AutoDisposeProviderRef<List<Page>>;
-String _$pageHash() => r'884d7b74470acd1d1cd7aefeb91f51364a14ba89';
+String _$pageHash() => r'0a64fb393bca5b9568593eff3cb7875f420079c4';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -203,7 +203,7 @@ class _PageProviderElement extends AutoDisposeProviderElement<Page?>
   String get pageId => (origin as PageProvider).pageId;
 }
 
-String _$pageNameHash() => r'c1089bcbebabddfc3bb11a9ba52b4019a761cd11';
+String _$pageNameHash() => r'83de166c1918556851736ebfc4ad2b7f0a08de38';
 
 /// See also [pageName].
 @ProviderFor(pageName)
@@ -332,7 +332,7 @@ class _PageNameProviderElement extends AutoDisposeProviderElement<String?>
   String get pageId => (origin as PageNameProvider).pageId;
 }
 
-String _$pageExistsHash() => r'68e3ea46a1e212bb9bc01ac653a749e9668d47f3';
+String _$pageExistsHash() => r'f4cfe7ab230e2aae357a3cbf98532412b4910190';
 
 /// See also [pageExists].
 @ProviderFor(pageExists)
@@ -462,7 +462,7 @@ class _PageExistsProviderElement extends AutoDisposeProviderElement<bool>
   String get pageId => (origin as PageExistsProvider).pageId;
 }
 
-String _$pageTypeHash() => r'e22516e95c00d6723256e425e31624dc3beccddb';
+String _$pageTypeHash() => r'64a1e3a7c12314dd84c1657080b2407f0ce679d9';
 
 /// See also [pageType].
 @ProviderFor(pageType)
@@ -591,7 +591,7 @@ class _PageTypeProviderElement extends AutoDisposeProviderElement<PageType>
   String get pageId => (origin as PageTypeProvider).pageId;
 }
 
-String _$pageChapterHash() => r'c8725780b13e27c6bfb7ade62625aabb4d7ca392';
+String _$pageChapterHash() => r'54c694d5e588ee7c2fe4fb0e7a897effe8611d6e';
 
 /// See also [pageChapter].
 @ProviderFor(pageChapter)
@@ -721,7 +721,7 @@ class _PageChapterProviderElement extends AutoDisposeProviderElement<String>
   String get pageId => (origin as PageChapterProvider).pageId;
 }
 
-String _$pagePriorityHash() => r'340f23a4c9b80bbd159ea066d79044424a8e4692';
+String _$pagePriorityHash() => r'faab7535ff7dd5740fae3e8be7a21f20e2850a05';
 
 /// See also [pagePriority].
 @ProviderFor(pagePriority)
@@ -851,7 +851,7 @@ class _PagePriorityProviderElement extends AutoDisposeProviderElement<int>
   String get pageId => (origin as PagePriorityProvider).pageId;
 }
 
-String _$entryPageIdHash() => r'a317d09f9de338ebefec45be649af4dc1c60a22d';
+String _$entryPageIdHash() => r'77d5208e639015cb3924cd0f7c418c768960bbfc';
 
 /// See also [entryPageId].
 @ProviderFor(entryPageId)
@@ -981,7 +981,7 @@ class _EntryPageIdProviderElement extends AutoDisposeProviderElement<String?>
   String get entryId => (origin as EntryPageIdProvider).entryId;
 }
 
-String _$entryPageHash() => r'00d12a29c4a1bfdec76651cba6577d582e65e20a';
+String _$entryPageHash() => r'c211aaca338fc322b5ed5e507ed4fb01a45cf006';
 
 /// See also [entryPage].
 @ProviderFor(entryPage)
@@ -1110,7 +1110,7 @@ class _EntryPageProviderElement extends AutoDisposeProviderElement<Page?>
   String get entryId => (origin as EntryPageProvider).entryId;
 }
 
-String _$entryHash() => r'f1e00a6ad6ab8e50c1e2178680c8004c98dea055';
+String _$entryHash() => r'4f7812f8b229def777e69725f6b6ff71791947a7';
 
 /// See also [entry].
 @ProviderFor(entry)
@@ -1256,7 +1256,7 @@ class _EntryProviderElement extends AutoDisposeProviderElement<Entry?>
   String get entryId => (origin as EntryProvider).entryId;
 }
 
-String _$globalEntryHash() => r'f304c143cc53b98eeccb7696c4c1152464820b93';
+String _$globalEntryHash() => r'9ce38058f363853e038e26d4b77c90132c321b2c';
 
 /// See also [globalEntry].
 @ProviderFor(globalEntry)
@@ -1387,7 +1387,7 @@ class _GlobalEntryProviderElement extends AutoDisposeProviderElement<Entry?>
 }
 
 String _$globalEntryWithPageHash() =>
-    r'003dec3f932daec4549b62ae8bb744dc256310ec';
+    r'e9d3d8e0b4cda57d378bfc322c126ee1e9562905';
 
 /// See also [globalEntryWithPage].
 @ProviderFor(globalEntryWithPage)
@@ -1520,7 +1520,7 @@ class _GlobalEntryWithPageProviderElement
   String get entryId => (origin as GlobalEntryWithPageProvider).entryId;
 }
 
-String _$entryExistsHash() => r'5280290c9246fb7003da2717fc9a1639c952a286';
+String _$entryExistsHash() => r'fe9eaeb7c200721137ea1800de89e040ac0b6111';
 
 /// See also [entryExists].
 @ProviderFor(entryExists)

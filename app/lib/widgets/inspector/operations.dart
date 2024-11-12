@@ -126,7 +126,6 @@ class _DuplicateEntry extends HookConsumerWidget {
         if (page == null) return;
         final entryId = ref.read(inspectingEntryIdProvider);
         if (entryId.isNullOrEmpty) return;
-        print("Creating duplicate entry");
         page.duplicateEntry(ref.passing, entryId!);
       },
       icon: const Iconify(TWIcons.duplicate),

@@ -14,6 +14,10 @@ _$EntryBlueprintImpl _$$EntryBlueprintImplFromJson(Map<String, dynamic> json) =>
       extension: json['extension'] as String,
       dataBlueprint: ObjectBlueprint.fromJson(
           json['dataBlueprint'] as Map<String, dynamic>),
+      color: json['color'] == null
+          ? Colors.grey
+          : const ColorConverter().fromJson(json['color'] as String),
+      icon: json['icon'] as String? ?? TWIcons.help,
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const <String>[],
@@ -25,10 +29,10 @@ _$EntryBlueprintImpl _$$EntryBlueprintImplFromJson(Map<String, dynamic> json) =>
           ? null
           : DataBlueprint.fromJson(
               json['variableDataBlueprint'] as Map<String, dynamic>),
-      color: json['color'] == null
-          ? Colors.grey
-          : const ColorConverter().fromJson(json['color'] as String),
-      icon: json['icon'] as String? ?? TWIcons.help,
+      modifiers: (json['modifiers'] as List<dynamic>?)
+              ?.map((e) => EntryModifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$EntryBlueprintImplToJson(
@@ -39,12 +43,13 @@ Map<String, dynamic> _$$EntryBlueprintImplToJson(
       'description': instance.description,
       'extension': instance.extension,
       'dataBlueprint': instance.dataBlueprint.toJson(),
+      'color': const ColorConverter().toJson(instance.color),
+      'icon': instance.icon,
       'tags': instance.tags,
       'genericConstraints':
           instance.genericConstraints?.map((e) => e.toJson()).toList(),
       'variableDataBlueprint': instance.variableDataBlueprint?.toJson(),
-      'color': const ColorConverter().toJson(instance.color),
-      'icon': instance.icon,
+      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
     };
 
 _$DataBlueprintTypeImpl _$$DataBlueprintTypeImplFromJson(
@@ -235,6 +240,30 @@ Map<String, dynamic> _$$ModifierImplToJson(_$ModifierImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'data': instance.data,
+    };
+
+_$EmptyModifierImpl _$$EmptyModifierImplFromJson(Map<String, dynamic> json) =>
+    _$EmptyModifierImpl(
+      $type: json['kind'] as String?,
+    );
+
+Map<String, dynamic> _$$EmptyModifierImplToJson(_$EmptyModifierImpl instance) =>
+    <String, dynamic>{
+      'kind': instance.$type,
+    };
+
+_$DeprecatedModifierImpl _$$DeprecatedModifierImplFromJson(
+        Map<String, dynamic> json) =>
+    _$DeprecatedModifierImpl(
+      reason: json['reason'] as String? ?? "",
+      $type: json['kind'] as String?,
+    );
+
+Map<String, dynamic> _$$DeprecatedModifierImplToJson(
+        _$DeprecatedModifierImpl instance) =>
+    <String, dynamic>{
+      'reason': instance.reason,
+      'kind': instance.$type,
     };
 
 // **************************************************************************
