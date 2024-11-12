@@ -97,6 +97,8 @@ class AlgebraicEditor extends HookConsumerWidget {
               expanded: ValueNotifier(true),
               canExpand: false,
               depth: Header.maybeOf(context)?.depth ?? 0,
+              combineActions: (actions) =>
+                  Header.maybeOf(context)?.combineActions(actions),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: FieldEditor(

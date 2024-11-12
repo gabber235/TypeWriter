@@ -23,7 +23,7 @@ final _fuzzyEntriesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _FuzzyEntriesRef = AutoDisposeProviderRef<Fuzzy<EntryDefinition>>;
-String _$fuzzyBlueprintsHash() => r'b602a3fcc7234bc2e5c9f42d330c8fca34200a4b';
+String _$fuzzyBlueprintsHash() => r'fd1232d7ffe9bf12a820cf8835199d28f7fa2e13';
 
 /// See also [_fuzzyBlueprints].
 @ProviderFor(_fuzzyBlueprints)
