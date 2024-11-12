@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:typewriter/hooks/delayed_execution.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -48,6 +49,15 @@ class FieldHeader extends HookConsumerWidget {
 
     // If there already is a header for this path, we don't need to create a new
     if (parent?.path == path) {
+      useDelayedExecution(() {
+        parent?.combineActions(
+          HeaderActions(
+            leading: leading,
+            trailing: trailing,
+            actions: actions,
+          ),
+        );
+      });
       return child;
     }
 
@@ -61,12 +71,22 @@ class FieldHeader extends HookConsumerWidget {
     final expanded = useState(defaultExpanded);
     final depth = (parent?.depth ?? -1) + 1;
 
+    final combinedActions = useState(
+      HeaderActions(
+        leading: leading,
+        trailing: trailing,
+        actions: actions,
+      ),
+    );
+
     return Header(
       key: ValueKey(path),
       path: path,
       expanded: expanded,
       canExpand: canExpand,
       depth: depth,
+      combineActions: (actions) =>
+          combinedActions.value = combinedActions.value.merge(actions),
       child: Material(
         color: canExpand
             ? depth.isEven
@@ -104,6 +124,7 @@ class FieldHeader extends HookConsumerWidget {
                       ...createActions(
                         availableActions,
                         HeaderActionLocation.leading,
+                        combinedActions.value.leading,
                       ),
                       Padding(
                         padding:
@@ -115,11 +136,13 @@ class FieldHeader extends HookConsumerWidget {
                       ...createActions(
                         availableActions,
                         HeaderActionLocation.trailing,
+                        combinedActions.value.trailing,
                       ),
                       const Spacer(),
                       ...createActions(
                         availableActions,
                         HeaderActionLocation.actions,
+                        combinedActions.value.actions,
                       ),
                     ],
                   ),
@@ -147,10 +170,11 @@ class FieldHeader extends HookConsumerWidget {
   List<Widget> createActions(
     List<HeaderActionFilter> filters,
     HeaderActionLocation location,
+    List<Widget> actions,
   ) {
     final children = [
-      if (location == HeaderActionLocation.leading) ...leading,
-      if (location == HeaderActionLocation.trailing) ...trailing,
+      if (location == HeaderActionLocation.leading) ...actions,
+      if (location == HeaderActionLocation.trailing) ...actions,
       for (final filter in filters)
         if (filter.location(path, dataBlueprint) == location)
           filter.build(path, dataBlueprint),
@@ -176,6 +200,7 @@ class Header extends InheritedWidget {
     required this.canExpand,
     required super.child,
     required this.depth,
+    required this.combineActions,
     super.key,
   });
 
@@ -183,12 +208,33 @@ class Header extends InheritedWidget {
   final ValueNotifier<bool> expanded;
   final bool canExpand;
   final int depth;
+  final void Function(HeaderActions) combineActions;
 
   @override
   bool updateShouldNotify(covariant Header oldWidget) => path != oldWidget.path;
 
   static Header? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<Header>();
+}
+
+class HeaderActions {
+  const HeaderActions({
+    this.leading = const [],
+    this.trailing = const [],
+    this.actions = const [],
+  });
+
+  final List<Widget> leading;
+  final List<Widget> trailing;
+  final List<Widget> actions;
+
+  HeaderActions merge(HeaderActions other) {
+    return HeaderActions(
+      leading: [...leading, ...other.leading],
+      trailing: [...trailing, ...other.trailing],
+      actions: [...actions, ...other.actions],
+    );
+  }
 }
 
 @riverpod

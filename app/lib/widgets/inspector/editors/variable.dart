@@ -125,6 +125,8 @@ class VariableEditor extends HookConsumerWidget {
                       canExpand: false,
                       depth: Header.maybeOf(context)?.depth ?? 0,
                       path: "$path.data",
+                      combineActions: (actions) =>
+                          Header.maybeOf(context)?.combineActions(actions),
                       child: FieldEditor(
                         path: "$path.data",
                         dataBlueprint: variableDataBlueprint,
