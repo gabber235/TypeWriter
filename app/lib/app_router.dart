@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/guard/connected_guard.dart";
 import "package:typewriter/models/page.dart";
@@ -85,7 +86,7 @@ class InvalidatorNavigatorObserver extends NavigatorObserver {
 
 /// Provides the current route data for the given [name].
 @Riverpod(keepAlive: true)
-RouteData? currentRouteData(CurrentRouteDataRef ref, String path) {
+RouteData? currentRouteData(Ref ref, String path) {
   final router = ref.watch(appRouter);
   return _fetchCurrentRouteData(path, router);
 }

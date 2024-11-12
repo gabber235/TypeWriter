@@ -54,7 +54,7 @@ class Heading extends HookConsumerWidget {
     final type = ref.watch(_entryTypeProvider);
     final url = ref.watch(_entryUrlProvider);
     final color = ref.watch(_entryColorProvider);
-    final isDeprecated = ref.watch(isEntryDeprecatedProvider(id));
+    final deprecation = ref.watch(entryDeprecatedProvider(id));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +62,7 @@ class Heading extends HookConsumerWidget {
         Title(
           color: color,
           title: name,
-          isDeprecated: isDeprecated,
+          isDeprecated: deprecation != null,
         ),
         Wrap(
           spacing: 8,
@@ -74,9 +74,9 @@ class Heading extends HookConsumerWidget {
             EntryIdentifier(id: id),
           ],
         ),
-        if (isDeprecated) ...[
+        if (deprecation != null) ...[
           const SizedBox(height: 8),
-          _DeperecationWarning(url: url),
+          _DeperecationWarning(url: url, reason: deprecation.reason),
         ],
       ],
     );
@@ -174,9 +174,11 @@ class EntryBlueprintDisplay extends HookConsumerWidget {
 class _DeperecationWarning extends StatelessWidget {
   const _DeperecationWarning({
     required this.url,
+    required this.reason,
   });
 
   final String url;
+  final String reason;
 
   Future<void> _launceUrl() async {
     if (url.isEmpty) return;
@@ -188,7 +190,7 @@ class _DeperecationWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     return Admonition.danger(
       onTap: _launceUrl,
-      child: const Text.rich(
+      child: Text.rich(
         TextSpan(
           text: "This entry has been marked as deprecated. Take a look at the ",
           children: [
@@ -200,6 +202,15 @@ class _DeperecationWarning extends StatelessWidget {
               ),
             ),
             TextSpan(text: " for more information."),
+            if (reason.isNotEmpty) ...[
+              TextSpan(
+                text: "\n$reason",
+                style: TextStyle(
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ],
         ),
       ),

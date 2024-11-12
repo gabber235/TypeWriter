@@ -7,6 +7,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.typewritermc.SharedJsonManager
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.GenericConstraint
@@ -16,6 +17,7 @@ import com.typewritermc.moduleplugin.TypewriterExtensionConfiguration
 import com.typewritermc.processors.ExtensionPartProcessor
 import com.typewritermc.processors.annotationClassValue
 import com.typewritermc.processors.fullName
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -52,12 +54,13 @@ class EntryProcessor(
             description = annotation.description,
             color = annotation.color,
             icon = annotation.icon,
+            className = clazz.qualifiedName?.asString() ?: throw IllegalClassTypeException(clazz.simpleName.asString()),
+            extension = configuration.name,
             tags = clazz.tags,
             dataBlueprint = dataBlueprint,
             genericConstraints = clazz.genericConstraints(dataBlueprint),
             variableDataBlueprint = clazz.variableDataBlueprint(),
-            className = clazz.qualifiedName?.asString() ?: throw IllegalClassTypeException(clazz.simpleName.asString()),
-            extension = configuration.name,
+            modifiers = clazz.getModifiers(),
         )
 
         return blueprintJson.encodeToJsonElement(blueprint)
@@ -135,6 +138,16 @@ class EntryProcessor(
             return blueprint
         }
     }
+
+    @OptIn(KspExperimental::class)
+    private fun KSClassDeclaration.getModifiers(): List<EntryModifier> {
+        val modifiers = mutableListOf<EntryModifier>()
+        val annotation = this.getAnnotationsByType(Deprecated::class).firstOrNull()
+        if (annotation != null) {
+            modifiers.add(EntryModifier.Deprecated(annotation.message))
+        }
+        return modifiers
+    }
 }
 
 @Serializable
@@ -144,13 +157,22 @@ private data class EntryBlueprint(
     val description: String,
     val color: String,
     val icon: String,
+    val className: String,
+    val extension: String,
     val tags: List<String>,
     val dataBlueprint: DataBlueprint,
     val genericConstraints: List<DataBlueprint>?,
     val variableDataBlueprint: DataBlueprint?,
-    val className: String,
-    val extension: String,
+    val modifiers: List<EntryModifier>,
 )
+
+@Serializable
+sealed interface EntryModifier {
+    @Serializable
+    @SerialName("deprecated")
+    class Deprecated(val reason: String) : EntryModifier
+}
+
 
 class IllegalClassTypeException(className: String) :
     Exception("Class $className does not have a qualified name. Entry classes must be full classes.")

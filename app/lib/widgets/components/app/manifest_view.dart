@@ -15,7 +15,7 @@ import "package:typewriter/widgets/components/app/search_bar.dart";
 part "manifest_view.g.dart";
 
 @riverpod
-List<Entry> manifestEntries(ManifestEntriesRef ref) {
+List<Entry> manifestEntries(Ref ref) {
   final page = ref.watch(currentPageProvider);
   if (page == null) return [];
 
@@ -30,13 +30,13 @@ List<Entry> manifestEntries(ManifestEntriesRef ref) {
 }
 
 @riverpod
-List<String> manifestEntryIds(ManifestEntryIdsRef ref) {
+List<String> manifestEntryIds(Ref ref) {
   final entries = ref.watch(manifestEntriesProvider);
   return entries.map((entry) => entry.id).toList();
 }
 
 @riverpod
-Set<String>? entryReferences(EntryReferencesRef ref, String entryId) {
+Set<String>? entryReferences(Ref ref, String entryId) {
   final entry = ref.watch(globalEntryProvider(entryId));
   if (entry == null) return null;
 
@@ -51,7 +51,7 @@ Set<String>? entryReferences(EntryReferencesRef ref, String entryId) {
 }
 
 @riverpod
-Graph manifestGraph(ManifestGraphRef ref) {
+Graph manifestGraph(Ref ref) {
   final entries = ref.watch(manifestEntriesProvider);
   final graph = Graph();
 

@@ -34,12 +34,12 @@ final searchProvider = StateNotifierProvider<SearchNotifier, Search?>(
 final _quantifierRegex = RegExp(r"!(\w+)");
 
 @riverpod
-FocusNode searchBarFocus(SearchBarFocusRef ref) {
+Raw<FocusNode> searchBarFocus(Ref ref) {
   return FocusNode();
 }
 
 @riverpod
-List<SearchElement> searchElements(SearchElementsRef ref) {
+List<SearchElement> searchElements(Ref ref) {
   final search = ref.watch(searchProvider);
   if (search == null) return [];
 
@@ -60,34 +60,34 @@ List<SearchElement> searchElements(SearchElementsRef ref) {
 }
 
 @riverpod
-List<SearchFetcher> searchFetchers(SearchFetchersRef ref) {
+List<SearchFetcher> searchFetchers(Ref ref) {
   final search = ref.watch(searchProvider);
   if (search == null) return [];
   return search.fetchers;
 }
 
 @riverpod
-List<SearchFilter> searchFilters(SearchFiltersRef ref) {
+List<SearchFilter> searchFilters(Ref ref) {
   final search = ref.watch(searchProvider);
   if (search == null) return [];
   return search.filters;
 }
 
 @riverpod
-List<FocusNode> searchFocusNodes(SearchFocusNodesRef ref) {
+List<FocusNode> searchFocusNodes(Ref ref) {
   final actionsCount =
       ref.watch(searchElementsProvider.select((value) => value.length));
   return List.generate(actionsCount, (_) => FocusNode());
 }
 
 @riverpod
-List<GlobalKey> searchGlobalKeys(SearchGlobalKeysRef ref) {
+List<GlobalKey> searchGlobalKeys(Ref ref) {
   final elements = ref.watch(searchElementsProvider);
   return elements.map((e) => GlobalKey(debugLabel: e.title)).toList();
 }
 
 @riverpod
-SearchElement? _focusedElement(_FocusedElementRef ref) {
+SearchElement? _focusedElement(Ref ref) {
   final elements = ref.watch(searchElementsProvider);
   final focusNodes = ref.watch(searchFocusNodesProvider);
 
@@ -98,14 +98,14 @@ SearchElement? _focusedElement(_FocusedElementRef ref) {
 }
 
 @riverpod
-List<SearchAction> _searchActions(_SearchActionsRef ref) {
+List<SearchAction> _searchActions(Ref ref) {
   final focusedElement = ref.watch(_focusedElementProvider);
 
   return focusedElement?.actions(ref.passing) ?? [];
 }
 
 @riverpod
-Set<ShortcutActivator> _searchActionShortcuts(_SearchActionShortcutsRef ref) {
+Set<ShortcutActivator> _searchActionShortcuts(Ref ref) {
   final elements = ref.watch(searchElementsProvider);
   final activators = elements
       .expand((e) => e.actions(ref.passing))
@@ -373,7 +373,7 @@ abstract class SearchFetcher {
   bool get disabled;
   String get icon => TWIcons.magnifyingGlass;
 
-  /// Quantifiers are used to disable the fetcher using !<quantifier>.
+  /// Quantifiers are used to disable the fetcher using !\<quantifier>.
   /// When a quantifier is used, the fetcher will only be used if the search contains the quantifier.
   List<String> get quantifiers => const [];
 

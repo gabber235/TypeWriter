@@ -22,7 +22,7 @@ Map<String, dynamic> _$$ResponseImplToJson(_$ResponseImpl instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
-String _$communicatorHash() => r'9085b5b631ddf5d09d571a34e6d1de239259e08f';
+String _$communicatorHash() => r'31ea59bcbb12c56d2ec15a773434802d1e663753';
 
 /// See also [communicator].
 @ProviderFor(communicator)

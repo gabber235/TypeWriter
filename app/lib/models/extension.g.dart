@@ -41,7 +41,7 @@ Map<String, dynamic> _$$ExtensionInfoImplToJson(_$ExtensionInfoImpl instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
-String _$extensionsHash() => r'c5ab97411f68e5201eaf3154a8c578929e519906';
+String _$extensionsHash() => r'10f9edbc062d3761b5fdbeb067a30725925444ba';
 
 /// A generated provider to fetch and cache a list of [Extension]s.
 ///

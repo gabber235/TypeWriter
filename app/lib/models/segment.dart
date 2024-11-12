@@ -1,6 +1,7 @@
 import "package:collection_ext/all.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/models/writers.dart";
 import "package:typewriter/utils/extensions.dart";
@@ -11,7 +12,7 @@ part "segment.freezed.dart";
 
 @riverpod
 List<Writer> segmentWriters(
-  SegmentWritersRef ref,
+  Ref ref,
   String entryId,
   String segmentId,
 ) {

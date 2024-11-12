@@ -7,7 +7,7 @@ part of 'material.dart';
 // **************************************************************************
 
 String _$materialPropertiesHash() =>
-    r'ec0ce652cc3458c9e2ee4d54c4fa1f496a45f1db';
+    r'06bdf69c856589203d392aba18d7a6aa9eec115b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -160,7 +160,7 @@ class _MaterialPropertiesProviderElement
   String get meta => (origin as MaterialPropertiesProvider).meta;
 }
 
-String _$fuzzyMaterialsHash() => r'bfaa303c86894a2592b383e46588f82a7a8b7e6d';
+String _$fuzzyMaterialsHash() => r'b37a1dfd121ba671b25989280ff20c0c1bd9c1f8';
 
 /// See also [_fuzzyMaterials].
 @ProviderFor(_fuzzyMaterials)

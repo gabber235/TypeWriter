@@ -2,6 +2,7 @@ import "dart:convert";
 import "dart:math";
 
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:http/http.dart" as http;
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
@@ -51,7 +52,7 @@ const _minecraftSoundsUrl = "$mcmetaUrl/summary/sounds/data.min.json";
 
 @Riverpod(keepAlive: true)
 Future<Map<String, List<SoundData>>> minecraftSounds(
-  MinecraftSoundsRef ref,
+  Ref ref,
 ) async {
   final response = await http.get(Uri.parse(_minecraftSoundsUrl));
   if (response.statusCode != 200) {
@@ -61,7 +62,7 @@ Future<Map<String, List<SoundData>>> minecraftSounds(
 }
 
 @riverpod
-Future<MinecraftSound?> minecraftSound(MinecraftSoundRef ref, String id) async {
+Future<MinecraftSound?> minecraftSound(Ref ref, String id) async {
   final strippedId = id.replacePrefix("minecraft:", "");
   final sounds = await ref.watch(minecraftSoundsProvider.future);
   if (!sounds.containsKey(strippedId)) return null;

@@ -45,9 +45,18 @@ String? entryBlueprintId(Ref ref, String entryId) {
 }
 
 @riverpod
+DeprecatedModifier? entryDeprecated(Ref ref, String entryId) {
+  final blueprintId = ref.watch(entryBlueprintIdProvider(entryId));
+  if (blueprintId == null) return null;
+  final blueprint = ref.watch(entryBlueprintProvider(blueprintId));
+  if (blueprint == null) return null;
+  return blueprint.modifiers.whereType<DeprecatedModifier>().firstOrNull;
+}
+
+@riverpod
 bool isEntryDeprecated(Ref ref, String entryId) {
-  final entryTags = ref.watch(entryTagsProvider(entryId));
-  return entryTags.contains("deprecated");
+  final deprecated = ref.watch(entryDeprecatedProvider(entryId));
+  return deprecated != null;
 }
 
 class EntryDefinition {
@@ -120,7 +129,6 @@ class Entry {
   DataBlueprint? get genericBlueprint {
     if (_genericBlueprint != null) return _genericBlueprint;
     final genericBlueprint = data["_genericBlueprint"];
-    print("Generic blueprint: $genericBlueprint");
     if (genericBlueprint == null) return null;
 
     if (genericBlueprint is! Map<String, dynamic>) {

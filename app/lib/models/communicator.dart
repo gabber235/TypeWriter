@@ -41,7 +41,7 @@ final socketProvider = StateNotifierProvider<SocketNotifier, Socket?>(
 class SocketNotifier extends StateNotifier<Socket?> {
   SocketNotifier(this.ref) : super(null);
 
-  final StateNotifierProviderRef<SocketNotifier, Socket?> ref;
+  final Ref ref;
   bool _disposed = false;
 
   /// When a socket gets disconnected, we want to try to reconnect it.
@@ -235,13 +235,13 @@ class SocketNotifier extends StateNotifier<Socket?> {
 }
 
 @Riverpod(keepAlive: true)
-Communicator communicator(CommunicatorRef ref) => Communicator(ref);
+Communicator communicator(Ref ref) => Communicator(ref);
 
 @immutable
 class Communicator {
   const Communicator(this.ref);
 
-  final CommunicatorRef ref;
+  final Ref ref;
 
   Future<void> fetchBook() async {
     final socket = ref.read(socketProvider);

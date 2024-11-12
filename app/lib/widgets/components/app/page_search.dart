@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart" hide Page;
 import "package:flutter/services.dart";
 import "package:fuzzy/fuzzy.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/app_router.dart";
 import "package:typewriter/models/page.dart";
@@ -42,7 +43,7 @@ class PageTypeFiler extends SearchFilter {
 }
 
 @riverpod
-Fuzzy<Page> _fuzzyPages(_FuzzyPagesRef ref) {
+Fuzzy<Page> _fuzzyPages(Ref ref) {
   final pages = ref.watch(pagesProvider);
   return Fuzzy(
     pages,
@@ -115,7 +116,7 @@ class PageFetcher extends SearchFetcher {
 }
 
 @riverpod
-Fuzzy<PageType> _fuzzyPageTypes(_FuzzyPageTypesRef ref) {
+Fuzzy<PageType> _fuzzyPageTypes(Ref ref) {
   const types = PageType.values;
   return Fuzzy(
     types,
