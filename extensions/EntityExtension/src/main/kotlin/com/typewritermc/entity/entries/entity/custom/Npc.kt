@@ -35,7 +35,7 @@ class NpcDefinition(
     override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
     @Help("The skin of the npc.")
-    val skin: SkinProperty = SkinProperty(),
+    val skin: Var<SkinProperty> = ConstVar(SkinProperty()),
     @OnlyTags("generic_entity_data", "living_entity_data", "lines", "player_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
@@ -62,13 +62,13 @@ class NpcInstance(
 class NpcEntity(
     player: Player,
     displayName: Var<String>,
-    private val skin: SkinProperty,
+    private val skin: Var<SkinProperty>,
     definition: Ref<out EntityDefinitionEntry>,
 ) : FakeEntity(player) {
     private val namePlate = NamedEntity(player, displayName, PlayerEntity(player, displayName), definition)
 
     init {
-        consumeProperties(skin)
+        consumeProperties(skin.get(player))
     }
 
     override val entityId: Int
@@ -82,7 +82,7 @@ class NpcEntity(
             namePlate.consumeProperties(properties)
             return
         }
-        namePlate.consumeProperties(properties + skin)
+        namePlate.consumeProperties(properties + skin.get(player))
     }
 
     override fun tick() {
