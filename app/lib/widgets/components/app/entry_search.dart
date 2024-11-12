@@ -205,7 +205,9 @@ Fuzzy<EntryBlueprint> _fuzzyBlueprints(Ref ref) {
   // If the blueprint has the "deprecated" tag, we don't want to show it.
   final blueprints = ref
       .watch(entryBlueprintsProvider)
-      .where((blueprint) => !blueprint.tags.contains("deprecated"))
+      .where(
+        (blueprint) => blueprint.modifiers.none((e) => e is DeprecatedModifier),
+      )
       .toList();
 
   return Fuzzy(

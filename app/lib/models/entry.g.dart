@@ -417,7 +417,138 @@ class _EntryBlueprintIdProviderElement
   String get entryId => (origin as EntryBlueprintIdProvider).entryId;
 }
 
-String _$isEntryDeprecatedHash() => r'f68cc9e8e0bf8eed671f49d5ceadc1d45e4da8a0';
+String _$entryDeprecatedHash() => r'379035c4bf36de1185ce43187253b02ea579eaa9';
+
+/// See also [entryDeprecated].
+@ProviderFor(entryDeprecated)
+const entryDeprecatedProvider = EntryDeprecatedFamily();
+
+/// See also [entryDeprecated].
+class EntryDeprecatedFamily extends Family<DeprecatedModifier?> {
+  /// See also [entryDeprecated].
+  const EntryDeprecatedFamily();
+
+  /// See also [entryDeprecated].
+  EntryDeprecatedProvider call(
+    String entryId,
+  ) {
+    return EntryDeprecatedProvider(
+      entryId,
+    );
+  }
+
+  @override
+  EntryDeprecatedProvider getProviderOverride(
+    covariant EntryDeprecatedProvider provider,
+  ) {
+    return call(
+      provider.entryId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'entryDeprecatedProvider';
+}
+
+/// See also [entryDeprecated].
+class EntryDeprecatedProvider extends AutoDisposeProvider<DeprecatedModifier?> {
+  /// See also [entryDeprecated].
+  EntryDeprecatedProvider(
+    String entryId,
+  ) : this._internal(
+          (ref) => entryDeprecated(
+            ref as EntryDeprecatedRef,
+            entryId,
+          ),
+          from: entryDeprecatedProvider,
+          name: r'entryDeprecatedProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$entryDeprecatedHash,
+          dependencies: EntryDeprecatedFamily._dependencies,
+          allTransitiveDependencies:
+              EntryDeprecatedFamily._allTransitiveDependencies,
+          entryId: entryId,
+        );
+
+  EntryDeprecatedProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.entryId,
+  }) : super.internal();
+
+  final String entryId;
+
+  @override
+  Override overrideWith(
+    DeprecatedModifier? Function(EntryDeprecatedRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EntryDeprecatedProvider._internal(
+        (ref) => create(ref as EntryDeprecatedRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        entryId: entryId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<DeprecatedModifier?> createElement() {
+    return _EntryDeprecatedProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EntryDeprecatedProvider && other.entryId == entryId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, entryId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin EntryDeprecatedRef on AutoDisposeProviderRef<DeprecatedModifier?> {
+  /// The parameter `entryId` of this provider.
+  String get entryId;
+}
+
+class _EntryDeprecatedProviderElement
+    extends AutoDisposeProviderElement<DeprecatedModifier?>
+    with EntryDeprecatedRef {
+  _EntryDeprecatedProviderElement(super.provider);
+
+  @override
+  String get entryId => (origin as EntryDeprecatedProvider).entryId;
+}
+
+String _$isEntryDeprecatedHash() => r'e763f6414bab29d177973400fed8321d8e68b1c7';
 
 /// See also [isEntryDeprecated].
 @ProviderFor(isEntryDeprecated)

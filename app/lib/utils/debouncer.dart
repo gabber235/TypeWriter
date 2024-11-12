@@ -8,7 +8,7 @@ typedef FutureOrVoidValueCallback<T> = FutureOr<void> Function(T);
 /// after a certain amount of time has passed without the action being triggered
 /// again. The debouncer allows you to "group" multiple triggers into one action.
 ///
-/// The <T> is the type of the value that is passed to the callback.
+/// The \<T> is the type of the value that is passed to the callback.
 class Debouncer<T> {
   Debouncer({required this.duration, required this.callback});
 

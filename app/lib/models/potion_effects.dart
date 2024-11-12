@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:http/http.dart" as http;
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter/main.dart";
@@ -11,7 +12,7 @@ part "potion_effects.g.dart";
 const _minecraftRegistriesUrl = "$mcmetaUrl/summary/registries/data.min.json";
 
 @riverpod
-Future<List<String>> potionEffects(PotionEffectsRef ref) async {
+Future<List<String>> potionEffects(Ref ref) async {
   final response =
       await http.get(Uri.parse(_minecraftRegistriesUrl)).timeout(5.seconds);
   if (response.statusCode != 200) {

@@ -6,7 +6,7 @@ part of 'page_search.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fuzzyPagesHash() => r'835da172df554f740abdb580832d5be1a90aba00';
+String _$fuzzyPagesHash() => r'587e3a0f5cccbe322d7f3c74c32c43f64f871b16';
 
 /// See also [_fuzzyPages].
 @ProviderFor(_fuzzyPages)
@@ -22,7 +22,7 @@ final _fuzzyPagesProvider = AutoDisposeProvider<Fuzzy<Page>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _FuzzyPagesRef = AutoDisposeProviderRef<Fuzzy<Page>>;
-String _$fuzzyPageTypesHash() => r'aad5781007f32aede23eb6288e7666f289b2f9ab';
+String _$fuzzyPageTypesHash() => r'e40fb807357ed31bb5fed21cafee566086927a39';
 
 /// See also [_fuzzyPageTypes].
 @ProviderFor(_fuzzyPageTypes)

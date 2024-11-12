@@ -6,7 +6,7 @@ part of 'segment.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$segmentWritersHash() => r'011eacd554b34d97ed234e8d2a30d527854c1a20';
+String _$segmentWritersHash() => r'316bcd141d3ba90d3ffc8ea857dda7eb92c68b57';
 
 /// Copied from Dart SDK
 class _SystemHash {

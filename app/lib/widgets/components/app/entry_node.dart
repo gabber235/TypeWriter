@@ -115,7 +115,6 @@ class EntryNode extends HookConsumerWidget {
         child: Iconify(blueprint.icon, size: 18),
       ),
       isSelected: isSelected,
-      isDeprecated: ref.watch(isEntryDeprecatedProvider(entryId)),
       contextActions: contextActions,
       onTap: () =>
           ref.read(inspectingEntryIdProvider.notifier).selectEntry(entryId),
@@ -203,7 +202,6 @@ class _EntryNode extends HookConsumerWidget {
     this.name = "",
     this.icon = const Icon(Icons.book, color: Colors.white),
     this.isSelected = false,
-    this.isDeprecated = false,
     this.contextActions = const [],
     this.onTap,
   });
@@ -213,7 +211,6 @@ class _EntryNode extends HookConsumerWidget {
   final String name;
   final Widget icon;
   final bool isSelected;
-  final bool isDeprecated;
   final List<ContextMenuTile> contextActions;
 
   final VoidCallback? onTap;
@@ -268,7 +265,7 @@ class _EntryNode extends HookConsumerWidget {
         feedback: FakeEntryNode(entryId: id),
         childWhenDragging: ColoredBox(
           color: Theme.of(context).scaffoldBackgroundColor,
-          child: _placeholderEntry(context, backgroundColor),
+          child: _placeholderEntry(context, ref, backgroundColor),
         ),
         child: ContextMenuRegion(
           builder: (context) {
@@ -351,7 +348,7 @@ class _EntryNode extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(4),
                     child: Padding(
                       padding: const EdgeInsets.all(7.0),
-                      child: _innerEntry(context, Colors.white),
+                      child: _innerEntry(context, ref, Colors.white),
                     ),
                   ),
                 );
@@ -390,7 +387,7 @@ class _EntryNode extends HookConsumerWidget {
                               duration: 400.ms,
                               curve: Curves.easeOutCirc,
                               alignment: Alignment.topCenter,
-                              child: _innerEntry(context, Colors.white),
+                              child: _innerEntry(context, ref, Colors.white),
                             ),
                           ),
                         ),
@@ -406,7 +403,7 @@ class _EntryNode extends HookConsumerWidget {
     );
   }
 
-  Widget _placeholderEntry(BuildContext context, Color color) {
+  Widget _placeholderEntry(BuildContext context, WidgetRef ref, Color color) {
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: DottedBorder(
@@ -416,12 +413,12 @@ class _EntryNode extends HookConsumerWidget {
         dashPattern: const [5, 5],
         radius: const Radius.circular(1),
         padding: const EdgeInsets.all(6),
-        child: _innerEntry(context, color),
+        child: _innerEntry(context, ref, color),
       ),
     );
   }
 
-  Widget _innerEntry(BuildContext context, Color color) {
+  Widget _innerEntry(BuildContext context, WidgetRef ref, Color color) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Row(
@@ -438,7 +435,9 @@ class _EntryNode extends HookConsumerWidget {
               fontFamily: "JetBrainsMono",
               fontSize: 13,
               color: color,
-              decoration: isDeprecated ? TextDecoration.lineThrough : null,
+              decoration: ref.watch(isEntryDeprecatedProvider(id))
+                  ? TextDecoration.lineThrough
+                  : null,
               decorationThickness: 2.8,
               decorationColor: Theme.of(context).scaffoldBackgroundColor,
               decorationStyle: TextDecorationStyle.wavy,

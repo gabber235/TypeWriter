@@ -28,7 +28,7 @@ class ListEditorFilter extends EditorFilter {
 }
 
 @riverpod
-int _listValueLength(_ListValueLengthRef ref, String path) {
+int _listValueLength(Ref ref, String path) {
   return (ref.watch(fieldValueProvider(path)) as List<dynamic>? ?? []).length;
 }
 
@@ -106,6 +106,8 @@ class ListEditor extends HookConsumerWidget {
                 _reorderList(globalKeys, oldIndex, newIndex);
               },
               shrinkWrap: true,
+              // The Inspector is already scrollable, so we don't want this to be nested.
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => _ListItem(
                 key: globalKeys[index],
                 index: index,

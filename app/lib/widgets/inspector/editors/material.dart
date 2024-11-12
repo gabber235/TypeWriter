@@ -21,7 +21,7 @@ typedef CombinedMaterial = MapEntry<String, MinecraftMaterial>;
 
 @riverpod
 List<MaterialProperty> materialProperties(
-  MaterialPropertiesRef ref,
+  Ref ref,
   String meta,
 ) {
   return meta
@@ -36,7 +36,7 @@ List<MaterialProperty> materialProperties(
 }
 
 @riverpod
-Fuzzy<CombinedMaterial> _fuzzyMaterials(_FuzzyMaterialsRef ref) {
+Fuzzy<CombinedMaterial> _fuzzyMaterials(Ref ref) {
   return Fuzzy(
     materials.entries.toList(),
     options: FuzzyOptions(

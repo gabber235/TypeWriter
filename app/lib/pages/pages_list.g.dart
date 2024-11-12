@@ -6,7 +6,7 @@ part of 'pages_list.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$pagesDataHash() => r'dde2241455047364635cf0985d51de217c282fc0';
+String _$pagesDataHash() => r'fc39d71b4905b7fe4412a26ec01ac2e04a84c0b7';
 
 /// See also [_pagesData].
 @ProviderFor(_pagesData)
@@ -22,7 +22,7 @@ final _pagesDataProvider = AutoDisposeProvider<List<_PageData>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _PagesDataRef = AutoDisposeProviderRef<List<_PageData>>;
-String _$pagesTreeHash() => r'019eebde840b5af25aae49b4b3af4db61c5ac7a1';
+String _$pagesTreeHash() => r'5d7f6a96ed485617ef185a17a3dbbc9d2a9e508e';
 
 /// See also [_pagesTree].
 @ProviderFor(_pagesTree)
@@ -39,7 +39,7 @@ final _pagesTreeProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _PagesTreeRef = AutoDisposeProviderRef<RootTreeNode<_PageData>>;
-String _$pageNamesHash() => r'd834681c3a622b64fd2562eb17db3434db172946';
+String _$pageNamesHash() => r'ba8e2fb564a7aa92ae49a419151c8f4f39bcf0f4';
 
 /// See also [_pageNames].
 @ProviderFor(_pageNames)
@@ -55,7 +55,7 @@ final _pageNamesProvider = AutoDisposeProvider<List<String>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _PageNamesRef = AutoDisposeProviderRef<List<String>>;
-String _$writersHash() => r'49be74d2cb1d297d1af054c85976d3f6c4251713';
+String _$writersHash() => r'67ebaf51392a3c4ff731ca624a60a92b56c9c253';
 
 /// Copied from Dart SDK
 class _SystemHash {

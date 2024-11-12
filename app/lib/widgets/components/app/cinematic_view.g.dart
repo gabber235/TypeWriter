@@ -6,7 +6,7 @@ part of 'cinematic_view.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$inspectingSegmentHash() => r'd7155fa87adad4c7e894d76ec98a91c9096f7632';
+String _$inspectingSegmentHash() => r'ed4c81bad81f7e3c3bde22dba48ded426d04b2b7';
 
 /// See also [inspectingSegment].
 @ProviderFor(inspectingSegment)
@@ -23,7 +23,7 @@ final inspectingSegmentProvider = AutoDisposeProvider<Segment?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef InspectingSegmentRef = AutoDisposeProviderRef<Segment?>;
-String _$allSegmentsHash() => r'cd0016ec442c5c46570cedbdde8893c1a52890df';
+String _$allSegmentsHash() => r'c62776e776362e7b097ed238098d3778aa7e06fb';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -174,7 +174,7 @@ class _AllSegmentsProviderElement
   String get entryId => (origin as _AllSegmentsProvider).entryId;
 }
 
-String _$cinematicEntryIdsHash() => r'd605052793e8cd783fa8fbb6ed8ea754ccc60023';
+String _$cinematicEntryIdsHash() => r'd535a2e4dbb60f81ae1cea64b14115494b4422d9';
 
 /// See also [_cinematicEntryIds].
 @ProviderFor(_cinematicEntryIds)
@@ -191,7 +191,7 @@ final _cinematicEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _CinematicEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$endingFrameHash() => r'b1ee54645a8ea133a3e35488b84aeb79b9701544';
+String _$endingFrameHash() => r'32fe11589339925d2765108f9b9d2c7e32b4ff39';
 
 /// See also [_endingFrame].
 @ProviderFor(_endingFrame)
@@ -322,7 +322,7 @@ class _EndingFrameProviderElement extends AutoDisposeProviderElement<int>
 }
 
 String _$entryContextActionsHash() =>
-    r'06b97aad5ea69b9a379f88525625aa8c7065d4c3';
+    r'5c4353ae741b4bafd2046b9a801e77324fa8977f';
 
 /// See also [_entryContextActions].
 @ProviderFor(_entryContextActions)
@@ -454,7 +454,7 @@ class _EntryContextActionsProviderElement
   String get entryId => (origin as _EntryContextActionsProvider).entryId;
 }
 
-String _$frameEndOffsetHash() => r'23292b810d25146945a92761725780a6c01c5616';
+String _$frameEndOffsetHash() => r'7537d90b87f974f1f7c9af4f248c46d19e33af1c';
 
 /// See also [_frameEndOffset].
 @ProviderFor(_frameEndOffset)
@@ -584,7 +584,7 @@ class _FrameEndOffsetProviderElement extends AutoDisposeProviderElement<double>
   int get frame => (origin as _FrameEndOffsetProvider).frame;
 }
 
-String _$frameSpacingHash() => r'b6efbe3e7da758078921b18a6b91cdd506f86895';
+String _$frameSpacingHash() => r'218185e0394e01b13c8bf37d402c638f4810d890';
 
 /// See also [_frameSpacing].
 @ProviderFor(_frameSpacing)
@@ -600,7 +600,7 @@ final _frameSpacingProvider = AutoDisposeProvider<double>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _FrameSpacingRef = AutoDisposeProviderRef<double>;
-String _$frameStartOffsetHash() => r'13381822c602dddec85110a9b1c3855a47c07172';
+String _$frameStartOffsetHash() => r'66a08dadb3741c0836d98b6968601b1079b91cb6';
 
 /// See also [_frameStartOffset].
 @ProviderFor(_frameStartOffset)
@@ -730,7 +730,7 @@ class _FrameStartOffsetProviderElement
   int get frame => (origin as _FrameStartOffsetProvider).frame;
 }
 
-String _$ignoreEntryFieldsHash() => r'602c6ed49c2d349912b9a3d448e72be350e9d4aa';
+String _$ignoreEntryFieldsHash() => r'3f09b6a0644048aebb3a520525b47943c085cb84';
 
 /// See also [_ignoreEntryFields].
 @ProviderFor(_ignoreEntryFields)
@@ -747,7 +747,7 @@ final _ignoreEntryFieldsProvider = AutoDisposeProvider<List<String>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _IgnoreEntryFieldsRef = AutoDisposeProviderRef<List<String>>;
-String _$longestEntryNameHash() => r'e28faa48892dbb64da18b39177390e09c73dc820';
+String _$longestEntryNameHash() => r'efa686f5099bd11a9e5cc5a52f883932f58d471d';
 
 /// See also [_longestEntryName].
 @ProviderFor(_longestEntryName)
@@ -764,7 +764,7 @@ final _longestEntryNameProvider = AutoDisposeProvider<String>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _LongestEntryNameRef = AutoDisposeProviderRef<String>;
-String _$segmentFieldsHash() => r'bf02df2288101b0055b4c2376e4f4336b36c8f37';
+String _$segmentFieldsHash() => r'09d6b3e1c5428165e80cd122e634e33cdf031099';
 
 /// See also [_segmentFields].
 @ProviderFor(_segmentFields)
@@ -781,7 +781,7 @@ final _segmentFieldsProvider = AutoDisposeProvider<ObjectBlueprint?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _SegmentFieldsRef = AutoDisposeProviderRef<ObjectBlueprint?>;
-String _$segmentPathsHash() => r'14d0fa46d736eab350f85a54908b939acd3562fd';
+String _$segmentPathsHash() => r'ffc6b402cd83f8d35eca4de7eb97113757d92135';
 
 /// See also [_segmentPaths].
 @ProviderFor(_segmentPaths)
@@ -912,7 +912,7 @@ class _SegmentPathsProviderElement
   String get entryId => (origin as _SegmentPathsProvider).entryId;
 }
 
-String _$segmentsHash() => r'4b38fe7227d758ce63b80733b122cf3a9676212f';
+String _$segmentsHash() => r'df9ff13dbbf42866bfb198f6062988d48da35ee6';
 
 /// See also [_segments].
 @ProviderFor(_segments)
@@ -1058,7 +1058,7 @@ class _SegmentsProviderElement extends AutoDisposeProviderElement<List<Segment>>
   String get path => (origin as _SegmentsProvider).path;
 }
 
-String _$showThumbsHash() => r'54d29c90b44317760879cbb63656a53fd73cced4';
+String _$showThumbsHash() => r'6e0ffe0024b04b2b73c4703962a3e949b028a513';
 
 /// See also [_showThumbs].
 @ProviderFor(_showThumbs)
@@ -1205,7 +1205,7 @@ class _ShowThumbsProviderElement extends AutoDisposeProviderElement<bool>
   int get endFrame => (origin as _ShowThumbsProvider).endFrame;
 }
 
-String _$sliderEndOffsetHash() => r'8b6fcf6b5d98782be5d72e962e4b3f6cf7356d85';
+String _$sliderEndOffsetHash() => r'f171aff799b25d4ed9a29726a4c910af891b8765';
 
 /// See also [_sliderEndOffset].
 @ProviderFor(_sliderEndOffset)
@@ -1222,7 +1222,7 @@ final _sliderEndOffsetProvider = AutoDisposeProvider<double>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _SliderEndOffsetRef = AutoDisposeProviderRef<double>;
-String _$sliderStartOffsetHash() => r'cea351bd17cd435ff70e20ce48f4b6e53b370445';
+String _$sliderStartOffsetHash() => r'4c988c6b8f973d9845d9f0401a3732703e003050';
 
 /// See also [_sliderStartOffset].
 @ProviderFor(_sliderStartOffset)
@@ -1240,7 +1240,7 @@ final _sliderStartOffsetProvider = AutoDisposeProvider<double>.internal(
 // ignore: unused_element
 typedef _SliderStartOffsetRef = AutoDisposeProviderRef<double>;
 String _$timeFractionFramesHash() =>
-    r'8015741ea21a16f837d627eefe543fbc6236db0f';
+    r'54704d73a15014590ff9e321a98c95e2709cd572';
 
 /// See also [_timeFractionFrames].
 @ProviderFor(_timeFractionFrames)
@@ -1372,7 +1372,7 @@ class _TimeFractionFramesProviderElement
       (origin as _TimeFractionFramesProvider).fractionModifier;
 }
 
-String _$timeFractionsHash() => r'd560bc95ea61d96501c85a1c74e3eb3e22538772';
+String _$timeFractionsHash() => r'2273d4813348bc5cc3e7b8bbd17d78ab3939696c';
 
 /// See also [_timeFractions].
 @ProviderFor(_timeFractions)
@@ -1389,7 +1389,7 @@ final _timeFractionsProvider = AutoDisposeProvider<int>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _TimeFractionsRef = AutoDisposeProviderRef<int>;
-String _$timePointOffsetHash() => r'7498c13cafb7517b374493ac38ab8e5e3a3441d0';
+String _$timePointOffsetHash() => r'1700a025ba74c3aa1ed3915791d60550dd53580d';
 
 /// See also [_timePointOffset].
 @ProviderFor(_timePointOffset)
@@ -1537,7 +1537,7 @@ class _TimePointOffsetProviderElement extends AutoDisposeProviderElement<double>
 }
 
 String _$totalSequenceFramesHash() =>
-    r'd4b107ec84c284c4ccc7b90e657979daf30ea139';
+    r'e756e31e18708523f758fa5e249bcf1373816394';
 
 /// See also [_totalSequenceFrames].
 @ProviderFor(_totalSequenceFrames)
@@ -1555,7 +1555,7 @@ final _totalSequenceFramesProvider = AutoDisposeProvider<int>.internal(
 // ignore: unused_element
 typedef _TotalSequenceFramesRef = AutoDisposeProviderRef<int>;
 String _$trackBackgroundFractionModifierHash() =>
-    r'e0aaee2ac472bad0bf9777a0ca67ead08a2351b3';
+    r'587f3d137423aba4a2b7a75ed2490e8fc64e6836';
 
 /// See also [_trackBackgroundFractionModifier].
 @ProviderFor(_trackBackgroundFractionModifier)
@@ -1574,7 +1574,7 @@ final _trackBackgroundFractionModifierProvider =
 // ignore: unused_element
 typedef _TrackBackgroundFractionModifierRef = AutoDisposeProviderRef<double>;
 String _$trackBackgroundLinesHash() =>
-    r'20ac7bd3700f1f91bd9053fb793ae6382fe9b073';
+    r'78e56d8095ca6b2e615457ad2f3ec5b0bb618007';
 
 /// See also [_trackBackgroundLines].
 @ProviderFor(_trackBackgroundLines)
@@ -1592,7 +1592,7 @@ final _trackBackgroundLinesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _TrackBackgroundLinesRef = AutoDisposeProviderRef<List<_FrameLine>>;
-String _$trackOffsetHash() => r'1f1ac2cb0fe819222d8ea488e86c896374f631a5';
+String _$trackOffsetHash() => r'30d47f3b10da598fd3a21f84b8cd840ba513ed29';
 
 /// See also [_trackOffset].
 @ProviderFor(_trackOffset)
@@ -1608,7 +1608,7 @@ final _trackOffsetProvider = AutoDisposeProvider<double>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef _TrackOffsetRef = AutoDisposeProviderRef<double>;
-String _$trackSizeHash() => r'9a61b99bd973ee4a896e962cb8b9fa690e2423a9';
+String _$trackSizeHash() => r'760f504d8f2b1f16852df36c7c44b0e7ad7adaff';
 
 /// See also [_trackSize].
 @ProviderFor(_trackSize)

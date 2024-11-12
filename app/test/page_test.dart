@@ -84,7 +84,11 @@ void main() {
       dataBlueprint: entryBlueprintFields,
     );
 
-    await page.createEntryFromBlueprint(container.passing, entry);
+    await page.createEntryFromBlueprint(
+      container.passing,
+      entry,
+      genericBlueprint: null,
+    );
 
     final newPage = container.read(pageProvider(page.id));
 

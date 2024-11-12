@@ -18,7 +18,7 @@ part "writers.g.dart";
 /// [path] the given path of the field.
 @riverpod
 List<Writer> fieldWriters(
-  FieldWritersRef ref,
+  Ref ref,
   String path, {
   bool exact = false,
 }) {
