@@ -132,6 +132,7 @@ impl EventHandler for ThreadIntakeHandler {
     }
 }
 
+#[derive(PartialEq)]
 enum IntakeCompletion {
     Success,
     Manual,
@@ -210,15 +211,13 @@ async fn complete_intake_with(
         return;
     };
 
-    match thread
-        .send_message(
-            &ctx,
-            CreateMessage::default()
-                .content(format!("{}", SUPPORT_ROLE_ID.mention()))
-                .embed(completion.completion_embed()),
-        )
-        .await
-    {
+    let mut message = CreateMessage::default().embed(completion.completion_embed());
+
+    if completion != IntakeCompletion::Manual {
+        message = message.content(format!("{}", SUPPORT_ROLE_ID.mention()));
+    }
+
+    match thread.send_message(&ctx, message).await {
         Ok(_) => {}
         Err(e) => {
             eprintln!("Error sending intake completion message: {}", e);
@@ -389,7 +388,7 @@ async fn create_ai_request(
         .max_tokens(512u32)
         .model("gpt-4o-mini")
         .messages(messages)
-        .temperature(0.5)
+        .temperature(0.2)
         .tools(vec![ChatCompletionToolArgs::default()
             .r#type(ChatCompletionToolType::Function)
             .function(
