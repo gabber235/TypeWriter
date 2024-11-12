@@ -28,6 +28,7 @@ data class VarContext<T : Any>(
     fun <T> getData(klass: Class<T>): T? {
         return gson.fromJson(data.data, klass)
     }
+
 }
 
 inline fun <reified T> VarContext<*>.getData(): T? {

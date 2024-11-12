@@ -168,6 +168,7 @@ class DataBlueprint with _$DataBlueprint {
 
   factory DataBlueprint.fromJson(Map<String, dynamic> json) =>
       _$DataBlueprintFromJson(json);
+
 }
 
 @freezed
@@ -206,7 +207,10 @@ extension EntryBlueprintExt on EntryBlueprint {
     if (genericBlueprint == null) return false;
     // If the blueprints is empty, all blueprints are allowed.
     if (blueprints.isEmpty) return true;
-    return blueprints.contains(genericBlueprint);
+    for (final blueprint in blueprints) {
+      if (blueprint.matches(genericBlueprint)) return true;
+    }
+    return blueprints.any((e) => e.matches(genericBlueprint));
   }
 
   Map<String, Modifier> fieldsWithModifier(String name) =>
@@ -389,6 +393,47 @@ extension DataBlueprintExtension on DataBlueprint {
   T? get<T>(String name) {
     final modifier = getModifier(name);
     return modifier?.data as T?;
+  }
+
+  bool matches(DataBlueprint other) {
+    if (this is PrimitiveBlueprint && other is PrimitiveBlueprint) {
+      return other.type == (this as PrimitiveBlueprint).type;
+    }
+    if (this is EnumBlueprint && other is EnumBlueprint) {
+      return listEquals(other.values, (this as EnumBlueprint).values);
+    }
+    if (this is ListBlueprint && other is ListBlueprint) {
+        return other.type.matches((this as ListBlueprint).type);
+    }
+    if (this is MapBlueprint && other is MapBlueprint) {
+        return other.key.matches((this as MapBlueprint).key) &&
+            other.value.matches((this as MapBlueprint).value);
+    }
+    if (this is ObjectBlueprint && other is ObjectBlueprint) {
+        final obj = this as ObjectBlueprint;
+        if (obj.fields.length != other.fields.length) return false;
+        if (!setEquals(obj.fields.keys.toSet(), other.fields.keys.toSet())) return false;
+        for (final key in obj.fields.keys) {
+          if (!other.fields.containsKey(key)) return false;
+          if (!obj.fields[key]!.matches(other.fields[key]!)) return false;
+        }
+        return true;
+    }
+    if (this is AlgebraicBlueprint && other is AlgebraicBlueprint) {
+        final alg = this as AlgebraicBlueprint;
+        if (alg.cases.length != other.cases.length) return false;
+        if (alg.cases.keys.toSet() != other.cases.keys.toSet()) return false;
+        for (final key in alg.cases.keys) {
+          if (!other.cases.containsKey(key)) return false;
+          if (!alg.cases[key]!.matches(other.cases[key]!)) return false;
+        }
+        return true;
+    }
+    if (this is CustomBlueprint && other is CustomBlueprint) {
+        return other.editor == (this as CustomBlueprint).editor &&
+            other.shape.matches((this as CustomBlueprint).shape);
+    }
+    return false;
   }
 }
 

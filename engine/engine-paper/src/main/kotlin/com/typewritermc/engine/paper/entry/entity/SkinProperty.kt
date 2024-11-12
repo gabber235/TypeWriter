@@ -1,7 +1,7 @@
 package com.typewritermc.engine.paper.entry.entity
 
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 
 data class SkinProperty(
     val texture: String = "",
@@ -10,7 +10,7 @@ data class SkinProperty(
     companion object : SinglePropertyCollectorSupplier<SkinProperty>(SkinProperty::class)
 }
 
-val Player.skin: SkinProperty
+val OfflinePlayer.skin: SkinProperty
     get() {
         val profile = playerProfile
         if (!profile.hasTextures()) return SkinProperty()

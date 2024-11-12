@@ -67,6 +67,7 @@ class VariableEditor extends HookConsumerWidget {
     }
 
     final variableDataBlueprint = variableBlueprint.variableDataBlueprint;
+    final header = Header.maybeOf(context);
 
     return Generic(
       dataBlueprint: customBlueprint.shape,
@@ -121,9 +122,9 @@ class VariableEditor extends HookConsumerWidget {
                   if (variableDataBlueprint != null) ...[
                     const SizedBox(height: 8),
                     Header(
-                      expanded: ValueNotifier(true),
-                      canExpand: false,
-                      depth: Header.maybeOf(context)?.depth ?? 0,
+                      expanded: header?.expanded ?? ValueNotifier(true),
+                      canExpand: header?.canExpand ?? false,
+                      depth: header?.depth ?? 0,
                       path: "$path.data",
                       combineActions: (actions) =>
                           Header.maybeOf(context)?.combineActions(actions),
