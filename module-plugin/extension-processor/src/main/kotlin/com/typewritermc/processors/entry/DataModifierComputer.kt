@@ -68,7 +68,7 @@ interface DataModifierComputer<A : Annotation> {
 
     context(Resolver)
     fun superInnerCompute(blueprint: DataBlueprint, annotation: A): DataModifier? {
-        return innerCompute(blueprint, annotation) ?: innerObjectCompute(blueprint, annotation)
+        return innerCompute(blueprint, annotation) ?: innerObjectCompute(blueprint, annotation) ?: compute(blueprint, annotation).getOrNull()
     }
 }
 
