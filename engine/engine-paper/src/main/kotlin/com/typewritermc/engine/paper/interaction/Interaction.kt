@@ -15,7 +15,6 @@ import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
-import com.typewritermc.engine.paper.utils.msg
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
@@ -128,7 +127,7 @@ class Interaction(val player: Player) : KoinComponent {
         val actions =
             Query.findWhere<ActionEntry> {
                 it in event && it.criteria.matches(event.player)
-            }
+            }.toList()
         actions.forEach { action -> action.execute(event.player) }
         val newTriggers =
             actions.flatMap { it.triggers }.map { EntryTrigger(it) }.filter {
