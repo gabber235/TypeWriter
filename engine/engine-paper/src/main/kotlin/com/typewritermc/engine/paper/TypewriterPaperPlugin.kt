@@ -195,7 +195,9 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
     val isFloodgateInstalled: Boolean by lazy { server.pluginManager.isPluginEnabled("Floodgate") }
 
     override suspend fun onDisableAsync() {
-        CommandAPI.onDisable()
+        if (CommandAPI.isLoaded()) {
+            CommandAPI.onDisable()
+        }
 
         get<StagingManager>().shutdown()
         get<FactDatabase>().shutdown()
