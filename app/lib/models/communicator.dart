@@ -170,6 +170,14 @@ class SocketNotifier extends StateNotifier<Socket?> {
         (data) => ref.read(communicatorProvider).handleStagingState(data),
       )
       ..on(
+        "updatePages",
+        (data) => ref.read(communicatorProvider).handleUpdatePages(data),
+      )
+      ..on(
+        "updateExtensions",
+        (data) => ref.read(communicatorProvider).handleUpdateExtensions(data),
+      )
+      ..on(
         "createPage",
         (data) => ref.read(communicatorProvider).handleCreatePage(data),
       )
@@ -474,6 +482,27 @@ class Communicator {
       orElse: () => StagingState.production,
     );
     ref.read(stagingStateProvider.notifier).state = state;
+  }
+
+  void handleUpdatePages(dynamic data) {
+    final rawPages = data as String;
+    final jsonPages = jsonDecode(rawPages) as List;
+
+    // ignore: unnecessary_lambdas
+    final pages = jsonPages.map((p) => Page.fromJson(p)).toList();
+    ref.read(bookProvider.notifier).book =
+        ref.read(bookProvider).copyWith(pages: pages);
+  }
+
+  void handleUpdateExtensions(dynamic data) {
+    final rawExtensions = data as String;
+    final jsonExtensions = jsonDecode(rawExtensions) as List;
+
+    // ignore: unnecessary_lambdas
+    final extensions =
+        jsonExtensions.map((e) => Extension.fromJson(e)).toList();
+    ref.read(bookProvider.notifier).book =
+        ref.read(bookProvider).copyWith(extensions: extensions);
   }
 
   void handleCreatePage(dynamic data) {
