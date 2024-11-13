@@ -47,24 +47,28 @@ class FieldHeader extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final parent = Header.maybeOf(context);
 
+    final headerActionFilters = ref.watch(headerActionFiltersProvider);
+    final availableActions = headerActionFilters
+        .where((filter) => filter.shouldShow(path, dataBlueprint))
+        .toList();
+
     // If there already is a header for this path, we don't need to create a new
     if (parent?.path == path) {
       useDelayedExecution(() {
         parent?.combineActions(
           HeaderActions(
-            leading: leading,
-            trailing: trailing,
-            actions: actions,
+            leading: leading +
+                filterActions(availableActions, HeaderActionLocation.leading),
+            trailing: trailing +
+                filterActions(availableActions, HeaderActionLocation.trailing),
+            actions: actions +
+                filterActions(availableActions, HeaderActionLocation.actions),
           ),
         );
       });
       return child;
     }
 
-    final headerActionFilters = ref.watch(headerActionFiltersProvider);
-    final availableActions = headerActionFilters
-        .where((filter) => filter.shouldShow(path, dataBlueprint))
-        .toList();
     final name =
         ref.watch(pathDisplayNameProvider(path)).nullIfEmpty ?? "Fields";
 
@@ -165,6 +169,16 @@ class FieldHeader extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> filterActions(
+    List<HeaderActionFilter> filters,
+    HeaderActionLocation location,
+  ) {
+    return filters
+        .where((filter) => filter.location(path, dataBlueprint) == location)
+        .map((filter) => filter.build(path, dataBlueprint))
+        .toList();
   }
 
   List<Widget> createActions(
