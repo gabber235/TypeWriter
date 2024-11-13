@@ -245,7 +245,7 @@ class StagingManagerImpl : StagingManager, KoinComponent {
 
     private fun saveStaging() {
         // If we are already publishing, we don't want to save the staging
-        if (stagingState != PUBLISHING) return
+        if (stagingState == PUBLISHING) return
         // Data is not loaded yet, so we can't save it
         val pages = this._pages ?: return
         val dir = stagingDir
@@ -271,10 +271,9 @@ class StagingManagerImpl : StagingManager, KoinComponent {
     override suspend fun publish(): Result<String> {
         if (stagingState != STAGING) return failure("Can only publish when in staging")
         if (this._pages == null) return failure("Pages are not loaded yet")
+        stagingState = PUBLISHING
         autoSaver.cancel()
         return DISPATCHERS_ASYNC.switchContext {
-            stagingState = PUBLISHING
-
             if (!publishedDir.exists()) publishedDir.mkdirs()
 
             try {
