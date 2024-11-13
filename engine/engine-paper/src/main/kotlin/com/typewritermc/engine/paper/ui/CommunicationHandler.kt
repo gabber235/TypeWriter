@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.Configuration
 import com.corundumstudio.socketio.HandshakeData
 import com.corundumstudio.socketio.SocketIOClient
 import com.corundumstudio.socketio.SocketIOServer
+import com.google.gson.JsonArray
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.server.server
 import com.typewritermc.engine.paper.entry.StagingManager
@@ -13,6 +14,7 @@ import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.config
 import com.typewritermc.engine.paper.utils.logErrorIfNull
 import com.typewritermc.engine.paper.utils.optionalConfig
+import com.typewritermc.loader.ExtensionLoader
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -26,6 +28,8 @@ class CommunicationHandler : KoinComponent {
     private val writers: Writers by inject()
     private val stagingManager: StagingManager by inject()
     private val panelHost: PanelHost by inject()
+    private val extensionLoader: ExtensionLoader by inject()
+    private val extensionJson by extensionLoader::extensionJson
 
     private val hostName: String by config(
         "hostname",
@@ -131,6 +135,18 @@ class CommunicationHandler : KoinComponent {
         plugin.listen<StagingChangeEvent> { (newState) ->
             server?.broadcastOperations?.sendEvent("stagingState", newState.name.lowercase())
         }
+    }
+
+    fun load() {
+        if (!enabled) return
+        server?.broadcastOperations?.sendEvent("stagingState", stagingManager.stagingState.name.lowercase())
+
+        val array = JsonArray()
+        stagingManager.pages.forEach { (_, page) ->
+            array.add(page)
+        }
+        server?.broadcastOperations?.sendEvent("updatePages", array.toString())
+        server?.broadcastOperations?.sendEvent("updateExtensions", extensionJson.toString())
     }
 
     private fun authenticate(data: HandshakeData): Boolean {

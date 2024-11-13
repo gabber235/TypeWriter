@@ -35,7 +35,6 @@ class DelayedActionEntry(
     @Help("The duration before the next triggers are fired.")
     private val duration: Var<Duration> = ConstVar(Duration.ZERO),
 ) : CustomTriggeringActionEntry {
-
     override fun execute(player: Player) {
         DISPATCHERS_ASYNC.launch {
             delay(duration.get(player).toMillis())

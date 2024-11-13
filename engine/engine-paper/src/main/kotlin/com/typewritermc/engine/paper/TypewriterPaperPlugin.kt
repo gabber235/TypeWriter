@@ -165,6 +165,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         get<TypewriterCore>().load()
 
         get<StagingManager>().loadState()
+        get<CommunicationHandler>().load()
         get<RoadNetworkManager>().load()
         get<InteractionHandler>().load()
         get<EntryListeners>().load()
