@@ -8,15 +8,14 @@ import com.typewritermc.engine.paper.entry.roadnetwork.gps.roadNetworkFindPath
 import com.typewritermc.engine.paper.entry.roadnetwork.pathfinding.PFInstanceSpace
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.Executors
+import kotlin.math.max
+import kotlin.math.min
 
 class RoadNetworkEditor(
     private val ref: Ref<out RoadNetworkEntry>,
@@ -64,16 +63,17 @@ class RoadNetworkEditor(
     fun recalculateEdges() {
         jobRecalculateEdges?.cancel()
 
-        val nrOfThreads = Runtime.getRuntime().availableProcessors()
+        val nrOfThreads = max(Runtime.getRuntime().availableProcessors() / 2, 1)
         jobRecalculateEdges = plugin.launch(Executors.newFixedThreadPool(nrOfThreads).asCoroutineDispatcher()) {
             update {
                 it.copy(edges = emptyList())
             }
             recalculateEdges.set(network.nodes.size)
+            val instancesSpaces = network.nodes.associate { it.location.world.uid to PFInstanceSpace(it.location.world) }
             coroutineScope {
                 network.nodes.map {
                     launch {
-                        recalculateEdgesForNode(it)
+                        recalculateEdgesForNode(it, instancesSpaces[it.location.world.uid]!!)
                         recalculateEdges.decrementAndGet()
                     }
                 }
@@ -82,8 +82,7 @@ class RoadNetworkEditor(
         }
     }
 
-    private suspend fun recalculateEdgesForNode(node: RoadNode) {
-        val instance = PFInstanceSpace(node.location.world)
+    private suspend fun recalculateEdgesForNode(node: RoadNode, instance: PFInstanceSpace) {
         val interestingNodes = network.nodes
             .filter { it != node && it.location.world == node.location.world && it.location.distanceSquared(node.location) < roadNetworkMaxDistance * roadNetworkMaxDistance }
         val generatedEdges =
