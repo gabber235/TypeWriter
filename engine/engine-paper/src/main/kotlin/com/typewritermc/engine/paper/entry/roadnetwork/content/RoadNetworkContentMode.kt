@@ -145,7 +145,6 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
     private fun addRoadNode() = DISPATCHERS_ASYNC.launch {
         val node = createNode()
         editorComponent.update { it.copy(nodes = it.nodes + node) }
-        editorComponent.recalculateEdges()
         ContentModeTrigger(
             context,
             SelectedRoadNodeContentMode(context, player, ref, node.id, true)
