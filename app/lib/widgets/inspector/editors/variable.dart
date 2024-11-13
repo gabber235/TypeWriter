@@ -47,7 +47,18 @@ class VariableEditor extends HookConsumerWidget {
     final value = ref.watch(fieldValueProvider(path));
     final data = variableData(value);
     if (data == null) {
-      return FieldEditor(path: path, dataBlueprint: customBlueprint.shape);
+      final child =
+          FieldEditor(path: path, dataBlueprint: customBlueprint.shape);
+
+      if (customBlueprint.shape.hasCustomLayout) {
+        return child;
+      }
+
+      return FieldHeader(
+        path: path,
+        dataBlueprint: customBlueprint.shape,
+        child: child,
+      );
     }
 
     final variableEntryId = data.ref;

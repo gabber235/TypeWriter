@@ -16,7 +16,7 @@ import kotlin.math.max
 @Entry(
     "countdown_fact",
     "A fact that counts down from the set value",
-    Colors.BLUE,
+    Colors.PURPLE,
     "material-symbols:person-pin"
 )
 /**
