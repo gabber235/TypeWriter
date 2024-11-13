@@ -76,6 +76,8 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
     private var playTime = Duration.ZERO
     private var totalDuration = Duration.ZERO
 
+    private var completedAnimation = false
+
     override val triggers: List<Ref<out TriggerableEntry>>
         get() = entry.triggers + (selected?.triggers ?: emptyList())
 
@@ -138,7 +140,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
             return
         }
 
-        if (playTime.toTicks() % 100 > 0 && playTime > totalDuration * 1.1 && !isFirst) {
+        if (playTime.toTicks() % 100 > 0 && completedAnimation && !isFirst) {
             // Only update periodically to avoid spamming the player
             return
         }
@@ -182,6 +184,8 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
         val maxOptions = min(4, around.size)
         val showingOptions = min(maxOptions, limitedOptions)
+
+        completedAnimation = maxOptions == showingOptions
 
         for (i in 0 until showingOptions) {
             val option = around[i]
