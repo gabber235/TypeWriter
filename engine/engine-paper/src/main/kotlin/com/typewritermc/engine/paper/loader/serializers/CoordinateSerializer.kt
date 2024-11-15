@@ -21,11 +21,11 @@ class CoordinateSerializer : DataSerializer<Coordinate> {
         }
 
         if (json is JsonObject) {
-            val x = json.get("x").asDouble
-            val y = json.get("y").asDouble
-            val z = json.get("z").asDouble
-            val yaw = json.get("yaw").asDouble
-            val pitch = json.get("pitch").asDouble
+            val x = json.get("x")?.asDouble ?: 0.0
+            val y = json.get("y")?.asDouble ?: 0.0
+            val z = json.get("z")?.asDouble ?: 0.0
+            val yaw = json.get("yaw")?.asDouble ?: 0.0
+            val pitch = json.get("pitch")?.asDouble ?: 0.0
             return Coordinate(x, y, z, yaw.toFloat(), pitch.toFloat())
         }
 
