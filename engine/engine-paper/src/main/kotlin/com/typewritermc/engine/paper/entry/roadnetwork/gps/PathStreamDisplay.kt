@@ -22,6 +22,7 @@ import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
 import com.typewritermc.engine.paper.utils.distanceSqrt
 import com.typewritermc.engine.paper.utils.firstWalkableLocationBelow
+import io.ktor.util.collections.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -111,7 +112,7 @@ private class PlayerPathStreamDisplay(
     private var gps = PointToPointGPS(ref, { startLocation(player) }, { endLocation(player) })
     private var edges = emptyList<GPSEdge>()
 
-    private val lines = mutableListOf<PathLine>()
+    private val lines = ConcurrentSet<PathLine>()
     private var lastRefresh = 0L
 
     private var job: Job? = null
