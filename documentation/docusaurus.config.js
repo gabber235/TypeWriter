@@ -235,7 +235,14 @@ const config = {
         require.resolve("./plugins/code-snippets/index.js"),
     ],
     future: {
-        experimental_faster: true,
+        experimental_faster: {
+            swcJsLoader: true,
+            swcJsMinimizer: true,
+            swcHtmlMinimizer: true,
+            lightningCssMinimizer: true,
+            rspackBundler: false,
+            mdxCrossCompilerCache: true,
+          },
     },
 };
 
