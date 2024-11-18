@@ -119,7 +119,7 @@ impl EventHandler for ThreadIntakeHandler {
 
         // We want to have a few safety checks to make sure we don't get a super high open AI bill.
 
-        if thread.message_count.unwrap_or(0) > 5 {
+        if thread.message_count.unwrap_or(0) > 2 {
             println!(
                 "Force close intake process for {} because of to many messages",
                 thread.name()
@@ -158,10 +158,10 @@ impl IntakeCompletion {
                         They will likely help you out soon.
                     "}),
             Self::TooManyMessages => CreateEmbed::default()
-                .title("Intake Too Long")
-                .color(0xFF0000)
+                .title("Intake Completed")
+                .color(0x0ccf92)
                 .description(formatdoc! {"
-                        This intake is too long. It has been closed.
+                        Thanks for your clear description of the problem!
                         I will pass the ticket on to the Support team.
                     "}),
             Self::InquiryNotProvided => CreateEmbed::default()
