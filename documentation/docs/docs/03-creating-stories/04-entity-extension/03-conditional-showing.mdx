@@ -1,0 +1,40 @@
+---
+difficulty: Normal
+---
+
+import EntrySearch from "@site/src/components/EntrySearch";
+import Image from "@site/src/components/Image";
+
+# Conditional NPC showing
+:::warning[NPC created]
+In this tutorial, we assume you already have created an entity.\
+If you haven't done that yet, please follow the [entity extension tutorial](./index.mdx) first.
+:::
+In this tutorial, you will learn how to conditionally show an entity using audiences.
+
+## Adding an audience entry
+There are a lot of different audience entries available. For this tutorial, we will use cinematic audience, but all others have similar features.
+
+
+Firstly, click on the + icon in the top right corner of the panel and search for `New Cinematic Audience`. Add it to your page by clicking on the + icon.
+
+<EntrySearch entryName="cinematic_audience"/>
+
+## Adding it onto your entity instance.
+Now hold your entity instance and drag it onto the `New Cinematic Audience` entry. This will link the audience to the entity.
+
+It should now look something like this:
+
+<Image img={require("../../assets/entity-extension/audience-entity-link.png")} alt="Audience Entity Link" width={400} />
+
+## Configuring the audience
+Inside the audience entry, there are 2 fields:
+* **Cinematic**: This is the cinematic that the audience will be linked to.
+* **Inverted**: This will invert the audience, meaning that the entity will only be shown when the audience is not met.
+
+## Result
+
+:::info[Result]
+Result will be later added.
+TODO: Add result video
+:::
