@@ -315,7 +315,9 @@ private class DisplayCameraAction(
 
     private fun setupPath(segment: CameraSegment) {
         path = segment.path.transform(player, segment.duration - BASE_INTERPOLATION) {
-            it.add(y = player.eyeHeight)
+            // We want this to be static as we assume the user was the correct height when capturing.
+            val playerDefaultEyeHeight = 1.6
+            it.add(y = playerDefaultEyeHeight)
         }
     }
 
