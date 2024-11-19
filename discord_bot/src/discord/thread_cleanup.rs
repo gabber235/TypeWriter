@@ -27,7 +27,6 @@ pub async fn cleanup_threads() -> Result<(), WinstonError> {
         .collect::<Vec<_>>();
 
     let answered_tag = get_tag(&available_tags, "answered")?;
-    let intake_tag = get_tag(&available_tags, "intake")?;
 
     let active_threads = GUILD_ID.get_active_threads(&discord).await?;
 
@@ -48,11 +47,6 @@ pub async fn cleanup_threads() -> Result<(), WinstonError> {
 
         if thread.applied_tags.iter().any(|tag| *tag == answered_tag) {
             resolve_answered_thread(&discord, thread, &available_tags).await?;
-            continue;
-        }
-
-        if thread.applied_tags.iter().any(|tag| *tag == intake_tag) {
-            resolve_intake_thread(&discord, thread, &available_tags).await?;
             continue;
         }
 
@@ -149,95 +143,6 @@ async fn resolve_answered_thread(
 
         )
         .await?;
-
-    Ok(())
-}
-
-async fn resolve_intake_thread(
-    discord: &Context,
-    mut thread: channel::GuildChannel,
-    available_tags: &[ForumTag],
-) -> Result<(), WinstonError> {
-    let Some(last_message_date) = get_last_message_date(&thread) else {
-        return Ok(());
-    };
-
-    let now = Timestamp::now();
-    let duration = now.timestamp() - last_message_date.timestamp();
-
-    let hours = [3, 12, 22];
-    // If the intake is not completed, we want to send the owner a reminder in dms.
-    if hours.iter().any(|h| {
-        duration > Duration::hours(*h).num_seconds()
-            && duration < Duration::hours(h + 1).num_seconds()
-    }) {
-        let owner_id = thread.owner_id.ok_or(WinstonError::NotAThreadChannel)?;
-
-        let dms = owner_id.create_dm_channel(&discord).await?;
-
-        if let Err(e) = dms
-            .send_message(
-                discord,
-                CreateMessage::default()
-                    .content(format!("{}", owner_id.mention()))
-                    .embed(
-                        CreateEmbed::default()
-                            .title("Intake Reminder")
-                            .color(0xFF0000)
-                            .description(formatdoc! {"
-                                You currently have an intake open for {} that is overdue.
-                                Please complete the intake as soon as possible.
-
-                                **Completing the intake is mandatory for the ticket to be answered and look by the support team.**
-                                ", thread.mention()})
-                    )
-                    ,
-
-            )
-            .await
-        {
-            eprintln!("Failed to send message: {}", e);
-        } else {
-            println!("Sent reminder message to {}", owner_id.mention());
-        }
-    }
-
-    if duration < Duration::days(1).num_seconds() {
-        return Ok(());
-    }
-
-    println!("Closing Intake thread {} ({})", thread.id, thread.name(),);
-
-    let Some(resolved_tag) = available_tags.get_tag_id("resolved") else {
-        return Err(WinstonError::TagNotFound("resolved".to_string()));
-    };
-
-    thread
-        .edit_thread(
-            discord,
-            EditThread::default()
-                .applied_tags(vec![resolved_tag])
-                .locked(false),
-        )
-        .await?;
-
-    let embed = CreateEmbed::default()
-        .title("Intake Failed")
-        .color(0x8c44ff)
-        .description(formatdoc! {"
-            The intake took too long to complete.
-            To help us, it is **mandatory** to provide the requested information.
-
-            If you still need help, you can make a new post in the {} channel.
-        ", QUESTIONS_CHANNEL.mention()})
-        .timestamp(Timestamp::now());
-
-    if let Err(e) = thread
-        .send_message(discord, CreateMessage::default().embed(embed))
-        .await
-    {
-        eprintln!("Failed to send message: {}", e);
-    }
 
     Ok(())
 }

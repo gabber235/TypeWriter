@@ -136,8 +136,6 @@ async fn startup_discord_bot() {
                 post_in_questions(),
                 post_bug_in_questions(),
                 post_suggestion_in_questions(),
-                complete_intake(),
-                example_attachment(),
             ],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
@@ -156,7 +154,6 @@ async fn startup_discord_bot() {
         .event_handler(TaskFixedHandler)
         .event_handler(TicketReopenHandler)
         .event_handler(ThreadArchivingHandler)
-        .event_handler(ThreadIntakeHandler)
         .event_handler(SupportAnsweringHandler)
         .event_handler(ThreadClosedBlockerHandler)
         .await;
