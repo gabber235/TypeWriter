@@ -17,7 +17,8 @@ class _DelayedExecutionHook extends Hook<void> {
   _DelayedExecutionHookState createState() => _DelayedExecutionHookState();
 }
 
-class _DelayedExecutionHookState extends HookState<void, _DelayedExecutionHook> {
+class _DelayedExecutionHookState
+    extends HookState<void, _DelayedExecutionHook> {
   void _run() {
     WidgetsBinding.instance.addPostFrameCallback((_) => hook.function());
   }

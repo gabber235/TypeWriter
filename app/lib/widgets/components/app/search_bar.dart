@@ -1,3 +1,5 @@
+import "dart:math";
+
 import "package:auto_size_text/auto_size_text.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
@@ -8,6 +10,7 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:text_scroll/text_scroll.dart";
+import "package:typewriter/hooks/staggered_animation_controllers.dart";
 import "package:typewriter/models/communicator.dart";
 import "package:typewriter/models/staging.dart";
 import "package:typewriter/utils/debouncer.dart";
@@ -56,7 +59,7 @@ List<SearchElement> searchElements(Ref ref) {
   final filtered =
       actions.where((e) => search.filters.every((f) => f.filter(e)));
 
-  return filtered.take(30).toList();
+  return filtered.toList();
 }
 
 @riverpod
@@ -1096,45 +1099,59 @@ class _SearchFilters extends HookConsumerWidget {
   }
 }
 
-class _SearchResults extends HookConsumerWidget {
+class _SearchResults extends StatefulHookConsumerWidget {
   const _SearchResults();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_SearchResults> createState() => _SearchResultsState();
+}
+
+class _SearchResultsState extends ConsumerState<_SearchResults>
+    with TickerProviderStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    final animatedResults = min(8, ref.watch(searchElementsProvider).length);
     final elements = ref.watch(searchElementsProvider);
+    final controllers = useStaggeredAnimationControllers(
+      count: animatedResults,
+      duration: 1.seconds,
+      interval: 50.ms,
+      vsync: this,
+    );
     final focusNodes = ref.watch(searchFocusNodesProvider);
     final globalKeys = ref.watch(searchGlobalKeysProvider);
 
     return Flexible(
       child: ClipPath(
         clipper: const VerticalClipper(additionalWidth: 100),
-        child: SingleChildScrollView(
-          clipBehavior: Clip.none,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < elements.length; i++)
-                _ResultTile(
-                  key: globalKeys[i],
-                  onPressed: () =>
-                      _activateItem(elements, i, context, ref.passing),
-                  focusNode: focusNodes[i],
-                  title: elements[i].title,
-                  color: elements[i].color(context),
-                  description: elements[i].description(context),
-                  icon: elements[i].icon(context),
-                  suffixIcon: elements[i].suffixIcon(context),
-                  actions: elements[i].actions(ref.passing),
-                ),
-            ]
-                .animate(interval: 50.ms)
+        child: ListView.builder(
+          itemCount: elements.length,
+          itemBuilder: (_, i) {
+            final child = _ResultTile(
+              key: globalKeys[i],
+              onPressed: () => _activateItem(elements, i, context, ref.passing),
+              focusNode: focusNodes[i],
+              title: elements[i].title,
+              color: elements[i].color(context),
+              description: elements[i].description(context),
+              icon: elements[i].icon(context),
+              suffixIcon: elements[i].suffixIcon(context),
+              actions: elements[i].actions(ref.passing),
+            );
+
+            if (i >= animatedResults) {
+              return child;
+            }
+
+            return child
+                .animate(controller: controllers[i], autoPlay: false)
                 .scaleXY(
                   begin: 0.9,
                   curve: Curves.elasticOut,
                   duration: 1.seconds,
                 )
-                .fadeIn(duration: 500.ms),
-          ),
+                .fadeIn(duration: 500.ms);
+          },
         ),
       ),
     );
