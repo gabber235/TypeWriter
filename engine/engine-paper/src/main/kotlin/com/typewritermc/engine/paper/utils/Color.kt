@@ -5,7 +5,7 @@ class Color(
 ) {
     companion object {
         fun fromHex(hex: String): Color {
-            val color = hex.removePrefix("#").toInt(16)
+            val color = hex.removePrefix("#").toLong(16).toInt()
             return Color(color)
         }
 
