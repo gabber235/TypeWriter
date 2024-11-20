@@ -136,6 +136,7 @@ async fn startup_discord_bot() {
                 post_in_questions(),
                 post_bug_in_questions(),
                 post_suggestion_in_questions(),
+                support(),
             ],
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
