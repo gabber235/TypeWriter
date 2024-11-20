@@ -9,9 +9,14 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
+import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
+import com.typewritermc.engine.paper.utils.asMini
 import org.bukkit.entity.Player
+
+private val dropMessage by snippet("give_item.drop", "<gray>Some items have been dropped because your inventory is full")
 
 @Entry("give_item", "Give an item to the player", Colors.RED, "streamline:give-gift-solid")
 /**
@@ -33,7 +38,13 @@ class GiveItemActionEntry(
         super.execute(player)
 
         SYNC.launch {
-            player.inventory.addItem(item.get(player).build(player))
+            val leftOver = player.inventory.addItem(item.get(player).build(player))
+            leftOver.values.forEach {
+                player.world.dropItemNaturally(player.location, it)
+            }
+            if (leftOver.isNotEmpty()) {
+                player.sendMessage(dropMessage.parsePlaceholders(player).asMini())
+            }
         }
     }
 }
