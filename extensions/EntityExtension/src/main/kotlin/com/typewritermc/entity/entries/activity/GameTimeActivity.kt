@@ -63,8 +63,8 @@ class GameTimeRange(
 }
 
 class GameTimedActivity(
-    val time: GameTimeRange,
-    val activity: Ref<out EntityActivityEntry>,
+    val time: GameTimeRange = GameTimeRange(),
+    val activity: Ref<out EntityActivityEntry> = emptyRef(),
 ) {
     operator fun contains(time: Long): Boolean {
         return time in this.time
