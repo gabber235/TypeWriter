@@ -44,7 +44,7 @@ class AmbientSoundActivityEntry(
 }
 
 data class AmbientSound(
-    val sound: Sound,
+    val sound: Sound = Sound.EMPTY,
     @Default("1.0")
     val weight: Double = 1.0,
 )

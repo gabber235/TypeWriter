@@ -46,8 +46,8 @@ class AudienceActivityEntry(
 }
 
 class AudienceActivityPair(
-    val audience: Ref<out AudienceEntry>,
-    val activity: Ref<out IndividualEntityActivityEntry>,
+    val audience: Ref<out AudienceEntry> = emptyRef(),
+    val activity: Ref<out IndividualEntityActivityEntry> = emptyRef(),
 )
 
 class AudienceActivity(
