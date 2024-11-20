@@ -28,7 +28,7 @@ impl Display for Message {
     ephemeral,
     check = "check_is_support"
 )]
-pub async fn support(
+pub async fn follow_up(
     ctx: Context<'_>,
     #[description = "The reason for closing the ticket"] reason: Message,
 ) -> Result<(), WinstonError> {
