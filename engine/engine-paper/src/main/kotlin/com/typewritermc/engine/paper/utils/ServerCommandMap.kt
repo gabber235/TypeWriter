@@ -9,12 +9,24 @@ import dev.jorel.commandapi.CommandTree
 
 fun CustomCommandEntry.Companion.registerAll() {
     val entries = Query.find<CustomCommandEntry>()
-    entries.forEach { it.register() }
+    entries.forEach {
+        try {
+            it.register()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
 
 fun CustomCommandEntry.Companion.unregisterAll() {
     val entries = Query.find<CustomCommandEntry>()
-    entries.forEach { it.unregister() }
+    entries.forEach {
+        try {
+            it.unregister()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
 
 fun CustomCommandEntry.register() {
