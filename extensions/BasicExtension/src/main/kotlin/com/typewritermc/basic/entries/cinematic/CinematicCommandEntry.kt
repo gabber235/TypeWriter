@@ -80,12 +80,12 @@ class CinematicPlayerCommandEntry(
 }
 
 data class CommandSegment(
-    override val startFrame: Int,
-    override val endFrame: Int,
+    override val startFrame: Int = 0,
+    override val endFrame: Int = 0,
     @Help("Each line is a different command. Commands should not be prefixed with <code>/</code>.")
     @Placeholder
     @MultiLine
-    val command: String,
+    val command: String = "",
 ) : Segment
 
 class CommandAction(

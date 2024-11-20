@@ -66,7 +66,7 @@ data class RoadNetwork(
 )
 
 @JvmInline
-value class RoadNodeId(val id: Int) {
+value class RoadNodeId(val id: Int = 0) {
     override fun toString(): String = id.toString()
 }
 

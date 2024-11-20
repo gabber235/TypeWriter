@@ -41,8 +41,8 @@ class BlindingCinematicEntry(
 }
 
 data class BlindingSegment(
-    override val startFrame: Int,
-    override val endFrame: Int,
+    override val startFrame: Int = 0,
+    override val endFrame: Int = 0,
 ) : Segment
 
 class BlindingCinematicAction(
