@@ -13,12 +13,10 @@ import com.typewritermc.engine.paper.entry.entity.SimpleEntityDefinition
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.snippets.snippet
-import com.typewritermc.engine.paper.utils.Sound
-import com.typewritermc.engine.paper.utils.asMini
-import com.typewritermc.engine.paper.utils.asMiniWithResolvers
-import com.typewritermc.engine.paper.utils.isFloodgate
+import com.typewritermc.engine.paper.utils.*
 import com.typewritermc.entity.entries.data.minecraft.display.BillboardConstraintProperty
 import com.typewritermc.entity.entries.data.minecraft.display.TranslationProperty
+import com.typewritermc.entity.entries.data.minecraft.display.text.BackgroundColorProperty
 import com.typewritermc.entity.entries.entity.minecraft.TextDisplayEntity
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
@@ -33,6 +31,7 @@ val namePlate by snippet(
 )
 
 val namePlateOffset by snippet("entity.name.offset", 0.2)
+val namePlateColor by snippet("entity.name.color", "#40000000")
 
 @Entry(
     "named_entity_definition",
@@ -83,11 +82,13 @@ class NamedEntity(
         hologram.consumeProperties(
             LinesProperty(hologramText),
             TranslationProperty(Vector(y = namePlateOffset)),
-            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER)
+            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER),
+            BackgroundColorProperty(Color.fromHex(namePlateColor))
         )
         indicatorEntity.consumeProperties(
             TranslationProperty(calculateIndicatorOffset(hologramText)),
-            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER)
+            BillboardConstraintProperty(AbstractDisplayMeta.BillboardConstraints.CENTER),
+            BackgroundColorProperty(Color.fromHex(namePlateColor))
         )
     }
 
