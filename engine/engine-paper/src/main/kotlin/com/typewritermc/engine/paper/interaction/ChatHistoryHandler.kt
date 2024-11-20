@@ -47,14 +47,18 @@ class ChatHistoryHandler :
 
     // When the serer sends a message to the player
     override fun onPacketSend(event: PacketSendEvent?) {
-        if (event == null) return
-        val component = findMessage(event) ?: return
-        if (component is TextComponent && component.content() == "no-index") return
-        val history = getHistory(event.user.uuid)
-        history.addMessage(component)
+        try {
+            if (event == null) return
+            val component = findMessage(event) ?: return
+            if (component is TextComponent && component.content() == "no-index") return
+            val history = getHistory(event.user.uuid)
+            history.addMessage(component)
 
-        if (history.isBlocking()) {
-            event.isCancelled = true
+            if (history.isBlocking()) {
+                event.isCancelled = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
