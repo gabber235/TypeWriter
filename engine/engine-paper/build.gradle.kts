@@ -62,7 +62,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnlyApi("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.3.1")
 }
 
 tasks.withType<ShadowJar> {

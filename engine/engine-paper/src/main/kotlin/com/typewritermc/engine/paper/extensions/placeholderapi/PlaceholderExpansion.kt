@@ -1,7 +1,9 @@
 package com.typewritermc.engine.paper.extensions.placeholderapi
 
 import com.typewritermc.core.entries.Query
+import com.typewritermc.core.utils.Reloadable
 import com.typewritermc.engine.paper.entry.PlaceholderEntry
+import com.typewritermc.engine.paper.entry.PlaceholderParser
 import lirand.api.extensions.server.server
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
@@ -14,11 +16,13 @@ import org.bukkit.plugin.Plugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 
 private val noneTracked by snippet("quest.tracked.none", "<gray>None tracked</gray>")
 
-object PlaceholderExpansion : PlaceholderExpansion(), KoinComponent {
+object PlaceholderExpansion : PlaceholderExpansion(), KoinComponent, Reloadable {
     private val plugin: Plugin by inject()
     override fun getIdentifier(): String = "typewriter"
 
@@ -28,6 +32,10 @@ object PlaceholderExpansion : PlaceholderExpansion(), KoinComponent {
 
     override fun persist(): Boolean = true
 
+    override fun load() = cachedParsers.clear()
+    override fun unload() = cachedParsers.clear()
+
+    private val cachedParsers: ConcurrentHashMap<String, PlaceholderParser> = ConcurrentHashMap<String, PlaceholderParser>()
     override fun onPlaceholderRequest(player: Player?, params: String): String? {
         if (params == "tracked_quest") {
             if (player == null) return null
@@ -40,8 +48,15 @@ object PlaceholderExpansion : PlaceholderExpansion(), KoinComponent {
                 .ifBlank { noneTracked }
         }
 
-        val entry: PlaceholderEntry = Query.findById(params) ?: Query.findByName(params) ?: return null
-        return entry.display(player)
+        val parts = params.split(':')
+        val id = parts[0]
+
+        val parser = cachedParsers.getOrPut(id) {
+            val entry: PlaceholderEntry = Query.findById(id) ?: Query.findByName(id) ?: return null
+            entry.parser()
+        }
+
+        return parser.parse(player, parts.subList(1, parts.size))
     }
 }
 

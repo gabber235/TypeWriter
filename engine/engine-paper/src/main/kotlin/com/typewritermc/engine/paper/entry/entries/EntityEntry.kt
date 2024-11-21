@@ -5,11 +5,8 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.core.utils.point.Position
-import com.typewritermc.engine.paper.entry.ManifestEntry
-import com.typewritermc.engine.paper.entry.PlaceholderEntry
+import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entity.*
-import com.typewritermc.engine.paper.entry.findDisplay
-import com.typewritermc.engine.paper.entry.inAudience
 import com.typewritermc.engine.paper.utils.Sound
 import org.bukkit.entity.Player
 import kotlin.reflect.KClass
@@ -24,7 +21,9 @@ interface SpeakerEntry : PlaceholderEntry {
     @Help("The sound that will be played when the entity speaks.")
     val sound: Sound
 
-    override fun display(player: Player?): String? = displayName.get(player)
+    override fun parser(): PlaceholderParser = placeholderParser {
+        supply { player -> displayName.get(player) }
+    }
 }
 
 /**

@@ -33,8 +33,12 @@ interface SidebarEntry : AudienceFilterEntry, PlaceholderEntry, PriorityEntry {
     @Placeholder
     val title: Var<String>
 
-    override fun display(player: Player?): String? {
+    fun display(player: Player?): String {
         return title.get(player)?.parsePlaceholders(player) ?: ""
+    }
+
+    override fun parser(): PlaceholderParser = placeholderParser {
+        supply { player -> display(player) }
     }
 
     override fun display(): AudienceFilter = SidebarFilter(ref()) { player ->
@@ -66,7 +70,7 @@ private class PlayerSidebarDisplay(
     override fun initialize() {
         super.initialize()
         val sidebar = ref.get() ?: return
-        val title = sidebar.display(player) ?: ""
+        val title = sidebar.display(player)
 
         createSidebar(title)
     }
@@ -80,7 +84,7 @@ private class PlayerSidebarDisplay(
         super.tick()
 
         val sidebar = ref.get() ?: return
-        val title = sidebar.display(player) ?: ""
+        val title = sidebar.display(player)
 
         val lines = lines
             .filter { player.inAudience(it) }

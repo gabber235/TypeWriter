@@ -6,12 +6,11 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.engine.paper.entry.PlaceholderEntry
+import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.AudienceEntry
 import com.typewritermc.engine.paper.entry.entries.AudienceFilter
 import com.typewritermc.engine.paper.entry.entries.AudienceFilterEntry
 import com.typewritermc.engine.paper.entry.entries.Invertible
-import com.typewritermc.engine.paper.entry.findDisplay
 import com.typewritermc.engine.paper.events.AsyncCinematicEndEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -43,11 +42,13 @@ class CinematicSkippableAudienceEntry(
         return CinematicSkippableAudienceDisplay(ref())
     }
 
-    override fun display(player: Player?): String? {
-        val default = SkipConfirmationKey.SNEAK.keybind
-        if (player == null) return default
-        val display = ref().findDisplay() as? CinematicSkippableAudienceDisplay ?: return default
-        return display.confirmationKey(player)?.keybind ?: default
+    override fun parser(): PlaceholderParser = placeholderParser {
+        supply { player ->
+            val default = SkipConfirmationKey.SNEAK.keybind
+            if (player == null) return@supply default
+            val display = ref().findDisplay() as? CinematicSkippableAudienceDisplay ?: return@supply default
+            display.confirmationKey(player)?.keybind ?: default
+        }
     }
 }
 

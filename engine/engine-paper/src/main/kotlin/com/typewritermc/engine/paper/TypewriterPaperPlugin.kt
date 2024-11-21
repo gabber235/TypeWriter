@@ -172,6 +172,10 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         get<AudienceManager>().load()
         get<MessengerFinder>().load()
         CustomCommandEntry.registerAll()
+
+        if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
+            PlaceholderExpansion.load()
+        }
     }
 
     suspend fun unload() {
@@ -183,6 +187,10 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         get<InteractionHandler>().unload()
         get<RoadNetworkManager>().unload()
         get<StagingManager>().unload()
+
+        if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
+            PlaceholderExpansion.unload()
+        }
 
         // Needs to be last, as it will unload the classLoader
         get<TypewriterCore>().unload()
