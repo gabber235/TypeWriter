@@ -1,9 +1,11 @@
 package com.typewritermc.basic.entries.fact
 
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.core.extension.annotations.Entry
+import com.typewritermc.core.utils.formatCompact
+import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.ExpirableFactEntry
 import com.typewritermc.engine.paper.entry.entries.GroupEntry
 import com.typewritermc.engine.paper.entry.entries.PersistableFactEntry
@@ -11,7 +13,9 @@ import com.typewritermc.engine.paper.facts.FactData
 import com.typewritermc.engine.paper.facts.FactId
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.max
+import kotlin.time.Duration.Companion.seconds
 
 @Entry(
     "countdown_fact",
@@ -51,5 +55,30 @@ class CountdownFact(
     private fun calculateValue(data: FactData): Int {
         val timeDifference = Duration.between(data.lastUpdate, LocalDateTime.now())
         return max(0, (data.value - timeDifference.seconds).toInt())
+    }
+
+    override fun parser(): PlaceholderParser = placeholderParser {
+        include(super<ExpirableFactEntry>.parser())
+
+        literal("time") {
+            literal("expires") {
+                literal("relative") {
+                    supplyPlayer { player ->
+                        val data = readForPlayersGroup(player)
+                        val duration = data.value.seconds
+
+                        duration.formatCompact()
+                    }
+                }
+
+                supplyPlayer { player ->
+                    val data = readForPlayersGroup(player)
+                    val now = LocalDateTime.now()
+                    val expireTime = now.plusSeconds(data.value.toLong())
+
+                    expireTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                }
+            }
+        }
     }
 }
