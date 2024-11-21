@@ -92,7 +92,7 @@ private fun CommandTree.factsCommands() = literalArgument("facts") {
             anyExecutor { sender, args ->
                 val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
                 val entries = Query.find<WritableFactEntry>().toList()
-                if (entries.none()) {
+                if (entries.isEmpty()) {
                     sender.msg("There are no facts available.")
                     return@anyExecutor
                 }
@@ -100,7 +100,42 @@ private fun CommandTree.factsCommands() = literalArgument("facts") {
                 for (entry in entries) {
                     entry.write(target, 0)
                 }
-                sender.msg("All facts for ${target.name} have been reset.")
+                sender.msg("All facts for <green>${target.name}</green> have been reset.")
+            }
+        }
+    }
+
+    literalArgument("query") {
+        argument(entryArgument<ReadableFactEntry>("fact")) {
+            optionalTarget {
+                anyExecutor { sender, args ->
+                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                    val fact = args["fact"] as ReadableFactEntry
+                    sender.sendMini("Fact for <green>${target.name}</green>:")
+                    sender.sendMini(fact.format(target))
+                }
+            }
+        }
+    }
+
+    literalArgument("inspect") {
+        argument(pages("page", PageType.STATIC)) {
+            optionalTarget {
+                anyExecutor { sender, args ->
+                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
+                    val page = args["page"] as Page
+                    val facts = page.entries.filterIsInstance<ReadableFactEntry>().sortedBy { it.name }
+                    sender.sendMini("Facts on page <blue>${page.name}</blue> for <green>${target.name}</green>:")
+
+                    if (facts.isEmpty()) {
+                        sender.msg("There are no facts on this page.")
+                        return@anyExecutor
+                    }
+
+                    for (fact in facts) {
+                        sender.sendMini(fact.format(target))
+                    }
+                }
             }
         }
     }
@@ -110,32 +145,45 @@ private fun CommandTree.factsCommands() = literalArgument("facts") {
             val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
 
             val factEntries = Query.find<ReadableFactEntry>().toList()
-            if (factEntries.none()) {
+            if (factEntries.isEmpty()) {
                 sender.msg("There are no facts available.")
                 return@anyExecutor
             }
 
             sender.sendMini("\n\n")
-            val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
-            sender.msg("${target.name} has the following facts:\n")
+            sender.msg("<green>${target.name}</green> has the following facts:\n")
 
-            for (entry in factEntries) {
-                val data = entry.readForPlayersGroup(target)
+            for (entry in factEntries.take(10)) {
+                sender.sendMini(entry.format(target))
+            }
+
+            val remaining = factEntries.size - 10
+            if (remaining > 0) {
                 sender.sendMini(
-                    "<hover:show_text:'${
-                        entry.comment.replace(
-                            Regex(" +"),
-                            " "
-                        ).replace("'", "\\'")
-                    }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts set ${entry.name} ${data.value} ${target.name}'><gray> - </gray><blue>${entry.formattedName}:</blue> ${data.value} <gray><i>(${
-                        formatter.format(
-                            data.lastUpdate
-                        )
-                    })</i></gray>"
+                    """
+                    |<gray><i>and $remaining more...
+                    |
+                    |<gray>Use <white>/tw facts [fact_id/page_name] </white>to query them.
+                    """.trimMargin()
                 )
             }
         }
     }
+}
+
+private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
+private fun ReadableFactEntry.format(player: Player): String {
+    val data = readForPlayersGroup(player)
+    return "<hover:show_text:'${
+        comment.replace(
+            Regex(" +"),
+            " "
+        ).replace("'", "\\'")
+    }\n\n<gray><i>Click to modify'><click:suggest_command:'/tw facts set $name ${data.value} ${player.name}'><gray> - </gray><blue>${formattedName}:</blue> ${data.value} <gray><i>(${
+        formatter.format(
+            data.lastUpdate
+        )
+    })</i></gray>"
 }
 
 private fun CommandTree.clearChatCommand() = literalArgument("clearChat") {
@@ -326,7 +374,7 @@ private fun CommandTree.manifestCommands() = literalArgument("manifest") {
                     val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
                     val page = args["page"] as Page
                     val audienceEntries =
-                        Query.findWhereFromPage<AudienceEntry>(page.id) { true }.sortedBy { it.name }.toList()
+                        page.entries.filterIsInstance<AudienceEntry>().sortedBy { it.name }.toList()
 
                     if (audienceEntries.isEmpty()) {
                         sender.msg("No audience entries found on page ${page.name}")
