@@ -4,15 +4,23 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.MultiLine
 import com.typewritermc.core.extension.annotations.Tags
-import com.typewritermc.engine.paper.entry.PlaceholderEntry
-import com.typewritermc.engine.paper.entry.StaticEntry
+import com.typewritermc.core.utils.formatCompact
+import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.facts.FactData
 import com.typewritermc.engine.paper.facts.FactDatabase
 import com.typewritermc.engine.paper.facts.FactId
+import com.typewritermc.engine.paper.loader.serializers.DurationSerializer
 import lirand.api.extensions.server.server
+import org.apache.commons.lang3.time.DurationFormatUtils
+import org.apache.commons.lang3.time.DurationUtils
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.get
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @Tags("fact")
 interface FactEntry : StaticEntry {
@@ -31,7 +39,7 @@ interface FactEntry : StaticEntry {
             entry.groupId(player) ?: return null
         } else {
             // If no group entry is set, we assume that the player is the group for backwards compatibility
-            com.typewritermc.engine.paper.entry.entries.GroupId(player.uniqueId)
+            GroupId(player.uniqueId)
         }
 
         return FactId(id, groupId)
@@ -61,14 +69,31 @@ interface ReadableFactEntry : FactEntry, PlaceholderEntry {
      */
     fun readSinglePlayer(player: Player): FactData
 
-    override fun display(player: Player?): String? {
-        if (player == null) return null
-        return readForPlayersGroup(player).value.toString()
+    override fun parser(): PlaceholderParser = placeholderParser {
+        literal("time") {
+            literal("lastUpdated") {
+                literal("relative") {
+                    supplyPlayer { player ->
+                        val lastUpdate = readForPlayersGroup(player).lastUpdate
+                        val now = LocalDateTime.now()
+                        val difference = (now.toEpochSecond(ZoneOffset.UTC) - lastUpdate.toEpochSecond(ZoneOffset.UTC)).seconds
+
+                        "${difference.formatCompact()} ago"
+                    }
+                }
+                supplyPlayer { player ->
+                    readForPlayersGroup(player).lastUpdate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                }
+            }
+        }
+        supplyPlayer { player ->
+            readForPlayersGroup(player).value.toString()
+        }
     }
 }
 
 @Tags("writable-fact")
-interface WritableFactEntry : com.typewritermc.engine.paper.entry.entries.FactEntry {
+interface WritableFactEntry : FactEntry {
     fun write(player: Player, value: Int) {
         val factId = identifier(player) ?: return
         write(factId, value)
@@ -78,10 +103,10 @@ interface WritableFactEntry : com.typewritermc.engine.paper.entry.entries.FactEn
 }
 
 @Tags("cachable-fact")
-interface CachableFactEntry : com.typewritermc.engine.paper.entry.entries.ReadableFactEntry,
-    com.typewritermc.engine.paper.entry.entries.WritableFactEntry {
+interface CachableFactEntry : ReadableFactEntry,
+    WritableFactEntry {
 
-    override fun readForGroup(groupId: com.typewritermc.engine.paper.entry.entries.GroupId): FactData {
+    override fun readForGroup(groupId: GroupId): FactData {
         return read(FactId(id, groupId))
     }
 
@@ -104,11 +129,11 @@ interface CachableFactEntry : com.typewritermc.engine.paper.entry.entries.Readab
 }
 
 @Tags("persistable-fact")
-interface PersistableFactEntry : com.typewritermc.engine.paper.entry.entries.CachableFactEntry {
+interface PersistableFactEntry : CachableFactEntry {
     fun canPersist(id: FactId, data: FactData): Boolean = true
 }
 
 @Tags("expirable-fact")
-interface ExpirableFactEntry : com.typewritermc.engine.paper.entry.entries.CachableFactEntry {
+interface ExpirableFactEntry : CachableFactEntry {
     fun hasExpired(id: FactId, data: FactData): Boolean = false
 }

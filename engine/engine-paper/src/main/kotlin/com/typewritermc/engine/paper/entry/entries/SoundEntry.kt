@@ -1,8 +1,7 @@
 package com.typewritermc.engine.paper.entry.entries
 
 import com.typewritermc.core.extension.annotations.Tags
-import com.typewritermc.engine.paper.entry.PlaceholderEntry
-import com.typewritermc.engine.paper.entry.StaticEntry
+import com.typewritermc.engine.paper.entry.*
 import net.kyori.adventure.sound.Sound
 import org.bukkit.entity.Player
 
@@ -10,7 +9,9 @@ import org.bukkit.entity.Player
 interface SoundIdEntry : StaticEntry, PlaceholderEntry {
     val soundId: String
 
-    override fun display(player: Player?): String? = soundId
+    override fun parser(): PlaceholderParser = placeholderParser {
+        supply { soundId }
+    }
 }
 
 @Tags("sound_source")

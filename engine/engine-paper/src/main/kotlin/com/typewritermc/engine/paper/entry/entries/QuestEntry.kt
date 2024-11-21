@@ -32,7 +32,14 @@ interface QuestEntry : AudienceFilterEntry, PlaceholderEntry {
     val facts: List<Ref<ReadableFactEntry>> get() = emptyList()
     fun questStatus(player: Player): QuestStatus
 
-    override fun display(player: Player?): String = displayName.get(player)?.parsePlaceholders(player) ?: ""
+    fun display(player: Player): String {
+        return displayName.get(player).parsePlaceholders(player)
+    }
+
+    override fun parser(): PlaceholderParser = placeholderParser {
+        supplyPlayer { player -> display(player) }
+    }
+
     override fun display(): AudienceFilter = QuestAudienceFilter(
         ref()
     )
@@ -73,7 +80,7 @@ interface ObjectiveEntry : AudienceFilterEntry, PlaceholderEntry, PriorityEntry 
         )
     }
 
-    override fun display(player: Player?): String {
+    fun display(player: Player?): String {
         val text = when {
             player == null -> inactiveObjectiveDisplay
             criteria.matches(player) -> showingObjectiveDisplay
@@ -82,6 +89,10 @@ interface ObjectiveEntry : AudienceFilterEntry, PlaceholderEntry, PriorityEntry 
         val display = display.get(player) ?: ""
 
         return text.asMiniWithResolvers(parsed("display", display)).asMini().parsePlaceholders(player)
+    }
+
+    override fun parser(): PlaceholderParser = placeholderParser {
+        supply { player -> display(player) }
     }
 }
 

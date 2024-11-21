@@ -2,7 +2,7 @@ package com.typewritermc.engine.paper.entry.entries
 
 import com.typewritermc.core.entries.PriorityEntry
 import com.typewritermc.core.extension.annotations.Tags
-import com.typewritermc.engine.paper.entry.PlaceholderEntry
+import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import org.bukkit.entity.Player
 import kotlin.reflect.KClass
@@ -15,7 +15,9 @@ interface LinesEntry : EntityData<LinesProperty>, AudienceEntry, PlaceholderEntr
      */
     fun lines(player: Player): String
 
-    override fun display(player: Player?): String? = player?.let { lines(it) }
+    override fun parser(): PlaceholderParser = placeholderParser {
+        supplyPlayer { player -> lines(player) }
+    }
 
     override fun type(): KClass<LinesProperty> = LinesProperty::class
     override fun build(player: Player): LinesProperty = LinesProperty(lines(player))
