@@ -63,7 +63,6 @@ private class ParrotEntity(player: Player) : WrapperFakeEntity(EntityTypes.PARRO
     override fun applyProperty(property: EntityProperty) {
         when (property) {
             is ParrotColorProperty -> applyParrotColorData(entity, property)
-            is DyeColorProperty -> applyDyeColorData(entity, property)
         }
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
