@@ -215,10 +215,18 @@ abstract class PlayerSingleDisplay<E : AudienceFilterEntry>(
 ) : KoinComponent {
     private val audienceManager: AudienceManager by inject()
     val ref: Ref<E> get() = current
+
+    /**
+     * Called when the player is added to a display for the first time
+     */
     open fun initialize() {
         setup()
     }
 
+    /**
+     * Called everytime the player is added to a display.
+     * Either after [initialize] or when the display changed for the player
+     */
     open fun setup() {
         val filter = audienceManager[ref] as? AudienceFilter? ?: return
         with(filter) {
@@ -226,7 +234,14 @@ abstract class PlayerSingleDisplay<E : AudienceFilterEntry>(
         }
     }
 
+    /**
+     * Called every tick
+     */
     open fun tick() {}
+
+    /**
+     * Called when the player is removed from a display
+     */
     open fun tearDown() {
         val filter = audienceManager[ref] as? AudienceFilter? ?: return
         with(filter) {
@@ -234,6 +249,9 @@ abstract class PlayerSingleDisplay<E : AudienceFilterEntry>(
         }
     }
 
+    /**
+     * Called when the player is no longer in any display
+     */
     open fun dispose() {
         tearDown()
     }
