@@ -11,6 +11,7 @@ import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/editors/list.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/headers/add_action.dart";
@@ -83,20 +84,25 @@ class MapEditor extends HookConsumerWidget {
           onAdd: () => _addNew(ref.passing, value),
         ),
       ],
-      child: Column(
-        children: value.entries
-            .mapIndexed(
-              (index, entry) => _MapEntry(
-                key: globalKeys[index],
-                index: index,
-                map: value,
-                entry: MapEntry(entry.key, entry.value),
-                path: path,
-                mapBlueprint: mapBlueprint,
-              ),
+      child: value.isNotEmpty
+          ? Column(
+              children: value.entries
+                  .mapIndexed(
+                    (index, entry) => _MapEntry(
+                      key: globalKeys[index],
+                      index: index,
+                      map: value,
+                      entry: MapEntry(entry.key, entry.value),
+                      path: path,
+                      mapBlueprint: mapBlueprint,
+                    ),
+                  )
+                  .toList(),
             )
-            .toList(),
-      ),
+          : NoElements(
+              path: path,
+              addNew: () => _addNew(ref.passing, value),
+            ),
     );
   }
 }
