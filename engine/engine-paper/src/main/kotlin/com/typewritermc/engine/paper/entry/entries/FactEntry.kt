@@ -9,17 +9,13 @@ import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.facts.FactData
 import com.typewritermc.engine.paper.facts.FactDatabase
 import com.typewritermc.engine.paper.facts.FactId
-import com.typewritermc.engine.paper.loader.serializers.DurationSerializer
 import lirand.api.extensions.server.server
-import org.apache.commons.lang3.time.DurationFormatUtils
-import org.apache.commons.lang3.time.DurationUtils
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.get
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 @Tags("fact")
@@ -76,13 +72,21 @@ interface ReadableFactEntry : FactEntry, PlaceholderEntry {
                     supplyPlayer { player ->
                         val lastUpdate = readForPlayersGroup(player).lastUpdate
                         val now = LocalDateTime.now()
-                        val difference = (now.toEpochSecond(ZoneOffset.UTC) - lastUpdate.toEpochSecond(ZoneOffset.UTC)).seconds
+                        val difference =
+                            (now.toEpochSecond(ZoneOffset.UTC) - lastUpdate.toEpochSecond(ZoneOffset.UTC)).seconds
 
                         "${difference.formatCompact()} ago"
                     }
                 }
                 supplyPlayer { player ->
                     readForPlayersGroup(player).lastUpdate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                }
+            }
+        }
+        literal("remaining") {
+            int("value") { value ->
+                supplyPlayer { player ->
+                    (value() - readForPlayersGroup(player).value).toString()
                 }
             }
         }

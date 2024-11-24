@@ -172,3 +172,16 @@ object StringArgument : PlaceholderArgument<String> {
         return ok(argument)
     }
 }
+
+fun PlaceholderNodeBuilder.int(name: String, builder: ArgumentBuilder<Int>) =
+    argument(name, Int::class, IntArgument, builder)
+
+object IntArgument : PlaceholderArgument<Int> {
+    override fun parse(player: Player?, argument: String): Result<Int> {
+        return try {
+            ok(argument.toInt())
+        } catch (e: NumberFormatException) {
+            failure("Could not parse '$argument' as an integer")
+        }
+    }
+}
