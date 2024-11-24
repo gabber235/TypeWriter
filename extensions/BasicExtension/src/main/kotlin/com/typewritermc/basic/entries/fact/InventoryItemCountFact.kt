@@ -36,7 +36,9 @@ class InventoryItemCountFact(
     val item: Var<Item> = ConstVar(Item.Empty),
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
-        val amount = player.inventory.contents.filterNotNull().filter { item.get(player).isSameAs(player, it) }.sumOf { it.amount }
-        return FactData(amount)
+        val item = item.get(player)
+        val amount = player.inventory.contents.filterNotNull().filter { item.isSameAs(player, it) }.sumOf { it.amount }
+        val amountInCursor = if (item.isSameAs(player, player.itemOnCursor)) player.itemOnCursor.amount else 0
+        return FactData(amount + amountInCursor)
     }
 }
