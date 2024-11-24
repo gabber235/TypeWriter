@@ -1,4 +1,4 @@
-package com.typewritermc.entity.entries.data.minecraft.living
+package com.typewritermc.entity.entries.data.minecraft.living.frog
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry

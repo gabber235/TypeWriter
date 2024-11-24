@@ -14,7 +14,7 @@ import com.typewritermc.engine.paper.entry.entity.SimpleEntityInstance
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.entity.entries.data.minecraft.applyGenericEntityData
-import com.typewritermc.entity.entries.data.minecraft.living.AgableProperty
+import com.typewritermc.entity.entries.data.minecraft.living.AgeableProperty
 import com.typewritermc.entity.entries.data.minecraft.living.applyAgeableData
 import com.typewritermc.entity.entries.data.minecraft.living.applyLivingEntityData
 import com.typewritermc.entity.entries.data.minecraft.living.villager.VillagerProperty
@@ -59,7 +59,7 @@ private class VillagerEntity(player: Player) : WrapperFakeEntity(
 ) {
     override fun applyProperty(property: EntityProperty) {
         when (property) {
-            is AgableProperty -> applyAgeableData(entity, property)
+            is AgeableProperty -> applyAgeableData(entity, property)
             is VillagerProperty -> applyVillagerData(entity, property)
             else -> {}
         }

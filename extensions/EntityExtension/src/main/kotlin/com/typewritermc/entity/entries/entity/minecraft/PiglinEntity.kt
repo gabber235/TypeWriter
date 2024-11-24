@@ -75,7 +75,7 @@ private class PiglinEntity(player: Player) : WrapperFakeEntity(
     override fun applyProperty(property: EntityProperty) {
         when (property) {
             is DancingProperty -> applyDancingData(entity, property)
-            is AgableProperty -> applyAgeableData(entity, property)
+            is AgeableProperty -> applyAgeableData(entity, property)
             is TremblingProperty -> applyTremblingData(entity, property)
             else -> {}
         }

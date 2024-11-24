@@ -1,4 +1,4 @@
-package com.typewritermc.entity.entries.data.minecraft
+package com.typewritermc.entity.entries.data.minecraft.living.armorstand
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("marker_data", "An marker data", Colors.RED, "la:map-marker")
-@Tags("marker_data")
+@Tags("marker_data", "armor_stand_data")
 class MarkerData(
     override val id: String = "",
     override val name: String = "",

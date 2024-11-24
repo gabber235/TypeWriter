@@ -1,4 +1,4 @@
-package com.typewritermc.entity.entries.data.minecraft
+package com.typewritermc.entity.entries.data.minecraft.living.armorstand
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("baseplate_data", "An baseplate data", Colors.RED, "memory:tile-caution-thin")
-@Tags("baseplate_data")
+@Tags("baseplate_data", "armor_stand_data")
 class BaseplateData(
     override val id: String = "",
     override val name: String = "",
