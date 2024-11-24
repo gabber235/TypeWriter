@@ -20,7 +20,7 @@ import "package:typewriter/widgets/inspector/section_title.dart";
 
 part "header.g.dart";
 
-class FieldHeader extends HookConsumerWidget {
+class FieldHeader extends StatefulHookConsumerWidget {
   const FieldHeader({
     required this.child,
     required this.dataBlueprint,
@@ -44,55 +44,80 @@ class FieldHeader extends HookConsumerWidget {
   final bool defaultExpanded;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FieldHeader> createState() => _FieldHeaderState();
+}
+
+class _FieldHeaderState extends ConsumerState<FieldHeader> {
+  late HeaderActions combinedActions;
+
+  @override
+  void initState() {
+    combinedActions = HeaderActions(
+      leading: widget.leading,
+      trailing: widget.trailing,
+      actions: widget.actions,
+    );
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant FieldHeader oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.leading != oldWidget.leading ||
+        widget.trailing != oldWidget.trailing ||
+        widget.actions != oldWidget.actions) {
+      combinedActions = HeaderActions(
+        leading: widget.leading,
+        trailing: widget.trailing,
+        actions: widget.actions,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final parent = Header.maybeOf(context);
 
     final headerActionFilters = ref.watch(headerActionFiltersProvider);
     final availableActions = headerActionFilters
-        .where((filter) => filter.shouldShow(path, dataBlueprint))
+        .where((filter) => filter.shouldShow(widget.path, widget.dataBlueprint))
         .toList();
 
     // If there already is a header for this path, we don't need to create a new
-    if (parent?.path == path) {
+    if (parent?.path == widget.path) {
       useDelayedExecution(() {
         parent?.combineActions(
           HeaderActions(
-            leading: leading +
+            leading: widget.leading +
                 filterActions(availableActions, HeaderActionLocation.leading),
-            trailing: trailing +
+            trailing: widget.trailing +
                 filterActions(availableActions, HeaderActionLocation.trailing),
-            actions: actions +
+            actions: widget.actions +
                 filterActions(availableActions, HeaderActionLocation.actions),
           ),
         );
       });
-      return child;
+      return widget.child;
     }
 
     final name =
-        ref.watch(pathDisplayNameProvider(path)).nullIfEmpty ?? "Fields";
+        ref.watch(pathDisplayNameProvider(widget.path)).nullIfEmpty ?? "Fields";
 
-    final expanded = useState(defaultExpanded);
+    final expanded = useState(widget.defaultExpanded);
     final depth = (parent?.depth ?? -1) + 1;
 
-    final combinedActions = useState(
-      HeaderActions(
-        leading: leading,
-        trailing: trailing,
-        actions: actions,
-      ),
-    );
-
     return Header(
-      key: ValueKey(path),
-      path: path,
+      key: ValueKey(widget.path),
+      path: widget.path,
       expanded: expanded,
-      canExpand: canExpand,
+      canExpand: widget.canExpand,
       depth: depth,
-      combineActions: (actions) =>
-          combinedActions.value = combinedActions.value.merge(actions),
+      combineActions: (actions) => setState(() {
+        combinedActions = combinedActions.merge(actions);
+      }),
       child: Material(
-        color: canExpand
+        color: widget.canExpand
             ? depth.isEven
                 ? Theme.of(context).colorScheme.surface
                 : Theme.of(context).colorScheme.surfaceContainer
@@ -110,16 +135,18 @@ class FieldHeader extends HookConsumerWidget {
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(4),
-                onTap:
-                    canExpand ? () => expanded.value = !expanded.value : null,
+                onTap: widget.canExpand
+                    ? () => expanded.value = !expanded.value
+                    : null,
                 child: WritersIndicator(
-                  enabled: canExpand && !expanded.value,
-                  provider: fieldWritersProvider(path),
-                  offset:
-                      canExpand ? const Offset(50, 25) : const Offset(15, 15),
+                  enabled: widget.canExpand && !expanded.value,
+                  provider: fieldWritersProvider(widget.path),
+                  offset: widget.canExpand
+                      ? const Offset(50, 25)
+                      : const Offset(15, 15),
                   child: Row(
                     children: [
-                      if (canExpand)
+                      if (widget.canExpand)
                         Icon(
                           expanded.value
                               ? Icons.expand_less
@@ -128,11 +155,12 @@ class FieldHeader extends HookConsumerWidget {
                       ...createActions(
                         availableActions,
                         HeaderActionLocation.leading,
-                        combinedActions.value.leading,
+                        combinedActions.leading,
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: canExpand ? 10 : 0),
+                        padding: EdgeInsets.symmetric(
+                          vertical: widget.canExpand ? 10 : 0,
+                        ),
                         child: SectionTitle(
                           title: name,
                         ),
@@ -140,31 +168,31 @@ class FieldHeader extends HookConsumerWidget {
                       ...createActions(
                         availableActions,
                         HeaderActionLocation.trailing,
-                        combinedActions.value.trailing,
+                        combinedActions.trailing,
                       ),
                       const Spacer(),
                       ...createActions(
                         availableActions,
                         HeaderActionLocation.actions,
-                        combinedActions.value.actions,
+                        combinedActions.actions,
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-            if (canExpand)
+            if (widget.canExpand)
               Collapsible(
                 collapsed: !expanded.value,
                 axis: CollapsibleAxis.vertical,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                  child: child,
+                  child: widget.child,
                 ),
               )
             else
-              child,
+              widget.child,
           ],
         ),
       ),
@@ -176,8 +204,11 @@ class FieldHeader extends HookConsumerWidget {
     HeaderActionLocation location,
   ) {
     return filters
-        .where((filter) => filter.location(path, dataBlueprint) == location)
-        .map((filter) => filter.build(path, dataBlueprint))
+        .where(
+          (filter) =>
+              filter.location(widget.path, widget.dataBlueprint) == location,
+        )
+        .map((filter) => filter.build(widget.path, widget.dataBlueprint))
         .toList();
   }
 
@@ -190,8 +221,8 @@ class FieldHeader extends HookConsumerWidget {
       if (location == HeaderActionLocation.leading) ...actions,
       if (location == HeaderActionLocation.trailing) ...actions,
       for (final filter in filters)
-        if (filter.location(path, dataBlueprint) == location)
-          filter.build(path, dataBlueprint),
+        if (filter.location(widget.path, widget.dataBlueprint) == location)
+          filter.build(widget.path, widget.dataBlueprint),
       if (location == HeaderActionLocation.actions) ...actions,
     ].joinWith(() => const SizedBox(width: 8));
 
