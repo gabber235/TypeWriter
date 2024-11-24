@@ -1,4 +1,4 @@
-package com.typewritermc.entity.entries.data.minecraft
+package com.typewritermc.entity.entries.data.minecraft.living.armorstand
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("small_data", "An small data", Colors.RED, "fluent:arrow-minimize-24-filled")
-@Tags("small_data")
+@Tags("small_data", "armor_stand_data")
 class SmallData(
     override val id: String = "",
     override val name: String = "",

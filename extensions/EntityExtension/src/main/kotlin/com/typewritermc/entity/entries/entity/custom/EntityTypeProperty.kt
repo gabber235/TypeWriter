@@ -6,7 +6,7 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
 import com.typewritermc.engine.paper.entry.entity.EntityState
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.entity.entries.data.minecraft.PoseProperty
-import com.typewritermc.entity.entries.data.minecraft.living.AgableProperty
+import com.typewritermc.entity.entries.data.minecraft.living.AgeableProperty
 import com.typewritermc.entity.entries.data.minecraft.living.ScaleProperty
 import com.typewritermc.entity.entries.data.minecraft.living.SizeProperty
 import com.typewritermc.entity.entries.data.minecraft.living.pufferfish.PuffStateProperty
@@ -55,7 +55,7 @@ private class EntityDataMatcher(
 }
 
 private fun EntityType.matcher(properties: Map<KClass<*>, EntityProperty>): EntityDataMatcher {
-    val isBaby = properties.property(AgableProperty::class)?.baby ?: false
+    val isBaby = properties.property(AgeableProperty::class)?.baby ?: false
     val pose = properties.property(PoseProperty::class)?.pose ?: EntityPose.STANDING
     val size = properties.property(SizeProperty::class)?.size ?: 0
     val small = properties.property(SmallProperty::class)?.small ?: false

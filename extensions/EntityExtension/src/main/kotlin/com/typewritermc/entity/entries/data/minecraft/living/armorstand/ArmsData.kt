@@ -1,4 +1,4 @@
-package com.typewritermc.entity.entries.data.minecraft
+package com.typewritermc.entity.entries.data.minecraft.living.armorstand
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("arms_data", "An arms data", Colors.RED, "openmoji:stick-figure-with-arms-raised")
-@Tags("arms_data")
+@Tags("arms_data", "armor_stand_data")
 class ArmsData(
     override val id: String = "",
     override val name: String = "",

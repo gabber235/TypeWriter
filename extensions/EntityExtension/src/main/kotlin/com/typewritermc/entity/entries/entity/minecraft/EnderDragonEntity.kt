@@ -14,9 +14,9 @@ import com.typewritermc.engine.paper.entry.entity.SimpleEntityInstance
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.entity.entries.data.minecraft.applyGenericEntityData
-import com.typewritermc.entity.entries.data.minecraft.living.AgableProperty
-import com.typewritermc.entity.entries.data.minecraft.living.applyAgeableData
 import com.typewritermc.entity.entries.data.minecraft.living.applyLivingEntityData
+import com.typewritermc.entity.entries.data.minecraft.living.enderdragon.EnderDragonPhaseProperty
+import com.typewritermc.entity.entries.data.minecraft.living.enderdragon.applyEnderDragonPhaseData
 import com.typewritermc.entity.entries.entity.WrapperFakeEntity
 import org.bukkit.entity.Player
 
@@ -33,7 +33,7 @@ class EnderDragonDefinition(
     override val name: String = "",
     override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "ender_dragon_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ender_dragon_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = EnderDragonEntity(player)
@@ -45,7 +45,7 @@ class EnderDragonInstance(
     override val name: String = "",
     override val definition: Ref<EnderDragonDefinition> = emptyRef(),
     override val spawnLocation: Position = Position.ORIGIN,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "ender_dragon_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ender_dragon_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
@@ -56,7 +56,7 @@ private class EnderDragonEntity(player: Player) : WrapperFakeEntity(
 ) {
     override fun applyProperty(property: EntityProperty) {
         when (property) {
-            is AgableProperty -> applyAgeableData(entity, property)
+            is EnderDragonPhaseProperty -> applyEnderDragonPhaseData(entity, property)
             else -> {}
         }
         if (applyGenericEntityData(entity, property)) return

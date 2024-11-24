@@ -1,4 +1,4 @@
-package com.typewritermc.entity.entries.data.minecraft
+package com.typewritermc.entity.entries.data.minecraft.living.armorstand
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
@@ -6,7 +6,6 @@ import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.packetevents.metas
-import com.typewritermc.engine.paper.utils.toBukkitVector
 import com.typewritermc.engine.paper.utils.toPacketVector3f
 import me.tofaa.entitylib.meta.other.ArmorStandMeta
 import me.tofaa.entitylib.wrapper.WrapperEntity
@@ -15,7 +14,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("rotation_data", "Rotation data", Colors.RED, "mdi:rotate-right")
-@Tags("rotation_data")
+@Tags("rotation_data", "armor_stand_data")
 class RotationData(
     override val id: String = "",
     override val name: String = "",

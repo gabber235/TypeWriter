@@ -15,6 +15,8 @@ import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.entity.entries.data.minecraft.applyGenericEntityData
 import com.typewritermc.entity.entries.data.minecraft.living.*
+import com.typewritermc.entity.entries.data.minecraft.living.frog.FrogVariantProperty
+import com.typewritermc.entity.entries.data.minecraft.living.frog.applyFrogVariantData
 import com.typewritermc.entity.entries.entity.WrapperFakeEntity
 import org.bukkit.entity.Player
 
@@ -61,7 +63,7 @@ private class FrogEntity(player: Player) : WrapperFakeEntity(
 ) {
     override fun applyProperty(property: EntityProperty) {
         when (property) {
-            is AgableProperty -> applyAgeableData(entity, property)
+            is AgeableProperty -> applyAgeableData(entity, property)
             is FrogVariantProperty -> applyFrogVariantData(entity, property)
             else -> {}
         }

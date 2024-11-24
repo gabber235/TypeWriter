@@ -23,17 +23,17 @@ class AgeableData(
     override val name: String = "",
     val baby: Boolean = false,
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : EntityData<AgableProperty> {
-    override fun type(): KClass<AgableProperty> = AgableProperty::class
+) : EntityData<AgeableProperty> {
+    override fun type(): KClass<AgeableProperty> = AgeableProperty::class
 
-    override fun build(player: Player): AgableProperty = AgableProperty(baby)
+    override fun build(player: Player): AgeableProperty = AgeableProperty(baby)
 }
 
-data class AgableProperty(val baby: Boolean) : EntityProperty {
-    companion object : SinglePropertyCollectorSupplier<AgableProperty>(AgableProperty::class, AgableProperty(false))
+data class AgeableProperty(val baby: Boolean) : EntityProperty {
+    companion object : SinglePropertyCollectorSupplier<AgeableProperty>(AgeableProperty::class, AgeableProperty(false))
 }
 
-fun applyAgeableData(entity: WrapperEntity, property: AgableProperty) {
+fun applyAgeableData(entity: WrapperEntity, property: AgeableProperty) {
     entity.metas {
         meta<AgeableMeta> { isBaby = property.baby }
         meta<ZoglinMeta> { isBaby = property.baby }
