@@ -47,7 +47,7 @@ const config = {
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
-                    lastVersion: '0.6.0',
+                    lastVersion: '0.6.1',
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,
                     versions: {
@@ -60,6 +60,7 @@ const config = {
                 blog: {
                     showReadingTime: true,
                     onUntruncatedBlogPosts: 'ignore',
+                    blogSidebarCount: 'ALL',
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                 },
@@ -76,7 +77,7 @@ const config = {
             announcementBar: {
                 id: 'support_us',
                 content:
-                    'TypeWriter 0.6.0 is out!',
+                    'TypeWriter 0.6.1 is out!',
                 isCloseable: true,
             },
             mermaid: {
@@ -87,7 +88,6 @@ const config = {
             },
             metadata: [
                 { name: 'title', content: 'Typewriter' },
-                { name: 'description', content: 'The next generation of Player Interactions' },
                 { name: 'keywords', content: 'Minecraft, Questing, NPC\'s, Manifests, Cinematics, sequences, Road-network, Interactions, player interactions, plugin, papermc' },
                 { name: 'robots', content: 'index, follow' },
                 { name: 'Content-Type', content: 'text/html; charset=utf-8' },
@@ -96,12 +96,10 @@ const config = {
                 { name: 'og:type', content: 'website' },
                 { name: 'og:url', content: 'img/typewriter.png' },
                 { name: 'og:title', content: 'TypeWriter' },
-                { name: 'og:description', content: 'The next generation of Player Interactions' },
                 { name: 'og:image', content: 'img/typewriter.png' },
                 { name: 'twitter:card', content: 'summary_large_image' },
                 { name: 'twitter:url', content: 'https://docs.typewritermc.com/' },
                 { name: 'twitter:title', content: 'TypeWriter' },
-                { name: 'twitter:description', content: 'The next generation of Player Interactions' },
                 { name: 'twitter:image', content: 'img/typewriter.png' },
             ],
             // Replace with your project's social card
@@ -131,7 +129,7 @@ const config = {
                         position: 'left',
                         label: 'Develop',
                     },
-                    { to: '/blog', label: 'Blog', position: 'left' },
+                    { to: '/devlog', label: 'Devlog', position: 'left' },
                     {
                         type: 'docsVersionDropdown',
                         position: 'right',
@@ -174,8 +172,8 @@ const config = {
                         title: 'More',
                         items: [
                             {
-                                label: 'Blog',
-                                to: '/blog',
+                                label: 'Devlog',
+                                to: '/devlog',
                             },
                             {
                                 label: 'Github',
@@ -229,6 +227,26 @@ const config = {
                 enableInDevelopment: false,
             },
         ],
+        [
+            '@docusaurus/plugin-content-blog',
+            {
+              /**
+               * Required for any multi-instance plugin
+               */
+              id: 'blog',
+              /**
+               * URL route for the blog section of your site.
+               * *DO NOT* include a trailing slash.
+               */
+              routeBasePath: 'devlog',
+              /**
+               * Path to data on filesystem relative to site dir.
+               */
+              path: './devlog',
+              blogSidebarCount: 'ALL',
+              blogSidebarTitle: 'All posts',
+            },
+          ],
         "rive-loader",
         require.resolve("./plugins/tailwind/index.js"),
         require.resolve("./plugins/compression/index.js"),
