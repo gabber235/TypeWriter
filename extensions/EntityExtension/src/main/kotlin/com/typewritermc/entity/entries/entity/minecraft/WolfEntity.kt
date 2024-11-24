@@ -16,7 +16,10 @@ import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.entity.entries.data.minecraft.DyeColorProperty
 import com.typewritermc.entity.entries.data.minecraft.applyDyeColorData
 import com.typewritermc.entity.entries.data.minecraft.applyGenericEntityData
+import com.typewritermc.entity.entries.data.minecraft.living.AgeableProperty
+import com.typewritermc.entity.entries.data.minecraft.living.applyAgeableData
 import com.typewritermc.entity.entries.data.minecraft.living.applyLivingEntityData
+import com.typewritermc.entity.entries.data.minecraft.living.tameable.applyTameableData
 import com.typewritermc.entity.entries.data.minecraft.living.wolf.BeggingProperty
 import com.typewritermc.entity.entries.data.minecraft.living.wolf.applyBeggingData
 import com.typewritermc.entity.entries.entity.WrapperFakeEntity
@@ -35,7 +38,7 @@ class WolfDefinition(
     override val name: String = "",
     override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "wolf_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "tameable_data", "wolf_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = WolfEntity(player)
@@ -54,7 +57,7 @@ class WolfInstance(
     override val name: String = "",
     override val definition: Ref<WolfDefinition> = emptyRef(),
     override val spawnLocation: Position = Position.ORIGIN,
-    @OnlyTags("generic_entity_data", "living_entity_data", "wolf_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "tameable_data", "wolf_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
@@ -64,9 +67,10 @@ private class WolfEntity(player: Player) : WrapperFakeEntity(EntityTypes.WOLF, p
         when (property) {
             is BeggingProperty -> applyBeggingData(entity, property)
             is DyeColorProperty -> applyDyeColorData(entity, property)
+            is AgeableProperty -> applyAgeableData(entity, property)
         }
         if (applyGenericEntityData(entity, property)) return
         if (applyLivingEntityData(entity, property)) return
+        if (applyTameableData(entity, property)) return
     }
-
 }

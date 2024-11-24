@@ -14,9 +14,8 @@ import com.typewritermc.engine.paper.entry.entity.SimpleEntityInstance
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.entity.entries.data.minecraft.*
-import com.typewritermc.entity.entries.data.minecraft.living.AgableProperty
-import com.typewritermc.entity.entries.data.minecraft.living.applyAgeableData
 import com.typewritermc.entity.entries.data.minecraft.living.applyLivingEntityData
+import com.typewritermc.entity.entries.data.minecraft.living.armorstand.*
 import com.typewritermc.entity.entries.entity.WrapperFakeEntity
 import org.bukkit.entity.Player
 
@@ -33,7 +32,7 @@ class ArmorStandDefinition(
     override val name: String = "",
     override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "armor_stand_data", "arms_data", "baseplate_data", "marker_data", "rotation_data", "small_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "armor_stand_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = ArmorStandEntity(player)
@@ -45,7 +44,7 @@ class ArmorStandInstance(
     override val name: String = "",
     override val definition: Ref<ArmorStandDefinition> = emptyRef(),
     override val spawnLocation: Position = Position.ORIGIN,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "armor_stand_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "armor_stand_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
@@ -56,7 +55,6 @@ private class ArmorStandEntity(player: Player) : WrapperFakeEntity(
 ) {
     override fun applyProperty(property: EntityProperty) {
         when (property) {
-            is AgableProperty -> applyAgeableData(entity, property)
             is ArmsProperty -> applyArmsData(entity, property)
             is BaseplateProperty -> applyBaseplateData(entity, property)
             is MarkerProperty -> applyMarkerData(entity, property)
