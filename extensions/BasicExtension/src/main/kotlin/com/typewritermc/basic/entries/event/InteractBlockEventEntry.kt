@@ -89,7 +89,7 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
     if (event.clickedBlock == null) return
     // The even triggers twice. Both for the main hand and offhand.
     // We only want to trigger once.
-    if (event.hand != org.bukkit.inventory.EquipmentSlot.HAND) return // Disable off-hand interactions
+    if (event.hand == org.bukkit.inventory.EquipmentSlot.OFF_HAND) return // Disable off-hand interactions
     val entries = query.findWhere { entry ->
         // Check if the player is sneaking
         if (!entry.shiftType.isApplicable(player)) return@findWhere false
