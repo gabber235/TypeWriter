@@ -115,7 +115,7 @@ class ListEditor extends HookConsumerWidget {
                 listBlueprint: listBlueprint,
               ),
             )
-          : _NoElements(
+          : NoElements(
               path: path,
               addNew: () => _addNew(ref.passing),
             ),
@@ -123,10 +123,11 @@ class ListEditor extends HookConsumerWidget {
   }
 }
 
-class _NoElements extends HookConsumerWidget {
-  const _NoElements({
+class NoElements extends HookConsumerWidget {
+  const NoElements({
     required this.path,
     required this.addNew,
+    super.key,
   });
 
   final String path;
