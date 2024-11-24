@@ -8,6 +8,7 @@ import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
+import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import org.bukkit.entity.Player
 
@@ -86,6 +87,7 @@ data class CommandSegment(
     @Placeholder
     @MultiLine
     val command: String = "",
+    val sudo: Boolean = false,
 ) : Segment
 
 class CommandAction(
@@ -99,10 +101,16 @@ class CommandAction(
         super.startSegment(segment)
         if (segment.command.isBlank()) return
         SYNC.switchContext {
+            val attachment = if (segment.sudo) {
+                player.addAttachment(plugin)
+            } else null
+            attachment?.setPermission("*", true)
             segment.command.parsePlaceholders(player)
                 .lines()
                 .filter { it.isNotBlank() }
                 .forEach(run)
+            
+            attachment?.remove()
         }
     }
 }

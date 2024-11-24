@@ -13,6 +13,7 @@ import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
+import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import lirand.api.extensions.server.server
 import org.bukkit.entity.Player
@@ -40,7 +41,8 @@ class PlayerCommandActionEntry(
     @Placeholder
     @MultiLine
     @Help("Every line is a different command. Commands should not be prefixed with <code>/</code>.")
-    private val command: Var<String> = ConstVar(""),
+    val command: Var<String> = ConstVar(""),
+    val sudo: Boolean = false,
 ) : ActionEntry {
     override fun execute(player: Player) {
         super.execute(player)
@@ -48,10 +50,15 @@ class PlayerCommandActionEntry(
         // Run in main thread
         if (command.isBlank()) return
         SYNC.launch {
+            val attachment = if (sudo) {
+                player.addAttachment(plugin)
+            } else null
+            attachment?.setPermission("*", true)
             val commands = command.parsePlaceholders(player).lines()
             for (cmd in commands) {
                 server.dispatchCommand(player, cmd)
             }
+            attachment?.remove()
         }
     }
 }
