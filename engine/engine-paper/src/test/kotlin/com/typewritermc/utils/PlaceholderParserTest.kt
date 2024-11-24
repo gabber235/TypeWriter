@@ -1,11 +1,14 @@
 package com.typewritermc.utils
 
-import com.typewritermc.engine.paper.entry.literal
-import com.typewritermc.engine.paper.entry.placeholderParser
-import com.typewritermc.engine.paper.entry.string
-import com.typewritermc.engine.paper.entry.supply
+import com.typewritermc.engine.paper.entry.*
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.double
+import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.string
+import io.kotest.property.checkAll
 
 class PlaceholderParserTest : FunSpec({
     test("Parser should parse with no arguments") {
@@ -138,8 +141,9 @@ class PlaceholderParserTest : FunSpec({
                 }
             }
 
-            parser.parse(null, listOf("bob")) shouldBe "Hey bob"
-            parser.parse(null, listOf("alice")) shouldBe "Hey alice"
+            Arb.string().checkAll { string ->
+                parser.parse(null, listOf(string)) shouldBe "Hey $string"
+            }
             parser.parse(null, emptyList()) shouldBe null
         }
 
@@ -154,10 +158,9 @@ class PlaceholderParserTest : FunSpec({
                 }
             }
 
-            parser.parse(null, listOf("bob", "jump")) shouldBe "Hey bob, jump"
-            parser.parse(null, listOf("bob", "run")) shouldBe "Hey bob, run"
-            parser.parse(null, listOf("alice", "jump")) shouldBe "Hey alice, jump"
-            parser.parse(null, listOf("alice", "run")) shouldBe "Hey alice, run"
+            checkAll<String, String>() { string, action ->
+                parser.parse(null, listOf(string, action)) shouldBe "Hey $string, $action"
+            }
             parser.parse(null, listOf("bob")) shouldBe null
             parser.parse(null, emptyList()) shouldBe null
         }
@@ -178,7 +181,11 @@ class PlaceholderParserTest : FunSpec({
             }
 
             parser.parse(null, listOf("hello")) shouldBe "Hey"
-            parser.parse(null, listOf("bob")) shouldBe "Hey bob"
+            Arb.string()
+                .filter { it != "hello" }
+                .checkAll { string ->
+                    parser.parse(null, listOf(string)) shouldBe "Hey $string"
+                }
             parser.parse(null, emptyList()) shouldBe null
         }
 
@@ -197,7 +204,58 @@ class PlaceholderParserTest : FunSpec({
                 }
             }
 
-            parser.parse(null, listOf("bob")) shouldBe "Hey bob"
+            Arb.string().checkAll { string ->
+                parser.parse(null, listOf(string)) shouldBe "Hey $string"
+            }
+            parser.parse(null, emptyList()) shouldBe null
+        }
+    }
+
+    context("Int Argument") {
+        test("Parser with int argument should parse when given the argument, otherwise it should fail") {
+            val parser = placeholderParser {
+                int("number") { number ->
+                    supply {
+                        "Hey ${number()}"
+                    }
+                }
+            }
+
+            Arb.int().checkAll { number ->
+                parser.parse(null, listOf(number.toString())) shouldBe "Hey $number"
+            }
+            parser.parse(null, emptyList()) shouldBe null
+        }
+
+        test("Parser with int argument should not parse when something else is given") {
+            val parser = placeholderParser {
+                int("number") { number ->
+                    supply {
+                        "Hey ${number()}"
+                    }
+                }
+            }
+
+            Arb.string()
+                .filter {
+                    try {
+                        it.toInt()
+                        false
+                    } catch (_: NumberFormatException) {
+                        true
+                    }
+                }
+                .checkAll { string ->
+                    parser.parse(null, listOf(string)) shouldBe null
+                }
+
+            Arb.double()
+                .filter {
+                    it.toInt().toDouble() != it
+                }
+                .checkAll { number ->
+                    parser.parse(null, listOf(number.toString())) shouldBe null
+                }
             parser.parse(null, emptyList()) shouldBe null
         }
     }
