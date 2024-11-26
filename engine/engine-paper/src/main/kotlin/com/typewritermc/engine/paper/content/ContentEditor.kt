@@ -7,7 +7,6 @@ import com.typewritermc.engine.paper.content.components.ItemInteraction
 import com.typewritermc.engine.paper.content.components.ItemInteractionType
 import com.typewritermc.engine.paper.entry.entries.SystemTrigger
 import com.typewritermc.engine.paper.entry.forceTriggerFor
-import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.events.ContentEditorEndEvent
 import com.typewritermc.engine.paper.events.ContentEditorStartEvent
 import com.typewritermc.engine.paper.interaction.InteractionHandler
@@ -149,7 +148,7 @@ class ContentEditor(
         if (event.clickedInventory != player.inventory) return
         val item = items[event.slot] ?: return
         item.action(
-            ItemInteraction(ItemInteractionType.INVENTORY_CLICK, event.slot),
+            ItemInteraction(ItemInteractionType.INVENTORY_CLICK, event.slot, null),
         )
         event.isCancelled = true
     }
@@ -171,7 +170,7 @@ class ContentEditor(
 
             else -> return
         }
-        item.action(ItemInteraction(type, slot))
+        item.action(ItemInteraction(type, slot, event.clickedBlock))
         event.isCancelled = true
     }
 
@@ -180,7 +179,7 @@ class ContentEditor(
         if (event.player != player) return
         val slot = player.inventory.heldItemSlot
         val item = items[slot] ?: return
-        item.action(ItemInteraction(ItemInteractionType.DROP, slot))
+        item.action(ItemInteraction(ItemInteractionType.DROP, slot, null))
         event.isCancelled = true
     }
 
@@ -189,7 +188,7 @@ class ContentEditor(
         if (event.player != player) return
         val slot = player.inventory.heldItemSlot
         val item = items[slot] ?: return
-        item.action(ItemInteraction(ItemInteractionType.SWAP, slot))
+        item.action(ItemInteraction(ItemInteractionType.SWAP, slot, null))
         event.isCancelled = true
     }
 }

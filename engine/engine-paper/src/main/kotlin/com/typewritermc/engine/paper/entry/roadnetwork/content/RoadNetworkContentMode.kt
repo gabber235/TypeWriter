@@ -5,6 +5,7 @@ import com.github.retrooper.packetevents.protocol.particle.data.ParticleDustData
 import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
 import com.github.retrooper.packetevents.util.Vector3f
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.content.ContentComponent
@@ -12,7 +13,6 @@ import com.typewritermc.engine.paper.content.ContentContext
 import com.typewritermc.engine.paper.content.ContentMode
 import com.typewritermc.engine.paper.content.components.*
 import com.typewritermc.engine.paper.content.entryId
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.roadnetwork.RoadNetworkEditorState
 import com.typewritermc.engine.paper.entry.triggerFor
@@ -21,6 +21,7 @@ import com.typewritermc.engine.paper.extensions.packetevents.toVector3d
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.*
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
+import lirand.api.extensions.math.add
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Color
@@ -32,7 +33,11 @@ import org.koin.core.component.KoinComponent
 import java.util.*
 import kotlin.math.pow
 
-private val showEdgeDistance by snippet("content.road_network.show_edge_distance", 30.0, "The distance at which the edge particles will still be shown")
+private val showEdgeDistance by snippet(
+    "content.road_network.show_edge_distance",
+    30.0,
+    "The distance at which the edge particles will still be shown"
+)
 
 class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentMode(context, player), KoinComponent {
     private lateinit var ref: Ref<RoadNetworkEntry>
@@ -124,14 +129,8 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         highlighting = !highlighting
     }
 
-    private fun createNode(): RoadNode {
-        val location = player.location.toCenterLocation().apply {
-            if (block.type.isSolid) {
-                // If you are standing on a slab or something, we want to place the node on top of it
-                if (!up.block.type.isSolid) {
-                    add(0.0, 1.0, 0.0)
-                }
-            }
+    private fun createNode(location: Location): RoadNode {
+        val centerLocation = location.toCenterLocation().apply {
             yaw = 0.0f
             pitch = 0.0f
         }
@@ -139,11 +138,11 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         do {
             id = Random().nextInt(Int.MAX_VALUE)
         } while (network.nodes.any { it.id.id == id })
-        return RoadNode(RoadNodeId(id), location, 1.0)
+        return RoadNode(RoadNodeId(id), centerLocation, 1.0)
     }
 
-    private fun addRoadNode() = DISPATCHERS_ASYNC.launch {
-        val node = createNode()
+    private fun addRoadNode(location: Location) = DISPATCHERS_ASYNC.launch {
+        val node = createNode(location)
         editorComponent.update { it.copy(nodes = it.nodes + node) }
         ContentModeTrigger(
             context,
@@ -151,8 +150,8 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         ) triggerFor player
     }
 
-    private fun addNegativeNode() = DISPATCHERS_ASYNC.launch {
-        val node = createNode()
+    private fun addNegativeNode(location: Location) = DISPATCHERS_ASYNC.launch {
+        val node = createNode(location)
         editorComponent.update { it.copy(negativeNodes = it.negativeNodes + node) }
         ContentModeTrigger(
             context,
@@ -186,8 +185,8 @@ fun RoadNode.material(modifications: List<RoadModification>): Material {
 }
 
 private class NetworkAddNodeComponent(
-    private val onAdd: () -> Unit = {},
-    private val onAddNegative: () -> Unit = {},
+    private val onAdd: (Location) -> Unit = {},
+    private val onAddNegative: (Location) -> Unit = {},
 ) : ContentComponent, ItemsComponent {
     override fun items(player: Player): Map<Int, IntractableItem> {
         val addNodeItem = ItemStack(Material.DIAMOND).apply {
@@ -196,7 +195,7 @@ private class NetworkAddNodeComponent(
                 meta.loreString = "<line> <gray>Click to add a new node to the road network"
             }
         } onInteract {
-            if (it.type.isClick) onAdd()
+            if (it.type.isClick) onAdd(it.clickedBlock?.location?.clone()?.add(0, 1, 0) ?: player.location)
         }
 
         val addNegativeNodeItem = ItemStack(Material.NETHERITE_INGOT).apply {
@@ -208,7 +207,7 @@ private class NetworkAddNodeComponent(
                 """.trimMargin()
             }
         } onInteract {
-            if (it.type.isClick) onAddNegative()
+            if (it.type.isClick) onAddNegative(it.clickedBlock?.location?.clone()?.add(0, 1, 0) ?: player.location)
         }
 
         return mapOf(
