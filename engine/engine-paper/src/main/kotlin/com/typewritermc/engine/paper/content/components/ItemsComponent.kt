@@ -1,6 +1,7 @@
 package com.typewritermc.engine.paper.content.components
 
 import com.typewritermc.engine.paper.content.ContentComponent
+import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -35,6 +36,7 @@ data class IntractableItem(
 data class ItemInteraction(
     val type: ItemInteractionType,
     val slot: Int,
+    val clickedBlock: Block?,
 )
 
 enum class ItemInteractionType {
