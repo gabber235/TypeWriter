@@ -30,7 +30,7 @@ class VarSerializer : DataSerializer<Var<*>> {
         }
     }
 
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Var<*> {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Var<*>? {
         val actualType = (typeOfT as? ParameterizedType)?.actualTypeArguments?.get(0)
             ?: throw IllegalArgumentException("Could not find actual type for Var")
 
@@ -40,12 +40,12 @@ class VarSerializer : DataSerializer<Var<*>> {
 
 
         if (!json.isJsonObject) {
-            val value: Any = context.deserialize(json, actualType)
+            val value: Any = context.deserialize(json, actualType) ?: return null
             return ConstVar(value)
         }
         val obj = json.asJsonObject
         if (!obj.has("_kind") || obj.get("_kind").asString != "backed") {
-            val value: Any = context.deserialize(json, actualType)
+            val value: Any = context.deserialize(json, actualType) ?: return null
             return ConstVar(value)
         }
 
