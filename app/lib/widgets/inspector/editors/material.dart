@@ -220,7 +220,8 @@ class MaterialEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(fieldValueProvider(path, ""));
+    final value =
+        ref.watch(fieldValueProvider(path, customBlueprint.defaultValue()));
     final propertiesModifier =
         customBlueprint.getModifier("material_properties");
     final properties = propertiesModifier != null

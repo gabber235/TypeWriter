@@ -35,7 +35,6 @@ class ItemEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final value = ref.watch(fieldValueProvider(path));
     final algebraicBlueprint = customBlueprint.shape is AlgebraicBlueprint
         ? customBlueprint.shape as AlgebraicBlueprint?
         : null;
@@ -93,7 +92,7 @@ class SerializedItemEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value =
-        ref.watch(fieldValueProvider(path)) ?? customBlueprint.defaultValue();
+        ref.watch(fieldValueProvider(path, customBlueprint.defaultValue()));
 
     if (value is! Map<String, dynamic>) {
       return Admonition.danger(

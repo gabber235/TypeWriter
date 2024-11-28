@@ -35,7 +35,7 @@ class CronEditor extends HookConsumerWidget {
       shift: (_) => const Offset(15, 0),
       child: ValidatedInspectorTextField<String>(
         path: path,
-        defaultValue: "0 0 1 1 *",
+        defaultValue: customBlueprint.defaultValue(),
         icon: TWIcons.clock,
         inputFormatters: [
           FilteringTextInputFormatter.allow(

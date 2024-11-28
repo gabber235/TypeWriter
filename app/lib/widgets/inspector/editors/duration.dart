@@ -36,7 +36,7 @@ class DurationEditor extends HookConsumerWidget {
       shift: (_) => const Offset(15, 0),
       child: ValidatedInspectorTextField<int>(
         path: path,
-        defaultValue: 0,
+        defaultValue: customBlueprint.defaultValue(),
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r"[\dwdhminsu ]")),
         ],

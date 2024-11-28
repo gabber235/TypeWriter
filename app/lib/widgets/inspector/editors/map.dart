@@ -56,7 +56,8 @@ class MapEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // ignore: provider_parameters
-    final rawValue = ref.watch(fieldValueProvider(path, {}));
+    final rawValue =
+        ref.watch(fieldValueProvider(path, mapBlueprint.defaultValue()));
 
     // Since the map will be of the form {dynamic: dynamic}, we
     // need to recreate the map.

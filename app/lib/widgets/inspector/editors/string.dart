@@ -48,7 +48,8 @@ class StringEditor extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final focus = useFocusNode();
     useFocusedBasedCurrentEditingField(focus, ref.passing, path);
-    final value = ref.watch(fieldValueProvider(path, ""));
+    final value =
+        ref.watch(fieldValueProvider(path, primitiveBlueprint.defaultValue()));
 
     final singleLine = !primitiveBlueprint.hasModifier("multiline");
 
