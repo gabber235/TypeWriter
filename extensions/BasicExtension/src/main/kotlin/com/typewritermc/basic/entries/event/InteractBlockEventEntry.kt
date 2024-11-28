@@ -65,10 +65,10 @@ enum class ShiftType {
 }
 
 enum class InteractionType(vararg val actions: Action) {
-    ALL(Action.RIGHT_CLICK_BLOCK, Action.LEFT_CLICK_BLOCK, Action.PHYSICAL),
-    CLICK(Action.RIGHT_CLICK_BLOCK, Action.LEFT_CLICK_BLOCK),
-    RIGHT_CLICK(Action.RIGHT_CLICK_BLOCK),
-    LEFT_CLICK(Action.LEFT_CLICK_BLOCK),
+    ALL(Action.RIGHT_CLICK_BLOCK, Action.RIGHT_CLICK_AIR, Action.LEFT_CLICK_BLOCK, Action.LEFT_CLICK_AIR, Action.PHYSICAL),
+    CLICK(Action.RIGHT_CLICK_BLOCK, Action.RIGHT_CLICK_AIR, Action.LEFT_CLICK_BLOCK, Action.LEFT_CLICK_AIR),
+    RIGHT_CLICK(Action.RIGHT_CLICK_BLOCK, Action.RIGHT_CLICK_AIR),
+    LEFT_CLICK(Action.LEFT_CLICK_BLOCK, Action.LEFT_CLICK_AIR),
     PHYSICAL(Action.PHYSICAL),
 }
 
@@ -86,7 +86,8 @@ fun Location.isSameBlock(location: Location): Boolean {
 @EntryListener(InteractBlockEventEntry::class)
 fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventEntry>) {
     val player = event.player
-    if (event.clickedBlock == null) return
+    val block = event.clickedBlock
+    val location = block?.location ?: player.location
     // The even triggers twice. Both for the main hand and offhand.
     // We only want to trigger once.
     if (event.hand == org.bukkit.inventory.EquipmentSlot.OFF_HAND) return // Disable off-hand interactions
@@ -98,13 +99,13 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
         if (!entry.interactionType.actions.contains(event.action)) return@findWhere false
 
         // Check if the player clicked on the correct location
-        if (!entry.location.map { it.get(player).sameBlock(event.clickedBlock!!.location.toPosition()) }
+        if (!entry.location.map { it.get(player).sameBlock(location.toPosition()) }
                 .orElse(true)) return@findWhere false
 
         // Check if the player is holding the correct item
         if (!hasItemInHand(player, entry.itemInHand.get(player))) return@findWhere false
 
-        entry.block == event.clickedBlock!!.type
+        entry.block == (block?.type ?: Material.AIR)
     }.toList()
     if (entries.isEmpty()) return
 
