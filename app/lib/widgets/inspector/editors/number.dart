@@ -40,7 +40,8 @@ class NumberEditor extends HookConsumerWidget {
     final focus = useFocusNode();
     useFocusedBasedCurrentEditingField(focus, ref.passing, path);
 
-    final value = ref.watch(fieldValueProvider(path, 0));
+    final value =
+        ref.watch(fieldValueProvider(path, primitiveBlueprint.defaultValue()));
 
     final isNegativeAllowed =
         primitiveBlueprint.get("negative") as bool? ?? true;

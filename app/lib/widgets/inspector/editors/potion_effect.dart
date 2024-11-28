@@ -188,7 +188,8 @@ class PotionEffectEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(fieldValueProvider(path, "speed"));
+    final value =
+        ref.watch(fieldValueProvider(path, customBlueprint.defaultValue()));
 
     // While we are editing, we need to keep the potion effects loaded
     ref.watch(potionEffectsProvider);

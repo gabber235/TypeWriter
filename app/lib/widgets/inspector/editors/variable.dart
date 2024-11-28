@@ -44,7 +44,8 @@ class VariableEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(fieldValueProvider(path));
+    final value =
+        ref.watch(fieldValueProvider(path, customBlueprint.defaultValue()));
     final data = variableData(value);
     if (data == null) {
       final child =

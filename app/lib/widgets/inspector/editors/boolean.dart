@@ -30,7 +30,8 @@ class BooleanEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(fieldValueProvider(path, false));
+    final value =
+        ref.watch(fieldValueProvider(path, primitiveBlueprint.defaultValue()));
 
     return FieldHeader(
       path: path,
