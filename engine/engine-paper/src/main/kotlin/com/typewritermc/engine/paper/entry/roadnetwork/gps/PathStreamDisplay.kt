@@ -22,7 +22,6 @@ import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
 import com.typewritermc.engine.paper.utils.distanceSqrt
 import com.typewritermc.engine.paper.utils.firstWalkableLocationBelow
-import io.ktor.util.collections.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -33,6 +32,7 @@ import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 private val pathStreamRefreshTime by snippet(
     "path_stream.refresh_time",
@@ -112,7 +112,7 @@ private class PlayerPathStreamDisplay(
     private var gps = PointToPointGPS(ref, { startLocation(player) }, { endLocation(player) })
     private var edges = emptyList<GPSEdge>()
 
-    private val lines = ConcurrentSet<PathLine>()
+    private val lines = ConcurrentHashMap<PathLine, Unit>()
     private var lastRefresh = 0L
 
     private var job: Job? = null
@@ -130,7 +130,7 @@ private class PlayerPathStreamDisplay(
     }
 
     private fun displayPath() {
-        lines.retainAll { line ->
+        lines.keys.retainAll { line ->
             val location = line.currentLocation ?: return@retainAll false
             WrapperPlayServerParticle(
                 Particle(ParticleTypes.TOTEM_OF_UNDYING),
@@ -171,7 +171,7 @@ private class PlayerPathStreamDisplay(
                 .flatten()
                 .map { it.toCenterLocation() }
             if (path.isEmpty()) return@coroutineScope
-            lines.add(PathLine(path))
+            lines[PathLine(path)] = Unit
         }
     }
 
