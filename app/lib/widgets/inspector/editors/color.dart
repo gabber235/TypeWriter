@@ -32,7 +32,8 @@ class ColorEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final startColor =
-        ref.watch(fieldValueProvider(path, customBlueprint.defaultValue));
+        ref.watch(fieldValueProvider(path, customBlueprint.defaultValue()));
+
     final pickerColor = startColor is int ? Color(startColor) : Colors.black;
     return FieldHeader(
       path: path,

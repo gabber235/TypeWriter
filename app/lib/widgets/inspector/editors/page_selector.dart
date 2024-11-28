@@ -48,7 +48,8 @@ class PageSelectorEditor extends HookConsumerWidget {
       return const Text("Invalid page type");
     }
 
-    final pageId = ref.watch(fieldValueProvider(path, ""));
+    final pageId =
+        ref.watch(fieldValueProvider(path, primitiveBlueprint.defaultValue()));
     final hasPage = ref.watch(pageExistsProvider(pageId));
 
     return DragTarget<PageDrag>(

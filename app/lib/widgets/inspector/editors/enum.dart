@@ -38,7 +38,7 @@ class EnumEditor extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value =
-        ref.watch(fieldValueProvider(path, enumBlueprint.values.first));
+        ref.watch(fieldValueProvider(path, enumBlueprint.defaultValue()));
     return Dropdown<String>(
       icon: icon,
       value: forcedValue ?? value,

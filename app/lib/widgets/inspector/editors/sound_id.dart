@@ -293,7 +293,8 @@ class SoundSelectorEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(fieldValueProvider(path));
+    final data =
+        ref.watch(fieldValueProvider(path, customBlueprint.defaultValue()));
     final soundId =
         data != null ? SoundId.fromJson(data) : const SoundId(id: "");
 
