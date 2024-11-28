@@ -296,22 +296,25 @@ abstract class RecordingCinematicContentMode<T : Any>(
         if (!json.isJsonObject) return
         val obj = json.asJsonObject
         val frames = obj.keySet().mapNotNull { it.toIntOrNull() }.sorted()
-        val previousValues = mutableMapOf<String, JsonElement>()
+        var previousValues = mapOf<String, JsonElement>()
         for (frame in frames) {
             // If the previous value is the same as the current value, remove the current value
             val dataElement = obj[frame.toString()]
             if (!dataElement.isJsonObject) continue
             val data = dataElement.asJsonObject
 
+            val newData = mutableMapOf<String, JsonElement>()
+
             for (key in data.keySet().toList()) {
                 val value = data[key]
+                newData[key] = value
                 val previousValue = previousValues[key]
                 if (previousValue != null && previousValue == value) {
                     data.remove(key)
                     continue
                 }
-                previousValues[key] = value
             }
+            previousValues = newData
 
             // If nothing changed in the frame, remove the frame
             if (data.size() == 0) {
