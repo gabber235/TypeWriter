@@ -1,5 +1,6 @@
 package com.typewritermc.processors.entry.modifiers
 
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.typewritermc.core.extension.annotations.Colored
 import com.typewritermc.core.utils.failure
@@ -13,7 +14,7 @@ import kotlin.reflect.KClass
 object ColoredModifierComputer : DataModifierComputer<Colored> {
     override val annotationClass: KClass<Colored> = Colored::class
 
-    context(Resolver)
+    context(KSPLogger, Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: Colored): Result<DataModifier> {
         // If the field is wrapped in a list or other container, we try if the inner type can be modified
         innerCompute(blueprint, annotation)?.let { return ok(it) }
