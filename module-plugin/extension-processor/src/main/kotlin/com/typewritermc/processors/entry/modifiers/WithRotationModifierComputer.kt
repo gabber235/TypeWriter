@@ -1,5 +1,6 @@
 package com.typewritermc.processors.entry.modifiers
 
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.typewritermc.core.extension.annotations.WithRotation
 import com.typewritermc.core.utils.failure
@@ -12,8 +13,10 @@ import kotlin.reflect.KClass
 object WithRotationModifierComputer : DataModifierComputer<WithRotation> {
     override val annotationClass: KClass<WithRotation> = WithRotation::class
 
-    context(Resolver)
+    context(KSPLogger, Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: WithRotation): Result<DataModifier> {
+        innerCompute(blueprint, annotation)?.let { return ok(it) }
+
         if (blueprint !is DataBlueprint.CustomBlueprint) {
             return failure("WithRotation annotation can only be used on positions or coordinates (including in lists or maps)!")
         }
