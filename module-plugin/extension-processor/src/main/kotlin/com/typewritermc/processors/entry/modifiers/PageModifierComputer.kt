@@ -1,5 +1,6 @@
 package com.typewritermc.processors.entry.modifiers
 
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.typewritermc.core.extension.annotations.Page
 import com.typewritermc.core.utils.failure
@@ -13,7 +14,7 @@ import kotlin.reflect.KClass
 object PageModifierComputer : DataModifierComputer<Page> {
     override val annotationClass: KClass<Page> = Page::class
 
-    context(Resolver)
+    context(KSPLogger, Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: Page): Result<DataModifier> {
         innerCompute(blueprint, annotation)?.let { return ok(it) }
 
