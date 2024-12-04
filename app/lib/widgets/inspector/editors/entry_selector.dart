@@ -3,6 +3,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/page.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/smart_single_activator.dart";
@@ -181,7 +182,7 @@ class EntrySelectorEditor extends HookConsumerWidget {
                     else
                       Expanded(
                         child: Text(
-                          "Select a $tag",
+                          "Select a ${tag.formatted}",
                           style:
                               Theme.of(context).inputDecorationTheme.hintStyle,
                         ),
