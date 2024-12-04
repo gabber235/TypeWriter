@@ -6,6 +6,7 @@ import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
+import com.typewritermc.engine.paper.entry.entries.get
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.isFloodgate
 import com.typewritermc.engine.paper.utils.legacy
@@ -24,7 +25,7 @@ class BedrockActionBarDialogueDialogueMessenger(player: Player, entry: ActionBar
         org.geysermc.floodgate.api.FloodgateApi.getInstance().sendForm(
             player.uniqueId,
             org.geysermc.cumulus.form.SimpleForm.builder()
-                .title("<bold>${entry.speakerDisplayName}</bold>".legacy())
+                .title("<bold>${entry.speakerDisplayName.get(player).parsePlaceholders(player)}</bold>".legacy())
                 .content("${entry.text.get(player).parsePlaceholders(player).legacy()}\n\n")
                 .button("Continue")
                 .closedOrInvalidResultHandler { _, _ ->

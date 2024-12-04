@@ -10,6 +10,7 @@ import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
+import com.typewritermc.engine.paper.entry.entries.get
 import com.typewritermc.engine.paper.entry.matches
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.isFloodgate
@@ -42,7 +43,7 @@ class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialog
         org.geysermc.floodgate.api.FloodgateApi.getInstance().sendForm(
             player.uniqueId,
             org.geysermc.cumulus.form.CustomForm.builder()
-                .title("<bold>${entry.speakerDisplayName}</bold>".legacy())
+                .title("<bold>${entry.speakerDisplayName.get(player).parsePlaceholders(player)}</bold>".legacy())
                 .label("${entry.text.get(player).parsePlaceholders(player).legacy()}\n\n\n")
                 .dropdown(
                     "Select Response",
