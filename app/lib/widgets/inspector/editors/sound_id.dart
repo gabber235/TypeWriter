@@ -182,6 +182,7 @@ class _FocusedAudioPlayer extends HookConsumerWidget {
     if (!kIsWeb) return;
     final audioPlayer = ref.read(audioPlayerProvider);
     final url = sound.value.pickRandomSoundUrl();
+    if (url == null) return;
     final source = UrlSource(url);
     audioPlayer.play(source);
   }
@@ -591,6 +592,7 @@ class _ChosenSound extends HookConsumerWidget {
     if (!kIsWeb) return;
     final audioPlayer = ref.read(audioPlayerProvider);
     final url = sound.value.pickRandomSoundUrl();
+    if (url == null) return;
     final source = UrlSource(url);
     audioPlayer.play(source);
   }
