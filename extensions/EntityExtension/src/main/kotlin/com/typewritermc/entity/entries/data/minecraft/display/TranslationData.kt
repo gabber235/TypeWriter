@@ -5,7 +5,9 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.entity.SinglePropertyCollectorSupplier
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
+import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.packetevents.metas
 import com.typewritermc.engine.paper.utils.toPacketVector3f
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta
@@ -19,12 +21,12 @@ import kotlin.reflect.KClass
 class TranslationData(
     override val id: String = "",
     override val name: String = "",
-    val vector: Vector = Vector(0.0, 0.0, 0.0),
+    val vector: Var<Vector> = ConstVar(Vector.ZERO),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : DisplayEntityData<TranslationProperty> {
     override fun type(): KClass<TranslationProperty> = TranslationProperty::class
 
-    override fun build(player: Player): TranslationProperty = TranslationProperty(vector)
+    override fun build(player: Player): TranslationProperty = TranslationProperty(vector.get(player))
 }
 
 data class TranslationProperty(val vector: Vector) : EntityProperty {

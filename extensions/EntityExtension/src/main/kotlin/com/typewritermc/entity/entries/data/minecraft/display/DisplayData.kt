@@ -13,6 +13,8 @@ fun applyDisplayEntityData(entity: WrapperEntity, property: EntityProperty): Boo
         is TranslationProperty -> applyTranslationData(entity, property)
         is BillboardConstraintProperty -> applyBillboardConstraintData(entity, property)
         is Scale3DProperty -> applyScale3DData(entity, property)
+        is PreRotationProperty -> applyPreRotationData(entity, property)
+        is PostRotationProperty -> applyPostRotationData(entity, property)
         else -> return false
     }
     return true
