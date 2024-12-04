@@ -9,6 +9,7 @@ import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.MaterialProperties
 import com.typewritermc.core.extension.annotations.MaterialProperty.BLOCK
 import com.typewritermc.core.utils.point.Position
+import com.typewritermc.core.utils.point.toBlockPosition
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.entries.Var
@@ -40,7 +41,7 @@ fun onPlaceBlock(event: BlockPlaceEvent, query: Query<BlockPlaceEventEntry>) {
     val position = event.block.location.toPosition()
     query findWhere { entry ->
         // Check if the player clicked on the correct location
-        if (!entry.location.map { it.get(player) == position }.orElse(true)) return@findWhere false
+        if (!entry.location.map { it.get(player).toBlockPosition() == position.toBlockPosition() }.orElse(true)) return@findWhere false
 
         entry.block == event.block.type
     } startDialogueWithOrNextDialogue player
