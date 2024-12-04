@@ -50,8 +50,11 @@ class ChatHistoryHandler :
         try {
             if (event == null) return
             val component = findMessage(event) ?: return
-            if (component is TextComponent && component.content() == "no-index") return
             val history = getHistory(event.user.uuid)
+            if (component is TextComponent && component.content() == "no-index") {
+                history.allowedMessageThrough()
+                return
+            }
             history.addMessage(component)
 
             if (history.isBlocking()) {
@@ -118,9 +121,11 @@ fun Player.stopBlockingMessages() = chatHistory.stopBlocking()
 
 class ChatHistory {
     private val messages = ConcurrentLinkedQueue<OldMessage>()
-    private var blocking: Boolean = false
+    private var blocking = false
+    private var blockingState: BlockingStatus = BlockingStatus.FullBlocking
 
     fun startBlocking() {
+        blockingState = BlockingStatus.PartialBlocking(0)
         blocking = true
     }
 
@@ -131,6 +136,9 @@ class ChatHistory {
     fun isBlocking(): Boolean = blocking
 
     fun addMessage(message: Component) {
+        if (blocking) {
+            blockingState = blockingState.addMessage()
+        }
         messages.add(OldMessage(message))
         while (messages.size > 100) {
             messages.poll()
@@ -145,14 +153,25 @@ class ChatHistory {
         messages.clear()
     }
 
+    fun allowedMessageThrough() {
+        blockingState = BlockingStatus.FullBlocking
+    }
+
     private fun clearMessage() = "\n".repeat(100 - min(messages.size, darkenLimit))
 
     fun resendMessages(player: Player, clear: Boolean = true) {
-        // Start with "no-index" to prevent the server from adding the message to the history
-        var msg = Component.text("no-index")
-        if (clear) msg = msg.append(Component.text(clearMessage()))
-        messages.forEach { msg = msg.append(Component.text("\n")).append(it.message) }
-        player.sendMessage(msg)
+        when (val status = blockingState) {
+            is BlockingStatus.FullBlocking -> {
+                // Start with "no-index" to prevent the server from adding the message to the history
+                var msg = Component.text("no-index")
+                if (clear) msg = msg.append(Component.text(clearMessage()))
+                messages.forEach { msg = msg.append(Component.text("\n")).append(it.message) }
+                player.sendMessage(msg)
+            }
+            is BlockingStatus.PartialBlocking -> {
+                messages.reversed().take(status.newMessages).forEach { player.sendMessage(it.message) }
+            }
+        }
     }
 
     fun composeDarkMessage(message: Component, clear: Boolean = true): Component {
@@ -171,6 +190,20 @@ class ChatHistory {
         var msg = Component.text("no-index")
         if (clear) msg = msg.append(Component.text(clearMessage()))
         return msg.append(message)
+    }
+}
+
+sealed interface BlockingStatus {
+    fun addMessage(): BlockingStatus
+
+    // When it only stopped messages from being sent, but not allowed messages to be sent.
+    data class PartialBlocking(val newMessages: Int) : BlockingStatus {
+        override fun addMessage(): BlockingStatus = copy(newMessages = newMessages + 1)
+    }
+
+    // When a message was allowed through.
+    data object FullBlocking : BlockingStatus {
+        override fun addMessage(): BlockingStatus = this
     }
 }
 
