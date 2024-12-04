@@ -61,8 +61,17 @@ Set<String>? entryTriggers(Ref ref, String entryId) {
       .watch(modifierPathsProvider(entry.blueprintId, "entry", "triggerable"));
   return modifiers
       .expand(entry.getAll)
-      .map((id) => id as String?)
-      .nonNulls
+      .expand((value) {
+        if (value is String) {
+          return [value];
+        }
+        // The keys of a map can also be entries
+        if (value is Map) {
+          return value.keys.map((key) => key.toString());
+        }
+
+        return <String>[];
+      })
       .where((id) => id.isNotEmpty)
       .toSet();
 }
