@@ -79,7 +79,6 @@ extension StringExtension on String {
   /// Joins a path with another path.
   String join(String other) {
     if (isEmpty) return other;
-    if (other.isEmpty) return this;
     return "$this.$other";
   }
 }
