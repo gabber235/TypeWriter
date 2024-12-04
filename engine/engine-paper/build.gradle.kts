@@ -37,7 +37,7 @@ dependencies {
     api(project(":engine-core"))
     api(project(":engine-loader"))
 
-    api("me.tofaa.entitylib:spigot:2.4.11-SNAPSHOT")
+    api("me.tofaa.entitylib:spigot:3.0.3-SNAPSHOT")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.20.0")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.20.0")
     api("dev.jorel:commandapi-bukkit-shade:9.6.1")
