@@ -135,3 +135,7 @@ open class Position(
         return "Position(world=$world, x=$x, y=$y, z=$z, yaw=$yaw, pitch=$pitch)"
     }
 }
+
+fun Position.toBlockPosition(): Position {
+    return Position(world, blockX.toDouble(), blockY.toDouble(), blockZ.toDouble(), 0f, 0f)
+}

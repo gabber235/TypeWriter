@@ -59,7 +59,7 @@ class BackedVar<T : Any>(
     val klass: KClass<T>,
 ) : Var<T> {
     override fun get(player: Player): T {
-        val entry = ref.get() ?: throw IllegalStateException("Could not find variable entry")
+        val entry = ref.get() ?: throw IllegalStateException("Could not find variable entry, $ref")
         return entry.get(VarContext(player, data, klass))
     }
 }
