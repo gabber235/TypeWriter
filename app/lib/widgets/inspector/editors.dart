@@ -30,6 +30,7 @@ import "package:typewriter/widgets/inspector/editors/sound_source.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/editors/variable.dart";
 import "package:typewriter/widgets/inspector/editors/vector.dart";
+import "package:typewriter/widgets/inspector/editors/world.dart";
 import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
@@ -66,6 +67,7 @@ List<EditorFilter> editorFilters(Ref ref) => [
       ColorEditorFilter(),
       VariableEditorFilter(),
       GenericEditorFilter(),
+      WorldEditorFilter(),
 
       // Default filters
       StringEditorFilter(),
