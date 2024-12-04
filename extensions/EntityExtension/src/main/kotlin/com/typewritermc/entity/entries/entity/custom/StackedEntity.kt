@@ -37,14 +37,13 @@ class StackedEntityDefinition(
     override val data: List<Ref<EntityData<*>>>
         get() = definitions.mapNotNull { it.get() }.flatMap { it.data }
 
-    override fun create(player: Player): FakeEntity = StackedEntity(player, definitions.mapNotNull { it.get() })
+    override fun create(player: Player): FakeEntity = StackedEntity(player, definitions.mapNotNull { it.get() }.map { it.create(player) })
 }
 
 class StackedEntity(
     player: Player,
-    definitions: List<EntityDefinitionEntry>,
+    private val entities: List<FakeEntity>,
 ) : FakeEntity(player) {
-    private val entities: List<FakeEntity> = definitions.map { it.create(player) }
     override val entityId: Int
         get() = entities.firstOrNull()?.entityId ?: -1
 
@@ -64,6 +63,7 @@ class StackedEntity(
         val baseEntity = entities.first()
         for (entity in entities) {
             entity.spawn(location)
+            if (baseEntity == entity) continue
             baseEntity.addPassenger(entity)
         }
     }
