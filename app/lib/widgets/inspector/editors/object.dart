@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/header.dart";
@@ -14,6 +15,24 @@ class ObjectEditorFilter extends EditorFilter {
         path: path,
         objectBlueprint: dataBlueprint as ObjectBlueprint,
       );
+
+  @override
+  (HeaderActions, Iterable<(String, HeaderContext, DataBlueprint)>)
+      headerActions(
+    Ref<Object?> ref,
+    String path,
+    DataBlueprint dataBlueprint,
+    HeaderContext context,
+  ) {
+    final objectBlueprint = dataBlueprint as ObjectBlueprint;
+    final actions = super.headerActions(ref, path, dataBlueprint, context);
+    final childContext = context.copyWith(parentBlueprint: dataBlueprint);
+    final children = objectBlueprint.fields.entries.map(
+      (entry) => (path.join(entry.key), childContext, entry.value),
+    );
+
+    return (actions.$1, actions.$2.followedBy(children));
+  }
 }
 
 class ObjectEditor extends HookConsumerWidget {
@@ -33,7 +52,6 @@ class ObjectEditor extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return FieldHeader(
       path: path,
-      dataBlueprint: objectBlueprint,
       canExpand: true,
       defaultExpanded: defaultExpanded,
       child: Column(
@@ -44,10 +62,7 @@ class ObjectEditor extends HookConsumerWidget {
             if (!ignoreFields.contains(fieldBlueprint.key)) ...[
               if (!fieldBlueprint.value.hasCustomLayout)
                 FieldHeader(
-                  dataBlueprint: fieldBlueprint.value,
-                  path: path.isNotEmpty
-                      ? "$path.${fieldBlueprint.key}"
-                      : fieldBlueprint.key,
+                  path: path.join(fieldBlueprint.key),
                   child: buildFieldEditor(fieldBlueprint),
                 )
               else
@@ -61,9 +76,9 @@ class ObjectEditor extends HookConsumerWidget {
   FieldEditor buildFieldEditor(MapEntry<String, DataBlueprint> field) {
     return FieldEditor(
       key: ValueKey(
-        path.isNotEmpty ? "$path.${field.key}" : field.key,
+        path.isNotEmpty ? path.join(field.key) : field.key,
       ),
-      path: path.isNotEmpty ? "$path.${field.key}" : field.key,
+      path: path.isNotEmpty ? path.join(field.key) : field.key,
       dataBlueprint: field.value,
     );
   }

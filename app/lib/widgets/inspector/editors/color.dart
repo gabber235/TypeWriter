@@ -37,7 +37,6 @@ class ColorEditor extends HookConsumerWidget {
     final pickerColor = startColor is int ? Color(startColor) : Colors.black;
     return FieldHeader(
       path: path,
-      dataBlueprint: customBlueprint,
       canExpand: true,
       child: Padding(
         padding: const EdgeInsets.only(top: 12),

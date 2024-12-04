@@ -11,9 +11,6 @@ import "package:typewriter/widgets/components/general/outline_button.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/header.dart";
-import "package:typewriter/widgets/inspector/headers/add_action.dart";
-import "package:typewriter/widgets/inspector/headers/delete_action.dart";
-import "package:typewriter/widgets/inspector/headers/duplicate_list_item_action.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "list.g.dart";
@@ -25,6 +22,27 @@ class ListEditorFilter extends EditorFilter {
   @override
   Widget build(String path, DataBlueprint dataBlueprint) =>
       ListEditor(path: path, listBlueprint: dataBlueprint as ListBlueprint);
+
+  @override
+  (HeaderActions, Iterable<(String, HeaderContext, DataBlueprint)>)
+      headerActions(
+    Ref<Object?> ref,
+    String path,
+    DataBlueprint dataBlueprint,
+    HeaderContext context,
+  ) {
+    final listBlueprint = dataBlueprint as ListBlueprint;
+    final length = _listValueLength(ref, path);
+
+    final actions = super.headerActions(ref, path, dataBlueprint, context);
+    final childContext = context.copyWith(parentBlueprint: dataBlueprint);
+    final children = List.generate(
+      length,
+      (index) => (path.join("$index"), childContext, listBlueprint.type),
+    );
+
+    return (actions.$1, actions.$2.followedBy(children));
+  }
 }
 
 @riverpod
@@ -41,16 +59,16 @@ class ListEditor extends HookConsumerWidget {
   final String path;
   final ListBlueprint listBlueprint;
 
-  List<dynamic> _get(PassingRef ref) {
-    return ref.read(fieldValueProvider(path)) as List<dynamic>? ?? [];
-  }
-
   void _addNew(PassingRef ref) {
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
       ref,
       path,
       [..._get(ref), listBlueprint.type.defaultValue()],
     );
+  }
+
+  List<dynamic> _get(PassingRef ref) {
+    return ref.read(fieldValueProvider(path)) as List<dynamic>? ?? [];
   }
 
   void _reorderList(List<dynamic> value, int oldIndex, int newIndex) {
@@ -90,14 +108,7 @@ class ListEditor extends HookConsumerWidget {
 
     return FieldHeader(
       path: path,
-      dataBlueprint: listBlueprint,
       canExpand: true,
-      actions: [
-        AddHeaderAction(
-          path: path,
-          onAdd: () => _addNew(ref.passing),
-        ),
-      ],
       child: length > 0
           ? ReorderableList(
               itemCount: length,
@@ -117,7 +128,7 @@ class ListEditor extends HookConsumerWidget {
             )
           : NoElements(
               path: path,
-              addNew: () => _addNew(ref.passing),
+              onAdd: () => _addNew(ref.passing),
             ),
     );
   }
@@ -126,12 +137,12 @@ class ListEditor extends HookConsumerWidget {
 class NoElements extends HookConsumerWidget {
   const NoElements({
     required this.path,
-    required this.addNew,
+    required this.onAdd,
     super.key,
   });
 
   final String path;
-  final VoidCallback addNew;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -149,7 +160,7 @@ class NoElements extends HookConsumerWidget {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             OutlineButton.icon(
-              onPressed: addNew,
+              onPressed: onAdd,
               icon: const Iconify(TWIcons.plus),
               label: Text("Add ${name.singular}"),
               color: Theme.of(context).colorScheme.primary,
@@ -173,51 +184,17 @@ class _ListItem extends HookConsumerWidget {
   final String path;
   final ListBlueprint listBlueprint;
 
-  void _remove(PassingRef ref, int index) {
-    final value = ref.read(fieldValueProvider(path)) as List<dynamic>? ?? [];
-    ref.read(inspectingEntryDefinitionProvider)?.updateField(
-          ref,
-          path,
-          [...value]..removeAt(index),
-        );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dataBlueprint = listBlueprint.type;
-    final childPath = "$path.$index";
+    final childPath = path.join("$index");
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: FieldHeader(
-        dataBlueprint: dataBlueprint,
         path: childPath,
         canExpand: true,
-        leading: [
-          MouseRegion(
-            cursor: SystemMouseCursors.grab,
-            child: ReorderableDragStartListener(
-              index: index,
-              child: const Iconify(
-                TWIcons.barsStaggered,
-                size: 12,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-        ],
-        actions: [
-          DuplicateListItemAction(
-            parentPath: path,
-            path: childPath,
-            dataBlueprint: dataBlueprint,
-          ),
-          RemoveHeaderAction(
-            path: "$path.$index",
-            onRemove: () => _remove(ref.passing, index),
-          ),
-        ],
         child: FieldEditor(
-          path: "$path.$index",
+          path: childPath,
           dataBlueprint: dataBlueprint,
         ),
       ),

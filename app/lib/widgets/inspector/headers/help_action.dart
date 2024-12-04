@@ -5,15 +5,27 @@ import "package:typewriter/widgets/inspector/header.dart";
 
 class HelpHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, DataBlueprint dataBlueprint) =>
+  bool shouldShow(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       (dataBlueprint.getModifier("help")?.data as String?) != null;
 
   @override
-  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
+  HeaderActionLocation location(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       HeaderActionLocation.trailing;
 
   @override
-  Widget build(String path, DataBlueprint dataBlueprint) =>
+  Widget build(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       HelpHeaderAction(dataBlueprint: dataBlueprint);
 }
 
@@ -39,7 +51,11 @@ class HelpHeaderAction extends HookConsumerWidget {
       child: Icon(
         Icons.help_outline,
         size: 16,
-        color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha:0.6),
+        color: Theme.of(context)
+            .textTheme
+            .bodySmall
+            ?.color
+            ?.withValues(alpha: 0.6),
       ),
     );
   }

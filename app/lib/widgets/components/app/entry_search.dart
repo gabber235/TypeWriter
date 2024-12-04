@@ -103,7 +103,7 @@ class GenericEntryFilter extends SearchFilter {
   bool filter(SearchElement action) {
     if (action is EntrySearchElement) {
       if (action.entry.genericBlueprint == null) return true;
-      return action.entry.genericBlueprint == blueprint;
+      return action.entry.genericBlueprint!.matches(blueprint);
     }
     if (action is AddEntrySearchElement) {
       return action.blueprint.allowsGeneric(blueprint);
