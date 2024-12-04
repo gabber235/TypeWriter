@@ -16,7 +16,7 @@ import com.typewritermc.engine.paper.entry.triggerEntriesFor
 import org.bukkit.entity.Player
 import kotlin.random.Random
 
-@Entry("weighted_random_trigger_gate", "A weighted random trigger gate", Colors.RED, "fa6-solid:dice-d6")
+@Entry("weighted_random_trigger_gate", "A weighted random trigger gate", Colors.PINK, "jam:dices-f")
 /**
  * The `Weighted Random Trigger Gate` is a gate that triggers a specified number of entries randomly.
  *
