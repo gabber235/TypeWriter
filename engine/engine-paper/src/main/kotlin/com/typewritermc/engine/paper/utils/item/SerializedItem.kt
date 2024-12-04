@@ -25,12 +25,13 @@ class SerializedItem(
         itemStack.type,
         itemStack.itemMeta.displayName()?.plainText() ?: itemStack.type.name,
         itemStack.amount,
-        Base64.encode(itemStack.serializeAsBytes())
+        if (itemStack.type != Material.AIR) Base64.encode(itemStack.serializeAsBytes()) else "",
     )
 
     @delegate:Transient
     private val itemStack: ItemStack by lazy(LazyThreadSafetyMode.NONE) {
         val bytes = Base64.decode(bytes)
+        if (bytes.isEmpty()) return@lazy ItemStack(Material.AIR)
         ItemStack.deserializeBytes(bytes).apply {
             amount = this@SerializedItem.amount
         }
