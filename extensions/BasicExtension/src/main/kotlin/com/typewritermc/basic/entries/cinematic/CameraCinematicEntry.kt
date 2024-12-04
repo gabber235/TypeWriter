@@ -24,6 +24,7 @@ import com.typewritermc.engine.paper.utils.*
 import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.*
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import kotlinx.coroutines.future.await
 import lirand.api.extensions.events.SimpleListener
 import lirand.api.extensions.events.listen
 import lirand.api.extensions.events.unregister
@@ -324,9 +325,7 @@ private class DisplayCameraAction(
     override suspend fun startSegment(segment: CameraSegment) {
         setupPath(segment)
 
-        SYNC.switchContext {
-            player.teleport(path.first().position.toBukkitLocation())
-        }
+        player.teleportAsync(path.first().position.toBukkitLocation()).await()
 
         entity.spawn(path.first().position.toPacketLocation())
         entity.addViewer(player.uniqueId)
