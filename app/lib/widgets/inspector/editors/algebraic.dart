@@ -29,6 +29,38 @@ class AlgebraicEditorFilter extends EditorFilter {
         path: path,
         algebraicBlueprint: dataBlueprint as AlgebraicBlueprint,
       );
+
+  @override
+  (HeaderActions, Iterable<(String, HeaderContext, DataBlueprint)>)
+      headerActions(
+    Ref<Object?> ref,
+    String path,
+    DataBlueprint dataBlueprint,
+    HeaderContext context,
+  ) {
+    final algebraicBlueprint = dataBlueprint as AlgebraicBlueprint;
+
+    final selectedCase = ref.watch(fieldValueProvider(path.join("case"), ""));
+
+    if (selectedCase is! String ||
+        selectedCase.isEmpty ||
+        !algebraicBlueprint.cases.containsKey(selectedCase)) {
+      return (const HeaderActions(), []);
+    }
+
+    final caseBlueprint = algebraicBlueprint.cases[selectedCase];
+    if (caseBlueprint == null) return (const HeaderActions(), []);
+
+    final actions = super.headerActions(ref, path, dataBlueprint, context);
+    final child = headerActionsFor(
+      ref,
+      path.join("value"),
+      caseBlueprint,
+      context.copyWith(parentBlueprint: dataBlueprint),
+    );
+
+    return (actions.$1.merge(child.$1), actions.$2.followedBy(child.$2));
+  }
 }
 
 class AlgebraicEditor extends HookConsumerWidget {
@@ -43,7 +75,7 @@ class AlgebraicEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedCase = ref.watch(fieldValueProvider("$path.case", ""));
+    final selectedCase = ref.watch(fieldValueProvider(path.join("case"), ""));
 
     if (selectedCase is! String ||
         selectedCase.isEmpty ||
@@ -81,7 +113,6 @@ class AlgebraicEditor extends HookConsumerWidget {
 
     return FieldHeader(
       path: path,
-      dataBlueprint: algebraicBlueprint,
       canExpand: true,
       child: SizedBox(
         width: double.infinity,
@@ -93,16 +124,14 @@ class AlgebraicEditor extends HookConsumerWidget {
             ),
             const SizedBox(height: 8),
             Header(
-              path: "$path.value",
+              path: path.join("value"),
               expanded: ValueNotifier(true),
               canExpand: false,
               depth: Header.maybeOf(context)?.depth ?? 0,
-              combineActions: (actions) =>
-                  Header.maybeOf(context)?.combineActions(actions),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: FieldEditor(
-                  path: "$path.value",
+                  path: path.join("value"),
                   dataBlueprint: caseBlueprint,
                 ),
               ),
@@ -141,7 +170,7 @@ class _CaseSelector extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cases = algebraicBlueprint.cases;
-    final selectedCase = ref.watch(fieldValueProvider("$path.case"));
+    final selectedCase = ref.watch(fieldValueProvider(path.join("case")));
     final caseBlueprint = cases[selectedCase];
     if (caseBlueprint == null) return const SizedBox.shrink();
 
@@ -149,14 +178,17 @@ class _CaseSelector extends HookConsumerWidget {
       final hexColor = caseBlueprint.get<String?>("color") ?? "#009688";
       final color = colorConverter.fromJson(hexColor) ?? Colors.teal;
 
-      return CupertinoSlidingSegmentedControl<String>(
-        groupValue: selectedCase,
-        thumbColor: color,
-        onValueChanged: (value) => _selectCase(ref.passing, value),
-        children: {
-          for (final casing in cases.entries)
-            casing.key: _buildCase(casing.key, casing.value, centered: true),
-        },
+      return Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: CupertinoSlidingSegmentedControl<String>(
+          groupValue: selectedCase,
+          thumbColor: color,
+          onValueChanged: (value) => _selectCase(ref.passing, value),
+          children: {
+            for (final casing in cases.entries)
+              casing.key: _buildCase(casing.key, casing.value, centered: true),
+          },
+        ),
       );
     }
 

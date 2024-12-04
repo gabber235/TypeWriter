@@ -14,17 +14,29 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class VariableHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, DataBlueprint dataBlueprint) {
+  bool shouldShow(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) {
     if (dataBlueprint is! CustomBlueprint) return false;
     return dataBlueprint.editor == "var";
   }
 
   @override
-  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
+  HeaderActionLocation location(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       HeaderActionLocation.actions;
 
   @override
-  Widget build(String path, DataBlueprint dataBlueprint) {
+  Widget build(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) {
     return VariableHeaderAction(
       path: path,
       customBlueprint: dataBlueprint as CustomBlueprint,
@@ -66,6 +78,15 @@ class VariableHeaderAction extends HookConsumerWidget {
     };
 
     ref.read(inspectingEntryDefinitionProvider)?.updateField(ref, path, data);
+
+    // Refresh the variable generic blueprint.
+    if (entry.genericBlueprint != null) {
+      ref.read(entryDefinitionProvider(entry.id))?.updateField(
+            ref,
+            "_genericBlueprint",
+            customBlueprint.shape.toJson(),
+          );
+    }
     return true;
   }
 

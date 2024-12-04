@@ -1,6 +1,7 @@
 import "dart:math";
 
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:typewriter/utils/extensions.dart";
 
 part "tree_view.freezed.dart";
 
@@ -213,11 +214,5 @@ extension on String {
     if (!startsWith(part)) return this;
     if (length == part.length) return "";
     return substring(part.length + 1);
-  }
-
-  String join(String other) {
-    if (isEmpty) return other;
-    if (other.isEmpty) return this;
-    return "$this.$other";
   }
 }

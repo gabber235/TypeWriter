@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -29,6 +30,7 @@ import "package:typewriter/widgets/inspector/editors/sound_source.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/editors/variable.dart";
 import "package:typewriter/widgets/inspector/editors/vector.dart";
+import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 part "editors.g.dart";
@@ -79,6 +81,38 @@ abstract class EditorFilter {
   bool canEdit(DataBlueprint dataBlueprint);
 
   Widget build(String path, DataBlueprint dataBlueprint);
+
+  (HeaderActions, Iterable<(String, HeaderContext, DataBlueprint)>)
+      headerActions(
+    Ref ref,
+    String path,
+    DataBlueprint dataBlueprint,
+    HeaderContext context,
+  ) {
+    final actions = ref
+        .watch(headerActionFiltersProvider)
+        .where((filter) {
+          return filter.shouldShow(path, context, dataBlueprint);
+        })
+        .groupListsBy((filter) => filter.location(path, context, dataBlueprint))
+        .map(
+          (key, value) => MapEntry(
+            key,
+            value
+                .map((filter) => filter.build(path, context, dataBlueprint))
+                .toList(),
+          ),
+        );
+
+    return (
+      HeaderActions(
+        leading: actions[HeaderActionLocation.leading] ?? [],
+        trailing: actions[HeaderActionLocation.trailing] ?? [],
+        actions: actions[HeaderActionLocation.actions] ?? [],
+      ),
+      [],
+    );
+  }
 }
 
 @riverpod

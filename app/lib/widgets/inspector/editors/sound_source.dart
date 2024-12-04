@@ -2,6 +2,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
@@ -37,7 +38,7 @@ class SoundSourceEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final type = ref.watch(fieldValueProvider("$path.type", "self"));
+    final type = ref.watch(fieldValueProvider(path.join("type"), "self"));
 
     final sourceType = SoundSourceType.fromString(type);
 
@@ -54,14 +55,17 @@ class SoundSourceEditor extends HookConsumerWidget {
             backgroundColor: Theme.of(context).inputDecorationTheme.fillColor ??
                 Theme.of(context).canvasColor,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            onValueChanged: (value) => ref
-                .read(inspectingEntryDefinitionProvider)
-                ?.updateField(ref.passing, "$path.type", value?.name ?? "self"),
+            onValueChanged: (value) =>
+                ref.read(inspectingEntryDefinitionProvider)?.updateField(
+                      ref.passing,
+                      path.join("type"),
+                      value?.name ?? "self",
+                    ),
           ),
           const SizedBox(height: 8),
           if (sourceType == SoundSourceType.emitter)
             EntrySelectorEditor(
-              path: "$path.entryId",
+              path: path.join("entryId"),
               dataBlueprint: const PrimitiveBlueprint(
                 type: PrimitiveType.string,
                 modifiers: [Modifier(name: "entry", data: "sound_source")],
@@ -69,7 +73,7 @@ class SoundSourceEditor extends HookConsumerWidget {
             ),
           if (sourceType == SoundSourceType.location)
             PositionEditor(
-              path: "$path.location",
+              path: path.join("location"),
               customBlueprint: CustomBlueprint(
                 editor: "location",
                 internalDefaultValue:

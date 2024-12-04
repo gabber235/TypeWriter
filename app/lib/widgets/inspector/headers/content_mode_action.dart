@@ -16,15 +16,27 @@ import "package:typewriter/widgets/inspector/inspector.dart";
 
 class ContentModeHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, DataBlueprint dataBlueprint) =>
+  bool shouldShow(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       (dataBlueprint.getModifier("contentMode")?.data as String?) != null;
 
   @override
-  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
+  HeaderActionLocation location(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       HeaderActionLocation.actions;
 
   @override
-  Widget build(String path, DataBlueprint dataBlueprint) =>
+  Widget build(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       ContentModeHeaderAction(path: path, dataBlueprint: dataBlueprint);
 }
 

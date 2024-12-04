@@ -23,7 +23,7 @@ final searchBarFocusProvider = AutoDisposeProvider<Raw<FocusNode>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SearchBarFocusRef = AutoDisposeProviderRef<Raw<FocusNode>>;
-String _$searchElementsHash() => r'ec61a24143ff846911649d995c31476e9fdded7e';
+String _$searchElementsHash() => r'e8a227a637b97bc0b1df60b2941b57cc7c7c5123';
 
 /// See also [searchElements].
 @ProviderFor(searchElements)

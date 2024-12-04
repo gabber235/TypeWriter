@@ -6,16 +6,28 @@ import "package:typewriter/widgets/inspector/header.dart";
 
 class LengthHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, DataBlueprint dataBlueprint) {
+  bool shouldShow(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) {
     return dataBlueprint is ListBlueprint || dataBlueprint is MapBlueprint;
   }
 
   @override
-  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
+  HeaderActionLocation location(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       HeaderActionLocation.trailing;
 
   @override
-  Widget build(String path, DataBlueprint dataBlueprint) =>
+  Widget build(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       LengthHeaderAction(path: path, dataBlueprint: dataBlueprint);
 }
 
