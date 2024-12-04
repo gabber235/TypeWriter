@@ -241,9 +241,13 @@ extension EntryBlueprintExt on EntryBlueprint {
         _fieldsWithModifier(name, path.join("*"), blueprint.type),
       );
     } else if (blueprint is MapBlueprint) {
-      fields.addAll(
-        _fieldsWithModifier(name, path.join("*"), blueprint.value),
-      );
+      fields
+        ..addAll(
+          _fieldsWithModifier(name, path, blueprint.key),
+        )
+        ..addAll(
+          _fieldsWithModifier(name, path.join("*"), blueprint.value),
+        );
     }
 
     return fields;
@@ -406,8 +410,9 @@ extension DataBlueprintExtension on DataBlueprint {
     if (this is ObjectBlueprint && other is ObjectBlueprint) {
       final obj = this as ObjectBlueprint;
       if (obj.fields.length != other.fields.length) return false;
-      if (!setEquals(obj.fields.keys.toSet(), other.fields.keys.toSet()))
+      if (!setEquals(obj.fields.keys.toSet(), other.fields.keys.toSet())) {
         return false;
+      }
       for (final key in obj.fields.keys) {
         if (!other.fields.containsKey(key)) return false;
         if (!obj.fields[key]!.matches(other.fields[key]!)) return false;

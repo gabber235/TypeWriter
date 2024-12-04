@@ -1,4 +1,5 @@
 import "package:collection/collection.dart";
+import "package:collection_ext/all.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -315,8 +316,17 @@ extension PageExtension on Page {
 
     final referenceEntryIds = referenceEntryPaths
         .expand((path) => entry.getAll(path))
-        .whereType<String>()
-        .toList();
+        .expand((value) {
+      if (value is String) {
+        return [value];
+      }
+      // The keys of a map can also be entries
+      if (value is Map) {
+        return value.keys.map((key) => key.toString());
+      }
+
+      return <String>[];
+    }).toList();
 
     if (!referenceEntryIds.contains(targetId)) {
       return entry;
@@ -326,7 +336,15 @@ extension PageExtension on Page {
       entry,
       (previousEntry, path) => previousEntry.copyMapped(
         path,
-        (value) => value == targetId ? null : value,
+        (value) {
+          if (value is String && value == targetId) {
+            return null;
+          }
+          if (value is Map && value.containsKey(targetId)) {
+            return value.where((key, value) => key != targetId).toMap();
+          }
+          return value;
+        },
       ),
     );
 
