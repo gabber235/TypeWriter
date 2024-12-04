@@ -6,7 +6,6 @@ import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.entries.VarContext
 import com.typewritermc.engine.paper.entry.entries.VariableEntry
 import com.typewritermc.engine.paper.entry.entries.getData
-import com.typewritermc.engine.paper.loader.serializers.VectorSerializer
 import com.typewritermc.engine.paper.utils.toVector
 import kotlin.reflect.cast
 
@@ -21,27 +20,20 @@ import kotlin.reflect.cast
 class LookingDirectionVariable(
     override val id: String = "",
     override val name: String = "",
-    @Help("The vector to add to the direction")
-    val vector: Vector = Vector.ZERO,
-    @Default("1.0")
-    val scalar: Double = 1.0,
+    @Default(Vector.UNIT_JSON)
+    val scalar: Vector = Vector.UNIT,
 ) : VariableEntry {
     override fun <T : Any> get(context: VarContext<T>): T {
-        val dataScalar = context.getData<LookingDirectionVariableData>()?.scalar ?: 1.0
-        val scalar = this.scalar * dataScalar
-
-        val dataVector = context.getData<LookingDirectionVariableData>()?.vector ?: Vector.ZERO
-        val vector = this.vector.mul(dataVector)
+        val dataScalar = context.getData<LookingDirectionVariableData>()?.scalar ?: Vector.UNIT
+        val vector = this.scalar.mul(dataScalar)
 
         val player = context.player
         val lookDirection = player.location.direction.toVector()
-        return context.klass.cast(lookDirection.add(vector).mul(scalar))
+        return context.klass.cast(lookDirection * vector)
     }
 }
 
 data class LookingDirectionVariableData(
-    @Help("The vector to add to the direction")
-    val vector: Vector = Vector.ZERO,
-    @Default("1.0")
-    val scalar: Double = 1.0,
+    @Default(Vector.UNIT_JSON)
+    val scalar: Vector = Vector.UNIT,
 )
