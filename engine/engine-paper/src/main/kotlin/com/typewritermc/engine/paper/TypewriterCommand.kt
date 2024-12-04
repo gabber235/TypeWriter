@@ -191,6 +191,7 @@ private fun CommandTree.clearChatCommand() = literalArgument("clearChat") {
     playerExecutor { player, _ ->
         player.chatHistory.let {
             it.clear()
+            it.allowedMessageThrough()
             it.resendMessages(player)
         }
     }
