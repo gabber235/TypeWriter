@@ -83,7 +83,10 @@ extension MinecraftSoundX on MinecraftSound {
 final Random _random = Random();
 
 extension ListSoundDataX on List<SoundData> {
-  String pickRandomSoundUrl() {
+  String? pickRandomSoundUrl() {
+    if (isEmpty) return null;
+    if (length == 1) return first.url;
+
     final totalWeight =
         fold(0, (previousValue, element) => previousValue + element.weight);
     final random = (totalWeight * _random.nextDouble()).toInt();
