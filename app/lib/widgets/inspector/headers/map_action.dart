@@ -48,15 +48,21 @@ class AddMapHeaderAction extends HookConsumerWidget {
   final MapBlueprint mapBlueprint;
 
   void _addNew(PassingRef ref) {
-    final value =
+    final rawValue =
         ref.read(fieldValueProvider(path, mapBlueprint.defaultValue()));
 
-    final key = mapBlueprint.key is EnumBlueprint
-        ? (mapBlueprint.key as EnumBlueprint)
-            .values
-            .firstWhereOrNull((e) => !value.containsKey(e))
-        : mapBlueprint.key.defaultValue();
+    final value = <String, dynamic>{
+      ...rawValue.map((key, value) => MapEntry(key.toString(), value)),
+    };
+
+    final key = switch (mapBlueprint.key) {
+      EnumBlueprint(values: final values) =>
+        values.firstWhereOrNull((e) => !value.containsKey(e)),
+      CustomBlueprint(editor: "ref") => "",
+      _ => mapBlueprint.key.defaultValue(),
+    };
     if (key == null) return;
+
     final val = mapBlueprint.value.defaultValue();
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
       ref,
