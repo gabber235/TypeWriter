@@ -34,13 +34,17 @@ class MapEditorFilter extends EditorFilter {
     HeaderContext context,
   ) {
     final mapBlueprint = dataBlueprint as MapBlueprint;
-    final value =
+    final rawValue =
         ref.watch(fieldValueProvider(path, mapBlueprint.defaultValue()));
+
+    final value = <String, dynamic>{
+      ...rawValue.map((key, value) => MapEntry(key.toString(), value)),
+    };
 
     final actions = super.headerActions(ref, path, dataBlueprint, context);
     final childContext = context.copyWith(parentBlueprint: dataBlueprint);
     final children = value.entries.map(
-      (entry) => (path.join(entry.key), childContext, entry.value),
+      (entry) => (path.join(entry.key), childContext, mapBlueprint.value),
     );
 
     return (actions.$1, actions.$2.followedBy(children));
@@ -57,11 +61,13 @@ class MapEditor extends HookConsumerWidget {
   final MapBlueprint mapBlueprint;
 
   void _addNew(PassingRef ref, Map<String, dynamic> value) {
-    final key = mapBlueprint.key is EnumBlueprint
-        ? (mapBlueprint.key as EnumBlueprint)
-            .values
-            .firstWhereOrNull((e) => !value.containsKey(e))
-        : mapBlueprint.key.defaultValue();
+    final key = switch (mapBlueprint.key) {
+      EnumBlueprint(values: final values) =>
+        values.firstWhereOrNull((e) => !value.containsKey(e)),
+      CustomBlueprint(editor: "ref") => "",
+      _ => mapBlueprint.key.defaultValue(),
+    };
+
     if (key == null) return;
     final val = mapBlueprint.value.defaultValue();
     ref.read(inspectingEntryDefinitionProvider)?.updateField(
@@ -107,7 +113,7 @@ class MapEditor extends HookConsumerWidget {
                       key: globalKeys[index],
                       index: index,
                       map: value,
-                      entry: MapEntry(entry.key, entry.value),
+                      entry: entry,
                       path: path,
                       mapBlueprint: mapBlueprint,
                     ),
@@ -130,7 +136,8 @@ class _MapEntry extends HookConsumerWidget {
     required this.path,
     required this.mapBlueprint,
     super.key,
-  }) : super();
+  });
+
   final int index;
   final Map<String, dynamic> map;
   final MapEntry<String, dynamic> entry;
@@ -243,7 +250,7 @@ class _MapEntry extends HookConsumerWidget {
             padding: const EdgeInsets.only(left: 24),
             child: FieldEditor(
               key: ValueKey("map-$index"),
-              path: path.join(entry.key),
+              path: "$path.${entry.key}",
               dataBlueprint: mapBlueprint.value,
             ),
           ),
