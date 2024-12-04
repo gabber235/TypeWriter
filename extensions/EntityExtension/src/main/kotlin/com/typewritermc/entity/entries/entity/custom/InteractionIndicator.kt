@@ -6,6 +6,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.OnlyTags
+import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.SimpleEntityDefinition
 import com.typewritermc.engine.paper.entry.entries.*
@@ -15,6 +16,7 @@ import com.typewritermc.engine.paper.entry.quest.trackedQuest
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.Sound
+import com.typewritermc.entity.entries.data.minecraft.display.TranslationProperty
 import com.typewritermc.entity.entries.entity.minecraft.TextDisplayEntity
 import com.typewritermc.entity.entries.event.EntityInteractEventEntry
 import com.typewritermc.entity.entries.quest.InteractEntityObjective
@@ -43,7 +45,14 @@ class InteractionIndicatorDefinition(
     @OnlyTags("generic_entity_data", "display_data", "text_display_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
-    override fun create(player: Player): FakeEntity = InteractionIndicatorEntity(player, definition)
+    override fun create(player: Player): FakeEntity = StackedEntity(
+        player, listOf(
+            definition.get()?.create(player) ?: throw IllegalStateException("Could not find definition for $definition"),
+            InteractionIndicatorEntity(player, definition).apply {
+                consumeProperties(TranslationProperty(Vector(y = namePlateOffset)))
+            },
+        )
+    )
 }
 
 class InteractionIndicatorEntity(
