@@ -24,7 +24,7 @@ class BedrockSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialog
         org.geysermc.floodgate.api.FloodgateApi.getInstance().sendForm(
             player.uniqueId,
             org.geysermc.cumulus.form.SimpleForm.builder()
-                .title("<bold>${entry.speakerDisplayName}</bold>".legacy())
+                .title("<bold>${entry.speakerDisplayName.get(player).parsePlaceholders(player)}</bold>".legacy())
                 .content("${entry.text.get(player).parsePlaceholders(player).legacy()}\n\n")
                 .button("Continue")
                 .closedOrInvalidResultHandler { _, _ ->
