@@ -4,6 +4,7 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.GenericConstraint
 import com.typewritermc.core.extension.annotations.VariableData
+import com.typewritermc.core.extension.annotations.WithRotation
 import com.typewritermc.core.utils.point.Coordinate
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.core.utils.point.toPosition
@@ -44,5 +45,6 @@ class PlayerWorldPositionVariable(
 }
 
 data class PlayerWorldPositionVariableData(
+    @WithRotation
     val coordinate: Coordinate = Coordinate.ORIGIN,
 )
