@@ -4,6 +4,7 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.OnlyTags
 import com.typewritermc.core.utils.point.Vector
@@ -48,7 +49,7 @@ class InteractionIndicatorDefinition(
     override fun create(player: Player): FakeEntity = StackedEntity(
         player, listOf(
             definition.get()?.create(player) ?: throw IllegalStateException("Could not find definition for $definition"),
-            InteractionIndicatorEntity(player, definition).apply {
+            InteractionIndicatorEntity(player, ref()).apply {
                 consumeProperties(TranslationProperty(Vector(y = namePlateOffset)))
             },
         )
