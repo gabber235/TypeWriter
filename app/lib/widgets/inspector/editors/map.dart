@@ -3,6 +3,7 @@ import "package:flutter/material.dart" hide FilledButton;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/utils/popups.dart";
@@ -14,7 +15,6 @@ import "package:typewriter/widgets/inspector/editors/field.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
 import "package:typewriter/widgets/inspector/editors/string.dart";
 import "package:typewriter/widgets/inspector/header.dart";
-import "package:typewriter/widgets/inspector/headers/add_action.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 
 class MapEditorFilter extends EditorFilter {
@@ -24,6 +24,27 @@ class MapEditorFilter extends EditorFilter {
   @override
   Widget build(String path, DataBlueprint dataBlueprint) =>
       MapEditor(path: path, mapBlueprint: dataBlueprint as MapBlueprint);
+
+  @override
+  (HeaderActions, Iterable<(String, HeaderContext, DataBlueprint)>)
+      headerActions(
+    Ref<Object?> ref,
+    String path,
+    DataBlueprint dataBlueprint,
+    HeaderContext context,
+  ) {
+    final mapBlueprint = dataBlueprint as MapBlueprint;
+    final value =
+        ref.watch(fieldValueProvider(path, mapBlueprint.defaultValue()));
+
+    final actions = super.headerActions(ref, path, dataBlueprint, context);
+    final childContext = context.copyWith(parentBlueprint: dataBlueprint);
+    final children = value.entries.map(
+      (entry) => (path.join(entry.key), childContext, entry.value),
+    );
+
+    return (actions.$1, actions.$2.followedBy(children));
+  }
 }
 
 class MapEditor extends HookConsumerWidget {
@@ -77,14 +98,7 @@ class MapEditor extends HookConsumerWidget {
 
     return FieldHeader(
       path: path,
-      dataBlueprint: mapBlueprint,
       canExpand: true,
-      actions: [
-        AddHeaderAction(
-          path: path,
-          onAdd: () => _addNew(ref.passing, value),
-        ),
-      ],
       child: value.isNotEmpty
           ? Column(
               children: value.entries
@@ -102,7 +116,7 @@ class MapEditor extends HookConsumerWidget {
             )
           : NoElements(
               path: path,
-              addNew: () => _addNew(ref.passing, value),
+              onAdd: () => _addNew(ref.passing, value),
             ),
     );
   }
@@ -207,7 +221,7 @@ class _MapEntry extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final name = ref.watch(pathDisplayNameProvider("$path.${entry.key}"));
+    final name = ref.watch(pathDisplayNameProvider(path.join(entry.key)));
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Column(
@@ -229,7 +243,7 @@ class _MapEntry extends HookConsumerWidget {
             padding: const EdgeInsets.only(left: 24),
             child: FieldEditor(
               key: ValueKey("map-$index"),
-              path: "$path.${entry.key}",
+              path: path.join(entry.key),
               dataBlueprint: mapBlueprint.value,
             ),
           ),

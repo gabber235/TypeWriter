@@ -3,6 +3,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/writers.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/utils/passing_reference.dart";
 import "package:typewriter/widgets/components/app/cord_property.dart";
@@ -40,24 +41,24 @@ class PositionEditor extends HookConsumerWidget {
 
     return Column(
       children: [
-        _WorldEditor(path: "$path.world"),
+        _WorldEditor(path: path.join("world")),
         const SizedBox(height: 8),
         Row(
           children: [
             CordPropertyEditor(
-              path: "$path.x",
+              path: path.join("x"),
               label: "X",
               color: Colors.red,
             ),
             const SizedBox(width: 8),
             CordPropertyEditor(
-              path: "$path.y",
+              path: path.join("y"),
               label: "Y",
               color: Colors.green,
             ),
             const SizedBox(width: 8),
             CordPropertyEditor(
-              path: "$path.z",
+              path: path.join("z"),
               label: "Z",
               color: Colors.blue,
             ),
@@ -68,13 +69,13 @@ class PositionEditor extends HookConsumerWidget {
           Row(
             children: [
               CordPropertyEditor(
-                path: "$path.yaw",
+                path: path.join("yaw"),
                 label: "Yaw",
                 color: Colors.deepPurpleAccent,
               ),
               const SizedBox(width: 8),
               CordPropertyEditor(
-                path: "$path.pitch",
+                path: path.join("pitch"),
                 label: "Pitch",
                 color: Colors.amberAccent,
               ),

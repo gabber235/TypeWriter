@@ -7,15 +7,27 @@ import "package:typewriter/widgets/inspector/headers/info_action.dart";
 
 class RegexHeaderActionFilter extends HeaderActionFilter {
   @override
-  bool shouldShow(String path, DataBlueprint dataBlueprint) =>
+  bool shouldShow(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       dataBlueprint.getModifier("regex") != null;
 
   @override
-  HeaderActionLocation location(String path, DataBlueprint dataBlueprint) =>
+  HeaderActionLocation location(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       HeaderActionLocation.trailing;
 
   @override
-  Widget build(String path, DataBlueprint dataBlueprint) =>
+  Widget build(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
       const RegexHeaderInfo();
 }
 

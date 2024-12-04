@@ -8,6 +8,7 @@ import "package:typewriter/models/entry.dart";
 import "package:typewriter/models/extension.dart";
 import "package:typewriter/models/page.dart";
 import "package:typewriter/utils/color_converter.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
@@ -168,7 +169,6 @@ class DataBlueprint with _$DataBlueprint {
 
   factory DataBlueprint.fromJson(Map<String, dynamic> json) =>
       _$DataBlueprintFromJson(json);
-
 }
 
 @freezed
@@ -226,24 +226,23 @@ extension EntryBlueprintExt on EntryBlueprint {
       if (blueprint.hasModifier(name)) path: blueprint.getModifier(name)!,
     };
 
-    final separator = path.isEmpty ? "" : ".";
     if (blueprint is ObjectBlueprint) {
       for (final field in blueprint.fields.entries) {
         fields.addAll(
           _fieldsWithModifier(
             name,
-            "$path$separator${field.key}",
+            path.join(field.key),
             field.value,
           ),
         );
       }
     } else if (blueprint is ListBlueprint) {
       fields.addAll(
-        _fieldsWithModifier(name, "$path$separator*", blueprint.type),
+        _fieldsWithModifier(name, path.join("*"), blueprint.type),
       );
     } else if (blueprint is MapBlueprint) {
       fields.addAll(
-        _fieldsWithModifier(name, "$path$separator*", blueprint.value),
+        _fieldsWithModifier(name, path.join("*"), blueprint.value),
       );
     }
 
@@ -294,11 +293,10 @@ extension EntryBlueprintExt on EntryBlueprint {
 }
 
 final _customEditorCustomLayout = [
-  "optional",
   "item",
   "skin",
   "color",
-  "closedRange",
+  "var",
 ];
 
 /// Since freezed does not support methods on data models, we have to create a separate extension class.
@@ -375,10 +373,6 @@ extension DataBlueprintExtension on DataBlueprint {
     if (this is MapBlueprint) {
       return true;
     }
-    if (this is PrimitiveBlueprint &&
-        (this as PrimitiveBlueprint).type == PrimitiveType.boolean) {
-      return true;
-    }
     return false;
   }
 
@@ -403,35 +397,36 @@ extension DataBlueprintExtension on DataBlueprint {
       return listEquals(other.values, (this as EnumBlueprint).values);
     }
     if (this is ListBlueprint && other is ListBlueprint) {
-        return other.type.matches((this as ListBlueprint).type);
+      return other.type.matches((this as ListBlueprint).type);
     }
     if (this is MapBlueprint && other is MapBlueprint) {
-        return other.key.matches((this as MapBlueprint).key) &&
-            other.value.matches((this as MapBlueprint).value);
+      return other.key.matches((this as MapBlueprint).key) &&
+          other.value.matches((this as MapBlueprint).value);
     }
     if (this is ObjectBlueprint && other is ObjectBlueprint) {
-        final obj = this as ObjectBlueprint;
-        if (obj.fields.length != other.fields.length) return false;
-        if (!setEquals(obj.fields.keys.toSet(), other.fields.keys.toSet())) return false;
-        for (final key in obj.fields.keys) {
-          if (!other.fields.containsKey(key)) return false;
-          if (!obj.fields[key]!.matches(other.fields[key]!)) return false;
-        }
-        return true;
+      final obj = this as ObjectBlueprint;
+      if (obj.fields.length != other.fields.length) return false;
+      if (!setEquals(obj.fields.keys.toSet(), other.fields.keys.toSet()))
+        return false;
+      for (final key in obj.fields.keys) {
+        if (!other.fields.containsKey(key)) return false;
+        if (!obj.fields[key]!.matches(other.fields[key]!)) return false;
+      }
+      return true;
     }
     if (this is AlgebraicBlueprint && other is AlgebraicBlueprint) {
-        final alg = this as AlgebraicBlueprint;
-        if (alg.cases.length != other.cases.length) return false;
-        if (alg.cases.keys.toSet() != other.cases.keys.toSet()) return false;
-        for (final key in alg.cases.keys) {
-          if (!other.cases.containsKey(key)) return false;
-          if (!alg.cases[key]!.matches(other.cases[key]!)) return false;
-        }
-        return true;
+      final alg = this as AlgebraicBlueprint;
+      if (alg.cases.length != other.cases.length) return false;
+      if (alg.cases.keys.toSet() != other.cases.keys.toSet()) return false;
+      for (final key in alg.cases.keys) {
+        if (!other.cases.containsKey(key)) return false;
+        if (!alg.cases[key]!.matches(other.cases[key]!)) return false;
+      }
+      return true;
     }
     if (this is CustomBlueprint && other is CustomBlueprint) {
-        return other.editor == (this as CustomBlueprint).editor &&
-            other.shape.matches((this as CustomBlueprint).shape);
+      return other.editor == (this as CustomBlueprint).editor &&
+          other.shape.matches((this as CustomBlueprint).shape);
     }
     return false;
   }

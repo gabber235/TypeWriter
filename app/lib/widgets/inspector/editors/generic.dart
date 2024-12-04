@@ -1,9 +1,11 @@
 import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/widgets/components/general/admonition.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 import "package:typewriter/widgets/inspector/editors/field.dart";
+import "package:typewriter/widgets/inspector/header.dart";
 import "package:typewriter/widgets/inspector/inspector.dart";
 import "package:url_launcher/url_launcher_string.dart";
 
@@ -17,6 +19,23 @@ class GenericEditorFilter extends EditorFilter {
         path: path,
         customBlueprint: dataBlueprint as CustomBlueprint,
       );
+
+  @override
+  (HeaderActions, Iterable<(String, HeaderContext, DataBlueprint)>)
+      headerActions(
+    Ref<Object?> ref,
+    String path,
+    DataBlueprint dataBlueprint,
+    HeaderContext context,
+  ) {
+    final blueprint = context.genericBlueprint ??
+        ref.watch(inspectingEntryProvider)?.genericBlueprint;
+
+    if (blueprint == null) return (const HeaderActions(), []);
+
+    // We want don't want to make the generic the parent for the child context as it should be transparent.
+    return headerActionsFor(ref, path, blueprint, context);
+  }
 }
 
 class GenericEditor extends HookConsumerWidget {
@@ -31,19 +50,17 @@ class GenericEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    DataBlueprint blueprint;
+    // We want to memoize this because when dragging in a list, the Generic.maybeOf is no longer available.
+    // But we still want to show the correct editor.
+    // Since the blueprint will stay the same, we can memoize it.
+    final blueprint = useMemoized(() {
+      final generic = Generic.maybeOf(context);
+      if (generic != null) return generic.dataBlueprint;
 
-    final generic = Generic.maybeOf(context);
-    if (generic == null) {
-      final entry = ref.watch(inspectingEntryProvider);
-      if (entry == null) return _buildError();
+      return ref.read(inspectingEntryProvider)?.genericBlueprint;
+    });
 
-      final genericBlueprint = entry.genericBlueprint;
-      if (genericBlueprint == null) return _buildError();
-      blueprint = genericBlueprint;
-    } else {
-      blueprint = generic.dataBlueprint;
-    }
+    if (blueprint == null) return _buildError();
 
     return FieldEditor(path: path, dataBlueprint: blueprint);
   }

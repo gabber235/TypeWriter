@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/widgets/components/app/cord_property.dart";
 import "package:typewriter/widgets/inspector/editors.dart";
 
@@ -35,19 +36,19 @@ class CoordinateEditor extends HookConsumerWidget {
         Row(
           children: [
             CordPropertyEditor(
-              path: "$path.x",
+              path: path.join("x"),
               label: "X",
               color: Colors.red,
             ),
             const SizedBox(width: 8),
             CordPropertyEditor(
-              path: "$path.y",
+              path: path.join("y"),
               label: "Y",
               color: Colors.green,
             ),
             const SizedBox(width: 8),
             CordPropertyEditor(
-              path: "$path.z",
+              path: path.join("z"),
               label: "Z",
               color: Colors.blue,
             ),
@@ -58,13 +59,13 @@ class CoordinateEditor extends HookConsumerWidget {
           Row(
             children: [
               CordPropertyEditor(
-                path: "$path.yaw",
+                path: path.join("yaw"),
                 label: "Yaw",
                 color: Colors.deepPurpleAccent,
               ),
               const SizedBox(width: 8),
               CordPropertyEditor(
-                path: "$path.pitch",
+                path: path.join("pitch"),
                 label: "Pitch",
                 color: Colors.amberAccent,
               ),

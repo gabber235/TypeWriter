@@ -13,7 +13,32 @@ class BooleanEditorFilter extends EditorFilter {
       dataBlueprint.type == PrimitiveType.boolean;
 
   @override
-  Widget build(String path, DataBlueprint dataBlueprint) => BooleanEditor(
+  Widget build(String path, DataBlueprint dataBlueprint) => const SizedBox();
+}
+
+class BooleanHeaderActionFilter extends HeaderActionFilter {
+  @override
+  bool shouldShow(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
+      dataBlueprint is PrimitiveBlueprint &&
+      dataBlueprint.type == PrimitiveType.boolean;
+  @override
+  HeaderActionLocation location(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
+      HeaderActionLocation.trailing;
+  @override
+  Widget build(
+    String path,
+    HeaderContext context,
+    DataBlueprint dataBlueprint,
+  ) =>
+      BooleanEditor(
         path: path,
         primitiveBlueprint: dataBlueprint as PrimitiveBlueprint,
       );
@@ -33,28 +58,21 @@ class BooleanEditor extends HookConsumerWidget {
     final value =
         ref.watch(fieldValueProvider(path, primitiveBlueprint.defaultValue()));
 
-    return FieldHeader(
-      path: path,
-      dataBlueprint: primitiveBlueprint,
-      trailing: [
-        Row(
-          children: [
-            Checkbox(
-              value: value,
-              onChanged: (value) {
-                ref
-                    .read(inspectingEntryDefinitionProvider)
-                    ?.updateField(ref.passing, path, value ?? false);
-              },
-            ),
-            if (value)
-              const Text("True", style: TextStyle(color: Colors.greenAccent))
-            else
-              const Text("False", style: TextStyle(color: Colors.grey)),
-          ],
+    return Row(
+      children: [
+        Checkbox(
+          value: value,
+          onChanged: (value) {
+            ref
+                .read(inspectingEntryDefinitionProvider)
+                ?.updateField(ref.passing, path, value ?? false);
+          },
         ),
+        if (value)
+          const Text("True", style: TextStyle(color: Colors.greenAccent))
+        else
+          const Text("False", style: TextStyle(color: Colors.grey)),
       ],
-      child: const SizedBox(),
     );
   }
 }

@@ -75,6 +75,13 @@ extension StringExtension on String {
   /// If the string is empty, returns null
   /// Otherwise returns the string
   String? get nullIfEmpty => isEmpty ? null : this;
+
+  /// Joins a path with another path.
+  String join(String other) {
+    if (isEmpty) return other;
+    if (other.isEmpty) return this;
+    return "$this.$other";
+  }
 }
 
 extension StringExt on String? {

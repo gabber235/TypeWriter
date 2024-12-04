@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter/models/entry_blueprint.dart";
 import "package:typewriter/models/materials.dart";
+import "package:typewriter/utils/extensions.dart";
 import "package:typewriter/utils/icons.dart";
 import "package:typewriter/widgets/components/app/input_field.dart";
 import "package:typewriter/widgets/components/general/admonition.dart";
@@ -21,6 +22,30 @@ class ItemEditorFilter extends EditorFilter {
   @override
   Widget build(String path, DataBlueprint dataBlueprint) =>
       ItemEditor(path: path, customBlueprint: dataBlueprint as CustomBlueprint);
+
+  @override
+  (HeaderActions, Iterable<(String, HeaderContext, DataBlueprint)>)
+      headerActions(
+    Ref<Object?> ref,
+    String path,
+    DataBlueprint dataBlueprint,
+    HeaderContext context,
+  ) {
+    final actions = super.headerActions(ref, path, dataBlueprint, context);
+    final shape = (dataBlueprint as CustomBlueprint).shape;
+
+    final shapeActions = headerActionsFor(
+      ref,
+      path,
+      shape,
+      context.copyWith(parentBlueprint: dataBlueprint),
+    );
+
+    return (
+      actions.$1.merge(shapeActions.$1),
+      actions.$2.followedBy(shapeActions.$2)
+    );
+  }
 }
 
 class ItemEditor extends HookConsumerWidget {
@@ -46,7 +71,6 @@ class ItemEditor extends HookConsumerWidget {
     }
     return FieldHeader(
       path: path,
-      dataBlueprint: customBlueprint,
       canExpand: true,
       child: FieldEditor(path: path, dataBlueprint: algebraicBlueprint),
     );
@@ -145,7 +169,7 @@ class SerializedItemEditor extends HookConsumerWidget {
           ),
           const SectionTitle(title: "Amount"),
           NumberEditor(
-            path: "$path.amount",
+            path: path.join("amount"),
             primitiveBlueprint: amountBlueprint,
           ),
           const SizedBox(height: 0),
