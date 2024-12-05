@@ -20,7 +20,7 @@ For detailed setup instructions, visit the [Installation Guide](https://docs.typ
 
 ### Sponsors
 
-<!-- sponsors --><a href="https://github.com/lucasmessana"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;137227705?u&#x3D;11a6591e8d75c7464ddeed4143fb86c223d0bd11&amp;v&#x3D;4" width="60px" alt="Lucas Messana" /></a><a href="https://github.com/myiume"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;3586926?u&#x3D;3db6af564b6ef85fa06122661bd686188c016e56&amp;v&#x3D;4" width="60px" alt="Myiume" /></a><!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/lucasmessana"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;137227705?u&#x3D;11a6591e8d75c7464ddeed4143fb86c223d0bd11&amp;v&#x3D;4" width="60px" alt="Lucas Messana" /></a><a href="https://github.com/myiume"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;3586926?u&#x3D;3db6af564b6ef85fa06122661bd686188c016e56&amp;v&#x3D;4" width="60px" alt="Myiume" /></a><a href="https://github.com/blue-dev00"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;174703443?v&#x3D;4" width="60px" alt="" /></a><!-- sponsors -->
 
 Thanks to the following sponsors for supporting this project. Without their support, this project would not be possible. If you are using Typewriter for your server, and are making money from it, please consider [sponsoring](https://github.com/sponsors/gabber235) the project.
 
