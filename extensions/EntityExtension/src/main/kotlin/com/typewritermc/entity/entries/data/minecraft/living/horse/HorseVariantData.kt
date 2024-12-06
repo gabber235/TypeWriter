@@ -2,6 +2,7 @@ package com.typewritermc.entity.entries.data.minecraft.living.horse
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
+import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.entry.entity.SinglePropertyCollectorSupplier
 import com.typewritermc.engine.paper.entry.entries.EntityData
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
@@ -12,8 +13,8 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("horse_variant_dat", "The variant of the horse.", Colors.RED, "mdi:horse")
-
+@Entry("horse_variant_data", "The variant of the horse.", Colors.RED, "mdi:horse")
+@Tags("horse_variant_data")
 class HorseVariantData(
     override val id: String = "",
     override val name: String = "",
