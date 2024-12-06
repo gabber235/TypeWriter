@@ -70,6 +70,7 @@ private class HorseEntity(player: Player) : WrapperFakeEntity(
             is HorseVariantProperty -> applyHorseVariantData(entity, property)
             is ChestedHorseChestProperty -> applyChestedHorseChestData(entity, property)
             is SaddledProperty -> applySaddledData(entity, property)
+            is EatingProperty -> applyHorseEatingData(entity, property)
             else -> {}
         }
         if (applyGenericEntityData(entity, property)) return
