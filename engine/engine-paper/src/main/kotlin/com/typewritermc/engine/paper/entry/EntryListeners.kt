@@ -44,7 +44,7 @@ class EntryListeners : KoinComponent, Reloadable {
     /**
      * Registers all the entry listeners.
      */
-    override fun load() {
+    override suspend fun load() {
         unload()
 
         val entryListeners = extensionLoader.extensions.flatMap { it.entryListeners }
@@ -91,7 +91,7 @@ class EntryListeners : KoinComponent, Reloadable {
     /**
      * Unregisters all the entry listeners.
      */
-    override fun unload() {
+    override suspend fun unload() {
         listener.unregister()
     }
 }

@@ -8,10 +8,7 @@ import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
-import com.typewritermc.engine.paper.entry.entries.ConstVar
-import com.typewritermc.engine.paper.entry.entries.DialogueEntry
-import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
-import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.entry.entries.*
 import java.time.Duration
 
 @Entry("option", "Display a list of options to the player", "#4CAF50", "fa6-solid:list")
@@ -46,4 +43,6 @@ data class Option(
     val modifiers: List<Modifier> = emptyList(),
     @Help("The triggers to fire when this option is chosen.")
     val triggers: List<Ref<TriggerableEntry>> = emptyList()
-)
+) {
+    val eventTriggers: List<EventTrigger> = triggers.map(::EntryTrigger)
+}

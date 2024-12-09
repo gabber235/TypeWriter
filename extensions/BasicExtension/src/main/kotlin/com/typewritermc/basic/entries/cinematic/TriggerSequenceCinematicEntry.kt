@@ -10,11 +10,11 @@ import com.typewritermc.core.extension.annotations.InnerMax
 import com.typewritermc.core.extension.annotations.Max
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.*
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.EntryTrigger
 import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import org.bukkit.entity.Player
 
 @Entry("trigger_sequence_cinematic", "A sequence of triggers to run", Colors.PURPLE, "fa-solid:play")
@@ -55,7 +55,7 @@ data class TriggerSequenceSegment(
 class TriggerSequenceAction(
     val player: Player,
     entry: TriggerSequenceCinematicEntry
-) : SimpleCinematicAction<TriggerSequenceSegment>() {
+) : SimpleTemporalAction<TriggerSequenceSegment>() {
     override val segments: List<TriggerSequenceSegment> = entry.segments
 
     override suspend fun startSegment(segment: TriggerSequenceSegment) {

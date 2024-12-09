@@ -4,28 +4,27 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
 import com.typewritermc.core.TypewriterCore
-import com.typewritermc.core.entries.Library
-import com.typewritermc.core.extension.InitializableManager
 import com.typewritermc.core.serialization.createDataSerializerGson
+import com.typewritermc.engine.paper.content.ContentHandler
 import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.action.ActionHandler
+import com.typewritermc.engine.paper.entry.dialogue.DialogueHandler
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFinder
 import com.typewritermc.engine.paper.entry.entity.EntityHandler
 import com.typewritermc.engine.paper.entry.entries.CustomCommandEntry
-import com.typewritermc.engine.paper.entry.entries.createRoadNetworkParser
-import com.typewritermc.engine.paper.entry.roadnetwork.RoadNetworkManager
+import com.typewritermc.engine.paper.entry.temporal.TemporalHandler
 import com.typewritermc.engine.paper.events.TypewriterUnloadEvent
 import com.typewritermc.engine.paper.extensions.bstats.BStatsMetrics
 import com.typewritermc.engine.paper.extensions.modrinth.Modrinth
 import com.typewritermc.engine.paper.extensions.placeholderapi.PlaceholderExpansion
 import com.typewritermc.engine.paper.facts.FactDatabase
+import com.typewritermc.engine.paper.facts.FactHandler
 import com.typewritermc.engine.paper.facts.FactStorage
+import com.typewritermc.engine.paper.facts.FactTracker
 import com.typewritermc.engine.paper.facts.storage.FileFactStorage
-import com.typewritermc.engine.paper.interaction.ActionBarBlockerHandler
-import com.typewritermc.engine.paper.interaction.ChatHistoryHandler
-import com.typewritermc.engine.paper.interaction.InteractionHandler
-import com.typewritermc.engine.paper.interaction.PacketInterceptor
+import com.typewritermc.engine.paper.interaction.*
 import com.typewritermc.engine.paper.loader.PaperDependencyChecker
-import com.typewritermc.engine.paper.loader.dataSerializers
+import com.typewritermc.engine.paper.loader.dataSerializerModule
 import com.typewritermc.engine.paper.snippets.SnippetDatabase
 import com.typewritermc.engine.paper.snippets.SnippetDatabaseImpl
 import com.typewritermc.engine.paper.ui.ClientSynchronizer
@@ -36,7 +35,6 @@ import com.typewritermc.engine.paper.utils.createBukkitDataParser
 import com.typewritermc.engine.paper.utils.registerAll
 import com.typewritermc.engine.paper.utils.unregisterAll
 import com.typewritermc.loader.DependencyChecker
-import com.typewritermc.loader.ExtensionLoader
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import kotlinx.coroutines.delay
@@ -53,6 +51,7 @@ import org.koin.core.module.dsl.createdAtStart
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
 import java.io.File
@@ -79,9 +78,6 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
 
             singleOf(::TypewriterCore)
             factory<File>(named("baseDir")) { plugin.dataFolder }
-            singleOf(::ExtensionLoader)
-            singleOf(::Library)
-            singleOf(::InitializableManager)
             single { PaperDependencyChecker() } withOptions {
                 named("dependencyChecker")
                 bind<DependencyChecker>()
@@ -91,7 +87,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
 
             singleOf<StagingManager>(::StagingManagerImpl)
             singleOf(::ClientSynchronizer)
-            singleOf(::InteractionHandler)
+            singleOf(::PlayerSessionManager)
             singleOf(::MessengerFinder)
             singleOf(::CommunicationHandler)
             singleOf(::Writers)
@@ -107,14 +103,20 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
             singleOf(::ActionBarBlockerHandler)
             singleOf(::PacketInterceptor)
             singleOf(::EntityHandler)
-            singleOf(::RoadNetworkManager)
-            dataSerializers()
+
+            factory() { FactTracker(it.get()) } bind SessionTracker::class
+            single() { InteractionTriggerHandler() } bind TriggerHandler::class
+            single() { ActionHandler() } bind TriggerHandler::class
+            single() { ContentHandler() } bind TriggerHandler::class
+            single() { DialogueHandler() } bind TriggerHandler::class
+            single() { FactHandler() } bind TriggerHandler::class
+            single() { TemporalHandler() } bind TriggerHandler::class
+
             factory<Gson>(named("dataSerializer")) { createDataSerializerGson(getAll()) }
             factory<Gson>(named("bukkitDataParser")) { createBukkitDataParser() }
-            factory<Gson>(named("roadNetworkParser")) { createRoadNetworkParser() }
         }
         startKoin {
-            modules(modules)
+            modules(modules, TypewriterCore.module, dataSerializerModule)
             logger(MinecraftLogger(logger))
         }
 
@@ -123,7 +125,6 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
 
     override suspend fun onEnableAsync() {
         CommandAPI.onEnable()
-        typeWriterCommand()
 
         if (!server.pluginManager.isPluginEnabled("packetevents")) {
             logger.warning("PacketEvents is not enabled, Typewriter will not work without it. Shutting down...")
@@ -135,7 +136,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
 
         get<FactDatabase>().initialize()
         get<AssetManager>().initialize()
-        get<InteractionHandler>().initialize()
+        get<PlayerSessionManager>().initialize()
         get<ChatHistoryHandler>().initialize()
         get<ActionBarBlockerHandler>().initialize()
         get<PacketInterceptor>().initialize()
@@ -160,14 +161,13 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         }
     }
 
-    fun load() {
+    suspend fun load() {
         // Needs to be first, as it will load the classLoader
         get<TypewriterCore>().load()
 
         get<StagingManager>().loadState()
         get<CommunicationHandler>().load()
-        get<RoadNetworkManager>().load()
-        get<InteractionHandler>().load()
+        get<PlayerSessionManager>().load()
         get<EntryListeners>().load()
         get<AudienceManager>().load()
         get<MessengerFinder>().load()
@@ -176,16 +176,20 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
             PlaceholderExpansion.load()
         }
+
+        typeWriterCommand()
     }
 
     suspend fun unload() {
         TypewriterUnloadEvent().callEvent()
+
+        CommandAPI.unregister("typewriter")
+
         CustomCommandEntry.unregisterAll()
         get<MessengerFinder>().unload()
         get<AudienceManager>().unload()
         get<EntryListeners>().unload()
-        get<InteractionHandler>().unload()
-        get<RoadNetworkManager>().unload()
+        get<PlayerSessionManager>().unload()
         get<StagingManager>().unload()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
@@ -214,7 +218,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         get<ActionBarBlockerHandler>().shutdown()
         get<PacketInterceptor>().shutdown()
         get<CommunicationHandler>().shutdown()
-        get<InteractionHandler>().shutdown()
+        get<PlayerSessionManager>().shutdown()
         get<AssetManager>().shutdown()
         get<AudienceManager>().shutdown()
         get<EntityHandler>().shutdown()

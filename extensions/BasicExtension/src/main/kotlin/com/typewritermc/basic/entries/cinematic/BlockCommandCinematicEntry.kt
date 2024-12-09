@@ -9,10 +9,10 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Regex
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import com.typewritermc.engine.paper.interaction.InterceptionBundle
 import com.typewritermc.engine.paper.interaction.interceptPackets
 import com.typewritermc.engine.paper.utils.ThreadType
@@ -49,7 +49,7 @@ data class BlockCommandSegment(
 class BlockCommandCinematicAction(
     private val player: Player,
     entry: BlockCommandCinematicEntry,
-) : SimpleCinematicAction<BlockCommandSegment>() {
+) : SimpleTemporalAction<BlockCommandSegment>() {
     override val segments: List<BlockCommandSegment> = entry.segments
 
     private var bundle: InterceptionBundle? = null

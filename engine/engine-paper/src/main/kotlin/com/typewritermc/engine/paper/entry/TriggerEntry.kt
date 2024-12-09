@@ -4,10 +4,10 @@ import com.typewritermc.core.entries.Entry
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Tags
+import com.typewritermc.engine.paper.entry.dialogue.DialogueTrigger
 import com.typewritermc.engine.paper.entry.entries.EntryTrigger
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
-import com.typewritermc.engine.paper.entry.entries.SystemTrigger
-import com.typewritermc.engine.paper.interaction.InteractionHandler
+import com.typewritermc.engine.paper.interaction.PlayerSessionManager
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.get
 
@@ -15,6 +15,9 @@ import org.koin.java.KoinJavaComponent.get
 interface TriggerEntry : Entry {
     @Help("The entries that will be fired after this entry.")
     val triggers: List<Ref<TriggerableEntry>>
+
+    val eventTriggers: List<EventTrigger>
+        get() = triggers.map(::EntryTrigger)
 }
 
 @Tags("triggerable")
@@ -38,9 +41,9 @@ interface TriggerableEntry : TriggerEntry {
  * @param player The player to trigger the triggers for.
  */
 infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
-    val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
+    val triggers = this.flatMap { it.eventTriggers }
     if (triggers.isEmpty()) return
-    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
 }
 
 /**
@@ -55,9 +58,9 @@ infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
  * @param player The player to trigger the triggers for.
  */
 infix fun <E : TriggerEntry> Sequence<E>.triggerAllFor(player: Player) {
-    val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }.toList()
+    val triggers = this.flatMap { it.eventTriggers }.toList()
     if (triggers.isEmpty()) return
-    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
 }
 
 /**
@@ -72,9 +75,9 @@ infix fun <E : TriggerEntry> Sequence<E>.triggerAllFor(player: Player) {
  * @param player The player to trigger the triggers for.
  */
 infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
-    val triggers = this.triggers.map { EntryTrigger(it) }
+    val triggers = this.eventTriggers
     if (triggers.isEmpty()) return
-    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
 }
 
 /**
@@ -92,7 +95,7 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
 infix fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
     val triggers = this.map { EntryTrigger(it) }
     if (triggers.isEmpty()) return
-    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
 }
 
 /**
@@ -110,7 +113,7 @@ infix fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
 infix fun Sequence<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
     val triggers = this.map { EntryTrigger(it) }.toList()
     if (triggers.isEmpty()) return
-    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
 }
 
 /**
@@ -169,7 +172,7 @@ suspend infix fun EventTrigger.forceTriggerFor(player: Player) = listOf(this) fo
  * @param player The player to trigger the triggers for.
  */
 infix fun List<EventTrigger>.triggerFor(player: Player) {
-    get<InteractionHandler>(InteractionHandler::class.java).triggerActions(player, this)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, this)
 }
 
 /**
@@ -186,7 +189,7 @@ infix fun List<EventTrigger>.triggerFor(player: Player) {
  * ```
  */
 suspend infix fun List<EventTrigger>.forceTriggerFor(player: Player) {
-    get<InteractionHandler>(InteractionHandler::class.java).forceTriggerActions(player, this)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).forceTriggerActions(player, this)
 }
 
 
@@ -205,9 +208,9 @@ suspend infix fun List<EventTrigger>.forceTriggerFor(player: Player) {
  * ```
  */
 fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, continueTrigger: EventTrigger) {
-    val triggers = this.flatMap { it.triggers }.map { EntryTrigger(it) }
+    val triggers = this.flatMap { it.eventTriggers }
     if (triggers.isEmpty()) return
-    get<InteractionHandler>(InteractionHandler::class.java).startDialogueWithOrTriggerEvent(
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).startDialogueWithOrTriggerEvent(
         player,
         triggers,
         continueTrigger
@@ -247,7 +250,7 @@ fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrTrigger(player: Player, co
  * ```
  */
 infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player) =
-    startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT_OR_COMPLETE)
+    startDialogueWithOrTrigger(player, DialogueTrigger.NEXT_OR_COMPLETE)
 
 
 /**
@@ -266,6 +269,6 @@ infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Pla
  * ```
  */
 infix fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrNextDialogue(player: Player) =
-    toList().startDialogueWithOrTrigger(player, SystemTrigger.DIALOGUE_NEXT_OR_COMPLETE)
+    toList().startDialogueWithOrTrigger(player, DialogueTrigger.NEXT_OR_COMPLETE)
 
 

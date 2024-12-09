@@ -1,12 +1,12 @@
 package com.typewritermc.engine.paper.loader
 
-import com.fasterxml.jackson.databind.ser.std.StringSerializer
 import com.typewritermc.core.serialization.DataSerializer
 import com.typewritermc.engine.paper.loader.serializers.*
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-fun Module.dataSerializers() {
+val dataSerializerModule = module {
     single<DataSerializer<*>>(named("closedRange")) { ClosedRangeSerializer() }
     single<DataSerializer<*>>(named("color")) { ColorSerializer() }
     single<DataSerializer<*>>(named("coordinate")) { CoordinateSerializer() }

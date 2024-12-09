@@ -3,15 +3,15 @@ package com.typewritermc.worldguard
 import com.sk89q.worldguard.WorldGuard
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin
 import com.typewritermc.core.extension.Initializable
-import com.typewritermc.core.extension.annotations.Initializer
+import com.typewritermc.core.extension.annotations.Singleton
 import com.typewritermc.engine.paper.logger
 import lirand.api.extensions.server.server
 
-@Initializer
+@Singleton
 object WorldGuardInitializer : Initializable {
     private val factory = WorldGuardHandler.Factory
 
-    override fun initialize() {
+    override suspend fun initialize() {
         val worldGuard = WorldGuard.getInstance()
 
         val registered = worldGuard.platform.sessionManager.registerHandler(factory, null)
@@ -41,7 +41,7 @@ object WorldGuardInitializer : Initializable {
         }
     }
 
-    override fun shutdown() {
+    override suspend fun shutdown() {
         WorldGuard.getInstance().platform.sessionManager.unregisterHandler(factory)
 
         // This is a hack to fix a shortcomming in WorldGuard.

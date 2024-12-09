@@ -8,6 +8,8 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.snippets.snippet
+import com.typewritermc.quest.ObjectiveEntry
+import com.typewritermc.quest.QuestEntry
 import java.util.*
 
 private val displayTemplate by snippet("quest.objective.interact_entity", "Interact with <entity>")
