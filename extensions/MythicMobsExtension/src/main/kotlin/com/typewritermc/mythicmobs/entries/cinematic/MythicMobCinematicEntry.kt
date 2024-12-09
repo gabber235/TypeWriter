@@ -7,19 +7,17 @@ import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.core.extension.annotations.WithRotation
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.utils.toBukkitLocation
-import io.github.retrooper.packetevents.util.SpigotConversionUtil.toBukkitLocation
 import io.lumine.mythic.api.mobs.GenericCaster
 import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.MythicBukkit
 import io.lumine.mythic.core.mobs.ActiveMob
 import io.lumine.mythic.core.skills.SkillMetadataImpl
 import io.lumine.mythic.core.skills.SkillTriggers
-import io.lumine.mythic.core.skills.placeholders.PlaceholderExecutor.parsePlaceholders
 import lirand.api.extensions.server.server
 import org.bukkit.entity.Player
 
@@ -55,7 +53,7 @@ data class MythicMobSegment(
 class MobCinematicAction(
     private val player: Player,
     entry: MythicMobCinematicEntry,
-) : SimpleCinematicAction<MythicMobSegment>() {
+) : SimpleTemporalAction<MythicMobSegment>() {
     override val segments: List<MythicMobSegment> = entry.segments
 
     private var mob: ActiveMob? = null

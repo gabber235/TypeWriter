@@ -6,12 +6,9 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.roadnetwork.RoadNetworkManager
-import com.typewritermc.engine.paper.entry.roadnetwork.gps.PointToPointGPS
-import com.typewritermc.engine.paper.utils.distanceSqrt
-import com.typewritermc.engine.paper.utils.toBukkitLocation
-import org.koin.core.component.KoinComponent
-import org.koin.java.KoinJavaComponent
+import com.typewritermc.roadnetwork.RoadNetworkEntry
+import com.typewritermc.roadnetwork.RoadNodeCollectionEntry
+import com.typewritermc.roadnetwork.RoadNodeId
 
 @Entry("random_patrol_activity", "Moving around a set of locations randomly", Colors.BLUE, "fa6-solid:shuffle")
 /**

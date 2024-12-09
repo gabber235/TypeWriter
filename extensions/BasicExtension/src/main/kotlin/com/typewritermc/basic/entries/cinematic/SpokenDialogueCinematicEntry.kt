@@ -1,17 +1,15 @@
 package com.typewritermc.basic.entries.cinematic
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.core.entries.Ref
-import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
-import com.typewritermc.engine.paper.entry.entries.SystemTrigger.DIALOGUE_END
-import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.interaction.acceptActionBarMessage
 import com.typewritermc.engine.paper.interaction.chatHistory
 import com.typewritermc.engine.paper.snippets.snippet
@@ -43,10 +41,7 @@ class SpokenDialogueCinematicEntry(
             speaker.get(),
             segments,
             spokenPercentage,
-            setup = {
-                // If the player is already in a dialogue, end it in favor of this one.
-                DIALOGUE_END.triggerFor(this)
-            },
+            setup = {},
             reset = { chatHistory.resendMessages(this) },
             display = ::displaySpokenDialogue,
         )
@@ -74,10 +69,7 @@ class RandomSpokenDialogueCinematicEntry(
             speaker.get(),
             segments.toDisplaySegments(),
             spokenPercentage,
-            setup = {
-                // If the player is already in a dialogue, end it in favor of this one.
-                DIALOGUE_END.triggerFor(this)
-            },
+            setup = {},
             reset = reset@{
                 if (isFloodgate) return@reset
                 chatHistory.resendMessages(this)

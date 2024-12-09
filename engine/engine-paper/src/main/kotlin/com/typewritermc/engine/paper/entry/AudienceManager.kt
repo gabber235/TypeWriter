@@ -51,7 +51,7 @@ class AudienceManager : Listener, Reloadable {
         }
     }
 
-    override fun load() {
+    override suspend fun load() {
         unload()
 
         val entries = Query.find<AudienceEntry>()
@@ -118,7 +118,7 @@ class AudienceManager : Listener, Reloadable {
 
     fun getParents(ref: Ref<out AudienceEntry>): List<Ref<out AudienceFilterEntry>> = parents[ref] ?: emptyList()
 
-    override fun unload() {
+    override suspend fun unload() {
         val displays = displays
         this.displays = emptyMap()
         displays.values.forEach { it.dispose() }
@@ -134,7 +134,7 @@ class AudienceManager : Listener, Reloadable {
         removePlayerForRoots(event.player)
     }
 
-    fun shutdown() {
+    suspend fun shutdown() {
         job?.cancel()
         job = null
         unload()

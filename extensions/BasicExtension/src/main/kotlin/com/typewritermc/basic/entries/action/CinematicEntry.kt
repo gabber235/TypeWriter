@@ -2,18 +2,18 @@ package com.typewritermc.basic.entries.action
 
 import com.google.gson.annotations.SerializedName
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.books.pages.PageType
-import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Page
-import com.typewritermc.engine.paper.entry.*
-import com.typewritermc.engine.paper.entry.entries.CinematicStartTrigger
+import com.typewritermc.engine.paper.entry.Criteria
+import com.typewritermc.engine.paper.entry.Modifier
+import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.CustomTriggeringActionEntry
-import org.bukkit.entity.Player
+import com.typewritermc.engine.paper.entry.entries.EntryTrigger
+import com.typewritermc.engine.paper.entry.entries.EventTrigger
+import com.typewritermc.engine.paper.entry.temporal.TemporalStartTrigger
 
 
 @Entry("cinematic", "Start a new cinematic", Colors.RED, "fa-solid:camera-retro")
@@ -40,9 +40,6 @@ class CinematicEntry(
     @Help("The cinematic page to start.")
     val pageId: String = "",
 ) : CustomTriggeringActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
-        CinematicStartTrigger(pageId, customTriggers) triggerFor player
-    }
+    override val eventTriggers: List<EventTrigger>
+        get() = super.eventTriggers + TemporalStartTrigger(pageId, customTriggers.map(::EntryTrigger))
 }

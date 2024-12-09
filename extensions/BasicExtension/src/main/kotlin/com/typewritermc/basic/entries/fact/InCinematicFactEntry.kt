@@ -2,15 +2,15 @@ package com.typewritermc.basic.entries.fact
 
 import com.google.gson.annotations.SerializedName
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.books.pages.PageType
+import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Page
-import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.cinematic.isPlayingCinematic
-import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.engine.paper.entry.entries.GroupEntry
 import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
+import com.typewritermc.engine.paper.entry.temporal.isPlayingTemporal
 import com.typewritermc.engine.paper.facts.FactData
 import org.bukkit.entity.Player
 
@@ -37,9 +37,9 @@ class InCinematicFactEntry(
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
         val inCinematic = if (pageId.isNotBlank())
-            player.isPlayingCinematic(pageId)
+            player.isPlayingTemporal(pageId)
         else
-            player.isPlayingCinematic()
+            player.isPlayingTemporal()
 
         return FactData(inCinematic.toInt())
     }

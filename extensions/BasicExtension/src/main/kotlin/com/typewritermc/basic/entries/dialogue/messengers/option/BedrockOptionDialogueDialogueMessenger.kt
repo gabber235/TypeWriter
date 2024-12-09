@@ -1,16 +1,14 @@
 package com.typewritermc.basic.entries.dialogue.messengers.option
 
-import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.basic.entries.dialogue.Option
 import com.typewritermc.basic.entries.dialogue.OptionDialogueEntry
 import com.typewritermc.core.extension.annotations.Messenger
-import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
-import com.typewritermc.engine.paper.entry.entries.get
+import com.typewritermc.engine.paper.entry.entries.EventTrigger
 import com.typewritermc.engine.paper.entry.matches
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.isFloodgate
@@ -30,8 +28,8 @@ class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialog
 
     private var usableOptions: List<Option> = emptyList()
 
-    override val triggers: List<Ref<out TriggerableEntry>>
-        get() = entry.triggers + selected.triggers
+    override val eventTriggers: List<EventTrigger>
+        get() = entry.eventTriggers + selected.eventTriggers
 
     override val modifiers: List<Modifier>
         get() = entry.modifiers + selected.modifiers

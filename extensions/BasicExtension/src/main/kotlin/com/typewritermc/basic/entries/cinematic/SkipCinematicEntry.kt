@@ -6,11 +6,11 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
-import com.typewritermc.engine.paper.entry.cinematic.setCinematicFrame
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.setTemporalFrame
 import com.typewritermc.engine.paper.interaction.InterceptionBundle
 import com.typewritermc.engine.paper.interaction.interceptPackets
 import com.typewritermc.engine.paper.plugin
@@ -63,7 +63,7 @@ enum class SkipConfirmationKey(val keybind: String) {
 class SkipCinematicAction(
     private val player: Player,
     val entry: SkipCinematicEntry,
-) : SimpleCinematicAction<SkipSegment>() {
+) : SimpleTemporalAction<SkipSegment>() {
     override val segments: List<SkipSegment> = entry.segments
     private var bundle: InterceptionBundle? = null
     private var listener: Listener? = null
@@ -78,7 +78,7 @@ class SkipCinematicAction(
                         val packet = WrapperPlayClientEntityAction(event)
                         if (packet.entityId != player.entityId) return@ENTITY_ACTION
                         if (packet.action != WrapperPlayClientEntityAction.Action.START_SNEAKING) return@ENTITY_ACTION
-                        player.setCinematicFrame(segment.endFrame)
+                        player.setTemporalFrame(segment.endFrame)
                     }
                 }
             }
@@ -88,7 +88,7 @@ class SkipCinematicAction(
                 this.listener = listener
                 plugin.listen<PlayerSwapHandItemsEvent>(listener) {
                     if (it.player.uniqueId != player.uniqueId) return@listen
-                    player.setCinematicFrame(segment.endFrame)
+                    player.setTemporalFrame(segment.endFrame)
                 }
             }
         }

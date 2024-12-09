@@ -11,6 +11,7 @@ import com.typewritermc.engine.paper.interaction.startBlockingActionBar
 import com.typewritermc.engine.paper.interaction.stopBlockingActionBar
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.*
+import com.typewritermc.engine.paper.entry.dialogue.typingDurationType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
@@ -25,7 +26,6 @@ val actionBarFormat: String by snippet(
 @Messenger(ActionBarDialogueEntry::class)
 class JavaActionBarDialogueDialogueMessenger(player: Player, entry: ActionBarDialogueEntry) :
     DialogueMessenger<ActionBarDialogueEntry>(player, entry) {
-
 
     companion object : MessengerFilter {
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true

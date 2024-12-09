@@ -7,15 +7,15 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
-import lirand.api.extensions.server.server
 import com.typewritermc.engine.paper.content.ContentContext
 import com.typewritermc.engine.paper.content.ContentMode
+import com.typewritermc.engine.paper.content.ContentModeTrigger
 import com.typewritermc.engine.paper.entry.StagingManager
-import com.typewritermc.engine.paper.entry.entries.ContentModeTrigger
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.loader.ExtensionLoader
+import lirand.api.extensions.server.server
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -77,7 +77,7 @@ class ClientSynchronizer : KoinComponent {
         }
     }
 
-     fun handleMoveEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+    fun handleMoveEntry(client: SocketIOClient, data: String, ack: AckRequest) {
         val (entryId, fromPageId, toPageId) = gson.fromJson(data, MoveEntry::class.java)
         val result = stagingManager.moveEntry(entryId, fromPageId, toPageId)
         ack.sendResult(result) {
@@ -85,7 +85,7 @@ class ClientSynchronizer : KoinComponent {
         }
     }
 
-     fun handleCreateEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+    fun handleCreateEntry(client: SocketIOClient, data: String, ack: AckRequest) {
         val json = gson.fromJson(data, EntryCreate::class.java)
         val result = stagingManager.createEntry(json.pageId, json.entry)
         ack.sendResult(result) {
@@ -93,7 +93,7 @@ class ClientSynchronizer : KoinComponent {
         }
     }
 
-     fun handleEntryFieldUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
+    fun handleEntryFieldUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
         val update = gson.fromJson(data, EntryUpdate::class.java)
         val result = stagingManager.updateEntryField(update.pageId, update.entryId, update.path, update.value)
         ack.sendResult(result) {
@@ -101,7 +101,7 @@ class ClientSynchronizer : KoinComponent {
         }
     }
 
-     fun handleEntryUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
+    fun handleEntryUpdate(client: SocketIOClient, data: String, ack: AckRequest) {
         val update = gson.fromJson(data, CompleteEntryUpdate::class.java)
         val result = stagingManager.updateEntry(update.pageId, update.entry)
         ack.sendResult(result) {
@@ -109,7 +109,7 @@ class ClientSynchronizer : KoinComponent {
         }
     }
 
-     fun handleReorderEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+    fun handleReorderEntry(client: SocketIOClient, data: String, ack: AckRequest) {
         val update = gson.fromJson(data, ReorderEntry::class.java)
         val result = stagingManager.reorderEntry(update.pageId, update.entryId, update.newIndex)
         ack.sendResult(result) {
@@ -118,7 +118,7 @@ class ClientSynchronizer : KoinComponent {
     }
 
 
-     fun handleDeleteEntry(client: SocketIOClient, data: String, ack: AckRequest) {
+    fun handleDeleteEntry(client: SocketIOClient, data: String, ack: AckRequest) {
         val json = gson.fromJson(data, EntryDelete::class.java)
         val result = stagingManager.deleteEntry(json.pageId, json.entryId)
         ack.sendResult(result) {
@@ -127,14 +127,14 @@ class ClientSynchronizer : KoinComponent {
     }
 
 
-     fun handlePublish(client: SocketIOClient, data: String, ack: AckRequest) {
+    fun handlePublish(client: SocketIOClient, data: String, ack: AckRequest) {
         SYNC.launch {
             val result = stagingManager.publish()
             ack.sendResult(result)
         }
     }
 
-     fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest) {
+    fun handleUpdateWriter(client: SocketIOClient, data: String, ack: AckRequest) {
         writers.updateWriter(client.sessionId.toString(), data)
         communicationHandler.server.broadcastWriters(writers)
         ack.sendResult(Result.success("Writer updated"))

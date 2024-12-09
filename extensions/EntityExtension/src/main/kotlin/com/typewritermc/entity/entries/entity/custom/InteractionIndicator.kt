@@ -13,7 +13,6 @@ import com.typewritermc.engine.paper.entry.entity.SimpleEntityDefinition
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.inAudience
 import com.typewritermc.engine.paper.entry.matches
-import com.typewritermc.engine.paper.entry.quest.trackedQuest
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.Sound
@@ -21,6 +20,7 @@ import com.typewritermc.entity.entries.data.minecraft.display.TranslationPropert
 import com.typewritermc.entity.entries.entity.minecraft.TextDisplayEntity
 import com.typewritermc.entity.entries.event.EntityInteractEventEntry
 import com.typewritermc.entity.entries.quest.InteractEntityObjective
+import com.typewritermc.quest.trackedQuest
 import org.bukkit.entity.Player
 
 val trackedInteractIndicator by snippet("objective.entity.indicator.tracked", "<gold><b>❗")
@@ -34,7 +34,7 @@ val dialogueIndicator by snippet("objective.entity.indicator.dialogue", "<white>
     "material-symbols:move-selection-up-rounded"
 )
 /**
- * The `InteractionIndicator` class is an entry that represents an interaction indicator.
+ * The `InteractionIndicator` class is an entry that represents an quest indicator.
  * When such an indicator is active, it will show an icon above any NPC.
  */
 class InteractionIndicatorDefinition(

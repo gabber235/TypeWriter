@@ -7,10 +7,10 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.core.utils.point.squared
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.interaction.InterceptionBundle
 import com.typewritermc.engine.paper.interaction.interceptPackets
@@ -19,7 +19,6 @@ import com.typewritermc.engine.paper.utils.PlayerState
 import com.typewritermc.engine.paper.utils.restore
 import com.typewritermc.engine.paper.utils.state
 import org.bukkit.entity.Player
-import kotlin.math.pow
 
 @Entry("game_time_cinematic", "A cinematic that changes the in game time", Colors.CYAN, "material-symbols:auto-timer")
 /**
@@ -61,7 +60,7 @@ data class GameTimeSegment(
 class GameTimeCinematicAction(
     val player: Player,
     entry: GameTimeCinematicEntry,
-) : SimpleCinematicAction<GameTimeSegment>() {
+) : SimpleTemporalAction<GameTimeSegment>() {
     override val segments: List<GameTimeSegment> = entry.segments
 
     private var state: PlayerState? = null

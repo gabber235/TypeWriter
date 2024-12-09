@@ -9,8 +9,8 @@ import com.typewritermc.engine.paper.entry.entity.ActivityEntityDisplay
 import com.typewritermc.engine.paper.entry.entries.AudienceDisplay
 import com.typewritermc.engine.paper.entry.entries.AudienceEntry
 import com.typewritermc.engine.paper.entry.entries.EntityInstanceEntry
-import com.typewritermc.engine.paper.entry.entries.RoadNetworkEntry
-import com.typewritermc.engine.paper.entry.roadnetwork.gps.PathStreamDisplay
+import com.typewritermc.roadnetwork.RoadNetworkEntry
+import com.typewritermc.roadnetwork.gps.PathStreamDisplay
 import com.typewritermc.engine.paper.utils.toBukkitLocation
 import org.koin.java.KoinJavaComponent
 

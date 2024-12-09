@@ -5,6 +5,10 @@ import com.google.gson.internal.Streams
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import com.typewritermc.core.utils.RuntimeTypeAdapterFactory
+import com.typewritermc.loader.DependencyInjectionClassInfo
+import com.typewritermc.loader.DependencyInjectionInfo
+import com.typewritermc.loader.DependencyInjectionMethodInfo
 import java.lang.reflect.Type
 
 interface DataSerializer<T : Any> : JsonSerializer<T>, JsonDeserializer<T> {
@@ -15,6 +19,11 @@ fun createDataSerializerGson(serializers: List<DataSerializer<*>>): Gson {
     var builder = GsonBuilder()
         .serializeNulls()
         .registerTypeAdapterFactory(AlgebraicSerializationFactory())
+        .registerTypeAdapterFactory(
+            RuntimeTypeAdapterFactory.of(DependencyInjectionInfo::class.java, "kind")
+                .registerSubtype(DependencyInjectionClassInfo::class.java, "class")
+                .registerSubtype(DependencyInjectionMethodInfo::class.java, "method")
+        )
 
     serializers.forEach {
         val typeToken = TypeToken.get(it.type)

@@ -48,7 +48,6 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:2.3.12")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3")
     implementation("org.bstats:bstats-bukkit:3.1.0")
-    implementation("com.extollit.gaming:hydrazine-path-engine:1.8.1")
 
     val adventureVersion = "4.17.0"
     compileOnlyApi("net.kyori:adventure-api:$adventureVersion")

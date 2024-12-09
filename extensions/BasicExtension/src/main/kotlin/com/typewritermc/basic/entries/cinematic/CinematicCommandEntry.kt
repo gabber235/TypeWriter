@@ -3,10 +3,10 @@ package com.typewritermc.basic.entries.cinematic
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
@@ -94,7 +94,7 @@ class CommandAction(
     private val player: Player,
     entry: CinematicCommandEntry,
     private val run: (String) -> Unit,
-) : SimpleCinematicAction<CommandSegment>() {
+) : SimpleTemporalAction<CommandSegment>() {
     override val segments: List<CommandSegment> = entry.segments
 
     override suspend fun startSegment(segment: CommandSegment) {

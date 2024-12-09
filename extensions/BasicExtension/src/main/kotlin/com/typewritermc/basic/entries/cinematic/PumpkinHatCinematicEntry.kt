@@ -8,10 +8,10 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
 import com.typewritermc.engine.paper.interaction.InterceptionBundle
@@ -54,7 +54,7 @@ data class PumpkinHatSegment(
 class PumpkinHatCinematicAction(
     private val player: Player,
     entry: PumpkinHatCinematicEntry,
-) : SimpleCinematicAction<PumpkinHatSegment>() {
+) : SimpleTemporalAction<PumpkinHatSegment>() {
     override val segments: List<PumpkinHatSegment> = entry.segments
 
     private var interceptor: InterceptionBundle? = null

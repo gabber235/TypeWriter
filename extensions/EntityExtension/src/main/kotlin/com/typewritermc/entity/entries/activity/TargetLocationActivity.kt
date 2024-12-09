@@ -9,10 +9,10 @@ import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.EntityActivityEntry
 import com.typewritermc.engine.paper.entry.entries.GenericEntityActivityEntry
-import com.typewritermc.engine.paper.entry.entries.RoadNetworkEntry
-import com.typewritermc.engine.paper.entry.roadnetwork.gps.PointToPointGPS
+import com.typewritermc.roadnetwork.RoadNetworkEntry
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.toBukkitLocation
+import com.typewritermc.roadnetwork.gps.PointToPointGPS
 
 private val locationActivityRange by snippet("entity.activity.target_location.range", 1.0)
 
@@ -90,7 +90,8 @@ class TargetLocationActivity(
             context: ActivityContext,
             currentLocation: PositionProperty
         ): EntityActivity<ActivityContext> {
-            return NavigationActivity(PointToPointGPS(
+            return NavigationActivity(
+                PointToPointGPS(
                 network,
                 { currentLocation.toBukkitLocation() },
                 { targetPosition.toBukkitLocation() }

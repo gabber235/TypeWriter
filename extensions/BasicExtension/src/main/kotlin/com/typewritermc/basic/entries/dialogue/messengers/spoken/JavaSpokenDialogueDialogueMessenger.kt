@@ -76,7 +76,7 @@ class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueE
             speakerDisplayName,
             entry.duration.get(player),
             playedTime,
-            triggers.isEmpty()
+            eventTriggers.isEmpty()
         )
     }
 }

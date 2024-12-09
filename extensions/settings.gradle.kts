@@ -30,5 +30,5 @@ gradleEnterprise {
         termsOfServiceAgree = "yes"
     }
 }
-
-
+include("_InteractionExtension")
+include("_RoadNetworkExtension")

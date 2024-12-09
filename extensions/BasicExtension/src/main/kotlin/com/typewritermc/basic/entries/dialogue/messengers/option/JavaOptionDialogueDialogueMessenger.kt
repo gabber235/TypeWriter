@@ -2,14 +2,13 @@ package com.typewritermc.basic.entries.dialogue.messengers.option
 
 import com.typewritermc.basic.entries.dialogue.Option
 import com.typewritermc.basic.entries.dialogue.OptionDialogueEntry
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.core.utils.around
 import com.typewritermc.core.utils.loopingDistance
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.dialogue.*
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
+import com.typewritermc.engine.paper.entry.entries.EventTrigger
 import com.typewritermc.engine.paper.entry.matches
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.interaction.chatHistory
@@ -78,8 +77,8 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
     private var completedAnimation = false
 
-    override val triggers: List<Ref<out TriggerableEntry>>
-        get() = entry.triggers + (selected?.triggers ?: emptyList())
+    override val eventTriggers: List<EventTrigger>
+        get() = entry.eventTriggers + (selected?.eventTriggers ?: emptyList())
 
     override val modifiers: List<Modifier>
         get() = entry.modifiers + (selected?.modifiers ?: emptyList())
