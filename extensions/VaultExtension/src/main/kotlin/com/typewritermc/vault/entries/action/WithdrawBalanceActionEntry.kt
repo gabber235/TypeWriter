@@ -13,6 +13,7 @@ import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent
 
 @Entry("withdraw_balance", "Withdraw Balance", Colors.RED, "majesticons:money-minus")
 /**
@@ -34,7 +35,7 @@ class WithdrawBalanceActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        val economy: Economy = VaultInitializer.economy ?: return
+        val economy: Economy = KoinJavaComponent.get<VaultInitializer>(VaultInitializer::class.java).economy ?: return
 
         economy.withdrawPlayer(player, amount.get(player))
     }

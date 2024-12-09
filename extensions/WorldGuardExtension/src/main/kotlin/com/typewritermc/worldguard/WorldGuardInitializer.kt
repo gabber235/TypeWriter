@@ -8,7 +8,7 @@ import com.typewritermc.engine.paper.logger
 import lirand.api.extensions.server.server
 
 @Singleton
-object WorldGuardInitializer : Initializable {
+class WorldGuardInitializer : Initializable {
     private val factory = WorldGuardHandler.Factory
 
     override suspend fun initialize() {

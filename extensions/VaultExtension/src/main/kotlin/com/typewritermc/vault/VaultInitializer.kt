@@ -9,7 +9,7 @@ import org.bukkit.Bukkit.getServer
 import org.bukkit.plugin.RegisteredServiceProvider
 
 @Singleton
-object VaultInitializer : Initializable {
+class VaultInitializer : Initializable {
     var economy: Economy? = null
         private set
 
