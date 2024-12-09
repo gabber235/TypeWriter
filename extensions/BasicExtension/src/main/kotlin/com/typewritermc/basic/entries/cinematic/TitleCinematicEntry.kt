@@ -6,8 +6,8 @@ import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.asMini
 import net.kyori.adventure.title.Title
@@ -51,7 +51,7 @@ data class TitleSegment(
 class TitleCinematicAction(
     private val player: Player,
     entry: TitleCinematicEntry,
-) : SimpleCinematicAction<TitleSegment>() {
+) : SimpleTemporalAction<TitleSegment>() {
 
     override val segments: List<TitleSegment> = entry.segments
 

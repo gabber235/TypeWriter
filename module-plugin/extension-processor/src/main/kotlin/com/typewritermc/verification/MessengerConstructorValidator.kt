@@ -8,11 +8,10 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSValueParameter
 import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.processors.annotationClassValue
 import com.typewritermc.processors.fullName
-import com.typewritermc.processors.whenClassNameIs
+import com.typewritermc.processors.hasParameter
 
 class MessengerConstructorValidator : SymbolProcessor {
     @OptIn(KspExperimental::class)
@@ -52,10 +51,6 @@ class MessengerConstructorValidator : SymbolProcessor {
         if (invalidMessengers.isEmpty()) return emptyList()
         throw InvalidMessengerConstructorException(invalidMessengers)
     }
-}
-
-private fun List<KSValueParameter>.hasParameter(className: String): Boolean {
-    return any { it.type.resolve().whenClassNameIs(className) }
 }
 
 class InvalidMessengerConstructorException(entries: List<String>) : Exception(

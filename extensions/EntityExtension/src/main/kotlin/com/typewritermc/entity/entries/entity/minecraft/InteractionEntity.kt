@@ -25,7 +25,7 @@ import org.bukkit.entity.Player
 
 @Entry(
     "interaction_entity_definition",
-    "An entity that allows interaction, responding to player input",
+    "An entity that allows quest, responding to player input",
     Colors.BLUE,
     "ic:round-touch-app"
 )
@@ -33,7 +33,7 @@ import org.bukkit.entity.Player
 /**
  * Interaction entities are invisible hitboxes that can be used to detect player interactions.
  *
- * This entry is meant when you only want to have the interaction entity.
+ * This entry is meant when you only want to have the quest entity.
  * If you want it to be tied to a specific entity, use the HitboxEntityDefinition instead.
  *
  * ## How could this be used?
@@ -56,7 +56,7 @@ class InteractionEntityDefinition(
     }
 }
 
-@Entry("interaction_entity_instance", "An instance of an interaction entity", Colors.YELLOW, "ic:round-touch-app")
+@Entry("interaction_entity_instance", "An instance of an quest entity", Colors.YELLOW, "ic:round-touch-app")
 class InteractionEntityInstance(
     override val id: String = "",
     override val name: String = "",

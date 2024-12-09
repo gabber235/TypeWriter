@@ -11,8 +11,8 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import com.typewritermc.engine.paper.extensions.packetevents.meta
 import com.typewritermc.engine.paper.extensions.packetevents.spectateEntity
 import com.typewritermc.engine.paper.extensions.packetevents.stopSpectatingEntity
@@ -413,7 +413,7 @@ private class TeleportCameraAction(
 class SimulatedCameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
-) : SimpleCinematicAction<CameraSegment>() {
+) : SimpleTemporalAction<CameraSegment>() {
     override val segments: List<CameraSegment> = entry.segments
 
     private val paths = entry.segments.associateWith { segment ->
@@ -432,12 +432,13 @@ class SimulatedCameraCinematicAction(
             .meta<ItemDisplayMeta> {
                 positionRotationInterpolationDuration = 3
                 displayType = ItemDisplayMeta.DisplayType.HEAD
-                item = SpigotConversionUtil.fromBukkitItemStack(ItemStack(Material.PLAYER_HEAD)
-                    .apply {
-                        editMeta(SkullMeta::class.java) { meta ->
-                            meta.applySkinUrl("https://textures.minecraft.net/texture/427066e899358b1185460f867fc6dc434c7b4c82fbe70e1919ce74b8bacf80a1")
+                item = SpigotConversionUtil.fromBukkitItemStack(
+                    ItemStack(Material.PLAYER_HEAD)
+                        .apply {
+                            editMeta(SkullMeta::class.java) { meta ->
+                                meta.applySkinUrl("https://textures.minecraft.net/texture/427066e899358b1185460f867fc6dc434c7b4c82fbe70e1919ce74b8bacf80a1")
+                            }
                         }
-                    }
                 )
             }
         val path = paths[segment] ?: return

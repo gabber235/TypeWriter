@@ -8,7 +8,6 @@ import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.util.Vector3f
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import com.typewritermc.engine.paper.TypewriterPaperPlugin
-import com.typewritermc.engine.paper.entry.roadnetwork.content.toPacketColor
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.logger
 import lirand.api.extensions.server.server
@@ -128,6 +127,10 @@ fun Location.particleSphere(
             ) sendPacketTo player
         }
     }
+}
+
+fun Color.toPacketColor(): com.github.retrooper.packetevents.protocol.color.Color {
+    return com.github.retrooper.packetevents.protocol.color.Color(red, green, blue)
 }
 
 fun Double.round(decimals: Int): Double {

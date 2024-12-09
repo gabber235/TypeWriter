@@ -69,6 +69,14 @@ inline fun <reified T : Annotation> T.annotationClassValue(f: T.() -> KClass<*>)
     e.ksType
 }
 
+fun List<KSValueParameter>.hasParameter(className: String): Boolean {
+    return any { it.type.resolve().whenClassNameIs(className) }
+}
+
+fun KSClassDeclaration.isImplementingInterface(interfaceName: String): Boolean {
+    return superTypes.any { it.resolve().whenClassNameIs(interfaceName) }
+}
+
 class EntryNotFoundException(what: String, who: String, entry: String) :
     Exception("$what $who target entry $entry does not have the Entry annotation")
 

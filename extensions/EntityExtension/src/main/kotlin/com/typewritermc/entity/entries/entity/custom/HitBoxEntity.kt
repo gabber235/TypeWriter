@@ -18,15 +18,15 @@ import org.bukkit.entity.Player
 
 @Entry(
     "hit_box_definition",
-    "A hit box for an entity to allow interaction with a different entity",
+    "A hit box for an entity to allow quest with a different entity",
     Colors.ORANGE,
     "mdi:cube-outline"
 )
 /**
- * The `HitBoxDefinition` class is an entry that represents a hit box for an entity to allow interaction with a different entity.
+ * The `HitBoxDefinition` class is an entry that represents a hit box for an entity to allow quest with a different entity.
  *
  * ## How could this be used?
- * This could be when using a display entity since they don't have a hit box to allow interaction with.
+ * This could be when using a display entity since they don't have a hit box to allow quest with.
  */
 class HitBoxDefinition(
     override val id: String = "",

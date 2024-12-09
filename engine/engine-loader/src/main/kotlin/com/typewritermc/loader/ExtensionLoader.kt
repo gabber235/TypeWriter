@@ -3,6 +3,7 @@ package com.typewritermc.loader
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
+import com.google.gson.annotations.SerializedName
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -105,7 +106,7 @@ class ExtensionLoader : KoinComponent {
             val maxVersionLength = extensions.maxOf { it.extension.version.length }
             val maxDigits = extensions.maxOf { it.entries.size.digits }
             val extensionsDisplay = extensions.sortedBy { it.extension.name }
-                    .joinToString("\n") { it.displayString(maxExtensionLength, maxVersionLength, maxDigits) }
+                .joinToString("\n") { it.displayString(maxExtensionLength, maxVersionLength, maxDigits) }
             logger.info(
                 """
                 |
@@ -153,8 +154,9 @@ data class Extension(
     val extension: ExtensionInfo,
     val entries: List<EntryInfo>,
     val entryListeners: List<EntryListenerInfo>,
+    val typewriterCommands: List<TypewriterCommandInfo>,
     val dialogueMessengers: List<DialogueMessengerInfo>,
-    val initializers: List<InitializerInfo>,
+    val dependencyInjections: List<DependencyInjectionInfo>,
 )
 
 data class ExtensionInfo(
@@ -216,6 +218,11 @@ data class EntryListenerInfo(
     val arguments: List<String>,
 )
 
+data class TypewriterCommandInfo(
+    val className: String,
+    val methodName: String,
+)
+
 data class DialogueMessengerInfo(
     val entryBlueprintId: String,
     val entryClassName: String,
@@ -223,9 +230,33 @@ data class DialogueMessengerInfo(
     val priority: Int,
 )
 
-data class InitializerInfo(
-    val className: String,
-)
+sealed interface DependencyInjectionInfo {
+    val className: String
+    val type: SerializableType
+    val name: String?
+}
+
+data class DependencyInjectionClassInfo(
+    override val className: String,
+    override val type: SerializableType,
+    override val name: String?,
+) : DependencyInjectionInfo
+
+data class DependencyInjectionMethodInfo(
+    override val className: String,
+    val methodName: String,
+    override val type: SerializableType,
+    override val name: String?,
+) : DependencyInjectionInfo
+
+
+enum class SerializableType {
+    @SerializedName("singleton")
+    SINGLETON,
+
+    @SerializedName("factory")
+    FACTORY,
+}
 
 enum class ExtensionFlag(val warning: String) {
     /**

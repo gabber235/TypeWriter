@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.entry.dialogue.*
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.stripped
+import com.typewritermc.engine.paper.entry.dialogue.typingDurationType
 import org.bukkit.entity.Player
 import java.time.Duration
 
@@ -43,7 +44,7 @@ class JavaRandomSpokenDialogueDialogueMessenger(player: Player, entry: RandomSpo
             speakerDisplayName.parsePlaceholders(player),
             entry.duration,
             playedTime,
-            triggers.isEmpty()
+            eventTriggers.isEmpty()
         )
     }
 }

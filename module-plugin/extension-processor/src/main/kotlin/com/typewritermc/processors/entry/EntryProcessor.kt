@@ -7,7 +7,6 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.typewritermc.SharedJsonManager
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.GenericConstraint

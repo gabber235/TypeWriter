@@ -6,10 +6,10 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.roadnetwork.RoadNetworkManager
-import com.typewritermc.engine.paper.entry.roadnetwork.gps.PointToPointGPS
 import com.typewritermc.engine.paper.utils.distanceSqrt
 import com.typewritermc.engine.paper.utils.toBukkitLocation
+import com.typewritermc.roadnetwork.*
+import com.typewritermc.roadnetwork.gps.PointToPointGPS
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent
 
@@ -56,7 +56,8 @@ class PatrolActivity(
             ?: return
 
         activity?.dispose(context)
-        activity = NavigationActivity(PointToPointGPS(
+        activity = NavigationActivity(
+            PointToPointGPS(
             roadNetwork,
             { currentPosition.toBukkitLocation() }) {
             targetNode.location

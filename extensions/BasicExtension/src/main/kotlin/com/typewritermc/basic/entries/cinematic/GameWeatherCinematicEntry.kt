@@ -5,14 +5,19 @@ import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import org.bukkit.WeatherType
 import org.bukkit.entity.Player
 
-@Entry("game_weather_cinematic", "A cinematic that changes the weather", Colors.CYAN, "fluent:weather-rain-showers-day-24-filled")
+@Entry(
+    "game_weather_cinematic",
+    "A cinematic that changes the weather",
+    Colors.CYAN,
+    "fluent:weather-rain-showers-day-24-filled"
+)
 /**
  * The `GameWeatherCinematicEntry` is an entry that changes the weather during a cinematic.
  *
@@ -39,7 +44,7 @@ data class GameWeatherSegment(
 class GameWeatherCinematicAction(
     val player: Player,
     entry: GameWeatherCinematicEntry,
-) : SimpleCinematicAction<GameWeatherSegment>() {
+) : SimpleTemporalAction<GameWeatherSegment>() {
     override val segments: List<GameWeatherSegment> = entry.segments
 
     override suspend fun startSegment(segment: GameWeatherSegment) {

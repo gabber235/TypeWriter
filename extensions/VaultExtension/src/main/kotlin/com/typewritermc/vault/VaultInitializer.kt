@@ -1,14 +1,14 @@
 package com.typewritermc.vault
 
 import com.typewritermc.core.extension.Initializable
-import com.typewritermc.core.extension.annotations.Initializer
+import com.typewritermc.core.extension.annotations.Singleton
 import net.milkbowl.vault.chat.Chat
 import net.milkbowl.vault.economy.Economy
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit.getServer
 import org.bukkit.plugin.RegisteredServiceProvider
 
-@Initializer
+@Singleton
 object VaultInitializer : Initializable {
     var economy: Economy? = null
         private set
@@ -20,11 +20,11 @@ object VaultInitializer : Initializable {
         private set
 
 
-    override fun initialize() {
+    override suspend fun initialize() {
         loadVault()
     }
 
-    override fun shutdown() {
+    override suspend fun shutdown() {
         economy = null
         permissions = null
         chat = null

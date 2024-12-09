@@ -1,6 +1,7 @@
 repositories {}
 dependencies {
-    compileOnly("com.extollit.gaming:hydrazine-path-engine:1.8.1")
+    compileOnly(project(":RoadNetworkExtension"))
+    compileOnly(project(":QuestExtension"))
 }
 
 typewriter {

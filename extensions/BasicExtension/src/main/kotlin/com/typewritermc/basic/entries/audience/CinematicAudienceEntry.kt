@@ -2,17 +2,17 @@ package com.typewritermc.basic.entries.audience
 
 import com.google.gson.annotations.SerializedName
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.books.pages.PageType
+import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.entries.ref
+import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Page
-import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.cinematic.isPlayingCinematic
 import com.typewritermc.engine.paper.entry.entries.AudienceEntry
 import com.typewritermc.engine.paper.entry.entries.AudienceFilter
 import com.typewritermc.engine.paper.entry.entries.AudienceFilterEntry
 import com.typewritermc.engine.paper.entry.entries.Invertible
-import com.typewritermc.core.entries.ref
+import com.typewritermc.engine.paper.entry.temporal.isPlayingTemporal
 import com.typewritermc.engine.paper.events.AsyncCinematicEndEvent
 import com.typewritermc.engine.paper.events.AsyncCinematicStartEvent
 import org.bukkit.entity.Player
@@ -53,7 +53,7 @@ class CinematicAudienceFilter(
     private val pageId: String,
 ) : AudienceFilter(ref) {
     override fun filter(player: Player): Boolean {
-        val inCinematic = if (pageId.isNotBlank()) player.isPlayingCinematic(pageId) else player.isPlayingCinematic()
+        val inCinematic = if (pageId.isNotBlank()) player.isPlayingTemporal(pageId) else player.isPlayingTemporal()
         return inCinematic
     }
 

@@ -3,25 +3,28 @@ package com.typewritermc.engine.paper.content.modes
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
-import lirand.api.extensions.events.unregister
-import lirand.api.extensions.server.registerEvents
+import com.typewritermc.core.utils.failure
+import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.content.*
 import com.typewritermc.engine.paper.content.components.*
 import com.typewritermc.engine.paper.entry.AssetManager
-import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.entries.AssetEntry
+import com.typewritermc.engine.paper.entry.entries.CinematicAction
+import com.typewritermc.engine.paper.entry.entries.CinematicEntry
+import com.typewritermc.engine.paper.entry.entries.getAssetFromFieldValue
 import com.typewritermc.engine.paper.entry.forceTriggerFor
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.interaction.startBlockingActionBar
 import com.typewritermc.engine.paper.interaction.stopBlockingActionBar
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
-import com.typewritermc.core.utils.failure
 import com.typewritermc.engine.paper.utils.loreString
 import com.typewritermc.engine.paper.utils.name
-import com.typewritermc.core.utils.ok
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import lirand.api.extensions.events.unregister
+import lirand.api.extensions.server.registerEvents
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -215,7 +218,7 @@ abstract class RecordingCinematicContentMode<T : Any>(
             recordFrame()
         } else if (frame > frames.last) {
             saveStore()
-            SystemTrigger.CONTENT_POP forceTriggerFor player
+            ContentPopTrigger forceTriggerFor player
         } else if (frame < frames.first) {
             preStart(frame)
         }

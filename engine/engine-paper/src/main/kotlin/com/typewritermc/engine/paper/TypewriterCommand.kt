@@ -1,20 +1,20 @@
 package com.typewritermc.engine.paper
 
 import com.typewritermc.core.books.pages.PageType
-import com.typewritermc.core.entries.*
-import com.typewritermc.engine.paper.content.ContentContext
+import com.typewritermc.core.entries.Entry
+import com.typewritermc.core.entries.Page
+import com.typewritermc.core.entries.Query
+import com.typewritermc.core.entries.formattedName
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.entries.SystemTrigger.CINEMATIC_END
-import com.typewritermc.engine.paper.entry.quest.trackQuest
-import com.typewritermc.engine.paper.entry.quest.unTrackQuest
-import com.typewritermc.engine.paper.entry.roadnetwork.content.RoadNetworkContentMode
+import com.typewritermc.engine.paper.entry.temporal.temporalCommands
 import com.typewritermc.engine.paper.interaction.chatHistory
 import com.typewritermc.engine.paper.ui.CommunicationHandler
 import com.typewritermc.engine.paper.utils.ThreadType
 import com.typewritermc.engine.paper.utils.asMini
 import com.typewritermc.engine.paper.utils.msg
 import com.typewritermc.engine.paper.utils.sendMini
+import com.typewritermc.loader.ExtensionLoader
 import dev.jorel.commandapi.CommandTree
 import dev.jorel.commandapi.StringTooltip
 import dev.jorel.commandapi.arguments.Argument
@@ -35,24 +35,27 @@ fun typeWriterCommand() = commandTree("typewriter") {
     withAliases("tw")
 
     reloadCommands()
-
     factsCommands()
-
     clearChatCommand()
-
     connectCommand()
-
-    cinematicCommand()
-
     triggerCommand()
     fireCommand()
-
-
-    questCommands()
-
-    roadNetworkCommands()
-
     manifestCommands()
+    temporalCommands()
+
+    registerDynamicCommands()
+}
+
+fun CommandTree.registerDynamicCommands() {
+    val extensionLoader = get<ExtensionLoader>(ExtensionLoader::class.java)
+    extensionLoader.extensions.flatMap { it.typewriterCommands }
+        .map {
+            val clazz = extensionLoader.loadClass(it.className)
+            clazz.getMethod(it.methodName, CommandTree::class.java)
+        }
+        .forEach {
+            it.invoke(null, this)
+        }
 }
 
 private fun CommandTree.reloadCommands() = literalArgument("reload") {
@@ -237,32 +240,6 @@ private fun CommandTree.connectCommand() {
     }
 }
 
-private fun CommandTree.cinematicCommand() = literalArgument("cinematic") {
-    literalArgument("start") {
-        withPermission("typewriter.cinematic.start")
-
-        argument(pages("cinematic", PageType.CINEMATIC)) {
-            optionalTarget {
-                anyExecutor { sender, args ->
-                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                    val page = args["cinematic"] as Page
-                    CinematicStartTrigger(page.id, emptyList()) triggerFor target
-                }
-            }
-        }
-    }
-
-    literalArgument("stop") {
-        withPermission("typewriter.cinematic.stop")
-        optionalTarget {
-            anyExecutor { sender, args ->
-                val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                CINEMATIC_END triggerFor target
-            }
-        }
-    }
-}
-
 private fun CommandTree.triggerCommand() = literalArgument("trigger") {
     withPermission("typewriter.trigger")
 
@@ -285,64 +262,12 @@ private fun CommandTree.fireCommand() = literalArgument("fire") {
             anyExecutor { sender, args ->
                 val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
                 val entry = args["entry"] as FireTriggerEventEntry
-                entry.triggers triggerEntriesFor target
+                entry.eventTriggers triggerFor target
             }
         }
     }
 }
 
-private fun CommandTree.questCommands() = literalArgument("quest") {
-    literalArgument("track") {
-        withPermission("typewriter.quest.track")
-
-        argument(entryArgument<QuestEntry>("quest")) {
-            optionalTarget {
-                anyExecutor { sender, args ->
-                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                    val quest = args["quest"] as QuestEntry
-                    target.trackQuest(quest.ref())
-                    sender.msg("You are now tracking <blue>${quest.display(target)}</blue>.")
-                }
-            }
-        }
-    }
-
-
-    literalArgument("untrack") {
-        withPermission("typewriter.quest.untrack")
-
-        optionalTarget {
-            anyExecutor { sender, args ->
-                val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                target.unTrackQuest()
-                sender.msg("You are no longer tracking any quests.")
-            }
-        }
-    }
-}
-
-private fun CommandTree.roadNetworkCommands() = literalArgument("roadNetwork") {
-    literalArgument("edit") {
-        withPermission("typewriter.roadNetwork.edit")
-
-        argument(entryArgument<RoadNetworkEntry>("network")) {
-            optionalTarget {
-                anyExecutor { sender, args ->
-                    val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                    val entry = args["network"] as RoadNetworkEntry
-                    val data = mapOf(
-                        "entryId" to entry.id
-                    )
-                    val context = ContentContext(data)
-                    ContentModeTrigger(
-                        context,
-                        RoadNetworkContentMode(context, target)
-                    ) triggerFor target
-                }
-            }
-        }
-    }
-}
 
 private fun CommandTree.manifestCommands() = literalArgument("manifest") {
     literalArgument("inspect") {

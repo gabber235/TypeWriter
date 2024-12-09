@@ -43,7 +43,7 @@ class EntryListenerProcessor(
         logger.info("Generating entry listener blueprint for ${function.fullName}")
 
         val parent = function.parent
-        if (parent !is KSFile) throw ListenerMustBeTopLevelFunctionException(function.fullName)
+        if (parent !is KSFile) throw MustBeTopLevelFunctionException("Entry listeners", function.fullName)
 
         val listener = function.getAnnotationsByType(EntryListener::class).first()
         val entry = listener.annotationClassValue { entry }
@@ -75,5 +75,5 @@ data class EntryListenerBlueprint(
     val arguments: List<String>,
 )
 
-class ListenerMustBeTopLevelFunctionException(function: String) :
-    Exception("Function $function is not in a class. Entry listeners must be a top-level function")
+class MustBeTopLevelFunctionException(type: String, function: String) :
+    Exception("Function $function is not in a class. $type must be a top-level function")

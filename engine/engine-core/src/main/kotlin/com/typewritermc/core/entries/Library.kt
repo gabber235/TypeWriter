@@ -27,7 +27,7 @@ class Library : KoinComponent, Reloadable {
     private val directory by inject<File>(named("baseDir"))
     private val gson by inject<Gson>(named("dataSerializer"))
 
-    override fun load() {
+    override suspend fun load() {
         pages = directory.resolve("pages").listFiles().orEmpty()
             .filter { it.isFile && it.canRead() && it.name.endsWith(".json") }
             .map {
@@ -50,7 +50,7 @@ class Library : KoinComponent, Reloadable {
         logger.info("Loaded ${entries.size} entries from ${pages.size} pages.")
     }
 
-    override fun unload() {
+    override suspend fun unload() {
         pages = emptyList()
         entries = emptyList()
         entryPriority = emptyMap()

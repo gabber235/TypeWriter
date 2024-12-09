@@ -6,11 +6,11 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.EmptyCinematicAction
 import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
+import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.utils.isFloodgate
 import org.bukkit.entity.Player
@@ -48,7 +48,7 @@ data class BlindingSegment(
 class BlindingCinematicAction(
     private val player: Player,
     entry: BlindingCinematicEntry,
-) : SimpleCinematicAction<BlindingSegment>() {
+) : SimpleTemporalAction<BlindingSegment>() {
     override val segments: List<BlindingSegment> = entry.segments
 
     override suspend fun tickSegment(segment: BlindingSegment, frame: Int) {

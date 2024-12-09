@@ -5,11 +5,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.ref
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.ModifierOperator
-import com.typewritermc.engine.paper.entry.RefreshFactTrigger
-import com.typewritermc.engine.paper.entry.entries.ExpirableFactEntry
-import com.typewritermc.engine.paper.entry.entries.PersistableFactEntry
-import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
-import com.typewritermc.engine.paper.entry.entries.WritableFactEntry
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
@@ -155,6 +151,13 @@ class FactsModifier {
     }
 
     fun build(): Map<String, Int> = modifications
+}
+
+class RefreshFactTrigger(
+    val fact: Ref<ReadableFactEntry>,
+) : EventTrigger {
+    override val id: String
+        get() = "fact.${fact.id}"
 }
 
 fun Player.fact(ref: Ref<out ReadableFactEntry>) = ref.get()?.readForPlayersGroup(this)

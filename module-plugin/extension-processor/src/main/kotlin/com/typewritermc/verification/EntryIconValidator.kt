@@ -31,24 +31,24 @@ class EntryIconValidator(
         val entries = resolver.getSymbolsWithAnnotation(Entry::class.qualifiedName!!)
 
         val invalidEntries = validateIcons(logger, buildDir) {
-                runBlocking {
-                    entries
-                        .map { it to it.getAnnotationsByType(Entry::class).first() }
-                        .map { (entry, annotation) ->
-                            async {
-                                val isValid = annotation.icon.isValidIcon()
-                                EntryIconInfo(entry, annotation, isValid)
-                            }
+            runBlocking {
+                entries
+                    .map { it to it.getAnnotationsByType(Entry::class).first() }
+                    .map { (entry, annotation) ->
+                        async {
+                            val isValid = annotation.icon.isValidIcon()
+                            EntryIconInfo(entry, annotation, isValid)
                         }
-                        .toList()
-                        .awaitAll()
-                        .filter { !it.isValid }
-                        .map {
-                            if (it.entry !is KSClassDeclaration) it.annotation.icon
-                            else "${it.entry.fullName}: ${it.annotation.icon}"
-                        }
-                }
+                    }
+                    .toList()
+                    .awaitAll()
+                    .filter { !it.isValid }
+                    .map {
+                        if (it.entry !is KSClassDeclaration) it.annotation.icon
+                        else "${it.entry.fullName}: ${it.annotation.icon}"
+                    }
             }
+        }
 
         if (invalidEntries.isEmpty()) return emptyList()
         throw InvalidIconException(invalidEntries)
@@ -126,6 +126,7 @@ class IconValidator(
 
     fun dispose() {
         if (consumers.decrementAndGet() != 0) return
+        client.close()
         val cacheFile = File(buildDir, "cache/icons.json")
         cacheFile.parentFile.mkdirs()
         cacheFile.writeText(Json.encodeToString(cachedIcons))

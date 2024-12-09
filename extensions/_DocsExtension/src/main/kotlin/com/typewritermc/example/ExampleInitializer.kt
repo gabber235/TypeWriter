@@ -6,11 +6,11 @@ import com.typewritermc.core.extension.annotations.Initializer
 
 @Initializer
 object ExampleInitializer : Initializable {
-    override fun initialize() {
+    override suspend fun initialize() {
         // Do something when the extension is initialized
     }
 
-    override fun shutdown() {
+    override suspend fun shutdown() {
         // Do something when the extension is shutdown
     }
 }

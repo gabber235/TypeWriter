@@ -1,6 +1,6 @@
 repositories { }
 dependencies {
-   implementation("com.mthaler:aparser:0.4.0")
+    implementation("com.mthaler:aparser:0.4.0")
 }
 
 typewriter {
