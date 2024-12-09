@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.vault.VaultInitializer
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent
 
 @Entry("deposit_balance", "Deposit Balance", Colors.RED, "majesticons:money-plus")
 /**
@@ -32,7 +33,7 @@ class DepositBalanceActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        val economy: Economy = VaultInitializer.economy ?: return
+        val economy: Economy = KoinJavaComponent.get<VaultInitializer>(VaultInitializer::class.java).economy ?: return
 
         economy.depositPlayer(player, amount.get(player))
     }

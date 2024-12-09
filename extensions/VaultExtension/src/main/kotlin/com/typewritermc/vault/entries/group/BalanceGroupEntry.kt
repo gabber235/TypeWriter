@@ -1,14 +1,14 @@
 package com.typewritermc.vault.entries.group
 
 import com.google.gson.annotations.SerializedName
-import com.typewritermc.vault.VaultInitializer
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.engine.paper.entry.CriteriaOperator
 import com.typewritermc.engine.paper.entry.entries.GroupEntry
 import com.typewritermc.engine.paper.entry.entries.GroupId
+import com.typewritermc.vault.VaultInitializer
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent
 
 @Entry("balance_audience", "Audiences grouped by balance", Colors.MYRTLE_GREEN, "streamline:justice-scale-2-solid")
 /**
@@ -25,7 +25,8 @@ class BalanceGroupEntry(
     val group: List<BalanceGroup> = emptyList(),
 ) : GroupEntry {
     override fun groupId(player: Player): GroupId? {
-        val balance = VaultInitializer.economy?.getBalance(player) ?: return null
+        val balance = KoinJavaComponent.get<VaultInitializer>(VaultInitializer::class.java).economy?.getBalance(player)
+            ?: return null
         return group
             .firstOrNull { it.operator.isValid(balance, it.value) }
             ?.let { GroupId(it.audience) }
