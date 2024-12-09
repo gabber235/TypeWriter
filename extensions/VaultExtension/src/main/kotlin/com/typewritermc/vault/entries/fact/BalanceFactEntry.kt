@@ -9,6 +9,7 @@ import com.typewritermc.engine.paper.entry.entries.GroupEntry
 import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
 import com.typewritermc.engine.paper.facts.FactData
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent
 
 @Entry("balance_fact", "The balance of a player's account", Colors.PURPLE, "fa6-solid:money-bill-wave")
 /**
@@ -27,8 +28,8 @@ class BalanceFactEntry(
     override val group: Ref<GroupEntry> = emptyRef(),
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
-        val permissionHandler = VaultInitializer.economy ?: return FactData(0)
-        val balance = permissionHandler.getBalance(player)
+        val economyHandler = KoinJavaComponent.get<VaultInitializer>(VaultInitializer::class.java).economy ?: return FactData(0)
+        val balance = economyHandler.getBalance(player)
         return FactData(balance.toInt())
     }
 }

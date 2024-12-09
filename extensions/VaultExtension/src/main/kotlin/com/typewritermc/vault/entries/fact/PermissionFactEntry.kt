@@ -11,6 +11,7 @@ import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
 import com.typewritermc.engine.paper.facts.FactData
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent
 
 @Entry("permission_fact", "If the player has a permission", Colors.PURPLE, "fa6-solid:user-shield")
 /**
@@ -29,7 +30,7 @@ class PermissionFactEntry(
     val permission: String = "",
 ) : ReadableFactEntry {
     override fun readSinglePlayer(player: Player): FactData {
-        val permissionHandler: Permission = VaultInitializer.permissions ?: return FactData(0)
+        val permissionHandler: Permission = KoinJavaComponent.get<VaultInitializer>(VaultInitializer::class.java).permissions ?: return FactData(0)
         val value = if (permissionHandler.playerHas(player, permission)) 1 else 0
         return FactData(value)
     }

@@ -55,6 +55,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
 import java.io.File
+import java.util.logging.Level.*
 import java.util.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
@@ -242,13 +243,13 @@ private class MinecraftLogger(private val logger: Logger) :
 
 fun java.util.logging.Level?.convertLogger(): Level {
     return when (this) {
-        java.util.logging.Level.FINEST -> Level.DEBUG
-        java.util.logging.Level.FINER -> Level.DEBUG
-        java.util.logging.Level.FINE -> Level.DEBUG
-        java.util.logging.Level.CONFIG -> Level.DEBUG
-        java.util.logging.Level.INFO -> Level.INFO
-        java.util.logging.Level.WARNING -> Level.WARNING
-        java.util.logging.Level.SEVERE -> Level.ERROR
+        FINEST -> Level.DEBUG
+        FINER -> Level.DEBUG
+        FINE -> Level.DEBUG
+        CONFIG -> Level.DEBUG
+        INFO -> Level.INFO
+        WARNING -> Level.WARNING
+        SEVERE -> Level.ERROR
         else -> Level.INFO
     }
 }

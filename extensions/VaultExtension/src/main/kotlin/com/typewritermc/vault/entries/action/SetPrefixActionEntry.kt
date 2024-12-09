@@ -13,6 +13,7 @@ import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import net.milkbowl.vault.chat.Chat
 import org.bukkit.entity.Player
+import org.koin.java.KoinJavaComponent
 
 @Entry("set_prefix", "Set Prefix", Colors.RED, "fa6-solid:user-tag")
 /**
@@ -36,7 +37,7 @@ class SetPrefixActionEntry(
     override fun execute(player: Player) {
         super.execute(player)
 
-        val chat: Chat = VaultInitializer.chat ?: return
+        val chat: Chat = KoinJavaComponent.get<VaultInitializer>(VaultInitializer::class.java).chat ?: return
 
         chat.setPlayerPrefix(player, prefix.get(player))
     }

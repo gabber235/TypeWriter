@@ -182,6 +182,7 @@ fun Extension.displayString(maxAdapterLength: Int, maxVersionLength: Int, maxDig
     display += padCount("📚", entries.size, maxDigits)
     display += padCount("👂", entryListeners.size, maxDigits)
     display += padCount("💬", dialogueMessengers.size, maxDigits)
+    display += padCount("🔌", dependencyInjections.size, maxDigits)
 
     extension.flags.filter { it.warning.isNotBlank() }.joinToString { it.warning }.let {
         if (it.isNotBlank()) {
