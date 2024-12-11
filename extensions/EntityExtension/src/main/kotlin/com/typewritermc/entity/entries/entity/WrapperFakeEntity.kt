@@ -27,7 +27,7 @@ abstract class WrapperFakeEntity(
         when (metaData) {
             is LivingEntityMeta -> WrapperLivingEntity(entityId, uuid, type, metaData)
             is ThrownExpBottleMeta -> WrapperExperienceOrbEntity(entityId, uuid, type, metaData)
-            else -> WrapperEntity(type)
+            else -> WrapperEntity(entityId, uuid, type, metaData)
         }
     }
 
