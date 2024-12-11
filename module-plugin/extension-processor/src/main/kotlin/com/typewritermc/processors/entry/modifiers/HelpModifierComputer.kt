@@ -14,8 +14,6 @@ object HelpModifierComputer : DataModifierComputer<Help> {
 
     context(KSPLogger, Resolver)
     override fun compute(blueprint: DataBlueprint, annotation: Help): Result<DataModifier> {
-        innerCompute(blueprint, annotation)?.let { return ok(it) }
-
         return ok(DataModifier.Modifier("help", annotation.text))
     }
 }
