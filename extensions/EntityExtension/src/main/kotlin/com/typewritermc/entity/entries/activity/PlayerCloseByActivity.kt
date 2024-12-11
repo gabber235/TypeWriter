@@ -5,6 +5,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.EntityActivityEntry
 import com.typewritermc.engine.paper.entry.entries.GenericEntityActivityEntry
@@ -30,8 +31,10 @@ class PlayerCloseByActivityEntry(
     override val id: String = "",
     override val name: String = "",
     @Help("The range in which the player has to be close by to activate the activity.")
+    @Default("10.0")
     val range: Double = 10.0,
     @Help("The maximum duration a player can be idle in the same range before the activity deactivates.")
+    @Default("30000")
     val maxIdleDuration: Duration = Duration.ofSeconds(30),
     @Help("The activity that will be used when there is a player close by.")
     val closeByActivity: Ref<out EntityActivityEntry> = emptyRef(),
