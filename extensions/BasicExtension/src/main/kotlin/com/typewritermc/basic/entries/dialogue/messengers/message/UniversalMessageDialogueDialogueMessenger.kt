@@ -12,7 +12,6 @@ import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.sendMiniWithResolvers
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
-import java.time.Duration
 
 val messageFormat: String by snippet(
     "dialogue.message.format",
@@ -37,6 +36,10 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
         if (state != MessengerState.RUNNING) return
         state = MessengerState.FINISHED
         player.sendMessageDialogue(entry.text.get(player), entry.speakerDisplayName.get(player))
+    }
+
+    override fun end() {
+        // Do nothing as we don't need to resend the messages.
     }
 }
 
