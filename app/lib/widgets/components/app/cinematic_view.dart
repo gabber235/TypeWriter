@@ -2014,13 +2014,13 @@ class _TrackSliderTrack extends HookConsumerWidget {
 @freezed
 class _TrackState with _$TrackState {
   const factory _TrackState([
-    // ignore: unused_element
+    // ignore: unused_element_parameter
     @Default(0) double start,
-    // ignore: unused_element
+    // ignore: unused_element_parameter
     @Default(1) double end,
-    // ignore: unused_element
+    // ignore: unused_element_parameter
     @Default(0) int totalFrames,
-    // ignore: unused_element
+    // ignore: unused_element_parameter
     @Default(0) double width,
   ]) = _$__TrackState;
 }
