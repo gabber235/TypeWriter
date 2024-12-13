@@ -8,6 +8,7 @@ import com.typewritermc.engine.paper.entry.dialogue.MessengerState
 import com.typewritermc.engine.paper.entry.dialogue.TickContext
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
+import com.typewritermc.engine.paper.interaction.chatHistory
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.sendMiniWithResolvers
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
@@ -29,6 +30,12 @@ class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDi
 
     companion object : MessengerFilter {
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
+    }
+
+    override fun init() {
+        super.init()
+        // The player might have had something before this. So we want to clean the chat before sending our message.
+        player.chatHistory.resendMessages(player)
     }
 
     override fun tick(context: TickContext) {
