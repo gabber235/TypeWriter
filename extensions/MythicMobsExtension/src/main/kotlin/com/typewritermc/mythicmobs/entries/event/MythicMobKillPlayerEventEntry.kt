@@ -8,6 +8,7 @@ import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.core.extension.annotations.Regex
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
@@ -38,7 +39,7 @@ fun onMythicMobKillPlayer(event: PlayerDeathEvent, query: Query<MythicMobKillPla
     val causingEntity = event.damageSource.causingEntity ?: return
     val mythicMob = MythicBukkit.inst().mobManager.getMythicMobInstance(causingEntity) ?: return
 
-    query findWhere { entry ->
+    query.findWhere { entry ->
         entry.mythicMobType.map { it.toRegex().matches(mythicMob.mobType) }.orElse(true)
-    } triggerAllFor event.player
+    }.triggerAllFor(event.player, context())
 }

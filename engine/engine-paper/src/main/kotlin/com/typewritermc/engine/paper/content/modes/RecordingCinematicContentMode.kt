@@ -14,6 +14,7 @@ import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.getAssetFromFieldValue
 import com.typewritermc.engine.paper.entry.forceTriggerFor
 import com.typewritermc.engine.paper.entry.triggerFor
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.interaction.startBlockingActionBar
 import com.typewritermc.engine.paper.interaction.stopBlockingActionBar
 import com.typewritermc.engine.paper.plugin
@@ -81,7 +82,7 @@ class RecordingCinematicComponent<T : Any>(
                 meta.loreString = "<line> <gray>Click to start recording the cinematic."
             }
         } onInteract {
-            ContentModeTrigger(context, modeCreator(context, player, frameFetcher(), klass)) triggerFor player
+            ContentModeTrigger(context, modeCreator(context, player, frameFetcher(), klass)).triggerFor(player, context())
         }
 
         return mapOf(slot to item)
@@ -218,7 +219,7 @@ abstract class RecordingCinematicContentMode<T : Any>(
             recordFrame()
         } else if (frame > frames.last) {
             saveStore()
-            ContentPopTrigger forceTriggerFor player
+            ContentPopTrigger.forceTriggerFor(player, context())
         } else if (frame < frames.first) {
             preStart(frame)
         }

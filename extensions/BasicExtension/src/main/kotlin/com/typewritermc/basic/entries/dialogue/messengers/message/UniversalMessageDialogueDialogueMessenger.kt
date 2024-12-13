@@ -2,6 +2,7 @@ package com.typewritermc.basic.entries.dialogue.messengers.message
 
 import com.typewritermc.basic.entries.dialogue.MessageDialogueEntry
 import com.typewritermc.core.extension.annotations.Messenger
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
@@ -25,8 +26,12 @@ val messagePadding: String by snippet(
 )
 
 @Messenger(MessageDialogueEntry::class)
-class UniversalMessageDialogueDialogueMessenger(player: Player, entry: MessageDialogueEntry) :
-    DialogueMessenger<MessageDialogueEntry>(player, entry) {
+class UniversalMessageDialogueDialogueMessenger(
+    player: Player,
+    context: InteractionContext,
+    entry: MessageDialogueEntry
+) :
+    DialogueMessenger<MessageDialogueEntry>(player, context, entry) {
 
     companion object : MessengerFilter {
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true

@@ -3,11 +3,10 @@ package com.typewritermc.basic.entries.event
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.engine.paper.entry.TriggerableEntry
-import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.core.extension.annotations.EntryListener
-import com.typewritermc.core.extension.annotations.MaterialProperties
 import com.typewritermc.core.extension.annotations.MaterialProperty.BLOCK
+import com.typewritermc.core.interaction.EntryContextKey
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.core.utils.point.toBlockPosition
 import com.typewritermc.engine.paper.entry.*
@@ -17,8 +16,10 @@ import com.typewritermc.engine.paper.utils.toPosition
 import org.bukkit.Material
 import org.bukkit.event.block.BlockPlaceEvent
 import java.util.*
+import kotlin.reflect.KClass
 
 @Entry("on_place_block", "When the player places a block", Colors.YELLOW, "fluent:cube-add-20-filled")
+@ContextKeys(BlockPlaceContextKeys::class)
 /**
  * The `Block Place Event` is called when a block is placed in the world.
  *
@@ -35,14 +36,25 @@ class BlockPlaceEventEntry(
     val block: Material = Material.STONE,
 ) : EventEntry
 
+enum class BlockPlaceContextKeys(override val klass: KClass<*>) : EntryContextKey {
+    @KeyType(Position::class)
+    BLOCK_POSITION(Position::class),
+
+    @KeyType(Position::class)
+    CENTER_POSITION(Position::class)
+}
+
 @EntryListener(BlockPlaceEventEntry::class)
 fun onPlaceBlock(event: BlockPlaceEvent, query: Query<BlockPlaceEventEntry>) {
     val player = event.player
     val position = event.block.location.toPosition()
-    query findWhere { entry ->
+    query.findWhere { entry ->
         // Check if the player clicked on the correct location
         if (!entry.location.map { it.get(player).toBlockPosition() == position.toBlockPosition() }.orElse(true)) return@findWhere false
 
         entry.block == event.block.type
-    } startDialogueWithOrNextDialogue player
+    }.startDialogueWithOrNextDialogue(player) {
+        BlockPlaceContextKeys.BLOCK_POSITION to position.toBlockPosition()
+        BlockPlaceContextKeys.CENTER_POSITION to position.mid()
+    }
 }

@@ -25,11 +25,6 @@ class PositionProperty(
         return distanceSquared(other)
     }
 
-    // Returns the x, z centered location
-    fun mid(): PositionProperty {
-        return copy(x = x.toInt() + 0.5, y = y.toInt().toDouble(), z = z.toInt() + 0.5)
-    }
-
     override fun withX(x: Double) = copy(x = x)
 
     override fun withY(y: Double) = copy(y = y)

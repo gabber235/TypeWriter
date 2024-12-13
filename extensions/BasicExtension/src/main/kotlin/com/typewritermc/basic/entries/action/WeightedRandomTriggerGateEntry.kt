@@ -10,10 +10,9 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
-import com.typewritermc.engine.paper.entry.triggerEntriesFor
-import org.bukkit.entity.Player
 import kotlin.random.Random
 
 @Entry("weighted_random_trigger_gate", "A weighted random trigger gate", Colors.PINK, "jam:dices-f")
@@ -38,17 +37,18 @@ class WeightedRandomTriggerGateEntry(
     override val triggers: List<Ref<TriggerableEntry>>
         get() = emptyList()
 
-    override fun execute(player: Player) {
+    override fun ActionTrigger.execute() {
+        disableAutomaticTriggering()
         val selectedTriggers = mutableListOf<Ref<TriggerableEntry>>()
 
         if (customTriggers.isNotEmpty()) {
-            for (i in 1..amount.get(player)) {
+            for (i in 1..amount.get(player, context)) {
                 selectedTriggers.add(customTriggers.weightedRandom())
             }
         }
 
-        super.execute(player)
-        selectedTriggers triggerEntriesFor player
+        applyModifiers()
+        selectedTriggers.triggerFor(player)
     }
 }
 

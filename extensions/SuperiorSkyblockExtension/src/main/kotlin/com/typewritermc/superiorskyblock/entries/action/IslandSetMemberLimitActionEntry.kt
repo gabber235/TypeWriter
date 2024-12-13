@@ -9,6 +9,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import org.bukkit.entity.Player
 
 @Entry("island_set_member_limit", "Set a player's island's member limit", Colors.RED, "fa6-solid:people-group")
@@ -29,10 +30,7 @@ class IslandSetMemberLimitActionEntry(
     @Help("The new limit to set the island's member limit to")
     val size: Int = 0
 ) : ActionEntry {
-
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val sPlayer = SuperiorSkyblockAPI.getPlayer(player)
         val island = sPlayer.island
         island?.teamLimit = size

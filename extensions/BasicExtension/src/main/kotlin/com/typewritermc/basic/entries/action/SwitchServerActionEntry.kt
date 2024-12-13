@@ -9,6 +9,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.plugin
@@ -31,14 +32,12 @@ class SwitchServerActionEntry(
     @Help("The server the player will connect to.")
     val server: Var<String> = ConstVar(""),
 ): ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         plugin.server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
 
         val out = ByteStreams.newDataOutput()
         out.writeUTF("Connect")
-        out.writeUTF(server.get(player))
+        out.writeUTF(server.get(player, context))
         player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray())
 
         plugin.server.messenger.unregisterOutgoingPluginChannel(plugin, "BungeeCord")

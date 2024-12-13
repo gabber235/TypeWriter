@@ -6,6 +6,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
@@ -37,5 +38,5 @@ class DiscoverRegionEventEntry(
 @EntryListener(DiscoverRegionEventEntry::class)
 fun onDiscoverRegions(event: RegionDiscoverEvent, query: Query<DiscoverRegionEventEntry>) {
     val player = server.getPlayer(event.player.uniqueId) ?: return
-    query findWhere { it.region == event.region } triggerAllFor player
+    query.findWhere { it.region == event.region }.triggerAllFor(player, context())
 }

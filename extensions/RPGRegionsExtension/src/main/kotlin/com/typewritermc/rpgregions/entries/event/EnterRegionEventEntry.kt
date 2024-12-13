@@ -1,15 +1,16 @@
 package com.typewritermc.rpgregions.entries.event
 
-import lirand.api.extensions.server.server
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.core.interaction.context
+import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
+import com.typewritermc.engine.paper.entry.triggerAllFor
+import lirand.api.extensions.server.server
 import net.islandearth.rpgregions.api.events.RegionsEnterEvent
 
 
@@ -34,5 +35,5 @@ class EnterRegionEventEntry(
 @EntryListener(EnterRegionEventEntry::class)
 fun onEnterRegions(event: RegionsEnterEvent, query: Query<EnterRegionEventEntry>) {
     val player = server.getPlayer(event.player.uniqueId) ?: return
-    query findWhere { it.region in event.regions } triggerAllFor player
+    query.findWhere { it.region in event.regions }.triggerAllFor(player, context())
 }

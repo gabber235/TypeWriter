@@ -276,7 +276,7 @@ sealed class DataBlueprint {
                 if (clazz.classKind != ClassKind.INTERFACE) return null
                 val possibilities = clazz.getSealedSubclasses()
                     .associate {
-                        val annotation = it.getAnnotationsByType(AlgebraicTypeInfo::class).firstOrNull() ?: throw IllegalArgumentException("Could not find `@AlgebraicTypeInfo` annotation for ${it.simpleName}")
+                        val annotation = it.getAnnotationsByType(AlgebraicTypeInfo::class).firstOrNull() ?: throw IllegalArgumentException("Could not find `@AlgebraicTypeInfo` annotation for ${it.fullName}")
                         val name = annotation.name
                         val color = annotation.color
                         val icon = annotation.icon

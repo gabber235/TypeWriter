@@ -8,6 +8,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import org.bukkit.entity.Player
 
 @Entry("island_disband", "Disbands player's island", Colors.RED, "material-symbols:bookmark-remove-rounded")
@@ -26,10 +27,7 @@ class IslandDisbandActionEntry(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
 ) : ActionEntry {
-
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val sPlayer = SuperiorSkyblockAPI.getPlayer(player)
         val island = sPlayer.island
         island?.disbandIsland()

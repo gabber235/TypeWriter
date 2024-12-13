@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.ModifierOperator
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.triggerFor
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
 import com.typewritermc.engine.paper.utils.logErrorIfNull
@@ -135,7 +136,7 @@ class FactDatabase : KoinComponent {
             val entry = Query.findById<WritableFactEntry>(id) ?: continue
             entry.write(player, value)
             if (entry is ReadableFactEntry) {
-                RefreshFactTrigger(entry.ref()) triggerFor player
+                RefreshFactTrigger(entry.ref()).triggerFor(player, context())
             }
         }
     }

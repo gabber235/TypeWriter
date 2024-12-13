@@ -7,6 +7,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Regex
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.startDialogueWithOrNextDialogue
@@ -31,7 +32,7 @@ class MythicMobInteractEventEntry(
 
 @EntryListener(MythicMobInteractEventEntry::class)
 fun onMythicMobInteractEvent(event: MythicMobInteractEvent, query: Query<MythicMobInteractEventEntry>) {
-    query findWhere {
+    query.findWhere {
         it.mobName.toRegex(RegexOption.IGNORE_CASE).matches(event.activeMobType.internalName)
-    } startDialogueWithOrNextDialogue event.player
+    }.startDialogueWithOrNextDialogue(event.player, context())
 }

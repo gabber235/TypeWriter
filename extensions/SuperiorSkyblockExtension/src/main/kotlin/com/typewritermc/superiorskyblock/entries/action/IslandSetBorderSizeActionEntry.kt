@@ -8,6 +8,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import org.bukkit.entity.Player
 
 @Entry("island_set_border_size", "Set a player's island's border size", Colors.RED, "fa6-solid:border-all")
@@ -26,10 +27,7 @@ class IslandSetBorderSizeActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val size: Int = 0
 ) : ActionEntry {
-
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val sPlayer = SuperiorSkyblockAPI.getPlayer(player)
         val island = sPlayer.island
         island?.islandSize = size

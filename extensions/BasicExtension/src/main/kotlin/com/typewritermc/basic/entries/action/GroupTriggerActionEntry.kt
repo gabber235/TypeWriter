@@ -1,6 +1,5 @@
 package com.typewritermc.basic.entries.action
 
-import com.google.gson.annotations.SerializedName
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
@@ -9,11 +8,8 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
-import com.typewritermc.engine.paper.entry.entries.CustomTriggeringActionEntry
-import com.typewritermc.engine.paper.entry.entries.GroupEntry
-import com.typewritermc.engine.paper.entry.entries.GroupId
-import com.typewritermc.engine.paper.entry.entries.Var
-import org.bukkit.entity.Player
+import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.triggerEntriesFor
 import java.util.*
 
 @Entry(
@@ -39,23 +35,24 @@ class GroupTriggerActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    @SerializedName("triggers")
-    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val group: Ref<GroupEntry> = emptyRef(),
     @Help("The group to trigger the next entries for. If not set, the action will trigger for the group of the player that triggered the action.")
     val forceGroup: Optional<Var<String>> = Optional.empty(),
-) : CustomTriggeringActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+) : ActionEntry {
+    override fun ActionTrigger.execute() {
         val groupEntry = group.get() ?: return
 
         val group = forceGroup
-            .map { groupEntry.group(GroupId(it.get(player))) }
+            .map { groupEntry.group(GroupId(it.get(player, context))) }
             .orElseGet { groupEntry.group(player) } ?: return
 
-        group.players.forEach {
-            it.triggerCustomTriggers()
-        }
+        val context = buildNewContext()
+        group.players
+            // Since we are still just triggering this for the player, we don't want to trigger it twice.
+            .filter { it.uniqueId != player.uniqueId }
+            .forEach {
+                triggers.triggerEntriesFor(it, context)
+            }
     }
 }

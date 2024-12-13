@@ -4,6 +4,7 @@ import com.typewritermc.core.books.pages.PageType
 import com.typewritermc.core.entries.Page
 import com.typewritermc.engine.paper.entry.entries.InteractionEndTrigger
 import com.typewritermc.engine.paper.entry.triggerFor
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.optionalTarget
 import com.typewritermc.engine.paper.pages
 import com.typewritermc.engine.paper.targetOrSelfPlayer
@@ -21,7 +22,7 @@ fun CommandTree.temporalCommands() = literalArgument("cinematic") {
                 anyExecutor { sender, args ->
                     val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
                     val page = args["cinematic"] as Page
-                    TemporalStartTrigger(page.id, emptyList()) triggerFor target
+                    TemporalStartTrigger(page.id, emptyList()).triggerFor(target, context())
                 }
             }
         }
@@ -32,7 +33,7 @@ fun CommandTree.temporalCommands() = literalArgument("cinematic") {
         optionalTarget {
             anyExecutor { sender, args ->
                 val target = args.targetOrSelfPlayer(sender) ?: return@anyExecutor
-                InteractionEndTrigger triggerFor target
+                InteractionEndTrigger.triggerFor(target, context())
             }
         }
     }

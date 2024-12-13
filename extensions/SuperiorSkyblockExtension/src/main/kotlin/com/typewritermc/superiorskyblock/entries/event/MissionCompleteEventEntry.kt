@@ -6,6 +6,7 @@ import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
@@ -29,5 +30,5 @@ class MissionCompleteEventEntry(
 fun onMissionComplete(event: MissionCompleteEvent, query: Query<MissionCompleteEventEntry>) {
     val player = event.player.asPlayer() ?: return
 
-    query.findWhere { entry -> entry.missionName == event.mission.name } triggerAllFor player
+    query.findWhere { entry -> entry.missionName == event.mission.name }.triggerAllFor(player, context())
 }

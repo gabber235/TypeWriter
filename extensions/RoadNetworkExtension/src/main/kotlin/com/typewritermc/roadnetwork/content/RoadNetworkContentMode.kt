@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes
 import com.github.retrooper.packetevents.util.Vector3f
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.interaction.context
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.content.*
@@ -93,7 +94,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
                         it.id,
                         false
                     )
-                ) triggerFor player
+                ).triggerFor(player, context())
             }
         }
 
@@ -111,7 +112,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
                         it.id,
                         false
                     )
-                ) triggerFor player
+                ).triggerFor(player, context())
             }
         }
         +NegativeNodePulseComponent { network.negativeNodes }
@@ -143,7 +144,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         ContentModeTrigger(
             context,
             SelectedRoadNodeContentMode(context, player, ref, node.id, true)
-        ) triggerFor player
+        ).triggerFor(player, context())
     }
 
     private fun addNegativeNode(location: Location) = DISPATCHERS_ASYNC.launch {
@@ -152,7 +153,7 @@ class RoadNetworkContentMode(context: ContentContext, player: Player) : ContentM
         ContentModeTrigger(
             context,
             SelectedNegativeNodeContentMode(context, player, ref, node.id, true)
-        ) triggerFor player
+        ).triggerFor(player, context())
     }
 
     override suspend fun tick() {

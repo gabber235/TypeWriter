@@ -40,6 +40,7 @@ val customEditors = listOf(
     CoordinateEditor,
     CronEditor,
     DurationEditor,
+    EntryInteractionContextKeyEditor,
     GenericEditor,
     ItemEditor,
     MaterialEditor,

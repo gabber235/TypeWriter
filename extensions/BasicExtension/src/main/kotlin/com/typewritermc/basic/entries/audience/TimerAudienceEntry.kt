@@ -7,6 +7,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.entries.AudienceDisplay
 import com.typewritermc.engine.paper.entry.entries.AudienceEntry
 import com.typewritermc.engine.paper.entry.entries.ConstVar
@@ -58,7 +59,7 @@ class TimerAudienceDisplay(
         jobs[player.uniqueId] = ThreadType.DISPATCHERS_ASYNC.launch {
             while (player in this) {
                 delay(duration.toMillis())
-                onTimer triggerFor player
+                onTimer.triggerFor(player, context())
             }
         }
     }

@@ -5,6 +5,7 @@ import dev.jorel.commandapi.kotlindsl.playerExecutor
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.CustomCommandEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
@@ -25,7 +26,7 @@ class RunCommandEventEntry(
 ) : CustomCommandEntry {
     override fun CommandTree.builder() {
         playerExecutor { player, _ ->
-            triggerAllFor(player)
+            triggerAllFor(player, context())
         }
     }
 }

@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.item.Item
@@ -30,11 +31,9 @@ class SetItemActionEntry(
     val item: Var<Item> = ConstVar(Item.Empty),
     val slot: Var<Int> = ConstVar(0),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         SYNC.launch {
-            player.inventory.setItem(slot.get(player), item.get(player).build(player))
+            player.inventory.setItem(slot.get(player, context), item.get(player, context).build(player))
         }
     }
 }

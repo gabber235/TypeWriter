@@ -1,5 +1,8 @@
 package com.typewritermc.engine.paper.interaction
 
+import com.typewritermc.core.interaction.Interaction
+import com.typewritermc.core.interaction.InteractionScope
+import com.typewritermc.core.interaction.SessionTracker
 import com.typewritermc.core.utils.getAll
 import com.typewritermc.engine.paper.entry.entries.Event
 import com.typewritermc.engine.paper.logger
@@ -26,7 +29,7 @@ class PlayerSession(val player: Player) : KoinComponent {
     private var trackers: List<SessionTracker> = emptyList()
     private var triggerHandlers: List<TriggerHandler> = emptyList()
 
-    private var scheduledEvent: Event? = null
+    private var scheduledEvents = emptyList<Event>()
     private val eventMutex = Mutex()
 
     private var lastTickTime = System.currentTimeMillis()
@@ -70,7 +73,7 @@ class PlayerSession(val player: Player) : KoinComponent {
      * Adds an event to the schedule. If there is already an event scheduled, it will be merged with
      */
     suspend fun addToSchedule(event: Event) = eventMutex.withLock {
-        scheduledEvent = event.merge(scheduledEvent)
+        scheduledEvents += event
     }
 
     /**
@@ -80,7 +83,7 @@ class PlayerSession(val player: Player) : KoinComponent {
      */
     suspend fun forceEvent(event: Event) {
         eventMutex.withLock {
-            scheduledEvent = event.merge(scheduledEvent)
+            scheduledEvents += event
             runSchedule()
         }
     }
@@ -91,31 +94,33 @@ class PlayerSession(val player: Player) : KoinComponent {
     }
 
     private suspend fun runSchedule() {
-        val scheduledEvent = scheduledEvent ?: return
-        onEvent(scheduledEvent.distinct())
-        this.scheduledEvent = null
+        if (scheduledEvents.isEmpty()) return
+        val events = scheduledEvents.map(Event::distinct)
+        this.scheduledEvents = emptyList()
+        onEvent(events)
     }
 
     /** Handles an event. */
-    private suspend fun onEvent(event: Event) {
+    private suspend fun onEvent(events: List<Event>) {
         var endInteraction = false
         val nextInteractions = mutableListOf<Interaction>()
-        var toTrigger = event
+        val todo = ArrayDeque(events.map(Event::filterAllowedTriggers))
 
         // To prevent infinite loops, we limit the number of recursive calls.
         var loops = 0
-        while (toTrigger.triggers.isNotEmpty() && loops < 1000) {
+        while (todo.isNotEmpty() && loops < 10000) {
             loops++
-            val triggering = Event(toTrigger.player, toTrigger.triggers.filter { it.canTriggerFor(toTrigger.player) })
+            val triggering = todo.removeFirst()
 
-            if (triggering.triggers.isEmpty()) break
-            toTrigger = Event(triggering.player)
+            if (triggering.triggers.isEmpty()) continue
+
+            val addingEvents = mutableListOf<Event>()
 
             triggerHandlers.forEach { handler ->
                 fun TriggerContinuation.apply() {
                     when (this) {
                         TriggerContinuation.Done -> {}
-                        is TriggerContinuation.Append -> toTrigger = toTrigger.merge(this.event)
+                        is TriggerContinuation.Append -> addingEvents.addAll(this.events)
                         is TriggerContinuation.StartInteraction -> nextInteractions.add(this.interaction)
                         TriggerContinuation.EndInteraction -> endInteraction = true
                         is TriggerContinuation.Multi -> this.continuations.forEach { it.apply() }
@@ -124,6 +129,10 @@ class PlayerSession(val player: Player) : KoinComponent {
 
                 handler.trigger(triggering, interaction).apply()
             }
+
+            // We want todo the filtering before the next event
+            //  but after all the handlers to make sure the criteria match as expected
+            todo.addAll(addingEvents.map(Event::filterAllowedTriggers))
         }
 
         if (nextInteractions.isEmpty() && endInteraction) {

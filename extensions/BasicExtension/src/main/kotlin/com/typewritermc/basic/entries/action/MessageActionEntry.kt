@@ -1,7 +1,8 @@
 package com.typewritermc.basic.entries.action
 
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.entries.*
+import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Colored
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.MultiLine
@@ -10,15 +11,11 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.dialogue.playSpeakerSound
-import com.typewritermc.engine.paper.entry.entries.ActionEntry
-import com.typewritermc.engine.paper.entry.entries.ConstVar
-import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
-import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.sendMiniWithResolvers
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed
-import org.bukkit.entity.Player
 
 private val messageFormat: String by snippet(
     "action.message.format",
@@ -51,20 +48,18 @@ class MessageActionEntry(
     @MultiLine
     val message: Var<String> = ConstVar(""),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val speakerEntry = speaker.get()
         player.playSpeakerSound(speakerEntry)
         player.sendMiniWithResolvers(
             messageFormat,
             parsed(
                 "speaker",
-                speakerEntry?.displayName?.get(player) ?: ""
+                speakerEntry?.displayName?.get(player, context) ?: ""
             ),
             parsed(
                 "message",
-                message.get(player).parsePlaceholders(player).replace("\n", "\n ")
+                message.get(player, context).parsePlaceholders(player).replace("\n", "\n ")
             )
         )
     }

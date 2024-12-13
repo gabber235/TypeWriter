@@ -105,6 +105,10 @@ open class Position(
         return isInRange(point.x, point.y, point.z, range)
     }
 
+    fun mid(): Position {
+        return toBlockPosition().add(0.5, 0.0, 0.5).rotate(yaw, pitch)
+    }
+
     open fun copy(
         world: World = this.world,
         x: Double = this.x,

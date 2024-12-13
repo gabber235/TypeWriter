@@ -1,5 +1,6 @@
 package com.typewritermc.engine.paper.interaction
 
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.dialogue.isInDialogue
 import com.typewritermc.engine.paper.entry.entries.Event
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
@@ -40,15 +41,16 @@ class PlayerSessionManager : Listener, KoinComponent {
      */
     fun startDialogueWithOrTriggerEvent(
         player: Player,
+        context: InteractionContext,
         initialTriggers: List<EventTrigger>,
         continueTrigger: EventTrigger? = null
     ) {
         if (player.isInDialogue) {
             if (continueTrigger != null) {
-                triggerEvent(Event(player, continueTrigger))
+                triggerEvent(Event(player, context, continueTrigger))
             }
         } else {
-            triggerEvent(Event(player, initialTriggers))
+            triggerEvent(Event(player, context, initialTriggers))
         }
     }
 
@@ -58,8 +60,8 @@ class PlayerSessionManager : Listener, KoinComponent {
      * @param player The player who interacted
      * @param triggers A list of triggers that should be fired.
      */
-    fun triggerActions(player: Player, triggers: List<EventTrigger>) {
-        triggerEvent(Event(player, triggers))
+    fun triggerActions(player: Player, context: InteractionContext, triggers: List<EventTrigger>) {
+        triggerEvent(Event(player, context, triggers))
     }
 
     /**
@@ -71,8 +73,8 @@ class PlayerSessionManager : Listener, KoinComponent {
      * @param player The player who interacted
      * @param triggers The trigger that should be fired.
      */
-    suspend fun forceTriggerActions(player: Player, triggers: List<EventTrigger>) {
-        player.session?.forceEvent(Event(player, triggers))
+    suspend fun forceTriggerActions(player: Player, context: InteractionContext, triggers: List<EventTrigger>) {
+        player.session?.forceEvent(Event(player, context, triggers))
     }
 
 

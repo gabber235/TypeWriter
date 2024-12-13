@@ -7,6 +7,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import org.bukkit.entity.Player
@@ -34,10 +35,10 @@ fun onEnterCombat(event: PlayerTagEvent, query: Query<PlayerEnterCombatEventEntr
 
     val entries = query.find()
 
-    entries triggerAllFor player
+    entries.triggerAllFor(player, context())
 
     if (aggressor is Player) {
-        entries.flatMap { it.aggressorTriggers } triggerEntriesFor aggressor
+        entries.flatMap { it.aggressorTriggers }.triggerEntriesFor(aggressor, context())
     }
 }
 

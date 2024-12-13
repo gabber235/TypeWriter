@@ -1,4 +1,4 @@
-package com.typewritermc.engine.paper.interaction
+package com.typewritermc.core.interaction
 
 import java.time.Duration
 

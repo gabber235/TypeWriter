@@ -8,6 +8,7 @@ import com.typewritermc.core.utils.point.Position
 import com.typewritermc.core.utils.point.Vector
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.temporal.temporalContext
 import com.typewritermc.engine.paper.utils.toBukkitLocation
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -57,17 +58,17 @@ class ParticleCinematicAction(
     override suspend fun tick(frame: Int) {
         super.tick(frame)
         (entry.segments activeSegmentAt frame) ?: return
+        val context = player.temporalContext
 
         player.spawnParticle(
-            entry.particle.get(player),
-            entry.location.get(player).toBukkitLocation(),
-            entry.count.get(player),
-            entry.offset.get(player).x,
-            entry.offset.get(player).y,
-            entry.offset.get(player).z,
-            entry.speed.get(player),
+            entry.particle.get(player, context),
+            entry.location.get(player, context).toBukkitLocation(),
+            entry.count.get(player, context),
+            entry.offset.get(player, context).x,
+            entry.offset.get(player, context).y,
+            entry.offset.get(player, context).z,
+            entry.speed.get(player, context),
         )
-
     }
 
     override fun canFinish(frame: Int): Boolean = entry.segments canFinishAt frame

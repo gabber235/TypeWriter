@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import kotlin.text.Regex as KotlinRegex
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 
 @Entry("on_detect_command_ran", "When a player runs an existing command", Colors.YELLOW, "mdi:account-eye")
 /**
@@ -67,6 +68,6 @@ fun onRunCommand(event: PlayerCommandPreprocessEvent, query: Query<DetectCommand
 
     val entries = query.findWhere { KotlinRegex(it.command).matches(message) }.toList()
     if (entries.isEmpty()) return
-    entries triggerAllFor event.player
+    entries.triggerAllFor(event.player, context())
     if (entries.any { it.cancel }) event.isCancelled = true
 }

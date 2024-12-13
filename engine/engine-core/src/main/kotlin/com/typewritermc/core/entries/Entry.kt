@@ -1,6 +1,7 @@
 package com.typewritermc.core.entries
 
 import com.typewritermc.core.extension.annotations.Help
+import com.typewritermc.core.extension.annotations.Tags
 import java.util.*
 
 val Entry.formattedName: String
@@ -9,6 +10,7 @@ val Entry.formattedName: String
         .split("_")
         .joinToString(" ") { part -> part.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
 
+@Tags("entry")
 interface Entry {
     val id: String
     val name: String

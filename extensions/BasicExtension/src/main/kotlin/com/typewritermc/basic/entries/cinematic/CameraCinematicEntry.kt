@@ -13,6 +13,7 @@ import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.temporalContext
 import com.typewritermc.engine.paper.extensions.packetevents.meta
 import com.typewritermc.engine.paper.extensions.packetevents.spectateEntity
 import com.typewritermc.engine.paper.extensions.packetevents.stopSpectatingEntity
@@ -341,7 +342,7 @@ private class DisplayCameraAction(
 
     override suspend fun switchSegment(newSegment: CameraSegment) {
         val oldWorld = path.first().position.world.identifier
-        val newWorld = newSegment.path.first().location.get(player).world.identifier
+        val newWorld = newSegment.path.first().location.get(player, player.temporalContext).world.identifier
 
         setupPath(newSegment)
         if (oldWorld == newWorld) {
@@ -475,7 +476,7 @@ private fun List<PathPoint>.transform(
 
     if (size == 1) {
         val pathPoint = first()
-        val location = pathPoint.location.get(player).run(locationTransformer)
+        val location = pathPoint.location.get(player, player.temporalContext).run(locationTransformer)
         return listOf(PointSegment(0, totalDuration, location))
     }
 
@@ -498,7 +499,7 @@ private fun List<PathPoint>.transform(
         var currentFrame = 0
         return map {
             val endFrame = currentFrame + it.duration.orElse(0)
-            val segment = PointSegment(currentFrame, endFrame, it.location.get(player).run(locationTransformer))
+            val segment = PointSegment(currentFrame, endFrame, it.location.get(player, player.temporalContext).run(locationTransformer))
             currentFrame = endFrame
             segment
         }
@@ -519,7 +520,7 @@ private fun List<PathPoint>.transform(
             }
         }
         val endFrame = currentFrame + duration
-        val segment = PointSegment(currentFrame, endFrame, pathPoint.location.get(player).run(locationTransformer))
+        val segment = PointSegment(currentFrame, endFrame, pathPoint.location.get(player, player.temporalContext).run(locationTransformer))
         currentFrame = endFrame
         segment
     }

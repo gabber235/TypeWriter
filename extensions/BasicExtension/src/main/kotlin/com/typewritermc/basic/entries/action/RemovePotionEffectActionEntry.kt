@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
@@ -34,11 +35,9 @@ class RemovePotionEffectActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val potionEffect: Var<PotionEffectType> = ConstVar(PotionEffectType.SPEED),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         SYNC.launch {
-            player.removePotionEffect(potionEffect.get(player))
+            player.removePotionEffect(potionEffect.get(player, context))
         }
     }
 }

@@ -9,6 +9,7 @@ import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.temporalContext
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.utils.toBukkitLocation
 import com.typewritermc.engine.paper.utils.toPacketVector3i
@@ -47,8 +48,9 @@ class SetFakeBlockCinematicAction(
     override suspend fun startSegment(segment: SetFakeBlockSegment) {
         super.startSegment(segment)
 
-        lastLocation = segment.location.get(player)
-        val state = SpigotConversionUtil.fromBukkitBlockData(segment.block.get(player).createBlockData())
+        val context = player.temporalContext
+        lastLocation = segment.location.get(player, context)
+        val state = SpigotConversionUtil.fromBukkitBlockData(segment.block.get(player, context).createBlockData())
         val packet = WrapperPlayServerBlockChange(lastLocation!!.toPacketVector3i(), state.globalId)
         packet.sendPacketTo(player)
     }

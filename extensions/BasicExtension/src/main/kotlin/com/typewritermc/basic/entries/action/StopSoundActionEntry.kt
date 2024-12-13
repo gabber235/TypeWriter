@@ -1,17 +1,17 @@
 package com.typewritermc.basic.entries.action
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.SoundId
 import net.kyori.adventure.sound.SoundStop
-import org.bukkit.entity.Player
 import java.util.*
 
 @Entry("stop_sound", "Stop a or all sounds for a player", Colors.RED, "teenyicons:sound-off-solid")
@@ -32,11 +32,9 @@ class StopSoundActionEntry(
     @Help("The sound to stop. If this field is left blank, all sounds will be stopped.")
     val sound: Optional<Var<SoundId>> = Optional.empty(),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         if (sound.isPresent) {
-            val sound = sound.get().get(player)
+            val sound = sound.get().get(player, context)
             val soundStop = sound.namespacedKey?.let { SoundStop.named(it) } ?: return
 
             player.stopSound(soundStop)

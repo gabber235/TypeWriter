@@ -2,6 +2,7 @@ package com.typewritermc.roadnetwork.content
 
 import com.github.retrooper.packetevents.util.Vector3f
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.interaction.context
 import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.content.ContentContext
 import com.typewritermc.engine.paper.content.ContentMode
@@ -78,13 +79,13 @@ class SelectedNegativeNodeContentMode(
             scale = Vector3f(0.5f, 0.5f, 0.5f)
             onInteract {
                 if (it.id == selectedNodeId) {
-                    ContentPopTrigger triggerFor player
+                    ContentPopTrigger.triggerFor(player, context())
                     return@onInteract
                 }
                 ContentModeSwapTrigger(
                     context,
                     SelectedNegativeNodeContentMode(context, player, ref, it.id, false),
-                ) triggerFor player
+                ).triggerFor(player, context())
             }
         }
         +NegativeNodePulseComponent { network.negativeNodes.filter { it.id != selectedNodeId } }
@@ -96,7 +97,7 @@ class SelectedNegativeNodeContentMode(
         super.tick()
         if (selectedNode == null) {
             // If the node is no longer in the network, we want to pop the content
-            ContentPopTrigger forceTriggerFor player
+            ContentPopTrigger.forceTriggerFor(player, context())
         }
 
         cycle++

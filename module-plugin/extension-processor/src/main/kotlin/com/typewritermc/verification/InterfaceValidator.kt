@@ -6,7 +6,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.typewritermc.core.extension.annotations.Messenger
+import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.processors.fullName
 import com.typewritermc.processors.isImplementingInterface
 import kotlin.reflect.KClass
@@ -51,6 +51,36 @@ open class InterfaceValidatorProvider<T : Annotation>(
         return InterfaceValidator(annotationClass, interfaceName)
     }
 }
+
+class EntryOnlyOnEntryValidatorProvider : InterfaceValidatorProvider<Entry>(
+    Entry::class,
+    com.typewritermc.core.entries.Entry::class.qualifiedName!!
+)
+
+class TagsOnlyOnEntryValidatorProvider : InterfaceValidatorProvider<Tags>(
+    Tags::class,
+    com.typewritermc.core.entries.Entry::class.qualifiedName!!
+)
+
+class VariableDataOnlyOnEntryValidatorProvider : InterfaceValidatorProvider<VariableData>(
+    VariableData::class,
+    com.typewritermc.core.entries.Entry::class.qualifiedName!!
+)
+
+class GenericConstraintOnlyOnEntryValidatorProvider : InterfaceValidatorProvider<GenericConstraint>(
+    GenericConstraint::class,
+    com.typewritermc.core.entries.Entry::class.qualifiedName!!
+)
+
+class ContextKeysOnlyOnEntryValidatorProvider : InterfaceValidatorProvider<ContextKeys>(
+    ContextKeys::class,
+    com.typewritermc.core.entries.Entry::class.qualifiedName!!
+)
+
+class KeyTypeOnlyOnEntryContextKeysValidatorProvider : InterfaceValidatorProvider<KeyType>(
+    KeyType::class,
+    com.typewritermc.core.interaction.EntryContextKey::class.qualifiedName!!
+)
 
 class MessengerOnlyOnMessengerValidatorProvider : InterfaceValidatorProvider<Messenger>(
     Messenger::class,

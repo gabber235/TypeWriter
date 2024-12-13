@@ -8,6 +8,7 @@ import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.util.Vector3f
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.interaction.context
 import com.typewritermc.core.utils.loopingDistance
 import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.content.*
@@ -135,7 +136,7 @@ class SelectedRoadNodeContentMode(
                         it.id,
                         false
                     )
-                ) triggerFor player
+                ).triggerFor(player, context())
             }
         }
         +NegativeNodePulseComponent { network.negativeNodes }
@@ -149,7 +150,7 @@ class SelectedRoadNodeContentMode(
 
     private fun interactWithNode(node: RoadNode) {
         if (node == selectedNode) {
-            ContentPopTrigger triggerFor player
+            ContentPopTrigger.triggerFor(player, context())
             return
         }
 
@@ -167,7 +168,7 @@ class SelectedRoadNodeContentMode(
             ContentModeSwapTrigger(
                 context,
                 SelectedRoadNodeContentMode(context, player, ref, node.id, false),
-            ) triggerFor player
+            ).triggerFor(player, context())
             return
         }
     }
@@ -250,7 +251,7 @@ class SelectedRoadNodeContentMode(
 
         if (selectedNode == null) {
             // If the node is no longer in the network, we want to pop the content
-            ContentPopTrigger forceTriggerFor player
+            ContentPopTrigger.forceTriggerFor(player, context())
         }
 
         super.tick()

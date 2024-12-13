@@ -7,6 +7,7 @@ import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
@@ -33,5 +34,5 @@ fun onUpgradeCommand(event: IslandUpgradeEvent, query: Query<IslandUpgradeEventE
 
     if (sPlayer.island == null) return
 
-    query.find() triggerAllFor player
+    query.find().triggerAllFor(player, context())
 }

@@ -40,7 +40,7 @@ final manifestEntryIdsProvider = AutoDisposeProvider<List<String>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ManifestEntryIdsRef = AutoDisposeProviderRef<List<String>>;
-String _$entryReferencesHash() => r'ba6abf603234d0956a476eda9044654727d07ef6';
+String _$entryReferencesHash() => r'ee4cd980835d93b915ef1fcc6ab625c2ac4fd6f8';
 
 /// Copied from Dart SDK
 class _SystemHash {

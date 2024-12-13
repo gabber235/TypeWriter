@@ -8,6 +8,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.math.BigDecimal
@@ -28,10 +29,7 @@ class IslandBankWithdrawActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val amount: Double = 0.0
 ) : ActionEntry {
-
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val amountConverted: BigDecimal = BigDecimal.valueOf(amount)
 
         val sPlayer = SuperiorSkyblockAPI.getPlayer(player)

@@ -1,22 +1,22 @@
 package com.typewritermc.basic.entries.action
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.MultiLine
 import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import lirand.api.extensions.server.server
-import org.bukkit.entity.Player
 
 @Entry("player_run_command", "Make player run command", Colors.RED, "mingcute:terminal-fill")
 /**
@@ -44,9 +44,8 @@ class PlayerCommandActionEntry(
     val command: Var<String> = ConstVar(""),
     val sudo: Boolean = false,
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-        val command = command.get(player)
+    override fun ActionTrigger.execute() {
+        val command = command.get(player, context)
         // Run in main thread
         if (command.isBlank()) return
         SYNC.launch {

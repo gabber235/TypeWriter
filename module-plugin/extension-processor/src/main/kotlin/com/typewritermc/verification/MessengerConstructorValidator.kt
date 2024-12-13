@@ -9,6 +9,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.typewritermc.core.extension.annotations.Messenger
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.processors.annotationClassValue
 import com.typewritermc.processors.fullName
 import com.typewritermc.processors.hasParameter
@@ -26,18 +27,22 @@ class MessengerConstructorValidator : SymbolProcessor {
                 val parameters = primaryConstructor.parameters
                 val issues = mutableListOf<String>()
 
-                if (!parameters.hasParameter("org.bukkit.entity.Player")) {
-                    issues.add("Missing 'player' parameter of type 'org.bukkit.entity.Player'")
+                if (!parameters.hasParameter(0, "org.bukkit.entity.Player")) {
+                    issues.add("First parameter must be of type 'org.bukkit.entity.Player'")
+                }
+
+                if (!parameters.hasParameter(1, InteractionContext::class.qualifiedName!!)) {
+                    issues.add("Second parameter must be of type '${InteractionContext::class.qualifiedName}'")
                 }
 
                 val annotation = classDeclaration.getAnnotationsByType(Messenger::class).firstOrNull()!!
                 val entryClass = with(resolver) { annotation.annotationClassValue { dialogue } }
-                if (!parameters.hasParameter(entryClass.fullName)) {
-                    issues.add("Missing 'entry' parameter of type '${entryClass.fullName}'")
+                if (!parameters.hasParameter(2, entryClass.fullName)) {
+                    issues.add("Third parameter must be of type '${entryClass.fullName}'")
                 }
 
-                if (parameters.size != 2) {
-                    issues.add("Expected 2 parameters, but got ${parameters.size}")
+                if (parameters.size != 3) {
+                    issues.add("Expected 3 parameters, but got ${parameters.size}")
                 }
 
                 if (issues.isNotEmpty()) {

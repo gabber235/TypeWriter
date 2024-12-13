@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.content.ContentMode
 import com.typewritermc.engine.paper.content.ContentModeTrigger
 import com.typewritermc.engine.paper.entry.StagingManager
 import com.typewritermc.engine.paper.entry.triggerFor
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.loader.ExtensionLoader
@@ -126,7 +127,6 @@ class ClientSynchronizer : KoinComponent {
         }
     }
 
-
     fun handlePublish(client: SocketIOClient, data: String, ack: AckRequest) {
         SYNC.launch {
             val result = stagingManager.publish()
@@ -185,7 +185,7 @@ class ClientSynchronizer : KoinComponent {
                 return
             }
 
-            ContentModeTrigger(context, mode) triggerFor player
+            ContentModeTrigger(context, mode).triggerFor(player, context())
         } catch (e: ClassNotFoundException) {
             ack.sendResult(Result.failure(Exception("Could not find content mode class ${request.contentModeClassName}")))
             e.printStackTrace()

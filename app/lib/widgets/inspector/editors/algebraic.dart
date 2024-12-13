@@ -174,6 +174,10 @@ class _CaseSelector extends HookConsumerWidget {
     final caseBlueprint = cases[selectedCase];
     if (caseBlueprint == null) return const SizedBox.shrink();
 
+    if (cases.length == 1) {
+      return SizedBox.shrink();
+    }
+
     if (cases.length <= 3) {
       final hexColor = caseBlueprint.get<String?>("color") ?? "#009688";
       final color = colorConverter.fromJson(hexColor) ?? Colors.teal;

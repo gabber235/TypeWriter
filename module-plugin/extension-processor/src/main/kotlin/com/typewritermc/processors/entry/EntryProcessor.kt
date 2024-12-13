@@ -5,18 +5,17 @@ import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.typewritermc.SharedJsonManager
-import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.core.extension.annotations.GenericConstraint
-import com.typewritermc.core.extension.annotations.Tags
-import com.typewritermc.core.extension.annotations.VariableData
+import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.moduleplugin.TypewriterExtensionConfiguration
 import com.typewritermc.processors.ExtensionPartProcessor
 import com.typewritermc.processors.annotationClassValue
 import com.typewritermc.processors.fullName
+import com.typewritermc.processors.serializedName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
@@ -60,6 +59,7 @@ class EntryProcessor(
             dataBlueprint = dataBlueprint,
             genericConstraints = clazz.genericConstraints(dataBlueprint),
             variableDataBlueprint = clazz.variableDataBlueprint(),
+            contextKeys = clazz.contextKeys(),
             modifiers = clazz.getModifiers(),
         )
 
@@ -139,6 +139,36 @@ class EntryProcessor(
         }
     }
 
+    context(Resolver)
+    @OptIn(KspExperimental::class)
+    private fun KSClassDeclaration.contextKeys(): List<ContextKey> {
+        with(logger) {
+            val data = getAnnotationsByType(ContextKeys::class)
+                .map { it.annotationClassValue { it.klass } }
+                .firstOrNull() ?: return emptyList()
+
+            val declaration = data.declaration as? KSClassDeclaration ?: return emptyList()
+            if (declaration.classKind != ClassKind.ENUM_CLASS) throw ExpectedEnumException(declaration.fullName)
+            return declaration.declarations
+                .filterIsInstance<KSClassDeclaration>()
+                .filter { it.classKind == ClassKind.ENUM_ENTRY }
+                .map {
+                    val annotation = it.getAnnotationsByType(KeyType::class).firstOrNull()
+                        ?: throw IllegalArgumentException("Could not find @KeyType annotation for ${it.simpleName} on ${declaration.fullName}")
+                    val type = annotation.annotationClassValue { type }
+                    ContextKey(
+                        it.serializedName,
+                        declaration.fullName,
+                        DataBlueprint.blueprint(type) ?: throw FailedToGenerateBlueprintException(
+                            this@contextKeys,
+                            CouldNotBuildBlueprintException(type.fullName)
+                        )
+                    )
+                }
+                .toList()
+        }
+    }
+
     @OptIn(KspExperimental::class)
     private fun KSClassDeclaration.getModifiers(): List<EntryModifier> {
         val modifiers = mutableListOf<EntryModifier>()
@@ -163,7 +193,15 @@ private data class EntryBlueprint(
     val dataBlueprint: DataBlueprint,
     val genericConstraints: List<DataBlueprint>?,
     val variableDataBlueprint: DataBlueprint?,
+    val contextKeys: List<ContextKey>,
     val modifiers: List<EntryModifier>,
+)
+
+@Serializable
+class ContextKey(
+    val name: String,
+    val klassName: String,
+    val blueprint: DataBlueprint,
 )
 
 @Serializable
@@ -196,3 +234,6 @@ class FailedToGenerateBlueprintException(
     |If you think this is a mistake, or don't know how to fix it, please open an issue on the Typewriter Discord.
 |""".trimMargin()
 )
+
+class ExpectedEnumException(className: String) :
+    Exception("Class $className does not have a qualified name. Context keys must be enums.")

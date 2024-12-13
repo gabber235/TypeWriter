@@ -29,6 +29,10 @@ _$EntryBlueprintImpl _$$EntryBlueprintImplFromJson(Map<String, dynamic> json) =>
           ? null
           : DataBlueprint.fromJson(
               json['variableDataBlueprint'] as Map<String, dynamic>),
+      contextKeys: (json['contextKeys'] as List<dynamic>?)
+              ?.map((e) => ContextKey.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       modifiers: (json['modifiers'] as List<dynamic>?)
               ?.map((e) => EntryModifier.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -49,6 +53,7 @@ Map<String, dynamic> _$$EntryBlueprintImplToJson(
       'genericConstraints':
           instance.genericConstraints?.map((e) => e.toJson()).toList(),
       'variableDataBlueprint': instance.variableDataBlueprint?.toJson(),
+      'contextKeys': instance.contextKeys.map((e) => e.toJson()).toList(),
       'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
     };
 
@@ -240,6 +245,21 @@ Map<String, dynamic> _$$ModifierImplToJson(_$ModifierImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'data': instance.data,
+    };
+
+_$ContextKeyImpl _$$ContextKeyImplFromJson(Map<String, dynamic> json) =>
+    _$ContextKeyImpl(
+      name: json['name'] as String,
+      klassName: json['klassName'] as String,
+      blueprint:
+          DataBlueprint.fromJson(json['blueprint'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$ContextKeyImplToJson(_$ContextKeyImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'klassName': instance.klassName,
+      'blueprint': instance.blueprint.toJson(),
     };
 
 _$EmptyModifierImpl _$$EmptyModifierImplFromJson(Map<String, dynamic> json) =>

@@ -73,8 +73,12 @@ fun List<KSValueParameter>.hasParameter(className: String): Boolean {
     return any { it.type.resolve().whenClassNameIs(className) }
 }
 
+fun List<KSValueParameter>.hasParameter(index: Int, className: String): Boolean {
+    return getOrNull(index)?.type?.resolve()?.whenClassNameIs(className) ?: false
+}
+
 fun KSClassDeclaration.isImplementingInterface(interfaceName: String): Boolean {
-    return superTypes.any { it.resolve().whenClassNameIs(interfaceName) }
+    return getAllSuperTypes().any { it.whenClassNameIs(interfaceName) }
 }
 
 class EntryNotFoundException(what: String, who: String, entry: String) :

@@ -8,6 +8,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import org.bukkit.block.Biome
 import org.bukkit.entity.Player
 
@@ -27,10 +28,7 @@ class IslandSetBiomeActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val biome: Biome = Biome.PLAINS
 ) : ActionEntry {
-
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val sPlayer = SuperiorSkyblockAPI.getPlayer(player)
         val island = sPlayer.island
         island?.biome = biome

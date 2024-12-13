@@ -6,7 +6,7 @@ part of 'header.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$headerActionsHash() => r'1349c8b52177c03112ea27da2dd242be1b03e843';
+String _$headerActionsHash() => r'dcfa29cb1ccbe3bfd3a995b00aa4bc4f76d20aed';
 
 /// See also [headerActions].
 @ProviderFor(headerActions)

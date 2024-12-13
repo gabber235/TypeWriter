@@ -7,6 +7,8 @@ import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Negative
 import com.typewritermc.core.extension.annotations.Tags
+import com.typewritermc.core.interaction.InteractionContext
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
 import com.typewritermc.engine.paper.entry.entries.Var
@@ -63,16 +65,16 @@ data class Criteria(
     @Negative
     val value: Var<Int> = ConstVar(0),
 ) {
-    fun isValid(fact: FactData?, player: Player): Boolean {
+    fun isValid(fact: FactData?, player: Player, context: InteractionContext): Boolean {
         val value = fact?.value ?: 0
-        return operator.isValid(value, this.value.get(player))
+        return operator.isValid(value, this.value.get(player, context))
     }
 }
 
-infix fun Iterable<Criteria>.matches(player: Player): Boolean = all {
+fun Iterable<Criteria>.matches(player: Player, context: InteractionContext = context()): Boolean = all {
     val entry = it.fact.get()
     val fact = entry?.readForPlayersGroup(player)
-    it.isValid(fact, player)
+    it.isValid(fact, player, context)
 }
 
 enum class ModifierOperator {

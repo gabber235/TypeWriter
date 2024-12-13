@@ -4,6 +4,7 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.google.gson.Gson
 import com.typewritermc.core.TypewriterCore
+import com.typewritermc.core.interaction.SessionTracker
 import com.typewritermc.core.serialization.createDataSerializerGson
 import com.typewritermc.engine.paper.content.ContentHandler
 import com.typewritermc.engine.paper.entry.*

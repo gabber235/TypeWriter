@@ -1,6 +1,7 @@
 package com.typewritermc.roadnetwork
 
 import com.typewritermc.core.extension.annotations.TypewriterCommand
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.content.ContentContext
 import com.typewritermc.engine.paper.content.ContentModeTrigger
 import com.typewritermc.roadnetwork.content.RoadNetworkContentMode
@@ -30,7 +31,7 @@ fun CommandTree.roadNetworkCommands() = literalArgument("roadNetwork") {
                     ContentModeTrigger(
                         context,
                         RoadNetworkContentMode(context, target)
-                    ) triggerFor target
+                    ).triggerFor(target, context())
                 }
             }
         }

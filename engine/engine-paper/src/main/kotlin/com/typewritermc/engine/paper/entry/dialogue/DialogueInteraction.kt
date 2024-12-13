@@ -2,6 +2,8 @@ package com.typewritermc.engine.paper.entry.dialogue
 
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.priority
+import com.typewritermc.core.interaction.Interaction
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
@@ -21,7 +23,11 @@ import org.koin.core.component.inject
 import org.koin.java.KoinJavaComponent
 import java.time.Duration
 
-class DialogueInteraction(private val player: Player, initialEntry: DialogueEntry) : Interaction, KoinComponent {
+class DialogueInteraction(
+    private val player: Player,
+    internal var context: InteractionContext,
+    initialEntry: DialogueEntry,
+) : Interaction, KoinComponent {
     private val _speakers: MutableSet<Ref<SpeakerEntry>> = mutableSetOf()
     val speakers: Set<Ref<SpeakerEntry>> by ::_speakers
 
@@ -29,7 +35,7 @@ class DialogueInteraction(private val player: Player, initialEntry: DialogueEntr
     private val factDatabase: FactDatabase by inject()
 
     internal var currentEntry: DialogueEntry = initialEntry
-    private var currentMessenger = messengerFinder.findMessenger(player, initialEntry)
+    private var currentMessenger = messengerFinder.findMessenger(player, context, initialEntry)
     private var playTime = Duration.ZERO
     var isActive = false
 
@@ -71,19 +77,20 @@ class DialogueInteraction(private val player: Player, initialEntry: DialogueEntr
 
         if (currentMessenger.state == MessengerState.FINISHED) {
             isActive = false
-            DialogueTrigger.NEXT_OR_COMPLETE triggerFor player
+            DialogueTrigger.NEXT_OR_COMPLETE.triggerFor(player, currentMessenger.buildNewContext())
         } else if (currentMessenger.state == MessengerState.CANCELLED) {
             isActive = false
-            InteractionEndTrigger triggerFor player
+            InteractionEndTrigger.triggerFor(player, currentMessenger.buildNewContext())
         }
 
         currentMessenger.tick(TickContext(playTime, deltaTime))
     }
 
-    fun next(nextEntry: DialogueEntry) {
+    fun next(nextEntry: DialogueEntry, context: InteractionContext) {
         cleanupEntry(false)
         currentEntry = nextEntry
-        currentMessenger = messengerFinder.findMessenger(player, nextEntry)
+        this.context = currentMessenger.buildNewContext().combine(context)
+        currentMessenger = messengerFinder.findMessenger(player, this.context, nextEntry)
         setup()
         DISPATCHERS_ASYNC.launch {
             AsyncDialogueSwitchEvent(player).callEvent()

@@ -3,12 +3,10 @@ package com.typewritermc.basic.entries.event
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.engine.paper.entry.TriggerableEntry
-import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.core.extension.annotations.EntryListener
-import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.core.extension.annotations.MaterialProperties
 import com.typewritermc.core.extension.annotations.MaterialProperty.BLOCK
+import com.typewritermc.core.interaction.EntryContextKey
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.ConstVar
@@ -22,8 +20,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
+import kotlin.reflect.KClass
 
 @Entry("on_interact_with_block", "When the player interacts with a block", Colors.YELLOW, "mingcute:finger-tap-fill")
+@ContextKeys(InteractBlockContextKeys::class)
 /**
  * The `Interact Block Event` is triggered when a player interacts with a block by right-clicking it.
  *
@@ -72,6 +72,11 @@ enum class InteractionType(vararg val actions: Action) {
     PHYSICAL(Action.PHYSICAL),
 }
 
+enum class InteractBlockContextKeys(override val klass: KClass<*>) : EntryContextKey {
+    @KeyType(Position::class)
+    POSITION(Position::class),
+}
+
 private fun hasItemInHand(player: Player, item: Item): Boolean {
     return item.isSameAs(player, player.inventory.itemInMainHand) || item.isSameAs(
         player,
@@ -109,6 +114,8 @@ fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractBlockEventE
     }.toList()
     if (entries.isEmpty()) return
 
-    entries startDialogueWithOrNextDialogue player
+    entries.startDialogueWithOrNextDialogue(player) {
+        InteractBlockContextKeys.POSITION to location.toPosition()
+    }
     if (entries.any { it.cancel }) event.isCancelled = true
 }

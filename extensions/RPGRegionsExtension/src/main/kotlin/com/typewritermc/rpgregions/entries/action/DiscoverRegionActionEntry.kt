@@ -8,9 +8,9 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import net.islandearth.rpgregions.api.RPGRegionsAPI
 import net.islandearth.rpgregions.managers.data.region.WorldDiscovery
-import org.bukkit.entity.Player
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -31,8 +31,7 @@ class DiscoverRegionActionEntry(
     @Help("Make sure that this is the region ID, not the region's display name")
     private val region: String = "",
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
+    override fun ActionTrigger.execute() {
         val region = RPGRegionsAPI.getAPI().managers.regionsCache.getConfiguredRegion(region)
         if (!region.isPresent) return
 

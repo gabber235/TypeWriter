@@ -8,6 +8,7 @@ import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.temporalContext
 import com.typewritermc.engine.paper.utils.EffectStateProvider
 import com.typewritermc.engine.paper.utils.PlayerState
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
@@ -69,7 +70,8 @@ class PotionEffectCinematicAction(
 
     override suspend fun startSegment(segment: PotionEffectSegment) {
         super.startSegment(segment)
-        val potionEffectType = segment.potionEffectType.get(player)
+        val context = player.temporalContext
+        val potionEffectType = segment.potionEffectType.get(player, context)
         state = player.state(EffectStateProvider(potionEffectType))
 
         SYNC.switchContext {
@@ -77,7 +79,7 @@ class PotionEffectCinematicAction(
                 PotionEffect(
                     potionEffectType,
                     10000000,
-                    segment.strength.get(player),
+                    segment.strength.get(player, context),
                     segment.ambient,
                     segment.particles,
                     segment.icon

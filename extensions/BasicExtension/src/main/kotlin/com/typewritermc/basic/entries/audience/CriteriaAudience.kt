@@ -36,7 +36,7 @@ class CriteriaAudienceFilter(
     val criteria: List<Criteria>,
 ) : AudienceFilter(ref) {
     private val factWatcherSubscriptions = ConcurrentHashMap<UUID, FactListenerSubscription>()
-    override fun filter(player: Player): Boolean = criteria matches player
+    override fun filter(player: Player): Boolean = criteria.matches(player)
 
     override fun onPlayerAdd(player: Player) {
         factWatcherSubscriptions.compute(player.uniqueId) { _, subscription ->

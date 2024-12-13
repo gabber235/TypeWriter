@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.WritableFactEntry
 import org.bukkit.entity.Player
 
@@ -26,8 +27,7 @@ class BulkFactsResetActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val facts: List<Ref<WritableFactEntry>> = emptyList(),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
+    override fun ActionTrigger.execute() {
         facts.forEach { it.get()?.write(player, 0) }
     }
 }
