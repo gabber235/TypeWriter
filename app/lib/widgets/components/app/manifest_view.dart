@@ -102,8 +102,8 @@ class ManifestView extends HookConsumerWidget {
 
     final builder = useMemoized(
       () => SugiyamaConfiguration()
-        ..nodeSeparation = (40)
-        ..levelSeparation = (40)
+        ..nodeSeparation = 40
+        ..levelSeparation = 40
         ..orientation = SugiyamaConfiguration.ORIENTATION_TOP_BOTTOM,
     );
 
