@@ -51,7 +51,9 @@ class ChatHistoryHandler :
             if (event == null) return
             val component = findMessage(event) ?: return
             val history = getHistory(event.user.uuid)
-            if (component is TextComponent && component.content() == "no-index") {
+            if (component is TextComponent && component.content().startsWith("no-index")) {
+                if (component.content().endsWith("resend")) return
+
                 history.allowedMessageThrough()
                 return
             }
@@ -163,15 +165,17 @@ class ChatHistory {
         when (val status = blockingState) {
             is BlockingStatus.FullBlocking -> {
                 // Start with "no-index" to prevent the server from adding the message to the history
-                var msg = Component.text("no-index")
+                var msg = Component.text("no-index-resend")
                 if (clear) msg = msg.append(Component.text(clearMessage()))
                 messages.forEach { msg = msg.append(Component.text("\n")).append(it.message) }
                 player.sendMessage(msg)
             }
+
             is BlockingStatus.PartialBlocking -> {
                 messages.reversed().take(status.newMessages).forEach { player.sendMessage(it.message) }
             }
         }
+        blockingState = BlockingStatus.PartialBlocking(0)
     }
 
     fun composeDarkMessage(message: Component, clear: Boolean = true): Component {
