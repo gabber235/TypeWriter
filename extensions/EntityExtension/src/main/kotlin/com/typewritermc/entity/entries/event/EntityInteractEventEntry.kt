@@ -10,6 +10,7 @@ import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EntityDefinitionEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
@@ -22,7 +23,7 @@ import com.typewritermc.engine.paper.events.AsyncEntityDefinitionInteract
     "fa6-solid:people-robbery"
 )
 /**
- * The `EntityInteractEvent` entry is an event that is triggered when a player interacts with a specific entity.
+ * The `EntityInteractEvent` entry is an event triggered when a player interacts with a specific entity.
  *
  * ## How could this be used?
  * This could be used to start dialogue when a player interacts with an entity.
@@ -38,5 +39,5 @@ class EntityInteractEventEntry(
 fun onEntityInteract(event: AsyncEntityDefinitionInteract, query: Query<EntityInteractEventEntry>) {
     if (event.hand != InteractionHand.MAIN_HAND || event.action == WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT) return
     val definition = event.definition.ref()
-    query.findWhere {it.definition == definition } startDialogueWithOrNextDialogue event.player
+    query.findWhere {it.definition == definition }.startDialogueWithOrNextDialogue(event.player, context())
 }

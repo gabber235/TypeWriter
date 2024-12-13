@@ -1,14 +1,13 @@
 package com.typewritermc.engine.paper.entry.temporal
 
 import com.typewritermc.core.entries.Query
-import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.interaction.Interaction
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
-import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
-import com.typewritermc.engine.paper.entry.entries.InteractionEndTrigger
 import com.typewritermc.engine.paper.entry.matches
 import com.typewritermc.engine.paper.entry.temporal.TemporalState.*
 import com.typewritermc.engine.paper.entry.triggerFor
@@ -27,6 +26,7 @@ import java.time.Duration
 class TemporalInteraction(
     val pageId: String,
     private val player: Player,
+    internal val context: InteractionContext,
     val eventTriggers: List<EventTrigger>,
     private val settings: TemporalSettings,
 ) : Interaction {
@@ -46,7 +46,7 @@ class TemporalInteraction(
         if (settings.blockActionBarMessages) player.startBlockingActionBar()
 
         actions = Query.findWhereFromPage<CinematicEntry>(pageId) {
-            it.criteria.matches(player)
+            it.criteria.matches(player, context)
         }.map { it.create(player) }.toList()
 
         actions.forEach {
@@ -87,7 +87,7 @@ class TemporalInteraction(
         AsyncCinematicTickEvent(player, frame).callEvent()
 
         if (canEnd) {
-            TemporalStopTrigger triggerFor player
+            TemporalStopTrigger.triggerFor(player, context)
         }
     }
 
@@ -142,6 +142,8 @@ fun Player.setTemporalFrame(frame: Int) {
     val interaction = temporalInteraction ?: return
     interaction.playTime(Duration.ofMillis(frame * 50L))
 }
+
+val Player.temporalContext: InteractionContext? get() = temporalInteraction?.context
 
 data class TemporalStartTrigger(
     val pageId: String,

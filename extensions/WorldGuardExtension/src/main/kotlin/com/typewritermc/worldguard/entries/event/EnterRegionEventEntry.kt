@@ -5,6 +5,7 @@ import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
@@ -29,6 +30,6 @@ class EnterRegionEventEntry(
 
 @EntryListener(EnterRegionEventEntry::class)
 fun onEnterRegions(event: RegionsEnterEvent, query: Query<EnterRegionEventEntry>) {
-    query findWhere { it.region in event } triggerAllFor event.player
+    query.findWhere { it.region in event }.triggerAllFor(event.player, context())
 }
 

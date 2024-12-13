@@ -3,6 +3,7 @@ package com.typewritermc.engine.paper.entry.entries
 import com.google.gson.Gson
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Tags
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.core.utils.point.Generic
 import com.typewritermc.engine.paper.entry.StaticEntry
 import org.bukkit.entity.Player
@@ -22,6 +23,7 @@ data class VarContext<T : Any>(
     val player: Player,
     val data: Generic,
     val klass: KClass<T>,
+    val interactionContext: InteractionContext?,
 ) : KoinComponent {
     private val gson: Gson by inject(named("dataSerializer"))
 
@@ -36,7 +38,17 @@ inline fun <reified T> VarContext<*>.getData(): T? {
 }
 
 sealed interface Var<T : Any> {
-    fun get(player: Player): T
+    fun get(player: Player, interactionContext: InteractionContext? = null): T
+}
+
+@OptIn(ExperimentalContracts::class)
+fun <T : Any> Var<T>.get(player: Player?, interactionContext: InteractionContext? = null): T? {
+    contract {
+        returns(null) implies (player == null)
+    }
+    if (this is ConstVar<*>) return this.value as T
+    if (player == null) return null
+    return get(player, interactionContext)
 }
 
 @OptIn(ExperimentalContracts::class)
@@ -50,7 +62,7 @@ fun <T : Any> Var<T>.get(player: Player?): T? {
 }
 
 class ConstVar<T : Any>(val value: T) : Var<T> {
-    override fun get(player: Player): T = value
+    override fun get(player: Player, interactionContext: InteractionContext?): T = value
 }
 
 class BackedVar<T : Any>(
@@ -58,9 +70,9 @@ class BackedVar<T : Any>(
     val data: Generic,
     val klass: KClass<T>,
 ) : Var<T> {
-    override fun get(player: Player): T {
+    override fun get(player: Player, interactionContext: InteractionContext?): T {
         val entry = ref.get() ?: throw IllegalStateException("Could not find variable entry, $ref")
-        return entry.get(VarContext(player, data, klass))
+        return entry.get(VarContext(player, data, klass, interactionContext))
     }
 }
 
@@ -68,8 +80,8 @@ class MappedVar<T : Any>(
     private val variable:Var<T>,
     private val mapper: (Player, T) -> T,
 ) : Var<T> {
-    override fun get(player: Player): T {
-        return mapper(player, variable.get(player))
+    override fun get(player: Player, interactionContext: InteractionContext?): T {
+        return mapper(player, variable.get(player, interactionContext))
     }
 }
 

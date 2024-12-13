@@ -3,16 +3,17 @@ package com.typewritermc.quest.entries.event
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.core.interaction.context
+import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
-import com.typewritermc.quest.events.AsyncQuestStatusUpdate
+import com.typewritermc.engine.paper.entry.triggerAllFor
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
+import com.typewritermc.quest.events.AsyncQuestStatusUpdate
 import java.util.*
 
 @Entry(
@@ -46,5 +47,5 @@ fun onQuestStatusUpdate(event: AsyncQuestStatusUpdate, query: Query<QuestStatusU
         (!it.quest.isSet || it.quest == event.quest) &&
                 (!it.from.isPresent || it.from.get() == event.from) &&
                 it.to == event.to
-    } triggerAllFor event.player
+    }.triggerAllFor(event.player, context())
 }

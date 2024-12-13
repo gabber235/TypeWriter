@@ -10,8 +10,8 @@ import com.typewritermc.core.extension.annotations.Page
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
-import com.typewritermc.engine.paper.entry.entries.CustomTriggeringActionEntry
-import com.typewritermc.engine.paper.entry.entries.EntryTrigger
+import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
 import com.typewritermc.engine.paper.entry.temporal.TemporalStartTrigger
 
@@ -33,13 +33,14 @@ class CinematicEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    @SerializedName("triggers")
-    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @SerializedName("page")
     @Page(PageType.CINEMATIC)
     @Help("The cinematic page to start.")
     val pageId: String = "",
-) : CustomTriggeringActionEntry {
+) : ActionEntry {
     override val eventTriggers: List<EventTrigger>
-        get() = super.eventTriggers + TemporalStartTrigger(pageId, customTriggers.map(::EntryTrigger))
+        get() = listOf(TemporalStartTrigger(pageId, super.eventTriggers))
+
+    override fun ActionTrigger.execute() {}
 }

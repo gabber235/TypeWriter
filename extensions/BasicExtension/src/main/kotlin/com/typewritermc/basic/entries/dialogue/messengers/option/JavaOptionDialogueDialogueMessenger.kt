@@ -3,6 +3,7 @@ package com.typewritermc.basic.entries.dialogue.messengers.option
 import com.typewritermc.basic.entries.dialogue.Option
 import com.typewritermc.basic.entries.dialogue.OptionDialogueEntry
 import com.typewritermc.core.extension.annotations.Messenger
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.core.utils.around
 import com.typewritermc.core.utils.loopingDistance
 import com.typewritermc.engine.paper.entry.Modifier
@@ -57,8 +58,8 @@ private val delayOptionShow: Int by snippet(
 )
 
 @Messenger(OptionDialogueEntry::class)
-class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
-    DialogueMessenger<OptionDialogueEntry>(player, entry) {
+class JavaOptionDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: OptionDialogueEntry) :
+    DialogueMessenger<OptionDialogueEntry>(player, context, entry) {
 
     companion object : MessengerFilter {
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true
@@ -92,7 +93,7 @@ class JavaOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueE
 
     override fun init() {
         usableOptions =
-            entry.options.filter { it.criteria.matches(player) }
+            entry.options.filter { it.criteria.matches(player, context) }
 
         if (usableOptions.isEmpty()) {
             return

@@ -6,6 +6,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import org.bukkit.entity.Player
@@ -35,7 +36,7 @@ fun onDeath(event: EntityDeathEvent, query: Query<PlayerDeathEventEntry>) {
 
     val player = event.entity as Player
 
-    query findWhere { entry ->
+    query.findWhere { entry ->
         entry.deathCause.map { it == event.entity.lastDamageCause?.cause }.orElse(true)
-    } triggerAllFor player
+    }.triggerAllFor(player, context())
 }

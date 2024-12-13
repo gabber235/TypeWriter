@@ -9,6 +9,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
@@ -49,13 +50,11 @@ class AddPotionEffectActionEntry(
     @Default("true")
     val icon: Boolean = true,
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val potion = PotionEffect(
-            potionEffect.get(player),
-            duration.get(player).toTicks().toInt(),
-            amplifier.get(player),
+            potionEffect.get(player, context),
+            duration.get(player, context).toTicks().toInt(),
+            amplifier.get(player, context),
             ambient,
             particles,
             icon

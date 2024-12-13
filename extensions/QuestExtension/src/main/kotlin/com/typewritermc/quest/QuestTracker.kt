@@ -10,7 +10,7 @@ import com.typewritermc.quest.events.AsyncTrackedQuestUpdate
 import com.typewritermc.engine.paper.facts.FactListenerSubscription
 import com.typewritermc.engine.paper.facts.listenForFacts
 import com.typewritermc.engine.paper.interaction.PlayerSessionManager
-import com.typewritermc.engine.paper.interaction.SessionTracker
+import com.typewritermc.core.interaction.SessionTracker
 import com.typewritermc.engine.paper.utils.ThreadType.DISPATCHERS_ASYNC
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.get

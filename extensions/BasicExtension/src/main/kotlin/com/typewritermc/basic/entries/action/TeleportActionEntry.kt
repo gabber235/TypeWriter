@@ -1,21 +1,20 @@
 package com.typewritermc.basic.entries.action
 
-import com.google.gson.annotations.SerializedName
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.WithRotation
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
-import com.typewritermc.engine.paper.entry.entries.CustomTriggeringActionEntry
 import com.typewritermc.engine.paper.entry.entries.Var
-import com.typewritermc.engine.paper.utils.ThreadType.SYNC
+import com.typewritermc.engine.paper.utils.ThreadType
 import com.typewritermc.engine.paper.utils.toBukkitLocation
-import io.github.retrooper.packetevents.util.SpigotConversionUtil.toBukkitLocation
-import org.bukkit.entity.Player
+import kotlinx.coroutines.future.await
 
 @Entry("teleport", "Teleport a player", Colors.RED, "teenyicons:google-streetview-solid")
 /**
@@ -30,16 +29,16 @@ class TeleportActionEntry(
     override val name: String = "",
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
-    @SerializedName("triggers")
-    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     @WithRotation
     val location: Var<Position> = ConstVar(Position.ORIGIN),
-) : CustomTriggeringActionEntry {
-    override fun execute(player: Player) {
-        SYNC.launch {
-            player.teleport(location.get(player).toBukkitLocation())
-            super.execute(player)
-            player.triggerCustomTriggers()
+) : ActionEntry {
+    override fun ActionTrigger.execute() {
+        disableAutomaticTriggering()
+        ThreadType.ASYNC.launch {
+            player.teleportAsync(location.get(player, context).toBukkitLocation()).await()
+            applyModifiers()
+            triggerManually()
         }
     }
 }

@@ -8,6 +8,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.trackQuest
 import org.bukkit.entity.Player
@@ -30,8 +31,7 @@ class TrackQuestActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val quest: Ref<QuestEntry> = emptyRef(),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
+    override fun ActionTrigger.execute() {
         player trackQuest quest
     }
 }

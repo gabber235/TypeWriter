@@ -41,8 +41,8 @@ class SimpleQuestEntry(
 
     override fun questStatus(player: Player): QuestStatus {
         return when {
-            completedCriteria matches player -> QuestStatus.COMPLETED
-            activeCriteria matches player -> QuestStatus.ACTIVE
+            completedCriteria.matches(player) -> QuestStatus.COMPLETED
+            activeCriteria.matches(player)-> QuestStatus.ACTIVE
             else -> QuestStatus.INACTIVE
         }
     }

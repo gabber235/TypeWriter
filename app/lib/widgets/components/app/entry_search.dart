@@ -36,13 +36,14 @@ class TagFilter extends SearchFilter {
 
   @override
   bool filter(SearchElement action) {
-    if (action is EntrySearchElement) {
-      return action.blueprint.tags.containsAny(tags);
-    }
-    if (action is AddEntrySearchElement) {
-      return action.blueprint.tags.containsAny(tags);
-    }
-    return true;
+    final blueprint = switch (action) {
+      final EntrySearchElement entry => entry.blueprint,
+      final AddEntrySearchElement entry => entry.blueprint,
+      _ => null,
+    };
+
+    if (blueprint == null) return true;
+    return blueprint.tags.containsAny(tags);
   }
 }
 

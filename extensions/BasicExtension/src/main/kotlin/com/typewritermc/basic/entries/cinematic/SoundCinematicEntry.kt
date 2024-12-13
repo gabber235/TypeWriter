@@ -6,6 +6,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.temporalContext
 import com.typewritermc.engine.paper.utils.*
 import org.bukkit.entity.Player
 
@@ -47,7 +48,7 @@ class SoundCinematicAction(
 
     override suspend fun startSegment(segment: SoundSegment) {
         super.startSegment(segment)
-        previousSound = segment.sound.get(player)
+        previousSound = segment.sound.get(player, player.temporalContext)
         player.playSound(previousSound!!)
     }
 

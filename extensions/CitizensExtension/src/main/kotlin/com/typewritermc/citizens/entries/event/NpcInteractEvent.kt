@@ -9,6 +9,7 @@ import com.typewritermc.citizens.entries.entity.ReferenceNpcEntry
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.logger
@@ -39,7 +40,7 @@ private fun onReferenceNpcInteract(player: Player, npcId: Int, query: Query<NpcI
 
     query.findWhere {
         it.identifier.id in identifiers
-    } startDialogueWithOrNextDialogue player
+    }.startDialogueWithOrNextDialogue(player, context())
 }
 
 @EntryListener(NpcInteractEventEntry::class)

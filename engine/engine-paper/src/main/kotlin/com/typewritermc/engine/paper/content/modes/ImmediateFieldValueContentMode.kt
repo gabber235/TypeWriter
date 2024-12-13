@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.content.fieldPath
 import com.typewritermc.engine.paper.entry.entries.InteractionEndTrigger
 import com.typewritermc.engine.paper.entry.fieldValue
 import com.typewritermc.engine.paper.entry.triggerFor
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
 import kotlinx.coroutines.delay
@@ -40,7 +41,7 @@ abstract class ImmediateFieldValueContentMode<T : Any>(context: ContentContext, 
                 logger.severe("Failed to set field value for ${this::class.simpleName}, with context: $context. This is a bug. Please report it.")
                 e.printStackTrace()
             } finally {
-                InteractionEndTrigger triggerFor player
+                InteractionEndTrigger.triggerFor(player, context())
             }
         }
 

@@ -3,9 +3,8 @@ package com.typewritermc.engine.paper.entry.dialogue
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.priority
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
-import com.typewritermc.engine.paper.entry.entries.EntryTrigger
 import com.typewritermc.engine.paper.entry.entries.Event
-import com.typewritermc.engine.paper.interaction.Interaction
+import com.typewritermc.core.interaction.Interaction
 import com.typewritermc.engine.paper.interaction.TriggerContinuation
 import com.typewritermc.engine.paper.interaction.TriggerHandler
 
@@ -47,7 +46,7 @@ class DialogueHandler : TriggerHandler {
         if (triggers.isEmpty()) {
             return TriggerContinuation.EndInteraction
         }
-        return TriggerContinuation.Append(Event(event.player, triggers))
+        return TriggerContinuation.Append(Event(event.player, event.context, triggers))
     }
 
     /**
@@ -65,9 +64,9 @@ class DialogueHandler : TriggerHandler {
 
         if (nextDialogue != null) {
             if (this !is DialogueInteraction) {
-                return TriggerContinuation.StartInteraction(DialogueInteraction(event.player, nextDialogue))
+                return TriggerContinuation.StartInteraction(DialogueInteraction(event.player, event.context, nextDialogue))
             } else if (!isActive || nextDialogue.priority >= priority) {
-                this.next(nextDialogue)
+                this.next(nextDialogue, event.context)
                 return TriggerContinuation.Done
             }
         } else if (this is DialogueInteraction && !isActive) {

@@ -5,6 +5,7 @@ import com.typewritermc.engine.paper.content.ContentPopTrigger
 import com.typewritermc.engine.paper.content.inLastContentMode
 import com.typewritermc.engine.paper.entry.entries.InteractionEndTrigger
 import com.typewritermc.engine.paper.entry.triggerFor
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.loreString
 import com.typewritermc.engine.paper.utils.name
@@ -38,7 +39,7 @@ class ExitComponent(
         // Only count shifting down
         if (!event.isSneaking) return
         if (System.currentTimeMillis() - lastShift < 500) {
-            InteractionEndTrigger triggerFor event.player
+            InteractionEndTrigger.triggerFor(event.player, context())
         }
         lastShift = System.currentTimeMillis()
     }
@@ -79,7 +80,7 @@ class ExitComponent(
         }
 
         return 8 to item {
-            ContentPopTrigger triggerFor player
+            ContentPopTrigger.triggerFor(player, context())
         }
     }
 }

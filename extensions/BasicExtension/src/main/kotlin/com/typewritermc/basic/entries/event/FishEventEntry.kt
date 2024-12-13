@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EventEntry
@@ -44,12 +45,12 @@ fun onPlayerFish(event: PlayerFishEvent, query: Query<FishEventEntry>) {
     if (event.state != PlayerFishEvent.State.CAUGHT_FISH) return
     val player = event.player
 
-    query findWhere { entry ->
+    query.findWhere { entry ->
         // Check if the player is holding the correct item
         if (!hasItemInHand(player, entry.itemInHand.get(player))) return@findWhere false
 
         // Check if the player caught the correct item
         val caughtItem = event.caught as? org.bukkit.entity.Item ?: return@findWhere false
         return@findWhere entry.caught.get(player).isSameAs(player, caughtItem.itemStack)
-    } triggerAllFor event.player
+    }.triggerAllFor(event.player, context())
 }

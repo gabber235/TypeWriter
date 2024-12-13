@@ -8,6 +8,7 @@ import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.entry.TriggerEntry
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.matches
+import com.typewritermc.core.interaction.InteractionContext
 import dev.jorel.commandapi.CommandTree
 import org.bukkit.entity.Player
 
@@ -25,19 +26,12 @@ interface CustomCommandEntry : EventEntry {
 
 interface FireTriggerEventEntry : EventEntry
 
-class Event(val player: Player, val triggers: List<EventTrigger>) {
-    constructor(player: Player, vararg triggers: EventTrigger) : this(player, triggers.toList())
+class Event(val player: Player, val context: InteractionContext, val triggers: List<EventTrigger>) {
+    constructor(player: Player, context: InteractionContext, vararg triggers: EventTrigger) : this(player, context, triggers.toList())
 
     operator fun contains(trigger: EventTrigger) = triggers.contains(trigger)
 
     operator fun contains(entry: Entry) = triggers.any { it.id == entry.id }
-
-
-    fun merge(other: Event?): Event {
-        if (other == null) return this
-        if (player.uniqueId != other.player.uniqueId) return this
-        return Event(player, triggers + other.triggers)
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -57,12 +51,13 @@ class Event(val player: Player, val triggers: List<EventTrigger>) {
         return "Event(player=${player.name}, triggers=$triggers)"
     }
 
-    fun distinct(): Event = Event(player, triggers.distinct())
+    fun distinct(): Event = Event(player, context, triggers.distinct())
+    fun filterAllowedTriggers() = Event(player, context, triggers.filter { it.canTriggerFor(player, context) })
 }
 
 interface EventTrigger {
     val id: String
-    fun canTriggerFor(player: Player): Boolean = true
+    fun canTriggerFor(player: Player, interactionContext: InteractionContext): Boolean = true
 }
 
 data class EntryTrigger(val ref: Ref<out TriggerableEntry>) : EventTrigger {
@@ -70,7 +65,7 @@ data class EntryTrigger(val ref: Ref<out TriggerableEntry>) : EventTrigger {
 
     constructor(entry: TriggerableEntry) : this(entry.ref())
 
-    override fun canTriggerFor(player: Player): Boolean = ref.get()?.criteria?.matches(player) ?: false
+    override fun canTriggerFor(player: Player, interactionContext: InteractionContext): Boolean = ref.get()?.criteria?.matches(player, interactionContext) ?: false
 }
 
 data object InteractionEndTrigger : EventTrigger {

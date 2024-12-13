@@ -9,6 +9,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import net.milkbowl.vault.economy.Economy
@@ -32,11 +33,9 @@ class WithdrawBalanceActionEntry(
     @Help("The amount of money to withdraw.")
     private val amount: Var<Double> = ConstVar(0.0),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val economy: Economy = KoinJavaComponent.get<VaultInitializer>(VaultInitializer::class.java).economy ?: return
 
-        economy.withdrawPlayer(player, amount.get(player))
+        economy.withdrawPlayer(player, amount.get(player, context))
     }
 }

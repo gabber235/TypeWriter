@@ -7,6 +7,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Regex
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
@@ -34,7 +35,7 @@ class MythicMobDeathEventEntry(
 @EntryListener(MythicMobDeathEventEntry::class)
 fun onMobDeath(event: MythicMobDeathEvent, query: Query<MythicMobDeathEventEntry>) {
     val player = event.killer as? Player ?: return
-    query findWhere {
+    query.findWhere {
         it.mobName.toRegex(RegexOption.IGNORE_CASE).matches(event.mobType.internalName)
-    } triggerAllFor player
+    }.triggerAllFor(player, context())
 }

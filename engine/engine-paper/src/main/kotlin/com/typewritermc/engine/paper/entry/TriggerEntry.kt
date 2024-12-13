@@ -4,9 +4,12 @@ import com.typewritermc.core.entries.Entry
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Tags
+import com.typewritermc.core.interaction.EntryContextBuilder
 import com.typewritermc.engine.paper.entry.dialogue.DialogueTrigger
 import com.typewritermc.engine.paper.entry.entries.EntryTrigger
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
+import com.typewritermc.core.interaction.InteractionContext
+import com.typewritermc.core.interaction.withContext
 import com.typewritermc.engine.paper.interaction.PlayerSessionManager
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.get
@@ -35,15 +38,36 @@ interface TriggerableEntry : TriggerEntry {
  * Example:
  * ```kotlin
  * val entries: List<SomeEntry> = ...
- * entries triggerAllFor player
+ * entries.triggerAllFor(player, context())
  * ```
  *
  * @param player The player to trigger the triggers for.
+ * @param context The context trigger the interaction with.
  */
-infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
+fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player, context: InteractionContext) {
     val triggers = this.flatMap { it.eventTriggers }
     if (triggers.isEmpty()) return
-    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, context, triggers)
+}
+
+/**
+ * Trigger all triggers for all entries in a list.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: List<SomeEntry> = ...
+ * entries.triggerAllFor(player) {
+ *     // Add context here
+ * }
+ * ```
+ *
+ * @param player The player to trigger the triggers for.
+ * @param builder The entry context builder to build the context with.
+ */
+fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player, builder: EntryContextBuilder) {
+    val triggers = this.flatMap { it.eventTriggers }
+    if (triggers.isEmpty()) return
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, this.withContext(builder), triggers)
 }
 
 /**
@@ -52,15 +76,36 @@ infix fun <E : TriggerEntry> List<E>.triggerAllFor(player: Player) {
  * Example:
  * ```kotlin
  * val entries: Sequence<SomeEntry> = ...
- * entries triggerAllFor player
+ * entries.triggerAllFor(player, context())
  * ```
  *
  * @param player The player to trigger the triggers for.
  */
-infix fun <E : TriggerEntry> Sequence<E>.triggerAllFor(player: Player) {
+fun <E : TriggerEntry> Sequence<E>.triggerAllFor(player: Player, context: InteractionContext) {
     val triggers = this.flatMap { it.eventTriggers }.toList()
     if (triggers.isEmpty()) return
-    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, context, triggers)
+}
+
+/**
+ * Trigger all triggers for all entries in a sequence.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: Sequence<SomeEntry> = ...
+ * entries.triggerAllFor(player) {
+ *     // Add context here
+ * }
+ * ```
+ *
+ * @param player The player to trigger the triggers for.
+ * @param builder The entry context builder to build the context with.
+ */
+fun <E : TriggerEntry> Sequence<E>.triggerAllFor(player: Player, builder: EntryContextBuilder) {
+    val entries = toList()
+    val triggers = entries.flatMap { it.eventTriggers }
+    if (triggers.isEmpty()) return
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, entries.withContext(builder), triggers)
 }
 
 /**
@@ -69,15 +114,35 @@ infix fun <E : TriggerEntry> Sequence<E>.triggerAllFor(player: Player) {
  * Example:
  * ```kotlin
  * val entry: SomeEntry = ...
- * entry triggerAllFor player
+ * entry.triggerAllFor(player, context())
  * ```
  *
  * @param player The player to trigger the triggers for.
  */
-infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
+fun <E : TriggerEntry> E.triggerAllFor(player: Player, context: InteractionContext) {
     val triggers = this.eventTriggers
     if (triggers.isEmpty()) return
-    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, context, triggers)
+}
+
+/**
+ * Trigger all triggers for a player.
+ *
+ * Example:
+ * ```kotlin
+ * val entry: SomeEntry = ...
+ * entry.triggerAllFor(player) {
+ *     // Add context here
+ * }
+ * ```
+ *
+ * @param player The player to trigger the triggers for.
+ * @param builder The entry context builder to build the context with.
+ */
+fun <E : TriggerEntry> E.triggerAllFor(player: Player, builder: EntryContextBuilder) {
+    val triggers = this.eventTriggers
+    if (triggers.isEmpty()) return
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, this.withContext(builder), triggers)
 }
 
 /**
@@ -87,15 +152,36 @@ infix fun <E : TriggerEntry> E.triggerAllFor(player: Player) {
  * Example:
  * ```kotlin
  * val triggers: List<Ref<TriggerableEntry>> = ...
- * triggers triggerEntriesFor player
+ * triggers.triggerEntriesFor(player, context())
  * ```
  *
  * @param player The player to trigger the triggers for.
  */
-infix fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
+fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player, context: InteractionContext) {
     val triggers = this.map { EntryTrigger(it) }
     if (triggers.isEmpty()) return
-    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, context, triggers)
+}
+
+/**
+ * Trigger all triggers for all entries in a list.
+ * This is a convenience method for [triggerAllFor] that takes a [Ref].
+ *
+ * Example:
+ * ```kotlin
+ * val triggers: List<Ref<TriggerableEntry>> = ...
+ * triggers.triggerEntriesFor(player) {
+ *     // Add context here
+ * }
+ * ```
+ *
+ * @param player The player to trigger the triggers for.
+ * @param builder The entry context builder to build the context with.
+ */
+fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player, builder: EntryContextBuilder) {
+    val triggers = this.map { EntryTrigger(it) }
+    if (triggers.isEmpty()) return
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, this.withContext(builder), triggers)
 }
 
 /**
@@ -105,15 +191,37 @@ infix fun List<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
  * Example:
  * ```kotlin
  * val triggers: Sequence<Ref<TriggerableEntry>> = ...
- * triggers triggerEntriesFor player
+ * triggers.triggerEntriesFor(player, context())
  * ```
  *
  * @param player The player to trigger the triggers for.
  */
-infix fun Sequence<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) {
+fun Sequence<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player, context: InteractionContext) {
     val triggers = this.map { EntryTrigger(it) }.toList()
     if (triggers.isEmpty()) return
-    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, triggers)
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, context, triggers)
+}
+
+/**
+ * Trigger all triggers for all entries in a sequence.
+ * This is a convenience method for [triggerAllFor] that takes a sequence of [Ref].
+ *
+ * Example:
+ * ```kotlin
+ * val triggers: Sequence<Ref<TriggerableEntry>> = ...
+ * triggers.triggerEntriesFor(player) {
+ *     // Add context here
+ * }
+ * ```
+ *
+ * @param player The player to trigger the triggers for.
+ * @param builder The entry context builder to build the context with.
+ */
+fun Sequence<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player, builder: EntryContextBuilder) {
+    val entries = toList()
+    val triggers = entries.map { EntryTrigger(it) }
+    if (triggers.isEmpty()) return
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, entries.withContext(builder), triggers)
 }
 
 /**
@@ -123,13 +231,31 @@ infix fun Sequence<Ref<out TriggerableEntry>>.triggerEntriesFor(player: Player) 
  * Example:
  * ```kotlin
  * val trigger: Ref<TriggerableEntry> = ...
- * trigger triggerFor player
+ * trigger.triggerFor(player, context())
  * ```
  *
  * @param player The player to trigger the trigger for.
  */
-infix fun Ref<out TriggerableEntry>.triggerFor(player: Player) {
-    EntryTrigger(this) triggerFor player
+fun Ref<out TriggerableEntry>.triggerFor(player: Player, context: InteractionContext) {
+    EntryTrigger(this).triggerFor(player, context)
+}
+
+/**
+ * Trigger all triggers for an entry.
+ * This is a convenience method for [triggerAllFor] that takes a [Ref].
+ *
+ * Example:
+ * ```kotlin
+ * val trigger: Ref<TriggerableEntry> = ...
+ * trigger.triggerFor(player) {
+ *     // Add context here
+ * }
+ * ```
+ *
+ * @param player The player to trigger the trigger for.
+ */
+fun Ref<out TriggerableEntry>.triggerFor(player: Player, builder: EntryContextBuilder) {
+    EntryTrigger(this).triggerFor(player, this.withContext(builder))
 }
 
 /**
@@ -138,12 +264,12 @@ infix fun Ref<out TriggerableEntry>.triggerFor(player: Player) {
  * Example:
  * ```kotlin
  * val trigger: EventTrigger = ...
- * trigger triggerFor player
+ * trigger.triggerFor(player, context())
  * ```
  *
  * @param player The player to trigger the trigger for.
  */
-infix fun EventTrigger.triggerFor(player: Player) = listOf(this) triggerFor player
+fun EventTrigger.triggerFor(player: Player, context: InteractionContext) = listOf(this).triggerFor(player, context)
 
 /**
  * Forcefully Trigger a specific trigger for a player.
@@ -155,10 +281,10 @@ infix fun EventTrigger.triggerFor(player: Player) = listOf(this) triggerFor play
  * Example:
  * ```kotlin
  * val trigger: EventTrigger = ...
- * trigger forceTriggerFor player
+ * trigger.forceTriggerFor(player, context())
  * ```
  */
-suspend infix fun EventTrigger.forceTriggerFor(player: Player) = listOf(this) forceTriggerFor player
+suspend fun EventTrigger.forceTriggerFor(player: Player, context: InteractionContext) = listOf(this).forceTriggerFor(player, context)
 
 /**
  * Trigger all triggers for a player.
@@ -166,13 +292,13 @@ suspend infix fun EventTrigger.forceTriggerFor(player: Player) = listOf(this) fo
  * Example:
  * ```kotlin
  * val triggers: List<EventTrigger> = ...
- * triggers triggerAllFor player
+ * triggers.triggerAllFor(player, context())
  * ```
  *
  * @param player The player to trigger the triggers for.
  */
-infix fun List<EventTrigger>.triggerFor(player: Player) {
-    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, this)
+fun List<EventTrigger>.triggerFor(player: Player, context: InteractionContext) {
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).triggerActions(player, context, this)
 }
 
 /**
@@ -185,11 +311,11 @@ infix fun List<EventTrigger>.triggerFor(player: Player) {
  * Example:
  * ```kotlin
  * val triggers: List<EventTrigger> = ...
- * triggers forceTriggerFor player
+ * triggers.forceTriggerFor(player, context())
  * ```
  */
-suspend infix fun List<EventTrigger>.forceTriggerFor(player: Player) {
-    get<PlayerSessionManager>(PlayerSessionManager::class.java).forceTriggerActions(player, this)
+suspend fun List<EventTrigger>.forceTriggerFor(player: Player, context: InteractionContext) {
+    get<PlayerSessionManager>(PlayerSessionManager::class.java).forceTriggerActions(player, context, this)
 }
 
 
@@ -204,14 +330,19 @@ suspend infix fun List<EventTrigger>.forceTriggerFor(player: Player) {
  * Example:
  * ```kotlin
  * val entries: List<SomeEntry> = ...
- * entries.startDialogueWithOrTrigger(player, continueTrigger)
+ * entries.startDialogueWithOrTrigger(player, continueTrigger, context())
  * ```
  */
-fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, continueTrigger: EventTrigger) {
+fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(
+    player: Player,
+    continueTrigger: EventTrigger,
+    context: InteractionContext
+) {
     val triggers = this.flatMap { it.eventTriggers }
     if (triggers.isEmpty()) return
     get<PlayerSessionManager>(PlayerSessionManager::class.java).startDialogueWithOrTriggerEvent(
         player,
+        context,
         triggers,
         continueTrigger
     )
@@ -229,11 +360,15 @@ fun <E : TriggerEntry> List<E>.startDialogueWithOrTrigger(player: Player, contin
  * Example:
  * ```kotlin
  * val entries: Sequence<SomeEntry> = ...
- * entries.startDialogueWithOrTrigger(player, continueTrigger)
+ * entries.startDialogueWithOrTrigger(player, continueTrigger, context())
  * ```
  */
-fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrTrigger(player: Player, continueTrigger: EventTrigger) =
-    toList().startDialogueWithOrTrigger(player, continueTrigger)
+fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrTrigger(
+    player: Player,
+    continueTrigger: EventTrigger,
+    context: InteractionContext
+) =
+    toList().startDialogueWithOrTrigger(player, continueTrigger, context)
 
 /**
  * If the player is not in a dialogue, trigger all triggers for all entries in a list.
@@ -246,11 +381,32 @@ fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrTrigger(player: Player, co
  * Example:
  * ```kotlin
  * val entries: List<SomeEntry> = ...
- * entries startDialogueWithOrTrigger player
+ * entries.startDialogueWithOrTrigger(player, context())
  * ```
  */
-infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player) =
-    startDialogueWithOrTrigger(player, DialogueTrigger.NEXT_OR_COMPLETE)
+fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player, context: InteractionContext) =
+    startDialogueWithOrTrigger(player, DialogueTrigger.NEXT_OR_COMPLETE, context)
+
+/**
+ * If the player is not in a dialogue, trigger all triggers for all entries in a list.
+ * If the player is in a dialogue, it will trigger the next dialogue.
+ *
+ * This can be useful for actions that should not be triggered again if the player is already in a dialogue.
+ * Like clicking on a npc to start a conversation.
+ * As we don't want to start the conversation again
+ * and we don't want to trigger the same dialogue again.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: List<SomeEntry> = ...
+ * entries.startDialogueWithOrTrigger(player) {
+ *     // Add context here
+ * }
+ * ```
+ */
+fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Player, builder: EntryContextBuilder) =
+    startDialogueWithOrTrigger(player, DialogueTrigger.NEXT_OR_COMPLETE, this.withContext(builder))
+
 
 
 /**
@@ -265,10 +421,30 @@ infix fun <E : TriggerEntry> List<E>.startDialogueWithOrNextDialogue(player: Pla
  * Example:
  * ```kotlin
  * val entries: Sequence<SomeEntry> = ...
- * entries startDialogueWithOrTrigger player
+ * entries.startDialogueWithOrNextDialogue(player, context())
  * ```
  */
-infix fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrNextDialogue(player: Player) =
-    toList().startDialogueWithOrTrigger(player, DialogueTrigger.NEXT_OR_COMPLETE)
+fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrNextDialogue(player: Player, context: InteractionContext) =
+    toList().startDialogueWithOrTrigger(player, DialogueTrigger.NEXT_OR_COMPLETE, context)
 
-
+/**
+ * If the player is not in a dialogue, trigger all triggers for all entries in a sequence.
+ * If the player is in a dialogue, it will trigger the next dialogue.
+ *
+ * This can be useful for actions that should not be triggered again if the player is already in a dialogue.
+ * Like clicking on a npc to start a conversation.
+ * As we don't want to start the conversation again
+ * and we don't want to trigger the same dialogue again.
+ *
+ * Example:
+ * ```kotlin
+ * val entries: Sequence<SomeEntry> = ...
+ * entries.startDialogueWithOrTrigger(player) {
+ *     // Add context here
+ * }
+ * ```
+ */
+fun <E : TriggerEntry> Sequence<E>.startDialogueWithOrNextDialogue(player: Player, builder: EntryContextBuilder) {
+    val entries = toList()
+    entries.startDialogueWithOrTrigger(player, DialogueTrigger.NEXT_OR_COMPLETE, entries.withContext(builder))
+}

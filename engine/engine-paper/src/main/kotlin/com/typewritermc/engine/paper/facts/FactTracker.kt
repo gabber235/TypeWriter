@@ -3,7 +3,7 @@ package com.typewritermc.engine.paper.facts
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
 import com.typewritermc.engine.paper.interaction.PlayerSessionManager
-import com.typewritermc.engine.paper.interaction.SessionTracker
+import com.typewritermc.core.interaction.SessionTracker
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent
 import java.util.*

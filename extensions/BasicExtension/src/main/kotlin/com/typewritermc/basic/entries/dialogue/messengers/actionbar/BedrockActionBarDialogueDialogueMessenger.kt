@@ -2,6 +2,7 @@ package com.typewritermc.basic.entries.dialogue.messengers.actionbar
 
 import com.typewritermc.basic.entries.dialogue.ActionBarDialogueEntry
 import com.typewritermc.core.extension.annotations.Messenger
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
@@ -13,8 +14,8 @@ import com.typewritermc.engine.paper.utils.legacy
 import org.bukkit.entity.Player
 
 @Messenger(ActionBarDialogueEntry::class, priority = 5)
-class BedrockActionBarDialogueDialogueMessenger(player: Player, entry: ActionBarDialogueEntry) :
-        DialogueMessenger<ActionBarDialogueEntry>(player, entry) {
+class BedrockActionBarDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: ActionBarDialogueEntry) :
+        DialogueMessenger<ActionBarDialogueEntry>(player, context, entry) {
 
     companion object : MessengerFilter {
         override fun filter(player: Player, entry: DialogueEntry): Boolean = player.isFloodgate

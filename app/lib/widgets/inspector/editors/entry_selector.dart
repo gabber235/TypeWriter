@@ -67,13 +67,12 @@ class EntrySelectorEditor extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = dataBlueprint.get<String>("entry") ?? "";
     final onlyTags = dataBlueprint.get<String>("only_tags")?.split(",") ?? [];
-    final id = forcedValue ?? ref.watch(fieldValueProvider(path, "")) as String;
-
-    final hasEntry = ref.watch(entryExistsProvider(id));
+    final entryId =
+        forcedValue ?? ref.watch(fieldValueProvider(path, "")) as String;
 
     return DragTarget<EntryDrag>(
       onWillAcceptWithDetails: (details) {
-        if (details.data.entryId == id) return false;
+        if (details.data.entryId == entryId) return false;
 
         final entry = ref.read(globalEntryProvider(details.data.entryId));
         if (entry == null) return false;
@@ -88,125 +87,155 @@ class EntrySelectorEditor extends HookConsumerWidget {
       },
       builder: (context, candidateData, rejectedData) {
         if (rejectedData.isNotEmpty) {
-          return _rejectWidget(context);
+          return EntrySelectorRejectWidget();
         }
         final isAccepting = candidateData.isNotEmpty;
 
-        final needsPadding = !hasEntry && !isAccepting;
-
-        return Material(
-          color: Theme.of(context).inputDecorationTheme.fillColor,
-          borderRadius: BorderRadius.circular(8),
-          child: ContextMenuRegion(
-            builder: (context) {
-              return [
-                if (hasEntry) ...[
-                  ContextMenuTile.button(
-                    title: "Navigate to entry",
-                    icon: TWIcons.pencil,
-                    onTap: () {
-                      ref
-                          .read(inspectingEntryIdProvider.notifier)
-                          .navigateAndSelectEntry(ref.passing, id);
-                    },
-                  ),
-                  if (id.isNotEmpty)
-                    ContextMenuTile.button(
-                      title: "Remove reference",
-                      icon: TWIcons.squareMinus,
-                      color: Colors.redAccent,
-                      onTap: () {
-                        ref
-                            .read(inspectingEntryDefinitionProvider)
-                            ?.updateField(
-                              ref.passing,
-                              path,
-                              dataBlueprint.defaultValue(),
-                            );
-                      },
-                    ),
-                ],
-                if (!hasEntry) ...[
-                  ContextMenuTile.button(
-                    title: "Select entry",
-                    icon: TWIcons.magnifyingGlass,
-                    onTap: () {
-                      _select(ref.passing, onlyTags.isEmpty ? [tag] : onlyTags);
-                    },
-                  ),
-                ],
-              ];
-            },
-            child: InkWell(
-              onTap: () {
-                if (hasOverrideDown && hasEntry) {
-                  ref
-                      .read(inspectingEntryIdProvider.notifier)
-                      .navigateAndSelectEntry(ref.passing, id);
-                  return;
-                }
-                _select(ref.passing, onlyTags.isEmpty ? [tag] : onlyTags);
-              },
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: needsPadding ? 12 : 4,
-                  right: 16,
-                  top: needsPadding ? 12 : 4,
-                  bottom: needsPadding ? 12 : 4,
-                ),
-                child: Row(
-                  children: [
-                    if (!hasEntry && !isAccepting) ...[
-                      Iconify(
-                        TWIcons.database,
-                        size: 16,
-                        color: Theme.of(context)
-                            .inputDecorationTheme
-                            .hintStyle
-                            ?.color,
-                      ),
-                      const SizedBox(width: 12),
-                    ],
-                    if (isAccepting)
-                      Expanded(
-                        child: Opacity(
-                          opacity: 0.5,
-                          child: FakeEntryNode(
-                            entryId: candidateData.first!.entryId,
-                          ),
-                        ),
-                      )
-                    else if (hasEntry)
-                      Expanded(child: FakeEntryNode(entryId: id))
-                    else
-                      Expanded(
-                        child: Text(
-                          "Select a ${tag.formatted}",
-                          style:
-                              Theme.of(context).inputDecorationTheme.hintStyle,
-                        ),
-                      ),
-                    const SizedBox(width: 12),
-                    Iconify(
-                      TWIcons.caretDown,
-                      size: 16,
-                      color: Theme.of(context)
-                          .inputDecorationTheme
-                          .hintStyle
-                          ?.color,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+        return EntrySelectorEditorDisplay(
+          entryId: candidateData.firstOrNull?.entryId ?? entryId,
+          display: tag.formatted,
+          isAccepting: isAccepting,
+          selectEntry: () {
+            _select(ref.passing, onlyTags.isEmpty ? [tag] : onlyTags);
+          },
+          onRemove: () {
+            ref.read(inspectingEntryDefinitionProvider)?.updateField(
+                  ref.passing,
+                  path,
+                  dataBlueprint.defaultValue(),
+                );
+          },
         );
       },
     );
   }
+}
 
-  Widget _rejectWidget(BuildContext context) {
+class EntrySelectorEditorDisplay extends ConsumerWidget {
+  const EntrySelectorEditorDisplay({
+    required this.entryId,
+    required this.display,
+    this.isAccepting = false,
+    this.selectEntry,
+    this.onRemove,
+    super.key,
+  });
+
+  final String entryId;
+  final String display;
+  final bool isAccepting;
+
+  final VoidCallback? selectEntry;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasEntry = ref.watch(entryExistsProvider(entryId));
+    final needsPadding = !hasEntry && !isAccepting;
+
+    return Material(
+      color: Theme.of(context).inputDecorationTheme.fillColor,
+      borderRadius: BorderRadius.circular(8),
+      child: ContextMenuRegion(
+        builder: (context) {
+          return [
+            if (hasEntry) ...[
+              ContextMenuTile.button(
+                title: "Navigate to entry",
+                icon: TWIcons.pencil,
+                onTap: () {
+                  ref
+                      .read(inspectingEntryIdProvider.notifier)
+                      .navigateAndSelectEntry(ref.passing, entryId);
+                },
+              ),
+              if (entryId.isNotEmpty)
+                ContextMenuTile.button(
+                  title: "Remove reference",
+                  icon: TWIcons.squareMinus,
+                  color: Colors.redAccent,
+                  onTap: onRemove,
+                ),
+            ],
+            if (!hasEntry) ...[
+              ContextMenuTile.button(
+                title: "Select entry",
+                icon: TWIcons.magnifyingGlass,
+                onTap: selectEntry,
+              ),
+            ],
+          ];
+        },
+        child: InkWell(
+          onTap: () {
+            if (hasOverrideDown && hasEntry) {
+              ref
+                  .read(inspectingEntryIdProvider.notifier)
+                  .navigateAndSelectEntry(ref.passing, entryId);
+              return;
+            }
+            selectEntry?.call();
+          },
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: needsPadding ? 12 : 4,
+              right: 16,
+              top: needsPadding ? 12 : 4,
+              bottom: needsPadding ? 12 : 4,
+            ),
+            child: Row(
+              children: [
+                if (!hasEntry && !isAccepting) ...[
+                  Iconify(
+                    TWIcons.database,
+                    size: 16,
+                    color:
+                        Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                if (isAccepting)
+                  Expanded(
+                    child: Opacity(
+                      opacity: 0.5,
+                      child: FakeEntryNode(
+                        entryId: entryId,
+                      ),
+                    ),
+                  )
+                else if (hasEntry)
+                  Expanded(child: FakeEntryNode(entryId: entryId))
+                else
+                  Expanded(
+                    child: Text(
+                      "Select a $display",
+                      style: Theme.of(context).inputDecorationTheme.hintStyle,
+                    ),
+                  ),
+                const SizedBox(width: 12),
+                Iconify(
+                  TWIcons.caretDown,
+                  size: 16,
+                  color:
+                      Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EntrySelectorRejectWidget extends HookConsumerWidget {
+  const EntrySelectorRejectWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: Theme.of(context).inputDecorationTheme.fillColor,
       borderRadius: BorderRadius.circular(8),

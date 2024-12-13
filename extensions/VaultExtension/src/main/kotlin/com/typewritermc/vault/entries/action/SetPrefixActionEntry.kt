@@ -9,6 +9,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import net.milkbowl.vault.chat.Chat
@@ -34,11 +35,9 @@ class SetPrefixActionEntry(
     @Help("The prefix to set.")
     private val prefix: Var<String> = ConstVar(""),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val chat: Chat = KoinJavaComponent.get<VaultInitializer>(VaultInitializer::class.java).chat ?: return
 
-        chat.setPlayerPrefix(player, prefix.get(player))
+        chat.setPlayerPrefix(player, prefix.get(player, context))
     }
 }

@@ -3,6 +3,7 @@ package com.typewritermc.basic.entries.dialogue.messengers.option
 import com.typewritermc.basic.entries.dialogue.Option
 import com.typewritermc.basic.entries.dialogue.OptionDialogueEntry
 import com.typewritermc.core.extension.annotations.Messenger
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
@@ -16,8 +17,8 @@ import com.typewritermc.engine.paper.utils.legacy
 import org.bukkit.entity.Player
 
 @Messenger(OptionDialogueEntry::class, priority = 5)
-class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialogueEntry) :
-    DialogueMessenger<OptionDialogueEntry>(player, entry) {
+class BedrockOptionDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: OptionDialogueEntry) :
+    DialogueMessenger<OptionDialogueEntry>(player, context, entry) {
 
     companion object : MessengerFilter {
         override fun filter(player: Player, entry: DialogueEntry): Boolean = player.isFloodgate
@@ -37,7 +38,7 @@ class BedrockOptionDialogueDialogueMessenger(player: Player, entry: OptionDialog
 
     override fun init() {
         super.init()
-        usableOptions = entry.options.filter { it.criteria.matches(player) }
+        usableOptions = entry.options.filter { it.criteria.matches(player, context) }
         org.geysermc.floodgate.api.FloodgateApi.getInstance().sendForm(
             player.uniqueId,
             org.geysermc.cumulus.form.CustomForm.builder()

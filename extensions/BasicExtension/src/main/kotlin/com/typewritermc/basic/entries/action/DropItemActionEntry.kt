@@ -9,6 +9,7 @@ import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.utils.item.Item
@@ -39,16 +40,15 @@ class DropItemActionEntry(
     @Help("The location to drop the item. (Defaults to the player's location)")
     private val location: Optional<Var<Position>> = Optional.empty(),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
+    override fun ActionTrigger.execute() {
         // Run on main thread
         SYNC.launch {
             if (location.isPresent) {
                 val position = location.get()
-                val bukkitLocation = position.get(player).toBukkitLocation()
-                bukkitLocation.world.dropItem(bukkitLocation, item.get(player).build(player))
+                val bukkitLocation = position.get(player, context).toBukkitLocation()
+                bukkitLocation.world.dropItem(bukkitLocation, item.get(player, context).build(player))
             } else {
-                player.location.world.dropItem(player.location, item.get(player).build(player))
+                player.location.world.dropItem(player.location, item.get(player, context).build(player))
             }
         }
     }

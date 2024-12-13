@@ -6,6 +6,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import org.bukkit.event.player.PlayerJoinEvent
@@ -27,5 +28,5 @@ class PlayerJoinEventEntry(
 
 @EntryListener(PlayerJoinEventEntry::class)
 fun onJoin(event: PlayerJoinEvent, query: Query<PlayerJoinEventEntry>) {
-    query.find() triggerAllFor event.player
+    query.find().triggerAllFor(event.player, context())
 }

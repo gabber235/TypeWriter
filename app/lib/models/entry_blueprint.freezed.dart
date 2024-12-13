@@ -33,6 +33,7 @@ mixin _$EntryBlueprint {
       throw _privateConstructorUsedError;
   DataBlueprint? get variableDataBlueprint =>
       throw _privateConstructorUsedError;
+  List<ContextKey> get contextKeys => throw _privateConstructorUsedError;
   List<EntryModifier> get modifiers => throw _privateConstructorUsedError;
 
   /// Serializes this EntryBlueprint to a JSON map.
@@ -62,6 +63,7 @@ abstract class $EntryBlueprintCopyWith<$Res> {
       List<String> tags,
       List<DataBlueprint>? genericConstraints,
       DataBlueprint? variableDataBlueprint,
+      List<ContextKey> contextKeys,
       List<EntryModifier> modifiers});
 
   $DataBlueprintCopyWith<$Res>? get variableDataBlueprint;
@@ -92,6 +94,7 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
     Object? tags = null,
     Object? genericConstraints = freezed,
     Object? variableDataBlueprint = freezed,
+    Object? contextKeys = null,
     Object? modifiers = null,
   }) {
     return _then(_value.copyWith(
@@ -135,6 +138,10 @@ class _$EntryBlueprintCopyWithImpl<$Res, $Val extends EntryBlueprint>
           ? _value.variableDataBlueprint
           : variableDataBlueprint // ignore: cast_nullable_to_non_nullable
               as DataBlueprint?,
+      contextKeys: null == contextKeys
+          ? _value.contextKeys
+          : contextKeys // ignore: cast_nullable_to_non_nullable
+              as List<ContextKey>,
       modifiers: null == modifiers
           ? _value.modifiers
           : modifiers // ignore: cast_nullable_to_non_nullable
@@ -176,6 +183,7 @@ abstract class _$$EntryBlueprintImplCopyWith<$Res>
       List<String> tags,
       List<DataBlueprint>? genericConstraints,
       DataBlueprint? variableDataBlueprint,
+      List<ContextKey> contextKeys,
       List<EntryModifier> modifiers});
 
   @override
@@ -205,6 +213,7 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
     Object? tags = null,
     Object? genericConstraints = freezed,
     Object? variableDataBlueprint = freezed,
+    Object? contextKeys = null,
     Object? modifiers = null,
   }) {
     return _then(_$EntryBlueprintImpl(
@@ -248,6 +257,10 @@ class __$$EntryBlueprintImplCopyWithImpl<$Res>
           ? _value.variableDataBlueprint
           : variableDataBlueprint // ignore: cast_nullable_to_non_nullable
               as DataBlueprint?,
+      contextKeys: null == contextKeys
+          ? _value._contextKeys
+          : contextKeys // ignore: cast_nullable_to_non_nullable
+              as List<ContextKey>,
       modifiers: null == modifiers
           ? _value._modifiers
           : modifiers // ignore: cast_nullable_to_non_nullable
@@ -272,9 +285,11 @@ class _$EntryBlueprintImpl
       final List<String> tags = const <String>[],
       final List<DataBlueprint>? genericConstraints = null,
       this.variableDataBlueprint = null,
+      final List<ContextKey> contextKeys = const [],
       final List<EntryModifier> modifiers = const []})
       : _tags = tags,
         _genericConstraints = genericConstraints,
+        _contextKeys = contextKeys,
         _modifiers = modifiers;
 
   factory _$EntryBlueprintImpl.fromJson(Map<String, dynamic> json) =>
@@ -321,6 +336,15 @@ class _$EntryBlueprintImpl
   @override
   @JsonKey()
   final DataBlueprint? variableDataBlueprint;
+  final List<ContextKey> _contextKeys;
+  @override
+  @JsonKey()
+  List<ContextKey> get contextKeys {
+    if (_contextKeys is EqualUnmodifiableListView) return _contextKeys;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_contextKeys);
+  }
+
   final List<EntryModifier> _modifiers;
   @override
   @JsonKey()
@@ -332,7 +356,7 @@ class _$EntryBlueprintImpl
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'EntryBlueprint(id: $id, name: $name, description: $description, extension: $extension, dataBlueprint: $dataBlueprint, color: $color, icon: $icon, tags: $tags, genericConstraints: $genericConstraints, variableDataBlueprint: $variableDataBlueprint, modifiers: $modifiers)';
+    return 'EntryBlueprint(id: $id, name: $name, description: $description, extension: $extension, dataBlueprint: $dataBlueprint, color: $color, icon: $icon, tags: $tags, genericConstraints: $genericConstraints, variableDataBlueprint: $variableDataBlueprint, contextKeys: $contextKeys, modifiers: $modifiers)';
   }
 
   @override
@@ -350,6 +374,7 @@ class _$EntryBlueprintImpl
       ..add(DiagnosticsProperty('tags', tags))
       ..add(DiagnosticsProperty('genericConstraints', genericConstraints))
       ..add(DiagnosticsProperty('variableDataBlueprint', variableDataBlueprint))
+      ..add(DiagnosticsProperty('contextKeys', contextKeys))
       ..add(DiagnosticsProperty('modifiers', modifiers));
   }
 
@@ -374,6 +399,8 @@ class _$EntryBlueprintImpl
             (identical(other.variableDataBlueprint, variableDataBlueprint) ||
                 other.variableDataBlueprint == variableDataBlueprint) &&
             const DeepCollectionEquality()
+                .equals(other._contextKeys, _contextKeys) &&
+            const DeepCollectionEquality()
                 .equals(other._modifiers, _modifiers));
   }
 
@@ -391,6 +418,7 @@ class _$EntryBlueprintImpl
       const DeepCollectionEquality().hash(_tags),
       const DeepCollectionEquality().hash(_genericConstraints),
       variableDataBlueprint,
+      const DeepCollectionEquality().hash(_contextKeys),
       const DeepCollectionEquality().hash(_modifiers));
 
   /// Create a copy of EntryBlueprint
@@ -422,6 +450,7 @@ abstract class _EntryBlueprint implements EntryBlueprint {
       final List<String> tags,
       final List<DataBlueprint>? genericConstraints,
       final DataBlueprint? variableDataBlueprint,
+      final List<ContextKey> contextKeys,
       final List<EntryModifier> modifiers}) = _$EntryBlueprintImpl;
 
   factory _EntryBlueprint.fromJson(Map<String, dynamic> json) =
@@ -448,6 +477,8 @@ abstract class _EntryBlueprint implements EntryBlueprint {
   List<DataBlueprint>? get genericConstraints;
   @override
   DataBlueprint? get variableDataBlueprint;
+  @override
+  List<ContextKey> get contextKeys;
   @override
   List<EntryModifier> get modifiers;
 
@@ -3769,6 +3800,218 @@ abstract class _Modifier implements Modifier {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ModifierImplCopyWith<_$ModifierImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+ContextKey _$ContextKeyFromJson(Map<String, dynamic> json) {
+  return _ContextKey.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ContextKey {
+  String get name => throw _privateConstructorUsedError;
+  String get klassName => throw _privateConstructorUsedError;
+  DataBlueprint get blueprint => throw _privateConstructorUsedError;
+
+  /// Serializes this ContextKey to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ContextKeyCopyWith<ContextKey> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ContextKeyCopyWith<$Res> {
+  factory $ContextKeyCopyWith(
+          ContextKey value, $Res Function(ContextKey) then) =
+      _$ContextKeyCopyWithImpl<$Res, ContextKey>;
+  @useResult
+  $Res call({String name, String klassName, DataBlueprint blueprint});
+
+  $DataBlueprintCopyWith<$Res> get blueprint;
+}
+
+/// @nodoc
+class _$ContextKeyCopyWithImpl<$Res, $Val extends ContextKey>
+    implements $ContextKeyCopyWith<$Res> {
+  _$ContextKeyCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? klassName = null,
+    Object? blueprint = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      klassName: null == klassName
+          ? _value.klassName
+          : klassName // ignore: cast_nullable_to_non_nullable
+              as String,
+      blueprint: null == blueprint
+          ? _value.blueprint
+          : blueprint // ignore: cast_nullable_to_non_nullable
+              as DataBlueprint,
+    ) as $Val);
+  }
+
+  /// Create a copy of ContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DataBlueprintCopyWith<$Res> get blueprint {
+    return $DataBlueprintCopyWith<$Res>(_value.blueprint, (value) {
+      return _then(_value.copyWith(blueprint: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$ContextKeyImplCopyWith<$Res>
+    implements $ContextKeyCopyWith<$Res> {
+  factory _$$ContextKeyImplCopyWith(
+          _$ContextKeyImpl value, $Res Function(_$ContextKeyImpl) then) =
+      __$$ContextKeyImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, String klassName, DataBlueprint blueprint});
+
+  @override
+  $DataBlueprintCopyWith<$Res> get blueprint;
+}
+
+/// @nodoc
+class __$$ContextKeyImplCopyWithImpl<$Res>
+    extends _$ContextKeyCopyWithImpl<$Res, _$ContextKeyImpl>
+    implements _$$ContextKeyImplCopyWith<$Res> {
+  __$$ContextKeyImplCopyWithImpl(
+      _$ContextKeyImpl _value, $Res Function(_$ContextKeyImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? klassName = null,
+    Object? blueprint = null,
+  }) {
+    return _then(_$ContextKeyImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      klassName: null == klassName
+          ? _value.klassName
+          : klassName // ignore: cast_nullable_to_non_nullable
+              as String,
+      blueprint: null == blueprint
+          ? _value.blueprint
+          : blueprint // ignore: cast_nullable_to_non_nullable
+              as DataBlueprint,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ContextKeyImpl with DiagnosticableTreeMixin implements _ContextKey {
+  const _$ContextKeyImpl(
+      {required this.name, required this.klassName, required this.blueprint});
+
+  factory _$ContextKeyImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ContextKeyImplFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String klassName;
+  @override
+  final DataBlueprint blueprint;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'ContextKey(name: $name, klassName: $klassName, blueprint: $blueprint)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ContextKey'))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('klassName', klassName))
+      ..add(DiagnosticsProperty('blueprint', blueprint));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ContextKeyImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.klassName, klassName) ||
+                other.klassName == klassName) &&
+            (identical(other.blueprint, blueprint) ||
+                other.blueprint == blueprint));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, klassName, blueprint);
+
+  /// Create a copy of ContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ContextKeyImplCopyWith<_$ContextKeyImpl> get copyWith =>
+      __$$ContextKeyImplCopyWithImpl<_$ContextKeyImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ContextKeyImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _ContextKey implements ContextKey {
+  const factory _ContextKey(
+      {required final String name,
+      required final String klassName,
+      required final DataBlueprint blueprint}) = _$ContextKeyImpl;
+
+  factory _ContextKey.fromJson(Map<String, dynamic> json) =
+      _$ContextKeyImpl.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get klassName;
+  @override
+  DataBlueprint get blueprint;
+
+  /// Create a copy of ContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ContextKeyImplCopyWith<_$ContextKeyImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

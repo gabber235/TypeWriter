@@ -4,14 +4,13 @@ import io.papermc.paper.event.player.AsyncChatEvent
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.extension.annotations.*
+import com.typewritermc.core.interaction.EntryContextKey
 import com.typewritermc.engine.paper.entry.TriggerableEntry
-import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.core.extension.annotations.EntryListener
-import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.core.extension.annotations.Regex
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.utils.plainText
+import kotlin.reflect.KClass
 import kotlin.text.Regex as KotlinRegex
 
 @Entry(
@@ -20,6 +19,7 @@ import kotlin.text.Regex as KotlinRegex
     Colors.YELLOW,
     "fluent:note-48-filled"
 )
+@ContextKeys(ChatContainsTextContextKeys::class)
 /**
  * The `Chat Contains Text Event` is called when a player sends a chat message containing certain text.
  *
@@ -38,14 +38,20 @@ class ChatContainsTextEventEntry(
     val exactSame: Boolean = false
 ) : EventEntry
 
+enum class ChatContainsTextContextKeys(override val klass: KClass<*>) : EntryContextKey {
+    @KeyType(String::class)
+    MESSAGE(String::class),
+}
 
 @EntryListener(ChatContainsTextEventEntry::class)
 fun onChat(event: AsyncChatEvent, query: Query<ChatContainsTextEventEntry>) {
     val message = event.message().plainText()
-    query findWhere {
+    query.findWhere {
         if (it.exactSame)
             KotlinRegex(it.text).matches(message)
         else
             KotlinRegex(it.text).containsMatchIn(message)
-    } triggerAllFor event.player
+    }.triggerAllFor(event.player) {
+        ChatContainsTextContextKeys.MESSAGE to message
+    }
 }

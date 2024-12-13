@@ -60,12 +60,19 @@ class GenericEditor extends HookConsumerWidget {
       return ref.read(inspectingEntryProvider)?.genericBlueprint;
     });
 
-    if (blueprint == null) return _buildError();
+    if (blueprint == null) return GenericNotFoundWidget();
 
     return FieldEditor(path: path, dataBlueprint: blueprint);
   }
+}
 
-  Widget _buildError() {
+class GenericNotFoundWidget extends HookConsumerWidget {
+  const GenericNotFoundWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Admonition.danger(
       onTap: () => launchUrlString("https://discord.gg/uYfnzJAFZN"),
       child: Text.rich(

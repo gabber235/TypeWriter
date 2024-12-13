@@ -8,14 +8,12 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
-import com.typewritermc.engine.paper.entry.entries.get
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import io.lumine.mythic.bukkit.MythicBukkit
-import io.lumine.mythic.core.skills.placeholders.PlaceholderExecutor.parsePlaceholders
-import org.bukkit.entity.Player
 
 
 @Entry("despawn_mythicmobs_mob", "Despawn a mob from MythicMobs", Colors.ORANGE, "fluent:crown-subtract-24-filled")
@@ -35,10 +33,8 @@ class DespawnMobActionEntry(
     @Placeholder
     private val mobName: Var<String> = ConstVar(""),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
-        val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName.get(player).parsePlaceholders(player))
+    override fun ActionTrigger.execute() {
+        val mob = MythicBukkit.inst().mobManager.getMythicMob(mobName.get(player, context).parsePlaceholders(player))
         if (!mob.isPresent) return
 
         SYNC.launch {

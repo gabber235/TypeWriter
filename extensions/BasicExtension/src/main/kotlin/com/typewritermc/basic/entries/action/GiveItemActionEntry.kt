@@ -7,6 +7,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
@@ -34,11 +35,9 @@ class GiveItemActionEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val item: Var<Item> = ConstVar(Item.Empty),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         SYNC.launch {
-            val leftOver = player.inventory.addItem(item.get(player).build(player))
+            val leftOver = player.inventory.addItem(item.get(player, context).build(player))
             leftOver.values.forEach {
                 player.world.dropItemNaturally(player.location, it)
             }

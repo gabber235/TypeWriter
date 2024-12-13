@@ -1,21 +1,21 @@
 package com.typewritermc.basic.entries.action
 
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
+import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Colored
+import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.asMini
 import net.kyori.adventure.title.Title
-import org.bukkit.entity.Player
 import java.time.Duration
 import java.util.*
 
@@ -42,13 +42,11 @@ class ShowTitleActionEntry(
     @Help("Optional duration settings for the title. Duration of the title: Fade in, how long it stays, fade out.")
     val durations: Optional<TitleDurations> = Optional.empty(),
 ) : ActionEntry {
-    override fun execute(player: Player) {
-        super.execute(player)
-
+    override fun ActionTrigger.execute() {
         val adventureTitle: Title = durations.map { durations ->
             Title.title(
-                title.get(player).parsePlaceholders(player).asMini(),
-                subtitle.get(player).parsePlaceholders(player).asMini(),
+                title.get(player, context).parsePlaceholders(player).asMini(),
+                subtitle.get(player, context).parsePlaceholders(player).asMini(),
 
                 Title.Times.times(
                     Duration.ofMillis(durations.fadeIn.toMillis()),
@@ -58,8 +56,8 @@ class ShowTitleActionEntry(
             )
         }.orElseGet {
             Title.title(
-                title.get(player).parsePlaceholders(player).asMini(),
-                subtitle.get(player).parsePlaceholders(player).asMini()
+                title.get(player, context).parsePlaceholders(player).asMini(),
+                subtitle.get(player, context).parsePlaceholders(player).asMini()
             )
         }
 

@@ -1,4 +1,4 @@
-package com.typewritermc.engine.paper.interaction
+package com.typewritermc.core.interaction
 
 interface SessionTracker {
     fun setup()

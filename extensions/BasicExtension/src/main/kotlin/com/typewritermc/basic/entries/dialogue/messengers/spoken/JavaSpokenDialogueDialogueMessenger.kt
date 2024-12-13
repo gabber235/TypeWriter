@@ -2,6 +2,7 @@ package com.typewritermc.basic.entries.dialogue.messengers.spoken
 
 import com.typewritermc.basic.entries.dialogue.SpokenDialogueEntry
 import com.typewritermc.core.extension.annotations.Messenger
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.dialogue.*
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
@@ -38,8 +39,8 @@ val spokenInstructionTicksBase: Long by snippet("dialogue.spoken.instruction.tic
 
 
 @Messenger(SpokenDialogueEntry::class)
-class JavaSpokenDialogueDialogueMessenger(player: Player, entry: SpokenDialogueEntry) :
-    DialogueMessenger<SpokenDialogueEntry>(player, entry) {
+class JavaSpokenDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: SpokenDialogueEntry) :
+    DialogueMessenger<SpokenDialogueEntry>(player, context, entry) {
 
     companion object : MessengerFilter {
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true

@@ -6,6 +6,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import org.bukkit.event.player.PlayerQuitEvent
@@ -26,5 +27,5 @@ class PlayerQuitEventEntry(
 
 @EntryListener(PlayerQuitEventEntry::class)
 fun onQuit(event: PlayerQuitEvent, query: Query<PlayerQuitEventEntry>) {
-    query.find() triggerAllFor event.player
+    query.find().triggerAllFor(event.player, context())
 }

@@ -11,6 +11,7 @@ import com.typewritermc.core.extension.annotations.ContentEditor
 import com.typewritermc.core.extension.annotations.Factory
 import com.typewritermc.core.extension.annotations.Named
 import com.typewritermc.core.extension.annotations.Tags
+import com.typewritermc.core.interaction.context
 import com.typewritermc.core.utils.RuntimeTypeAdapterFactory
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
@@ -203,7 +204,7 @@ class SelectRoadNodeContentMode(context: ContentContext, player: Player) : Conte
             onInteract {
                 val value = node.id.id
                 entry.ref().fieldValue(fieldPath, value)
-                ContentPopTrigger triggerFor player
+                ContentPopTrigger.triggerFor(player, context())
             }
         }
 

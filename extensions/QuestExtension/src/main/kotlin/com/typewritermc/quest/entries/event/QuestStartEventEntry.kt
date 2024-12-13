@@ -7,11 +7,13 @@ import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.core.interaction.context
+import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
-import com.typewritermc.quest.events.AsyncQuestStatusUpdate
+import com.typewritermc.engine.paper.entry.triggerAllFor
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
+import com.typewritermc.quest.events.AsyncQuestStatusUpdate
 
 @Entry("quest_start_event", "Triggered when a quest is started for a player", Colors.YELLOW, "mdi:notebook-plus")
 /**
@@ -36,5 +38,5 @@ fun onQuestStart(event: AsyncQuestStatusUpdate, query: Query<QuestStartEventEntr
 
     query.findWhere {
         !it.quest.isSet || it.quest == event.quest
-    } triggerAllFor event.player
+    }.triggerAllFor(event.player, context())
 }

@@ -1,10 +1,10 @@
 package com.typewritermc.engine.paper.entry.dialogue
 
 import com.github.shynixn.mccoroutine.bukkit.ticks
-import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.interaction.ContextModifier
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.core.utils.Reloadable
 import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
 import com.typewritermc.engine.paper.interaction.chatHistory
@@ -43,15 +43,15 @@ class MessengerFinder : KoinComponent, Reloadable {
         messengers = emptyList()
     }
 
-    fun findMessenger(player: Player, entry: DialogueEntry): DialogueMessenger<out DialogueEntry> {
+    fun findMessenger(player: Player, context: InteractionContext, entry: DialogueEntry): DialogueMessenger<out DialogueEntry> {
         val messenger =
             messengers
                 .filter { it.dialogue.isInstance(entry) }
                 .filter { it.filter.filter(player, entry) }
                 .maxByOrNull { it.priority }?.messenger
-                ?: return EmptyDialogueMessenger(player, entry)
+                ?: return EmptyDialogueMessenger(player, context, entry)
 
-        return messenger.primaryConstructor!!.call(player, entry)
+        return messenger.primaryConstructor!!.call(player, context, entry)
     }
 }
 
@@ -61,7 +61,11 @@ enum class MessengerState {
     CANCELLED,
 }
 
-open class DialogueMessenger<DE : DialogueEntry>(val player: Player, val entry: DE) : Listener {
+open class DialogueMessenger<DE : DialogueEntry>(
+    val player: Player,
+    context: InteractionContext,
+    val entry: DE,
+) : ContextModifier(context), Listener {
     open var state: MessengerState = MessengerState.RUNNING
         protected set
 
@@ -123,7 +127,7 @@ class EmptyMessengerFilter : MessengerFilter {
     override fun filter(player: Player, entry: DialogueEntry): Boolean = true
 }
 
-class EmptyDialogueMessenger(player: Player, entry: DialogueEntry) : DialogueMessenger<DialogueEntry>(player, entry) {
+class EmptyDialogueMessenger(player: Player, context: InteractionContext, entry: DialogueEntry) : DialogueMessenger<DialogueEntry>(player, context, entry) {
     override fun init() {
         state = MessengerState.FINISHED
     }

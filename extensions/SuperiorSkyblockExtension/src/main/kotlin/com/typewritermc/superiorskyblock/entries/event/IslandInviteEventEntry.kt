@@ -6,6 +6,7 @@ import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
@@ -33,10 +34,10 @@ fun onInvite(event: IslandInviteEvent, query: Query<IslandInviteEventEntry>) {
 
     val entries = query.find()
 
-    entries triggerAllFor player
+    entries.triggerAllFor(player, context())
 
     if (target?.isOnline == true) {
-        entries.flatMap { it.inviteeTriggers } triggerEntriesFor target
+        entries.flatMap { it.inviteeTriggers }.triggerEntriesFor(target, context())
     }
 }
 

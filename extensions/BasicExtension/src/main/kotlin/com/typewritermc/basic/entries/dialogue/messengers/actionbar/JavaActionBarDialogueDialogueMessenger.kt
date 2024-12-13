@@ -2,6 +2,7 @@ package com.typewritermc.basic.entries.dialogue.messengers.actionbar
 
 import com.typewritermc.basic.entries.dialogue.ActionBarDialogueEntry
 import com.typewritermc.core.extension.annotations.Messenger
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.dialogue.*
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
@@ -24,8 +25,8 @@ val actionBarFormat: String by snippet(
 )
 
 @Messenger(ActionBarDialogueEntry::class)
-class JavaActionBarDialogueDialogueMessenger(player: Player, entry: ActionBarDialogueEntry) :
-    DialogueMessenger<ActionBarDialogueEntry>(player, entry) {
+class JavaActionBarDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: ActionBarDialogueEntry) :
+    DialogueMessenger<ActionBarDialogueEntry>(player, context, entry) {
 
     companion object : MessengerFilter {
         override fun filter(player: Player, entry: DialogueEntry): Boolean = true

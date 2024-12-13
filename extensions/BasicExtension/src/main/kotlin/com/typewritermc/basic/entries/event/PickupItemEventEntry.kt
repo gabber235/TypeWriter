@@ -6,6 +6,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EventEntry
@@ -35,7 +36,7 @@ fun onPickupItem(event: EntityPickupItemEvent, query: Query<PickupItemEventEntry
 
     val player = event.entity as Player
 
-    query findWhere { entry ->
+    query.findWhere { entry ->
         entry.item.get(player).isSameAs(player, event.item.itemStack)
-    } startDialogueWithOrNextDialogue player
+    }.startDialogueWithOrNextDialogue(player, context())
 }

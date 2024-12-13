@@ -4,11 +4,12 @@ import com.github.sirblobman.combatlogx.api.event.PlayerUntagEvent
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
-import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.core.interaction.context
+import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
+import com.typewritermc.engine.paper.entry.triggerAllFor
 import org.bukkit.entity.Player
 
 @Entry("on_player_exit_combat", "When a player is no longer in combat", Colors.YELLOW, "fa6-solid:heart-circle-plus")
@@ -29,6 +30,6 @@ class PlayerExitCombatEventEntry(
 fun onExitCombat(event: PlayerUntagEvent, query: Query<PlayerExitCombatEventEntry>) {
     val player: Player = event.player
 
-    query.find() triggerAllFor player
+    query.find().triggerAllFor(player, context())
 }
 

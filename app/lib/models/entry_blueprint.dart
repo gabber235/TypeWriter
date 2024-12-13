@@ -98,6 +98,7 @@ class EntryBlueprint with _$EntryBlueprint {
     @Default(<String>[]) List<String> tags,
     @Default(null) List<DataBlueprint>? genericConstraints,
     @Default(null) DataBlueprint? variableDataBlueprint,
+    @Default([]) List<ContextKey> contextKeys,
     @Default([]) List<EntryModifier> modifiers,
   }) = _EntryBlueprint;
 
@@ -180,6 +181,18 @@ class Modifier with _$Modifier {
 
   factory Modifier.fromJson(Map<String, dynamic> json) =>
       _$ModifierFromJson(json);
+}
+
+@freezed
+class ContextKey with _$ContextKey {
+  const factory ContextKey({
+    required String name,
+    required String klassName,
+    required DataBlueprint blueprint,
+  }) = _ContextKey;
+
+  factory ContextKey.fromJson(Map<String, dynamic> json) =>
+      _$ContextKeyFromJson(json);
 }
 
 @Freezed(unionKey: "kind")

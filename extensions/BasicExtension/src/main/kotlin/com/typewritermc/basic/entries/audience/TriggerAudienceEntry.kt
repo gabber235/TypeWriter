@@ -6,6 +6,7 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.entries.AudienceDisplay
 import com.typewritermc.engine.paper.entry.entries.AudienceEntry
 import com.typewritermc.engine.paper.entry.triggerFor
@@ -39,10 +40,10 @@ class TriggerAudienceDisplay(
     private val onExit: Ref<TriggerableEntry>,
 ) : AudienceDisplay() {
     override fun onPlayerAdd(player: Player) {
-        onEnter triggerFor player
+        onEnter.triggerFor(player, context())
     }
 
     override fun onPlayerRemove(player: Player) {
-        onExit triggerFor player
+        onExit.triggerFor(player, context())
     }
 }

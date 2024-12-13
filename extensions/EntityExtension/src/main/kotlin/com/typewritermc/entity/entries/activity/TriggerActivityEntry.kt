@@ -6,6 +6,7 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.entries.emptyRef
+import com.typewritermc.core.interaction.context
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.EntityActivityEntry
 import com.typewritermc.engine.paper.entry.entries.GenericEntityActivityEntry
@@ -47,7 +48,7 @@ private class TriggerActivity(
         activity = ref.get()?.create(context, currentPosition)
         activity?.initialize(context)
         context.viewers.forEach {
-            onStart triggerFor it
+            onStart.triggerFor(it, context())
         }
     }
 
@@ -57,7 +58,7 @@ private class TriggerActivity(
 
     override fun dispose(context: ActivityContext) {
         context.viewers.forEach {
-            onStop triggerFor it
+            onStop.triggerFor(it, context())
         }
         activity?.dispose(context)
         activity = null

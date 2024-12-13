@@ -91,6 +91,6 @@ class InteractionIndicatorEntity(
         return Query.findWhere<EntityInteractEventEntry> { it.definition == definition }
             .flatMap { it.triggers }
             .mapNotNull { it.get() }
-            .any { it.criteria matches player }
+            .any { it.criteria.matches(player) }
     }
 }

@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
+import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 
 @Entry("simple_action", "Simple action to modify facts", Colors.RED, "heroicons:bolt-16-solid")
 /**
@@ -23,4 +24,6 @@ class SimpleActionEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-) : ActionEntry
+) : ActionEntry {
+    override fun ActionTrigger.execute() {}
+}

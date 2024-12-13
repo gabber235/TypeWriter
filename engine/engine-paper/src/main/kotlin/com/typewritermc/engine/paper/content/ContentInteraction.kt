@@ -7,7 +7,7 @@ import com.typewritermc.engine.paper.content.components.ItemInteraction
 import com.typewritermc.engine.paper.content.components.ItemInteractionType
 import com.typewritermc.engine.paper.events.ContentEditorEndEvent
 import com.typewritermc.engine.paper.events.ContentEditorStartEvent
-import com.typewritermc.engine.paper.interaction.Interaction
+import com.typewritermc.core.interaction.Interaction
 import com.typewritermc.engine.paper.interaction.PlayerSessionManager
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
