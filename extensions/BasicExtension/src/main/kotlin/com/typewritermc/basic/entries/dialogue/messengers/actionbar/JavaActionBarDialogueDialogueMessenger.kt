@@ -6,6 +6,7 @@ import com.typewritermc.engine.paper.entry.dialogue.*
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.interaction.acceptActionBarMessage
+import com.typewritermc.engine.paper.interaction.chatHistory
 import com.typewritermc.engine.paper.interaction.startBlockingActionBar
 import com.typewritermc.engine.paper.interaction.stopBlockingActionBar
 import com.typewritermc.engine.paper.snippets.snippet
@@ -51,6 +52,10 @@ class JavaActionBarDialogueDialogueMessenger(player: Player, entry: ActionBarDia
         confirmationKey.listen(this, player.uniqueId) {
             completeOrFinish()
         }
+
+        // The player might have had something before this. So we want to clean the chat before sending our message.
+        player.chatHistory.resendMessages(player)
+
 
         player.startBlockingActionBar()
     }
