@@ -26,6 +26,9 @@ Before a player fully loads the server, it is possible for TypeWriter to start t
 To add an option to your sequence, it's best to read the [Options](../01-interactions/01-options.mdx) page. For this tutorial, we will have a `New Option` with a `Start Cinematic` option.
 
 ### Configuring the Criteria
+:::warning[Option]
+If you are using the option from the [waiting for interaction](#waiting-for-interaction), you need to configure the following steps in the option and **NOT** inside the start cinematic.  
+:::
 Now we need to configure the criteria for the cinematic. This can be done by clicking on the `+` icon in the inspector next to the criteria field. Then, you can select the fact you want to use. For this tutorial, we will use a permanent fact called `First Join` with the group set to a player group.
 
 <Image img={require("../../assets/cinematics/first-join-fact.png")} alt="first-join-fact" width={400} />
