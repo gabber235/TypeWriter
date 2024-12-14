@@ -9,10 +9,6 @@ dependencies {
 }
 
 typewriter {
-    engine {
-        version = file("../../version.txt").readText().trim().substringBefore("-beta")
-        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
-    }
     namespace = "typewritermc"
 
     extension {
@@ -22,8 +18,10 @@ typewriter {
             |The RPGRegions Extension is an extension that makes it easy to use RPGRegions in your dialogue.
             |Create dialogues that are triggered when the player enters or leaves a region.
         """.trimMargin()
-
         flag(ExtensionFlag.Deprecated)
+        engineVersion = file("../../version.txt").readText().trim().substringBefore("-beta")
+        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
+
 
         paper {
             dependency("RPGRegions")

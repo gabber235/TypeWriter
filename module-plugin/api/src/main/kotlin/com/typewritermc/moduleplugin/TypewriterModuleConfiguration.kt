@@ -44,22 +44,17 @@ fun TypewriterModuleConfiguration.validate() {
     if (namespace.length !in MIN_NAMESPACE_LENGTH..MAX_NAMESPACE_LENGTH) {
         throw FieldOutsideRangeException("namespace", MIN_NAMESPACE_LENGTH, MAX_NAMESPACE_LENGTH)
     }
+
+    if (engine != null && extension != null) {
+        throw IllegalArgumentException("Cannot have both engine and extension set for the same module.")
+    }
+
     engine?.validate()
     extension?.validate()
 }
 
 @Serializable
-data class TypewriterEngineConfiguration(
-    /**
-     * Version of the engine.
-     * It follows the [Semantic Versioning](https://semver.org/) format.
-     */
-    var version: String = "",
-    /**
-     * Release channel of the engine.
-     * This is used to determine what repository to download the engine from.
-     */
-    var channel: ReleaseChannel = ReleaseChannel.RELEASE,
+class TypewriterEngineConfiguration(
 )
 
 enum class ReleaseChannel(val url: String? = null) {
@@ -69,12 +64,6 @@ enum class ReleaseChannel(val url: String? = null) {
 }
 
 private fun TypewriterEngineConfiguration.validate() {
-    if (version.isBlank()) {
-        throw MissingFieldException("engine.version")
-    }
-    if (!Regex("^([0-9])+\\.([0-9])+\\.([0-9])+\$").matches(version)) {
-        throw IllegalArgumentException("Version must follow the Semantic Versioning format.")
-    }
 }
 
 @Serializable
@@ -91,6 +80,18 @@ data class TypewriterExtensionConfiguration(
      * A longer description of the extension.
      */
     var description: String = "",
+    /**
+     * The engine version of the extension.
+     * This is used to determine which engine version to load the extension for.
+     */
+    var engineVersion: String = "",
+    /**
+     * The release channel to use for the engine and other dependencies.
+     */
+    var channel: ReleaseChannel = ReleaseChannel.RELEASE,
+    /**
+     * The paper extension configuration.
+     */
     var paper: PaperExtensionConfiguration? = null
 ) {
     fun paper(block: PaperExtensionConfiguration.() -> Unit) {
@@ -142,6 +143,13 @@ internal fun TypewriterExtensionConfiguration.validate() {
     }
     if (description.length !in MIN_DESCRIPTION_LENGTH..MAX_DESCRIPTION_LENGTH) {
         throw FieldOutsideRangeException("extension.description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH)
+    }
+
+    if (engineVersion.isBlank()) {
+        throw MissingFieldException("extension.engineVersion")
+    }
+    if (!Regex("^([0-9])+\\.([0-9])+\\.([0-9])+\$").matches(engineVersion)) {
+        throw IllegalArgumentException("Version must follow the Semantic Versioning format.")
     }
 
     paper?.validate()

@@ -4,7 +4,6 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.typewritermc.SharedJsonManager
 import com.typewritermc.core.extension.annotations.TypewriterCommand
 import com.typewritermc.processors.entry.blueprintJson
 import kotlinx.serialization.Serializable
@@ -15,7 +14,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 class TypewriterCommandProcessor(
     private val json: SharedJsonManager,
     private val logger: KSPLogger,
-) : ExtensionPartProcessor {
+) : PartProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(TypewriterCommand::class.qualifiedName!!)
         val commands = symbols.filterIsInstance<KSFunctionDeclaration>()

@@ -7,7 +7,6 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.typewritermc.SharedJsonManager
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.loader.ListenerPriority
@@ -20,7 +19,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 class EntryListenerProcessor(
     private val json: SharedJsonManager,
     private val logger: KSPLogger,
-) : ExtensionPartProcessor {
+) : PartProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(EntryListener::class.qualifiedName!!)
         val listeners = symbols.filterIsInstance<KSFunctionDeclaration>()

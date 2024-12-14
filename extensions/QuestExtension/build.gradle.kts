@@ -4,10 +4,6 @@ dependencies {
 }
 
 typewriter {
-    engine {
-        version = file("../../version.txt").readText().trim().substringBefore("-beta")
-        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
-    }
     namespace = "typewritermc"
 
     extension {
@@ -20,6 +16,9 @@ typewriter {
             |It is **not** necessary to use this extension for quests.
             |It is just a visual novelty.
             """.trimMargin()
+        engineVersion = file("../../version.txt").readText().trim().substringBefore("-beta")
+        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
+
 
         paper()
     }

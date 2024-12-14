@@ -11,6 +11,8 @@ gradleEnterprise {
         termsOfServiceAgree = "yes"
     }
 }
-include("extension-processor")
 includeBuild("../engine")
 include("api")
+include("processor")
+include("engine-processor")
+include("extension-processor")

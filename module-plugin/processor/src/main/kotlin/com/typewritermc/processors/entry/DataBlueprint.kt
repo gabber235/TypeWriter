@@ -390,3 +390,23 @@ class InvalidDefaultValueException(message: String) : Exception(message)
 
 class InvalidKeyTypeException(type: KSType, blueprint: DataBlueprint, supported: String) :
         Exception("Invalid key type for map ${type.fullName}, supported types are $supported, but found $blueprint")
+
+class CouldNotBuildBlueprintException(className: String) :
+    Exception("Could not build blueprint for class $className")
+
+class FailedToGenerateBlueprintException(
+    klass: KSClassDeclaration,
+    cause: Exception,
+) : Exception(
+    """Failed Generating Blueprint for ${klass.fullName}
+    |
+    |Failed to generate blueprint for ${klass.fullName}:
+    |${cause.message}
+    |
+    |Not all types are possible to be serialized to JSON.
+    |Most platform specific types are not supported. Some examples are:
+    | - org.bukkit.Location
+    |
+    |If you think this is a mistake, or don't know how to fix it, please open an issue on the Typewriter Discord.
+|""".trimMargin()
+)
