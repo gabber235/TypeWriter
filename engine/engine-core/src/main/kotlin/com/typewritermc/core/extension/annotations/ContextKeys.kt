@@ -11,3 +11,7 @@ annotation class ContextKeys(val klass: KClass<out EntryContextKey>)
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class KeyType(val type: KClass<*>)
+
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class GlobalKey(val klass: KClass<*>)

@@ -20,7 +20,8 @@ class ContentHandler : TriggerHandler {
                 ContentInteraction(
                     trigger.context,
                     event.player,
-                    trigger.mode
+                    trigger.mode,
+                    event.context
                 )
             )
         }

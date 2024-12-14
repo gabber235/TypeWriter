@@ -15,6 +15,7 @@ import "package:typewriter/widgets/inspector/editors/entry_interaction_context_k
 import "package:typewriter/widgets/inspector/editors/entry_selector.dart";
 import "package:typewriter/widgets/inspector/editors/enum.dart";
 import "package:typewriter/widgets/inspector/editors/generic.dart";
+import "package:typewriter/widgets/inspector/editors/global_context_key.dart";
 import "package:typewriter/widgets/inspector/editors/item.dart";
 import "package:typewriter/widgets/inspector/editors/list.dart";
 import "package:typewriter/widgets/inspector/editors/map.dart";
@@ -68,6 +69,7 @@ List<EditorFilter> editorFilters(Ref ref) => [
       ColorEditorFilter(),
       VariableEditorFilter(),
       GenericEditorFilter(),
+      GlobalContextKeyEditorFilter(),
       WorldEditorFilter(),
       EntryInteractionContextKeyEditorFilter(),
 

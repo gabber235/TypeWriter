@@ -1039,7 +1039,9 @@ class ChangePagePriorityDialogue extends HookConsumerWidget {
     useDelayedExecution(focusNode.requestFocus);
 
     return AlertDialog(
-      title: Text("Change priority of ${pageId.formatted}"),
+      title: Text(
+        "Change priority of ${ref.watch(pageNameProvider(pageId))?.formatted}",
+      ),
       content: FormattedTextField(
         controller: controller,
         focus: focusNode,

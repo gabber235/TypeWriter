@@ -5,10 +5,10 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Tags
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.TriggerEntry
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.matches
-import com.typewritermc.core.interaction.InteractionContext
 import dev.jorel.commandapi.CommandTree
 import org.bukkit.entity.Player
 
@@ -27,7 +27,11 @@ interface CustomCommandEntry : EventEntry {
 interface FireTriggerEventEntry : EventEntry
 
 class Event(val player: Player, val context: InteractionContext, val triggers: List<EventTrigger>) {
-    constructor(player: Player, context: InteractionContext, vararg triggers: EventTrigger) : this(player, context, triggers.toList())
+    constructor(player: Player, context: InteractionContext, vararg triggers: EventTrigger) : this(
+        player,
+        context,
+        triggers.toList()
+    )
 
     operator fun contains(trigger: EventTrigger) = triggers.contains(trigger)
 
@@ -65,7 +69,8 @@ data class EntryTrigger(val ref: Ref<out TriggerableEntry>) : EventTrigger {
 
     constructor(entry: TriggerableEntry) : this(entry.ref())
 
-    override fun canTriggerFor(player: Player, interactionContext: InteractionContext): Boolean = ref.get()?.criteria?.matches(player, interactionContext) ?: false
+    override fun canTriggerFor(player: Player, interactionContext: InteractionContext): Boolean =
+        ref.get()?.criteria?.matches(player, interactionContext) ?: false
 }
 
 data object InteractionEndTrigger : EventTrigger {

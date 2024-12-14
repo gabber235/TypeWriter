@@ -12,12 +12,17 @@ part "extension.g.dart";
 @riverpod
 List<Extension> extensions(Ref ref) => ref.watch(bookProvider).extensions;
 
+@riverpod
+List<GlobalContextKey> globalContextKeys(Ref ref) =>
+    ref.watch(extensionsProvider).expand((e) => e.globalContextKeys).toList();
+
 /// A data model that represents an extension.
 @freezed
 class Extension with _$Extension {
   const factory Extension({
     required ExtensionInfo extension,
     required List<EntryBlueprint> entries,
+    required List<GlobalContextKey> globalContextKeys,
   }) = _Extension;
 
   factory Extension.fromJson(Map<String, dynamic> json) =>
@@ -35,4 +40,16 @@ class ExtensionInfo with _$ExtensionInfo {
 
   factory ExtensionInfo.fromJson(Map<String, dynamic> json) =>
       _$ExtensionInfoFromJson(json);
+}
+
+@freezed
+class GlobalContextKey with _$GlobalContextKey {
+  const factory GlobalContextKey({
+    required String name,
+    required String klassName,
+    required DataBlueprint blueprint,
+  }) = _GlobalContextKey;
+
+  factory GlobalContextKey.fromJson(Map<String, dynamic> json) =>
+      _$GlobalContextKeyFromJson(json);
 }

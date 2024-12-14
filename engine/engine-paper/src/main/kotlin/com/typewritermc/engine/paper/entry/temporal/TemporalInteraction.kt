@@ -26,7 +26,7 @@ import java.time.Duration
 class TemporalInteraction(
     val pageId: String,
     private val player: Player,
-    internal val context: InteractionContext,
+    override val context: InteractionContext,
     val eventTriggers: List<EventTrigger>,
     private val settings: TemporalSettings,
 ) : Interaction {
@@ -142,8 +142,6 @@ fun Player.setTemporalFrame(frame: Int) {
     val interaction = temporalInteraction ?: return
     interaction.playTime(Duration.ofMillis(frame * 50L))
 }
-
-val Player.temporalContext: InteractionContext? get() = temporalInteraction?.context
 
 data class TemporalStartTrigger(
     val pageId: String,

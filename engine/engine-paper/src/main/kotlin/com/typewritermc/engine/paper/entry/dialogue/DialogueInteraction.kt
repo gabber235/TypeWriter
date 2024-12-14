@@ -25,7 +25,7 @@ import java.time.Duration
 
 class DialogueInteraction(
     private val player: Player,
-    internal var context: InteractionContext,
+    override var context: InteractionContext,
     initialEntry: DialogueEntry,
 ) : Interaction, KoinComponent {
     private val _speakers: MutableSet<Ref<SpeakerEntry>> = mutableSetOf()

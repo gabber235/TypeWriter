@@ -1,5 +1,7 @@
 package com.typewritermc.engine.paper.content
 
+import com.typewritermc.core.interaction.Interaction
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.core.utils.failure
 import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.content.components.IntractableItem
@@ -7,7 +9,6 @@ import com.typewritermc.engine.paper.content.components.ItemInteraction
 import com.typewritermc.engine.paper.content.components.ItemInteractionType
 import com.typewritermc.engine.paper.events.ContentEditorEndEvent
 import com.typewritermc.engine.paper.events.ContentEditorStartEvent
-import com.typewritermc.core.interaction.Interaction
 import com.typewritermc.engine.paper.interaction.PlayerSessionManager
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
@@ -30,9 +31,10 @@ import java.time.Duration
 import java.util.concurrent.ConcurrentLinkedDeque
 
 class ContentInteraction(
-    val context: ContentContext,
+    val contentContext: ContentContext,
     val player: Player,
     mode: ContentMode,
+    override val context: InteractionContext,
 ) : Interaction, Listener {
     private val stack = ConcurrentLinkedDeque(listOf(mode))
     private var items = emptyMap<Int, IntractableItem>()

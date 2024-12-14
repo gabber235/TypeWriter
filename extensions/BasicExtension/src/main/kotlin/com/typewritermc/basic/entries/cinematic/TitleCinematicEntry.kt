@@ -8,8 +8,8 @@ import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
-import com.typewritermc.engine.paper.entry.temporal.temporalContext
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
+import com.typewritermc.engine.paper.interaction.interactionContext
 import com.typewritermc.engine.paper.utils.asMini
 import net.kyori.adventure.title.Title
 import org.bukkit.entity.Player
@@ -68,7 +68,7 @@ class TitleCinematicAction(
             Duration.of(segment.fadeOut, Tick.tick())
         )
 
-        val context = player.temporalContext
+        val context = player.interactionContext
         val title: Title = Title.title(
             segment.title.get(player, context).parsePlaceholders(player).asMini(),
             segment.subtitle.get(player, context).parsePlaceholders(player).asMini(),
