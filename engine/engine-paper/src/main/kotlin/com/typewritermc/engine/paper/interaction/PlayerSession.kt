@@ -103,6 +103,7 @@ class PlayerSession(val player: Player) : KoinComponent {
     private suspend fun onEvent(events: List<Event>) {
         var endInteraction = false
         val nextInteractions = mutableListOf<Interaction>()
+        val nextBounds = mutableListOf<InteractionBound>()
         val todo = ArrayDeque(events.map(Event::filterAllowedTriggers))
 
         // To prevent infinite loops, we limit the number of recursive calls.
@@ -122,6 +123,7 @@ class PlayerSession(val player: Player) : KoinComponent {
                         is TriggerContinuation.Append -> addingEvents.addAll(this.events)
                         is TriggerContinuation.StartInteraction -> nextInteractions.add(this.interaction)
                         TriggerContinuation.EndInteraction -> endInteraction = true
+                        is TriggerContinuation.StartInteractionBound -> nextBounds.add(this.bound)
                         is TriggerContinuation.Multi -> this.continuations.forEach { it.apply() }
                     }
                 }
@@ -140,17 +142,23 @@ class PlayerSession(val player: Player) : KoinComponent {
             return
         }
 
+        val nextBound = nextBounds.maxByOrNull { it.priority } ?: InteractionBound.Empty
+        val scope = scope
+        if (scope != null && (scope.bound.priority) <= nextBound.priority) {
+            scope.swapBound(nextBound)
+        }
+
         val nextInteraction = nextInteractions.maxByOrNull { it.priority } ?: return
-        // Only more or equal important interactions should be started.
-        if (nextInteraction.priority < (interaction?.priority ?: 0)) {
+        // Only more or equal important interactions should be overridden.
+        if (nextInteraction.priority < (interaction?.priority ?: 0) && !endInteraction) {
             return
         }
 
         if (scope == null) {
-            scope = InteractionScope(nextInteraction)
-            scope?.initialize()
+            this.scope = InteractionScope(nextInteraction, nextBound)
+            this.scope?.initialize()
         } else {
-            scope?.swapInteraction(nextInteraction)
+            this.scope?.swapInteraction(nextInteraction)
         }
     }
 

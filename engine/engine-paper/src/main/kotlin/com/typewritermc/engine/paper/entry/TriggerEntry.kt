@@ -5,6 +5,7 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.interaction.EntryContextBuilder
+import com.typewritermc.core.interaction.InteractionBound
 import com.typewritermc.engine.paper.entry.dialogue.DialogueTrigger
 import com.typewritermc.engine.paper.entry.entries.EntryTrigger
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
@@ -30,6 +31,11 @@ interface TriggerableEntry : TriggerEntry {
 
     @Help("The modifiers that will be applied when this entry is triggered")
     val modifiers: List<Modifier>
+}
+
+@Tags("interaction_bound")
+interface InteractionBoundEntry : TriggerableEntry {
+    fun build(player: Player): InteractionBound
 }
 
 /**

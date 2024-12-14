@@ -108,6 +108,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
 
             factory() { FactTracker(it.get()) } bind SessionTracker::class
             single() { InteractionTriggerHandler() } bind TriggerHandler::class
+            single() { InteractionBoundHandler() } bind TriggerHandler::class
             single() { ActionHandler() } bind TriggerHandler::class
             single() { ContentHandler() } bind TriggerHandler::class
             single() { DialogueHandler() } bind TriggerHandler::class
@@ -119,7 +120,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         }
         startKoin {
             modules(modules, TypewriterCore.module, dataSerializerModule)
-            logger(MinecraftLogger(logger))
+//            logger(MinecraftLogger(logger))
         }
 
         CommandAPI.onLoad(CommandAPIBukkitConfig(this).usePluginNamespace().skipReloadDatapacks(true))

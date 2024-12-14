@@ -9,16 +9,19 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.*
+import com.typewritermc.core.interaction.InteractionBoundState
+import com.typewritermc.core.interaction.InteractionBoundStateOverrideSubscription
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
-import com.typewritermc.engine.paper.entry.temporal.temporalContext
 import com.typewritermc.engine.paper.extensions.packetevents.meta
 import com.typewritermc.engine.paper.extensions.packetevents.spectateEntity
 import com.typewritermc.engine.paper.extensions.packetevents.stopSpectatingEntity
 import com.typewritermc.engine.paper.interaction.InterceptionBundle
+import com.typewritermc.engine.paper.interaction.cancel
 import com.typewritermc.engine.paper.interaction.interceptPackets
+import com.typewritermc.engine.paper.interaction.overrideBoundState
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.*
@@ -125,6 +128,7 @@ class CameraCinematicAction(
     private var originalState: PlayerState? = null
     private var interceptor: InterceptionBundle? = null
     private var listener: Listener? = null
+    private var boundStateSubscription: InteractionBoundStateOverrideSubscription? = null
 
     override suspend fun setup() {
         action = if (player.isFloodgate) {
@@ -233,6 +237,9 @@ class CameraCinematicAction(
                 packet.position = packet.position.withY(packet.position.y - 500)
             }
         }
+        // Because we are teleporting the player away,
+        // we don't want to quit the temporal interaction because we went out of bounds.
+        boundStateSubscription = overrideBoundState(InteractionBoundState.IGNORING, priority = Int.MAX_VALUE)
     }
 
     private suspend fun Player.teardown() {
@@ -249,6 +256,11 @@ class CameraCinematicAction(
                 restoreInventory()
             }
         }
+
+        // Do this after restoring the player's state.
+        // To make sure the player is where they were before the bound got overridden.
+        boundStateSubscription?.cancel()
+
         originalState = null
     }
 
@@ -342,7 +354,7 @@ private class DisplayCameraAction(
 
     override suspend fun switchSegment(newSegment: CameraSegment) {
         val oldWorld = path.first().position.world.identifier
-        val newWorld = newSegment.path.first().location.get(player, player.temporalContext).world.identifier
+        val newWorld = newSegment.path.first().location.get(player).world.identifier
 
         setupPath(newSegment)
         if (oldWorld == newWorld) {
@@ -476,7 +488,7 @@ private fun List<PathPoint>.transform(
 
     if (size == 1) {
         val pathPoint = first()
-        val location = pathPoint.location.get(player, player.temporalContext).run(locationTransformer)
+        val location = pathPoint.location.get(player).run(locationTransformer)
         return listOf(PointSegment(0, totalDuration, location))
     }
 
@@ -499,7 +511,11 @@ private fun List<PathPoint>.transform(
         var currentFrame = 0
         return map {
             val endFrame = currentFrame + it.duration.orElse(0)
-            val segment = PointSegment(currentFrame, endFrame, it.location.get(player, player.temporalContext).run(locationTransformer))
+            val segment = PointSegment(
+                currentFrame,
+                endFrame,
+                it.location.get(player).run(locationTransformer)
+            )
             currentFrame = endFrame
             segment
         }
@@ -520,7 +536,11 @@ private fun List<PathPoint>.transform(
             }
         }
         val endFrame = currentFrame + duration
-        val segment = PointSegment(currentFrame, endFrame, pathPoint.location.get(player, player.temporalContext).run(locationTransformer))
+        val segment = PointSegment(
+            currentFrame,
+            endFrame,
+            pathPoint.location.get(player).run(locationTransformer)
+        )
         currentFrame = endFrame
         segment
     }
