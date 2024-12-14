@@ -6,6 +6,7 @@ import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.core.utils.point.Generic
 import com.typewritermc.engine.paper.entry.StaticEntry
+import com.typewritermc.engine.paper.interaction.interactionContext
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -38,7 +39,7 @@ inline fun <reified T> VarContext<*>.getData(): T? {
 }
 
 sealed interface Var<T : Any> {
-    fun get(player: Player, interactionContext: InteractionContext? = null): T
+    fun get(player: Player, interactionContext: InteractionContext? = player.interactionContext): T
 }
 
 @OptIn(ExperimentalContracts::class)

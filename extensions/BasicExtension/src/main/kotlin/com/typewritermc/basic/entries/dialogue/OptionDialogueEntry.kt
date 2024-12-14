@@ -44,5 +44,5 @@ data class Option(
     @Help("The triggers to fire when this option is chosen.")
     val triggers: List<Ref<TriggerableEntry>> = emptyList()
 ) {
-    val eventTriggers: List<EventTrigger> = triggers.map(::EntryTrigger)
+    val eventTriggers: List<EventTrigger> get() = triggers.map(::EntryTrigger)
 }

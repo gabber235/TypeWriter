@@ -22,6 +22,8 @@ Extension _$ExtensionFromJson(Map<String, dynamic> json) {
 mixin _$Extension {
   ExtensionInfo get extension => throw _privateConstructorUsedError;
   List<EntryBlueprint> get entries => throw _privateConstructorUsedError;
+  List<GlobalContextKey> get globalContextKeys =>
+      throw _privateConstructorUsedError;
 
   /// Serializes this Extension to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -38,7 +40,10 @@ abstract class $ExtensionCopyWith<$Res> {
   factory $ExtensionCopyWith(Extension value, $Res Function(Extension) then) =
       _$ExtensionCopyWithImpl<$Res, Extension>;
   @useResult
-  $Res call({ExtensionInfo extension, List<EntryBlueprint> entries});
+  $Res call(
+      {ExtensionInfo extension,
+      List<EntryBlueprint> entries,
+      List<GlobalContextKey> globalContextKeys});
 
   $ExtensionInfoCopyWith<$Res> get extension;
 }
@@ -60,6 +65,7 @@ class _$ExtensionCopyWithImpl<$Res, $Val extends Extension>
   $Res call({
     Object? extension = null,
     Object? entries = null,
+    Object? globalContextKeys = null,
   }) {
     return _then(_value.copyWith(
       extension: null == extension
@@ -70,6 +76,10 @@ class _$ExtensionCopyWithImpl<$Res, $Val extends Extension>
           ? _value.entries
           : entries // ignore: cast_nullable_to_non_nullable
               as List<EntryBlueprint>,
+      globalContextKeys: null == globalContextKeys
+          ? _value.globalContextKeys
+          : globalContextKeys // ignore: cast_nullable_to_non_nullable
+              as List<GlobalContextKey>,
     ) as $Val);
   }
 
@@ -92,7 +102,10 @@ abstract class _$$ExtensionImplCopyWith<$Res>
       __$$ExtensionImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ExtensionInfo extension, List<EntryBlueprint> entries});
+  $Res call(
+      {ExtensionInfo extension,
+      List<EntryBlueprint> entries,
+      List<GlobalContextKey> globalContextKeys});
 
   @override
   $ExtensionInfoCopyWith<$Res> get extension;
@@ -113,6 +126,7 @@ class __$$ExtensionImplCopyWithImpl<$Res>
   $Res call({
     Object? extension = null,
     Object? entries = null,
+    Object? globalContextKeys = null,
   }) {
     return _then(_$ExtensionImpl(
       extension: null == extension
@@ -123,6 +137,10 @@ class __$$ExtensionImplCopyWithImpl<$Res>
           ? _value._entries
           : entries // ignore: cast_nullable_to_non_nullable
               as List<EntryBlueprint>,
+      globalContextKeys: null == globalContextKeys
+          ? _value._globalContextKeys
+          : globalContextKeys // ignore: cast_nullable_to_non_nullable
+              as List<GlobalContextKey>,
     ));
   }
 }
@@ -131,8 +149,11 @@ class __$$ExtensionImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
   const _$ExtensionImpl(
-      {required this.extension, required final List<EntryBlueprint> entries})
-      : _entries = entries;
+      {required this.extension,
+      required final List<EntryBlueprint> entries,
+      required final List<GlobalContextKey> globalContextKeys})
+      : _entries = entries,
+        _globalContextKeys = globalContextKeys;
 
   factory _$ExtensionImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExtensionImplFromJson(json);
@@ -147,9 +168,18 @@ class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
     return EqualUnmodifiableListView(_entries);
   }
 
+  final List<GlobalContextKey> _globalContextKeys;
+  @override
+  List<GlobalContextKey> get globalContextKeys {
+    if (_globalContextKeys is EqualUnmodifiableListView)
+      return _globalContextKeys;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_globalContextKeys);
+  }
+
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Extension(extension: $extension, entries: $entries)';
+    return 'Extension(extension: $extension, entries: $entries, globalContextKeys: $globalContextKeys)';
   }
 
   @override
@@ -158,7 +188,8 @@ class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
     properties
       ..add(DiagnosticsProperty('type', 'Extension'))
       ..add(DiagnosticsProperty('extension', extension))
-      ..add(DiagnosticsProperty('entries', entries));
+      ..add(DiagnosticsProperty('entries', entries))
+      ..add(DiagnosticsProperty('globalContextKeys', globalContextKeys));
   }
 
   @override
@@ -168,13 +199,18 @@ class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
             other is _$ExtensionImpl &&
             (identical(other.extension, extension) ||
                 other.extension == extension) &&
-            const DeepCollectionEquality().equals(other._entries, _entries));
+            const DeepCollectionEquality().equals(other._entries, _entries) &&
+            const DeepCollectionEquality()
+                .equals(other._globalContextKeys, _globalContextKeys));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, extension, const DeepCollectionEquality().hash(_entries));
+      runtimeType,
+      extension,
+      const DeepCollectionEquality().hash(_entries),
+      const DeepCollectionEquality().hash(_globalContextKeys));
 
   /// Create a copy of Extension
   /// with the given fields replaced by the non-null parameter values.
@@ -194,8 +230,10 @@ class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
 
 abstract class _Extension implements Extension {
   const factory _Extension(
-      {required final ExtensionInfo extension,
-      required final List<EntryBlueprint> entries}) = _$ExtensionImpl;
+          {required final ExtensionInfo extension,
+          required final List<EntryBlueprint> entries,
+          required final List<GlobalContextKey> globalContextKeys}) =
+      _$ExtensionImpl;
 
   factory _Extension.fromJson(Map<String, dynamic> json) =
       _$ExtensionImpl.fromJson;
@@ -204,6 +242,8 @@ abstract class _Extension implements Extension {
   ExtensionInfo get extension;
   @override
   List<EntryBlueprint> get entries;
+  @override
+  List<GlobalContextKey> get globalContextKeys;
 
   /// Create a copy of Extension
   /// with the given fields replaced by the non-null parameter values.
@@ -439,5 +479,220 @@ abstract class _ExtensionInfo implements ExtensionInfo {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ExtensionInfoImplCopyWith<_$ExtensionInfoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+GlobalContextKey _$GlobalContextKeyFromJson(Map<String, dynamic> json) {
+  return _GlobalContextKey.fromJson(json);
+}
+
+/// @nodoc
+mixin _$GlobalContextKey {
+  String get name => throw _privateConstructorUsedError;
+  String get klassName => throw _privateConstructorUsedError;
+  DataBlueprint get blueprint => throw _privateConstructorUsedError;
+
+  /// Serializes this GlobalContextKey to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of GlobalContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $GlobalContextKeyCopyWith<GlobalContextKey> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GlobalContextKeyCopyWith<$Res> {
+  factory $GlobalContextKeyCopyWith(
+          GlobalContextKey value, $Res Function(GlobalContextKey) then) =
+      _$GlobalContextKeyCopyWithImpl<$Res, GlobalContextKey>;
+  @useResult
+  $Res call({String name, String klassName, DataBlueprint blueprint});
+
+  $DataBlueprintCopyWith<$Res> get blueprint;
+}
+
+/// @nodoc
+class _$GlobalContextKeyCopyWithImpl<$Res, $Val extends GlobalContextKey>
+    implements $GlobalContextKeyCopyWith<$Res> {
+  _$GlobalContextKeyCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of GlobalContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? klassName = null,
+    Object? blueprint = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      klassName: null == klassName
+          ? _value.klassName
+          : klassName // ignore: cast_nullable_to_non_nullable
+              as String,
+      blueprint: null == blueprint
+          ? _value.blueprint
+          : blueprint // ignore: cast_nullable_to_non_nullable
+              as DataBlueprint,
+    ) as $Val);
+  }
+
+  /// Create a copy of GlobalContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DataBlueprintCopyWith<$Res> get blueprint {
+    return $DataBlueprintCopyWith<$Res>(_value.blueprint, (value) {
+      return _then(_value.copyWith(blueprint: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$GlobalContextKeyImplCopyWith<$Res>
+    implements $GlobalContextKeyCopyWith<$Res> {
+  factory _$$GlobalContextKeyImplCopyWith(_$GlobalContextKeyImpl value,
+          $Res Function(_$GlobalContextKeyImpl) then) =
+      __$$GlobalContextKeyImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, String klassName, DataBlueprint blueprint});
+
+  @override
+  $DataBlueprintCopyWith<$Res> get blueprint;
+}
+
+/// @nodoc
+class __$$GlobalContextKeyImplCopyWithImpl<$Res>
+    extends _$GlobalContextKeyCopyWithImpl<$Res, _$GlobalContextKeyImpl>
+    implements _$$GlobalContextKeyImplCopyWith<$Res> {
+  __$$GlobalContextKeyImplCopyWithImpl(_$GlobalContextKeyImpl _value,
+      $Res Function(_$GlobalContextKeyImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of GlobalContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? klassName = null,
+    Object? blueprint = null,
+  }) {
+    return _then(_$GlobalContextKeyImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      klassName: null == klassName
+          ? _value.klassName
+          : klassName // ignore: cast_nullable_to_non_nullable
+              as String,
+      blueprint: null == blueprint
+          ? _value.blueprint
+          : blueprint // ignore: cast_nullable_to_non_nullable
+              as DataBlueprint,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$GlobalContextKeyImpl
+    with DiagnosticableTreeMixin
+    implements _GlobalContextKey {
+  const _$GlobalContextKeyImpl(
+      {required this.name, required this.klassName, required this.blueprint});
+
+  factory _$GlobalContextKeyImpl.fromJson(Map<String, dynamic> json) =>
+      _$$GlobalContextKeyImplFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String klassName;
+  @override
+  final DataBlueprint blueprint;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'GlobalContextKey(name: $name, klassName: $klassName, blueprint: $blueprint)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'GlobalContextKey'))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('klassName', klassName))
+      ..add(DiagnosticsProperty('blueprint', blueprint));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GlobalContextKeyImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.klassName, klassName) ||
+                other.klassName == klassName) &&
+            (identical(other.blueprint, blueprint) ||
+                other.blueprint == blueprint));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, klassName, blueprint);
+
+  /// Create a copy of GlobalContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GlobalContextKeyImplCopyWith<_$GlobalContextKeyImpl> get copyWith =>
+      __$$GlobalContextKeyImplCopyWithImpl<_$GlobalContextKeyImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$GlobalContextKeyImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _GlobalContextKey implements GlobalContextKey {
+  const factory _GlobalContextKey(
+      {required final String name,
+      required final String klassName,
+      required final DataBlueprint blueprint}) = _$GlobalContextKeyImpl;
+
+  factory _GlobalContextKey.fromJson(Map<String, dynamic> json) =
+      _$GlobalContextKeyImpl.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get klassName;
+  @override
+  DataBlueprint get blueprint;
+
+  /// Create a copy of GlobalContextKey
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GlobalContextKeyImplCopyWith<_$GlobalContextKeyImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

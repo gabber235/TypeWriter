@@ -1,8 +1,6 @@
 package com.typewritermc.engine.paper.interaction
 
-import com.typewritermc.core.interaction.Interaction
-import com.typewritermc.core.interaction.InteractionScope
-import com.typewritermc.core.interaction.SessionTracker
+import com.typewritermc.core.interaction.*
 import com.typewritermc.core.utils.getAll
 import com.typewritermc.engine.paper.entry.entries.Event
 import com.typewritermc.engine.paper.logger
@@ -14,6 +12,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
+import org.koin.java.KoinJavaComponent
 import java.time.Duration
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -23,7 +22,7 @@ import kotlin.reflect.safeCast
 class PlayerSession(val player: Player) : KoinComponent {
     private var job: Job? = null
 
-    private var scope: InteractionScope? = null
+    internal var scope: InteractionScope? = null
     val interaction: Interaction? get() = scope?.interaction
 
     private var trackers: List<SessionTracker> = emptyList()
@@ -89,7 +88,7 @@ class PlayerSession(val player: Player) : KoinComponent {
     }
 
     suspend fun tick(deltaTime: Duration) {
-        interaction?.tick(deltaTime)
+        scope?.tick(deltaTime)
         trackers.forEach { it.tick() }
     }
 
@@ -165,3 +164,14 @@ class PlayerSession(val player: Player) : KoinComponent {
         trackers.forEach { it.teardown() }
     }
 }
+
+internal val Player.interactionScope: InteractionScope?
+    get() = with(KoinJavaComponent.get<PlayerSessionManager>(PlayerSessionManager::class.java)) {
+        session?.scope
+    }
+
+
+val Player.interactionContext: InteractionContext?
+    get() = with(KoinJavaComponent.get<PlayerSessionManager>(PlayerSessionManager::class.java)) {
+        session?.interaction?.context
+    }

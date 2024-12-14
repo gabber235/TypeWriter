@@ -12,6 +12,7 @@ import kotlin.reflect.safeCast
 
 interface Interaction {
     val priority: Int
+    val context: InteractionContext
     suspend fun initialize(): Result<Unit>
     suspend fun tick(deltaTime: Duration)
     suspend fun teardown(force: Boolean = false)
@@ -63,6 +64,9 @@ interface EntryContextKey {
     }
 }
 
+@AlgebraicTypeInfo("global", Colors.RED, "mdi:application-variable")
+open class GlobalContextKey<T : Any>(override val klass: KClass<T>) : InteractionContextKey<T>
+
 class InteractionContextBuilder {
     private val data = mutableMapOf<InteractionContextKey<*>, Any>()
 
@@ -70,7 +74,7 @@ class InteractionContextBuilder {
         data[key] = value
     }
 
-    infix fun <T : Any> InteractionContextKey<T>.to(value: T) {
+    infix fun <T : Any> InteractionContextKey<T>.withValue(value: T) {
         put(this, value)
     }
 
@@ -110,7 +114,7 @@ class EntryInteractionContextBuilder {
         data[key] = value
     }
 
-    infix fun <T : Any> EntryContextKey.to(value: T) {
+    infix fun <T : Any> EntryContextKey.withValue(value: T) {
         put(this, value)
     }
 

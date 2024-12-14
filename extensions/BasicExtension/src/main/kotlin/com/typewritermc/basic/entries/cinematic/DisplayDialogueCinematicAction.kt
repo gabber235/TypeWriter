@@ -6,7 +6,6 @@ import com.typewritermc.core.extension.annotations.MultiLine
 import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.engine.paper.entry.dialogue.playSpeakerSound
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.temporal.temporalContext
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.EXP
 import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.LEVEL
@@ -113,7 +112,7 @@ class DisplayDialogueCinematicAction(
             player.exp = 1f
             player.playSpeakerSound(speaker)
             previousSegment = segment
-            displayText = segment.text.get(player, player.temporalContext).parsePlaceholders(player)
+            displayText = segment.text.get(player).parsePlaceholders(player)
         }
 
         val percentage = segment percentageAt frame
@@ -129,7 +128,7 @@ class DisplayDialogueCinematicAction(
             if (!needsDisplay) return
         }
 
-        display(player, speaker?.displayName?.get(player, player.temporalContext)?.parsePlaceholders(player) ?: "", displayText, displayPercentage)
+        display(player, speaker?.displayName?.get(player)?.parsePlaceholders(player) ?: "", displayText, displayPercentage)
     }
 
     override suspend fun teardown() {

@@ -16,7 +16,7 @@ import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.EntryTrigger
 import com.typewritermc.engine.paper.entry.entries.Segment
 import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
-import com.typewritermc.engine.paper.entry.temporal.temporalContext
+import com.typewritermc.engine.paper.interaction.interactionContext
 import org.bukkit.entity.Player
 
 @Entry("trigger_sequence_cinematic", "A sequence of triggers to run", Colors.PURPLE, "fa-solid:play")
@@ -64,7 +64,7 @@ class TriggerSequenceAction(
         super.startSegment(segment)
 
         val entry = segment.trigger.get() ?: return
-        val context = player.temporalContext ?: context()
+        val context = player.interactionContext ?: context()
         EntryTrigger(entry).triggerFor(player, context)
     }
 }
