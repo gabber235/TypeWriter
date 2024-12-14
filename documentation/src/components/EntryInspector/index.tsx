@@ -369,6 +369,9 @@ function CustomFieldInspector({
     if (editor === "duration") {
         return <DurationField duration={value} path={path} />;
     }
+    if (editor === "ref") {
+        return <EntryReferenceField entryId={value} pages={pages} path={path} />;
+    }
     if (editor === "soundId") {
         return <SoundIdField {...value} path={path} />;
     }
@@ -637,7 +640,9 @@ function DurationField({ duration, path }: { duration: number; path: string }) {
 function SoundIdField({ value, path }: { value: string; path: string }) {
     return <SimpleValueField value={value} icon="mdi:volume-high" name={path} />;
 }
-
+function QuestField({ value, path }: { value: string; path: string }) {
+    return <SimpleValueField value={value} icon="mdi:book" name={path} />;
+}
 interface SoundSourceFieldProps {
     type: "self" | "emitter" | "location";
     entryId: string;
