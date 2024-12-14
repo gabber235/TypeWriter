@@ -5,6 +5,7 @@ difficulty: Normal
 import Player from "@site/src/components/Player";
 import Image from "@site/src/components/Image";
 import EntrySearch from "@site/src/components/EntrySearch";
+import ActionButton from "@site/src/components/ActionButtons";
 
 # Adding entities
 
@@ -34,7 +35,7 @@ Now we need to add a segment to our track. You can do this by clicking in the in
 In the segment, we now need to add an artifact. You can do this by clicking on `Select a entity_cinematic_artifact` and selecting your artifact, or create one by clicking on `Add Entity Cinematic Artifact`. Then select or create your static page.
 
 ### Requesting the content mode.
-Now, back on the cinematic page, click on the camera icon in the inspector just above the artifact. This will open the content mode in Minecraft. If you like, you can read what the items do in your inventory just by hovering over them with your mouse, but we will just use the book for now.
+Now, back on the cinematic page, click on the <ActionButton button='capture'/> icon in the inspector just above the artifact. This will open the content mode in Minecraft. If you like, you can read what the items do in your inventory just by hovering over them with your mouse, but we will just use the book for now.
 By clicking on the book, TypeWriter will start recording your movements and items that you were holding before you requested the content mode.
 
 #### Recording the NPC
