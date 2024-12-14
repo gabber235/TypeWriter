@@ -5,15 +5,16 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientIn
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.entries.ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.interaction.GlobalContextKey
 import com.typewritermc.core.interaction.context
-import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EntityDefinitionEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
+import com.typewritermc.engine.paper.entry.startDialogueWithOrNextDialogue
 import com.typewritermc.engine.paper.events.AsyncEntityDefinitionInteract
 
 @Entry(
@@ -39,5 +40,11 @@ class EntityInteractEventEntry(
 fun onEntityInteract(event: AsyncEntityDefinitionInteract, query: Query<EntityInteractEventEntry>) {
     if (event.hand != InteractionHand.MAIN_HAND || event.action == WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT) return
     val definition = event.definition.ref()
-    query.findWhere {it.definition == definition }.startDialogueWithOrNextDialogue(event.player, context())
+
+    query.findWhere { it.definition == definition }.startDialogueWithOrNextDialogue(event.player, context {
+        val instance = event.instance
+        InteractingEntityInstance withValue instance.ref()
+    })
 }
+
+object InteractingEntityInstance : GlobalContextKey<Ref<*>>(Ref::class)

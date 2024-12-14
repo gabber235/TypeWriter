@@ -7,7 +7,6 @@ import com.typewritermc.engine.paper.entry.entries.EntityInstanceEntry
 import com.typewritermc.engine.paper.entry.entries.PropertySupplier
 import com.typewritermc.engine.paper.entry.entries.TickableDisplay
 import com.typewritermc.engine.paper.utils.config
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -15,12 +14,12 @@ import java.util.concurrent.ConcurrentHashMap
 val entityShowRange by config("entity.show-range", 50.0, "The range at which entities are shown")
 
 class SharedActivityEntityDisplay(
-    private val ref: Ref<out EntityInstanceEntry>,
+    override val instanceEntryRef: Ref<out EntityInstanceEntry>,
     override val creator: EntityCreator,
     private val activityCreators: ActivityCreator,
     private val suppliers: List<Pair<PropertySupplier<*>, Int>>,
     private val spawnPosition: Position,
-) : AudienceFilter(ref), TickableDisplay, ActivityEntityDisplay {
+) : AudienceFilter(instanceEntryRef), TickableDisplay, ActivityEntityDisplay {
     private var activityManager: ActivityManager<SharedActivityContext>? = null
     private val entities = ConcurrentHashMap<UUID, DisplayEntity>()
 
@@ -32,7 +31,7 @@ class SharedActivityEntityDisplay(
 
     override fun initialize() {
         super.initialize()
-        val context = SharedActivityContext(ref, players)
+        val context = SharedActivityContext(instanceEntryRef, players)
         activityManager =
             ActivityManager(activityCreators.create(context, spawnPosition.toProperty()))
         activityManager?.initialize(context)
@@ -54,7 +53,7 @@ class SharedActivityEntityDisplay(
         // But there is no real solution to this.
         // So we pick the first entity's state and use to try and keep the state consistent.
         val entityState = entities.values.firstOrNull()?.state ?: EntityState()
-        activityManager?.tick(SharedActivityContext(ref, players, entityState))
+        activityManager?.tick(SharedActivityContext(instanceEntryRef, players, entityState))
         entities.values.forEach { it.tick() }
     }
 
@@ -67,7 +66,7 @@ class SharedActivityEntityDisplay(
         super.dispose()
         entities.values.forEach { it.dispose() }
         entities.clear()
-        activityManager?.dispose(SharedActivityContext(ref, players))
+        activityManager?.dispose(SharedActivityContext(instanceEntryRef, players))
         activityManager = null
     }
 
@@ -76,7 +75,7 @@ class SharedActivityEntityDisplay(
     }
 
     override fun position(playerId: UUID): Position? = activityManager?.position
-
+    override fun entityState(playerId: UUID): EntityState = entities[playerId]?.state ?: EntityState()
     override fun canView(playerId: UUID): Boolean = canConsider(playerId)
 
     override fun entityId(playerId: UUID): Int {

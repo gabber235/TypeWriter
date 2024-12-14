@@ -7,7 +7,6 @@ import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.GenericEntityActivityEntry
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.isLookable
-import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -142,6 +141,10 @@ fun updateLookDirection(
     val pitch = smoothDamp(current.pitch, target.pitch, pitchVelocity, smoothTime)
 
     return yaw to pitch
+}
+
+fun normalizeYaw(yaw: Float): Float {
+    return (yaw + 180) % 360 - 180
 }
 
 class Velocity(var value: Float)
