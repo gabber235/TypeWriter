@@ -9,10 +9,6 @@ dependencies {
 }
 
 typewriter {
-    engine {
-        version = file("../../version.txt").readText().trim().substringBefore("-beta")
-        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
-    }
     namespace = "typewritermc"
 
     extension {
@@ -22,8 +18,10 @@ typewriter {
             |The MythicMobs Extension allows you to create MyticMobs, and trigger Skills from Typewriter.
             |Create cool particles during cinematics or have dialgues triggered when interacting with a MythicMob.
         """.trimMargin()
-
         flag(ExtensionFlag.Deprecated)
+        engineVersion = file("../../version.txt").readText().trim().substringBefore("-beta")
+        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
+
 
         paper {
             dependency("MythicMobs")

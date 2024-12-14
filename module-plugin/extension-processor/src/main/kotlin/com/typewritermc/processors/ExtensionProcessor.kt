@@ -4,7 +4,6 @@ import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFile
-import com.typewritermc.SharedJsonManager
 import com.typewritermc.moduleplugin.TypewriterModuleConfiguration
 import com.typewritermc.processors.entry.EntryProcessor
 import kotlinx.serialization.json.*
@@ -17,7 +16,7 @@ class ExtensionProcessor(
     private val pluginVersion: String,
     private val version: String,
     private val configuration: TypewriterModuleConfiguration,
-    private vararg val processors: ExtensionPartProcessor,
+    private vararg val processors: PartProcessor,
 ) : SymbolProcessor {
     private var dependencies = Dependencies(false)
     override fun process(resolver: Resolver): List<KSAnnotated> {
@@ -34,7 +33,7 @@ class ExtensionProcessor(
         sharedJsonManager.updateSection(
             "extension", JsonObject(
                 extensionInfo + mapOf(
-                    "engineVersion" to JsonPrimitive(configuration.engine?.version ?: "0.0.0"),
+                    "engineVersion" to JsonPrimitive(extension.engineVersion),
                     "pluginVersion" to JsonPrimitive(pluginVersion),
                     "version" to JsonPrimitive(version),
                 )
@@ -64,9 +63,6 @@ object EmptyProcessor : SymbolProcessor {
     override fun finish() {}
 }
 
-interface ExtensionPartProcessor {
-    fun process(resolver: Resolver): List<KSAnnotated>
-}
 
 class ExtensionProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
@@ -96,6 +92,7 @@ class ExtensionProcessorProvider : SymbolProcessorProvider {
             TypewriterCommandProcessor(sharedJsonManager, logger),
             DialogueMessengerProcessor(sharedJsonManager, logger),
             DependencyInjectionProcessor(sharedJsonManager, logger),
+            GlobalContextKeysProcessor(sharedJsonManager, logger),
         )
     }
 }

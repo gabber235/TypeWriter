@@ -23,7 +23,8 @@ object MaterialPropertiesModifierComputer : DataModifierComputer<MaterialPropert
             return failure("MaterialProperties annotation can only be used materials (not on ${blueprint.editor})")
         }
 
-        return ok(DataModifier.Modifier(
+        return ok(
+            DataModifier.Modifier(
             "material_properties",
             annotation.properties.joinToString(";") { it.name.lowercase() }
         ))

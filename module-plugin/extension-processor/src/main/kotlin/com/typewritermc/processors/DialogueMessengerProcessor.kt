@@ -6,7 +6,6 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.typewritermc.SharedJsonManager
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.processors.entry.blueprintJson
@@ -18,7 +17,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 class DialogueMessengerProcessor(
     private val json: SharedJsonManager,
     private val logger: KSPLogger,
-) : ExtensionPartProcessor {
+) : PartProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(Messenger::class.qualifiedName!!)
         val messengers = symbols.filterIsInstance<KSClassDeclaration>()

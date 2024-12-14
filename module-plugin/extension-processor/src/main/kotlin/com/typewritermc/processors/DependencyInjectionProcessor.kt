@@ -8,7 +8,6 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.typewritermc.SharedJsonManager
 import com.typewritermc.core.extension.annotations.Factory
 import com.typewritermc.core.extension.annotations.Named
 import com.typewritermc.core.extension.annotations.Singleton
@@ -22,7 +21,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 class DependencyInjectionProcessor(
     private val json: SharedJsonManager,
     private val logger: KSPLogger,
-) : ExtensionPartProcessor {
+) : PartProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val singletons = resolver.getSymbolsWithAnnotation(Singleton::class.qualifiedName!!).toList()
         val factories = resolver.getSymbolsWithAnnotation(Factory::class.qualifiedName!!).toList()

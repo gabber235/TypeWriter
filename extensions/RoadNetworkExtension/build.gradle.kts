@@ -4,10 +4,6 @@ dependencies {
 }
 
 typewriter {
-    engine {
-        version = file("../../version.txt").readText().trim().substringBefore("-beta")
-        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
-    }
     namespace = "typewritermc"
 
     extension {
@@ -17,6 +13,10 @@ typewriter {
             |The road network is a way to create natural paths in the world. 
             |It can be used by NPCs to navigate to certain locations, or by players to know how to get somewhere.
             """.trimMargin()
+
+        engineVersion = file("../../version.txt").readText().trim().substringBefore("-beta")
+        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
+
 
         paper()
     }

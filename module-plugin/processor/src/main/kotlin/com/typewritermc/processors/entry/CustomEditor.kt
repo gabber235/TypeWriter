@@ -5,7 +5,6 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSType
 import com.typewritermc.processors.entry.editors.*
 import kotlinx.serialization.json.JsonElement
-import kotlin.reflect.KClass
 
 interface CustomEditor {
     /// The name of the editor
@@ -42,6 +41,7 @@ val customEditors = listOf(
     DurationEditor,
     EntryInteractionContextKeyEditor,
     GenericEditor,
+    GlobalContextKeyEditor,
     ItemEditor,
     MaterialEditor,
     OptionalEditor,

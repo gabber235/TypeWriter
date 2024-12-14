@@ -1,7 +1,7 @@
 {
   "initializer": {
     "file": "src/main/kotlin/com/typewritermc/example/ExampleInitializer.kt",
-    "content": "import com.typewritermc.core.extension.Initializable\nimport com.typewritermc.core.extension.annotations.Initializer\n\n@Initializer\nobject ExampleInitializer : Initializable {\n    override fun initialize() {\n        // Do something when the extension is initialized\n    }\n\n    override fun shutdown() {\n        // Do something when the extension is shutdown\n    }\n}"
+    "content": "import com.typewritermc.core.extension.Initializable\nimport com.typewritermc.core.extension.annotations.Initializer\n\n@Initializer\nobject ExampleInitializer : Initializable {\n    override suspend fun initialize() {\n        // Do something when the extension is initialized\n    }\n\n    override suspend fun shutdown() {\n        // Do something when the extension is shutdown\n    }\n}"
   },
   "simple_placeholder_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/ExamplePlaceholderEntry.kt",
@@ -37,7 +37,7 @@
   },
   "cinematic_simple_action": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/cinematic/ExampleCinematicEntry.kt",
-    "content": "class ExampleSimpleCinematicAction(\n    val player: Player,\n    entry: ExampleCinematicEntry,\n) : SimpleCinematicAction<ExampleSegment>() {\n    override val segments: List<ExampleSegment> = entry.segments\n\n    override suspend fun startSegment(segment: ExampleSegment) {\n        super.startSegment(segment) // Keep this\n        // Called when a segment starts\n    }\n\n    override suspend fun tickSegment(segment: ExampleSegment, frame: Int) {\n        super.tickSegment(segment, frame) // Keep this\n        // Called every tick while the segment is active\n        // Will always be called after startSegment and never after stopSegment\n\n        // The `frame` parameter is not necessarily next frame: `frame != old(frame)+1`\n    }\n\n    override suspend fun stopSegment(segment: ExampleSegment) {\n        super.stopSegment(segment) // Keep this\n        // Called when the segment ends\n        // Will also be called if the cinematic is stopped early\n    }\n}"
+    "content": "class ExampleSimpleTemporalAction(\n    val player: Player,\n    entry: ExampleCinematicEntry,\n) : SimpleTemporalAction<ExampleSegment>() {\n    override val segments: List<ExampleSegment> = entry.segments\n\n    override suspend fun startSegment(segment: ExampleSegment) {\n        super.startSegment(segment) // Keep this\n        // Called when a segment starts\n    }\n\n    override suspend fun tickSegment(segment: ExampleSegment, frame: Int) {\n        super.tickSegment(segment, frame) // Keep this\n        // Called every tick while the segment is active\n        // Will always be called after startSegment and never after stopSegment\n\n        // The `frame` parameter is not necessarily next frame: `frame != old(frame)+1`\n    }\n\n    override suspend fun stopSegment(segment: ExampleSegment) {\n        super.stopSegment(segment) // Keep this\n        // Called when the segment ends\n        // Will also be called if the cinematic is stopped early\n    }\n}"
   },
   "audience_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/manifest/ExampleAudienceEntry.kt",

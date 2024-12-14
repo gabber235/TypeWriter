@@ -25,7 +25,7 @@ Begin by establishing a Gradle project for your Typewriter extension. Below is a
 <Tabs>
     <TabItem value="release" label="Release" default>
         Add the following to your `settings.gradle.kts` file:
-        ```kotlin title="settings.gradle.kts"
+        ```kotlin title="settings.gradle.kts" showLineNumbers
         pluginManagement {
             repositories {
                 mavenCentral()
@@ -36,11 +36,11 @@ Begin by establishing a Gradle project for your Typewriter extension. Below is a
         ```
 
         Add the following to your `build.gradle.kts` file:
-        ```kotlin title="build.gradle.kts"
+        ```kotlin title="build.gradle.kts" showLineNumbers
         import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
         plugins {
-            kotlin("jvm") version "2.0.20"
+            kotlin("jvm") version "2.0.21"
             id("com.typewritermc.module-plugin") version "<module plugin version>"
         }
 
@@ -49,15 +49,13 @@ Begin by establishing a Gradle project for your Typewriter extension. Below is a
         version = "0.0.1"
 
         typewriter {
-            engine {
-                version = "<latest typewriter version>"
-            }
             namespace = "<a name for the company which all your extensions are published under>"
 
             extension {
                 name = "<Name of the extension>"
                 shortDescription = "<Short description of the extension>"
                 description = "<Long description of the extension>"
+                engineVersion = "<latest typewriter version>"
 
                 paper {
                     // Optional - If you want to make sure a plugin is required to be installed to use this extension
@@ -73,7 +71,7 @@ Begin by establishing a Gradle project for your Typewriter extension. Below is a
     </TabItem>
     <TabItem value="beta" label="Beta">
         Add the following to your `settings.gradle.kts` file:
-        ```kotlin title="settings.gradle.kts"
+        ```kotlin title="settings.gradle.kts" showLineNumbers
         pluginManagement {
             repositories {
                 mavenCentral()
@@ -84,25 +82,23 @@ Begin by establishing a Gradle project for your Typewriter extension. Below is a
         ```
 
         Add the following to your `build.gradle.kts` file:
-        ```kotlin title="build.gradle.kts"
+        ```kotlin title="build.gradle.kts" showLineNumbers
         import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
         plugins {
-            kotlin("jvm") version "2.0.20"
+            kotlin("jvm") version "2.0.21"
             id("com.typewritermc.module-plugin") version "<module plugin version>"
         }
         
         typewriter {
-            engine {
-                version = "<latest typewriter version>"
-                channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
-            }
             namespace = "<a name for the company which all your extensions are published under>"
 
             extension {
                 name = "<Name of the extension>"
                 shortDescription = "<Short description of the extension>"
                 description = "<Long description of the extension>"
+                engineVersion = "<latest typewriter version>"
+                channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
 
                 paper {
                     // Optional - If you want to make sure a plugin is required to be installed to use this extension

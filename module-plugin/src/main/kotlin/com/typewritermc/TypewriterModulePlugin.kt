@@ -14,12 +14,11 @@ class TypewriterModulePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.pluginManager.apply("com.google.devtools.ksp")
 
-        project.extensions
         val extension = project.extensions.create("typewriter", TypewriterModuleConfiguration::class.java)
 
         project.registerKsp(extension)
         project.afterEvaluate {
-            project.checkExtension(extension)
+            project.checkModuleConfiguration(extension)
 
             project.registerRepositories(extension)
         }
@@ -28,13 +27,13 @@ class TypewriterModulePlugin : Plugin<Project> {
     /**
      * Checks if the extension is valid.
      */
-    private fun Project.checkExtension(extension: TypewriterModuleConfiguration) {
-        if (extension.namespace.isBlank() && extension.flags.isEmpty() && extension.engine == null && extension.extension == null) {
+    private fun Project.checkModuleConfiguration(module: TypewriterModuleConfiguration) {
+        if (module.namespace.isBlank() && module.flags.isEmpty() && module.engine == null && module.extension == null) {
             logger.warn("No extension configuration found in module $name. The typewriter plugin will not work.")
             return
         }
         try {
-            extension.validate()
+            module.validate()
         } catch (e: Exception) {
             throw GradleException("Invalid module configuration for $name", e)
         }
@@ -47,18 +46,6 @@ class TypewriterModulePlugin : Plugin<Project> {
         // Add Maven Central repository
         repositories.mavenCentral()
 
-        extension.engine?.let { engine ->
-            // Add Typewriter repository
-            engine.channel.url?.let { url ->
-                repositories.maven {
-                    it.setUrl(url)
-                }
-            }
-            // Add Typewriter dependency
-            dependencies.add("compileOnly", "com.typewritermc:engine-core:${engine.version}")
-        }
-
-
         // Add PacketEvents repository
         repositories.maven {
             it.setUrl("https://repo.codemc.io/repository/maven-snapshots/")
@@ -68,10 +55,20 @@ class TypewriterModulePlugin : Plugin<Project> {
             it.setUrl("https://maven.evokegames.gg/snapshots")
         }
 
-        if (extension.extension?.paper != null) {
-            extension.engine?.let { engine ->
+        // Configure dependencies for extensions
+        extension.extension?.let { extension ->
+            // Add Typewriter repository
+            extension.channel.url?.let { url ->
+                repositories.maven {
+                    it.setUrl(url)
+                }
+            }
+            // Add Typewriter core dependency
+            dependencies.add("compileOnly", "com.typewritermc:engine-core:${extension.engineVersion}")
+
+            extension.paper?.let { paper ->
                 // Add Typewriter Paper dependency
-                dependencies.add("compileOnly", "com.typewritermc:engine-paper:${engine.version}")
+                dependencies.add("compileOnly", "com.typewritermc:engine-paper:${extension.engineVersion}")
                 // Add Paper repository
                 repositories.maven {
                     it.setUrl("https://repo.papermc.io/repository/maven-public/")
@@ -85,7 +82,7 @@ class TypewriterModulePlugin : Plugin<Project> {
     }
 
     private fun Project.registerKsp(configuration: TypewriterModuleConfiguration) {
-        val pluginVersion = getPluginVersion()
+        val pluginVersion = getModulePluginVersion()
         dependencies.add("ksp", "com.typewritermc.module-plugin:extension-processor:$pluginVersion")
 
         afterEvaluate {
@@ -101,7 +98,7 @@ class TypewriterModulePlugin : Plugin<Project> {
         }
     }
 
-    private fun getPluginVersion(): String {
+    private fun getModulePluginVersion(): String {
         val props = Properties().apply {
             this@TypewriterModulePlugin::class.java.classLoader.getResourceAsStream("typewriter-module-plugin.properties")
                 ?.use { stream ->

@@ -18,5 +18,6 @@ object GenericEditor : CustomEditor {
 
     context(KSPLogger, Resolver) override fun default(type: KSType): JsonElement = JsonNull
 
-    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint = DataBlueprint.PrimitiveBlueprint(PrimitiveType.STRING)
+    context(KSPLogger, Resolver) override fun shape(type: KSType): DataBlueprint = DataBlueprint.PrimitiveBlueprint(
+        PrimitiveType.STRING)
 }

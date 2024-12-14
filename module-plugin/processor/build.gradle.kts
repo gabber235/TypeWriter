@@ -9,11 +9,10 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":processor"))
+    api("com.google.code.gson:gson:2.11.0")
+    api(project(":api"))
 
-    val ktorVersion = "2.3.12"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 }
 
 tasks.withType(KotlinCompile::class.java) {

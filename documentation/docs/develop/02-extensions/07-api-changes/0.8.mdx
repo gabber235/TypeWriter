@@ -1,0 +1,95 @@
+---
+title: 0.8.X API Changes
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# All API changes to 0.8.X
+
+There are quite a few changes to the API.
+Make sure to read these changes before updating your extension.
+
+## `build.gradle.kts` Changes
+
+Now the engine version is not specified in a seperate `engine` block, but in the `extension` block.
+
+<Tabs>
+    <TabItem value="release" label="Release" default>
+        ```kotlin title="build.gradle.kts" showLineNumbers
+        import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+        plugins {
+            kotlin("jvm") version "2.0.21"
+            id("com.typewritermc.module-plugin") version "<module plugin version>"
+        }
+        // Replace with your own information
+        group = "me.yourusername"
+        version = "0.0.1"
+        typewriter {
+        // highlight-red-start
+            engine {
+                version = "<latest typewriter version>"
+            }
+        // highlight-red-end
+
+            namespace = "<a name for the company which all your extensions are published under>"
+
+            extension {
+                name = "<Name of the extension>"
+                shortDescription = "<Short description of the extension>"
+                description = "<Long description of the extension>"
+                // highlight-green
+                engineVersion = "<latest typewriter version>"
+
+                paper {
+                    // Optional - If you want to make sure a plugin is required to be installed to use this extension
+                    dependency("<plugin name>")
+                }
+            }
+        }
+        kotlin {
+            jvmToolchain(21)
+        }
+        ```
+    </TabItem>
+    <TabItem value="beta" label="Beta">
+        ```kotlin title="build.gradle.kts" showLineNumbers
+        import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+        plugins {
+            kotlin("jvm") version "2.0.21"
+            id("com.typewritermc.module-plugin") version "<module plugin version>"
+        }
+        // Replace with your own information
+        group = "me.yourusername"
+        version = "0.0.1"
+        typewriter {
+        // highlight-red-start
+            engine {
+                version = "<latest typewriter version>"
+                channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
+            }
+        // highlight-red-end
+
+            namespace = "<a name for the company which all your extensions are published under>"
+
+            extension {
+                name = "<Name of the extension>"
+                shortDescription = "<Short description of the extension>"
+                description = "<Long description of the extension>"
+                // highlight-green-start
+                engineVersion = "<latest typewriter version>"
+                channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
+                // highlight-green-end
+                 
+                paper {
+                    // Optional - If you want to make sure a plugin is required to be installed to use this extension
+                    dependency("<plugin name>")
+                }
+            }
+        }
+        kotlin {
+            jvmToolchain(21)
+        }
+        ```
+    </TabItem>
+</Tabs>

@@ -10,10 +10,6 @@ dependencies {
 }
 
 typewriter {
-    engine {
-        version = file("../../version.txt").readText().trim().substringBefore("-beta")
-        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
-    }
     namespace = "typewritermc"
 
     extension {
@@ -22,8 +18,10 @@ typewriter {
         description = """
             |The CombatLogX Extension allows you to create entries that are triggered when a player enters or leaves combat.
         """.trimMargin()
-
         flag(ExtensionFlag.Deprecated)
+        engineVersion = file("../../version.txt").readText().trim().substringBefore("-beta")
+        channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
+
 
         paper {
             dependency("CombatLogX")
