@@ -8,7 +8,7 @@ rem Create the output folder if it doesn't exist
 if not exist "%output_folder%" mkdir "%output_folder%"
 
 rem Loop through all .webm files in the input folder
-for %%f in ("%input_folder%\*.webm") do (
+for %%f in ("%input_folder%\*.mp4") do (
     set "input_file=%%f"
     set "output_file=%output_folder%\%%~nf.webm"
 
@@ -17,7 +17,7 @@ for %%f in ("%input_folder%\*.webm") do (
     for %%I in ("!input_file!") do set "original_size=%%~zI"
 
     rem Only compress if the original file is larger than 2MB
-    if !original_size! gtr 2000000 (
+    if !original_size! gtr 20000 (
         echo Compressing !input_file!
         
         rem Compress the video
