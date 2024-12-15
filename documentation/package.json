@@ -21,11 +21,11 @@
         "@docusaurus/preset-classic": "^3.6.3",
         "@docusaurus/theme-mermaid": "^3.6.3",
         "@mdx-js/react": "^3.1.0",
-        "@rive-app/react-canvas": "^4.16.4",
+        "@rive-app/react-canvas": "^4.17.3",
         "clsx": "^2.1.1",
         "documentation": "file:",
-        "posthog-docusaurus": "^2.0.1",
-        "prism-react-renderer": "^2.3.1",
+        "posthog-docusaurus": "^2.0.2",
+        "prism-react-renderer": "^2.4.1",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-player": "^2.16.0",
@@ -38,14 +38,14 @@
         "@docusaurus/module-type-aliases": "^3.6.3",
         "@docusaurus/tsconfig": "^3.6.3",
         "@docusaurus/types": "^3.6.3",
-        "@iconify/react": "^5.0.2",
-        "@types/react": "^18.3.12",
+        "@iconify/react": "^5.1.0",
+        "@types/react": "^18.3.1",
         "autoprefixer": "^10.4.20",
         "postcss": "^8.4.49",
         "responsive-loader": "^3.1.2",
         "sharp": "^0.33.5",
-        "tailwindcss": "^3.4.15",
-        "typescript": "^5.6.3"
+        "tailwindcss": "^3.4.16",
+        "typescript": "^5.7.2"
     },
     "browserslist": {
         "production": [
