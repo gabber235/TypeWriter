@@ -2,32 +2,30 @@
 difficulty: Normal
 ---
 
-import Player from "@site/src/components/Player";
-import Image from "@site/src/components/Image";
 import EntrySearch from "@site/src/components/EntrySearch";
 import EntryDisplay from "@site/src/components/EntryDisplay";
 import EntryNodeInspector from "@site/src/components/EntryInspector";
-import Tabs from '@theme/Tabs';
 export const questPages = [
     require("./assets/full_tutorial/manifest.json"),
     require("./assets/full_tutorial/static.json"),
-    require("./assets/full_tutorial/sequence.json"),
-
+    require("./assets/full_tutorial/sequence.json")
 ];
-import TabItem from '@theme/TabItem';
 
-# Full Quest Tutorial
+# Kill Quest Guide
 :::info[Before starting]
-It is best to read the [Interactions](../01-interactions/index.mdx), [facts](../03-facts/index.mdx), and [Questing](./index.mdx) documentation before starting this tutorial. A sequence, static and manifest page should also be created already.
+It is best to read the [Interactions](../01-interactions/index.mdx),
+[facts](../03-facts/index.mdx), and [Questing](./index.mdx) documentation before starting this guide.
+A sequence, static and manifest page should also be created already.
 :::
-:::warning[Complete tutorial]
-This tutorial is made to showcase the complete use of TypeWriter, and it's system. To grasp the concept of this tutorial, make sure to thoroughly read it.
+:::warning[Complete guide]
+This guide is made to showcase the complete use of TypeWriter, and its system.
+To grasp the concept of this guide, make sure to thoroughly read it.
 :::
-In this tutorial, you will learn how to create a quest where the player needs to kill x amount of a certain mob.
+In this guide, you will learn how to create a quest where the player needs to kill x amount of a certain mob.
 
 ## Configuring the manifest page
 :::info[Manifest]
-This section of the tutorial already assumes you have created a manifest page.
+This section of the guide already assumes you have created a manifest page.
 :::
 First we will need to create a quest. This can be done by doing the following steps:
 
@@ -40,10 +38,10 @@ This can be done by going to the manifest page and clicking on the `+` icon in t
 After creating the quest open the inspector and follow the following steps
 
 #### Setting the display name
-set the Display Name field to `Tutorial Quest`. This will be the name of the quest that will be displayed to the player. 
+Set the Display Name field to `Guide Quest`. This will be the name of the quest that will be displayed to the player.
 
 #### Configuring the criteria
-Click on the `+` icon in the inspector next to the Active Criteria field. Then, you can select the fact you want to use. For this tutorial, we will use a permanent fact called `Tutorial Kill` with the group set to a player group.\
+Click on the `+` icon in the inspector next to the Active Criteria field. Then, you can select the fact you want to use. For this guide, we will use a permanent fact called `Guide Kill` with the group set to a player group.\
 * For the Active Criteria set the value to `<` and the value to `4`. Create another active criteria with the same fact but set the value to `!=` and the value to `0`.
 * For the Completed Criteria set the value to `==` and the value to `4`.
 
@@ -56,19 +54,19 @@ Now we have created our quest we can begin with creating the objective. This can
 <EntrySearch entryName='completable_objective'/>
 
 ### Configuring the objective
-After creating the objective create a new permanent fact and give it a name, for this tutorial we will be using a zombie so we will be using the name `killed_zombies` and link it with the player group. Now configure the objective as the following:
+After creating the objective create a new permanent fact and give it a name, for this guide we will be using a zombie so we will be using the name `killed_zombies` and link it with the player group. Now configure the objective as the following:
 <EntryNodeInspector entryId="zWK21mcvT1HpoSu" pages={questPages} />
 
 ## Configuring the sequence page
 :::info[First interaction]
-This section of the tutorial already assumes you have created a sequence page with a trigger event.
+This section of the guide already assumes you have created a sequence page with a trigger event.
 :::
 ### Adding the quest track entry
 Now we need to add a `Track Quest` entry to our sequence page. This can be done by clicking on the `+` icon in the top right corner of the panel and searching for `Track Quest`. Add it to your page by clicking on the `+` icon.
 
 <EntrySearch entryName='track_quest'/>
 
-After creating the quest track open the inspector and select the tutorial quest at the `Quest` field. Now your inspector should look like this:
+After creating the quest track open the inspector and select the guide quest at the `Quest` field. Now your inspector should look like this:
 <EntryNodeInspector entryId="tUaei0LbNfz8acp" pages={questPages} />
 
 ### Adding the `On Player Kill Entity` event
@@ -76,7 +74,7 @@ Now we need to add a `On Player Kill Entity` event to our sequence page. This ca
 
 <EntrySearch entryName='on_player_kill_entity'/>
 
-Now inside the inspector, you can configure the entity you want to use. For this tutorial we will be using a zombie.
+Now inside the inspector, you can configure the entity you want to use. For this guide, we will be using a zombie.
 
 ### Adding a simple action entry
 Now right-click on the kill event and search for `Add Simple Action`. Add it to your page by clicking on the `+` icon.
@@ -88,7 +86,7 @@ Now inside the inspector, create a new modifier and set the fields:
 * Operator: `+`
 * Value: `1`
 
-## full result
+## Full Result
 Now all your pages should look like this:
 <EntryDisplay pages={[
     require("./assets/full_tutorial/sequence.json"),
