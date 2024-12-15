@@ -47,7 +47,7 @@ const config = {
                     editUrl:
                         'https://github.com/gabber235/TypeWriter/tree/develop/documentation/',
                     routeBasePath: '/',
-                    lastVersion: '0.6.1',
+                    lastVersion: '0.7.0',
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,
                     versions: {
@@ -77,7 +77,7 @@ const config = {
             announcementBar: {
                 id: 'support_us',
                 content:
-                    'TypeWriter 0.6.1 is out!',
+                    'TypeWriter 0.7.0 is out!',
                 isCloseable: true,
             },
             mermaid: {
@@ -87,9 +87,9 @@ const config = {
                 },
             },
             metadata: [
-                { name: 'title', content: 'Typewriter' },
                 { name: 'keywords', content: 'Minecraft, Questing, NPC\'s, Manifests, Cinematics, sequences, Road-network, Interactions, player interactions, plugin, papermc' },
                 { name: 'robots', content: 'index, follow' },
+                { name: 'description', content: 'TypeWriter is a plugin for Minecraft servers that allows you to create complex interactions between players and the server. It allows you to create sequences, cinematics, quests, NPCs, manifests, road-networks, and more!' },
                 { name: 'Content-Type', content: 'text/html; charset=utf-8' },
                 { name: 'language', content: 'English' },
                 { name: 'author', content: 'Gabber235, Marten_mrfcyt' },
