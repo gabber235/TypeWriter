@@ -84,7 +84,7 @@ enum class ModifierOperator {
 }
 
 data class Modifier(
-    @Help("The fact to modify when the entry is triggered")
+    @Help("The fact to modify after the entry is completed")
     val fact: Ref<WritableFactEntry> = emptyRef(),
     @Help("The operator to use when modifying the fact value")
     val operator: ModifierOperator = ModifierOperator.ADD,
