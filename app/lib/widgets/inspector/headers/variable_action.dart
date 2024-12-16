@@ -74,7 +74,7 @@ class VariableHeaderAction extends HookConsumerWidget {
     final data = {
       "_kind": "backed",
       "ref": entry.id,
-      "data": targetBlueprint.dataBlueprint.defaultValue(),
+      "data": targetBlueprint.variableDataBlueprint?.defaultValue() ?? {},
     };
 
     ref.read(inspectingEntryDefinitionProvider)?.updateField(ref, path, data);
