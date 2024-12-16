@@ -33,7 +33,7 @@ class SetItemActionEntry(
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
         SYNC.launch {
-            player.inventory.setItem(slot.get(player, context), item.get(player, context).build(player))
+            player.inventory.setItem(slot.get(player, context), item.get(player, context).build(player, context))
         }
     }
 }

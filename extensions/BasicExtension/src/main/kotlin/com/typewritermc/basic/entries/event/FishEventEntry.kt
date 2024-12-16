@@ -3,15 +3,15 @@ package com.typewritermc.basic.entries.event
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.interaction.context
-import com.typewritermc.engine.paper.entry.*
+import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.entry.triggerAllFor
 import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerFishEvent
@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerFishEvent
  * ## How could this be used?
  * You can create custom fishing mechanics, such as catching a specific item when fishing in a specific location.
  */
-class FishEventEntry (
+class FishEventEntry(
     override val id: String = "",
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
@@ -34,9 +34,10 @@ class FishEventEntry (
 
 
 private fun hasItemInHand(player: Player, item: Item): Boolean {
-    return item.isSameAs(player, player.inventory.itemInMainHand) || item.isSameAs(
+    return item.isSameAs(player, player.inventory.itemInMainHand, context()) || item.isSameAs(
         player,
-        player.inventory.itemInOffHand
+        player.inventory.itemInOffHand,
+        context(),
     )
 }
 

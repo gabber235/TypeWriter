@@ -1,10 +1,10 @@
 package com.typewritermc.basic.entries.audience
 
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.core.entries.ref
+import com.typewritermc.core.extension.annotations.Entry
+import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.item.Item
 import org.bukkit.entity.Player
 
@@ -37,7 +37,10 @@ class ItemInInventoryAudienceFilter(
     override fun filter(player: Player): Boolean {
         val item = item.get(player)
 
-        return player.inventory.contents.any { it != null && item.isSameAs(player, it) } || item.isSameAs(player, player.itemOnCursor)
+        return player.inventory.contents.any { it != null && item.isSameAs(player, it) } || item.isSameAs(
+            player,
+            player.itemOnCursor
+        )
     }
 
     override fun tick() {

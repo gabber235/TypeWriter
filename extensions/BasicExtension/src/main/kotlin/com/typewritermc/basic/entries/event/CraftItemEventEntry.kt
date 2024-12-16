@@ -34,6 +34,6 @@ class CraftItemEventEntry(
 fun onCraftItem(event: CraftItemEvent, query: Query<CraftItemEventEntry>) {
     val player = event.whoClicked
     if (player !is Player) return
-    query.findWhere { it.craftedItem.get(player).isSameAs(player, event.recipe.result) }
+    query.findWhere { it.craftedItem.get(player).isSameAs(player, event.recipe.result, context()) }
         .triggerAllFor(player, context())
 }

@@ -39,7 +39,7 @@ class RemoveItemActionEntry(
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
         ThreadType.SYNC.launch {
-            player.inventory.removeItemAnySlot(item.get(player, context).build(player).clone())
+            player.inventory.removeItemAnySlot(item.get(player, context).build(player, context).clone())
         }
     }
 }

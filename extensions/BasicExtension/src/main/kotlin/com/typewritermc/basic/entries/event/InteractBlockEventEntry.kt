@@ -7,6 +7,7 @@ import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.core.extension.annotations.MaterialProperty.BLOCK
 import com.typewritermc.core.interaction.EntryContextKey
+import com.typewritermc.core.interaction.context
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.ConstVar
@@ -78,9 +79,10 @@ enum class InteractBlockContextKeys(override val klass: KClass<*>) : EntryContex
 }
 
 private fun hasItemInHand(player: Player, item: Item): Boolean {
-    return item.isSameAs(player, player.inventory.itemInMainHand) || item.isSameAs(
+    return item.isSameAs(player, player.inventory.itemInMainHand, context()) || item.isSameAs(
         player,
-        player.inventory.itemInOffHand
+        player.inventory.itemInOffHand,
+        context(),
     )
 }
 

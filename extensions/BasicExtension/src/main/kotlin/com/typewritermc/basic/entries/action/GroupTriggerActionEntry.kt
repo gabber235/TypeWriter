@@ -47,7 +47,6 @@ class GroupTriggerActionEntry(
             .map { groupEntry.group(GroupId(it.get(player, context))) }
             .orElseGet { groupEntry.group(player) } ?: return
 
-        val context = buildNewContext()
         group.players
             // Since we are still just triggering this for the player, we don't want to trigger it twice.
             .filter { it.uniqueId != player.uniqueId }

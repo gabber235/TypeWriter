@@ -37,7 +37,8 @@ class GiveItemActionEntry(
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
         SYNC.launch {
-            val leftOver = player.inventory.addItem(item.get(player, context).build(player))
+            val itemStack = item.get(player, context).build(player, context)
+            val leftOver = player.inventory.addItem(itemStack)
             leftOver.values.forEach {
                 player.world.dropItemNaturally(player.location, it)
             }

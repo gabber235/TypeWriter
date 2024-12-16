@@ -1,13 +1,13 @@
 package com.typewritermc.basic.entries.audience
 
-import io.papermc.paper.event.player.PlayerPickItemEvent
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.ref
+import com.typewritermc.core.extension.annotations.Entry
+import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.engine.paper.utils.item.Item
+import io.papermc.paper.event.player.PlayerPickItemEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.inventory.*

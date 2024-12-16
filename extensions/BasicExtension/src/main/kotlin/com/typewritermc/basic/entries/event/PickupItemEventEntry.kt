@@ -37,6 +37,6 @@ fun onPickupItem(event: EntityPickupItemEvent, query: Query<PickupItemEventEntry
     val player = event.entity as Player
 
     query.findWhere { entry ->
-        entry.item.get(player).isSameAs(player, event.item.itemStack)
+        entry.item.get(player).isSameAs(player, event.item.itemStack, context())
     }.startDialogueWithOrNextDialogue(player, context())
 }

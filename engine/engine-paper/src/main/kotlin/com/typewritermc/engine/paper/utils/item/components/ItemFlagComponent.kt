@@ -2,6 +2,7 @@ package com.typewritermc.engine.paper.utils.item.components
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.AlgebraicTypeInfo
+import com.typewritermc.core.interaction.InteractionContext
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -10,5 +11,5 @@ import org.bukkit.inventory.ItemStack
 class ItemFlagComponent(
     val flag: ItemFlag,
 ) : ItemComponent {
-    override fun apply(player: Player?, item: ItemStack) = item.addItemFlags(flag)
+    override fun apply(player: Player?, interactionContext: InteractionContext?, item: ItemStack) = item.addItemFlags(flag)
 }

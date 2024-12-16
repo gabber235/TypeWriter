@@ -3,6 +3,7 @@ package com.typewritermc.engine.paper.utils.item
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.extension.annotations.AlgebraicTypeInfo
 import com.typewritermc.core.extension.annotations.Default
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.utils.plainText
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -37,8 +38,8 @@ class SerializedItem(
         }
     }
 
-    override fun build(player: Player?): ItemStack = itemStack
-    override fun isSameAs(player: Player?, item: ItemStack?): Boolean = this.itemStack.isSimilar(item)
+    override fun build(player: Player?, context: InteractionContext?): ItemStack = itemStack
+    override fun isSameAs(player: Player?, item: ItemStack?, context: InteractionContext?): Boolean = this.itemStack.isSimilar(item)
 }
 
 fun ItemStack.toItem(): SerializedItem = SerializedItem(this)
