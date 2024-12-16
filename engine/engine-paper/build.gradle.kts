@@ -10,7 +10,7 @@ plugins {
 repositories {
     mavenCentral()
     // Floodgate
-    maven("https://repo.opencollab.dev/maven-snapshots/")
+    maven("https://repo.opencollab.dev/main/")
     // PacketEvents, CommandAPI
     maven("https://repo.codemc.io/repository/maven-releases/")
     // PlaceholderAPI
@@ -59,7 +59,7 @@ dependencies {
     compileOnlyApi("com.github.retrooper:packetevents-api:2.6.0-SNAPSHOT")
     compileOnlyApi("com.github.retrooper:packetevents-spigot:2.6.0-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnlyApi("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
+    compileOnlyApi("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
 
     testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.3.1")
 }

@@ -75,7 +75,7 @@ class TypewriterModulePlugin : Plugin<Project> {
                 }
                 // Add Geyser repository
                 repositories.maven {
-                    it.setUrl("https://repo.opencollab.dev/maven-snapshots/")
+                    it.setUrl("https://repo.opencollab.dev/main/")
                 }
             }
         }
