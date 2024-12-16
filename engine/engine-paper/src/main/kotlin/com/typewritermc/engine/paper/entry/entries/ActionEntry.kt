@@ -21,7 +21,6 @@ class ActionTrigger(
     context: InteractionContext,
     val entry: ActionEntry,
 ): ContextModifier(context) {
-    private val additionContext: MutableMap<InteractionContextKey<*>, Any> = mutableMapOf()
     internal var automaticTriggering: Boolean = true
     internal var automaticModifiers: Boolean = true
 
@@ -36,7 +35,7 @@ class ActionTrigger(
 
     fun triggerManually() {
         applyModifiers()
-        entry.eventTriggers.triggerFor(player, buildNewContext())
+        entry.eventTriggers.triggerFor(player, context)
     }
 
     fun applyModifiers() {
@@ -45,11 +44,7 @@ class ActionTrigger(
     }
 
     fun List<Ref<out TriggerableEntry>>.triggerFor(player: Player) {
-        this.triggerEntriesFor(player, buildNewContext())
-    }
-
-    operator fun <T : Any> InteractionContext.set(key: InteractionContextKey<T>, value: T) {
-        additionContext[key] = value
+        this.triggerEntriesFor(player, context)
     }
 
     operator fun <T : Any> InteractionContext.set(key: EntryContextKey, value: T) {

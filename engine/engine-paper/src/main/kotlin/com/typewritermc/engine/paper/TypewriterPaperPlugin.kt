@@ -10,7 +10,6 @@ import com.typewritermc.engine.paper.content.ContentHandler
 import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.action.ActionHandler
 import com.typewritermc.engine.paper.entry.dialogue.DialogueHandler
-import com.typewritermc.engine.paper.entry.dialogue.MessengerFinder
 import com.typewritermc.engine.paper.entry.entity.EntityHandler
 import com.typewritermc.engine.paper.entry.entries.CustomCommandEntry
 import com.typewritermc.engine.paper.entry.temporal.TemporalHandler
@@ -90,7 +89,6 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
             singleOf<StagingManager>(::StagingManagerImpl)
             singleOf(::ClientSynchronizer)
             singleOf(::PlayerSessionManager)
-            singleOf(::MessengerFinder)
             singleOf(::CommunicationHandler)
             singleOf(::Writers)
             singleOf(::PanelHost)
@@ -173,7 +171,6 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         get<PlayerSessionManager>().load()
         get<EntryListeners>().load()
         get<AudienceManager>().load()
-        get<MessengerFinder>().load()
         CustomCommandEntry.registerAll()
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
@@ -189,7 +186,6 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
         CommandAPI.unregister("typewriter")
 
         CustomCommandEntry.unregisterAll()
-        get<MessengerFinder>().unload()
         get<AudienceManager>().unload()
         get<EntryListeners>().unload()
         get<PlayerSessionManager>().unload()

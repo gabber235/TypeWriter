@@ -155,7 +155,6 @@ data class Extension(
     val entries: List<EntryInfo>,
     val entryListeners: List<EntryListenerInfo>,
     val typewriterCommands: List<TypewriterCommandInfo>,
-    val dialogueMessengers: List<DialogueMessengerInfo>,
     val dependencyInjections: List<DependencyInjectionInfo>,
 )
 
@@ -181,7 +180,6 @@ fun Extension.displayString(maxAdapterLength: Int, maxVersionLength: Int, maxDig
     display += " (${extension.version})".rightPad(maxVersionLength + 2)
     display += padCount("📚", entries.size, maxDigits)
     display += padCount("👂", entryListeners.size, maxDigits)
-    display += padCount("💬", dialogueMessengers.size, maxDigits)
     display += padCount("🔌", dependencyInjections.size, maxDigits)
 
     extension.flags.filter { it.warning.isNotBlank() }.joinToString { it.warning }.let {

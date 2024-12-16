@@ -27,7 +27,7 @@ class ActionHandler : TriggerHandler {
             val nextTriggers = action.eventTriggers.filter { it !in event } // Stops infinite loops
             if (nextTriggers.isEmpty()) return@mapNotNull null
 
-            Event(event.player, trigger.buildNewContext(), nextTriggers)
+            Event(event.player, trigger.context, nextTriggers)
         }
 
         if (events.isEmpty()) return TriggerContinuation.Done

@@ -2,27 +2,18 @@ package com.typewritermc.basic.entries.dialogue.messengers.option
 
 import com.typewritermc.basic.entries.dialogue.Option
 import com.typewritermc.basic.entries.dialogue.OptionDialogueEntry
-import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
-import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
-import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
 import com.typewritermc.engine.paper.entry.matches
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
-import com.typewritermc.engine.paper.utils.isFloodgate
 import com.typewritermc.engine.paper.utils.legacy
 import org.bukkit.entity.Player
 
-@Messenger(OptionDialogueEntry::class, priority = 5)
 class BedrockOptionDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: OptionDialogueEntry) :
     DialogueMessenger<OptionDialogueEntry>(player, context, entry) {
-
-    companion object : MessengerFilter {
-        override fun filter(player: Player, entry: DialogueEntry): Boolean = player.isFloodgate
-    }
 
     private var selectedIndex = 0
     private val selected get() = usableOptions[selectedIndex]

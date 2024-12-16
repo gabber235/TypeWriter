@@ -43,23 +43,13 @@ sealed interface Var<T : Any> {
 }
 
 @OptIn(ExperimentalContracts::class)
-fun <T : Any> Var<T>.get(player: Player?, interactionContext: InteractionContext? = null): T? {
+fun <T : Any> Var<T>.get(player: Player?, interactionContext: InteractionContext? = player?.interactionContext): T? {
     contract {
         returns(null) implies (player == null)
     }
     if (this is ConstVar<*>) return this.value as T
     if (player == null) return null
     return get(player, interactionContext)
-}
-
-@OptIn(ExperimentalContracts::class)
-fun <T : Any> Var<T>.get(player: Player?): T? {
-    contract {
-        returns(null) implies (player == null)
-    }
-    if (this is ConstVar<*>) return this.value as T
-    if (player == null) return null
-    return get(player)
 }
 
 class ConstVar<T : Any>(val value: T) : Var<T> {

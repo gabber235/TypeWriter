@@ -1,17 +1,21 @@
 package com.typewritermc.basic.entries.dialogue
 
+import com.typewritermc.basic.entries.dialogue.messengers.message.UniversalMessageDialogueDialogueMessenger
 import com.typewritermc.core.entries.*
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Colored
 import com.typewritermc.core.extension.annotations.MultiLine
 import com.typewritermc.core.extension.annotations.Placeholder
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
 import com.typewritermc.engine.paper.entry.entries.Var
+import org.bukkit.entity.Player
 
 @Entry("message", "Display a single message to the player", "#1c4da3", "ic:baseline-comment-bank")
 /**
@@ -32,4 +36,8 @@ class MessageDialogueEntry(
     @Placeholder
     @Colored
     val text: Var<String> = ConstVar(""),
-) : DialogueEntry
+) : DialogueEntry {
+    override fun messenger(player: Player, context: InteractionContext): DialogueMessenger<MessageDialogueEntry> {
+        return UniversalMessageDialogueDialogueMessenger(player, context, this)
+    }
+}

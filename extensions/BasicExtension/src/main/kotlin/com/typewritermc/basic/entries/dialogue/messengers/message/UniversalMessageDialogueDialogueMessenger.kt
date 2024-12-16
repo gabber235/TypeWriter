@@ -1,13 +1,10 @@
 package com.typewritermc.basic.entries.dialogue.messengers.message
 
 import com.typewritermc.basic.entries.dialogue.MessageDialogueEntry
-import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
-import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
 import com.typewritermc.engine.paper.entry.dialogue.TickContext
-import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.interaction.chatHistory
 import com.typewritermc.engine.paper.snippets.snippet
@@ -25,17 +22,12 @@ val messagePadding: String by snippet(
     " "
 )
 
-@Messenger(MessageDialogueEntry::class)
 class UniversalMessageDialogueDialogueMessenger(
     player: Player,
     context: InteractionContext,
     entry: MessageDialogueEntry
 ) :
     DialogueMessenger<MessageDialogueEntry>(player, context, entry) {
-
-    companion object : MessengerFilter {
-        override fun filter(player: Player, entry: DialogueEntry): Boolean = true
-    }
 
     override fun init() {
         super.init()

@@ -90,7 +90,6 @@ class ExtensionProcessorProvider : SymbolProcessorProvider {
             EntryProcessor(sharedJsonManager, logger, extension),
             EntryListenerProcessor(sharedJsonManager, logger),
             TypewriterCommandProcessor(sharedJsonManager, logger),
-            DialogueMessengerProcessor(sharedJsonManager, logger),
             DependencyInjectionProcessor(sharedJsonManager, logger),
             GlobalContextKeysProcessor(sharedJsonManager, logger),
         )

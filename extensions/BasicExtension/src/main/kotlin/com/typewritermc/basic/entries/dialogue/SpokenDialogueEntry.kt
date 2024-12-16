@@ -1,15 +1,21 @@
 package com.typewritermc.basic.entries.dialogue
 
+import com.typewritermc.basic.entries.dialogue.messengers.spoken.BedrockSpokenDialogueDialogueMessenger
+import com.typewritermc.basic.entries.dialogue.messengers.spoken.JavaSpokenDialogueDialogueMessenger
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.*
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
 import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.utils.isFloodgate
+import org.bukkit.entity.Player
 import java.time.Duration
 
 @Entry("spoken", "Display a animated message to the player", "#1E88E5", "mingcute:message-4-fill")
@@ -33,4 +39,9 @@ class SpokenDialogueEntry(
     val text: Var<String> = ConstVar(""),
     @Help("The duration it takes to type out the message.")
     val duration: Var<Duration> = ConstVar(Duration.ZERO),
-) : DialogueEntry
+) : DialogueEntry {
+    override fun messenger(player: Player, context: InteractionContext): DialogueMessenger<SpokenDialogueEntry> {
+        return if (player.isFloodgate) BedrockSpokenDialogueDialogueMessenger(player, context, this)
+        else JavaSpokenDialogueDialogueMessenger(player, context, this)
+    }
+}

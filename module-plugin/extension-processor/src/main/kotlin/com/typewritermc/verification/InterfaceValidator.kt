@@ -31,8 +31,3 @@ class KeyTypeOnlyOnEntryContextKeysValidatorProvider : InterfaceValidatorProvide
     KeyType::class,
     com.typewritermc.core.interaction.EntryContextKey::class.qualifiedName!!
 )
-
-class MessengerOnlyOnMessengerValidatorProvider : InterfaceValidatorProvider<Messenger>(
-    Messenger::class,
-    "com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger"
-)

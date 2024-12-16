@@ -1,25 +1,19 @@
 package com.typewritermc.basic.entries.dialogue.messengers.actionbar
 
 import com.typewritermc.basic.entries.dialogue.ActionBarDialogueEntry
-import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
-import com.typewritermc.engine.paper.entry.dialogue.MessengerFilter
 import com.typewritermc.engine.paper.entry.dialogue.MessengerState
-import com.typewritermc.engine.paper.entry.entries.DialogueEntry
-import com.typewritermc.engine.paper.entry.entries.get
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
-import com.typewritermc.engine.paper.utils.isFloodgate
 import com.typewritermc.engine.paper.utils.legacy
 import org.bukkit.entity.Player
 
-@Messenger(ActionBarDialogueEntry::class, priority = 5)
-class BedrockActionBarDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: ActionBarDialogueEntry) :
-        DialogueMessenger<ActionBarDialogueEntry>(player, context, entry) {
-
-    companion object : MessengerFilter {
-        override fun filter(player: Player, entry: DialogueEntry): Boolean = player.isFloodgate
-    }
+class BedrockActionBarDialogueDialogueMessenger(
+    player: Player,
+    context: InteractionContext,
+    entry: ActionBarDialogueEntry
+) :
+    DialogueMessenger<ActionBarDialogueEntry>(player, context, entry) {
 
     override fun init() {
         super.init()

@@ -31,11 +31,10 @@ class DialogueInteraction(
     private val _speakers: MutableSet<Ref<SpeakerEntry>> = mutableSetOf()
     val speakers: Set<Ref<SpeakerEntry>> by ::_speakers
 
-    private val messengerFinder: MessengerFinder by inject()
     private val factDatabase: FactDatabase by inject()
 
     internal var currentEntry: DialogueEntry = initialEntry
-    private var currentMessenger = messengerFinder.findMessenger(player, context, initialEntry)
+    private var currentMessenger = initialEntry.messenger(player, context) ?: EmptyDialogueMessenger(player, context, initialEntry)
     private var playTime = Duration.ZERO
     var isActive = false
 
@@ -50,7 +49,6 @@ class DialogueInteraction(
         set(value) {
             currentMessenger.isCompleted = value
         }
-
 
     override suspend fun initialize(): Result<Unit> {
         setup()
@@ -77,10 +75,10 @@ class DialogueInteraction(
 
         if (currentMessenger.state == MessengerState.FINISHED) {
             isActive = false
-            DialogueTrigger.NEXT_OR_COMPLETE.triggerFor(player, currentMessenger.buildNewContext())
+            DialogueTrigger.NEXT_OR_COMPLETE.triggerFor(player, currentMessenger.context)
         } else if (currentMessenger.state == MessengerState.CANCELLED) {
             isActive = false
-            InteractionEndTrigger.triggerFor(player, currentMessenger.buildNewContext())
+            InteractionEndTrigger.triggerFor(player, currentMessenger.context)
         }
 
         currentMessenger.tick(TickContext(playTime, deltaTime))
@@ -89,8 +87,8 @@ class DialogueInteraction(
     fun next(nextEntry: DialogueEntry, context: InteractionContext) {
         cleanupEntry(false)
         currentEntry = nextEntry
-        this.context = currentMessenger.buildNewContext().combine(context)
-        currentMessenger = messengerFinder.findMessenger(player, this.context, nextEntry)
+        this.context = currentMessenger.context.combine(context)
+        currentMessenger = nextEntry.messenger(player, this.context) ?: EmptyDialogueMessenger(player, this.context, nextEntry)
         setup()
         DISPATCHERS_ASYNC.launch {
             AsyncDialogueSwitchEvent(player).callEvent()

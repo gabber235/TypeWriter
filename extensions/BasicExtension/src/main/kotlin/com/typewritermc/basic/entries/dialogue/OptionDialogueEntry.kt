@@ -1,14 +1,21 @@
 package com.typewritermc.basic.entries.dialogue
 
-import com.typewritermc.core.entries.*
-import com.typewritermc.core.extension.annotations.Entry
+import com.typewritermc.basic.entries.dialogue.messengers.option.BedrockOptionDialogueDialogueMessenger
+import com.typewritermc.basic.entries.dialogue.messengers.option.JavaOptionDialogueDialogueMessenger
+import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Colored
+import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Placeholder
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.utils.isFloodgate
+import org.bukkit.entity.Player
 import java.time.Duration
 
 @Entry("option", "Display a list of options to the player", "#4CAF50", "fa6-solid:list")
@@ -32,7 +39,12 @@ class OptionDialogueEntry(
     val options: List<Option> = emptyList(),
     @Help("The duration it takes to type out the message. If the duration is zero, the message will be displayed instantly.")
     val duration: Var<Duration> = ConstVar(Duration.ZERO),
-) : DialogueEntry
+) : DialogueEntry {
+    override fun messenger(player: Player, context: InteractionContext): DialogueMessenger<OptionDialogueEntry> {
+        return if (player.isFloodgate) BedrockOptionDialogueDialogueMessenger(player, context, this)
+        else JavaOptionDialogueDialogueMessenger(player, context, this)
+    }
+}
 
 data class Option(
     @Help("Text for this option.")

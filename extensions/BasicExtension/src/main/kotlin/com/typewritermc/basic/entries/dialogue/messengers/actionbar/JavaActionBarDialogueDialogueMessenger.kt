@@ -1,10 +1,8 @@
 package com.typewritermc.basic.entries.dialogue.messengers.actionbar
 
 import com.typewritermc.basic.entries.dialogue.ActionBarDialogueEntry
-import com.typewritermc.core.extension.annotations.Messenger
 import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.dialogue.*
-import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.interaction.acceptActionBarMessage
 import com.typewritermc.engine.paper.interaction.chatHistory
@@ -12,7 +10,6 @@ import com.typewritermc.engine.paper.interaction.startBlockingActionBar
 import com.typewritermc.engine.paper.interaction.stopBlockingActionBar
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.*
-import com.typewritermc.engine.paper.entry.dialogue.typingDurationType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
@@ -24,13 +21,12 @@ val actionBarFormat: String by snippet(
     "<bold><speaker></bold><reset><gray>: <white><message><padding>",
 )
 
-@Messenger(ActionBarDialogueEntry::class)
-class JavaActionBarDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: ActionBarDialogueEntry) :
+class JavaActionBarDialogueDialogueMessenger(
+    player: Player,
+    context: InteractionContext,
+    entry: ActionBarDialogueEntry
+) :
     DialogueMessenger<ActionBarDialogueEntry>(player, context, entry) {
-
-    companion object : MessengerFilter {
-        override fun filter(player: Player, entry: DialogueEntry): Boolean = true
-    }
 
     private var speakerDisplayName = ""
     private var text = ""

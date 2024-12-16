@@ -1,18 +1,24 @@
 package com.typewritermc.basic.entries.dialogue
 
+import com.typewritermc.basic.entries.dialogue.messengers.actionbar.BedrockActionBarDialogueDialogueMessenger
+import com.typewritermc.basic.entries.dialogue.messengers.actionbar.JavaActionBarDialogueDialogueMessenger
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Colored
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Placeholder
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.dialogue.DialogueMessenger
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.DialogueEntry
 import com.typewritermc.engine.paper.entry.entries.SpeakerEntry
 import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.utils.isFloodgate
+import org.bukkit.entity.Player
 import java.time.Duration
 
 @Entry("action_bar_dialogue", "An action bar dialogue", "#1E88E5", "fa6-solid:xmarks-lines")
@@ -35,4 +41,9 @@ class ActionBarDialogueEntry(
     val text: Var<String> = ConstVar(""),
     @Help("The duration it takes to type out the message.")
     val duration: Var<Duration> = ConstVar(Duration.ZERO),
-) : DialogueEntry
+) : DialogueEntry {
+    override fun messenger(player: Player, context: InteractionContext): DialogueMessenger<ActionBarDialogueEntry> {
+        return if (player.isFloodgate) BedrockActionBarDialogueDialogueMessenger(player, context, this)
+        else JavaActionBarDialogueDialogueMessenger(player, context, this)
+    }
+}

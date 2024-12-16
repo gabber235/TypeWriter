@@ -3,6 +3,7 @@ package com.typewritermc.processors.entry
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getDeclaredProperties
+import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
@@ -211,12 +212,13 @@ sealed class DataBlueprint {
     data class ObjectBlueprint(val fields: Map<String, DataBlueprint>) : DataBlueprint() {
         companion object {
             context(KSPLogger, Resolver)
+            @OptIn(KspExperimental::class)
             fun blueprint(type: KSType): ObjectBlueprint? {
                 val clazz = type.declaration as? KSClassDeclaration ?: return null
                 if (clazz.classKind != ClassKind.CLASS) return null
                 val order = clazz.primaryConstructor?.parameters?.mapNotNull { it.name?.asString() } ?: emptyList()
                 val fields = clazz.getDeclaredProperties()
-                    .filter { it.hasBackingField }
+                    .filter { it.hasBackingField && !it.isAnnotationPresent(kotlin.jvm.Transient::class) }
                     .sortedBy {
                         val index = order.indexOf(it.serializedName)
                         if (index == -1) Int.MAX_VALUE else index

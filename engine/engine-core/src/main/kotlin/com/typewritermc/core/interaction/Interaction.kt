@@ -126,11 +126,32 @@ class EntryInteractionContextBuilder {
 }
 
 open class ContextModifier(
-    val context: InteractionContext,
+    private val initialContext: InteractionContext,
 ) {
     private val additionContext: MutableMap<InteractionContextKey<*>, Any> = mutableMapOf()
+    var context: InteractionContext = initialContext
+        private set
 
-    fun buildNewContext(): InteractionContext {
-        return context.combine(InteractionContext(additionContext))
+    operator fun <T : Any> set(key: InteractionContextKey<T>, value: T) {
+        additionContext[key] = value
+        context = initialContext.combine(InteractionContext(additionContext))
     }
+
+    operator fun <T : Any> set(ref: Ref<out Entry>, key: EntryContextKey, value: T) {
+        this[EntryInteractionContextKey<T>(ref, key)] = value
+    }
+
+    operator fun <T : Any> set(entry: Entry, key: EntryContextKey, value: T) = set(entry.ref(), key, value)
+
+    operator fun <T : Any> InteractionContext.set(key: InteractionContextKey<T>, value: T) {
+        additionContext[key] = value
+        context = initialContext.combine(InteractionContext(additionContext))
+    }
+
+    operator fun <T : Any> InteractionContext.set(ref: Ref<out Entry>, key: EntryContextKey, value: T) {
+        this[EntryInteractionContextKey<T>(ref, key)] = value
+    }
+
+    operator fun <T : Any> InteractionContext.set(entry: Entry, key: EntryContextKey, value: T) =
+        set(entry.ref(), key, value)
 }
