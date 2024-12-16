@@ -61,7 +61,7 @@ class PlayerRadiusInteractionBound(
         val zoom = calculateZoom(distance)
         val modifier = AttributeModifier(key, zoom, AttributeModifier.Operation.MULTIPLY_SCALAR_1)
 
-        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)?.let { attribute ->
+        player.getAttribute(Attribute.MOVEMENT_SPEED)?.let { attribute ->
             attribute.removeModifier(key)
 
             attribute.addModifier(modifier)
@@ -97,7 +97,9 @@ class PlayerRadiusInteractionBound(
     }
 
     override fun teardown() {
-        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)?.removeModifier(key)
+        if (zoom) {
+            player.getAttribute(Attribute.MOVEMENT_SPEED)?.removeModifier(key)
+        }
         super.teardown()
     }
 }

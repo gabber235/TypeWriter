@@ -32,16 +32,16 @@ dependencies {
     for (dependency in centralDependencies) {
         compileOnlyApi(dependency)
     }
-    compileOnlyApi("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnlyApi("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 
     api(project(":engine-core"))
     api(project(":engine-loader"))
 
-    api("me.tofaa.entitylib:spigot:3.0.3-SNAPSHOT")
+    api("me.tofaa.entitylib:spigot:+39cce79-SNAPSHOT")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.20.0")
     api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.20.0")
-    api("dev.jorel:commandapi-bukkit-shade:9.6.1")
-    api("dev.jorel:commandapi-bukkit-kotlin:9.6.1")
+    api("dev.jorel:commandapi-bukkit-shade:9.7.0")
+    api("dev.jorel:commandapi-bukkit-kotlin:9.7.0")
 
     // Doesn't want to load properly using the spigot api.
     implementation("io.ktor:ktor-server-core-jvm:2.3.12")
@@ -56,12 +56,10 @@ dependencies {
     compileOnlyApi("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
     compileOnlyApi("net.kyori:adventure-text-serializer-gson:$adventureVersion")
 
-    compileOnlyApi("com.github.retrooper:packetevents-api:2.6.0-SNAPSHOT")
-    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.6.0-SNAPSHOT")
+    compileOnlyApi("com.github.retrooper:packetevents-api:2.7.0-SNAPSHOT")
+    compileOnlyApi("com.github.retrooper:packetevents-spigot:2.7.0-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnlyApi("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
-
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.3.1")
 }
 
 tasks.withType<ShadowJar> {
