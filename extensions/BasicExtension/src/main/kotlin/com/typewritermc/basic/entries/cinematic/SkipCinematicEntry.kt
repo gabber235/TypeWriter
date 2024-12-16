@@ -89,6 +89,7 @@ class SkipCinematicAction(
                 plugin.listen<PlayerSwapHandItemsEvent>(listener) {
                     if (it.player.uniqueId != player.uniqueId) return@listen
                     player.setTemporalFrame(segment.endFrame)
+                    it.isCancelled = true
                 }
             }
         }
