@@ -5,6 +5,7 @@ interface RiveBoardProps {
     src: any;
     artboard?: string;
     stateMachines?: string | string[];
+    aspectRatio?: number;
 }
 
 export default function RiveBoard(props: RiveBoardProps) {
@@ -16,12 +17,14 @@ export default function RiveBoard(props: RiveBoardProps) {
         stateMachines: props.stateMachines,
         autoplay: true,
     });
+    const aspectRatio = props.aspectRatio || 1;
     const usedWidth = width * 0.8;
+    const usedHeight = usedWidth / aspectRatio;
     return (
         <div ref={ref} style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }} >
             <div style={{
                 width: usedWidth,
-                height: usedWidth,
+                height: usedHeight,
             }}>
                 <RiveComponent />
             </div >
