@@ -78,16 +78,12 @@ enum class InteractBlockContextKeys(override val klass: KClass<*>) : EntryContex
     POSITION(Position::class),
 }
 
-private fun hasItemInHand(player: Player, item: Item): Boolean {
+fun hasItemInHand(player: Player, item: Item): Boolean {
     return item.isSameAs(player, player.inventory.itemInMainHand, context()) || item.isSameAs(
         player,
         player.inventory.itemInOffHand,
         context(),
     )
-}
-
-fun Location.isSameBlock(location: Location): Boolean {
-    return this.world == location.world && this.blockX == location.blockX && this.blockY == location.blockY && this.blockZ == location.blockZ
 }
 
 @EntryListener(InteractBlockEventEntry::class)

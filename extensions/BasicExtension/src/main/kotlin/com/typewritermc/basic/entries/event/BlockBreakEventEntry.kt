@@ -54,14 +54,6 @@ enum class BlockBreakContextKeys(override val klass: KClass<*>) : EntryContextKe
     CENTER_POSITION(Position::class)
 }
 
-private fun hasItemInHand(player: Player, item: Item): Boolean {
-    return item.isSameAs(player, player.inventory.itemInMainHand, context()) || item.isSameAs(
-        player,
-        player.inventory.itemInOffHand,
-        context(),
-    )
-}
-
 @EntryListener(BlockBreakEventEntry::class)
 fun onBlockBreak(event: BlockBreakEvent, query: Query<BlockBreakEventEntry>) {
     val player = event.player

@@ -1,47 +1,66 @@
-package io.devgiga.gigaextension.entries
+package com.typewritermc.basic.entries.event
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.extension.annotations.Help
+import com.typewritermc.core.interaction.context
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.TriggerableEntry
+import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.EventEntry
-import com.typewritermc.engine.paper.entry.startDialogueWithOrNextDialogue
+import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.entry.triggerAllFor
+import com.typewritermc.engine.paper.utils.item.Item
 import com.typewritermc.engine.paper.utils.toPosition
-import org.bukkit.Location
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
 
-@Entry("interact_event_entry", "triggers when a player interacts with a block", Colors.YELLOW, "hugeicons:touch-interaction-02")
+@Entry("interact_event_entry", "triggers when a player clicks", Colors.YELLOW, "hugeicons:touch-interaction-02")
 class InteractEventEntry(
     override val id: String = "",
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val location: Optional<Position> = Optional.empty(),
+    val location: Optional<Var<Position>> = Optional.empty(),
+    @Help("The item the player must be holding when the block is interacted with.")
+    val itemInHand: Var<Item> = ConstVar(Item.Empty),
+    @Help("""
+        Cancel the event when triggered.
+        It will only cancel the event if all the criteria are met.
+        If set to false, it will not modify the event.
+    """)
+    val cancel: Boolean = false,
+    val interactionType: InteractionType = InteractionType.ALL,
+    val shiftType: ShiftType = ShiftType.ANY,
 ): EventEntry
 
-fun Location.isSameBlock(location: Location): Boolean {
-    return this.world == location.world && this.blockX == location.blockX && this.blockY == location.blockY && this.blockZ == location.blockZ
-}
-
 @EntryListener(InteractEventEntry::class)
-fun onInteractBlock(event: PlayerInteractEvent, query: Query<InteractEventEntry>) {
+fun onInteract(event: PlayerInteractEvent, query: Query<InteractEventEntry>) {
     val player = event.player
     val block = event.clickedBlock
     val location = block?.location ?: player.location
     // The even triggers twice. Both for the main hand and offhand.
     // We only want to trigger once.
-    println("interact detected")
     if (event.hand == org.bukkit.inventory.EquipmentSlot.OFF_HAND) return // Disable off-hand interactions
     val entries = query.findWhere { entry ->
-        println("is this working")
+        // Check if the player is sneaking
+        if (!entry.shiftType.isApplicable(player)) return@findWhere false
+
+        // Check if the player is interacting with the block in the correct way
+        if (!entry.interactionType.actions.contains(event.action)) return@findWhere false
+
         // Check if the player clicked on the correct location
-        if (!entry.location.map { it.sameBlock(location.toPosition()) }
+        if (!entry.location.map { it.get(player).sameBlock(location.toPosition()) }
                 .orElse(true)) return@findWhere false
+
+        // Check if the player is holding the correct item
+        if (!hasItemInHand(player, entry.itemInHand.get(player))) return@findWhere false
+
         true
     }.toList()
     if (entries.isEmpty()) return
-    entries startDialogueWithOrNextDialogue player
+    entries.triggerAllFor(player, context())
+    if (entries.any { it.cancel }) event.isCancelled = true
 }
