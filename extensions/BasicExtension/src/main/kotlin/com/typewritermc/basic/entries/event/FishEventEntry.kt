@@ -32,15 +32,6 @@ class FishEventEntry(
     val caught: Var<Item> = ConstVar(Item.Empty),
 ) : EventEntry
 
-
-private fun hasItemInHand(player: Player, item: Item): Boolean {
-    return item.isSameAs(player, player.inventory.itemInMainHand, context()) || item.isSameAs(
-        player,
-        player.inventory.itemInOffHand,
-        context(),
-    )
-}
-
 @EntryListener(FishEventEntry::class)
 fun onPlayerFish(event: PlayerFishEvent, query: Query<FishEventEntry>) {
     if (event.state != PlayerFishEvent.State.CAUGHT_FISH) return
