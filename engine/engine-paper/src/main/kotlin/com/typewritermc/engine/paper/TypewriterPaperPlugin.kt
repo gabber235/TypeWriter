@@ -77,6 +77,8 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
                 createdAtStart()
             }
 
+            single(named("version")) { this@TypewriterPaperPlugin.pluginMeta.version }
+
             singleOf(::TypewriterCore)
             factory<File>(named("baseDir")) { plugin.dataFolder }
             single { PaperDependencyChecker() } withOptions {

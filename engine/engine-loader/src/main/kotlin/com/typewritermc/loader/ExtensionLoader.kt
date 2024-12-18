@@ -15,6 +15,7 @@ import kotlin.math.abs
 import kotlin.math.log10
 
 class ExtensionLoader : KoinComponent {
+    private val version: String by inject(named("version"))
     private val logger: Logger by inject()
     private val dependencyChecker: DependencyChecker by inject()
     private val gson: Gson by inject(named("dataSerializer"))
@@ -57,6 +58,11 @@ class ExtensionLoader : KoinComponent {
         extensions = extensionJsonTexts.map { extensionJson ->
             gson.fromJson(extensionJson, Extension::class.java) to extensionJson
         }.filter { (extension, _) ->
+            if (extension.extension.engineVersion != version) {
+                logger.warning("Extension '${extension.extension.name}Extension' was made for Typewriter $version but you are using Typewriter ${extension.extension.engineVersion}. Ignoring extension.")
+                return@filter false
+            }
+
             val paper = extension.extension.paper
             if (paper == null) {
                 logger.warning("Extension '${extension.extension.name}Extension' does not seem to be a paper extension. Ignoring extension.")
@@ -163,6 +169,7 @@ data class ExtensionInfo(
     val shortDescription: String = "",
     val description: String = "",
     val version: String = "",
+    val engineVersion: String = "",
     val flags: List<ExtensionFlag> = emptyList(),
     val paper: PaperExtensionInfo? = null,
 )
