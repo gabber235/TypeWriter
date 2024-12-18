@@ -15,7 +15,7 @@ import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.EntryTrigger
 import com.typewritermc.engine.paper.entry.entries.Segment
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.interaction.interactionContext
 import org.bukkit.entity.Player
 
@@ -57,7 +57,7 @@ data class TriggerSequenceSegment(
 class TriggerSequenceAction(
     val player: Player,
     entry: TriggerSequenceCinematicEntry
-) : SimpleTemporalAction<TriggerSequenceSegment>() {
+) : SimpleCinematicAction<TriggerSequenceSegment>() {
     override val segments: List<TriggerSequenceSegment> = entry.segments
 
     override suspend fun startSegment(segment: TriggerSequenceSegment) {

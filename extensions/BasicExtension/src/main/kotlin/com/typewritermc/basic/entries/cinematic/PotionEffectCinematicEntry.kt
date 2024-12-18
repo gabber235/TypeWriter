@@ -7,7 +7,7 @@ import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.interaction.interactionContext
 import com.typewritermc.engine.paper.utils.EffectStateProvider
 import com.typewritermc.engine.paper.utils.PlayerState
@@ -62,7 +62,7 @@ data class PotionEffectSegment(
 class PotionEffectCinematicAction(
     private val player: Player,
     entry: PotionEffectCinematicEntry
-) : SimpleTemporalAction<PotionEffectSegment>() {
+) : SimpleCinematicAction<PotionEffectSegment>() {
 
     private var state: PlayerState? = null
 

@@ -8,7 +8,7 @@ import com.typewritermc.core.extension.annotations.WithRotation
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.utils.toBukkitLocation
@@ -53,7 +53,7 @@ data class MythicMobSegment(
 class MobCinematicAction(
     private val player: Player,
     entry: MythicMobCinematicEntry,
-) : SimpleTemporalAction<MythicMobSegment>() {
+) : SimpleCinematicAction<MythicMobSegment>() {
     override val segments: List<MythicMobSegment> = entry.segments
 
     private var mob: ActiveMob? = null

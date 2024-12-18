@@ -1,11 +1,10 @@
 package com.typewritermc.example.entries.cinematic
 
 import com.typewritermc.core.books.pages.Colors
-import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.*
 import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.cinematic.SimpleTemporalAction
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import org.bukkit.entity.Player
 
 //<code-block:cinematic_entry>
@@ -97,7 +96,7 @@ class ExampleCinematicAction(
 class ExampleSimpleTemporalAction(
     val player: Player,
     entry: ExampleCinematicEntry,
-) : SimpleTemporalAction<ExampleSegment>() {
+) : SimpleCinematicAction<ExampleSegment>() {
     override val segments: List<ExampleSegment> = entry.segments
 
     override suspend fun startSegment(segment: ExampleSegment) {
@@ -124,20 +123,20 @@ class ExampleSimpleTemporalAction(
 class DefaultCinematicAction(
     val player: Player,
     entry: ExampleWithSegmentSizesEntry,
-) : SimpleTemporalAction<ExampleSegment>() {
+) : SimpleCinematicAction<ExampleSegment>() {
     override val segments: List<ExampleSegment> = entry.segments
 }
 
 class SimulatedCinematicAction(
     val player: Player,
     entry: ExampleWithSegmentSizesEntry,
-) : SimpleTemporalAction<ExampleSegment>() {
+) : SimpleCinematicAction<ExampleSegment>() {
     override val segments: List<ExampleSegment> = entry.segments
 }
 
 class RecordingCinematicAction(
     val player: Player,
     entry: ExampleWithSegmentSizesEntry,
-) : SimpleTemporalAction<ExampleSegment>() {
+) : SimpleCinematicAction<ExampleSegment>() {
     override val segments: List<ExampleSegment> = entry.segments
 }

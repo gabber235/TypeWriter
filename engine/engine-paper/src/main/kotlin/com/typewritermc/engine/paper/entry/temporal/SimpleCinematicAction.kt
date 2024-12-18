@@ -5,7 +5,7 @@ import com.typewritermc.engine.paper.entry.entries.Segment
 import com.typewritermc.engine.paper.entry.entries.activeSegmentAt
 import com.typewritermc.engine.paper.entry.entries.canFinishAt
 
-abstract class SimpleTemporalAction<S : Segment> : CinematicAction {
+abstract class SimpleCinematicAction<S : Segment> : CinematicAction {
     protected var lastFrame = 0
         private set
     private var previousSegment: S? = null

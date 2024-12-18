@@ -16,9 +16,6 @@ This is automatically handled by Typewriter.
 To define the messenger that will be used to display the dialogue to the player, you must create a class that implements the `DialogueMessenger` interface.
 <CodeSnippet tag="dialogue_messenger" json={require("../../../snippets.json")} />
 
-### Multiple Messengers
-The `DialogueMessenger` has a `MessengerFilter` that is used to determine if the messenger should be used to display the dialogue to the player. When having multiple `MessageFilter`'s make sure that they are deterministic. So if you have some condition, such as if they are bedrock players. One message check that the player is a bedrock player and the other filter check that they are not.
-
 ### Lifecycle
 The `state` of the messenger determines what happens to the messenger. 
 - `MessengerState.FINISHED` - The dialogue is finished and the next dialogue in the chain will be triggered.

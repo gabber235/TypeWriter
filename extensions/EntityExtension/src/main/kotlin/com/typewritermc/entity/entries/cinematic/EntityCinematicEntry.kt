@@ -21,7 +21,7 @@ import com.typewritermc.engine.paper.entry.AssetManager
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.extensions.packetevents.ArmSwing
 import com.typewritermc.engine.paper.extensions.packetevents.toPacketItem
 import com.typewritermc.engine.paper.utils.toBukkitLocation
@@ -95,7 +95,7 @@ class EntityCinematicAction(
     private val player: Player,
     private val entry: EntityCinematicEntry,
 ) :
-    SimpleTemporalAction<EntityRecordedSegment>() {
+    SimpleCinematicAction<EntityRecordedSegment>() {
     private val assetManager: AssetManager by KoinJavaComponent.inject(AssetManager::class.java)
     private val gson: Gson by KoinJavaComponent.inject(Gson::class.java, named("bukkitDataParser"))
 

@@ -1,7 +1,47 @@
 {
   "initializer": {
     "file": "src/main/kotlin/com/typewritermc/example/ExampleInitializer.kt",
-    "content": "import com.typewritermc.core.extension.Initializable\nimport com.typewritermc.core.extension.annotations.Initializer\n\n@Initializer\nobject ExampleInitializer : Initializable {\n    override suspend fun initialize() {\n        // Do something when the extension is initialized\n    }\n\n    override suspend fun shutdown() {\n        // Do something when the extension is shutdown\n    }\n}"
+    "content": "import com.typewritermc.core.extension.Initializable\nimport com.typewritermc.core.extension.annotations.Singleton\n\n@Singleton\nobject ExampleInitializer : Initializable {\n    override suspend fun initialize() {\n        // Do something when the extension is initialized\n    }\n\n    override suspend fun shutdown() {\n        // Do something when the extension is shutdown\n    }\n}"
+  },
+  "query_multiple": {
+    "file": "src/main/kotlin/com/typewritermc/example/QueryExample.kt",
+    "content": "    val entries = Query.find<MyEntry>()"
+  },
+  "query_multiple_with_filter": {
+    "file": "src/main/kotlin/com/typewritermc/example/QueryExample.kt",
+    "content": "    val entries = Query.findWhere<MyEntry> {\n        it.someField == \"some value\"\n    }"
+  },
+  "query_by_id": {
+    "file": "src/main/kotlin/com/typewritermc/example/QueryExample.kt",
+    "content": "    val id = \"some_id\"\n    val entry = Query.findById<MyEntry>(id)"
+  },
+  "query_from_page": {
+    "file": "src/main/kotlin/com/typewritermc/example/QueryExample.kt",
+    "content": "    val pageId = \"some_page_id\"\n    val entries = Query.findWhereFromPage<MyEntry>(pageId) {\n        it.someField == \"some value\"\n    }"
+  },
+  "trigger_without_context": {
+    "file": "src/main/kotlin/com/typewritermc/example/TriggerExample.kt",
+    "content": "    // If you only have one entry\n    val triggerEntry: TriggerEntry = Query.findById<MyTriggerableEntry>(\"some_id\") ?: return\n    // Triggers all the next entries in the sequence.\n    triggerEntry.triggerAllFor(player, context())\n\n    // If you have multiple entries\n    val triggerEntries: Sequence<TriggerEntry> = Query.find<MyTriggerableEntry>()\n    // Triggers all the next entries for all entries.\n    triggerEntries.triggerAllFor(player, context())"
+  },
+  "start_dialogue_with_or_trigger": {
+    "file": "src/main/kotlin/com/typewritermc/example/TriggerExample.kt",
+    "content": "    val triggerEntries: Sequence<MyTriggerableEntry> = Query.find<MyTriggerableEntry>()\n    triggerEntries.startDialogueWithOrNextDialogue(player, context())\n\n    // Or trigger something completely different when the player is in dialogue:\n    val customTrigger: EventTrigger = InteractionEndTrigger\n    triggerEntries.startDialogueWithOrTrigger(player, customTrigger, context())"
+  },
+  "trigger_with_context": {
+    "file": "src/main/kotlin/com/typewritermc/example/TriggerExample.kt",
+    "content": "    // The context that you have, most likely provided by Typewriter in some way.\n    val context = player.interactionContext ?: context()\n    // Triggers all the next entries in the sequence.\n    triggerEntries.triggerAllFor(player, context)"
+  },
+  "interaction_triggers": {
+    "file": "src/main/kotlin/com/typewritermc/example/TriggerExample.kt",
+    "content": "    // Indicates that the current interaction should be ended\n    InteractionEndTrigger.triggerFor(player, context())"
+  },
+  "dialogue_triggers": {
+    "file": "src/main/kotlin/com/typewritermc/example/TriggerExample.kt",
+    "content": "    // Next dialogue should be triggered or the current dialogue should complete its typing animation.\n    DialogueTrigger.NEXT_OR_COMPLETE.triggerFor(player, context())\n\n    // Forces the next dialogue to be triggered, even if the animation hasn't finished.\n    DialogueTrigger.FORCE_NEXT.triggerFor(player, context())"
+  },
+  "temporal_triggers": {
+    "file": "src/main/kotlin/com/typewritermc/example/TriggerExample.kt",
+    "content": "    // To start a temporal sequence\n    TemporalStartTrigger(\n        pageId = \"some_id\",\n        eventTriggers = listOf<EventTrigger>(),\n        settings = TemporalSettings(\n            blockChatMessages = true,\n            blockActionBarMessages = true\n        )\n    ).triggerFor(player, context())\n\n    // To stop the temporal sequence and trigger the following entries.\n    TemporalStopTrigger.triggerFor(player, player.interactionContext ?: context())"
   },
   "simple_placeholder_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/ExamplePlaceholderEntry.kt",
@@ -37,7 +77,7 @@
   },
   "cinematic_simple_action": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/cinematic/ExampleCinematicEntry.kt",
-    "content": "class ExampleSimpleTemporalAction(\n    val player: Player,\n    entry: ExampleCinematicEntry,\n) : SimpleTemporalAction<ExampleSegment>() {\n    override val segments: List<ExampleSegment> = entry.segments\n\n    override suspend fun startSegment(segment: ExampleSegment) {\n        super.startSegment(segment) // Keep this\n        // Called when a segment starts\n    }\n\n    override suspend fun tickSegment(segment: ExampleSegment, frame: Int) {\n        super.tickSegment(segment, frame) // Keep this\n        // Called every tick while the segment is active\n        // Will always be called after startSegment and never after stopSegment\n\n        // The `frame` parameter is not necessarily next frame: `frame != old(frame)+1`\n    }\n\n    override suspend fun stopSegment(segment: ExampleSegment) {\n        super.stopSegment(segment) // Keep this\n        // Called when the segment ends\n        // Will also be called if the cinematic is stopped early\n    }\n}"
+    "content": "class ExampleSimpleTemporalAction(\n    val player: Player,\n    entry: ExampleCinematicEntry,\n) : SimpleCinematicAction<ExampleSegment>() {\n    override val segments: List<ExampleSegment> = entry.segments\n\n    override suspend fun startSegment(segment: ExampleSegment) {\n        super.startSegment(segment) // Keep this\n        // Called when a segment starts\n    }\n\n    override suspend fun tickSegment(segment: ExampleSegment, frame: Int) {\n        super.tickSegment(segment, frame) // Keep this\n        // Called every tick while the segment is active\n        // Will always be called after startSegment and never after stopSegment\n\n        // The `frame` parameter is not necessarily next frame: `frame != old(frame)+1`\n    }\n\n    override suspend fun stopSegment(segment: ExampleSegment) {\n        super.stopSegment(segment) // Keep this\n        // Called when the segment ends\n        // Will also be called if the cinematic is stopped early\n    }\n}"
   },
   "audience_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/manifest/ExampleAudienceEntry.kt",
@@ -101,23 +141,23 @@
   },
   "variable_usage": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/static/ExampleVariableEntry.kt",
-    "content": "@Entry(\"example_action_using_variable\", \"An example action that uses a variable.\", Colors.RED, \"material-symbols:touch-app-rounded\")\nclass ExampleActionUsingVariableEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),\n    override val criteria: List<Criteria> = emptyList(),\n    override val modifiers: List<Modifier> = emptyList(),\n    val someString: Var<String> = ConstVar(\"\"),\n    val someInt: Var<Int> = ConstVar(0),\n) : ActionEntry {\n    override fun execute(player: Player) {\n        val someString = someString.get(player)\n        val someInt = someInt.get(player)\n\n        // Do something with the variables\n    }\n}"
+    "content": "@Entry(\"example_action_using_variable\", \"An example action that uses a variable.\", Colors.RED, \"material-symbols:touch-app-rounded\")\nclass ExampleActionUsingVariableEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),\n    override val criteria: List<Criteria> = emptyList(),\n    override val modifiers: List<Modifier> = emptyList(),\n    val someString: Var<String> = ConstVar(\"\"),\n    val someInt: Var<Int> = ConstVar(0),\n) : ActionEntry {\n    override fun ActionTrigger.execute() {\n        val someString = someString.get(player)\n        val someInt = someInt.get(player)\n\n        // Do something with the variables\n    }\n}"
   },
   "action_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleActionEntry.kt",
-    "content": "@Entry(\"example_action\", \"An example action entry.\", Colors.RED, \"material-symbols:touch-app-rounded\")\nclass ExampleActionEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val criteria: List<Criteria> = emptyList(),\n    override val modifiers: List<Modifier> = emptyList(),\n    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),\n) : ActionEntry {\n    override fun execute(player: Player) {\n        super.execute(player) // This will apply all the modifiers.\n        // Do something with the player\n    }\n}"
+    "content": "@Entry(\"example_action\", \"An example action entry.\", Colors.RED, \"material-symbols:touch-app-rounded\")\nclass ExampleActionEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val criteria: List<Criteria> = emptyList(),\n    override val modifiers: List<Modifier> = emptyList(),\n    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),\n) : ActionEntry {\n    override fun ActionTrigger.execute() {\n        // Do something with the player\n    }\n}"
   },
-  "custom_triggering_action_entry": {
-    "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleCustomTriggeringActionEntry.kt",
-    "content": "@Entry(\n    \"example_custom_triggering_action\",\n    \"An example custom triggering entry.\",\n    Colors.RED,\n    \"material-symbols:touch-app-rounded\"\n)\nclass ExampleCustomTriggeringActionEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val criteria: List<Criteria> = emptyList(),\n    override val modifiers: List<Modifier> = emptyList(),\n    @SerializedName(\"triggers\")\n    override val customTriggers: List<Ref<TriggerableEntry>> = emptyList(),\n) : CustomTriggeringActionEntry {\n    override fun execute(player: Player) {\n        super.execute(player) // This will apply the modifiers.\n        // Do something with the player\n        player.triggerCustomTriggers() // Can be called later to trigger the next entries.\n    }\n}"
+  "action_entry_manual": {
+    "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleActionEntry.kt",
+    "content": "    override fun ActionTrigger.execute() {\n        // This disables Typewriter's automatic triggering of the next entries,\n        // and disables the automatic apply of the modifiers.\n        disableAutomaticTriggering()\n\n        // Now you can manually trigger the next entries.\n        triggerManually()\n\n        // Or if you want to specify which triggers to trigger, you can do so.\n        triggers.filterIndexed { index, _ -> index % 2 == 0 }.triggerFor(player)\n\n        // You can also manually apply the modifiers.\n        applyModifiers()\n    }"
   },
   "dialogue_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleDialogueEntry.kt",
-    "content": "@Entry(\"example_dialogue\", \"An example dialogue entry.\", Colors.BLUE, \"material-symbols:chat-rounded\")\nclass ExampleDialogueEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val criteria: List<Criteria> = emptyList(),\n    override val modifiers: List<Modifier> = emptyList(),\n    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),\n    override val speaker: Ref<SpeakerEntry> = emptyRef(),\n    @MultiLine\n    @Placeholder\n    @Colored\n    @Help(\"The text to display to the player.\")\n    val text: String = \"\",\n) : DialogueEntry"
+    "content": "@Entry(\"example_dialogue\", \"An example dialogue entry.\", Colors.BLUE, \"material-symbols:chat-rounded\")\nclass ExampleDialogueEntry(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val criteria: List<Criteria> = emptyList(),\n    override val modifiers: List<Modifier> = emptyList(),\n    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),\n    override val speaker: Ref<SpeakerEntry> = emptyRef(),\n    @MultiLine\n    @Placeholder\n    @Colored\n    @Help(\"The text to display to the player.\")\n    val text: String = \"\",\n) : DialogueEntry {\n    // May return null to skip the dialogue\n    override fun messenger(player: Player, context: InteractionContext): DialogueMessenger<*>? {\n        // You can use if statements to return a different messenger depending on different conditions\n        return ExampleDialogueDialogueMessenger(player, context, this)\n    }\n}"
   },
   "dialogue_messenger": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleDialogueEntry.kt",
-    "content": "@Messenger(ExampleDialogueEntry::class)\nclass ExampleDialogueDialogueMessenger(player: Player, entry: ExampleDialogueEntry) :\n    DialogueMessenger<ExampleDialogueEntry>(player, entry) {\n\n    companion object : MessengerFilter {\n        override fun filter(player: Player, entry: DialogueEntry): Boolean = true\n    }\n\n    // Called every game tick (20 times per second).\n    // The cycle is a parameter that is incremented every tick, starting at 0.\n    override fun tick(context: TickContext) {\n        super.tick(context)\n        if (state != MessengerState.RUNNING) return\n\n        player.sendMessage(\"${entry.speakerDisplayName}: ${entry.text}\".parsePlaceholders(player).asMini())\n\n        // When we want the dialogue to end, we can set the state to FINISHED.\n        state = MessengerState.FINISHED\n    }\n}"
+    "content": "class ExampleDialogueDialogueMessenger(player: Player, context: InteractionContext, entry: ExampleDialogueEntry) :\n    DialogueMessenger<ExampleDialogueEntry>(player, context, entry) {\n\n    // Called every game tick (20 times per second).\n    // The cycle is a parameter that is incremented every tick, starting at 0.\n    override fun tick(context: TickContext) {\n        super.tick(context)\n        if (state != MessengerState.RUNNING) return\n\n        player.sendMessage(\"${entry.speakerDisplayName}: ${entry.text}\".parsePlaceholders(player).asMini())\n\n        // When we want the dialogue to end, we can set the state to FINISHED.\n        state = MessengerState.FINISHED\n    }\n}"
   },
   "event_entry": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleEventEntry.kt",
@@ -125,6 +165,10 @@
   },
   "event_entry_listener": {
     "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleEventEntry.kt",
-    "content": "// Must be scoped to be public\n@EntryListener(ExampleEventEntry::class)\nfun onEvent(event: SomeBukkitEvent, query: Query<ExampleEventEntry>) {\n    // Do something\n    val entries = query.find() // Find all the entries of this type, for more information see the Query section\n    // Do something with the entries, for example trigger them\n    entries triggerAllFor event.player\n}"
+    "content": "@EntryListener(ExampleEventEntry::class)\nfun onEvent(event: SomeBukkitEvent, query: Query<ExampleEventEntry>) {\n    // Do something\n    val entries = query.find() // Find all the entries of this type, for more information see the Query section\n    // Do something with the entries, for example trigger them\n    entries.triggerAllFor(event.player, context())\n}"
+  },
+  "event_entry_with_context_keys": {
+    "file": "src/main/kotlin/com/typewritermc/example/entries/trigger/ExampleEventEntry.kt",
+    "content": "@Entry(\"example_event_with_context_keys\", \"An example event entry with context keys.\", Colors.YELLOW, \"material-symbols:bigtop-updates\")\n// This tells Typewriter that this entry exposes some context\n@ContextKeys(ExampleContextKeys::class)\nclass ExampleEventEntryWithContextKeys(\n    override val id: String = \"\",\n    override val name: String = \"\",\n    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),\n) : EventEntry\n\nenum class ExampleContextKeys(override val klass: KClass<*>) : EntryContextKey {\n    // The two `String::class` have to be the same.\n    // The @KeyType is for the panel to know\n    @KeyType(String::class)\n    // The type here is for casting during runtime\n    TEXT(String::class),\n\n    @KeyType(Int::class)\n    NUMBER(Int::class),\n\n    // More complex types are also allowed.\n    @KeyType(Position::class)\n    POSITION(Position::class)\n}\n\n@EntryListener(ExampleEventEntryWithContextKeys::class)\nfun onEventAddContext(event: SomeBukkitEvent, query: Query<ExampleEventEntryWithContextKeys>) {\n    val entries = query.find()\n    entries.triggerAllFor(event.player) {\n        // Make sure these values are drawn from the event.\n        // You MUST supply all the context keys.\n        ExampleContextKeys.TEXT withValue \"Hello World\"\n        ExampleContextKeys.NUMBER withValue 42\n        ExampleContextKeys.POSITION withValue Position.ORIGIN\n    }\n}"
   }
 }

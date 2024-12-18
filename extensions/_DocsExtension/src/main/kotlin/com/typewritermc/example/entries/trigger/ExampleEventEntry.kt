@@ -3,14 +3,20 @@ package com.typewritermc.example.entries.trigger
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
+import com.typewritermc.core.extension.annotations.ContextKeys
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.EntryListener
+import com.typewritermc.core.extension.annotations.KeyType
+import com.typewritermc.core.interaction.EntryContextKey
+import com.typewritermc.core.interaction.context
+import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.EventEntry
 import com.typewritermc.engine.paper.entry.triggerAllFor
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
+import kotlin.reflect.KClass
 
 //<code-block:event_entry>
 @Entry("example_event", "An example event entry.", Colors.YELLOW, "material-symbols:bigtop-updates")
@@ -22,15 +28,52 @@ class ExampleEventEntry(
 //</code-block:event_entry>
 
 //<code-block:event_entry_listener>
-// Must be scoped to be public
 @EntryListener(ExampleEventEntry::class)
 fun onEvent(event: SomeBukkitEvent, query: Query<ExampleEventEntry>) {
     // Do something
     val entries = query.find() // Find all the entries of this type, for more information see the Query section
     // Do something with the entries, for example trigger them
-    entries triggerAllFor event.player
+    entries.triggerAllFor(event.player, context())
 }
 //</code-block:event_entry_listener>
+
+//<code-block:event_entry_with_context_keys>
+@Entry("example_event_with_context_keys", "An example event entry with context keys.", Colors.YELLOW, "material-symbols:bigtop-updates")
+// This tells Typewriter that this entry exposes some context
+@ContextKeys(ExampleContextKeys::class)
+class ExampleEventEntryWithContextKeys(
+    override val id: String = "",
+    override val name: String = "",
+    override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
+) : EventEntry
+
+enum class ExampleContextKeys(override val klass: KClass<*>) : EntryContextKey {
+    // The two `String::class` have to be the same.
+    // The @KeyType is for the panel to know
+    @KeyType(String::class)
+    // The type here is for casting during runtime
+    TEXT(String::class),
+
+    @KeyType(Int::class)
+    NUMBER(Int::class),
+
+    // More complex types are also allowed.
+    @KeyType(Position::class)
+    POSITION(Position::class)
+}
+
+@EntryListener(ExampleEventEntryWithContextKeys::class)
+fun onEventAddContext(event: SomeBukkitEvent, query: Query<ExampleEventEntryWithContextKeys>) {
+    val entries = query.find()
+    entries.triggerAllFor(event.player) {
+        // Make sure these values are drawn from the event.
+        // You MUST supply all the context keys.
+        ExampleContextKeys.TEXT withValue "Hello World"
+        ExampleContextKeys.NUMBER withValue 42
+        ExampleContextKeys.POSITION withValue Position.ORIGIN
+    }
+}
+//</code-block:event_entry_with_context_keys>
 
 class SomeBukkitEvent(player: Player) : PlayerEvent(player) {
     override fun getHandlers(): HandlerList = HANDLER_LIST

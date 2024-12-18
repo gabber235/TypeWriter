@@ -11,11 +11,10 @@ To listen to an event, you must create a function that is annotated with `@Entry
 The great thing about kotlin, is that this can be done in the same file as the entry.
 <CodeSnippet tag="event_entry_listener" json={require("../../../snippets.json")} />
 
-:::warning Public Function
-If the function is not scoped to be public, it will not be registered as a listener.
-:::
-
 The function will automatically be registered as a listener for the event by Typewriter and be called when the Bukkit event is trigger.
 An optional `Query` parameter can be added to easily fetch all the different event entries.
 
+## Entry Context Variables
+Sometimes you want to pass some information to the context so that subsequent entries can use it.
 
+<CodeSnippet tag="event_entry_with_context_keys" json={require("../../../snippets.json")} />

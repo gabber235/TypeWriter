@@ -10,7 +10,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.PrimaryCinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.interaction.InterceptionBundle
 import com.typewritermc.engine.paper.interaction.interceptPackets
@@ -60,7 +60,7 @@ data class GameTimeSegment(
 class GameTimeCinematicAction(
     val player: Player,
     entry: GameTimeCinematicEntry,
-) : SimpleTemporalAction<GameTimeSegment>() {
+) : SimpleCinematicAction<GameTimeSegment>() {
     override val segments: List<GameTimeSegment> = entry.segments
 
     private var state: PlayerState? = null

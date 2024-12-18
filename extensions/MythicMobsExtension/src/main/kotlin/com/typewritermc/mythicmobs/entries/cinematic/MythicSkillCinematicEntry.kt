@@ -7,7 +7,7 @@ import com.typewritermc.core.extension.annotations.Max
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.logger
 import io.lumine.mythic.api.mobs.GenericCaster
 import io.lumine.mythic.bukkit.BukkitAdapter
@@ -55,7 +55,7 @@ data class MythicSkillSegment(
 class SkillCinematicAction(
     private val player: Player,
     entry: MythicSkillCinematicEntry,
-) : SimpleTemporalAction<MythicSkillSegment>() {
+) : SimpleCinematicAction<MythicSkillSegment>() {
     override val segments: List<MythicSkillSegment> = entry.segments
 
     override suspend fun startSegment(segment: MythicSkillSegment) {

@@ -9,7 +9,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.entry.temporal.setTemporalFrame
 import com.typewritermc.engine.paper.interaction.InterceptionBundle
 import com.typewritermc.engine.paper.interaction.interceptPackets
@@ -63,7 +63,7 @@ enum class SkipConfirmationKey(val keybind: String) {
 class SkipCinematicAction(
     private val player: Player,
     val entry: SkipCinematicEntry,
-) : SimpleTemporalAction<SkipSegment>() {
+) : SimpleCinematicAction<SkipSegment>() {
     override val segments: List<SkipSegment> = entry.segments
     private var bundle: InterceptionBundle? = null
     private var listener: Listener? = null

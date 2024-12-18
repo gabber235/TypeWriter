@@ -14,7 +14,7 @@ import com.typewritermc.core.interaction.InteractionBoundStateOverrideSubscripti
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.extensions.packetevents.meta
 import com.typewritermc.engine.paper.extensions.packetevents.spectateEntity
 import com.typewritermc.engine.paper.extensions.packetevents.stopSpectatingEntity
@@ -426,7 +426,7 @@ private class TeleportCameraAction(
 class SimulatedCameraCinematicAction(
     private val player: Player,
     private val entry: CameraCinematicEntry,
-) : SimpleTemporalAction<CameraSegment>() {
+) : SimpleCinematicAction<CameraSegment>() {
     override val segments: List<CameraSegment> = entry.segments
 
     private val paths = entry.segments.associateWith { segment ->

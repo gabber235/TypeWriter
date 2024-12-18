@@ -1,3 +1,5 @@
+import CodeSnippet from "@site/src/components/CodeSnippet";
+
 # Triggering Entries
 
 There are easy ways to trigger all the next entries in a `TriggerEntry`.
@@ -9,69 +11,36 @@ If criteria are not met, the entries are not triggered.
 :::
 
 If you have a single `TriggerEntry`:
-```kotlin
-val triggerEntry: TriggerEntry = ...
-val player: Player = ...
-triggerEntry triggerAllFor player
-```
+<CodeSnippet tag="trigger_without_context" json={require("../snippets.json")} />
 
-If you have list of `TriggerEntry`:
-```kotlin
-val triggerEntries: List<TriggerEntry> = ...
-val player: Player = ...
-triggerEntries triggerAllFor player
-```
-
-If you have a list of id's of `TriggerEntry`:
-```kotlin
-val triggerEntryIds: List<String> = ...
-val player: Player = ...
-triggerEntryIds triggerEntriesFor player
-```
-
-Sometimes you don't want to trigger the entries when the player is in a dialogue. 
+Sometimes you don't want to trigger the entries when the player is in a dialogue.
 For example, when the player is in a dialogue with a NPC, you don't want to trigger the first entry of the NPC again.
 You expect when the player clicks on the NPC again, the next dialogue is triggered.
 To facilitate this, you can use the `startDialogueWithOrNextDialogue` function.
 
-```kotlin
-val triggerEntries: List<TriggerEntry> = ...
-val player: Player = ...
-triggerEntries startDialogueWithOrNextDialogue player
-```
+<CodeSnippet tag="start_dialogue_with_or_trigger" json={require("../snippets.json")} />
 
-Or if you want to trigger something completely different when the player is in a dialogue:
-```kotlin
-val triggerEntries: List<TriggerEntry> = ...
-val player: Player = ...
-val customTrigger: EventTrigger = ...
-triggerEntries.startDialogueWithOrTrigger(player, customTrigger)
-```
+Previously, we triggered entries with a new fresh `context`, but sometimes we already have a context.
+Then you need to make sure that you pass on the context to the trigger.
 
+<CodeSnippet tag="trigger_with_context" json={require("../snippets.json")} />
 
 ## Custom triggers
 Typewriter triggers based on the `EventTrigger` interface.
 So all the entries that are triggered are wrapped in a `EntryTrigger`.
 
-There are some triggers that are defined in Typewriter. 
-The two are `SystemTrigger` and `CinematicStartTrigger`.
+### System Triggers
 
-### SystemTrigger
+For some interactions there are custom triggers that are defined in Typewriter.
+These triggers allow you to do special things with the interaction.
 
-`SystemTrigger`'s can be used to indicate to either the `DialogueSequence` or the `CinematicSequence` that something needs to happen.
+<CodeSnippet tag="interaction_triggers" json={require("../snippets.json")} />
 
-- `SystemTrigger.DIALOGUE_NEXT` indicates that the next dialogue should be triggered.
-- `SystemTrigger.DIALOGUE_END` indicates that the dialogue should end.
-- `SystemTrigger.CINEMATIC_END` indicates that the cinematic should end.
+#### Dialogue Interaction
 
-### CinematicStartTrigger
 
-`CinematicStartTrigger`'s can be used to indicate to the `CinematicSequence` that a cinematic should start.
+<CodeSnippet tag="dialogue_triggers" json={require("../snippets.json")} />
 
-It has several properties that can be set:
-- `pageId: String` is the id of the cinematic page that should be shown. This is required.
-- `triggers: List<String>` is a list of trigger id's that should be triggered when the cinematic is finished. This is optional.
-- `override: Boolean` indicates if the cinematic should override the current cinematic. This is optional and defaults to `false`.
-- `simulate: Boolean` is used to run a cinematic for recording purposes. When this is enable it disables some entries from running. This is optional and defaults to `false`.
-- `ignoreEntries: List<String>` is a list of entry id's that should not be triggered. This is optional.
-- `minEndTime: Optional<Int>` is the minimum amount of frames the cinematic should run. If the cinematic is shorter than this, it will be extended. This is optional.
+#### Temporal Interaction
+
+<CodeSnippet tag="temporal_triggers" json={require("../snippets.json")} />

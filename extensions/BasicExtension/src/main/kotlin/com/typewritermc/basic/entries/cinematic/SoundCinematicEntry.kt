@@ -5,7 +5,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.utils.*
 import org.bukkit.entity.Player
 
@@ -41,7 +41,7 @@ data class SoundSegment(
 class SoundCinematicAction(
     private val player: Player,
     entry: SoundCinematicEntry,
-) : SimpleTemporalAction<SoundSegment>() {
+) : SimpleCinematicAction<SoundSegment>() {
     override val segments: List<SoundSegment> = entry.segments
     private var previousSound: Sound? = null
 

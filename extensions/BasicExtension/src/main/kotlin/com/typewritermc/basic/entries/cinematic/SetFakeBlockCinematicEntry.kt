@@ -8,7 +8,7 @@ import com.typewritermc.core.extension.annotations.Segments
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.*
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.extensions.packetevents.sendPacketTo
 import com.typewritermc.engine.paper.interaction.interactionContext
 import com.typewritermc.engine.paper.utils.toBukkitLocation
@@ -41,7 +41,7 @@ data class SetFakeBlockSegment(
 class SetFakeBlockCinematicAction(
     private val player: Player,
     entry: SetFakeBlockCinematicEntry,
-) : SimpleTemporalAction<SetFakeBlockSegment>() {
+) : SimpleCinematicAction<SetFakeBlockSegment>() {
     override val segments: List<SetFakeBlockSegment> = entry.segments
     private var lastLocation: Position? = null
 

@@ -6,7 +6,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
@@ -94,7 +94,7 @@ class CommandAction(
     private val player: Player,
     entry: CinematicCommandEntry,
     private val run: (String) -> Unit,
-) : SimpleTemporalAction<CommandSegment>() {
+) : SimpleCinematicAction<CommandSegment>() {
     override val segments: List<CommandSegment> = entry.segments
 
     override suspend fun startSegment(segment: CommandSegment) {

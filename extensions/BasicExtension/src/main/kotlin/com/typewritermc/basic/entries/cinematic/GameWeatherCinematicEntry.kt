@@ -8,7 +8,7 @@ import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.entries.CinematicAction
 import com.typewritermc.engine.paper.entry.entries.CinematicEntry
 import com.typewritermc.engine.paper.entry.entries.Segment
-import com.typewritermc.engine.paper.entry.temporal.SimpleTemporalAction
+import com.typewritermc.engine.paper.entry.temporal.SimpleCinematicAction
 import org.bukkit.WeatherType
 import org.bukkit.entity.Player
 
@@ -44,7 +44,7 @@ data class GameWeatherSegment(
 class GameWeatherCinematicAction(
     val player: Player,
     entry: GameWeatherCinematicEntry,
-) : SimpleTemporalAction<GameWeatherSegment>() {
+) : SimpleCinematicAction<GameWeatherSegment>() {
     override val segments: List<GameWeatherSegment> = entry.segments
 
     override suspend fun startSegment(segment: GameWeatherSegment) {

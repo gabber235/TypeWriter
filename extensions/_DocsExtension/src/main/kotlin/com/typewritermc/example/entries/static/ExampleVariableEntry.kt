@@ -112,7 +112,7 @@ class ExampleActionUsingVariableEntry(
     val someString: Var<String> = ConstVar(""),
     val someInt: Var<Int> = ConstVar(0),
 ) : ActionEntry {
-    override fun execute(player: Player) {
+    override fun ActionTrigger.execute() {
         val someString = someString.get(player)
         val someInt = someInt.get(player)
 
