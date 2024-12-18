@@ -45,7 +45,7 @@ class EntityHandler : PacketListenerAbstract(), KoinComponent {
 
         val definition = display.definition ?: return
         val instance = display.instanceEntryRef.get() ?: return
-        AsyncEntityDefinitionInteract(player, entityId, definition, instance, packet.hand, packet.action).callEvent()
+        AsyncEntityDefinitionInteract(player, entityId, definition, instance, packet.hand, packet.action, packet.isSneaking.orElse(false)).callEvent()
     }
 
     fun shutdown() {

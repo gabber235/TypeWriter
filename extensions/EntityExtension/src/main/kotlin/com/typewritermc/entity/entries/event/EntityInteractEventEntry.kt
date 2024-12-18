@@ -1,7 +1,7 @@
 package com.typewritermc.entity.entries.event
 
 import com.github.retrooper.packetevents.protocol.player.InteractionHand
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity.InteractAction
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.entries.Ref
@@ -34,14 +34,46 @@ class EntityInteractEventEntry(
     override val name: String = "",
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     val definition: Ref<EntityDefinitionEntry> = emptyRef(),
+    val shiftType: ShiftType = ShiftType.ANY,
+    val interactionType: InteractionType = InteractionType.ALL,
 ) : EventEntry
+
+enum class ShiftType {
+    ANY,
+    SHIFT,
+    NO_SHIFT;
+
+    fun isApplicable(isSneaking: Boolean): Boolean {
+        return when (this) {
+            ANY -> true
+            SHIFT -> isSneaking
+            NO_SHIFT -> !isSneaking
+        }
+    }
+}
+
+enum class InteractionType(private vararg val actions: InteractAction) {
+    ALL(InteractAction.INTERACT, InteractAction.ATTACK),
+    LEFT_CLICK(InteractAction.ATTACK),
+    RIGHT_CLICK(InteractAction.INTERACT);
+
+    fun isApplicable(action: InteractAction): Boolean {
+        return actions.contains(action)
+    }
+}
+
 
 @EntryListener(EntityInteractEventEntry::class)
 fun onEntityInteract(event: AsyncEntityDefinitionInteract, query: Query<EntityInteractEventEntry>) {
-    if (event.hand != InteractionHand.MAIN_HAND || event.action == WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT) return
+    if (event.hand != InteractionHand.MAIN_HAND || event.action == InteractAction.INTERACT_AT) return
     val definition = event.definition.ref()
 
-    query.findWhere { it.definition == definition }.startDialogueWithOrNextDialogue(event.player, context {
+    query.findWhere {
+        if (!it.shiftType.isApplicable(event.shift)) return@findWhere false
+        if (!it.interactionType.isApplicable(event.action)) return@findWhere false
+
+        it.definition == definition
+    }.startDialogueWithOrNextDialogue(event.player, context {
         val instance = event.instance
         InteractingEntityInstance withValue instance.ref()
     })

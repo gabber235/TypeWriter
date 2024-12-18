@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.entry.entries.EntityInstanceEntry
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
+import java.util.Optional
 
 class AsyncFakeEntityInteract(
     player: Player,
@@ -32,6 +33,7 @@ class AsyncEntityDefinitionInteract(
     val instance: EntityInstanceEntry,
     val hand: InteractionHand,
     val action: InteractAction,
+    val shift: Boolean,
 ) : PlayerEvent(player, true) {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 
