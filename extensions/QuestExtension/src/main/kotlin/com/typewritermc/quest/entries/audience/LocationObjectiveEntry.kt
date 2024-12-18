@@ -5,10 +5,12 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.utils.point.Position
-import com.typewritermc.engine.paper.entry.Criteria
+import com.typewritermc.core.utils.point.formatted
+import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.AudienceEntry
 import com.typewritermc.engine.paper.entry.entries.ConstVar
 import com.typewritermc.engine.paper.entry.entries.Var
+import com.typewritermc.engine.paper.entry.entries.get
 import com.typewritermc.quest.ObjectiveEntry
 import com.typewritermc.quest.QuestEntry
 import java.util.*
@@ -39,4 +41,18 @@ class LocationObjectiveEntry(
     override val display: Var<String> = ConstVar(""),
     val targetLocation: Var<Position> = ConstVar(Position.ORIGIN),
     override val priorityOverride: Optional<Int> = Optional.empty(),
-) : ObjectiveEntry
+) : ObjectiveEntry {
+    override fun parser(): PlaceholderParser = placeholderParser {
+        include(super.parser())
+
+        literal("location") {
+            string("format") { format ->
+                supply {
+                    targetLocation.get(it)?.formatted(format())
+                }
+            }
+
+            supply { targetLocation.get(it)?.formatted() }
+        }
+    }
+}
