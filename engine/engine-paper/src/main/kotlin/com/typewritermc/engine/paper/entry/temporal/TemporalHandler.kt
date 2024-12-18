@@ -10,7 +10,7 @@ class TemporalHandler : TriggerHandler {
         if (TemporalStopTrigger in event && currentInteraction is TemporalInteraction) {
             return TriggerContinuation.Multi(
                 TriggerContinuation.EndInteraction,
-                TriggerContinuation.Append(Event(event.player, event.context, currentInteraction.eventTriggers)),
+                TriggerContinuation.Append(Event(event.player, currentInteraction.context, currentInteraction.eventTriggers)),
             )
         }
 

@@ -30,14 +30,12 @@ class CommandInteractionBoundEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-    val command: String = "",
 ) : InteractionBoundEntry {
-    override fun build(player: Player): InteractionBound = PlayerCommandInteractionBound(player, command, priority)
+    override fun build(player: Player): InteractionBound = PlayerCommandInteractionBound(player, priority)
 }
 
 class PlayerCommandInteractionBound(
     private val player: Player,
-    private val command: String,
     override val priority: Int,
 ) : ListenerInteractionBound {
 
