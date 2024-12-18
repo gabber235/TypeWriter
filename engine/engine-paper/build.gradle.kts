@@ -60,6 +60,8 @@ dependencies {
     compileOnlyApi("com.github.retrooper:packetevents-spigot:2.7.0-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnlyApi("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
+
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.18.0")
 }
 
 tasks.withType<ShadowJar> {

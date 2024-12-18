@@ -158,7 +158,7 @@ class PlaceholderParserTest : FunSpec({
                 }
             }
 
-            checkAll<String, String>() { string, action ->
+            checkAll<String, String> { string, action ->
                 parser.parse(null, listOf(string, action)) shouldBe "Hey $string, $action"
             }
             parser.parse(null, listOf("bob")) shouldBe null

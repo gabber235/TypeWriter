@@ -51,7 +51,7 @@ class ExampleBound(
 
             // A manual version of the above
             when (event.player.boundState) {
-                InteractionBoundState.BLOCKING -> event.cancelled = true
+                InteractionBoundState.BLOCKING -> event.isCancelled = true
                 InteractionBoundState.INTERRUPTING -> InteractionEndTrigger.triggerFor(event.player, context())
                 InteractionBoundState.IGNORING -> {}
             }
@@ -70,7 +70,7 @@ class ExampleBound(
 }
 //</code-block:interaction_bound>
 
-class SomeCancellablePlayerEvent(player: Player, var cancelled: Boolean) : PlayerEvent(player, true), Cancellable {
+class SomeCancellablePlayerEvent(player: Player) : PlayerEvent(player, true), Cancellable {
     override fun getHandlers(): HandlerList = HANDLER_LIST
 
     companion object {
@@ -78,9 +78,6 @@ class SomeCancellablePlayerEvent(player: Player, var cancelled: Boolean) : Playe
         val HANDLER_LIST = HandlerList()
     }
 
-    override fun isCancelled(): Boolean = cancelled
-
-    override fun setCancelled(isCancelled: Boolean) {
-        cancelled = isCancelled
-    }
+    override fun isCancelled(): Boolean = false
+    override fun setCancelled(p0: Boolean) {}
 }
