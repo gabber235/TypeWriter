@@ -36,6 +36,10 @@ class ExtensionProcessor(
                     "engineVersion" to JsonPrimitive(extension.engineVersion),
                     "pluginVersion" to JsonPrimitive(pluginVersion),
                     "version" to JsonPrimitive(version),
+                    "namespace" to JsonPrimitive(configuration.namespace),
+                    "dependencies" to JsonArray(
+                        extension.dependencies?.dependencies?.map { Json.encodeToJsonElement(it) } ?: emptyList()
+                    )
                 )
             )
         )

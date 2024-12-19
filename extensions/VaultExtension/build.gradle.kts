@@ -1,5 +1,14 @@
 repositories {
-    maven("https://jitpack.io")
+    exclusiveContent {
+        forRepository {
+            maven {
+                url = uri("https://jitpack.io")
+            }
+        }
+        filter {
+            includeGroup("com.github.MilkBowl")
+        }
+    }
 }
 dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")

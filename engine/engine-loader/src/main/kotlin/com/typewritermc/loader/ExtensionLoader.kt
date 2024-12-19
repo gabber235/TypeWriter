@@ -55,37 +55,60 @@ class ExtensionLoader : KoinComponent {
         // TODO: Remove this when the database update is implemented
         extensionJson = JsonArray()
 
-        extensions = extensionJsonTexts.map { extensionJson ->
-            gson.fromJson(extensionJson, Extension::class.java) to extensionJson
-        }.filter { (extension, _) ->
-            if (extension.extension.engineVersion != version) {
-                logger.warning("Extension '${extension.extension.name}Extension' was made for Typewriter $version but you are using Typewriter ${extension.extension.engineVersion}. Ignoring extension.")
-                return@filter false
+        val possibleExtensions =
+
+            extensionJsonTexts.map { extensionJson ->
+                gson.fromJson(extensionJson, Extension::class.java) to extensionJson
+            }.filter { (extension, _) ->
+                if (extension.extension.engineVersion != version) {
+                    logger.warning("Extension '${extension.extension.name}Extension' was made for Typewriter $version but you are using Typewriter ${extension.extension.engineVersion}. Ignoring extension.")
+                    return@filter false
+                }
+
+                val paper = extension.extension.paper
+                if (paper == null) {
+                    logger.warning("Extension '${extension.extension.name}Extension' does not seem to be a paper extension. Ignoring extension.")
+                    return@filter false
+                }
+
+                val dependencies = paper.dependencies
+                val missingDependencies = dependencies.filter { !dependencyChecker.hasDependency(it) }
+                if (missingDependencies.isNotEmpty()) {
+                    val missing = missingDependencies.joinToString(", ")
+                    logger.warning(
+                        "Extension '${extension.extension.name}Extension' is missing external dependencies: '${missing}'. Ignoring extension."
+                    )
+                    return@filter false
+                }
+
+                true
             }
 
-            val paper = extension.extension.paper
-            if (paper == null) {
-                logger.warning("Extension '${extension.extension.name}Extension' does not seem to be a paper extension. Ignoring extension.")
-                return@filter false
+        extensions = possibleExtensions
+            .filter { (extension, _) ->
+                // Check if the extension dependencies are met
+                val missingDependencies =
+                    extension.extension.dependencies.filter { (namespace, name) ->
+                        possibleExtensions.none { (extension, _) ->
+                            extension.extension.namespace == namespace && extension.extension.name == name
+                        }
+                    }
+
+                if (missingDependencies.isNotEmpty()) {
+                    val missing = missingDependencies.joinToString(", ") { "${it.namespace}:${it.name}Extension" }
+                    logger.warning(
+                        "Extension '${extension.extension.name}Extension' is missing extension dependencies: '${missing}'. Ignoring extension."
+                    )
+                    return@filter false
+                }
+                true
             }
+            .map { (extension, extensionJson) ->
+                // TODO: Remove this when the database update is implemented
+                this.extensionJson.add(JsonParser.parseString(extensionJson))
 
-            val dependencies = paper.dependencies
-            val missingDependencies = dependencies.filter { !dependencyChecker.hasDependency(it) }
-            if (missingDependencies.isNotEmpty()) {
-                val missing = missingDependencies.joinToString(", ")
-                logger.warning(
-                    "Extension '${extension.extension.name}Extension' is missing dependencies: '${missing}'. Ignoring extension."
-                )
-                return@filter false
+                extension
             }
-
-            true
-        }.map { (extension, extensionJson) ->
-            // TODO: Remove this when the database update is implemented
-            this.extensionJson.add(JsonParser.parseString(extensionJson))
-
-            extension
-        }
 
         if (hasShownLoadedMessage) return
         hasShownLoadedMessage = true
@@ -170,8 +193,15 @@ data class ExtensionInfo(
     val description: String = "",
     val version: String = "",
     val engineVersion: String = "",
+    val namespace: String = "",
     val flags: List<ExtensionFlag> = emptyList(),
+    val dependencies: List<ExtensionDependencyInfo> = emptyList(),
     val paper: PaperExtensionInfo? = null,
+)
+
+data class ExtensionDependencyInfo(
+    val namespace: String = "",
+    val name: String = "",
 )
 
 data class PaperExtensionInfo(

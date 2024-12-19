@@ -22,6 +22,11 @@ typewriter {
         engineVersion = file("../../version.txt").readText().trim().substringBefore("-beta")
         channel = com.typewritermc.moduleplugin.ReleaseChannel.NONE
 
+        dependencies {
+            dependency("typewritermc", "RoadNetwork")
+            dependency("typewritermc", "Quest")
+        }
+
         paper()
     }
 }

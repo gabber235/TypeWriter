@@ -1,6 +1,7 @@
 package com.typewritermc.moduleplugin
 
 import com.typewritermc.loader.ExtensionFlag
+import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -34,16 +35,21 @@ open class TypewriterModuleConfiguration {
 
 const val MIN_NAMESPACE_LENGTH = 5
 const val MAX_NAMESPACE_LENGTH = 20
-fun TypewriterModuleConfiguration.validate() {
-    if (namespace.isBlank()) {
-        throw MissingFieldException("namespace")
+val NAMESPACE_REGEX = Regex("^([a-z0-9])+\$")
+private fun String.validateAsNamespace(path: String) {
+    if (isBlank()) {
+        throw MissingFieldException(path)
     }
-    if (!Regex("^([a-z0-9])+\$").matches(namespace)) {
+    if (!NAMESPACE_REGEX.matches(this)) {
         throw IllegalArgumentException("Namespace must only contain lowercase letters and numbers.")
     }
-    if (namespace.length !in MIN_NAMESPACE_LENGTH..MAX_NAMESPACE_LENGTH) {
-        throw FieldOutsideRangeException("namespace", MIN_NAMESPACE_LENGTH, MAX_NAMESPACE_LENGTH)
+    if (length !in MIN_NAMESPACE_LENGTH..MAX_NAMESPACE_LENGTH) {
+        throw FieldOutsideRangeException(path, MIN_NAMESPACE_LENGTH, MAX_NAMESPACE_LENGTH)
     }
+}
+
+fun TypewriterModuleConfiguration.validate() {
+    namespace.validateAsNamespace("namespace")
 
     if (engine != null && extension != null) {
         throw IllegalArgumentException("Cannot have both engine and extension set for the same module.")
@@ -90,10 +96,17 @@ data class TypewriterExtensionConfiguration(
      */
     var channel: ReleaseChannel = ReleaseChannel.RELEASE,
     /**
+     * Dependencies on other extensions.
+     */
+    var dependencies: ExtensionDependencyConfiguration? = null,
+    /**
      * The paper extension configuration.
      */
     var paper: PaperExtensionConfiguration? = null
 ) {
+    fun dependencies(block: ExtensionDependencyConfiguration.() -> Unit) {
+        dependencies = ExtensionDependencyConfiguration().apply(block)
+    }
     fun paper(block: PaperExtensionConfiguration.() -> Unit) {
         paper = PaperExtensionConfiguration().apply(block)
     }
@@ -109,23 +122,28 @@ private const val MIN_SHORT_DESCRIPTION_LENGTH = 10
 private const val MAX_SHORT_DESCRIPTION_LENGTH = 80
 private const val MIN_DESCRIPTION_LENGTH = 100
 private const val MAX_DESCRIPTION_LENGTH = 2000
+private val NAME_REGEX = Regex("^([a-zA-Z0-9])+\$")
 private val FORBIDDEN_WORDS = listOf("Adapter", "Extension")
 
-internal fun TypewriterExtensionConfiguration.validate() {
-    if (name.isBlank()) {
-        throw MissingFieldException("extension.name")
+private fun String.validateAsExtensionName(path: String) {
+    if (isBlank()) {
+        throw MissingFieldException(path)
     }
-    if (name.length !in MIN_NAME_LENGTH..MAX_NAME_LENGTH) {
-        throw FieldOutsideRangeException("extension.name", MIN_NAME_LENGTH, MAX_NAME_LENGTH)
+    if (length !in MIN_NAME_LENGTH..MAX_NAME_LENGTH) {
+        throw FieldOutsideRangeException(path, MIN_NAME_LENGTH, MAX_NAME_LENGTH)
     }
-    if (!Regex("^[a-zA-Z0-9]+$").matches(name)) {
-        throw IllegalArgumentException("Extension name '$name' must be alphanumeric.")
+    if (!NAME_REGEX.matches(this)) {
+        throw IllegalArgumentException("Extension name '$this' must be alphanumeric.")
     }
     for (word in FORBIDDEN_WORDS) {
-        if (name.contains(word, ignoreCase = true)) {
-            throw IllegalArgumentException("Extension name '$name' cannot contain '$word'")
+        if (this.contains(word, ignoreCase = true)) {
+            throw IllegalArgumentException("Extension name '$this' cannot contain '$word'")
         }
     }
+}
+
+internal fun TypewriterExtensionConfiguration.validate() {
+    name.validateAsExtensionName("extension.name")
 
     if (shortDescription.isBlank()) {
         throw MissingFieldException("extension.shortDescription")
@@ -152,7 +170,32 @@ internal fun TypewriterExtensionConfiguration.validate() {
         throw IllegalArgumentException("Version must follow the Semantic Versioning format.")
     }
 
+    dependencies?.validate()
     paper?.validate()
+}
+
+@Serializable
+data class ExtensionDependencyConfiguration(
+    val dependencies: MutableList<ExtensionDependency> = mutableListOf(),
+) {
+    fun dependency(namespace: String, name: String) {
+        dependencies.add(ExtensionDependency(namespace, name))
+    }
+}
+
+@Serializable
+data class ExtensionDependency(
+    val namespace: String,
+    val name: String,
+)
+
+private fun ExtensionDependencyConfiguration.validate() {
+    dependencies.forEach { it.validate() }
+}
+
+private fun ExtensionDependency.validate() {
+    namespace.validateAsNamespace("extension.dependencies.namespace")
+    name.validateAsExtensionName("extension.dependencies.name")
 }
 
 @Serializable
