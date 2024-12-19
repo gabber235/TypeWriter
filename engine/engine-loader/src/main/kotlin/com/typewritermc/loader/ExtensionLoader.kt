@@ -61,7 +61,7 @@ class ExtensionLoader : KoinComponent {
                 gson.fromJson(extensionJson, Extension::class.java) to extensionJson
             }.filter { (extension, _) ->
                 if (extension.extension.engineVersion != version) {
-                    logger.warning("Extension '${extension.extension.name}Extension' was made for Typewriter $version but you are using Typewriter ${extension.extension.engineVersion}. Ignoring extension.")
+                    logger.warning("Extension '${extension.extension.name}Extension' was made for Typewriter ${extension.extension.engineVersion} but you are using Typewriter $version. Ignoring extension.")
                     return@filter false
                 }
 

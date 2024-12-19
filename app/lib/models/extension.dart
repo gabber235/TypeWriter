@@ -21,8 +21,8 @@ List<GlobalContextKey> globalContextKeys(Ref ref) =>
 class Extension with _$Extension {
   const factory Extension({
     required ExtensionInfo extension,
-    required List<EntryBlueprint> entries,
-    required List<GlobalContextKey> globalContextKeys,
+    @Default([]) List<EntryBlueprint> entries,
+    @Default([]) List<GlobalContextKey> globalContextKeys,
   }) = _Extension;
 
   factory Extension.fromJson(Map<String, dynamic> json) =>

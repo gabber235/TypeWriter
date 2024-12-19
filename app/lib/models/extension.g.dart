@@ -10,12 +10,14 @@ _$ExtensionImpl _$$ExtensionImplFromJson(Map<String, dynamic> json) =>
     _$ExtensionImpl(
       extension:
           ExtensionInfo.fromJson(json['extension'] as Map<String, dynamic>),
-      entries: (json['entries'] as List<dynamic>)
-          .map((e) => EntryBlueprint.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      globalContextKeys: (json['globalContextKeys'] as List<dynamic>)
-          .map((e) => GlobalContextKey.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      entries: (json['entries'] as List<dynamic>?)
+              ?.map((e) => EntryBlueprint.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      globalContextKeys: (json['globalContextKeys'] as List<dynamic>?)
+              ?.map((e) => GlobalContextKey.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$ExtensionImplToJson(_$ExtensionImpl instance) =>

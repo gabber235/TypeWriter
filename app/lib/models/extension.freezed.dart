@@ -150,8 +150,8 @@ class __$$ExtensionImplCopyWithImpl<$Res>
 class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
   const _$ExtensionImpl(
       {required this.extension,
-      required final List<EntryBlueprint> entries,
-      required final List<GlobalContextKey> globalContextKeys})
+      final List<EntryBlueprint> entries = const [],
+      final List<GlobalContextKey> globalContextKeys = const []})
       : _entries = entries,
         _globalContextKeys = globalContextKeys;
 
@@ -162,6 +162,7 @@ class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
   final ExtensionInfo extension;
   final List<EntryBlueprint> _entries;
   @override
+  @JsonKey()
   List<EntryBlueprint> get entries {
     if (_entries is EqualUnmodifiableListView) return _entries;
     // ignore: implicit_dynamic_type
@@ -170,6 +171,7 @@ class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
 
   final List<GlobalContextKey> _globalContextKeys;
   @override
+  @JsonKey()
   List<GlobalContextKey> get globalContextKeys {
     if (_globalContextKeys is EqualUnmodifiableListView)
       return _globalContextKeys;
@@ -230,10 +232,9 @@ class _$ExtensionImpl with DiagnosticableTreeMixin implements _Extension {
 
 abstract class _Extension implements Extension {
   const factory _Extension(
-          {required final ExtensionInfo extension,
-          required final List<EntryBlueprint> entries,
-          required final List<GlobalContextKey> globalContextKeys}) =
-      _$ExtensionImpl;
+      {required final ExtensionInfo extension,
+      final List<EntryBlueprint> entries,
+      final List<GlobalContextKey> globalContextKeys}) = _$ExtensionImpl;
 
   factory _Extension.fromJson(Map<String, dynamic> json) =
       _$ExtensionImpl.fromJson;

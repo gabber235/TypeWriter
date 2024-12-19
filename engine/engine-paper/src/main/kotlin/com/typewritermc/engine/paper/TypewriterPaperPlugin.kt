@@ -77,7 +77,7 @@ class TypewriterPaperPlugin : KotlinPlugin(), KoinComponent {
                 createdAtStart()
             }
 
-            single(named("version")) { this@TypewriterPaperPlugin.pluginMeta.version }
+            single(named("version")) { this@TypewriterPaperPlugin.pluginMeta.version.substringBefore("-beta") }
 
             singleOf(::TypewriterCore)
             factory<File>(named("baseDir")) { plugin.dataFolder }
