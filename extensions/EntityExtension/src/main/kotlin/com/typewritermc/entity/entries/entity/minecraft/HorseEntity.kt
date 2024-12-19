@@ -36,7 +36,7 @@ class HorseDefinition(
     override val name: String = "",
     override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "horse_variant_data", "horse_data", "eating_data", "chested_horse_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "horse_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = HorseEntity(player)
@@ -55,7 +55,7 @@ class HorseInstance(
     override val name: String = "",
     override val definition: Ref<HorseDefinition> = emptyRef(),
     override val spawnLocation: Position = Position.ORIGIN,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "horse_variant_data", "horse_data", "eating_data", "chested_horse_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "horse_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
@@ -66,9 +66,7 @@ private class HorseEntity(player: Player) : WrapperFakeEntity(
 ) {
     override fun applyProperty(property: EntityProperty) {
         when (property) {
-            is AgeableProperty -> applyAgeableData(entity, property)
             is HorseVariantProperty -> applyHorseVariantData(entity, property)
-            is ChestedHorseChestProperty -> applyChestedHorseChestData(entity, property)
             is SaddledProperty -> applySaddledData(entity, property)
             is EatingProperty -> applyHorseEatingData(entity, property)
             else -> {}

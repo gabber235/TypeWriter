@@ -15,7 +15,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("saddled_data", "If the entity has a saddle.", Colors.RED, "game-icons:saddle")
-@Tags("horse_data", "pig_data", "saddled_data")
+@Tags("saddled_data", "horse_data", "pig_data")
 class SaddledData(
     override val id: String = "",
     override val name: String = "",

@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("chested_horse_chest_meta", "If the horse has a chest.", Colors.RED, "mdi:horse")
-@Tags("chested_horse_data", "chested_horse_chest_meta")
+@Tags("chested_horse_chest_meta", "chested_horse_meta")
 class ChestedHorseChestData(
     override val id: String = "",
     override val name: String = "",
