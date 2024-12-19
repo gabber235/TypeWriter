@@ -34,7 +34,7 @@ class LlamaDefinition(
     override val name: String = "",
     override val displayName: Var<String> = ConstVar(""),
     override val sound: Sound = Sound.EMPTY,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "llama_data", "chested_horse_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "horse_data", "chested_horse_data", "llama_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
 ) : SimpleEntityDefinition {
     override fun create(player: Player): FakeEntity = LlamaEntity(player)
@@ -53,7 +53,7 @@ class LlamaInstance(
     override val name: String = "",
     override val definition: Ref<LlamaDefinition> = emptyRef(),
     override val spawnLocation: Position = Position.ORIGIN,
-    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "ageable_data", "llama_data", "chested_horse_data")
+    @OnlyTags("generic_entity_data", "living_entity_data", "mob_data", "horse_data", "chested_horse_data", "llama_data")
     override val data: List<Ref<EntityData<*>>> = emptyList(),
     override val activity: Ref<out SharedEntityActivityEntry> = emptyRef(),
 ) : SimpleEntityInstance
@@ -64,7 +64,6 @@ private class LlamaEntity(player: Player) : WrapperFakeEntity(
 ) {
     override fun applyProperty(property: EntityProperty) {
         when (property) {
-            is AgeableProperty -> applyAgeableData(entity, property)
             is LlamaVariantProperty -> applyLlamaVariantData(entity, property)
             is LlamaCarpetColorProperty -> applyLlamaCarpetColorData(entity, property)
             is ChestedHorseChestProperty -> applyChestedHorseChestData(entity, property)

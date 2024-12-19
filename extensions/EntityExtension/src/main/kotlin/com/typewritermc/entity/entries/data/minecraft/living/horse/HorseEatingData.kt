@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("eating_data", "If the entity is eating.", Colors.RED, "mdi:horse")
-@Tags("eating_data")
+@Tags("eating_data", "horse_data")
 class HorseEatingData(
     override val id: String = "",
     override val name: String = "",

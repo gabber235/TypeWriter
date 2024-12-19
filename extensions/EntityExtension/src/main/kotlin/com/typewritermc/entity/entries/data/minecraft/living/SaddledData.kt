@@ -1,6 +1,7 @@
 package com.typewritermc.entity.entries.data.minecraft.living
 
 import com.typewritermc.core.books.pages.Colors
+import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.engine.paper.entry.entity.SinglePropertyCollectorSupplier
@@ -15,11 +16,12 @@ import java.util.*
 import kotlin.reflect.KClass
 
 @Entry("saddled_data", "If the entity has a saddle.", Colors.RED, "game-icons:saddle")
-@Tags("horse_data", "pig_data", "saddled_data")
+@Tags("saddled_data", "horse_data", "pig_data")
 class SaddledData(
     override val id: String = "",
     override val name: String = "",
-    val saddled: Boolean = false,
+    @Default("true")
+    val saddled: Boolean = true,
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : EntityData<SaddledProperty> {
     override fun type(): KClass<SaddledProperty> = SaddledProperty::class
