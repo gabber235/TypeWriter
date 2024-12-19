@@ -12,7 +12,8 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
-@Entry("horse_variant_dat", "The variant of the horse.", Colors.RED, "mdi:horse")
+@Entry("horse_variant_data", "The variant of the horse.", Colors.RED, "mdi:horse")
+@Tags("horse_variant_data")
 
 class HorseVariantData(
     override val id: String = "",
