@@ -22,8 +22,6 @@ class BlockCollision(private val maxStepHeight: Double = 0.6) {
         private const val EPSILON = 1e-10
     }
 
-    private val blockIterator = BlockIterator(smooth = false)
-
     /**
      * Fast-exit using cache when physics conditions haven't changed
      */
@@ -290,6 +288,7 @@ class BlockCollision(private val maxStepHeight: Double = 0.6) {
         finalResult: SweepResult
     ) {
         // When large moves are done we need to ray-cast to find all blocks that could intersect with the movement
+        val blockIterator = BlockIterator(smooth = false)
         for (point in allFaces) {
             if (point == null) continue
 

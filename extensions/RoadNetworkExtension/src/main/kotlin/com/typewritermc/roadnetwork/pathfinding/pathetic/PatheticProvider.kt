@@ -22,7 +22,7 @@ fun providePathFactory(): PathfinderFactory {
     return AStarPathfinderFactory()
 }
 
-@Singleton
+@Factory
 fun providePathConfiguration(): PathfinderConfiguration.PathfinderConfigurationBuilder {
     return PathfinderConfiguration.builder()
         .provider(LoadingNavigationPointProvider())

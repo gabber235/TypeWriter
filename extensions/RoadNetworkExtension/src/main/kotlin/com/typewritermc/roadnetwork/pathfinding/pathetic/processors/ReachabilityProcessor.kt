@@ -222,7 +222,7 @@ class ReachabilityProcessor(
         return when {
             velocity.y < 0 -> handleFallCollision(result)
             isJump -> handleJumpCollision(result)
-            else -> handleStepOrFlatMovement(result, velocity, startPosition, currentGroundY, world, sidestepInfo)
+            else -> handleStepOrFlatMovement(result, velocity, startPosition, currentGroundY, blockGetter, sidestepInfo)
         }
     }
 
@@ -236,7 +236,7 @@ class ReachabilityProcessor(
         velocity: Vector,
         startPosition: PositionProperty,
         currentGroundY: Double,
-        world: World,
+        blockGetter: BukkitBlockGetter,
         sidestepInfo: SidestepInfo? = null
     ): Boolean {
         val yDifference = result.newPosition.y - startPosition.y
@@ -257,7 +257,7 @@ class ReachabilityProcessor(
                 )
             } ?: baseEndPosition
 
-            isHeadspaceClearAlongPath(startVector, adjustedEndPosition, BukkitBlockGetter(world))
+            isHeadspaceClearAlongPath(startVector, adjustedEndPosition, blockGetter)
         } else {
             !result.collisionX && !result.collisionZ && !result.collisionY
         }
