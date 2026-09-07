@@ -7,6 +7,7 @@ import com.typewritermc.engine.paper.utils.config
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.jvm.Volatile
 import kotlin.reflect.KClass
 
 val entityShowRange by config("entity.show-range", 50.0, "The range at which entities are shown")
@@ -19,6 +20,7 @@ class SharedAudienceEntityDisplay(
     private val spawnPosition: Position,
     private val showRange: Var<Double> = ConstVar(entityShowRange),
     ) : AudienceFilter(instanceEntryRef), TickableDisplay, AudienceEntityDisplay {
+    @Volatile
     private var activityManager: ActivityManager<SharedActivityContext>? = null
     private val entities = ConcurrentHashMap<UUID, DisplayEntity>()
 
@@ -38,9 +40,10 @@ class SharedAudienceEntityDisplay(
     override fun initialize() {
         super.initialize()
         val context = SharedActivityContext(instanceEntryRef, players)
-        activityManager =
+        val manager: ActivityManager<SharedActivityContext> =
             ActivityManager(activityCreators.create(context, spawnPosition.toProperty()))
-        activityManager?.initialize(context)
+        manager.initialize(context)
+        activityManager = manager
     }
 
     override fun onPlayerFilterAdded(player: Player) {
