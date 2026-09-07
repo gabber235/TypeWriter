@@ -90,6 +90,11 @@ class AudienceManager : Listener, Reloadable, KoinComponent {
                     withTimeout(30.seconds) {
                         display.tick()
                     }
+                } catch (c: CancellationException) {
+                    if (coroutineScope?.isActive == true) {
+                        logger.warning("Exception thrown while ticking $display")
+                        c.printStackTrace()
+                    }
                 } catch (t: Throwable) {
                     logger.warning("Exception thrown while ticking $display")
                     t.printStackTrace()
@@ -98,7 +103,7 @@ class AudienceManager : Listener, Reloadable, KoinComponent {
 
             val wait = TICK_MS - time.inWholeMilliseconds - AVERAGE_SCHEDULING_DELAY_MS
             if (wait > 0) delay(wait)
-            else if (wait < -100) {
+            else if (wait < -100 && coroutineScope?.isActive == true) {
                 logger.warning(
                     "Audience entry $ref took to long to tick ${time.inWholeMilliseconds}ms (if this happens only occasionally, it's fine)"
                 )
