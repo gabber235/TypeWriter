@@ -15,15 +15,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -363,7 +358,10 @@ class ServiceRegistrar(
                     created.reconnectForBoundPermissions()
                 }
             if (reauthorized == null) return null
-            when (val confirmed = retryPhase(RegistrarStage.BINDING, events = events) { created.queryBinding() } ?: return null) {
+            when (
+                val confirmed =
+                    retryPhase(RegistrarStage.BINDING, events = events) { created.queryBinding() } ?: return null
+            ) {
                 is BindingStatus.Bound -> {
                     return beginReadySupervision(created, acquired.identity, confirmed.binding, events)
                 }
@@ -651,7 +649,8 @@ class ServiceRegistrar(
                 }
 
                 ReadyEvent.Degraded -> {
-                    val generation = recoverReady(current.runtime, current.session, current.connectionGeneration) ?: return
+                    val generation =
+                        recoverReady(current.runtime, current.session, current.connectionGeneration) ?: return
                     current = current.copy(connectionGeneration = generation)
                 }
 
@@ -1165,12 +1164,13 @@ private fun RuntimeCreateResult.asRuntimeResult(): RuntimeResult<RegistrarRuntim
 
 private enum class HeartbeatResult { HEALTHY, RECONNECTED, TERMINAL }
 
-private val RuntimeSetupProgress.stage: RegistrarStage get() =
-    when (this) {
-        RuntimeSetupProgress.ACQUIRING_ACCESS_TOKEN -> RegistrarStage.ACCESS_TOKEN
-        RuntimeSetupProgress.ACQUIRING_SENTINEL_CREDENTIALS -> RegistrarStage.SENTINEL
-        RuntimeSetupProgress.CONNECTING -> RegistrarStage.CONNECTING
-    }
+private val RuntimeSetupProgress.stage: RegistrarStage
+    get() =
+        when (this) {
+            RuntimeSetupProgress.ACQUIRING_ACCESS_TOKEN -> RegistrarStage.ACCESS_TOKEN
+            RuntimeSetupProgress.ACQUIRING_SENTINEL_CREDENTIALS -> RegistrarStage.SENTINEL
+            RuntimeSetupProgress.CONNECTING -> RegistrarStage.CONNECTING
+        }
 
 private fun RegistrarFailure.runtimeCreateStage(fallback: RegistrarStage): RegistrarStage =
     when (this) {
