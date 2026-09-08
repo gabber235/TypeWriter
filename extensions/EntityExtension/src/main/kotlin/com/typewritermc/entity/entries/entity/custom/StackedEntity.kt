@@ -4,12 +4,15 @@ import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
+import com.typewritermc.engine.paper.entry.entity.EntityIdentity
 import com.typewritermc.engine.paper.entry.entity.EntityState
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.PositionProperty
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.entries.EntityData
 import com.typewritermc.engine.paper.utils.Sound
 import org.bukkit.entity.Player
+import java.util.*
 
 @Entry("stacked_entity_definition", "A stacking of entities", Colors.ORANGE, "ic:baseline-stacked-bar-chart")
 /**
@@ -44,8 +47,8 @@ class StackedEntity(
     player: Player,
     private val entities: List<FakeEntity>,
 ) : FakeEntity(player) {
-    override val entityId: Int
-        get() = entities.firstOrNull()?.entityId ?: -1
+    override val identity: EntityIdentity
+        get() = EntityIdentity(entities.firstOrNull()?.entityId ?: -1, entities.firstOrNull()?.uuid ?: UUID(0L, 0L))
 
     override val state: EntityState
         get() = entities.firstOrNull()?.state ?: EntityState()

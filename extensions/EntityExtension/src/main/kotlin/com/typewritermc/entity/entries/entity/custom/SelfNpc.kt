@@ -54,8 +54,8 @@ class SelfNpc(
         consumeProperties(player.skin)
     }
 
-    override val entityId: Int
-        get() = playerEntity.entityId
+    override val identity: EntityIdentity
+        get() = EntityIdentity(playerEntity.entityId, playerEntity.uuid)
 
     override fun applyProperties(properties: List<EntityProperty>) {
         playerEntity.consumeProperties(properties)

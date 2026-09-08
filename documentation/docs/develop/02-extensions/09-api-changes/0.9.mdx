@@ -518,3 +518,28 @@ import com.typewritermc.quest.trackedShowingObjectives
 // highlight-green
 import com.typewritermc.quest.entries.trackedShowingObjectives
 ```
+
+## `FakeEntity` Identity Changes
+
+`FakeEntity` now tracks its network identity as a single value instead of only the numeric id.
+Override `identity` instead of `entityId`.
+
+```kotlin showLineNumbers
+data class EntityIdentity(val entityId: Int, val entityUuid: UUID)
+```
+
+`entityId` and `uuid` are now concrete vals derived from `identity`, so reading them keeps working
+and `uuid` is now available on every `FakeEntity`.
+
+**To migrate a subclass:**
+
+```kotlin showLineNumbers
+// highlight-red-start
+override val entityId: Int
+    get() = entity.entityId
+// highlight-red-end
+// highlight-green-start
+override val identity: EntityIdentity
+    get() = EntityIdentity(entity.entityId, entity.uuid)
+// highlight-green-end
+```

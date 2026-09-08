@@ -91,8 +91,9 @@ class PlayerEntity(
     )
 
     private var entity: WrapperPlayer
-    override val entityId: Int
-        get() = entity.entityId
+
+    override val identity: EntityIdentity
+        get() = EntityIdentity(entity.entityId, entity.uuid)
 
     override val state: EntityState
         get() = entity.entityType.state(properties)

@@ -11,6 +11,7 @@ import com.typewritermc.core.extension.annotations.Tags
 import com.typewritermc.core.utils.point.Position
 import com.typewritermc.engine.paper.entry.entity.*
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.entries.EntityData
 import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.entity.entries.entity.minecraft.PlayerEntity
 import org.bukkit.entity.Player
@@ -72,8 +73,8 @@ class NpcEntity(
         consumeProperties(skin.get(player))
     }
 
-    override val entityId: Int
-        get() = namePlate.entityId
+    override val identity: EntityIdentity
+        get() = EntityIdentity(namePlate.entityId, namePlate.uuid)
 
     override val state: EntityState
         get() = namePlate.state

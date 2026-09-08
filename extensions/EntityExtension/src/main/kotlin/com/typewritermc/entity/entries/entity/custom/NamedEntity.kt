@@ -78,8 +78,8 @@ class NamedEntity(
     private val indicatorEntity = InteractionIndicatorEntity(player, definition)
     private var customName: String? = null
 
-    override val entityId: Int
-        get() = baseEntity.entityId
+    override val identity: EntityIdentity
+        get() = EntityIdentity(baseEntity.entityId, baseEntity.uuid)
 
     override val state: EntityState
         get() = baseEntity.state

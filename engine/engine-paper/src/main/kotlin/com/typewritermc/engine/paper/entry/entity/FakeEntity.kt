@@ -2,6 +2,7 @@ package com.typewritermc.engine.paper.entry.entity
 
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import org.bukkit.entity.Player
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.safeCast
 
@@ -9,12 +10,21 @@ interface EntityCreator {
     fun create(player: Player): FakeEntity
 }
 
+data class EntityIdentity(val entityId: Int, val entityUuid: UUID)
+
 abstract class FakeEntity(
     protected val player: Player
 ) {
     protected val properties = mutableMapOf<KClass<*>, EntityProperty>()
 
-    abstract val entityId: Int
+    abstract val identity: EntityIdentity
+
+    val entityId: Int
+        get() = identity.entityId
+
+    val uuid: UUID
+        get() = identity.entityUuid
+
     abstract val state: EntityState
 
     fun consumeProperties(vararg properties: EntityProperty) {

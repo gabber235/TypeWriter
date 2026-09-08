@@ -6,9 +6,11 @@ import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.entries.emptyRef
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.utils.point.Vector
+import com.typewritermc.engine.paper.entry.entity.EntityIdentity
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.PositionProperty
 import com.typewritermc.engine.paper.entry.entries.*
+import com.typewritermc.engine.paper.entry.entries.EntityData
 import com.typewritermc.engine.paper.extensions.packetevents.meta
 import com.typewritermc.engine.paper.utils.Sound
 import com.typewritermc.engine.paper.utils.move
@@ -54,8 +56,8 @@ class HitBoxEntity(
     width: Double,
     height: Double,
 ) : WrapperFakeEntity(EntityTypes.INTERACTION, player) {
-    override val entityId: Int
-        get() = baseEntity.entityId
+    override val identity: EntityIdentity
+        get() = EntityIdentity(baseEntity.entityId, baseEntity.uuid)
 
     init {
         entity.meta<InteractionMeta> {

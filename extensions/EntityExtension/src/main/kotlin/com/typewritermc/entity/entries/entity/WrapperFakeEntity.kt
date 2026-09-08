@@ -1,6 +1,7 @@
 package com.typewritermc.entity.entries.entity
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType
+import com.typewritermc.engine.paper.entry.entity.EntityIdentity
 import com.typewritermc.engine.paper.entry.entity.EntityState
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.PositionProperty
@@ -32,8 +33,8 @@ abstract class WrapperFakeEntity(
         }
     }
 
-    override val entityId: Int
-        get() = entity.entityId
+    override val identity: EntityIdentity
+        get() = EntityIdentity(entity.entityId, entity.uuid)
 
     override val state: EntityState
         get() = type.state(properties)
