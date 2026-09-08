@@ -77,7 +77,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-
+  
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });
@@ -226,7 +226,7 @@ return keyframe(_that.id,_that.frame,_that.elementDefinition,_that.data,_that.in
 
 class Segment implements Cue {
   const Segment({required this.id, required this.startFrame, required this.endFrame, required this.elementDefinition, required this.data, required final  List<ElementLink> inwardLinks, required final  List<ElementLink> outwardLinks, this.authoringSequence = 0}): assert(id != "", 'ID must not be empty.'),assert(startFrame >= 0, 'Start frame must not be negative.'),assert(endFrame >= startFrame, 'End frame must not precede start frame.'),_inwardLinks = inwardLinks,_outwardLinks = outwardLinks;
-
+  
 
 @override final  String id;
  final  int startFrame;
@@ -315,7 +315,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-
+  
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });
@@ -327,7 +327,7 @@ $ElementDefinitionCopyWith<$Res> get elementDefinition {
 
 class Keyframe implements Cue {
   const Keyframe({required this.id, required this.frame, required this.elementDefinition, required this.data, required final  List<ElementLink> inwardLinks, this.authoringSequence = 0}): assert(id != "", 'ID must not be empty.'),assert(frame >= 0, 'Frame must not be negative.'),_inwardLinks = inwardLinks;
-
+  
 
 @override final  String id;
  final  int frame;
@@ -406,7 +406,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-
+  
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });

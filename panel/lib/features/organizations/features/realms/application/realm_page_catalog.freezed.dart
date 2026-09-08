@@ -208,7 +208,7 @@ return $default(_that.id,_that.revision);case _:
 
 class _PageKindRef extends PageKindRef {
   const _PageKindRef({required this.id, required this.revision}): super._();
-
+  
 
 @override final  String id;
 @override final  int revision;
@@ -436,7 +436,7 @@ return timeline(_that.trackTypes,_that.segmentTypes,_that.keyframeTypes);case _:
 
 class RealmGraphPageEditor implements RealmPageEditor {
   const RealmGraphPageEditor({required this.direction, required final  List<ResolvedTypeRef> nodeTypes}): _nodeTypes = nodeTypes;
-
+  
 
  final  GraphDirection direction;
  final  List<ResolvedTypeRef> _nodeTypes;
@@ -510,7 +510,7 @@ as List<ResolvedTypeRef>,
 
 class RealmTimelinePageEditor implements RealmPageEditor {
   const RealmTimelinePageEditor({required final  List<ResolvedTypeRef> trackTypes, required final  List<ResolvedTypeRef> segmentTypes, required final  List<ResolvedTypeRef> keyframeTypes}): _trackTypes = trackTypes,_segmentTypes = segmentTypes,_keyframeTypes = keyframeTypes;
-
+  
 
  final  List<ResolvedTypeRef> _trackTypes;
  List<ResolvedTypeRef> get trackTypes {
@@ -662,7 +662,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $PageKindRefCopyWith<$Res> get kind {
-
+  
   return $PageKindRefCopyWith<$Res>(_self.kind, (value) {
     return _then(_self.copyWith(kind: value));
   });
@@ -671,7 +671,7 @@ $PageKindRefCopyWith<$Res> get kind {
 @override
 @pragma('vm:prefer-inline')
 $IconValueCopyWith<$Res> get icon {
-
+  
   return $IconValueCopyWith<$Res>(_self.icon, (value) {
     return _then(_self.copyWith(icon: value));
   });
@@ -680,7 +680,7 @@ $IconValueCopyWith<$Res> get icon {
 @override
 @pragma('vm:prefer-inline')
 $RealmPageEditorCopyWith<$Res> get editor {
-
+  
   return $RealmPageEditorCopyWith<$Res>(_self.editor, (value) {
     return _then(_self.copyWith(editor: value));
   });
@@ -823,7 +823,7 @@ return $default(_that.kind,_that.name,_that.description,_that.icon,_that.color,_
 
 class _RealmPageDefinition implements RealmPageDefinition {
   const _RealmPageDefinition({required this.kind, required this.name, required this.description, required this.icon, required this.color, required this.editor, required this.originArtifactId, required this.sourcePart});
-
+  
 
 @override final  PageKindRef kind;
 @override final  String name;
@@ -900,7 +900,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $PageKindRefCopyWith<$Res> get kind {
-
+  
   return $PageKindRefCopyWith<$Res>(_self.kind, (value) {
     return _then(_self.copyWith(kind: value));
   });
@@ -909,7 +909,7 @@ $PageKindRefCopyWith<$Res> get kind {
 @override
 @pragma('vm:prefer-inline')
 $IconValueCopyWith<$Res> get icon {
-
+  
   return $IconValueCopyWith<$Res>(_self.icon, (value) {
     return _then(_self.copyWith(icon: value));
   });
@@ -918,7 +918,7 @@ $IconValueCopyWith<$Res> get icon {
 @override
 @pragma('vm:prefer-inline')
 $RealmPageEditorCopyWith<$Res> get editor {
-
+  
   return $RealmPageEditorCopyWith<$Res>(_self.editor, (value) {
     return _then(_self.copyWith(editor: value));
   });
@@ -1138,7 +1138,7 @@ return $default(_that.code,_that.message,_that.originArtifactId,_that.sourcePart
 
 class _RealmPageDiagnostic implements RealmPageDiagnostic {
   const _RealmPageDiagnostic({required this.code, required this.message, required this.originArtifactId, required this.sourcePart, required this.declarationName, required this.kind});
-
+  
 
 @override final  String code;
 @override final  String message;
@@ -1418,7 +1418,7 @@ return $default(_that.definitions,_that.diagnostics);case _:
 
 class _RealmPageCatalog implements RealmPageCatalog {
   const _RealmPageCatalog({final  Map<PageKindRef, RealmPageDefinition> definitions = const {}, final  List<RealmPageDiagnostic> diagnostics = const []}): _definitions = definitions,_diagnostics = diagnostics;
-
+  
 
  final  Map<PageKindRef, RealmPageDefinition> _definitions;
 @override@JsonKey() Map<PageKindRef, RealmPageDefinition> get definitions {
