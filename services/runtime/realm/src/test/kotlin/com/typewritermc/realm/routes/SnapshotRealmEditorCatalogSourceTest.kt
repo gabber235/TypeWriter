@@ -136,18 +136,9 @@ val SnapshotRealmEditorCatalogSourceTest by testSuite {
     test("successful fetch includes assembled presentation definitions") {
         val fixture = catalogFixture()
         val presentation =
-            PresentationDefinition(
-                presentationId = PresentationId(namespace = "test", name = "editor"),
-                target =
-                    SkirTypeCodec
-                        .encode(
-                            com.typewritermc.types.TypeExpression
-                                .Named(fixture.leaf.id),
-                        ).getOrThrow(),
-                root = PresentationNode.partial(nodeId = "root"),
-                dependencies =
-                    skirout.editor.v1.presentation.PresentationDependencies
-                        .partial(),
+            presentation(
+                com.typewritermc.types.PresentationId(namespace = "test", name = "editor"),
+                fixture.leaf.id,
             )
         val source = SnapshotRealmEditorCatalogSource { fixture.snapshot.editorCatalog(listOf(presentation)) }
 
@@ -265,12 +256,20 @@ private fun presentation(
     target: ResolvedTypeRef,
 ) = PresentationDefinition(
     presentationId = PresentationId(namespace = id.namespace, name = id.name),
-    target =
-        SkirTypeCodec
-            .encode(
-                com.typewritermc.types.TypeExpression
-                    .Named(target),
-            ).getOrThrow(),
+    inputs =
+        listOf(
+            skirout.editor.v1.presentation.PresentationInput(
+                bindingId = skirout.editor.v1.binding.BindingId(value = 0),
+                name = "value",
+                access = skirout.editor.v1.presentation.PresentationInputAccess.EDIT,
+                valueType =
+                    SkirTypeCodec
+                        .encode(
+                            com.typewritermc.types.TypeExpression.Named(target),
+                        ).getOrThrow(),
+            ),
+        ),
+    primaryInput = skirout.editor.v1.binding.BindingId(value = 0),
     root = PresentationNode.partial(nodeId = "root"),
     dependencies =
         skirout.editor.v1.presentation.PresentationDependencies

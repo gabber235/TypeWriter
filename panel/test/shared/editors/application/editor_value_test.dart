@@ -18,7 +18,7 @@ void main() {
       ]);
 
       expect(const EditorValue.loading().valueOrNull, isNull);
-      expect(const EditorValue.conflict().valueOrNull, isNull);
+      expect(const EditorValue.mixed().valueOrNull, isNull);
       expect(invalid.valueOrNull, isNull);
     });
   });

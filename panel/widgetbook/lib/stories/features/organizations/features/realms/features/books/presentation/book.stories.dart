@@ -33,6 +33,11 @@ Widget bookUseCase(BuildContext context) {
 
   return FakeApp(
     overrides: [
+      ...authoringSessionMockOverrides(),
+      organizationIdProvider.overrideWithValue(
+        recordId("organization:widgetbook"),
+      ),
+      realmIdProvider.overrideWithValue(recordId("service:widgetbook")),
       ...tagsProviderOverrides(tags: [directTag, inheritedTag]),
       booksProvider.overrideWith(() => _BookStoryBooks(book)),
     ],

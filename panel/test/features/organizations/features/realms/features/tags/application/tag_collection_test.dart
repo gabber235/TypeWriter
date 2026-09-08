@@ -111,11 +111,12 @@ void main() {
           .select(TagIdentifier(tag.tagId));
 
       final selected = await _selected(container);
-      final document = (selected as TagSelectable).document;
+      final inspector = selected as TagSelectable;
+      final document = inspector.document;
       final resolved = TypeRegistry(
         document.typeCatalog,
       ).resolve(document.rootType as NamedType);
-      final root = document.presentations.single.root.element as ColumnElement;
+      final root = inspector.presentations.single.root.element as ColumnElement;
       final layoutNode = root.children.singleWhere(
         (node) => node.id == "tag.layout",
       );
@@ -139,7 +140,7 @@ void main() {
       final inheritanceSection = inheritance.whenTrue.element as SectionElement;
       final graph = inheritanceSection.child.element as CollectionGraphElement;
 
-      expect(document.collections.single.id, tagCollectionSourceId);
+      expect(inspector.collections.single.id, tagCollectionSourceId);
       expect(resolved.diagnostics, isEmpty);
       expect(resolved.valueOrNull, isNotNull);
       expect(document.mergePolicies, {
@@ -209,7 +210,7 @@ void main() {
       );
 
       await tester.pumpTestApp(
-        child: SizedBox(width: 400, child: _render(selected.document)),
+        child: SizedBox(width: 400, child: _render(selected)),
         settle: false,
       );
       await tester.pump();
@@ -342,14 +343,14 @@ Future<Selectable> _selected(ProviderContainer container) async {
   }
 }
 
-EditorProtocolRenderer _render(EditorDocument document) =>
+EditorProtocolRenderer _render(EditableSelectable inspector) =>
     EditorProtocolRenderer(
       envelope: TypedValueEnvelope(
-        rootType: (document.rootType as NamedType).reference,
-        rootValue: document.confirmedValue,
+        rootType: (inspector.document.rootType as NamedType).reference,
+        rootValue: inspector.document.confirmedValue,
       ),
-      typeCatalog: document.typeCatalog,
-      collections: document.collections,
-      presentations: document.presentations,
-      presentation: document.presentations.single.root,
+      typeCatalog: inspector.document.typeCatalog,
+      collections: inspector.collections,
+      presentations: inspector.presentations,
+      presentation: inspector.presentations.single.root,
     );

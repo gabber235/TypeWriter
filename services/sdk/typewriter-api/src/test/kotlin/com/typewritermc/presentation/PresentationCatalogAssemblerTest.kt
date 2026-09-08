@@ -39,6 +39,109 @@ private data class SearchSample(
 )
 
 val PresentationCatalogAssemblerTest by testSuite {
+    test("composed inputs compile explicit scalar bindings and invocations") {
+        val prototypes = TypePrototypeRegistry(emptyList())
+        val context = PresentationBuildContext(prototypes)
+        val child =
+            context(context) {
+                presentation("child") {
+                    val text = editableInput<String>("text")
+                    textInput(text.value())
+                    commitControls(text.value())
+                }
+            }
+        val parent =
+            context(context) {
+                presentation("parent") {
+                    val status = input<String>("status")
+                    val name = editableInput<String>("name")
+                    text(status.value())
+                    include(com.typewritermc.types.PresentationId("test", "child"), child.input<String>("text") receives name.value())
+                }
+            }
+        val catalog =
+            PresentationCatalogAssembler.assemble(
+                listOf(provider("test", false, specification = child), provider("test", false, specification = parent)),
+                prototypes,
+                TypeCatalog(emptyList()),
+            )
+        catalog.diagnostics shouldBe emptyList()
+        val compiled = catalog.definitions.single { it.presentationId.name == "parent" }
+        compiled.inputs.map { it.name } shouldBe listOf("status", "name")
+        compiled.primaryInput shouldBe null
+        val children = (compiled.root.element as PresentationElement.ChildrenWrapper).value.children
+        val invocation = (children[1].element as PresentationElement.InvocationWrapper).value
+        invocation.arguments
+            .single()
+            .binding.bindingId.value shouldBe 1L
+        val control =
+            (
+                (
+                    catalog.definitions
+                        .single { it.presentationId.name == "child" }
+                        .root.element as PresentationElement.ChildrenWrapper
+                ).value.children
+                    .first()
+                    .element as PresentationElement.TextInputWrapper
+            ).value.control
+        control.binding.path.segments shouldBe emptyList()
+        val childRoot = catalog.definitions.single { it.presentationId.name == "child" }.root
+        val commit =
+            (
+                (childRoot.element as PresentationElement.ChildrenWrapper)
+                    .value.children
+                    .last()
+                    .element
+                    as PresentationElement.CommitControlsWrapper
+            ).value
+        commit.binding.bindingId.value shouldBe 0L
+        commit.binding.path.segments shouldBe emptyList()
+    }
+
+    test("catalog rejects commit controls authored against a read input") {
+        val prototypes = TypePrototypeRegistry(emptyList())
+        val valid = context(PresentationBuildContext(prototypes)) { presentation("invalid") {} }
+        val invalidProvider =
+            object : PresentationProvider by provider("test", false, specification = valid) {
+                override fun specification(context: PresentationBuildContext): PresentationSpec<*> =
+                    context(context) {
+                        presentation("invalid") {
+                            val observation = input<String>("observation")
+                            commitControls(observation.value())
+                        }
+                    }
+            }
+        val catalog =
+            PresentationCatalogAssembler.assemble(
+                listOf(invalidProvider),
+                prototypes,
+                TypeCatalog(emptyList()),
+            )
+        catalog.definitions shouldBe emptyList()
+        catalog.diagnostics.map { it.code } shouldBe listOf("invalid_presentation")
+    }
+
+    test("an edit input cannot receive a read input") {
+        val prototypes = TypePrototypeRegistry(emptyList())
+        val context = PresentationBuildContext(prototypes)
+        val child = context(context) { presentation("child") { editableInput<String>("text") } }
+        val parent =
+            context(context) {
+                presentation("parent") {
+                    val observed = input<String>("status")
+                    include(com.typewritermc.types.PresentationId("test", "child"), child.input<String>("text") receives observed.value())
+                }
+            }
+        val catalog =
+            PresentationCatalogAssembler.assemble(
+                listOf(provider("test", false, specification = child), provider("test", false, specification = parent)),
+                prototypes,
+                TypeCatalog(emptyList()),
+            )
+        catalog.definitions.map { it.presentationId.name } shouldBe listOf("child")
+        catalog.diagnostics.map { it.code } shouldBe listOf("invalid_invocation")
+    }
+
     test("typed property references use generated serialized field names") {
         val prototype = prototype(Sample::class, "sample", mapOf("message" to "wire_message"))
         val prototypes = TypePrototypeRegistry(listOf(prototype))

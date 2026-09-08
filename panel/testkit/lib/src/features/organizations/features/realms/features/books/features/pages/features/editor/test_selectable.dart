@@ -104,7 +104,7 @@ class TestSelectableIdentifier extends SelectableIdentifier {
   }
 }
 
-class TestSelectable extends InspectableSelectable<TestSelectableIdentifier> {
+class TestSelectable extends EditableSelectable<TestSelectableIdentifier> {
   TestSelectable({
     required this.ref,
     required this.id,

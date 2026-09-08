@@ -69,23 +69,6 @@ sealed class RealmAction with _$RealmAction {
   }) = InvokeRealmCommandAction;
 }
 
-sealed class EditorActionResult {
-  const EditorActionResult();
-}
-
-final class LocalEditorActionResult extends EditorActionResult {
-  const LocalEditorActionResult(this.mutation, {this.structuralMutation});
-
-  final TypedMutationResult mutation;
-  final EditorStructuralMutation? structuralMutation;
-}
-
-final class RealmEditorActionResult extends EditorActionResult {
-  const RealmEditorActionResult(this.command);
-
-  final RealmCommandResult command;
-}
-
 sealed class RealmCommandResult {
   const RealmCommandResult();
 
@@ -244,7 +227,25 @@ sealed class TypedMutationResult with _$TypedMutationResult {
   const factory TypedMutationResult.permissionDenied(String message) =
       MutationPermissionDenied;
 
+  const factory TypedMutationResult.uncertain({
+    required String message,
+    required Object cause,
+    required StackTrace stackTrace,
+    Future<TypedMutationResult> Function()? replay,
+    Object? submissionId,
+  }) = MutationUncertain;
+
   @Assert("diagnostics.isNotEmpty", "Diagnostics must not be empty.")
   factory TypedMutationResult.unavailable(List<TypeDiagnostic> diagnostics) =
       MutationUnavailable;
+}
+
+@freezed
+sealed class LocalMutationResult with _$LocalMutationResult {
+  const factory LocalMutationResult.applied({
+    required BindingId bindingId,
+    required DataValue value,
+  }) = LocalMutationApplied;
+  const factory LocalMutationResult.invalid(List<TypeDiagnostic> diagnostics) =
+      LocalMutationInvalid;
 }

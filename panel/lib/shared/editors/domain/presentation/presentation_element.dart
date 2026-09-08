@@ -26,6 +26,11 @@ sealed class PresentationElement with _$PresentationElement {
     PresentationId? presentationId,
   }) = DefaultPresentationElement;
 
+  const factory PresentationElement.invocation({
+    required PresentationId presentationId,
+    required Map<BindingId, BindingReference> arguments,
+  }) = PresentationInvocationElement;
+
   const factory PresentationElement.text(
     TypedExpression value, {
     TypedExpression? color,
@@ -215,6 +220,11 @@ sealed class PresentationElement with _$PresentationElement {
     PresentationNode? fallback,
   }) = PolymorphicMatchElement;
 
+  /// Places controls for the complete transaction owning [binding].
+  /// The editor determines submission policy and supplies a fallback location.
+  const factory PresentationElement.commitControls({
+    required BindingReference binding,
+  }) = CommitControlsElement;
   const factory PresentationElement.button({
     required TypedExpression label,
     required EditorAction action,

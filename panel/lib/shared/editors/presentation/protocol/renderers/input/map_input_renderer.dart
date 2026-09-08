@@ -94,7 +94,7 @@ class _MapInputState extends State<_MapInput> {
         .at(DataPath.root.mapKey(entry.key));
     final valueScope = element.valuePresentation == null
         ? null
-        : _valueScope(type, entry, reference);
+        : _valueScope(type, entry);
     final valueChain = valueScope == null
         ? null
         : element.valuePresentation!.resolveHeaderChain(valueScope);
@@ -196,6 +196,7 @@ class _MapInputState extends State<_MapInput> {
           onChanged: (next) => _replaceKey(map, entry.key, next),
           interactionTarget: scope.canonical(element.control.binding),
         ),
+        source: element.control.binding,
       );
       final localized = presentation.localizeFailures(
         childScope.expressions,
@@ -217,6 +218,7 @@ class _MapInputState extends State<_MapInput> {
         onChanged: (next) => _replaceKey(map, entry.key, next),
         interactionTarget: scope.canonical(element.control.binding),
       ),
+      source: element.control.binding,
     );
     return ResolvedBinding(
       reference: reference,
@@ -244,20 +246,17 @@ class _MapInputState extends State<_MapInput> {
     scope.update(element.control.binding, MapValue(entries.toList()));
   }
 
-  PresentationRenderScope _valueScope(
-    MapType type,
-    DataMapEntry entry,
-    BindingReference reference,
-  ) => scope.withAlias(
-    element.valueBindingId,
-    reference,
-    BindingSnapshot(
-      type: type.value,
-      value: entry.value,
-      revision: binding.revision,
-      writable: binding.writable,
-    ),
-  );
+  PresentationRenderScope _valueScope(MapType type, DataMapEntry entry) =>
+      scope.withAlias(
+        element.valueBindingId,
+        element.control.binding.at(DataPath.root.mapKey(entry.key)),
+        BindingSnapshot(
+          type: type.value,
+          value: entry.value,
+          revision: binding.revision,
+          writable: binding.writable,
+        ),
+      );
 
   Widget _item(
     MapType type,
@@ -269,7 +268,7 @@ class _MapInputState extends State<_MapInput> {
         .canonical(element.control.binding)
         .at(DataPath.root.mapKey(entry.key));
     if (element.valuePresentation case final presentation?) {
-      final childScope = itemScope ?? _valueScope(type, entry, reference);
+      final childScope = itemScope ?? _valueScope(type, entry);
       final localized = presentation.localizeFailures(
         childScope.expressions,
         registry: childScope.registry,

@@ -60,12 +60,16 @@ abstract class BindingEnvironment with _$BindingEnvironment {
 
   const BindingEnvironment._();
 
-  TypeResult<ResolvedBinding> resolve(BindingReference reference) {
+  TypeResult<ResolvedBinding> resolve(
+    BindingReference reference, {
+    TypeRegistry? registry,
+  }) {
     final snapshot = bindings[reference.bindingId];
     if (snapshot == null) return _failure("Binding is not available");
     var type = snapshot.type;
     var value = snapshot.value;
     for (final segment in reference.path.segments) {
+      type = type.bindingRepresentation(registry);
       final next = segment._resolveBindingSegment(type, value);
       if (next case TypeFailure(:final diagnostics)) {
         return TypeResult.failure(diagnostics);
@@ -129,3 +133,29 @@ extension on DataPathSegment {
 TypeFailure<T> _failure<T>(String message) => TypeFailure([
   TypeDiagnostic(code: TypeDiagnosticCode.invalidPath, message: message),
 ]);
+
+extension BindingTypeResolution on TypeExpression {
+  TypeExpression bindingNominal(TypeRegistry registry) {
+    var current = this;
+    final visited = <ResolvedTypeRef>{};
+    while (current is NamedType && visited.add(current.reference)) {
+      final next = registry.resolve(current).valueOrNull?.representation;
+      if (next is! NamedType) break;
+      current = next;
+    }
+    return current;
+  }
+
+  TypeExpression bindingRepresentation(TypeRegistry? registry) {
+    var current = this;
+    final visited = <ResolvedTypeRef>{};
+    while (registry != null &&
+        current is NamedType &&
+        visited.add(current.reference)) {
+      final next = registry.resolve(current).valueOrNull?.representation;
+      if (next == null) break;
+      current = next;
+    }
+    return current;
+  }
+}

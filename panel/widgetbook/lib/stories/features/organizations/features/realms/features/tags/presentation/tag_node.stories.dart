@@ -24,6 +24,11 @@ Widget tagNodeUseCase(BuildContext context) {
 
   return FakeApp(
     overrides: [
+      ...authoringSessionMockOverrides(),
+      organizationIdProvider.overrideWithValue(
+        recordId("organization:widgetbook"),
+      ),
+      realmIdProvider.overrideWithValue(recordId("service:widgetbook")),
       ...tagsProviderOverrides(tags: [previewTag, parentCandidate]),
     ],
     child: InspectorScaffold(
@@ -61,7 +66,14 @@ Widget tagNodeColorsUseCase(BuildContext context) {
   }).toList();
 
   return FakeApp(
-    overrides: [...tagsProviderOverrides(tags: tags)],
+    overrides: [
+      ...authoringSessionMockOverrides(),
+      organizationIdProvider.overrideWithValue(
+        recordId("organization:widgetbook"),
+      ),
+      realmIdProvider.overrideWithValue(recordId("service:widgetbook")),
+      ...tagsProviderOverrides(tags: tags),
+    ],
     child: InspectorScaffold(
       child: Center(
         child: Wrap(

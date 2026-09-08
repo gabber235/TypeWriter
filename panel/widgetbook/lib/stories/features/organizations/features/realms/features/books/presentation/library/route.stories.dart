@@ -23,13 +23,15 @@ Widget libraryPageStory({
 }) {
   return FakeApp(
     overrides: [
+      ...authoringSessionMockOverrides(),
       realmInteractionProvider.overrideWith(
         (ref) => RealmInteractionState(connectionState: connectionState),
       ),
       ...booksProviderOverrides(state: displayState),
       ...tagsProviderOverrides(state: tagsState),
       ...servicesProviderOverrides(state: DisplayState.manyItems),
-      ...realmProviderOverrides(),
+      realmIdProvider.overrideWithValue(recordId("service:widgetbook")),
+      selectedRealmProvider.overrideWith((ref) async => null),
       ...organizationProviderOverrides(),
       ...organizationsProviderOverrides(state: DisplayState.manyItems),
       ...authProviderOverrides(),

@@ -17,6 +17,7 @@ class BoundControlShell extends HookWidget {
     required this.builder,
     this.shapeMismatch,
     this.labeled = true,
+    this.nominal = false,
     super.key,
   });
 
@@ -26,6 +27,7 @@ class BoundControlShell extends HookWidget {
   /// Whether the built control is wrapped in a [LabeledControl]. Disable for
   /// controls whose chrome is provided elsewhere, such as absorbed headers.
   final bool labeled;
+  final bool nominal;
 
   /// Returns a diagnostic message when the resolved binding does not have
   /// the shape this control requires.
@@ -40,7 +42,31 @@ class BoundControlShell extends HookWidget {
     if (resolved case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
     }
-    final binding = resolved.valueOrNull!;
+    final declared = resolved.valueOrNull!;
+    final binding = declared.copyWith(
+      type: nominal
+          ? declared.type.bindingNominal(scope.registry)
+          : declared.type.bindingRepresentation(scope.registry),
+    );
+    if (scope.fieldValue?.call(scope.canonical(control.binding))
+            is MixedEditorValue &&
+        binding.type.bindingRepresentation(scope.registry) is! RecordType) {
+      return LabeledControl(
+        control: control,
+        scope: scope,
+        child: TextButton(
+          onPressed: scope.readOnly || !binding.writable
+              ? null
+              : () {
+                  final value = binding.type
+                      .createInitialValue(registry: scope.registry)
+                      .valueOrNull;
+                  if (value != null) scope.update(control.binding, value);
+                },
+          child: const Text("Mixed values. Set a common value"),
+        ),
+      );
+    }
     if (shapeMismatch?.call(binding) case final message?) {
       return presentationDiagnostic(context, [
         TypeDiagnostic(code: TypeDiagnosticCode.invalidValue, message: message),

@@ -37,7 +37,7 @@ final _bookInspectorType = TypeDefinition(
 
 final _bookInspectorCatalog = TypeCatalog([_bookInspectorType]);
 
-final _bookInspectorPresentation = PresentationDefinition(
+final _bookInspectorPresentation = PresentationDefinition.single(
   id: _bookInspectorPresentationId,
   target: NamedType(bookInspectorTypeRef),
   root: PresentationNode(
@@ -109,6 +109,9 @@ class BookIdentifier extends SelectableIdentifier {
   String get id => bookId.id;
 
   @override
+  Object get resourceId => bookId;
+
+  @override
   AsyncValue<Selectable> create(Ref ref) {
     final asyncBook = ref.watch(bookProvider(bookId));
     final tags = ref.watch(tagsProvider).value ?? const <Tag>[];
@@ -135,7 +138,7 @@ class BookIdentifier extends SelectableIdentifier {
   String toString() => "BookIdentifier(bookId: $bookId)";
 }
 
-class BookSelection extends InspectableSelectable<BookIdentifier> {
+class BookSelection extends EditableSelectable<BookIdentifier> {
   BookSelection({
     required this.ref,
     required this.id,
@@ -147,11 +150,35 @@ class BookSelection extends InspectableSelectable<BookIdentifier> {
   final BookIdentifier id;
   final Book book;
   final Ref ref;
+  late final AuthoringSession _commands = ref.readAuthoringSession().notifier;
+
+  @override
+  Stream<EditorDocument?> get updates =>
+      _commands.watchSnapshots(_commands.acquireLibrary).map((snapshot) {
+        final value = snapshot.books[id.bookId];
+        if (snapshot.sequence == null) return document;
+        return value == null
+            ? null
+            : document.copyWith(
+                confirmedValue: Book.fromWire(
+                  value,
+                  snapshot.sequence!,
+                ).inspectorValue,
+                revision: snapshot.sequence!,
+              );
+      });
   final PresentationCollectionSource tagCollection;
   final RecordValue _data;
 
   @override
   String get name => book.title;
+
+  @override
+  List<PresentationDefinition> get presentations => [
+    _bookInspectorPresentation,
+  ];
+  @override
+  List<PresentationCollectionSource> get collections => [tagCollection];
 
   @override
   EditorDocument get document => EditorDocument(
@@ -160,8 +187,6 @@ class BookSelection extends InspectableSelectable<BookIdentifier> {
     confirmedValue: _data,
     revision: book.authoringSequence,
     mergePolicies: {DataPath.root.field("tags"): EditorMergePolicy.set},
-    collections: [tagCollection],
-    presentations: [_bookInspectorPresentation],
   );
 
   @override
@@ -200,7 +225,13 @@ class BookSelection extends InspectableSelectable<BookIdentifier> {
         ]),
       );
     }
-    return ref.read(booksProvider.notifier).updateBook(next, expected: book);
+    final expected = _bookFromInspectorValue(
+      commit.baseValue,
+      expectedRevision: commit.expectedRevision,
+    );
+    if (expected == null)
+      return Future.value(invalidMutation("The confirmed value is invalid"));
+    return _commands.commitBook(next, expected: expected);
   }
 
   @override
@@ -257,7 +288,7 @@ BindingReference _bookField(String name) => BindingReference(
   path: DataPath.root.field(name),
 );
 
-extension on Book {
+extension BookInspectorValue on Book {
   RecordValue get inspectorValue => RecordValue({
     "title": StringValue(title),
     "icon": IconValue.from(icon).typedValue,

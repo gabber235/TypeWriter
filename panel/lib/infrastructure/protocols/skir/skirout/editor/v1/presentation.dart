@@ -15215,6 +15215,7 @@ final class SelectControl implements SelectControl_orMutable {
     BoundControl.defaultInstance,
     _skir.KeyedIterable.empty,
     false,
+    null,
   );
 
   /// Returns a new mutable instance.
@@ -15223,6 +15224,7 @@ final class SelectControl implements SelectControl_orMutable {
     BoundControl.defaultInstance,
     _skir.KeyedIterable.empty,
     false,
+    null,
   );
 
   /// Returns this instance (no-op).
@@ -21535,6 +21537,125 @@ final class DefaultPresentationElement_mutable implements DefaultPresentationEle
 }
 
 // -----------------------------------------------------------------------------
+// struct CommitControlsElement
+// -----------------------------------------------------------------------------
+
+sealed class CommitControlsElement_orMutable {
+  _lib_editor_v1_binding.BindingRef_orMutable get binding;
+
+  CommitControlsElement toFrozen();
+}
+
+/// Deeply immutable.
+final class CommitControlsElement implements CommitControlsElement_orMutable {
+  @_core.override
+  final _lib_editor_v1_binding.BindingRef binding;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory CommitControlsElement({
+    required _lib_editor_v1_binding.BindingRef_orMutable binding,
+  }) => CommitControlsElement._(
+    binding.toFrozen(),
+  );
+
+  CommitControlsElement._(
+    this.binding,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = CommitControlsElement._(
+    _lib_editor_v1_binding.BindingRef.defaultInstance,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static CommitControlsElement_mutable mutable() => CommitControlsElement_mutable._(
+    _lib_editor_v1_binding.BindingRef.defaultInstance,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  CommitControlsElement toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  CommitControlsElement_mutable toMutable() => CommitControlsElement_mutable._(
+    this.binding,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! CommitControlsElement) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.binding,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `CommitControlsElement` instances.
+  static _skir.StructSerializer<CommitControlsElement, CommitControlsElement_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "binding",
+        "binding",
+        0,
+        _lib_editor_v1_binding.BindingRef.serializer,
+        "",
+        (it) => it.binding,
+        (it, v) => it.binding = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "editor/v1/presentation.skir:CommitControlsElement",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (CommitControlsElement_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [CommitControlsElement].
+final class CommitControlsElement_mutable implements CommitControlsElement_orMutable {
+  _lib_editor_v1_binding.BindingRef_orMutable binding;
+  _skir.internal__UnrecognizedFields? _u;
+
+  CommitControlsElement_mutable._(
+    this.binding,
+  );
+
+  /// If the value of [binding] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [binding] and returns it.
+  _lib_editor_v1_binding.BindingRef_mutable get mutableBinding {
+    final value = this.binding;
+    if (value is _lib_editor_v1_binding.BindingRef_mutable) {
+      return value;
+    } else {
+      return this.binding = (value as _lib_editor_v1_binding.BindingRef).toMutable();
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  CommitControlsElement toFrozen() => CommitControlsElement(
+    binding: this.binding,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
 // struct ButtonElement
 // -----------------------------------------------------------------------------
 
@@ -22339,6 +22460,7 @@ final class TooltipElement_mutable implements TooltipElement_orMutable {
 ///     case PresentationElement_colorInput(:var value): { ... }
 ///     case PresentationElement_bytesInput(:var value): { ... }
 ///     case PresentationElement_namedInput(:var value): { ... }
+///     case PresentationElement_commitControls(:var value): { ... }
 ///     case PresentationElement_button(:var value): { ... }
 ///     case PresentationElement_iconButton(:var value): { ... }
 ///     case PresentationElement_menu(:var value): { ... }
@@ -22356,6 +22478,7 @@ final class TooltipElement_mutable implements TooltipElement_orMutable {
 ///     case PresentationElement_anchor(:var value): { ... }
 ///     case PresentationElement_connectionLayer(:var value): { ... }
 ///     case PresentationElement_polymorphicMatch(:var value): { ... }
+///     case PresentationElement_invocation(:var value): { ... }
 ///   }
 ///   ```
 ///
@@ -22957,6 +23080,20 @@ sealed class PresentationElement {
     )
   );
 
+  /// Create a 'commit_controls' variant wrapping around the given value.
+  factory PresentationElement.wrapCommitControls(
+    CommitControlsElement value
+  ) => PresentationElement_commitControlsWrapper._(value);
+
+  /// Same as `wrapCommitControls(CommitControlsElement(...))`.
+  factory PresentationElement.createCommitControls({
+    required _lib_editor_v1_binding.BindingRef_orMutable binding,
+  }) => PresentationElement.wrapCommitControls(
+    CommitControlsElement(
+      binding: binding,
+    )
+  );
+
   /// Create a 'button' variant wrapping around the given value.
   factory PresentationElement.wrapButton(
     ButtonElement value
@@ -23303,6 +23440,22 @@ sealed class PresentationElement {
     )
   );
 
+  /// Create a 'invocation' variant wrapping around the given value.
+  factory PresentationElement.wrapInvocation(
+    PresentationInvocation value
+  ) => PresentationElement_invocationWrapper._(value);
+
+  /// Same as `wrapInvocation(PresentationInvocation(...))`.
+  factory PresentationElement.createInvocation({
+    required _lib_editor_v1_type_catalog.PresentationId_orMutable presentationId,
+    required _core.Iterable<PresentationArgument_orMutable> arguments,
+  }) => PresentationElement.wrapInvocation(
+    PresentationInvocation(
+      presentationId: presentationId,
+      arguments: arguments,
+    )
+  );
+
   /// Returns the kind of variant held by this PresentationElement.
   PresentationElement_kind get kind;
 
@@ -23618,6 +23771,16 @@ sealed class PresentationElement {
       );
       _serializerBuilder.addWrapperVariant(
         32,
+        "commit_controls",
+        "wrapCommitControls",
+        CommitControlsElement.serializer,
+        "",
+        PresentationElement_commitControlsWrapper._,
+        (it) => it.value,
+        ordinal: PresentationElement_kind.commitControlsWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        33,
         "button",
         "wrapButton",
         ButtonElement.serializer,
@@ -23627,7 +23790,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.buttonWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        33,
+        34,
         "icon_button",
         "wrapIconButton",
         IconButtonElement.serializer,
@@ -23637,7 +23800,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.iconButtonWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        34,
+        35,
         "menu",
         "wrapMenu",
         MenuElement.serializer,
@@ -23647,7 +23810,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.menuWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        35,
+        36,
         "tooltip",
         "wrapTooltip",
         TooltipElement.serializer,
@@ -23657,7 +23820,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.tooltipWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        36,
+        37,
         "list_input",
         "wrapListInput",
         ListControl.serializer,
@@ -23667,7 +23830,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.listInputWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        37,
+        38,
         "map_input",
         "wrapMapInput",
         MapControl.serializer,
@@ -23677,7 +23840,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.mapInputWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        38,
+        39,
         "record_input",
         "wrapRecordInput",
         RecordControl.serializer,
@@ -23687,7 +23850,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.recordInputWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        39,
+        40,
         "enum_input",
         "wrapEnumInput",
         BoundControl.serializer,
@@ -23697,7 +23860,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.enumInputWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        40,
+        41,
         "polymorphic_input",
         "wrapPolymorphicInput",
         PolymorphicControl.serializer,
@@ -23707,7 +23870,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.polymorphicInputWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        41,
+        42,
         "default_presentation",
         "wrapDefaultPresentation",
         DefaultPresentationElement.serializer,
@@ -23717,7 +23880,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.defaultPresentationWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        42,
+        43,
         "search_input",
         "wrapSearchInput",
         SearchControl.serializer,
@@ -23727,7 +23890,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.searchInputWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        43,
+        44,
         "collection_lookup",
         "wrapCollectionLookup",
         CollectionLookupElement.serializer,
@@ -23737,7 +23900,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.collectionLookupWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        44,
+        45,
         "collection_graph",
         "wrapCollectionGraph",
         CollectionGraphElement.serializer,
@@ -23747,7 +23910,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.collectionGraphWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        45,
+        46,
         "container",
         "wrapContainer",
         ContainerLayout.serializer,
@@ -23757,7 +23920,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.containerWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        46,
+        47,
         "anchor",
         "wrapAnchor",
         PresentationAnchorLayout.serializer,
@@ -23767,7 +23930,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.anchorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        47,
+        48,
         "connection_layer",
         "wrapConnectionLayer",
         ConnectionLayerLayout.serializer,
@@ -23777,7 +23940,7 @@ sealed class PresentationElement {
         ordinal: PresentationElement_kind.connectionLayerWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        48,
+        49,
         "polymorphic_match",
         "wrapPolymorphicMatch",
         PolymorphicMatchElement.serializer,
@@ -23785,6 +23948,16 @@ sealed class PresentationElement {
         PresentationElement_polymorphicMatchWrapper._,
         (it) => it.value,
         ordinal: PresentationElement_kind.polymorphicMatchWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        50,
+        "invocation",
+        "wrapInvocation",
+        PresentationInvocation.serializer,
+        "",
+        PresentationElement_invocationWrapper._,
+        (it) => it.value,
+        ordinal: PresentationElement_kind.invocationWrapper._ordinal,
       );
       _serializerBuilder.finalize();
     }
@@ -23836,23 +24009,25 @@ enum PresentationElement_kind {
   colorInputWrapper(29),
   bytesInputWrapper(30),
   namedInputWrapper(31),
-  buttonWrapper(32),
-  iconButtonWrapper(33),
-  menuWrapper(34),
-  tooltipWrapper(35),
-  listInputWrapper(36),
-  mapInputWrapper(37),
-  recordInputWrapper(38),
-  enumInputWrapper(39),
-  polymorphicInputWrapper(40),
-  defaultPresentationWrapper(41),
-  searchInputWrapper(42),
-  collectionLookupWrapper(43),
-  collectionGraphWrapper(44),
-  containerWrapper(45),
-  anchorWrapper(46),
-  connectionLayerWrapper(47),
-  polymorphicMatchWrapper(48);
+  commitControlsWrapper(32),
+  buttonWrapper(33),
+  iconButtonWrapper(34),
+  menuWrapper(35),
+  tooltipWrapper(36),
+  listInputWrapper(37),
+  mapInputWrapper(38),
+  recordInputWrapper(39),
+  enumInputWrapper(40),
+  polymorphicInputWrapper(41),
+  defaultPresentationWrapper(42),
+  searchInputWrapper(43),
+  collectionLookupWrapper(44),
+  collectionGraphWrapper(45),
+  containerWrapper(46),
+  anchorWrapper(47),
+  connectionLayerWrapper(48),
+  polymorphicMatchWrapper(49),
+  invocationWrapper(50);
 
   final _core.int _ordinal;
 
@@ -24175,6 +24350,15 @@ final class PresentationElement_namedInputWrapper extends _PresentationElement_w
   PresentationElement_kind get kind => PresentationElement_kind.namedInputWrapper;
 }
 
+final class PresentationElement_commitControlsWrapper extends _PresentationElement_wrapper {
+  final CommitControlsElement value;
+
+  PresentationElement_commitControlsWrapper._(this.value);
+
+  @_core.override
+  PresentationElement_kind get kind => PresentationElement_kind.commitControlsWrapper;
+}
+
 final class PresentationElement_buttonWrapper extends _PresentationElement_wrapper {
   final ButtonElement value;
 
@@ -24328,15 +24512,25 @@ final class PresentationElement_polymorphicMatchWrapper extends _PresentationEle
   PresentationElement_kind get kind => PresentationElement_kind.polymorphicMatchWrapper;
 }
 
+final class PresentationElement_invocationWrapper extends _PresentationElement_wrapper {
+  final PresentationInvocation value;
+
+  PresentationElement_invocationWrapper._(this.value);
+
+  @_core.override
+  PresentationElement_kind get kind => PresentationElement_kind.invocationWrapper;
+}
+
 // -----------------------------------------------------------------------------
 // struct PresentationDefinition
 // -----------------------------------------------------------------------------
 
 sealed class PresentationDefinition_orMutable {
   _lib_editor_v1_type_catalog.PresentationId_orMutable get presentationId;
-  _lib_editor_v1_type_catalog.TypeExpression get target;
+  _core.Iterable<PresentationInput_orMutable> get inputs;
   PresentationNode_orMutable get root;
   PresentationDependencies_orMutable get dependencies;
+  _lib_editor_v1_binding.BindingId_orMutable? get primaryInput;
 
   PresentationDefinition toFrozen();
 }
@@ -24346,47 +24540,54 @@ final class PresentationDefinition implements PresentationDefinition_orMutable {
   @_core.override
   final _lib_editor_v1_type_catalog.PresentationId presentationId;
   @_core.override
-  final _lib_editor_v1_type_catalog.TypeExpression target;
+  final _core.Iterable<PresentationInput> inputs;
   @_core.override
   final PresentationNode root;
   @_core.override
   final PresentationDependencies dependencies;
+  @_core.override
+  final _lib_editor_v1_binding.BindingId? primaryInput;
   _skir.internal__UnrecognizedFields? _u;
 
   factory PresentationDefinition({
     required _lib_editor_v1_type_catalog.PresentationId_orMutable presentationId,
-    required _lib_editor_v1_type_catalog.TypeExpression target,
+    required _core.Iterable<PresentationInput_orMutable> inputs,
     required PresentationNode_orMutable root,
     required PresentationDependencies_orMutable dependencies,
+    required _lib_editor_v1_binding.BindingId_orMutable? primaryInput,
   }) => PresentationDefinition._(
     presentationId.toFrozen(),
-    target,
+    _skir.internal__frozenMappedCopy(inputs, (it) => it.toFrozen()),
     root.toFrozen(),
     dependencies.toFrozen(),
+    (primaryInput != null) ? primaryInput.toFrozen() : null,
   );
 
   PresentationDefinition._(
     this.presentationId,
-    this.target,
+    this.inputs,
     this.root,
     this.dependencies,
+    this.primaryInput,
   );
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = PresentationDefinition._(
     _lib_editor_v1_type_catalog.PresentationId.defaultInstance,
-    _lib_editor_v1_type_catalog.TypeExpression.unknown,
+    _skir.KeyedIterable.empty,
     PresentationNode.defaultInstance,
     PresentationDependencies.defaultInstance,
+    null,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
   static PresentationDefinition_mutable mutable() => PresentationDefinition_mutable._(
     _lib_editor_v1_type_catalog.PresentationId.defaultInstance,
-    _lib_editor_v1_type_catalog.TypeExpression.unknown,
+    _skir.KeyedIterable.empty,
     PresentationNode.defaultInstance,
     PresentationDependencies.defaultInstance,
+    null,
   );
 
   /// Returns this instance (no-op).
@@ -24397,9 +24598,10 @@ final class PresentationDefinition implements PresentationDefinition_orMutable {
   /// Returns a mutable shallow copy of this instance.
   PresentationDefinition_mutable toMutable() => PresentationDefinition_mutable._(
     this.presentationId,
-    this.target,
+    this.inputs,
     this.root,
     this.dependencies,
+    this.primaryInput,
   );
 
   @_core.override
@@ -24414,9 +24616,10 @@ final class PresentationDefinition implements PresentationDefinition_orMutable {
 
   _core.List get _equality_proxy => [
     this.presentationId,
-    this.target,
+    this.inputs,
     this.root,
     this.dependencies,
+    this.primaryInput,
   ];
 
   @_core.override
@@ -24435,13 +24638,15 @@ final class PresentationDefinition implements PresentationDefinition_orMutable {
         (it, v) => it.presentationId = v,
       );
       _serializerBuilder.addField(
-        "target",
-        "target",
+        "inputs",
+        "inputs",
         1,
-        _lib_editor_v1_type_catalog.TypeExpression.serializer,
+        _skir.Serializers.iterable(
+          PresentationInput.serializer,
+        ),
         "",
-        (it) => it.target,
-        (it, v) => it.target = v,
+        (it) => it.inputs,
+        (it, v) => it.inputs = v,
       );
       _serializerBuilder.addField(
         "root",
@@ -24460,6 +24665,17 @@ final class PresentationDefinition implements PresentationDefinition_orMutable {
         "",
         (it) => it.dependencies,
         (it, v) => it.dependencies = v,
+      );
+      _serializerBuilder.addField(
+        "primary_input",
+        "primaryInput",
+        4,
+        _skir.Serializers.optional(
+          _lib_editor_v1_binding.BindingId.serializer,
+        ),
+        "",
+        (it) => it.primaryInput,
+        (it, v) => it.primaryInput = v,
       );
       _serializerBuilder.finalize();
     }
@@ -24480,16 +24696,18 @@ final class PresentationDefinition implements PresentationDefinition_orMutable {
 /// Mutable version of [PresentationDefinition].
 final class PresentationDefinition_mutable implements PresentationDefinition_orMutable {
   _lib_editor_v1_type_catalog.PresentationId_orMutable presentationId;
-  _lib_editor_v1_type_catalog.TypeExpression target;
+  _core.Iterable<PresentationInput_orMutable> inputs;
   PresentationNode_orMutable root;
   PresentationDependencies_orMutable dependencies;
+  _lib_editor_v1_binding.BindingId_orMutable? primaryInput;
   _skir.internal__UnrecognizedFields? _u;
 
   PresentationDefinition_mutable._(
     this.presentationId,
-    this.target,
+    this.inputs,
     this.root,
     this.dependencies,
+    this.primaryInput,
   );
 
   /// If the value of [presentationId] is already mutable, returns it as-is.
@@ -24500,6 +24718,17 @@ final class PresentationDefinition_mutable implements PresentationDefinition_orM
       return value;
     } else {
       return this.presentationId = (value as _lib_editor_v1_type_catalog.PresentationId).toMutable();
+    }
+  }
+
+  /// If the value of [inputs] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [inputs] and returns it.
+  _core.List<PresentationInput_orMutable> get mutableInputs {
+    final value = this.inputs;
+    if (value is _skir.internal__MutableList<PresentationInput_orMutable>) {
+      return value;
+    } else {
+      return this.inputs = _skir.internal__MutableList([...value]);
     }
   }
 
@@ -24529,9 +24758,10 @@ final class PresentationDefinition_mutable implements PresentationDefinition_orM
   @_core.override
   PresentationDefinition toFrozen() => PresentationDefinition(
     presentationId: this.presentationId,
-    target: this.target,
+    inputs: this.inputs,
     root: this.root,
     dependencies: this.dependencies,
+    primaryInput: this.primaryInput,
   ).._u = this._u;
 }
 
@@ -24758,5 +24988,596 @@ final class PresentationDependencies_mutable implements PresentationDependencies
     presentations: this.presentations,
     conversions: this.conversions,
     capabilities: this.capabilities,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// enum PresentationInputAccess
+// -----------------------------------------------------------------------------
+
+/// To switch on the variants:
+///   ```
+///   switch (e) {
+///     case PresentationInputAccess_unknown(): { ... }
+///     case PresentationInputAccess.read: { ... }
+///     case PresentationInputAccess.edit: { ... }
+///   }
+///   ```
+///
+/// Deeply immutable.
+sealed class PresentationInputAccess {
+  /// Constant indicating an unknown `PresentationInputAccess`.
+  /// Default value for fields of type `PresentationInputAccess`.
+  static const PresentationInputAccess unknown = PresentationInputAccess_unknown._instance;
+
+  static const read = _PresentationInputAccess_consts.readConst;
+  static const edit = _PresentationInputAccess_consts.editConst;
+
+  /// Returns the kind of variant held by this PresentationInputAccess.
+  PresentationInputAccess_kind get kind;
+
+  /// Serializer for `PresentationInputAccess` instances.
+  static _skir.EnumSerializer<PresentationInputAccess> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addConstantVariant(
+        1,
+        "read",
+        "read",
+        "",
+        read,
+      );
+      _serializerBuilder.addConstantVariant(
+        2,
+        "edit",
+        "edit",
+        "",
+        edit,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__EnumSerializerBuilder.create(
+    recordId: "editor/v1/presentation.skir:PresentationInputAccess",
+    doc: "",
+    unknownInstance: PresentationInputAccess_unknown._instance,
+    enumInstance: PresentationInputAccess.unknown,
+    getOrdinal: (it) => it.kind._ordinal,
+    wrapUnrecognized: PresentationInputAccess_unknown._unrecognized,
+    getUnrecognized: (it) => it._u,
+  );
+}
+
+/// The kind of variant held by a `PresentationInputAccess`.
+enum PresentationInputAccess_kind {
+  unknown(0),
+  readConst(1),
+  editConst(2);
+
+  final _core.int _ordinal;
+
+  const PresentationInputAccess_kind(this._ordinal);
+}
+
+final class PresentationInputAccess_unknown implements PresentationInputAccess {
+  static const _instance = PresentationInputAccess_unknown._();
+
+  final _skir.internal__UnrecognizedVariant? _u;
+
+  const PresentationInputAccess_unknown._() : _u = null;
+  PresentationInputAccess_unknown._unrecognized(this._u);
+
+  @_core.override
+  PresentationInputAccess_kind get kind => PresentationInputAccess_kind.unknown;
+  @_core.override
+  _core.bool operator ==(other) => other is PresentationInputAccess_unknown;
+  @_core.override
+  _core.int get hashCode => 8118964;
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, PresentationInputAccess.serializer);
+}
+
+enum _PresentationInputAccess_consts implements PresentationInputAccess {
+  readConst(PresentationInputAccess_kind.readConst),
+  editConst(PresentationInputAccess_kind.editConst);
+
+  @_core.override
+  final PresentationInputAccess_kind kind;
+
+  const _PresentationInputAccess_consts(this.kind);
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, PresentationInputAccess.serializer);
+}
+
+// -----------------------------------------------------------------------------
+// struct PresentationInput
+// -----------------------------------------------------------------------------
+
+sealed class PresentationInput_orMutable {
+  _lib_editor_v1_binding.BindingId_orMutable get bindingId;
+  _core.String get name;
+  _lib_editor_v1_type_catalog.TypeExpression get valueType;
+  PresentationInputAccess get access;
+
+  PresentationInput toFrozen();
+}
+
+/// Deeply immutable.
+final class PresentationInput implements PresentationInput_orMutable {
+  @_core.override
+  final _lib_editor_v1_binding.BindingId bindingId;
+  @_core.override
+  final _core.String name;
+  @_core.override
+  final _lib_editor_v1_type_catalog.TypeExpression valueType;
+  @_core.override
+  final PresentationInputAccess access;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory PresentationInput({
+    required _lib_editor_v1_binding.BindingId_orMutable bindingId,
+    required _core.String name,
+    required _lib_editor_v1_type_catalog.TypeExpression valueType,
+    required PresentationInputAccess access,
+  }) => PresentationInput._(
+    bindingId.toFrozen(),
+    name,
+    valueType,
+    access,
+  );
+
+  PresentationInput._(
+    this.bindingId,
+    this.name,
+    this.valueType,
+    this.access,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = PresentationInput._(
+    _lib_editor_v1_binding.BindingId.defaultInstance,
+    "",
+    _lib_editor_v1_type_catalog.TypeExpression.unknown,
+    PresentationInputAccess.unknown,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static PresentationInput_mutable mutable() => PresentationInput_mutable._(
+    _lib_editor_v1_binding.BindingId.defaultInstance,
+    "",
+    _lib_editor_v1_type_catalog.TypeExpression.unknown,
+    PresentationInputAccess.unknown,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  PresentationInput toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  PresentationInput_mutable toMutable() => PresentationInput_mutable._(
+    this.bindingId,
+    this.name,
+    this.valueType,
+    this.access,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! PresentationInput) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.bindingId,
+    this.name,
+    this.valueType,
+    this.access,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `PresentationInput` instances.
+  static _skir.StructSerializer<PresentationInput, PresentationInput_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "binding_id",
+        "bindingId",
+        0,
+        _lib_editor_v1_binding.BindingId.serializer,
+        "",
+        (it) => it.bindingId,
+        (it, v) => it.bindingId = v,
+      );
+      _serializerBuilder.addField(
+        "name",
+        "name",
+        1,
+        _skir.Serializers.string,
+        "",
+        (it) => it.name,
+        (it, v) => it.name = v,
+      );
+      _serializerBuilder.addField(
+        "value_type",
+        "valueType",
+        2,
+        _lib_editor_v1_type_catalog.TypeExpression.serializer,
+        "",
+        (it) => it.valueType,
+        (it, v) => it.valueType = v,
+      );
+      _serializerBuilder.addField(
+        "access",
+        "access",
+        3,
+        PresentationInputAccess.serializer,
+        "",
+        (it) => it.access,
+        (it, v) => it.access = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "editor/v1/presentation.skir:PresentationInput",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (PresentationInput_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [PresentationInput].
+final class PresentationInput_mutable implements PresentationInput_orMutable {
+  _lib_editor_v1_binding.BindingId_orMutable bindingId;
+  _core.String name;
+  _lib_editor_v1_type_catalog.TypeExpression valueType;
+  PresentationInputAccess access;
+  _skir.internal__UnrecognizedFields? _u;
+
+  PresentationInput_mutable._(
+    this.bindingId,
+    this.name,
+    this.valueType,
+    this.access,
+  );
+
+  /// If the value of [bindingId] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [bindingId] and returns it.
+  _lib_editor_v1_binding.BindingId_mutable get mutableBindingId {
+    final value = this.bindingId;
+    if (value is _lib_editor_v1_binding.BindingId_mutable) {
+      return value;
+    } else {
+      return this.bindingId = (value as _lib_editor_v1_binding.BindingId).toMutable();
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  PresentationInput toFrozen() => PresentationInput(
+    bindingId: this.bindingId,
+    name: this.name,
+    valueType: this.valueType,
+    access: this.access,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct PresentationArgument
+// -----------------------------------------------------------------------------
+
+sealed class PresentationArgument_orMutable {
+  _lib_editor_v1_binding.BindingId_orMutable get input;
+  _lib_editor_v1_binding.BindingRef_orMutable get binding;
+
+  PresentationArgument toFrozen();
+}
+
+/// Deeply immutable.
+final class PresentationArgument implements PresentationArgument_orMutable {
+  @_core.override
+  final _lib_editor_v1_binding.BindingId input;
+  @_core.override
+  final _lib_editor_v1_binding.BindingRef binding;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory PresentationArgument({
+    required _lib_editor_v1_binding.BindingId_orMutable input,
+    required _lib_editor_v1_binding.BindingRef_orMutable binding,
+  }) => PresentationArgument._(
+    input.toFrozen(),
+    binding.toFrozen(),
+  );
+
+  PresentationArgument._(
+    this.input,
+    this.binding,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = PresentationArgument._(
+    _lib_editor_v1_binding.BindingId.defaultInstance,
+    _lib_editor_v1_binding.BindingRef.defaultInstance,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static PresentationArgument_mutable mutable() => PresentationArgument_mutable._(
+    _lib_editor_v1_binding.BindingId.defaultInstance,
+    _lib_editor_v1_binding.BindingRef.defaultInstance,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  PresentationArgument toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  PresentationArgument_mutable toMutable() => PresentationArgument_mutable._(
+    this.input,
+    this.binding,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! PresentationArgument) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.input,
+    this.binding,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `PresentationArgument` instances.
+  static _skir.StructSerializer<PresentationArgument, PresentationArgument_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "input",
+        "input",
+        0,
+        _lib_editor_v1_binding.BindingId.serializer,
+        "",
+        (it) => it.input,
+        (it, v) => it.input = v,
+      );
+      _serializerBuilder.addField(
+        "binding",
+        "binding",
+        1,
+        _lib_editor_v1_binding.BindingRef.serializer,
+        "",
+        (it) => it.binding,
+        (it, v) => it.binding = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "editor/v1/presentation.skir:PresentationArgument",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (PresentationArgument_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [PresentationArgument].
+final class PresentationArgument_mutable implements PresentationArgument_orMutable {
+  _lib_editor_v1_binding.BindingId_orMutable input;
+  _lib_editor_v1_binding.BindingRef_orMutable binding;
+  _skir.internal__UnrecognizedFields? _u;
+
+  PresentationArgument_mutable._(
+    this.input,
+    this.binding,
+  );
+
+  /// If the value of [input] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [input] and returns it.
+  _lib_editor_v1_binding.BindingId_mutable get mutableInput {
+    final value = this.input;
+    if (value is _lib_editor_v1_binding.BindingId_mutable) {
+      return value;
+    } else {
+      return this.input = (value as _lib_editor_v1_binding.BindingId).toMutable();
+    }
+  }
+
+  /// If the value of [binding] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [binding] and returns it.
+  _lib_editor_v1_binding.BindingRef_mutable get mutableBinding {
+    final value = this.binding;
+    if (value is _lib_editor_v1_binding.BindingRef_mutable) {
+      return value;
+    } else {
+      return this.binding = (value as _lib_editor_v1_binding.BindingRef).toMutable();
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  PresentationArgument toFrozen() => PresentationArgument(
+    input: this.input,
+    binding: this.binding,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct PresentationInvocation
+// -----------------------------------------------------------------------------
+
+sealed class PresentationInvocation_orMutable {
+  _lib_editor_v1_type_catalog.PresentationId_orMutable get presentationId;
+  _core.Iterable<PresentationArgument_orMutable> get arguments;
+
+  PresentationInvocation toFrozen();
+}
+
+/// Deeply immutable.
+final class PresentationInvocation implements PresentationInvocation_orMutable {
+  @_core.override
+  final _lib_editor_v1_type_catalog.PresentationId presentationId;
+  @_core.override
+  final _core.Iterable<PresentationArgument> arguments;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory PresentationInvocation({
+    required _lib_editor_v1_type_catalog.PresentationId_orMutable presentationId,
+    required _core.Iterable<PresentationArgument_orMutable> arguments,
+  }) => PresentationInvocation._(
+    presentationId.toFrozen(),
+    _skir.internal__frozenMappedCopy(arguments, (it) => it.toFrozen()),
+  );
+
+  PresentationInvocation._(
+    this.presentationId,
+    this.arguments,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = PresentationInvocation._(
+    _lib_editor_v1_type_catalog.PresentationId.defaultInstance,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static PresentationInvocation_mutable mutable() => PresentationInvocation_mutable._(
+    _lib_editor_v1_type_catalog.PresentationId.defaultInstance,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  PresentationInvocation toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  PresentationInvocation_mutable toMutable() => PresentationInvocation_mutable._(
+    this.presentationId,
+    this.arguments,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! PresentationInvocation) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.presentationId,
+    this.arguments,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `PresentationInvocation` instances.
+  static _skir.StructSerializer<PresentationInvocation, PresentationInvocation_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "presentation_id",
+        "presentationId",
+        0,
+        _lib_editor_v1_type_catalog.PresentationId.serializer,
+        "",
+        (it) => it.presentationId,
+        (it, v) => it.presentationId = v,
+      );
+      _serializerBuilder.addField(
+        "arguments",
+        "arguments",
+        1,
+        _skir.Serializers.iterable(
+          PresentationArgument.serializer,
+        ),
+        "",
+        (it) => it.arguments,
+        (it, v) => it.arguments = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "editor/v1/presentation.skir:PresentationInvocation",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (PresentationInvocation_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [PresentationInvocation].
+final class PresentationInvocation_mutable implements PresentationInvocation_orMutable {
+  _lib_editor_v1_type_catalog.PresentationId_orMutable presentationId;
+  _core.Iterable<PresentationArgument_orMutable> arguments;
+  _skir.internal__UnrecognizedFields? _u;
+
+  PresentationInvocation_mutable._(
+    this.presentationId,
+    this.arguments,
+  );
+
+  /// If the value of [presentationId] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [presentationId] and returns it.
+  _lib_editor_v1_type_catalog.PresentationId_mutable get mutablePresentationId {
+    final value = this.presentationId;
+    if (value is _lib_editor_v1_type_catalog.PresentationId_mutable) {
+      return value;
+    } else {
+      return this.presentationId = (value as _lib_editor_v1_type_catalog.PresentationId).toMutable();
+    }
+  }
+
+  /// If the value of [arguments] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [arguments] and returns it.
+  _core.List<PresentationArgument_orMutable> get mutableArguments {
+    final value = this.arguments;
+    if (value is _skir.internal__MutableList<PresentationArgument_orMutable>) {
+      return value;
+    } else {
+      return this.arguments = _skir.internal__MutableList([...value]);
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  PresentationInvocation toFrozen() => PresentationInvocation(
+    presentationId: this.presentationId,
+    arguments: this.arguments,
   ).._u = this._u;
 }

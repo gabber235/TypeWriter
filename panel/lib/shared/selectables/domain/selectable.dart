@@ -7,6 +7,7 @@ abstract class SelectionCapability {
 abstract class SelectableIdentifier {
   const SelectableIdentifier();
   String get id;
+  Object get resourceId => this;
 
   AsyncValue<Selectable> create(Ref ref);
 }

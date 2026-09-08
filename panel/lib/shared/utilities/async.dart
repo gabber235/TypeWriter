@@ -12,7 +12,8 @@ extension FutureExt<T> on Future<T> {
       },
       test: (error) =>
           error is ApiException ||
-          error is SubmissionException,
+          error is SubmissionException ||
+          error is EditorMutationException,
     );
   }
 }

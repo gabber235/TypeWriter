@@ -157,13 +157,6 @@ List<PageElement> _decodePageElements(
   return [...local, ...related];
 }
 
-RecordValue _elementValue(PageElement element) => switch (element) {
-  PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
-    definition.data,
-  PageElementCue(cue: Segment(:final data) || Keyframe(:final data)) => data,
-  _ => throw StateError("The element has no editable value"),
-};
-
 String _elementName(PageElement element) => switch (element) {
   PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
     definition.name,

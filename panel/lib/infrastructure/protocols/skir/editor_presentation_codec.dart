@@ -65,6 +65,10 @@ final class SkirPresentationDecoder {
     wire.PresentationElement_connectionLayerWrapper(:final value) =>
       _connectionLayer(value),
     wire.PresentationElement_paddingWrapper(:final value) => _padding(value),
+    wire.PresentationElement_commitControlsWrapper(:final value) =>
+      expressions
+          .binding(value.binding)
+          .mapValue((binding) => CommitControlsElement(binding: binding)),
     wire.PresentationElement_slotWrapper(:final value) => _slot(value),
     wire.PresentationElement_tabsWrapper(:final value) => _tabs(value),
     wire.PresentationElement.divider => const TypeResult.success(
@@ -139,6 +143,9 @@ final class SkirPresentationDecoder {
     wire.PresentationElement_namedInputWrapper(:final value) => _bound(
       value,
     ).mapValue(NamedInputElement.new),
+    wire.PresentationElement_invocationWrapper(:final value) => _invocation(
+      value,
+    ),
     wire.PresentationElement_defaultPresentationWrapper(:final value) =>
       _defaultPresentation(value),
     wire.PresentationElement_buttonWrapper(:final value) => _button(value),

@@ -1,4 +1,9 @@
 import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
+    as skir;
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v1/authoring.dart"
+    as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
 import "package:widgetbook/widgetbook.dart";
@@ -49,6 +54,21 @@ Widget pagePageStory({
   );
   return FakeApp(
     overrides: [
+      ...authoringSessionMockOverrides(
+        initial: pageStoryAuthoring(pageType, storyElements ?? const []),
+      ),
+      realmEntryIndexProvider.overrideWith(
+        (ref, scope) => AsyncData({
+          for (final element in storyElements ?? const <PageElement>[])
+            if (element case PageElementEntry(
+              entry: DefinitionPageEntry(:final definition),
+            ))
+              definition.id: CachedPageEntry(
+                pageId: "example-page-id",
+                definition: definition,
+              ),
+        }),
+      ),
       realmInteractionProvider.overrideWith(
         (ref) => const RealmInteractionState(
           connectionState: RealmConnectionState.online,

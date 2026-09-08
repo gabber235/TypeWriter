@@ -9,158 +9,255 @@ PresentationNode _hostConfigurationSection({
 }) => _dashboardSection(
   id: "serviceHost.configuration",
   title: "Configuration",
-  description: "Workloads managed by this host",
   color: color,
   children: [
-    if (canHostRealm) _realmConfigurationCard(targets: realmTargets),
-    _engineConfigurationCard(
-      targets: engineTargets,
-      realms: realms,
-      canHostRealm: canHostRealm,
-    ),
-  ],
-);
-
-PresentationNode _realmConfigurationCard({
-  required Map<String, List<String>> targets,
-}) => _dashboardCard(
-  id: "serviceHost.configuration.realm",
-  label: "REALM HOSTING",
-  color: realmServiceRoleColor,
-  children: [
-    PresentationNode(
-      id: "serviceHost.realmEnabled",
-      element: ToggleInputElement(
-        _configurationControl(
-          _HostInspectorFields.realmEnabled,
-          "Host a Realm",
-        ),
+    if (canHostRealm)
+      _workloadMode(
+        field: "realm",
+        label: "Host a Realm",
+        title: "REALM HOSTING",
+        color: realmServiceRoleColor,
+        disabled: _realmDisabled,
+        enabled: _realmHosted,
+        scopeId: const BindingId(30),
+        fields: [
+          _targetChoice(const BindingId(30), realmTargets, "Realm target"),
+        ],
       ),
-    ),
-    PresentationNode(
-      id: "serviceHost.realmConfiguration",
-      element: ConditionalElement(
-        condition: _configurationExpression(
-          _HostInspectorFields.realmEnabled,
-          const BooleanType(),
-        ),
-        whenTrue: _engineTargetSelect(
-          id: "serviceHost.realmTarget",
-          field: _HostInspectorFields.realmTarget,
-          label: "Realm target",
-          targets: targets,
-        ),
-      ),
-    ),
-  ],
-);
-
-PresentationNode _engineConfigurationCard({
-  required Map<String, List<String>> targets,
-  required List<TopologyRealm> realms,
-  required bool canHostRealm,
-}) => _dashboardCard(
-  id: "serviceHost.configuration.engine",
-  label: "EXECUTION ENGINE",
-  color: engineServiceRoleColor,
-  children: [
-    PresentationNode(
-      id: "serviceHost.engineEnabled",
-      element: ToggleInputElement(
-        _configurationControl(
-          _HostInspectorFields.engineEnabled,
-          "Run an execution engine",
-        ),
-      ),
-    ),
-    PresentationNode(
-      id: "serviceHost.engineConfiguration",
-      element: ConditionalElement(
-        condition: _configurationExpression(
-          _HostInspectorFields.engineEnabled,
-          const BooleanType(),
-        ),
-        whenTrue: PresentationNode(
-          id: "serviceHost.engineConfiguration.fields",
-          element: ColumnElement(
-            spacing: 12,
-            crossAxisAlignment: PresentationCrossAxisAlignment.start,
-            children: [
-              _engineTargetSelect(
-                id: "serviceHost.engineTarget",
-                field: _HostInspectorFields.engineTarget,
-                label: "Engine target",
-                targets: targets,
+    _workloadMode(
+      field: "engine",
+      label: "Run an execution engine",
+      title: "EXECUTION ENGINE",
+      color: engineServiceRoleColor,
+      disabled: _engineDisabled,
+      enabled: _engineEnabled,
+      scopeId: const BindingId(31),
+      fields: [
+        _targetChoice(const BindingId(31), engineTargets, "Engine target"),
+        PresentationNode(
+          id: "engine.realm.availability",
+          element: PolymorphicMatchElement(
+            binding: BindingReference(
+              bindingId: const BindingId(1),
+              path: DataPath.root.field("realm"),
+            ),
+            scopeBindingId: const BindingId(33),
+            cases: [
+              PolymorphicMatchCase(
+                type: _realmDisabled,
+                child: _engineRealmChoice(realms),
               ),
-              _realmAssignment(canHostRealm: canHostRealm, realms: realms),
+              PolymorphicMatchCase(
+                type: _realmHosted,
+                child: PresentationNode(
+                  id: "engine.realm.hostedMatch",
+                  element: ConditionalElement(
+                    condition: _equalTargets(
+                      _draftTargetExpression(const BindingId(31)),
+                      _draftTargetExpression(const BindingId(33)),
+                    ),
+                    whenTrue: const PresentationNode(
+                      id: "engine.realm.inferred",
+                      element: ColumnElement(children: []),
+                    ),
+                    whenFalse: _engineRealmChoice(realms),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-      ),
+      ],
     ),
   ],
 );
 
-PresentationNode _realmAssignment({
-  required bool canHostRealm,
-  required List<TopologyRealm> realms,
-}) => PresentationNode(
-  id: "serviceHost.realmAssignment",
-  element: canHostRealm
-      ? ConditionalElement(
-          condition: _configurationExpression(
-            _HostInspectorFields.realmEnabled,
-            const BooleanType(),
-          ).compare(ComparisonOperator.equal, false.asBooleanLiteral),
-          whenTrue: _realmAssignmentSelect(
-            id: "serviceHost.realmAssignment.remote",
-            realms: realms,
-          ),
-        )
-      : _realmAssignmentSelect(
-          id: "serviceHost.realmAssignment.remote",
-          realms: realms,
-        ).element,
-);
-
-PresentationNode _engineTargetSelect({
-  required String id,
+PresentationNode _workloadMode({
   required String field,
   required String label,
-  required Map<String, List<String>> targets,
-}) => PresentationNode(
-  id: id,
+  required String title,
+  required Color color,
+  required ResolvedTypeRef disabled,
+  required ResolvedTypeRef enabled,
+  required BindingId scopeId,
+  required List<PresentationNode> fields,
+}) {
+  final binding = BindingReference(
+    bindingId: const BindingId(1),
+    path: DataPath.root.field(field),
+  );
+  final registry = TypeRegistry(_hostInspectorCatalog);
+  TypedExpression initialValue(ResolvedTypeRef type) {
+    final representation = registry
+        .resolveExact(type)
+        .valueOrNull!
+        .representation;
+    return representation
+        .createInitialValue(registry: registry)
+        .valueOrNull!
+        .asLiteral(representation);
+  }
+
+  return _dashboardCard(
+    id: "serviceHost.configuration.$field",
+    label: title,
+    color: color,
+    children: [
+      PresentationNode(
+        id: "host.configuration.$field",
+        element: PolymorphicMatchElement(
+          binding: binding,
+          scopeBindingId: scopeId,
+          cases: [
+            for (final currentType in [disabled, enabled])
+              PolymorphicMatchCase(
+                type: currentType,
+                child: PresentationNode(
+                  id: "$field.${currentType == enabled ? "enabled" : "disabled"}",
+                  header: PresentationHeader(
+                    binding: binding,
+                    title: label.asStringLiteral.asHeaderTitle,
+                    items: [
+                      HeaderBooleanToggleItem(
+                        id: booleanToggleHeaderItemId,
+                        label: label.asStringLiteral,
+                        checked: (currentType == enabled).asBooleanLiteral,
+                        placement: HeaderActionPlacement.beforeTitle,
+                        action: LocalEditorAction(
+                          ReplaceConcreteTypeAction(
+                            target: binding,
+                            concreteType: currentType == enabled
+                                ? disabled
+                                : enabled,
+                            initialValue: initialValue(
+                              currentType == enabled ? disabled : enabled,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  element: ColumnElement(
+                    spacing: 12,
+                    children: currentType == enabled ? fields : const [],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+PresentationNode _targetChoice(
+  BindingId scope,
+  Map<String, List<String>> targets,
+  String label,
+) => PresentationNode(
+  id: "target.${scope.value}",
   element: SelectInputElement(
-    control: _configurationControl(field, label),
+    control: BoundControl(
+      binding: BindingReference(
+        bindingId: scope,
+        path: DataPath.root.field("target"),
+      ),
+      label: label.asStringLiteral,
+    ),
     options: [
       for (final entry in targets.entries)
         for (final version in entry.value)
           SelectOption(
             id: _encodeTarget(entry.key, version),
-            label: "${entry.key.formatted} $version".asStringLiteral,
+            label: _targetLabel(
+              TopologyEngineTarget(
+                engineId: entry.key,
+                versionConstraint: version,
+              ),
+            ).asStringLiteral,
             value: _encodeTarget(entry.key, version).asStringLiteral,
           ),
     ],
   ),
 );
 
-PresentationNode _realmAssignmentSelect({
-  required String id,
-  required List<TopologyRealm> realms,
-}) => PresentationNode(
-  id: id,
-  element: SelectInputElement(
-    control: _configurationControl(
-      _HostInspectorFields.realmAssignment,
-      "Assigned Realm",
-    ),
-    options: [
-      for (final realm in realms)
-        SelectOption(
-          id: realm.realmId.id,
-          label: realm.ownerHost.name.formatted.asStringLiteral,
-          value: realm.realmId.id.asStringLiteral,
-        ),
-    ],
+TypedExpression _draftTargetExpression(BindingId binding) => TypedExpression(
+  resultType: const StringType(),
+  expression: BindingExpression(
+    BindingReference(bindingId: binding, path: DataPath.root.field("target")),
   ),
 );
+
+TypedExpression _equalTargets(TypedExpression left, TypedExpression right) =>
+    TypedExpression(
+      resultType: const BooleanType(),
+      expression: BooleanExpression(
+        operator: BooleanOperator.and,
+        operands: [
+          TypedExpression(
+            resultType: const BooleanType(),
+            expression: ComparisonExpression(
+              operator: ComparisonOperator.notEqual,
+              left: left,
+              right: "".asStringLiteral,
+            ),
+          ),
+          TypedExpression(
+            resultType: const BooleanType(),
+            expression: ComparisonExpression(
+              operator: ComparisonOperator.equal,
+              left: left,
+              right: right,
+            ),
+          ),
+        ],
+      ),
+    );
+
+PresentationNode _engineRealmChoice(List<TopologyRealm> realms) {
+  final groups = <String, List<TopologyRealm>>{};
+  for (final realm in realms) {
+    final target = _encodeTarget(
+      realm.targetEngine.engineId,
+      realm.targetEngine.versionConstraint,
+    );
+    groups.putIfAbsent(target, () => []).add(realm);
+  }
+  var choice = _realmOptions(const [], "none");
+  for (final entry in groups.entries) {
+    choice = PresentationNode(
+      id: "engine.realm.target.${entry.key}",
+      element: ConditionalElement(
+        condition: _equalTargets(
+          _draftTargetExpression(const BindingId(31)),
+          entry.key.asStringLiteral,
+        ),
+        whenTrue: _realmOptions(entry.value, entry.key),
+        whenFalse: choice,
+      ),
+    );
+  }
+  return choice;
+}
+
+PresentationNode _realmOptions(List<TopologyRealm> realms, String target) =>
+    PresentationNode(
+      id: "engine.realm.$target",
+      element: SelectInputElement(
+        control: BoundControl(
+          binding: BindingReference(
+            bindingId: const BindingId(31),
+            path: DataPath.root.field("realm"),
+          ),
+          label: "Assigned Realm".asStringLiteral,
+        ),
+        options: [
+          for (final realm in realms)
+            SelectOption(
+              id: realm.realmId.id,
+              label: realm.ownerHost.name.asStringLiteral,
+              value: realm.realmId.id.asStringLiteral,
+            ),
+        ],
+      ),
+    );

@@ -185,7 +185,7 @@ void main() {
         reason: "${resolvedSelection.error}",
       );
       expect(resolvedSelection.value, hasLength(1));
-      expect(find.byType(TypedEditor), findsOneWidget);
+      expect(find.byType(ComposedEditor), findsOneWidget);
       expect(find.byType(EntryHeader), findsOneWidget);
       expect(find.text("Priority"), findsOneWidget);
       expect(find.text("Weight"), findsOneWidget);
@@ -213,7 +213,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TypedEditor), findsOneWidget);
+    expect(find.byType(ComposedEditor), findsOneWidget);
     expect(find.byType(CueHeader), findsOneWidget);
   });
 }
@@ -239,8 +239,10 @@ Future<void> _cancel(WidgetTester tester) async {
 
 RecordValue _editorRoot(WidgetTester tester) {
   final container = ProviderScope.containerOf(
-    tester.element(find.byType(TypedEditor)),
+    tester.element(find.byType(ComposedEditor)),
   );
-  final value = container.read(editorProvider)!.value(DataPath.root);
+  final model = container.read(inspectionSessionProvider).model!;
+  final owner = (model.inputs.values.single as PresentationEditInput).owner;
+  final value = owner.value(DataPath.root);
   return (value as ReadyEditorValue).value as RecordValue;
 }

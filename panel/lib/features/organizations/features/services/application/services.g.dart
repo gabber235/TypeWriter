@@ -9,34 +9,80 @@ part of 'services.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(Services)
-final servicesProvider = ServicesProvider._();
+@ProviderFor(OrganizationServices)
+final organizationServicesProvider = OrganizationServicesFamily._();
 
-final class ServicesProvider
-    extends $StreamNotifierProvider<Services, List<Service>> {
-  ServicesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'servicesProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+final class OrganizationServicesProvider
+    extends $StreamNotifierProvider<OrganizationServices, List<Service>> {
+  OrganizationServicesProvider._({
+    required OrganizationServicesFamily super.from,
+    required skir.RecordId super.argument,
+  }) : super(
+         retry: null,
+         name: r'organizationServicesProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
-  String debugGetCreateSourceHash() => _$servicesHash();
+  String debugGetCreateSourceHash() => _$organizationServicesHash();
+
+  @override
+  String toString() {
+    return r'organizationServicesProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
-  Services create() => Services();
+  OrganizationServices create() => OrganizationServices();
+
+  @override
+  bool operator ==(Object other) {
+    return other is OrganizationServicesProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
-String _$servicesHash() => r'47bcd9872c7e5ce2115f22408b897ddc7311c174';
+String _$organizationServicesHash() =>
+    r'4ed5dc3223862b5b25c28b1e0c7f9aac09fc0b04';
 
-abstract class _$Services extends $StreamNotifier<List<Service>> {
-  Stream<List<Service>> build();
+final class OrganizationServicesFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          OrganizationServices,
+          AsyncValue<List<Service>>,
+          List<Service>,
+          Stream<List<Service>>,
+          skir.RecordId
+        > {
+  OrganizationServicesFamily._()
+    : super(
+        retry: null,
+        name: r'organizationServicesProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  OrganizationServicesProvider call(skir.RecordId organizationId) =>
+      OrganizationServicesProvider._(argument: organizationId, from: this);
+
+  @override
+  String toString() => r'organizationServicesProvider';
+}
+
+abstract class _$OrganizationServices extends $StreamNotifier<List<Service>> {
+  late final _$args = ref.$arg as skir.RecordId;
+  skir.RecordId get organizationId => _$args;
+
+  Stream<List<Service>> build(skir.RecordId organizationId);
   @$mustCallSuper
   @override
   void runBuild() {
@@ -49,7 +95,7 @@ abstract class _$Services extends $StreamNotifier<List<Service>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -123,6 +169,50 @@ final class ServiceFamily extends $Family
   String toString() => r'serviceProvider';
 }
 
+@ProviderFor(Services)
+final servicesProvider = ServicesProvider._();
+
+final class ServicesProvider
+    extends $StreamNotifierProvider<Services, List<Service>> {
+  ServicesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'servicesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$servicesHash();
+
+  @$internal
+  @override
+  Services create() => Services();
+}
+
+String _$servicesHash() => r'a73dacdcfcc43b3b8100d858f81dbe667e3fd005';
+
+abstract class _$Services extends $StreamNotifier<List<Service>> {
+  Stream<List<Service>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<Service>>, List<Service>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Service>>, List<Service>>,
+              AsyncValue<List<Service>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(OrganizationTopologyStream)
 final organizationTopologyStreamProvider =
     OrganizationTopologyStreamProvider._();
@@ -153,7 +243,7 @@ final class OrganizationTopologyStreamProvider
 }
 
 String _$organizationTopologyStreamHash() =>
-    r'77c4991c1eabadba5982768b4604fc8a97f6adf7';
+    r'785f7be8ae1563a38f775fc1651c7f93f92fd86f';
 
 abstract class _$OrganizationTopologyStream
     extends $StreamNotifier<OrganizationTopology> {
@@ -176,6 +266,110 @@ abstract class _$OrganizationTopologyStream
               Object?
             >;
     element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(ScopedOrganizationTopology)
+final scopedOrganizationTopologyProvider = ScopedOrganizationTopologyFamily._();
+
+final class ScopedOrganizationTopologyProvider
+    extends
+        $StreamNotifierProvider<
+          ScopedOrganizationTopology,
+          OrganizationTopology
+        > {
+  ScopedOrganizationTopologyProvider._({
+    required ScopedOrganizationTopologyFamily super.from,
+    required skir.RecordId super.argument,
+  }) : super(
+         retry: null,
+         name: r'scopedOrganizationTopologyProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$scopedOrganizationTopologyHash();
+
+  @override
+  String toString() {
+    return r'scopedOrganizationTopologyProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  ScopedOrganizationTopology create() => ScopedOrganizationTopology();
+
+  @override
+  bool operator ==(Object other) {
+    return other is ScopedOrganizationTopologyProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$scopedOrganizationTopologyHash() =>
+    r'ccad5eb053a284e21e9d8166ad5ba491367e798e';
+
+final class ScopedOrganizationTopologyFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          ScopedOrganizationTopology,
+          AsyncValue<OrganizationTopology>,
+          OrganizationTopology,
+          Stream<OrganizationTopology>,
+          skir.RecordId
+        > {
+  ScopedOrganizationTopologyFamily._()
+    : super(
+        retry: null,
+        name: r'scopedOrganizationTopologyProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ScopedOrganizationTopologyProvider call(skir.RecordId organizationId) =>
+      ScopedOrganizationTopologyProvider._(
+        argument: organizationId,
+        from: this,
+      );
+
+  @override
+  String toString() => r'scopedOrganizationTopologyProvider';
+}
+
+abstract class _$ScopedOrganizationTopology
+    extends $StreamNotifier<OrganizationTopology> {
+  late final _$args = ref.$arg as skir.RecordId;
+  skir.RecordId get organizationId => _$args;
+
+  Stream<OrganizationTopology> build(skir.RecordId organizationId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<OrganizationTopology>, OrganizationTopology>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<OrganizationTopology>,
+                OrganizationTopology
+              >,
+              AsyncValue<OrganizationTopology>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 

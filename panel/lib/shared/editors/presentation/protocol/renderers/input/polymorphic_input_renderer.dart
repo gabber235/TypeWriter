@@ -7,6 +7,7 @@ extension PolymorphicInputElementRendering on PolymorphicInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final element = this;
     return BoundControlShell(
+      nominal: true,
       control: element.control,
       scope: scope,
       shapeMismatch: (binding) =>
@@ -89,6 +90,7 @@ extension on PolymorphicValue {
         ),
         interactionTarget: scope.canonical(element.control.binding),
       ),
+      source: element.control.binding,
     );
     return ResolvedBinding(
       reference: payloadReference,

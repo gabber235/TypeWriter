@@ -95,7 +95,7 @@ final class _ExpressionEvaluator {
   };
 
   TypeResult<DataValue> _binding(BindingReference reference) {
-    final binding = context.bindings.resolve(reference);
+    final binding = context.bindings.resolve(reference, registry: registry);
     if (binding case TypeFailure(:final diagnostics)) {
       return TypeResult.failure(diagnostics);
     }

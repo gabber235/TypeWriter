@@ -12,3 +12,7 @@ export "realm_editor_catalog_request.dart";
 export "realm_element_catalog.dart";
 export "realm_page_catalog.dart";
 export "realm_service_address.dart";
+export "authoring_element_editor.dart";
+
+export "authoring_element_placement.dart";
+export "authoring_element_submission.dart";

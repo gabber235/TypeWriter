@@ -1,3 +1,5 @@
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/binding.dart"
+    as wire_binding;
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/capability.dart"
     as wire_capability;
@@ -29,13 +31,53 @@ final class SkirCatalogDefinitionCodec {
       value.presentationId.namespace,
       value.presentationId.name,
     );
-    final target = types.decodeExpression(value.target);
-    return combineResults(
-      id,
-      target,
-      (id, target) => PresentationDefinition(
-        id: PresentationId(namespace: id.$1, name: id.$2),
-        target: target,
+    final inputs = <PresentationInputParameter>[];
+    final diagnostics = [...id.diagnostics];
+    for (final input in value.inputs) {
+      final type = types.decodeExpression(input.valueType);
+      diagnostics.addAll(type.diagnostics);
+      final access = switch (input.access) {
+        wire_presentation.PresentationInputAccess.read =>
+          PresentationInputAccess.read,
+        wire_presentation.PresentationInputAccess.edit =>
+          PresentationInputAccess.edit,
+        _ => null,
+      };
+      if (access == null ||
+          input.name.isEmpty ||
+          input.bindingId.value < 0 ||
+          inputs.any(
+            (existing) =>
+                existing.id.value == input.bindingId.value ||
+                existing.name == input.name,
+          )) {
+        return invalidWire("Invalid or duplicate presentation input");
+      }
+      if (type.valueOrNull case final type?) {
+        inputs.add(
+          PresentationInputParameter(
+            id: BindingId(input.bindingId.value),
+            name: input.name,
+            type: type,
+            access: access,
+          ),
+        );
+      }
+    }
+    if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
+    final primary = value.primaryInput;
+    if (primary != null &&
+        !inputs.any((input) => input.id.value == primary.value)) {
+      return invalidWire("Primary presentation input is not declared");
+    }
+    return TypeResult.success(
+      PresentationDefinition(
+        id: PresentationId(
+          namespace: id.valueOrNull!.$1,
+          name: id.valueOrNull!.$2,
+        ),
+        inputs: inputs,
+        primaryInput: primary == null ? null : BindingId(primary.value),
         root: presentations.decodeNode(value.root),
       ),
     );
@@ -44,26 +86,46 @@ final class SkirCatalogDefinitionCodec {
   TypeResult<wire_presentation.PresentationDefinition> encodePresentation(
     PresentationDefinition value,
   ) {
-    final target = types.encodeExpression(value.target);
-    final root = presentationEncoder.encodeNode(value.root);
-    return combineResults(
-      target,
-      root,
-      (target, root) => wire_presentation.PresentationDefinition(
-        presentationId: wire_type.PresentationId(
-          namespace: value.id.namespace,
-          name: value.id.name,
+    final inputs = <wire_presentation.PresentationInput>[];
+    for (final input in value.inputs) {
+      final type = types.encodeExpression(input.type);
+      if (type case TypeFailure(:final diagnostics))
+        return TypeResult.failure(diagnostics);
+      inputs.add(
+        wire_presentation.PresentationInput(
+          bindingId: wire_binding.BindingId(value: input.id.value),
+          name: input.name,
+          valueType: type.valueOrNull!,
+          access: switch (input.access) {
+            PresentationInputAccess.read =>
+              wire_presentation.PresentationInputAccess.read,
+            PresentationInputAccess.edit =>
+              wire_presentation.PresentationInputAccess.edit,
+          },
         ),
-        target: target,
-        root: root,
-        dependencies: wire_presentation.PresentationDependencies(
-          types: const [],
-          presentations: const [],
-          conversions: const [],
-          capabilities: const [],
-        ),
-      ),
-    );
+      );
+    }
+    return presentationEncoder
+        .encodeNode(value.root)
+        .mapValue(
+          (root) => wire_presentation.PresentationDefinition(
+            presentationId: wire_type.PresentationId(
+              namespace: value.id.namespace,
+              name: value.id.name,
+            ),
+            inputs: inputs,
+            primaryInput: value.primaryInput == null
+                ? null
+                : wire_binding.BindingId(value: value.primaryInput!.value),
+            root: root,
+            dependencies: wire_presentation.PresentationDependencies(
+              types: const [],
+              presentations: const [],
+              conversions: const [],
+              capabilities: const [],
+            ),
+          ),
+        );
   }
 
   TypeResult<CapabilityDefinition> decodeCapability(

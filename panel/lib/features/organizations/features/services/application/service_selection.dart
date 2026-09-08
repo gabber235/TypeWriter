@@ -8,10 +8,8 @@ const serviceInspectorTypeRef = ResolvedTypeRef(
 final _serviceInspectorType = TypeDefinition(
   id: serviceInspectorTypeRef,
   kind: NominalTypeKind.concrete,
-  defaultPresentationId: _serviceInspectorPresentationId,
   representation: RecordType(
     fields: {
-      "name": TypeField(name: "name", type: identifierStringType),
       "version": const TypeField(name: "version", type: StringType()),
       "state": const TypeField(name: "state", type: StringType()),
       "lastSeen": TypeField(
@@ -34,9 +32,16 @@ class ServiceIdentifier extends SelectableIdentifier {
 
   @override
   AsyncValue<Selectable> create(Ref ref) {
+    final services = ref.watch(servicesProvider).value ?? const <Service>[];
+    final connections = ref.watch(serviceConnectionsProvider(services));
     return ref.watch(serviceProvider(serviceId)).whenData((value) {
       if (value == null) throw SelectableNotFoundException(this);
-      return ServiceSelectable(ref: ref, id: this, service: value);
+      return ServiceSelectable(
+        ref: ref,
+        id: this,
+        service: value,
+        connected: connections[serviceId] ?? false,
+      );
     });
   }
 
@@ -57,25 +62,106 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
     required this.ref,
     required this.id,
     required this.service,
+    required this.connected,
   });
 
   @override
   final ServiceIdentifier id;
   final Service service;
+  final bool connected;
   final Ref ref;
 
-  RecordValue get _data => service.inspectorValue;
+  RecordValue get _data => service.observationValue(connected);
 
   @override
   String get name => service.displayName;
 
+  EditorTarget get editTarget {
+    final organization = ref.read(organizationIdProvider);
+    if (organization == null) throw ApiException.noOrganization();
+    final repository = ref.read(
+      organizationServicesProvider(organization).notifier,
+    );
+    return ResourceEditorTarget(
+      targetId: id,
+      label: "$name: identity",
+      updates: repository
+          .watchValues()
+          .where((value) => value.hasValue || value.hasError)
+          .map((value) {
+            final current = value.requireValue
+                .where((item) => item.serviceId == service.serviceId)
+                .firstOrNull;
+            return current == null
+                ? null
+                : EditorDocument(
+                    rootType: _serviceIdentityType,
+                    typeCatalog: _serviceInspectorCatalog,
+                    confirmedValue: current.identityValue,
+                    revision: current.revision,
+                  );
+          }),
+      document: EditorDocument(
+        rootType: _serviceIdentityType,
+        typeCatalog: _serviceInspectorCatalog,
+        confirmedValue: RecordValue({"name": StringValue(service.name)}),
+        revision: service.revision,
+      ),
+      commit: (commit) async {
+        final value = commit.rootValue;
+        if (value is! RecordValue)
+          return invalidMutation("Service identity is invalid");
+        final name = value.fields["name"]?.stringOrNull;
+        if (name == null || name.trim().isEmpty)
+          return invalidMutation("Name must not be empty");
+        final result = await repository.updateService(
+          service.copyWith(revision: commit.expectedRevision, name: name),
+        );
+        return switch (result) {
+          MutationSuccess(:final revision, :final value) =>
+            TypedMutationResult.success(
+              revision: revision,
+              value: _identityValue(value),
+            ),
+          MutationConflict(
+            :final expectedRevision,
+            :final actualRevision,
+            :final actualValue,
+          ) =>
+            TypedMutationResult.conflict(
+              expectedRevision: expectedRevision,
+              actualRevision: actualRevision,
+              actualValue: _identityValue(actualValue),
+            ),
+          _ => result,
+        };
+      },
+    );
+  }
+
   @override
-  EditorDocument get document => EditorDocument(
-    rootType: NamedType(serviceInspectorTypeRef),
-    typeCatalog: _serviceInspectorCatalog,
-    confirmedValue: _data,
-    revision: service.revision,
+  PresentationModel buildPresentation(
+    EditorOwnerRegistry owners,
+  ) => PresentationModel(
+    catalog: _serviceInspectorCatalog,
+    inputs: {
+      const BindingId(0): PresentationInput.value(
+        type: NamedType(serviceInspectorTypeRef),
+        value: EditorValue.ready(_data),
+      ),
+      const BindingId(1): PresentationInput.edit(owners.editor(editTarget)),
+    },
     presentations: [serviceInspectorPresentation(service)],
+    root: PresentationNode(
+      id: "service",
+      element: PresentationInvocationElement(
+        presentationId: _serviceInspectorPresentationId,
+        arguments: {
+          const BindingId(0): const BindingReference(bindingId: BindingId(0)),
+          const BindingId(1): const BindingReference(bindingId: BindingId(1)),
+        },
+      ),
+    ),
   );
 
   @override
@@ -94,67 +180,30 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
   );
 
   @override
-  EditorMutationResult validate(DataPath path, DataValue value) {
-    const readOnlyFields = {"version", "state", "lastSeen"};
-    if (path.segments.firstOrNull case FieldPathSegment(
-      :final name,
-    ) when readOnlyFields.contains(name)) {
-      return EditorMutationResult.invalid([
-        TypeDiagnostic(
-          code: TypeDiagnosticCode.invalidPath,
-          message: "Service status fields are read only",
-          path: path,
-        ),
-      ]);
-    }
-    return super.validate(path, value);
-  }
-
-  @override
-  Future<TypedMutationResult> commit(EditorCommit commit) {
-    final next = _serviceFromInspectorValue(
-      commit.rootValue,
-      expectedRevision: commit.expectedRevision,
-    );
-    if (next == null) {
-      return Future.value(
-        TypedMutationResult.invalid([
-          const TypeDiagnostic(
-            code: TypeDiagnosticCode.invalidValue,
-            message: "The Service inspector value is invalid",
-          ),
-        ]),
-      );
-    }
-    return ref.read(servicesProvider.notifier).updateService(next);
-  }
-
-  @override
-  int get hashCode => Object.hash(id, service);
+  int get hashCode => Object.hash(id, service, connected);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ServiceSelectable && other.id == id && other.service == service;
-
-  Service? _serviceFromInspectorValue(
-    DataValue value, {
-    required int expectedRevision,
-  }) {
-    if (value is! RecordValue) return null;
-    final name = value.fields["name"];
-    if (name is! StringValue || name.value.trim().isEmpty) {
-      return null;
-    }
-    return service.copyWith(revision: expectedRevision, name: name.value);
-  }
+      other is ServiceSelectable &&
+          other.id == id &&
+          other.service == service &&
+          other.connected == connected;
 }
 
 extension ServiceInspectorValue on Service {
-  RecordValue get inspectorValue => RecordValue({
-    "name": StringValue(name),
+  RecordValue get identityValue => RecordValue({"name": StringValue(name)});
+
+  RecordValue observationValue(bool connected) => RecordValue({
     "version": StringValue(role.version),
-    "state": StringValue(isOnline ? "Connected" : "Offline"),
+    "state": StringValue(connected ? "Connected" : "Offline"),
     "lastSeen": _optionalTimestamp(lastSeen),
   });
 }
+
+final _serviceIdentityType = RecordType(
+  fields: {"name": TypeField(name: "name", type: identifierStringType)},
+);
+
+RecordValue _identityValue(DataValue value) =>
+    RecordValue({"name": (value as RecordValue).fields["name"]!});

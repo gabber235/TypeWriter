@@ -50,8 +50,6 @@ abstract class Service with _$Service {
 
   Color get color => role.color;
 
-  bool get isOnline => isConnectedAt(DateTime.now());
-
   bool isConnectedAt(DateTime now) => state?.isConnectedAt(now) ?? false;
 
   DateTime? get lastSeen => state?.lastSeen;
@@ -59,8 +57,6 @@ abstract class Service with _$Service {
   String get label => role.label;
 
   DateTime? get connectionDeadline => state?.nextTimeout;
-
-  DateTime get nextTimeout => state?.nextTimeout ?? lastSeen ?? DateTime.now();
 
   bool get isHost => role is HostServiceRole;
   bool get isCustom => role is CustomServiceRole;

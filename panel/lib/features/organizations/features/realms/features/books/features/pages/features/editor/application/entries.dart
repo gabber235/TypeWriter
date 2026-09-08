@@ -193,6 +193,9 @@ class EntryIdentifier extends SelectableIdentifier
   final String id;
 
   @override
+  Object get resourceId => recordId("element:$id");
+
+  @override
   AsyncValue<Selectable<EntryIdentifier>> create(Ref ref) {
     final asyncEntry = ref.watch(entryProvider(id));
     return asyncEntry.when(
@@ -233,18 +236,29 @@ class EntryIdentifier extends SelectableIdentifier
   String toString() => "EntryIdentifier($id)";
 }
 
-class EntrySelection extends InspectableSelectable<EntryIdentifier> {
-  const EntrySelection({
+class EntrySelection extends EditableSelectable<EntryIdentifier> {
+  EntrySelection({
     required this.ref,
     required this.id,
     required this.definition,
     required this.typeCatalog,
     required this.presentations,
-  });
+  }) : _commands = ref.readAuthoringSession().notifier,
+       _pageId = ref
+           .read(
+             realmEntryIndexProvider(
+               ref.read(organizationIdProvider)!,
+               ref.read(realmIdProvider)!,
+             ),
+           )
+           .requireValue[id.id]!
+           .pageId;
 
   @override
   final EntryIdentifier id;
   final Ref ref;
+  final AuthoringSession _commands;
+  final String _pageId;
   final EntryDefinition definition;
 
   @override
@@ -255,10 +269,17 @@ class EntrySelection extends InspectableSelectable<EntryIdentifier> {
   String get name => definition.name;
 
   @override
-  EditorDocument get document => EditorDocument(
+  EditorDocument get document => _target.document;
+
+  @override
+  DataPath get presentationPath => elementValuePath;
+
+  @override
+  ResolvedTypeRef get rootType => definition.elementDefinition.rootType;
+
+  EditorDocument get _valueDocument => EditorDocument(
     rootType: NamedType(definition.elementDefinition.rootType),
     typeCatalog: typeCatalog,
-    presentations: presentations,
     confirmedValue: definition.data,
     revision: definition.authoringSequence,
   );
@@ -275,40 +296,20 @@ class EntrySelection extends InspectableSelectable<EntryIdentifier> {
     );
   }
 
+  late final EditorTarget _target = authoringElementTarget(
+    session: _commands,
+    identity: id,
+    pageId: _pageId,
+    label: name,
+    document: _valueDocument,
+  );
+
   @override
-  Future<TypedMutationResult> commit(EditorCommit commit) async {
-    final organizationId = ref.read(organizationIdProvider);
-    final realmId = ref.read(realmIdProvider);
-    final cached = organizationId == null || realmId == null
-        ? null
-        : ref
-              .read(realmEntryIndexProvider(organizationId, realmId))
-              .value?[id.id];
-    if (cached == null) {
-      return TypedMutationResult.unavailable([
-        const TypeDiagnostic(
-          code: TypeDiagnosticCode.invalidValue,
-          message: "The entry is not in a loaded page document",
-        ),
-      ]);
-    }
-    return ref.withReadyPageElements(cached.pageId, (elements) {
-      final activeOrganizationId = ref.read(organizationIdProvider);
-      final activeRealmId = ref.read(realmIdProvider);
-      final current = activeOrganizationId == null || activeRealmId == null
-          ? null
-          : ref
-                .read(
-                  realmEntryIndexProvider(activeOrganizationId, activeRealmId),
-                )
-                .value?[id.id];
-      if (current == null) throw ApiException.notFound("Entry");
-      if (current.pageId != cached.pageId) {
-        throw ApiException.conflict("The entry moved to another page");
-      }
-      return elements.commitElementValue(id.id, commit);
-    });
-  }
+  Stream<EditorDocument?> get updates => _target.updates;
+
+  @override
+  Future<TypedMutationResult> commit(EditorCommit commit) =>
+      _target.commit(commit);
 
   @override
   int get hashCode => id.hashCode;

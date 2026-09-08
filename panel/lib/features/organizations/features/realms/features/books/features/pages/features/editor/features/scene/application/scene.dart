@@ -42,6 +42,9 @@ class CueIdentifier extends SelectableIdentifier {
   final String id;
 
   @override
+  Object get resourceId => recordId("element:$id");
+
+  @override
   AsyncValue<Selectable<CueIdentifier>> create(Ref ref) {
     final organizationId = ref.watch(organizationIdProvider);
     final realmId = ref.watch(realmIdProvider);
@@ -102,16 +105,17 @@ class CueIdentifier extends SelectableIdentifier {
   String toString() => "CueIdentifier($pageId, $id)";
 }
 
-class CueSelection extends InspectableSelectable<CueIdentifier> {
-  const CueSelection({
+class CueSelection extends EditableSelectable<CueIdentifier> {
+  CueSelection({
     required this.ref,
     required this.id,
     required this.cue,
     required this.typeCatalog,
     required this.presentations,
-  });
+  }) : _commands = ref.readAuthoringSession().notifier;
 
   final Ref ref;
+  final AuthoringSession _commands;
 
   @override
   final CueIdentifier id;
@@ -126,10 +130,17 @@ class CueSelection extends InspectableSelectable<CueIdentifier> {
   String get name => cue.elementDefinition.name;
 
   @override
-  EditorDocument get document => EditorDocument(
+  EditorDocument get document => _target.document;
+
+  @override
+  DataPath get presentationPath => elementValuePath;
+
+  @override
+  ResolvedTypeRef get rootType => cue.elementDefinition.rootType;
+
+  EditorDocument get _valueDocument => EditorDocument(
     rootType: NamedType(cue.elementDefinition.rootType),
     typeCatalog: typeCatalog,
-    presentations: presentations,
     confirmedValue: cue.data,
     revision: cue.authoringSequence,
   );
@@ -142,13 +153,20 @@ class CueSelection extends InspectableSelectable<CueIdentifier> {
     return CueHeader(id: id.id, name: name, color: cue.elementDefinition.color);
   }
 
+  late final EditorTarget _target = authoringElementTarget(
+    session: _commands,
+    identity: id,
+    pageId: id.pageId,
+    label: name,
+    document: _valueDocument,
+  );
+
   @override
-  Future<TypedMutationResult> commit(EditorCommit commit) async {
-    return ref.withReadyPageElements(
-      id.pageId,
-      (elements) => elements.commitElementValue(id.id, commit),
-    );
-  }
+  Stream<EditorDocument?> get updates => _target.updates;
+
+  @override
+  Future<TypedMutationResult> commit(EditorCommit commit) =>
+      _target.commit(commit);
 
   @override
   int get hashCode => id.hashCode;

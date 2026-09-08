@@ -63,7 +63,7 @@ void main() {
     expect(encodedType.defaultPresentationId?.name, "main");
     expect(encodedCatalog.decodeDomain().valueOrNull!.catalog, catalog);
 
-    final presentation = PresentationDefinition(
+    final presentation = PresentationDefinition.single(
       id: const PresentationId(namespace: "example", name: "main"),
       target: NamedType(reference),
       root: const PresentationNode(id: "root", element: DividerElement()),
@@ -74,7 +74,7 @@ void main() {
     expect(encodedPresentation.presentationId.namespace, "example");
     expect(encodedPresentation.presentationId.name, "main");
     expect(
-      encodedPresentation.target.kind,
+      encodedPresentation.inputs.single.valueType.kind,
       wire_type.TypeExpression_kind.namedWrapper,
     );
     expect(encodedPresentation.root.nodeId, "root");

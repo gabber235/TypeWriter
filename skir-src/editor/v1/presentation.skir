@@ -820,34 +820,40 @@ struct DefaultPresentationElement(810800121) {
   presentation_id: PresentationId? = 1;
 }
 
-struct ButtonElement(810800122) {
+// Places controls for the complete edit transaction owning this binding.
+// Presentation placement does not change persistence policy or grant edit access.
+struct CommitControlsElement(810800122) {
+  binding: BindingRef = 0;
+}
+
+struct ButtonElement(810800123) {
   label: TypedExpression = 0;
   action: EditorAction = 1;
 }
 
-struct IconButtonElement(810800123) {
+struct IconButtonElement(810800124) {
   icon: TypedExpression = 0;
   semantic_label: TypedExpression = 1;
   action: EditorAction = 2;
 }
 
-struct MenuItem(810800124) {
+struct MenuItem(810800125) {
   item_id: string = 0;
   label: TypedExpression = 1;
   action: EditorAction = 2;
 }
 
-struct MenuElement(810800125) {
+struct MenuElement(810800126) {
   label: TypedExpression? = 0;
   items: [MenuItem|item_id] = 1;
 }
 
-struct TooltipElement(810800126) {
+struct TooltipElement(810800127) {
   message: TypedExpression = 0;
   child: PresentationNode = 1;
 }
 
-enum PresentationElement(810800127) {
+enum PresentationElement(810800128) {
   children: ChildrenElement = 1;
   section: SectionLayout = 2;
   padding: PaddingLayout = 3;
@@ -879,35 +885,60 @@ enum PresentationElement(810800127) {
   color_input: ColorControl = 29;
   bytes_input: BoundControl = 30;
   named_input: BoundControl = 31;
-  button: ButtonElement = 32;
-  icon_button: IconButtonElement = 33;
-  menu: MenuElement = 34;
-  tooltip: TooltipElement = 35;
-  list_input: ListControl = 36;
-  map_input: MapControl = 37;
-  record_input: RecordControl = 38;
-  enum_input: BoundControl = 39;
-  polymorphic_input: PolymorphicControl = 40;
-  default_presentation: DefaultPresentationElement = 41;
-  search_input: SearchControl = 42;
-  collection_lookup: CollectionLookupElement = 43;
-  collection_graph: CollectionGraphElement = 44;
-  container: ContainerLayout = 45;
-  anchor: PresentationAnchorLayout = 46;
-  connection_layer: ConnectionLayerLayout = 47;
-  polymorphic_match: PolymorphicMatchElement = 48;
+  commit_controls: CommitControlsElement = 32;
+  button: ButtonElement = 33;
+  icon_button: IconButtonElement = 34;
+  menu: MenuElement = 35;
+  tooltip: TooltipElement = 36;
+  list_input: ListControl = 37;
+  map_input: MapControl = 38;
+  record_input: RecordControl = 39;
+  enum_input: BoundControl = 40;
+  polymorphic_input: PolymorphicControl = 41;
+  default_presentation: DefaultPresentationElement = 42;
+  search_input: SearchControl = 43;
+  collection_lookup: CollectionLookupElement = 44;
+  collection_graph: CollectionGraphElement = 45;
+  container: ContainerLayout = 46;
+  anchor: PresentationAnchorLayout = 47;
+  connection_layer: ConnectionLayerLayout = 48;
+  polymorphic_match: PolymorphicMatchElement = 49;
+  invocation: PresentationInvocation = 50;
 }
 
-struct PresentationDefinition(810800128) {
+struct PresentationDefinition(810800129) {
   presentation_id: PresentationId = 0;
-  target: TypeExpression = 1;
+  inputs: [PresentationInput] = 1;
   root: PresentationNode = 2;
   dependencies: PresentationDependencies = 3;
+  primary_input: BindingId? = 4;
 }
 
-struct PresentationDependencies(810800129) {
+struct PresentationDependencies(810800130) {
   types: [ResolvedTypeRef] = 0;
   presentations: [PresentationId] = 1;
   conversions: [ConversionId] = 2;
   capabilities: [CapabilityId] = 3;
+}
+
+enum PresentationInputAccess(810800131) {
+  read = 1;
+  edit = 2;
+}
+
+struct PresentationInput(810800132) {
+  binding_id: BindingId = 0;
+  name: string = 1;
+  value_type: TypeExpression = 2;
+  access: PresentationInputAccess = 3;
+}
+
+struct PresentationArgument(810800133) {
+  input: BindingId = 0;
+  binding: BindingRef = 1;
+}
+
+struct PresentationInvocation(810800134) {
+  presentation_id: PresentationId = 0;
+  arguments: [PresentationArgument] = 1;
 }

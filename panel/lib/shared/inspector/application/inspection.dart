@@ -20,18 +20,11 @@ bool hasInspectableSelection(Ref ref) {
 }
 
 @riverpod
-TypeExpression? inspectedRootType(Ref ref) {
-  final selected = ref.watch(inspectedSelectionProvider).value;
-  if (selected == null || selected.isEmpty) return null;
-  if (selected.length == 1) return NamedType(selected.single.rootType);
-  final representations = <TypeExpression>[];
-  for (final selectable in selected) {
-    final resolved = selectable.typeRegistry.resolveExact(selectable.rootType);
-    final representation = resolved.valueOrNull?.representation;
-    if (representation == null) return null;
-    representations.add(representation);
-  }
-  return representations.commonEditableProjection().valueOrNull;
+InspectionSession inspectionSession(Ref ref) {
+  ref.watch(editorWorkspaceProvider);
+  final session = InspectionSession(ref);
+  ref.onDispose(session.dispose);
+  return session;
 }
 
 @riverpod

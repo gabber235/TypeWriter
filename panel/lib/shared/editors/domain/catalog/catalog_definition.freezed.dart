@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PresentationDefinition {
 
- PresentationId get id; TypeExpression get target; PresentationNode get root;
+ PresentationId get id; List<PresentationInputParameter> get inputs; BindingId? get primaryInput; PresentationNode get root;
 /// Create a copy of PresentationDefinition
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PresentationDefinitionCopyWith<PresentationDefinition> get copyWith => _$Presen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.target, target) || other.target == target)&&(identical(other.root, root) || other.root == root));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationDefinition&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.inputs, inputs)&&(identical(other.primaryInput, primaryInput) || other.primaryInput == primaryInput)&&(identical(other.root, root) || other.root == root));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,target,root);
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(inputs),primaryInput,root);
 
 @override
 String toString() {
-  return 'PresentationDefinition(id: $id, target: $target, root: $root)';
+  return 'PresentationDefinition(id: $id, inputs: $inputs, primaryInput: $primaryInput, root: $root)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $PresentationDefinitionCopyWith<$Res>  {
   factory $PresentationDefinitionCopyWith(PresentationDefinition value, $Res Function(PresentationDefinition) _then) = _$PresentationDefinitionCopyWithImpl;
 @useResult
 $Res call({
- PresentationId id, TypeExpression target, PresentationNode root
+ PresentationId id, List<PresentationInputParameter> inputs, BindingId? primaryInput, PresentationNode root
 });
 
 
-$PresentationIdCopyWith<$Res> get id;$TypeExpressionCopyWith<$Res> get target;$PresentationNodeCopyWith<$Res> get root;
+$PresentationIdCopyWith<$Res> get id;$BindingIdCopyWith<$Res>? get primaryInput;$PresentationNodeCopyWith<$Res> get root;
 
 }
 /// @nodoc
@@ -62,11 +62,12 @@ class _$PresentationDefinitionCopyWithImpl<$Res>
 
 /// Create a copy of PresentationDefinition
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? target = null,Object? root = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? inputs = null,Object? primaryInput = freezed,Object? root = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as PresentationId,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
-as TypeExpression,root: null == root ? _self.root : root // ignore: cast_nullable_to_non_nullable
+as PresentationId,inputs: null == inputs ? _self.inputs : inputs // ignore: cast_nullable_to_non_nullable
+as List<PresentationInputParameter>,primaryInput: freezed == primaryInput ? _self.primaryInput : primaryInput // ignore: cast_nullable_to_non_nullable
+as BindingId?,root: null == root ? _self.root : root // ignore: cast_nullable_to_non_nullable
 as PresentationNode,
   ));
 }
@@ -83,10 +84,13 @@ $PresentationIdCopyWith<$Res> get id {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TypeExpressionCopyWith<$Res> get target {
-  
-  return $TypeExpressionCopyWith<$Res>(_self.target, (value) {
-    return _then(_self.copyWith(target: value));
+$BindingIdCopyWith<$Res>? get primaryInput {
+    if (_self.primaryInput == null) {
+    return null;
+  }
+
+  return $BindingIdCopyWith<$Res>(_self.primaryInput!, (value) {
+    return _then(_self.copyWith(primaryInput: value));
   });
 }/// Create a copy of PresentationDefinition
 /// with the given fields replaced by the non-null parameter values.
@@ -179,10 +183,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PresentationId id,  TypeExpression target,  PresentationNode root)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PresentationId id,  List<PresentationInputParameter> inputs,  BindingId? primaryInput,  PresentationNode root)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PresentationDefinition() when $default != null:
-return $default(_that.id,_that.target,_that.root);case _:
+return $default(_that.id,_that.inputs,_that.primaryInput,_that.root);case _:
   return orElse();
 
 }
@@ -200,10 +204,10 @@ return $default(_that.id,_that.target,_that.root);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PresentationId id,  TypeExpression target,  PresentationNode root)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PresentationId id,  List<PresentationInputParameter> inputs,  BindingId? primaryInput,  PresentationNode root)  $default,) {final _that = this;
 switch (_that) {
 case _PresentationDefinition():
-return $default(_that.id,_that.target,_that.root);case _:
+return $default(_that.id,_that.inputs,_that.primaryInput,_that.root);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -220,10 +224,10 @@ return $default(_that.id,_that.target,_that.root);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PresentationId id,  TypeExpression target,  PresentationNode root)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PresentationId id,  List<PresentationInputParameter> inputs,  BindingId? primaryInput,  PresentationNode root)?  $default,) {final _that = this;
 switch (_that) {
 case _PresentationDefinition() when $default != null:
-return $default(_that.id,_that.target,_that.root);case _:
+return $default(_that.id,_that.inputs,_that.primaryInput,_that.root);case _:
   return null;
 
 }
@@ -234,12 +238,19 @@ return $default(_that.id,_that.target,_that.root);case _:
 /// @nodoc
 
 
-class _PresentationDefinition implements PresentationDefinition {
-  const _PresentationDefinition({required this.id, required this.target, required this.root});
+class _PresentationDefinition extends PresentationDefinition {
+  const _PresentationDefinition({required this.id, required final  List<PresentationInputParameter> inputs, this.primaryInput, required this.root}): _inputs = inputs,super._();
   
 
 @override final  PresentationId id;
-@override final  TypeExpression target;
+ final  List<PresentationInputParameter> _inputs;
+@override List<PresentationInputParameter> get inputs {
+  if (_inputs is EqualUnmodifiableListView) return _inputs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_inputs);
+}
+
+@override final  BindingId? primaryInput;
 @override final  PresentationNode root;
 
 /// Create a copy of PresentationDefinition
@@ -252,16 +263,16 @@ _$PresentationDefinitionCopyWith<_PresentationDefinition> get copyWith => __$Pre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.target, target) || other.target == target)&&(identical(other.root, root) || other.root == root));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationDefinition&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._inputs, _inputs)&&(identical(other.primaryInput, primaryInput) || other.primaryInput == primaryInput)&&(identical(other.root, root) || other.root == root));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,target,root);
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_inputs),primaryInput,root);
 
 @override
 String toString() {
-  return 'PresentationDefinition(id: $id, target: $target, root: $root)';
+  return 'PresentationDefinition(id: $id, inputs: $inputs, primaryInput: $primaryInput, root: $root)';
 }
 
 
@@ -272,11 +283,11 @@ abstract mixin class _$PresentationDefinitionCopyWith<$Res> implements $Presenta
   factory _$PresentationDefinitionCopyWith(_PresentationDefinition value, $Res Function(_PresentationDefinition) _then) = __$PresentationDefinitionCopyWithImpl;
 @override @useResult
 $Res call({
- PresentationId id, TypeExpression target, PresentationNode root
+ PresentationId id, List<PresentationInputParameter> inputs, BindingId? primaryInput, PresentationNode root
 });
 
 
-@override $PresentationIdCopyWith<$Res> get id;@override $TypeExpressionCopyWith<$Res> get target;@override $PresentationNodeCopyWith<$Res> get root;
+@override $PresentationIdCopyWith<$Res> get id;@override $BindingIdCopyWith<$Res>? get primaryInput;@override $PresentationNodeCopyWith<$Res> get root;
 
 }
 /// @nodoc
@@ -289,11 +300,12 @@ class __$PresentationDefinitionCopyWithImpl<$Res>
 
 /// Create a copy of PresentationDefinition
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? target = null,Object? root = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? inputs = null,Object? primaryInput = freezed,Object? root = null,}) {
   return _then(_PresentationDefinition(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as PresentationId,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
-as TypeExpression,root: null == root ? _self.root : root // ignore: cast_nullable_to_non_nullable
+as PresentationId,inputs: null == inputs ? _self._inputs : inputs // ignore: cast_nullable_to_non_nullable
+as List<PresentationInputParameter>,primaryInput: freezed == primaryInput ? _self.primaryInput : primaryInput // ignore: cast_nullable_to_non_nullable
+as BindingId?,root: null == root ? _self.root : root // ignore: cast_nullable_to_non_nullable
 as PresentationNode,
   ));
 }
@@ -311,10 +323,13 @@ $PresentationIdCopyWith<$Res> get id {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TypeExpressionCopyWith<$Res> get target {
-  
-  return $TypeExpressionCopyWith<$Res>(_self.target, (value) {
-    return _then(_self.copyWith(target: value));
+$BindingIdCopyWith<$Res>? get primaryInput {
+    if (_self.primaryInput == null) {
+    return null;
+  }
+
+  return $BindingIdCopyWith<$Res>(_self.primaryInput!, (value) {
+    return _then(_self.copyWith(primaryInput: value));
   });
 }/// Create a copy of PresentationDefinition
 /// with the given fields replaced by the non-null parameter values.
@@ -324,6 +339,308 @@ $PresentationNodeCopyWith<$Res> get root {
   
   return $PresentationNodeCopyWith<$Res>(_self.root, (value) {
     return _then(_self.copyWith(root: value));
+  });
+}
+}
+
+/// @nodoc
+mixin _$PresentationInputParameter {
+
+ BindingId get id; String get name; TypeExpression get type; PresentationInputAccess get access;
+/// Create a copy of PresentationInputParameter
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PresentationInputParameterCopyWith<PresentationInputParameter> get copyWith => _$PresentationInputParameterCopyWithImpl<PresentationInputParameter>(this as PresentationInputParameter, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationInputParameter&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.access, access) || other.access == access));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,name,type,access);
+
+@override
+String toString() {
+  return 'PresentationInputParameter(id: $id, name: $name, type: $type, access: $access)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PresentationInputParameterCopyWith<$Res>  {
+  factory $PresentationInputParameterCopyWith(PresentationInputParameter value, $Res Function(PresentationInputParameter) _then) = _$PresentationInputParameterCopyWithImpl;
+@useResult
+$Res call({
+ BindingId id, String name, TypeExpression type, PresentationInputAccess access
+});
+
+
+$BindingIdCopyWith<$Res> get id;$TypeExpressionCopyWith<$Res> get type;
+
+}
+/// @nodoc
+class _$PresentationInputParameterCopyWithImpl<$Res>
+    implements $PresentationInputParameterCopyWith<$Res> {
+  _$PresentationInputParameterCopyWithImpl(this._self, this._then);
+
+  final PresentationInputParameter _self;
+  final $Res Function(PresentationInputParameter) _then;
+
+/// Create a copy of PresentationInputParameter
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? type = null,Object? access = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as BindingId,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as TypeExpression,access: null == access ? _self.access : access // ignore: cast_nullable_to_non_nullable
+as PresentationInputAccess,
+  ));
+}
+/// Create a copy of PresentationInputParameter
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BindingIdCopyWith<$Res> get id {
+  
+  return $BindingIdCopyWith<$Res>(_self.id, (value) {
+    return _then(_self.copyWith(id: value));
+  });
+}/// Create a copy of PresentationInputParameter
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypeExpressionCopyWith<$Res> get type {
+  
+  return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [PresentationInputParameter].
+extension PresentationInputParameterPatterns on PresentationInputParameter {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PresentationInputParameter value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PresentationInputParameter() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PresentationInputParameter value)  $default,){
+final _that = this;
+switch (_that) {
+case _PresentationInputParameter():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PresentationInputParameter value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PresentationInputParameter() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BindingId id,  String name,  TypeExpression type,  PresentationInputAccess access)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PresentationInputParameter() when $default != null:
+return $default(_that.id,_that.name,_that.type,_that.access);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BindingId id,  String name,  TypeExpression type,  PresentationInputAccess access)  $default,) {final _that = this;
+switch (_that) {
+case _PresentationInputParameter():
+return $default(_that.id,_that.name,_that.type,_that.access);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BindingId id,  String name,  TypeExpression type,  PresentationInputAccess access)?  $default,) {final _that = this;
+switch (_that) {
+case _PresentationInputParameter() when $default != null:
+return $default(_that.id,_that.name,_that.type,_that.access);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _PresentationInputParameter implements PresentationInputParameter {
+  const _PresentationInputParameter({required this.id, required this.name, required this.type, this.access = PresentationInputAccess.read});
+  
+
+@override final  BindingId id;
+@override final  String name;
+@override final  TypeExpression type;
+@override@JsonKey() final  PresentationInputAccess access;
+
+/// Create a copy of PresentationInputParameter
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PresentationInputParameterCopyWith<_PresentationInputParameter> get copyWith => __$PresentationInputParameterCopyWithImpl<_PresentationInputParameter>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationInputParameter&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.access, access) || other.access == access));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,name,type,access);
+
+@override
+String toString() {
+  return 'PresentationInputParameter(id: $id, name: $name, type: $type, access: $access)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PresentationInputParameterCopyWith<$Res> implements $PresentationInputParameterCopyWith<$Res> {
+  factory _$PresentationInputParameterCopyWith(_PresentationInputParameter value, $Res Function(_PresentationInputParameter) _then) = __$PresentationInputParameterCopyWithImpl;
+@override @useResult
+$Res call({
+ BindingId id, String name, TypeExpression type, PresentationInputAccess access
+});
+
+
+@override $BindingIdCopyWith<$Res> get id;@override $TypeExpressionCopyWith<$Res> get type;
+
+}
+/// @nodoc
+class __$PresentationInputParameterCopyWithImpl<$Res>
+    implements _$PresentationInputParameterCopyWith<$Res> {
+  __$PresentationInputParameterCopyWithImpl(this._self, this._then);
+
+  final _PresentationInputParameter _self;
+  final $Res Function(_PresentationInputParameter) _then;
+
+/// Create a copy of PresentationInputParameter
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? type = null,Object? access = null,}) {
+  return _then(_PresentationInputParameter(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as BindingId,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as TypeExpression,access: null == access ? _self.access : access // ignore: cast_nullable_to_non_nullable
+as PresentationInputAccess,
+  ));
+}
+
+/// Create a copy of PresentationInputParameter
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BindingIdCopyWith<$Res> get id {
+  
+  return $BindingIdCopyWith<$Res>(_self.id, (value) {
+    return _then(_self.copyWith(id: value));
+  });
+}/// Create a copy of PresentationInputParameter
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypeExpressionCopyWith<$Res> get type {
+  
+  return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
+    return _then(_self.copyWith(type: value));
   });
 }
 }

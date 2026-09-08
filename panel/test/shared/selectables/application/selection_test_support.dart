@@ -2,11 +2,11 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-final selectionEditorSourceProvider = Provider<SelectionEditorSource>((ref) {
-  final source = SelectionEditorSource(ref);
-  ref.onDispose(source.dispose);
-  return source;
-});
+EditOwner? selectionOwner(ProviderContainer container) {
+  final model = container.read(inspectionSessionProvider).model;
+  if (model == null || model.inputs.isEmpty) return null;
+  return (model.inputs.values.single as PresentationEditInput).owner;
+}
 
 class MockSelectableIdentifier extends SelectableIdentifier {
   MockSelectableIdentifier(this.id, [RecordValue? value])
@@ -53,7 +53,7 @@ class LoadingSelectableIdentifier extends SelectableIdentifier {
   int get hashCode => id.hashCode;
 }
 
-class MockSelectable extends InspectableSelectable<MockSelectableIdentifier> {
+class MockSelectable extends EditableSelectable<MockSelectableIdentifier> {
   MockSelectable(this.id, this.data);
 
   @override

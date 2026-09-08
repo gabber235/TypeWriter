@@ -1,13 +1,12 @@
 part of "selection_editor_source_test.dart";
 
-final _sourceProvider = Provider<SelectionEditorSource>((ref) {
-  final source = SelectionEditorSource(
-    ref,
-    realmRuntime: ref.watch(editorRealmRuntimeProvider),
-  );
-  ref.onDispose(source.dispose);
-  return source;
-}, dependencies: [editorRealmRuntimeProvider]);
+final _sourceProvider = inspectionSessionProvider;
+
+EditOwner _owner(InspectionSession session) =>
+    (session.model!.inputs.values.single as PresentationEditInput).owner;
+
+EditorSource _resource(InspectionSession session) =>
+    _owner(session) as EditorSource;
 
 class _Identifier extends SelectableIdentifier {
   _Identifier({
@@ -60,7 +59,7 @@ class _Identifier extends SelectableIdentifier {
   int get hashCode => id.hashCode;
 }
 
-class _Inspectable extends InspectableSelectable<_Identifier> {
+class _Inspectable extends EditableSelectable<_Identifier> {
   _Inspectable(this.id);
 
   @override

@@ -18,9 +18,10 @@ Service _service({String name = "Original", int revision = 1}) => Service(
   createdAt: DateTime.utc(2025),
 );
 
-class _SeededServices extends Services {
+class _SeededServices extends OrganizationServices {
   @override
-  Stream<List<Service>> build() => Stream.value([_service()]);
+  Stream<List<Service>> build(skir.RecordId organizationId) =>
+      Stream.value([_service()]);
 
   void observe(Service service) {
     state = AsyncData([service]);
@@ -37,7 +38,9 @@ class _Harness {
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
         ),
-        servicesProvider.overrideWith(() => notifier = _SeededServices()),
+        organizationServicesProvider(
+          _organizationId,
+        ).overrideWith(() => notifier = _SeededServices()),
       ],
     );
   }
@@ -128,7 +131,7 @@ void main() {
   });
 
   test(
-    "unexpected update preserves a newer observation and reports once",
+    "uncertain update preserves the cause and a newer observation",
     () async {
       final newest = _service(name: "Newest", revision: 4);
       harness.respond(_updateSubject, (data) {
@@ -140,14 +143,19 @@ void main() {
           .read(servicesProvider.notifier)
           .updateService(_service(name: "Requested"));
 
-      expect(result, isA<MutationUnavailable>());
-      expect(
-        (result as MutationUnavailable).diagnostics.single.message,
-        "The service update could not be completed",
-      );
+      expect(result, isA<MutationUncertain>());
+      final uncertain = result as MutationUncertain;
+      expect(uncertain.cause, isA<StateError>());
+      expect(uncertain.replay, isNull);
+      expect(uncertain.submissionId, isNotNull);
       expect(harness.container.read(servicesProvider).requireValue, [newest]);
-      expect(reports, hasLength(1));
-      expect(reports.single.context.toString(), "while updating a service");
+      expect(reports, isEmpty);
+      final submission = harness.container
+          .read(mutationJournalProvider)
+          .submissions
+          .single;
+      expect(submission.result, isA<SubmissionUncertain>());
+      expect(submission.canReplay, isFalse);
     },
   );
 
@@ -162,7 +170,7 @@ void main() {
       harness.container
           .read(servicesProvider.notifier)
           .deleteService(_service().serviceId),
-      throwsA(isA<StateError>()),
+      throwsA(isA<SubmissionException>()),
     );
 
     expect(harness.container.read(servicesProvider).requireValue, [newest]);

@@ -3,7 +3,6 @@ part of "services.dart";
 abstract final class _HostInspectorFields {
   static const service = "service";
   static const host = "host";
-  static const configuration = "configuration";
   static const name = "name";
   static const version = "version";
   static const state = "state";
@@ -13,11 +12,6 @@ abstract final class _HostInspectorFields {
   static const supportedEngines = "supportedEngines";
   static const message = "message";
   static const updatedAt = "updatedAt";
-  static const realmEnabled = "realmEnabled";
-  static const realmTarget = "realmTarget";
-  static const engineEnabled = "engineEnabled";
-  static const engineTarget = "engineTarget";
-  static const realmAssignment = "realmAssignment";
 }
 
 abstract final class _RuntimeInspectorFields {
@@ -60,14 +54,12 @@ const _stringListType = ListType(element: StringType());
 final _hostInspectorType = TypeDefinition(
   id: _hostInspectorTypeRef,
   kind: NominalTypeKind.concrete,
-  defaultPresentationId: _hostInspectorPresentationId,
   representation: RecordType(
     fields: {
       _HostInspectorFields.service: TypeField(
         name: _HostInspectorFields.service,
         type: RecordType(
           fields: {
-            _HostInspectorFields.name: _stringField(_HostInspectorFields.name),
             _HostInspectorFields.version: _stringField(
               _HostInspectorFields.version,
             ),
@@ -105,30 +97,6 @@ final _hostInspectorType = TypeDefinition(
             _HostInspectorFields.updatedAt: const TypeField(
               name: _HostInspectorFields.updatedAt,
               type: TimestampType(),
-            ),
-          },
-        ),
-      ),
-      _HostInspectorFields.configuration: TypeField(
-        name: _HostInspectorFields.configuration,
-        type: RecordType(
-          fields: {
-            _HostInspectorFields.realmEnabled: const TypeField(
-              name: _HostInspectorFields.realmEnabled,
-              type: BooleanType(),
-            ),
-            _HostInspectorFields.realmTarget: _stringField(
-              _HostInspectorFields.realmTarget,
-            ),
-            _HostInspectorFields.engineEnabled: const TypeField(
-              name: _HostInspectorFields.engineEnabled,
-              type: BooleanType(),
-            ),
-            _HostInspectorFields.engineTarget: _stringField(
-              _HostInspectorFields.engineTarget,
-            ),
-            _HostInspectorFields.realmAssignment: _stringField(
-              _HostInspectorFields.realmAssignment,
             ),
           },
         ),
@@ -193,10 +161,18 @@ RecordType _runtimeInstanceRecord({
 TypeField _stringField(String name) =>
     TypeField(name: name, type: const StringType());
 
-final _hostInspectorCatalog = TypeCatalog([_hostInspectorType]);
+final _hostInspectorCatalog = TypeCatalog([
+  _hostInspectorType,
+  ..._hostConfigurationDefinitions,
+]);
 final _realmInstanceInspectorCatalog = TypeCatalog([
   _realmInstanceInspectorType,
 ]);
 final _engineInstanceInspectorCatalog = TypeCatalog([
   _engineInstanceInspectorType,
 ]);
+
+extension on DataValue {
+  String? get stringOrNull =>
+      this is StringValue ? (this as StringValue).value : null;
+}

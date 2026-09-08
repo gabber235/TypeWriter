@@ -37,6 +37,30 @@ class AuthoringSession extends _$AuthoringSession
     return const AuthoringSessionState();
   }
 
+  AuthoringSessionState get snapshot => state;
+
+  Stream<AuthoringSessionState> watchSnapshots(
+    AuthoringScopeLease Function() acquire,
+  ) => Stream.multi((controller) {
+    final lease = acquire();
+    var ready = false;
+    final stop = listenSelf((_, value) {
+      if (ready) controller.add(value);
+    });
+    lease.ready.then(
+      (_) {
+        ready = true;
+        if (!controller.isClosed) controller.add(state);
+      },
+      onError: (Object error, StackTrace stack) =>
+          controller.addError(error, stack),
+    );
+    controller.onCancel = () async {
+      stop();
+      lease.release();
+    };
+  });
+
   AuthoringScopeLease acquireLibrary() =>
       _acquire(const _AuthoringScope.library());
 
@@ -101,7 +125,11 @@ class AuthoringSession extends _$AuthoringSession
     final ready = added
         ? _scopeReadiness[scope] = _startOperation.then((_) => _refresh())
         : _scopeReadiness[scope] ?? _startOperation;
-    return _AuthoringScopeLease(ready, () => _release(scope));
+    final retention = ref.keepAlive();
+    return _AuthoringScopeLease(ready, () {
+      _release(scope);
+      retention.close();
+    });
   }
 
   void _release(_AuthoringScope scope) {

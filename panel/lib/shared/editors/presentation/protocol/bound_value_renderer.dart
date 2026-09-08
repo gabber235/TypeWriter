@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
 part "renderers/data/default_presentation_renderer.dart";
+part "renderers/data/presentation_invocation_renderer.dart";
 
 class ProtocolBoundValueEditor extends StatelessWidget {
   const ProtocolBoundValueEditor({

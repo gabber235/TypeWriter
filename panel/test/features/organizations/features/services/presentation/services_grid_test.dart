@@ -125,7 +125,7 @@ void main() {
     expect(find.text("Assigned Realm"), findsNothing);
     expect(find.text("Hosted Realm"), findsNothing);
     expect(find.text("Message"), findsNothing);
-    expect(find.byType(TypedEditor), findsOneWidget);
+    expect(find.byType(ComposedEditor), findsOneWidget);
     expect(find.text("Unbind"), findsOneWidget);
     expect(find.byIcon(Icons.cloud_done_outlined), findsOneWidget);
     expect(find.byIcon(Icons.play_circle_outline), findsWidgets);

@@ -8,7 +8,6 @@ void main() {
     EditorSavePhase.pending: "Pending",
     EditorSavePhase.saving: "Saving",
     EditorSavePhase.saved: "Saved",
-    EditorSavePhase.sessionOnly: "Session only",
     EditorSavePhase.failed: "Save failed",
     EditorSavePhase.conflict: "Changed elsewhere",
     EditorSavePhase.repeatedContention: "Changed repeatedly elsewhere",

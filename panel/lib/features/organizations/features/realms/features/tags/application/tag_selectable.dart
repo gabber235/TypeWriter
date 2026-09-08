@@ -18,6 +18,9 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
   GraphIdentifier get graphId => GraphIdentifier(id);
 
   @override
+  Object get resourceId => tagId;
+
+  @override
   AsyncValue<Selectable> create(Ref ref) {
     final tagAsync = ref.watch(tagProvider(tagId));
     final tags = ref.watch(tagsProvider).value ?? const <Tag>[];
@@ -51,7 +54,7 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
   String toString() => "TagIdentifier(tagId: $tagId)";
 }
 
-class TagSelectable extends InspectableSelectable<TagIdentifier> {
+class TagSelectable extends EditableSelectable<TagIdentifier> {
   TagSelectable({
     required this.ref,
     required this.id,
@@ -69,8 +72,30 @@ class TagSelectable extends InspectableSelectable<TagIdentifier> {
   String get name => tag.name;
 
   final Ref ref;
+  late final AuthoringSession _commands = ref.readAuthoringSession().notifier;
+
+  @override
+  Stream<EditorDocument?> get updates =>
+      _commands.watchSnapshots(_commands.acquireLibrary).map((snapshot) {
+        final value = snapshot.tags[id.tagId];
+        if (snapshot.sequence == null) return document;
+        return value == null
+            ? null
+            : document.copyWith(
+                confirmedValue: Tag.fromWire(
+                  value,
+                  snapshot.sequence!,
+                ).inspectorValue,
+                revision: snapshot.sequence!,
+              );
+      });
 
   final RecordValue _data;
+
+  @override
+  List<PresentationDefinition> get presentations => [_tagInspectorPresentation];
+  @override
+  List<PresentationCollectionSource> get collections => [tagCollection];
 
   @override
   EditorDocument get document => EditorDocument(
@@ -79,8 +104,6 @@ class TagSelectable extends InspectableSelectable<TagIdentifier> {
     confirmedValue: _data,
     revision: tag.authoringSequence,
     mergePolicies: {DataPath.root.field("parents"): EditorMergePolicy.set},
-    collections: [tagCollection],
-    presentations: [_tagInspectorPresentation],
   );
 
   @override
@@ -129,7 +152,13 @@ class TagSelectable extends InspectableSelectable<TagIdentifier> {
         ]),
       );
     }
-    return ref.read(tagsProvider.notifier).updateTag(next, expected: tag);
+    final expected = _tagFromInspectorValue(
+      commit.baseValue,
+      expectedRevision: commit.expectedRevision,
+    );
+    if (expected == null)
+      return Future.value(invalidMutation("The confirmed value is invalid"));
+    return _commands.commitTag(next, expected: expected);
   }
 
   @override

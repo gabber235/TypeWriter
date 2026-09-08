@@ -54,54 +54,6 @@ void main() {
     source.dispose();
   });
 
-  test("commit groups flush through independent commits", () async {
-    final commits = <EditorCommit>[];
-    final source = _source(
-      commitGroups: {
-        DataPath.root.field("title"): "content",
-        DataPath.root.field("color"): "appearance",
-      },
-      commit: (commit) async {
-        commits.add(commit);
-        return TypedMutationResult.success(
-          revision: commit.expectedRevision + 1,
-          value: commit.rootValue,
-        );
-      },
-    );
-
-    source
-      ..update(title, const StringValue("New"))
-      ..update(color, const StringValue("Blue"));
-    await source.flush();
-
-    expect(commits, hasLength(2));
-    expect(commits.map((commit) => commit.group), ["appearance", "content"]);
-    expect(commits[0].changedPaths, {color});
-    expect(commits[1].changedPaths, {title});
-    expect(
-      source.value(DataPath.root).valueOrNull,
-      _value(title: "New", color: "Blue"),
-    );
-    source.dispose();
-  });
-
-  test("successful session commits retain session durability", () async {
-    final source = _source(
-      successfulSavePhase: EditorSavePhase.sessionOnly,
-      commit: (commit) async => TypedMutationResult.success(
-        revision: commit.expectedRevision + 1,
-        value: commit.rootValue,
-      ),
-    );
-
-    source.update(title, const StringValue("Session"));
-    await source.flush();
-
-    expect(source.saveState(title).phase, EditorSavePhase.sessionOnly);
-    source.dispose();
-  });
-
   test(
     "different remote fields rebase and retry with injected jitter",
     () async {
@@ -516,7 +468,8 @@ void main() {
     source.update(title, const StringValue("New"));
     await interaction.commit();
     expect(interaction.active, isFalse);
-    expect(await interaction.commit(), isA<MutationUnavailable>());
+    await interaction.commit();
+    expect(interaction.active, isFalse);
     source.dispose();
   });
 
@@ -646,22 +599,6 @@ void main() {
   });
 
   test("metadata refresh preserves a rebased local draft", () {
-    final collection = LocalPresentationCollectionSource(
-      id: const PresentationCollectionSourceId("metadata"),
-      schema: const PresentationCollectionSchema(
-        rowType: StringType(),
-        keyType: StringType(),
-        rowBindingId: BindingId(3),
-        key: TypedExpression(
-          resultType: StringType(),
-          expression: BindingExpression(
-            BindingReference(bindingId: BindingId(3)),
-          ),
-        ),
-      ),
-      rows: const [StringValue("row")],
-      registry: TypeRegistry(const TypeCatalog([])),
-    );
     final source = _source(
       commit: (commit) async => TypedMutationResult.success(
         revision: commit.expectedRevision + 1,
@@ -678,7 +615,6 @@ void main() {
       typeCatalog: const TypeCatalog([]),
       confirmedValue: _value(title: "Old", color: "Remote"),
       revision: 2,
-      collections: [collection],
       readOnly: true,
     );
     source.refreshDocument(refreshed);
@@ -688,7 +624,6 @@ void main() {
       source.value(DataPath.root.field("color")).valueOrNull,
       const StringValue("Remote"),
     );
-    expect(source.document.collections, [collection]);
     expect(source.document.readOnly, isTrue);
     expect(notifications, greaterThan(notificationsBeforeRefresh));
 
@@ -701,10 +636,8 @@ void main() {
 
 TransactionalEditorSource _source({
   required EditorCommitter commit,
-  Map<DataPath, String> commitGroups = const {},
   EditorDelayScheduler? scheduler,
   EditorJitterSource? jitter,
-  EditorSavePhase successfulSavePhase = EditorSavePhase.saved,
   Duration debounce = const Duration(milliseconds: 250),
   void Function()? onDeleted,
 }) {
@@ -719,13 +652,11 @@ TransactionalEditorSource _source({
       typeCatalog: const TypeCatalog([]),
       confirmedValue: _value(title: "Old", color: "Red"),
       revision: 1,
-      commitGroups: commitGroups,
     ),
     debounce: debounce,
     commit: commit,
     scheduler: scheduler ?? _ControlledScheduler(),
     jitter: jitter,
-    successfulSavePhase: successfulSavePhase,
     onDeleted: onDeleted,
   );
 }

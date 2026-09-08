@@ -20,12 +20,12 @@ Service _service({String name = "Original", int revision = 1}) => Service(
   createdAt: DateTime.utc(2025),
 );
 
-class _SeededServices extends Services {
+class _SeededServices extends OrganizationServices {
   _SeededServices(this.services);
   final List<Service> services;
 
   @override
-  Stream<List<Service>> build() async* {
+  Stream<List<Service>> build(skir.RecordId organizationId) async* {
     yield services;
   }
 
@@ -48,9 +48,9 @@ class _Harness {
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
         ),
-        servicesProvider.overrideWith(
-          () => notifier = _SeededServices([_service()]),
-        ),
+        organizationServicesProvider(
+          _organizationId,
+        ).overrideWith(() => notifier = _SeededServices([_service()])),
       ],
     );
   }

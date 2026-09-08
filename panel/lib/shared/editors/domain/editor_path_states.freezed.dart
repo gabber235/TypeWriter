@@ -717,7 +717,7 @@ as EditorPathConflict,
 
 
 class SettledPathProgress implements EditorPathProgress {
-  const SettledPathProgress(this.phase): assert(phase == EditorSavePhase.saved || phase == EditorSavePhase.sessionOnly, 'A settled path is either saved or session only.');
+  const SettledPathProgress(this.phase): assert(phase == EditorSavePhase.saved, 'A settled path has been saved.');
   
 
  final  EditorSavePhase phase;

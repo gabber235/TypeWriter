@@ -167,3 +167,79 @@ TypeExpression _valueType(DataValue value) {
     _ => const AnyType(),
   };
 }
+
+AuthoringSessionState pageStoryAuthoring(
+  PageType pageType,
+  List<PageElement> elements,
+) {
+  final page = wire.Page(
+    id: recordId("page:example-page-id"),
+    book: recordId("book:example-book-id"),
+    name: "Example",
+    kind: skir.PageKindRef(id: skir.PageKindId(value: "example"), revision: 1),
+    chapter: "",
+    priority: 0,
+  );
+  final catalog =
+      (pageStoryPageCatalog(pageType, elements) as RealmEditorCatalogReady)
+          .value
+          .catalog;
+  final codec = SkirEditorCodec(TypeRegistry(catalog));
+  return AuthoringSessionState(
+    sequence: 1,
+    pages: {page.id: page},
+    documents: {
+      page.id: wire.PageDocument(
+        page: page,
+        elements: [
+          for (final element in elements)
+            switch (element) {
+              PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
+                wire.PageElement(
+                  id: recordId("element:${definition.id}"),
+                  page: page.id,
+                  name: definition.name,
+                  elementType: definition.elementDefinition.typeId.uuid,
+                  schemaRevision:
+                      definition.elementDefinition.rootType.revision,
+                  value: codec.encodeValue(definition.data).valueOrNull!,
+                  placement: wire.ElementPlacement.createGraph(
+                    x: definition.placement.x,
+                    y: definition.placement.y,
+                    width: definition.placement.width,
+                    height: definition.placement.height,
+                  ),
+                ),
+              PageElementCue(:final cue) => wire.PageElement(
+                id: recordId("element:${cue.id}"),
+                page: page.id,
+                name: cue.elementDefinition.name,
+                elementType: cue.elementDefinition.typeId.uuid,
+                schemaRevision: cue.elementDefinition.rootType.revision,
+                value: codec.encodeValue(cue.data).valueOrNull!,
+                placement: switch (cue) {
+                  Segment(:final startFrame, :final endFrame) =>
+                    wire.ElementPlacement.createTimelineSegment(
+                      startFrame: startFrame,
+                      endFrame: endFrame,
+                    ),
+                  Keyframe(:final frame) =>
+                    wire.ElementPlacement.createTimelineKeyframe(frame: frame),
+                  _ => throw StateError("Unknown story cue"),
+                },
+              ),
+              _ => throw StateError("Unsupported story element"),
+            },
+        ],
+        references: const [],
+        crossPageTargets: const [],
+        crossPageSources: const [],
+        diagnostics: const [],
+        compileStatus: wire.PageCompileStatus.createBlocked(
+          lastActiveManifestId: null,
+          diagnosticCount: 0,
+        ),
+      ),
+    },
+  );
+}

@@ -75,6 +75,11 @@ extension on PresentationElement {
             .evaluate(context, registry: registry, budget: budget)
             .diagnostics,
     ];
+    if (element case CommitControlsElement(:final binding)) {
+      diagnostics.addAll(
+        context.bindings.resolve(binding, registry: registry).diagnostics,
+      );
+    }
     if (element case DateTimeInputElement(
       includeDate: false,
       includeTime: false,
@@ -276,18 +281,28 @@ extension on PresentationElement {
       }
     }
     if (element case TypedFieldElement(:final binding, :final expectedType)) {
-      final resolved = context.bindings.resolve(binding);
+      final resolved = context.bindings.resolve(binding, registry: registry);
       diagnostics.addAll(resolved.diagnostics);
       final actual = resolved.valueOrNull?.type;
-      if (actual != null && !typeExpressionsEqual(actual, expectedType)) {
+      if (actual != null &&
+          !typeExpressionsEqual(actual, expectedType) &&
+          !typeExpressionsEqual(
+            actual.bindingRepresentation(registry),
+            expectedType.bindingRepresentation(registry),
+          )) {
         diagnostics.add(_invalid("Typed field does not match its binding"));
       }
     }
     if (control == null) return diagnostics;
-    final binding = context.bindings.resolve(control.binding);
+    final binding = context.bindings.resolve(
+      control.binding,
+      registry: registry,
+    );
     diagnostics.addAll(binding.diagnostics);
     final type = binding.valueOrNull?.type;
-    if (type != null && !element._acceptsControl(type)) {
+    if (type != null &&
+        !element._acceptsControl(type) &&
+        !element._acceptsControl(type.bindingRepresentation(registry))) {
       diagnostics.add(_invalid("Control does not accept its binding type"));
     }
     return diagnostics;

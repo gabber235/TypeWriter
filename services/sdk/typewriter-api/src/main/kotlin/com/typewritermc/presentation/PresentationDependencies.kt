@@ -35,12 +35,17 @@ data class PresentationDependencies(
 
 internal fun collectPresentationDependencies(
     root: PresentationNode,
-    target: ResolvedTypeRef,
+    inputs: List<com.typewritermc.types.TypeExpression>,
 ): PresentationDependencies {
     val collector = PresentationDependencyCollector()
     collector.transform(root, PresentationNode.serializer.typeDescriptor)
-    val dependencies = collector.dependencies()
-    return dependencies.copy(types = dependencies.types + target)
+    inputs.forEach { input ->
+        collector.transform(
+            SkirTypeCodec.encode(input).getOrThrow(),
+            skirout.editor.v1.type_catalog.TypeExpression.serializer.typeDescriptor,
+        )
+    }
+    return collector.dependencies()
 }
 
 internal fun PresentationDependencies.toWire(): skirout.editor.v1.presentation.PresentationDependencies =

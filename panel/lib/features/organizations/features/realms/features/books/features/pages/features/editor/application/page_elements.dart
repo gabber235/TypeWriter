@@ -131,8 +131,8 @@ PageDocumentHealth? pageDocumentHealth(
 class PageElements extends _$PageElements
     with
         _PageElementMutationContext,
-        _PageElementMutations,
-        _PageElementValues {
+        _PageElementValues,
+        _PageElementMutations {
   @override
   Future<List<PageElement>> build(
     skir.RecordId organizationId,
@@ -158,7 +158,7 @@ class PageElements extends _$PageElements
       if (!scopeReady) return;
       final AsyncValue<List<PageElement>>? projected = switch (documents) {
         AsyncData(:final value) when value[pageId] != null => AsyncData(
-          value[pageId]!,
+          _withDraftPlacements(value[pageId]!),
         ),
         AsyncData() => AsyncError(
           ApiException.notFound("Page"),
@@ -185,10 +185,45 @@ class PageElements extends _$PageElements
     }
 
     ref.listen(documentsProvider, (_, documents) => applyDocuments(documents));
+    final workspace = ref.read(editorWorkspaceProvider);
+    void refreshDrafts() => applyDocuments(ref.read(documentsProvider));
+    workspace.addListener(refreshDrafts);
+    ref.onDispose(() => workspace.removeListener(refreshDrafts));
     await lease.ready;
     if (!ref.mounted) return initial.future;
     scopeReady = true;
     applyDocuments(ref.read(documentsProvider));
     return initial.future;
+  }
+
+  List<PageElement> _withDraftPlacements(List<PageElement> elements) {
+    final resources = ref.read(editorWorkspaceProvider).resources;
+    return [
+      for (final element in elements) _withDraftPlacement(element, resources),
+    ];
+  }
+
+  PageElement _withDraftPlacement(
+    PageElement element,
+    Map<EditorResourceKey, EditorResource> resources,
+  ) {
+    final source =
+        resources[EditorResourceKey(
+              scope: (organizationId, realmId),
+              identity: recordId("element:${element.id}"),
+            )]
+            ?.source;
+    if (source == null || !source.hasWork) return element;
+    final value = source.value(elementPlacementPath).valueOrNull;
+    if (value == null) return element;
+    return switch (encodeElementPlacement(value)) {
+      wire.ElementPlacement_graphWrapper(:final value) =>
+        element.moveTo(value.x, value.y).resizeTo(value.width, value.height),
+      wire.ElementPlacement_timelineSegmentWrapper(:final value) =>
+        element.updateCueTo(value.startFrame, value.endFrame),
+      wire.ElementPlacement_timelineKeyframeWrapper(:final value) =>
+        element.updateCueTo(value.frame, value.frame),
+      _ => element,
+    };
   }
 }

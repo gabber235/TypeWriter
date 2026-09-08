@@ -18112,6 +18112,7 @@ class SelectControl private constructor(
                 skirout.editor.v1.presentation.BoundControl.partial(),
                 build.skir.internal.emptyKeyedList<skirout.editor.v1.presentation.SelectOption, kotlin.String>(),
                 false,
+                null,
             );
 
         /** Returns an instance with all fields set to their default values. */
@@ -25518,6 +25519,154 @@ class DefaultPresentationElement private constructor(
     }
 }
 
+sealed interface CommitControlsElement_OrMutable {
+    val binding: skirout.editor.v1.binding.BindingRef_OrMutable;
+
+    fun toFrozen(): skirout.editor.v1.presentation.CommitControlsElement;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class CommitControlsElement private constructor(
+    override val binding: skirout.editor.v1.binding.BindingRef,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.CommitControlsElement>? =
+        null,
+): skirout.editor.v1.presentation.CommitControlsElement_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        binding: skirout.editor.v1.binding.BindingRef_OrMutable,
+        _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.CommitControlsElement>? =
+            null,
+    ): this(
+        binding.toFrozen(),
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        binding = this.binding,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        binding: skirout.editor.v1.binding.BindingRef_OrMutable =
+            this.binding,
+    ) = skirout.editor.v1.presentation.CommitControlsElement(
+        binding.toFrozen(),
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.editor.v1.presentation.CommitControlsElement && this.binding == other.binding);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.binding).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.editor.v1.presentation.CommitControlsElement.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [CommitControlsElement]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var binding: skirout.editor.v1.binding.BindingRef_OrMutable =
+            skirout.editor.v1.binding.BindingRef.partial(),
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.CommitControlsElement>? =
+            null,
+    ): skirout.editor.v1.presentation.CommitControlsElement_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.editor.v1.presentation.CommitControlsElement(
+            binding = this.binding,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [binding] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [binding] and returns it.
+         */
+        val mutableBinding: skirout.editor.v1.binding.BindingRef.Mutable get() {
+            var value = this.binding;
+            return when (value) {
+                is skirout.editor.v1.binding.BindingRef -> {
+                    value = value.toMutable();
+                    this.binding = value;
+                    return value;
+                }
+                is skirout.editor.v1.binding.BindingRef.Mutable -> value;
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.editor.v1.presentation.CommitControlsElement(
+                skirout.editor.v1.binding.BindingRef.partial(),
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [CommitControlsElement].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            binding: skirout.editor.v1.binding.BindingRef_OrMutable =
+                skirout.editor.v1.binding.BindingRef.partial(),
+        ) = skirout.editor.v1.presentation.CommitControlsElement(
+            binding = binding,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "editor/v1/presentation.skir:CommitControlsElement",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [CommitControlsElement] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [CommitControlsElement] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "binding",
+                "binding",
+                0,
+                skirout.editor.v1.binding.BindingRef.serializer,
+                "",
+                { it.binding },
+                { mut, v -> mut.binding = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
 sealed interface ButtonElement_OrMutable {
     val label: skirout.editor.v1.expression.TypedExpression_OrMutable;
     val action: skirout.editor.v1.action.EditorAction;
@@ -26484,6 +26633,7 @@ sealed class PresentationElement private constructor() {
         COLOR_INPUT_WRAPPER,
         BYTES_INPUT_WRAPPER,
         NAMED_INPUT_WRAPPER,
+        COMMIT_CONTROLS_WRAPPER,
         BUTTON_WRAPPER,
         ICON_BUTTON_WRAPPER,
         MENU_WRAPPER,
@@ -26501,6 +26651,7 @@ sealed class PresentationElement private constructor() {
         ANCHOR_WRAPPER,
         CONNECTION_LAYER_WRAPPER,
         POLYMORPHIC_MATCH_WRAPPER,
+        INVOCATION_WRAPPER,
     }
 
     class Unknown @kotlin.Deprecated("For internal use", kotlin.ReplaceWith("skirout.editor.v1.presentation.PresentationElement.UNKNOWN")) internal constructor(
@@ -27074,6 +27225,24 @@ sealed class PresentationElement private constructor() {
         }
     }
 
+    class CommitControlsWrapper private constructor (
+        val value: skirout.editor.v1.presentation.CommitControlsElement,
+    ) : skirout.editor.v1.presentation.PresentationElement() {
+        constructor(
+            value: skirout.editor.v1.presentation.CommitControlsElement_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.COMMIT_CONTROLS_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.editor.v1.presentation.PresentationElement.CommitControlsWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + 706788542;
+        }
+    }
+
     class ButtonWrapper private constructor (
         val value: skirout.editor.v1.presentation.ButtonElement,
     ) : skirout.editor.v1.presentation.PresentationElement() {
@@ -27377,6 +27546,24 @@ sealed class PresentationElement private constructor() {
 
         override fun hashCode(): kotlin.Int {
             return this.value.hashCode() + -918901988;
+        }
+    }
+
+    class InvocationWrapper private constructor (
+        val value: skirout.editor.v1.presentation.PresentationInvocation,
+    ) : skirout.editor.v1.presentation.PresentationElement() {
+        constructor(
+            value: skirout.editor.v1.presentation.PresentationInvocation_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.INVOCATION_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.editor.v1.presentation.PresentationElement.InvocationWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + 1738700944;
         }
     }
 
@@ -27928,6 +28115,18 @@ sealed class PresentationElement private constructor() {
             )
         );
 
+        /** Shortcut for `CommitControlsWrapper(skirout.editor.v1.presentation.CommitControlsElement(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createCommitControls(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            binding: skirout.editor.v1.binding.BindingRef_OrMutable,
+        ) = CommitControlsWrapper(
+            skirout.editor.v1.presentation.CommitControlsElement(
+                binding = binding,
+            )
+        );
+
         /** Shortcut for `ButtonWrapper(skirout.editor.v1.presentation.ButtonElement(...))`. */
         @kotlin.Suppress("UNUSED_PARAMETER")
         fun createButton(
@@ -28240,6 +28439,20 @@ sealed class PresentationElement private constructor() {
             )
         );
 
+        /** Shortcut for `InvocationWrapper(skirout.editor.v1.presentation.PresentationInvocation(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createInvocation(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable,
+            arguments: kotlin.collections.Iterable<skirout.editor.v1.presentation.PresentationArgument_OrMutable>,
+        ) = InvocationWrapper(
+            skirout.editor.v1.presentation.PresentationInvocation(
+                presentationId = presentationId,
+                arguments = arguments,
+            )
+        );
+
         private val _serializerImpl =
             build.skir.internal.EnumSerializer.create<skirout.editor.v1.presentation.PresentationElement, Unknown>(
                 recordId = "editor/v1/presentation.skir:PresentationElement",
@@ -28546,6 +28759,15 @@ sealed class PresentationElement private constructor() {
                 );
                 _serializerImpl.addWrapperVariant(
                     32,
+                    "commit_controls",
+                    Kind.COMMIT_CONTROLS_WRAPPER.ordinal,
+                    skirout.editor.v1.presentation.CommitControlsElement.serializer,
+                    "",
+                    { CommitControlsWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.addWrapperVariant(
+                    33,
                     "button",
                     Kind.BUTTON_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.ButtonElement.serializer,
@@ -28554,7 +28776,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    33,
+                    34,
                     "icon_button",
                     Kind.ICON_BUTTON_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.IconButtonElement.serializer,
@@ -28563,7 +28785,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    34,
+                    35,
                     "menu",
                     Kind.MENU_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.MenuElement.serializer,
@@ -28572,7 +28794,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    35,
+                    36,
                     "tooltip",
                     Kind.TOOLTIP_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.TooltipElement.serializer,
@@ -28581,7 +28803,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    36,
+                    37,
                     "list_input",
                     Kind.LIST_INPUT_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.ListControl.serializer,
@@ -28590,7 +28812,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    37,
+                    38,
                     "map_input",
                     Kind.MAP_INPUT_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.MapControl.serializer,
@@ -28599,7 +28821,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    38,
+                    39,
                     "record_input",
                     Kind.RECORD_INPUT_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.RecordControl.serializer,
@@ -28608,7 +28830,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    39,
+                    40,
                     "enum_input",
                     Kind.ENUM_INPUT_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.BoundControl.serializer,
@@ -28617,7 +28839,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    40,
+                    41,
                     "polymorphic_input",
                     Kind.POLYMORPHIC_INPUT_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.PolymorphicControl.serializer,
@@ -28626,7 +28848,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    41,
+                    42,
                     "default_presentation",
                     Kind.DEFAULT_PRESENTATION_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.DefaultPresentationElement.serializer,
@@ -28635,7 +28857,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    42,
+                    43,
                     "search_input",
                     Kind.SEARCH_INPUT_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.SearchControl.serializer,
@@ -28644,7 +28866,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    43,
+                    44,
                     "collection_lookup",
                     Kind.COLLECTION_LOOKUP_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.CollectionLookupElement.serializer,
@@ -28653,7 +28875,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    44,
+                    45,
                     "collection_graph",
                     Kind.COLLECTION_GRAPH_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.CollectionGraphElement.serializer,
@@ -28662,7 +28884,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    45,
+                    46,
                     "container",
                     Kind.CONTAINER_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.ContainerLayout.serializer,
@@ -28671,7 +28893,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    46,
+                    47,
                     "anchor",
                     Kind.ANCHOR_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.PresentationAnchorLayout.serializer,
@@ -28680,7 +28902,7 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    47,
+                    48,
                     "connection_layer",
                     Kind.CONNECTION_LAYER_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.ConnectionLayerLayout.serializer,
@@ -28689,12 +28911,21 @@ sealed class PresentationElement private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    48,
+                    49,
                     "polymorphic_match",
                     Kind.POLYMORPHIC_MATCH_WRAPPER.ordinal,
                     skirout.editor.v1.presentation.PolymorphicMatchElement.serializer,
                     "",
                     { PolymorphicMatchWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.addWrapperVariant(
+                    50,
+                    "invocation",
+                    Kind.INVOCATION_WRAPPER.ordinal,
+                    skirout.editor.v1.presentation.PresentationInvocation.serializer,
+                    "",
+                    { InvocationWrapper(it) },
                     { it.value },
                 );
                 _serializerImpl.finalizeEnum();
@@ -28705,9 +28936,10 @@ sealed class PresentationElement private constructor() {
 
 sealed interface PresentationDefinition_OrMutable {
     val presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable;
-    val target: skirout.editor.v1.type_catalog.TypeExpression;
+    val inputs: kotlin.collections.List<skirout.editor.v1.presentation.PresentationInput_OrMutable>;
     val root: skirout.editor.v1.presentation.PresentationNode_OrMutable;
     val dependencies: skirout.editor.v1.presentation.PresentationDependencies_OrMutable;
+    val primaryInput: skirout.editor.v1.binding.BindingId_OrMutable?;
 
     fun toFrozen(): skirout.editor.v1.presentation.PresentationDefinition;
 }
@@ -28716,9 +28948,10 @@ sealed interface PresentationDefinition_OrMutable {
 @kotlin.Suppress("UNUSED_PARAMETER")
 class PresentationDefinition private constructor(
     override val presentationId: skirout.editor.v1.type_catalog.PresentationId,
-    override val target: skirout.editor.v1.type_catalog.TypeExpression,
+    override val inputs: kotlin.collections.List<skirout.editor.v1.presentation.PresentationInput>,
     override val root: skirout.editor.v1.presentation.PresentationNode,
     override val dependencies: skirout.editor.v1.presentation.PresentationDependencies,
+    override val primaryInput: skirout.editor.v1.binding.BindingId?,
     private val _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationDefinition>? =
         null,
 ): skirout.editor.v1.presentation.PresentationDefinition_OrMutable {
@@ -28726,16 +28959,18 @@ class PresentationDefinition private constructor(
         _mustNameArguments: _MustNameArguments =
             _MustNameArguments,
         presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable,
-        target: skirout.editor.v1.type_catalog.TypeExpression,
+        inputs: kotlin.collections.Iterable<skirout.editor.v1.presentation.PresentationInput_OrMutable>,
         root: skirout.editor.v1.presentation.PresentationNode_OrMutable,
         dependencies: skirout.editor.v1.presentation.PresentationDependencies_OrMutable,
+        primaryInput: skirout.editor.v1.binding.BindingId_OrMutable?,
         _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationDefinition>? =
             null,
     ): this(
         presentationId.toFrozen(),
-        target,
+        build.skir.internal.toFrozenList(inputs, { it.toFrozen() }),
         root.toFrozen(),
         dependencies.toFrozen(),
+        if (primaryInput != null) primaryInput.toFrozen() else null,
         _unrecognizedFields,
     ) {}
 
@@ -28745,9 +28980,10 @@ class PresentationDefinition private constructor(
     /** Returns a mutable shallow copy of this instance */
     fun toMutable() = Mutable(
         presentationId = this.presentationId,
-        target = this.target,
+        inputs = this.inputs,
         root = this.root,
         dependencies = this.dependencies,
+        primaryInput = this.primaryInput,
     );
 
     /** Returns a shallow copy of this instance with the specified fields replaced. */
@@ -28756,17 +28992,20 @@ class PresentationDefinition private constructor(
             _MustNameArguments,
         presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable =
             this.presentationId,
-        target: skirout.editor.v1.type_catalog.TypeExpression =
-            this.target,
+        inputs: kotlin.collections.Iterable<skirout.editor.v1.presentation.PresentationInput_OrMutable> =
+            this.inputs,
         root: skirout.editor.v1.presentation.PresentationNode_OrMutable =
             this.root,
         dependencies: skirout.editor.v1.presentation.PresentationDependencies_OrMutable =
             this.dependencies,
+        primaryInput: skirout.editor.v1.binding.BindingId_OrMutable? =
+            this.primaryInput,
     ) = skirout.editor.v1.presentation.PresentationDefinition(
         presentationId.toFrozen(),
-        target,
+        build.skir.internal.toFrozenList(inputs, { it.toFrozen() }),
         root.toFrozen(),
         dependencies.toFrozen(),
+        if (primaryInput != null) primaryInput.toFrozen() else null,
         this._unrecognizedFields,
     );
 
@@ -28774,11 +29013,11 @@ class PresentationDefinition private constructor(
     fun copy() = this;
 
     override fun equals(other: kotlin.Any?): kotlin.Boolean {
-        return this === other || (other is skirout.editor.v1.presentation.PresentationDefinition && this.presentationId == other.presentationId && this.target == other.target && this.root == other.root && this.dependencies == other.dependencies);
+        return this === other || (other is skirout.editor.v1.presentation.PresentationDefinition && this.presentationId == other.presentationId && this.inputs == other.inputs && this.root == other.root && this.dependencies == other.dependencies && this.primaryInput == other.primaryInput);
     }
 
     override fun hashCode(): kotlin.Int {
-        return kotlin.collections.listOf<kotlin.Any?>(this.presentationId, this.target, this.root, this.dependencies).hashCode();
+        return kotlin.collections.listOf<kotlin.Any?>(this.presentationId, this.inputs, this.root, this.dependencies, this.primaryInput).hashCode();
     }
 
     override fun toString(): kotlin.String {
@@ -28794,21 +29033,24 @@ class PresentationDefinition private constructor(
             _MustNameArguments,
         override var presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable =
             skirout.editor.v1.type_catalog.PresentationId.partial(),
-        override var target: skirout.editor.v1.type_catalog.TypeExpression =
-            skirout.editor.v1.type_catalog.TypeExpression.UNKNOWN,
+        override var inputs: kotlin.collections.List<skirout.editor.v1.presentation.PresentationInput_OrMutable> =
+            build.skir.internal.emptyFrozenList<skirout.editor.v1.presentation.PresentationInput>(),
         override var root: skirout.editor.v1.presentation.PresentationNode_OrMutable =
             skirout.editor.v1.presentation.PresentationNode.partial(),
         override var dependencies: skirout.editor.v1.presentation.PresentationDependencies_OrMutable =
             skirout.editor.v1.presentation.PresentationDependencies.partial(),
+        override var primaryInput: skirout.editor.v1.binding.BindingId_OrMutable? =
+            null,
         internal var _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationDefinition>? =
             null,
     ): skirout.editor.v1.presentation.PresentationDefinition_OrMutable {
         /** Returns a deeply immutable copy of this instance */
         override fun toFrozen() = skirout.editor.v1.presentation.PresentationDefinition(
             presentationId = this.presentationId,
-            target = this.target,
+            inputs = this.inputs,
             root = this.root,
             dependencies = this.dependencies,
+            primaryInput = this.primaryInput,
             _unrecognizedFields = this._unrecognizedFields,
         );
 
@@ -28825,6 +29067,22 @@ class PresentationDefinition private constructor(
                     return value;
                 }
                 is skirout.editor.v1.type_catalog.PresentationId.Mutable -> value;
+            }
+        }
+
+        /**
+         * If the value of [inputs] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [inputs] and returns it.
+         */
+        val mutableInputs: kotlin.collections.MutableList<skirout.editor.v1.presentation.PresentationInput_OrMutable> get() {
+            var value = this.inputs;
+            return when (value) {
+                is build.skir.internal.MutableList -> value;
+                else -> {
+                    value = build.skir.internal.MutableList(value);
+                    this.inputs = value;
+                    value;
+                }
             }
         }
 
@@ -28865,9 +29123,10 @@ class PresentationDefinition private constructor(
         private val default =
             skirout.editor.v1.presentation.PresentationDefinition(
                 skirout.editor.v1.type_catalog.PresentationId.partial(),
-                skirout.editor.v1.type_catalog.TypeExpression.UNKNOWN,
+                build.skir.internal.emptyFrozenList<skirout.editor.v1.presentation.PresentationInput>(),
                 skirout.editor.v1.presentation.PresentationNode.partial(),
                 skirout.editor.v1.presentation.PresentationDependencies.partial(),
+                null,
             );
 
         /** Returns an instance with all fields set to their default values. */
@@ -28883,17 +29142,20 @@ class PresentationDefinition private constructor(
                 _MustNameArguments,
             presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable =
                 skirout.editor.v1.type_catalog.PresentationId.partial(),
-            target: skirout.editor.v1.type_catalog.TypeExpression =
-                skirout.editor.v1.type_catalog.TypeExpression.UNKNOWN,
+            inputs: kotlin.collections.Iterable<skirout.editor.v1.presentation.PresentationInput_OrMutable> =
+                build.skir.internal.emptyFrozenList<skirout.editor.v1.presentation.PresentationInput>(),
             root: skirout.editor.v1.presentation.PresentationNode_OrMutable =
                 skirout.editor.v1.presentation.PresentationNode.partial(),
             dependencies: skirout.editor.v1.presentation.PresentationDependencies_OrMutable =
                 skirout.editor.v1.presentation.PresentationDependencies.partial(),
+            primaryInput: skirout.editor.v1.binding.BindingId_OrMutable? =
+                null,
         ) = skirout.editor.v1.presentation.PresentationDefinition(
             presentationId = presentationId,
-            target = target,
+            inputs = inputs,
             root = root,
             dependencies = dependencies,
+            primaryInput = primaryInput,
             _unrecognizedFields = null,
         );
 
@@ -28924,13 +29186,15 @@ class PresentationDefinition private constructor(
                 { mut, v -> mut.presentationId = v },
             );
             serializerImpl.addField(
-                "target",
-                "target",
+                "inputs",
+                "inputs",
                 1,
-                skirout.editor.v1.type_catalog.TypeExpression.serializer,
+                build.skir.Serializers.list(
+                    skirout.editor.v1.presentation.PresentationInput.serializer,
+                ),
                 "",
-                { it.target },
-                { mut, v -> mut.target = v },
+                { it.inputs },
+                { mut, v -> mut.inputs = v },
             );
             serializerImpl.addField(
                 "root",
@@ -28949,6 +29213,17 @@ class PresentationDefinition private constructor(
                 "",
                 { it.dependencies },
                 { mut, v -> mut.dependencies = v },
+            );
+            serializerImpl.addField(
+                "primary_input",
+                "primaryInput",
+                4,
+                build.skir.Serializers.optional(
+                    skirout.editor.v1.binding.BindingId.serializer,
+                ),
+                "",
+                { it.primaryInput },
+                { mut, v -> mut.primaryInput = v },
             );
             serializerImpl.finalizeStruct();
         }
@@ -29225,6 +29500,726 @@ class PresentationDependencies private constructor(
                 "",
                 { it.capabilities },
                 { mut, v -> mut.capabilities = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
+/** Deeply immutable. */
+sealed class PresentationInputAccess private constructor() {
+    /** The kind of variant held by a `PresentationInputAccess`. */
+    enum class Kind {
+        UNKNOWN,
+        READ_CONST,
+        EDIT_CONST,
+    }
+
+    class Unknown @kotlin.Deprecated("For internal use", kotlin.ReplaceWith("skirout.editor.v1.presentation.PresentationInputAccess.UNKNOWN")) internal constructor(
+        internal val _kind: Kind,
+        internal override val _unrecognized: _UnrecognizedVariant<skirout.editor.v1.presentation.PresentationInputAccess>?,
+    ) : skirout.editor.v1.presentation.PresentationInputAccess() {
+        override val kind get() = _kind;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.editor.v1.presentation.PresentationInputAccess && other.kind == kind;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return kind.ordinal;
+        }
+    }
+
+    object READ : skirout.editor.v1.presentation.PresentationInputAccess() {
+        override val kind get() = Kind.READ_CONST;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.editor.v1.presentation.PresentationInputAccess && other.kind == Kind.READ_CONST;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return Kind.READ_CONST.ordinal;
+        }
+
+        init {
+            _maybeFinalizeSerializer();
+        }
+    }
+
+    object EDIT : skirout.editor.v1.presentation.PresentationInputAccess() {
+        override val kind get() = Kind.EDIT_CONST;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.editor.v1.presentation.PresentationInputAccess && other.kind == Kind.EDIT_CONST;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return Kind.EDIT_CONST.ordinal;
+        }
+
+        init {
+            _maybeFinalizeSerializer();
+        }
+    }
+
+    internal open val _unrecognized: _UnrecognizedVariant<skirout.editor.v1.presentation.PresentationInputAccess>? get() = null;
+
+    abstract val kind: Kind;
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.editor.v1.presentation.PresentationInputAccess._serializerImpl,
+        )
+    }
+
+    companion object {
+        /**
+         * Constant indicating an unknown [PresentationInputAccess].
+         * Default value for fields of type [PresentationInputAccess].
+         */
+        val UNKNOWN = @kotlin.Suppress("DEPRECATION") Unknown(Kind.UNKNOWN, null);
+
+        private val _serializerImpl =
+            build.skir.internal.EnumSerializer.create<skirout.editor.v1.presentation.PresentationInputAccess, Unknown>(
+                recordId = "editor/v1/presentation.skir:PresentationInputAccess",
+                doc = "",
+                getKindOrdinal = { it.kind.ordinal },
+                kindCount = Kind.values().size,
+                unknownInstance = UNKNOWN,
+                wrapUnrecognized = { @kotlin.Suppress("DEPRECATION") Unknown(Kind.UNKNOWN, it) },
+                getUnrecognized = { it._unrecognized },
+            );
+
+        /** Serializer for [PresentationInputAccess] instances. */
+        val serializer = build.skir.internal.makeSerializer(_serializerImpl);
+
+        /** Describes the [PresentationInputAccess] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = _serializerImpl.typeDescriptor;
+
+        init {
+            READ;
+            EDIT;
+            _maybeFinalizeSerializer();
+        }
+
+        private var _finalizationCounter = 0;
+
+        private fun _maybeFinalizeSerializer() {
+            _finalizationCounter += 1;
+            if (_finalizationCounter == 3) {
+                _serializerImpl.addConstantVariant(
+                    1,
+                    "read",
+                    Kind.READ_CONST.ordinal,
+                    "",
+                    READ,
+                );
+                _serializerImpl.addConstantVariant(
+                    2,
+                    "edit",
+                    Kind.EDIT_CONST.ordinal,
+                    "",
+                    EDIT,
+                );
+                _serializerImpl.finalizeEnum();
+            }
+        }
+    }
+}
+
+sealed interface PresentationInput_OrMutable {
+    val bindingId: skirout.editor.v1.binding.BindingId_OrMutable;
+    val name: kotlin.String;
+    val valueType: skirout.editor.v1.type_catalog.TypeExpression;
+    val access: skirout.editor.v1.presentation.PresentationInputAccess;
+
+    fun toFrozen(): skirout.editor.v1.presentation.PresentationInput;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class PresentationInput private constructor(
+    override val bindingId: skirout.editor.v1.binding.BindingId,
+    override val name: kotlin.String,
+    override val valueType: skirout.editor.v1.type_catalog.TypeExpression,
+    override val access: skirout.editor.v1.presentation.PresentationInputAccess,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationInput>? =
+        null,
+): skirout.editor.v1.presentation.PresentationInput_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        bindingId: skirout.editor.v1.binding.BindingId_OrMutable,
+        name: kotlin.String,
+        valueType: skirout.editor.v1.type_catalog.TypeExpression,
+        access: skirout.editor.v1.presentation.PresentationInputAccess,
+        _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationInput>? =
+            null,
+    ): this(
+        bindingId.toFrozen(),
+        name,
+        valueType,
+        access,
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        bindingId = this.bindingId,
+        name = this.name,
+        valueType = this.valueType,
+        access = this.access,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        bindingId: skirout.editor.v1.binding.BindingId_OrMutable =
+            this.bindingId,
+        name: kotlin.String =
+            this.name,
+        valueType: skirout.editor.v1.type_catalog.TypeExpression =
+            this.valueType,
+        access: skirout.editor.v1.presentation.PresentationInputAccess =
+            this.access,
+    ) = skirout.editor.v1.presentation.PresentationInput(
+        bindingId.toFrozen(),
+        name,
+        valueType,
+        access,
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.editor.v1.presentation.PresentationInput && this.bindingId == other.bindingId && this.name == other.name && this.valueType == other.valueType && this.access == other.access);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.bindingId, this.name, this.valueType, this.access).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.editor.v1.presentation.PresentationInput.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [PresentationInput]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var bindingId: skirout.editor.v1.binding.BindingId_OrMutable =
+            skirout.editor.v1.binding.BindingId.partial(),
+        override var name: kotlin.String =
+            "",
+        override var valueType: skirout.editor.v1.type_catalog.TypeExpression =
+            skirout.editor.v1.type_catalog.TypeExpression.UNKNOWN,
+        override var access: skirout.editor.v1.presentation.PresentationInputAccess =
+            skirout.editor.v1.presentation.PresentationInputAccess.UNKNOWN,
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationInput>? =
+            null,
+    ): skirout.editor.v1.presentation.PresentationInput_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.editor.v1.presentation.PresentationInput(
+            bindingId = this.bindingId,
+            name = this.name,
+            valueType = this.valueType,
+            access = this.access,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [bindingId] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [bindingId] and returns it.
+         */
+        val mutableBindingId: skirout.editor.v1.binding.BindingId.Mutable get() {
+            var value = this.bindingId;
+            return when (value) {
+                is skirout.editor.v1.binding.BindingId -> {
+                    value = value.toMutable();
+                    this.bindingId = value;
+                    return value;
+                }
+                is skirout.editor.v1.binding.BindingId.Mutable -> value;
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.editor.v1.presentation.PresentationInput(
+                skirout.editor.v1.binding.BindingId.partial(),
+                "",
+                skirout.editor.v1.type_catalog.TypeExpression.UNKNOWN,
+                skirout.editor.v1.presentation.PresentationInputAccess.UNKNOWN,
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [PresentationInput].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            bindingId: skirout.editor.v1.binding.BindingId_OrMutable =
+                skirout.editor.v1.binding.BindingId.partial(),
+            name: kotlin.String =
+                "",
+            valueType: skirout.editor.v1.type_catalog.TypeExpression =
+                skirout.editor.v1.type_catalog.TypeExpression.UNKNOWN,
+            access: skirout.editor.v1.presentation.PresentationInputAccess =
+                skirout.editor.v1.presentation.PresentationInputAccess.UNKNOWN,
+        ) = skirout.editor.v1.presentation.PresentationInput(
+            bindingId = bindingId,
+            name = name,
+            valueType = valueType,
+            access = access,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "editor/v1/presentation.skir:PresentationInput",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [PresentationInput] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [PresentationInput] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "binding_id",
+                "bindingId",
+                0,
+                skirout.editor.v1.binding.BindingId.serializer,
+                "",
+                { it.bindingId },
+                { mut, v -> mut.bindingId = v },
+            );
+            serializerImpl.addField(
+                "name",
+                "name",
+                1,
+                build.skir.Serializers.string,
+                "",
+                { it.name },
+                { mut, v -> mut.name = v },
+            );
+            serializerImpl.addField(
+                "value_type",
+                "valueType",
+                2,
+                skirout.editor.v1.type_catalog.TypeExpression.serializer,
+                "",
+                { it.valueType },
+                { mut, v -> mut.valueType = v },
+            );
+            serializerImpl.addField(
+                "access",
+                "access",
+                3,
+                skirout.editor.v1.presentation.PresentationInputAccess.serializer,
+                "",
+                { it.access },
+                { mut, v -> mut.access = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
+sealed interface PresentationArgument_OrMutable {
+    val input: skirout.editor.v1.binding.BindingId_OrMutable;
+    val binding: skirout.editor.v1.binding.BindingRef_OrMutable;
+
+    fun toFrozen(): skirout.editor.v1.presentation.PresentationArgument;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class PresentationArgument private constructor(
+    override val input: skirout.editor.v1.binding.BindingId,
+    override val binding: skirout.editor.v1.binding.BindingRef,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationArgument>? =
+        null,
+): skirout.editor.v1.presentation.PresentationArgument_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        input: skirout.editor.v1.binding.BindingId_OrMutable,
+        binding: skirout.editor.v1.binding.BindingRef_OrMutable,
+        _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationArgument>? =
+            null,
+    ): this(
+        input.toFrozen(),
+        binding.toFrozen(),
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        input = this.input,
+        binding = this.binding,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        input: skirout.editor.v1.binding.BindingId_OrMutable =
+            this.input,
+        binding: skirout.editor.v1.binding.BindingRef_OrMutable =
+            this.binding,
+    ) = skirout.editor.v1.presentation.PresentationArgument(
+        input.toFrozen(),
+        binding.toFrozen(),
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.editor.v1.presentation.PresentationArgument && this.input == other.input && this.binding == other.binding);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.input, this.binding).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.editor.v1.presentation.PresentationArgument.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [PresentationArgument]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var input: skirout.editor.v1.binding.BindingId_OrMutable =
+            skirout.editor.v1.binding.BindingId.partial(),
+        override var binding: skirout.editor.v1.binding.BindingRef_OrMutable =
+            skirout.editor.v1.binding.BindingRef.partial(),
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationArgument>? =
+            null,
+    ): skirout.editor.v1.presentation.PresentationArgument_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.editor.v1.presentation.PresentationArgument(
+            input = this.input,
+            binding = this.binding,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [input] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [input] and returns it.
+         */
+        val mutableInput: skirout.editor.v1.binding.BindingId.Mutable get() {
+            var value = this.input;
+            return when (value) {
+                is skirout.editor.v1.binding.BindingId -> {
+                    value = value.toMutable();
+                    this.input = value;
+                    return value;
+                }
+                is skirout.editor.v1.binding.BindingId.Mutable -> value;
+            }
+        }
+
+        /**
+         * If the value of [binding] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [binding] and returns it.
+         */
+        val mutableBinding: skirout.editor.v1.binding.BindingRef.Mutable get() {
+            var value = this.binding;
+            return when (value) {
+                is skirout.editor.v1.binding.BindingRef -> {
+                    value = value.toMutable();
+                    this.binding = value;
+                    return value;
+                }
+                is skirout.editor.v1.binding.BindingRef.Mutable -> value;
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.editor.v1.presentation.PresentationArgument(
+                skirout.editor.v1.binding.BindingId.partial(),
+                skirout.editor.v1.binding.BindingRef.partial(),
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [PresentationArgument].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            input: skirout.editor.v1.binding.BindingId_OrMutable =
+                skirout.editor.v1.binding.BindingId.partial(),
+            binding: skirout.editor.v1.binding.BindingRef_OrMutable =
+                skirout.editor.v1.binding.BindingRef.partial(),
+        ) = skirout.editor.v1.presentation.PresentationArgument(
+            input = input,
+            binding = binding,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "editor/v1/presentation.skir:PresentationArgument",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [PresentationArgument] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [PresentationArgument] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "input",
+                "input",
+                0,
+                skirout.editor.v1.binding.BindingId.serializer,
+                "",
+                { it.input },
+                { mut, v -> mut.input = v },
+            );
+            serializerImpl.addField(
+                "binding",
+                "binding",
+                1,
+                skirout.editor.v1.binding.BindingRef.serializer,
+                "",
+                { it.binding },
+                { mut, v -> mut.binding = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
+sealed interface PresentationInvocation_OrMutable {
+    val presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable;
+    val arguments: kotlin.collections.List<skirout.editor.v1.presentation.PresentationArgument_OrMutable>;
+
+    fun toFrozen(): skirout.editor.v1.presentation.PresentationInvocation;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class PresentationInvocation private constructor(
+    override val presentationId: skirout.editor.v1.type_catalog.PresentationId,
+    override val arguments: kotlin.collections.List<skirout.editor.v1.presentation.PresentationArgument>,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationInvocation>? =
+        null,
+): skirout.editor.v1.presentation.PresentationInvocation_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable,
+        arguments: kotlin.collections.Iterable<skirout.editor.v1.presentation.PresentationArgument_OrMutable>,
+        _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationInvocation>? =
+            null,
+    ): this(
+        presentationId.toFrozen(),
+        build.skir.internal.toFrozenList(arguments, { it.toFrozen() }),
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        presentationId = this.presentationId,
+        arguments = this.arguments,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable =
+            this.presentationId,
+        arguments: kotlin.collections.Iterable<skirout.editor.v1.presentation.PresentationArgument_OrMutable> =
+            this.arguments,
+    ) = skirout.editor.v1.presentation.PresentationInvocation(
+        presentationId.toFrozen(),
+        build.skir.internal.toFrozenList(arguments, { it.toFrozen() }),
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.editor.v1.presentation.PresentationInvocation && this.presentationId == other.presentationId && this.arguments == other.arguments);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.presentationId, this.arguments).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.editor.v1.presentation.PresentationInvocation.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [PresentationInvocation]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable =
+            skirout.editor.v1.type_catalog.PresentationId.partial(),
+        override var arguments: kotlin.collections.List<skirout.editor.v1.presentation.PresentationArgument_OrMutable> =
+            build.skir.internal.emptyFrozenList<skirout.editor.v1.presentation.PresentationArgument>(),
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.PresentationInvocation>? =
+            null,
+    ): skirout.editor.v1.presentation.PresentationInvocation_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.editor.v1.presentation.PresentationInvocation(
+            presentationId = this.presentationId,
+            arguments = this.arguments,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [presentationId] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [presentationId] and returns it.
+         */
+        val mutablePresentationId: skirout.editor.v1.type_catalog.PresentationId.Mutable get() {
+            var value = this.presentationId;
+            return when (value) {
+                is skirout.editor.v1.type_catalog.PresentationId -> {
+                    value = value.toMutable();
+                    this.presentationId = value;
+                    return value;
+                }
+                is skirout.editor.v1.type_catalog.PresentationId.Mutable -> value;
+            }
+        }
+
+        /**
+         * If the value of [arguments] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [arguments] and returns it.
+         */
+        val mutableArguments: kotlin.collections.MutableList<skirout.editor.v1.presentation.PresentationArgument_OrMutable> get() {
+            var value = this.arguments;
+            return when (value) {
+                is build.skir.internal.MutableList -> value;
+                else -> {
+                    value = build.skir.internal.MutableList(value);
+                    this.arguments = value;
+                    value;
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.editor.v1.presentation.PresentationInvocation(
+                skirout.editor.v1.type_catalog.PresentationId.partial(),
+                build.skir.internal.emptyFrozenList<skirout.editor.v1.presentation.PresentationArgument>(),
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [PresentationInvocation].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            presentationId: skirout.editor.v1.type_catalog.PresentationId_OrMutable =
+                skirout.editor.v1.type_catalog.PresentationId.partial(),
+            arguments: kotlin.collections.Iterable<skirout.editor.v1.presentation.PresentationArgument_OrMutable> =
+                build.skir.internal.emptyFrozenList<skirout.editor.v1.presentation.PresentationArgument>(),
+        ) = skirout.editor.v1.presentation.PresentationInvocation(
+            presentationId = presentationId,
+            arguments = arguments,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "editor/v1/presentation.skir:PresentationInvocation",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [PresentationInvocation] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [PresentationInvocation] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "presentation_id",
+                "presentationId",
+                0,
+                skirout.editor.v1.type_catalog.PresentationId.serializer,
+                "",
+                { it.presentationId },
+                { mut, v -> mut.presentationId = v },
+            );
+            serializerImpl.addField(
+                "arguments",
+                "arguments",
+                1,
+                build.skir.Serializers.list(
+                    skirout.editor.v1.presentation.PresentationArgument.serializer,
+                ),
+                "",
+                { it.arguments },
+                { mut, v -> mut.arguments = v },
             );
             serializerImpl.finalizeStruct();
         }

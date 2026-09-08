@@ -83,6 +83,7 @@ void main() {
         expectedRevision: 1,
         localRevision: 2,
         rootValue: changedValue,
+        baseValue: harness.value,
         changedPaths: {DataPath.root.field("title")},
       ),
     );
@@ -443,26 +444,43 @@ void main() {
     await harness.dispose();
   });
 
-  test("conflict refresh survives the optimistic patch exception", () async {
-    final harness = await _Harness.create();
-    harness.nats.registerHandler(_batchSubject, (_) {
-      harness
-        ..sequence = 2
-        ..x = 8;
-      return wire.ApplyAuthoringBatchResponse.serializer.toBytes(
-        wire.ApplyAuthoringBatchResponse.createConflict(conflicts: const []),
+  test(
+    "placement conflict preserves local intent and refreshed canonical value",
+    () async {
+      final harness = await _Harness.create();
+      harness.nats.registerHandler(_batchSubject, (_) {
+        harness
+          ..sequence = 2
+          ..x = 8;
+        return wire.ApplyAuthoringBatchResponse.serializer.toBytes(
+          wire.ApplyAuthoringBatchResponse.createConflict(conflicts: const []),
+        );
+      });
+
+      await expectLater(
+        harness.notifier.moveAll([(_element.id, 4, 0)]),
+        throwsA(isA<ApiException>()),
       );
-    });
 
-    await expectLater(
-      harness.notifier.moveAll([(_element.id, 4, 0)]),
-      throwsA(isA<ApiException>()),
-    );
+      expect(harness.placement.x, 4);
+      final draft = harness.container
+          .read(editorWorkspaceProvider)
+          .resources
+          .values
+          .single
+          .source;
+      expect(
+        elementPlacementPath
+            .field("x")
+            .read(draft.document.confirmedValue)
+            .valueOrNull,
+        IntegerValue(BigInt.from(8)),
+      );
+      expect(draft.hasWork, isTrue);
 
-    expect(harness.placement.x, 8);
-
-    await harness.dispose();
-  });
+      await harness.dispose();
+    },
+  );
 }
 
 final class _Harness {

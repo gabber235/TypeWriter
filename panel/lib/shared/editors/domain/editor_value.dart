@@ -8,16 +8,14 @@ sealed class EditorValue with _$EditorValue {
   const EditorValue._();
 
   const factory EditorValue.loading() = LoadingEditorValue;
-  const factory EditorValue.conflict() = ConflictEditorValue;
+  const factory EditorValue.mixed() = MixedEditorValue;
   const factory EditorValue.invalid(List<TypeDiagnostic> diagnostics) =
       InvalidEditorValue;
   const factory EditorValue.ready(DataValue value) = ReadyEditorValue;
 
   DataValue? get valueOrNull => switch (this) {
     ReadyEditorValue(:final value) => value,
-    LoadingEditorValue() ||
-    ConflictEditorValue() ||
-    InvalidEditorValue() => null,
+    LoadingEditorValue() || MixedEditorValue() || InvalidEditorValue() => null,
   };
 }
 

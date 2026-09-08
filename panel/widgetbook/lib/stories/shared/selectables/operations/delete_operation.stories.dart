@@ -79,7 +79,7 @@ class _DeleteSelectableIdentifier extends SelectableIdentifier {
 }
 
 class _DeleteSelectable
-    extends InspectableSelectable<_DeleteSelectableIdentifier> {
+    extends EditableSelectable<_DeleteSelectableIdentifier> {
   _DeleteSelectable({required this.id, required this.onDelete});
 
   static final TypeDefinition _rootDefinition = TypeDefinition(

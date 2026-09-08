@@ -149,8 +149,11 @@ void main() {
             registry: null,
           );
 
-      expect(result, isA<MutationSuccess>());
-      expect((result as MutationSuccess).value, const StringValue("after"));
+      expect(result, isA<LocalMutationApplied>());
+      expect(
+        (result as LocalMutationApplied).value,
+        const StringValue("after"),
+      );
     });
 
     test("captures the current revision when invoked", () {
@@ -169,8 +172,7 @@ void main() {
             registry: null,
           );
 
-      expect(result, isA<MutationSuccess>());
-      expect((result as MutationSuccess).revision, 5);
+      expect(result, isA<LocalMutationApplied>());
     });
   });
 

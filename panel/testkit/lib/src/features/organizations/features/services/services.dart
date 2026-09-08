@@ -47,11 +47,11 @@ Service generateRandomService({
   );
 }
 
-class ServicesMock extends Services {
+class ServicesMock extends OrganizationServices {
   ServicesMock({required this.displayState});
   final DisplayState displayState;
   @override
-  Stream<List<Service>> build() async* {
+  Stream<List<Service>> build(skir.RecordId organizationId) async* {
     yield await displayState.generateBatch((count) {
       final organization = recordId("organization:${faker.guid.guid()}");
       return List.generate(count, (index) {
@@ -86,7 +86,7 @@ class ServicesMock extends Services {
     );
     return TypedMutationResult.success(
       revision: canonical.revision,
-      value: canonical.inspectorValue,
+      value: canonical.identityValue,
     );
   }
 
@@ -103,7 +103,11 @@ class ServicesMock extends Services {
 
 List<Override> servicesProviderOverrides({
   DisplayState state = DisplayState.loading,
-}) => [servicesProvider.overrideWith(() => ServicesMock(displayState: state))];
+}) => [
+  organizationServicesProvider.overrideWith(
+    () => ServicesMock(displayState: state),
+  ),
+];
 
 List<Override> realmProviderOverrides() => [
   realmIdProvider.overrideWith(

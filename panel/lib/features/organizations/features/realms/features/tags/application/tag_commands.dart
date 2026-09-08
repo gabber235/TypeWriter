@@ -6,6 +6,46 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
 import "package:typewriter_panel/typewriter_panel.dart";
 
 extension TagCommands on AuthoringSession {
+  Future<TypedMutationResult> commitTag(
+    Tag next, {
+    required Tag expected,
+  }) async {
+    Future<TypedMutationResult> accept(
+      wire.ApplyAuthoringBatchResponse response,
+    ) async {
+      switch (response) {
+        case wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value):
+          return TypedMutationResult.success(
+            revision: value.sequence,
+            value: next.inspectorValue,
+          );
+        case wire.ApplyAuthoringBatchResponse_conflictWrapper():
+          final canonical = snapshot.tags[expected.tagId];
+          if (canonical == null)
+            return unavailableMutation(
+              "The tag no longer exists",
+              targetDeleted: true,
+            );
+          final actual = Tag.fromWire(canonical, snapshot.sequence ?? 0);
+          return TypedMutationResult.conflict(
+            expectedRevision: expected.authoringSequence,
+            actualRevision: actual.authoringSequence,
+            actualValue: actual.inspectorValue,
+          );
+        default:
+          return response.toMutationFailure(
+            unavailableMessage: "The tag update could not be completed",
+          );
+      }
+    }
+
+    try {
+      return await accept(await patchTag(next, expected: expected));
+    } on SubmissionException<wire.ApplyAuthoringBatchResponse> catch (error) {
+      return error.toMutation(accept);
+    }
+  }
+
   Future<wire.ApplyAuthoringBatchResponse> createTag(wire.Tag tag) =>
       apply([wire.AuthoringOperation.createCreateTag(tag: tag)]);
 

@@ -5,8 +5,8 @@ enum EditorSavePhase {
   pending,
   saving,
   saved,
-  sessionOnly,
   failed,
+  uncertain,
   conflict,
   repeatedContention,
   deletedElsewhere,
@@ -28,6 +28,8 @@ final class EditorSaveState {
   const EditorSaveState({
     required this.phase,
     this.path,
+    this.replayAvailable = false,
+    this.submissionId,
     this.conflict,
     this.diagnostics = const [],
   });
@@ -36,10 +38,13 @@ final class EditorSaveState {
 
   final EditorSavePhase phase;
   final DataPath? path;
+  final bool replayAvailable;
+  final Object? submissionId;
   final EditorPathConflict? conflict;
   final List<TypeDiagnostic> diagnostics;
 
   bool get canRetry =>
+      (phase == EditorSavePhase.uncertain && replayAvailable) ||
       phase == EditorSavePhase.failed ||
       phase == EditorSavePhase.repeatedContention;
 }
@@ -49,7 +54,7 @@ abstract interface class EditorInteractionSession {
 
   bool get active;
 
-  Future<TypedMutationResult> commit();
+  Future<void> commit();
 
   void cancel();
 }

@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
+    as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
 import "package:widgetbook_annotation/widgetbook_annotation.dart" as widgetbook;
@@ -13,10 +15,12 @@ Widget servicesPageStory() {
   final scenario = completeTopologyScenario();
   return FakeApp(
     overrides: [
-      organizationTopologyStreamProvider.overrideWith(
+      scopedOrganizationTopologyProvider.overrideWith(
         () => _StoryTopology(scenario.topology),
       ),
-      servicesProvider.overrideWith(() => _StoryServices(scenario.services)),
+      organizationServicesProvider.overrideWith(
+        () => _StoryServices(scenario.services),
+      ),
       ...organizationProviderOverrides(),
       ...organizationsProviderOverrides(state: DisplayState.fewItems),
       ...authProviderOverrides(),
@@ -26,20 +30,22 @@ Widget servicesPageStory() {
   );
 }
 
-class _StoryServices extends Services {
+class _StoryServices extends OrganizationServices {
   _StoryServices(this.services);
 
   final List<Service> services;
 
   @override
-  Stream<List<Service>> build() => Stream.value(services);
+  Stream<List<Service>> build(skir.RecordId organizationId) =>
+      Stream.value(services);
 }
 
-class _StoryTopology extends OrganizationTopologyStream {
+class _StoryTopology extends ScopedOrganizationTopology {
   _StoryTopology(this.topology);
 
   final OrganizationTopology topology;
 
   @override
-  Stream<OrganizationTopology> build() => Stream.value(topology);
+  Stream<OrganizationTopology> build(skir.RecordId organizationId) =>
+      Stream.value(topology);
 }

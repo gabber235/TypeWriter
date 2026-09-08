@@ -1,12 +1,15 @@
 part of "services.dart";
 
 @riverpod
-class OrganizationTopologyStream extends _$OrganizationTopologyStream {
+class ScopedOrganizationTopology extends _$ScopedOrganizationTopology {
+  OrganizationTopology? _current;
+  OrganizationTopology? get snapshot => state.value;
+
   @override
-  Stream<OrganizationTopology> build() async* {
+  Stream<OrganizationTopology> build(skir.RecordId organizationId) async* {
+    _current = null;
     final userId = await ref.watch(userIdProvider.future);
-    final organizationId = ref.watch(organizationIdProvider);
-    if (userId == null || organizationId == null) {
+    if (userId == null) {
       yield OrganizationTopology.empty;
       return;
     }
@@ -14,16 +17,28 @@ class OrganizationTopologyStream extends _$OrganizationTopologyStream {
     final request = skir.WatchOrganizationTopologyRequest();
     yield* ref.watchRequest(
       subject:
-          "cloud.to.user.$userId.organization.${organizationId.id}.topology.watch",
+          "cloud.to.user.$userId.organization.${this.organizationId.id}.topology.watch",
       listenSubject:
-          "cloud.from.organization.${organizationId.id}.topology.watch",
+          "cloud.from.organization.${this.organizationId.id}.topology.watch",
       requestBytes: skir.WatchOrganizationTopologyRequest.serializer.toBytes(
         request,
       ),
       serializer: skir.WatchOrganizationTopologyResponse.serializer,
-      transformer: _reduceTopology,
+      transformer: (previous, response) =>
+          _current = _reduceTopology(_current ?? previous, response),
     );
   }
+
+  Stream<AsyncValue<OrganizationTopology>> watchValues() =>
+      Stream.multi((controller) {
+        final retention = ref.keepAlive();
+        final stop = listenSelf((_, value) => controller.add(value));
+        controller.add(state);
+        controller.onCancel = () {
+          stop();
+          retention.close();
+        };
+      });
 
   /// Applies one complete execution configuration with optimistic concurrency.
   ///
@@ -36,23 +51,41 @@ class OrganizationTopologyStream extends _$OrganizationTopologyStream {
   }) async {
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) throw ApiException.notAuthenticated();
-    final organizationId = ref.read(organizationIdProvider);
-    if (organizationId == null) throw ApiException.noOrganization();
     final request = skir.ConfigureServiceHostRequest(
       hostId: host.hostId,
       expectedRevision: host.revision,
       execution: execution,
     );
-    final response = await ref.requestSkir(
-      "cloud.to.user.$userId.organization.${organizationId.id}.topology.configure",
+    final response = await ref.mutateSkir(
+      "cloud.to.user.$userId.organization.${this.organizationId.id}.topology.configure",
       skir.ConfigureServiceHostRequest.serializer.toBytes(request),
       skir.ConfigureServiceHostResponse.serializer,
+      label: "Apply Host configuration: ${host.hostId.id}",
+      resources: {(organizationId, host.hostId)},
+      classify: (response) => switch (response) {
+        skir.ConfigureServiceHostResponse_successWrapper() =>
+          MutationResponseDisposition.confirmed,
+        skir.ConfigureServiceHostResponse_unknown() ||
+        skir.ConfigureServiceHostResponse_internalErrorWrapper() =>
+          MutationResponseDisposition.uncertain,
+        _ => MutationResponseDisposition.rejected,
+      },
     );
     switch (response) {
       case skir.ConfigureServiceHostResponse_successWrapper(:final value):
+        state = AsyncData(
+          _current = (state.value ?? OrganizationTopology.empty)
+              .applyConfiguration(value),
+        );
         return TopologyConfigurationResult.fromSkir(value);
       case skir.ConfigureServiceHostResponse_conflictErrorWrapper(:final value):
-        throw _HostConfigurationConflict(TopologyHost.fromSkir(value.actual.host));
+        state = AsyncData(
+          _current = (state.value ?? OrganizationTopology.empty)
+              .applyConfiguration(value.actual),
+        );
+        throw _HostConfigurationConflict(
+          TopologyConfigurationResult.fromSkir(value.actual),
+        );
       case skir.ConfigureServiceHostResponse_invalidConfigurationErrorWrapper(
         :final value,
       ):
@@ -78,7 +111,7 @@ class OrganizationTopologyStream extends _$OrganizationTopologyStream {
 class _HostConfigurationConflict implements Exception {
   const _HostConfigurationConflict(this.actual);
 
-  final TopologyHost actual;
+  final TopologyConfigurationResult actual;
 }
 
 OrganizationTopology _reduceTopology(

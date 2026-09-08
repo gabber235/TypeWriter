@@ -21,6 +21,7 @@ class TypedEditor extends ConsumerWidget {
     final realmRuntime = ref.watch(editorRealmRuntimeProvider);
     return EditorSurface(
       source: source,
+      runtime: realmRuntime?.executeAction,
       path: path,
       registry: registry,
       readOnly: readOnly,

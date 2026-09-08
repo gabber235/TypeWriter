@@ -47,7 +47,7 @@ void main() {
       expect(find.byType(PagePage), findsOneWidget);
       expect(find.byType(MobileInspector), findsOneWidget);
       expect(find.byType(DesktopInspector), findsNothing);
-      expect(find.byType(TypedEditor), findsOneWidget);
+      expect(find.byType(ComposedEditor), findsOneWidget);
     },
   );
 }

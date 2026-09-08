@@ -15,27 +15,24 @@ void main() {
         RecordValue({"field": const StringValue("hello")}),
       );
 
-      expect(
-        container.read(selectionEditorSourceProvider).value(path),
-        isA<InvalidEditorValue>(),
-      );
+      expect(selectionOwner(container)?.value(path), isNull);
 
       container
           .read(selectionProvider.notifier)
           .select(idA, isMultiSelect: false);
 
-      final value = container.read(selectionEditorSourceProvider).value(path);
+      final value = selectionOwner(container)?.value(path);
 
       expect(value, isA<ReadyEditorValue>());
       expect((value as ReadyEditorValue).value, const StringValue("hello"));
     });
   });
 
-  group("inspected root type provider", () {
+  group("inspection input type", () {
     test("returns null when no selection", () {
       final container = ProviderContainer.test();
 
-      final rootType = container.read(inspectedRootTypeProvider);
+      final rootType = selectionOwner(container)?.rootType;
 
       expect(rootType, isNull);
     });
@@ -53,7 +50,7 @@ void main() {
           .read(selectionProvider.notifier)
           .select(idA, isMultiSelect: false);
 
-      final rootType = container.read(inspectedRootTypeProvider);
+      final rootType = selectionOwner(container)?.rootType;
 
       expect(rootType, isA<NamedType>());
       expect(
@@ -84,7 +81,7 @@ void main() {
 
       container.read(selectionProvider.notifier).selectAll([idA, idB]);
 
-      final rootType = container.read(inspectedRootTypeProvider) as RecordType?;
+      final rootType = selectionOwner(container)?.rootType as RecordType?;
 
       expect(rootType, isNotNull);
       expect(rootType!.fields.containsKey("shared"), isTrue);

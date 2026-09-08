@@ -143,7 +143,7 @@ private fun RealmDiscoverySnapshot.closure(
             }
         }
         presentationIds.mapNotNull(presentationsById::get).forEach { presentation ->
-            collector.includeExpression(SkirTypeCodec.decode(presentation.target).getOrThrow())
+            presentation.inputs.forEach { collector.includeExpression(SkirTypeCodec.decode(it.valueType).getOrThrow()) }
             presentation.dependencies.types.forEach { collector.includeReference(SkirTypeCodec.decode(it).getOrThrow()) }
             presentation.dependencies.presentations.forEach { presentationIds += PresentationId(it.namespace, it.name) }
             presentation.dependencies.capabilities.forEach { capabilityIds += CapabilityId(it.value) }

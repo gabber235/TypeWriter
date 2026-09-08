@@ -3,6 +3,12 @@ import "dart:async";
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+part "transactional_editor_persistence.dart";
+part "editor_batch.dart";
+part "editor_batch_recovery.dart";
+part "transactional_editor_interactions.dart";
+part "transactional_editor_reconciliation.dart";
+
 typedef EditorCommitter =
     Future<TypedMutationResult> Function(EditorCommit commit);
 typedef EditorMutationValidator =
@@ -19,17 +25,17 @@ final class TransactionalEditorSource extends ChangeNotifier
     required EditorDocument document,
     required EditorCommitter commit,
     EditorMutationValidator? validate,
-    EditorRealmActionExecutor? executeRealmAction,
+    List<TypeDiagnostic> Function(DataValue)? validateDraft,
+    this.commitPolicy = EditorCommitPolicy.autosaveChanges,
     EditorDelayScheduler scheduler = const TimerEditorDelayScheduler(),
     EditorJitterSource? jitter,
     this.debounce = const Duration(milliseconds: 250),
-    this.successfulSavePhase = EditorSavePhase.saved,
     this.onDeleted,
   }) : _document = document,
        _draft = document.confirmedValue,
        _commit = commit,
        _validate = validate,
-       _executeRealmAction = executeRealmAction,
+       _validateDraft = validateDraft,
        _scheduler = scheduler,
        _jitter = jitter ?? RandomEditorJitterSource();
 
@@ -37,22 +43,43 @@ final class TransactionalEditorSource extends ChangeNotifier
   DataValue _draft;
   final EditorCommitter _commit;
   final EditorMutationValidator? _validate;
-  final EditorRealmActionExecutor? _executeRealmAction;
+  final List<TypeDiagnostic> Function(DataValue)? _validateDraft;
+  @override
+  final EditorCommitPolicy commitPolicy;
+  @override
+  bool get hasWork =>
+      _states.dirtyPaths.isNotEmpty ||
+      _activeCommit != null ||
+      _unresolved != null;
+  @override
+  List<TypeDiagnostic> get draftDiagnostics =>
+      _validateDraft?.call(_draft) ?? const [];
   final EditorDelayScheduler _scheduler;
   final EditorJitterSource _jitter;
   final Duration debounce;
-  final EditorSavePhase successfulSavePhase;
   final VoidCallback? onDeleted;
   final EditorReconciler _reconciler = const EditorReconciler();
   final EditorPathStates _states = EditorPathStates();
   EditorScheduledTask? _debounceTask;
   EditorScheduledTask? _retryTask;
   Future<TypedMutationResult>? _activeCommit;
+  _UnresolvedCommit? _unresolved;
+  EditorBatch? _rejectedBatch;
   bool _deleted = false;
   bool _disposed = false;
   int _localRevision = 0;
   int _generation = 0;
   final List<_PendingStructuralMutation> _pendingMutations = [];
+
+  @override
+  TypeExpression get rootType => document.rootType;
+  @override
+  TypeCatalog get typeCatalog => document.typeCatalog;
+  @override
+  bool get readOnly =>
+      document.readOnly ||
+      (commitPolicy == EditorCommitPolicy.applyResource &&
+          (_activeCommit != null || _unresolved != null));
 
   @override
   EditorDocument get document => _document;
@@ -71,22 +98,7 @@ final class TransactionalEditorSource extends ChangeNotifier
     DataValue value, {
     EditorStructuralMutation? structuralMutation,
   }) {
-    if (_disposed) {
-      return EditorMutationResult.invalid([_diagnostic("Editor is disposed")]);
-    }
-    if (_deleted) return EditorMutationResult.invalid([_deletedDiagnostic()]);
-    if (_document.readOnly) {
-      return EditorMutationResult.invalid([
-        _diagnostic("The editor is read only", path),
-      ]);
-    }
-    final validation =
-        _validate?.call(path, value) ??
-        _document.rootType.validateEditorMutation(
-          path,
-          value,
-          registry: TypeRegistry(_document.typeCatalog),
-        );
+    final validation = validate(path, value);
     if (validation is! AppliedEditorMutation) return validation;
     final replaced = path.replace(_draft, validation.value);
     if (replaced case TypeFailure(:final diagnostics)) {
@@ -107,31 +119,36 @@ final class TransactionalEditorSource extends ChangeNotifier
   }
 
   @override
-  void refreshDocument(EditorDocument document) {
-    if (_disposed) return;
-    if (_document.hasSameContent(document)) return;
-    acceptRemote(revision: document.revision, value: document.confirmedValue);
-    final refreshed = _document.copyWith(
-      rootType: document.rootType,
-      typeCatalog: document.typeCatalog,
-      presentations: document.presentations,
-      collections: document.collections,
-      mergePolicies: document.mergePolicies,
-      commitGroups: document.commitGroups,
-      rootPresentation: document.rootPresentation,
-      clearRootPresentation: document.rootPresentation == null,
-      diagnostics: document.diagnostics,
-      readOnly: document.readOnly,
-    );
-    if (_document.hasSameContent(refreshed)) return;
-    _document = refreshed;
-    _notify();
+  EditorMutationResult validate(DataPath path, DataValue value) {
+    if (_disposed) {
+      return EditorMutationResult.invalid([_diagnostic("Editor is disposed")]);
+    }
+    if (_deleted) return EditorMutationResult.invalid([_deletedDiagnostic()]);
+    if (readOnly) {
+      return EditorMutationResult.invalid([
+        _diagnostic("The editor is read only", path),
+      ]);
+    }
+    return _validate?.call(path, value) ??
+        _document.rootType.validateEditorMutation(
+          path,
+          value,
+          registry: TypeRegistry(_document.typeCatalog),
+        );
   }
 
   @override
+  void refreshDocument(EditorDocument document) => _refreshDocument(document);
+
+  @override
   EditorInteractionSession beginInteraction(DataPath path) {
-    final existing = _states.gate(path);
-    if (existing is _Interaction && existing.active) return existing;
+    for (final gate in _states.takeGates()) {
+      if (_pathsOverlap(path, gate.path)) {
+        if (gate is _Interaction) gate.close();
+      } else {
+        _states.setGate(gate.path, gate);
+      }
+    }
     final interaction = _Interaction(
       source: this,
       path: path,
@@ -154,6 +171,17 @@ final class TransactionalEditorSource extends ChangeNotifier
         path: path,
       );
     }
+    if (_unresolved case final unresolved?) {
+      return EditorSaveState(
+        phase: _activeCommit == null
+            ? EditorSavePhase.uncertain
+            : EditorSavePhase.saving,
+        path: path,
+        replayAvailable: unresolved.result.replay != null,
+        submissionId: unresolved.result.submissionId,
+        diagnostics: [_diagnostic(unresolved.result.message)],
+      );
+    }
     return _states.saveState(path);
   }
 
@@ -162,53 +190,35 @@ final class TransactionalEditorSource extends ChangeNotifier
     if (_disposed) return _unavailable("Editor is disposed");
     if (_deleted) return _unavailable("Deleted elsewhere");
 
-    var result = _settledResult();
-    final processedGroups = <String?>{};
-    while (true) {
-      while (_activeCommit != null) {
-        result = await _activeCommit!;
-        if (_disposed) return _unavailable("Editor is disposed");
-        if (_deleted) return _unavailable("Deleted elsewhere");
-      }
-
-      final selected = _states
-          .flushCandidates(paths)
-          .where((path) => !processedGroups.contains(_commitGroupFor(path)))
-          .toSet();
-      if (selected.isEmpty) return result;
-      final commitPaths = _firstCommitGroup(selected);
-      processedGroups.add(_commitGroupFor(commitPaths.first));
-      result = await _runCommit(commitPaths);
+    while (_activeCommit != null) {
+      await _activeCommit!;
       if (_disposed) return _unavailable("Editor is disposed");
-      if (_deleted) {
-        return result is MutationConflict
-            ? result
-            : _unavailable("Deleted elsewhere");
-      }
-      if (result is! MutationSuccess) return result;
+      if (_deleted) return _unavailable("Deleted elsewhere");
     }
-  }
-
-  Set<DataPath> _firstCommitGroup(Set<DataPath> paths) {
-    final ordered = paths.toList()
-      ..sort((left, right) => left.toString().compareTo(right.toString()));
-    final group = _commitGroupFor(ordered.first);
-    return {
-      for (final path in ordered)
-        if (_commitGroupFor(path) == group) path,
-    };
-  }
-
-  String? _commitGroupFor(DataPath path) {
-    MapEntry<DataPath, String>? closest;
-    for (final entry in _document.commitGroups.entries) {
-      if (!path.isAtOrBelow(entry.key)) continue;
-      if (closest == null ||
-          entry.key.segments.length > closest.key.segments.length) {
-        closest = entry;
+    if (_unresolved case final unresolved?) return _replayCommit(unresolved);
+    if (_rejectedBatch case final batch?) {
+      if (paths == null ||
+          paths.any(
+            (path) => batch._commits[this]!.changedPaths.any(
+              (changed) => _pathsOverlap(path, changed),
+            ),
+          )) {
+        return (await batch._retryRejected())[this] ?? _settledResult();
       }
     }
-    return closest?.value;
+    if (commitPolicy == EditorCommitPolicy.applyResource) {
+      if (_states.hasConflicts) {
+        return _unavailable("Conflicting fields require a choice");
+      }
+      final diagnostics = draftDiagnostics;
+      if (diagnostics.isNotEmpty) {
+        return TypedMutationResult.invalid(diagnostics);
+      }
+    }
+    final selected = _states.flushCandidates(
+      commitPolicy == EditorCommitPolicy.applyResource ? null : paths,
+    );
+    return selected.isEmpty ? _settledResult() : _runCommit(selected);
   }
 
   TypedMutationResult _settledResult() {
@@ -221,248 +231,13 @@ final class TransactionalEditorSource extends ChangeNotifier
     );
   }
 
-  Future<TypedMutationResult> _runCommit(Set<DataPath> selected) async {
-    final commit = _persist(selected);
-    _activeCommit = commit;
-    try {
-      return await commit;
-    } finally {
-      _activeCommit = null;
-      if (!_disposed && !_deleted && _states.autoFlushCandidates.isNotEmpty) {
-        _scheduleAutoFlush();
-      }
-    }
-  }
-
-  Future<TypedMutationResult> _persist(Set<DataPath> paths) async {
-    var attempt = 0;
-    var activePaths = paths;
-    try {
-      while (true) {
-        if (_disposed) return _unavailable("Editor is disposed");
-        final generation = _generation;
-        final rootValue = _commitValue(activePaths);
-        final pendingMutations = _mutationsFor(activePaths);
-        _states.markSaving(activePaths);
-        _notify();
-        final result = await _commit(
-          EditorCommit(
-            expectedRevision: _document.revision,
-            localRevision: _localRevision,
-            rootValue: rootValue,
-            changedPaths: activePaths,
-            mutations: pendingMutations
-                .map((pending) => pending.mutation)
-                .toList(),
-            group: _commitGroupFor(activePaths.first),
-          ),
-        );
-        if (_disposed || _deleted || generation != _generation) {
-          return _unavailable("The commit result is stale");
-        }
-        switch (result) {
-          case MutationSuccess(:final revision, :final value):
-            if (revision < _document.revision) {
-              final retryPaths = _states.flushCandidates(activePaths);
-              if (retryPaths.isEmpty) return result;
-              if (!await _waitForRetry(retryPaths, attempt++)) return result;
-              activePaths = retryPaths;
-              continue;
-            }
-            if (revision == _document.revision &&
-                value != _document.confirmedValue) {
-              acceptRemote(revision: revision, value: value);
-              _failPaths(activePaths, [
-                _diagnostic("Different values share the same revision"),
-              ]);
-              return result;
-            }
-            _acceptSuccess(revision, value, rootValue, activePaths);
-            _pendingMutations.removeWhere(pendingMutations.contains);
-            return result;
-          case MutationConflict(:final actualRevision, :final actualValue):
-            acceptRemote(revision: actualRevision, value: actualValue);
-            final retryPaths = _states.flushCandidates(activePaths);
-            if (retryPaths.isEmpty) return result;
-            if (!await _waitForRetry(retryPaths, attempt++)) return result;
-            activePaths = retryPaths;
-          case MutationInvalid(:final diagnostics) ||
-              MutationUnavailable(:final diagnostics):
-            if (_targetWasDeleted(diagnostics)) {
-              acceptRemoteDeletion();
-              return result;
-            }
-            _failPaths(activePaths, diagnostics);
-            return result;
-          case MutationPermissionDenied(:final message):
-            _failPaths(activePaths, [_diagnostic(message)]);
-            return result;
-        }
-      }
-    } finally {
-      if (!_disposed) {
-        _states.clearSaving();
-        _notify();
-      }
-    }
-  }
-
-  Future<bool> _waitForRetry(Set<DataPath> paths, int attempt) async {
-    if (attempt >= _retryDelays.length) {
-      _states.markContended(paths);
-      _notify();
-      return false;
-    }
-    final base = _retryDelays[attempt];
-    final jitter = _jitter.next(
-      Duration(microseconds: base.inMicroseconds ~/ 2),
-    );
-    final task = _scheduler.schedule(base + jitter);
-    _retryTask?.cancel();
-    _retryTask = task;
-    final completion = await task.completed;
-    if (identical(_retryTask, task)) _retryTask = null;
-    return completion == EditorTaskCompletion.executed &&
-        !_disposed &&
-        !_deleted;
-  }
-
-  DataValue _commitValue(Set<DataPath> paths) {
-    var value = _document.confirmedValue;
-    for (final path in paths) {
-      final local = path.read(_draft).valueOrNull;
-      if (local != null) {
-        value = path.replace(value, local).valueOrNull ?? value;
-      }
-    }
-    return value;
-  }
-
-  void _acceptSuccess(
-    int revision,
-    DataValue value,
-    DataValue sent,
-    Set<DataPath> committed,
-  ) {
-    var nextDraft = value;
-    final confirmed = <DataPath>{};
-    for (final path in _states.dirtyPaths) {
-      final local = path.read(_draft).valueOrNull;
-      if (committed.contains(path) && local == path.read(sent).valueOrNull) {
-        confirmed.add(path);
-        continue;
-      }
-      if (local != null) {
-        nextDraft = path.replace(nextDraft, local).valueOrNull ?? nextDraft;
-      }
-    }
-    _states.confirm(confirmed, successfulSavePhase);
-    _document = _document.copyWith(confirmedValue: value, revision: revision);
-    _draft = nextDraft;
-    _notify();
-  }
-
-  void _failPaths(Set<DataPath> paths, List<TypeDiagnostic> diagnostics) {
-    _states.fail(paths, diagnostics);
-    _notify();
-  }
-
   @override
-  Future<EditorActionResult> executeAction(
-    EditorAction action,
-    ExpressionContext context,
-    Map<BindingId, BindingReference> aliases,
-  ) async {
-    if (_disposed) {
-      return LocalEditorActionResult(_unavailable("Editor is disposed"));
-    }
-    final result = switch (action) {
-      LocalEditorAction() => _executeLocalAction(action, context, aliases),
-      RealmEditorAction(:final action) => RealmEditorActionResult(
-        await _executeRealm(action, context),
-      ),
-    };
-    return result;
-  }
-
-  LocalEditorActionResult _executeLocalAction(
-    LocalEditorAction action,
-    ExpressionContext context,
-    Map<BindingId, BindingReference> aliases,
-  ) {
-    final canonical = action.canonicalizedWith(aliases);
-    final registry = TypeRegistry(_document.typeCatalog);
-    final result = canonical.execute(context, registry: registry);
-    return LocalEditorActionResult(
-      result,
-      structuralMutation: _structuralMutation(
-        canonical.action,
-        context,
-        result,
-        registry,
-      ),
-    );
-  }
-
-  List<_PendingStructuralMutation> _mutationsFor(Set<DataPath> paths) => [
-    for (final pending in _pendingMutations)
-      if (paths.any((path) => _pathsOverlap(path, pending.mutation.path)))
-        pending,
-  ];
-
-  Future<RealmCommandResult> _executeRealm(
-    RealmAction action,
-    ExpressionContext context,
-  ) async {
-    final executor = _executeRealmAction;
-    if (executor == null) {
-      return RealmCommandResult.unavailable([
-        _diagnostic("Realm actions are unavailable"),
-      ]);
-    }
-    return executor(action, context);
-  }
-
-  @override
-  void acceptRemote({required int revision, required DataValue value}) {
-    if (_disposed || _deleted || revision < _document.revision) return;
-    if (revision == _document.revision) {
-      if (value == _document.confirmedValue) return;
-      _document = _document.copyWith(
-        diagnostics: [
-          ..._document.diagnostics,
-          _diagnostic("Different values share the same revision"),
-        ],
-      );
-      _notify();
-      return;
-    }
-    final result = _reconciler.reconcile(
-      base: _document.confirmedValue,
-      local: _draft,
-      remote: value,
-      remoteRevision: revision,
-      dirtyPaths: _states.dirtyPaths,
-      mergePolicies: _document.mergePolicies,
-    );
-    _document = _document.copyWith(
-      confirmedValue: result.base,
-      revision: result.revision,
-      diagnostics: [..._document.diagnostics, ...result.diagnostics],
-    );
-    _draft = result.draft;
-    _states.applyReconciliation(
-      dirtyPaths: result.dirtyPaths,
-      confirmedPaths: result.confirmedPaths,
-      conflicts: result.conflicts,
-      confirmedPhase: successfulSavePhase,
-    );
-    _notify();
-  }
+  void acceptRemote({required int revision, required DataValue value}) =>
+      _acceptRemote(revision: revision, value: value);
 
   @override
   void useRemote(DataPath path) {
-    if (_disposed) return;
+    if (_disposed || _unresolved != null) return;
     final remote = path.read(_document.confirmedValue).valueOrNull;
     if (remote == null) return;
     _draft = path.replace(_draft, remote).valueOrNull ?? _draft;
@@ -476,8 +251,12 @@ final class TransactionalEditorSource extends ChangeNotifier
   @override
   Future<TypedMutationResult> keepLocal(DataPath path) {
     if (_disposed) return Future.value(_unavailable("Editor is disposed"));
+    if (_unresolved case final unresolved?)
+      return Future.value(unresolved.result);
     _states.resolveConflictLocally(path);
     _notify();
+    if (commitPolicy == EditorCommitPolicy.applyResource)
+      return Future.value(_settledResult());
     return flush(paths: {path});
   }
 
@@ -486,6 +265,7 @@ final class TransactionalEditorSource extends ChangeNotifier
     if (_disposed || _deleted) return;
     _deleted = true;
     _pendingMutations.clear();
+    _unresolved = null;
     _generation++;
     _cancelScheduledTasks();
     _closeGates();
@@ -493,76 +273,12 @@ final class TransactionalEditorSource extends ChangeNotifier
     onDeleted?.call();
   }
 
-  void _scheduleAutoFlush() {
-    if (_disposed || _deleted) return;
-    _cancelDebounce();
-    final task = _scheduler.schedule(debounce);
-    _debounceTask = task;
-    unawaited(_autoFlushAfter(task));
-  }
-
-  Future<void> _autoFlushAfter(EditorScheduledTask task) async {
-    final completion = await task.completed;
-    if (!identical(_debounceTask, task)) return;
-    _debounceTask = null;
-    if (completion == EditorTaskCompletion.cancelled || _disposed || _deleted) {
-      return;
-    }
-    final candidates = _states.autoFlushCandidates;
-    if (candidates.isEmpty) return;
-    await flush(paths: candidates);
-  }
-
-  void _cancelDebounce() {
-    _debounceTask?.cancel();
-    _debounceTask = null;
-  }
-
-  void _cancelScheduledTasks() {
-    _cancelDebounce();
-    _retryTask?.cancel();
-    _retryTask = null;
-  }
-
   void _notify() {
     if (!_disposed) notifyListeners();
   }
 
-  Future<TypedMutationResult> _commitInteraction(_Interaction interaction) {
-    if (!_release(interaction)) {
-      return Future.value(_unavailable("Interaction is closed"));
-    }
-    return flush(paths: {..._states.autoFlushCandidates, interaction.path});
-  }
-
-  void _cancelInteraction(_Interaction interaction) {
-    if (!_release(interaction)) return;
-    if (_disposed || _deleted) return;
-    final origin = interaction.origin;
-    if (origin != null) {
-      _draft = interaction.path.replace(_draft, origin).valueOrNull ?? _draft;
-    }
-    _pendingMutations.removeWhere(
-      (pending) =>
-          pending.revision > interaction.startingRevision &&
-          _pathsOverlap(interaction.path, pending.mutation.path),
-    );
-    _states.reset(interaction.path);
-    _notify();
-  }
-
-  bool _release(_Interaction interaction) {
-    if (!interaction.active) return false;
-    interaction.close();
-    _states.clearGate(interaction.path, interaction);
-    return true;
-  }
-
-  void _closeGates() {
-    for (final gate in _states.takeGates()) {
-      if (gate is _Interaction) gate.close();
-    }
-  }
+  @override
+  void discardDraft() => _discardDraft();
 
   @override
   void dispose() {
@@ -574,265 +290,3 @@ final class TransactionalEditorSource extends ChangeNotifier
     super.dispose();
   }
 }
-
-final class _Interaction implements EditorInteractionSession {
-  _Interaction({
-    required this.source,
-    required this.path,
-    required this.origin,
-    required this.startingRevision,
-  });
-
-  final TransactionalEditorSource source;
-  @override
-  final DataPath path;
-  final DataValue? origin;
-  final int startingRevision;
-  @override
-  bool active = true;
-
-  @override
-  Future<TypedMutationResult> commit() => source._commitInteraction(this);
-
-  @override
-  void cancel() => source._cancelInteraction(this);
-
-  void close() => active = false;
-}
-
-TypeDiagnostic _diagnostic(String message, [DataPath path = DataPath.root]) {
-  return TypeDiagnostic(
-    code: TypeDiagnosticCode.mutationConflict,
-    message: message,
-    path: path,
-  );
-}
-
-TypeDiagnostic _deletedDiagnostic() => _diagnostic("Deleted elsewhere");
-
-TypedMutationResult _unavailable(String message) =>
-    TypedMutationResult.unavailable([_diagnostic(message)]);
-
-bool _targetWasDeleted(List<TypeDiagnostic> diagnostics) {
-  return diagnostics.any(
-    (diagnostic) => diagnostic.details.any(
-      (detail) => detail.key == "editor.target" && detail.value == "deleted",
-    ),
-  );
-}
-
-final class _PendingStructuralMutation {
-  const _PendingStructuralMutation(this.revision, this.mutation);
-
-  final int revision;
-  final EditorStructuralMutation mutation;
-}
-
-EditorStructuralMutation? _structuralMutation(
-  LocalAction action,
-  ExpressionContext context,
-  TypedMutationResult result,
-  TypeRegistry registry,
-) {
-  if (result is! MutationSuccess) return null;
-  final root = result.value;
-  return switch (action) {
-    SetValueAction(:final target) => _rootTarget(
-      target,
-      root,
-      EditorSetValue.new,
-    ),
-    InsertListItemAction(:final target, :final index) => _rootListTarget(
-      target,
-      root,
-      context,
-      (path, before, after) {
-        final position = _evaluateIndex(index, context, registry);
-        if (position == null ||
-            after.values.length != before.values.length + 1) {
-          return null;
-        }
-        return EditorInsertListItems(path, position, [after.values[position]]);
-      },
-    ),
-    AppendListItemAction(:final target) => _rootListTarget(
-      target,
-      root,
-      context,
-      (path, before, after) => EditorInsertListItems(
-        path,
-        before.values.length,
-        [after.values.last],
-      ),
-    ),
-    RemoveListItemAction(:final target, :final index) => _removeListMutation(
-      target,
-      index,
-      context,
-      registry,
-    ),
-    DuplicateListItemAction(:final source) => _duplicateListMutation(source),
-    ReorderListItemAction(:final source, :final newIndex) =>
-      _reorderListMutation(source, newIndex, context, registry),
-    PutMapEntryAction(:final target) => _rootMapTarget(
-      target,
-      root,
-      context,
-      (path, before, after) => EditorPutMapEntries(
-        path,
-        after.entries
-            .where((entry) => !before.entries.contains(entry))
-            .toList(),
-      ),
-    ),
-    RemoveMapEntryAction(:final target) => _rootMapTarget(
-      target,
-      root,
-      context,
-      (path, before, after) => EditorRemoveMapEntries(
-        path,
-        before.entries
-            .where((entry) => !after.entries.contains(entry))
-            .map((entry) => entry.key)
-            .toList(),
-      ),
-    ),
-    ReplaceConcreteTypeAction(:final target, :final concreteType) =>
-      _rootTarget(
-        target,
-        root,
-        (path, value) => value is PolymorphicValue
-            ? EditorReplaceConcreteType(path, concreteType, value.value)
-            : null,
-      ),
-  };
-}
-
-EditorStructuralMutation? _rootTarget(
-  BindingReference target,
-  DataValue root,
-  EditorStructuralMutation? Function(DataPath path, DataValue value) create,
-) {
-  if (target.bindingId != const BindingId(0)) return null;
-  final value = target.path.read(root).valueOrNull;
-  return value == null ? null : create(target.path, value);
-}
-
-EditorStructuralMutation? _rootListTarget(
-  BindingReference target,
-  DataValue root,
-  ExpressionContext context,
-  EditorStructuralMutation? Function(
-    DataPath path,
-    ListValue before,
-    ListValue after,
-  )
-  create,
-) {
-  if (target.bindingId != const BindingId(0)) return null;
-  final before = context.bindings.resolve(target).valueOrNull?.value;
-  final after = target.path.read(root).valueOrNull;
-  if (before is! ListValue || after is! ListValue) return null;
-  return create(target.path, before, after);
-}
-
-EditorStructuralMutation? _rootMapTarget(
-  BindingReference target,
-  DataValue root,
-  ExpressionContext context,
-  EditorStructuralMutation Function(
-    DataPath path,
-    MapValue before,
-    MapValue after,
-  )
-  create,
-) {
-  if (target.bindingId != const BindingId(0)) return null;
-  final before = context.bindings.resolve(target).valueOrNull?.value;
-  final after = target.path.read(root).valueOrNull;
-  if (before is! MapValue || after is! MapValue) return null;
-  return create(target.path, before, after);
-}
-
-int? _evaluateIndex(
-  TypedExpression expression,
-  ExpressionContext context,
-  TypeRegistry registry,
-) {
-  final value = expression.evaluate(context, registry: registry).valueOrNull;
-  return value is IntegerValue ? value.value.toInt() : null;
-}
-
-(BindingReference, int)? _listItemLocation(BindingReference reference) {
-  if (reference.path.segments.lastOrNull case IndexPathSegment(:final index)) {
-    return (
-      BindingReference(
-        bindingId: reference.bindingId,
-        path: DataPath(
-          reference.path.segments.sublist(
-            0,
-            reference.path.segments.length - 1,
-          ),
-        ),
-      ),
-      index,
-    );
-  }
-  return null;
-}
-
-EditorStructuralMutation? _removeListMutation(
-  BindingReference target,
-  TypedExpression index,
-  ExpressionContext context,
-  TypeRegistry registry,
-) {
-  final position = _evaluateIndex(index, context, registry);
-  if (target.bindingId != const BindingId(0) || position == null) return null;
-  return EditorRemoveListItems(target.path, position, 1);
-}
-
-EditorStructuralMutation? _duplicateListMutation(BindingReference source) {
-  final location = _listItemLocation(source);
-  if (location == null || location.$1.bindingId != const BindingId(0)) {
-    return null;
-  }
-  return EditorDuplicateListItems(
-    location.$1.path,
-    location.$2,
-    1,
-    location.$2 + 1,
-  );
-}
-
-EditorStructuralMutation? _reorderListMutation(
-  BindingReference source,
-  TypedExpression newIndex,
-  ExpressionContext context,
-  TypeRegistry registry,
-) {
-  final location = _listItemLocation(source);
-  final destination = _evaluateIndex(newIndex, context, registry);
-  if (location == null ||
-      location.$1.bindingId != const BindingId(0) ||
-      destination == null) {
-    return null;
-  }
-  return EditorReorderListItems(location.$1.path, location.$2, 1, destination);
-}
-
-bool _pathsOverlap(DataPath first, DataPath second) {
-  final shared = first.segments.length < second.segments.length
-      ? first.segments.length
-      : second.segments.length;
-  for (var index = 0; index < shared; index++) {
-    if (first.segments[index] != second.segments[index]) return false;
-  }
-  return true;
-}
-
-const _retryDelays = [
-  Duration(milliseconds: 50),
-  Duration(milliseconds: 100),
-  Duration(milliseconds: 200),
-];

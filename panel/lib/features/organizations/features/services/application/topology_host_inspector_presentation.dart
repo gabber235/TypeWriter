@@ -8,7 +8,24 @@ PresentationDefinition _hostInspectorPresentation({
   required Color color,
 }) => PresentationDefinition(
   id: _hostInspectorPresentationId,
-  target: NamedType(_hostInspectorTypeRef),
+  inputs: [
+    PresentationInputParameter(
+      id: const BindingId(0),
+      name: "runtime",
+      type: NamedType(_hostInspectorTypeRef),
+    ),
+    PresentationInputParameter(
+      id: const BindingId(1),
+      name: "configuration",
+      type: _hostConfigurationType,
+      access: PresentationInputAccess.edit,
+    ),
+    PresentationInputParameter(
+      id: const BindingId(2),
+      name: "identity",
+      type: _serviceIdentityType,
+    ),
+  ],
   root: PresentationNode(
     id: "serviceHost.inspector",
     element: ColumnElement(
@@ -37,7 +54,6 @@ PresentationNode _hostServiceSection(Color color) {
   return _dashboardSection(
     id: "serviceHost.service",
     title: "Service",
-    description: "Identity and connection",
     color: color,
     children: [
       PresentationNode(
@@ -107,7 +123,6 @@ PresentationNode _hostDetailsSection(Color color) {
   return _dashboardSection(
     id: "serviceHost.host",
     title: "Host",
-    description: "Capabilities and runtime health",
     color: color,
     children: [
       _dashboardCard(

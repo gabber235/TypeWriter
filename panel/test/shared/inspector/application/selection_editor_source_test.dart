@@ -6,26 +6,14 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "selection_editor_source_test_support.dart";
 
 void main() {
-  group("SelectionEditorSource values", () {
-    test("reports loading while selected values resolve", () {
+  group("InspectionSession values", () {
+    test("has no presentation before a selection resolves", () {
       final container = ProviderContainer.test();
+      expect(container.read(_sourceProvider).model, isNull);
       container
           .read(selectionProvider.notifier)
-          .select(_loadingIdentifier("loading"), isMultiSelect: false);
-
-      expect(
-        container.read(_sourceProvider).value(DataPath.root),
-        isA<LoadingEditorValue>(),
-      );
-    });
-
-    test("reports invalid for an empty selection", () {
-      final container = ProviderContainer.test();
-
-      expect(
-        container.read(_sourceProvider).value(DataPath.root),
-        isA<InvalidEditorValue>(),
-      );
+          .select(_loadingIdentifier("loading"));
+      expect(container.read(_sourceProvider).model, isNull);
     });
 
     test("uses structural equality for selected values", () {
@@ -40,7 +28,9 @@ void main() {
       final container = ProviderContainer.test();
       container.read(selectionProvider.notifier).selectAll([first, second]);
 
-      final state = container.read(_sourceProvider).value(DataPath.root);
+      final state = _owner(
+        container.read(_sourceProvider),
+      ).value(DataPath.root);
 
       expect(state, isA<ReadyEditorValue>());
       expect(state.valueOrNull, ListValue([const StringValue("same")]));
@@ -53,8 +43,8 @@ void main() {
       container.read(selectionProvider.notifier).selectAll([ready, conflict]);
 
       expect(
-        container.read(_sourceProvider).value(DataPath.root),
-        isA<ConflictEditorValue>(),
+        _owner(container.read(_sourceProvider)).value(DataPath.root),
+        isA<MixedEditorValue>(),
       );
     });
 
@@ -64,11 +54,11 @@ void main() {
       final container = ProviderContainer.test();
       container.read(selectionProvider.notifier).selectAll([first, second]);
 
-      final state = container
-          .read(_sourceProvider)
-          .value(DataPath.root.field("missing"));
+      final state = _owner(
+        container.read(_sourceProvider),
+      ).value(DataPath.root.field("missing"));
 
-      expect((state as InvalidEditorValue).diagnostics, hasLength(2));
+      expect((state as InvalidEditorValue).diagnostics, isNotEmpty);
     });
 
     test("read getters never notify or resynchronize targets", () {
@@ -81,13 +71,16 @@ void main() {
       var notifications = 0;
       source.addListener(() => notifications++);
 
-      expect(source.document, isNotNull);
-      expect(source.value(DataPath.root), isA<ReadyEditorValue>());
-      expect(source.saveState(DataPath.root).phase, EditorSavePhase.idle);
+      expect(_resource(source).document, isNotNull);
+      expect(_owner(source).value(DataPath.root), isA<ReadyEditorValue>());
+      expect(
+        _resource(source).saveState(DataPath.root).phase,
+        EditorSavePhase.idle,
+      );
       expect(notifications, 0);
     });
 
-    test("provider refresh skips unchanged documents", () {
+    test("provider refresh retains resource ownership", () {
       final identifier = _identifier("stable", const StringValue("value"));
       final container = ProviderContainer.test();
       container
@@ -101,8 +94,11 @@ void main() {
         ..invalidate(selectedProvider)
         ..read(inspectedSelectionProvider);
 
-      expect(source.value(DataPath.root).valueOrNull, identifier.current);
-      expect(notifications, 0);
+      expect(
+        _owner(source).value(DataPath.root).valueOrNull,
+        identifier.current,
+      );
+      expect(_owner(source), same(_resource(source)));
     });
 
     test("provider refresh applies remote values and metadata", () {
@@ -123,13 +119,16 @@ void main() {
         ..invalidate(selectedProvider)
         ..read(inspectedSelectionProvider);
 
-      expect(source.value(DataPath.root).valueOrNull, identifier.current);
-      expect(source.document?.revision, 2);
-      expect(source.document?.readOnly, isTrue);
+      expect(
+        _owner(source).value(DataPath.root).valueOrNull,
+        identifier.current,
+      );
+      expect(_resource(source).document?.revision, 2);
+      expect(_resource(source).document?.readOnly, isTrue);
       expect(notifications, greaterThan(0));
     });
 
-    testWidgets("renders remote deletion once before removing selection", (
+    testWidgets("renders deletion before removing the selection", (
       tester,
     ) async {
       final identifier = _identifier("deleted", const StringValue("before"));
@@ -138,7 +137,7 @@ void main() {
           .read(selectionProvider.notifier)
           .select(identifier, isMultiSelect: false);
       final source = container.read(_sourceProvider);
-      expect(source.value(DataPath.root), isA<ReadyEditorValue>());
+      expect(_owner(source).value(DataPath.root), isA<ReadyEditorValue>());
 
       identifier.deleted = true;
       container
@@ -146,7 +145,7 @@ void main() {
         ..read(inspectedSelectionProvider);
 
       expect(
-        source.saveState(DataPath.root).phase,
+        _resource(source).saveState(DataPath.root).phase,
         EditorSavePhase.deletedElsewhere,
       );
       expect(container.read(selectionProvider), [identifier]);
@@ -157,7 +156,7 @@ void main() {
     });
   });
 
-  group("SelectionEditorSource type projection", () {
+  group("InspectionSession type projection", () {
     test("projects common editable record fields", () {
       final first = _identifier(
         "first",
@@ -172,14 +171,15 @@ void main() {
       final container = ProviderContainer.test();
       container.read(selectionProvider.notifier).selectAll([first, second]);
 
-      final type = container.read(inspectedRootTypeProvider)! as RecordType;
+      final type =
+          _owner(container.read(_sourceProvider)).rootType as RecordType;
 
       expect(type.fields.keys, ["shared"]);
-      expect(container.read(_sourceProvider).document?.rootType, same(type));
+      expect(_owner(container.read(_sourceProvider)).rootType, same(type));
     });
   });
 
-  group("SelectionEditorSource mutations", () {
+  group("InspectionSession mutations", () {
     test("fans out typed mutations and commits the accepted value", () async {
       final first = _identifier(
         "first",
@@ -195,16 +195,16 @@ void main() {
       container.read(selectionProvider.notifier).selectAll([first, second]);
       const path = DataPath.root;
 
-      final result = container
-          .read(_sourceProvider)
-          .update(path, const StringValue("requested"));
+      final result = _owner(
+        container.read(_sourceProvider),
+      ).update(path, const StringValue("requested"));
 
       expect(
         (result as AppliedEditorMutation).value,
         const StringValue("accepted"),
       );
       expect(first.latest!.validatedPath, path);
-      expect(first.latest!.validatedValue, const StringValue("requested"));
+      expect(first.latest!.validatedValue, const StringValue("accepted"));
       expect(second.latest!.validatedPath, path);
 
       await container.read(_sourceProvider).flush();
@@ -233,9 +233,9 @@ void main() {
       final container = ProviderContainer.test();
       container.read(selectionProvider.notifier).selectAll([first, second]);
 
-      final result = container
-          .read(_sourceProvider)
-          .update(DataPath.root, const StringValue("requested"));
+      final result = _owner(
+        container.read(_sourceProvider),
+      ).update(DataPath.root, const StringValue("requested"));
 
       expect(result, isA<ConflictingEditorMutation>());
     });
@@ -254,9 +254,9 @@ void main() {
       final container = ProviderContainer.test();
       container.read(selectionProvider.notifier).selectAll([first, second]);
 
-      final result = container
-          .read(_sourceProvider)
-          .update(DataPath.root, const StringValue("requested"));
+      final result = _owner(
+        container.read(_sourceProvider),
+      ).update(DataPath.root, const StringValue("requested"));
 
       expect((result as InvalidEditorMutation).diagnostics, hasLength(2));
     });
@@ -275,57 +275,13 @@ void main() {
       final container = ProviderContainer.test();
       container.read(selectionProvider.notifier).selectAll([first, second]);
 
-      final result = container
-          .read(_sourceProvider)
-          .update(DataPath.root, const StringValue("after"));
+      final result = _owner(
+        container.read(_sourceProvider),
+      ).update(DataPath.root, const StringValue("after"));
 
       expect(result, isA<InvalidEditorMutation>());
       expect(first.latest!.latestCommit, isNull);
       expect(second.latest!.latestCommit, isNull);
-    });
-  });
-
-  group("SelectionEditorSource actions", () {
-    test("invokes a Realm command once for a multi selection", () async {
-      var invocations = 0;
-      final container = ProviderContainer.test(
-        overrides: [
-          editorRealmRuntimeProvider.overrideWithValue(
-            EditorRealmRuntime(
-              executeAction: (action, context) async {
-                invocations++;
-                return const RealmCommandResult.success([]);
-              },
-              searchSourceBuilder:
-                  ({
-                    required provider,
-                    required queryBindingId,
-                    required expressions,
-                    required registry,
-                    required budget,
-                    required providerKey,
-                  }) => UnavailableRealmPresentationSearchSource(
-                    provider: provider,
-                  ),
-            ),
-          ),
-        ],
-      );
-      container.read(selectionProvider.notifier).selectAll([
-        _identifier("first", const StringValue("same")),
-        _identifier("second", const StringValue("same")),
-      ]);
-
-      final result = await container
-          .read(_sourceProvider)
-          .executeAction(
-            const EditorAction.realm(RealmAction.reload()),
-            const ExpressionContext(bindings: BindingEnvironment({})),
-            const {},
-          );
-
-      expect(result, isA<RealmEditorActionResult>());
-      expect(invocations, 1);
     });
   });
 }

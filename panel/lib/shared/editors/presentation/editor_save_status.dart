@@ -25,7 +25,7 @@ class EditorSaveStatus extends StatelessWidget {
       EditorSavePhase.pending => "Pending",
       EditorSavePhase.saving => "Saving",
       EditorSavePhase.saved => "Saved",
-      EditorSavePhase.sessionOnly => "Session only",
+      EditorSavePhase.uncertain => "Outcome unknown",
       EditorSavePhase.failed => "Save failed",
       EditorSavePhase.conflict => "Changed elsewhere",
       EditorSavePhase.repeatedContention => "Changed repeatedly elsewhere",
@@ -36,6 +36,7 @@ class EditorSaveStatus extends StatelessWidget {
       child = const SizedBox.shrink();
     } else {
       final color = switch (state.phase) {
+        EditorSavePhase.uncertain ||
         EditorSavePhase.failed ||
         EditorSavePhase.conflict ||
         EditorSavePhase.repeatedContention ||
@@ -79,8 +80,7 @@ class EditorSaveStatus extends StatelessWidget {
                     context,
                   ).textTheme.labelSmall?.copyWith(color: color),
                 ),
-                if (state.phase == .failed ||
-                    state.phase == .repeatedContention)
+                if (state.canRetry)
                   LoadingIconButton(
                     icon: const Icones(MaterialSymbols.refresh),
                     onPressed: onRetry,

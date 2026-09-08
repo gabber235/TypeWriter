@@ -25,7 +25,7 @@ extension on PresentationElement {
     final value = this;
     return switch (value) {
       DiagnosticElement() => DiagnosticElement(value.diagnostics),
-      DefaultPresentationElement() => value,
+      DefaultPresentationElement() || PresentationInvocationElement() => value,
       ColumnElement() => ColumnElement(
         children: value.children._substituteTypes(substitutions),
         spacing: value.spacing,
@@ -286,6 +286,7 @@ extension on PresentationElement {
             .toList(),
         fallback: value.fallback?.substitute(substitutions),
       ),
+      CommitControlsElement() => value,
       ButtonElement() => ButtonElement(
         label: value.label._substituteTypes(substitutions),
         action: value.action.substituteTypes(substitutions),

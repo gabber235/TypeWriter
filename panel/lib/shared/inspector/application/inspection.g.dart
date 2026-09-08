@@ -110,47 +110,52 @@ final class HasInspectableSelectionProvider
 String _$hasInspectableSelectionHash() =>
     r'fc35f93d31e8a73986f4932f8650aac64a93cc09';
 
-@ProviderFor(inspectedRootType)
-final inspectedRootTypeProvider = InspectedRootTypeProvider._();
+@ProviderFor(inspectionSession)
+final inspectionSessionProvider = InspectionSessionProvider._();
 
-final class InspectedRootTypeProvider
+final class InspectionSessionProvider
     extends
-        $FunctionalProvider<TypeExpression?, TypeExpression?, TypeExpression?>
-    with $Provider<TypeExpression?> {
-  InspectedRootTypeProvider._()
+        $FunctionalProvider<
+          InspectionSession,
+          InspectionSession,
+          InspectionSession
+        >
+    with $Provider<InspectionSession> {
+  InspectionSessionProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'inspectedRootTypeProvider',
+        name: r'inspectionSessionProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$inspectedRootTypeHash();
+  String debugGetCreateSourceHash() => _$inspectionSessionHash();
 
   @$internal
   @override
-  $ProviderElement<TypeExpression?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<InspectionSession> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
-  TypeExpression? create(Ref ref) {
-    return inspectedRootType(ref);
+  InspectionSession create(Ref ref) {
+    return inspectionSession(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TypeExpression? value) {
+  Override overrideWithValue(InspectionSession value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<TypeExpression?>(value),
+      providerOverride: $SyncValueProvider<InspectionSession>(value),
     );
   }
 }
 
-String _$inspectedRootTypeHash() => r'dde8d50025d4f9ff0d0bed58b42ec4cfdccc1ba3';
+String _$inspectionSessionHash() => r'87e63ba53af6a7c0f7c7def866221560e0434209';
 
 @ProviderFor(inspectedHeader)
 final inspectedHeaderProvider = InspectedHeaderProvider._();

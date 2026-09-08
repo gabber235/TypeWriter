@@ -18,128 +18,67 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
     DataPath path,
     DataValue value,
   ) async {
-    state.ensureReady();
-    final current = state.requireValue.singleWhere(
-      (element) => element.id == elementId,
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(editorWorkspaceProvider),
+      scope: (organizationId, realmId),
     );
-    final expected = path.read(_elementValue(current)).valueOrNull;
-    if (expected == null) {
-      throw ApiException.badRequest("The edited field does not exist");
-    }
-    final mutation = _setMutation(_codec().codec, path, expected, value);
-    state = AsyncData([
-      for (final element in state.requireValue)
-        if (element.id == elementId)
-          element.updateFieldValue(path, value)
-        else
-          element,
-    ]);
     try {
-      await _submit(
-        _commands.patchElement(
-          id: recordId("element:$elementId"),
-          valueMutations: [mutation],
-        ),
-      );
-    } on Object {
-      _replaceFromSession();
-      rethrow;
+      final result = await owners.editor(_target(elementId)).applyChanges({
+        elementValuePath.followedBy(path): value,
+      });
+      switch (result) {
+        case MutationSuccess():
+          return;
+        case MutationUncertain():
+          return;
+        case MutationConflict():
+          throw ApiException.conflict("The field changed elsewhere");
+        case MutationInvalid(:final diagnostics) ||
+            MutationUnavailable(:final diagnostics):
+          throw ApiException.badRequest(
+            diagnostics.map((value) => value.message).join("; "),
+          );
+        case MutationPermissionDenied(:final message):
+          throw ApiException.badRequest(message);
+      }
+    } finally {
+      owners.dispose();
     }
   }
 
   Future<TypedMutationResult> commitElementValue(
     String elementId,
     EditorCommit commit,
-  ) async {
+  ) => _target(elementId).commit(commit);
+
+  EditorTarget _target(String elementId) {
     state.ensureReady();
     final current = state.requireValue.singleWhere(
       (element) => element.id == elementId,
     );
-    final before = _elementValue(current);
-    final after = commit.rootValue;
-    if (after is! RecordValue) {
-      return invalidMutation("Element values must be records");
-    }
-    final codec = _codec().codec;
-    final mutations = <wire.ExpectedElementValueMutation>[];
-    for (final path in commit.changedPaths) {
-      final expected = path.read(before).valueOrNull;
-      final value = path.read(after).valueOrNull;
-      if (expected == null || value == null) {
-        return invalidMutation("An edited field could not be encoded");
-      }
-      mutations.add(_setMutation(codec, path, expected, value));
-    }
-    state = AsyncData([
-      for (final element in state.requireValue)
-        if (element.id == elementId)
-          element.updateFieldValue(DataPath.root, after)
-        else
-          element,
-    ]);
-    try {
-      final response = await _commands.patchElement(
-        id: recordId("element:$elementId"),
-        name: _elementName(current) == _wireElement(elementId).name
-            ? null
-            : wire.StringChange(
-                expected: _wireElement(elementId).name,
-                value: _elementName(current),
-              ),
-        valueMutations: mutations,
-      );
-      switch (response) {
-        case wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value):
-          return TypedMutationResult.success(
-            revision: value.sequence,
-            value: after,
-          );
-        case wire.ApplyAuthoringBatchResponse_conflictWrapper():
-          return _elementConflict(elementId, commit.expectedRevision);
-        case wire.ApplyAuthoringBatchResponse_invalidWrapper() ||
-            wire.ApplyAuthoringBatchResponse_internalErrorWrapper() ||
-            wire.ApplyAuthoringBatchResponse_unknown():
-          _replaceFromSession();
-          return response.toMutationFailure(
-            unavailableMessage: "The element update could not be completed",
-          );
-      }
-    } on Object {
-      _replaceFromSession();
-      return unavailableMutation("The element update could not be completed");
-    }
-  }
-
-  wire.ExpectedElementValueMutation _setMutation(
-    SkirEditorCodec codec,
-    DataPath path,
-    DataValue expected,
-    DataValue value,
-  ) {
-    final wirePath = codec.encodePath(path).valueOrNull;
-    final wireExpected = codec.encodeValue(expected).valueOrNull;
-    final wireValue = codec.encodeValue(value).valueOrNull;
-    if (wirePath == null || wireExpected == null || wireValue == null) {
-      throw ApiException.badRequest("The edited value could not be encoded");
-    }
-    return wire.ExpectedElementValueMutation(
-      expected: wireExpected,
-      mutation: wire.ElementValueMutation.createSetValue(
-        path: wirePath,
-        value: wireValue,
+    final definition = switch (current) {
+      PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
+        definition.elementDefinition,
+      PageElementCue(:final cue) => cue.elementDefinition,
+      _ => throw ApiException.badRequest("The element has no editable value"),
+    };
+    final codec = _codec();
+    final canonical = codec.codec
+        .decodeValue(_wireElement(elementId).value)
+        .valueOrNull;
+    if (canonical == null)
+      throw ApiException.badRequest("The element value cannot be decoded");
+    return authoringElementTarget(
+      session: _commands,
+      identity: EntryIdentifier(elementId),
+      pageId: _pageId.id,
+      label: _elementName(current),
+      document: EditorDocument(
+        rootType: NamedType(definition.rootType),
+        typeCatalog: codec.registry.catalog,
+        confirmedValue: canonical,
+        revision: ref.read(_sessionProvider).sequence ?? 0,
       ),
-    );
-  }
-
-  TypedMutationResult _elementConflict(String elementId, int expectedSequence) {
-    _replaceFromSession();
-    final actual = state.requireValue.singleWhere(
-      (element) => element.id == elementId,
-    );
-    return TypedMutationResult.conflict(
-      expectedRevision: expectedSequence,
-      actualRevision: ref.read(_sessionProvider).sequence ?? 0,
-      actualValue: _elementValue(actual),
     );
   }
 }

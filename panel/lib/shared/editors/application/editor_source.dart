@@ -1,8 +1,15 @@
-import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-abstract interface class EditorSource implements Listenable {
+abstract interface class EditorSource implements EditOwner {
   EditorDocument? get document;
+
+  EditorCommitPolicy get commitPolicy;
+
+  bool get hasWork;
+
+  List<TypeDiagnostic> get draftDiagnostics;
+
+  void discardDraft();
 
   EditorValue value(DataPath path);
 
@@ -19,12 +26,6 @@ abstract interface class EditorSource implements Listenable {
   EditorSaveState saveState(DataPath path);
 
   Future<TypedMutationResult> flush({Set<DataPath>? paths});
-
-  Future<EditorActionResult> executeAction(
-    EditorAction action,
-    ExpressionContext context,
-    Map<BindingId, BindingReference> aliases,
-  );
 
   void acceptRemote({required int revision, required DataValue value});
 

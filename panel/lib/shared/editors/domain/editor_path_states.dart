@@ -215,10 +215,7 @@ sealed class EditorPathProgress with _$EditorPathProgress {
   const factory EditorPathProgress.conflicted(EditorPathConflict conflict) =
       ConflictedPathProgress;
 
-  @Assert(
-    "phase == EditorSavePhase.saved || phase == EditorSavePhase.sessionOnly",
-    "A settled path is either saved or session only.",
-  )
+  @Assert("phase == EditorSavePhase.saved", "A settled path has been saved.")
   const factory EditorPathProgress.settled(EditorSavePhase phase) =
       SettledPathProgress;
 }
@@ -226,10 +223,10 @@ sealed class EditorPathProgress with _$EditorPathProgress {
 int _phasePriority(EditorSavePhase phase) => switch (phase) {
   EditorSavePhase.idle => 0,
   EditorSavePhase.saved => 1,
-  EditorSavePhase.sessionOnly => 2,
   EditorSavePhase.pending => 3,
   EditorSavePhase.saving => 4,
   EditorSavePhase.failed => 5,
+  EditorSavePhase.uncertain => 9,
   EditorSavePhase.conflict => 6,
   EditorSavePhase.repeatedContention => 7,
   EditorSavePhase.deletedElsewhere => 8,

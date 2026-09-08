@@ -56,7 +56,7 @@ void main() {
     expect(commits.single.changedPaths, {priority});
     expect(source.value(priority).valueOrNull, IntegerValue(BigInt.from(421)));
     expect(source.saveState(priority).phase, EditorSavePhase.saved);
-    expect(find.text("Saved"), findsOneWidget);
+    expect(find.text("Saved"), findsNothing);
 
     await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();

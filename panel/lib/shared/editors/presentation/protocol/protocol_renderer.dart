@@ -68,36 +68,61 @@ class EditorProtocolRenderer extends StatefulWidget {
 }
 
 class _EditorProtocolRendererState extends State<EditorProtocolRenderer> {
-  late final TransactionalEditorSource _source;
+  LocalEditor? _local;
 
   @override
   void initState() {
     super.initState();
-    _source = _createSource();
+    _replaceLocal();
+  }
+
+  void _replaceLocal() {
+    _local?.dispose();
+    _local = widget.readOnly
+        ? null
+        : LocalEditor(
+            rootType: NamedType(widget.envelope.rootType),
+            typeCatalog: widget.typeCatalog,
+            value: widget.envelope.rootValue,
+          );
   }
 
   @override
   void didUpdateWidget(EditorProtocolRenderer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.envelope == widget.envelope &&
-        oldWidget.typeCatalog == widget.typeCatalog &&
-        oldWidget.presentations == widget.presentations &&
-        oldWidget.collections == widget.collections &&
-        oldWidget.presentation == widget.presentation &&
-        oldWidget.diagnostics == widget.diagnostics &&
-        oldWidget.readOnly == widget.readOnly) {
-      return;
-    }
-    final revision = oldWidget.envelope.rootValue == widget.envelope.rootValue
-        ? _source.document.revision
-        : _source.document.revision + 1;
-    _source.refreshDocument(_createDocument(revision));
+    if (oldWidget.envelope != widget.envelope ||
+        oldWidget.readOnly != widget.readOnly)
+      _replaceLocal();
+    else
+      _local?.refreshSchema(
+        NamedType(widget.envelope.rootType),
+        widget.typeCatalog,
+      );
   }
 
   @override
   Widget build(BuildContext context) {
-    return EditorSurface(
-      source: _source,
+    final model = _local == null
+        ? PresentationModel.value(
+            type: NamedType(widget.envelope.rootType),
+            value: widget.envelope.rootValue,
+            catalog: widget.typeCatalog,
+            presentation: widget.presentation,
+            presentations: widget.presentations,
+            collections: widget.collections,
+            diagnostics: widget.diagnostics,
+          )
+        : PresentationModel.editor(
+            owner: _local!,
+            presentation: widget.presentation,
+            presentations: widget.presentations,
+            collections: widget.collections,
+            diagnostics: widget.diagnostics,
+          );
+    return ComposedEditor(
+      key: ObjectKey(_local ?? widget.envelope),
+      model: model,
+      runtime: _executeRealm,
       conversions: widget.conversions,
       realmSearchSourceBuilder: widget.realmSearchSourceBuilder,
       executePanelInstruction: widget.executePanelInstruction,
@@ -105,39 +130,7 @@ class _EditorProtocolRendererState extends State<EditorProtocolRenderer> {
         ..._defaultEditorHeaderShortcuts,
         ...widget.headerShortcuts,
       },
-      readOnly: widget.readOnly,
       historyNamespace: widget.historyNamespace,
-    );
-  }
-
-  TransactionalEditorSource _createSource() {
-    return TransactionalEditorSource(
-      document: _createDocument(0),
-      debounce: Duration.zero,
-      successfulSavePhase: EditorSavePhase.sessionOnly,
-      commit: (commit) async {
-        return TypedMutationResult.success(
-          revision: commit.expectedRevision + 1,
-          value: commit.rootValue,
-        );
-      },
-      executeRealmAction: _executeRealm,
-    );
-  }
-
-  EditorDocument _createDocument(int revision) {
-    final rootType = NamedType(widget.envelope.rootType);
-    final registry = TypeRegistry(widget.typeCatalog);
-    final resolved = registry.resolve(rootType);
-    return EditorDocument(
-      rootType: rootType,
-      typeCatalog: widget.typeCatalog,
-      confirmedValue: widget.envelope.rootValue,
-      revision: revision,
-      presentations: widget.presentations,
-      collections: widget.collections,
-      rootPresentation: widget.presentation,
-      diagnostics: [...widget.diagnostics, ...resolved.diagnostics],
       readOnly: widget.readOnly,
     );
   }
@@ -183,7 +176,7 @@ class _EditorProtocolRendererState extends State<EditorProtocolRenderer> {
 
   @override
   void dispose() {
-    _source.dispose();
+    _local?.dispose();
     super.dispose();
   }
 }

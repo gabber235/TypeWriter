@@ -2,18 +2,20 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 final class TypeRegistry {
   TypeRegistry(TypeCatalog catalog)
-    : this._(bootstrapTypeCatalog(catalog.definitions));
+    : this._(catalog, bootstrapTypeCatalog(catalog.definitions));
 
-  TypeRegistry._(TypeCatalog catalog)
+  TypeRegistry._(this.catalog, TypeCatalog resolvedCatalog)
     : _definitions = {
-        for (final definition in catalog.definitions) definition.id: definition,
+        for (final definition in resolvedCatalog.definitions)
+          definition.id: definition,
       },
-      _duplicates = _findDuplicates(catalog.definitions),
+      _duplicates = _findDuplicates(resolvedCatalog.definitions),
       _declarationDiagnostics = {
-        for (final definition in catalog.definitions)
+        for (final definition in resolvedCatalog.definitions)
           definition.id: definition.validateDeclaration(),
       };
 
+  final TypeCatalog catalog;
   final Map<ResolvedTypeRef, TypeDefinition> _definitions;
   final Set<ResolvedTypeRef> _duplicates;
   final Map<ResolvedTypeRef, List<TypeDiagnostic>> _declarationDiagnostics;

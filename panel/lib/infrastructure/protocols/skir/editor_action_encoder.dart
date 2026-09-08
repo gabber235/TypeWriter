@@ -29,6 +29,12 @@ final class SkirActionEncoder {
   TypeResult<wire.TypedMutationResult> encodeMutation(
     TypedMutationResult value,
   ) => switch (value) {
+    MutationUncertain() => TypeResult.failure([
+      TypeDiagnostic(
+        code: TypeDiagnosticCode.invalidValue,
+        message: "Transport uncertainty cannot be encoded as a server response",
+      ),
+    ]),
     MutationSuccess() =>
       values
           .encode(value.value)

@@ -361,7 +361,6 @@ extension on BindingReference {
     final resolved = scope.resolve(parent);
     diagnostics.addAll(resolved.diagnostics);
     if (resolved.valueOrNull case ResolvedBinding(
-      type: ListType(),
       value: ListValue(:final values),
     )) {
       if (index < values.length) return (index, values.length);

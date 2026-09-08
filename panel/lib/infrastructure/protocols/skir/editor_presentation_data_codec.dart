@@ -162,6 +162,31 @@ extension SkirPresentationDataDecoder on SkirPresentationDecoder {
         : TypeResult.failure(diagnostics);
   }
 
+  TypeResult<PresentationElement> _invocation(
+    wire.PresentationInvocation value,
+  ) {
+    final id = value.presentationId._decodeDomain();
+    if (id case TypeFailure(:final diagnostics))
+      return TypeResult.failure(diagnostics);
+    final arguments = <BindingId, BindingReference>{};
+    for (final argument in value.arguments) {
+      final input = argument.input.value;
+      if (input < 0 || arguments.containsKey(BindingId(input))) {
+        return invalidWire("Invalid or duplicate presentation argument");
+      }
+      final binding = expressions.binding(argument.binding);
+      if (binding case TypeFailure(:final diagnostics))
+        return TypeResult.failure(diagnostics);
+      arguments[BindingId(input)] = binding.valueOrNull!;
+    }
+    return TypeResult.success(
+      PresentationInvocationElement(
+        presentationId: id.valueOrNull!,
+        arguments: arguments,
+      ),
+    );
+  }
+
   TypeResult<PresentationElement> _defaultPresentation(
     wire.DefaultPresentationElement value,
   ) {

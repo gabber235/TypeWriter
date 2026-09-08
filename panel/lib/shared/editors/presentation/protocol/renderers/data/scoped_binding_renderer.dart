@@ -9,7 +9,7 @@ extension ScopedBindingElementRendering on ScopedBindingElement {
     final resolved = bindingResult.valueOrNull!;
     final childScope = scope.withAlias(
       scopeBindingId,
-      scope.canonical(binding),
+      binding,
       BindingSnapshot(
         type: resolved.type,
         value: resolved.value,

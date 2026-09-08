@@ -11,6 +11,7 @@ class _RealmInstanceSelectable
     required this.ref,
     required this.id,
     required this.realm,
+    required this.connected,
     required this.host,
     required this.service,
   });
@@ -19,26 +20,33 @@ class _RealmInstanceSelectable
   @override
   final RealmInstanceIdentifier id;
   final TopologyRealm realm;
+  final bool connected;
   final TopologyHost? host;
   final Service? service;
 
-  bool get canOpen => host != null && (service?.isOnline ?? false);
+  bool get canOpen => host != null && connected;
 
   @override
   String get name => realm.ownerHost.name.formatted;
 
   @override
-  EditorDocument get document => EditorDocument(
-    rootType: NamedType(_realmInstanceInspectorTypeRef),
-    typeCatalog: _realmInstanceInspectorCatalog,
-    confirmedValue: _runtimeValue(
-      ownerHost: realm.ownerHost.name.formatted,
-      target: realm.targetEngine,
-      state: realm.state,
-    ),
-    revision: realm.revision,
-    presentations: [_realmInstanceInspectorPresentation],
-  );
+  PresentationModel buildPresentation(EditorOwnerRegistry owners) =>
+      PresentationModel(
+        catalog: _realmInstanceInspectorCatalog,
+        inputs: {
+          const BindingId(0): PresentationInput.value(
+            type: NamedType(_realmInstanceInspectorTypeRef),
+            value: EditorValue.ready(
+              _runtimeValue(
+                ownerHost: realm.ownerHost.name.formatted,
+                target: realm.targetEngine,
+                state: realm.state,
+              ),
+            ),
+          ),
+        },
+        root: _realmInstanceInspectorPresentation.root,
+      );
 
   @override
   List<SelectionCapability> get capabilities => [
@@ -60,14 +68,6 @@ class _RealmInstanceSelectable
     name: name,
     color: realmServiceRoleColor,
   );
-
-  @override
-  EditorMutationResult validate(DataPath path, DataValue value) =>
-      _readOnlyRuntimeMutation(path);
-
-  @override
-  Future<TypedMutationResult> commit(EditorCommit commit) =>
-      Future.value(invalidMutation("Realm runtime state is read only"));
 }
 
 OrganizationRoute realmNavigationRoute(
@@ -102,18 +102,24 @@ class _EngineInstanceSelectable
   String get name => "${engine.target.engineId.formatted} engine";
 
   @override
-  EditorDocument get document => EditorDocument(
-    rootType: NamedType(_engineInstanceInspectorTypeRef),
-    typeCatalog: _engineInstanceInspectorCatalog,
-    confirmedValue: _runtimeValue(
-      ownerHost: engine.ownerHost.name.formatted,
-      target: engine.target,
-      state: engine.state,
-      assignedRealm: engine.realm.ownerHost.name.formatted,
-    ),
-    revision: engine.revision,
-    presentations: [_engineInstanceInspectorPresentation],
-  );
+  PresentationModel buildPresentation(EditorOwnerRegistry owners) =>
+      PresentationModel(
+        catalog: _engineInstanceInspectorCatalog,
+        inputs: {
+          const BindingId(0): PresentationInput.value(
+            type: NamedType(_engineInstanceInspectorTypeRef),
+            value: EditorValue.ready(
+              _runtimeValue(
+                ownerHost: engine.ownerHost.name.formatted,
+                target: engine.target,
+                state: engine.state,
+                assignedRealm: engine.realm.ownerHost.name.formatted,
+              ),
+            ),
+          ),
+        },
+        root: _engineInstanceInspectorPresentation.root,
+      );
 
   @override
   List<SelectionCapability> get capabilities => [];
@@ -124,14 +130,6 @@ class _EngineInstanceSelectable
     name: name,
     color: engineServiceRoleColor,
   );
-
-  @override
-  EditorMutationResult validate(DataPath path, DataValue value) =>
-      _readOnlyRuntimeMutation(path);
-
-  @override
-  Future<TypedMutationResult> commit(EditorCommit commit) =>
-      Future.value(invalidMutation("Engine runtime state is read only"));
 }
 
 RecordValue _runtimeValue({
@@ -153,12 +151,3 @@ RecordValue _runtimeValue({
   _RuntimeInspectorFields.runtimeMessage: StringValue(state.message ?? "None"),
   _RuntimeInspectorFields.updatedAt: TimestampValue(state.updatedAt),
 });
-
-EditorMutationResult _readOnlyRuntimeMutation(DataPath path) =>
-    EditorMutationResult.invalid([
-      TypeDiagnostic(
-        code: TypeDiagnosticCode.invalidPath,
-        message: "Runtime state is read only",
-        path: path,
-      ),
-    ]);

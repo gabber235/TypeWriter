@@ -1,25 +1,27 @@
 part of "action_executor.dart";
 
 extension on DuplicateListItemAction {
-  TypedMutationResult _duplicate(
+  LocalMutationResult _duplicate(
     ExpressionContext context,
     TypeRegistry? registry,
   ) {
     final location = source._listItemLocation;
     if (location == null) {
-      return invalidMutation("Duplicate source must be a list item binding");
+      return invalidLocalMutation(
+        "Duplicate source must be a list item binding",
+      );
     }
-    final parent = _resolved(location.$1, context);
+    final parent = _resolved(location.$1, context, registry);
     if (parent case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     final resolved = parent.valueOrNull!;
     if (resolved.type is! ListType || resolved.value is! ListValue) {
-      return invalidMutation("Duplicate source parent must be a list");
+      return invalidLocalMutation("Duplicate source parent must be a list");
     }
     final values = List<DataValue>.of((resolved.value as ListValue).values);
     if (location.$2 >= values.length) {
-      return invalidMutation("Duplicate source index is outside the list");
+      return invalidLocalMutation("Duplicate source index is outside the list");
     }
     values.insert(location.$2 + 1, values[location.$2]);
     return location.$1.replaceValue(
@@ -32,38 +34,41 @@ extension on DuplicateListItemAction {
 }
 
 extension on ReorderListItemAction {
-  TypedMutationResult _reorder(
+  LocalMutationResult _reorder(
     ExpressionContext context,
     TypeRegistry? registry,
     ExpressionBudget budget,
   ) {
     final location = source._listItemLocation;
     if (location == null) {
-      return invalidMutation("Reorder source must be a list item binding");
+      return invalidLocalMutation("Reorder source must be a list item binding");
     }
-    final parent = _resolved(location.$1, context);
+    final parent = _resolved(location.$1, context, registry);
     if (parent case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     final destination = newIndex._integer(context, registry, budget);
     if (destination case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     final resolved = parent.valueOrNull!;
     if (resolved.type is! ListType || resolved.value is! ListValue) {
-      return invalidMutation("Reorder source parent must be a list");
+      return invalidLocalMutation("Reorder source parent must be a list");
     }
     final values = List<DataValue>.of((resolved.value as ListValue).values);
     final nextIndex = destination.valueOrNull!;
     if (location.$2 >= values.length ||
         nextIndex < 0 ||
         nextIndex >= values.length) {
-      return invalidMutation("Reorder index is outside the list");
+      return invalidLocalMutation("Reorder index is outside the list");
     }
     if (location.$2 == nextIndex) {
       final root = context.bindings.bindings[source.bindingId];
-      if (root == null) return invalidMutation("Binding is not available");
-      return MutationSuccess(revision: root.revision, value: root.value);
+      if (root == null) return invalidLocalMutation("Binding is not available");
+      return LocalMutationApplied(
+        bindingId: source.bindingId,
+        value: root.value,
+      );
     }
     final value = values.removeAt(location.$2);
     values.insert(nextIndex, value);

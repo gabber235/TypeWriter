@@ -46,15 +46,12 @@ class InspectorScaffold extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [editorRealmRuntimeProvider.overrideWithValue(realmRuntime)],
-      child: EditorRoot(
-        create: (ref) => SelectionEditorSource(ref, realmRuntime: realmRuntime),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return constraints.maxWidth < 3 * kInspectorMinSize
-                ? MobileInspector(child: child)
-                : DesktopInspector(margin: margin, child: child);
-          },
-        ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return constraints.maxWidth < 3 * kInspectorMinSize
+              ? MobileInspector(child: child)
+              : DesktopInspector(margin: margin, child: child);
+        },
       ),
     );
   }
@@ -379,14 +376,28 @@ class _InspectorContent extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: Add shimmer when loading.
     final selectedHeader = ref.watch(inspectedHeaderProvider);
-    final selectedRootType = ref.watch(inspectedRootTypeProvider);
+    final session = ref.watch(inspectionSessionProvider);
+    final runtime = ref.watch(editorRealmRuntimeProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: context.spacing.space3,
       children: [
         ?selectedHeader,
-        if (selectedRootType != null) const TypedEditor(),
+        ListenableBuilder(
+          listenable: session,
+          builder: (context, _) {
+            final model = session.model;
+            if (model == null) return const SizedBox.shrink();
+            return ComposedEditor(
+              key: ValueKey(ref.watch(selectionProvider)),
+              model: model,
+              runtime: runtime?.executeAction,
+              realmSearchSourceBuilder: runtime?.searchSourceBuilder,
+              executePanelInstruction: runtime?.executePanelInstruction,
+            );
+          },
+        ),
         const SizedBox(height: 5),
         InspectorOperations(),
         const SizedBox(height: 30),

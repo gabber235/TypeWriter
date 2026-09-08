@@ -2,6 +2,9 @@ package com.typewritermc.presentation
 
 import com.typewritermc.capability.RealmCommandCapabilityRef
 import com.typewritermc.capability.RealmSearchCapabilityRef
+import com.typewritermc.types.FloatWidth
+import com.typewritermc.types.IntegerWidth
+import com.typewritermc.types.TypeExpression
 import com.typewritermc.types.TypePrototypeRegistry
 import skirout.editor.v1.presentation.PresentationNode
 import kotlin.reflect.KClass
@@ -29,6 +32,21 @@ annotation class TypewriterPresentation(
 class PresentationBuildContext internal constructor(
     private val prototypes: TypePrototypeRegistry,
 ) {
+    internal fun type(owner: KClass<*>): TypeExpression =
+        when (owner) {
+            String::class -> TypeExpression.StringType()
+            Boolean::class -> TypeExpression.Boolean
+            Byte::class -> TypeExpression.Integer(IntegerWidth.SIGNED_8)
+            Short::class -> TypeExpression.Integer(IntegerWidth.SIGNED_16)
+            Int::class -> TypeExpression.Integer(IntegerWidth.SIGNED_32)
+            Long::class -> TypeExpression.Integer(IntegerWidth.SIGNED_64)
+            Float::class -> TypeExpression.Float(FloatWidth.FLOAT_32)
+            Double::class -> TypeExpression.Float(FloatWidth.FLOAT_64)
+            Unit::class -> TypeExpression.Unit
+            else -> TypeExpression.Named(prototypes.require(owner).type)
+        }
+
+    @PublishedApi
     internal fun field(
         owner: KClass<*>,
         kotlinName: String,
@@ -51,10 +69,18 @@ class PresentationBuildContext internal constructor(
 class PresentationSpec<T : Any> internal constructor(
     val name: String,
     val target: KClass<T>,
+    val inputs: List<PresentationInputRef<*>>,
     internal val root: AuthoredPresentationNode,
 ) {
     init {
         require(name.isNotBlank()) { "Presentation names must not be blank." }
+    }
+
+    inline fun <reified V : Any> input(name: String): PresentationInputRef<V> {
+        val input = inputs.single { it.name == name }
+        require(input.type == V::class) { "Presentation input type does not match $name." }
+        @Suppress("UNCHECKED_CAST")
+        return input as PresentationInputRef<V>
     }
 }
 
@@ -80,8 +106,83 @@ class PresentationBuilder<T : Any>
     internal constructor(
         @PublishedApi internal val target: KClass<T>,
         @PublishedApi internal val context: PresentationBuildContext,
+        @PublishedApi internal val inputs: MutableList<PresentationInputRef<*>> = mutableListOf(),
     ) {
+        init {
+            if (target != Unit::class && inputs.isEmpty()) {
+                inputs += PresentationInputRef("value", target, false, 0, context)
+            }
+        }
+
         private val children = mutableListOf<AuthoredPresentationNode>()
+
+        inline fun <reified V : Any> input(name: String): PresentationInputRef<V> = declareInput(name, V::class, false)
+
+        inline fun <reified V : Any> editableInput(name: String): PresentationInputRef<V> = declareInput(name, V::class, true)
+
+        @PublishedApi
+        internal fun <V : Any> declareInput(
+            name: String,
+            type: KClass<V>,
+            editable: Boolean,
+        ): PresentationInputRef<V> {
+            require(name.isNotBlank() && inputs.none { it.name == name }) { "Presentation input names must be unique and nonblank." }
+            return PresentationInputRef(name, type, editable, inputs.size.toLong(), context).also(inputs::add)
+        }
+
+        fun textInput(
+            value: PresentationValue<String>,
+            multiline: Boolean? = null,
+            label: String? = null,
+        ) {
+            children += AuthoredPresentationNode.TextInput(value.reference(), multiline, label)
+        }
+
+        fun <V : Number> numericInput(
+            value: PresentationValue<V>,
+            label: String? = null,
+        ) {
+            children += AuthoredPresentationNode.NumericInput(value.reference(), label)
+        }
+
+        /** Places transaction controls for an editable input without owning its persistence policy. */
+        fun commitControls(value: PresentationValue<*>) {
+            require(value.input.editable) { "Commit controls require an editable presentation input." }
+            children += AuthoredPresentationNode.CommitControls(value)
+        }
+
+        fun <V : Any> commandButton(
+            label: String,
+            capability: RealmCommandCapabilityRef<V>,
+            payload: PresentationValue<V>,
+        ) {
+            require(label.isNotBlank()) { "Command button labels must not be blank." }
+            children += AuthoredPresentationNode.CommandButton(label, capability, payload)
+        }
+
+        fun text(value: PresentationValue<String>) {
+            children += AuthoredPresentationNode.Text(value)
+        }
+
+        fun <V : Any> defaultEditor(value: PresentationValue<V>) {
+            children += AuthoredPresentationNode.DefaultEditor(value)
+        }
+
+        fun <V : Any> polymorphicInput(
+            value: PresentationValue<V>,
+            block: PolymorphicPresentationBuilder<V>.() -> Unit,
+        ) {
+            val types = PolymorphicPresentationBuilder<V>(context).apply(block).build()
+            require(types.isNotEmpty()) { "Polymorphic inputs require at least one concrete type." }
+            children += AuthoredPresentationNode.PolymorphicInput(value.reference(), types)
+        }
+
+        fun include(
+            id: com.typewritermc.types.PresentationId,
+            vararg arguments: PresentationArgumentRef,
+        ) {
+            children += AuthoredPresentationNode.Invocation(id, arguments.toList())
+        }
 
         fun section(
             key: String,
@@ -90,7 +191,7 @@ class PresentationBuilder<T : Any>
             block: PresentationBuilder<T>.() -> Unit,
         ) {
             require(key.isNotBlank()) { "Section keys must not be blank." }
-            val content = PresentationBuilder(target, context).apply(block).column()
+            val content = PresentationBuilder(target, context, inputs).apply(block).column()
             children += AuthoredPresentationNode.Section(key, title, initiallyExpanded, content)
         }
 
@@ -115,6 +216,25 @@ class PresentationBuilder<T : Any>
         ) {
             require(label.isNotBlank()) { "Command button labels must not be blank." }
             children += AuthoredPresentationNode.CommandButton(label, capability)
+        }
+
+        fun <Context : Any, Result : Any> realmSearchInput(
+            value: PresentationValue<Result>,
+            capability: RealmSearchCapabilityRef<Context, Result>,
+            payload: PresentationValue<Context>,
+            resultKey: KProperty1<Result, String>,
+            resultLabel: KProperty1<Result, String> = resultKey,
+            label: String? = null,
+        ) {
+            children +=
+                AuthoredPresentationNode.RealmSearchInput(
+                    field = value.reference(),
+                    capability = capability,
+                    resultKey = context.field(capability.resultType, resultKey.name),
+                    resultLabel = context.field(capability.resultType, resultLabel.name),
+                    label = label,
+                    payload = payload,
+                )
         }
 
         fun <Result : Any> realmSearchInput(
@@ -156,7 +276,7 @@ class PresentationBuilder<T : Any>
         }
 
         @PublishedApi
-        internal fun build(name: String): PresentationSpec<T> = PresentationSpec(name, target, column())
+        internal fun build(name: String): PresentationSpec<T> = PresentationSpec(name, target, inputs.toList(), column())
 
         @PublishedApi
         internal fun column(): AuthoredPresentationNode = AuthoredPresentationNode.Column(children.toList())
@@ -189,8 +309,11 @@ class PolymorphicPresentationBuilder<T : Any> internal constructor(
 @DslMarker
 annotation class PresentationDsl
 
+@PublishedApi
 internal data class FieldReference(
     val serializedName: String,
+    val input: PresentationInputRef<*>? = null,
+    val prefix: List<String> = emptyList(),
 )
 
 @PublishedApi
@@ -201,6 +324,23 @@ internal data class ConcretePresentation(
 )
 
 internal sealed interface AuthoredPresentationNode {
+    data class CommitControls(
+        val value: PresentationValue<*>,
+    ) : AuthoredPresentationNode
+
+    data class DefaultEditor(
+        val value: PresentationValue<*>,
+    ) : AuthoredPresentationNode
+
+    data class Text(
+        val value: PresentationValue<String>,
+    ) : AuthoredPresentationNode
+
+    data class Invocation(
+        val id: com.typewritermc.types.PresentationId,
+        val arguments: List<PresentationArgumentRef>,
+    ) : AuthoredPresentationNode
+
     data class Column(
         val children: List<AuthoredPresentationNode>,
     ) : AuthoredPresentationNode
@@ -226,6 +366,7 @@ internal sealed interface AuthoredPresentationNode {
     data class CommandButton(
         val label: String,
         val capability: RealmCommandCapabilityRef<*>,
+        val payload: PresentationValue<*>? = null,
     ) : AuthoredPresentationNode
 
     data class RealmSearchInput(
@@ -234,6 +375,7 @@ internal sealed interface AuthoredPresentationNode {
         val resultKey: FieldReference,
         val resultLabel: FieldReference,
         val label: String?,
+        val payload: PresentationValue<*>? = null,
     ) : AuthoredPresentationNode
 
     data class PolymorphicInput(

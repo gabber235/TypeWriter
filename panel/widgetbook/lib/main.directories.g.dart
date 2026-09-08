@@ -65,6 +65,8 @@ import 'package:widgetbook_workspace/stories/shared/editors/presentation/compone
     as _widgetbook_workspace_stories_shared_editors_presentation_components_editor_text_field_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/components/search_input/search_input.stories.dart'
     as _widgetbook_workspace_stories_shared_editors_presentation_components_search_input_search_input_stories;
+import 'package:widgetbook_workspace/stories/shared/editors/presentation/composed_editor.stories.dart'
+    as _widgetbook_workspace_stories_shared_editors_presentation_composed_editor_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/editor_save_status.stories.dart'
     as _widgetbook_workspace_stories_shared_editors_presentation_editor_save_status_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/editor_surface.stories.dart'
@@ -805,6 +807,17 @@ final directories = <_widgetbook.WidgetbookNode>[
             name: 'presentation',
             children: [
               _widgetbook.WidgetbookComponent(
+                name: 'ComposedEditor',
+                useCases: [
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Independent inputs',
+                    builder:
+                        _widgetbook_workspace_stories_shared_editors_presentation_composed_editor_stories
+                            .composedEditorUseCase,
+                  ),
+                ],
+              ),
+              _widgetbook.WidgetbookComponent(
                 name: 'EditorSaveStatus',
                 useCases: [
                   _widgetbook.WidgetbookUseCase(
@@ -836,12 +849,6 @@ final directories = <_widgetbook.WidgetbookNode>[
                             .booleanEditorUseCase,
                   ),
                   _widgetbook.WidgetbookUseCase(
-                    name: 'Conflict',
-                    builder:
-                        _widgetbook_workspace_stories_shared_editors_presentation_typed_editor_typed_editor_stories
-                            .conflictValueEditorUseCase,
-                  ),
-                  _widgetbook.WidgetbookUseCase(
                     name: 'Invalid',
                     builder:
                         _widgetbook_workspace_stories_shared_editors_presentation_typed_editor_typed_editor_stories
@@ -858,6 +865,12 @@ final directories = <_widgetbook.WidgetbookNode>[
                     builder:
                         _widgetbook_workspace_stories_shared_editors_presentation_typed_editor_typed_editor_stories
                             .loadingEditorUseCase,
+                  ),
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Mixed',
+                    builder:
+                        _widgetbook_workspace_stories_shared_editors_presentation_typed_editor_typed_editor_stories
+                            .conflictValueEditorUseCase,
                   ),
                   _widgetbook.WidgetbookUseCase(
                     name: 'Number',

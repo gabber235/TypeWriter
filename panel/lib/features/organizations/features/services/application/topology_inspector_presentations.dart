@@ -6,14 +6,12 @@ const _dashboardFieldSpacing = 12.0;
 PresentationNode _dashboardSection({
   required String id,
   required String title,
-  required String description,
   required Color color,
   required List<PresentationNode> children,
 }) => PresentationNode(
   id: id,
   header: PresentationHeader(
     title: title.asStringLiteral.asHeaderTitle,
-    description: description.asStringLiteral,
     headerPadding: const PresentationInsets.symmetric(
       horizontal: 12,
       vertical: 10,
@@ -22,9 +20,6 @@ PresentationNode _dashboardSection({
     initiallyExpanded: true,
   ),
   element: SectionElement(
-    border: PresentationBorder.sides(
-      start: PresentationBorderSide(color: color.asColorLiteral, width: 3),
-    ),
     child: PresentationNode(
       id: "$id.content",
       element: PaddingElement(
@@ -189,26 +184,13 @@ PresentationElement _optionalRelativeTimeContent({
 DataPath _hostPath(String section, String field) =>
     DataPath.root.field(section).field(field);
 
-DataPath _configurationPath(String field) =>
-    _hostPath(_HostInspectorFields.configuration, field);
-
-BoundControl _configurationControl(String field, String label) =>
-    _hostControl(_configurationPath(field), label);
-
-TypedExpression _configurationExpression(String field, TypeExpression type) =>
-    _hostExpression(_configurationPath(field), type);
-
-BoundControl _hostControl(DataPath path, String label) => BoundControl(
-  binding: BindingReference(bindingId: const BindingId(0), path: path),
-  label: label.asStringLiteral,
-);
+BoundControl _hostControl(DataPath path, String label) =>
+    BoundControl(binding: _hostReference(path), label: label.asStringLiteral);
 
 TypedExpression _hostExpression(DataPath path, TypeExpression type) =>
     TypedExpression(
       resultType: type,
-      expression: BindingExpression(
-        BindingReference(bindingId: const BindingId(0), path: path),
-      ),
+      expression: BindingExpression(_hostReference(path)),
     );
 
 TypedExpression _fieldExpression(String name, TypeExpression type) =>
@@ -233,4 +215,17 @@ DataValue _optionalTimestamp(DateTime? value) {
           concreteType: standardTypeRefs.someOf(type),
           value: RecordValue({"value": TimestampValue(value)}),
         );
+}
+
+BindingReference _hostReference(DataPath path) {
+  if (path.segments.firstOrNull is FieldPathSegment) {
+    if (path ==
+        _hostPath(_HostInspectorFields.service, _HostInspectorFields.name)) {
+      return BindingReference(
+        bindingId: const BindingId(2),
+        path: DataPath.root.field("name"),
+      );
+    }
+  }
+  return BindingReference(bindingId: const BindingId(0), path: path);
 }

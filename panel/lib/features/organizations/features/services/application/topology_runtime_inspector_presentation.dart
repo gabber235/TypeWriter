@@ -38,7 +38,7 @@ PresentationDefinition _runtimeInspectorPresentation({
     _RuntimeInspectorFields.runtimeMessage,
     const StringType(),
   );
-  return PresentationDefinition(
+  return PresentationDefinition.single(
     id: id,
     target: NamedType(target),
     root: PresentationNode(
@@ -51,7 +51,6 @@ PresentationDefinition _runtimeInspectorPresentation({
           _dashboardSection(
             id: "$rootId.overview",
             title: "Runtime",
-            description: "Current deployment health",
             color: color,
             children: [
               _dashboardCard(
@@ -109,7 +108,6 @@ PresentationDefinition _runtimeInspectorPresentation({
           _dashboardSection(
             id: "$rootId.placement",
             title: "Placement",
-            description: "Where this runtime executes",
             color: color,
             children: [
               _dashboardCard(

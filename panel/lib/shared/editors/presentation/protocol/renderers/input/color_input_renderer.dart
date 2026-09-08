@@ -3,6 +3,7 @@ part of "../../simple_input_renderer.dart";
 extension ColorInputElementRendering on ColorInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(
+      nominal: true,
       control: control,
       scope: scope,
       shapeMismatch: (binding) => binding.type is NamedType

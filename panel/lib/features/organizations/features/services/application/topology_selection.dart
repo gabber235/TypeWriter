@@ -15,7 +15,7 @@ class ServiceHostIdentifier extends SelectableIdentifier {
 
   @override
   AsyncValue<Selectable> create(Ref ref) =>
-      _topologySelectable(ref, (topology, services) {
+      _topologySelectable(ref, (topology, services, connections) {
         final host = topology.hosts.firstWhereOrNull(
           (candidate) => candidate.hostId == hostId,
         );
@@ -28,6 +28,7 @@ class ServiceHostIdentifier extends SelectableIdentifier {
             (service) => service.serviceId == host.serviceId,
           ),
           topology: topology,
+          connected: connections[host.serviceId] ?? false,
         );
       });
 
@@ -54,7 +55,7 @@ class RealmInstanceIdentifier extends SelectableIdentifier {
 
   @override
   AsyncValue<Selectable> create(Ref ref) =>
-      _topologySelectable(ref, (topology, services) {
+      _topologySelectable(ref, (topology, services, connections) {
         final realm = topology.realmInstances.firstWhereOrNull(
           (candidate) => candidate.realmId == realmId,
         );
@@ -66,6 +67,7 @@ class RealmInstanceIdentifier extends SelectableIdentifier {
           ref: ref,
           id: this,
           realm: realm,
+          connected: connections[host?.serviceId] ?? false,
           host: host,
           service: services.firstWhereOrNull(
             (service) => service.serviceId == host?.serviceId,
@@ -93,7 +95,7 @@ class EngineInstanceIdentifier extends SelectableIdentifier {
 
   @override
   AsyncValue<Selectable> create(Ref ref) =>
-      _topologySelectable(ref, (topology, services) {
+      _topologySelectable(ref, (topology, services, connections) {
         final engine = topology.engineInstances.firstWhereOrNull(
           (candidate) => candidate.engineId == engineId,
         );
@@ -122,10 +124,18 @@ class EngineInstanceIdentifier extends SelectableIdentifier {
 
 AsyncValue<Selectable> _topologySelectable(
   Ref ref,
-  Selectable Function(OrganizationTopology, List<Service>) create,
+  Selectable Function(
+    OrganizationTopology,
+    List<Service>,
+    Map<skir.RecordId, bool>,
+  )
+  create,
 ) {
   final topology = ref.watch(organizationTopologyStreamProvider);
   final services = ref.watch(servicesProvider);
+  final connections = ref.watch(
+    serviceConnectionsProvider(services.value ?? const <Service>[]),
+  );
   if (topology case AsyncError(:final error, :final stackTrace)) {
     return AsyncError(error, stackTrace);
   }
@@ -135,7 +145,13 @@ AsyncValue<Selectable> _topologySelectable(
   if (!topology.hasValue || !services.hasValue) {
     return const AsyncLoading();
   }
-  return AsyncData(create(topology.requireValue, services.requireValue));
+  try {
+    return AsyncData(
+      create(topology.requireValue, services.requireValue, connections),
+    );
+  } on Object catch (error, stackTrace) {
+    return AsyncError(error, stackTrace);
+  }
 }
 
 Map<String, List<String>> _engineTargetCatalog(
@@ -177,7 +193,9 @@ String childRuntimeStatusLabel(TopologyRuntimeStatus status) =>
     };
 
 String _targetLabel(TopologyEngineTarget target) =>
-    "${target.engineId.formatted} ${target.versionConstraint}";
+    target.versionConstraint == "*"
+    ? target.engineId
+    : "${target.engineId} ${target.versionConstraint}";
 
 String _encodeTarget(String engineId, String versionConstraint) =>
     "$engineId@$versionConstraint";

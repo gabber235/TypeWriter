@@ -7,9 +7,44 @@ part "catalog_definition.freezed.dart";
 abstract class PresentationDefinition with _$PresentationDefinition {
   const factory PresentationDefinition({
     required PresentationId id,
-    required TypeExpression target,
+    required List<PresentationInputParameter> inputs,
+    BindingId? primaryInput,
     required PresentationNode root,
   }) = _PresentationDefinition;
+
+  const PresentationDefinition._();
+
+  factory PresentationDefinition.single({
+    required PresentationId id,
+    required TypeExpression target,
+    required PresentationNode root,
+  }) => PresentationDefinition(
+    id: id,
+    inputs: [
+      PresentationInputParameter(
+        id: const BindingId(0),
+        name: "value",
+        type: target,
+      ),
+    ],
+    primaryInput: const BindingId(0),
+    root: root,
+  );
+
+  TypeExpression? get target =>
+      inputs.where((input) => input.id == primaryInput).firstOrNull?.type;
+}
+
+enum PresentationInputAccess { read, edit }
+
+@freezed
+abstract class PresentationInputParameter with _$PresentationInputParameter {
+  const factory PresentationInputParameter({
+    required BindingId id,
+    required String name,
+    required TypeExpression type,
+    @Default(PresentationInputAccess.read) PresentationInputAccess access,
+  }) = _PresentationInputParameter;
 }
 
 @freezed

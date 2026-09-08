@@ -1,4 +1,5 @@
 import "dart:typed_data";
+import "package:flutter/material.dart";
 
 import "package:flutter_test/flutter_test.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -6,6 +7,12 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
+
+import "../../../../../support/test_utils.dart";
+
+part "topology_selection_removal_test_cases.dart";
+part "host_apply_test_cases.dart";
+part "host_target_selection_test_cases.dart";
 
 const _updateSubject = "cloud.to.user.user1.organization.org1.services.update";
 const _configureSubject =
@@ -15,85 +22,60 @@ final _organizationId = recordId("organization:org1");
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test(
-    "host document is composite and keeps observation fields read only",
-    () async {
-      final harness = await _Harness.create();
-      addTearDown(harness.dispose);
-      final selectable = harness.selectable;
-      final root = selectable.document.confirmedValue as RecordValue;
+  _testTopologySelectionRemoval();
+  _testHostApply();
+  _testHostTargetSelection();
 
-      expect(root.fields.keys, {"service", "host", "configuration"});
-      final service = root.fields["service"]! as RecordValue;
-      final lastSeen = service.fields["lastSeen"]! as PolymorphicValue;
-      expect(lastSeen.concreteType.id, const TypeId.some());
-      expect(
-        (lastSeen.value as RecordValue).fields["value"],
-        isA<TimestampValue>(),
+  test("host presentation owns separate runtime and resource inputs", () async {
+    final harness = await _Harness.create();
+    addTearDown(harness.dispose);
+    final owners = EditorOwnerRegistry();
+    addTearDown(owners.dispose);
+    final model = harness.selectable.buildPresentation(owners);
+    expect(
+      model.inputs.values.whereType<PresentationValueInput>(),
+      hasLength(1),
+    );
+    final edits = model.inputs.values
+        .whereType<PresentationEditInput>()
+        .map((input) => input.owner as EditorSource)
+        .toList();
+    expect(edits, hasLength(2));
+    expect(edits.map((owner) => owner.document!.revision), [1, 1]);
+    expect(identical(edits[0], edits[1]), isFalse);
+  });
+
+  test("service save carries only identity and its own revision", () async {
+    final harness = await _Harness.create();
+    addTearDown(harness.dispose);
+    skir.UpdateOrganizationServiceRequest? request;
+    harness.respond(_updateSubject, (data) {
+      request = skir.UpdateOrganizationServiceRequest.serializer.fromBytes(
+        data,
       );
-      final host = root.fields["host"]! as RecordValue;
-      expect(host.fields["updatedAt"], isA<TimestampValue>());
-      expect(selectable.document.revision, 2);
-      expect(selectable.document.commitGroups.values, {
-        "service",
-        "configuration",
-      });
-      expect(
-        selectable.validate(
-          DataPath.root.field("host").field("entrypoint"),
-          const StringValue("STANDALONE"),
-        ),
-        isA<InvalidEditorMutation>(),
-      );
-    },
-  );
-
-  test(
-    "service group updates only the service and expands the result",
-    () async {
-      final harness = await _Harness.create();
-      addTearDown(harness.dispose);
-      skir.UpdateOrganizationServiceRequest? request;
-      harness.respond(_updateSubject, (data) {
-        request = skir.UpdateOrganizationServiceRequest.serializer.fromBytes(
-          data,
-        );
-        return skir.UpdateOrganizationServiceResponse.serializer.toBytes(
-          skir.UpdateOrganizationServiceResponse.wrapSuccess(
-            harness.service.copyWith(revision: 2, name: "Renamed").toSkir(),
-          ),
-        );
-      });
-      final path = DataPath.root.field("service").field("name");
-      final next = path
-          .replace(
-            harness.selectable.document.confirmedValue,
-            const StringValue("Renamed"),
-          )
-          .valueOrNull!;
-
-      final result = await harness.selectable.commit(
-        EditorCommit(
-          expectedRevision: 2,
-          localRevision: 1,
-          rootValue: next,
-          changedPaths: {path},
-          group: "service",
+      return skir.UpdateOrganizationServiceResponse.serializer.toBytes(
+        skir.UpdateOrganizationServiceResponse.wrapSuccess(
+          harness.service.copyWith(revision: 2, name: "renamed").toSkir(),
         ),
       );
+    });
+    final owners = EditorOwnerRegistry();
+    addTearDown(owners.dispose);
+    final model = harness.selectable.buildPresentation(owners);
+    final owner =
+        (model.inputs[const BindingId(2)] as PresentationEditInput).owner
+            as EditorSource;
+    owner.update(DataPath.root.field("name"), const StringValue("renamed"));
+    final result = await owner.flush() as MutationSuccess;
+    expect(request!.name, "renamed");
+    expect(result.revision, 2);
+    expect((result.value as RecordValue).fields.keys, ["name"]);
+    expect(harness.nats.requests.map((entry) => entry.subject), [
+      _updateSubject,
+    ]);
+  });
 
-      expect(request!.name, "Renamed");
-      expect(harness.nats.requests.map((entry) => entry.subject), [
-        _updateSubject,
-      ]);
-      expect(result, isA<MutationSuccess>());
-      final value = (result as MutationSuccess).value as RecordValue;
-      expect(value.fields.keys, {"service", "host", "configuration"});
-      expect(result.revision, 3);
-    },
-  );
-
-  test("configuration group configures only the host", () async {
+  test("configuration saves only the host transaction", () async {
     final harness = await _Harness.create();
     addTearDown(harness.dispose);
     skir.ConfigureServiceHostRequest? request;
@@ -101,39 +83,40 @@ void main() {
       request = skir.ConfigureServiceHostRequest.serializer.fromBytes(data);
       return skir.ConfigureServiceHostResponse.serializer.toBytes(
         skir.ConfigureServiceHostResponse.createSuccess(
+          removedResources: [],
           host: _hostWithRevision(harness.host, 2),
           realm: harness.realm,
           engine: null,
-          removedResources: [],
         ),
       );
     });
-    final path = DataPath.root.field("configuration").field("realmEnabled");
-    final next = path
-        .replace(
-          harness.selectable.document.confirmedValue,
-          const BooleanValue(true),
-        )
-        .valueOrNull!;
-
-    final result = await harness.selectable.commit(
-      EditorCommit(
-        expectedRevision: 2,
-        localRevision: 1,
-        rootValue: next,
-        changedPaths: {path},
-        group: "configuration",
+    final owners = EditorOwnerRegistry();
+    addTearDown(owners.dispose);
+    final model = harness.selectable.buildPresentation(owners);
+    final owner =
+        (model.inputs[const BindingId(1)] as PresentationEditInput).owner
+            as EditorSource;
+    owner.update(
+      DataPath.root.field("realm"),
+      PolymorphicValue(
+        concreteType: const ResolvedTypeRef(
+          id: QualifiedTypeId(namespace: "panel.host", name: "RealmHosted"),
+          revision: 1,
+        ),
+        value: RecordValue({"target": StringValue("paper@*")}),
       ),
     );
 
+    final result = await owner.flush() as MutationSuccess;
     expect(request!.execution.realm, isNotNull);
+    expect(result.revision, 2);
+    expect(
+      (result.value as RecordValue).fields.containsKey("service"),
+      isFalse,
+    );
     expect(harness.nats.requests.map((entry) => entry.subject), [
       _configureSubject,
     ]);
-    expect(result, isA<MutationSuccess>());
-    final value = (result as MutationSuccess).value as RecordValue;
-    expect(value.fields.keys, {"service", "host", "configuration"});
-    expect(result.revision, 3);
   });
 }
 
@@ -149,7 +132,11 @@ class _Harness {
     required this.topologySubscription,
   });
 
-  static Future<_Harness> create() async {
+  static Future<_Harness> create({
+    skir.RecordId Function()? organization,
+    List<String> supportedEngineIds = const ["paper"],
+    List<skir.RealmInstance> realms = const [],
+  }) async {
     final nats = FakeNatsClient();
     final service = Service(
       serviceId: recordId("service:paper"),
@@ -168,7 +155,9 @@ class _Harness {
       revision: 1,
       entrypoint: "PAPER",
       canHostRealm: true,
-      supportedEngines: [skir.SupportedEngine(engineId: "paper")],
+      supportedEngines: [
+        for (final id in supportedEngineIds) skir.SupportedEngine(engineId: id),
+      ],
       topologyRevision: skir.ReconciledRevision(desired: 1, applied: 1),
       state: skir.HostRuntimeState(
         status: skir.HostRuntimeStatus.active,
@@ -188,21 +177,25 @@ class _Harness {
     );
     final topology = OrganizationTopology(
       hosts: [TopologyHost.fromSkir(host)],
-      realmInstances: [],
+      realmInstances: realms.map(TopologyRealm.fromSkir).toList(),
       engineInstances: [],
     );
     final container = ProviderContainer.test(
       overrides: [
         userIdProvider.overrideWith((ref) async => "user1"),
-        organizationIdProvider.overrideWith((ref) => _organizationId),
+        organizationIdProvider.overrideWith(
+          (ref) => organization?.call() ?? _organizationId,
+        ),
         natsProvider.overrideWithValue(nats),
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
         ),
-        servicesProvider.overrideWith(() => _SeededServices([service])),
-        organizationTopologyStreamProvider.overrideWith(
-          () => _SeededTopology(topology),
-        ),
+        organizationServicesProvider(
+          _organizationId,
+        ).overrideWith(() => _SeededServices([service])),
+        scopedOrganizationTopologyProvider(
+          _organizationId,
+        ).overrideWith(() => _SeededTopology(topology)),
       ],
     );
     final servicesSubscription = container.listen(
@@ -255,22 +248,26 @@ class _Harness {
   }
 }
 
-class _SeededServices extends Services {
+class _SeededServices extends OrganizationServices {
   _SeededServices(this.services);
 
   final List<Service> services;
 
   @override
-  Stream<List<Service>> build() => Stream.value(services);
+  Stream<List<Service>> build(skir.RecordId organizationId) =>
+      Stream.value(services);
 }
 
-class _SeededTopology extends OrganizationTopologyStream {
+class _SeededTopology extends ScopedOrganizationTopology {
   _SeededTopology(this.topology);
 
   final OrganizationTopology topology;
 
+  void replace(OrganizationTopology value) => state = AsyncData(value);
+
   @override
-  Stream<OrganizationTopology> build() => Stream.value(topology);
+  Stream<OrganizationTopology> build(skir.RecordId organizationId) =>
+      Stream.value(topology);
 }
 
 skir.ServiceHost _hostWithRevision(skir.ServiceHost host, int revision) =>

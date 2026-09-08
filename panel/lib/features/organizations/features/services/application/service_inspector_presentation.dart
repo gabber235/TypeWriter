@@ -8,7 +8,19 @@ const _serviceInspectorPresentationId = PresentationId(
 PresentationDefinition serviceInspectorPresentation(Service service) =>
     PresentationDefinition(
       id: _serviceInspectorPresentationId,
-      target: NamedType(serviceInspectorTypeRef),
+      inputs: [
+        PresentationInputParameter(
+          id: const BindingId(0),
+          name: "runtime",
+          type: NamedType(serviceInspectorTypeRef),
+        ),
+        PresentationInputParameter(
+          id: const BindingId(1),
+          name: "identity",
+          type: _serviceIdentityType,
+          access: PresentationInputAccess.edit,
+        ),
+      ],
       root: PresentationNode(
         id: "service.inspector",
         element: ColumnElement(
@@ -18,7 +30,6 @@ PresentationDefinition serviceInspectorPresentation(Service service) =>
             _dashboardSection(
               id: "service.details",
               title: "Service",
-              description: "Identity and connection",
               color: service.color,
               children: [
                 PresentationNode(
@@ -79,7 +90,7 @@ PresentationNode _serviceReadOnlyField(String field, String label) =>
     );
 
 BindingReference serviceInspectorField(String name) => BindingReference(
-  bindingId: const BindingId(0),
+  bindingId: BindingId(name == "name" ? 1 : 0),
   path: DataPath.root.field(name),
 );
 

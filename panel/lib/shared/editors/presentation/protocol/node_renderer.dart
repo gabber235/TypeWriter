@@ -102,6 +102,10 @@ extension on PresentationElement {
         context,
         scope,
       ),
+      final PresentationInvocationElement element => element.render(
+        context,
+        scope,
+      ),
       final TextElement element => element.render(scope),
       final MarkdownElement element => element.render(scope),
       final IconElement element => element.render(context, scope),
@@ -136,6 +140,7 @@ extension on PresentationElement {
       final ListInputElement element => element.renderInput(context, scope),
       final MapInputElement element => element.renderInput(context, scope),
       final RecordInputElement element => element.renderInput(context, scope),
+      CommitControlsElement() => const SizedBox.shrink(),
       final ButtonElement element => element.render(scope),
       final IconButtonElement element => element.render(context, scope),
       final MenuElement element => element.render(scope),

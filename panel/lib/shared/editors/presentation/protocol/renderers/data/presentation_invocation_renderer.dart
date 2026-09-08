@@ -1,0 +1,100 @@
+part of "../../bound_value_renderer.dart";
+
+extension PresentationInvocationRendering on PresentationInvocationElement {
+  Widget render(BuildContext context, PresentationRenderScope scope) {
+    final definition = scope.resolvePresentation(null, presentationId);
+    if (definition == null ||
+        scope.activePresentations.contains(presentationId)) {
+      return presentationDiagnostic(context, [
+        const TypeDiagnostic(
+          code: TypeDiagnosticCode.invalidPresentation,
+          message: "Presentation is unavailable or recursively invoked",
+        ),
+      ]);
+    }
+    final bound = scope.bindPresentation(definition, arguments);
+    if (bound case TypeFailure(:final diagnostics))
+      return presentationDiagnostic(context, diagnostics);
+    return PresentationNodeRenderer(
+      node: bound.valueOrNull!.$1,
+      scope: bound.valueOrNull!.$2,
+    );
+  }
+}
+
+extension PresentationInputScope on PresentationRenderScope {
+  /// Arguments resolve in the caller before a fresh lexical scope is created.
+  TypeResult<(PresentationNode, PresentationRenderScope)> bindPresentation(
+    ResolvedPresentationDefinition definition,
+    Map<BindingId, BindingReference> arguments,
+  ) {
+    final substitutions = <String, TypeExpression>{};
+    final snapshots = <BindingId, BindingSnapshot>{};
+    final destinations = <BindingId, BindingReference>{};
+    final owners = <BindingId, BindingReference?>{};
+    if (definition.inputs.map((input) => input.id).toSet().length !=
+            definition.inputs.length ||
+        arguments.length != definition.inputs.length)
+      return _inputFailure("Presentation input count does not match");
+    for (final input in definition.inputs) {
+      final argument = arguments[input.id];
+      if (argument == null)
+        return _inputFailure("Missing presentation input: ${input.name}");
+      final resolved = resolve(argument);
+      if (resolved case TypeFailure(:final diagnostics))
+        return TypeResult.failure(diagnostics);
+      final value = resolved.valueOrNull!;
+      final expected = input.type.substitute(substitutions);
+      final actual = value.type;
+      var inferred = expected.inferPresentationSubstitutions(actual);
+      inferred ??= expected
+          .bindingNominal(registry)
+          .inferPresentationSubstitutions(actual.bindingNominal(registry));
+      if (inferred == null && expected is! NamedType) {
+        final representation = actual.bindingRepresentation(registry);
+        inferred = expected.inferPresentationSubstitutions(representation);
+        if (inferred == null &&
+            representation.isStructurallyAssignableTo(expected, registry))
+          inferred = {};
+      }
+      if (inferred == null)
+        return _inputFailure("Incompatible presentation input: ${input.name}");
+      substitutions.addAll(inferred);
+      if (input.access == PresentationInputAccess.edit &&
+          (!value.writable ||
+              inputAccess[argument.bindingId] == PresentationInputAccess.read))
+        return _inputFailure(
+          "Presentation input requires editing: ${input.name}",
+        );
+      snapshots[input.id] = BindingSnapshot(
+        type: value.type,
+        value: value.value,
+        revision: value.revision,
+        writable: value.writable,
+      );
+      destinations[input.id] = canonical(argument);
+      owners[input.id] = ownerReference(argument);
+    }
+    return TypeResult.success((
+      definition.root.substitute(substitutions),
+      copyWith(
+        expressions: expressions.copyWith(
+          bindings: BindingEnvironment(snapshots),
+        ),
+        aliases: destinations,
+        ownerBindings: owners,
+        inputAccess: {
+          for (final input in definition.inputs) input.id: input.access,
+        },
+        activePresentations: {...activePresentations, definition.id},
+      ),
+    ));
+  }
+}
+
+TypeFailure<T> _inputFailure<T>(String message) => TypeFailure([
+  TypeDiagnostic(
+    code: TypeDiagnosticCode.invalidPresentation,
+    message: message,
+  ),
+]);

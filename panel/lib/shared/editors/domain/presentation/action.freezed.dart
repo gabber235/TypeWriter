@@ -1641,14 +1641,15 @@ extension TypedMutationResultPatterns on TypedMutationResult {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MutationSuccess value)?  success,TResult Function( MutationConflict value)?  conflict,TResult Function( MutationInvalid value)?  invalid,TResult Function( MutationPermissionDenied value)?  permissionDenied,TResult Function( MutationUnavailable value)?  unavailable,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MutationSuccess value)?  success,TResult Function( MutationConflict value)?  conflict,TResult Function( MutationInvalid value)?  invalid,TResult Function( MutationPermissionDenied value)?  permissionDenied,TResult Function( MutationUncertain value)?  uncertain,TResult Function( MutationUnavailable value)?  unavailable,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case MutationSuccess() when success != null:
 return success(_that);case MutationConflict() when conflict != null:
 return conflict(_that);case MutationInvalid() when invalid != null:
 return invalid(_that);case MutationPermissionDenied() when permissionDenied != null:
-return permissionDenied(_that);case MutationUnavailable() when unavailable != null:
+return permissionDenied(_that);case MutationUncertain() when uncertain != null:
+return uncertain(_that);case MutationUnavailable() when unavailable != null:
 return unavailable(_that);case _:
   return orElse();
 
@@ -1667,14 +1668,15 @@ return unavailable(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MutationSuccess value)  success,required TResult Function( MutationConflict value)  conflict,required TResult Function( MutationInvalid value)  invalid,required TResult Function( MutationPermissionDenied value)  permissionDenied,required TResult Function( MutationUnavailable value)  unavailable,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MutationSuccess value)  success,required TResult Function( MutationConflict value)  conflict,required TResult Function( MutationInvalid value)  invalid,required TResult Function( MutationPermissionDenied value)  permissionDenied,required TResult Function( MutationUncertain value)  uncertain,required TResult Function( MutationUnavailable value)  unavailable,}){
 final _that = this;
 switch (_that) {
 case MutationSuccess():
 return success(_that);case MutationConflict():
 return conflict(_that);case MutationInvalid():
 return invalid(_that);case MutationPermissionDenied():
-return permissionDenied(_that);case MutationUnavailable():
+return permissionDenied(_that);case MutationUncertain():
+return uncertain(_that);case MutationUnavailable():
 return unavailable(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -1689,14 +1691,15 @@ return unavailable(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MutationSuccess value)?  success,TResult? Function( MutationConflict value)?  conflict,TResult? Function( MutationInvalid value)?  invalid,TResult? Function( MutationPermissionDenied value)?  permissionDenied,TResult? Function( MutationUnavailable value)?  unavailable,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MutationSuccess value)?  success,TResult? Function( MutationConflict value)?  conflict,TResult? Function( MutationInvalid value)?  invalid,TResult? Function( MutationPermissionDenied value)?  permissionDenied,TResult? Function( MutationUncertain value)?  uncertain,TResult? Function( MutationUnavailable value)?  unavailable,}){
 final _that = this;
 switch (_that) {
 case MutationSuccess() when success != null:
 return success(_that);case MutationConflict() when conflict != null:
 return conflict(_that);case MutationInvalid() when invalid != null:
 return invalid(_that);case MutationPermissionDenied() when permissionDenied != null:
-return permissionDenied(_that);case MutationUnavailable() when unavailable != null:
+return permissionDenied(_that);case MutationUncertain() when uncertain != null:
+return uncertain(_that);case MutationUnavailable() when unavailable != null:
 return unavailable(_that);case _:
   return null;
 
@@ -1714,13 +1717,14 @@ return unavailable(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int revision,  DataValue value)?  success,TResult Function( int expectedRevision,  int actualRevision,  DataValue actualValue)?  conflict,TResult Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult Function( String message)?  permissionDenied,TResult Function( List<TypeDiagnostic> diagnostics)?  unavailable,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int revision,  DataValue value)?  success,TResult Function( int expectedRevision,  int actualRevision,  DataValue actualValue)?  conflict,TResult Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult Function( String message)?  permissionDenied,TResult Function( String message,  Object cause,  StackTrace stackTrace,  Future<TypedMutationResult> Function()? replay,  Object? submissionId)?  uncertain,TResult Function( List<TypeDiagnostic> diagnostics)?  unavailable,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MutationSuccess() when success != null:
 return success(_that.revision,_that.value);case MutationConflict() when conflict != null:
 return conflict(_that.expectedRevision,_that.actualRevision,_that.actualValue);case MutationInvalid() when invalid != null:
 return invalid(_that.diagnostics);case MutationPermissionDenied() when permissionDenied != null:
-return permissionDenied(_that.message);case MutationUnavailable() when unavailable != null:
+return permissionDenied(_that.message);case MutationUncertain() when uncertain != null:
+return uncertain(_that.message,_that.cause,_that.stackTrace,_that.replay,_that.submissionId);case MutationUnavailable() when unavailable != null:
 return unavailable(_that.diagnostics);case _:
   return orElse();
 
@@ -1739,13 +1743,14 @@ return unavailable(_that.diagnostics);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int revision,  DataValue value)  success,required TResult Function( int expectedRevision,  int actualRevision,  DataValue actualValue)  conflict,required TResult Function( List<TypeDiagnostic> diagnostics)  invalid,required TResult Function( String message)  permissionDenied,required TResult Function( List<TypeDiagnostic> diagnostics)  unavailable,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int revision,  DataValue value)  success,required TResult Function( int expectedRevision,  int actualRevision,  DataValue actualValue)  conflict,required TResult Function( List<TypeDiagnostic> diagnostics)  invalid,required TResult Function( String message)  permissionDenied,required TResult Function( String message,  Object cause,  StackTrace stackTrace,  Future<TypedMutationResult> Function()? replay,  Object? submissionId)  uncertain,required TResult Function( List<TypeDiagnostic> diagnostics)  unavailable,}) {final _that = this;
 switch (_that) {
 case MutationSuccess():
 return success(_that.revision,_that.value);case MutationConflict():
 return conflict(_that.expectedRevision,_that.actualRevision,_that.actualValue);case MutationInvalid():
 return invalid(_that.diagnostics);case MutationPermissionDenied():
-return permissionDenied(_that.message);case MutationUnavailable():
+return permissionDenied(_that.message);case MutationUncertain():
+return uncertain(_that.message,_that.cause,_that.stackTrace,_that.replay,_that.submissionId);case MutationUnavailable():
 return unavailable(_that.diagnostics);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -1760,13 +1765,14 @@ return unavailable(_that.diagnostics);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int revision,  DataValue value)?  success,TResult? Function( int expectedRevision,  int actualRevision,  DataValue actualValue)?  conflict,TResult? Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult? Function( String message)?  permissionDenied,TResult? Function( List<TypeDiagnostic> diagnostics)?  unavailable,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int revision,  DataValue value)?  success,TResult? Function( int expectedRevision,  int actualRevision,  DataValue actualValue)?  conflict,TResult? Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult? Function( String message)?  permissionDenied,TResult? Function( String message,  Object cause,  StackTrace stackTrace,  Future<TypedMutationResult> Function()? replay,  Object? submissionId)?  uncertain,TResult? Function( List<TypeDiagnostic> diagnostics)?  unavailable,}) {final _that = this;
 switch (_that) {
 case MutationSuccess() when success != null:
 return success(_that.revision,_that.value);case MutationConflict() when conflict != null:
 return conflict(_that.expectedRevision,_that.actualRevision,_that.actualValue);case MutationInvalid() when invalid != null:
 return invalid(_that.diagnostics);case MutationPermissionDenied() when permissionDenied != null:
-return permissionDenied(_that.message);case MutationUnavailable() when unavailable != null:
+return permissionDenied(_that.message);case MutationUncertain() when uncertain != null:
+return uncertain(_that.message,_that.cause,_that.stackTrace,_that.replay,_that.submissionId);case MutationUnavailable() when unavailable != null:
 return unavailable(_that.diagnostics);case _:
   return null;
 
@@ -2072,6 +2078,78 @@ as String,
 /// @nodoc
 
 
+class MutationUncertain implements TypedMutationResult {
+  const MutationUncertain({required this.message, required this.cause, required this.stackTrace, this.replay, this.submissionId});
+  
+
+ final  String message;
+ final  Object cause;
+ final  StackTrace stackTrace;
+ final  Future<TypedMutationResult> Function()? replay;
+ final  Object? submissionId;
+
+/// Create a copy of TypedMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MutationUncertainCopyWith<MutationUncertain> get copyWith => _$MutationUncertainCopyWithImpl<MutationUncertain>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationUncertain&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.cause, cause)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace)&&(identical(other.replay, replay) || other.replay == replay)&&const DeepCollectionEquality().equals(other.submissionId, submissionId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(cause),stackTrace,replay,const DeepCollectionEquality().hash(submissionId));
+
+@override
+String toString() {
+  return 'TypedMutationResult.uncertain(message: $message, cause: $cause, stackTrace: $stackTrace, replay: $replay, submissionId: $submissionId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MutationUncertainCopyWith<$Res> implements $TypedMutationResultCopyWith<$Res> {
+  factory $MutationUncertainCopyWith(MutationUncertain value, $Res Function(MutationUncertain) _then) = _$MutationUncertainCopyWithImpl;
+@useResult
+$Res call({
+ String message, Object cause, StackTrace stackTrace, Future<TypedMutationResult> Function()? replay, Object? submissionId
+});
+
+
+
+
+}
+/// @nodoc
+class _$MutationUncertainCopyWithImpl<$Res>
+    implements $MutationUncertainCopyWith<$Res> {
+  _$MutationUncertainCopyWithImpl(this._self, this._then);
+
+  final MutationUncertain _self;
+  final $Res Function(MutationUncertain) _then;
+
+/// Create a copy of TypedMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? cause = null,Object? stackTrace = null,Object? replay = freezed,Object? submissionId = freezed,}) {
+  return _then(MutationUncertain(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,cause: null == cause ? _self.cause : cause ,stackTrace: null == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
+as StackTrace,replay: freezed == replay ? _self.replay : replay // ignore: cast_nullable_to_non_nullable
+as Future<TypedMutationResult> Function()?,submissionId: freezed == submissionId ? _self.submissionId : submissionId ,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class MutationUnavailable implements TypedMutationResult {
    MutationUnavailable(final  List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
   
@@ -2133,6 +2211,324 @@ class _$MutationUnavailableCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? diagnostics = null,}) {
   return _then(MutationUnavailable(
+null == diagnostics ? _self._diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
+as List<TypeDiagnostic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$LocalMutationResult {
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalMutationResult);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LocalMutationResult()';
+}
+
+
+}
+
+/// @nodoc
+class $LocalMutationResultCopyWith<$Res>  {
+$LocalMutationResultCopyWith(LocalMutationResult _, $Res Function(LocalMutationResult) __);
+}
+
+
+/// Adds pattern-matching-related methods to [LocalMutationResult].
+extension LocalMutationResultPatterns on LocalMutationResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LocalMutationApplied value)?  applied,TResult Function( LocalMutationInvalid value)?  invalid,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case LocalMutationApplied() when applied != null:
+return applied(_that);case LocalMutationInvalid() when invalid != null:
+return invalid(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LocalMutationApplied value)  applied,required TResult Function( LocalMutationInvalid value)  invalid,}){
+final _that = this;
+switch (_that) {
+case LocalMutationApplied():
+return applied(_that);case LocalMutationInvalid():
+return invalid(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LocalMutationApplied value)?  applied,TResult? Function( LocalMutationInvalid value)?  invalid,}){
+final _that = this;
+switch (_that) {
+case LocalMutationApplied() when applied != null:
+return applied(_that);case LocalMutationInvalid() when invalid != null:
+return invalid(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BindingId bindingId,  DataValue value)?  applied,TResult Function( List<TypeDiagnostic> diagnostics)?  invalid,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case LocalMutationApplied() when applied != null:
+return applied(_that.bindingId,_that.value);case LocalMutationInvalid() when invalid != null:
+return invalid(_that.diagnostics);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BindingId bindingId,  DataValue value)  applied,required TResult Function( List<TypeDiagnostic> diagnostics)  invalid,}) {final _that = this;
+switch (_that) {
+case LocalMutationApplied():
+return applied(_that.bindingId,_that.value);case LocalMutationInvalid():
+return invalid(_that.diagnostics);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BindingId bindingId,  DataValue value)?  applied,TResult? Function( List<TypeDiagnostic> diagnostics)?  invalid,}) {final _that = this;
+switch (_that) {
+case LocalMutationApplied() when applied != null:
+return applied(_that.bindingId,_that.value);case LocalMutationInvalid() when invalid != null:
+return invalid(_that.diagnostics);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class LocalMutationApplied implements LocalMutationResult {
+  const LocalMutationApplied({required this.bindingId, required this.value});
+  
+
+ final  BindingId bindingId;
+ final  DataValue value;
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LocalMutationAppliedCopyWith<LocalMutationApplied> get copyWith => _$LocalMutationAppliedCopyWithImpl<LocalMutationApplied>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalMutationApplied&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.value, value) || other.value == value));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,bindingId,value);
+
+@override
+String toString() {
+  return 'LocalMutationResult.applied(bindingId: $bindingId, value: $value)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LocalMutationAppliedCopyWith<$Res> implements $LocalMutationResultCopyWith<$Res> {
+  factory $LocalMutationAppliedCopyWith(LocalMutationApplied value, $Res Function(LocalMutationApplied) _then) = _$LocalMutationAppliedCopyWithImpl;
+@useResult
+$Res call({
+ BindingId bindingId, DataValue value
+});
+
+
+$BindingIdCopyWith<$Res> get bindingId;$DataValueCopyWith<$Res> get value;
+
+}
+/// @nodoc
+class _$LocalMutationAppliedCopyWithImpl<$Res>
+    implements $LocalMutationAppliedCopyWith<$Res> {
+  _$LocalMutationAppliedCopyWithImpl(this._self, this._then);
+
+  final LocalMutationApplied _self;
+  final $Res Function(LocalMutationApplied) _then;
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? bindingId = null,Object? value = null,}) {
+  return _then(LocalMutationApplied(
+bindingId: null == bindingId ? _self.bindingId : bindingId // ignore: cast_nullable_to_non_nullable
+as BindingId,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as DataValue,
+  ));
+}
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BindingIdCopyWith<$Res> get bindingId {
+  
+  return $BindingIdCopyWith<$Res>(_self.bindingId, (value) {
+    return _then(_self.copyWith(bindingId: value));
+  });
+}/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DataValueCopyWith<$Res> get value {
+  
+  return $DataValueCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class LocalMutationInvalid implements LocalMutationResult {
+  const LocalMutationInvalid(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
+  
+
+ final  List<TypeDiagnostic> _diagnostics;
+ List<TypeDiagnostic> get diagnostics {
+  if (_diagnostics is EqualUnmodifiableListView) return _diagnostics;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_diagnostics);
+}
+
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LocalMutationInvalidCopyWith<LocalMutationInvalid> get copyWith => _$LocalMutationInvalidCopyWithImpl<LocalMutationInvalid>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalMutationInvalid&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+
+@override
+String toString() {
+  return 'LocalMutationResult.invalid(diagnostics: $diagnostics)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LocalMutationInvalidCopyWith<$Res> implements $LocalMutationResultCopyWith<$Res> {
+  factory $LocalMutationInvalidCopyWith(LocalMutationInvalid value, $Res Function(LocalMutationInvalid) _then) = _$LocalMutationInvalidCopyWithImpl;
+@useResult
+$Res call({
+ List<TypeDiagnostic> diagnostics
+});
+
+
+
+
+}
+/// @nodoc
+class _$LocalMutationInvalidCopyWithImpl<$Res>
+    implements $LocalMutationInvalidCopyWith<$Res> {
+  _$LocalMutationInvalidCopyWithImpl(this._self, this._then);
+
+  final LocalMutationInvalid _self;
+  final $Res Function(LocalMutationInvalid) _then;
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? diagnostics = null,}) {
+  return _then(LocalMutationInvalid(
 null == diagnostics ? _self._diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
 as List<TypeDiagnostic>,
   ));

@@ -1,6 +1,7 @@
 part of "page_elements.dart";
 
-mixin _PageElementMutations on _$PageElements, _PageElementMutationContext {
+mixin _PageElementMutations
+    on _$PageElements, _PageElementMutationContext, _PageElementValues {
   void optimisticMoveAll(List<(String, int, int)> changed) {
     final positions = {for (final item in changed) item.$1: (item.$2, item.$3)};
     state = AsyncData([
@@ -34,9 +35,8 @@ mixin _PageElementMutations on _$PageElements, _PageElementMutationContext {
     ]);
   }
 
-  Future<void> moveAll(List<(String, int, int)> changed) => _optimisticPatch(
+  Future<void> moveAll(List<(String, int, int)> changed) => _commitPlacements(
     changed,
-    optimisticMoveAll,
     (element, x, y) => wire.ElementPlacement.createGraph(
       x: x,
       y: y,
@@ -45,9 +45,8 @@ mixin _PageElementMutations on _$PageElements, _PageElementMutationContext {
     ),
   );
 
-  Future<void> resizeAll(List<(String, int, int)> changed) => _optimisticPatch(
+  Future<void> resizeAll(List<(String, int, int)> changed) => _commitPlacements(
     changed,
-    optimisticResizeAll,
     (element, width, height) => wire.ElementPlacement.createGraph(
       x: _graph(element).x,
       y: _graph(element).y,
@@ -56,48 +55,97 @@ mixin _PageElementMutations on _$PageElements, _PageElementMutationContext {
     ),
   );
 
-  Future<void> updateCues(List<(String, int, int)> changed) => _optimisticPatch(
-    changed,
-    optimisticCuesUpdate,
-    (element, start, end) => switch (element.placement) {
-      wire.ElementPlacement_timelineSegmentWrapper() =>
-        wire.ElementPlacement.createTimelineSegment(
-          startFrame: start,
-          endFrame: end,
-        ),
-      wire.ElementPlacement_timelineKeyframeWrapper() =>
-        wire.ElementPlacement.createTimelineKeyframe(frame: start),
-      _ => throw ApiException.badRequest("The element is not a cue"),
-    },
-  );
+  Future<void> updateCues(List<(String, int, int)> changed) =>
+      _commitPlacements(
+        changed,
+        (element, start, end) => switch (element) {
+          wire.ElementPlacement_timelineSegmentWrapper() =>
+            wire.ElementPlacement.createTimelineSegment(
+              startFrame: start,
+              endFrame: end,
+            ),
+          wire.ElementPlacement_timelineKeyframeWrapper() =>
+            wire.ElementPlacement.createTimelineKeyframe(frame: start),
+          _ => throw ApiException.badRequest("The element is not a cue"),
+        },
+      );
 
-  Future<void> _optimisticPatch(
+  Future<void> _commitPlacements(
     List<(String, int, int)> changed,
-    void Function(List<(String, int, int)>) optimistic,
-    wire.ElementPlacement Function(wire.PageElement, int, int) placement,
+    wire.ElementPlacement Function(wire.ElementPlacement, int, int) placement,
   ) async {
     state.ensureReady();
     if (changed.isEmpty) return;
-    final elements = {for (final item in _document.elements) item.id.id: item};
-    optimistic(changed);
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(editorWorkspaceProvider),
+      scope: (organizationId, realmId),
+    );
+    final commands = _commands;
+    final targets = <TransactionalEditorSource, (String, EditorTarget)>{};
+    final changes = <TransactionalEditorSource, Map<DataPath, DataValue>>{};
     try {
-      await _submit(
-        _commands.changeElementPlacements([
-          for (final item in changed)
-            (
-              elements[item.$1]!,
-              placement(elements[item.$1]!, item.$2, item.$3),
-            ),
-        ]),
+      for (final (id, first, second) in changed) {
+        final target = _target(id);
+        final owner = owners.editor(target) as TransactionalEditorSource;
+        targets[owner] = (id, target);
+        final current = encodeElementPlacement(
+          owner.value(elementPlacementPath).valueOrNull!,
+        );
+        changes[owner] = {
+          elementPlacementPath: elementPlacementValue(
+            placement(current, first, second),
+          ),
+        };
+      }
+      final results = await EditorBatch.submit(
+        changes: changes,
+        send: (commits) async {
+          Future<Map<TransactionalEditorSource, TypedMutationResult>> accept(
+            wire.ApplyAuthoringBatchResponse response,
+          ) async => {
+            for (final entry in commits.entries)
+              entry.key: await acceptElementCommit(
+                response,
+                entry.value,
+                entry.key.document,
+              ),
+          };
+          try {
+            return await accept(
+              await commands.apply([
+                for (final entry in commits.entries)
+                  elementCommitOperation(
+                    targets[entry.key]!.$1,
+                    entry.value,
+                    entry.key.typeCatalog,
+                  ),
+              ]),
+            );
+          } on SubmissionException<wire.ApplyAuthoringBatchResponse> catch (
+            error
+          ) {
+            return {
+              for (final entry in commits.entries)
+                entry.key: error.toMutation(
+                  (response) async => (await accept(response))[entry.key]!,
+                ),
+            };
+          }
+        },
       );
-    } on Object {
-      _replaceFromSession();
-      rethrow;
+      for (final result in results.values) {
+        if (result is MutationSuccess || result is MutationUncertain) continue;
+        throw ApiException.conflict(
+          "The placement batch could not be saved. Review the retained draft.",
+        );
+      }
+    } finally {
+      owners.dispose();
     }
   }
 
-  wire.GraphPlacement _graph(wire.PageElement element) =>
-      switch (element.placement) {
+  wire.GraphPlacement _graph(wire.ElementPlacement element) =>
+      switch (element) {
         wire.ElementPlacement_graphWrapper(:final value) => value,
         _ => throw ApiException.badRequest("The element is not on a graph"),
       };

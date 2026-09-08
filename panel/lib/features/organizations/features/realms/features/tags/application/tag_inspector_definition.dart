@@ -59,7 +59,7 @@ final tagInspectorTypeDefinition = TypeDefinition(
 
 final _tagInspectorCatalog = TypeCatalog([tagInspectorTypeDefinition]);
 
-final _tagInspectorPresentation = PresentationDefinition(
+final _tagInspectorPresentation = PresentationDefinition.single(
   id: _tagInspectorPresentationId,
   target: NamedType(tagInspectorTypeRef),
   root: PresentationNode(

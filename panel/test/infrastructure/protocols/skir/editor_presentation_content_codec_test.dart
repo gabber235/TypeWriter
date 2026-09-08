@@ -6,6 +6,18 @@ import "package:typewriter_panel/typewriter_panel.dart";
 void main() {
   final codecs = _PresentationContentCodecs();
 
+  test("round trips commit controls with a nested binding", () {
+    codecs.expectRoundTrip(
+      CommitControlsElement(
+        binding: BindingReference(
+          bindingId: const BindingId(7),
+          path: DataPath.root.field("configuration"),
+        ),
+      ),
+      wire.PresentationElement_kind.commitControlsWrapper,
+    );
+  });
+
   test("round trips every status tone and optional label", () {
     final tones = StatusTone.values;
     final element = StatusElement(

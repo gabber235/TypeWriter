@@ -33,7 +33,7 @@ void main() {
           ),
         ]),
         presentations: [
-          PresentationDefinition(
+          PresentationDefinition.single(
             id: presentationId,
             target: NamedType(target),
             root: const PresentationNode(
@@ -103,7 +103,11 @@ void main() {
           ),
         ]),
         presentations: [
-          PresentationDefinition(id: id, target: NamedType(root), root: node),
+          PresentationDefinition.single(
+            id: id,
+            target: NamedType(root),
+            root: node,
+          ),
         ],
       ),
     );

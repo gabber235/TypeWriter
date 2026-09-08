@@ -1,5 +1,17 @@
 library;
 
+export "application/edit_owner.dart";
+export "application/projected_edit_owner.dart";
+export "application/multi_edit_owner.dart";
+export "application/editor_owner_registry.dart";
+export "application/editor_workspace.dart";
+export "application/editor_changes.dart";
+export "application/presentation_structural_mutation.dart";
+export "application/presentation_session.dart";
+export "application/local_editor.dart";
+export "domain/presentation_model.dart";
+export "presentation/composed_editor.dart";
+
 export "application/collection_presentation_search_source.dart";
 export "application/color_library.dart";
 export "application/editor_realm_runtime.dart";
@@ -20,6 +32,7 @@ export "domain/catalog/catalog.dart";
 export "domain/conversions/conversion.dart";
 export "domain/conversions/conversion_evaluator.dart";
 export "domain/editor_document.dart";
+export "domain/editor_commit_policy.dart";
 export "domain/editor_path_states.dart";
 export "domain/editor_reconciliation.dart";
 export "domain/editor_save_state.dart";
@@ -61,7 +74,14 @@ export "presentation/components/search_input/search_input.dart";
 export "presentation/components/validated_text_field.dart";
 export "presentation/editor_root.dart";
 export "presentation/editor_save_status.dart";
+export "presentation/editor_commit_controls.dart";
 export "presentation/editor_surface.dart";
 export "presentation/header.dart";
 export "presentation/protocol/protocol.dart";
 export "presentation/typed_editor.dart";
+
+export "domain/editor_target.dart";
+
+export "domain/editor_mutation_exception.dart";
+
+export "presentation/protocol/presentation_diagnostic.dart";

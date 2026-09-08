@@ -150,7 +150,9 @@ final rendererStoryRoot = ResolvedTypeRef(
 extension RendererStoryElementKind on PresentationElement {
   RendererStoryKind get rendererStoryKind => switch (this) {
     DiagnosticElement() => RendererStoryKind.diagnostic,
-    DefaultPresentationElement() => RendererStoryKind.defaultPresentation,
+    DefaultPresentationElement() ||
+    PresentationInvocationElement() ||
+    CommitControlsElement() => RendererStoryKind.defaultPresentation,
     TextElement() => RendererStoryKind.text,
     MarkdownElement() => RendererStoryKind.markdown,
     IconElement() => RendererStoryKind.icon,

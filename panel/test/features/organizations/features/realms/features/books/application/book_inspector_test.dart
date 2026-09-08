@@ -86,11 +86,12 @@ void main() {
         .whereType<OpenSelectionCapability>()
         .single;
     expect(open.allowMultiSelect, isFalse);
-    final document = (selected as BookSelection).document;
+    final inspector = selected as BookSelection;
+    final document = inspector.document;
     final resolved = TypeRegistry(
       document.typeCatalog,
     ).resolve(document.rootType as NamedType);
-    final root = document.presentations.single.root.element as ColumnElement;
+    final root = inspector.presentations.single.root.element as ColumnElement;
     final direct =
         root.children
                 .singleWhere((node) => node.id == "book.tags.search")
@@ -114,7 +115,7 @@ void main() {
     expect(document.revision, 4);
     expect(resolved.diagnostics, isEmpty);
     expect(resolved.valueOrNull, isNotNull);
-    expect(document.collections.single.id, tagCollectionSourceId);
+    expect(inspector.collections.single.id, tagCollectionSourceId);
     expect(document.mergePolicies, {
       DataPath.root.field("tags"): EditorMergePolicy.set,
     });
@@ -174,7 +175,7 @@ void main() {
       );
 
       await tester.pumpTestApp(
-        child: SizedBox(width: 400, child: _render(selected.document)),
+        child: SizedBox(width: 400, child: _render(selected)),
         settle: false,
       );
       await tester.pumpAndSettle();
@@ -194,16 +195,16 @@ void _expectTagChip(ChipElement chip) {
   expect(color.binding.path, DataPath.root.field("color"));
 }
 
-EditorProtocolRenderer _render(EditorDocument document) =>
+EditorProtocolRenderer _render(EditableSelectable inspector) =>
     EditorProtocolRenderer(
       envelope: TypedValueEnvelope(
-        rootType: (document.rootType as NamedType).reference,
-        rootValue: document.confirmedValue,
+        rootType: (inspector.document.rootType as NamedType).reference,
+        rootValue: inspector.document.confirmedValue,
       ),
-      typeCatalog: document.typeCatalog,
-      collections: document.collections,
-      presentations: document.presentations,
-      presentation: document.presentations.single.root,
+      typeCatalog: inspector.document.typeCatalog,
+      collections: inspector.collections,
+      presentations: inspector.presentations,
+      presentation: inspector.presentations.single.root,
     );
 
 Future<Selectable> _selected(ProviderContainer container) async {

@@ -161,7 +161,12 @@ class _PresentationHeaderChromeState extends State<PresentationHeaderChrome> {
           vertical: context.spacing.space1,
         ),
       ),
-      child: widget.child,
+      child: PresentationActivity(
+        active:
+            PresentationActivity.of(context) &&
+            (!collapsible || _expansibleController.isExpanded),
+        child: widget.child,
+      ),
     );
     final content = collapsible
         ? Expansible(

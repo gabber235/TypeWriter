@@ -22,6 +22,7 @@ import skirout.editor.v1.presentation.BoundControl
 import skirout.editor.v1.presentation.ButtonElement
 import skirout.editor.v1.presentation.ChildrenElement
 import skirout.editor.v1.presentation.ChildrenLayout
+import skirout.editor.v1.presentation.CommitControlsElement
 import skirout.editor.v1.presentation.ConcreteTypePresentation
 import skirout.editor.v1.presentation.CrossAxisAlignment
 import skirout.editor.v1.presentation.MainAxisAlignment
@@ -137,7 +138,46 @@ object PresentationCatalogAssembler {
                     emptyList()
                 }
             }
-        val byTarget = unique.groupBy(CompiledPresentation::target)
+        val available = unique.toMutableList()
+        do {
+            val known = available.associateBy { it.id }
+            val rejected =
+                available.filter { candidate ->
+                    runCatching {
+                        candidate.invocations.forEach { invocation ->
+                            val target = requireNotNull(known[invocation.id]) { "Invoked presentation ${invocation.id} is unavailable." }
+                            require(
+                                invocation.arguments.size == target.inputs.size,
+                            ) { "Presentation input count does not match ${invocation.id}." }
+                            require(
+                                invocation.arguments
+                                    .map { it.input }
+                                    .toSet()
+                                    .size == invocation.arguments.size,
+                            ) { "Presentation arguments must be unique." }
+                            invocation.arguments.forEach { argument ->
+                                require(
+                                    target.inputs.any {
+                                        it.index == argument.input.index && it.name == argument.input.name &&
+                                            it.type == argument.input.type
+                                    },
+                                ) { "Argument belongs to a different presentation declaration." }
+                                require(
+                                    argument.input.type == argument.value.type,
+                                ) { "Presentation argument type does not match ${argument.input.name}." }
+                                require(
+                                    !argument.input.editable || argument.value.input.editable,
+                                ) { "Presentation input ${argument.input.name} requires editing." }
+                            }
+                        }
+                    }.exceptionOrNull()?.let { failure ->
+                        diagnostics += candidate.diagnostic("invalid_invocation", failure.message.orEmpty())
+                        true
+                    } ?: false
+                }
+            available.removeAll(rejected.toSet())
+        } while (rejected.isNotEmpty())
+        val byTarget = available.groupBy(CompiledPresentation::target)
         val updatedTypes =
             types.definitions.map { definition ->
                 val candidates = byTarget[definition.id].orEmpty()
@@ -152,7 +192,7 @@ object PresentationCatalogAssembler {
         return PresentationCatalog(
             types = TypeCatalog(updatedTypes),
             definitions =
-                unique
+                available
                     .map(
                         CompiledPresentation::definition,
                     ).sortedBy { "${it.presentationId.namespace}/${it.presentationId.name}" },
@@ -168,15 +208,22 @@ object PresentationCatalogAssembler {
     ): CompiledPresentation? =
         runCatching {
             val specification = provider.specification(context)
-            val target = prototypes.require(specification.target).type
-            val compiler = NodeCompiler(prototypes)
+            val target =
+                specification.inputs
+                    .singleOrNull()
+                    ?.let { context.type(it.type) as? TypeExpression.Named }
+                    ?.reference
+            require(!provider.default || target != null) { "Default presentations require one nominal input." }
+            val compiler = NodeCompiler(prototypes, specification.inputs)
             val root = compiler.compile(specification.root, "root", emptyList())
             assertUniqueNodeIds(root)
             val id = PresentationId(provider.namespace, specification.name)
-            val dependencies = collectPresentationDependencies(root, target)
+            val dependencies = collectPresentationDependencies(root, specification.inputs.map { context.type(it.type) })
             CompiledPresentation(
                 id = id,
                 target = target,
+                inputs = specification.inputs,
+                invocations = compiler.invocations,
                 specificationName = specification.name,
                 default = provider.default,
                 priority = provider.priority,
@@ -184,7 +231,21 @@ object PresentationCatalogAssembler {
                 definition =
                     PresentationDefinition(
                         presentationId = SkirPresentationId(namespace = id.namespace, name = id.name),
-                        target = SkirTypeCodec.encode(TypeExpression.Named(target)).getOrThrow(),
+                        inputs =
+                            specification.inputs.map { input ->
+                                skirout.editor.v1.presentation.PresentationInput(
+                                    bindingId = BindingId(value = input.index),
+                                    name = input.name,
+                                    valueType = SkirTypeCodec.encode(context.type(input.type)).getOrThrow(),
+                                    access =
+                                        if (input.editable) {
+                                            skirout.editor.v1.presentation.PresentationInputAccess.EDIT
+                                        } else {
+                                            skirout.editor.v1.presentation.PresentationInputAccess.READ
+                                        },
+                                )
+                            },
+                        primaryInput = specification.inputs.singleOrNull()?.let { BindingId(value = it.index) },
                         root = root,
                         dependencies = dependencies.toWire(),
                     ),
@@ -218,7 +279,9 @@ object PresentationCatalogAssembler {
 
 private data class CompiledPresentation(
     val id: PresentationId,
-    val target: ResolvedTypeRef,
+    val target: ResolvedTypeRef?,
+    val inputs: List<PresentationInputRef<*>>,
+    val invocations: List<AuthoredPresentationNode.Invocation>,
     val specificationName: String,
     val default: Boolean,
     val priority: Int,
@@ -233,35 +296,120 @@ private data class CompiledPresentation(
 
 private class NodeCompiler(
     private val prototypes: TypePrototypeRegistry,
+    private val inputs: List<PresentationInputRef<*>>,
 ) {
-    private var nextBindingId = 1L
+    val invocations = mutableListOf<AuthoredPresentationNode.Invocation>()
+    private var nextBindingId = inputs.size.toLong()
+
+    private fun inputId(input: PresentationInputRef<*>): Long {
+        require(inputs.any { it === input }) { "Presentation references an input from a different declaration." }
+        return input.index
+    }
+
+    private fun reference(value: PresentationValue<*>): BindingRef =
+        BindingRef(
+            bindingId = BindingId(value = inputId(value.input)),
+            path = DataPath(segments = value.fields.map(::fieldPathSegment)),
+        )
 
     fun compile(
         node: AuthoredPresentationNode,
         path: String,
         bindingPath: List<String>,
+        bindingId: Long = 0L,
     ): PresentationNode =
         when (node) {
-            is AuthoredPresentationNode.Column -> column(node, path, bindingPath)
-            is AuthoredPresentationNode.Section -> section(node, path, bindingPath)
-            is AuthoredPresentationNode.TextInput -> textInput(node, path, bindingPath)
-            is AuthoredPresentationNode.NumericInput -> numericInput(node, path, bindingPath)
-            is AuthoredPresentationNode.CommandButton -> commandButton(node, path, bindingPath)
-            is AuthoredPresentationNode.RealmSearchInput -> realmSearchInput(node, path, bindingPath)
-            is AuthoredPresentationNode.PolymorphicInput -> polymorphicInput(node, path, bindingPath)
-            is AuthoredPresentationNode.Wire -> node.node
+            is AuthoredPresentationNode.CommitControls -> {
+                require(node.value.input.editable) { "Commit controls require an editable presentation input." }
+                presentationNode(
+                    path,
+                    PresentationElement.CommitControlsWrapper(CommitControlsElement(binding = reference(node.value))),
+                )
+            }
+
+            is AuthoredPresentationNode.Column -> {
+                column(node, path, bindingPath, bindingId)
+            }
+
+            is AuthoredPresentationNode.Section -> {
+                section(node, path, bindingPath, bindingId)
+            }
+
+            is AuthoredPresentationNode.TextInput -> {
+                textInput(node, path, bindingPath, bindingId)
+            }
+
+            is AuthoredPresentationNode.NumericInput -> {
+                numericInput(node, path, bindingPath, bindingId)
+            }
+
+            is AuthoredPresentationNode.CommandButton -> {
+                commandButton(node, path, bindingPath, bindingId)
+            }
+
+            is AuthoredPresentationNode.RealmSearchInput -> {
+                realmSearchInput(node, path, bindingPath, bindingId)
+            }
+
+            is AuthoredPresentationNode.PolymorphicInput -> {
+                polymorphicInput(node, path, bindingPath, bindingId)
+            }
+
+            is AuthoredPresentationNode.Wire -> {
+                node.node
+            }
+
+            is AuthoredPresentationNode.Text -> {
+                presentationNode(
+                    path,
+                    PresentationElement.TextWrapper(
+                        TextContent.partial(value = bindingExpression(node.value.type, inputId(node.value.input), node.value.fields)),
+                    ),
+                )
+            }
+
+            is AuthoredPresentationNode.DefaultEditor -> {
+                presentationNode(
+                    path,
+                    PresentationElement.DefaultPresentationWrapper(
+                        skirout.editor.v1.presentation.DefaultPresentationElement(
+                            binding = reference(node.value),
+                            presentationId = null,
+                        ),
+                    ),
+                )
+            }
+
+            is AuthoredPresentationNode.Invocation -> {
+                presentationNode(
+                    path,
+                    PresentationElement.InvocationWrapper(
+                        skirout.editor.v1.presentation.PresentationInvocation(
+                            presentationId = SkirPresentationId(namespace = node.id.namespace, name = node.id.name),
+                            arguments =
+                                node.also(invocations::add).arguments.map { argument ->
+                                    skirout.editor.v1.presentation.PresentationArgument(
+                                        input = BindingId(value = argument.input.index),
+                                        binding = reference(argument.value),
+                                    )
+                                },
+                        ),
+                    ),
+                )
+            }
         }
 
     private fun column(
         node: AuthoredPresentationNode.Column,
         path: String,
         bindingPath: List<String>,
+        bindingId: Long = 0L,
     ): PresentationNode =
         presentationNode(
             path,
             PresentationElement.ChildrenWrapper(
                 ChildrenElement(
-                    children = node.children.mapIndexed { index, child -> compile(child, "$path.$index", bindingPath) },
+                    children = node.children.mapIndexed { index, child -> compile(child, "$path.$index", bindingPath, bindingId) },
                     layout =
                         ChildrenLayout.ColumnWrapper(
                             AxisChildrenLayout(
@@ -278,11 +426,12 @@ private class NodeCompiler(
         node: AuthoredPresentationNode.Section,
         path: String,
         bindingPath: List<String>,
+        bindingId: Long = 0L,
     ): PresentationNode =
         presentationNode(
             node.key,
             PresentationElement.SectionWrapper(
-                SectionLayout(child = compile(node.child, "$path.content", bindingPath), border = null),
+                SectionLayout(child = compile(node.child, "$path.content", bindingPath, bindingId), border = null),
             ),
             PresentationHeader(
                 binding = null,
@@ -299,10 +448,11 @@ private class NodeCompiler(
         node: AuthoredPresentationNode.TextInput,
         path: String,
         bindingPath: List<String>,
+        bindingId: Long = 0L,
     ): PresentationNode {
         val field = field(node.field)
-        val fields = bindingPath + field
-        val control = boundControl(fields, node.label)
+        val fields = ((if (node.field.input == null) bindingPath else node.field.prefix) + field).filter(String::isNotEmpty)
+        val control = boundControl(fields, node.label, node.field.input?.let(::inputId) ?: bindingId)
         return presentationNode(
             "field:${fields.joinToString(".")}:$path",
             PresentationElement.TextInputWrapper(
@@ -315,12 +465,13 @@ private class NodeCompiler(
         node: AuthoredPresentationNode.NumericInput,
         path: String,
         bindingPath: List<String>,
+        bindingId: Long = 0L,
     ): PresentationNode {
         val field = field(node.field)
-        val fields = bindingPath + field
+        val fields = ((if (node.field.input == null) bindingPath else node.field.prefix) + field).filter(String::isNotEmpty)
         return presentationNode(
             "field:${fields.joinToString(".")}:$path",
-            PresentationElement.NumericInputWrapper(boundControl(fields, node.label)),
+            PresentationElement.NumericInputWrapper(boundControl(fields, node.label, node.field.input?.let(::inputId) ?: bindingId)),
         )
     }
 
@@ -328,8 +479,11 @@ private class NodeCompiler(
         node: AuthoredPresentationNode.CommandButton,
         path: String,
         bindingPath: List<String>,
+        bindingId: Long = 0L,
     ): PresentationNode {
-        val payload = bindingExpression(node.capability.requestType, 0L, bindingPath)
+        val payload =
+            node.payload?.let { bindingExpression(it.type, inputId(it.input), it.fields) }
+                ?: bindingExpression(node.capability.requestType, bindingId, bindingPath)
         val action =
             EditorAction.RealmWrapper(
                 RealmEditorAction.createCommand(
@@ -347,9 +501,10 @@ private class NodeCompiler(
         node: AuthoredPresentationNode.RealmSearchInput,
         path: String,
         bindingPath: List<String>,
+        bindingId: Long = 0L,
     ): PresentationNode {
         val field = field(node.field)
-        val fields = bindingPath + field
+        val fields = ((if (node.field.input == null) bindingPath else node.field.prefix) + field).filter(String::isNotEmpty)
         val queryBindingId = allocateBindingId()
         val summaryBindingId = allocateBindingId()
         val resultBindingId = allocateBindingId()
@@ -372,7 +527,9 @@ private class NodeCompiler(
         val provider =
             SearchProvider.createRealmCallback(
                 capabilityId = CapabilityId(value = node.capability.id.value),
-                payload = bindingExpression(node.capability.requestType, 0L, bindingPath),
+                payload =
+                    node.payload?.let { bindingExpression(it.type, inputId(it.input), it.fields) }
+                        ?: bindingExpression(node.capability.requestType, bindingId, bindingPath),
                 result = result,
                 selectors = emptyList(),
             )
@@ -380,7 +537,7 @@ private class NodeCompiler(
             "field:${fields.joinToString(".")}:$path",
             PresentationElement.SearchInputWrapper(
                 SearchControl(
-                    control = boundControl(fields, node.label),
+                    control = boundControl(fields, node.label, node.field.input?.let(::inputId) ?: bindingId),
                     selectionMode = SearchSelectionMode.SINGLE,
                     queryBindingId = BindingId(value = queryBindingId),
                     summaryBindingId = BindingId(value = summaryBindingId),
@@ -399,21 +556,25 @@ private class NodeCompiler(
         node: AuthoredPresentationNode.PolymorphicInput,
         path: String,
         bindingPath: List<String>,
+        bindingId: Long = 0L,
     ): PresentationNode {
         val field = field(node.field)
-        val fields = bindingPath + field
+        val fields = ((if (node.field.input == null) bindingPath else node.field.prefix) + field).filter(String::isNotEmpty)
         val types =
             node.types.mapIndexed { index, type ->
                 ConcreteTypePresentation(
                     concreteType = SkirTypeCodec.encode(prototypes.require(type.type).type).getOrThrow(),
                     label = stringExpression(type.label),
-                    presentation = compile(type.root, "$path.type.$index", fields),
+                    presentation = compile(type.root, "$path.type.$index", fields, node.field.input?.let(::inputId) ?: bindingId),
                 )
             }
         return presentationNode(
             "field:${fields.joinToString(".")}",
             PresentationElement.PolymorphicInputWrapper(
-                PolymorphicControl(control = boundControl(fields, null), concreteTypes = types),
+                PolymorphicControl(
+                    control = boundControl(fields, null, node.field.input?.let(::inputId) ?: bindingId),
+                    concreteTypes = types,
+                ),
             ),
         )
     }
@@ -428,7 +589,7 @@ private class NodeCompiler(
         fields: List<String>,
     ): TypedExpression =
         bindingExpression(
-            SkirTypeCodec.encode(TypeExpression.Named(prototypes.require(type).type)).getOrThrow(),
+            SkirTypeCodec.encode(PresentationBuildContext(prototypes).type(type)).getOrThrow(),
             bindingId,
             fields,
         )
@@ -457,6 +618,7 @@ private class NodeCompiler(
     private fun boundControl(
         fields: List<String>,
         label: String?,
+        bindingId: Long,
     ): BoundControl =
         BoundControl(
             binding =
@@ -465,7 +627,7 @@ private class NodeCompiler(
                         DataPath(
                             segments = fields.map { DataPathSegment.FieldWrapper(FieldPathSegment(fieldName = it)) },
                         ),
-                    bindingId = BindingId(value = 0),
+                    bindingId = BindingId(value = bindingId),
                 ),
             label = label?.let(::stringExpression),
             description = null,
