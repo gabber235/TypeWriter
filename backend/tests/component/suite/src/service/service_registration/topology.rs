@@ -6,11 +6,12 @@ use typewriter_component_test::prelude::skir_record_id;
 use wasmcloud_utils::skir::base::service::v1::topology::{
     ChildRuntimeState, ChildRuntimeStatus, ConfigureServiceHostRequest,
     ConfigureServiceHostResponse, EngineRealmSelection, EngineRealmSelection_ExistingRealm,
-    EngineTarget, HostExecutionConfiguration, HostedEngineConfiguration,
-    HostedRealmConfiguration, ReportHostExecutionRequest, ReportHostExecutionResponse,
-    GetServiceMessagingScopeRequest, GetServiceMessagingScopeResponse, RegisterServiceHostRequest,
-    RegisterServiceHostResponse, SupportedEngine, WatchHostExecutionRequest, WatchHostExecutionResponse,
-    WatchOrganizationTopologyRequest, WatchOrganizationTopologyResponse,
+    EngineTarget, GetServiceMessagingScopeRequest, GetServiceMessagingScopeResponse,
+    HostExecutionConfiguration, HostedEngineConfiguration, HostedRealmConfiguration,
+    RegisterServiceHostRequest, RegisterServiceHostResponse, ReportHostExecutionRequest,
+    ReportHostExecutionResponse, SupportedEngine, WatchHostExecutionRequest,
+    WatchHostExecutionResponse, WatchOrganizationTopologyRequest,
+    WatchOrganizationTopologyResponse,
 };
 
 use super::{ServiceRegistration, database, request};
@@ -91,8 +92,18 @@ async fn messaging_scope_reports_exact_owned_and_attached_realm(
         anyhow::bail!("expected messaging scope");
     };
     assert_eq!(scope.organization_id, "test_org");
-    assert_eq!(scope.owned_realm.expect("owned Realm").key.to_string(), "realm");
-    assert_eq!(scope.attached_realm.expect("attached Realm").key.to_string(), "realm");
+    assert_eq!(
+        scope.owned_realm.expect("owned Realm").key.to_string(),
+        "realm"
+    );
+    assert_eq!(
+        scope
+            .attached_realm
+            .expect("attached Realm")
+            .key
+            .to_string(),
+        "realm"
+    );
     Ok(())
 }
 
@@ -128,7 +139,10 @@ async fn watch_returns_first_class_topology_for_one_organization(
     assert_eq!(topology.realms[0].owner_host.id.key.to_string(), "host");
     assert_eq!(topology.realms[0].owner_host.name, "host_service");
     assert_eq!(topology.engines[0].owner_host.name, "host_service");
-    assert_eq!(topology.engines[0].realm.realm_id, topology.realms[0].realm_id);
+    assert_eq!(
+        topology.engines[0].realm.realm_id,
+        topology.realms[0].realm_id
+    );
     assert_eq!(topology.engines[0].realm.owner_host.name, "host_service");
     Ok(())
 }
@@ -138,7 +152,18 @@ async fn configure_creates_local_realm_and_engine_transactionally(
     context: &mut TestContext<ServiceRegistration>,
 ) -> TestResult {
     seed_paper_host(context, "host", "host_service").await?;
-    expect_publications(context, 3, 0, 1)?;
+    context.messaging_mock()?.expect_publish(ORGANIZATION_TOPOLOGY_SUBJECT)
+        .body_matches(|bytes| {
+            matches!(
+                WatchOrganizationTopologyResponse::serializer().from_bytes(bytes, wasmcloud_utils::skir_client::UnrecognizedValues::Drop),
+                Ok(WatchOrganizationTopologyResponse::ConfigurationChanged(change))
+                    if change.host.revision == 2 && change.realm.is_some() && change.engine.is_some()
+                        && change.removed_resources.is_empty()
+            )
+        });
+    context
+        .messaging_mock()?
+        .expect_publish(HOST_EXECUTION_SUBJECT);
 
     let response = configure(
         context,
@@ -186,12 +211,10 @@ async fn configure_runs_an_advertised_custom_engine_on_a_standalone_host(
 ) -> TestResult {
     seed_standalone_host(context, "host", "host_service").await?;
     database(context)?
-        .seed(
-            "UPDATE service_host:host SET supported_engines = [{ engine_id: 'custom_engine' }]",
-        )
+        .seed("UPDATE service_host:host SET supported_engines = [{ engine_id: 'custom_engine' }]")
         .execute()
         .await?;
-    expect_publications(context, 3, 0, 1)?;
+    expect_publications(context, 1, 0, 1)?;
     let target = EngineTarget {
         engine_id: "custom_engine".into(),
         version_constraint: "^0.1".into(),
@@ -219,7 +242,10 @@ async fn configure_runs_an_advertised_custom_engine_on_a_standalone_host(
     let ConfigureServiceHostResponse::Success(configured) = response else {
         anyhow::bail!("expected custom engine configuration to succeed");
     };
-    assert_eq!(configured.realm.expect("Realm must exist").target_engine, target);
+    assert_eq!(
+        configured.realm.expect("Realm must exist").target_engine,
+        target
+    );
     assert_eq!(configured.engine.expect("engine must exist").target, target);
     Ok(())
 }
@@ -236,14 +262,14 @@ async fn configure_moves_engine_to_existing_realm_before_removing_local_realm(
         )
         .execute()
         .await?;
-    expect_publications(context, 3, 0, 1)?;
+    expect_publications(context, 1, 0, 1)?;
     let first = configure(context, 1, combined_execution()).await?;
     let ConfigureServiceHostResponse::Success(first) = first else {
         anyhow::bail!("expected initial combined configuration");
     };
     first.realm.expect("local Realm must exist");
 
-    expect_publications(context, 2, 1, 1)?;
+    expect_publications(context, 1, 0, 1)?;
     let response = configure(
         context,
         2,
@@ -364,7 +390,7 @@ async fn realm_only_host_may_target_an_engine_it_does_not_execute(
         .seed("UPDATE service_host:host SET supported_engines = []")
         .execute()
         .await?;
-    expect_publications(context, 2, 0, 1)?;
+    expect_publications(context, 1, 0, 1)?;
     let target = EngineTarget {
         engine_id: "paper".into(),
         version_constraint: "^1".into(),
@@ -388,7 +414,10 @@ async fn realm_only_host_may_target_an_engine_it_does_not_execute(
     let ConfigureServiceHostResponse::Success(configured) = response else {
         anyhow::bail!("expected Realm only configuration to succeed");
     };
-    assert_eq!(configured.realm.expect("Realm must exist").target_engine, target);
+    assert_eq!(
+        configured.realm.expect("Realm must exist").target_engine,
+        target
+    );
     assert!(configured.engine.is_none());
     Ok(())
 }
@@ -402,7 +431,7 @@ async fn configure_returns_conflict_for_stale_host_revision(
     let ConfigureServiceHostResponse::ConflictError(conflict) = response else {
         anyhow::bail!("expected host conflict");
     };
-    assert_eq!(conflict.actual.revision, 1);
+    assert_eq!(conflict.actual.host.revision, 1);
     Ok(())
 }
 
@@ -472,10 +501,7 @@ async fn host_watch_and_report_apply_only_current_topology_revision(
 
     expect_publications(context, 2, 0, 0)?;
     let applied = report(context, 4, active_state()).await?;
-    assert!(matches!(
-        applied,
-        ReportHostExecutionResponse::Success(_)
-    ));
+    assert!(matches!(applied, ReportHostExecutionResponse::Success(_)));
     assert_jm!(
         database
             .query_json("RETURN [service_host:host.topology_revision.applied, service_host:host.state.status, realm_instance:realm.state.status, service_host:other_host.topology_revision.applied, service_host:other_host.state.status]")

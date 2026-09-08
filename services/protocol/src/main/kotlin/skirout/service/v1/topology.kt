@@ -3790,6 +3790,248 @@ sealed class RegisterServiceHostResponse private constructor() {
     }
 }
 
+sealed interface HostConfigurationChange_OrMutable {
+    val host: skirout.service.v1.topology.ServiceHost_OrMutable;
+    val realm: skirout.service.v1.topology.RealmInstance_OrMutable?;
+    val engine: skirout.service.v1.topology.EngineInstance_OrMutable?;
+    val removedResources: kotlin.collections.List<skirout.kernel.v1.record_id.RecordId_OrMutable>;
+
+    fun toFrozen(): skirout.service.v1.topology.HostConfigurationChange;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class HostConfigurationChange private constructor(
+    override val host: skirout.service.v1.topology.ServiceHost,
+    override val realm: skirout.service.v1.topology.RealmInstance?,
+    override val engine: skirout.service.v1.topology.EngineInstance?,
+    override val removedResources: kotlin.collections.List<skirout.kernel.v1.record_id.RecordId>,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.HostConfigurationChange>? =
+        null,
+): skirout.service.v1.topology.HostConfigurationChange_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        host: skirout.service.v1.topology.ServiceHost_OrMutable,
+        realm: skirout.service.v1.topology.RealmInstance_OrMutable?,
+        engine: skirout.service.v1.topology.EngineInstance_OrMutable?,
+        removedResources: kotlin.collections.Iterable<skirout.kernel.v1.record_id.RecordId_OrMutable>,
+        _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.HostConfigurationChange>? =
+            null,
+    ): this(
+        host.toFrozen(),
+        if (realm != null) realm.toFrozen() else null,
+        if (engine != null) engine.toFrozen() else null,
+        build.skir.internal.toFrozenList(removedResources, { it.toFrozen() }),
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        host = this.host,
+        realm = this.realm,
+        engine = this.engine,
+        removedResources = this.removedResources,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        host: skirout.service.v1.topology.ServiceHost_OrMutable =
+            this.host,
+        realm: skirout.service.v1.topology.RealmInstance_OrMutable? =
+            this.realm,
+        engine: skirout.service.v1.topology.EngineInstance_OrMutable? =
+            this.engine,
+        removedResources: kotlin.collections.Iterable<skirout.kernel.v1.record_id.RecordId_OrMutable> =
+            this.removedResources,
+    ) = skirout.service.v1.topology.HostConfigurationChange(
+        host.toFrozen(),
+        if (realm != null) realm.toFrozen() else null,
+        if (engine != null) engine.toFrozen() else null,
+        build.skir.internal.toFrozenList(removedResources, { it.toFrozen() }),
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.service.v1.topology.HostConfigurationChange && this.host == other.host && this.realm == other.realm && this.engine == other.engine && this.removedResources == other.removedResources);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.host, this.realm, this.engine, this.removedResources).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.service.v1.topology.HostConfigurationChange.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [HostConfigurationChange]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var host: skirout.service.v1.topology.ServiceHost_OrMutable =
+            skirout.service.v1.topology.ServiceHost.partial(),
+        override var realm: skirout.service.v1.topology.RealmInstance_OrMutable? =
+            null,
+        override var engine: skirout.service.v1.topology.EngineInstance_OrMutable? =
+            null,
+        override var removedResources: kotlin.collections.List<skirout.kernel.v1.record_id.RecordId_OrMutable> =
+            build.skir.internal.emptyFrozenList<skirout.kernel.v1.record_id.RecordId>(),
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.HostConfigurationChange>? =
+            null,
+    ): skirout.service.v1.topology.HostConfigurationChange_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.service.v1.topology.HostConfigurationChange(
+            host = this.host,
+            realm = this.realm,
+            engine = this.engine,
+            removedResources = this.removedResources,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [host] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [host] and returns it.
+         */
+        val mutableHost: skirout.service.v1.topology.ServiceHost.Mutable get() {
+            var value = this.host;
+            return when (value) {
+                is skirout.service.v1.topology.ServiceHost -> {
+                    value = value.toMutable();
+                    this.host = value;
+                    return value;
+                }
+                is skirout.service.v1.topology.ServiceHost.Mutable -> value;
+            }
+        }
+
+        /**
+         * If the value of [removedResources] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [removedResources] and returns it.
+         */
+        val mutableRemovedResources: kotlin.collections.MutableList<skirout.kernel.v1.record_id.RecordId_OrMutable> get() {
+            var value = this.removedResources;
+            return when (value) {
+                is build.skir.internal.MutableList -> value;
+                else -> {
+                    value = build.skir.internal.MutableList(value);
+                    this.removedResources = value;
+                    value;
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.service.v1.topology.HostConfigurationChange(
+                skirout.service.v1.topology.ServiceHost.partial(),
+                null,
+                null,
+                build.skir.internal.emptyFrozenList<skirout.kernel.v1.record_id.RecordId>(),
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [HostConfigurationChange].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            host: skirout.service.v1.topology.ServiceHost_OrMutable =
+                skirout.service.v1.topology.ServiceHost.partial(),
+            realm: skirout.service.v1.topology.RealmInstance_OrMutable? =
+                null,
+            engine: skirout.service.v1.topology.EngineInstance_OrMutable? =
+                null,
+            removedResources: kotlin.collections.Iterable<skirout.kernel.v1.record_id.RecordId_OrMutable> =
+                build.skir.internal.emptyFrozenList<skirout.kernel.v1.record_id.RecordId>(),
+        ) = skirout.service.v1.topology.HostConfigurationChange(
+            host = host,
+            realm = realm,
+            engine = engine,
+            removedResources = removedResources,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "service/v1/topology.skir:HostConfigurationChange",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [HostConfigurationChange] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [HostConfigurationChange] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "host",
+                "host",
+                0,
+                skirout.service.v1.topology.ServiceHost.serializer,
+                "",
+                { it.host },
+                { mut, v -> mut.host = v },
+            );
+            serializerImpl.addField(
+                "realm",
+                "realm",
+                1,
+                build.skir.Serializers.optional(
+                    skirout.service.v1.topology.RealmInstance.serializer,
+                ),
+                "",
+                { it.realm },
+                { mut, v -> mut.realm = v },
+            );
+            serializerImpl.addField(
+                "engine",
+                "engine",
+                2,
+                build.skir.Serializers.optional(
+                    skirout.service.v1.topology.EngineInstance.serializer,
+                ),
+                "",
+                { it.engine },
+                { mut, v -> mut.engine = v },
+            );
+            serializerImpl.addField(
+                "removed_resources",
+                "removedResources",
+                3,
+                build.skir.Serializers.list(
+                    skirout.kernel.v1.record_id.RecordId.serializer,
+                ),
+                "",
+                { it.removedResources },
+                { mut, v -> mut.removedResources = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
 sealed interface ConfigureServiceHostRequest_OrMutable {
     val hostId: skirout.kernel.v1.record_id.RecordId_OrMutable;
     val expectedRevision: kotlin.Long;
@@ -4032,10 +4274,10 @@ sealed class ConfigureServiceHostResponse private constructor() {
     }
 
     class SuccessWrapper private constructor (
-        val value: skirout.service.v1.topology.ConfigureServiceHostResponse.Success,
+        val value: skirout.service.v1.topology.HostConfigurationChange,
     ) : skirout.service.v1.topology.ConfigureServiceHostResponse() {
         constructor(
-            value: skirout.service.v1.topology.ConfigureServiceHostResponse.Success_OrMutable,
+            value: skirout.service.v1.topology.HostConfigurationChange_OrMutable,
         ): this(value.toFrozen()) {}
 
         override val kind get() = Kind.SUCCESS_WRAPPER;
@@ -4175,7 +4417,7 @@ sealed class ConfigureServiceHostResponse private constructor() {
          */
         val UNKNOWN = @kotlin.Suppress("DEPRECATION") Unknown(Kind.UNKNOWN, null);
 
-        /** Shortcut for `SuccessWrapper(skirout.service.v1.topology.ConfigureServiceHostResponse.Success(...))`. */
+        /** Shortcut for `SuccessWrapper(skirout.service.v1.topology.HostConfigurationChange(...))`. */
         @kotlin.Suppress("UNUSED_PARAMETER")
         fun createSuccess(
             _mustNameArguments: _MustNameArguments =
@@ -4183,11 +4425,13 @@ sealed class ConfigureServiceHostResponse private constructor() {
             host: skirout.service.v1.topology.ServiceHost_OrMutable,
             realm: skirout.service.v1.topology.RealmInstance_OrMutable?,
             engine: skirout.service.v1.topology.EngineInstance_OrMutable?,
+            removedResources: kotlin.collections.Iterable<skirout.kernel.v1.record_id.RecordId_OrMutable>,
         ) = SuccessWrapper(
-            skirout.service.v1.topology.ConfigureServiceHostResponse.Success(
+            skirout.service.v1.topology.HostConfigurationChange(
                 host = host,
                 realm = realm,
                 engine = engine,
+                removedResources = removedResources,
             )
         );
 
@@ -4196,7 +4440,7 @@ sealed class ConfigureServiceHostResponse private constructor() {
         fun createConflictError(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            actual: skirout.service.v1.topology.ServiceHost_OrMutable,
+            actual: skirout.service.v1.topology.HostConfigurationChange_OrMutable,
         ) = ConflictErrorWrapper(
             skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError(
                 actual = actual,
@@ -4292,7 +4536,7 @@ sealed class ConfigureServiceHostResponse private constructor() {
                     1,
                     "success",
                     Kind.SUCCESS_WRAPPER.ordinal,
-                    skirout.service.v1.topology.ConfigureServiceHostResponse.Success.serializer,
+                    skirout.service.v1.topology.HostConfigurationChange.serializer,
                     "",
                     { SuccessWrapper(it) },
                     { it.value },
@@ -4356,208 +4600,8 @@ sealed class ConfigureServiceHostResponse private constructor() {
         }
     }
 
-    sealed interface Success_OrMutable {
-        val host: skirout.service.v1.topology.ServiceHost_OrMutable;
-        val realm: skirout.service.v1.topology.RealmInstance_OrMutable?;
-        val engine: skirout.service.v1.topology.EngineInstance_OrMutable?;
-
-        fun toFrozen(): skirout.service.v1.topology.ConfigureServiceHostResponse.Success;
-    }
-
-    /** Deeply immutable. */
-    @kotlin.Suppress("UNUSED_PARAMETER")
-    class Success private constructor(
-        override val host: skirout.service.v1.topology.ServiceHost,
-        override val realm: skirout.service.v1.topology.RealmInstance?,
-        override val engine: skirout.service.v1.topology.EngineInstance?,
-        private val _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.Success>? =
-            null,
-    ): skirout.service.v1.topology.ConfigureServiceHostResponse.Success_OrMutable {
-        constructor(
-            _mustNameArguments: _MustNameArguments =
-                _MustNameArguments,
-            host: skirout.service.v1.topology.ServiceHost_OrMutable,
-            realm: skirout.service.v1.topology.RealmInstance_OrMutable?,
-            engine: skirout.service.v1.topology.EngineInstance_OrMutable?,
-            _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.Success>? =
-                null,
-        ): this(
-            host.toFrozen(),
-            if (realm != null) realm.toFrozen() else null,
-            if (engine != null) engine.toFrozen() else null,
-            _unrecognizedFields,
-        ) {}
-
-        @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
-        override fun toFrozen() = this;
-
-        /** Returns a mutable shallow copy of this instance */
-        fun toMutable() = Mutable(
-            host = this.host,
-            realm = this.realm,
-            engine = this.engine,
-        );
-
-        /** Returns a shallow copy of this instance with the specified fields replaced. */
-        fun copy(
-            _mustNameArguments: _MustNameArguments =
-                _MustNameArguments,
-            host: skirout.service.v1.topology.ServiceHost_OrMutable =
-                this.host,
-            realm: skirout.service.v1.topology.RealmInstance_OrMutable? =
-                this.realm,
-            engine: skirout.service.v1.topology.EngineInstance_OrMutable? =
-                this.engine,
-        ) = skirout.service.v1.topology.ConfigureServiceHostResponse.Success(
-            host.toFrozen(),
-            if (realm != null) realm.toFrozen() else null,
-            if (engine != null) engine.toFrozen() else null,
-            this._unrecognizedFields,
-        );
-
-        @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
-        fun copy() = this;
-
-        override fun equals(other: kotlin.Any?): kotlin.Boolean {
-            return this === other || (other is skirout.service.v1.topology.ConfigureServiceHostResponse.Success && this.host == other.host && this.realm == other.realm && this.engine == other.engine);
-        }
-
-        override fun hashCode(): kotlin.Int {
-            return kotlin.collections.listOf<kotlin.Any?>(this.host, this.realm, this.engine).hashCode();
-        }
-
-        override fun toString(): kotlin.String {
-            return build.skir.internal.toStringImpl(
-                this,
-                skirout.service.v1.topology.ConfigureServiceHostResponse.Success.serializerImpl,
-            )
-        }
-
-        /** Mutable version of [Success]. */
-        class Mutable internal constructor(
-            _mustNameArguments: _MustNameArguments =
-                _MustNameArguments,
-            override var host: skirout.service.v1.topology.ServiceHost_OrMutable =
-                skirout.service.v1.topology.ServiceHost.partial(),
-            override var realm: skirout.service.v1.topology.RealmInstance_OrMutable? =
-                null,
-            override var engine: skirout.service.v1.topology.EngineInstance_OrMutable? =
-                null,
-            internal var _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.Success>? =
-                null,
-        ): skirout.service.v1.topology.ConfigureServiceHostResponse.Success_OrMutable {
-            /** Returns a deeply immutable copy of this instance */
-            override fun toFrozen() = skirout.service.v1.topology.ConfigureServiceHostResponse.Success(
-                host = this.host,
-                realm = this.realm,
-                engine = this.engine,
-                _unrecognizedFields = this._unrecognizedFields,
-            );
-
-            /**
-             * If the value of [host] is already mutable, returns it as-is.
-             * Otherwise, makes a mutable copy, assigns it back to [host] and returns it.
-             */
-            val mutableHost: skirout.service.v1.topology.ServiceHost.Mutable get() {
-                var value = this.host;
-                return when (value) {
-                    is skirout.service.v1.topology.ServiceHost -> {
-                        value = value.toMutable();
-                        this.host = value;
-                        return value;
-                    }
-                    is skirout.service.v1.topology.ServiceHost.Mutable -> value;
-                }
-            }
-        }
-
-        companion object {
-            private val default =
-                skirout.service.v1.topology.ConfigureServiceHostResponse.Success(
-                    skirout.service.v1.topology.ServiceHost.partial(),
-                    null,
-                    null,
-                );
-
-            /** Returns an instance with all fields set to their default values. */
-            fun partial() = default;
-
-            /**
-             * Creates a new instance of [Success].
-             * Unlike the constructor, does not require all fields to be specified.
-             * Missing fields will be set to their default values.
-             */
-            fun partial(
-                _mustNameArguments: _MustNameArguments =
-                    _MustNameArguments,
-                host: skirout.service.v1.topology.ServiceHost_OrMutable =
-                    skirout.service.v1.topology.ServiceHost.partial(),
-                realm: skirout.service.v1.topology.RealmInstance_OrMutable? =
-                    null,
-                engine: skirout.service.v1.topology.EngineInstance_OrMutable? =
-                    null,
-            ) = skirout.service.v1.topology.ConfigureServiceHostResponse.Success(
-                host = host,
-                realm = realm,
-                engine = engine,
-                _unrecognizedFields = null,
-            );
-
-            private val serializerImpl = build.skir.internal.StructSerializer(
-                recordId = "service/v1/topology.skir:ConfigureServiceHostResponse.Success",
-                doc = "",
-                defaultInstance = default,
-                newMutableFn = { it?.toMutable() ?: Mutable() },
-                toFrozenFn = { it.toFrozen() },
-                getUnrecognizedFields = { it._unrecognizedFields },
-                setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
-            );
-
-            /** Serializer for [Success] instances. */
-            val serializer = build.skir.internal.makeSerializer(serializerImpl);
-
-            /** Describes the [Success] type. Provides runtime introspection capabilities. */
-            val typeDescriptor get() = serializerImpl.typeDescriptor;
-
-            init {
-                serializerImpl.addField(
-                    "host",
-                    "host",
-                    0,
-                    skirout.service.v1.topology.ServiceHost.serializer,
-                    "",
-                    { it.host },
-                    { mut, v -> mut.host = v },
-                );
-                serializerImpl.addField(
-                    "realm",
-                    "realm",
-                    1,
-                    build.skir.Serializers.optional(
-                        skirout.service.v1.topology.RealmInstance.serializer,
-                    ),
-                    "",
-                    { it.realm },
-                    { mut, v -> mut.realm = v },
-                );
-                serializerImpl.addField(
-                    "engine",
-                    "engine",
-                    2,
-                    build.skir.Serializers.optional(
-                        skirout.service.v1.topology.EngineInstance.serializer,
-                    ),
-                    "",
-                    { it.engine },
-                    { mut, v -> mut.engine = v },
-                );
-                serializerImpl.finalizeStruct();
-            }
-        }
-    }
-
     sealed interface ConflictError_OrMutable {
-        val actual: skirout.service.v1.topology.ServiceHost_OrMutable;
+        val actual: skirout.service.v1.topology.HostConfigurationChange_OrMutable;
 
         fun toFrozen(): skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError;
     }
@@ -4565,14 +4609,14 @@ sealed class ConfigureServiceHostResponse private constructor() {
     /** Deeply immutable. */
     @kotlin.Suppress("UNUSED_PARAMETER")
     class ConflictError private constructor(
-        override val actual: skirout.service.v1.topology.ServiceHost,
+        override val actual: skirout.service.v1.topology.HostConfigurationChange,
         private val _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError>? =
             null,
     ): skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError_OrMutable {
         constructor(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            actual: skirout.service.v1.topology.ServiceHost_OrMutable,
+            actual: skirout.service.v1.topology.HostConfigurationChange_OrMutable,
             _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError>? =
                 null,
         ): this(
@@ -4592,7 +4636,7 @@ sealed class ConfigureServiceHostResponse private constructor() {
         fun copy(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            actual: skirout.service.v1.topology.ServiceHost_OrMutable =
+            actual: skirout.service.v1.topology.HostConfigurationChange_OrMutable =
                 this.actual,
         ) = skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError(
             actual.toFrozen(),
@@ -4621,8 +4665,8 @@ sealed class ConfigureServiceHostResponse private constructor() {
         class Mutable internal constructor(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            override var actual: skirout.service.v1.topology.ServiceHost_OrMutable =
-                skirout.service.v1.topology.ServiceHost.partial(),
+            override var actual: skirout.service.v1.topology.HostConfigurationChange_OrMutable =
+                skirout.service.v1.topology.HostConfigurationChange.partial(),
             internal var _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError>? =
                 null,
         ): skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError_OrMutable {
@@ -4636,15 +4680,15 @@ sealed class ConfigureServiceHostResponse private constructor() {
              * If the value of [actual] is already mutable, returns it as-is.
              * Otherwise, makes a mutable copy, assigns it back to [actual] and returns it.
              */
-            val mutableActual: skirout.service.v1.topology.ServiceHost.Mutable get() {
+            val mutableActual: skirout.service.v1.topology.HostConfigurationChange.Mutable get() {
                 var value = this.actual;
                 return when (value) {
-                    is skirout.service.v1.topology.ServiceHost -> {
+                    is skirout.service.v1.topology.HostConfigurationChange -> {
                         value = value.toMutable();
                         this.actual = value;
                         return value;
                     }
-                    is skirout.service.v1.topology.ServiceHost.Mutable -> value;
+                    is skirout.service.v1.topology.HostConfigurationChange.Mutable -> value;
                 }
             }
         }
@@ -4652,7 +4696,7 @@ sealed class ConfigureServiceHostResponse private constructor() {
         companion object {
             private val default =
                 skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError(
-                    skirout.service.v1.topology.ServiceHost.partial(),
+                    skirout.service.v1.topology.HostConfigurationChange.partial(),
                 );
 
             /** Returns an instance with all fields set to their default values. */
@@ -4666,8 +4710,8 @@ sealed class ConfigureServiceHostResponse private constructor() {
             fun partial(
                 _mustNameArguments: _MustNameArguments =
                     _MustNameArguments,
-                actual: skirout.service.v1.topology.ServiceHost_OrMutable =
-                    skirout.service.v1.topology.ServiceHost.partial(),
+                actual: skirout.service.v1.topology.HostConfigurationChange_OrMutable =
+                    skirout.service.v1.topology.HostConfigurationChange.partial(),
             ) = skirout.service.v1.topology.ConfigureServiceHostResponse.ConflictError(
                 actual = actual,
                 _unrecognizedFields = null,
@@ -4694,7 +4738,7 @@ sealed class ConfigureServiceHostResponse private constructor() {
                     "actual",
                     "actual",
                     0,
-                    skirout.service.v1.topology.ServiceHost.serializer,
+                    skirout.service.v1.topology.HostConfigurationChange.serializer,
                     "",
                     { it.actual },
                     { mut, v -> mut.actual = v },
@@ -5233,6 +5277,7 @@ sealed class WatchOrganizationTopologyResponse private constructor() {
     enum class Kind {
         UNKNOWN,
         LIST_WRAPPER,
+        CONFIGURATION_CHANGED_WRAPPER,
         HOST_UPDATED_WRAPPER,
         REALM_UPDATED_WRAPPER,
         ENGINE_UPDATED_WRAPPER,
@@ -5270,6 +5315,24 @@ sealed class WatchOrganizationTopologyResponse private constructor() {
 
         override fun hashCode(): kotlin.Int {
             return this.value.hashCode() + 3322014;
+        }
+    }
+
+    class ConfigurationChangedWrapper private constructor (
+        val value: skirout.service.v1.topology.HostConfigurationChange,
+    ) : skirout.service.v1.topology.WatchOrganizationTopologyResponse() {
+        constructor(
+            value: skirout.service.v1.topology.HostConfigurationChange_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.CONFIGURATION_CHANGED_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.service.v1.topology.WatchOrganizationTopologyResponse.ConfigurationChangedWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + -992139157;
         }
     }
 
@@ -5394,6 +5457,24 @@ sealed class WatchOrganizationTopologyResponse private constructor() {
                 hosts = hosts,
                 realms = realms,
                 engines = engines,
+            )
+        );
+
+        /** Shortcut for `ConfigurationChangedWrapper(skirout.service.v1.topology.HostConfigurationChange(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createConfigurationChanged(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            host: skirout.service.v1.topology.ServiceHost_OrMutable,
+            realm: skirout.service.v1.topology.RealmInstance_OrMutable?,
+            engine: skirout.service.v1.topology.EngineInstance_OrMutable?,
+            removedResources: kotlin.collections.Iterable<skirout.kernel.v1.record_id.RecordId_OrMutable>,
+        ) = ConfigurationChangedWrapper(
+            skirout.service.v1.topology.HostConfigurationChange(
+                host = host,
+                realm = realm,
+                engine = engine,
+                removedResources = removedResources,
             )
         );
 
@@ -5525,6 +5606,15 @@ sealed class WatchOrganizationTopologyResponse private constructor() {
                 );
                 _serializerImpl.addWrapperVariant(
                     2,
+                    "configuration_changed",
+                    Kind.CONFIGURATION_CHANGED_WRAPPER.ordinal,
+                    skirout.service.v1.topology.HostConfigurationChange.serializer,
+                    "",
+                    { ConfigurationChangedWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.addWrapperVariant(
+                    3,
                     "host_updated",
                     Kind.HOST_UPDATED_WRAPPER.ordinal,
                     skirout.service.v1.topology.ServiceHost.serializer,
@@ -5533,7 +5623,7 @@ sealed class WatchOrganizationTopologyResponse private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    3,
+                    4,
                     "realm_updated",
                     Kind.REALM_UPDATED_WRAPPER.ordinal,
                     skirout.service.v1.topology.RealmInstance.serializer,
@@ -5542,7 +5632,7 @@ sealed class WatchOrganizationTopologyResponse private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    4,
+                    5,
                     "engine_updated",
                     Kind.ENGINE_UPDATED_WRAPPER.ordinal,
                     skirout.service.v1.topology.EngineInstance.serializer,
@@ -5551,7 +5641,7 @@ sealed class WatchOrganizationTopologyResponse private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    5,
+                    6,
                     "resource_removed",
                     Kind.RESOURCE_REMOVED_WRAPPER.ordinal,
                     skirout.kernel.v1.record_id.RecordId.serializer,
@@ -5560,7 +5650,7 @@ sealed class WatchOrganizationTopologyResponse private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    6,
+                    7,
                     "internal_error",
                     Kind.INTERNAL_ERROR_WRAPPER.ordinal,
                     skirout.kernel.v1.errors.InternalError.serializer,

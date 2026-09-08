@@ -3111,6 +3111,208 @@ final class RegisterServiceHostResponse_internalErrorWrapper extends _RegisterSe
 }
 
 // -----------------------------------------------------------------------------
+// struct HostConfigurationChange
+// -----------------------------------------------------------------------------
+
+sealed class HostConfigurationChange_orMutable {
+  ServiceHost_orMutable get host;
+  RealmInstance_orMutable? get realm;
+  EngineInstance_orMutable? get engine;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get removedResources;
+
+  HostConfigurationChange toFrozen();
+}
+
+/// Deeply immutable.
+final class HostConfigurationChange implements HostConfigurationChange_orMutable {
+  @_core.override
+  final ServiceHost host;
+  @_core.override
+  final RealmInstance? realm;
+  @_core.override
+  final EngineInstance? engine;
+  @_core.override
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> removedResources;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory HostConfigurationChange({
+    required ServiceHost_orMutable host,
+    required RealmInstance_orMutable? realm,
+    required EngineInstance_orMutable? engine,
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> removedResources,
+  }) => HostConfigurationChange._(
+    host.toFrozen(),
+    (realm != null) ? realm.toFrozen() : null,
+    (engine != null) ? engine.toFrozen() : null,
+    _skir.internal__frozenMappedCopy(removedResources, (it) => it.toFrozen()),
+  );
+
+  HostConfigurationChange._(
+    this.host,
+    this.realm,
+    this.engine,
+    this.removedResources,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = HostConfigurationChange._(
+    ServiceHost.defaultInstance,
+    null,
+    null,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static HostConfigurationChange_mutable mutable() => HostConfigurationChange_mutable._(
+    ServiceHost.defaultInstance,
+    null,
+    null,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  HostConfigurationChange toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  HostConfigurationChange_mutable toMutable() => HostConfigurationChange_mutable._(
+    this.host,
+    this.realm,
+    this.engine,
+    this.removedResources,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! HostConfigurationChange) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.host,
+    this.realm,
+    this.engine,
+    this.removedResources,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `HostConfigurationChange` instances.
+  static _skir.StructSerializer<HostConfigurationChange, HostConfigurationChange_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "host",
+        "host",
+        0,
+        ServiceHost.serializer,
+        "",
+        (it) => it.host,
+        (it, v) => it.host = v,
+      );
+      _serializerBuilder.addField(
+        "realm",
+        "realm",
+        1,
+        _skir.Serializers.optional(
+          RealmInstance.serializer,
+        ),
+        "",
+        (it) => it.realm,
+        (it, v) => it.realm = v,
+      );
+      _serializerBuilder.addField(
+        "engine",
+        "engine",
+        2,
+        _skir.Serializers.optional(
+          EngineInstance.serializer,
+        ),
+        "",
+        (it) => it.engine,
+        (it, v) => it.engine = v,
+      );
+      _serializerBuilder.addField(
+        "removed_resources",
+        "removedResources",
+        3,
+        _skir.Serializers.iterable(
+          _lib_kernel_v1_record_id.RecordId.serializer,
+        ),
+        "",
+        (it) => it.removedResources,
+        (it, v) => it.removedResources = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "service/v1/topology.skir:HostConfigurationChange",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (HostConfigurationChange_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [HostConfigurationChange].
+final class HostConfigurationChange_mutable implements HostConfigurationChange_orMutable {
+  ServiceHost_orMutable host;
+  RealmInstance_orMutable? realm;
+  EngineInstance_orMutable? engine;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> removedResources;
+  _skir.internal__UnrecognizedFields? _u;
+
+  HostConfigurationChange_mutable._(
+    this.host,
+    this.realm,
+    this.engine,
+    this.removedResources,
+  );
+
+  /// If the value of [host] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [host] and returns it.
+  ServiceHost_mutable get mutableHost {
+    final value = this.host;
+    if (value is ServiceHost_mutable) {
+      return value;
+    } else {
+      return this.host = (value as ServiceHost).toMutable();
+    }
+  }
+
+  /// If the value of [removedResources] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [removedResources] and returns it.
+  _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableRemovedResources {
+    final value = this.removedResources;
+    if (value is _skir.internal__MutableList<_lib_kernel_v1_record_id.RecordId_orMutable>) {
+      return value;
+    } else {
+      return this.removedResources = _skir.internal__MutableList([...value]);
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  HostConfigurationChange toFrozen() => HostConfigurationChange(
+    host: this.host,
+    realm: this.realm,
+    engine: this.engine,
+    removedResources: this.removedResources,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
 // struct ConfigureServiceHostRequest
 // -----------------------------------------------------------------------------
 
@@ -3285,178 +3487,11 @@ final class ConfigureServiceHostRequest_mutable implements ConfigureServiceHostR
 }
 
 // -----------------------------------------------------------------------------
-// struct ConfigureServiceHostResponse.Success
-// -----------------------------------------------------------------------------
-
-sealed class ConfigureServiceHostResponse_Success_orMutable {
-  ServiceHost_orMutable get host;
-  RealmInstance_orMutable? get realm;
-  EngineInstance_orMutable? get engine;
-
-  ConfigureServiceHostResponse_Success toFrozen();
-}
-
-/// Deeply immutable.
-final class ConfigureServiceHostResponse_Success implements ConfigureServiceHostResponse_Success_orMutable {
-  @_core.override
-  final ServiceHost host;
-  @_core.override
-  final RealmInstance? realm;
-  @_core.override
-  final EngineInstance? engine;
-  _skir.internal__UnrecognizedFields? _u;
-
-  factory ConfigureServiceHostResponse_Success({
-    required ServiceHost_orMutable host,
-    required RealmInstance_orMutable? realm,
-    required EngineInstance_orMutable? engine,
-  }) => ConfigureServiceHostResponse_Success._(
-    host.toFrozen(),
-    (realm != null) ? realm.toFrozen() : null,
-    (engine != null) ? engine.toFrozen() : null,
-  );
-
-  ConfigureServiceHostResponse_Success._(
-    this.host,
-    this.realm,
-    this.engine,
-  );
-
-  /// Default instance with all fields set to their default values.
-  static final defaultInstance = ConfigureServiceHostResponse_Success._(
-    ServiceHost.defaultInstance,
-    null,
-    null,
-  );
-
-  /// Returns a new mutable instance.
-  /// Fields are initialized to their default values.
-  static ConfigureServiceHostResponse_Success_mutable mutable() => ConfigureServiceHostResponse_Success_mutable._(
-    ServiceHost.defaultInstance,
-    null,
-    null,
-  );
-
-  /// Returns this instance (no-op).
-  @_core.Deprecated("This instance is already frozen.")
-  @_core.override
-  ConfigureServiceHostResponse_Success toFrozen() => this;
-
-  /// Returns a mutable shallow copy of this instance.
-  ConfigureServiceHostResponse_Success_mutable toMutable() => ConfigureServiceHostResponse_Success_mutable._(
-    this.host,
-    this.realm,
-    this.engine,
-  );
-
-  @_core.override
-  _core.bool operator ==(other) {
-    if (_core.identical(this, other)) return true;
-    if (other is! ConfigureServiceHostResponse_Success) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
-  }
-
-  @_core.override
-  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
-
-  _core.List get _equality_proxy => [
-    this.host,
-    this.realm,
-    this.engine,
-  ];
-
-  @_core.override
-  _core.String toString() => _skir.internal__stringify(this, serializer);
-
-  /// Serializer for `ConfigureServiceHostResponse_Success` instances.
-  static _skir.StructSerializer<ConfigureServiceHostResponse_Success, ConfigureServiceHostResponse_Success_mutable> get serializer {
-    if (_serializerBuilder.mustInitialize()) {
-      _serializerBuilder.addField(
-        "host",
-        "host",
-        0,
-        ServiceHost.serializer,
-        "",
-        (it) => it.host,
-        (it, v) => it.host = v,
-      );
-      _serializerBuilder.addField(
-        "realm",
-        "realm",
-        1,
-        _skir.Serializers.optional(
-          RealmInstance.serializer,
-        ),
-        "",
-        (it) => it.realm,
-        (it, v) => it.realm = v,
-      );
-      _serializerBuilder.addField(
-        "engine",
-        "engine",
-        2,
-        _skir.Serializers.optional(
-          EngineInstance.serializer,
-        ),
-        "",
-        (it) => it.engine,
-        (it, v) => it.engine = v,
-      );
-      _serializerBuilder.finalize();
-    }
-    return _serializerBuilder.serializer;
-  }
-
-  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "service/v1/topology.skir:ConfigureServiceHostResponse.Success",
-    doc: "",
-    defaultInstance: defaultInstance,
-    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (ConfigureServiceHostResponse_Success_mutable it) => it.toFrozen(),
-    getUnrecognizedFields: (it) => it._u,
-    setUnrecognizedFields: (it, u) => it._u = u,
-  );
-}
-
-/// Mutable version of [ConfigureServiceHostResponse_Success].
-final class ConfigureServiceHostResponse_Success_mutable implements ConfigureServiceHostResponse_Success_orMutable {
-  ServiceHost_orMutable host;
-  RealmInstance_orMutable? realm;
-  EngineInstance_orMutable? engine;
-  _skir.internal__UnrecognizedFields? _u;
-
-  ConfigureServiceHostResponse_Success_mutable._(
-    this.host,
-    this.realm,
-    this.engine,
-  );
-
-  /// If the value of [host] is already mutable, returns it as-is.
-  /// Otherwise, makes a mutable copy, assigns it back to [host] and returns it.
-  ServiceHost_mutable get mutableHost {
-    final value = this.host;
-    if (value is ServiceHost_mutable) {
-      return value;
-    } else {
-      return this.host = (value as ServiceHost).toMutable();
-    }
-  }
-
-  /// Returns a deeply immutable copy of this instance.
-  @_core.override
-  ConfigureServiceHostResponse_Success toFrozen() => ConfigureServiceHostResponse_Success(
-    host: this.host,
-    realm: this.realm,
-    engine: this.engine,
-  ).._u = this._u;
-}
-
-// -----------------------------------------------------------------------------
 // struct ConfigureServiceHostResponse.ConflictError
 // -----------------------------------------------------------------------------
 
 sealed class ConfigureServiceHostResponse_ConflictError_orMutable {
-  ServiceHost_orMutable get actual;
+  HostConfigurationChange_orMutable get actual;
 
   ConfigureServiceHostResponse_ConflictError toFrozen();
 }
@@ -3464,11 +3499,11 @@ sealed class ConfigureServiceHostResponse_ConflictError_orMutable {
 /// Deeply immutable.
 final class ConfigureServiceHostResponse_ConflictError implements ConfigureServiceHostResponse_ConflictError_orMutable {
   @_core.override
-  final ServiceHost actual;
+  final HostConfigurationChange actual;
   _skir.internal__UnrecognizedFields? _u;
 
   factory ConfigureServiceHostResponse_ConflictError({
-    required ServiceHost_orMutable actual,
+    required HostConfigurationChange_orMutable actual,
   }) => ConfigureServiceHostResponse_ConflictError._(
     actual.toFrozen(),
   );
@@ -3479,13 +3514,13 @@ final class ConfigureServiceHostResponse_ConflictError implements ConfigureServi
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = ConfigureServiceHostResponse_ConflictError._(
-    ServiceHost.defaultInstance,
+    HostConfigurationChange.defaultInstance,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
   static ConfigureServiceHostResponse_ConflictError_mutable mutable() => ConfigureServiceHostResponse_ConflictError_mutable._(
-    ServiceHost.defaultInstance,
+    HostConfigurationChange.defaultInstance,
   );
 
   /// Returns this instance (no-op).
@@ -3522,7 +3557,7 @@ final class ConfigureServiceHostResponse_ConflictError implements ConfigureServi
         "actual",
         "actual",
         0,
-        ServiceHost.serializer,
+        HostConfigurationChange.serializer,
         "",
         (it) => it.actual,
         (it, v) => it.actual = v,
@@ -3545,7 +3580,7 @@ final class ConfigureServiceHostResponse_ConflictError implements ConfigureServi
 
 /// Mutable version of [ConfigureServiceHostResponse_ConflictError].
 final class ConfigureServiceHostResponse_ConflictError_mutable implements ConfigureServiceHostResponse_ConflictError_orMutable {
-  ServiceHost_orMutable actual;
+  HostConfigurationChange_orMutable actual;
   _skir.internal__UnrecognizedFields? _u;
 
   ConfigureServiceHostResponse_ConflictError_mutable._(
@@ -3554,12 +3589,12 @@ final class ConfigureServiceHostResponse_ConflictError_mutable implements Config
 
   /// If the value of [actual] is already mutable, returns it as-is.
   /// Otherwise, makes a mutable copy, assigns it back to [actual] and returns it.
-  ServiceHost_mutable get mutableActual {
+  HostConfigurationChange_mutable get mutableActual {
     final value = this.actual;
-    if (value is ServiceHost_mutable) {
+    if (value is HostConfigurationChange_mutable) {
       return value;
     } else {
-      return this.actual = (value as ServiceHost).toMutable();
+      return this.actual = (value as HostConfigurationChange).toMutable();
     }
   }
 
@@ -3942,19 +3977,21 @@ sealed class ConfigureServiceHostResponse {
 
   /// Create a 'success' variant wrapping around the given value.
   factory ConfigureServiceHostResponse.wrapSuccess(
-    ConfigureServiceHostResponse_Success value
+    HostConfigurationChange value
   ) => ConfigureServiceHostResponse_successWrapper._(value);
 
-  /// Same as `wrapSuccess(ConfigureServiceHostResponse_Success(...))`.
+  /// Same as `wrapSuccess(HostConfigurationChange(...))`.
   factory ConfigureServiceHostResponse.createSuccess({
     required ServiceHost_orMutable host,
     required RealmInstance_orMutable? realm,
     required EngineInstance_orMutable? engine,
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> removedResources,
   }) => ConfigureServiceHostResponse.wrapSuccess(
-    ConfigureServiceHostResponse_Success(
+    HostConfigurationChange(
       host: host,
       realm: realm,
       engine: engine,
+      removedResources: removedResources,
     )
   );
 
@@ -3965,7 +4002,7 @@ sealed class ConfigureServiceHostResponse {
 
   /// Same as `wrapConflictError(ConfigureServiceHostResponse_ConflictError(...))`.
   factory ConfigureServiceHostResponse.createConflictError({
-    required ServiceHost_orMutable actual,
+    required HostConfigurationChange_orMutable actual,
   }) => ConfigureServiceHostResponse.wrapConflictError(
     ConfigureServiceHostResponse_ConflictError(
       actual: actual,
@@ -4050,7 +4087,7 @@ sealed class ConfigureServiceHostResponse {
         1,
         "success",
         "wrapSuccess",
-        ConfigureServiceHostResponse_Success.serializer,
+        HostConfigurationChange.serializer,
         "",
         ConfigureServiceHostResponse_successWrapper._,
         (it) => it.value,
@@ -4183,7 +4220,7 @@ sealed class _ConfigureServiceHostResponse_wrapper implements ConfigureServiceHo
 }
 
 final class ConfigureServiceHostResponse_successWrapper extends _ConfigureServiceHostResponse_wrapper {
-  final ConfigureServiceHostResponse_Success value;
+  final HostConfigurationChange value;
 
   ConfigureServiceHostResponse_successWrapper._(this.value);
 
@@ -4521,6 +4558,7 @@ final class WatchOrganizationTopologyResponse_List_mutable implements WatchOrgan
 ///   switch (e) {
 ///     case WatchOrganizationTopologyResponse_unknown(): { ... }
 ///     case WatchOrganizationTopologyResponse_list(:var value): { ... }
+///     case WatchOrganizationTopologyResponse_configurationChanged(:var value): { ... }
 ///     case WatchOrganizationTopologyResponse_hostUpdated(:var value): { ... }
 ///     case WatchOrganizationTopologyResponse_realmUpdated(:var value): { ... }
 ///     case WatchOrganizationTopologyResponse_engineUpdated(:var value): { ... }
@@ -4550,6 +4588,26 @@ sealed class WatchOrganizationTopologyResponse {
       hosts: hosts,
       realms: realms,
       engines: engines,
+    )
+  );
+
+  /// Create a 'configuration_changed' variant wrapping around the given value.
+  factory WatchOrganizationTopologyResponse.wrapConfigurationChanged(
+    HostConfigurationChange value
+  ) => WatchOrganizationTopologyResponse_configurationChangedWrapper._(value);
+
+  /// Same as `wrapConfigurationChanged(HostConfigurationChange(...))`.
+  factory WatchOrganizationTopologyResponse.createConfigurationChanged({
+    required ServiceHost_orMutable host,
+    required RealmInstance_orMutable? realm,
+    required EngineInstance_orMutable? engine,
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> removedResources,
+  }) => WatchOrganizationTopologyResponse.wrapConfigurationChanged(
+    HostConfigurationChange(
+      host: host,
+      realm: realm,
+      engine: engine,
+      removedResources: removedResources,
     )
   );
 
@@ -4671,6 +4729,16 @@ sealed class WatchOrganizationTopologyResponse {
       );
       _serializerBuilder.addWrapperVariant(
         2,
+        "configuration_changed",
+        "wrapConfigurationChanged",
+        HostConfigurationChange.serializer,
+        "",
+        WatchOrganizationTopologyResponse_configurationChangedWrapper._,
+        (it) => it.value,
+        ordinal: WatchOrganizationTopologyResponse_kind.configurationChangedWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        3,
         "host_updated",
         "wrapHostUpdated",
         ServiceHost.serializer,
@@ -4680,7 +4748,7 @@ sealed class WatchOrganizationTopologyResponse {
         ordinal: WatchOrganizationTopologyResponse_kind.hostUpdatedWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        3,
+        4,
         "realm_updated",
         "wrapRealmUpdated",
         RealmInstance.serializer,
@@ -4690,7 +4758,7 @@ sealed class WatchOrganizationTopologyResponse {
         ordinal: WatchOrganizationTopologyResponse_kind.realmUpdatedWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        4,
+        5,
         "engine_updated",
         "wrapEngineUpdated",
         EngineInstance.serializer,
@@ -4700,7 +4768,7 @@ sealed class WatchOrganizationTopologyResponse {
         ordinal: WatchOrganizationTopologyResponse_kind.engineUpdatedWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        5,
+        6,
         "resource_removed",
         "wrapResourceRemoved",
         _lib_kernel_v1_record_id.RecordId.serializer,
@@ -4710,7 +4778,7 @@ sealed class WatchOrganizationTopologyResponse {
         ordinal: WatchOrganizationTopologyResponse_kind.resourceRemovedWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        6,
+        7,
         "internal_error",
         "wrapInternalError",
         _lib_kernel_v1_errors.InternalError.serializer,
@@ -4739,11 +4807,12 @@ sealed class WatchOrganizationTopologyResponse {
 enum WatchOrganizationTopologyResponse_kind {
   unknown(0),
   listWrapper(1),
-  hostUpdatedWrapper(2),
-  realmUpdatedWrapper(3),
-  engineUpdatedWrapper(4),
-  resourceRemovedWrapper(5),
-  internalErrorWrapper(6);
+  configurationChangedWrapper(2),
+  hostUpdatedWrapper(3),
+  realmUpdatedWrapper(4),
+  engineUpdatedWrapper(5),
+  resourceRemovedWrapper(6),
+  internalErrorWrapper(7);
 
   final _core.int _ordinal;
 
@@ -4791,6 +4860,15 @@ final class WatchOrganizationTopologyResponse_listWrapper extends _WatchOrganiza
 
   @_core.override
   WatchOrganizationTopologyResponse_kind get kind => WatchOrganizationTopologyResponse_kind.listWrapper;
+}
+
+final class WatchOrganizationTopologyResponse_configurationChangedWrapper extends _WatchOrganizationTopologyResponse_wrapper {
+  final HostConfigurationChange value;
+
+  WatchOrganizationTopologyResponse_configurationChangedWrapper._(this.value);
+
+  @_core.override
+  WatchOrganizationTopologyResponse_kind get kind => WatchOrganizationTopologyResponse_kind.configurationChangedWrapper;
 }
 
 final class WatchOrganizationTopologyResponse_hostUpdatedWrapper extends _WatchOrganizationTopologyResponse_wrapper {

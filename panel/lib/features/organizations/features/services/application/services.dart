@@ -13,6 +13,7 @@ part "service_inspector_presentation.dart";
 part "service_selection.dart";
 part "topology_models.dart";
 part "topology.dart";
+part "topology_configuration.dart";
 part "topology_inspector_presentations.dart";
 part "topology_host_inspector_presentation.dart";
 part "topology_host_configuration_presentation.dart";

@@ -52,7 +52,7 @@ class OrganizationTopologyStream extends _$OrganizationTopologyStream {
       case skir.ConfigureServiceHostResponse_successWrapper(:final value):
         return TopologyConfigurationResult.fromSkir(value);
       case skir.ConfigureServiceHostResponse_conflictErrorWrapper(:final value):
-        throw _HostConfigurationConflict(TopologyHost.fromSkir(value.actual));
+        throw _HostConfigurationConflict(TopologyHost.fromSkir(value.actual.host));
       case skir.ConfigureServiceHostResponse_invalidConfigurationErrorWrapper(
         :final value,
       ):
@@ -93,30 +93,16 @@ OrganizationTopology _reduceTopology(
         realmInstances: value.realms.map(TopologyRealm.fromSkir).toList(),
         engineInstances: value.engines.map(TopologyEngine.fromSkir).toList(),
       ),
+    skir.WatchOrganizationTopologyResponse_configurationChangedWrapper(
+      :final value,
+    ) =>
+      current.applyConfiguration(value),
     skir.WatchOrganizationTopologyResponse_hostUpdatedWrapper(:final value) =>
-      current.copyWith(
-        hosts: _upsertById(
-          current.hosts,
-          TopologyHost.fromSkir(value),
-          (it) => it.hostId,
-        ),
-      ),
+      current.applyHostObservation(TopologyHost.fromSkir(value)),
     skir.WatchOrganizationTopologyResponse_realmUpdatedWrapper(:final value) =>
-      current.copyWith(
-        realmInstances: _upsertById(
-          current.realmInstances,
-          TopologyRealm.fromSkir(value),
-          (it) => it.realmId,
-        ),
-      ),
+      current.applyRealmObservation(TopologyRealm.fromSkir(value)),
     skir.WatchOrganizationTopologyResponse_engineUpdatedWrapper(:final value) =>
-      current.copyWith(
-        engineInstances: _upsertById(
-          current.engineInstances,
-          TopologyEngine.fromSkir(value),
-          (it) => it.engineId,
-        ),
-      ),
+      current.applyEngineObservation(TopologyEngine.fromSkir(value)),
     skir.WatchOrganizationTopologyResponse_resourceRemovedWrapper(
       :final value,
     ) =>

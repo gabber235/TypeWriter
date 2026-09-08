@@ -215,7 +215,7 @@ abstract class TopologyConfigurationResult with _$TopologyConfigurationResult {
   }) = _TopologyConfigurationResult;
 
   factory TopologyConfigurationResult.fromSkir(
-    skir.ConfigureServiceHostResponse_Success result,
+    skir.HostConfigurationChange result,
   ) => TopologyConfigurationResult(
     host: TopologyHost.fromSkir(result.host),
     realm: result.realm == null ? null : TopologyRealm.fromSkir(result.realm!),

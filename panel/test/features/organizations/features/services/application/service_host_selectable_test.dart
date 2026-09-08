@@ -104,6 +104,7 @@ void main() {
           host: _hostWithRevision(harness.host, 2),
           realm: harness.realm,
           engine: null,
+          removedResources: [],
         ),
       );
     });

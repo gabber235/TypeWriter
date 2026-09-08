@@ -820,6 +820,47 @@ impl RegisterServiceHostResponse {
 }
 
 // ==============================================================================
+// struct HostConfigurationChange
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct HostConfigurationChange {
+    pub host: ServiceHost,
+    pub realm: Option<RealmInstance>,
+    pub engine: Option<EngineInstance>,
+    pub removed_resources: Vec<crate::skirout::base::kernel::v1::record_id::RecordId>,
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<HostConfigurationChange>>,
+}
+
+impl HostConfigurationChange {
+    pub fn default_ref() -> &'static HostConfigurationChange {
+        static D: std::sync::LazyLock<HostConfigurationChange> = std::sync::LazyLock::new(HostConfigurationChange::default);
+        &D
+    }
+}
+
+impl HostConfigurationChange {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<HostConfigurationChange> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<HostConfigurationChange>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "service/v1/topology.skir",
+                    "HostConfigurationChange",
+                    "",
+                    |x: &HostConfigurationChange| &x._unrecognized,
+                    |x: &mut HostConfigurationChange, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<HostConfigurationChange> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(HostConfigurationChange::_adapter())
+    }
+}
+
+// ==============================================================================
 // struct ConfigureServiceHostRequest
 // ==============================================================================
 
@@ -860,52 +901,12 @@ impl ConfigureServiceHostRequest {
 }
 
 // ==============================================================================
-// struct ConfigureServiceHostResponse.Success
-// ==============================================================================
-
-#[derive(Clone, Debug, PartialEq, Default)]
-pub struct ConfigureServiceHostResponse_Success {
-    pub host: ServiceHost,
-    pub realm: Option<RealmInstance>,
-    pub engine: Option<EngineInstance>,
-    /// Set this to None when you're creating a struct.
-    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<ConfigureServiceHostResponse_Success>>,
-}
-
-impl ConfigureServiceHostResponse_Success {
-    pub fn default_ref() -> &'static ConfigureServiceHostResponse_Success {
-        static D: std::sync::LazyLock<ConfigureServiceHostResponse_Success> = std::sync::LazyLock::new(ConfigureServiceHostResponse_Success::default);
-        &D
-    }
-}
-
-impl ConfigureServiceHostResponse_Success {
-    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_Success> {
-        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_Success>> =
-            std::sync::LazyLock::new(|| {
-                crate::skir_client::internal::StructAdapter::new(
-                    "service/v1/topology.skir",
-                    "ConfigureServiceHostResponse.Success",
-                    "",
-                    |x: &ConfigureServiceHostResponse_Success| &x._unrecognized,
-                    |x: &mut ConfigureServiceHostResponse_Success, u| x._unrecognized = u,
-                )
-            });
-        &*ADAPTER
-    }
-    pub fn serializer() -> crate::skir_client::Serializer<ConfigureServiceHostResponse_Success> {
-        initialize_module_serializers();
-        crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_Success::_adapter())
-    }
-}
-
-// ==============================================================================
 // struct ConfigureServiceHostResponse.ConflictError
 // ==============================================================================
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct ConfigureServiceHostResponse_ConflictError {
-    pub actual: ServiceHost,
+    pub actual: HostConfigurationChange,
     /// Set this to None when you're creating a struct.
     pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<ConfigureServiceHostResponse_ConflictError>>,
 }
@@ -1058,7 +1059,7 @@ impl ConfigureServiceHostResponse_RealmNotFoundError {
 #[derive(Debug, Clone, PartialEq)]
 pub enum ConfigureServiceHostResponse {
     Unknown(Option<crate::skir_client::UnrecognizedVariant<ConfigureServiceHostResponse>>),
-    Success(Box<ConfigureServiceHostResponse_Success>),
+    Success(Box<HostConfigurationChange>),
     ConflictError(Box<ConfigureServiceHostResponse_ConflictError>),
     InvalidConfigurationError(Box<ConfigureServiceHostResponse_InvalidConfigurationError>),
     IncompatibleEngineError(Box<ConfigureServiceHostResponse_IncompatibleEngineError>),
@@ -1188,6 +1189,7 @@ impl WatchOrganizationTopologyResponse_List {
 pub enum WatchOrganizationTopologyResponse {
     Unknown(Option<crate::skir_client::UnrecognizedVariant<WatchOrganizationTopologyResponse>>),
     List(Box<WatchOrganizationTopologyResponse_List>),
+    ConfigurationChanged(Box<HostConfigurationChange>),
     HostUpdated(Box<ServiceHost>),
     RealmUpdated(Box<RealmInstance>),
     EngineUpdated(Box<EngineInstance>),
@@ -1209,11 +1211,12 @@ impl WatchOrganizationTopologyResponse {
                     |x: &WatchOrganizationTopologyResponse| match x {
                         WatchOrganizationTopologyResponse::Unknown(_) => 0,
                         WatchOrganizationTopologyResponse::List(_) => 1,
-                        WatchOrganizationTopologyResponse::HostUpdated(_) => 2,
-                        WatchOrganizationTopologyResponse::RealmUpdated(_) => 3,
-                        WatchOrganizationTopologyResponse::EngineUpdated(_) => 4,
-                        WatchOrganizationTopologyResponse::ResourceRemoved(_) => 5,
-                        WatchOrganizationTopologyResponse::InternalError(_) => 6,
+                        WatchOrganizationTopologyResponse::ConfigurationChanged(_) => 2,
+                        WatchOrganizationTopologyResponse::HostUpdated(_) => 3,
+                        WatchOrganizationTopologyResponse::RealmUpdated(_) => 4,
+                        WatchOrganizationTopologyResponse::EngineUpdated(_) => 5,
+                        WatchOrganizationTopologyResponse::ResourceRemoved(_) => 6,
+                        WatchOrganizationTopologyResponse::InternalError(_) => 7,
                     },
                     |u| WatchOrganizationTopologyResponse::Unknown(Some(u)),
                     |x: &WatchOrganizationTopologyResponse| match x { WatchOrganizationTopologyResponse::Unknown(Some(u)) => Some(u.as_ref()), _ => None },
@@ -1810,6 +1813,14 @@ fn initialize_module_serializers() {
                 (*a).finalize();
             }
             unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<HostConfigurationChange> = HostConfigurationChange::_adapter() as *const _ as *mut _;
+                (*a).add_field("host", 0, crate::skir_client::internal::struct_serializer_from_static(ServiceHost::_adapter()), "", |x: &HostConfigurationChange| &x.host, |x: &mut HostConfigurationChange, v| x.host = v);
+                (*a).add_field("realm", 1, crate::skir_client::Serializer::optional(crate::skir_client::internal::struct_serializer_from_static(RealmInstance::_adapter())), "", |x: &HostConfigurationChange| &x.realm, |x: &mut HostConfigurationChange, v| x.realm = v);
+                (*a).add_field("engine", 2, crate::skir_client::Serializer::optional(crate::skir_client::internal::struct_serializer_from_static(EngineInstance::_adapter())), "", |x: &HostConfigurationChange| &x.engine, |x: &mut HostConfigurationChange, v| x.engine = v);
+                (*a).add_field("removed_resources", 3, crate::skir_client::Serializer::array(crate::skirout::base::kernel::v1::record_id::RecordId::serializer()), "", |x: &HostConfigurationChange| &x.removed_resources, |x: &mut HostConfigurationChange, v| x.removed_resources = v);
+                (*a).finalize();
+            }
+            unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<ConfigureServiceHostRequest> = ConfigureServiceHostRequest::_adapter() as *const _ as *mut _;
                 (*a).add_field("host_id", 0, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |x: &ConfigureServiceHostRequest| &x.host_id, |x: &mut ConfigureServiceHostRequest, v| x.host_id = v);
                 (*a).add_field("expected_revision", 1, crate::skir_client::Serializer::int64(), "", |x: &ConfigureServiceHostRequest| &x.expected_revision, |x: &mut ConfigureServiceHostRequest, v| x.expected_revision = v);
@@ -1817,15 +1828,8 @@ fn initialize_module_serializers() {
                 (*a).finalize();
             }
             unsafe {
-                let a: *mut crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_Success> = ConfigureServiceHostResponse_Success::_adapter() as *const _ as *mut _;
-                (*a).add_field("host", 0, crate::skir_client::internal::struct_serializer_from_static(ServiceHost::_adapter()), "", |x: &ConfigureServiceHostResponse_Success| &x.host, |x: &mut ConfigureServiceHostResponse_Success, v| x.host = v);
-                (*a).add_field("realm", 1, crate::skir_client::Serializer::optional(crate::skir_client::internal::struct_serializer_from_static(RealmInstance::_adapter())), "", |x: &ConfigureServiceHostResponse_Success| &x.realm, |x: &mut ConfigureServiceHostResponse_Success, v| x.realm = v);
-                (*a).add_field("engine", 2, crate::skir_client::Serializer::optional(crate::skir_client::internal::struct_serializer_from_static(EngineInstance::_adapter())), "", |x: &ConfigureServiceHostResponse_Success| &x.engine, |x: &mut ConfigureServiceHostResponse_Success, v| x.engine = v);
-                (*a).finalize();
-            }
-            unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_ConflictError> = ConfigureServiceHostResponse_ConflictError::_adapter() as *const _ as *mut _;
-                (*a).add_field("actual", 0, crate::skir_client::internal::struct_serializer_from_static(ServiceHost::_adapter()), "", |x: &ConfigureServiceHostResponse_ConflictError| &x.actual, |x: &mut ConfigureServiceHostResponse_ConflictError, v| x.actual = v);
+                (*a).add_field("actual", 0, crate::skir_client::internal::struct_serializer_from_static(HostConfigurationChange::_adapter()), "", |x: &ConfigureServiceHostResponse_ConflictError| &x.actual, |x: &mut ConfigureServiceHostResponse_ConflictError, v| x.actual = v);
                 (*a).finalize();
             }
             unsafe {
@@ -1845,7 +1849,7 @@ fn initialize_module_serializers() {
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<ConfigureServiceHostResponse> = ConfigureServiceHostResponse::_adapter() as *const _ as *mut _;
-                (*a).add_wrapper_variant("success", 1, 1, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_Success::_adapter()), "", |v| ConfigureServiceHostResponse::Success(Box::new(v)), |x| match x { ConfigureServiceHostResponse::Success(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("success", 1, 1, crate::skir_client::internal::struct_serializer_from_static(HostConfigurationChange::_adapter()), "", |v| ConfigureServiceHostResponse::Success(Box::new(v)), |x| match x { ConfigureServiceHostResponse::Success(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("conflict_error", 2, 2, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_ConflictError::_adapter()), "", |v| ConfigureServiceHostResponse::ConflictError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::ConflictError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("invalid_configuration_error", 3, 3, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_InvalidConfigurationError::_adapter()), "", |v| ConfigureServiceHostResponse::InvalidConfigurationError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::InvalidConfigurationError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("incompatible_engine_error", 4, 4, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_IncompatibleEngineError::_adapter()), "", |v| ConfigureServiceHostResponse::IncompatibleEngineError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::IncompatibleEngineError(b) => b.as_ref(), _ => unreachable!() });
@@ -1868,11 +1872,12 @@ fn initialize_module_serializers() {
             unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<WatchOrganizationTopologyResponse> = WatchOrganizationTopologyResponse::_adapter() as *const _ as *mut _;
                 (*a).add_wrapper_variant("list", 1, 1, crate::skir_client::internal::struct_serializer_from_static(WatchOrganizationTopologyResponse_List::_adapter()), "", |v| WatchOrganizationTopologyResponse::List(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::List(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("host_updated", 2, 2, crate::skir_client::internal::struct_serializer_from_static(ServiceHost::_adapter()), "", |v| WatchOrganizationTopologyResponse::HostUpdated(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::HostUpdated(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("realm_updated", 3, 3, crate::skir_client::internal::struct_serializer_from_static(RealmInstance::_adapter()), "", |v| WatchOrganizationTopologyResponse::RealmUpdated(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::RealmUpdated(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("engine_updated", 4, 4, crate::skir_client::internal::struct_serializer_from_static(EngineInstance::_adapter()), "", |v| WatchOrganizationTopologyResponse::EngineUpdated(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::EngineUpdated(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("resource_removed", 5, 5, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |v| WatchOrganizationTopologyResponse::ResourceRemoved(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::ResourceRemoved(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("internal_error", 6, 6, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| WatchOrganizationTopologyResponse::InternalError(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("configuration_changed", 2, 2, crate::skir_client::internal::struct_serializer_from_static(HostConfigurationChange::_adapter()), "", |v| WatchOrganizationTopologyResponse::ConfigurationChanged(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::ConfigurationChanged(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("host_updated", 3, 3, crate::skir_client::internal::struct_serializer_from_static(ServiceHost::_adapter()), "", |v| WatchOrganizationTopologyResponse::HostUpdated(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::HostUpdated(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("realm_updated", 4, 4, crate::skir_client::internal::struct_serializer_from_static(RealmInstance::_adapter()), "", |v| WatchOrganizationTopologyResponse::RealmUpdated(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::RealmUpdated(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("engine_updated", 5, 5, crate::skir_client::internal::struct_serializer_from_static(EngineInstance::_adapter()), "", |v| WatchOrganizationTopologyResponse::EngineUpdated(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::EngineUpdated(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("resource_removed", 6, 6, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |v| WatchOrganizationTopologyResponse::ResourceRemoved(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::ResourceRemoved(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("internal_error", 7, 7, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| WatchOrganizationTopologyResponse::InternalError(Box::new(v)), |x| match x { WatchOrganizationTopologyResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).finalize();
             }
             unsafe {

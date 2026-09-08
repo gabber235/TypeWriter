@@ -119,6 +119,13 @@ method RegisterServiceHost(
   internal_error: InternalError;
 } = 934206;
 
+struct HostConfigurationChange {
+  host: ServiceHost;
+  realm: RealmInstance?;
+  engine: EngineInstance?;
+  removed_resources: [RecordId];
+}
+
 method ConfigureServiceHost(
   struct {
     host_id: RecordId;
@@ -126,14 +133,10 @@ method ConfigureServiceHost(
     execution: HostExecutionConfiguration;
   }
 ): enum {
-  success: struct {
-    host: ServiceHost;
-    realm: RealmInstance?;
-    engine: EngineInstance?;
-  };
+  success: HostConfigurationChange;
 
   conflict_error: struct {
-    actual: ServiceHost;
+    actual: HostConfigurationChange;
   };
 
   invalid_configuration_error: struct {
@@ -161,6 +164,7 @@ method WatchOrganizationTopology(
     engines: [EngineInstance];
   };
 
+  configuration_changed: HostConfigurationChange;
   host_updated: ServiceHost;
   realm_updated: RealmInstance;
   engine_updated: EngineInstance;

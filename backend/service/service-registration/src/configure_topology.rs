@@ -17,7 +17,7 @@ use wasmcloud_utils::{
         ConfigureServiceHostResponse_ConflictError,
         ConfigureServiceHostResponse_IncompatibleEngineError,
         ConfigureServiceHostResponse_InvalidConfigurationError,
-        ConfigureServiceHostResponse_RealmNotFoundError, ConfigureServiceHostResponse_Success,
+        ConfigureServiceHostResponse_RealmNotFoundError, HostConfigurationChange,
         EngineRealmSelection, EngineTarget, WatchHostExecutionResponse,
         WatchHostExecutionResponse_Desired, WatchOrganizationTopologyResponse,
     },
@@ -37,6 +37,8 @@ enum ConfigureTopologyOutcome {
     },
     ConflictError {
         host: ServiceHostRecord,
+        realm: Option<RealmInstanceViewRecord>,
+        engine: Option<EngineInstanceViewRecord>,
     },
     InvalidConfigurationError {
         message: String,
@@ -140,7 +142,37 @@ pub async fn handle_configure(
             };
             LET $host = array::first($hosts);
             IF $host.revision != $expected_revision {
-                RETURN { outcome: 'conflict-error', host: $host }
+                RETURN { outcome: 'conflict-error', host: $host,
+                realm: array::first(SELECT
+                        id,
+                        revision,
+                        target_engine,
+                        state,
+                        {
+                            id: owner_host_id,
+                            name: owner_host_id.service_id.name,
+                        } AS owner_host
+                    FROM realm_instance
+                    WHERE owner_host_id = $host_id),
+                engine: array::first(SELECT
+                        id,
+                        revision,
+                        target,
+                        state,
+                        {
+                            id: owner_host_id,
+                            name: owner_host_id.service_id.name,
+                        } AS owner_host,
+                        {
+                            realm_id: realm_id,
+                            owner_host: {
+                                id: realm_id.owner_host_id,
+                                name: realm_id.owner_host_id.service_id.name,
+                            },
+                        } AS realm
+                    FROM engine_instance
+                    WHERE owner_host_id = $host_id),
+                }
             };
             IF $has_realm AND !$host.can_host_realm {
                 RETURN {
@@ -304,20 +336,28 @@ pub async fn handle_configure(
             TransactionOutcome::Rejected(error)
         ),
     };
-    publish_configuration(org_id, &outcome).await?;
-    let (host, realm, engine) = skir_transaction_outcome!(
+    let change = skir_transaction_outcome!(
         ConfigureServiceHostResponse,
         outcome,
         success ConfigureTopologyOutcome::Configured {
             host,
             realm,
             engine,
-            removed_realm: _,
-            removed_engine: _,
-        } => (host, realm, engine),
+            removed_realm,
+            removed_engine,
+        } => HostConfigurationChange {
+            host: host.into(),
+            realm: realm.map(Into::into),
+            engine: engine.map(Into::into),
+            removed_resources: [removed_engine, removed_realm]
+                .into_iter().flatten().map(Into::into).collect(),
+            ..Default::default()
+        },
         errors {
-            ConfigureTopologyOutcome::ConflictError { host } => {
-                actual: host.into()
+            ConfigureTopologyOutcome::ConflictError { host, realm, engine } => {
+                actual: HostConfigurationChange {
+                    host: host.into(), realm: realm.map(Into::into), engine: engine.map(Into::into), removed_resources: Vec::new(), ..Default::default()
+                }
             },
             ConfigureTopologyOutcome::InvalidConfigurationError { message } => {
                 message
@@ -331,64 +371,22 @@ pub async fn handle_configure(
         }
     );
 
-    Ok(skir_variant!(ConfigureServiceHostResponse::Success {
-        host: host.into(),
-        realm: realm.map(Into::into),
-        engine: engine.map(Into::into),
-    }))
+    publish_configuration(org_id, &change).await?;
+    Ok(ConfigureServiceHostResponse::Success(Box::new(change)))
 }
 
 async fn publish_configuration(
     organization_id: &str,
-    outcome: &ConfigureTopologyOutcome,
+    change: &HostConfigurationChange,
 ) -> Result<(), otel_wasi::Error> {
-    let ConfigureTopologyOutcome::Configured {
-        host,
-        realm,
-        engine,
-        removed_realm,
-        removed_engine,
-    } = outcome
-    else {
-        return Ok(());
-    };
-    let host = wasmcloud_utils::skir::base::service::v1::topology::ServiceHost::from(host.clone());
-    let realm: Option<wasmcloud_utils::skir::base::service::v1::topology::RealmInstance> =
-        realm.clone().map(Into::into);
-    let engine: Option<wasmcloud_utils::skir::base::service::v1::topology::EngineInstance> =
-        engine.clone().map(Into::into);
-    let topology = wasmcloud_utils::skir_subjects::organization_topology(organization_id);
-    topology
-        .publish(WatchOrganizationTopologyResponse::HostUpdated(Box::new(
-            host.clone(),
-        )))
+    wasmcloud_utils::skir_subjects::organization_topology(organization_id)
+        .publish(WatchOrganizationTopologyResponse::ConfigurationChanged(Box::new(change.clone())))
         .await?;
-    if let Some(realm) = &realm {
-        topology
-            .publish(WatchOrganizationTopologyResponse::RealmUpdated(Box::new(
-                realm.clone(),
-            )))
-            .await?;
-    }
-    if let Some(engine) = &engine {
-        topology
-            .publish(WatchOrganizationTopologyResponse::EngineUpdated(Box::new(
-                engine.clone(),
-            )))
-            .await?;
-    }
-    for removed in [removed_engine, removed_realm].into_iter().flatten() {
-        topology
-            .publish(WatchOrganizationTopologyResponse::ResourceRemoved(
-                Box::new(removed.clone().into()),
-            ))
-            .await?;
-    }
-    wasmcloud_utils::skir_subjects::host_execution(&host.service_id.key.to_string())
+    wasmcloud_utils::skir_subjects::host_execution(&change.host.service_id.key.to_string())
         .publish(skir_variant!(WatchHostExecutionResponse::Desired {
-            topology_revision: host.topology_revision.desired,
-            realm,
-            engine,
+            topology_revision: change.host.topology_revision.desired,
+            realm: change.realm.clone(),
+            engine: change.engine.clone(),
         }))
         .await
 }

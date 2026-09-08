@@ -11,17 +11,20 @@ const _configureSubject =
     "cloud.to.user.user1.organization.org1.topology.configure";
 final _organizationId = recordId("organization:org1");
 
-skir.ServiceHost _host({String id = "host1", int revision = 1}) =>
-    skir.ServiceHost(
-      hostId: recordId("service_host:$id"),
-      serviceId: recordId("service:$id"),
-      revision: revision,
-      entrypoint: "PAPER",
-      canHostRealm: true,
-      supportedEngines: [skir.SupportedEngine(engineId: "paper")],
-      topologyRevision: skir.ReconciledRevision(desired: 1, applied: 1),
-      state: skir.HostRuntimeState.defaultInstance,
-    );
+skir.ServiceHost _host({
+  String id = "host1",
+  int revision = 1,
+  skir.HostRuntimeState? state,
+}) => skir.ServiceHost(
+  hostId: recordId("service_host:$id"),
+  serviceId: recordId("service:$id"),
+  revision: revision,
+  entrypoint: "PAPER",
+  canHostRealm: true,
+  supportedEngines: [skir.SupportedEngine(engineId: "paper")],
+  topologyRevision: skir.ReconciledRevision(desired: 1, applied: 1),
+  state: state ?? skir.HostRuntimeState.defaultInstance,
+);
 
 skir.RealmInstance _realm() => skir.RealmInstance(
   realmId: recordId("realm_instance:realm1"),
@@ -55,6 +58,47 @@ Future<void> _waitFor(bool Function() condition) async {
 }
 
 void main() {
+  test(
+    "runtime reports cannot publish configuration early or revive removed children",
+    () {
+      final initial = OrganizationTopology(
+        hosts: [TopologyHost.fromSkir(_host())],
+        realmInstances: [TopologyRealm.fromSkir(_realm())],
+        engineInstances: [],
+      );
+      final early = initial.applyHostObservation(
+        TopologyHost.fromSkir(
+          _host(
+            revision: 2,
+            state: skir.HostRuntimeState(
+              status: skir.HostRuntimeStatus.active,
+              message: null,
+              updatedAt: DateTime.utc(2026),
+            ),
+          ),
+        ),
+      );
+      expect(early.hosts.single.revision, 1);
+      expect(early.hosts.single.state.status, TopologyHostStatus.active);
+      final removed = early.applyConfiguration(
+        skir.HostConfigurationChange(
+          host: _host(revision: 2),
+          realm: null,
+          engine: null,
+          removedResources: [_realm().realmId],
+        ),
+      );
+      expect(removed.hosts.single.revision, 2);
+      expect(removed.hosts.single.state.status, TopologyHostStatus.active);
+      expect(
+        removed
+            .applyRealmObservation(TopologyRealm.fromSkir(_realm()))
+            .realmInstances,
+        isEmpty,
+      );
+    },
+  );
+
   test("topology watch reduces lists, updates, and removals", () async {
     final nats = FakeNatsClient()
       ..registerHandler(
@@ -133,11 +177,30 @@ void main() {
 
     final updated = await emit(
       skir.WatchOrganizationTopologyResponse.wrapHostUpdated(
-        _host(revision: 2),
+        _host(
+          revision: 2,
+          state: skir.HostRuntimeState(
+            status: skir.HostRuntimeStatus.active,
+            message: null,
+            updatedAt: DateTime.utc(2026),
+          ),
+        ),
       ),
     );
-    expect(updated.hosts.first.revision, 2);
+    expect(updated.hosts.first.revision, 1);
     expect(updated.hosts.map((host) => host.hostId.id), ["host1", "host2"]);
+
+    final configured = await emit(
+      skir.WatchOrganizationTopologyResponse.createConfigurationChanged(
+        host: _host(revision: 3),
+        realm: _realm(),
+        engine: null,
+        removedResources: [_engine().engineId],
+      ),
+    );
+    expect(configured.hosts.first.revision, 3);
+    expect(configured.realmInstances.single.realmId, _realm().realmId);
+    expect(configured.engineInstances, isEmpty);
 
     final removed = await emit(
       skir.WatchOrganizationTopologyResponse.wrapResourceRemoved(
@@ -146,6 +209,34 @@ void main() {
     );
     expect(removed.realmInstances, isEmpty);
   });
+
+  test(
+    "configuration repeats preserve newer runtime and reject older config",
+    () {
+      final change = skir.HostConfigurationChange(
+        host: _host(revision: 3),
+        realm: _realm(),
+        engine: null,
+        removedResources: [],
+      );
+      final configured = OrganizationTopology.empty.applyConfiguration(change);
+      final newerState = configured.hosts.single.state.copyWith(
+        status: TopologyHostStatus.failed,
+        updatedAt: DateTime.utc(2026),
+      );
+      final observed = configured.copyWith(
+        hosts: [configured.hosts.single.copyWith(state: newerState)],
+      );
+      expect(observed.applyConfiguration(change), observed);
+      final old = skir.HostConfigurationChange(
+        host: _host(revision: 2),
+        realm: null,
+        engine: null,
+        removedResources: [_realm().realmId],
+      );
+      expect(observed.applyConfiguration(old), observed);
+    },
+  );
 
   test(
     "host configuration sends the generated transactional request",
@@ -159,6 +250,7 @@ void main() {
             host: _host(revision: 2),
             realm: null,
             engine: null,
+            removedResources: [],
           ),
         );
       });

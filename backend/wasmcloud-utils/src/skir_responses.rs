@@ -111,7 +111,7 @@ wasmcloud_utils_macros::skir_response! {
 
 wasmcloud_utils_macros::skir_response! {
     WatchOrganizationTopologyResponse {
-        success: [List, HostUpdated, RealmUpdated, EngineUpdated, ResourceRemoved],
+        success: [List, ConfigurationChanged, HostUpdated, RealmUpdated, EngineUpdated, ResourceRemoved],
         errors {}
     }
 }
