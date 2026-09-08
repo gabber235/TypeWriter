@@ -16,6 +16,8 @@ part "authoring_session.g.dart";
 part "authoring_session_snapshots.dart";
 part "authoring_session_state.dart";
 part "authoring_session_sync.dart";
+part "authoring_operation_resources.dart";
+part "authoring_operation_label.dart";
 
 @riverpod
 class AuthoringSession extends _$AuthoringSession
@@ -54,23 +56,41 @@ class AuthoringSession extends _$AuthoringSession
     );
     final wire.ApplyAuthoringBatchResponse response;
     try {
-      response = await ref.requestSkir(
+      response = await ref.mutateSkir(
         _address.request("library.authoring.batch.apply"),
         wire.ApplyAuthoringBatchRequest.serializer.toBytes(request),
         wire.ApplyAuthoringBatchResponse.serializer,
+        label: _authoringLabel(request.operations),
+        classify: (response) => switch (response) {
+          wire.ApplyAuthoringBatchResponse_appliedWrapper() =>
+            MutationResponseDisposition.confirmed,
+          wire.ApplyAuthoringBatchResponse_unknown() ||
+          wire.ApplyAuthoringBatchResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
+        onResponse: (response) async {
+          switch (response) {
+            case wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value):
+              _accept(value);
+            case wire.ApplyAuthoringBatchResponse_conflictWrapper():
+              await _refresh();
+            case wire.ApplyAuthoringBatchResponse_invalidWrapper() ||
+                wire.ApplyAuthoringBatchResponse_internalErrorWrapper() ||
+                wire.ApplyAuthoringBatchResponse_unknown():
+          }
+        },
+        submissionId: request.batchId,
+        resources: {
+          for (final operation in request.operations)
+            for (final resource in _operationResources(operation))
+              (organizationId, realmId, resource),
+        },
+        replay: SubmissionReplay.identicalRequest,
       );
     } on Object {
       _scheduleRefresh();
       rethrow;
-    }
-    switch (response) {
-      case wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value):
-        _accept(value);
-      case wire.ApplyAuthoringBatchResponse_conflictWrapper():
-        await _refresh();
-      case wire.ApplyAuthoringBatchResponse_invalidWrapper() ||
-          wire.ApplyAuthoringBatchResponse_internalErrorWrapper() ||
-          wire.ApplyAuthoringBatchResponse_unknown():
     }
     return response;
   }

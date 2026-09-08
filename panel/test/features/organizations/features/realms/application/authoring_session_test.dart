@@ -164,7 +164,7 @@ void main() {
           tags: null,
         ),
       ]),
-      throwsA(isA<NatsClientException>()),
+      throwsA(isA<SubmissionException>()),
     );
     await waitForProvider(
       harness.container,
