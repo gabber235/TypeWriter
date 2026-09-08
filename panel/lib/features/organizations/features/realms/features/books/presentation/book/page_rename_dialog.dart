@@ -12,7 +12,7 @@ class RenamePageDialogue extends HookConsumerWidget {
 
   Future<void> _renamePage(WidgetRef ref, String newName) async {
     final router = ref.read(appRouterProvider);
-    final result = await ref.readAuthoringSession().notifier.patchPage(
+    final result = await ref.editPage(
       id: pageId,
       name: skir.StringChange(expected: oldName, value: newName),
     );

@@ -17,11 +17,7 @@ Future<void> _changePagesChapter(
       )
       .toList();
   if (changed.isEmpty || !ref.context.mounted) return;
-  final result = await ref.readAuthoringSession().notifier.changePagesChapters(
-    changed,
-    chapter,
-    newChapter,
-  );
+  final result = await ref.editPagesChapter(changed, chapter, newChapter);
   result.requireApplied(
     conflictMessage: "A page changed while chapters were moving",
   );

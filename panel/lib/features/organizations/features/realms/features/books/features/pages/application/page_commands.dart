@@ -43,14 +43,18 @@ extension PageCommands on AuthoringSession {
         name: null,
         chapter: wire.StringChange(
           expected: page.chapter,
-          value: _replaceChapter(page.chapter, oldChapter, newChapter),
+          value: replacePageChapter(page.chapter, oldChapter, newChapter),
         ),
         priority: null,
       ),
   ]);
 }
 
-String _replaceChapter(String chapter, String oldChapter, String newChapter) {
+String replacePageChapter(
+  String chapter,
+  String oldChapter,
+  String newChapter,
+) {
   if (chapter != oldChapter && !chapter.startsWith("$oldChapter.")) {
     throw ApiException.badRequest("The page is not in the selected chapter");
   }

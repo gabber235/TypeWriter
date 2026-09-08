@@ -71,34 +71,24 @@ class Tags extends _$Tags {
     final before =
         expected ??
         state.requireValue.firstWhere((value) => value.tagId == tag.tagId);
-    state = AsyncData([
-      for (final current in state.requireValue)
-        if (current.tagId == tag.tagId) tag else current,
-    ]);
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(editorWorkspaceProvider),
+      scope: (ref.read(organizationIdProvider), ref.read(realmIdProvider)),
+    );
     try {
-      final response = await ref.readAuthoringSession().notifier.patchTag(
-        tag,
-        expected: before,
+      final owner = owners.editor(
+        TagSelectable(
+          ref: ref,
+          id: TagIdentifier(tag.tagId),
+          tag: before,
+          tagCollection: tagPresentationCollection(state.requireValue),
+        ),
       );
-      switch (response) {
-        case wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value):
-          return TypedMutationResult.success(
-            revision: value.sequence,
-            value: tag.inspectorValue,
-          );
-        case wire.ApplyAuthoringBatchResponse_conflictWrapper():
-          return _tagConflict(before);
-        case wire.ApplyAuthoringBatchResponse_invalidWrapper() ||
-            wire.ApplyAuthoringBatchResponse_internalErrorWrapper() ||
-            wire.ApplyAuthoringBatchResponse_unknown():
-          _replaceFromSession();
-          return response.toMutationFailure(
-            unavailableMessage: "The tag update could not be completed",
-          );
-      }
-    } on Object {
-      _replaceFromSession();
-      return unavailableMutation("The tag update could not be completed");
+      return await owner.applyChanges(
+        editorValueChanges(before.inspectorValue, tag.inspectorValue),
+      );
+    } finally {
+      owners.dispose();
     }
   }
 
@@ -139,27 +129,6 @@ class Tags extends _$Tags {
       _replaceFromSession();
       rethrow;
     }
-  }
-
-  TypedMutationResult _tagConflict(Tag expected) {
-    final session = ref.readAuthoringSession();
-    final canonical = session.state.tags[expected.tagId];
-    if (canonical == null) {
-      return unavailableMutation(
-        "The tag no longer exists",
-        targetDeleted: true,
-      );
-    }
-    final actual = Tag.fromWire(canonical, session.state.sequence ?? 0);
-    state = AsyncData([
-      for (final tag in state.requireValue)
-        if (tag.tagId == actual.tagId) actual else tag,
-    ]);
-    return TypedMutationResult.conflict(
-      expectedRevision: expected.authoringSequence,
-      actualRevision: actual.authoringSequence,
-      actualValue: actual.inspectorValue,
-    );
   }
 
   void _replaceFromSession() {

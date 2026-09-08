@@ -32,7 +32,7 @@ final class BooksProvider extends $AsyncNotifierProvider<Books, List<Book>> {
   Books create() => Books();
 }
 
-String _$booksHash() => r'cea4394eddc1b658c27c8be15c8d05a5b9789331';
+String _$booksHash() => r'ef30497e64454ba316584d7b8274fbab7cac077e';
 
 abstract class _$Books extends $AsyncNotifier<List<Book>> {
   FutureOr<List<Book>> build();

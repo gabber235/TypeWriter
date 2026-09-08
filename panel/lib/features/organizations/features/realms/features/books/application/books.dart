@@ -67,56 +67,27 @@ class Books extends _$Books {
     final before =
         expected ??
         state.requireValue.firstWhere((value) => value.bookId == book.bookId);
-    state = AsyncData([
-      for (final current in state.requireValue)
-        if (current.bookId == book.bookId) book else current,
-    ]);
-    try {
-      final response = await ref.readAuthoringSession().notifier.patchBook(
-        book,
-        expected: before,
-      );
-      switch (response) {
-        case wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value):
-          return TypedMutationResult.success(
-            revision: value.sequence,
-            value: book.inspectorValue,
-          );
-        case wire.ApplyAuthoringBatchResponse_conflictWrapper():
-          return _bookConflict(before);
-        case wire.ApplyAuthoringBatchResponse_invalidWrapper() ||
-            wire.ApplyAuthoringBatchResponse_internalErrorWrapper() ||
-            wire.ApplyAuthoringBatchResponse_unknown():
-          _replaceFromSession();
-          return response.toMutationFailure(
-            unavailableMessage: "The book update could not be completed",
-          );
-      }
-    } on Object {
-      _replaceFromSession();
-      return unavailableMutation("The book update could not be completed");
-    }
-  }
-
-  TypedMutationResult _bookConflict(Book expected) {
-    final session = ref.readAuthoringSession();
-    final canonical = session.state.books[expected.bookId];
-    if (canonical == null) {
-      return unavailableMutation(
-        "The book no longer exists",
-        targetDeleted: true,
-      );
-    }
-    final actual = Book.fromWire(canonical, session.state.sequence ?? 0);
-    state = AsyncData([
-      for (final book in state.requireValue)
-        if (book.bookId == actual.bookId) actual else book,
-    ]);
-    return TypedMutationResult.conflict(
-      expectedRevision: expected.authoringSequence,
-      actualRevision: actual.authoringSequence,
-      actualValue: actual.inspectorValue,
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(editorWorkspaceProvider),
+      scope: (ref.read(organizationIdProvider), ref.read(realmIdProvider)),
     );
+    try {
+      final owner = owners.editor(
+        BookSelection(
+          ref: ref,
+          id: BookIdentifier(book.bookId),
+          book: before,
+          tagCollection: tagPresentationCollection(
+            ref.read(tagsProvider).value ?? const [],
+          ),
+        ),
+      );
+      return await owner.applyChanges(
+        editorValueChanges(before.inspectorValue, book.inspectorValue),
+      );
+    } finally {
+      owners.dispose();
+    }
   }
 
   void _replaceFromSession() {

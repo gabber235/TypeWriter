@@ -22,7 +22,7 @@ class ChangePagePriorityDialogue extends HookConsumerWidget {
 
     final navigator = Navigator.of(ref.context);
     try {
-      final result = await ref.readAuthoringSession().notifier.patchPage(
+      final result = await ref.editPage(
         id: pageId,
         priority: skir.Int32Change(expected: priority, value: newPriority),
       );

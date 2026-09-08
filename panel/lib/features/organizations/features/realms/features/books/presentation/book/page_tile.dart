@@ -26,7 +26,7 @@ class _PageTile extends HookConsumerWidget {
           title: "Change chapter of $name",
           chapter: chapter,
           onChapterChanged: (newChapter) async {
-            final result = await ref.readAuthoringSession().notifier.patchPage(
+            final result = await ref.editPage(
               id: pageId,
               chapter: skir.StringChange(expected: chapter, value: newChapter),
             );
@@ -80,7 +80,7 @@ class _PageTile extends HookConsumerWidget {
           title: "Change chapter of $name",
           chapter: chapter,
           onChapterChanged: (newChapter) async {
-            final result = await ref.readAuthoringSession().notifier.patchPage(
+            final result = await ref.editPage(
               id: pageId,
               chapter: skir.StringChange(expected: chapter, value: newChapter),
             );
@@ -172,7 +172,7 @@ class _PageTile extends HookConsumerWidget {
         return DragTarget<PageDrag>(
           onWillAcceptWithDetails: (details) => true,
           onAcceptWithDetails: (details) async {
-            final result = await ref.readAuthoringSession().notifier.patchPage(
+            final result = await ref.editPage(
               id: details.data.pageId,
               chapter: skir.StringChange(
                 expected: details.data.chapter,
