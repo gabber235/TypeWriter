@@ -58,6 +58,7 @@ void main() {
           control: control,
           options: const [SelectOption(id: "one", label: text, value: text)],
           allowCustomValue: true,
+          defaultValue: text,
         ),
         wire.PresentationElement_kind.selectInputWrapper,
       ),

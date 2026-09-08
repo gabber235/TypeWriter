@@ -143,6 +143,7 @@ sealed class PresentationElement with _$PresentationElement {
     required BoundControl control,
     required List<SelectOption> options,
     @Default(false) bool allowCustomValue,
+    TypedExpression? defaultValue,
   }) = SelectInputElement;
   const factory PresentationElement.sliderInput({
     required BoundControl control,

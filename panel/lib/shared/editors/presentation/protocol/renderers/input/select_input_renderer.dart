@@ -11,16 +11,26 @@ extension SelectInputElementRendering on SelectInputElement {
             if (scope.evaluate(option.value).valueOrNull case final value?)
               (option, value),
         ];
+        final current = field.binding.value;
+        final hasSelection =
+            allowCustomValue ||
+            resolvedOptions.any((option) => option.$2 == current);
+        final initializer = hasSelection
+            ? null
+            : field.binding.type
+                  .createInitialValue(registry: scope.registry)
+                  .valueOrNull;
+        final selected = !hasSelection && current == initializer
+            ? null
+            : current;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             AdaptiveChoiceControl<DataValue>(
-              selected:
-                  resolvedOptions.any(
-                    (option) => option.$2 == field.binding.value,
-                  )
-                  ? field.binding.value
-                  : null,
+              selected: selected,
+              defaultValue: defaultValue == null
+                  ? null
+                  : scope.evaluate(defaultValue!).valueOrNull,
               choices: {
                 for (final option in resolvedOptions)
                   option.$2: scope.expressionText(option.$1.label),

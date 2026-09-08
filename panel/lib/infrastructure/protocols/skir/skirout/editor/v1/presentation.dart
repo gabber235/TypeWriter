@@ -15180,6 +15180,7 @@ sealed class SelectControl_orMutable {
   BoundControl_orMutable get control;
   _core.Iterable<SelectOption_orMutable> get options;
   _core.bool get allowCustomValue;
+  _lib_editor_v1_expression.TypedExpression_orMutable? get defaultValue;
 
   SelectControl toFrozen();
 }
@@ -15192,22 +15193,27 @@ final class SelectControl implements SelectControl_orMutable {
   final _skir.KeyedIterable<SelectOption, _core.String> options;
   @_core.override
   final _core.bool allowCustomValue;
+  @_core.override
+  final _lib_editor_v1_expression.TypedExpression? defaultValue;
   _skir.internal__UnrecognizedFields? _u;
 
   factory SelectControl({
     required BoundControl_orMutable control,
     required _core.Iterable<SelectOption_orMutable> options,
     required _core.bool allowCustomValue,
+    required _lib_editor_v1_expression.TypedExpression_orMutable? defaultValue,
   }) => SelectControl._(
     control.toFrozen(),
     _skir.internal__keyedMappedCopy(options, "optionId", (it) => it.optionId, (it) => it.toFrozen()),
     allowCustomValue,
+    (defaultValue != null) ? defaultValue.toFrozen() : null,
   );
 
   SelectControl._(
     this.control,
     this.options,
     this.allowCustomValue,
+    this.defaultValue,
   );
 
   /// Default instance with all fields set to their default values.
@@ -15237,6 +15243,7 @@ final class SelectControl implements SelectControl_orMutable {
     this.control,
     this.options,
     this.allowCustomValue,
+    this.defaultValue,
   );
 
   @_core.override
@@ -15253,6 +15260,7 @@ final class SelectControl implements SelectControl_orMutable {
     this.control,
     this.options,
     this.allowCustomValue,
+    this.defaultValue,
   ];
 
   @_core.override
@@ -15292,6 +15300,17 @@ final class SelectControl implements SelectControl_orMutable {
         (it) => it.allowCustomValue,
         (it, v) => it.allowCustomValue = v,
       );
+      _serializerBuilder.addField(
+        "default_value",
+        "defaultValue",
+        3,
+        _skir.Serializers.optional(
+          _lib_editor_v1_expression.TypedExpression.serializer,
+        ),
+        "",
+        (it) => it.defaultValue,
+        (it, v) => it.defaultValue = v,
+      );
       _serializerBuilder.finalize();
     }
     return _serializerBuilder.serializer;
@@ -15313,12 +15332,14 @@ final class SelectControl_mutable implements SelectControl_orMutable {
   BoundControl_orMutable control;
   _core.Iterable<SelectOption_orMutable> options;
   _core.bool allowCustomValue;
+  _lib_editor_v1_expression.TypedExpression_orMutable? defaultValue;
   _skir.internal__UnrecognizedFields? _u;
 
   SelectControl_mutable._(
     this.control,
     this.options,
     this.allowCustomValue,
+    this.defaultValue,
   );
 
   /// If the value of [options] is already mutable, returns it as-is.
@@ -15338,6 +15359,7 @@ final class SelectControl_mutable implements SelectControl_orMutable {
     control: this.control,
     options: this.options,
     allowCustomValue: this.allowCustomValue,
+    defaultValue: this.defaultValue,
   ).._u = this._u;
 }
 
@@ -22952,11 +22974,13 @@ sealed class PresentationElement {
     required BoundControl_orMutable control,
     required _core.Iterable<SelectOption_orMutable> options,
     required _core.bool allowCustomValue,
+    required _lib_editor_v1_expression.TypedExpression_orMutable? defaultValue,
   }) => PresentationElement.wrapSelectInput(
     SelectControl(
       control: control,
       options: options,
       allowCustomValue: allowCustomValue,
+      defaultValue: defaultValue,
     )
   );
 

@@ -164,6 +164,24 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.Text(value)
         }
 
+        /**
+         * Offers typed literal choices. Use [wire] for custom protocol expressions.
+         *
+         * Initialization is eligible only when the current value equals its type initializer and is absent from
+         * the options. An available [defaultValue] wins; otherwise the sole distinct option is selected, if any.
+         * Initialization writes through the normal editable input callback and follows its commit policy.
+         * Existing selections are preserved. Each mounted control initializes at most once; later default changes
+         * do not replace edits. Disabled controls wait until editable, and removal cancels pending initialization.
+         */
+        fun <V : Any> selectInput(
+            value: PresentationValue<V>,
+            options: List<PresentationOption<V>>,
+            defaultValue: PresentationValue<V>? = null,
+            label: String? = null,
+        ) {
+            children += AuthoredPresentationNode.SelectInput(value, options, defaultValue, label)
+        }
+
         fun <V : Any> defaultEditor(value: PresentationValue<V>) {
             children += AuthoredPresentationNode.DefaultEditor(value)
         }
@@ -326,6 +344,13 @@ internal data class ConcretePresentation(
 internal sealed interface AuthoredPresentationNode {
     data class CommitControls(
         val value: PresentationValue<*>,
+    ) : AuthoredPresentationNode
+
+    data class SelectInput<V : Any>(
+        val value: PresentationValue<V>,
+        val options: List<PresentationOption<V>>,
+        val defaultValue: PresentationValue<V>?,
+        val label: String?,
     ) : AuthoredPresentationNode
 
     data class DefaultEditor(

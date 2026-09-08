@@ -3724,6 +3724,7 @@ pub struct SelectControl {
     pub control: BoundControl,
     pub options: crate::skir_client::KeyedVec<SelectOption_byOptionId>,
     pub allow_custom_value: bool,
+    pub default_value: Option<crate::skirout::base::editor::v1::expression::TypedExpression>,
     /// Set this to None when you're creating a struct.
     pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<SelectControl>>,
 }
@@ -6468,6 +6469,7 @@ fn initialize_module_serializers() {
                 (*a).add_field("control", 0, crate::skir_client::internal::struct_serializer_from_static(BoundControl::_adapter()), "", |x: &SelectControl| &x.control, |x: &mut SelectControl, v| x.control = v);
                 (*a).add_field("options", 1, crate::skir_client::Serializer::<crate::skir_client::KeyedVec<SelectOption_byOptionId>>::keyed_array(crate::skir_client::internal::struct_serializer_from_static(SelectOption::_adapter())), "", |x: &SelectControl| &x.options, |x: &mut SelectControl, v| x.options = v);
                 (*a).add_field("allow_custom_value", 2, crate::skir_client::Serializer::bool(), "", |x: &SelectControl| &x.allow_custom_value, |x: &mut SelectControl, v| x.allow_custom_value = v);
+                (*a).add_field("default_value", 3, crate::skir_client::Serializer::optional(crate::skirout::base::editor::v1::expression::TypedExpression::serializer()), "", |x: &SelectControl| &x.default_value, |x: &mut SelectControl, v| x.default_value = v);
                 (*a).finalize();
             }
             unsafe {

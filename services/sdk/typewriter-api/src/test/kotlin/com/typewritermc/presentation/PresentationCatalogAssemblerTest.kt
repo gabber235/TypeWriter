@@ -39,6 +39,96 @@ private data class SearchSample(
 )
 
 val PresentationCatalogAssemblerTest by testSuite {
+    test("select defaults retain their input expression through catalog compilation") {
+        val prototypes = TypePrototypeRegistry(emptyList())
+        val specification =
+            context(PresentationBuildContext(prototypes)) {
+                presentation("selection") {
+                    val preferred = input<String>("preferred")
+                    val selected = editableInput<String>("selected")
+                    selectInput(
+                        selected.value(),
+                        listOf(selectOption("paper", "Paper", "paper")),
+                        defaultValue = preferred.value(),
+                    )
+                }
+            }
+        val catalog =
+            PresentationCatalogAssembler.assemble(
+                listOf(provider("test", false, specification = specification)),
+                prototypes,
+                TypeCatalog(emptyList()),
+            )
+        catalog.diagnostics shouldBe emptyList()
+        val node =
+            (
+                catalog.definitions
+                    .single()
+                    .root.element as PresentationElement.ChildrenWrapper
+            ).value.children.single()
+        val select = (node.element as PresentationElement.SelectInputWrapper).value
+        select.control.binding.bindingId.value shouldBe 1L
+        val option = select.options.single()
+        option.optionId shouldBe "paper"
+        (option.label.expression as skirout.editor.v1.expression.Expression.LiteralWrapper).value shouldBe
+            skirout.editor.v1.type_catalog.TypedValue
+                .StringWrapper("Paper")
+        (option.value.expression as skirout.editor.v1.expression.Expression.LiteralWrapper).value shouldBe
+            skirout.editor.v1.type_catalog.TypedValue
+                .StringWrapper("paper")
+        val defaultBinding = (select.defaultValue!!.expression as skirout.editor.v1.expression.Expression.BindingWrapper).value
+        defaultBinding.bindingId.value shouldBe 0L
+        val restored =
+            skirout.editor.v1.presentation.SelectControl.serializer.fromBytes(
+                skirout.editor.v1.presentation.SelectControl.serializer
+                    .toBytes(select)
+                    .toByteArray(),
+            )
+        restored.defaultValue shouldBe select.defaultValue
+    }
+
+    test("typed literal choices compile numeric and boolean values") {
+        val prototypes = TypePrototypeRegistry(emptyList())
+        val specification =
+            context(PresentationBuildContext(prototypes)) {
+                presentation("literal_choices") {
+                    val count = editableInput<Int>("count")
+                    val enabled = editableInput<Boolean>("enabled")
+                    selectInput(count.value(), listOf(selectOption("two", "Two", 2)))
+                    selectInput(enabled.value(), listOf(selectOption("yes", "Yes", true)))
+                }
+            }
+        val catalog =
+            PresentationCatalogAssembler.assemble(
+                listOf(provider("test", false, specification = specification)),
+                prototypes,
+                TypeCatalog(emptyList()),
+            )
+        catalog.diagnostics shouldBe emptyList()
+        val nodes =
+            (
+                catalog.definitions
+                    .single()
+                    .root.element as PresentationElement.ChildrenWrapper
+            ).value.children
+        val values =
+            nodes.map { node ->
+                val select = (node.element as PresentationElement.SelectInputWrapper).value
+                (
+                    select.options
+                        .single()
+                        .value.expression as skirout.editor.v1.expression.Expression.LiteralWrapper
+                ).value
+            }
+        values shouldBe
+            listOf(
+                skirout.editor.v1.type_catalog.TypedValue
+                    .SignedSixtyFourWrapper(2L),
+                skirout.editor.v1.type_catalog.TypedValue
+                    .BooleanWrapper(true),
+            )
+    }
+
     test("composed inputs compile explicit scalar bindings and invocations") {
         val prototypes = TypePrototypeRegistry(emptyList())
         val context = PresentationBuildContext(prototypes)

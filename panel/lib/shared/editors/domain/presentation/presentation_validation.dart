@@ -80,6 +80,22 @@ extension on PresentationElement {
         context.bindings.resolve(binding, registry: registry).diagnostics,
       );
     }
+    if (element case SelectInputElement(
+      :final control,
+      defaultValue: final expression?,
+    )) {
+      final binding = context.bindings
+          .resolve(control.binding, registry: registry)
+          .valueOrNull;
+      final value = expression
+          .evaluate(context, registry: registry, budget: budget)
+          .valueOrNull;
+      if (binding != null && value != null) {
+        diagnostics.addAll(
+          value.validateAgainst(binding.type, registry: registry),
+        );
+      }
+    }
     if (element case DateTimeInputElement(
       includeDate: false,
       includeTime: false,
@@ -445,7 +461,8 @@ extension on PresentationElement {
       TabsElement(:final tabs) => [for (final tab in tabs) tab.label],
       ConditionalElement(:final condition) => [condition],
       RepeatedElement(:final source) => [source],
-      SelectInputElement(:final options) => [
+      SelectInputElement(:final options, :final defaultValue) => [
+        ?defaultValue,
         for (final option in options) ...[option.label, option.value],
       ],
       SliderInputElement(:final minimum, :final maximum, :final divisions) => [

@@ -204,6 +204,7 @@ extension on PresentationElement {
             )
             .toList(),
         allowCustomValue: value.allowCustomValue,
+        defaultValue: value.defaultValue._substituteTypes(substitutions),
       ),
       SliderInputElement() => SliderInputElement(
         control: value.control._substituteTypes(substitutions),

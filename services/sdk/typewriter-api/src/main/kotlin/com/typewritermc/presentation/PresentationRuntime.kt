@@ -6,6 +6,7 @@ import com.typewritermc.types.ResolvedTypeRef
 import com.typewritermc.types.TypeCatalog
 import com.typewritermc.types.TypeExpression
 import com.typewritermc.types.TypePrototypeRegistry
+import com.typewritermc.types.skir.SkirDataValueCodec
 import com.typewritermc.types.skir.SkirTypeCodec
 import com.typewritermc.types.skir.getOrThrow
 import skirout.editor.v1.action.EditorAction
@@ -364,6 +365,36 @@ private class NodeCompiler(
                     path,
                     PresentationElement.TextWrapper(
                         TextContent.partial(value = bindingExpression(node.value.type, inputId(node.value.input), node.value.fields)),
+                    ),
+                )
+            }
+
+            is AuthoredPresentationNode.SelectInput<*> -> {
+                val type = PresentationBuildContext(prototypes).type(node.value.type)
+                val expected = SkirTypeCodec.encode(type).getOrThrow()
+                presentationNode(
+                    path,
+                    PresentationElement.SelectInputWrapper(
+                        skirout.editor.v1.presentation.SelectControl(
+                            control = boundControl(node.value.fields, node.label, inputId(node.value.input)),
+                            options =
+                                node.options.map { option ->
+                                    skirout.editor.v1.presentation.SelectOption(
+                                        optionId = option.id,
+                                        label = stringExpression(option.label),
+                                        value =
+                                            TypedExpression(
+                                                resultType = expected,
+                                                expression =
+                                                    Expression.LiteralWrapper(
+                                                        SkirDataValueCodec.encode(option.encode(prototypes, type)).getOrThrow(),
+                                                    ),
+                                            ),
+                                    )
+                                },
+                            allowCustomValue = false,
+                            defaultValue = node.defaultValue?.let { bindingExpression(it.type, inputId(it.input), it.fields) },
+                        ),
                     ),
                 )
             }

@@ -17995,6 +17995,7 @@ sealed interface SelectControl_OrMutable {
     val control: skirout.editor.v1.presentation.BoundControl_OrMutable;
     val options: kotlin.collections.List<skirout.editor.v1.presentation.SelectOption_OrMutable>;
     val allowCustomValue: kotlin.Boolean;
+    val defaultValue: skirout.editor.v1.expression.TypedExpression_OrMutable?;
 
     fun toFrozen(): skirout.editor.v1.presentation.SelectControl;
 }
@@ -18005,6 +18006,7 @@ class SelectControl private constructor(
     override val control: skirout.editor.v1.presentation.BoundControl,
     override val options: build.skir.KeyedList<skirout.editor.v1.presentation.SelectOption, kotlin.String>,
     override val allowCustomValue: kotlin.Boolean,
+    override val defaultValue: skirout.editor.v1.expression.TypedExpression?,
     private val _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.SelectControl>? =
         null,
 ): skirout.editor.v1.presentation.SelectControl_OrMutable {
@@ -18014,12 +18016,14 @@ class SelectControl private constructor(
         control: skirout.editor.v1.presentation.BoundControl_OrMutable,
         options: kotlin.collections.Iterable<skirout.editor.v1.presentation.SelectOption_OrMutable>,
         allowCustomValue: kotlin.Boolean,
+        defaultValue: skirout.editor.v1.expression.TypedExpression_OrMutable?,
         _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.SelectControl>? =
             null,
     ): this(
         control.toFrozen(),
         build.skir.internal.toKeyedList(options, "optionId", { it.optionId }, { it.toFrozen() }),
         allowCustomValue,
+        if (defaultValue != null) defaultValue.toFrozen() else null,
         _unrecognizedFields,
     ) {}
 
@@ -18031,6 +18035,7 @@ class SelectControl private constructor(
         control = this.control,
         options = this.options,
         allowCustomValue = this.allowCustomValue,
+        defaultValue = this.defaultValue,
     );
 
     /** Returns a shallow copy of this instance with the specified fields replaced. */
@@ -18043,10 +18048,13 @@ class SelectControl private constructor(
             this.options,
         allowCustomValue: kotlin.Boolean =
             this.allowCustomValue,
+        defaultValue: skirout.editor.v1.expression.TypedExpression_OrMutable? =
+            this.defaultValue,
     ) = skirout.editor.v1.presentation.SelectControl(
         control.toFrozen(),
         build.skir.internal.toKeyedList(options, "optionId", { it.optionId }, { it.toFrozen() }),
         allowCustomValue,
+        if (defaultValue != null) defaultValue.toFrozen() else null,
         this._unrecognizedFields,
     );
 
@@ -18054,11 +18062,11 @@ class SelectControl private constructor(
     fun copy() = this;
 
     override fun equals(other: kotlin.Any?): kotlin.Boolean {
-        return this === other || (other is skirout.editor.v1.presentation.SelectControl && this.control == other.control && this.options == other.options && this.allowCustomValue == other.allowCustomValue);
+        return this === other || (other is skirout.editor.v1.presentation.SelectControl && this.control == other.control && this.options == other.options && this.allowCustomValue == other.allowCustomValue && this.defaultValue == other.defaultValue);
     }
 
     override fun hashCode(): kotlin.Int {
-        return kotlin.collections.listOf<kotlin.Any?>(this.control, this.options, this.allowCustomValue).hashCode();
+        return kotlin.collections.listOf<kotlin.Any?>(this.control, this.options, this.allowCustomValue, this.defaultValue).hashCode();
     }
 
     override fun toString(): kotlin.String {
@@ -18078,6 +18086,8 @@ class SelectControl private constructor(
             build.skir.internal.emptyKeyedList<skirout.editor.v1.presentation.SelectOption, kotlin.String>(),
         override var allowCustomValue: kotlin.Boolean =
             false,
+        override var defaultValue: skirout.editor.v1.expression.TypedExpression_OrMutable? =
+            null,
         internal var _unrecognizedFields: _UnrecognizedFields<skirout.editor.v1.presentation.SelectControl>? =
             null,
     ): skirout.editor.v1.presentation.SelectControl_OrMutable {
@@ -18086,6 +18096,7 @@ class SelectControl private constructor(
             control = this.control,
             options = this.options,
             allowCustomValue = this.allowCustomValue,
+            defaultValue = this.defaultValue,
             _unrecognizedFields = this._unrecognizedFields,
         );
 
@@ -18132,10 +18143,13 @@ class SelectControl private constructor(
                 build.skir.internal.emptyKeyedList<skirout.editor.v1.presentation.SelectOption, kotlin.String>(),
             allowCustomValue: kotlin.Boolean =
                 false,
+            defaultValue: skirout.editor.v1.expression.TypedExpression_OrMutable? =
+                null,
         ) = skirout.editor.v1.presentation.SelectControl(
             control = control,
             options = options,
             allowCustomValue = allowCustomValue,
+            defaultValue = defaultValue,
             _unrecognizedFields = null,
         );
 
@@ -18186,6 +18200,17 @@ class SelectControl private constructor(
                 "",
                 { it.allowCustomValue },
                 { mut, v -> mut.allowCustomValue = v },
+            );
+            serializerImpl.addField(
+                "default_value",
+                "defaultValue",
+                3,
+                build.skir.Serializers.optional(
+                    skirout.editor.v1.expression.TypedExpression.serializer,
+                ),
+                "",
+                { it.defaultValue },
+                { mut, v -> mut.defaultValue = v },
             );
             serializerImpl.finalizeStruct();
         }
@@ -27999,11 +28024,13 @@ sealed class PresentationElement private constructor() {
             control: skirout.editor.v1.presentation.BoundControl_OrMutable,
             options: kotlin.collections.Iterable<skirout.editor.v1.presentation.SelectOption_OrMutable>,
             allowCustomValue: kotlin.Boolean,
+            defaultValue: skirout.editor.v1.expression.TypedExpression_OrMutable?,
         ) = SelectInputWrapper(
             skirout.editor.v1.presentation.SelectControl(
                 control = control,
                 options = options,
                 allowCustomValue = allowCustomValue,
+                defaultValue = defaultValue,
             )
         );
 

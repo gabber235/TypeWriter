@@ -596,6 +596,14 @@ struct SelectControl(810800088) {
   control: BoundControl = 0;
   options: [SelectOption|option_id] = 1;
   allow_custom_value: bool = 2;
+  // Initializes an editable control only when its current value equals the type
+  // initializer and is absent from the options. Custom values disable initialization.
+  // An available default wins; otherwise the sole distinct option value is used.
+  // Existing selections, including unavailable values other than the initializer,
+  // are preserved. Initialization uses the normal edit callback and commit policy.
+  // Each mounted control initializes at most once. Disabled controls wait until
+  // editable; removal cancels pending work. Later default changes do not replace edits.
+  default_value: TypedExpression? = 3;
 }
 
 struct SliderControl(810800089) {
