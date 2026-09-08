@@ -144,10 +144,6 @@ final class TypeRegistry {
         ..add(appliedParent)
         ..addAll(parentValue.ancestors);
     }
-    final resolvedDiagnostics = effective.validateResolvedEnums(this);
-    if (resolvedDiagnostics.isNotEmpty) {
-      return TypeResult.failure(resolvedDiagnostics);
-    }
     final result = ResolvedType(
       reference: reference,
       kind: definition.kind,
@@ -156,6 +152,11 @@ final class TypeRegistry {
       directParents: directParents,
     );
     _cache[reference] = result;
+    final resolvedDiagnostics = effective.validateResolvedValues(this);
+    if (resolvedDiagnostics.isNotEmpty) {
+      _cache.remove(reference);
+      return TypeResult.failure(resolvedDiagnostics);
+    }
     return TypeResult.success(result);
   }
 

@@ -52,7 +52,8 @@ extension RecordTypeConstraintValidation on RecordType {
         entry.value.type._validateConstraintTree(parameters, fieldPath, active),
       );
       if (entry.value.initialValue case final initial?
-          when !entry.value.type.containsParameter) {
+          when !entry.value.type.containsParameter &&
+              !entry.value.type.requiresRegistry) {
         diagnostics.addAll(
           initial.validateAgainst(entry.value.type, path: fieldPath),
         );
