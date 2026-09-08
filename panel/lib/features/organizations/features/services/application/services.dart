@@ -1,3 +1,4 @@
+import "dart:async";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
@@ -9,6 +10,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "services.freezed.dart";
 part "services.g.dart";
 part "service_models.dart";
+part "service_connections.dart";
 part "service_inspector_presentation.dart";
 part "service_selection.dart";
 part "topology_models.dart";

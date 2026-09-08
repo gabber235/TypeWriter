@@ -78,7 +78,8 @@ Stream<RealmConnectionState> realmConnection(Ref ref) async* {
     return;
   }
 
-  if (realm.state.status != TopologyRuntimeStatus.active) {
+  if (realm.state.status != TopologyRuntimeStatus.active ||
+      !ref.watch(hostConnectedProvider(realm.ownerHost.id))) {
     yield RealmConnectionState.offline;
     return;
   }

@@ -169,7 +169,7 @@ final class RealmConnectionProvider
   }
 }
 
-String _$realmConnectionHash() => r'9f88d82c3bc14249fa4a14555d9bc978ec857615';
+String _$realmConnectionHash() => r'4a138358818b34afa64c45a4107bb05a1f356342';
 
 @ProviderFor(realmInteraction)
 final realmInteractionProvider = RealmInteractionProvider._();

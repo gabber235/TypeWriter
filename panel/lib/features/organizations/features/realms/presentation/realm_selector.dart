@@ -108,7 +108,9 @@ class _RealmMenuItem extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final onColor = realmServiceRoleColor.on(context);
-    final isOnline = realm.state.status == TopologyRuntimeStatus.active;
+    final isOnline =
+        realm.state.status == TopologyRuntimeStatus.active &&
+        ref.watch(hostConnectedProvider(realm.ownerHost.id));
 
     return Padding(
       padding: EdgeInsets.symmetric(

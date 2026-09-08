@@ -43,6 +43,7 @@ class ServicesGraph extends ConsumerWidget {
   }
 
   _ServicesGraphProjection _project(BuildContext context, WidgetRef ref) {
+    final availability = ref.watch(serviceConnectionsProvider(services));
     final servicesById = {
       for (final service in services) service.serviceId: service,
     };
@@ -51,9 +52,18 @@ class ServicesGraph extends ConsumerWidget {
     final items = <_ServiceGraphItem>[
       for (final service in services)
         if (service.isCustom && !hostServiceIds.contains(service.serviceId))
-          _customServiceItem(context, service),
+          _customServiceItem(
+            context,
+            service,
+            availability[service.serviceId] ?? false,
+          ),
       for (final host in topology.hosts)
-        _hostItem(context, host, servicesById[host.serviceId]),
+        _hostItem(
+          context,
+          host,
+          servicesById[host.serviceId],
+          availability[host.serviceId] ?? false,
+        ),
       for (final realm in topology.realmInstances)
         _realmItem(
           context,
@@ -61,6 +71,7 @@ class ServicesGraph extends ConsumerWidget {
           realm,
           hostsById[realm.ownerHost.id],
           servicesById,
+          availability,
         ),
       for (final engine in topology.engineInstances)
         _engineItem(
@@ -68,6 +79,7 @@ class ServicesGraph extends ConsumerWidget {
           engine,
           hostsById[engine.ownerHost.id],
           servicesById,
+          availability,
         ),
     ];
     final nodes = [
@@ -124,25 +136,27 @@ class ServicesGraph extends ConsumerWidget {
     );
   }
 
-  _ServiceGraphItem _customServiceItem(BuildContext context, Service service) =>
-      _ServiceGraphItem(
-        selectableId: ServiceIdentifier(service.serviceId),
-        title: service.displayName,
-        badge: "${service.role.label.formatted} service",
-        status: service.isOnline ? "Connected" : "Offline",
-        tone: service.isOnline ? _StatusTone.active : _StatusTone.offline,
-        color: service.color,
-        icon: service.icon,
-        available: service.isOnline,
-        nextRefresh: service.nextTimeout,
-      );
+  _ServiceGraphItem _customServiceItem(
+    BuildContext context,
+    Service service,
+    bool connected,
+  ) => _ServiceGraphItem(
+    selectableId: ServiceIdentifier(service.serviceId),
+    title: service.displayName,
+    badge: "${service.role.label.formatted} service",
+    status: connected ? "Connected" : "Offline",
+    tone: connected ? _StatusTone.active : _StatusTone.offline,
+    color: service.color,
+    icon: service.icon,
+    available: connected,
+  );
 
   _ServiceGraphItem _hostItem(
     BuildContext context,
     TopologyHost host,
     Service? service,
+    bool connected,
   ) {
-    final connected = service?.isOnline ?? false;
     final status = connected
         ? hostRuntimeStatusLabel(host.state.status)
         : "Offline";
@@ -157,7 +171,6 @@ class ServicesGraph extends ConsumerWidget {
           ? Icons.sports_esports_outlined
           : Icons.cloud_outlined,
       available: connected,
-      nextRefresh: service?.nextTimeout ?? _distantRefresh,
     );
   }
 
@@ -167,9 +180,10 @@ class ServicesGraph extends ConsumerWidget {
     TopologyRealm realm,
     TopologyHost? host,
     Map<skir.RecordId, Service> services,
+    Map<skir.RecordId, bool> connections,
   ) {
     final service = host == null ? null : services[host.serviceId];
-    final connected = service?.isOnline ?? false;
+    final connected = connections[service?.serviceId] ?? false;
     return _ServiceGraphItem(
       selectableId: RealmInstanceIdentifier(realm.realmId),
       title: realm.ownerHost.name.formatted,
@@ -181,7 +195,7 @@ class ServicesGraph extends ConsumerWidget {
       color: realmServiceRoleColor,
       icon: Icons.cloud_outlined,
       available: connected,
-      nextRefresh: service?.nextTimeout ?? _distantRefresh,
+
       onDoubleTap: connected && host != null
           ? () => _openRealm(context, ref, realm.realmId)
           : null,
@@ -193,9 +207,10 @@ class ServicesGraph extends ConsumerWidget {
     TopologyEngine engine,
     TopologyHost? host,
     Map<skir.RecordId, Service> services,
+    Map<skir.RecordId, bool> connections,
   ) {
     final service = host == null ? null : services[host.serviceId];
-    final connected = service?.isOnline ?? false;
+    final connected = connections[service?.serviceId] ?? false;
     return _ServiceGraphItem(
       selectableId: EngineInstanceIdentifier(engine.engineId),
       title:
@@ -208,7 +223,6 @@ class ServicesGraph extends ConsumerWidget {
       color: engineServiceRoleColor,
       icon: Icons.memory_outlined,
       available: connected,
-      nextRefresh: service?.nextTimeout ?? _distantRefresh,
     );
   }
 
@@ -227,7 +241,6 @@ class _ServiceGraphNode extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final focusNode = useFocusNode();
-    useRefreshAt(item.nextRefresh);
     return Selector(
       selectableId: item.selectableId,
       focusNode: focusNode,
@@ -322,7 +335,6 @@ class _ServiceGraphItem {
     required this.color,
     required this.icon,
     required this.available,
-    required this.nextRefresh,
     this.onDoubleTap,
   });
 
@@ -334,7 +346,6 @@ class _ServiceGraphItem {
   final Color color;
   final IconData icon;
   final bool available;
-  final DateTime nextRefresh;
   final VoidCallback? onDoubleTap;
 
   GraphIdentifier get graphId => GraphIdentifier(selectableId.id);
@@ -366,5 +377,3 @@ String _recordLabel(skir.RecordId id) {
   final value = id.id.split(":").last.replaceAll("`", "");
   return value.formatted;
 }
-
-DateTime get _distantRefresh => DateTime.now().add(const Duration(days: 365));

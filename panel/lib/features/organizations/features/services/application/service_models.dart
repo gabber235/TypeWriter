@@ -50,11 +50,15 @@ abstract class Service with _$Service {
 
   Color get color => role.color;
 
-  bool get isOnline => state?.isOnline ?? false;
+  bool get isOnline => isConnectedAt(DateTime.now());
+
+  bool isConnectedAt(DateTime now) => state?.isConnectedAt(now) ?? false;
 
   DateTime? get lastSeen => state?.lastSeen;
 
   String get label => role.label;
+
+  DateTime? get connectionDeadline => state?.nextTimeout;
 
   DateTime get nextTimeout => state?.nextTimeout ?? lastSeen ?? DateTime.now();
 
@@ -162,9 +166,9 @@ abstract class ServiceState with _$ServiceState {
     return skir.ServiceState(status: status.toSkir(), lastSeen: lastSeen);
   }
 
-  bool get isOnline {
+  bool isConnectedAt(DateTime now) {
     if (status == ServiceStateStatus.offline) return false;
-    return DateTime.now().difference(lastSeen) < _serviceStateTimeout;
+    return now.difference(lastSeen) < _serviceStateTimeout;
   }
 
   DateTime get nextTimeout {

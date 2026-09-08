@@ -35,7 +35,7 @@ void main() {
         lastSeen: DateTime.now().subtract(const Duration(seconds: 10)),
       ),
     );
-    expect(value.isOnline, isFalse);
+    expect(value.isConnectedAt(DateTime.now()), isFalse);
   });
 
   test("last seen older than two minutes is offline", () {
@@ -47,7 +47,7 @@ void main() {
         ),
       ),
     );
-    expect(value.isOnline, isFalse);
+    expect(value.isConnectedAt(DateTime.now()), isFalse);
   });
 
   test("formats display name and missing state", () {
