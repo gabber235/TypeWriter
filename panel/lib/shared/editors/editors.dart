@@ -84,4 +84,5 @@ export "domain/editor_target.dart";
 
 export "domain/editor_mutation_exception.dart";
 
+export "presentation/editor_commit_placement.dart";
 export "presentation/protocol/presentation_diagnostic.dart";

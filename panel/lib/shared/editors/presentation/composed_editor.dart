@@ -30,12 +30,14 @@ class ComposedEditor extends StatefulWidget {
 class _ComposedEditorState extends State<ComposedEditor> {
   late final PresentationSession _session;
   late TypeRegistry _registry;
+  final _placements = EditorCommitPlacements();
   final HeaderExpansionStore _expansion = HeaderExpansionStore();
   List<TypeDiagnostic> _diagnostics = [];
   @override
   void initState() {
     super.initState();
     _registry = TypeRegistry(widget.model.catalog);
+    _placements.addListener(_changed);
     _session = PresentationSession(widget.model)..addListener(_changed);
   }
 
@@ -83,46 +85,60 @@ class _ComposedEditorState extends State<ComposedEditor> {
         if (input case PresentationEditInput(:final owner))
           ..._resources(owner),
     };
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 8,
-      children: [
-        for (final owner in owners)
-          if ({
-            EditorSavePhase.conflict,
-            EditorSavePhase.failed,
-            EditorSavePhase.uncertain,
-            EditorSavePhase.repeatedContention,
-            EditorSavePhase.deletedElsewhere,
-          }.contains(owner.saveState(DataPath.root).phase)) ...[
-            EditorSaveStatus(
-              state: owner.saveState(DataPath.root),
-              onRetry: owner.flush,
-              onUseRemote: () async => owner.useRemote(
-                owner.saveState(DataPath.root).path ?? DataPath.root,
+    return EditorCommitPlacementScope(
+      placements: _placements,
+      labels: widget.model.ownerLabels,
+      resolve: (reference) {
+        final input = widget.model.inputs[reference.bindingId];
+        if (input is! PresentationEditInput) return null;
+        return _resources(input.owner)
+            .where(
+              (owner) => owner.commitPolicy == EditorCommitPolicy.applyResource,
+            )
+            .toSet();
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          for (final owner in owners)
+            if ({
+              EditorSavePhase.conflict,
+              EditorSavePhase.failed,
+              EditorSavePhase.uncertain,
+              EditorSavePhase.repeatedContention,
+              EditorSavePhase.deletedElsewhere,
+            }.contains(owner.saveState(DataPath.root).phase)) ...[
+              EditorSaveStatus(
+                state: owner.saveState(DataPath.root),
+                onRetry: owner.flush,
+                onUseRemote: () async => owner.useRemote(
+                  owner.saveState(DataPath.root).path ?? DataPath.root,
+                ),
+                onKeepLocal: () => owner.keepLocal(
+                  owner.saveState(DataPath.root).path ?? DataPath.root,
+                ),
               ),
-              onKeepLocal: () => owner.keepLocal(
-                owner.saveState(DataPath.root).path ?? DataPath.root,
-              ),
+            ],
+          PresentationSurface(
+            presentation: widget.model.root.localizeFailures(
+              scope.expressions,
+              registry: registry,
+              budget: scope.budget,
             ),
-          ],
-        PresentationSurface(
-          presentation: widget.model.root.localizeFailures(
-            scope.expressions,
-            registry: registry,
-            budget: scope.budget,
+            scope: scope,
+            diagnostics: [...widget.model.diagnostics, ..._diagnostics],
           ),
-          scope: scope,
-          diagnostics: [...widget.model.diagnostics, ..._diagnostics],
-        ),
-        for (final owner in owners)
-          if (owner.commitPolicy == EditorCommitPolicy.applyResource)
-            EditorCommitControls(
-              owner: owner,
-              enabled: !widget.readOnly,
-              label: widget.model.ownerLabels[owner],
-            ),
-      ],
+          for (final owner in owners)
+            if (owner.commitPolicy == EditorCommitPolicy.applyResource &&
+                _placements.count(owner) != 1)
+              EditorCommitControls(
+                owner: owner,
+                enabled: !widget.readOnly,
+                label: widget.model.ownerLabels[owner],
+              ),
+        ],
+      ),
     );
   }
 
@@ -215,6 +231,7 @@ class _ComposedEditorState extends State<ComposedEditor> {
 
   @override
   void dispose() {
+    _placements.dispose();
     _session.removeListener(_changed);
     _session.dispose();
     super.dispose();

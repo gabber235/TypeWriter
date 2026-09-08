@@ -69,6 +69,12 @@ PresentationNode _hostConfigurationSection({
         ),
       ],
     ),
+    const PresentationNode(
+      id: "host.configuration.commit",
+      element: CommitControlsElement(
+        binding: BindingReference(bindingId: BindingId(1)),
+      ),
+    ),
   ],
 );
 

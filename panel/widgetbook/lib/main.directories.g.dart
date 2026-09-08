@@ -67,6 +67,8 @@ import 'package:widgetbook_workspace/stories/shared/editors/presentation/compone
     as _widgetbook_workspace_stories_shared_editors_presentation_components_search_input_search_input_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/composed_editor.stories.dart'
     as _widgetbook_workspace_stories_shared_editors_presentation_composed_editor_stories;
+import 'package:widgetbook_workspace/stories/shared/editors/presentation/editor_commit_placement.stories.dart'
+    as _widgetbook_workspace_stories_shared_editors_presentation_editor_commit_placement_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/editor_save_status.stories.dart'
     as _widgetbook_workspace_stories_shared_editors_presentation_editor_save_status_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/editor_surface.stories.dart'
@@ -814,6 +816,17 @@ final directories = <_widgetbook.WidgetbookNode>[
                     builder:
                         _widgetbook_workspace_stories_shared_editors_presentation_composed_editor_stories
                             .composedEditorUseCase,
+                  ),
+                ],
+              ),
+              _widgetbook.WidgetbookComponent(
+                name: 'EditorCommitPlacement',
+                useCases: [
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Inline and fallback',
+                    builder:
+                        _widgetbook_workspace_stories_shared_editors_presentation_editor_commit_placement_stories
+                            .editorCommitPlacementStory,
                   ),
                 ],
               ),

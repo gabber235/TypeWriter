@@ -140,7 +140,21 @@ extension on PresentationElement {
       final ListInputElement element => element.renderInput(context, scope),
       final MapInputElement element => element.renderInput(context, scope),
       final RecordInputElement element => element.renderInput(context, scope),
-      CommitControlsElement() => const SizedBox.shrink(),
+      final CommitControlsElement element =>
+        scope.inputAccess[element.binding.bindingId] !=
+                    PresentationInputAccess.read &&
+                scope.ownerReference(element.binding) != null &&
+                scope.resolve(element.binding) is TypeSuccess
+            ? EditorCommitPlacement(
+                binding: scope.ownerReference(element.binding)!,
+                enabled: scope.enabled && !scope.readOnly,
+              )
+            : presentationDiagnostic(context, [
+                const TypeDiagnostic(
+                  code: TypeDiagnosticCode.invalidPresentation,
+                  message: "Commit controls require an editable binding",
+                ),
+              ]),
       final ButtonElement element => element.render(scope),
       final IconButtonElement element => element.render(context, scope),
       final MenuElement element => element.render(scope),

@@ -80,7 +80,19 @@ class _TabsRendererState extends State<_TabsRenderer>
           controller: _controller,
           children: [
             for (final tab in widget.element.tabs)
-              PresentationNodeRenderer(node: tab.child, scope: widget.scope),
+              ListenableBuilder(
+                listenable: _controller,
+                builder: (context, child) => PresentationActivity(
+                  active:
+                      PresentationActivity.of(context) &&
+                      widget.element.tabs[_controller.index].id == tab.id,
+                  child: child!,
+                ),
+                child: PresentationNodeRenderer(
+                  node: tab.child,
+                  scope: widget.scope,
+                ),
+              ),
           ],
         ),
       ],
