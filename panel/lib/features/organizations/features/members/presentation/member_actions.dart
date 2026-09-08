@@ -11,17 +11,18 @@ class BulkMemberActions extends HookConsumerWidget {
     required this.selectedCount,
     required this.selectedIds,
     required this.onRemove,
-    required this.onClearSelection,
+    required this.onUnselect,
     super.key,
   });
 
   final int selectedCount;
   final Set<skir.RecordId> selectedIds;
   final VoidCallback onRemove;
-  final VoidCallback onClearSelection;
+  final ValueChanged<Set<skir.RecordId>> onUnselect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    void onClearSelection() => onUnselect(selectedIds);
     final theme = Theme.of(context);
     final bulkRoles = useState<List<OrganizationRole>>([]);
     final isApplying = useState(false);
@@ -35,15 +36,24 @@ class BulkMemberActions extends HookConsumerWidget {
     Future<void> applyRoles() async {
       if (isApplying.value) return;
       isApplying.value = true;
+      final members = ref.read(organizationMembersProvider.notifier);
+      final roles = List<OrganizationRole>.unmodifiable(bulkRoles.value);
+      final succeeded = <skir.RecordId>{};
       try {
-        for (final id in selectedIds) {
-          await ref
-              .read(organizationMembersProvider.notifier)
-              .updateMemberRoles(id, bulkRoles.value)
-              .catchApiExceptionsAndDisplay(context);
+        for (final id in Set.of(selectedIds)) {
+          try {
+            await members.updateMemberRoles(id, roles);
+            succeeded.add(id);
+          } on ApiException catch (error) {
+            if (context.mounted) showErrorSnackBar(context, error.message);
+          } on SubmissionException {
+            continue;
+          }
         }
-        bulkRoles.value = [];
-        onClearSelection();
+        if (context.mounted) {
+          if (succeeded.length == selectedIds.length) bulkRoles.value = [];
+          onUnselect(succeeded);
+        }
       } finally {
         if (context.mounted) isApplying.value = false;
       }

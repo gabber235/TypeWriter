@@ -164,10 +164,19 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
       ),
     );
 
-    final response = await ref.requestSkir(
+    final response = await ref.mutateSkir(
       "cloud.to.user.$userId.organization.${organizationId.id}.members.join_codes.generate",
       skir.GenerateOrganizationJoinCodeRequest.serializer.toBytes(request),
       skir.GenerateOrganizationJoinCodeResponse.serializer,
+      label: "Generate join code",
+      classify: (response) => switch (response) {
+        skir.GenerateOrganizationJoinCodeResponse_successWrapper() =>
+          MutationResponseDisposition.confirmed,
+        skir.GenerateOrganizationJoinCodeResponse_unknown() ||
+        skir.GenerateOrganizationJoinCodeResponse_internalErrorWrapper() =>
+          MutationResponseDisposition.uncertain,
+        _ => MutationResponseDisposition.rejected,
+      },
     );
 
     switch (response) {
@@ -224,10 +233,20 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
     try {
       final request = skir.RevokeOrganizationJoinCodeRequest(codeId: codeId);
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.join_codes.revoke",
         skir.RevokeOrganizationJoinCodeRequest.serializer.toBytes(request),
         skir.RevokeOrganizationJoinCodeResponse.serializer,
+        label: "Revoke join code",
+        resources: {(organizationId, codeId)},
+        classify: (response) => switch (response) {
+          skir.RevokeOrganizationJoinCodeResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.RevokeOrganizationJoinCodeResponse_unknown() ||
+          skir.RevokeOrganizationJoinCodeResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {

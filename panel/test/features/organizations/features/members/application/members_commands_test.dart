@@ -23,7 +23,7 @@ void main() {
     });
 
     test(
-      "removeMember optimistically removes then restores on error",
+      "removeMember preserves the member when delivery is uncertain",
       () async {
         final member = createMember();
 
@@ -48,7 +48,7 @@ void main() {
           container
               .read(organizationMembersProvider.notifier)
               .removeMember(testMemberId),
-          throwsA(isA<TimeoutException>()),
+          throwsA(isA<SubmissionException>()),
         );
 
         final currentState = container.read(organizationMembersProvider);
@@ -132,7 +132,7 @@ void main() {
           container
               .read(organizationMembersProvider.notifier)
               .updateMemberRoles(testMemberId, [newRole]),
-          throwsA(isA<TimeoutException>()),
+          throwsA(isA<SubmissionException>()),
         );
 
         final currentState = container.read(organizationMembersProvider);

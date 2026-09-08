@@ -103,10 +103,18 @@ class Organizations extends _$Organizations {
       "Creating organization with name: '$name' and logoUrl: '$logoUrl'",
     );
 
-    final response = await ref.requestSkir(
+    final response = await ref.mutateSkir(
       "cloud.to.user.$userId.organization.create",
       skir.CreateOrganizationRequest.serializer.toBytes(request),
       skir.CreateOrganizationResponse.serializer,
+      label: "Create organization",
+      classify: (response) => switch (response) {
+        skir.CreateOrganizationResponse_successWrapper() =>
+          MutationResponseDisposition.confirmed,
+        skir.CreateOrganizationResponse_unknown() ||
+        skir.CreateOrganizationResponse_internalErrorWrapper() =>
+          MutationResponseDisposition.uncertain,
+      },
     );
 
     switch (response) {

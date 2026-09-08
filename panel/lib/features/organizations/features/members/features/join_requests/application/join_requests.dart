@@ -122,10 +122,20 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
         roleIds: roles.map((r) => r.roleId),
       );
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.join_requests.approve",
         skir.ApproveOrganizationJoinRequestRequest.serializer.toBytes(request),
         skir.ApproveOrganizationJoinRequestResponse.serializer,
+        label: "Approve membership",
+        resources: {(organizationId, requestId)},
+        classify: (response) => switch (response) {
+          skir.ApproveOrganizationJoinRequestResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.ApproveOrganizationJoinRequestResponse_unknown() ||
+          skir.ApproveOrganizationJoinRequestResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {
@@ -184,10 +194,20 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
         requestId: requestId,
       );
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.join_requests.decline",
         skir.DeclineOrganizationJoinRequestRequest.serializer.toBytes(request),
         skir.DeclineOrganizationJoinRequestResponse.serializer,
+        label: "Decline membership",
+        resources: {(organizationId, requestId)},
+        classify: (response) => switch (response) {
+          skir.DeclineOrganizationJoinRequestResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.DeclineOrganizationJoinRequestResponse_unknown() ||
+          skir.DeclineOrganizationJoinRequestResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {

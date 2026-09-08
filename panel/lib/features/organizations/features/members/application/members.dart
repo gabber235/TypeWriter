@@ -158,10 +158,21 @@ class OrganizationMembers extends _$OrganizationMembers {
         roleIds: roles.map((r) => r.roleId),
       );
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.update",
         skir.UpdateOrganizationMemberRolesRequest.serializer.toBytes(request),
         skir.UpdateOrganizationMemberRolesResponse.serializer,
+        label:
+            "Update roles: ${state.requireValue.firstWhereOrNull((member) => member.userId == memberId)?.name ?? memberId.id}",
+        resources: {(organizationId, memberId)},
+        classify: (response) => switch (response) {
+          skir.UpdateOrganizationMemberRolesResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.UpdateOrganizationMemberRolesResponse_unknown() ||
+          skir.UpdateOrganizationMemberRolesResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {
@@ -219,18 +230,24 @@ class OrganizationMembers extends _$OrganizationMembers {
     state.ensureReady();
     final previousState = state;
 
-    // Optimistically remove the member
-    state = AsyncValue.data(
-      state.requireValue.where((m) => m.userId != memberId).toList(),
-    );
-
     try {
       final request = skir.RemoveOrganizationMemberRequest(userId: memberId);
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.remove",
         skir.RemoveOrganizationMemberRequest.serializer.toBytes(request),
         skir.RemoveOrganizationMemberResponse.serializer,
+        label:
+            "Remove member: ${state.requireValue.firstWhereOrNull((member) => member.userId == memberId)?.name ?? memberId.id}",
+        resources: {(organizationId, memberId)},
+        classify: (response) => switch (response) {
+          skir.RemoveOrganizationMemberResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.RemoveOrganizationMemberResponse_unknown() ||
+          skir.RemoveOrganizationMemberResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {
@@ -247,7 +264,11 @@ class OrganizationMembers extends _$OrganizationMembers {
         case skir.RemoveOrganizationMemberResponse_founderCannotBeRemovedErrorWrapper():
           throw ApiException.conflict("Organization founder cannot be removed");
         case skir.RemoveOrganizationMemberResponse_successWrapper():
-          debugPrint("removed $memberId from $organizationId");
+          state = AsyncData(
+            state.requireValue
+                .where((member) => member.userId != memberId)
+                .toList(),
+          );
       }
     } catch (e) {
       state = previousState;

@@ -35,7 +35,7 @@ final class OrganizationMembersProvider
 }
 
 String _$organizationMembersHash() =>
-    r'ac4cf9e85d8bf57b00dcf9c760ba434185b7c2db';
+    r'6e18dc563ec5ef6081e7e2ae79fa6a9a83d905b5';
 
 abstract class _$OrganizationMembers
     extends $StreamNotifier<List<OrganizationMember>> {

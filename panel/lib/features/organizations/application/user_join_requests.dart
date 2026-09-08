@@ -104,10 +104,20 @@ class UserJoinRequests extends _$UserJoinRequests {
 
     final request = skir.SubmitUserJoinRequestRequest(code: codeId);
 
-    final response = await ref.requestSkir(
+    final response = await ref.mutateSkir(
       "cloud.to.user.$userId.organization.join_requests.request",
       skir.SubmitUserJoinRequestRequest.serializer.toBytes(request),
       skir.SubmitUserJoinRequestResponse.serializer,
+      label: "Request membership",
+      classify: (response) => switch (response) {
+        skir.SubmitUserJoinRequestResponse_requestMadeWrapper() ||
+        skir.SubmitUserJoinRequestResponse_autoAcceptedWrapper() =>
+          MutationResponseDisposition.confirmed,
+        skir.SubmitUserJoinRequestResponse_unknown() ||
+        skir.SubmitUserJoinRequestResponse_internalErrorWrapper() =>
+          MutationResponseDisposition.uncertain,
+        _ => MutationResponseDisposition.rejected,
+      },
     );
 
     switch (response) {
@@ -164,10 +174,19 @@ class UserJoinRequests extends _$UserJoinRequests {
     try {
       final request = skir.CancelUserJoinRequestRequest(requestId: requestId);
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.join_requests.cancel",
         skir.CancelUserJoinRequestRequest.serializer.toBytes(request),
         skir.CancelUserJoinRequestResponse.serializer,
+        label: "Cancel membership request",
+        classify: (response) => switch (response) {
+          skir.CancelUserJoinRequestResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.CancelUserJoinRequestResponse_unknown() ||
+          skir.CancelUserJoinRequestResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {

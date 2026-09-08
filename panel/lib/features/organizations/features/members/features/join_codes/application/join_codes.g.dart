@@ -41,7 +41,7 @@ final class OrganizationJoinCodesProvider
 }
 
 String _$organizationJoinCodesHash() =>
-    r'3a193492f24f965e7d82e47a96991e89dfcf7198';
+    r'3c181e7572c713707babdbfc79e26da883708379';
 
 /// Provider for the join codes in the current organization.
 
