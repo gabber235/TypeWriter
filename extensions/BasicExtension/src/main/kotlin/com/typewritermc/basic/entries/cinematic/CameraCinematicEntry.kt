@@ -22,8 +22,10 @@ import com.typewritermc.engine.paper.extensions.packetevents.stopSpectatingEntit
 import com.typewritermc.engine.paper.interaction.*
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
+import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.*
-import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.*
+import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.LOCATION
+import com.typewritermc.engine.paper.utils.GenericPlayerStateProvider.VELOCITY
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
@@ -51,6 +53,22 @@ import org.bukkit.potion.PotionEffectType.INVISIBILITY
 import org.geysermc.geyser.api.connection.GeyserConnection
 import java.util.*
 import kotlin.math.abs
+
+private val enableLegacyVisibility by snippet(
+    "cinematic.legacy_visibility",
+    true,
+    "Whether the legacy cinematic visibility system should be enabled"
+)
+private val autoVisibilityViewer by snippet(
+    "cinematic.auto_visibility_viewer",
+    true,
+    "Whether the player viewing the cinematic should be automatically hidden from other players"
+)
+private val autoVisibilityTarget by snippet(
+    "cinematic.auto_visibility_target",
+    true,
+    "Whether players outside the cinematic should be automatically hidden from players in the cinematic"
+)
 
 @Entry("camera_cinematic", "Create a cinematic camera path", Colors.CYAN, "fa6-solid:video")
 /**
@@ -222,9 +240,11 @@ class CameraCinematicAction(
             // TODO: Remove this and the release in teardown once the visibility extension is
             // released. Hiding the other players becomes opt in through a visibility rule, because
             // opting out of it here is not possible.
-            server.onlinePlayers.filter { it.uniqueId != uniqueId }.forEach {
-                playerHides.hide(this@CameraCinematicAction, it, this@setup)
-                playerHides.hide(this@CameraCinematicAction, this@setup, it)
+            if (enableLegacyVisibility) {
+                server.onlinePlayers.filter { it.uniqueId != uniqueId }.forEach {
+                    if (autoVisibilityTarget) playerHides.hide(this@CameraCinematicAction, it, this@setup)
+                    if (autoVisibilityViewer) playerHides.hide(this@CameraCinematicAction, this@setup, it)
+                }
             }
 
             // In creative mode, when the player opens the inventory while their inventory is fake cleared,
@@ -305,7 +325,7 @@ class CameraCinematicAction(
             sendRealAbilities()
             // Revealed only after the player is restored, so nobody sees them reappear at the
             // camera's position.
-            playerHides.release(this@CameraCinematicAction)
+            if (enableLegacyVisibility) playerHides.release(this@CameraCinematicAction)
             originalState = null
 
             if (gameMode != GameMode.CREATIVE && !isFloodgate) {
