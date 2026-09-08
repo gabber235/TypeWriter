@@ -49,6 +49,7 @@ export "components/query_bar.dart";
 export "components/retry_indicator.dart";
 export "components/secret_field.dart";
 export "components/section.dart";
+export "components/selection_initialization.dart";
 export "components/section_title.dart";
 export "components/shimmer.dart";
 export "components/shortcut_display.dart";

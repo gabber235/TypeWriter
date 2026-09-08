@@ -153,6 +153,8 @@ import 'package:widgetbook_workspace/stories/shared/ui/components/secret_field.s
     as _widgetbook_workspace_stories_shared_ui_components_secret_field_stories;
 import 'package:widgetbook_workspace/stories/shared/ui/components/section.stories.dart'
     as _widgetbook_workspace_stories_shared_ui_components_section_stories;
+import 'package:widgetbook_workspace/stories/shared/ui/components/selection_initialization.stories.dart'
+    as _widgetbook_workspace_stories_shared_ui_components_selection_initialization_stories;
 import 'package:widgetbook_workspace/stories/shared/ui/components/shimmer.stories.dart'
     as _widgetbook_workspace_stories_shared_ui_components_shimmer_stories;
 import 'package:widgetbook_workspace/stories/shared/ui/components/shortcut_display.stories.dart'
@@ -1961,6 +1963,17 @@ final directories = <_widgetbook.WidgetbookNode>[
                     builder:
                         _widgetbook_workspace_stories_shared_ui_components_section_stories
                             .sectionUseCase,
+                  ),
+                ],
+              ),
+              _widgetbook.WidgetbookComponent(
+                name: 'SelectionInitialization<Object>',
+                useCases: [
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Controlled default selection',
+                    builder:
+                        _widgetbook_workspace_stories_shared_ui_components_selection_initialization_stories
+                            .selectionInitializationUseCase,
                   ),
                 ],
               ),
