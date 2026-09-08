@@ -5,6 +5,7 @@ export "graph/graph.dart";
 export "hooks/hooks.dart";
 export "inspector/inspector.dart";
 export "interaction_mode/interaction_mode.dart";
+export "mutations/mutations.dart";
 export "search/search.dart";
 export "selectables/selectables.dart";
 export "ui/ui.dart";
