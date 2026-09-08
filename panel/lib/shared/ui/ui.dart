@@ -62,3 +62,5 @@ export "components/type_link.dart";
 export "components/vertical_clipper.dart";
 export "screens/error_screen.dart";
 export "screens/loading_screen.dart";
+
+export "components/anchored_popup.dart";

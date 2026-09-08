@@ -113,6 +113,8 @@ import 'package:widgetbook_workspace/stories/shared/selectables/presentation/sel
     as _widgetbook_workspace_stories_shared_selectables_presentation_selector_stories;
 import 'package:widgetbook_workspace/stories/shared/ui/components/adaptive_choice_control.stories.dart'
     as _widgetbook_workspace_stories_shared_ui_components_adaptive_choice_control_stories;
+import 'package:widgetbook_workspace/stories/shared/ui/components/anchored_popup.stories.dart'
+    as _widgetbook_workspace_stories_shared_ui_components_anchored_popup_stories;
 import 'package:widgetbook_workspace/stories/shared/ui/components/blur_reveal.stories.dart'
     as _widgetbook_workspace_stories_shared_ui_components_blur_reveal_stories;
 import 'package:widgetbook_workspace/stories/shared/ui/components/countdown_badge.stories.dart'
@@ -1677,6 +1679,17 @@ final directories = <_widgetbook.WidgetbookNode>[
                     builder:
                         _widgetbook_workspace_stories_shared_ui_components_adaptive_choice_control_stories
                             .adaptiveChoiceControlUseCase,
+                  ),
+                ],
+              ),
+              _widgetbook.WidgetbookComponent(
+                name: 'AnchoredPopup',
+                useCases: [
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Interactive content',
+                    builder:
+                        _widgetbook_workspace_stories_shared_ui_components_anchored_popup_stories
+                            .anchoredPopupUseCase,
                   ),
                 ],
               ),

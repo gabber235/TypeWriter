@@ -7,7 +7,7 @@ typedef SelectorItemBuilder<T> = Widget Function(T item);
 typedef SelectorContentBuilder<T> =
     Widget Function(List<T> items, T? selected, void Function(T) onSelect);
 
-class SelectorPopup<T> extends HookConsumerWidget {
+class SelectorPopup<T> extends ConsumerWidget {
   const SelectorPopup({
     required this.asyncValue,
     required this.buttonBuilder,
@@ -23,14 +23,12 @@ class SelectorPopup<T> extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final link = useRef(LayerLink());
     final items = asyncValue;
 
     return items(
       name: name,
       builder: (itemsList) {
         return _SelectorButton<T>(
-          link: link.value,
           buttonBuilder: buttonBuilder,
           contentBuilder: contentBuilder,
           items: itemsList,
@@ -43,7 +41,7 @@ class SelectorPopup<T> extends HookConsumerWidget {
   }
 }
 
-class SelectorPopupWithSelection<T> extends HookConsumerWidget {
+class SelectorPopupWithSelection<T> extends ConsumerWidget {
   const SelectorPopupWithSelection({
     required this.itemsAsync,
     required this.selectedAsync,
@@ -61,8 +59,6 @@ class SelectorPopupWithSelection<T> extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final link = useRef(LayerLink());
-
     return selectedAsync(
       name: name,
       builder: (selected) {
@@ -70,7 +66,6 @@ class SelectorPopupWithSelection<T> extends HookConsumerWidget {
           name: name,
           builder: (items) {
             return _SelectorButton<T>(
-              link: link.value,
               buttonBuilder: buttonBuilder,
               contentBuilder: contentBuilder,
               items: items,
@@ -87,9 +82,8 @@ class SelectorPopupWithSelection<T> extends HookConsumerWidget {
   }
 }
 
-class _SelectorButton<T> extends HookWidget {
+class _SelectorButton<T> extends StatelessWidget {
   const _SelectorButton({
-    required this.link,
     required this.buttonBuilder,
     required this.contentBuilder,
     required this.items,
@@ -97,69 +91,44 @@ class _SelectorButton<T> extends HookWidget {
     super.key,
   });
 
-  final LayerLink link;
   final Widget Function(T? selected) buttonBuilder;
   final SelectorContentBuilder<T> contentBuilder;
   final List<T> items;
   final T? selected;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => AnchoredPopup(
+    popupBuilder: (context, close) => GlobalModeShortcut(
+      child: GlobalOperationShortcuts(
+        child: contentBuilder(items, selected, (_) => close()),
+      ),
+    ),
+    builder: (context, show) => Material(
       shape: RoundedRectangleBorder(
         borderRadius: context.shapes.mediumBorderRadius,
       ),
-      child: CompositedTransformTarget(
-        link: link,
-        child: InkWell(
-          onTap: () => _showMenu(context),
-          borderRadius: context.shapes.mediumBorderRadius,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-            child: buttonBuilder(selected),
-          ),
+      child: InkWell(
+        onTap: () => context.isMobile ? _showMobileMenu(context) : show(),
+        borderRadius: context.shapes.mediumBorderRadius,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          child: buttonBuilder(selected),
         ),
       ),
-    );
-  }
+    ),
+  );
 
-  void _showMenu(BuildContext context) {
-    if (context.isMobile) {
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (ctx) {
-          return UncontrolledProviderScope(
-            container: ProviderScope.containerOf(context),
-            child: _MobileMenu<T>(
-              contentBuilder: contentBuilder,
-              items: items,
-              selected: selected,
-            ),
-          );
-        },
-      );
-      return;
-    }
-    Navigator.of(context).push(
-      _PopupRoute<T>(
-        link: link,
-        themes: InheritedTheme.capture(
-          from: context,
-          to: Navigator.of(context).context,
-        ),
-        child: UncontrolledProviderScope(
-          container: ProviderScope.containerOf(context),
-          child: GlobalModeShortcut(
-            child: GlobalOperationShortcuts(
-              child: contentBuilder(
-                items,
-                selected,
-                (item) => Navigator.of(context).pop(),
-              ),
-            ),
-          ),
+  void _showMobileMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => UncontrolledProviderScope(
+        container: ProviderScope.containerOf(context),
+        child: _MobileMenu<T>(
+          contentBuilder: contentBuilder,
+          items: items,
+          selected: selected,
         ),
       ),
     );
@@ -198,69 +167,6 @@ class _MobileMenu<T> extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _PopupRoute<T> extends PopupRoute<void> {
-  _PopupRoute({required this.link, required this.child, required this.themes});
-
-  final LayerLink link;
-  final Widget child;
-  final CapturedThemes themes;
-
-  @override
-  Color? get barrierColor => null;
-
-  @override
-  bool get barrierDismissible => true;
-
-  @override
-  String? get barrierLabel => null;
-
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 60);
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return themes.wrap(
-      Stack(
-        children: [
-          CompositedTransformFollower(
-            link: link,
-            showWhenUnlinked: false,
-            followerAnchor: Alignment.topLeft,
-            targetAnchor: Alignment.bottomLeft,
-            child: FadeTransition(
-              opacity: animation,
-              child: Builder(
-                builder: (context) {
-                  final color = Theme.of(context).colorScheme.surfaceContainer;
-
-                  return Material(
-                    elevation: 4,
-                    color: color,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: context.shapes.mediumBorderRadius,
-                    ),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 420,
-                        maxHeight: 420,
-                      ),
-                      child: Surface(color: color, child: child),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
