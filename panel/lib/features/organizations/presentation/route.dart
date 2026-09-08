@@ -47,6 +47,7 @@ class IndexPage extends ConsumerWidget {
           automaticallyImplyLeading: false,
           title: const SizedBox.shrink(),
           actions: [
+            const MutationActivityButton(),
             const FooterSidebarLinks(compact: true, expand: false),
             SizedBox(width: context.spacing.space2),
           ],
@@ -58,6 +59,11 @@ class IndexPage extends ConsumerWidget {
     return Stack(
       children: [
         content,
+        Positioned(
+          top: 8,
+          right: 8 + (context.debugShowCheckedModeBanner ? 40 : 0),
+          child: MutationActivityButton(),
+        ),
         const Positioned(
           left: 8,
           bottom: 8,

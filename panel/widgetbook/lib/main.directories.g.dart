@@ -91,6 +91,8 @@ import 'package:widgetbook_workspace/stories/shared/editors/presentation/protoco
     as _widgetbook_workspace_stories_shared_editors_presentation_protocol_renderers_interaction_interaction_renderer_variants_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/protocol/renderers/layout/layout_renderer.stories.dart'
     as _widgetbook_workspace_stories_shared_editors_presentation_protocol_renderers_layout_layout_renderer_stories;
+import 'package:widgetbook_workspace/stories/shared/editors/presentation/save_workflow.stories.dart'
+    as _widgetbook_workspace_stories_shared_editors_presentation_save_workflow_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/typed_editor/boolean.stories.dart'
     as _widgetbook_workspace_stories_shared_editors_presentation_typed_editor_boolean_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/typed_editor/list.stories.dart'
@@ -816,6 +818,17 @@ final directories = <_widgetbook.WidgetbookNode>[
                     builder:
                         _widgetbook_workspace_stories_shared_editors_presentation_composed_editor_stories
                             .composedEditorUseCase,
+                  ),
+                ],
+              ),
+              _widgetbook.WidgetbookComponent(
+                name: 'EditorCommitControls',
+                useCases: [
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Complete configuration',
+                    builder:
+                        _widgetbook_workspace_stories_shared_editors_presentation_save_workflow_stories
+                            .editorCommitControlsStory,
                   ),
                 ],
               ),
@@ -1599,6 +1612,38 @@ final directories = <_widgetbook.WidgetbookNode>[
                     builder:
                         _widgetbook_workspace_stories_shared_interaction_mode_presentation_mode_display_chip_stories
                             .modeDisplayChipNormal,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookFolder(
+        name: 'mutations',
+        children: [
+          _widgetbook.WidgetbookFolder(
+            name: 'presentation',
+            children: [
+              _widgetbook.WidgetbookComponent(
+                name: 'MutationActivityButton',
+                useCases: [
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Save workflow',
+                    builder:
+                        _widgetbook_workspace_stories_shared_editors_presentation_save_workflow_stories
+                            .mutationActivityButtonStory,
+                  ),
+                ],
+              ),
+              _widgetbook.WidgetbookComponent(
+                name: 'MutationActivityView',
+                useCases: [
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Save workflow',
+                    builder:
+                        _widgetbook_workspace_stories_shared_editors_presentation_save_workflow_stories
+                            .mutationActivityViewStory,
                   ),
                 ],
               ),

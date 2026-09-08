@@ -4,7 +4,7 @@ import "package:flutter/material.dart";
 import "package:iconify_flutter_plus/icons/material_symbols.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-class EditorSaveStatus extends StatelessWidget {
+class EditorSaveStatus extends StatefulWidget {
   const EditorSaveStatus({
     required this.state,
     this.onRetry,
@@ -19,21 +19,64 @@ class EditorSaveStatus extends StatelessWidget {
   final Future<void> Function()? onKeepLocal;
 
   @override
+  State<EditorSaveStatus> createState() => _EditorSaveStatusState();
+}
+
+class _EditorSaveStatusState extends State<EditorSaveStatus> {
+  Timer? _expiry;
+  bool _expired = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleExpiry();
+  }
+
+  @override
+  void didUpdateWidget(EditorSaveStatus oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.state.phase != widget.state.phase ||
+        oldWidget.state.submissionId != widget.state.submissionId) {
+      _scheduleExpiry();
+    }
+  }
+
+  void _scheduleExpiry() {
+    _expiry?.cancel();
+    _expired = false;
+    if (widget.state.phase == EditorSavePhase.saved) {
+      _expiry = Timer(savedFeedbackDuration, () {
+        if (mounted) setState(() => _expired = true);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _expiry?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final label = switch (state.phase) {
-      EditorSavePhase.idle => null,
-      EditorSavePhase.pending => "Pending",
-      EditorSavePhase.saving => "Saving",
-      EditorSavePhase.saved => "Saved",
-      EditorSavePhase.uncertain => "Outcome unknown",
-      EditorSavePhase.failed => "Save failed",
-      EditorSavePhase.conflict => "Changed elsewhere",
-      EditorSavePhase.repeatedContention => "Changed repeatedly elsewhere",
-      EditorSavePhase.deletedElsewhere => "Deleted elsewhere",
-    };
-    Widget child;
+    final state = widget.state;
+    final label = _expired
+        ? null
+        : switch (state.phase) {
+            EditorSavePhase.idle => null,
+            EditorSavePhase.pending => "Pending",
+            EditorSavePhase.saving => "Saving",
+            EditorSavePhase.saved => "Saved",
+            EditorSavePhase.failed => "Save failed",
+            EditorSavePhase.uncertain => "Outcome unknown",
+            EditorSavePhase.conflict => "Changed elsewhere",
+            EditorSavePhase.repeatedContention =>
+              "Changed repeatedly elsewhere",
+            EditorSavePhase.deletedElsewhere => "Deleted elsewhere",
+          };
+    Widget? child;
     if (label == null) {
-      child = const SizedBox.shrink();
+      child = null;
     } else {
       final color = switch (state.phase) {
         EditorSavePhase.uncertain ||
@@ -56,7 +99,7 @@ class EditorSaveStatus extends StatelessWidget {
                 spacing: context.spacing.space2,
                 children: [
                   LoadingButton.filledIcon(
-                    onPressed: onUseRemote,
+                    onPressed: widget.onUseRemote,
                     style: TextButton.styleFrom(
                       backgroundColor: context.theme.colorScheme.error,
                     ),
@@ -64,7 +107,7 @@ class EditorSaveStatus extends StatelessWidget {
                     label: const Text("Use theirs"),
                   ),
                   LoadingButton.filledIcon(
-                    onPressed: onKeepLocal,
+                    onPressed: widget.onKeepLocal,
                     icon: const Icones(MaterialSymbols.arrow_downward),
                     label: const Text("Keep mine"),
                   ),
@@ -83,7 +126,7 @@ class EditorSaveStatus extends StatelessWidget {
                 if (state.canRetry)
                   LoadingIconButton(
                     icon: const Icones(MaterialSymbols.refresh),
-                    onPressed: onRetry,
+                    onPressed: widget.onRetry,
                   ),
               ],
             ),

@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/foundation.dart";
 import "package:riverpod/riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -17,6 +19,7 @@ MutationJournal mutationJournal(Ref ref) {
 final class MutationJournal extends ChangeNotifier {
   final coordinator = MutationCoordinator();
   final Map<Object, MutationSubmission<Object?>> _submissions = {};
+  final Map<Object, Timer> _expiry = {};
   bool _disposed = false;
 
   List<MutationSubmission<Object?>> get submissions =>
@@ -46,12 +49,21 @@ final class MutationJournal extends ChangeNotifier {
         submission.result is SubmissionUncertain) {
       return;
     }
+    _expiry.remove(id)?.cancel();
     _submissions.remove(id)?.removeListener(_changed);
     notifyListeners();
   }
 
   void _changed() {
     if (_disposed) return;
+    for (final submission in _submissions.values) {
+      if (submission.result is SubmissionConfirmed && !submission.sending) {
+        _expiry.putIfAbsent(
+          submission.id,
+          () => Timer(savedFeedbackDuration, () => dismiss(submission.id)),
+        );
+      }
+    }
     notifyListeners();
   }
 
@@ -59,9 +71,13 @@ final class MutationJournal extends ChangeNotifier {
   void dispose() {
     _disposed = true;
     coordinator.dispose();
+    for (final timer in _expiry.values) {
+      timer.cancel();
+    }
     for (final submission in _submissions.values) {
       submission.removeListener(_changed);
     }
+    _expiry.clear();
     _submissions.clear();
     super.dispose();
   }
