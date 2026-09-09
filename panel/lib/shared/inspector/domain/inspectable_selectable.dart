@@ -12,14 +12,19 @@ abstract class EditableSelectable<I extends SelectableIdentifier>
     extends InspectableSelectable<I>
     implements EditorTarget {
   const EditableSelectable();
+
   @override
   SelectableIdentifier get targetId => id;
+
   @override
   String get label => name;
+
   @override
   EditorCommitPolicy get commitPolicy => EditorCommitPolicy.autosaveChanges;
+
   @override
-  List<TypeDiagnostic> validateDraft(DataValue value) => snapshot.validateDraft(value);
+  List<TypeDiagnostic> validateDraft(DataValue value) =>
+      snapshot.validateDraft(value);
   ResolvedTypeRef get rootType {
     final type = document.rootType;
     if (type is NamedType) return type.reference;
@@ -28,8 +33,10 @@ abstract class EditableSelectable<I extends SelectableIdentifier>
 
   TypeCatalog get typeCatalog => document.typeCatalog;
   TypeRegistry get typeRegistry => TypeRegistry(typeCatalog);
+
   @override
   EditorDocument get document => snapshot.document;
+
   @override
   EditorValue value(DataPath path) =>
       document.confirmedValue.readEditorValue(path);

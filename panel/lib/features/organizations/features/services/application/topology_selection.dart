@@ -37,7 +37,9 @@ class ServiceHostIdentifier extends SelectableIdentifier {
     final service = servicesState.requireValue.firstWhereOrNull(
       (service) => service.serviceId == host.serviceId,
     );
-    final repository = ref.watch(resourceRepositoriesProvider).services(organization);
+    final repository = ref
+        .watch(resourceRepositoriesProvider)
+        .services(organization);
     final serviceCommands = service == null
         ? null
         : ref.watch(organizationServicesProvider(organization).notifier);

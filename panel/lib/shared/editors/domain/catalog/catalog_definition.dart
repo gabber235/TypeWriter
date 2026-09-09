@@ -8,7 +8,8 @@ abstract class PresentationDefinition with _$PresentationDefinition {
   const factory PresentationDefinition({
     required PresentationId id,
     required List<PresentationInputParameter> inputs,
-    required PresentationNode root, BindingId? primaryInput,
+    required PresentationNode root,
+    BindingId? primaryInput,
   }) = _PresentationDefinition;
 
   const PresentationDefinition._();

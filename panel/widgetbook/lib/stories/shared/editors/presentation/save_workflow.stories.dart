@@ -17,6 +17,7 @@ Widget editorCommitControlsStory(BuildContext context) =>
 
 class _SaveWorkflowStory extends StatefulWidget {
   const _SaveWorkflowStory();
+
   @override
   State<_SaveWorkflowStory> createState() => _SaveWorkflowStoryState();
 }
@@ -100,13 +101,17 @@ final class _WorkflowResource implements EditableResource {
       revision: 1,
     ),
   );
+
   @override
   EditorResourceKey get key =>
       const EditorResourceKey(scope: "example", identity: "host");
+
   @override
   Set<Object> get reservations => {key};
+
   @override
   Future<EditorSnapshot?> refresh() async => snapshot;
+
   @override
   MutationIntent prepare(
     EditorSnapshot snapshot,

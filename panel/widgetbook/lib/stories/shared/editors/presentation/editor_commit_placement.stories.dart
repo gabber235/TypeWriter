@@ -9,6 +9,7 @@ Widget editorCommitPlacementStory(BuildContext context) =>
 
 class _CommitPlacementStory extends StatefulWidget {
   const _CommitPlacementStory();
+
   @override
   State<_CommitPlacementStory> createState() => _CommitPlacementStoryState();
 }
@@ -16,6 +17,7 @@ class _CommitPlacementStory extends StatefulWidget {
 class _CommitPlacementStoryState extends State<_CommitPlacementStory> {
   late final TransactionalEditorSource owner;
   bool inline = true;
+
   @override
   void initState() {
     super.initState();

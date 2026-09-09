@@ -55,18 +55,22 @@ final class TransactionalEditorSource extends ChangeNotifier
   EditorSnapshot? _snapshot;
   final EditorMutationValidator? _validate;
   final List<TypeDiagnostic> Function(DataValue)? _validateDraft;
+
   @override
   final EditorCommitPolicy commitPolicy;
+
   @override
   bool get hasWork =>
       _states.dirtyPaths.isNotEmpty ||
       _activeCommit != null ||
       _unresolved != null;
+
   @override
   List<TypeDiagnostic> get draftDiagnostics =>
       _snapshot?.validateDraft(_draft) ??
       _validateDraft?.call(_draft) ??
       const [];
+
   final EditorDelayScheduler _scheduler;
   final EditorJitterSource _jitter;
   final Duration debounce;
@@ -86,8 +90,10 @@ final class TransactionalEditorSource extends ChangeNotifier
 
   @override
   TypeExpression get rootType => document.rootType;
+
   @override
   TypeCatalog get typeCatalog => document.typeCatalog;
+
   @override
   bool get readOnly =>
       document.readOnly ||

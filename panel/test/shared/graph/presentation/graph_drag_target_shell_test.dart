@@ -155,6 +155,7 @@ void main() {
 
 class _TestDragData extends GraphDragData {
   const _TestDragData(this.graphId);
+
   @override
   final GraphIdentifier graphId;
 }

@@ -107,7 +107,9 @@ async fn attached_service_receives_only_its_realm_permissions(
             "typewriter.organization.writers.realm.quests.hosts.{suffix}"
         )));
     }
-    assert!(subscribe.contains(&"typewriter.organization.writers.realm.quests.shared.changed".into()));
+    assert!(
+        subscribe.contains(&"typewriter.organization.writers.realm.quests.shared.changed".into())
+    );
     assert!(subscribe.contains(&"cloud.from.service.engine_one.registration.bound".into()));
     for suffix in ["configuration", "command"] {
         assert!(subscribe.contains(&format!(
@@ -116,7 +118,11 @@ async fn attached_service_receives_only_its_realm_permissions(
     }
     assert!(publish.iter().all(|subject| !subject.contains("realm.*")));
     assert!(subscribe.iter().all(|subject| !subject.contains("realm.*")));
-    assert!(subscribe.iter().all(|subject| !subject.ends_with(".realm.>")));
+    assert!(
+        subscribe
+            .iter()
+            .all(|subject| !subject.ends_with(".realm.>"))
+    );
     Ok(())
 }
 
@@ -178,8 +184,12 @@ async fn realm_service_executes_realm_routes_and_coordinates_hosts(
         )));
     }
     assert!(publish.contains(&"typewriter.organization.writers.realm.quests.hosts.state".into()));
-    assert!(subscribe.contains(&"typewriter.organization.writers.realm.quests.shared.changed".into()));
-    assert!(publish.contains(&"typewriter.organization.writers.realm.quests.shared.changed".into()));
+    assert!(
+        subscribe.contains(&"typewriter.organization.writers.realm.quests.shared.changed".into())
+    );
+    assert!(
+        publish.contains(&"typewriter.organization.writers.realm.quests.shared.changed".into())
+    );
     for suffix in [
         "shared.catalog.fetch",
         "shared.publish",

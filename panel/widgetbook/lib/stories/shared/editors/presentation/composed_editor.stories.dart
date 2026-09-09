@@ -9,6 +9,7 @@ Widget composedEditorUseCase(BuildContext context) =>
 
 class _CompositionStory extends StatefulWidget {
   const _CompositionStory();
+
   @override
   State<_CompositionStory> createState() => _CompositionStoryState();
 }

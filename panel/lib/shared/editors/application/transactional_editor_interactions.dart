@@ -74,10 +74,12 @@ final class _Interaction implements EditorInteractionSession {
   });
 
   final TransactionalEditorSource source;
+
   @override
   final DataPath path;
   final DataValue? origin;
   final int startingRevision;
+
   @override
   bool active = true;
 

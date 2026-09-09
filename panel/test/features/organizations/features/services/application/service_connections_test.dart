@@ -85,6 +85,7 @@ void main() {
 class _Services extends Services {
   _Services(this.service);
   final Service service;
+
   @override
   Stream<List<Service>> build() => Stream.value([service]);
 }

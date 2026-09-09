@@ -35,17 +35,22 @@ final class TestEditorSource extends ChangeNotifier implements EditorSource {
 
   @override
   TypeCatalog get typeCatalog => registry?.catalog ?? const TypeCatalog([]);
+
   @override
   bool get readOnly => document.readOnly;
 
   @override
   EditorDocument get document => _document;
+
   @override
   EditorCommitPolicy get commitPolicy => EditorCommitPolicy.autosaveChanges;
+
   @override
   bool get hasWork => false;
+
   @override
   List<TypeDiagnostic> get draftDiagnostics => const [];
+
   @override
   void discardDraft() {}
 
@@ -115,9 +120,11 @@ final class _TestInteraction implements EditorInteractionSession {
   _TestInteraction(this.source, this.path, this.origin);
 
   final TestEditorSource source;
+
   @override
   final DataPath path;
   final DataValue? origin;
+
   @override
   bool active = true;
 

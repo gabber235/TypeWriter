@@ -15,6 +15,7 @@ class ComposedEditor extends StatefulWidget {
     this.readOnly = false,
     super.key,
   });
+
   final PresentationModel model;
   final List<ConversionDefinition> conversions;
   final EditorRealmActionExecutor? runtime;
@@ -23,6 +24,7 @@ class ComposedEditor extends StatefulWidget {
   final Map<HeaderItemCommandId, List<ShortcutActivator>> headerShortcuts;
   final String historyNamespace;
   final bool readOnly;
+
   @override
   State<ComposedEditor> createState() => _ComposedEditorState();
 }
@@ -33,6 +35,7 @@ class _ComposedEditorState extends State<ComposedEditor> {
   final _placements = EditorCommitPlacements();
   final HeaderExpansionStore _expansion = HeaderExpansionStore();
   List<TypeDiagnostic> _diagnostics = [];
+
   @override
   void initState() {
     super.initState();

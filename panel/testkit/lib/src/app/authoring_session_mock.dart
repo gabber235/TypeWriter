@@ -11,11 +11,13 @@ class AuthoringSessionMock extends AuthoringSession {
     this.initial = const AuthoringSessionState(sequence: 1),
   });
   final AuthoringSessionState initial;
+
   @override
   AuthoringSessionState build(
     skir.RecordId organizationId,
     skir.RecordId realmId,
   ) => initial;
+
   @override
   Future<wire.ApplyAuthoringBatchResponse> apply(
     Iterable<wire.AuthoringOperation> operations, {

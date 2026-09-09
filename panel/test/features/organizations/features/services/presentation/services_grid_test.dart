@@ -332,6 +332,7 @@ skir.ChildRuntimeState _childState({String? message}) => skir.ChildRuntimeState(
 class _FixtureScopedTopology extends OrganizationTopologyController {
   _FixtureScopedTopology(this.topology);
   final OrganizationTopology topology;
+
   @override
   Stream<OrganizationTopology> build(skir.RecordId organizationId) =>
       Stream.value(topology);

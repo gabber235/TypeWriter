@@ -107,24 +107,33 @@ final class ResourceEditorTarget implements EditorTarget {
     required this.snapshot,
     this.commitPolicy = EditorCommitPolicy.autosaveChanges,
   });
+
   @override
   final Object targetId;
+
   @override
   final String label;
+
   @override
   final EditableResource resource;
+
   @override
   final EditorSnapshot snapshot;
+
   @override
   final EditorCommitPolicy commitPolicy;
+
   @override
   EditorDocument get document => snapshot.document;
+
   @override
   List<TypeDiagnostic> validateDraft(DataValue value) =>
       snapshot.validateDraft(value);
+
   @override
   EditorValue value(DataPath path) =>
       document.confirmedValue.readEditorValue(path);
+
   @override
   EditorMutationResult validate(DataPath path, DataValue value) =>
       snapshot.validate(path, value);

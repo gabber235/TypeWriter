@@ -100,6 +100,7 @@ class _Inspectable extends EditableSelectable<_Identifier> {
   @override
   EditorSnapshot get snapshot =>
       FakeEditorSnapshot(document, validation: validate);
+
   @override
   late final EditableResource resource = FakeEditableResource(
     key: EditorResourceKey(scope: null, identity: id.resourceId),

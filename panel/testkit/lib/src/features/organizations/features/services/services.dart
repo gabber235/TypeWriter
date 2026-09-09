@@ -50,6 +50,7 @@ Service generateRandomService({
 class ServicesMock extends OrganizationServices {
   ServicesMock({required this.displayState});
   final DisplayState displayState;
+
   @override
   Stream<List<Service>> build(skir.RecordId organizationId) async* {
     yield await displayState.generateBatch((count) {
@@ -73,6 +74,7 @@ class ServicesMock extends OrganizationServices {
   @override
   Future<void> bindService(String token) async =>
       Future<void>.delayed(const Duration(milliseconds: 1000));
+
   @override
   Future<TypedMutationResult> updateService(Service service) async {
     await Future<void>.delayed(const Duration(milliseconds: 100));

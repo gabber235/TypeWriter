@@ -9,15 +9,19 @@ final class LocalEditor extends ChangeNotifier implements EditOwner {
     required this.typeCatalog,
     required DataValue value,
   }) : _value = value;
+
   @override
   TypeExpression rootType;
+
   @override
   TypeCatalog typeCatalog;
   DataValue _value;
   bool _disposed = false;
   final Set<_LocalInteraction> _interactions = {};
+
   @override
   bool get readOnly => _disposed;
+
   @override
   EditorValue value(DataPath path) => _value.readEditorValue(path);
 
@@ -74,10 +78,13 @@ final class LocalEditor extends ChangeNotifier implements EditOwner {
 
 final class _LocalInteraction implements EditorInteractionSession {
   _LocalInteraction(this.owner, this.path, this.origin);
+
   final LocalEditor owner;
   final DataValue? origin;
+
   @override
   final DataPath path;
+
   @override
   bool active = true;
   @override

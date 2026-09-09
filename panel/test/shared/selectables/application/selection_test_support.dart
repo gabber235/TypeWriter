@@ -97,6 +97,7 @@ class MockSelectable extends EditableSelectable<MockSelectableIdentifier> {
   @override
   EditorSnapshot get snapshot =>
       FakeEditorSnapshot(document, validation: validate);
+
   @override
   late final EditableResource resource = FakeEditableResource(
     key: EditorResourceKey(scope: null, identity: id.resourceId),

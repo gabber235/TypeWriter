@@ -16,8 +16,10 @@ final class _BatchResource implements EditableResource {
   _BatchResource(String id, this.combiner)
     : key = EditorResourceKey(scope: "realm", identity: id);
   final MutationCombiner<_Operation, List<_Operation>> combiner;
+
   @override
   final EditorResourceKey key;
+
   @override
   Set<Object> get reservations => {key};
   int reads = 0;

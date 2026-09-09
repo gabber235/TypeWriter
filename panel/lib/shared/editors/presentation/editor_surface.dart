@@ -20,6 +20,7 @@ class EditorSurface extends StatelessWidget {
     this.readOnly = false,
     super.key,
   });
+
   final EditorSource source;
   final DataPath path;
   final TypeRegistry? registry;
@@ -34,6 +35,7 @@ class EditorSurface extends StatelessWidget {
   final Map<HeaderItemCommandId, List<ShortcutActivator>> headerShortcuts;
   final String historyNamespace;
   final bool readOnly;
+
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: source,

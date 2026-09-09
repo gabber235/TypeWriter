@@ -259,17 +259,22 @@ private fun presentation(
     inputs =
         listOf(
             skirout.editor.v1.presentation.PresentationInput(
-                bindingId = skirout.editor.v1.binding.BindingId(value = 0),
+                bindingId =
+                    skirout.editor.v1.binding
+                        .BindingId(value = 0),
                 name = "value",
                 access = skirout.editor.v1.presentation.PresentationInputAccess.EDIT,
                 valueType =
                     SkirTypeCodec
                         .encode(
-                            com.typewritermc.types.TypeExpression.Named(target),
+                            com.typewritermc.types.TypeExpression
+                                .Named(target),
                         ).getOrThrow(),
             ),
         ),
-    primaryInput = skirout.editor.v1.binding.BindingId(value = 0),
+    primaryInput =
+        skirout.editor.v1.binding
+            .BindingId(value = 0),
     root = PresentationNode.partial(nodeId = "root"),
     dependencies =
         skirout.editor.v1.presentation.PresentationDependencies

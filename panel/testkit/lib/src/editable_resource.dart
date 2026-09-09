@@ -6,13 +6,16 @@ final class FakeEditorSnapshot extends EditorSnapshot {
     this.validation,
     this.draftValidation,
   });
+
   @override
   final EditorDocument document;
   final EditorMutationValidator? validation;
   final List<TypeDiagnostic> Function(DataValue)? draftValidation;
+
   @override
   EditorMutationResult validate(DataPath path, DataValue value) =>
       validation?.call(path, value) ?? super.validate(path, value);
+
   @override
   List<TypeDiagnostic> validateDraft(DataValue value) =>
       draftValidation?.call(value) ?? const [];
@@ -26,15 +29,19 @@ class FakeEditableResource implements EditableResource {
     required this.commit,
     this.load,
   });
+
   @override
   final EditorResourceKey key;
   EditorSnapshot? current;
   final EditorCommitter commit;
   Future<EditorSnapshot?> Function()? load;
+
   @override
   Set<Object> get reservations => {key};
+
   @override
   Future<EditorSnapshot?> refresh() async => load == null ? current : load!();
+
   @override
   MutationIntent prepare(
     EditorSnapshot snapshot,

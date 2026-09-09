@@ -219,6 +219,7 @@ final class _UncertainResource extends FakeEditableResource {
   int reads = 0;
   int sends = 0;
   final requests = <EditorCommit>[];
+
   @override
   Future<EditorSnapshot?> refresh() async {
     reads++;

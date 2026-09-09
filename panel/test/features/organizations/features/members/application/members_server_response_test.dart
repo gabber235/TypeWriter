@@ -48,7 +48,10 @@ void main() {
             organizationMembersProvider.overrideWith(
               () => _RefreshingMembers(
                 () => [
-                  if (reads++ == 0) member else member.copyWith(name: "Current Name"),
+                  if (reads++ == 0)
+                    member
+                  else
+                    member.copyWith(name: "Current Name"),
                 ],
               ),
             ),

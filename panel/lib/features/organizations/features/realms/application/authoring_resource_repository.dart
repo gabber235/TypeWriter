@@ -3,6 +3,7 @@ part of "authoring_session.dart";
 /// Durable authoring requests. Live projections subscribe only while they are observed.
 final class AuthoringResourceRepository {
   AuthoringResourceRepository(this.session, this.organization, this.realm);
+
   final ResourceRepositories session;
   final skir.RecordId organization;
   final skir.RecordId realm;
@@ -10,10 +11,12 @@ final class AuthoringResourceRepository {
     sync: true,
   );
   final _invalidations = StreamController<void>.broadcast(sync: true);
+
   Stream<wire.AuthoringChanged> get changes => _changes.stream;
   Stream<void> get invalidations => _invalidations.stream;
   RealmServiceAddress get address =>
       RealmServiceAddress(organizationId: organization, realmId: realm);
+
   late final combiner =
       MutationCombiner<
         wire.AuthoringOperation,

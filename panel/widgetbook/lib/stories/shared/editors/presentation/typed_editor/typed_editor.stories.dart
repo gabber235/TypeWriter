@@ -27,6 +27,7 @@ class EditorStory extends StatefulWidget {
   const EditorStory({required this.rootType, this.initialValue, super.key});
   final RecordType rootType;
   final RecordValue? initialValue;
+
   @override
   State<EditorStory> createState() => _EditorStoryState();
 }
@@ -39,12 +40,14 @@ class _EditorStoryState extends State<EditorStory> {
         widget.initialValue ??
         widget.rootType.createInitialValue().valueOrNull!,
   );
+
   @override
   Widget build(BuildContext context) => EditorStories(
     child: SingleChildScrollView(
       child: ComposedEditor(model: PresentationModel.editor(owner: owner)),
     ),
   );
+
   @override
   void dispose() {
     owner.dispose();

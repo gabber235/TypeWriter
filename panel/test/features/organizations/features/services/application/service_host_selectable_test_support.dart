@@ -149,6 +149,7 @@ class _Harness {
 class _ReplaceableNats extends Nats {
   _ReplaceableNats(this.client);
   final NatsClient client;
+
   @override
   NatsClient build() => client;
   NatsClient get connection => state;

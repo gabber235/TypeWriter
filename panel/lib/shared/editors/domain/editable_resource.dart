@@ -31,6 +31,7 @@ abstract class EditorSnapshot {
 
 final class DocumentEditorSnapshot extends EditorSnapshot {
   const DocumentEditorSnapshot(this.document);
+
   @override
   final EditorDocument document;
 }
