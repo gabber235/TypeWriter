@@ -189,10 +189,10 @@ packages:
     dependency: transitive
     description:
       name: clock
-      sha256: fddb70d9b5277016c77a80201021d40a2247104d9f4aa7bab7157b7e3f05b84b
+      sha256: e51d50bca3217c9a9fa2b41a30e4a38971133f5f9ec7a3d57bae095007f1d28e
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.3"
   code_assets:
     dependency: transitive
     description:
@@ -293,18 +293,18 @@ packages:
     dependency: transitive
     description:
       name: dartastic_opentelemetry
-      sha256: "3ee1571b9b4b4700a2c4713c2dbaba4d1892ee00c0930e6b2bc241b2f0a14761"
+      sha256: c4b74569b7d46ed953c6ed66ec04f06e1104779e29bb3ce6e3031bb0e6da8c52
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0-beta.7"
+    version: "1.1.0-beta.15"
   dartastic_opentelemetry_api:
     dependency: transitive
     description:
       name: dartastic_opentelemetry_api
-      sha256: "2224561025dea6c2926e3f8c7172000bfc12b583f9dd8c75b53eaa5348d8d023"
+      sha256: "0aa68844f4de54753a1a9f990f1f64c6dfe0b56ce331d2d8df5eea1d48e94c9b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-rc.1"
+    version: "1.0.0-rc.3"
   device_frame_plus:
     dependency: transitive
     description:
