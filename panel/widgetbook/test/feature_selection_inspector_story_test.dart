@@ -104,7 +104,6 @@ void main() {
       expect(find.text("Name"), findsOneWidget);
       expect(find.text("Version"), findsOneWidget);
       expect(find.text("Service"), findsOneWidget);
-      expect(find.text("Identity and connection"), findsOneWidget);
       expect(find.text("CONNECTION"), findsOneWidget);
       expect(find.text("Connected"), findsWidgets);
       expect(find.text("Expected a record"), findsNothing);

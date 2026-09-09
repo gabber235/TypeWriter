@@ -4,6 +4,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 import "../../support/test_utils.dart";
 
 void main() {
@@ -11,9 +12,8 @@ void main() {
     "return action follows current selection without replacing review fallback",
     (tester) async {
       final container = ProviderContainer.test();
-      final journal = MutationJournal();
-      final workspace = EditorWorkspace();
-      addTearDown(journal.dispose);
+      final workspace = LocalWork();
+
       addTearDown(workspace.dispose);
       final identity = ServiceIdentifier(
         skir.RecordId(
@@ -22,10 +22,9 @@ void main() {
         ),
       );
       final router = container.read(appRouterProvider);
-      const key = EditorResourceKey(scope: null, identity: "host");
+      final key = EditorResourceKey(scope: null, identity: identity.resourceId);
       final owner = workspace.editor(
-        key,
-        ResourceEditorTarget(
+        fakeEditorTarget(
           targetId: identity,
           label: "Host configuration",
           document: const EditorDocument(
@@ -51,11 +50,7 @@ void main() {
       container.read(selectionProvider.notifier).selectAll([identity]);
       await tester.pumpTestApp(
         child: Scaffold(
-          appBar: AppBar(
-            actions: [
-              MutationActivityView(journal: journal, workspace: workspace),
-            ],
-          ),
+          appBar: AppBar(actions: [MutationActivityView(workspace: workspace)]),
         ),
       );
       await tester.tap(find.text("1 draft"));

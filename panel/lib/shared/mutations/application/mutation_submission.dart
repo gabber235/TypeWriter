@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
@@ -11,16 +13,24 @@ final class MutationSubmission<T> extends ChangeNotifier {
     required this.id,
     required this.label,
     required Future<SubmissionResult<T>> Function() send,
+    Future<void> Function(SubmissionResult<T>)? integrate,
+    void Function()? onDispose,
     this.replay = SubmissionReplay.unsupported,
     Set<Object> resources = const {},
   }) : resources = Set.unmodifiable(resources),
-       _send = send;
+       _send = send,
+       _integrate = integrate,
+       _onDispose = onDispose;
 
   final Object id;
   final Set<Object> resources;
   final String label;
   final SubmissionReplay replay;
   final Future<SubmissionResult<T>> Function() _send;
+  final Future<void> Function(SubmissionResult<T>)? _integrate;
+  final void Function()? _onDispose;
+  AsyncError? _integrationError;
+  AsyncError? get integrationError => _integrationError;
   Future<SubmissionResult<T>>? _active;
   SubmissionResult<T>? _result;
   bool _disposed = false;
@@ -39,17 +49,21 @@ final class MutationSubmission<T> extends ChangeNotifier {
     final active = _active;
     if (active != null) return active;
     final previous = _result;
-    if (previous != null && !canReplay) return Future.value(previous);
-    final operation = Future<SubmissionResult<T>>.sync(_send).then(
-      (result) => result,
-      onError: (Object error, StackTrace stackTrace) =>
-          SubmissionResult<T>.uncertain(
-            message: "The operation result could not be confirmed",
-            cause: error,
-            stackTrace: stackTrace,
-          ),
-    );
-    _active = operation.then((result) {
+    if (previous != null && !canReplay && _integrationError == null) {
+      return Future.value(previous);
+    }
+    final operation = previous != null && !canReplay
+        ? Future.value(previous)
+        : Future<SubmissionResult<T>>.sync(_send).then(
+            (result) => result,
+            onError: (Object error, StackTrace stackTrace) =>
+                SubmissionResult<T>.uncertain(
+                  message: "The operation result could not be confirmed",
+                  cause: error,
+                  stackTrace: stackTrace,
+                ),
+          );
+    _active = operation.then(_integrateResult).then((result) {
       if (!_disposed) {
         _result = result;
         _active = null;
@@ -61,9 +75,29 @@ final class MutationSubmission<T> extends ChangeNotifier {
     return _active!;
   }
 
+  Future<SubmissionResult<T>> _integrateResult(
+    SubmissionResult<T> result,
+  ) async {
+    if (_disposed || result is SubmissionUncertain<T>) return result;
+    try {
+      await _integrate?.call(result);
+      _integrationError = null;
+    } on Object catch (error, stackTrace) {
+      if (_disposed) return result;
+      _integrationError = AsyncError(error, stackTrace);
+      FlutterError.reportError(
+        FlutterErrorDetails(exception: error, stack: stackTrace),
+      );
+    }
+    if (!_disposed) notifyListeners();
+    return result;
+  }
+
   @override
   void dispose() {
+    if (_disposed) return;
     _disposed = true;
+    _onDispose?.call();
     super.dispose();
   }
 }

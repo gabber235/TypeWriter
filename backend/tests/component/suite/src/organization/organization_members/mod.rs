@@ -1,3 +1,5 @@
+mod mutation_receipts;
+
 use std::time::Duration;
 
 use component_test::{
@@ -88,15 +90,16 @@ async fn generate_join_code_persists_and_publishes(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchOrganizationJoinCodesResponse::Add(code))
-                    if !code.single_use
-                        && code.expires_at.is_none()
-                        && code.auto_accept.role_ids.len() == 1
-                        && code.auto_accept.role_ids[0].key.to_string() == expected_writer_key
+                Ok(WatchOrganizationJoinCodesResponse::List(codes))
+                    if codes.len() == 1 && !codes[0].single_use
+                        && codes[0].expires_at.is_none()
+                        && codes[0].auto_accept.role_ids.len() == 1
+                        && codes[0].auto_accept.role_ids[0].key.to_string() == expected_writer_key
             )
         });
 
     let request = GenerateOrganizationJoinCodeRequest {
+        operation_id: crate::framework::operation_id(),
         single_use: false,
         expiration: GenerateOrganizationJoinCodeRequest_Expiration::Never,
         auto_accept: GenerateOrganizationJoinCodeRequest_AutoAccept {
@@ -140,6 +143,7 @@ async fn generate_join_code_rejects_invalid_expiration_without_state(
         .ok_or_else(|| anyhow::anyhow!("database handle missing"))?;
     seed_organization(&database).await?;
     let request = GenerateOrganizationJoinCodeRequest {
+        operation_id: crate::framework::operation_id(),
         single_use: true,
         expiration: GenerateOrganizationJoinCodeRequest_Expiration::Duration(Box::new(
             SkirDuration {
@@ -193,9 +197,15 @@ async fn member_update_keeps_protected_founder_role(
         .messaging_mock()?
         .expect_publish("typewriter.to.organization.alpha.members.watch")
         .body_matches(|body| {
-            let Ok(WatchOrganizationMembersResponse::Update(member)) =
+            let Ok(WatchOrganizationMembersResponse::List(members)) =
                 WatchOrganizationMembersResponse::serializer()
                     .from_bytes(body, UnrecognizedValues::Drop)
+            else {
+                return false;
+            };
+            let Some(member) = members
+                .iter()
+                .find(|member| member.user_id.key.to_string() == "founder")
             else {
                 return false;
             };
@@ -209,7 +219,8 @@ async fn member_update_keeps_protected_founder_role(
         });
 
     let request = UpdateOrganizationMemberRolesRequest {
-        user_id: skir_record_id("user", "founder"),
+        operation_id: crate::framework::operation_id(),
+        user_ids: vec![skir_record_id("user", "founder")],
         role_ids: vec![skir_record_id("organization_role", &writer_key)],
         _unrecognized: None,
     };
@@ -225,10 +236,10 @@ async fn member_update_keeps_protected_founder_role(
         )
         .await?;
 
-    let UpdateOrganizationMemberRolesResponse::Success(member) = response else {
+    let UpdateOrganizationMemberRolesResponse::Success(members) = response else {
         anyhow::bail!("expected member update success, received {response:?}")
     };
-    let mut names = member
+    let mut names = members[0]
         .roles
         .iter()
         .map(|role| role.name.as_str())
@@ -254,7 +265,8 @@ async fn member_update_returns_precise_validation_errors_without_state_changes(
         .request_skir(
             "typewriter.from.user.founder.organization.alpha.members.update",
             &UpdateOrganizationMemberRolesRequest {
-                user_id: skir_record_id("user", "member"),
+                operation_id: crate::framework::operation_id(),
+                user_ids: vec![skir_record_id("user", "member")],
                 role_ids: vec![
                     skir_record_id("organization_role", &writer),
                     skir_record_id("organization_role", "missing"),
@@ -278,7 +290,8 @@ async fn member_update_returns_precise_validation_errors_without_state_changes(
         .request_skir(
             "typewriter.from.user.founder.organization.alpha.members.update",
             &UpdateOrganizationMemberRolesRequest {
-                user_id: skir_record_id("user", "member"),
+                operation_id: crate::framework::operation_id(),
+                user_ids: vec![skir_record_id("user", "member")],
                 role_ids: vec![skir_record_id("organization_role", &founder)],
                 _unrecognized: None,
             },
@@ -299,7 +312,8 @@ async fn member_update_returns_precise_validation_errors_without_state_changes(
         .request_skir(
             "typewriter.from.user.founder.organization.alpha.members.update",
             &UpdateOrganizationMemberRolesRequest {
-                user_id: skir_record_id("user", "missing"),
+                operation_id: crate::framework::operation_id(),
+                user_ids: vec![skir_record_id("user", "missing")],
                 role_ids: vec![skir_record_id("organization_role", &writer)],
                 _unrecognized: None,
             },
@@ -336,6 +350,7 @@ async fn join_code_rejects_missing_and_protected_roles(
 
     for (role, expected_assignable) in [("missing".to_string(), false), (founder, true)] {
         let request = GenerateOrganizationJoinCodeRequest {
+            operation_id: crate::framework::operation_id(),
             single_use: true,
             expiration: GenerateOrganizationJoinCodeRequest_Expiration::Never,
             auto_accept: GenerateOrganizationJoinCodeRequest_AutoAccept {
@@ -392,6 +407,7 @@ async fn revoke_join_code_deletes_and_notifies(
         matches!(WatchOrganizationJoinCodesResponse::serializer().from_bytes(body, UnrecognizedValues::Drop), Ok(WatchOrganizationJoinCodesResponse::Remove(code)) if code.key.to_string() == "invite")
     });
     let request = RevokeOrganizationJoinCodeRequest {
+        operation_id: crate::framework::operation_id(),
         code_id: skir_record_id("organization_join_code", "invite"),
         _unrecognized: None,
     };
@@ -426,6 +442,7 @@ async fn founder_cannot_be_removed(context: &mut TestContext<OrganizationMembers
         .ok_or_else(|| anyhow::anyhow!("database handle missing"))?;
     seed_organization(&database).await?;
     let request = RemoveOrganizationMemberRequest {
+        operation_id: crate::framework::operation_id(),
         user_id: skir_record_id("user", "founder"),
         _unrecognized: None,
     };
@@ -479,8 +496,9 @@ async fn approve_request_atomically_creates_member_and_removes_request(
     ] {
         context.messaging_mock()?.expect_publish(subject);
     }
-    let request = ApproveOrganizationJoinRequestRequest {
-        request_id: skir_record_id("request_to_join", &request_key),
+    let request = ApproveOrganizationJoinRequestsRequest {
+        operation_id: crate::framework::operation_id(),
+        request_ids: vec![skir_record_id("request_to_join", &request_key)],
         role_ids: vec![skir_record_id("organization_role", &writer)],
         _unrecognized: None,
     };
@@ -489,14 +507,14 @@ async fn approve_request_atomically_creates_member_and_removes_request(
         .request_skir(
             "typewriter.from.user.founder.organization.alpha.members.join_requests.approve",
             &request,
-            ApproveOrganizationJoinRequestRequest::serializer(),
-            ApproveOrganizationJoinRequestResponse::serializer(),
+            ApproveOrganizationJoinRequestsRequest::serializer(),
+            ApproveOrganizationJoinRequestsResponse::serializer(),
             Duration::from_secs(2),
             UnrecognizedValues::Drop,
         )
         .await?;
     assert!(
-        matches!(response, ApproveOrganizationJoinRequestResponse::Success(member) if member.user_id.key.to_string() == "applicant")
+        matches!(response, ApproveOrganizationJoinRequestsResponse::Success(approvals) if approvals.len() == 1 && approvals[0].member.user_id.key.to_string() == "applicant")
     );
     let state = database.query_json("RETURN { members: count(SELECT id FROM member_of WHERE in = user:applicant AND out = organization:alpha), requests: count(SELECT id FROM request_to_join WHERE in = user:applicant) }").await?;
     assert_jm!(state, { "members": 1, "requests": 0 });
@@ -519,8 +537,9 @@ async fn approve_existing_member_rolls_back_request_deletion(
         .await?;
     let request_key = database_record_key(&request_id, "request_to_join")?;
     let writer = role_key(&database, "writer").await?;
-    let request = ApproveOrganizationJoinRequestRequest {
-        request_id: skir_record_id("request_to_join", &request_key),
+    let request = ApproveOrganizationJoinRequestsRequest {
+        operation_id: crate::framework::operation_id(),
+        request_ids: vec![skir_record_id("request_to_join", &request_key)],
         role_ids: vec![skir_record_id("organization_role", &writer)],
         _unrecognized: None,
     };
@@ -529,15 +548,15 @@ async fn approve_existing_member_rolls_back_request_deletion(
         .request_skir(
             "typewriter.from.user.founder.organization.alpha.members.join_requests.approve",
             &request,
-            ApproveOrganizationJoinRequestRequest::serializer(),
-            ApproveOrganizationJoinRequestResponse::serializer(),
+            ApproveOrganizationJoinRequestsRequest::serializer(),
+            ApproveOrganizationJoinRequestsResponse::serializer(),
             Duration::from_secs(2),
             UnrecognizedValues::Drop,
         )
         .await?;
     assert!(matches!(
         response,
-        ApproveOrganizationJoinRequestResponse::UserAlreadyMemberError(_)
+        ApproveOrganizationJoinRequestsResponse::UserAlreadyMemberError(_)
     ));
     assert_jm!(
         database
@@ -564,8 +583,9 @@ async fn approval_uses_current_role_policy_inside_transaction(
         .await?;
     let request_key = database_record_key(&request_id, "request_to_join")?;
     let writer = role_key(&database, "writer").await?;
-    let request = ApproveOrganizationJoinRequestRequest {
-        request_id: skir_record_id("request_to_join", &request_key),
+    let request = ApproveOrganizationJoinRequestsRequest {
+        operation_id: crate::framework::operation_id(),
+        request_ids: vec![skir_record_id("request_to_join", &request_key)],
         role_ids: vec![skir_record_id("organization_role", &writer)],
         _unrecognized: None,
     };
@@ -581,13 +601,13 @@ async fn approval_uses_current_role_policy_inside_transaction(
         .request_skir(
             "typewriter.from.user.founder.organization.alpha.members.join_requests.approve",
             &request,
-            ApproveOrganizationJoinRequestRequest::serializer(),
-            ApproveOrganizationJoinRequestResponse::serializer(),
+            ApproveOrganizationJoinRequestsRequest::serializer(),
+            ApproveOrganizationJoinRequestsResponse::serializer(),
             Duration::from_secs(2),
             UnrecognizedValues::Drop,
         )
         .await?;
-    let ApproveOrganizationJoinRequestResponse::RolesNotAssignableError(error) = response else {
+    let ApproveOrganizationJoinRequestsResponse::RolesNotAssignableError(error) = response else {
         anyhow::bail!("expected current role policy error, received {response:?}")
     };
     assert_eq!(error.role_ids.len(), 1);
@@ -625,6 +645,7 @@ async fn decline_request_deletes_and_notifies_both_views(
         .messaging_mock()?
         .expect_publish("typewriter.to.user.applicant.organization.join_requests.watch");
     let request = DeclineOrganizationJoinRequestRequest {
+        operation_id: crate::framework::operation_id(),
         request_id: skir_record_id("request_to_join", &request_key),
         _unrecognized: None,
     };

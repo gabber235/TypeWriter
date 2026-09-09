@@ -22,6 +22,7 @@ method WatchOrganizationServices(
 
 method UpdateOrganizationService(
   struct {
+    operation_id: string;
     service_id: RecordId;
     expected_revision: int64;
     name: string;
@@ -40,5 +41,7 @@ method UpdateOrganizationService(
 
   validation_error: ServiceUpdateValidationError;
 
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   invalid_record_id_error: InvalidRecordIdError;
 } = 872501;

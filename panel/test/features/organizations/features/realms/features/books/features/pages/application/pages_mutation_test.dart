@@ -85,32 +85,32 @@ void main() {
   );
 
   test("page metadata rejection retains the draft for review", () async {
-    final nats = FakeNatsClient();
-    nats.registerHandler(_snapshotSubject, (_) => _snapshot("Initial", 1));
-    nats.registerHandler(_batchSubject, (bytes) {
-      final request = wire.ApplyAuthoringBatchRequest.serializer.fromBytes(
-        bytes,
-      );
-      final patch =
-          (request.operations.single
-                  as wire.AuthoringOperation_patchPageWrapper)
-              .value;
-      expect(patch.name?.expected, "Initial");
-      expect(patch.name?.value, "Retained");
-      expect(patch.priority, isNull);
-      return wire.ApplyAuthoringBatchResponse.serializer.toBytes(
-        wire.ApplyAuthoringBatchResponse.createInvalid(
-          diagnostics: [
-            wire.AuthoringDiagnostic(
-              code: "invalid",
-              message: "Rejected",
-              resource: null,
-              path: null,
-            ),
-          ],
-        ),
-      );
-    });
+    final nats = FakeNatsClient()
+      ..registerHandler(_snapshotSubject, (_) => _snapshot("Initial", 1))
+      ..registerHandler(_batchSubject, (bytes) {
+        final request = wire.ApplyAuthoringBatchRequest.serializer.fromBytes(
+          bytes,
+        );
+        final patch =
+            (request.operations.single
+                    as wire.AuthoringOperation_patchPageWrapper)
+                .value;
+        expect(patch.name?.expected, "Initial");
+        expect(patch.name?.value, "Retained");
+        expect(patch.priority, isNull);
+        return wire.ApplyAuthoringBatchResponse.serializer.toBytes(
+          wire.ApplyAuthoringBatchResponse.createInvalid(
+            diagnostics: [
+              wire.AuthoringDiagnostic(
+                code: "invalid",
+                message: "Rejected",
+                resource: null,
+                path: null,
+              ),
+            ],
+          ),
+        );
+      });
     final container = ProviderContainer.test(
       overrides: [
         natsProvider.overrideWithValue(nats),
@@ -119,11 +119,17 @@ void main() {
         ),
       ],
     );
-    final workspace = EditorWorkspace();
+    final workspace = LocalWork();
     final provider = authoringSessionProvider(_organization, _realm);
     final subscription = container.listen(provider, (_, _) {});
     final result =
-        await PageEditing(container.read(provider.notifier), workspace).edit({
+        await PageEditing(
+          container.read(provider.notifier),
+          workspace,
+          container
+              .read(resourceRepositoriesProvider)
+              .authoring(_organization, _realm),
+        ).edit({
           _page: {DataPath.root.field("name"): const StringValue("Retained")},
         });
     expect(result, isA<MutationInvalid>());

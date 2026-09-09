@@ -1,6 +1,6 @@
 part of "services.dart";
 
-extension _HostConfigurationValue on _ServiceHostSelectable {
+extension _HostConfigurationValue on HostEditorSnapshot {
   RecordValue _configurationValue(
     TopologyRealm? realm,
     TopologyEngine? engine,
@@ -59,7 +59,7 @@ extension _HostConfigurationValue on _ServiceHostSelectable {
       issue("engine.target", "Choose a supported engine target");
     }
     if (!_usesHostedRealm(realm, engine) &&
-        !_configurationTopology.realmInstances.any(
+        !topology.realmInstances.any(
           (r) =>
               r.realmId.id == _draftString(engine, "realm") &&
               r.ownerHost.id != host.hostId &&
@@ -77,10 +77,10 @@ extension _HostConfigurationValue on _ServiceHostSelectable {
   skir.HostExecutionConfiguration? _decodeExecution(DataValue value) {
     if (_configurationIssues(value).isNotEmpty) return null;
     final realm =
-        DataPath.root.field("realm").read(value).valueOrNull
+        DataPath.root.field("realm").read(value).valueOrNull!
             as PolymorphicValue;
     final engine =
-        DataPath.root.field("engine").read(value).valueOrNull
+        DataPath.root.field("engine").read(value).valueOrNull!
             as PolymorphicValue;
     return skir.HostExecutionConfiguration(
       realm: realm.concreteType == _realmHosted
@@ -100,7 +100,7 @@ extension _HostConfigurationValue on _ServiceHostSelectable {
               realm: _usesHostedRealm(realm, engine)
                   ? skir.EngineRealmSelection.hostedRealm
                   : skir.EngineRealmSelection.createExistingRealm(
-                      realmId: _configurationTopology.realmInstances
+                      realmId: topology.realmInstances
                           .singleWhere(
                             (r) =>
                                 r.realmId.id == _draftString(engine, "realm") &&

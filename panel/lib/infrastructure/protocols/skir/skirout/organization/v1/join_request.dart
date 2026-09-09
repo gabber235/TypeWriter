@@ -36,7 +36,8 @@ sealed class OrganizationJoinRequest_orMutable {
 }
 
 /// Deeply immutable.
-final class OrganizationJoinRequest implements OrganizationJoinRequest_orMutable {
+final class OrganizationJoinRequest
+    implements OrganizationJoinRequest_orMutable {
   @_core.override
   final _lib_kernel_v1_record_id.RecordId requestId;
   @_core.override
@@ -94,15 +95,16 @@ final class OrganizationJoinRequest implements OrganizationJoinRequest_orMutable
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static OrganizationJoinRequest_mutable mutable() => OrganizationJoinRequest_mutable._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-    null,
-    null,
-    null,
-    _skir.unixEpoch,
-    _skir.unixEpoch,
-  );
+  static OrganizationJoinRequest_mutable mutable() =>
+      OrganizationJoinRequest_mutable._(
+        _lib_kernel_v1_record_id.RecordId.defaultInstance,
+        _lib_kernel_v1_record_id.RecordId.defaultInstance,
+        null,
+        null,
+        null,
+        _skir.unixEpoch,
+        _skir.unixEpoch,
+      );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
@@ -110,21 +112,25 @@ final class OrganizationJoinRequest implements OrganizationJoinRequest_orMutable
   OrganizationJoinRequest toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  OrganizationJoinRequest_mutable toMutable() => OrganizationJoinRequest_mutable._(
-    this.requestId,
-    this.userId,
-    this.userName,
-    this.userEmail,
-    this.userAvatarUrl,
-    this.requestedAt,
-    this.expiresAt,
-  );
+  OrganizationJoinRequest_mutable toMutable() =>
+      OrganizationJoinRequest_mutable._(
+        this.requestId,
+        this.userId,
+        this.userName,
+        this.userEmail,
+        this.userAvatarUrl,
+        this.requestedAt,
+        this.expiresAt,
+      );
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
     if (other is! OrganizationJoinRequest) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
@@ -144,7 +150,11 @@ final class OrganizationJoinRequest implements OrganizationJoinRequest_orMutable
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
   /// Serializer for `OrganizationJoinRequest` instances.
-  static _skir.StructSerializer<OrganizationJoinRequest, OrganizationJoinRequest_mutable> get serializer {
+  static _skir.StructSerializer<
+    OrganizationJoinRequest,
+    OrganizationJoinRequest_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
         "request_id",
@@ -168,9 +178,7 @@ final class OrganizationJoinRequest implements OrganizationJoinRequest_orMutable
         "user_name",
         "userName",
         2,
-        _skir.Serializers.optional(
-          _skir.Serializers.string,
-        ),
+        _skir.Serializers.optional(_skir.Serializers.string),
         "",
         (it) => it.userName,
         (it, v) => it.userName = v,
@@ -179,9 +187,7 @@ final class OrganizationJoinRequest implements OrganizationJoinRequest_orMutable
         "user_email",
         "userEmail",
         3,
-        _skir.Serializers.optional(
-          _skir.Serializers.string,
-        ),
+        _skir.Serializers.optional(_skir.Serializers.string),
         "",
         (it) => it.userEmail,
         (it, v) => it.userEmail = v,
@@ -190,9 +196,7 @@ final class OrganizationJoinRequest implements OrganizationJoinRequest_orMutable
         "user_avatar_url",
         "userAvatarUrl",
         4,
-        _skir.Serializers.optional(
-          _skir.Serializers.string,
-        ),
+        _skir.Serializers.optional(_skir.Serializers.string),
         "",
         (it) => it.userAvatarUrl,
         (it, v) => it.userAvatarUrl = v,
@@ -232,7 +236,8 @@ final class OrganizationJoinRequest implements OrganizationJoinRequest_orMutable
 }
 
 /// Mutable version of [OrganizationJoinRequest].
-final class OrganizationJoinRequest_mutable implements OrganizationJoinRequest_orMutable {
+final class OrganizationJoinRequest_mutable
+    implements OrganizationJoinRequest_orMutable {
   _lib_kernel_v1_record_id.RecordId_orMutable requestId;
   _lib_kernel_v1_record_id.RecordId_orMutable userId;
   _core.String? userName;
@@ -259,7 +264,8 @@ final class OrganizationJoinRequest_mutable implements OrganizationJoinRequest_o
     if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
       return value;
     } else {
-      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId)
+          .toMutable();
     }
   }
 
@@ -270,7 +276,8 @@ final class OrganizationJoinRequest_mutable implements OrganizationJoinRequest_o
     if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
       return value;
     } else {
-      return this.userId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.userId = (value as _lib_kernel_v1_record_id.RecordId)
+          .toMutable();
     }
   }
 
@@ -383,7 +390,10 @@ final class UserJoinRequest implements UserJoinRequest_orMutable {
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
     if (other is! UserJoinRequest) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
@@ -402,7 +412,8 @@ final class UserJoinRequest implements UserJoinRequest_orMutable {
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
   /// Serializer for `UserJoinRequest` instances.
-  static _skir.StructSerializer<UserJoinRequest, UserJoinRequest_mutable> get serializer {
+  static _skir.StructSerializer<UserJoinRequest, UserJoinRequest_mutable>
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
         "request_id",
@@ -500,7 +511,8 @@ final class UserJoinRequest_mutable implements UserJoinRequest_orMutable {
     if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
       return value;
     } else {
-      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId)
+          .toMutable();
     }
   }
 
@@ -511,7 +523,8 @@ final class UserJoinRequest_mutable implements UserJoinRequest_orMutable {
     if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
       return value;
     } else {
-      return this.organizationId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.organizationId = (value as _lib_kernel_v1_record_id.RecordId)
+          .toMutable();
     }
   }
 
@@ -535,7 +548,8 @@ sealed class AutoAcceptedMember_orMutable {
   _lib_kernel_v1_record_id.RecordId_orMutable get organizationId;
   _core.String get organizationName;
   _core.String? get organizationLogoUrl;
-  _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable> get roles;
+  _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable>
+  get roles;
 
   AutoAcceptedMember toFrozen();
 }
@@ -556,7 +570,10 @@ final class AutoAcceptedMember implements AutoAcceptedMember_orMutable {
     required _lib_kernel_v1_record_id.RecordId_orMutable organizationId,
     required _core.String organizationName,
     required _core.String? organizationLogoUrl,
-    required _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable> roles,
+    required _core.Iterable<
+      _lib_organization_v1_role.OrganizationRole_orMutable
+    >
+    roles,
   }) => AutoAcceptedMember._(
     organizationId.toFrozen(),
     organizationName,
@@ -605,7 +622,10 @@ final class AutoAcceptedMember implements AutoAcceptedMember_orMutable {
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
     if (other is! AutoAcceptedMember) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
@@ -622,7 +642,8 @@ final class AutoAcceptedMember implements AutoAcceptedMember_orMutable {
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
   /// Serializer for `AutoAcceptedMember` instances.
-  static _skir.StructSerializer<AutoAcceptedMember, AutoAcceptedMember_mutable> get serializer {
+  static _skir.StructSerializer<AutoAcceptedMember, AutoAcceptedMember_mutable>
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
         "organization_id",
@@ -646,9 +667,7 @@ final class AutoAcceptedMember implements AutoAcceptedMember_orMutable {
         "organization_logo_url",
         "organizationLogoUrl",
         2,
-        _skir.Serializers.optional(
-          _skir.Serializers.string,
-        ),
+        _skir.Serializers.optional(_skir.Serializers.string),
         "",
         (it) => it.organizationLogoUrl,
         (it, v) => it.organizationLogoUrl = v,
@@ -702,15 +721,20 @@ final class AutoAcceptedMember_mutable implements AutoAcceptedMember_orMutable {
     if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
       return value;
     } else {
-      return this.organizationId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.organizationId = (value as _lib_kernel_v1_record_id.RecordId)
+          .toMutable();
     }
   }
 
   /// If the value of [roles] is already mutable, returns it as-is.
   /// Otherwise, makes a mutable copy, assigns it back to [roles] and returns it.
-  _core.List<_lib_organization_v1_role.OrganizationRole_orMutable> get mutableRoles {
+  _core.List<_lib_organization_v1_role.OrganizationRole_orMutable>
+  get mutableRoles {
     final value = this.roles;
-    if (value is _skir.internal__MutableList<_lib_organization_v1_role.OrganizationRole_orMutable>) {
+    if (value
+        is _skir.internal__MutableList<
+          _lib_organization_v1_role.OrganizationRole_orMutable
+        >) {
       return value;
     } else {
       return this.roles = _skir.internal__MutableList([...value]);
@@ -736,10 +760,12 @@ sealed class WatchOrganizationJoinRequestsRequest_orMutable {
 }
 
 /// Deeply immutable.
-final class WatchOrganizationJoinRequestsRequest implements WatchOrganizationJoinRequestsRequest_orMutable {
+final class WatchOrganizationJoinRequestsRequest
+    implements WatchOrganizationJoinRequestsRequest_orMutable {
   _skir.internal__UnrecognizedFields? _u;
 
-  factory WatchOrganizationJoinRequestsRequest() => WatchOrganizationJoinRequestsRequest._();
+  factory WatchOrganizationJoinRequestsRequest() =>
+      WatchOrganizationJoinRequestsRequest._();
 
   WatchOrganizationJoinRequestsRequest._();
 
@@ -748,7 +774,8 @@ final class WatchOrganizationJoinRequestsRequest implements WatchOrganizationJoi
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static WatchOrganizationJoinRequestsRequest_mutable mutable() => WatchOrganizationJoinRequestsRequest_mutable._();
+  static WatchOrganizationJoinRequestsRequest_mutable mutable() =>
+      WatchOrganizationJoinRequestsRequest_mutable._();
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
@@ -756,13 +783,17 @@ final class WatchOrganizationJoinRequestsRequest implements WatchOrganizationJoi
   WatchOrganizationJoinRequestsRequest toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  WatchOrganizationJoinRequestsRequest_mutable toMutable() => WatchOrganizationJoinRequestsRequest_mutable._();
+  WatchOrganizationJoinRequestsRequest_mutable toMutable() =>
+      WatchOrganizationJoinRequestsRequest_mutable._();
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
     if (other is! WatchOrganizationJoinRequestsRequest) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
@@ -774,7 +805,11 @@ final class WatchOrganizationJoinRequestsRequest implements WatchOrganizationJoi
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
   /// Serializer for `WatchOrganizationJoinRequestsRequest` instances.
-  static _skir.StructSerializer<WatchOrganizationJoinRequestsRequest, WatchOrganizationJoinRequestsRequest_mutable> get serializer {
+  static _skir.StructSerializer<
+    WatchOrganizationJoinRequestsRequest,
+    WatchOrganizationJoinRequestsRequest_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.finalize();
     }
@@ -782,25 +817,29 @@ final class WatchOrganizationJoinRequestsRequest implements WatchOrganizationJoi
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:WatchOrganizationJoinRequestsRequest",
+    recordId:
+        "organization/v1/join_request.skir:WatchOrganizationJoinRequestsRequest",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (WatchOrganizationJoinRequestsRequest_mutable it) => it.toFrozen(),
+    toFrozen: (WatchOrganizationJoinRequestsRequest_mutable it) =>
+        it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
 /// Mutable version of [WatchOrganizationJoinRequestsRequest].
-final class WatchOrganizationJoinRequestsRequest_mutable implements WatchOrganizationJoinRequestsRequest_orMutable {
+final class WatchOrganizationJoinRequestsRequest_mutable
+    implements WatchOrganizationJoinRequestsRequest_orMutable {
   _skir.internal__UnrecognizedFields? _u;
 
   WatchOrganizationJoinRequestsRequest_mutable._();
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  WatchOrganizationJoinRequestsRequest toFrozen() => WatchOrganizationJoinRequestsRequest().._u = this._u;
+  WatchOrganizationJoinRequestsRequest toFrozen() =>
+      WatchOrganizationJoinRequestsRequest().._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
@@ -822,26 +861,28 @@ final class WatchOrganizationJoinRequestsRequest_mutable implements WatchOrganiz
 sealed class WatchOrganizationJoinRequestsResponse {
   /// Constant indicating an unknown `WatchOrganizationJoinRequestsResponse`.
   /// Default value for fields of type `WatchOrganizationJoinRequestsResponse`.
-  static const WatchOrganizationJoinRequestsResponse unknown = WatchOrganizationJoinRequestsResponse_unknown._instance;
+  static const WatchOrganizationJoinRequestsResponse unknown =
+      WatchOrganizationJoinRequestsResponse_unknown._instance;
 
   /// Create a 'internal_error' variant wrapping around the given value.
   factory WatchOrganizationJoinRequestsResponse.wrapInternalError(
-    _lib_kernel_v1_errors.InternalError value
+    _lib_kernel_v1_errors.InternalError value,
   ) => WatchOrganizationJoinRequestsResponse_internalErrorWrapper._(value);
 
   /// Same as `wrapInternalError(_lib_kernel_v1_errors.InternalError(...))`.
-  factory WatchOrganizationJoinRequestsResponse.createInternalError() => WatchOrganizationJoinRequestsResponse.wrapInternalError(
-    _lib_kernel_v1_errors.InternalError()
-  );
+  factory WatchOrganizationJoinRequestsResponse.createInternalError() =>
+      WatchOrganizationJoinRequestsResponse.wrapInternalError(
+        _lib_kernel_v1_errors.InternalError(),
+      );
 
   /// Create a 'list' variant wrapping around the given value.
   factory WatchOrganizationJoinRequestsResponse.wrapList(
-    _core.Iterable<OrganizationJoinRequest> value
+    _core.Iterable<OrganizationJoinRequest> value,
   ) => WatchOrganizationJoinRequestsResponse_listWrapper._(value);
 
   /// Create a 'add' variant wrapping around the given value.
   factory WatchOrganizationJoinRequestsResponse.wrapAdd(
-    OrganizationJoinRequest value
+    OrganizationJoinRequest value,
   ) => WatchOrganizationJoinRequestsResponse_addWrapper._(value);
 
   /// Same as `wrapAdd(OrganizationJoinRequest(...))`.
@@ -862,12 +903,12 @@ sealed class WatchOrganizationJoinRequestsResponse {
       userAvatarUrl: userAvatarUrl,
       requestedAt: requestedAt,
       expiresAt: expiresAt,
-    )
+    ),
   );
 
   /// Create a 'remove' variant wrapping around the given value.
   factory WatchOrganizationJoinRequestsResponse.wrapRemove(
-    _lib_kernel_v1_record_id.RecordId value
+    _lib_kernel_v1_record_id.RecordId value,
   ) => WatchOrganizationJoinRequestsResponse_removeWrapper._(value);
 
   /// Same as `wrapRemove(_lib_kernel_v1_record_id.RecordId(...))`.
@@ -875,17 +916,15 @@ sealed class WatchOrganizationJoinRequestsResponse {
     required _core.String table,
     required _lib_kernel_v1_record_id.RecordIdKey key,
   }) => WatchOrganizationJoinRequestsResponse.wrapRemove(
-    _lib_kernel_v1_record_id.RecordId(
-      table: table,
-      key: key,
-    )
+    _lib_kernel_v1_record_id.RecordId(table: table, key: key),
   );
 
   /// Returns the kind of variant held by this WatchOrganizationJoinRequestsResponse.
   WatchOrganizationJoinRequestsResponse_kind get kind;
 
   /// Serializer for `WatchOrganizationJoinRequestsResponse` instances.
-  static _skir.EnumSerializer<WatchOrganizationJoinRequestsResponse> get serializer {
+  static _skir.EnumSerializer<WatchOrganizationJoinRequestsResponse>
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addWrapperVariant(
         1,
@@ -895,19 +934,20 @@ sealed class WatchOrganizationJoinRequestsResponse {
         "",
         WatchOrganizationJoinRequestsResponse_internalErrorWrapper._,
         (it) => it.value,
-        ordinal: WatchOrganizationJoinRequestsResponse_kind.internalErrorWrapper._ordinal,
+        ordinal: WatchOrganizationJoinRequestsResponse_kind
+            .internalErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         2,
         "list",
         "wrapList",
-        _skir.Serializers.iterable(
-          OrganizationJoinRequest.serializer,
-        ),
+        _skir.Serializers.iterable(OrganizationJoinRequest.serializer),
         "",
         WatchOrganizationJoinRequestsResponse_listWrapper._,
         (it) => it.value,
-        ordinal: WatchOrganizationJoinRequestsResponse_kind.listWrapper._ordinal,
+        ordinal:
+            WatchOrganizationJoinRequestsResponse_kind.listWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         3,
@@ -927,7 +967,8 @@ sealed class WatchOrganizationJoinRequestsResponse {
         "",
         WatchOrganizationJoinRequestsResponse_removeWrapper._,
         (it) => it.value,
-        ordinal: WatchOrganizationJoinRequestsResponse_kind.removeWrapper._ordinal,
+        ordinal:
+            WatchOrganizationJoinRequestsResponse_kind.removeWrapper._ordinal,
       );
       _serializerBuilder.finalize();
     }
@@ -935,12 +976,14 @@ sealed class WatchOrganizationJoinRequestsResponse {
   }
 
   static final _serializerBuilder = _skir.internal__EnumSerializerBuilder.create(
-    recordId: "organization/v1/join_request.skir:WatchOrganizationJoinRequestsResponse",
+    recordId:
+        "organization/v1/join_request.skir:WatchOrganizationJoinRequestsResponse",
     doc: "",
     unknownInstance: WatchOrganizationJoinRequestsResponse_unknown._instance,
     enumInstance: WatchOrganizationJoinRequestsResponse.unknown,
     getOrdinal: (it) => it.kind._ordinal,
-    wrapUnrecognized: WatchOrganizationJoinRequestsResponse_unknown._unrecognized,
+    wrapUnrecognized:
+        WatchOrganizationJoinRequestsResponse_unknown._unrecognized,
     getUnrecognized: (it) => it._u,
   );
 }
@@ -958,7 +1001,8 @@ enum WatchOrganizationJoinRequestsResponse_kind {
   const WatchOrganizationJoinRequestsResponse_kind(this._ordinal);
 }
 
-final class WatchOrganizationJoinRequestsResponse_unknown implements WatchOrganizationJoinRequestsResponse {
+final class WatchOrganizationJoinRequestsResponse_unknown
+    implements WatchOrganizationJoinRequestsResponse {
   static const _instance = WatchOrganizationJoinRequestsResponse_unknown._();
 
   final _skir.internal__UnrecognizedVariant? _u;
@@ -967,16 +1011,22 @@ final class WatchOrganizationJoinRequestsResponse_unknown implements WatchOrgani
   WatchOrganizationJoinRequestsResponse_unknown._unrecognized(this._u);
 
   @_core.override
-  WatchOrganizationJoinRequestsResponse_kind get kind => WatchOrganizationJoinRequestsResponse_kind.unknown;
+  WatchOrganizationJoinRequestsResponse_kind get kind =>
+      WatchOrganizationJoinRequestsResponse_kind.unknown;
   @_core.override
-  _core.bool operator ==(other) => other is WatchOrganizationJoinRequestsResponse_unknown;
+  _core.bool operator ==(other) =>
+      other is WatchOrganizationJoinRequestsResponse_unknown;
   @_core.override
   _core.int get hashCode => 8118964;
   @_core.override
-  _core.String toString() => _skir.internal__stringify(this, WatchOrganizationJoinRequestsResponse.serializer);
+  _core.String toString() => _skir.internal__stringify(
+    this,
+    WatchOrganizationJoinRequestsResponse.serializer,
+  );
 }
 
-sealed class _WatchOrganizationJoinRequestsResponse_wrapper implements WatchOrganizationJoinRequestsResponse {
+sealed class _WatchOrganizationJoinRequestsResponse_wrapper
+    implements WatchOrganizationJoinRequestsResponse {
   _core.dynamic get value;
 
   @_core.override
@@ -989,121 +1039,133 @@ sealed class _WatchOrganizationJoinRequestsResponse_wrapper implements WatchOrga
   _core.int get hashCode => (kind._ordinal * 31) ^ value.hashCode;
 
   @_core.override
-  _core.String toString() => _skir.internal__stringify(this, WatchOrganizationJoinRequestsResponse.serializer);
+  _core.String toString() => _skir.internal__stringify(
+    this,
+    WatchOrganizationJoinRequestsResponse.serializer,
+  );
 }
 
-final class WatchOrganizationJoinRequestsResponse_internalErrorWrapper extends _WatchOrganizationJoinRequestsResponse_wrapper {
+final class WatchOrganizationJoinRequestsResponse_internalErrorWrapper
+    extends _WatchOrganizationJoinRequestsResponse_wrapper {
   final _lib_kernel_v1_errors.InternalError value;
 
   WatchOrganizationJoinRequestsResponse_internalErrorWrapper._(this.value);
 
   @_core.override
-  WatchOrganizationJoinRequestsResponse_kind get kind => WatchOrganizationJoinRequestsResponse_kind.internalErrorWrapper;
+  WatchOrganizationJoinRequestsResponse_kind get kind =>
+      WatchOrganizationJoinRequestsResponse_kind.internalErrorWrapper;
 }
 
-final class WatchOrganizationJoinRequestsResponse_listWrapper extends _WatchOrganizationJoinRequestsResponse_wrapper {
+final class WatchOrganizationJoinRequestsResponse_listWrapper
+    extends _WatchOrganizationJoinRequestsResponse_wrapper {
   final _core.Iterable<OrganizationJoinRequest> value;
 
   WatchOrganizationJoinRequestsResponse_listWrapper._(this.value);
 
   @_core.override
-  WatchOrganizationJoinRequestsResponse_kind get kind => WatchOrganizationJoinRequestsResponse_kind.listWrapper;
+  WatchOrganizationJoinRequestsResponse_kind get kind =>
+      WatchOrganizationJoinRequestsResponse_kind.listWrapper;
 }
 
-final class WatchOrganizationJoinRequestsResponse_addWrapper extends _WatchOrganizationJoinRequestsResponse_wrapper {
+final class WatchOrganizationJoinRequestsResponse_addWrapper
+    extends _WatchOrganizationJoinRequestsResponse_wrapper {
   final OrganizationJoinRequest value;
 
   WatchOrganizationJoinRequestsResponse_addWrapper._(this.value);
 
   @_core.override
-  WatchOrganizationJoinRequestsResponse_kind get kind => WatchOrganizationJoinRequestsResponse_kind.addWrapper;
+  WatchOrganizationJoinRequestsResponse_kind get kind =>
+      WatchOrganizationJoinRequestsResponse_kind.addWrapper;
 }
 
-final class WatchOrganizationJoinRequestsResponse_removeWrapper extends _WatchOrganizationJoinRequestsResponse_wrapper {
+final class WatchOrganizationJoinRequestsResponse_removeWrapper
+    extends _WatchOrganizationJoinRequestsResponse_wrapper {
   final _lib_kernel_v1_record_id.RecordId value;
 
   WatchOrganizationJoinRequestsResponse_removeWrapper._(this.value);
 
   @_core.override
-  WatchOrganizationJoinRequestsResponse_kind get kind => WatchOrganizationJoinRequestsResponse_kind.removeWrapper;
+  WatchOrganizationJoinRequestsResponse_kind get kind =>
+      WatchOrganizationJoinRequestsResponse_kind.removeWrapper;
 }
 
 // -----------------------------------------------------------------------------
-// struct ApproveOrganizationJoinRequestRequest
+// struct ApprovedOrganizationJoinRequest
 // -----------------------------------------------------------------------------
 
-sealed class ApproveOrganizationJoinRequestRequest_orMutable {
+sealed class ApprovedOrganizationJoinRequest_orMutable {
   _lib_kernel_v1_record_id.RecordId_orMutable get requestId;
-  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get roleIds;
+  _lib_organization_v1_member.OrganizationMember_orMutable get member;
 
-  ApproveOrganizationJoinRequestRequest toFrozen();
+  ApprovedOrganizationJoinRequest toFrozen();
 }
 
 /// Deeply immutable.
-final class ApproveOrganizationJoinRequestRequest implements ApproveOrganizationJoinRequestRequest_orMutable {
+final class ApprovedOrganizationJoinRequest
+    implements ApprovedOrganizationJoinRequest_orMutable {
   @_core.override
   final _lib_kernel_v1_record_id.RecordId requestId;
   @_core.override
-  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> roleIds;
+  final _lib_organization_v1_member.OrganizationMember member;
   _skir.internal__UnrecognizedFields? _u;
 
-  factory ApproveOrganizationJoinRequestRequest({
+  factory ApprovedOrganizationJoinRequest({
     required _lib_kernel_v1_record_id.RecordId_orMutable requestId,
-    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds,
-  }) => ApproveOrganizationJoinRequestRequest._(
+    required _lib_organization_v1_member.OrganizationMember_orMutable member,
+  }) => ApprovedOrganizationJoinRequest._(
     requestId.toFrozen(),
-    _skir.internal__frozenMappedCopy(roleIds, (it) => it.toFrozen()),
+    member.toFrozen(),
   );
 
-  ApproveOrganizationJoinRequestRequest._(
-    this.requestId,
-    this.roleIds,
-  );
+  ApprovedOrganizationJoinRequest._(this.requestId, this.member);
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = ApproveOrganizationJoinRequestRequest._(
+  static final defaultInstance = ApprovedOrganizationJoinRequest._(
     _lib_kernel_v1_record_id.RecordId.defaultInstance,
-    _skir.KeyedIterable.empty,
+    _lib_organization_v1_member.OrganizationMember.defaultInstance,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static ApproveOrganizationJoinRequestRequest_mutable mutable() => ApproveOrganizationJoinRequestRequest_mutable._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-    _skir.KeyedIterable.empty,
-  );
+  static ApprovedOrganizationJoinRequest_mutable mutable() =>
+      ApprovedOrganizationJoinRequest_mutable._(
+        _lib_kernel_v1_record_id.RecordId.defaultInstance,
+        _lib_organization_v1_member.OrganizationMember.defaultInstance,
+      );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  ApproveOrganizationJoinRequestRequest toFrozen() => this;
+  ApprovedOrganizationJoinRequest toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  ApproveOrganizationJoinRequestRequest_mutable toMutable() => ApproveOrganizationJoinRequestRequest_mutable._(
-    this.requestId,
-    this.roleIds,
-  );
+  ApprovedOrganizationJoinRequest_mutable toMutable() =>
+      ApprovedOrganizationJoinRequest_mutable._(this.requestId, this.member);
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! ApproveOrganizationJoinRequestRequest) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    if (other is! ApprovedOrganizationJoinRequest) return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
-  _core.List get _equality_proxy => [
-    this.requestId,
-    this.roleIds,
-  ];
+  _core.List get _equality_proxy => [this.requestId, this.member];
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
-  /// Serializer for `ApproveOrganizationJoinRequestRequest` instances.
-  static _skir.StructSerializer<ApproveOrganizationJoinRequestRequest, ApproveOrganizationJoinRequestRequest_mutable> get serializer {
+  /// Serializer for `ApprovedOrganizationJoinRequest` instances.
+  static _skir.StructSerializer<
+    ApprovedOrganizationJoinRequest,
+    ApprovedOrganizationJoinRequest_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
         "request_id",
@@ -1115,13 +1177,199 @@ final class ApproveOrganizationJoinRequestRequest implements ApproveOrganization
         (it, v) => it.requestId = v,
       );
       _serializerBuilder.addField(
-        "role_ids",
-        "roleIds",
+        "member",
+        "member",
+        1,
+        _lib_organization_v1_member.OrganizationMember.serializer,
+        "",
+        (it) => it.member,
+        (it, v) => it.member = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId:
+        "organization/v1/join_request.skir:ApprovedOrganizationJoinRequest",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (ApprovedOrganizationJoinRequest_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [ApprovedOrganizationJoinRequest].
+final class ApprovedOrganizationJoinRequest_mutable
+    implements ApprovedOrganizationJoinRequest_orMutable {
+  _lib_kernel_v1_record_id.RecordId_orMutable requestId;
+  _lib_organization_v1_member.OrganizationMember_orMutable member;
+  _skir.internal__UnrecognizedFields? _u;
+
+  ApprovedOrganizationJoinRequest_mutable._(this.requestId, this.member);
+
+  /// If the value of [requestId] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [requestId] and returns it.
+  _lib_kernel_v1_record_id.RecordId_mutable get mutableRequestId {
+    final value = this.requestId;
+    if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
+      return value;
+    } else {
+      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId)
+          .toMutable();
+    }
+  }
+
+  /// If the value of [member] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [member] and returns it.
+  _lib_organization_v1_member.OrganizationMember_mutable get mutableMember {
+    final value = this.member;
+    if (value is _lib_organization_v1_member.OrganizationMember_mutable) {
+      return value;
+    } else {
+      return this.member =
+          (value as _lib_organization_v1_member.OrganizationMember).toMutable();
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  ApprovedOrganizationJoinRequest toFrozen() => ApprovedOrganizationJoinRequest(
+    requestId: this.requestId,
+    member: this.member,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct ApproveOrganizationJoinRequestsRequest
+// -----------------------------------------------------------------------------
+
+sealed class ApproveOrganizationJoinRequestsRequest_orMutable {
+  _core.String get operationId;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get requestIds;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get roleIds;
+
+  ApproveOrganizationJoinRequestsRequest toFrozen();
+}
+
+/// Deeply immutable.
+final class ApproveOrganizationJoinRequestsRequest
+    implements ApproveOrganizationJoinRequestsRequest_orMutable {
+  @_core.override
+  final _core.String operationId;
+  @_core.override
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> requestIds;
+  @_core.override
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> roleIds;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory ApproveOrganizationJoinRequestsRequest({
+    required _core.String operationId,
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    requestIds,
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    roleIds,
+  }) => ApproveOrganizationJoinRequestsRequest._(
+    operationId,
+    _skir.internal__frozenMappedCopy(requestIds, (it) => it.toFrozen()),
+    _skir.internal__frozenMappedCopy(roleIds, (it) => it.toFrozen()),
+  );
+
+  ApproveOrganizationJoinRequestsRequest._(
+    this.operationId,
+    this.requestIds,
+    this.roleIds,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = ApproveOrganizationJoinRequestsRequest._(
+    "",
+    _skir.KeyedIterable.empty,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static ApproveOrganizationJoinRequestsRequest_mutable mutable() =>
+      ApproveOrganizationJoinRequestsRequest_mutable._(
+        "",
+        _skir.KeyedIterable.empty,
+        _skir.KeyedIterable.empty,
+      );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  ApproveOrganizationJoinRequestsRequest toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  ApproveOrganizationJoinRequestsRequest_mutable toMutable() =>
+      ApproveOrganizationJoinRequestsRequest_mutable._(
+        this.operationId,
+        this.requestIds,
+        this.roleIds,
+      );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! ApproveOrganizationJoinRequestsRequest) return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.operationId,
+    this.requestIds,
+    this.roleIds,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `ApproveOrganizationJoinRequestsRequest` instances.
+  static _skir.StructSerializer<
+    ApproveOrganizationJoinRequestsRequest,
+    ApproveOrganizationJoinRequestsRequest_mutable
+  >
+  get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "operation_id",
+        "operationId",
+        0,
+        _skir.Serializers.string,
+        "",
+        (it) => it.operationId,
+        (it, v) => it.operationId = v,
+      );
+      _serializerBuilder.addField(
+        "request_ids",
+        "requestIds",
         1,
         _skir.Serializers.iterable(
           _lib_kernel_v1_record_id.RecordId.serializer,
         ),
         "",
+        (it) => it.requestIds,
+        (it, v) => it.requestIds = v,
+      );
+      _serializerBuilder.addField(
+        "role_ids",
+        "roleIds",
+        2,
+        _skir.Serializers.iterable(
+          _lib_kernel_v1_record_id.RecordId.serializer,
+        ),
+        "",
         (it) => it.roleIds,
         (it, v) => it.roleIds = v,
       );
@@ -1131,35 +1379,44 @@ final class ApproveOrganizationJoinRequestRequest implements ApproveOrganization
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:ApproveOrganizationJoinRequestRequest",
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsRequest",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (ApproveOrganizationJoinRequestRequest_mutable it) => it.toFrozen(),
+    toFrozen: (ApproveOrganizationJoinRequestsRequest_mutable it) =>
+        it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
-/// Mutable version of [ApproveOrganizationJoinRequestRequest].
-final class ApproveOrganizationJoinRequestRequest_mutable implements ApproveOrganizationJoinRequestRequest_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable requestId;
+/// Mutable version of [ApproveOrganizationJoinRequestsRequest].
+final class ApproveOrganizationJoinRequestsRequest_mutable
+    implements ApproveOrganizationJoinRequestsRequest_orMutable {
+  _core.String operationId;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> requestIds;
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  ApproveOrganizationJoinRequestRequest_mutable._(
-    this.requestId,
+  ApproveOrganizationJoinRequestsRequest_mutable._(
+    this.operationId,
+    this.requestIds,
     this.roleIds,
   );
 
-  /// If the value of [requestId] is already mutable, returns it as-is.
-  /// Otherwise, makes a mutable copy, assigns it back to [requestId] and returns it.
-  _lib_kernel_v1_record_id.RecordId_mutable get mutableRequestId {
-    final value = this.requestId;
-    if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
+  /// If the value of [requestIds] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [requestIds] and returns it.
+  _core.List<_lib_kernel_v1_record_id.RecordId_orMutable>
+  get mutableRequestIds {
+    final value = this.requestIds;
+    if (value
+        is _skir.internal__MutableList<
+          _lib_kernel_v1_record_id.RecordId_orMutable
+        >) {
       return value;
     } else {
-      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.requestIds = _skir.internal__MutableList([...value]);
     }
   }
 
@@ -1167,7 +1424,10 @@ final class ApproveOrganizationJoinRequestRequest_mutable implements ApproveOrga
   /// Otherwise, makes a mutable copy, assigns it back to [roleIds] and returns it.
   _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableRoleIds {
     final value = this.roleIds;
-    if (value is _skir.internal__MutableList<_lib_kernel_v1_record_id.RecordId_orMutable>) {
+    if (value
+        is _skir.internal__MutableList<
+          _lib_kernel_v1_record_id.RecordId_orMutable
+        >) {
       return value;
     } else {
       return this.roleIds = _skir.internal__MutableList([...value]);
@@ -1176,87 +1436,106 @@ final class ApproveOrganizationJoinRequestRequest_mutable implements ApproveOrga
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  ApproveOrganizationJoinRequestRequest toFrozen() => ApproveOrganizationJoinRequestRequest(
-    requestId: this.requestId,
-    roleIds: this.roleIds,
-  ).._u = this._u;
+  ApproveOrganizationJoinRequestsRequest toFrozen() =>
+      ApproveOrganizationJoinRequestsRequest(
+        operationId: this.operationId,
+        requestIds: this.requestIds,
+        roleIds: this.roleIds,
+      ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
-// struct ApproveOrganizationJoinRequestResponse.RequestNotFoundError
+// struct ApproveOrganizationJoinRequestsResponse.RequestNotFoundError
 // -----------------------------------------------------------------------------
 
-sealed class ApproveOrganizationJoinRequestResponse_RequestNotFoundError_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable get requestId;
+sealed class ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_orMutable {
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get requestIds;
 
-  ApproveOrganizationJoinRequestResponse_RequestNotFoundError toFrozen();
+  ApproveOrganizationJoinRequestsResponse_RequestNotFoundError toFrozen();
 }
 
 /// Deeply immutable.
-final class ApproveOrganizationJoinRequestResponse_RequestNotFoundError implements ApproveOrganizationJoinRequestResponse_RequestNotFoundError_orMutable {
+final class ApproveOrganizationJoinRequestsResponse_RequestNotFoundError
+    implements
+        ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_orMutable {
   @_core.override
-  final _lib_kernel_v1_record_id.RecordId requestId;
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> requestIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  factory ApproveOrganizationJoinRequestResponse_RequestNotFoundError({
-    required _lib_kernel_v1_record_id.RecordId_orMutable requestId,
-  }) => ApproveOrganizationJoinRequestResponse_RequestNotFoundError._(
-    requestId.toFrozen(),
+  factory ApproveOrganizationJoinRequestsResponse_RequestNotFoundError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    requestIds,
+  }) => ApproveOrganizationJoinRequestsResponse_RequestNotFoundError._(
+    _skir.internal__frozenMappedCopy(requestIds, (it) => it.toFrozen()),
   );
 
-  ApproveOrganizationJoinRequestResponse_RequestNotFoundError._(
-    this.requestId,
+  ApproveOrganizationJoinRequestsResponse_RequestNotFoundError._(
+    this.requestIds,
   );
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = ApproveOrganizationJoinRequestResponse_RequestNotFoundError._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-  );
+  static final defaultInstance =
+      ApproveOrganizationJoinRequestsResponse_RequestNotFoundError._(
+        _skir.KeyedIterable.empty,
+      );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static ApproveOrganizationJoinRequestResponse_RequestNotFoundError_mutable mutable() => ApproveOrganizationJoinRequestResponse_RequestNotFoundError_mutable._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-  );
+  static ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_mutable
+  mutable() =>
+      ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_mutable._(
+        _skir.KeyedIterable.empty,
+      );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  ApproveOrganizationJoinRequestResponse_RequestNotFoundError toFrozen() => this;
+  ApproveOrganizationJoinRequestsResponse_RequestNotFoundError toFrozen() =>
+      this;
 
   /// Returns a mutable shallow copy of this instance.
-  ApproveOrganizationJoinRequestResponse_RequestNotFoundError_mutable toMutable() => ApproveOrganizationJoinRequestResponse_RequestNotFoundError_mutable._(
-    this.requestId,
-  );
+  ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_mutable
+  toMutable() =>
+      ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_mutable._(
+        this.requestIds,
+      );
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! ApproveOrganizationJoinRequestResponse_RequestNotFoundError) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    if (other is! ApproveOrganizationJoinRequestsResponse_RequestNotFoundError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
-  _core.List get _equality_proxy => [
-    this.requestId,
-  ];
+  _core.List get _equality_proxy => [this.requestIds];
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
-  /// Serializer for `ApproveOrganizationJoinRequestResponse_RequestNotFoundError` instances.
-  static _skir.StructSerializer<ApproveOrganizationJoinRequestResponse_RequestNotFoundError, ApproveOrganizationJoinRequestResponse_RequestNotFoundError_mutable> get serializer {
+  /// Serializer for `ApproveOrganizationJoinRequestsResponse_RequestNotFoundError` instances.
+  static _skir.StructSerializer<
+    ApproveOrganizationJoinRequestsResponse_RequestNotFoundError,
+    ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
-        "request_id",
-        "requestId",
+        "request_ids",
+        "requestIds",
         0,
-        _lib_kernel_v1_record_id.RecordId.serializer,
+        _skir.Serializers.iterable(
+          _lib_kernel_v1_record_id.RecordId.serializer,
+        ),
         "",
-        (it) => it.requestId,
-        (it, v) => it.requestId = v,
+        (it) => it.requestIds,
+        (it, v) => it.requestIds = v,
       );
       _serializerBuilder.finalize();
     }
@@ -1264,109 +1543,133 @@ final class ApproveOrganizationJoinRequestResponse_RequestNotFoundError implemen
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:ApproveOrganizationJoinRequestResponse.RequestNotFoundError",
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse.RequestNotFoundError",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (ApproveOrganizationJoinRequestResponse_RequestNotFoundError_mutable it) => it.toFrozen(),
+    toFrozen:
+        (
+          ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_mutable
+          it,
+        ) => it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
-/// Mutable version of [ApproveOrganizationJoinRequestResponse_RequestNotFoundError].
-final class ApproveOrganizationJoinRequestResponse_RequestNotFoundError_mutable implements ApproveOrganizationJoinRequestResponse_RequestNotFoundError_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable requestId;
+/// Mutable version of [ApproveOrganizationJoinRequestsResponse_RequestNotFoundError].
+final class ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_mutable
+    implements
+        ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_orMutable {
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> requestIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  ApproveOrganizationJoinRequestResponse_RequestNotFoundError_mutable._(
-    this.requestId,
+  ApproveOrganizationJoinRequestsResponse_RequestNotFoundError_mutable._(
+    this.requestIds,
   );
 
-  /// If the value of [requestId] is already mutable, returns it as-is.
-  /// Otherwise, makes a mutable copy, assigns it back to [requestId] and returns it.
-  _lib_kernel_v1_record_id.RecordId_mutable get mutableRequestId {
-    final value = this.requestId;
-    if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
+  /// If the value of [requestIds] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [requestIds] and returns it.
+  _core.List<_lib_kernel_v1_record_id.RecordId_orMutable>
+  get mutableRequestIds {
+    final value = this.requestIds;
+    if (value
+        is _skir.internal__MutableList<
+          _lib_kernel_v1_record_id.RecordId_orMutable
+        >) {
       return value;
     } else {
-      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.requestIds = _skir.internal__MutableList([...value]);
     }
   }
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  ApproveOrganizationJoinRequestResponse_RequestNotFoundError toFrozen() => ApproveOrganizationJoinRequestResponse_RequestNotFoundError(
-    requestId: this.requestId,
-  ).._u = this._u;
+  ApproveOrganizationJoinRequestsResponse_RequestNotFoundError toFrozen() =>
+      ApproveOrganizationJoinRequestsResponse_RequestNotFoundError(
+        requestIds: this.requestIds,
+      ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
-// struct ApproveOrganizationJoinRequestResponse.RolesNotFoundError
+// struct ApproveOrganizationJoinRequestsResponse.RolesNotFoundError
 // -----------------------------------------------------------------------------
 
-sealed class ApproveOrganizationJoinRequestResponse_RolesNotFoundError_orMutable {
+sealed class ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_orMutable {
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get roleIds;
 
-  ApproveOrganizationJoinRequestResponse_RolesNotFoundError toFrozen();
+  ApproveOrganizationJoinRequestsResponse_RolesNotFoundError toFrozen();
 }
 
 /// Deeply immutable.
-final class ApproveOrganizationJoinRequestResponse_RolesNotFoundError implements ApproveOrganizationJoinRequestResponse_RolesNotFoundError_orMutable {
+final class ApproveOrganizationJoinRequestsResponse_RolesNotFoundError
+    implements
+        ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_orMutable {
   @_core.override
   final _core.Iterable<_lib_kernel_v1_record_id.RecordId> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  factory ApproveOrganizationJoinRequestResponse_RolesNotFoundError({
-    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds,
-  }) => ApproveOrganizationJoinRequestResponse_RolesNotFoundError._(
+  factory ApproveOrganizationJoinRequestsResponse_RolesNotFoundError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    roleIds,
+  }) => ApproveOrganizationJoinRequestsResponse_RolesNotFoundError._(
     _skir.internal__frozenMappedCopy(roleIds, (it) => it.toFrozen()),
   );
 
-  ApproveOrganizationJoinRequestResponse_RolesNotFoundError._(
-    this.roleIds,
-  );
+  ApproveOrganizationJoinRequestsResponse_RolesNotFoundError._(this.roleIds);
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = ApproveOrganizationJoinRequestResponse_RolesNotFoundError._(
-    _skir.KeyedIterable.empty,
-  );
+  static final defaultInstance =
+      ApproveOrganizationJoinRequestsResponse_RolesNotFoundError._(
+        _skir.KeyedIterable.empty,
+      );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable mutable() => ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable._(
-    _skir.KeyedIterable.empty,
-  );
+  static ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_mutable
+  mutable() =>
+      ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_mutable._(
+        _skir.KeyedIterable.empty,
+      );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  ApproveOrganizationJoinRequestResponse_RolesNotFoundError toFrozen() => this;
+  ApproveOrganizationJoinRequestsResponse_RolesNotFoundError toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable toMutable() => ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable._(
-    this.roleIds,
-  );
+  ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_mutable
+  toMutable() =>
+      ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_mutable._(
+        this.roleIds,
+      );
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! ApproveOrganizationJoinRequestResponse_RolesNotFoundError) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    if (other is! ApproveOrganizationJoinRequestsResponse_RolesNotFoundError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
-  _core.List get _equality_proxy => [
-    this.roleIds,
-  ];
+  _core.List get _equality_proxy => [this.roleIds];
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
-  /// Serializer for `ApproveOrganizationJoinRequestResponse_RolesNotFoundError` instances.
-  static _skir.StructSerializer<ApproveOrganizationJoinRequestResponse_RolesNotFoundError, ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable> get serializer {
+  /// Serializer for `ApproveOrganizationJoinRequestsResponse_RolesNotFoundError` instances.
+  static _skir.StructSerializer<
+    ApproveOrganizationJoinRequestsResponse_RolesNotFoundError,
+    ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
         "role_ids",
@@ -1385,22 +1688,28 @@ final class ApproveOrganizationJoinRequestResponse_RolesNotFoundError implements
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:ApproveOrganizationJoinRequestResponse.RolesNotFoundError",
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse.RolesNotFoundError",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable it) => it.toFrozen(),
+    toFrozen:
+        (
+          ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_mutable it,
+        ) => it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
-/// Mutable version of [ApproveOrganizationJoinRequestResponse_RolesNotFoundError].
-final class ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable implements ApproveOrganizationJoinRequestResponse_RolesNotFoundError_orMutable {
+/// Mutable version of [ApproveOrganizationJoinRequestsResponse_RolesNotFoundError].
+final class ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_mutable
+    implements
+        ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_orMutable {
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable._(
+  ApproveOrganizationJoinRequestsResponse_RolesNotFoundError_mutable._(
     this.roleIds,
   );
 
@@ -1408,7 +1717,10 @@ final class ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable im
   /// Otherwise, makes a mutable copy, assigns it back to [roleIds] and returns it.
   _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableRoleIds {
     final value = this.roleIds;
-    if (value is _skir.internal__MutableList<_lib_kernel_v1_record_id.RecordId_orMutable>) {
+    if (value
+        is _skir.internal__MutableList<
+          _lib_kernel_v1_record_id.RecordId_orMutable
+        >) {
       return value;
     } else {
       return this.roleIds = _skir.internal__MutableList([...value]);
@@ -1417,77 +1729,94 @@ final class ApproveOrganizationJoinRequestResponse_RolesNotFoundError_mutable im
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  ApproveOrganizationJoinRequestResponse_RolesNotFoundError toFrozen() => ApproveOrganizationJoinRequestResponse_RolesNotFoundError(
-    roleIds: this.roleIds,
-  ).._u = this._u;
+  ApproveOrganizationJoinRequestsResponse_RolesNotFoundError toFrozen() =>
+      ApproveOrganizationJoinRequestsResponse_RolesNotFoundError(
+        roleIds: this.roleIds,
+      ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
-// struct ApproveOrganizationJoinRequestResponse.RolesNotAssignableError
+// struct ApproveOrganizationJoinRequestsResponse.RolesNotAssignableError
 // -----------------------------------------------------------------------------
 
-sealed class ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_orMutable {
+sealed class ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_orMutable {
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get roleIds;
 
-  ApproveOrganizationJoinRequestResponse_RolesNotAssignableError toFrozen();
+  ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError toFrozen();
 }
 
 /// Deeply immutable.
-final class ApproveOrganizationJoinRequestResponse_RolesNotAssignableError implements ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_orMutable {
+final class ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError
+    implements
+        ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_orMutable {
   @_core.override
   final _core.Iterable<_lib_kernel_v1_record_id.RecordId> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  factory ApproveOrganizationJoinRequestResponse_RolesNotAssignableError({
-    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds,
-  }) => ApproveOrganizationJoinRequestResponse_RolesNotAssignableError._(
+  factory ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    roleIds,
+  }) => ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError._(
     _skir.internal__frozenMappedCopy(roleIds, (it) => it.toFrozen()),
   );
 
-  ApproveOrganizationJoinRequestResponse_RolesNotAssignableError._(
+  ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError._(
     this.roleIds,
   );
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = ApproveOrganizationJoinRequestResponse_RolesNotAssignableError._(
-    _skir.KeyedIterable.empty,
-  );
+  static final defaultInstance =
+      ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError._(
+        _skir.KeyedIterable.empty,
+      );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutable mutable() => ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutable._(
-    _skir.KeyedIterable.empty,
-  );
+  static ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_mutable
+  mutable() =>
+      ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_mutable._(
+        _skir.KeyedIterable.empty,
+      );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  ApproveOrganizationJoinRequestResponse_RolesNotAssignableError toFrozen() => this;
+  ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError toFrozen() =>
+      this;
 
   /// Returns a mutable shallow copy of this instance.
-  ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutable toMutable() => ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutable._(
-    this.roleIds,
-  );
+  ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_mutable
+  toMutable() =>
+      ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_mutable._(
+        this.roleIds,
+      );
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! ApproveOrganizationJoinRequestResponse_RolesNotAssignableError) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    if (other
+        is! ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
-  _core.List get _equality_proxy => [
-    this.roleIds,
-  ];
+  _core.List get _equality_proxy => [this.roleIds];
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
-  /// Serializer for `ApproveOrganizationJoinRequestResponse_RolesNotAssignableError` instances.
-  static _skir.StructSerializer<ApproveOrganizationJoinRequestResponse_RolesNotAssignableError, ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutable> get serializer {
+  /// Serializer for `ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError` instances.
+  static _skir.StructSerializer<
+    ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError,
+    ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
         "role_ids",
@@ -1506,22 +1835,29 @@ final class ApproveOrganizationJoinRequestResponse_RolesNotAssignableError imple
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:ApproveOrganizationJoinRequestResponse.RolesNotAssignableError",
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse.RolesNotAssignableError",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutable it) => it.toFrozen(),
+    toFrozen:
+        (
+          ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_mutable
+          it,
+        ) => it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
-/// Mutable version of [ApproveOrganizationJoinRequestResponse_RolesNotAssignableError].
-final class ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutable implements ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_orMutable {
+/// Mutable version of [ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError].
+final class ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_mutable
+    implements
+        ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_orMutable {
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutable._(
+  ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError_mutable._(
     this.roleIds,
   );
 
@@ -1529,7 +1865,10 @@ final class ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutab
   /// Otherwise, makes a mutable copy, assigns it back to [roleIds] and returns it.
   _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableRoleIds {
     final value = this.roleIds;
-    if (value is _skir.internal__MutableList<_lib_kernel_v1_record_id.RecordId_orMutable>) {
+    if (value
+        is _skir.internal__MutableList<
+          _lib_kernel_v1_record_id.RecordId_orMutable
+        >) {
       return value;
     } else {
       return this.roleIds = _skir.internal__MutableList([...value]);
@@ -1538,47 +1877,60 @@ final class ApproveOrganizationJoinRequestResponse_RolesNotAssignableError_mutab
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  ApproveOrganizationJoinRequestResponse_RolesNotAssignableError toFrozen() => ApproveOrganizationJoinRequestResponse_RolesNotAssignableError(
-    roleIds: this.roleIds,
-  ).._u = this._u;
+  ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError toFrozen() =>
+      ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError(
+        roleIds: this.roleIds,
+      ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
-// struct ApproveOrganizationJoinRequestResponse.RolesRequiredError
+// struct ApproveOrganizationJoinRequestsResponse.RolesRequiredError
 // -----------------------------------------------------------------------------
 
-sealed class ApproveOrganizationJoinRequestResponse_RolesRequiredError_orMutable {
-  ApproveOrganizationJoinRequestResponse_RolesRequiredError toFrozen();
+sealed class ApproveOrganizationJoinRequestsResponse_RolesRequiredError_orMutable {
+  ApproveOrganizationJoinRequestsResponse_RolesRequiredError toFrozen();
 }
 
 /// Deeply immutable.
-final class ApproveOrganizationJoinRequestResponse_RolesRequiredError implements ApproveOrganizationJoinRequestResponse_RolesRequiredError_orMutable {
+final class ApproveOrganizationJoinRequestsResponse_RolesRequiredError
+    implements
+        ApproveOrganizationJoinRequestsResponse_RolesRequiredError_orMutable {
   _skir.internal__UnrecognizedFields? _u;
 
-  factory ApproveOrganizationJoinRequestResponse_RolesRequiredError() => ApproveOrganizationJoinRequestResponse_RolesRequiredError._();
+  factory ApproveOrganizationJoinRequestsResponse_RolesRequiredError() =>
+      ApproveOrganizationJoinRequestsResponse_RolesRequiredError._();
 
-  ApproveOrganizationJoinRequestResponse_RolesRequiredError._();
+  ApproveOrganizationJoinRequestsResponse_RolesRequiredError._();
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = ApproveOrganizationJoinRequestResponse_RolesRequiredError._();
+  static final defaultInstance =
+      ApproveOrganizationJoinRequestsResponse_RolesRequiredError._();
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static ApproveOrganizationJoinRequestResponse_RolesRequiredError_mutable mutable() => ApproveOrganizationJoinRequestResponse_RolesRequiredError_mutable._();
+  static ApproveOrganizationJoinRequestsResponse_RolesRequiredError_mutable
+  mutable() =>
+      ApproveOrganizationJoinRequestsResponse_RolesRequiredError_mutable._();
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  ApproveOrganizationJoinRequestResponse_RolesRequiredError toFrozen() => this;
+  ApproveOrganizationJoinRequestsResponse_RolesRequiredError toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  ApproveOrganizationJoinRequestResponse_RolesRequiredError_mutable toMutable() => ApproveOrganizationJoinRequestResponse_RolesRequiredError_mutable._();
+  ApproveOrganizationJoinRequestsResponse_RolesRequiredError_mutable
+  toMutable() =>
+      ApproveOrganizationJoinRequestsResponse_RolesRequiredError_mutable._();
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! ApproveOrganizationJoinRequestResponse_RolesRequiredError) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    if (other is! ApproveOrganizationJoinRequestsResponse_RolesRequiredError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
@@ -1589,8 +1941,12 @@ final class ApproveOrganizationJoinRequestResponse_RolesRequiredError implements
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
-  /// Serializer for `ApproveOrganizationJoinRequestResponse_RolesRequiredError` instances.
-  static _skir.StructSerializer<ApproveOrganizationJoinRequestResponse_RolesRequiredError, ApproveOrganizationJoinRequestResponse_RolesRequiredError_mutable> get serializer {
+  /// Serializer for `ApproveOrganizationJoinRequestsResponse_RolesRequiredError` instances.
+  static _skir.StructSerializer<
+    ApproveOrganizationJoinRequestsResponse_RolesRequiredError,
+    ApproveOrganizationJoinRequestsResponse_RolesRequiredError_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.finalize();
     }
@@ -1598,102 +1954,128 @@ final class ApproveOrganizationJoinRequestResponse_RolesRequiredError implements
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:ApproveOrganizationJoinRequestResponse.RolesRequiredError",
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse.RolesRequiredError",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (ApproveOrganizationJoinRequestResponse_RolesRequiredError_mutable it) => it.toFrozen(),
+    toFrozen:
+        (
+          ApproveOrganizationJoinRequestsResponse_RolesRequiredError_mutable it,
+        ) => it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
-/// Mutable version of [ApproveOrganizationJoinRequestResponse_RolesRequiredError].
-final class ApproveOrganizationJoinRequestResponse_RolesRequiredError_mutable implements ApproveOrganizationJoinRequestResponse_RolesRequiredError_orMutable {
+/// Mutable version of [ApproveOrganizationJoinRequestsResponse_RolesRequiredError].
+final class ApproveOrganizationJoinRequestsResponse_RolesRequiredError_mutable
+    implements
+        ApproveOrganizationJoinRequestsResponse_RolesRequiredError_orMutable {
   _skir.internal__UnrecognizedFields? _u;
 
-  ApproveOrganizationJoinRequestResponse_RolesRequiredError_mutable._();
+  ApproveOrganizationJoinRequestsResponse_RolesRequiredError_mutable._();
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  ApproveOrganizationJoinRequestResponse_RolesRequiredError toFrozen() => ApproveOrganizationJoinRequestResponse_RolesRequiredError().._u = this._u;
+  ApproveOrganizationJoinRequestsResponse_RolesRequiredError toFrozen() =>
+      ApproveOrganizationJoinRequestsResponse_RolesRequiredError()
+        .._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
-// struct ApproveOrganizationJoinRequestResponse.UserAlreadyMemberError
+// struct ApproveOrganizationJoinRequestsResponse.UserAlreadyMemberError
 // -----------------------------------------------------------------------------
 
-sealed class ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable get userId;
+sealed class ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_orMutable {
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get userIds;
 
-  ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError toFrozen();
+  ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError toFrozen();
 }
 
 /// Deeply immutable.
-final class ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError implements ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_orMutable {
+final class ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError
+    implements
+        ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_orMutable {
   @_core.override
-  final _lib_kernel_v1_record_id.RecordId userId;
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> userIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  factory ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
-  }) => ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError._(
-    userId.toFrozen(),
+  factory ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    userIds,
+  }) => ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError._(
+    _skir.internal__frozenMappedCopy(userIds, (it) => it.toFrozen()),
   );
 
-  ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError._(
-    this.userId,
+  ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError._(
+    this.userIds,
   );
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-  );
+  static final defaultInstance =
+      ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError._(
+        _skir.KeyedIterable.empty,
+      );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_mutable mutable() => ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_mutable._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-  );
+  static ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_mutable
+  mutable() =>
+      ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_mutable._(
+        _skir.KeyedIterable.empty,
+      );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError toFrozen() => this;
+  ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError toFrozen() =>
+      this;
 
   /// Returns a mutable shallow copy of this instance.
-  ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_mutable toMutable() => ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_mutable._(
-    this.userId,
-  );
+  ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_mutable
+  toMutable() =>
+      ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_mutable._(
+        this.userIds,
+      );
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    if (other
+        is! ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
-  _core.List get _equality_proxy => [
-    this.userId,
-  ];
+  _core.List get _equality_proxy => [this.userIds];
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
-  /// Serializer for `ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError` instances.
-  static _skir.StructSerializer<ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError, ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_mutable> get serializer {
+  /// Serializer for `ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError` instances.
+  static _skir.StructSerializer<
+    ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError,
+    ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
-        "user_id",
-        "userId",
+        "user_ids",
+        "userIds",
         0,
-        _lib_kernel_v1_record_id.RecordId.serializer,
+        _skir.Serializers.iterable(
+          _lib_kernel_v1_record_id.RecordId.serializer,
+        ),
         "",
-        (it) => it.userId,
-        (it, v) => it.userId = v,
+        (it) => it.userIds,
+        (it, v) => it.userIds = v,
       );
       _serializerBuilder.finalize();
     }
@@ -1701,189 +2083,437 @@ final class ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError implem
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:ApproveOrganizationJoinRequestResponse.UserAlreadyMemberError",
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse.UserAlreadyMemberError",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_mutable it) => it.toFrozen(),
+    toFrozen:
+        (
+          ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_mutable
+          it,
+        ) => it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
-/// Mutable version of [ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError].
-final class ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_mutable implements ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable userId;
+/// Mutable version of [ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError].
+final class ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_mutable
+    implements
+        ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_orMutable {
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError_mutable._(
-    this.userId,
+  ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError_mutable._(
+    this.userIds,
   );
 
-  /// If the value of [userId] is already mutable, returns it as-is.
-  /// Otherwise, makes a mutable copy, assigns it back to [userId] and returns it.
-  _lib_kernel_v1_record_id.RecordId_mutable get mutableUserId {
-    final value = this.userId;
-    if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
+  /// If the value of [userIds] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [userIds] and returns it.
+  _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableUserIds {
+    final value = this.userIds;
+    if (value
+        is _skir.internal__MutableList<
+          _lib_kernel_v1_record_id.RecordId_orMutable
+        >) {
       return value;
     } else {
-      return this.userId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.userIds = _skir.internal__MutableList([...value]);
     }
   }
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError toFrozen() => ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError(
-    userId: this.userId,
-  ).._u = this._u;
+  ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError toFrozen() =>
+      ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError(
+        userIds: this.userIds,
+      ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
-// enum ApproveOrganizationJoinRequestResponse
+// struct ApproveOrganizationJoinRequestsResponse.OperationIdentityReusedError
+// -----------------------------------------------------------------------------
+
+sealed class ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_orMutable {
+  ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError
+  toFrozen();
+}
+
+/// Deeply immutable.
+final class ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError
+    implements
+        ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError() =>
+      ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError._();
+
+  ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance =
+      ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_mutable
+  mutable() =>
+      ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError
+  toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_mutable
+  toMutable() =>
+      ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other
+        is! ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError` instances.
+  static _skir.StructSerializer<
+    ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError,
+    ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_mutable
+  >
+  get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse.OperationIdentityReusedError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen:
+        (
+          ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_mutable
+          it,
+        ) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError].
+final class ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_mutable
+    implements
+        ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError
+  toFrozen() =>
+      ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError()
+        .._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct ApproveOrganizationJoinRequestsResponse.InvalidSelectionError
+// -----------------------------------------------------------------------------
+
+sealed class ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_orMutable {
+  ApproveOrganizationJoinRequestsResponse_InvalidSelectionError toFrozen();
+}
+
+/// Deeply immutable.
+final class ApproveOrganizationJoinRequestsResponse_InvalidSelectionError
+    implements
+        ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory ApproveOrganizationJoinRequestsResponse_InvalidSelectionError() =>
+      ApproveOrganizationJoinRequestsResponse_InvalidSelectionError._();
+
+  ApproveOrganizationJoinRequestsResponse_InvalidSelectionError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance =
+      ApproveOrganizationJoinRequestsResponse_InvalidSelectionError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_mutable
+  mutable() =>
+      ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  ApproveOrganizationJoinRequestsResponse_InvalidSelectionError toFrozen() =>
+      this;
+
+  /// Returns a mutable shallow copy of this instance.
+  ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_mutable
+  toMutable() =>
+      ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! ApproveOrganizationJoinRequestsResponse_InvalidSelectionError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `ApproveOrganizationJoinRequestsResponse_InvalidSelectionError` instances.
+  static _skir.StructSerializer<
+    ApproveOrganizationJoinRequestsResponse_InvalidSelectionError,
+    ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_mutable
+  >
+  get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse.InvalidSelectionError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen:
+        (
+          ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_mutable
+          it,
+        ) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [ApproveOrganizationJoinRequestsResponse_InvalidSelectionError].
+final class ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_mutable
+    implements
+        ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  ApproveOrganizationJoinRequestsResponse_InvalidSelectionError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  ApproveOrganizationJoinRequestsResponse_InvalidSelectionError toFrozen() =>
+      ApproveOrganizationJoinRequestsResponse_InvalidSelectionError()
+        .._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// enum ApproveOrganizationJoinRequestsResponse
 // -----------------------------------------------------------------------------
 
 /// To switch on the variants:
 ///   ```
 ///   switch (e) {
-///     case ApproveOrganizationJoinRequestResponse_unknown(): { ... }
-///     case ApproveOrganizationJoinRequestResponse_internalError(:var value): { ... }
-///     case ApproveOrganizationJoinRequestResponse_success(:var value): { ... }
-///     case ApproveOrganizationJoinRequestResponse_requestNotFoundError(:var value): { ... }
-///     case ApproveOrganizationJoinRequestResponse_rolesNotFoundError(:var value): { ... }
-///     case ApproveOrganizationJoinRequestResponse_rolesNotAssignableError(:var value): { ... }
-///     case ApproveOrganizationJoinRequestResponse_rolesRequiredError(:var value): { ... }
-///     case ApproveOrganizationJoinRequestResponse_userAlreadyMemberError(:var value): { ... }
-///     case ApproveOrganizationJoinRequestResponse_invalidRecordIdError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_unknown(): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_internalError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_success(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_requestNotFoundError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_rolesNotFoundError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_rolesNotAssignableError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_rolesRequiredError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_userAlreadyMemberError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_operationIdentityReusedError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_invalidSelectionError(:var value): { ... }
+///     case ApproveOrganizationJoinRequestsResponse_invalidRecordIdError(:var value): { ... }
 ///   }
 ///   ```
 ///
 /// Deeply immutable.
-sealed class ApproveOrganizationJoinRequestResponse {
-  /// Constant indicating an unknown `ApproveOrganizationJoinRequestResponse`.
-  /// Default value for fields of type `ApproveOrganizationJoinRequestResponse`.
-  static const ApproveOrganizationJoinRequestResponse unknown = ApproveOrganizationJoinRequestResponse_unknown._instance;
+sealed class ApproveOrganizationJoinRequestsResponse {
+  /// Constant indicating an unknown `ApproveOrganizationJoinRequestsResponse`.
+  /// Default value for fields of type `ApproveOrganizationJoinRequestsResponse`.
+  static const ApproveOrganizationJoinRequestsResponse unknown =
+      ApproveOrganizationJoinRequestsResponse_unknown._instance;
 
   /// Create a 'internal_error' variant wrapping around the given value.
-  factory ApproveOrganizationJoinRequestResponse.wrapInternalError(
-    _lib_kernel_v1_errors.InternalError value
-  ) => ApproveOrganizationJoinRequestResponse_internalErrorWrapper._(value);
+  factory ApproveOrganizationJoinRequestsResponse.wrapInternalError(
+    _lib_kernel_v1_errors.InternalError value,
+  ) => ApproveOrganizationJoinRequestsResponse_internalErrorWrapper._(value);
 
   /// Same as `wrapInternalError(_lib_kernel_v1_errors.InternalError(...))`.
-  factory ApproveOrganizationJoinRequestResponse.createInternalError() => ApproveOrganizationJoinRequestResponse.wrapInternalError(
-    _lib_kernel_v1_errors.InternalError()
-  );
+  factory ApproveOrganizationJoinRequestsResponse.createInternalError() =>
+      ApproveOrganizationJoinRequestsResponse.wrapInternalError(
+        _lib_kernel_v1_errors.InternalError(),
+      );
 
   /// Create a 'success' variant wrapping around the given value.
-  factory ApproveOrganizationJoinRequestResponse.wrapSuccess(
-    _lib_organization_v1_member.OrganizationMember value
-  ) => ApproveOrganizationJoinRequestResponse_successWrapper._(value);
-
-  /// Same as `wrapSuccess(_lib_organization_v1_member.OrganizationMember(...))`.
-  factory ApproveOrganizationJoinRequestResponse.createSuccess({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
-    required _core.String? name,
-    required _core.String? email,
-    required _core.String? avatarUrl,
-    required _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable> roles,
-    required _core.DateTime joinedAt,
-  }) => ApproveOrganizationJoinRequestResponse.wrapSuccess(
-    _lib_organization_v1_member.OrganizationMember(
-      userId: userId,
-      name: name,
-      email: email,
-      avatarUrl: avatarUrl,
-      roles: roles,
-      joinedAt: joinedAt,
-    )
-  );
+  factory ApproveOrganizationJoinRequestsResponse.wrapSuccess(
+    _core.Iterable<ApprovedOrganizationJoinRequest> value,
+  ) => ApproveOrganizationJoinRequestsResponse_successWrapper._(value);
 
   /// Create a 'request_not_found_error' variant wrapping around the given value.
-  factory ApproveOrganizationJoinRequestResponse.wrapRequestNotFoundError(
-    ApproveOrganizationJoinRequestResponse_RequestNotFoundError value
-  ) => ApproveOrganizationJoinRequestResponse_requestNotFoundErrorWrapper._(value);
+  factory ApproveOrganizationJoinRequestsResponse.wrapRequestNotFoundError(
+    ApproveOrganizationJoinRequestsResponse_RequestNotFoundError value,
+  ) => ApproveOrganizationJoinRequestsResponse_requestNotFoundErrorWrapper._(
+    value,
+  );
 
-  /// Same as `wrapRequestNotFoundError(ApproveOrganizationJoinRequestResponse_RequestNotFoundError(...))`.
-  factory ApproveOrganizationJoinRequestResponse.createRequestNotFoundError({
-    required _lib_kernel_v1_record_id.RecordId_orMutable requestId,
-  }) => ApproveOrganizationJoinRequestResponse.wrapRequestNotFoundError(
-    ApproveOrganizationJoinRequestResponse_RequestNotFoundError(
-      requestId: requestId,
-    )
+  /// Same as `wrapRequestNotFoundError(ApproveOrganizationJoinRequestsResponse_RequestNotFoundError(...))`.
+  factory ApproveOrganizationJoinRequestsResponse.createRequestNotFoundError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    requestIds,
+  }) => ApproveOrganizationJoinRequestsResponse.wrapRequestNotFoundError(
+    ApproveOrganizationJoinRequestsResponse_RequestNotFoundError(
+      requestIds: requestIds,
+    ),
   );
 
   /// Create a 'roles_not_found_error' variant wrapping around the given value.
-  factory ApproveOrganizationJoinRequestResponse.wrapRolesNotFoundError(
-    ApproveOrganizationJoinRequestResponse_RolesNotFoundError value
-  ) => ApproveOrganizationJoinRequestResponse_rolesNotFoundErrorWrapper._(value);
+  factory ApproveOrganizationJoinRequestsResponse.wrapRolesNotFoundError(
+    ApproveOrganizationJoinRequestsResponse_RolesNotFoundError value,
+  ) => ApproveOrganizationJoinRequestsResponse_rolesNotFoundErrorWrapper._(
+    value,
+  );
 
-  /// Same as `wrapRolesNotFoundError(ApproveOrganizationJoinRequestResponse_RolesNotFoundError(...))`.
-  factory ApproveOrganizationJoinRequestResponse.createRolesNotFoundError({
-    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds,
-  }) => ApproveOrganizationJoinRequestResponse.wrapRolesNotFoundError(
-    ApproveOrganizationJoinRequestResponse_RolesNotFoundError(
+  /// Same as `wrapRolesNotFoundError(ApproveOrganizationJoinRequestsResponse_RolesNotFoundError(...))`.
+  factory ApproveOrganizationJoinRequestsResponse.createRolesNotFoundError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    roleIds,
+  }) => ApproveOrganizationJoinRequestsResponse.wrapRolesNotFoundError(
+    ApproveOrganizationJoinRequestsResponse_RolesNotFoundError(
       roleIds: roleIds,
-    )
+    ),
   );
 
   /// Create a 'roles_not_assignable_error' variant wrapping around the given value.
-  factory ApproveOrganizationJoinRequestResponse.wrapRolesNotAssignableError(
-    ApproveOrganizationJoinRequestResponse_RolesNotAssignableError value
-  ) => ApproveOrganizationJoinRequestResponse_rolesNotAssignableErrorWrapper._(value);
+  factory ApproveOrganizationJoinRequestsResponse.wrapRolesNotAssignableError(
+    ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError value,
+  ) => ApproveOrganizationJoinRequestsResponse_rolesNotAssignableErrorWrapper._(
+    value,
+  );
 
-  /// Same as `wrapRolesNotAssignableError(ApproveOrganizationJoinRequestResponse_RolesNotAssignableError(...))`.
-  factory ApproveOrganizationJoinRequestResponse.createRolesNotAssignableError({
-    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds,
-  }) => ApproveOrganizationJoinRequestResponse.wrapRolesNotAssignableError(
-    ApproveOrganizationJoinRequestResponse_RolesNotAssignableError(
+  /// Same as `wrapRolesNotAssignableError(ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError(...))`.
+  factory ApproveOrganizationJoinRequestsResponse.createRolesNotAssignableError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    roleIds,
+  }) => ApproveOrganizationJoinRequestsResponse.wrapRolesNotAssignableError(
+    ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError(
       roleIds: roleIds,
-    )
+    ),
   );
 
   /// Create a 'roles_required_error' variant wrapping around the given value.
-  factory ApproveOrganizationJoinRequestResponse.wrapRolesRequiredError(
-    ApproveOrganizationJoinRequestResponse_RolesRequiredError value
-  ) => ApproveOrganizationJoinRequestResponse_rolesRequiredErrorWrapper._(value);
-
-  /// Same as `wrapRolesRequiredError(ApproveOrganizationJoinRequestResponse_RolesRequiredError(...))`.
-  factory ApproveOrganizationJoinRequestResponse.createRolesRequiredError() => ApproveOrganizationJoinRequestResponse.wrapRolesRequiredError(
-    ApproveOrganizationJoinRequestResponse_RolesRequiredError()
+  factory ApproveOrganizationJoinRequestsResponse.wrapRolesRequiredError(
+    ApproveOrganizationJoinRequestsResponse_RolesRequiredError value,
+  ) => ApproveOrganizationJoinRequestsResponse_rolesRequiredErrorWrapper._(
+    value,
   );
+
+  /// Same as `wrapRolesRequiredError(ApproveOrganizationJoinRequestsResponse_RolesRequiredError(...))`.
+  factory ApproveOrganizationJoinRequestsResponse.createRolesRequiredError() =>
+      ApproveOrganizationJoinRequestsResponse.wrapRolesRequiredError(
+        ApproveOrganizationJoinRequestsResponse_RolesRequiredError(),
+      );
 
   /// Create a 'user_already_member_error' variant wrapping around the given value.
-  factory ApproveOrganizationJoinRequestResponse.wrapUserAlreadyMemberError(
-    ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError value
-  ) => ApproveOrganizationJoinRequestResponse_userAlreadyMemberErrorWrapper._(value);
-
-  /// Same as `wrapUserAlreadyMemberError(ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError(...))`.
-  factory ApproveOrganizationJoinRequestResponse.createUserAlreadyMemberError({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
-  }) => ApproveOrganizationJoinRequestResponse.wrapUserAlreadyMemberError(
-    ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError(
-      userId: userId,
-    )
+  factory ApproveOrganizationJoinRequestsResponse.wrapUserAlreadyMemberError(
+    ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError value,
+  ) => ApproveOrganizationJoinRequestsResponse_userAlreadyMemberErrorWrapper._(
+    value,
   );
 
+  /// Same as `wrapUserAlreadyMemberError(ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError(...))`.
+  factory ApproveOrganizationJoinRequestsResponse.createUserAlreadyMemberError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable>
+    userIds,
+  }) => ApproveOrganizationJoinRequestsResponse.wrapUserAlreadyMemberError(
+    ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError(
+      userIds: userIds,
+    ),
+  );
+
+  /// Create a 'operation_identity_reused_error' variant wrapping around the given value.
+  factory ApproveOrganizationJoinRequestsResponse.wrapOperationIdentityReusedError(
+    ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError value,
+  ) =>
+      ApproveOrganizationJoinRequestsResponse_operationIdentityReusedErrorWrapper._(
+        value,
+      );
+
+  /// Same as `wrapOperationIdentityReusedError(ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError(...))`.
+  factory ApproveOrganizationJoinRequestsResponse.createOperationIdentityReusedError() =>
+      ApproveOrganizationJoinRequestsResponse.wrapOperationIdentityReusedError(
+        ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError(),
+      );
+
+  /// Create a 'invalid_selection_error' variant wrapping around the given value.
+  factory ApproveOrganizationJoinRequestsResponse.wrapInvalidSelectionError(
+    ApproveOrganizationJoinRequestsResponse_InvalidSelectionError value,
+  ) => ApproveOrganizationJoinRequestsResponse_invalidSelectionErrorWrapper._(
+    value,
+  );
+
+  /// Same as `wrapInvalidSelectionError(ApproveOrganizationJoinRequestsResponse_InvalidSelectionError(...))`.
+  factory ApproveOrganizationJoinRequestsResponse.createInvalidSelectionError() =>
+      ApproveOrganizationJoinRequestsResponse.wrapInvalidSelectionError(
+        ApproveOrganizationJoinRequestsResponse_InvalidSelectionError(),
+      );
+
   /// Create a 'invalid_record_id_error' variant wrapping around the given value.
-  factory ApproveOrganizationJoinRequestResponse.wrapInvalidRecordIdError(
-    _lib_kernel_v1_errors.InvalidRecordIdError value
-  ) => ApproveOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper._(value);
+  factory ApproveOrganizationJoinRequestsResponse.wrapInvalidRecordIdError(
+    _lib_kernel_v1_errors.InvalidRecordIdError value,
+  ) => ApproveOrganizationJoinRequestsResponse_invalidRecordIdErrorWrapper._(
+    value,
+  );
 
   /// Same as `wrapInvalidRecordIdError(_lib_kernel_v1_errors.InvalidRecordIdError(...))`.
-  factory ApproveOrganizationJoinRequestResponse.createInvalidRecordIdError({
+  factory ApproveOrganizationJoinRequestsResponse.createInvalidRecordIdError({
     required _core.String expectedTable,
     required _core.Iterable<_core.String> givenTables,
-  }) => ApproveOrganizationJoinRequestResponse.wrapInvalidRecordIdError(
+  }) => ApproveOrganizationJoinRequestsResponse.wrapInvalidRecordIdError(
     _lib_kernel_v1_errors.InvalidRecordIdError(
       expectedTable: expectedTable,
       givenTables: givenTables,
-    )
+    ),
   );
 
-  /// Returns the kind of variant held by this ApproveOrganizationJoinRequestResponse.
-  ApproveOrganizationJoinRequestResponse_kind get kind;
+  /// Returns the kind of variant held by this ApproveOrganizationJoinRequestsResponse.
+  ApproveOrganizationJoinRequestsResponse_kind get kind;
 
-  /// Serializer for `ApproveOrganizationJoinRequestResponse` instances.
-  static _skir.EnumSerializer<ApproveOrganizationJoinRequestResponse> get serializer {
+  /// Serializer for `ApproveOrganizationJoinRequestsResponse` instances.
+  static _skir.EnumSerializer<ApproveOrganizationJoinRequestsResponse>
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addWrapperVariant(
         1,
@@ -1891,79 +2521,125 @@ sealed class ApproveOrganizationJoinRequestResponse {
         "wrapInternalError",
         _lib_kernel_v1_errors.InternalError.serializer,
         "",
-        ApproveOrganizationJoinRequestResponse_internalErrorWrapper._,
+        ApproveOrganizationJoinRequestsResponse_internalErrorWrapper._,
         (it) => it.value,
-        ordinal: ApproveOrganizationJoinRequestResponse_kind.internalErrorWrapper._ordinal,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .internalErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         2,
         "success",
         "wrapSuccess",
-        _lib_organization_v1_member.OrganizationMember.serializer,
+        _skir.Serializers.iterable(ApprovedOrganizationJoinRequest.serializer),
         "",
-        ApproveOrganizationJoinRequestResponse_successWrapper._,
+        ApproveOrganizationJoinRequestsResponse_successWrapper._,
         (it) => it.value,
-        ordinal: ApproveOrganizationJoinRequestResponse_kind.successWrapper._ordinal,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .successWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         3,
         "request_not_found_error",
         "wrapRequestNotFoundError",
-        ApproveOrganizationJoinRequestResponse_RequestNotFoundError.serializer,
+        ApproveOrganizationJoinRequestsResponse_RequestNotFoundError.serializer,
         "",
-        ApproveOrganizationJoinRequestResponse_requestNotFoundErrorWrapper._,
+        ApproveOrganizationJoinRequestsResponse_requestNotFoundErrorWrapper._,
         (it) => it.value,
-        ordinal: ApproveOrganizationJoinRequestResponse_kind.requestNotFoundErrorWrapper._ordinal,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .requestNotFoundErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         4,
         "roles_not_found_error",
         "wrapRolesNotFoundError",
-        ApproveOrganizationJoinRequestResponse_RolesNotFoundError.serializer,
+        ApproveOrganizationJoinRequestsResponse_RolesNotFoundError.serializer,
         "",
-        ApproveOrganizationJoinRequestResponse_rolesNotFoundErrorWrapper._,
+        ApproveOrganizationJoinRequestsResponse_rolesNotFoundErrorWrapper._,
         (it) => it.value,
-        ordinal: ApproveOrganizationJoinRequestResponse_kind.rolesNotFoundErrorWrapper._ordinal,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .rolesNotFoundErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         5,
         "roles_not_assignable_error",
         "wrapRolesNotAssignableError",
-        ApproveOrganizationJoinRequestResponse_RolesNotAssignableError.serializer,
+        ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError
+            .serializer,
         "",
-        ApproveOrganizationJoinRequestResponse_rolesNotAssignableErrorWrapper._,
+        ApproveOrganizationJoinRequestsResponse_rolesNotAssignableErrorWrapper
+            ._,
         (it) => it.value,
-        ordinal: ApproveOrganizationJoinRequestResponse_kind.rolesNotAssignableErrorWrapper._ordinal,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .rolesNotAssignableErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         6,
         "roles_required_error",
         "wrapRolesRequiredError",
-        ApproveOrganizationJoinRequestResponse_RolesRequiredError.serializer,
+        ApproveOrganizationJoinRequestsResponse_RolesRequiredError.serializer,
         "",
-        ApproveOrganizationJoinRequestResponse_rolesRequiredErrorWrapper._,
+        ApproveOrganizationJoinRequestsResponse_rolesRequiredErrorWrapper._,
         (it) => it.value,
-        ordinal: ApproveOrganizationJoinRequestResponse_kind.rolesRequiredErrorWrapper._ordinal,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .rolesRequiredErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         7,
         "user_already_member_error",
         "wrapUserAlreadyMemberError",
-        ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError.serializer,
+        ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError
+            .serializer,
         "",
-        ApproveOrganizationJoinRequestResponse_userAlreadyMemberErrorWrapper._,
+        ApproveOrganizationJoinRequestsResponse_userAlreadyMemberErrorWrapper._,
         (it) => it.value,
-        ordinal: ApproveOrganizationJoinRequestResponse_kind.userAlreadyMemberErrorWrapper._ordinal,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .userAlreadyMemberErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         8,
+        "operation_identity_reused_error",
+        "wrapOperationIdentityReusedError",
+        ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError
+            .serializer,
+        "",
+        ApproveOrganizationJoinRequestsResponse_operationIdentityReusedErrorWrapper
+            ._,
+        (it) => it.value,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .operationIdentityReusedErrorWrapper
+            ._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        9,
+        "invalid_selection_error",
+        "wrapInvalidSelectionError",
+        ApproveOrganizationJoinRequestsResponse_InvalidSelectionError
+            .serializer,
+        "",
+        ApproveOrganizationJoinRequestsResponse_invalidSelectionErrorWrapper._,
+        (it) => it.value,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .invalidSelectionErrorWrapper
+            ._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        10,
         "invalid_record_id_error",
         "wrapInvalidRecordIdError",
         _lib_kernel_v1_errors.InvalidRecordIdError.serializer,
         "",
-        ApproveOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper._,
+        ApproveOrganizationJoinRequestsResponse_invalidRecordIdErrorWrapper._,
         (it) => it.value,
-        ordinal: ApproveOrganizationJoinRequestResponse_kind.invalidRecordIdErrorWrapper._ordinal,
+        ordinal: ApproveOrganizationJoinRequestsResponse_kind
+            .invalidRecordIdErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.finalize();
     }
@@ -1971,18 +2647,20 @@ sealed class ApproveOrganizationJoinRequestResponse {
   }
 
   static final _serializerBuilder = _skir.internal__EnumSerializerBuilder.create(
-    recordId: "organization/v1/join_request.skir:ApproveOrganizationJoinRequestResponse",
+    recordId:
+        "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse",
     doc: "",
-    unknownInstance: ApproveOrganizationJoinRequestResponse_unknown._instance,
-    enumInstance: ApproveOrganizationJoinRequestResponse.unknown,
+    unknownInstance: ApproveOrganizationJoinRequestsResponse_unknown._instance,
+    enumInstance: ApproveOrganizationJoinRequestsResponse.unknown,
     getOrdinal: (it) => it.kind._ordinal,
-    wrapUnrecognized: ApproveOrganizationJoinRequestResponse_unknown._unrecognized,
+    wrapUnrecognized:
+        ApproveOrganizationJoinRequestsResponse_unknown._unrecognized,
     getUnrecognized: (it) => it._u,
   );
 }
 
-/// The kind of variant held by a `ApproveOrganizationJoinRequestResponse`.
-enum ApproveOrganizationJoinRequestResponse_kind {
+/// The kind of variant held by a `ApproveOrganizationJoinRequestsResponse`.
+enum ApproveOrganizationJoinRequestsResponse_kind {
   unknown(0),
   internalErrorWrapper(1),
   successWrapper(2),
@@ -1991,37 +2669,47 @@ enum ApproveOrganizationJoinRequestResponse_kind {
   rolesNotAssignableErrorWrapper(5),
   rolesRequiredErrorWrapper(6),
   userAlreadyMemberErrorWrapper(7),
-  invalidRecordIdErrorWrapper(8);
+  operationIdentityReusedErrorWrapper(8),
+  invalidSelectionErrorWrapper(9),
+  invalidRecordIdErrorWrapper(10);
 
   final _core.int _ordinal;
 
-  const ApproveOrganizationJoinRequestResponse_kind(this._ordinal);
+  const ApproveOrganizationJoinRequestsResponse_kind(this._ordinal);
 }
 
-final class ApproveOrganizationJoinRequestResponse_unknown implements ApproveOrganizationJoinRequestResponse {
-  static const _instance = ApproveOrganizationJoinRequestResponse_unknown._();
+final class ApproveOrganizationJoinRequestsResponse_unknown
+    implements ApproveOrganizationJoinRequestsResponse {
+  static const _instance = ApproveOrganizationJoinRequestsResponse_unknown._();
 
   final _skir.internal__UnrecognizedVariant? _u;
 
-  const ApproveOrganizationJoinRequestResponse_unknown._() : _u = null;
-  ApproveOrganizationJoinRequestResponse_unknown._unrecognized(this._u);
+  const ApproveOrganizationJoinRequestsResponse_unknown._() : _u = null;
+  ApproveOrganizationJoinRequestsResponse_unknown._unrecognized(this._u);
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.unknown;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind.unknown;
   @_core.override
-  _core.bool operator ==(other) => other is ApproveOrganizationJoinRequestResponse_unknown;
+  _core.bool operator ==(other) =>
+      other is ApproveOrganizationJoinRequestsResponse_unknown;
   @_core.override
   _core.int get hashCode => 8118964;
   @_core.override
-  _core.String toString() => _skir.internal__stringify(this, ApproveOrganizationJoinRequestResponse.serializer);
+  _core.String toString() => _skir.internal__stringify(
+    this,
+    ApproveOrganizationJoinRequestsResponse.serializer,
+  );
 }
 
-sealed class _ApproveOrganizationJoinRequestResponse_wrapper implements ApproveOrganizationJoinRequestResponse {
+sealed class _ApproveOrganizationJoinRequestsResponse_wrapper
+    implements ApproveOrganizationJoinRequestsResponse {
   _core.dynamic get value;
 
   @_core.override
   _core.bool operator ==(other) {
-    if (other is! _ApproveOrganizationJoinRequestResponse_wrapper) return false;
+    if (other is! _ApproveOrganizationJoinRequestsResponse_wrapper)
+      return false;
     return kind == other.kind && value == other.value;
   }
 
@@ -2029,79 +2717,140 @@ sealed class _ApproveOrganizationJoinRequestResponse_wrapper implements ApproveO
   _core.int get hashCode => (kind._ordinal * 31) ^ value.hashCode;
 
   @_core.override
-  _core.String toString() => _skir.internal__stringify(this, ApproveOrganizationJoinRequestResponse.serializer);
+  _core.String toString() => _skir.internal__stringify(
+    this,
+    ApproveOrganizationJoinRequestsResponse.serializer,
+  );
 }
 
-final class ApproveOrganizationJoinRequestResponse_internalErrorWrapper extends _ApproveOrganizationJoinRequestResponse_wrapper {
+final class ApproveOrganizationJoinRequestsResponse_internalErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
   final _lib_kernel_v1_errors.InternalError value;
 
-  ApproveOrganizationJoinRequestResponse_internalErrorWrapper._(this.value);
+  ApproveOrganizationJoinRequestsResponse_internalErrorWrapper._(this.value);
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.internalErrorWrapper;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind.internalErrorWrapper;
 }
 
-final class ApproveOrganizationJoinRequestResponse_successWrapper extends _ApproveOrganizationJoinRequestResponse_wrapper {
-  final _lib_organization_v1_member.OrganizationMember value;
+final class ApproveOrganizationJoinRequestsResponse_successWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
+  final _core.Iterable<ApprovedOrganizationJoinRequest> value;
 
-  ApproveOrganizationJoinRequestResponse_successWrapper._(this.value);
+  ApproveOrganizationJoinRequestsResponse_successWrapper._(this.value);
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.successWrapper;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind.successWrapper;
 }
 
-final class ApproveOrganizationJoinRequestResponse_requestNotFoundErrorWrapper extends _ApproveOrganizationJoinRequestResponse_wrapper {
-  final ApproveOrganizationJoinRequestResponse_RequestNotFoundError value;
+final class ApproveOrganizationJoinRequestsResponse_requestNotFoundErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
+  final ApproveOrganizationJoinRequestsResponse_RequestNotFoundError value;
 
-  ApproveOrganizationJoinRequestResponse_requestNotFoundErrorWrapper._(this.value);
+  ApproveOrganizationJoinRequestsResponse_requestNotFoundErrorWrapper._(
+    this.value,
+  );
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.requestNotFoundErrorWrapper;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind.requestNotFoundErrorWrapper;
 }
 
-final class ApproveOrganizationJoinRequestResponse_rolesNotFoundErrorWrapper extends _ApproveOrganizationJoinRequestResponse_wrapper {
-  final ApproveOrganizationJoinRequestResponse_RolesNotFoundError value;
+final class ApproveOrganizationJoinRequestsResponse_rolesNotFoundErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
+  final ApproveOrganizationJoinRequestsResponse_RolesNotFoundError value;
 
-  ApproveOrganizationJoinRequestResponse_rolesNotFoundErrorWrapper._(this.value);
+  ApproveOrganizationJoinRequestsResponse_rolesNotFoundErrorWrapper._(
+    this.value,
+  );
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.rolesNotFoundErrorWrapper;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind.rolesNotFoundErrorWrapper;
 }
 
-final class ApproveOrganizationJoinRequestResponse_rolesNotAssignableErrorWrapper extends _ApproveOrganizationJoinRequestResponse_wrapper {
-  final ApproveOrganizationJoinRequestResponse_RolesNotAssignableError value;
+final class ApproveOrganizationJoinRequestsResponse_rolesNotAssignableErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
+  final ApproveOrganizationJoinRequestsResponse_RolesNotAssignableError value;
 
-  ApproveOrganizationJoinRequestResponse_rolesNotAssignableErrorWrapper._(this.value);
+  ApproveOrganizationJoinRequestsResponse_rolesNotAssignableErrorWrapper._(
+    this.value,
+  );
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.rolesNotAssignableErrorWrapper;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind
+          .rolesNotAssignableErrorWrapper;
 }
 
-final class ApproveOrganizationJoinRequestResponse_rolesRequiredErrorWrapper extends _ApproveOrganizationJoinRequestResponse_wrapper {
-  final ApproveOrganizationJoinRequestResponse_RolesRequiredError value;
+final class ApproveOrganizationJoinRequestsResponse_rolesRequiredErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
+  final ApproveOrganizationJoinRequestsResponse_RolesRequiredError value;
 
-  ApproveOrganizationJoinRequestResponse_rolesRequiredErrorWrapper._(this.value);
+  ApproveOrganizationJoinRequestsResponse_rolesRequiredErrorWrapper._(
+    this.value,
+  );
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.rolesRequiredErrorWrapper;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind.rolesRequiredErrorWrapper;
 }
 
-final class ApproveOrganizationJoinRequestResponse_userAlreadyMemberErrorWrapper extends _ApproveOrganizationJoinRequestResponse_wrapper {
-  final ApproveOrganizationJoinRequestResponse_UserAlreadyMemberError value;
+final class ApproveOrganizationJoinRequestsResponse_userAlreadyMemberErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
+  final ApproveOrganizationJoinRequestsResponse_UserAlreadyMemberError value;
 
-  ApproveOrganizationJoinRequestResponse_userAlreadyMemberErrorWrapper._(this.value);
+  ApproveOrganizationJoinRequestsResponse_userAlreadyMemberErrorWrapper._(
+    this.value,
+  );
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.userAlreadyMemberErrorWrapper;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind
+          .userAlreadyMemberErrorWrapper;
 }
 
-final class ApproveOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper extends _ApproveOrganizationJoinRequestResponse_wrapper {
+final class ApproveOrganizationJoinRequestsResponse_operationIdentityReusedErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
+  final ApproveOrganizationJoinRequestsResponse_OperationIdentityReusedError
+  value;
+
+  ApproveOrganizationJoinRequestsResponse_operationIdentityReusedErrorWrapper._(
+    this.value,
+  );
+
+  @_core.override
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind
+          .operationIdentityReusedErrorWrapper;
+}
+
+final class ApproveOrganizationJoinRequestsResponse_invalidSelectionErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
+  final ApproveOrganizationJoinRequestsResponse_InvalidSelectionError value;
+
+  ApproveOrganizationJoinRequestsResponse_invalidSelectionErrorWrapper._(
+    this.value,
+  );
+
+  @_core.override
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind.invalidSelectionErrorWrapper;
+}
+
+final class ApproveOrganizationJoinRequestsResponse_invalidRecordIdErrorWrapper
+    extends _ApproveOrganizationJoinRequestsResponse_wrapper {
   final _lib_kernel_v1_errors.InvalidRecordIdError value;
 
-  ApproveOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper._(this.value);
+  ApproveOrganizationJoinRequestsResponse_invalidRecordIdErrorWrapper._(
+    this.value,
+  );
 
   @_core.override
-  ApproveOrganizationJoinRequestResponse_kind get kind => ApproveOrganizationJoinRequestResponse_kind.invalidRecordIdErrorWrapper;
+  ApproveOrganizationJoinRequestsResponse_kind get kind =>
+      ApproveOrganizationJoinRequestsResponse_kind.invalidRecordIdErrorWrapper;
 }
 
 // -----------------------------------------------------------------------------
@@ -2109,37 +2858,44 @@ final class ApproveOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper e
 // -----------------------------------------------------------------------------
 
 sealed class DeclineOrganizationJoinRequestRequest_orMutable {
+  _core.String get operationId;
   _lib_kernel_v1_record_id.RecordId_orMutable get requestId;
 
   DeclineOrganizationJoinRequestRequest toFrozen();
 }
 
 /// Deeply immutable.
-final class DeclineOrganizationJoinRequestRequest implements DeclineOrganizationJoinRequestRequest_orMutable {
+final class DeclineOrganizationJoinRequestRequest
+    implements DeclineOrganizationJoinRequestRequest_orMutable {
+  @_core.override
+  final _core.String operationId;
   @_core.override
   final _lib_kernel_v1_record_id.RecordId requestId;
   _skir.internal__UnrecognizedFields? _u;
 
   factory DeclineOrganizationJoinRequestRequest({
+    required _core.String operationId,
     required _lib_kernel_v1_record_id.RecordId_orMutable requestId,
   }) => DeclineOrganizationJoinRequestRequest._(
+    operationId,
     requestId.toFrozen(),
   );
 
-  DeclineOrganizationJoinRequestRequest._(
-    this.requestId,
-  );
+  DeclineOrganizationJoinRequestRequest._(this.operationId, this.requestId);
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = DeclineOrganizationJoinRequestRequest._(
+    "",
     _lib_kernel_v1_record_id.RecordId.defaultInstance,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static DeclineOrganizationJoinRequestRequest_mutable mutable() => DeclineOrganizationJoinRequestRequest_mutable._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-  );
+  static DeclineOrganizationJoinRequestRequest_mutable mutable() =>
+      DeclineOrganizationJoinRequestRequest_mutable._(
+        "",
+        _lib_kernel_v1_record_id.RecordId.defaultInstance,
+      );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
@@ -2147,34 +2903,50 @@ final class DeclineOrganizationJoinRequestRequest implements DeclineOrganization
   DeclineOrganizationJoinRequestRequest toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  DeclineOrganizationJoinRequestRequest_mutable toMutable() => DeclineOrganizationJoinRequestRequest_mutable._(
-    this.requestId,
-  );
+  DeclineOrganizationJoinRequestRequest_mutable toMutable() =>
+      DeclineOrganizationJoinRequestRequest_mutable._(
+        this.operationId,
+        this.requestId,
+      );
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
     if (other is! DeclineOrganizationJoinRequestRequest) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
-  _core.List get _equality_proxy => [
-    this.requestId,
-  ];
+  _core.List get _equality_proxy => [this.operationId, this.requestId];
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
   /// Serializer for `DeclineOrganizationJoinRequestRequest` instances.
-  static _skir.StructSerializer<DeclineOrganizationJoinRequestRequest, DeclineOrganizationJoinRequestRequest_mutable> get serializer {
+  static _skir.StructSerializer<
+    DeclineOrganizationJoinRequestRequest,
+    DeclineOrganizationJoinRequestRequest_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "operation_id",
+        "operationId",
+        0,
+        _skir.Serializers.string,
+        "",
+        (it) => it.operationId,
+        (it, v) => it.operationId = v,
+      );
       _serializerBuilder.addField(
         "request_id",
         "requestId",
-        0,
+        1,
         _lib_kernel_v1_record_id.RecordId.serializer,
         "",
         (it) => it.requestId,
@@ -2186,22 +2958,27 @@ final class DeclineOrganizationJoinRequestRequest implements DeclineOrganization
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:DeclineOrganizationJoinRequestRequest",
+    recordId:
+        "organization/v1/join_request.skir:DeclineOrganizationJoinRequestRequest",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (DeclineOrganizationJoinRequestRequest_mutable it) => it.toFrozen(),
+    toFrozen: (DeclineOrganizationJoinRequestRequest_mutable it) =>
+        it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
 /// Mutable version of [DeclineOrganizationJoinRequestRequest].
-final class DeclineOrganizationJoinRequestRequest_mutable implements DeclineOrganizationJoinRequestRequest_orMutable {
+final class DeclineOrganizationJoinRequestRequest_mutable
+    implements DeclineOrganizationJoinRequestRequest_orMutable {
+  _core.String operationId;
   _lib_kernel_v1_record_id.RecordId_orMutable requestId;
   _skir.internal__UnrecognizedFields? _u;
 
   DeclineOrganizationJoinRequestRequest_mutable._(
+    this.operationId,
     this.requestId,
   );
 
@@ -2212,15 +2989,226 @@ final class DeclineOrganizationJoinRequestRequest_mutable implements DeclineOrga
     if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
       return value;
     } else {
-      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId)
+          .toMutable();
     }
   }
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  DeclineOrganizationJoinRequestRequest toFrozen() => DeclineOrganizationJoinRequestRequest(
-    requestId: this.requestId,
-  ).._u = this._u;
+  DeclineOrganizationJoinRequestRequest toFrozen() =>
+      DeclineOrganizationJoinRequestRequest(
+        operationId: this.operationId,
+        requestId: this.requestId,
+      ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct DeclineOrganizationJoinRequestResponse.InvalidOperationIdError
+// -----------------------------------------------------------------------------
+
+sealed class DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_orMutable {
+  DeclineOrganizationJoinRequestResponse_InvalidOperationIdError toFrozen();
+}
+
+/// Deeply immutable.
+final class DeclineOrganizationJoinRequestResponse_InvalidOperationIdError
+    implements
+        DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory DeclineOrganizationJoinRequestResponse_InvalidOperationIdError() =>
+      DeclineOrganizationJoinRequestResponse_InvalidOperationIdError._();
+
+  DeclineOrganizationJoinRequestResponse_InvalidOperationIdError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance =
+      DeclineOrganizationJoinRequestResponse_InvalidOperationIdError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_mutable
+  mutable() =>
+      DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  DeclineOrganizationJoinRequestResponse_InvalidOperationIdError toFrozen() =>
+      this;
+
+  /// Returns a mutable shallow copy of this instance.
+  DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_mutable
+  toMutable() =>
+      DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other
+        is! DeclineOrganizationJoinRequestResponse_InvalidOperationIdError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `DeclineOrganizationJoinRequestResponse_InvalidOperationIdError` instances.
+  static _skir.StructSerializer<
+    DeclineOrganizationJoinRequestResponse_InvalidOperationIdError,
+    DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_mutable
+  >
+  get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId:
+        "organization/v1/join_request.skir:DeclineOrganizationJoinRequestResponse.InvalidOperationIdError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen:
+        (
+          DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_mutable
+          it,
+        ) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [DeclineOrganizationJoinRequestResponse_InvalidOperationIdError].
+final class DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_mutable
+    implements
+        DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  DeclineOrganizationJoinRequestResponse_InvalidOperationIdError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  DeclineOrganizationJoinRequestResponse_InvalidOperationIdError toFrozen() =>
+      DeclineOrganizationJoinRequestResponse_InvalidOperationIdError()
+        .._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct DeclineOrganizationJoinRequestResponse.OperationIdentityReusedError
+// -----------------------------------------------------------------------------
+
+sealed class DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_orMutable {
+  DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError
+  toFrozen();
+}
+
+/// Deeply immutable.
+final class DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError
+    implements
+        DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError() =>
+      DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError._();
+
+  DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance =
+      DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_mutable
+  mutable() =>
+      DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError
+  toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_mutable
+  toMutable() =>
+      DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other
+        is! DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError` instances.
+  static _skir.StructSerializer<
+    DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError,
+    DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_mutable
+  >
+  get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId:
+        "organization/v1/join_request.skir:DeclineOrganizationJoinRequestResponse.OperationIdentityReusedError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen:
+        (
+          DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_mutable
+          it,
+        ) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError].
+final class DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_mutable
+    implements
+        DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError
+  toFrozen() =>
+      DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError()
+        .._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
@@ -2232,19 +3220,23 @@ sealed class DeclineOrganizationJoinRequestResponse_Success_orMutable {
 }
 
 /// Deeply immutable.
-final class DeclineOrganizationJoinRequestResponse_Success implements DeclineOrganizationJoinRequestResponse_Success_orMutable {
+final class DeclineOrganizationJoinRequestResponse_Success
+    implements DeclineOrganizationJoinRequestResponse_Success_orMutable {
   _skir.internal__UnrecognizedFields? _u;
 
-  factory DeclineOrganizationJoinRequestResponse_Success() => DeclineOrganizationJoinRequestResponse_Success._();
+  factory DeclineOrganizationJoinRequestResponse_Success() =>
+      DeclineOrganizationJoinRequestResponse_Success._();
 
   DeclineOrganizationJoinRequestResponse_Success._();
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = DeclineOrganizationJoinRequestResponse_Success._();
+  static final defaultInstance =
+      DeclineOrganizationJoinRequestResponse_Success._();
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static DeclineOrganizationJoinRequestResponse_Success_mutable mutable() => DeclineOrganizationJoinRequestResponse_Success_mutable._();
+  static DeclineOrganizationJoinRequestResponse_Success_mutable mutable() =>
+      DeclineOrganizationJoinRequestResponse_Success_mutable._();
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
@@ -2252,13 +3244,17 @@ final class DeclineOrganizationJoinRequestResponse_Success implements DeclineOrg
   DeclineOrganizationJoinRequestResponse_Success toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  DeclineOrganizationJoinRequestResponse_Success_mutable toMutable() => DeclineOrganizationJoinRequestResponse_Success_mutable._();
+  DeclineOrganizationJoinRequestResponse_Success_mutable toMutable() =>
+      DeclineOrganizationJoinRequestResponse_Success_mutable._();
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
     if (other is! DeclineOrganizationJoinRequestResponse_Success) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
@@ -2270,7 +3266,11 @@ final class DeclineOrganizationJoinRequestResponse_Success implements DeclineOrg
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
   /// Serializer for `DeclineOrganizationJoinRequestResponse_Success` instances.
-  static _skir.StructSerializer<DeclineOrganizationJoinRequestResponse_Success, DeclineOrganizationJoinRequestResponse_Success_mutable> get serializer {
+  static _skir.StructSerializer<
+    DeclineOrganizationJoinRequestResponse_Success,
+    DeclineOrganizationJoinRequestResponse_Success_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.finalize();
     }
@@ -2278,25 +3278,29 @@ final class DeclineOrganizationJoinRequestResponse_Success implements DeclineOrg
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:DeclineOrganizationJoinRequestResponse.Success",
+    recordId:
+        "organization/v1/join_request.skir:DeclineOrganizationJoinRequestResponse.Success",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (DeclineOrganizationJoinRequestResponse_Success_mutable it) => it.toFrozen(),
+    toFrozen: (DeclineOrganizationJoinRequestResponse_Success_mutable it) =>
+        it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
 /// Mutable version of [DeclineOrganizationJoinRequestResponse_Success].
-final class DeclineOrganizationJoinRequestResponse_Success_mutable implements DeclineOrganizationJoinRequestResponse_Success_orMutable {
+final class DeclineOrganizationJoinRequestResponse_Success_mutable
+    implements DeclineOrganizationJoinRequestResponse_Success_orMutable {
   _skir.internal__UnrecognizedFields? _u;
 
   DeclineOrganizationJoinRequestResponse_Success_mutable._();
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  DeclineOrganizationJoinRequestResponse_Success toFrozen() => DeclineOrganizationJoinRequestResponse_Success().._u = this._u;
+  DeclineOrganizationJoinRequestResponse_Success toFrozen() =>
+      DeclineOrganizationJoinRequestResponse_Success().._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
@@ -2310,7 +3314,9 @@ sealed class DeclineOrganizationJoinRequestResponse_RequestNotFoundError_orMutab
 }
 
 /// Deeply immutable.
-final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError implements DeclineOrganizationJoinRequestResponse_RequestNotFoundError_orMutable {
+final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError
+    implements
+        DeclineOrganizationJoinRequestResponse_RequestNotFoundError_orMutable {
   @_core.override
   final _lib_kernel_v1_record_id.RecordId requestId;
   _skir.internal__UnrecognizedFields? _u;
@@ -2321,50 +3327,60 @@ final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError implemen
     requestId.toFrozen(),
   );
 
-  DeclineOrganizationJoinRequestResponse_RequestNotFoundError._(
-    this.requestId,
-  );
+  DeclineOrganizationJoinRequestResponse_RequestNotFoundError._(this.requestId);
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = DeclineOrganizationJoinRequestResponse_RequestNotFoundError._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-  );
+  static final defaultInstance =
+      DeclineOrganizationJoinRequestResponse_RequestNotFoundError._(
+        _lib_kernel_v1_record_id.RecordId.defaultInstance,
+      );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable mutable() => DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
-  );
+  static DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable
+  mutable() =>
+      DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable._(
+        _lib_kernel_v1_record_id.RecordId.defaultInstance,
+      );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  DeclineOrganizationJoinRequestResponse_RequestNotFoundError toFrozen() => this;
+  DeclineOrganizationJoinRequestResponse_RequestNotFoundError toFrozen() =>
+      this;
 
   /// Returns a mutable shallow copy of this instance.
-  DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable toMutable() => DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable._(
-    this.requestId,
-  );
+  DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable
+  toMutable() =>
+      DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable._(
+        this.requestId,
+      );
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! DeclineOrganizationJoinRequestResponse_RequestNotFoundError) return false;
-    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+    if (other is! DeclineOrganizationJoinRequestResponse_RequestNotFoundError)
+      return false;
+    return _skir.internal__listEquality.equals(
+      _equality_proxy,
+      other._equality_proxy,
+    );
   }
 
   @_core.override
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
-  _core.List get _equality_proxy => [
-    this.requestId,
-  ];
+  _core.List get _equality_proxy => [this.requestId];
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
   /// Serializer for `DeclineOrganizationJoinRequestResponse_RequestNotFoundError` instances.
-  static _skir.StructSerializer<DeclineOrganizationJoinRequestResponse_RequestNotFoundError, DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable> get serializer {
+  static _skir.StructSerializer<
+    DeclineOrganizationJoinRequestResponse_RequestNotFoundError,
+    DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable
+  >
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
         "request_id",
@@ -2381,18 +3397,25 @@ final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError implemen
   }
 
   static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
-    recordId: "organization/v1/join_request.skir:DeclineOrganizationJoinRequestResponse.RequestNotFoundError",
+    recordId:
+        "organization/v1/join_request.skir:DeclineOrganizationJoinRequestResponse.RequestNotFoundError",
     doc: "",
     defaultInstance: defaultInstance,
     newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
-    toFrozen: (DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable it) => it.toFrozen(),
+    toFrozen:
+        (
+          DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable
+          it,
+        ) => it.toFrozen(),
     getUnrecognizedFields: (it) => it._u,
     setUnrecognizedFields: (it, u) => it._u = u,
   );
 }
 
 /// Mutable version of [DeclineOrganizationJoinRequestResponse_RequestNotFoundError].
-final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable implements DeclineOrganizationJoinRequestResponse_RequestNotFoundError_orMutable {
+final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable
+    implements
+        DeclineOrganizationJoinRequestResponse_RequestNotFoundError_orMutable {
   _lib_kernel_v1_record_id.RecordId_orMutable requestId;
   _skir.internal__UnrecognizedFields? _u;
 
@@ -2407,15 +3430,17 @@ final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable 
     if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
       return value;
     } else {
-      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.requestId = (value as _lib_kernel_v1_record_id.RecordId)
+          .toMutable();
     }
   }
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  DeclineOrganizationJoinRequestResponse_RequestNotFoundError toFrozen() => DeclineOrganizationJoinRequestResponse_RequestNotFoundError(
-    requestId: this.requestId,
-  ).._u = this._u;
+  DeclineOrganizationJoinRequestResponse_RequestNotFoundError toFrozen() =>
+      DeclineOrganizationJoinRequestResponse_RequestNotFoundError(
+        requestId: this.requestId,
+      ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
@@ -2426,6 +3451,8 @@ final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable 
 ///   ```
 ///   switch (e) {
 ///     case DeclineOrganizationJoinRequestResponse_unknown(): { ... }
+///     case DeclineOrganizationJoinRequestResponse_invalidOperationIdError(:var value): { ... }
+///     case DeclineOrganizationJoinRequestResponse_operationIdentityReusedError(:var value): { ... }
 ///     case DeclineOrganizationJoinRequestResponse_internalError(:var value): { ... }
 ///     case DeclineOrganizationJoinRequestResponse_success(:var value): { ... }
 ///     case DeclineOrganizationJoinRequestResponse_requestNotFoundError(:var value): { ... }
@@ -2437,32 +3464,64 @@ final class DeclineOrganizationJoinRequestResponse_RequestNotFoundError_mutable 
 sealed class DeclineOrganizationJoinRequestResponse {
   /// Constant indicating an unknown `DeclineOrganizationJoinRequestResponse`.
   /// Default value for fields of type `DeclineOrganizationJoinRequestResponse`.
-  static const DeclineOrganizationJoinRequestResponse unknown = DeclineOrganizationJoinRequestResponse_unknown._instance;
+  static const DeclineOrganizationJoinRequestResponse unknown =
+      DeclineOrganizationJoinRequestResponse_unknown._instance;
+
+  /// Create a 'invalid_operation_id_error' variant wrapping around the given value.
+  factory DeclineOrganizationJoinRequestResponse.wrapInvalidOperationIdError(
+    DeclineOrganizationJoinRequestResponse_InvalidOperationIdError value,
+  ) => DeclineOrganizationJoinRequestResponse_invalidOperationIdErrorWrapper._(
+    value,
+  );
+
+  /// Same as `wrapInvalidOperationIdError(DeclineOrganizationJoinRequestResponse_InvalidOperationIdError(...))`.
+  factory DeclineOrganizationJoinRequestResponse.createInvalidOperationIdError() =>
+      DeclineOrganizationJoinRequestResponse.wrapInvalidOperationIdError(
+        DeclineOrganizationJoinRequestResponse_InvalidOperationIdError(),
+      );
+
+  /// Create a 'operation_identity_reused_error' variant wrapping around the given value.
+  factory DeclineOrganizationJoinRequestResponse.wrapOperationIdentityReusedError(
+    DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError value,
+  ) =>
+      DeclineOrganizationJoinRequestResponse_operationIdentityReusedErrorWrapper._(
+        value,
+      );
+
+  /// Same as `wrapOperationIdentityReusedError(DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError(...))`.
+  factory DeclineOrganizationJoinRequestResponse.createOperationIdentityReusedError() =>
+      DeclineOrganizationJoinRequestResponse.wrapOperationIdentityReusedError(
+        DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError(),
+      );
 
   /// Create a 'internal_error' variant wrapping around the given value.
   factory DeclineOrganizationJoinRequestResponse.wrapInternalError(
-    _lib_kernel_v1_errors.InternalError value
+    _lib_kernel_v1_errors.InternalError value,
   ) => DeclineOrganizationJoinRequestResponse_internalErrorWrapper._(value);
 
   /// Same as `wrapInternalError(_lib_kernel_v1_errors.InternalError(...))`.
-  factory DeclineOrganizationJoinRequestResponse.createInternalError() => DeclineOrganizationJoinRequestResponse.wrapInternalError(
-    _lib_kernel_v1_errors.InternalError()
-  );
+  factory DeclineOrganizationJoinRequestResponse.createInternalError() =>
+      DeclineOrganizationJoinRequestResponse.wrapInternalError(
+        _lib_kernel_v1_errors.InternalError(),
+      );
 
   /// Create a 'success' variant wrapping around the given value.
   factory DeclineOrganizationJoinRequestResponse.wrapSuccess(
-    DeclineOrganizationJoinRequestResponse_Success value
+    DeclineOrganizationJoinRequestResponse_Success value,
   ) => DeclineOrganizationJoinRequestResponse_successWrapper._(value);
 
   /// Same as `wrapSuccess(DeclineOrganizationJoinRequestResponse_Success(...))`.
-  factory DeclineOrganizationJoinRequestResponse.createSuccess() => DeclineOrganizationJoinRequestResponse.wrapSuccess(
-    DeclineOrganizationJoinRequestResponse_Success()
-  );
+  factory DeclineOrganizationJoinRequestResponse.createSuccess() =>
+      DeclineOrganizationJoinRequestResponse.wrapSuccess(
+        DeclineOrganizationJoinRequestResponse_Success(),
+      );
 
   /// Create a 'request_not_found_error' variant wrapping around the given value.
   factory DeclineOrganizationJoinRequestResponse.wrapRequestNotFoundError(
-    DeclineOrganizationJoinRequestResponse_RequestNotFoundError value
-  ) => DeclineOrganizationJoinRequestResponse_requestNotFoundErrorWrapper._(value);
+    DeclineOrganizationJoinRequestResponse_RequestNotFoundError value,
+  ) => DeclineOrganizationJoinRequestResponse_requestNotFoundErrorWrapper._(
+    value,
+  );
 
   /// Same as `wrapRequestNotFoundError(DeclineOrganizationJoinRequestResponse_RequestNotFoundError(...))`.
   factory DeclineOrganizationJoinRequestResponse.createRequestNotFoundError({
@@ -2470,13 +3529,15 @@ sealed class DeclineOrganizationJoinRequestResponse {
   }) => DeclineOrganizationJoinRequestResponse.wrapRequestNotFoundError(
     DeclineOrganizationJoinRequestResponse_RequestNotFoundError(
       requestId: requestId,
-    )
+    ),
   );
 
   /// Create a 'invalid_record_id_error' variant wrapping around the given value.
   factory DeclineOrganizationJoinRequestResponse.wrapInvalidRecordIdError(
-    _lib_kernel_v1_errors.InvalidRecordIdError value
-  ) => DeclineOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper._(value);
+    _lib_kernel_v1_errors.InvalidRecordIdError value,
+  ) => DeclineOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper._(
+    value,
+  );
 
   /// Same as `wrapInvalidRecordIdError(_lib_kernel_v1_errors.InvalidRecordIdError(...))`.
   factory DeclineOrganizationJoinRequestResponse.createInvalidRecordIdError({
@@ -2486,54 +3547,89 @@ sealed class DeclineOrganizationJoinRequestResponse {
     _lib_kernel_v1_errors.InvalidRecordIdError(
       expectedTable: expectedTable,
       givenTables: givenTables,
-    )
+    ),
   );
 
   /// Returns the kind of variant held by this DeclineOrganizationJoinRequestResponse.
   DeclineOrganizationJoinRequestResponse_kind get kind;
 
   /// Serializer for `DeclineOrganizationJoinRequestResponse` instances.
-  static _skir.EnumSerializer<DeclineOrganizationJoinRequestResponse> get serializer {
+  static _skir.EnumSerializer<DeclineOrganizationJoinRequestResponse>
+  get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addWrapperVariant(
         1,
+        "invalid_operation_id_error",
+        "wrapInvalidOperationIdError",
+        DeclineOrganizationJoinRequestResponse_InvalidOperationIdError
+            .serializer,
+        "",
+        DeclineOrganizationJoinRequestResponse_invalidOperationIdErrorWrapper._,
+        (it) => it.value,
+        ordinal: DeclineOrganizationJoinRequestResponse_kind
+            .invalidOperationIdErrorWrapper
+            ._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        2,
+        "operation_identity_reused_error",
+        "wrapOperationIdentityReusedError",
+        DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError
+            .serializer,
+        "",
+        DeclineOrganizationJoinRequestResponse_operationIdentityReusedErrorWrapper
+            ._,
+        (it) => it.value,
+        ordinal: DeclineOrganizationJoinRequestResponse_kind
+            .operationIdentityReusedErrorWrapper
+            ._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        3,
         "internal_error",
         "wrapInternalError",
         _lib_kernel_v1_errors.InternalError.serializer,
         "",
         DeclineOrganizationJoinRequestResponse_internalErrorWrapper._,
         (it) => it.value,
-        ordinal: DeclineOrganizationJoinRequestResponse_kind.internalErrorWrapper._ordinal,
+        ordinal: DeclineOrganizationJoinRequestResponse_kind
+            .internalErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        2,
+        4,
         "success",
         "wrapSuccess",
         DeclineOrganizationJoinRequestResponse_Success.serializer,
         "",
         DeclineOrganizationJoinRequestResponse_successWrapper._,
         (it) => it.value,
-        ordinal: DeclineOrganizationJoinRequestResponse_kind.successWrapper._ordinal,
+        ordinal:
+            DeclineOrganizationJoinRequestResponse_kind.successWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        3,
+        5,
         "request_not_found_error",
         "wrapRequestNotFoundError",
         DeclineOrganizationJoinRequestResponse_RequestNotFoundError.serializer,
         "",
         DeclineOrganizationJoinRequestResponse_requestNotFoundErrorWrapper._,
         (it) => it.value,
-        ordinal: DeclineOrganizationJoinRequestResponse_kind.requestNotFoundErrorWrapper._ordinal,
+        ordinal: DeclineOrganizationJoinRequestResponse_kind
+            .requestNotFoundErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        4,
+        6,
         "invalid_record_id_error",
         "wrapInvalidRecordIdError",
         _lib_kernel_v1_errors.InvalidRecordIdError.serializer,
         "",
         DeclineOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper._,
         (it) => it.value,
-        ordinal: DeclineOrganizationJoinRequestResponse_kind.invalidRecordIdErrorWrapper._ordinal,
+        ordinal: DeclineOrganizationJoinRequestResponse_kind
+            .invalidRecordIdErrorWrapper
+            ._ordinal,
       );
       _serializerBuilder.finalize();
     }
@@ -2541,12 +3637,14 @@ sealed class DeclineOrganizationJoinRequestResponse {
   }
 
   static final _serializerBuilder = _skir.internal__EnumSerializerBuilder.create(
-    recordId: "organization/v1/join_request.skir:DeclineOrganizationJoinRequestResponse",
+    recordId:
+        "organization/v1/join_request.skir:DeclineOrganizationJoinRequestResponse",
     doc: "",
     unknownInstance: DeclineOrganizationJoinRequestResponse_unknown._instance,
     enumInstance: DeclineOrganizationJoinRequestResponse.unknown,
     getOrdinal: (it) => it.kind._ordinal,
-    wrapUnrecognized: DeclineOrganizationJoinRequestResponse_unknown._unrecognized,
+    wrapUnrecognized:
+        DeclineOrganizationJoinRequestResponse_unknown._unrecognized,
     getUnrecognized: (it) => it._u,
   );
 }
@@ -2554,17 +3652,20 @@ sealed class DeclineOrganizationJoinRequestResponse {
 /// The kind of variant held by a `DeclineOrganizationJoinRequestResponse`.
 enum DeclineOrganizationJoinRequestResponse_kind {
   unknown(0),
-  internalErrorWrapper(1),
-  successWrapper(2),
-  requestNotFoundErrorWrapper(3),
-  invalidRecordIdErrorWrapper(4);
+  invalidOperationIdErrorWrapper(1),
+  operationIdentityReusedErrorWrapper(2),
+  internalErrorWrapper(3),
+  successWrapper(4),
+  requestNotFoundErrorWrapper(5),
+  invalidRecordIdErrorWrapper(6);
 
   final _core.int _ordinal;
 
   const DeclineOrganizationJoinRequestResponse_kind(this._ordinal);
 }
 
-final class DeclineOrganizationJoinRequestResponse_unknown implements DeclineOrganizationJoinRequestResponse {
+final class DeclineOrganizationJoinRequestResponse_unknown
+    implements DeclineOrganizationJoinRequestResponse {
   static const _instance = DeclineOrganizationJoinRequestResponse_unknown._();
 
   final _skir.internal__UnrecognizedVariant? _u;
@@ -2573,16 +3674,22 @@ final class DeclineOrganizationJoinRequestResponse_unknown implements DeclineOrg
   DeclineOrganizationJoinRequestResponse_unknown._unrecognized(this._u);
 
   @_core.override
-  DeclineOrganizationJoinRequestResponse_kind get kind => DeclineOrganizationJoinRequestResponse_kind.unknown;
+  DeclineOrganizationJoinRequestResponse_kind get kind =>
+      DeclineOrganizationJoinRequestResponse_kind.unknown;
   @_core.override
-  _core.bool operator ==(other) => other is DeclineOrganizationJoinRequestResponse_unknown;
+  _core.bool operator ==(other) =>
+      other is DeclineOrganizationJoinRequestResponse_unknown;
   @_core.override
   _core.int get hashCode => 8118964;
   @_core.override
-  _core.String toString() => _skir.internal__stringify(this, DeclineOrganizationJoinRequestResponse.serializer);
+  _core.String toString() => _skir.internal__stringify(
+    this,
+    DeclineOrganizationJoinRequestResponse.serializer,
+  );
 }
 
-sealed class _DeclineOrganizationJoinRequestResponse_wrapper implements DeclineOrganizationJoinRequestResponse {
+sealed class _DeclineOrganizationJoinRequestResponse_wrapper
+    implements DeclineOrganizationJoinRequestResponse {
   _core.dynamic get value;
 
   @_core.override
@@ -2595,77 +3702,121 @@ sealed class _DeclineOrganizationJoinRequestResponse_wrapper implements DeclineO
   _core.int get hashCode => (kind._ordinal * 31) ^ value.hashCode;
 
   @_core.override
-  _core.String toString() => _skir.internal__stringify(this, DeclineOrganizationJoinRequestResponse.serializer);
+  _core.String toString() => _skir.internal__stringify(
+    this,
+    DeclineOrganizationJoinRequestResponse.serializer,
+  );
 }
 
-final class DeclineOrganizationJoinRequestResponse_internalErrorWrapper extends _DeclineOrganizationJoinRequestResponse_wrapper {
+final class DeclineOrganizationJoinRequestResponse_invalidOperationIdErrorWrapper
+    extends _DeclineOrganizationJoinRequestResponse_wrapper {
+  final DeclineOrganizationJoinRequestResponse_InvalidOperationIdError value;
+
+  DeclineOrganizationJoinRequestResponse_invalidOperationIdErrorWrapper._(
+    this.value,
+  );
+
+  @_core.override
+  DeclineOrganizationJoinRequestResponse_kind get kind =>
+      DeclineOrganizationJoinRequestResponse_kind
+          .invalidOperationIdErrorWrapper;
+}
+
+final class DeclineOrganizationJoinRequestResponse_operationIdentityReusedErrorWrapper
+    extends _DeclineOrganizationJoinRequestResponse_wrapper {
+  final DeclineOrganizationJoinRequestResponse_OperationIdentityReusedError
+  value;
+
+  DeclineOrganizationJoinRequestResponse_operationIdentityReusedErrorWrapper._(
+    this.value,
+  );
+
+  @_core.override
+  DeclineOrganizationJoinRequestResponse_kind get kind =>
+      DeclineOrganizationJoinRequestResponse_kind
+          .operationIdentityReusedErrorWrapper;
+}
+
+final class DeclineOrganizationJoinRequestResponse_internalErrorWrapper
+    extends _DeclineOrganizationJoinRequestResponse_wrapper {
   final _lib_kernel_v1_errors.InternalError value;
 
   DeclineOrganizationJoinRequestResponse_internalErrorWrapper._(this.value);
 
   @_core.override
-  DeclineOrganizationJoinRequestResponse_kind get kind => DeclineOrganizationJoinRequestResponse_kind.internalErrorWrapper;
+  DeclineOrganizationJoinRequestResponse_kind get kind =>
+      DeclineOrganizationJoinRequestResponse_kind.internalErrorWrapper;
 }
 
-final class DeclineOrganizationJoinRequestResponse_successWrapper extends _DeclineOrganizationJoinRequestResponse_wrapper {
+final class DeclineOrganizationJoinRequestResponse_successWrapper
+    extends _DeclineOrganizationJoinRequestResponse_wrapper {
   final DeclineOrganizationJoinRequestResponse_Success value;
 
   DeclineOrganizationJoinRequestResponse_successWrapper._(this.value);
 
   @_core.override
-  DeclineOrganizationJoinRequestResponse_kind get kind => DeclineOrganizationJoinRequestResponse_kind.successWrapper;
+  DeclineOrganizationJoinRequestResponse_kind get kind =>
+      DeclineOrganizationJoinRequestResponse_kind.successWrapper;
 }
 
-final class DeclineOrganizationJoinRequestResponse_requestNotFoundErrorWrapper extends _DeclineOrganizationJoinRequestResponse_wrapper {
+final class DeclineOrganizationJoinRequestResponse_requestNotFoundErrorWrapper
+    extends _DeclineOrganizationJoinRequestResponse_wrapper {
   final DeclineOrganizationJoinRequestResponse_RequestNotFoundError value;
 
-  DeclineOrganizationJoinRequestResponse_requestNotFoundErrorWrapper._(this.value);
+  DeclineOrganizationJoinRequestResponse_requestNotFoundErrorWrapper._(
+    this.value,
+  );
 
   @_core.override
-  DeclineOrganizationJoinRequestResponse_kind get kind => DeclineOrganizationJoinRequestResponse_kind.requestNotFoundErrorWrapper;
+  DeclineOrganizationJoinRequestResponse_kind get kind =>
+      DeclineOrganizationJoinRequestResponse_kind.requestNotFoundErrorWrapper;
 }
 
-final class DeclineOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper extends _DeclineOrganizationJoinRequestResponse_wrapper {
+final class DeclineOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper
+    extends _DeclineOrganizationJoinRequestResponse_wrapper {
   final _lib_kernel_v1_errors.InvalidRecordIdError value;
 
-  DeclineOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper._(this.value);
+  DeclineOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper._(
+    this.value,
+  );
 
   @_core.override
-  DeclineOrganizationJoinRequestResponse_kind get kind => DeclineOrganizationJoinRequestResponse_kind.invalidRecordIdErrorWrapper;
+  DeclineOrganizationJoinRequestResponse_kind get kind =>
+      DeclineOrganizationJoinRequestResponse_kind.invalidRecordIdErrorWrapper;
 }
 
 final _skir.Method<
   WatchOrganizationJoinRequestsRequest,
   WatchOrganizationJoinRequestsResponse
-> watchOrganizationJoinRequestsMethod =
-  _skir.Method(
-    "WatchOrganizationJoinRequests",
-    399821,
-    WatchOrganizationJoinRequestsRequest.serializer,
-    WatchOrganizationJoinRequestsResponse.serializer,
-    "",
-  );
+>
+watchOrganizationJoinRequestsMethod = _skir.Method(
+  "WatchOrganizationJoinRequests",
+  399821,
+  WatchOrganizationJoinRequestsRequest.serializer,
+  WatchOrganizationJoinRequestsResponse.serializer,
+  "",
+);
 
 final _skir.Method<
-  ApproveOrganizationJoinRequestRequest,
-  ApproveOrganizationJoinRequestResponse
-> approveOrganizationJoinRequestMethod =
-  _skir.Method(
-    "ApproveOrganizationJoinRequest",
-    167357,
-    ApproveOrganizationJoinRequestRequest.serializer,
-    ApproveOrganizationJoinRequestResponse.serializer,
-    "",
-  );
+  ApproveOrganizationJoinRequestsRequest,
+  ApproveOrganizationJoinRequestsResponse
+>
+approveOrganizationJoinRequestsMethod = _skir.Method(
+  "ApproveOrganizationJoinRequests",
+  167357,
+  ApproveOrganizationJoinRequestsRequest.serializer,
+  ApproveOrganizationJoinRequestsResponse.serializer,
+  "",
+);
 
 final _skir.Method<
   DeclineOrganizationJoinRequestRequest,
   DeclineOrganizationJoinRequestResponse
-> declineOrganizationJoinRequestMethod =
-  _skir.Method(
-    "DeclineOrganizationJoinRequest",
-    329306,
-    DeclineOrganizationJoinRequestRequest.serializer,
-    DeclineOrganizationJoinRequestResponse.serializer,
-    "",
-  );
+>
+declineOrganizationJoinRequestMethod = _skir.Method(
+  "DeclineOrganizationJoinRequest",
+  329306,
+  DeclineOrganizationJoinRequestRequest.serializer,
+  DeclineOrganizationJoinRequestResponse.serializer,
+  "",
+);

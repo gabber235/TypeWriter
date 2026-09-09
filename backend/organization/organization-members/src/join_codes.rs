@@ -2,9 +2,7 @@ use otel_wasi::{ResultWithSlug, main_attribute, wasi_error};
 use serde::Deserialize;
 use std::collections::HashMap;
 use wasmcloud_utils::{
-    database::{
-        DatabaseDuration, RecordId, organization::JoinCodeRecord, read_query, transaction_query,
-    },
+    database::{DatabaseDuration, RecordId, organization::JoinCodeRecord, transaction_query},
     decode_skir, extract_params,
     skir::base::organization::v1::join_codes::*,
     skir_transaction_outcome,
@@ -43,36 +41,11 @@ pub async fn handle_watch(
     );
     let _ = decode_skir!(WatchOrganizationJoinCodesRequest, &msg.body)?;
 
-    let organization_id = RecordId::new("organization", org_id);
-    let rows = read_query!(
-        r#"
-            SELECT
-                id,
-                created_at,
-                expires_at,
-                single_use,
-                auto_accept_roles
-            FROM organization_join_code
-            WHERE organization = $org_id
-                AND (expires_at IS NONE OR expires_at IS NULL OR expires_at > time::now())
-                ORDER BY created_at DESC
-        "#,
-    )
-    .bind("org_id", organization_id)
-    .execute()
-    .await
-    .error_with_slug("join-code-watch-query-failed")?
-    .take::<Vec<JoinCodeRecord>>()
-    .error_with_slug("join-code-watch-result-parse-failed")?;
-
-    main_attribute!(
-        "join_code.outcome" = "listed",
-        "join_code.result_count" = rows.len() as i64
-    );
-
-    Ok(WatchOrganizationJoinCodesResponse::List(
-        rows.into_iter().map(Into::into).collect(),
+    wasmcloud_utils::database::organization::snapshots::join_codes(RecordId::new(
+        "organization",
+        org_id,
     ))
+    .await
 }
 
 #[tracing::instrument(skip(msg, params))]
@@ -82,6 +55,17 @@ pub async fn handle_generate(
 ) -> Result<GenerateOrganizationJoinCodeResponse, otel_wasi::Error> {
     let (actor_id, org_id) = extract_params!(params, user_id, org_id)?;
     let req = decode_skir!(GenerateOrganizationJoinCodeRequest, &msg.body)?;
+    if req.operation_id.is_empty() {
+        return Ok(wasmcloud_utils::skir_variant!(
+            GenerateOrganizationJoinCodeResponse::InvalidOperationIdError
+        ));
+    }
+    let receipt = wasmcloud_utils::database::mutation::receipt_id(
+        actor_id,
+        org_id,
+        "GenerateOrganizationJoinCode",
+        &req.operation_id,
+    );
     wasmcloud_utils::validate_record_ids!(
         GenerateOrganizationJoinCodeResponse,
         req.auto_accept.role_ids,
@@ -125,8 +109,11 @@ pub async fn handle_generate(
         JoinCodeGenerationOutcome,
         r#"
         BEGIN TRANSACTION;
-
         RETURN {
+            LET $previous = fn::mutation::recall($receipt, $request_bytes);
+            IF $previous != NONE { RETURN $previous.value };
+            LET $result = {
+RETURN {
             LET $requested = SELECT * FROM $roles WHERE organization = $org;
             LET $missing = array::complement(array::distinct($roles), $requested.id);
 
@@ -151,6 +138,13 @@ pub async fn handle_generate(
                 code: (SELECT id, created_at, expires_at, single_use, auto_accept_roles FROM ONLY $code)
             };
         };
+            };
+            IF $result.outcome = 'created' {
+                LET $stored = fn::mutation::commit($receipt, $request_bytes, { value: $result });
+                RETURN $stored.value;
+            };
+            RETURN $result;
+        };
         COMMIT TRANSACTION;
         "#,
     )
@@ -159,13 +153,16 @@ pub async fn handle_generate(
     .bind("single_use", req.single_use)
     .bind("roles", role_ids)
     .bind("duration", expiration)
+    .bind("receipt", receipt)
+    .bind("request_bytes", msg.body.clone())
     .execute()
     .await
     .error_with_slug("join-code-generate-query-failed")?
     .decode()
     .error_with_slug("join-code-generate-result-parse-failed")?;
 
-    let result = wasmcloud_utils::skir_domain_result!(GenerateOrganizationJoinCodeResponse, result);
+    let result = wasmcloud_utils::skir_domain_result!(GenerateOrganizationJoinCodeResponse, result,
+        "operation-identity-reused-error" => {});
     main_attribute!("join_code.outcome" = result.as_str());
     let row = skir_transaction_outcome!(
         GenerateOrganizationJoinCodeResponse,
@@ -183,9 +180,13 @@ pub async fn handle_generate(
 
     let code: JoinCode = row.into();
     wasmcloud_utils::skir_subjects::organization_join_codes(org_id)
-        .publish(WatchOrganizationJoinCodesResponse::Add(Box::new(
-            code.clone(),
-        )))
+        .publish(
+            wasmcloud_utils::database::organization::snapshots::join_codes(RecordId::new(
+                "organization",
+                org_id,
+            ))
+            .await?,
+        )
         .await?;
 
     main_attribute!(
@@ -205,6 +206,17 @@ pub async fn handle_revoke(
 ) -> Result<RevokeOrganizationJoinCodeResponse, otel_wasi::Error> {
     let (actor_id, org_id) = extract_params!(params, user_id, org_id)?;
     let req = decode_skir!(RevokeOrganizationJoinCodeRequest, &msg.body)?;
+    if req.operation_id.is_empty() {
+        return Ok(wasmcloud_utils::skir_variant!(
+            RevokeOrganizationJoinCodeResponse::InvalidOperationIdError
+        ));
+    }
+    let receipt = wasmcloud_utils::database::mutation::receipt_id(
+        actor_id,
+        org_id,
+        "RevokeOrganizationJoinCode",
+        &req.operation_id,
+    );
     wasmcloud_utils::validate_record_ids!(
         RevokeOrganizationJoinCodeResponse,
         req.code_id,
@@ -223,25 +235,37 @@ pub async fn handle_revoke(
         Option<JoinCodeRecord>,
         r#"
         BEGIN TRANSACTION;
-
-        LET $deleted = DELETE $code
+        RETURN {
+            LET $previous = fn::mutation::recall($receipt, $request_bytes);
+            IF $previous != NONE { RETURN $previous.value };
+            LET $result = {
+LET $deleted = DELETE $code
         WHERE organization = $org
             AND (expires_at IS NONE OR expires_at IS NULL OR expires_at > time::now())
         RETURN BEFORE;
 
         RETURN $deleted[0];
-
+            };
+            IF $result != NONE {
+                LET $stored = fn::mutation::commit($receipt, $request_bytes, { value: $result });
+                RETURN $stored.value;
+            };
+            RETURN $result;
+        };
         COMMIT TRANSACTION;
         "#,
     )
     .bind("code", code_id)
     .bind("org", organization_id)
+    .bind("receipt", receipt)
+    .bind("request_bytes", msg.body.clone())
     .execute()
     .await
     .error_with_slug("join-code-revoke-query-failed")?
     .decode()
     .error_with_slug("join-code-revoke-result-parse-failed")?;
-    let deleted = wasmcloud_utils::skir_domain_result!(RevokeOrganizationJoinCodeResponse, deleted);
+    let deleted = wasmcloud_utils::skir_domain_result!(RevokeOrganizationJoinCodeResponse, deleted,
+        "operation-identity-reused-error" => {});
 
     if deleted.is_none() {
         main_attribute!("join_code.outcome" = "code_not_found");
@@ -251,7 +275,13 @@ pub async fn handle_revoke(
     }
 
     wasmcloud_utils::skir_subjects::organization_join_codes(org_id)
-        .publish(WatchOrganizationJoinCodesResponse::Remove(Box::new(code)))
+        .publish(
+            wasmcloud_utils::database::organization::snapshots::join_codes(RecordId::new(
+                "organization",
+                org_id,
+            ))
+            .await?,
+        )
         .await?;
 
     main_attribute!("join_code.outcome" = "revoked");

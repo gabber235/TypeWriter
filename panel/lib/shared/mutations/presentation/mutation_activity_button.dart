@@ -11,20 +11,13 @@ class MutationActivityButton extends ConsumerWidget {
   const MutationActivityButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => MutationActivityView(
-    journal: ref.watch(mutationJournalProvider),
-    workspace: ref.watch(editorWorkspaceProvider),
-  );
+  Widget build(BuildContext context, WidgetRef ref) =>
+      MutationActivityView(workspace: ref.watch(localWorkProvider));
 }
 
 class MutationActivityView extends StatelessWidget {
-  const MutationActivityView({
-    required this.journal,
-    required this.workspace,
-    super.key,
-  });
-  final MutationJournal journal;
-  final EditorWorkspace workspace;
+  const MutationActivityView({required this.workspace, super.key});
+  final LocalWork workspace;
 
   Future<void> _showMobileActivity(BuildContext context) =>
       showModalBottomSheet<void>(
@@ -45,7 +38,6 @@ class MutationActivityView extends StatelessWidget {
                 ),
               ),
               child: _ActivityDetails(
-                journal: journal,
                 workspace: workspace,
                 onClose: () => Navigator.pop(context),
               ),
@@ -56,12 +48,15 @@ class MutationActivityView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-    listenable: Listenable.merge([journal, workspace]),
+    listenable: workspace,
     builder: (context, _) {
       final drafts = workspace.resources.values
           .where((entry) => entry.source.hasWork)
           .toList();
-      final phase = MutationActivityPhase.resolve(journal.submissions, drafts);
+      final phase = MutationActivityPhase.resolve(
+        workspace.submissions,
+        drafts,
+      );
       final label = phase.label(drafts.length);
       final color = phase.color(context);
       final icon = phase.isSaving
@@ -77,11 +72,7 @@ class MutationActivityView extends StatelessWidget {
         maxHeight: math.min(MediaQuery.sizeOf(context).height * .75, 580),
         popupBuilder: (context, close) => SizedBox(
           width: double.infinity,
-          child: _ActivityDetails(
-            journal: journal,
-            workspace: workspace,
-            onClose: close,
-          ),
+          child: _ActivityDetails(workspace: workspace, onClose: close),
         ),
         builder: (context, show) => ElasticSwitcher(
           child: phase == MutationActivityPhase.idle

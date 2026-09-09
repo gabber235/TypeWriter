@@ -156,7 +156,7 @@ void main() {
   });
 
   test(
-    "stale in flight success retries without regressing remote state",
+    "stale accepted result acknowledges captured edits without resending",
     () async {
       final first = Completer<TypedMutationResult>();
       final commits = <EditorCommit>[];
@@ -187,14 +187,17 @@ void main() {
       );
       await flush;
 
-      expect(commits, hasLength(2));
-      expect(commits.last.expectedRevision, 3);
-      expect(commits.last.rootValue, _value(title: "New", color: "Blue"));
-      expect(source.document.revision, 4);
+      expect(commits, hasLength(1));
+      expect(source.document.revision, 3);
       expect(
         source.document.confirmedValue,
-        _value(title: "New", color: "Blue"),
+        _value(title: "Old", color: "Blue"),
       );
+      expect(
+        source.value(DataPath.root).valueOrNull,
+        _value(title: "Old", color: "Blue"),
+      );
+      expect(source.saveState(title).phase, EditorSavePhase.saved);
       source.dispose();
     },
   );

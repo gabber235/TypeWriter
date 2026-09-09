@@ -9,6 +9,8 @@ use wasmcloud_utils::{
         organization::{
             ServiceUpdateValidationError, UpdateOrganizationServiceRequest,
             UpdateOrganizationServiceResponse, UpdateOrganizationServiceResponse_ConflictError,
+            UpdateOrganizationServiceResponse_InvalidOperationIdError,
+            UpdateOrganizationServiceResponse_OperationIdentityReusedError,
             UpdateOrganizationServiceResponse_ServiceNotFoundError,
             WatchOrganizationServicesResponse,
         },
@@ -59,12 +61,25 @@ pub async fn handle_update(
 
     let service_id = RecordId::from(&request.service_id);
     let organization_id = RecordId::new("organization", org_id);
+    if request.operation_id.is_empty() {
+        return Ok(skir_variant!(
+            UpdateOrganizationServiceResponse::InvalidOperationIdError
+        ));
+    }
+    let receipt = wasmcloud_utils::database::mutation::receipt_id(
+        actor_id,
+        org_id,
+        "service.update",
+        &request.operation_id,
+    );
     let result = transaction_query!(
         ServiceUpdateOutcome,
         r#"
         BEGIN TRANSACTION;
 
         RETURN {
+            LET $previous = fn::mutation::recall($receipt, $request_bytes);
+            IF $previous != NONE { RETURN $previous };
             LET $services = SELECT * FROM $service_id WHERE organization = $organization_id;
 
             IF array::is_empty($services) {
@@ -85,7 +100,8 @@ pub async fn handle_update(
                 revision = $current.revision + 1
             RETURN AFTER;
 
-            RETURN { outcome: 'updated', service: $updated };
+            LET $result = { outcome: 'updated', service: $updated };
+            RETURN fn::mutation::commit($receipt, $request_bytes, $result);
         };
 
         COMMIT TRANSACTION;
@@ -95,6 +111,8 @@ pub async fn handle_update(
     .bind("organization_id", organization_id)
     .bind("expected_revision", request.expected_revision)
     .bind("name", request.name)
+    .bind("receipt", receipt)
+    .bind("request_bytes", msg.body.clone())
     .execute()
     .await
     .error_with_slug("service-update-query-failed")?
@@ -105,7 +123,8 @@ pub async fn handle_update(
         TransactionOutcome::Committed(result) => result,
         TransactionOutcome::Rejected(error) => wasmcloud_utils::skir_domain_result!(
             UpdateOrganizationServiceResponse,
-            TransactionOutcome::Rejected(error)
+            TransactionOutcome::Rejected(error),
+            "operation-identity-reused-error" => {}
         ),
     };
     otel_wasi::main_attribute!("service.outcome" = result.as_str());

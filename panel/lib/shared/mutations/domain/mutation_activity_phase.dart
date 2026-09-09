@@ -1,7 +1,7 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
 /// Successful feedback remains visible briefly; unresolved work never expires.
-const savedFeedbackDuration = Duration(seconds: 10);
+const savedFeedbackDuration = Duration(seconds: 5);
 
 enum MutationActivityPhase {
   idle,
@@ -30,7 +30,8 @@ enum MutationActivityPhase {
           (entry) =>
               !entry.sending &&
               entry.result != null &&
-              entry.result is! SubmissionConfirmed,
+              (entry.result is! SubmissionConfirmed ||
+                  entry.integrationError != null),
         ) ||
         phases.any(
           {

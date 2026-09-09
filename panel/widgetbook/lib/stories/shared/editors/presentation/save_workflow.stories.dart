@@ -22,58 +22,23 @@ class _SaveWorkflowStory extends StatefulWidget {
 }
 
 class _SaveWorkflowStoryState extends State<_SaveWorkflowStory> {
-  final journal = MutationJournal();
-  final workspace = EditorWorkspace();
+  final workspace = LocalWork();
   late final EditorOwnerRegistry registry;
   late final EditorSource source;
   bool uncertain = false;
-  int sequence = 0;
 
   @override
   void initState() {
     super.initState();
-    registry = EditorOwnerRegistry(workspace: workspace, scope: "example");
+    registry = EditorOwnerRegistry(workspace: workspace);
+    final resource = _WorkflowResource(() => uncertain);
     source = registry.editor(
       ResourceEditorTarget(
         targetId: "host",
         label: "Paper Host configuration",
+        resource: resource,
+        snapshot: resource.snapshot,
         commitPolicy: EditorCommitPolicy.applyResource,
-        document: EditorDocument(
-          rootType: RecordType(
-            fields: const {
-              "target": TypeField(name: "target", type: StringType()),
-            },
-          ),
-          typeCatalog: const TypeCatalog([]),
-          confirmedValue: RecordValue({"target": StringValue("paper@*")}),
-          revision: 1,
-        ),
-        commit: (commit) async {
-          final submission = MutationSubmission<DataValue>(
-            id: ++sequence,
-            label: "Apply Paper Host configuration",
-            send: () async {
-              await Future<void>.delayed(const Duration(seconds: 2));
-              return uncertain
-                  ? SubmissionResult.uncertain(
-                      message: "Lost response",
-                      cause: StateError("Lost response"),
-                      stackTrace: StackTrace.current,
-                    )
-                  : SubmissionResult.confirmed(commit.rootValue);
-            },
-          );
-          journal.track(submission);
-          return switch (await submission.run()) {
-            SubmissionConfirmed(:final value) => MutationSuccess(
-              revision: commit.expectedRevision + 1,
-              value: value,
-            ),
-            _ => SubmissionException(
-              submission,
-            ).toMutation((_) async => throw StateError("Replay unsupported")),
-          };
-        },
       ),
     );
   }
@@ -82,7 +47,7 @@ class _SaveWorkflowStoryState extends State<_SaveWorkflowStory> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: const Text("Services"),
-      actions: [MutationActivityView(journal: journal, workspace: workspace)],
+      actions: [MutationActivityView(workspace: workspace)],
     ),
     body: Center(
       child: SizedBox(
@@ -118,7 +83,66 @@ class _SaveWorkflowStoryState extends State<_SaveWorkflowStory> {
   void dispose() {
     registry.dispose();
     workspace.dispose();
-    journal.dispose();
     super.dispose();
   }
+}
+
+final class _WorkflowResource implements EditableResource {
+  _WorkflowResource(this.loseResponse);
+  final bool Function() loseResponse;
+  EditorSnapshot snapshot = DocumentEditorSnapshot(
+    EditorDocument(
+      rootType: RecordType(
+        fields: const {"target": TypeField(name: "target", type: StringType())},
+      ),
+      typeCatalog: const TypeCatalog([]),
+      confirmedValue: RecordValue({"target": StringValue("paper@*")}),
+      revision: 1,
+    ),
+  );
+  @override
+  EditorResourceKey get key =>
+      const EditorResourceKey(scope: "example", identity: "host");
+  @override
+  Set<Object> get reservations => {key};
+  @override
+  Future<EditorSnapshot?> refresh() async => snapshot;
+  @override
+  MutationIntent prepare(
+    EditorSnapshot snapshot,
+    EditorCommit commit,
+    void Function(TypedMutationResult) accept,
+  ) => IndependentMutation(
+    PendingCommit(
+      resources: reservations,
+      prepare: () => PreparedCommit<DataValue>(
+        id: Object(),
+        label: "Apply Paper Host configuration",
+        resources: reservations,
+        send: () async {
+          await Future<void>.delayed(const Duration(seconds: 2));
+          if (loseResponse()) {
+            return SubmissionUncertain(
+              message: "Lost response",
+              cause: StateError("Lost response"),
+              stackTrace: StackTrace.current,
+            );
+          }
+          return SubmissionConfirmed(commit.rootValue);
+        },
+        integrate: (result) async {
+          if (result case SubmissionConfirmed(:final value)) {
+            final revision = commit.expectedRevision + 1;
+            this.snapshot = DocumentEditorSnapshot(
+              snapshot.document.copyWith(
+                confirmedValue: value,
+                revision: revision,
+              ),
+            );
+            accept(MutationSuccess(revision: revision, value: value));
+          }
+        },
+      ),
+    ),
+  );
 }

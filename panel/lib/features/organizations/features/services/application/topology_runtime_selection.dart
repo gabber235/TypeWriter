@@ -7,8 +7,8 @@ part of "services.dart";
 /// that service connection.
 class _RealmInstanceSelectable
     extends InspectableSelectable<RealmInstanceIdentifier> {
-  _RealmInstanceSelectable({
-    required this.ref,
+  const _RealmInstanceSelectable({
+    required this.onOpen,
     required this.id,
     required this.realm,
     required this.connected,
@@ -16,15 +16,13 @@ class _RealmInstanceSelectable
     required this.service,
   });
 
-  final Ref ref;
+  final VoidCallback? onOpen;
   @override
   final RealmInstanceIdentifier id;
   final TopologyRealm realm;
   final bool connected;
   final TopologyHost? host;
   final Service? service;
-
-  bool get canOpen => host != null && connected;
 
   @override
   String get name => realm.ownerHost.name.formatted;
@@ -50,17 +48,9 @@ class _RealmInstanceSelectable
 
   @override
   List<SelectionCapability> get capabilities => [
-    if (canOpen)
-      OpenSelectionCapability(onOpen: _open, allowMultiSelect: false),
+    if (onOpen case final open?)
+      OpenSelectionCapability(onOpen: open, allowMultiSelect: false),
   ];
-
-  void _open() {
-    final organization = service?.organization;
-    if (!canOpen || organization == null) return;
-    ref
-        .read(appRouterProvider)
-        .navigate(realmNavigationRoute(organization, realm.realmId));
-  }
 
   @override
   Widget? buildInspectorHeader() => ServiceHeader(
@@ -99,7 +89,7 @@ class _EngineInstanceSelectable
   final Service? service;
 
   @override
-  String get name => "${engine.target.engineId.formatted} engine";
+  String get name => "${engine.target.engineId} engine";
 
   @override
   PresentationModel buildPresentation(EditorOwnerRegistry owners) =>

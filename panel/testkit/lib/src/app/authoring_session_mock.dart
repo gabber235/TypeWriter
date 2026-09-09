@@ -17,10 +17,6 @@ class AuthoringSessionMock extends AuthoringSession {
     skir.RecordId realmId,
   ) => initial;
   @override
-  Stream<AuthoringSessionState> watchSnapshots(
-    AuthoringScopeLease Function() acquire,
-  ) => const Stream.empty();
-  @override
   Future<wire.ApplyAuthoringBatchResponse> apply(
     Iterable<wire.AuthoringOperation> operations, {
     String? batchId,
@@ -38,8 +34,8 @@ class AuthoringSessionMock extends AuthoringSession {
 List<Override> authoringSessionMockOverrides({
   AuthoringSessionState? initial,
 }) => [
-  authoringSessionProvider.overrideWith(
-    () => AuthoringSessionMock(
+  authoringSessionProvider.overrideWith2(
+    (_) => AuthoringSessionMock(
       initial: initial ?? const AuthoringSessionState(sequence: 1),
     ),
   ),

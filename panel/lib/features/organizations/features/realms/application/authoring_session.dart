@@ -14,6 +14,8 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "authoring_session.freezed.dart";
 part "authoring_session.g.dart";
 part "authoring_session_snapshots.dart";
+part "authoring_resource_repository.dart";
+part "authoring_editor_resource.dart";
 part "authoring_session_state.dart";
 part "authoring_session_sync.dart";
 part "authoring_operation_resources.dart";
@@ -28,6 +30,16 @@ class AuthoringSession extends _$AuthoringSession
     skir.RecordId realmId,
   ) {
     _client = ref.watch(natsProvider);
+    final repository = ref
+        .watch(resourceRepositoriesProvider)
+        .authoring(organizationId, realmId);
+    final results = repository.changes.listen(_accept);
+    final invalidations = repository.invalidations.listen(
+      (_) => _scheduleRefresh(),
+    );
+    ref
+      ..onDispose(results.cancel)
+      ..onDispose(invalidations.cancel);
     _address = RealmServiceAddress(
       organizationId: organizationId,
       realmId: realmId,
@@ -39,27 +51,8 @@ class AuthoringSession extends _$AuthoringSession
 
   AuthoringSessionState get snapshot => state;
 
-  Stream<AuthoringSessionState> watchSnapshots(
-    AuthoringScopeLease Function() acquire,
-  ) => Stream.multi((controller) {
-    final lease = acquire();
-    var ready = false;
-    final stop = listenSelf((_, value) {
-      if (ready) controller.add(value);
-    });
-    lease.ready.then(
-      (_) {
-        ready = true;
-        if (!controller.isClosed) controller.add(state);
-      },
-      onError: (Object error, StackTrace stack) =>
-          controller.addError(error, stack),
-    );
-    controller.onCancel = () async {
-      stop();
-      lease.release();
-    };
-  });
+  /// Fetches an authoritative snapshot of the scopes held by the caller.
+  Future<void> refresh() => _refresh();
 
   AuthoringScopeLease acquireLibrary() =>
       _acquire(const _AuthoringScope.library());
@@ -70,53 +63,59 @@ class AuthoringSession extends _$AuthoringSession
   AuthoringScopeLease acquirePage(skir.RecordId pageId) =>
       _acquire(_AuthoringScope.page(pageId));
 
-  Future<wire.ApplyAuthoringBatchResponse> apply(
+  PreparedCommit<wire.ApplyAuthoringBatchResponse> prepare(
     Iterable<wire.AuthoringOperation> operations, {
     String? batchId,
-  }) async {
+  }) {
     final request = wire.ApplyAuthoringBatchRequest(
       batchId: batchId ?? uuid.v4(),
       operations: operations,
     );
-    final wire.ApplyAuthoringBatchResponse response;
+    return ref.prepareSkir(
+      _address.request("library.authoring.batch.apply"),
+      wire.ApplyAuthoringBatchRequest.serializer.toBytes(request),
+      wire.ApplyAuthoringBatchResponse.serializer,
+      label: _authoringLabel(request.operations),
+      classify: (response) => switch (response) {
+        wire.ApplyAuthoringBatchResponse_appliedWrapper() =>
+          MutationResponseDisposition.confirmed,
+        wire.ApplyAuthoringBatchResponse_unknown() ||
+        wire.ApplyAuthoringBatchResponse_internalErrorWrapper() =>
+          MutationResponseDisposition.uncertain,
+        _ => MutationResponseDisposition.rejected,
+      },
+      onResponse: (response) async {
+        switch (response) {
+          case wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value):
+            _accept(value);
+          case wire.ApplyAuthoringBatchResponse_conflictWrapper():
+            await _refresh();
+          case wire.ApplyAuthoringBatchResponse_invalidWrapper() ||
+              wire.ApplyAuthoringBatchResponse_internalErrorWrapper() ||
+              wire.ApplyAuthoringBatchResponse_unknown():
+        }
+      },
+      submissionId: request.batchId,
+      resources: {
+        for (final operation in request.operations)
+          for (final resource in _operationResources(operation))
+            (organizationId, realmId, resource),
+      },
+      replay: SubmissionReplay.identicalRequest,
+    );
+  }
+
+  Future<wire.ApplyAuthoringBatchResponse> apply(
+    Iterable<wire.AuthoringOperation> operations, {
+    String? batchId,
+  }) async {
+    final commit = prepare(operations, batchId: batchId);
     try {
-      response = await ref.mutateSkir(
-        _address.request("library.authoring.batch.apply"),
-        wire.ApplyAuthoringBatchRequest.serializer.toBytes(request),
-        wire.ApplyAuthoringBatchResponse.serializer,
-        label: _authoringLabel(request.operations),
-        classify: (response) => switch (response) {
-          wire.ApplyAuthoringBatchResponse_appliedWrapper() =>
-            MutationResponseDisposition.confirmed,
-          wire.ApplyAuthoringBatchResponse_unknown() ||
-          wire.ApplyAuthoringBatchResponse_internalErrorWrapper() =>
-            MutationResponseDisposition.uncertain,
-          _ => MutationResponseDisposition.rejected,
-        },
-        onResponse: (response) async {
-          switch (response) {
-            case wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value):
-              _accept(value);
-            case wire.ApplyAuthoringBatchResponse_conflictWrapper():
-              await _refresh();
-            case wire.ApplyAuthoringBatchResponse_invalidWrapper() ||
-                wire.ApplyAuthoringBatchResponse_internalErrorWrapper() ||
-                wire.ApplyAuthoringBatchResponse_unknown():
-          }
-        },
-        submissionId: request.batchId,
-        resources: {
-          for (final operation in request.operations)
-            for (final resource in _operationResources(operation))
-              (organizationId, realmId, resource),
-        },
-        replay: SubmissionReplay.identicalRequest,
-      );
+      return await ref.read(localWorkProvider).execute(commit);
     } on Object {
       _scheduleRefresh();
       rethrow;
     }
-    return response;
   }
 
   _AuthoringScopeLease _acquire(_AuthoringScope scope) {

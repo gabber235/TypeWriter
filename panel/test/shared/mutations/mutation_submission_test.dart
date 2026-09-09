@@ -53,7 +53,7 @@ void main() {
   );
 
   test("a new attempt replaces only the same resource rejection", () async {
-    final journal = MutationJournal();
+    final journal = LocalWork();
     addTearDown(journal.dispose);
     MutationSubmission<int> attempt(String id, String scope) =>
         MutationSubmission<int>(
@@ -65,8 +65,9 @@ void main() {
         );
     final first = attempt("first", "org1");
     final other = attempt("other", "org2");
-    journal.track(first);
-    journal.track(other);
+    journal
+      ..track(first)
+      ..track(other);
     await first.run();
     await other.run();
     final replacement = attempt("replacement", "org1");

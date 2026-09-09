@@ -28,6 +28,7 @@ method WatchOrganizationJoinCodes(
 
 method GenerateOrganizationJoinCode(
   struct {
+    operation_id: string;
     single_use: bool;
     expiration: enum {
       never;
@@ -38,6 +39,8 @@ method GenerateOrganizationJoinCode(
     };
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
   success: JoinCode;
@@ -57,9 +60,12 @@ method GenerateOrganizationJoinCode(
 
 method RevokeOrganizationJoinCode(
   struct {
+    operation_id: string;
     code_id: RecordId;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
   success: struct {};

@@ -12,10 +12,13 @@ struct Organization {
 
 method CreateOrganization(
   struct {
+    operation_id: string;
     name: string;
     logo_url: string?;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
   success: Organization;

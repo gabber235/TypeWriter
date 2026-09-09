@@ -25,36 +25,44 @@ method WatchOrganizationMembers(
   remove: RecordId;
 } = 638484;
 
+// Applies one role selection to every selected member in one transaction.
+// Held protected roles remain assigned. Any invalid target rejects the complete selection.
 method UpdateOrganizationMemberRoles(
   struct {
-    user_id: RecordId;
+    operation_id: string;
+    user_ids: [RecordId];
     role_ids: [RecordId];
   }
 ): enum {
   internal_error: InternalError;
-
-  success: OrganizationMember;
-
+  success: [OrganizationMember];
   user_not_found_error: struct {
-    user_id: RecordId;
+    user_ids: [RecordId];
   };
   roles_not_found_error: struct {
     role_ids: [RecordId];
   };
   roles_not_assignable_error: struct {
+    user_ids: [RecordId];
     role_ids: [RecordId];
   };
-  roles_required_error: struct {};
+  roles_required_error: struct {
+    user_ids: [RecordId];
+  };
   founder_role_required_error: struct {};
-
+  operation_identity_reused_error: struct {};
+  invalid_selection_error: struct {};
   invalid_record_id_error: InvalidRecordIdError;
 } = 813953;
 
 method RemoveOrganizationMember(
   struct {
+    operation_id: string;
     user_id: RecordId;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
   success: struct {};

@@ -137,8 +137,7 @@ const _retryDelays = [
 ];
 
 final class _UnresolvedCommit {
-  const _UnresolvedCommit(this.commit, this.result, this.mutations);
+  const _UnresolvedCommit(this.commit, this.result);
   final EditorCommit commit;
   final MutationUncertain result;
-  final List<_PendingStructuralMutation> mutations;
 }

@@ -42,9 +42,10 @@ RecordType elementPlacementType(wire.ElementPlacement placement) => RecordType(
 );
 
 wire.ElementPlacement encodeElementPlacement(DataValue value) {
-  if (value is! RecordValue)
+  if (value is! RecordValue) {
     throw ArgumentError("Element placement must be a record");
-  int number(String key) => (value.fields[key] as IntegerValue).value.toInt();
+  }
+  int number(String key) => (value.fields[key]! as IntegerValue).value.toInt();
   if (value.fields.containsKey("x") &&
       number("width") > 0 &&
       number("height") > 0) {

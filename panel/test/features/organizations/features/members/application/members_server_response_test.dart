@@ -20,60 +20,81 @@ void main() {
       mockNats.dispose();
     });
 
-    test("uses server response to update member", () async {
-      final role = createRole(
-        id: "member",
-        name: "Member",
-        color: Colors.grey,
-        assignable: true,
-      );
+    test(
+      "refreshes current membership instead of applying a historical receipt",
+      () async {
+        final role = createRole(
+          id: "member",
+          name: "Member",
+          color: Colors.grey,
+          assignable: true,
+        );
 
-      final member = OrganizationMember(
-        userId: recordId("user:m1"),
-        name: "Original Name",
-        email: "test@test.com",
-        avatarUrl: "",
-        roles: [role],
-        joinedAt: testTimestamp,
-      );
+        final member = OrganizationMember(
+          userId: recordId("user:m1"),
+          name: "Original Name",
+          email: "test@test.com",
+          avatarUrl: "",
+          roles: [role],
+          joinedAt: testTimestamp,
+        );
 
-      final container = ProviderContainer.test(
-        overrides: [
-          userIdProvider.overrideWith((ref) async => testUserId),
-          organizationIdProvider.overrideWith((ref) => testOrganizationId),
-          natsProvider.overrideWithValue(mockNats),
-          organizationMembersProvider.overrideWith(
-            () => MockMembersNotifier([member]),
-          ),
-          organizationRolesProvider.overrideWith(
-            () => MockRolesNotifier([role]),
-          ),
-        ],
-      );
+        var reads = 0;
+        final container = ProviderContainer.test(
+          overrides: [
+            userIdProvider.overrideWith((ref) async => testUserId),
+            organizationIdProvider.overrideWith((ref) => testOrganizationId),
+            natsProvider.overrideWithValue(mockNats),
+            organizationMembersProvider.overrideWith(
+              () => _RefreshingMembers(
+                () => [
+                  if (reads++ == 0) member else member.copyWith(name: "Current Name"),
+                ],
+              ),
+            ),
+            organizationRolesProvider.overrideWith(
+              () => MockRolesNotifier([role]),
+            ),
+          ],
+        );
 
-      await readMembers(container);
+        await readMembers(container);
 
-      mockNats.registerHandler(
-        memberUpdateSubject,
-        (data) => skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.createSuccess(
-            userId: recordId("user:m1"),
-            name: "Updated Name",
-            email: "test@test.com",
-            avatarUrl: "",
-            roles: [],
-            joinedAt: testTimestamp,
-          ),
-        ),
-      );
+        mockNats.registerHandler(
+          memberUpdateSubject,
+          (data) =>
+              skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
+                skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+                  skir.OrganizationMember(
+                    userId: recordId("user:m1"),
+                    name: "Historical Name",
+                    email: "test@test.com",
+                    avatarUrl: "",
+                    roles: [],
+                    joinedAt: testTimestamp,
+                  ),
+                ]),
+              ),
+        );
 
-      await container
-          .read(organizationMembersProvider.notifier)
-          .updateMemberRoles(recordId("user:m1"), [role]);
+        await container
+            .read(organizationMembersProvider.notifier)
+            .updateMemberRoles([recordId("user:m1")], [role]);
 
-      final currentState = container.read(organizationMembersProvider);
-      expect(currentState.value, isNotNull);
-      expect(currentState.value!.first.name, "Updated Name");
-    });
+        final current = await readMembers(container);
+        expect(current.single.name, "Current Name");
+        expect(reads, 2);
+      },
+    );
   });
+}
+
+class _RefreshingMembers extends OrganizationMembers {
+  _RefreshingMembers(this.load);
+  final List<OrganizationMember> Function() load;
+
+  @override
+  Stream<List<OrganizationMember>> build() async* {
+    yield load();
+  }
 }

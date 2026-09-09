@@ -1,3 +1,4 @@
+import "dart:async";
 import "dart:typed_data";
 
 import "package:riverpod/riverpod.dart";
@@ -7,6 +8,36 @@ import "package:typewriter_panel/typewriter_panel.dart";
 enum MutationResponseDisposition { confirmed, rejected, uncertain }
 
 extension RefSkirMutation on Ref {
+  PreparedCommit<TResponse> prepareSkir<TResponse>(
+    String subject,
+    Uint8List requestBytes,
+    Serializer<TResponse> serializer, {
+    required String label,
+    required MutationResponseDisposition Function(TResponse) classify,
+    Future<void> Function(TResponse)? onResponse,
+    String? submissionId,
+    Set<Object> resources = const {},
+    SubmissionReplay replay = SubmissionReplay.unsupported,
+  }) {
+    final retention = keepAlive();
+    return SkirMutationClient(
+          () => read(natsProvider),
+          () => read(panelTelemetryProvider.future),
+        )
+        .prepare(
+          subject,
+          requestBytes,
+          serializer,
+          label: label,
+          classify: classify,
+          onResponse: onResponse,
+          submissionId: submissionId,
+          resources: resources,
+          replay: replay,
+        )
+        .copyWith(dispose: retention.close);
+  }
+
   Future<TResponse> mutateSkir<TResponse>(
     String subject,
     Uint8List requestBytes,
@@ -17,38 +48,105 @@ extension RefSkirMutation on Ref {
     String? submissionId,
     Set<Object> resources = const {},
     SubmissionReplay replay = SubmissionReplay.unsupported,
-  }) async {
-    final client = read(natsProvider);
-    final telemetryFuture = read(panelTelemetryProvider.future);
+  }) => read(localWorkProvider).execute(
+    prepareSkir(
+      subject,
+      requestBytes,
+      serializer,
+      label: label,
+      classify: classify,
+      onResponse: onResponse,
+      submissionId: submissionId,
+      resources: resources,
+      replay: replay,
+    ),
+  );
+}
+
+/// Resolves the current connection for each attempt while preserving captured request bytes.
+/// Dependencies belong to the originating scope and must reject access after disposal.
+final class SkirMutationClient {
+  const SkirMutationClient(this._client, this._telemetry);
+  final NatsClient Function() _client;
+  final Future<PanelTelemetry> Function() _telemetry;
+
+  Future<T> request<T>(
+    FutureOr<String> subject,
+    Uint8List bytes,
+    Serializer<T> serializer,
+  ) async {
+    final destination = await subject;
+    final telemetry = await _telemetry();
+    final client = _client();
+    final response = await telemetry.traceNats(
+      subject: destination,
+      payloadSize: bytes.length,
+      operationName: "request",
+      operation: (headers) => client.request(
+        destination,
+        bytes,
+        headers: headers,
+        timeout: const Duration(seconds: 10),
+      ),
+    );
+    return serializer.fromBytes(response.payload);
+  }
+
+  PreparedCommit<TResponse> prepare<TResponse>(
+    FutureOr<String> subject,
+    Uint8List requestBytes,
+    Serializer<TResponse> serializer, {
+    required String label,
+    required MutationResponseDisposition Function(TResponse) classify,
+    Future<void> Function(TResponse)? onResponse,
+    String? submissionId,
+    Set<Object> resources = const {},
+    SubmissionReplay replay = SubmissionReplay.unsupported,
+  }) {
     final bytes = Uint8List.fromList(requestBytes).asUnmodifiableView();
-    final journal = read(mutationJournalProvider);
-    final telemetry = await telemetryFuture;
-    MutationReservation? reservation;
-    final submission = MutationSubmission<TResponse>(
+    return PreparedCommit<TResponse>(
       id: submissionId ?? uuid.v4(),
       label: label,
       replay: replay,
       resources: resources,
+      integrate: (result) async {
+        switch (result) {
+          case SubmissionConfirmed(:final value):
+            await onResponse?.call(value);
+          case SubmissionRejected(response: final TResponse response):
+            await onResponse?.call(response);
+          case SubmissionRejected() ||
+              SubmissionNotSubmitted() ||
+              SubmissionUncertain():
+        }
+      },
       send: () async {
-        reservation ??= await journal.coordinator.reserve(resources);
+        final PanelTelemetry telemetry;
+        final NatsClient client;
+        final String destination;
+        try {
+          destination = await subject;
+          telemetry = await _telemetry();
+          client = _client();
+        } on Object catch (error) {
+          return SubmissionResult.notSubmitted(
+            message: "The request could not be prepared",
+            cause: error,
+          );
+        }
         final response = await telemetry.traceNats(
-          subject: subject,
+          subject: destination,
           payloadSize: bytes.length,
           operationName: "request",
           operation: (headers) => client.request(
-            subject,
+            destination,
             bytes,
             headers: headers,
             timeout: const Duration(seconds: 10),
           ),
         );
         final value = serializer.fromBytes(response.payload);
-        await onResponse?.call(value);
         final disposition = classify(value);
-        if (disposition != MutationResponseDisposition.uncertain) {
-          reservation!.release();
-          reservation = null;
-        }
         return switch (disposition) {
           MutationResponseDisposition.confirmed => SubmissionResult.confirmed(
             value,
@@ -65,11 +163,5 @@ extension RefSkirMutation on Ref {
         };
       },
     );
-    journal.track(submission);
-    return switch (await submission.run()) {
-      SubmissionConfirmed(:final value) => value,
-      SubmissionRejected(response: final TResponse response) => response,
-      _ => throw SubmissionException(submission),
-    };
   }
 }

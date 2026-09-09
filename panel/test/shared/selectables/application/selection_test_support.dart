@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 EditOwner? selectionOwner(ProviderContainer container) {
   final model = container.read(inspectionSessionProvider).model;
@@ -94,6 +95,16 @@ class MockSelectable extends EditableSelectable<MockSelectableIdentifier> {
   Widget? buildInspectorHeader() => null;
 
   @override
+  EditorSnapshot get snapshot =>
+      FakeEditorSnapshot(document, validation: validate);
+  @override
+  late final EditableResource resource = FakeEditableResource(
+    key: EditorResourceKey(scope: null, identity: id.resourceId),
+    current: snapshot,
+    commit: commit,
+    load: () async => snapshot,
+  );
+
   Future<TypedMutationResult> commit(EditorCommit commit) async {
     latestCommit = commit;
     final value = commit.rootValue;

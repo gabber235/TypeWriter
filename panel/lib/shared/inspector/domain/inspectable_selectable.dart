@@ -17,11 +17,9 @@ abstract class EditableSelectable<I extends SelectableIdentifier>
   @override
   String get label => name;
   @override
-  Stream<EditorDocument?> get updates => const Stream.empty();
-  @override
   EditorCommitPolicy get commitPolicy => EditorCommitPolicy.autosaveChanges;
   @override
-  List<TypeDiagnostic> validateDraft(DataValue value) => const [];
+  List<TypeDiagnostic> validateDraft(DataValue value) => snapshot.validateDraft(value);
   ResolvedTypeRef get rootType {
     final type = document.rootType;
     if (type is NamedType) return type.reference;
@@ -30,6 +28,8 @@ abstract class EditableSelectable<I extends SelectableIdentifier>
 
   TypeCatalog get typeCatalog => document.typeCatalog;
   TypeRegistry get typeRegistry => TypeRegistry(typeCatalog);
+  @override
+  EditorDocument get document => snapshot.document;
   @override
   EditorValue value(DataPath path) =>
       document.confirmedValue.readEditorValue(path);

@@ -111,10 +111,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Service"), findsOneWidget);
-    expect(find.text("Identity and connection"), findsOneWidget);
+    expect(find.text("Identity and connection"), findsNothing);
     expect(find.text("CONNECTION"), findsOneWidget);
     expect(find.text("Host"), findsOneWidget);
-    expect(find.text("Capabilities and runtime health"), findsOneWidget);
+    expect(find.text("Capabilities and runtime health"), findsNothing);
     expect(find.text("CAPABILITIES"), findsOneWidget);
     expect(find.text("RUNTIME HEALTH"), findsOneWidget);
     expect(find.text("Configuration"), findsOneWidget);
@@ -133,7 +133,7 @@ void main() {
     await tester.ensureVisible(find.text("Host a Realm"));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(Checkbox).first);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text("Assigned Realm"), findsOneWidget);
     expect(find.text("Hosted Realm"), findsNothing);
@@ -189,10 +189,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Runtime"), findsOneWidget);
-    expect(find.text("Current deployment health"), findsOneWidget);
+    expect(find.text("Current deployment health"), findsNothing);
     expect(find.text("STATUS"), findsOneWidget);
     expect(find.text("Placement"), findsOneWidget);
-    expect(find.text("Where this runtime executes"), findsOneWidget);
+    expect(find.text("Where this runtime executes"), findsNothing);
     expect(find.text("ASSIGNMENT"), findsOneWidget);
     expect(find.text("Assigned Realm"), findsOneWidget);
     expect(find.text("Message"), findsOneWidget);
@@ -287,10 +287,11 @@ class _Fixture {
   List<Service> get services => [hostService, customService];
 
   List<Override> get overrides => [
+    organizationIdProvider.overrideWith((ref) => recordId("organization:test")),
+    organizationTopologyControllerProvider(
+      recordId("organization:test"),
+    ).overrideWith(() => _FixtureScopedTopology(topology)),
     servicesProvider.overrideWith(() => _FixtureServices(services)),
-    organizationTopologyStreamProvider.overrideWith(
-      () => _FixtureTopology(topology),
-    ),
   ];
 }
 
@@ -301,15 +302,6 @@ class _FixtureServices extends Services {
 
   @override
   Stream<List<Service>> build() => Stream.value(services);
-}
-
-class _FixtureTopology extends OrganizationTopologyStream {
-  _FixtureTopology(this.topology);
-
-  final OrganizationTopology topology;
-
-  @override
-  Stream<OrganizationTopology> build() => Stream.value(topology);
 }
 
 Service _service({
@@ -336,3 +328,11 @@ skir.ChildRuntimeState _childState({String? message}) => skir.ChildRuntimeState(
   message: message,
   updatedAt: DateTime.utc(2026, 8, 20),
 );
+
+class _FixtureScopedTopology extends OrganizationTopologyController {
+  _FixtureScopedTopology(this.topology);
+  final OrganizationTopology topology;
+  @override
+  Stream<OrganizationTopology> build(skir.RecordId organizationId) =>
+      Stream.value(topology);
+}

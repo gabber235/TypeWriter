@@ -5,68 +5,84 @@ void _testTopologySelectionRemoval() {
     testWidgets("removed selected $kind recovers the inspector", (
       tester,
     ) async {
-      final harness = await tester.runAsync(_Harness.create);
-      final container = harness!.container;
-      addTearDown(harness.dispose);
-      final engineId = recordId("engine_instance:paper");
-      final topology =
-          (container.read(
-                  scopedOrganizationTopologyProvider(_organizationId).notifier,
-                )
-                as _SeededTopology)
-            ..replace(
-              OrganizationTopology(
-                hosts: [TopologyHost.fromSkir(harness.host)],
-                realmInstances: [TopologyRealm.fromSkir(harness.realm)],
-                engineInstances: [
-                  TopologyEngine.fromSkir(
-                    skir.EngineInstance(
-                      engineId: engineId,
-                      ownerHost: harness.realm.ownerHost,
-                      realm: skir.RealmInfo(
-                        realmId: harness.realm.realmId,
+      late _Harness harness;
+      await tester.runAsync(() async {
+        harness = await _Harness.create();
+        final container = harness.container;
+        addTearDown(harness.dispose);
+        final engineId = recordId("engine_instance:paper");
+        final topology =
+            (container.read(
+                    organizationTopologyControllerProvider(
+                      _organizationId,
+                    ).notifier,
+                  )
+                  as _SeededTopology)
+              ..replace(
+                OrganizationTopology(
+                  hosts: [TopologyHost.fromSkir(harness.host)],
+                  realmInstances: [TopologyRealm.fromSkir(harness.realm)],
+                  engineInstances: [
+                    TopologyEngine.fromSkir(
+                      skir.EngineInstance(
+                        engineId: engineId,
                         ownerHost: harness.realm.ownerHost,
+                        realm: skir.RealmInfo(
+                          realmId: harness.realm.realmId,
+                          ownerHost: harness.realm.ownerHost,
+                        ),
+                        revision: 1,
+                        target: harness.realm.targetEngine,
+                        state: skir.ChildRuntimeState.defaultInstance,
                       ),
-                      revision: 1,
-                      target: harness.realm.targetEngine,
-                      state: skir.ChildRuntimeState.defaultInstance,
                     ),
-                  ),
-                ],
-              ),
-            );
-      final identifier = switch (kind) {
-        "host" => ServiceHostIdentifier(harness.host.hostId),
-        "realm" => RealmInstanceIdentifier(harness.realm.realmId),
-        _ => EngineInstanceIdentifier(engineId),
-      };
-      container.read(selectionProvider.notifier).selectAll([identifier]);
-      final session = container.listen(inspectionSessionProvider, (_, _) {});
-      addTearDown(session.close);
-      expect(
-        container.read(inspectedSelectionProvider).requireValue,
-        hasLength(1),
-      );
+                  ],
+                ),
+              );
+        await container.pump();
+        await container.read(organizationTopologyStreamProvider.future);
+        final identifier = switch (kind) {
+          "host" => ServiceHostIdentifier(harness.host.hostId),
+          "realm" => RealmInstanceIdentifier(harness.realm.realmId),
+          _ => EngineInstanceIdentifier(engineId),
+        };
+        container.read(selectionProvider.notifier).selectAll([identifier]);
+        final session = container.listen(inspectionSessionProvider, (_, _) {});
+        addTearDown(session.close);
+        expect(
+          container.read(inspectedSelectionProvider).requireValue,
+          hasLength(1),
+        );
 
-      topology.replace(OrganizationTopology.empty);
-      final missing = container.read(inspectedSelectionProvider);
-      expect(
-        missing.asError?.error,
-        isA<SelectableNotFoundException>().having(
-          (error) => error.id,
-          "identifier",
-          identifier,
-        ),
-      );
-      expect(
-        missing.asError?.stackTrace.toString(),
-        contains("topology_selection.dart"),
-      );
-      expect(container.read(selectionProvider), [identifier]);
-
+        final missing = Completer<AsyncValue<List<InspectableSelectable>>>();
+        final errors = container.listen(inspectedSelectionProvider, (_, value) {
+          if (value.hasError && !missing.isCompleted) missing.complete(value);
+        });
+        addTearDown(errors.close);
+        topology.replace(OrganizationTopology.empty);
+        final removed = await missing.future.timeout(
+          const Duration(seconds: 2),
+        );
+        expect(
+          removed.asError?.error,
+          isA<SelectableNotFoundException>().having(
+            (error) => error.id,
+            "identifier",
+            identifier,
+          ),
+        );
+        expect(
+          removed.asError?.stackTrace.toString(),
+          contains("topology_selection.dart"),
+        );
+      });
       await tester.pump();
-      expect(container.read(selectionProvider), isEmpty);
-      expect(container.read(inspectedSelectionProvider).requireValue, isEmpty);
+      expect(harness.container.read(selectionProvider), isEmpty);
+      expect(
+        harness.container.read(inspectedSelectionProvider).requireValue,
+        isEmpty,
+      );
+      await tester.pump(Duration.zero);
       expect(tester.takeException(), isNull);
     });
   }

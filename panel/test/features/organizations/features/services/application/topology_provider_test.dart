@@ -1,9 +1,14 @@
+import "dart:async";
+
 import "package:flutter_test/flutter_test.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
+
+part "topology_state_test_cases.dart";
+part "topology_lifecycle_test_cases.dart";
 
 const _watchSubject = "cloud.to.user.user1.organization.org1.topology.watch";
 const _listenSubject = "cloud.from.organization.org1.topology.watch";
@@ -58,6 +63,8 @@ Future<void> _waitFor(bool Function() condition) async {
 }
 
 void main() {
+  topologyStateTests();
+  topologyLifecycleTests();
   test(
     "runtime reports cannot publish configuration early or revive removed children",
     () {
@@ -235,55 +242,6 @@ void main() {
         removedResources: [_realm().realmId],
       );
       expect(observed.applyConfiguration(old), observed);
-    },
-  );
-
-  test(
-    "host configuration sends the generated transactional request",
-    () async {
-      final nats = FakeNatsClient();
-      skir.ConfigureServiceHostRequest? decoded;
-      nats.registerHandler(_configureSubject, (data) {
-        decoded = skir.ConfigureServiceHostRequest.serializer.fromBytes(data);
-        return skir.ConfigureServiceHostResponse.serializer.toBytes(
-          skir.ConfigureServiceHostResponse.createSuccess(
-            host: _host(revision: 2),
-            realm: null,
-            engine: null,
-            removedResources: [],
-          ),
-        );
-      });
-      final container = ProviderContainer.test(
-        overrides: [
-          userIdProvider.overrideWith((ref) async => "user1"),
-          organizationIdProvider.overrideWith((ref) => _organizationId),
-          natsProvider.overrideWithValue(nats),
-        ],
-      );
-      addTearDown(container.dispose);
-      addTearDown(nats.dispose);
-      final execution = skir.HostExecutionConfiguration(
-        realm: null,
-        primaryEngine: null,
-      );
-
-      await container
-          .read(organizationTopologyStreamProvider.notifier)
-          .configureHost(
-            host: TopologyHost.fromSkir(_host()),
-            execution: execution,
-          );
-
-      expect(
-        nats.requests
-            .singleWhere((request) => request.subject == _configureSubject)
-            .subject,
-        _configureSubject,
-      );
-      expect(decoded!.hostId, _host().hostId);
-      expect(decoded!.expectedRevision, 1);
-      expect(decoded!.execution, execution);
     },
   );
 }

@@ -95,6 +95,7 @@ class Organizations extends _$Organizations {
     }
 
     final request = skir.CreateOrganizationRequest(
+      operationId: uuid.v4(),
       name: name,
       logoUrl: logoUrl,
     );
@@ -107,8 +108,13 @@ class Organizations extends _$Organizations {
       "cloud.to.user.$userId.organization.create",
       skir.CreateOrganizationRequest.serializer.toBytes(request),
       skir.CreateOrganizationResponse.serializer,
+      submissionId: request.operationId,
+      replay: SubmissionReplay.identicalRequest,
       label: "Create organization",
       classify: (response) => switch (response) {
+        skir.CreateOrganizationResponse_invalidOperationIdErrorWrapper() ||
+        skir.CreateOrganizationResponse_operationIdentityReusedErrorWrapper() =>
+          MutationResponseDisposition.rejected,
         skir.CreateOrganizationResponse_successWrapper() =>
           MutationResponseDisposition.confirmed,
         skir.CreateOrganizationResponse_unknown() ||
@@ -118,6 +124,12 @@ class Organizations extends _$Organizations {
     );
 
     switch (response) {
+      case skir.CreateOrganizationResponse_invalidOperationIdErrorWrapper():
+        throw ApiException.badRequest("Operation identity is required");
+      case skir.CreateOrganizationResponse_operationIdentityReusedErrorWrapper():
+        throw ApiException.conflict(
+          "Operation identity was reused with different input",
+        );
       case skir.CreateOrganizationResponse_unknown():
         throw ApiException.unknownResponseMessage();
       case skir.CreateOrganizationResponse_internalErrorWrapper():

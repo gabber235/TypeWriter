@@ -108,7 +108,7 @@ final class HasInspectableSelectionProvider
 }
 
 String _$hasInspectableSelectionHash() =>
-    r'fc35f93d31e8a73986f4932f8650aac64a93cc09';
+    r'7cbf8deaf3235756f3140f855bf5bd9bf7d40ccb';
 
 @ProviderFor(inspectionSession)
 final inspectionSessionProvider = InspectionSessionProvider._();
@@ -155,7 +155,7 @@ final class InspectionSessionProvider
   }
 }
 
-String _$inspectionSessionHash() => r'87e63ba53af6a7c0f7c7def866221560e0434209';
+String _$inspectionSessionHash() => r'a868b7baa20bfc6f0ad563c882929f25c10f0895';
 
 @ProviderFor(inspectedHeader)
 final inspectedHeaderProvider = InspectedHeaderProvider._();

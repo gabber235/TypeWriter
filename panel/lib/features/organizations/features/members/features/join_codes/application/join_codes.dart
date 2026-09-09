@@ -150,6 +150,7 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
     }
 
     final request = skir.GenerateOrganizationJoinCodeRequest(
+      operationId: uuid.v4(),
       singleUse: options.singleUse,
       expiration: switch (options.expiration) {
         JoinCodeExpirationNever() =>
@@ -168,6 +169,8 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
       "cloud.to.user.$userId.organization.${organizationId.id}.members.join_codes.generate",
       skir.GenerateOrganizationJoinCodeRequest.serializer.toBytes(request),
       skir.GenerateOrganizationJoinCodeResponse.serializer,
+      submissionId: request.operationId,
+      replay: SubmissionReplay.identicalRequest,
       label: "Generate join code",
       classify: (response) => switch (response) {
         skir.GenerateOrganizationJoinCodeResponse_successWrapper() =>
@@ -180,6 +183,12 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
     );
 
     switch (response) {
+      case skir.GenerateOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper():
+        throw ApiException.badRequest("Operation identity is required");
+      case skir.GenerateOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper():
+        throw ApiException.conflict(
+          "Operation identity was reused with different input",
+        );
       case skir.GenerateOrganizationJoinCodeResponse_unknown():
         throw ApiException.unknownResponseMessage();
       case skir.GenerateOrganizationJoinCodeResponse_internalErrorWrapper():
@@ -231,12 +240,17 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
     );
 
     try {
-      final request = skir.RevokeOrganizationJoinCodeRequest(codeId: codeId);
+      final request = skir.RevokeOrganizationJoinCodeRequest(
+        operationId: uuid.v4(),
+        codeId: codeId,
+      );
 
       final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.join_codes.revoke",
         skir.RevokeOrganizationJoinCodeRequest.serializer.toBytes(request),
         skir.RevokeOrganizationJoinCodeResponse.serializer,
+        submissionId: request.operationId,
+        replay: SubmissionReplay.identicalRequest,
         label: "Revoke join code",
         resources: {(organizationId, codeId)},
         classify: (response) => switch (response) {
@@ -250,6 +264,12 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
       );
 
       switch (response) {
+        case skir.RevokeOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper():
+          throw ApiException.badRequest("Operation identity is required");
+        case skir.RevokeOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper():
+          throw ApiException.conflict(
+            "Operation identity was reused with different input",
+          );
         case skir.RevokeOrganizationJoinCodeResponse_unknown():
           throw ApiException.unknownResponseMessage();
         case skir.RevokeOrganizationJoinCodeResponse_internalErrorWrapper():

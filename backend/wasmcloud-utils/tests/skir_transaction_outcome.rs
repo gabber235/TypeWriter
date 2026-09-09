@@ -12,7 +12,7 @@ enum MemberUpdateOutcome {
     Updated { member: OrganizationMember },
     UserNotFoundError,
     RolesNotFoundError { role_ids: Vec<RecordId> },
-    RolesRequiredError,
+    FounderRoleRequiredError,
 }
 
 #[test]
@@ -28,7 +28,7 @@ fn returns_success_value() {
 
     assert_eq!(
         response,
-        UpdateOrganizationMemberRolesResponse::Success(Box::new(member))
+        UpdateOrganizationMemberRolesResponse::Success(vec![member])
     );
 }
 
@@ -58,20 +58,20 @@ fn maps_request_payload_to_error_variant() {
     let UpdateOrganizationMemberRolesResponse::UserNotFoundError(error) = response else {
         panic!("expected user not found response")
     };
-    assert_eq!(error.user_id, user_id);
+    assert_eq!(error.user_ids, [user_id]);
 }
 
 #[test]
 fn maps_payloadless_error_variant() {
     let response = map_outcome(
-        MemberUpdateOutcome::RolesRequiredError,
+        MemberUpdateOutcome::FounderRoleRequiredError,
         record_id("user", "member"),
     )
     .expect("payloadless error outcome should map");
 
     assert!(matches!(
         response,
-        UpdateOrganizationMemberRolesResponse::RolesRequiredError(_)
+        UpdateOrganizationMemberRolesResponse::FounderRoleRequiredError(_)
     ));
 }
 
@@ -85,18 +85,16 @@ fn map_outcome(
         success MemberUpdateOutcome::Updated { member } => member,
         errors {
             MemberUpdateOutcome::UserNotFoundError => {
-                user_id
+                user_ids: vec![user_id]
             },
             MemberUpdateOutcome::RolesNotFoundError { role_ids } => {
                 role_ids
             },
-            MemberUpdateOutcome::RolesRequiredError => {},
+            MemberUpdateOutcome::FounderRoleRequiredError => {},
         }
     );
 
-    Ok(UpdateOrganizationMemberRolesResponse::Success(Box::new(
-        member,
-    )))
+    Ok(UpdateOrganizationMemberRolesResponse::Success(vec![member]))
 }
 
 fn record_id(table: &str, key: &str) -> RecordId {

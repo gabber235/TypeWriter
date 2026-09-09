@@ -64,11 +64,11 @@ void main() {
     await tester.pumpWidget(
       FakeApp(
         overrides: [
-          organizationServicesProvider.overrideWith(
-            () => _StoryServices(services),
+          organizationServicesProvider.overrideWith2(
+            (_) => _StoryServices(services),
           ),
-          scopedOrganizationTopologyProvider.overrideWith(
-            () => _StoryTopology(topology),
+          organizationTopologyControllerProvider.overrideWith2(
+            (_) => _StoryTopology(topology),
           ),
           organizationIdProvider.overrideWithValue(
             recordId("organization:story"),
@@ -164,7 +164,7 @@ class _StoryServices extends OrganizationServices {
       Stream.value(services);
 }
 
-class _StoryTopology extends ScopedOrganizationTopology {
+class _StoryTopology extends OrganizationTopologyController {
   _StoryTopology(this.topology);
 
   final OrganizationTopology topology;

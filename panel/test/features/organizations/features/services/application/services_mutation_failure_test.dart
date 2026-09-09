@@ -146,16 +146,16 @@ void main() {
       expect(result, isA<MutationUncertain>());
       final uncertain = result as MutationUncertain;
       expect(uncertain.cause, isA<StateError>());
-      expect(uncertain.replay, isNull);
+      expect(uncertain.replay, isNotNull);
       expect(uncertain.submissionId, isNotNull);
       expect(harness.container.read(servicesProvider).requireValue, [newest]);
       expect(reports, isEmpty);
       final submission = harness.container
-          .read(mutationJournalProvider)
+          .read(localWorkProvider)
           .submissions
           .single;
       expect(submission.result, isA<SubmissionUncertain>());
-      expect(submission.canReplay, isFalse);
+      expect(submission.canReplay, isTrue);
     },
   );
 
@@ -174,7 +174,6 @@ void main() {
     );
 
     expect(harness.container.read(servicesProvider).requireValue, [newest]);
-    expect(reports, hasLength(1));
-    expect(reports.single.context.toString(), "while deleting a service");
+    expect(reports, isEmpty);
   });
 }

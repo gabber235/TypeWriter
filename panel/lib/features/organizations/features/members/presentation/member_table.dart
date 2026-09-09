@@ -284,7 +284,7 @@ class MembersTable extends HookConsumerWidget {
                   onRolesChanged: (newRoles) {
                     ref
                         .read(organizationMembersProvider.notifier)
-                        .updateMemberRoles(member.userId, newRoles)
+                        .updateMemberRoles([member.userId], newRoles)
                         .catchApiExceptionsAndDisplay(context);
                   },
                   placeholder: "Select roles",

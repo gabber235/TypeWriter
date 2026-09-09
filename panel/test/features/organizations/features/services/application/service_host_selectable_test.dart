@@ -1,3 +1,4 @@
+import "dart:async";
 import "dart:typed_data";
 import "package:flutter/material.dart";
 
@@ -13,6 +14,8 @@ import "../../../../../support/test_utils.dart";
 part "topology_selection_removal_test_cases.dart";
 part "host_apply_test_cases.dart";
 part "host_target_selection_test_cases.dart";
+part "resource_connection_test_cases.dart";
+part "service_host_selectable_test_support.dart";
 
 const _updateSubject = "cloud.to.user.user1.organization.org1.services.update";
 const _configureSubject =
@@ -25,6 +28,7 @@ void main() {
   _testTopologySelectionRemoval();
   _testHostApply();
   _testHostTargetSelection();
+  _testResourceConnections();
 
   test("host presentation owns separate runtime and resource inputs", () async {
     final harness = await _Harness.create();
@@ -63,14 +67,15 @@ void main() {
     addTearDown(owners.dispose);
     final model = harness.selectable.buildPresentation(owners);
     final owner =
-        (model.inputs[const BindingId(2)] as PresentationEditInput).owner
-            as EditorSource;
-    owner.update(DataPath.root.field("name"), const StringValue("renamed"));
+        ((model.inputs[const BindingId(2)]! as PresentationEditInput).owner
+              as EditorSource)
+          ..update(DataPath.root.field("name"), const StringValue("renamed"));
     final result = await owner.flush() as MutationSuccess;
     expect(request!.name, "renamed");
     expect(result.revision, 2);
     expect((result.value as RecordValue).fields.keys, ["name"]);
     expect(harness.nats.requests.map((entry) => entry.subject), [
+      "cloud.to.user.user1.organization.org1.services.watch",
       _updateSubject,
     ]);
   });
@@ -94,18 +99,21 @@ void main() {
     addTearDown(owners.dispose);
     final model = harness.selectable.buildPresentation(owners);
     final owner =
-        (model.inputs[const BindingId(1)] as PresentationEditInput).owner
-            as EditorSource;
-    owner.update(
-      DataPath.root.field("realm"),
-      PolymorphicValue(
-        concreteType: const ResolvedTypeRef(
-          id: QualifiedTypeId(namespace: "panel.host", name: "RealmHosted"),
-          revision: 1,
-        ),
-        value: RecordValue({"target": StringValue("paper@*")}),
-      ),
-    );
+        ((model.inputs[const BindingId(1)]! as PresentationEditInput).owner
+              as EditorSource)
+          ..update(
+            DataPath.root.field("realm"),
+            PolymorphicValue(
+              concreteType: const ResolvedTypeRef(
+                id: QualifiedTypeId(
+                  namespace: "panel.host",
+                  name: "RealmHosted",
+                ),
+                revision: 1,
+              ),
+              value: RecordValue({"target": StringValue("paper@*")}),
+            ),
+          );
 
     final result = await owner.flush() as MutationSuccess;
     expect(request!.execution.realm, isNotNull);
@@ -115,169 +123,8 @@ void main() {
       isFalse,
     );
     expect(harness.nats.requests.map((entry) => entry.subject), [
+      "cloud.to.user.user1.organization.org1.topology.watch",
       _configureSubject,
     ]);
   });
 }
-
-class _Harness {
-  _Harness._({
-    required this.nats,
-    required this.container,
-    required this.service,
-    required this.host,
-    required this.realm,
-    required this.selectable,
-    required this.servicesSubscription,
-    required this.topologySubscription,
-  });
-
-  static Future<_Harness> create({
-    skir.RecordId Function()? organization,
-    List<String> supportedEngineIds = const ["paper"],
-    List<skir.RealmInstance> realms = const [],
-  }) async {
-    final nats = FakeNatsClient();
-    final service = Service(
-      serviceId: recordId("service:paper"),
-      revision: 1,
-      name: "Paper",
-      role: HostServiceRole(version: "1.0.0"),
-      createdAt: DateTime.utc(2026, 8, 21),
-      state: ServiceState(
-        status: ServiceStateStatus.online,
-        lastSeen: DateTime.now(),
-      ),
-    );
-    final host = skir.ServiceHost(
-      hostId: recordId("service_host:paper"),
-      serviceId: service.serviceId,
-      revision: 1,
-      entrypoint: "PAPER",
-      canHostRealm: true,
-      supportedEngines: [
-        for (final id in supportedEngineIds) skir.SupportedEngine(engineId: id),
-      ],
-      topologyRevision: skir.ReconciledRevision(desired: 1, applied: 1),
-      state: skir.HostRuntimeState(
-        status: skir.HostRuntimeStatus.active,
-        message: null,
-        updatedAt: DateTime.utc(2026, 8, 21),
-      ),
-    );
-    final realm = skir.RealmInstance(
-      realmId: recordId("realm_instance:paper"),
-      ownerHost: skir.OwnerHost(id: host.hostId, name: service.name),
-      revision: 1,
-      targetEngine: skir.EngineTarget(
-        engineId: "paper",
-        versionConstraint: "^1",
-      ),
-      state: skir.ChildRuntimeState.defaultInstance,
-    );
-    final topology = OrganizationTopology(
-      hosts: [TopologyHost.fromSkir(host)],
-      realmInstances: realms.map(TopologyRealm.fromSkir).toList(),
-      engineInstances: [],
-    );
-    final container = ProviderContainer.test(
-      overrides: [
-        userIdProvider.overrideWith((ref) async => "user1"),
-        organizationIdProvider.overrideWith(
-          (ref) => organization?.call() ?? _organizationId,
-        ),
-        natsProvider.overrideWithValue(nats),
-        panelTelemetryProvider.overrideWithValue(
-          const AsyncData(NoopPanelTelemetry()),
-        ),
-        organizationServicesProvider(
-          _organizationId,
-        ).overrideWith(() => _SeededServices([service])),
-        scopedOrganizationTopologyProvider(
-          _organizationId,
-        ).overrideWith(() => _SeededTopology(topology)),
-      ],
-    );
-    final servicesSubscription = container.listen(
-      servicesProvider,
-      (previous, next) {},
-    );
-    final topologySubscription = container.listen(
-      organizationTopologyStreamProvider,
-      (previous, next) {},
-    );
-    await container.read(servicesProvider.future);
-    await container.read(organizationTopologyStreamProvider.future);
-    container
-        .read(selectionProvider.notifier)
-        .select(ServiceHostIdentifier(host.hostId));
-    final selectable =
-        container.read(selectedProvider).requireValue.single
-            as InspectableSelectable;
-    return _Harness._(
-      nats: nats,
-      container: container,
-      service: service,
-      host: host,
-      realm: realm,
-      selectable: selectable,
-      servicesSubscription: servicesSubscription,
-      topologySubscription: topologySubscription,
-    );
-  }
-
-  final FakeNatsClient nats;
-  final ProviderContainer container;
-  final Service service;
-  final skir.ServiceHost host;
-  final skir.RealmInstance realm;
-  final InspectableSelectable selectable;
-  final ProviderSubscription<AsyncValue<List<Service>>> servicesSubscription;
-  final ProviderSubscription<AsyncValue<OrganizationTopology>>
-  topologySubscription;
-
-  void respond(String subject, Uint8List Function(Uint8List) handler) {
-    nats.registerHandler(subject, handler);
-  }
-
-  void dispose() {
-    servicesSubscription.close();
-    topologySubscription.close();
-    container.dispose();
-    nats.dispose();
-  }
-}
-
-class _SeededServices extends OrganizationServices {
-  _SeededServices(this.services);
-
-  final List<Service> services;
-
-  @override
-  Stream<List<Service>> build(skir.RecordId organizationId) =>
-      Stream.value(services);
-}
-
-class _SeededTopology extends ScopedOrganizationTopology {
-  _SeededTopology(this.topology);
-
-  final OrganizationTopology topology;
-
-  void replace(OrganizationTopology value) => state = AsyncData(value);
-
-  @override
-  Stream<OrganizationTopology> build(skir.RecordId organizationId) =>
-      Stream.value(topology);
-}
-
-skir.ServiceHost _hostWithRevision(skir.ServiceHost host, int revision) =>
-    skir.ServiceHost(
-      hostId: host.hostId,
-      serviceId: host.serviceId,
-      revision: revision,
-      entrypoint: host.entrypoint,
-      canHostRealm: host.canHostRealm,
-      supportedEngines: host.supportedEngines,
-      topologyRevision: host.topologyRevision,
-      state: host.state,
-    );

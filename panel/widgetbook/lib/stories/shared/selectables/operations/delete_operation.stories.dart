@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 import "package:widgetbook_annotation/widgetbook_annotation.dart" as widgetbook;
 import "package:widgetbook_workspace/stories/shared/selectables/operations/operation_story.dart";
 
@@ -129,6 +130,16 @@ class _DeleteSelectable
       ]);
 
   @override
+  EditorSnapshot get snapshot =>
+      FakeEditorSnapshot(document, validation: validate);
+  @override
+  late final EditableResource resource = FakeEditableResource(
+    key: EditorResourceKey(scope: null, identity: id.resourceId),
+    current: snapshot,
+    commit: commit,
+    load: () async => snapshot,
+  );
+
   Future<TypedMutationResult> commit(EditorCommit commit) async =>
       TypedMutationResult.unavailable([
         const TypeDiagnostic(

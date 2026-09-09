@@ -17,11 +17,11 @@ fn service_add_matches(body: &[u8]) -> bool {
         .is_ok_and(|response| {
             matches!(
                 response,
-                WatchOrganizationServicesResponse::Add(service)
-                    if service.service_id.key.to_string() == "bindable"
+                WatchOrganizationServicesResponse::List(services)
+                    if services.iter().any(|service| service.service_id.key.to_string() == "bindable"
                         && service.organization.as_ref().is_some_and(|organization| {
                             organization.key.to_string() == "test_org"
-                        })
+                        }))
             )
         })
 }
@@ -35,14 +35,14 @@ fn bound_notification_matches(body: &[u8]) -> bool {
         })
 }
 
-fn topology_removal_matches(body: &[u8], table: &str, key: &str) -> bool {
+fn topology_empty_matches(body: &[u8]) -> bool {
     WatchOrganizationTopologyResponse::serializer()
         .from_bytes(body, wasmcloud_utils::skir_client::UnrecognizedValues::Drop)
         .is_ok_and(|response| {
             matches!(
                 response,
-                WatchOrganizationTopologyResponse::ResourceRemoved(resource_id)
-                    if resource_id.table == table && resource_id.key.to_string() == key
+                WatchOrganizationTopologyResponse::List(topology)
+                    if topology.hosts.is_empty() && topology.realms.is_empty() && topology.engines.is_empty()
             )
         })
 }
@@ -63,6 +63,7 @@ async fn invalid_registration_token_does_not_bind_service(
         context,
         "typewriter.from.user.actor.organization.test_org.services.bind",
         &BindServiceRequest {
+            operation_id: crate::framework::operation_id(),
             registration_token: "ZZZZZZZZZZ".into(),
             _unrecognized: None,
         },
@@ -102,6 +103,7 @@ async fn missing_organization_does_not_consume_registration(
         context,
         "typewriter.from.user.actor.organization.missing.services.bind",
         &BindServiceRequest {
+            operation_id: crate::framework::operation_id(),
             registration_token: "ABCDEFGHIJ".into(),
             _unrecognized: None,
         },
@@ -146,6 +148,7 @@ async fn valid_registration_binds_service_and_publishes_both_views(
         context,
         "typewriter.from.user.actor.organization.test_org.services.bind",
         &BindServiceRequest {
+            operation_id: crate::framework::operation_id(),
             registration_token: "ABCDEFGHIJ".into(),
             _unrecognized: None,
         },
@@ -194,26 +197,19 @@ async fn unbind_removes_service_and_topology_from_organization_views(
                 .is_ok_and(|response| {
                     matches!(
                         response,
-                        WatchOrganizationServicesResponse::Remove(service_id)
-                            if service_id.table == "service"
-                                && service_id.key.to_string() == "bound"
+                        WatchOrganizationServicesResponse::List(services) if services.is_empty()
                     )
                 })
         });
     messaging
         .expect_publish("typewriter.to.organization.test_org.topology.watch")
-        .body_matches(|body| topology_removal_matches(body, "engine_instance", "bound"));
-    messaging
-        .expect_publish("typewriter.to.organization.test_org.topology.watch")
-        .body_matches(|body| topology_removal_matches(body, "realm_instance", "bound"));
-    messaging
-        .expect_publish("typewriter.to.organization.test_org.topology.watch")
-        .body_matches(|body| topology_removal_matches(body, "service_host", "bound"));
+        .body_matches(topology_empty_matches);
 
     let response: UnbindServiceResponse = request(
         context,
         "typewriter.from.user.actor.organization.test_org.services.unbind",
         &UnbindServiceRequest {
+            operation_id: crate::framework::operation_id(),
             service_id: "bound".into(),
             _unrecognized: None,
         },

@@ -131,6 +131,7 @@ final exemptions = <Exemption>[
     "lib/features/organizations/features/services/presentation/route.dart",
     "lib/features/organizations/presentation/join_organization.dart",
     "lib/shared/ui/components/grid_selectable_card.dart",
+    "lib/shared/mutations/presentation/mutation_activity_button.dart",
     "lib/shared/ui/components/focus_highlight.dart",
     "lib/shared/ui/components/depth_box.dart",
     "lib/shared/search/presentation/search_modal_body.dart",

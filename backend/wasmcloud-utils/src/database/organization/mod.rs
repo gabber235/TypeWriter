@@ -1,4 +1,5 @@
 pub mod projections;
+pub mod snapshots;
 
 use serde::{Deserialize, Serialize};
 use surrealdb_component_sdk::{Datetime, RecordId};

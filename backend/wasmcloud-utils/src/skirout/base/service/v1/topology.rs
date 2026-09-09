@@ -866,6 +866,7 @@ impl HostConfigurationChange {
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct ConfigureServiceHostRequest {
+    pub operation_id: String,
     pub host_id: crate::skirout::base::kernel::v1::record_id::RecordId,
     pub expected_revision: i64,
     pub execution: HostExecutionConfiguration,
@@ -1053,6 +1054,80 @@ impl ConfigureServiceHostResponse_RealmNotFoundError {
 }
 
 // ==============================================================================
+// struct ConfigureServiceHostResponse.InvalidOperationIdError
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct ConfigureServiceHostResponse_InvalidOperationIdError {
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<ConfigureServiceHostResponse_InvalidOperationIdError>>,
+}
+
+impl ConfigureServiceHostResponse_InvalidOperationIdError {
+    pub fn default_ref() -> &'static ConfigureServiceHostResponse_InvalidOperationIdError {
+        static D: std::sync::LazyLock<ConfigureServiceHostResponse_InvalidOperationIdError> = std::sync::LazyLock::new(ConfigureServiceHostResponse_InvalidOperationIdError::default);
+        &D
+    }
+}
+
+impl ConfigureServiceHostResponse_InvalidOperationIdError {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_InvalidOperationIdError> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_InvalidOperationIdError>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "service/v1/topology.skir",
+                    "ConfigureServiceHostResponse.InvalidOperationIdError",
+                    "",
+                    |x: &ConfigureServiceHostResponse_InvalidOperationIdError| &x._unrecognized,
+                    |x: &mut ConfigureServiceHostResponse_InvalidOperationIdError, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<ConfigureServiceHostResponse_InvalidOperationIdError> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_InvalidOperationIdError::_adapter())
+    }
+}
+
+// ==============================================================================
+// struct ConfigureServiceHostResponse.OperationIdentityReusedError
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct ConfigureServiceHostResponse_OperationIdentityReusedError {
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<ConfigureServiceHostResponse_OperationIdentityReusedError>>,
+}
+
+impl ConfigureServiceHostResponse_OperationIdentityReusedError {
+    pub fn default_ref() -> &'static ConfigureServiceHostResponse_OperationIdentityReusedError {
+        static D: std::sync::LazyLock<ConfigureServiceHostResponse_OperationIdentityReusedError> = std::sync::LazyLock::new(ConfigureServiceHostResponse_OperationIdentityReusedError::default);
+        &D
+    }
+}
+
+impl ConfigureServiceHostResponse_OperationIdentityReusedError {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_OperationIdentityReusedError> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_OperationIdentityReusedError>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "service/v1/topology.skir",
+                    "ConfigureServiceHostResponse.OperationIdentityReusedError",
+                    "",
+                    |x: &ConfigureServiceHostResponse_OperationIdentityReusedError| &x._unrecognized,
+                    |x: &mut ConfigureServiceHostResponse_OperationIdentityReusedError, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<ConfigureServiceHostResponse_OperationIdentityReusedError> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_OperationIdentityReusedError::_adapter())
+    }
+}
+
+// ==============================================================================
 // enum ConfigureServiceHostResponse
 // ==============================================================================
 
@@ -1064,6 +1139,8 @@ pub enum ConfigureServiceHostResponse {
     InvalidConfigurationError(Box<ConfigureServiceHostResponse_InvalidConfigurationError>),
     IncompatibleEngineError(Box<ConfigureServiceHostResponse_IncompatibleEngineError>),
     RealmNotFoundError(Box<ConfigureServiceHostResponse_RealmNotFoundError>),
+    InvalidOperationIdError(Box<ConfigureServiceHostResponse_InvalidOperationIdError>),
+    OperationIdentityReusedError(Box<ConfigureServiceHostResponse_OperationIdentityReusedError>),
     InvalidRecordIdError(Box<crate::skirout::base::kernel::v1::errors::InvalidRecordIdError>),
     InternalError(Box<crate::skirout::base::kernel::v1::errors::InternalError>),
 }
@@ -1086,8 +1163,10 @@ impl ConfigureServiceHostResponse {
                         ConfigureServiceHostResponse::InvalidConfigurationError(_) => 3,
                         ConfigureServiceHostResponse::IncompatibleEngineError(_) => 4,
                         ConfigureServiceHostResponse::RealmNotFoundError(_) => 5,
-                        ConfigureServiceHostResponse::InvalidRecordIdError(_) => 6,
-                        ConfigureServiceHostResponse::InternalError(_) => 7,
+                        ConfigureServiceHostResponse::InvalidOperationIdError(_) => 6,
+                        ConfigureServiceHostResponse::OperationIdentityReusedError(_) => 7,
+                        ConfigureServiceHostResponse::InvalidRecordIdError(_) => 8,
+                        ConfigureServiceHostResponse::InternalError(_) => 9,
                     },
                     |u| ConfigureServiceHostResponse::Unknown(Some(u)),
                     |x: &ConfigureServiceHostResponse| match x { ConfigureServiceHostResponse::Unknown(Some(u)) => Some(u.as_ref()), _ => None },
@@ -1822,9 +1901,10 @@ fn initialize_module_serializers() {
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<ConfigureServiceHostRequest> = ConfigureServiceHostRequest::_adapter() as *const _ as *mut _;
-                (*a).add_field("host_id", 0, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |x: &ConfigureServiceHostRequest| &x.host_id, |x: &mut ConfigureServiceHostRequest, v| x.host_id = v);
-                (*a).add_field("expected_revision", 1, crate::skir_client::Serializer::int64(), "", |x: &ConfigureServiceHostRequest| &x.expected_revision, |x: &mut ConfigureServiceHostRequest, v| x.expected_revision = v);
-                (*a).add_field("execution", 2, crate::skir_client::internal::struct_serializer_from_static(HostExecutionConfiguration::_adapter()), "", |x: &ConfigureServiceHostRequest| &x.execution, |x: &mut ConfigureServiceHostRequest, v| x.execution = v);
+                (*a).add_field("operation_id", 0, crate::skir_client::Serializer::string(), "", |x: &ConfigureServiceHostRequest| &x.operation_id, |x: &mut ConfigureServiceHostRequest, v| x.operation_id = v);
+                (*a).add_field("host_id", 1, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |x: &ConfigureServiceHostRequest| &x.host_id, |x: &mut ConfigureServiceHostRequest, v| x.host_id = v);
+                (*a).add_field("expected_revision", 2, crate::skir_client::Serializer::int64(), "", |x: &ConfigureServiceHostRequest| &x.expected_revision, |x: &mut ConfigureServiceHostRequest, v| x.expected_revision = v);
+                (*a).add_field("execution", 3, crate::skir_client::internal::struct_serializer_from_static(HostExecutionConfiguration::_adapter()), "", |x: &ConfigureServiceHostRequest| &x.execution, |x: &mut ConfigureServiceHostRequest, v| x.execution = v);
                 (*a).finalize();
             }
             unsafe {
@@ -1848,14 +1928,24 @@ fn initialize_module_serializers() {
                 (*a).finalize();
             }
             unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_InvalidOperationIdError> = ConfigureServiceHostResponse_InvalidOperationIdError::_adapter() as *const _ as *mut _;
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<ConfigureServiceHostResponse_OperationIdentityReusedError> = ConfigureServiceHostResponse_OperationIdentityReusedError::_adapter() as *const _ as *mut _;
+                (*a).finalize();
+            }
+            unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<ConfigureServiceHostResponse> = ConfigureServiceHostResponse::_adapter() as *const _ as *mut _;
                 (*a).add_wrapper_variant("success", 1, 1, crate::skir_client::internal::struct_serializer_from_static(HostConfigurationChange::_adapter()), "", |v| ConfigureServiceHostResponse::Success(Box::new(v)), |x| match x { ConfigureServiceHostResponse::Success(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("conflict_error", 2, 2, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_ConflictError::_adapter()), "", |v| ConfigureServiceHostResponse::ConflictError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::ConflictError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("invalid_configuration_error", 3, 3, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_InvalidConfigurationError::_adapter()), "", |v| ConfigureServiceHostResponse::InvalidConfigurationError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::InvalidConfigurationError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("incompatible_engine_error", 4, 4, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_IncompatibleEngineError::_adapter()), "", |v| ConfigureServiceHostResponse::IncompatibleEngineError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::IncompatibleEngineError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("realm_not_found_error", 5, 5, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_RealmNotFoundError::_adapter()), "", |v| ConfigureServiceHostResponse::RealmNotFoundError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::RealmNotFoundError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("invalid_record_id_error", 6, 6, crate::skirout::base::kernel::v1::errors::InvalidRecordIdError::serializer(), "", |v| ConfigureServiceHostResponse::InvalidRecordIdError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::InvalidRecordIdError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("internal_error", 7, 7, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| ConfigureServiceHostResponse::InternalError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("invalid_operation_id_error", 6, 6, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_InvalidOperationIdError::_adapter()), "", |v| ConfigureServiceHostResponse::InvalidOperationIdError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::InvalidOperationIdError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("operation_identity_reused_error", 7, 7, crate::skir_client::internal::struct_serializer_from_static(ConfigureServiceHostResponse_OperationIdentityReusedError::_adapter()), "", |v| ConfigureServiceHostResponse::OperationIdentityReusedError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::OperationIdentityReusedError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("invalid_record_id_error", 8, 8, crate::skirout::base::kernel::v1::errors::InvalidRecordIdError::serializer(), "", |v| ConfigureServiceHostResponse::InvalidRecordIdError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::InvalidRecordIdError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("internal_error", 9, 9, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| ConfigureServiceHostResponse::InternalError(Box::new(v)), |x| match x { ConfigureServiceHostResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).finalize();
             }
             unsafe {

@@ -44,18 +44,22 @@ class OrganizationJoinRequestsMock extends OrganizationJoinRequests {
   }
 
   @override
-  Future<void> approveRequest(
-    skir.RecordId requestId,
+  Future<void> approveRequests(
+    Iterable<skir.RecordId> requestIds,
     List<OrganizationRole> roles,
   ) async {
-    await Future.delayed(300.ms);
+    final ids = requestIds.toSet();
     final requests = await future;
-
-    final request = requests.firstWhere((r) => r.requestId == requestId);
-    final updated = requests.where((r) => r.requestId != requestId).toList();
-    state = AsyncData(updated);
-
-    onApprove?.call(request, roles);
+    final approved = [
+      for (final id in ids)
+        requests.firstWhere((request) => request.requestId == id),
+    ];
+    state = AsyncData(
+      requests.where((request) => !ids.contains(request.requestId)).toList(),
+    );
+    for (final request in approved) {
+      onApprove?.call(request, roles);
+    }
   }
 
   @override

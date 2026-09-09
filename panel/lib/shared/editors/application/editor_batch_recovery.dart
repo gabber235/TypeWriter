@@ -3,11 +3,24 @@ part of "transactional_editor_source.dart";
 extension _BatchRecovery on EditorBatch {
   Future<Map<TransactionalEditorSource, TypedMutationResult>> _retryRejected() {
     if (_recovery case final active?) return active;
+    if (_paths.entries.any(
+      (entry) =>
+          entry.key._disposed ||
+          entry.key._deleted ||
+          entry.value.any((path) => entry.key.value(path).valueOrNull == null),
+    )) {
+      return Future.value({
+        for (final source in _paths.keys)
+          source: _unavailable(
+            "A resource in this batch is no longer available",
+          ),
+      });
+    }
     final changes = {
-      for (final entry in _commits.entries)
+      for (final entry in _paths.entries)
         if (!entry.key._disposed && entry.key._rejectedBatch == this)
           entry.key: {
-            for (final path in entry.value.changedPaths)
+            for (final path in entry.value)
               path: entry.key.value(path).valueOrNull!,
           },
     };

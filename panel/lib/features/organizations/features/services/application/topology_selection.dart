@@ -12,25 +12,63 @@ class ServiceHostIdentifier extends SelectableIdentifier {
 
   @override
   String get id => "host:${hostId.id}";
+  @override
+  Object get resourceId => hostId;
 
   @override
-  AsyncValue<Selectable> create(Ref ref) =>
-      _topologySelectable(ref, (topology, services, connections) {
-        final host = topology.hosts.firstWhereOrNull(
-          (candidate) => candidate.hostId == hostId,
-        );
-        if (host == null) throw SelectableNotFoundException(this);
-        return _ServiceHostSelectable(
-          ref: ref,
-          id: this,
-          host: host,
-          service: services.firstWhereOrNull(
-            (service) => service.serviceId == host.serviceId,
-          ),
-          topology: topology,
-          connected: connections[host.serviceId] ?? false,
-        );
-      });
+  AsyncValue<Selectable> create(Ref ref) {
+    final topologyState = ref.watch(organizationTopologyStreamProvider);
+    final servicesState = ref.watch(servicesProvider);
+    final connections = ref.watch(serviceConnectionsProvider);
+    final organization = ref.watch(organizationIdProvider);
+    if (topologyState.mapUnready<Selectable>() case final state?) return state;
+    if (servicesState.mapUnready<Selectable>() case final state?) return state;
+    if (organization == null) {
+      return AsyncError(ApiException.noOrganization(), StackTrace.current);
+    }
+
+    final topology = topologyState.requireValue;
+    final host = topology.hosts.firstWhereOrNull(
+      (candidate) => candidate.hostId == hostId,
+    );
+    if (host == null) {
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
+    }
+    final service = servicesState.requireValue.firstWhereOrNull(
+      (service) => service.serviceId == host.serviceId,
+    );
+    final repository = ref.watch(resourceRepositoriesProvider).services(organization);
+    final serviceCommands = service == null
+        ? null
+        : ref.watch(organizationServicesProvider(organization).notifier);
+
+    return AsyncData(
+      _ServiceHostSelectable(
+        id: this,
+        host: host,
+        service: service,
+        topology: topology,
+        connected: connections[host.serviceId] ?? false,
+        configurationTarget: ResourceEditorTarget(
+          targetId: this,
+          label: "${service?.displayName ?? host.hostId.id}: configuration",
+          resource: HostEditorResource(repository, hostId),
+          snapshot: HostEditorSnapshot(host, topology),
+          commitPolicy: EditorCommitPolicy.applyResource,
+        ),
+        onUnbind: service == null
+            ? null
+            : () => serviceCommands!.deleteService(service.serviceId),
+        serviceIdentityTarget: service == null
+            ? null
+            : serviceIdentityTarget(
+                id: ServiceIdentifier(service.serviceId),
+                service: service,
+                repository: repository,
+              ),
+      ),
+    );
+  }
 
   @override
   int get hashCode => hostId.hashCode;
@@ -63,15 +101,23 @@ class RealmInstanceIdentifier extends SelectableIdentifier {
         final host = topology.hosts.firstWhereOrNull(
           (candidate) => candidate.hostId == realm.ownerHost.id,
         );
+        final service = services.firstWhereOrNull(
+          (service) => service.serviceId == host?.serviceId,
+        );
+        final connected = connections[host?.serviceId] ?? false;
+        final organization = service?.organization;
+        final router = ref.watch(appRouterProvider);
         return _RealmInstanceSelectable(
-          ref: ref,
+          onOpen: host != null && connected && organization != null
+              ? () {
+                  router.navigate(realmNavigationRoute(organization, realmId));
+                }
+              : null,
           id: this,
           realm: realm,
-          connected: connections[host?.serviceId] ?? false,
+          connected: connected,
           host: host,
-          service: services.firstWhereOrNull(
-            (service) => service.serviceId == host?.serviceId,
-          ),
+          service: service,
         );
       });
 
@@ -133,9 +179,7 @@ AsyncValue<Selectable> _topologySelectable(
 ) {
   final topology = ref.watch(organizationTopologyStreamProvider);
   final services = ref.watch(servicesProvider);
-  final connections = ref.watch(
-    serviceConnectionsProvider(services.value ?? const <Service>[]),
-  );
+  final connections = ref.watch(serviceConnectionsProvider);
   if (topology case AsyncError(:final error, :final stackTrace)) {
     return AsyncError(error, stackTrace);
   }

@@ -2,13 +2,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 /// Retains resource editors across presentation refreshes and disposes unused owners.
 final class EditorOwnerRegistry {
-  EditorOwnerRegistry({EditorWorkspace? workspace, this.scope})
-    : workspace = workspace ?? EditorWorkspace(),
+  EditorOwnerRegistry({LocalWork? workspace})
+    : workspace = workspace ?? LocalWork(),
       _ownsWorkspace = workspace == null;
 
-  final EditorWorkspace workspace;
+  final LocalWork workspace;
   final bool _ownsWorkspace;
-  Object? scope;
   EditorDestination Function(Object identity)? destinationFor;
   final Set<EditorResourceKey> _retained = {};
   Set<EditorResourceKey> _previous = {};
@@ -16,7 +15,7 @@ final class EditorOwnerRegistry {
   Map<EditOwner, String> get labels => {
     for (final key in _retained)
       if (workspace.resources[key] case final resource?)
-        resource.source: resource.target.label,
+        resource.source: resource.label,
   };
 
   void begin() {
@@ -25,12 +24,9 @@ final class EditorOwnerRegistry {
   }
 
   EditorSource editor(EditorTarget target) {
-    final key = EditorResourceKey(
-      scope: scope,
-      identity: _resourceIdentity(target.targetId),
-    );
+    final key = target.resource.key;
     final first = _retained.add(key);
-    final source = workspace.editor(key, target);
+    final source = workspace.editor(target);
     if (first && !_previous.contains(key)) workspace.retain(key);
     final destination = destinationFor;
     if (destination != null) {
@@ -39,13 +35,32 @@ final class EditorOwnerRegistry {
     return source;
   }
 
-  void deleted(Object id) => workspace
-      .resources[EditorResourceKey(
-        scope: scope,
-        identity: _resourceIdentity(id),
-      )]
-      ?.source
-      .acceptRemoteDeletion();
+  void deleted(Object id) {
+    final identity = _resourceIdentity(id);
+    for (final key in _retained) {
+      if (key.identity == identity) {
+        workspace.resources[key]?.source.acceptRemoteDeletion();
+      }
+    }
+  }
+
+  void unavailable(String message) {
+    for (final key in _retained) {
+      final source = workspace.resources[key]?.source;
+      if (source == null) continue;
+      source.refreshDocument(
+        source.document.copyWith(
+          readOnly: true,
+          diagnostics: [
+            TypeDiagnostic(
+              code: TypeDiagnosticCode.invalidValue,
+              message: message,
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   Future<Map<Object, TypedMutationResult>> flush({
     bool failedOnly = false,
@@ -61,7 +76,7 @@ final class EditorOwnerRegistry {
     );
     return {
       for (var index = 0; index < selected.length; index++)
-        selected[index].target.targetId: results[index],
+        selected[index].targetId: results[index],
     };
   }
 
@@ -83,45 +98,36 @@ final class EditorOwnerRegistry {
   }
 }
 
-/// Adapts one backend mutation boundary into a retained resource editor.
+/// Binds immutable presentation metadata to an explicitly scoped resource.
 final class ResourceEditorTarget implements EditorTarget {
   const ResourceEditorTarget({
     required this.targetId,
     required this.label,
-    required this.document,
-    required EditorCommitter commit,
-    this.updates = const Stream.empty(),
+    required this.resource,
+    required this.snapshot,
     this.commitPolicy = EditorCommitPolicy.autosaveChanges,
-    List<TypeDiagnostic> Function(DataValue)? validateDraft,
-  }) : _commit = commit,
-       _validateDraft = validateDraft;
-  @override
-  final EditorCommitPolicy commitPolicy;
-  final List<TypeDiagnostic> Function(DataValue)? _validateDraft;
-  @override
-  List<TypeDiagnostic> validateDraft(DataValue value) =>
-      _validateDraft?.call(value) ?? const [];
+  });
   @override
   final Object targetId;
   @override
   final String label;
   @override
-  final EditorDocument document;
+  final EditableResource resource;
   @override
-  final Stream<EditorDocument?> updates;
-  final EditorCommitter _commit;
+  final EditorSnapshot snapshot;
   @override
-  Future<TypedMutationResult> commit(EditorCommit commit) => _commit(commit);
+  final EditorCommitPolicy commitPolicy;
+  @override
+  EditorDocument get document => snapshot.document;
+  @override
+  List<TypeDiagnostic> validateDraft(DataValue value) =>
+      snapshot.validateDraft(value);
   @override
   EditorValue value(DataPath path) =>
       document.confirmedValue.readEditorValue(path);
   @override
   EditorMutationResult validate(DataPath path, DataValue value) =>
-      document.rootType.validateEditorMutation(
-        path,
-        value,
-        registry: TypeRegistry(document.typeCatalog),
-      );
+      snapshot.validate(path, value);
 }
 
 Object _resourceIdentity(Object id) =>

@@ -128,6 +128,7 @@ struct HostConfigurationChange {
 
 method ConfigureServiceHost(
   struct {
+    operation_id: string;
     host_id: RecordId;
     expected_revision: int64;
     execution: HostExecutionConfiguration;
@@ -151,6 +152,8 @@ method ConfigureServiceHost(
     realm_id: RecordId;
   };
 
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   invalid_record_id_error: InvalidRecordIdError;
   internal_error: InternalError;
 } = 934201;

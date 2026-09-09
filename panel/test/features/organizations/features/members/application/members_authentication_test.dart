@@ -34,7 +34,7 @@ void main() {
       expect(
         () => container
             .read(organizationMembersProvider.notifier)
-            .updateMemberRoles(recordId("user:m1"), []),
+            .updateMemberRoles([recordId("user:m1")], []),
         throwsA(isA<ApiException>()),
       );
     });
@@ -56,7 +56,7 @@ void main() {
       expect(
         () => container
             .read(organizationMembersProvider.notifier)
-            .updateMemberRoles(recordId("user:m1"), []),
+            .updateMemberRoles([recordId("user:m1")], []),
         throwsA(isA<ApiException>()),
       );
     });

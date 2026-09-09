@@ -16,12 +16,12 @@ AsyncValue<List<InspectableSelectable>> inspectedSelection(Ref ref) {
 
 @riverpod
 bool hasInspectableSelection(Ref ref) {
-  return ref.watch(inspectedSelectionProvider).value?.isNotEmpty ?? false;
+  return ref.watch(inspectedSelectionProvider).value?.isNotEmpty ?? true;
 }
 
 @riverpod
 InspectionSession inspectionSession(Ref ref) {
-  ref.watch(editorWorkspaceProvider);
+  ref.watch(localWorkProvider);
   final session = InspectionSession(ref);
   ref.onDispose(session.dispose);
   return session;

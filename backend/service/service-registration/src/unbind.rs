@@ -1,31 +1,17 @@
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
-use serde::Deserialize;
 use wasmcloud_utils::{
     database::{RecordId, transaction_query},
     decode_skir, extract_params,
-    skir::base::service::v1::{
-        organization::WatchOrganizationServicesResponse,
-        registration::{
-            UnbindServiceRequest, UnbindServiceResponse,
-            UnbindServiceResponse_ServiceNotFoundError, UnbindServiceResponse_Success,
-        },
-        topology::WatchOrganizationTopologyResponse,
+    skir::base::service::v1::registration::{
+        UnbindServiceRequest, UnbindServiceResponse, UnbindServiceResponse_InvalidOperationIdError,
+        UnbindServiceResponse_OperationIdentityReusedError,
+        UnbindServiceResponse_ServiceNotFoundError, UnbindServiceResponse_Success,
     },
     skir_variant,
     wasmcloud::messaging::types::BrokerMessage,
 };
-
-use wasmcloud_utils::database::service::ServiceRecord;
-
-#[derive(Debug, Deserialize)]
-struct UnbindResult {
-    service: ServiceRecord,
-    host_id: Option<RecordId>,
-    realm_id: Option<RecordId>,
-    engine_id: Option<RecordId>,
-}
 
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_unbind(
@@ -34,6 +20,17 @@ pub async fn handle_unbind(
 ) -> Result<UnbindServiceResponse, otel_wasi::Error> {
     let (actor_id, org_id) = extract_params!(params, user_id, org_id)?;
     let request = decode_skir!(UnbindServiceRequest, &msg.body)?;
+    if request.operation_id.is_empty() {
+        return Ok(wasmcloud_utils::skir_variant!(
+            UnbindServiceResponse::InvalidOperationIdError
+        ));
+    }
+    let receipt = wasmcloud_utils::database::mutation::receipt_id(
+        actor_id,
+        org_id,
+        "UnbindService",
+        &request.operation_id,
+    );
     otel_wasi::main_attribute!(
         "actor.id" = actor_id.to_string(),
         "organization.id" = org_id.to_string(),
@@ -43,69 +40,56 @@ pub async fn handle_unbind(
     let organization_id = RecordId::new("organization", org_id);
 
     let result = transaction_query!(
-        Option<UnbindResult>,
+        Option<bool>,
         r#"
         BEGIN TRANSACTION;
-
         RETURN {
+            LET $previous = fn::mutation::recall($receipt, $request_bytes);
+            IF $previous != NONE { RETURN $previous.value };
+            LET $result = {
+RETURN {
             LET $services = SELECT * FROM $service_id
                 WHERE organization = $organization_id;
             IF array::is_empty($services) {
                 RETURN NONE
             };
-            LET $service = array::first($services);
-            LET $host_id = array::first(
-                SELECT VALUE id FROM service_host WHERE service_id = $service_id
-            );
-            LET $realm_id = array::first(
-                SELECT VALUE id FROM realm_instance WHERE owner_host_id = $host_id
-            );
-            LET $engine_id = array::first(
-                SELECT VALUE id FROM engine_instance WHERE owner_host_id = $host_id
-            );
             UPDATE ONLY $service_id SET
                 organization = NONE,
                 registration = NONE;
-            RETURN {
-                service: $service,
-                host_id: $host_id,
-                realm_id: $realm_id,
-                engine_id: $engine_id,
-            };
+            RETURN true;
         };
-
+            };
+            IF $result != NONE {
+                LET $stored = fn::mutation::commit($receipt, $request_bytes, { value: $result });
+                RETURN $stored.value;
+            };
+            RETURN $result;
+        };
         COMMIT TRANSACTION;
         "#,
     )
     .bind("service_id", service_id)
     .bind("organization_id", organization_id)
+    .bind("receipt", receipt)
+    .bind("request_bytes", msg.body.clone())
     .execute()
     .await
     .error_with_slug("service-unbind-query-failed")?
     .decode()
     .error_with_slug("service-unbind-result-parse-failed")?;
-    let result = wasmcloud_utils::skir_domain_result!(UnbindServiceResponse, result);
+    let result = wasmcloud_utils::skir_domain_result!(UnbindServiceResponse, result,
+        "operation-identity-reused-error" => {});
 
-    let Some(result) = result else {
+    let Some(true) = result else {
         otel_wasi::main_attribute!("service.outcome" = "not_found");
         return Ok(skir_variant!(UnbindServiceResponse::ServiceNotFoundError));
     };
 
-    let topology = wasmcloud_utils::skir_subjects::organization_topology(org_id);
-    for resource_id in [result.engine_id, result.realm_id, result.host_id]
-        .into_iter()
-        .flatten()
-    {
-        topology
-            .publish(WatchOrganizationTopologyResponse::ResourceRemoved(
-                Box::new(resource_id.into()),
-            ))
-            .await?;
-    }
+    wasmcloud_utils::skir_subjects::organization_topology(org_id)
+        .publish(crate::watch_topology::snapshot(org_id).await?)
+        .await?;
     wasmcloud_utils::skir_subjects::organization_services(org_id)
-        .publish(WatchOrganizationServicesResponse::Remove(Box::new(
-            result.service.id.into(),
-        )))
+        .publish(crate::watch::snapshot(org_id).await?)
         .await?;
 
     otel_wasi::main_attribute!("service.outcome" = "unbound");

@@ -3,6 +3,7 @@ import "package:flutter/material.dart" hide Title;
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 part "test_selectable.g.dart";
 
@@ -85,9 +86,38 @@ class TestSelectableIdentifier extends SelectableIdentifier {
           StringValue(id.formatted),
         );
 
+    final snapshot = DocumentEditorSnapshot(
+      EditorDocument(
+        rootType: NamedType(rootDefinition.id),
+        typeCatalog: typeCatalog,
+        confirmedValue: data,
+        revision: 1,
+      ),
+    );
+    final commands = ref.read(testSelectableDataProvider.notifier);
+    final resource = FakeEditableResource(
+      key: EditorResourceKey(scope: null, identity: resourceId),
+      current: snapshot,
+      commit: (commit) async {
+        final next = commit.rootValue;
+        if (next is! RecordValue) {
+          return TypedMutationResult.invalid([
+            const TypeDiagnostic(
+              code: TypeDiagnosticCode.invalidValue,
+              message: "The selectable root must remain a record",
+            ),
+          ]);
+        }
+        commands.set(id, next);
+        return TypedMutationResult.success(
+          revision: commit.expectedRevision + 1,
+          value: next,
+        );
+      },
+    );
     return AsyncValue.data(
       TestSelectable(
-        ref: ref,
+        resource: resource,
         id: this,
         rootDefinition: rootDefinition,
         typeCatalog: typeCatalog,
@@ -106,7 +136,7 @@ class TestSelectableIdentifier extends SelectableIdentifier {
 
 class TestSelectable extends EditableSelectable<TestSelectableIdentifier> {
   TestSelectable({
-    required this.ref,
+    required this.resource,
     required this.id,
     required this.rootDefinition,
     required this.typeCatalog,
@@ -115,7 +145,8 @@ class TestSelectable extends EditableSelectable<TestSelectableIdentifier> {
     required this.onDelete,
   });
 
-  final Ref ref;
+  @override
+  final EditableResource resource;
 
   @override
   final TestSelectableIdentifier id;
@@ -168,22 +199,7 @@ class TestSelectable extends EditableSelectable<TestSelectableIdentifier> {
   Widget? buildInspectorHeader() => TestSelectableHeader(selectable: this);
 
   @override
-  Future<TypedMutationResult> commit(EditorCommit commit) async {
-    final next = commit.rootValue;
-    if (next is! RecordValue) {
-      return TypedMutationResult.invalid([
-        const TypeDiagnostic(
-          code: TypeDiagnosticCode.invalidValue,
-          message: "The selectable root must remain a record",
-        ),
-      ]);
-    }
-    ref.read(testSelectableDataProvider.notifier).set(id.id, next);
-    return TypedMutationResult.success(
-      revision: commit.expectedRevision + 1,
-      value: next,
-    );
-  }
+  EditorSnapshot get snapshot => DocumentEditorSnapshot(document);
 
   @override
   String toString() {

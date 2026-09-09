@@ -54,41 +54,58 @@ class CueIdentifier extends SelectableIdentifier {
         StackTrace.current,
       );
     }
+    final state = ref.watch(authoringSessionProvider(organizationId, realmId));
+    final repository = ref
+        .watch(resourceRepositoriesProvider)
+        .authoring(organizationId, realmId);
     final asyncElements = ref.watch(
       pageElementsProvider(organizationId, realmId, pageId),
     );
-    return asyncElements.when(
-      data: (elements) {
-        Cue? cue;
-        for (final element in elements) {
-          if (element case PageElementCue(
-            cue: final candidate,
-          ) when candidate.id == id) {
-            cue = candidate;
-            break;
-          }
-        }
+    if (asyncElements.mapUnready<Selectable<CueIdentifier>>()
+        case final value?) {
+      return value;
+    }
+    final elements = asyncElements.requireValue;
 
-        if (cue == null) {
-          throw SelectableNotFoundException(this);
-        }
+    Cue? cue;
+    for (final element in elements) {
+      if (element case PageElementCue(
+        cue: final candidate,
+      ) when candidate.id == id) {
+        cue = candidate;
+        break;
+      }
+    }
 
-        final catalogState = ref.watch(
-          realmEditorCatalogForTypeProvider(cue.elementDefinition.rootType),
-        );
-        return catalogState.resolveElement(
-          cue.elementDefinition,
-          (catalog, presentations) => CueSelection(
-            ref: ref,
-            id: this,
-            cue: cue!,
+    if (cue == null) {
+      throw SelectableNotFoundException(this);
+    }
+
+    final resolvedCue = cue;
+    final catalogState = ref.watch(
+      realmEditorCatalogForTypeProvider(resolvedCue.elementDefinition.rootType),
+    );
+    return catalogState.resolveElement(
+      resolvedCue.elementDefinition,
+      (catalog, presentations) => CueSelection(
+        target: authoringElementTarget(
+          repository: repository,
+          state: state,
+          identity: this,
+          pageId: pageId,
+          label: resolvedCue.elementDefinition.name,
+          document: EditorDocument(
+            rootType: NamedType(resolvedCue.elementDefinition.rootType),
             typeCatalog: catalog,
-            presentations: presentations,
+            confirmedValue: resolvedCue.data,
+            revision: resolvedCue.authoringSequence,
           ),
-        );
-      },
-      error: AsyncValue.error,
-      loading: AsyncValue.loading,
+        ),
+        id: this,
+        cue: resolvedCue,
+        typeCatalog: catalog,
+        presentations: presentations,
+      ),
     );
   }
 
@@ -106,16 +123,15 @@ class CueIdentifier extends SelectableIdentifier {
 }
 
 class CueSelection extends EditableSelectable<CueIdentifier> {
-  CueSelection({
-    required this.ref,
+  const CueSelection({
+    required this.target,
     required this.id,
     required this.cue,
     required this.typeCatalog,
     required this.presentations,
-  }) : _commands = ref.readAuthoringSession().notifier;
+  });
 
-  final Ref ref;
-  final AuthoringSession _commands;
+  final EditorTarget target;
 
   @override
   final CueIdentifier id;
@@ -124,26 +140,20 @@ class CueSelection extends EditableSelectable<CueIdentifier> {
 
   @override
   final TypeCatalog typeCatalog;
+  @override
   final List<PresentationDefinition> presentations;
 
   @override
   String get name => cue.elementDefinition.name;
 
   @override
-  EditorDocument get document => _target.document;
+  EditorDocument get document => target.document;
 
   @override
   DataPath get presentationPath => elementValuePath;
 
   @override
   ResolvedTypeRef get rootType => cue.elementDefinition.rootType;
-
-  EditorDocument get _valueDocument => EditorDocument(
-    rootType: NamedType(cue.elementDefinition.rootType),
-    typeCatalog: typeCatalog,
-    confirmedValue: cue.data,
-    revision: cue.authoringSequence,
-  );
 
   @override
   List<SelectionCapability> get capabilities => const [];
@@ -153,28 +163,10 @@ class CueSelection extends EditableSelectable<CueIdentifier> {
     return CueHeader(id: id.id, name: name, color: cue.elementDefinition.color);
   }
 
-  late final EditorTarget _target = authoringElementTarget(
-    session: _commands,
-    identity: id,
-    pageId: id.pageId,
-    label: name,
-    document: _valueDocument,
-  );
-
   @override
-  Stream<EditorDocument?> get updates => _target.updates;
-
+  EditableResource get resource => target.resource;
   @override
-  Future<TypedMutationResult> commit(EditorCommit commit) =>
-      _target.commit(commit);
-
-  @override
-  int get hashCode => id.hashCode;
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) || (other is CueSelection && other.id == id);
-  }
+  EditorSnapshot get snapshot => target.snapshot;
 
   @override
   String toString() => "CueSelection($id)";

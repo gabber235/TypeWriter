@@ -4,7 +4,9 @@ import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
 part "transactional_editor_persistence.dart";
+part "transactional_editor_commit.dart";
 part "editor_batch.dart";
+part "editor_resource_save.dart";
 part "editor_batch_recovery.dart";
 part "transactional_editor_interactions.dart";
 part "transactional_editor_reconciliation.dart";
@@ -23,7 +25,10 @@ final class TransactionalEditorSource extends ChangeNotifier
     implements EditorSource {
   TransactionalEditorSource({
     required EditorDocument document,
-    required EditorCommitter commit,
+    EditorCommitter? commit,
+    EditableResource? resource,
+    this.workspace,
+    EditorSnapshot? snapshot,
     EditorMutationValidator? validate,
     List<TypeDiagnostic> Function(DataValue)? validateDraft,
     this.commitPolicy = EditorCommitPolicy.autosaveChanges,
@@ -34,6 +39,8 @@ final class TransactionalEditorSource extends ChangeNotifier
   }) : _document = document,
        _draft = document.confirmedValue,
        _commit = commit,
+       _snapshot = snapshot,
+       _resource = resource,
        _validate = validate,
        _validateDraft = validateDraft,
        _scheduler = scheduler,
@@ -41,7 +48,11 @@ final class TransactionalEditorSource extends ChangeNotifier
 
   EditorDocument _document;
   DataValue _draft;
-  final EditorCommitter _commit;
+  final EditorCommitter? _commit;
+  EditableResource? _resource;
+  EditableResource? get resource => _resource;
+  final LocalWork? workspace;
+  EditorSnapshot? _snapshot;
   final EditorMutationValidator? _validate;
   final List<TypeDiagnostic> Function(DataValue)? _validateDraft;
   @override
@@ -53,7 +64,9 @@ final class TransactionalEditorSource extends ChangeNotifier
       _unresolved != null;
   @override
   List<TypeDiagnostic> get draftDiagnostics =>
-      _validateDraft?.call(_draft) ?? const [];
+      _snapshot?.validateDraft(_draft) ??
+      _validateDraft?.call(_draft) ??
+      const [];
   final EditorDelayScheduler _scheduler;
   final EditorJitterSource _jitter;
   final Duration debounce;
@@ -129,7 +142,8 @@ final class TransactionalEditorSource extends ChangeNotifier
         _diagnostic("The editor is read only", path),
       ]);
     }
-    return _validate?.call(path, value) ??
+    return _snapshot?.validate(path, value) ??
+        _validate?.call(path, value) ??
         _document.rootType.validateEditorMutation(
           path,
           value,
@@ -199,20 +213,11 @@ final class TransactionalEditorSource extends ChangeNotifier
     if (_rejectedBatch case final batch?) {
       if (paths == null ||
           paths.any(
-            (path) => batch._commits[this]!.changedPaths.any(
+            (path) => batch._paths[this]!.any(
               (changed) => _pathsOverlap(path, changed),
             ),
           )) {
         return (await batch._retryRejected())[this] ?? _settledResult();
-      }
-    }
-    if (commitPolicy == EditorCommitPolicy.applyResource) {
-      if (_states.hasConflicts) {
-        return _unavailable("Conflicting fields require a choice");
-      }
-      final diagnostics = draftDiagnostics;
-      if (diagnostics.isNotEmpty) {
-        return TypedMutationResult.invalid(diagnostics);
       }
     }
     final selected = _states.flushCandidates(
@@ -251,12 +256,14 @@ final class TransactionalEditorSource extends ChangeNotifier
   @override
   Future<TypedMutationResult> keepLocal(DataPath path) {
     if (_disposed) return Future.value(_unavailable("Editor is disposed"));
-    if (_unresolved case final unresolved?)
+    if (_unresolved case final unresolved?) {
       return Future.value(unresolved.result);
+    }
     _states.resolveConflictLocally(path);
     _notify();
-    if (commitPolicy == EditorCommitPolicy.applyResource)
+    if (commitPolicy == EditorCommitPolicy.applyResource) {
       return Future.value(_settledResult());
+    }
     return flush(paths: {path});
   }
 

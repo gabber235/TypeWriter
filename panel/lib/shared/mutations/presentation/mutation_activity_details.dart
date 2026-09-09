@@ -1,14 +1,9 @@
 part of "mutation_activity_button.dart";
 
 class _ActivityDetails extends StatelessWidget {
-  const _ActivityDetails({
-    required this.journal,
-    required this.workspace,
-    required this.onClose,
-  });
+  const _ActivityDetails({required this.workspace, required this.onClose});
   final VoidCallback onClose;
-  final MutationJournal journal;
-  final EditorWorkspace workspace;
+  final LocalWork workspace;
 
   Future<void> _retry(MutationSubmission<Object?> submission) async {
     final owners = workspace.resources.values.where(
@@ -33,7 +28,7 @@ class _ActivityDetails extends StatelessWidget {
       await showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(resource.target.label),
+          title: Text(resource.label),
           content: SizedBox(
             width: 560,
             child: SingleChildScrollView(
@@ -57,7 +52,7 @@ class _ActivityDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-    listenable: Listenable.merge([journal, workspace]),
+    listenable: workspace,
     builder: (context, _) {
       final drafts = workspace.resources.values
           .where((entry) => entry.source.hasWork)
@@ -107,7 +102,7 @@ class _ActivityDetails extends StatelessWidget {
               children: [
                 for (final resource in drafts)
                   _ActivityCard(
-                    title: resource.target.label,
+                    title: resource.label,
                     message:
                         resource.source.commitPolicy ==
                             EditorCommitPolicy.applyResource
@@ -148,13 +143,15 @@ class _ActivityDetails extends StatelessWidget {
                       ),
                     ],
                   ),
-                for (final submission in journal.submissions)
+                for (final submission in workspace.submissions)
                   _ActivityCard(
                     title: submission.label,
                     phase: MutationActivityPhase.resolve([
                       submission,
                     ], const []),
-                    message: submission.sending
+                    message: submission.integrationError != null
+                        ? "Saved. Local refresh failed."
+                        : submission.sending
                         ? "Saving"
                         : switch (submission.result) {
                             SubmissionConfirmed() => "Saved",
@@ -165,7 +162,13 @@ class _ActivityDetails extends StatelessWidget {
                             null => "Ready",
                           },
                     actions: [
-                      if (submission.canReplay)
+                      if (submission.integrationError != null)
+                        TextButton.icon(
+                          icon: const Icon(Icons.refresh, size: 16),
+                          onPressed: submission.run,
+                          label: const Text("Refresh saved result"),
+                        )
+                      else if (submission.canReplay)
                         TextButton.icon(
                           icon: const Icon(Icons.refresh, size: 16),
                           onPressed: () => _retry(submission),
@@ -174,12 +177,12 @@ class _ActivityDetails extends StatelessWidget {
                       else if (!submission.sending &&
                           submission.result is! SubmissionUncertain)
                         TextButton(
-                          onPressed: () => journal.dismiss(submission.id),
+                          onPressed: () => workspace.dismiss(submission.id),
                           child: const Text("Dismiss"),
                         ),
                     ],
                   ),
-                if (drafts.isEmpty && journal.submissions.isEmpty)
+                if (drafts.isEmpty && workspace.submissions.isEmpty)
                   Padding(
                     padding: EdgeInsets.all(context.spacing.space4),
                     child: Text(

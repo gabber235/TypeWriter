@@ -28,9 +28,9 @@ void main() {
   testWidgets(
     "successful feedback expires after ten seconds and later saves appear again",
     (tester) async {
-      final journal = MutationJournal();
-      final workspace = EditorWorkspace();
-      addTearDown(journal.dispose);
+      final workspace = LocalWork();
+      final journal = workspace;
+
       addTearDown(workspace.dispose);
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(1280, 800);
@@ -40,11 +40,7 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpTestApp(
         child: Scaffold(
-          appBar: AppBar(
-            actions: [
-              MutationActivityView(journal: journal, workspace: workspace),
-            ],
-          ),
+          appBar: AppBar(actions: [MutationActivityView(workspace: workspace)]),
         ),
       );
       expect(find.text("Saved"), findsNothing);
@@ -54,7 +50,6 @@ void main() {
           label: "Save host",
           send: () async => SubmissionResult.confirmed(id),
         );
-        addTearDown(submission.dispose);
         journal.track(submission);
         await submission.run();
       }
@@ -103,9 +98,9 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         await tester.binding.setSurfaceSize(Size(mobile ? 390 : 1280, 800));
         addTearDown(() => tester.binding.setSurfaceSize(null));
-        final journal = MutationJournal();
-        final workspace = EditorWorkspace();
-        addTearDown(journal.dispose);
+        final workspace = LocalWork();
+        final journal = workspace;
+
         addTearDown(workspace.dispose);
         final submission = MutationSubmission<void>(
           id: "failed",
@@ -114,15 +109,12 @@ void main() {
             message: "Choose a supported engine target",
           ),
         );
-        addTearDown(submission.dispose);
         journal.track(submission);
         await submission.run();
         await tester.pumpTestApp(
           child: Scaffold(
             appBar: AppBar(
-              actions: [
-                MutationActivityView(journal: journal, workspace: workspace),
-              ],
+              actions: [MutationActivityView(workspace: workspace)],
             ),
           ),
         );
@@ -211,8 +203,8 @@ void main() {
   testWidgets(
     "already confirmed submissions expire but uncertain outcomes do not",
     (tester) async {
-      final journal = MutationJournal();
-      addTearDown(journal.dispose);
+      final journal = LocalWork();
+
       final confirmed = MutationSubmission<void>(
         id: 1,
         label: "Saved",
@@ -223,8 +215,7 @@ void main() {
         label: "Unknown",
         send: () async => throw StateError("Lost reply"),
       );
-      addTearDown(confirmed.dispose);
-      addTearDown(uncertain.dispose);
+      addTearDown(journal.dispose);
       await confirmed.run();
       await uncertain.run();
       journal

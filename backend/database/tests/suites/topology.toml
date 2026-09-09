@@ -110,3 +110,87 @@ allow = true
 [[cases.assertions]]
 path = ""
 equals = true
+
+
+[[cases]]
+name = "topology_views_expand_distinct_engine_and_realm_owners"
+kind = "sql_expect"
+actor = "root"
+sql = """
+RETURN {
+    CREATE service:projection_realm SET name = 'projection_realm', role = { type: 'host', version: '1.0.0' }, organization = organization:acme;
+    CREATE service:projection_engine SET name = 'projection_engine', role = { type: 'host', version: '1.0.0' }, organization = organization:acme;
+    CREATE service_host:realm_owner SET service_id = service:projection_realm, entrypoint = 'PAPER', can_host_realm = true, supported_engines = [];
+    CREATE service_host:engine_owner SET service_id = service:projection_engine, entrypoint = 'PAPER', can_host_realm = false, supported_engines = [{ engine_id: 'paper' }];
+    CREATE realm_instance:external SET owner_host_id = service_host:realm_owner, revision = 4, target_engine = { engine_id: 'paper', version_constraint: '^1' };
+    CREATE engine_instance:attached SET owner_host_id = service_host:engine_owner, realm_id = realm_instance:external, revision = 7, target = { engine_id: 'paper', version_constraint: '^1' };
+    UPDATE service:projection_realm SET name = 'renamed_realm_host';
+    LET $realm = array::first(SELECT * FROM realm_instance:external);
+    LET $engine = array::first(SELECT * FROM engine_instance:attached);
+    RETURN {
+        realm: fn::service::realm_view($realm) = {
+            id: realm_instance:external,
+            revision: 4,
+            target_engine: { engine_id: 'paper', version_constraint: '^1' },
+            state: $realm.state,
+            owner_host: { id: service_host:realm_owner, name: 'renamed_realm_host' },
+        },
+        engine: fn::service::engine_view($engine) = {
+            id: engine_instance:attached,
+            revision: 7,
+            target: { engine_id: 'paper', version_constraint: '^1' },
+            state: $engine.state,
+            owner_host: { id: service_host:engine_owner, name: 'projection_engine' },
+            realm: {
+                realm_id: realm_instance:external,
+                owner_host: { id: service_host:realm_owner, name: 'renamed_realm_host' },
+            },
+        },
+    };
+};
+"""
+allow = true
+[[cases.assertions]]
+path = "realm"
+equals = true
+[[cases.assertions]]
+path = "engine"
+equals = true
+
+[[cases]]
+name = "mapped_topology_queries_preserve_scope_order_and_absence"
+kind = "sql_expect"
+actor = "root"
+sql = """
+RETURN {
+    CREATE organization:projection_scope SET name = 'projection_scope', founder = user:alice;
+    CREATE service:projection_first SET name = 'projection_first', role = { type: 'host', version: '1.0.0' }, organization = organization:projection_scope;
+    CREATE service:projection_second SET name = 'projection_second', role = { type: 'host', version: '1.0.0' }, organization = organization:projection_scope;
+    CREATE service:projection_unbound SET name = 'projection_unbound', role = { type: 'host', version: '1.0.0' };
+    CREATE service_host:first SET service_id = service:projection_first, entrypoint = 'PAPER', can_host_realm = true, supported_engines = [];
+    CREATE service_host:second SET service_id = service:projection_second, entrypoint = 'PAPER', can_host_realm = true, supported_engines = [];
+    CREATE service_host:unbound SET service_id = service:projection_unbound, entrypoint = 'PAPER', can_host_realm = true, supported_engines = [];
+    CREATE realm_instance:z SET owner_host_id = service_host:first, target_engine = { engine_id: 'paper', version_constraint: '^1' };
+    CREATE realm_instance:a SET owner_host_id = service_host:second, target_engine = { engine_id: 'paper', version_constraint: '^1' };
+    CREATE realm_instance:unbound SET owner_host_id = service_host:unbound, target_engine = { engine_id: 'paper', version_constraint: '^1' };
+    LET $realms = (SELECT * FROM realm_instance WHERE owner_host_id.service_id.organization = organization:projection_scope ORDER BY id)
+        .map(|$row| fn::service::realm_view($row));
+    RETURN {
+        scoped_and_ordered: $realms.map(|$realm| $realm.id) = [realm_instance:a, realm_instance:z],
+        no_realm: array::first((SELECT * FROM realm_instance WHERE owner_host_id = service_host:missing)
+            .map(|$row| fn::service::realm_view($row))) = NONE,
+        no_engine: array::first((SELECT * FROM engine_instance WHERE owner_host_id = service_host:first)
+            .map(|$row| fn::service::engine_view($row))) = NONE,
+    };
+};
+"""
+allow = true
+[[cases.assertions]]
+path = "scoped_and_ordered"
+equals = true
+[[cases.assertions]]
+path = "no_realm"
+equals = true
+[[cases.assertions]]
+path = "no_engine"
+equals = true

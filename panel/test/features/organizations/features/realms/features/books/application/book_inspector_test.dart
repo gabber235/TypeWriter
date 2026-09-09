@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart" hide Tags;
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 import "../../../../../../../support/test_utils.dart";
 
@@ -24,8 +25,6 @@ class _Tags extends Tags {
   @override
   Future<List<Tag>> build() async => tags;
 }
-
-final _refProvider = Provider<Ref>((ref) => ref);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +56,12 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
+        organizationIdProvider.overrideWithValue(recordId("organization:test")),
+        realmIdProvider.overrideWithValue(recordId("realm:test")),
+        natsProvider.overrideWithValue(FakeNatsClient()),
+        panelTelemetryProvider.overrideWithValue(
+          const AsyncData(NoopPanelTelemetry()),
+        ),
         booksProvider.overrideWith(() => _Books([book])),
         tagsProvider.overrideWith(() => _Tags([directTag, parentTag])),
       ],
@@ -166,9 +171,14 @@ void main() {
         color: Colors.deepPurple,
         tagIds: const [],
       );
-      final container = ProviderContainer.test();
       final selected = BookSelection(
-        ref: container.read(_refProvider),
+        resource: FakeEditableResource(
+          key: EditorResourceKey(scope: null, identity: book.bookId),
+          current: BookEditorSnapshot(book),
+          commit: (_) async =>
+              throw StateError("No save in this rendering test"),
+        ),
+        onOpen: null,
         id: BookIdentifier(book.bookId),
         book: book,
         tagCollection: tagPresentationCollection(const []),

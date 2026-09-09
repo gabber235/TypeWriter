@@ -1,5 +1,9 @@
 library;
 
+export "../features/books/features/pages/application/page_editing.dart";
+export "authoring_element_editor.dart";
+export "authoring_element_placement.dart";
+export "authoring_element_submission.dart";
 export "authoring_session.dart";
 export "nats_realm_capability_transport.dart";
 export "nats_realm_editor_catalog_source.dart";
@@ -12,9 +16,3 @@ export "realm_editor_catalog_request.dart";
 export "realm_element_catalog.dart";
 export "realm_page_catalog.dart";
 export "realm_service_address.dart";
-export "authoring_element_editor.dart";
-
-export "authoring_element_placement.dart";
-export "authoring_element_submission.dart";
-
-export "../features/books/features/pages/application/page_editing.dart";

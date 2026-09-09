@@ -116,12 +116,13 @@ Future<List<OrganizationRole>> readRoles(ProviderContainer container) =>
     );
 
 class MockMembersNotifier extends OrganizationMembers {
-  MockMembersNotifier(this.members);
+  MockMembersNotifier(this.members, {this.load});
   final List<OrganizationMember> members;
+  final List<OrganizationMember> Function()? load;
 
   @override
   Stream<List<OrganizationMember>> build() async* {
-    yield members;
+    yield load?.call() ?? members;
   }
 }
 

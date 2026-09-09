@@ -1,5 +1,7 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
+
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
@@ -38,14 +40,20 @@ class BulkJoinRequestActions extends HookConsumerWidget {
     Future<void> acceptSelected() async {
       if (isAccepting.value) return;
       isAccepting.value = true;
+      final ids = Set<skir.RecordId>.unmodifiable(selectedIds);
+      final roles = List<OrganizationRole>.unmodifiable(bulkRoles.value);
       try {
-        for (final id in selectedIds) {
-          await ref
-              .read(organizationJoinRequestsProvider.notifier)
-              .approveRequest(id, bulkRoles.value);
+        await ref
+            .read(organizationJoinRequestsProvider.notifier)
+            .approveRequests(ids, roles);
+        if (context.mounted) {
+          if (listEquals(bulkRoles.value, roles)) bulkRoles.value = [];
+          if (setEquals(selectedIds, ids)) onClearSelection();
         }
-        bulkRoles.value = [];
-        onClearSelection();
+      } on ApiException catch (error) {
+        if (context.mounted) showErrorSnackBar(context, error.message);
+      } on SubmissionException {
+        // The shared activity retains unresolved delivery.
       } finally {
         if (context.mounted) isAccepting.value = false;
       }

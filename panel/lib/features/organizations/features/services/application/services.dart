@@ -1,4 +1,5 @@
 import "dart:async";
+import "package:clock/clock.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
@@ -10,6 +11,9 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "services.freezed.dart";
 part "services.g.dart";
 part "service_models.dart";
+part "service_resource_repository.dart";
+part "host_editor_resource.dart";
+part "service_editor_resource.dart";
 part "service_route_projection.dart";
 part "service_connections.dart";
 part "service_inspector_presentation.dart";
@@ -38,6 +42,16 @@ class OrganizationServices extends _$OrganizationServices {
       return;
     }
 
+    final results = ref
+        .watch(resourceRepositoriesProvider)
+        .services(organizationId)
+        .identities
+        .listen((service) {
+          if (state.value case final values?) {
+            state = AsyncData(_upsertCanonicalService(values, service).values);
+          }
+        });
+    ref.onDispose(results.cancel);
     final request = skir.WatchOrganizationServicesRequest();
     yield* ref.watchRequest(
       subject:
@@ -66,24 +80,19 @@ class OrganizationServices extends _$OrganizationServices {
     );
   }
 
-  Stream<AsyncValue<List<Service>>> watchValues() => Stream.multi((controller) {
-    final retention = ref.keepAlive();
-    final stop = listenSelf((_, value) => controller.add(value));
-    controller.add(state);
-    controller.onCancel = () {
-      stop();
-      retention.close();
-    };
-  });
-
   Future<void> bindService(String token) async {
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) throw ApiException.notAuthenticated();
-    final request = skir.BindServiceRequest(registrationToken: token);
+    final request = skir.BindServiceRequest(
+      operationId: uuid.v4(),
+      registrationToken: token,
+    );
     final response = await ref.mutateSkir(
       "cloud.to.user.$userId.organization.${this.organizationId.id}.services.bind",
       skir.BindServiceRequest.serializer.toBytes(request),
       skir.BindServiceResponse.serializer,
+      submissionId: request.operationId,
+      replay: SubmissionReplay.identicalRequest,
       label: "Bind service",
       classify: (response) => switch (response) {
         skir.BindServiceResponse_successWrapper() =>
@@ -95,6 +104,12 @@ class OrganizationServices extends _$OrganizationServices {
       },
     );
     switch (response) {
+      case skir.BindServiceResponse_invalidOperationIdErrorWrapper():
+        throw ApiException.badRequest("Operation identity is required");
+      case skir.BindServiceResponse_operationIdentityReusedErrorWrapper():
+        throw ApiException.conflict(
+          "Operation identity was reused with different input",
+        );
       case skir.BindServiceResponse_unknown():
         throw ApiException.unknownResponseMessage();
       case skir.BindServiceResponse_internalErrorWrapper():
@@ -113,6 +128,7 @@ class OrganizationServices extends _$OrganizationServices {
     if (userId == null) throw ApiException.notAuthenticated();
     state.ensureReady();
     final request = skir.UpdateOrganizationServiceRequest(
+      operationId: uuid.v4(),
       serviceId: service.serviceId,
       expectedRevision: service.revision,
       name: service.name,
@@ -123,6 +139,8 @@ class OrganizationServices extends _$OrganizationServices {
         "cloud.to.user.$userId.organization.${this.organizationId.id}.services.update",
         skir.UpdateOrganizationServiceRequest.serializer.toBytes(request),
         skir.UpdateOrganizationServiceResponse.serializer,
+        submissionId: request.operationId,
+        replay: SubmissionReplay.identicalRequest,
         label: "Update service: ${service.displayName}",
         resources: {(organizationId, service.serviceId)},
         classify: (response) => switch (response) {
@@ -142,6 +160,12 @@ class OrganizationServices extends _$OrganizationServices {
       );
     }
     switch (response) {
+      case skir.UpdateOrganizationServiceResponse_invalidOperationIdErrorWrapper():
+        throw ApiException.badRequest("Operation identity is required");
+      case skir.UpdateOrganizationServiceResponse_operationIdentityReusedErrorWrapper():
+        throw ApiException.conflict(
+          "Operation identity was reused with different input",
+        );
       case skir.UpdateOrganizationServiceResponse_unknown():
         return unavailableMutation("The server returned an unknown response");
       case skir.UpdateOrganizationServiceResponse_internalErrorWrapper():
@@ -187,29 +211,34 @@ class OrganizationServices extends _$OrganizationServices {
     final removed = state.requireValue.firstWhere(
       (service) => service.serviceId == serviceId,
     );
-    final request = skir.UnbindServiceRequest(serviceId: serviceId.id);
-    final response = await runPanelMutation(
-      operation: PanelMutationOperation.deleteService,
-      mutation: () => ref.mutateSkir(
-        "cloud.to.user.$userId.organization.${this.organizationId.id}.services.unbind",
-        skir.UnbindServiceRequest.serializer.toBytes(request),
-        skir.UnbindServiceResponse.serializer,
-        label: "Unbind service: ${removed.displayName}",
-        resources: {(organizationId, serviceId)},
-        classify: (response) => switch (response) {
-          skir.UnbindServiceResponse_successWrapper() =>
-            MutationResponseDisposition.confirmed,
-          skir.UnbindServiceResponse_unknown() ||
-          skir.UnbindServiceResponse_internalErrorWrapper() =>
-            MutationResponseDisposition.uncertain,
-          _ => MutationResponseDisposition.rejected,
-        },
-      ),
-      recover: (error, stackTrace) {
-        Error.throwWithStackTrace(error, stackTrace);
+    final request = skir.UnbindServiceRequest(
+      operationId: uuid.v4(),
+      serviceId: serviceId.id,
+    );
+    final response = await ref.mutateSkir(
+      "cloud.to.user.$userId.organization.${this.organizationId.id}.services.unbind",
+      skir.UnbindServiceRequest.serializer.toBytes(request),
+      skir.UnbindServiceResponse.serializer,
+      submissionId: request.operationId,
+      replay: SubmissionReplay.identicalRequest,
+      label: "Unbind service: ${removed.displayName}",
+      resources: {(organizationId, serviceId)},
+      classify: (response) => switch (response) {
+        skir.UnbindServiceResponse_successWrapper() =>
+          MutationResponseDisposition.confirmed,
+        skir.UnbindServiceResponse_unknown() ||
+        skir.UnbindServiceResponse_internalErrorWrapper() =>
+          MutationResponseDisposition.uncertain,
+        _ => MutationResponseDisposition.rejected,
       },
     );
     switch (response) {
+      case skir.UnbindServiceResponse_invalidOperationIdErrorWrapper():
+        throw ApiException.badRequest("Operation identity is required");
+      case skir.UnbindServiceResponse_operationIdentityReusedErrorWrapper():
+        throw ApiException.conflict(
+          "Operation identity was reused with different input",
+        );
       case skir.UnbindServiceResponse_unknown():
         throw ApiException.unknownResponseMessage();
       case skir.UnbindServiceResponse_internalErrorWrapper():

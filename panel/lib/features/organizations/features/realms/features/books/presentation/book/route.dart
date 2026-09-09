@@ -32,11 +32,13 @@ part "route.g.dart";
 @RoutePage()
 class BookPage extends HookConsumerWidget {
   const BookPage({
+    @PathParam("organizationId") required this.organizationId,
     @PathParam("realmId") required this.realmId,
     @PathParam("bookId") required this.bookId,
     super.key,
   });
 
+  final String organizationId;
   final String realmId;
   final String bookId;
 

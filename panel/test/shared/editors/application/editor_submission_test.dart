@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 final _title = DataPath.root.field("title");
 RecordValue _value(String title) => RecordValue({"title": StringValue(title)});
@@ -110,9 +111,10 @@ void main() {
   test(
     "session workspace retains drafts and isolates resource scope",
     () async {
-      final workspace = EditorWorkspace();
+      final workspace = LocalWork();
       addTearDown(workspace.dispose);
-      ResourceEditorTarget target() => ResourceEditorTarget(
+      ResourceEditorTarget target(String scope) => fakeEditorTarget(
+        scope: scope,
         targetId: "resource",
         label: "Resource",
         document: _document("Original", 1),
@@ -120,19 +122,19 @@ void main() {
         commit: (commit) async =>
             MutationSuccess(revision: 2, value: commit.rootValue),
       );
-      final first = EditorOwnerRegistry(workspace: workspace, scope: "org1");
-      final source = first.editor(target());
-      source.update(_title, const StringValue("Retained"));
+      final first = EditorOwnerRegistry(workspace: workspace);
+      final source = (first.editor(target("org1")))
+        ..update(_title, const StringValue("Retained"));
       first.dispose();
-      final other = EditorOwnerRegistry(workspace: workspace, scope: "org2");
-      final returned = EditorOwnerRegistry(workspace: workspace, scope: "org1");
+      final other = EditorOwnerRegistry(workspace: workspace);
+      final returned = EditorOwnerRegistry(workspace: workspace);
       addTearDown(other.dispose);
       addTearDown(returned.dispose);
       expect(
-        other.editor(target()).value(_title).valueOrNull,
+        other.editor(target("org2")).value(_title).valueOrNull,
         const StringValue("Original"),
       );
-      expect(identical(returned.editor(target()), source), isTrue);
+      expect(identical(returned.editor(target("org1")), source), isTrue);
       expect(source.value(_title).valueOrNull, const StringValue("Retained"));
       await source.flush();
       expect(source.hasWork, isFalse);

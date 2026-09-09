@@ -22,7 +22,8 @@ class _Identifier extends SelectableIdentifier {
   final TypeExpression representation;
   DataValue current;
   final EditorMutationResult mutation;
-  final bool loading;
+  bool loading;
+  Object? failure;
   int revision = 1;
   bool readOnly = false;
   bool deleted = false;
@@ -41,6 +42,9 @@ class _Identifier extends SelectableIdentifier {
 
   @override
   AsyncValue<Selectable<_Identifier>> create(Ref ref) {
+    if (failure case final error?) {
+      return AsyncValue.error(error, StackTrace.current);
+    }
     if (deleted) {
       return AsyncValue.error(
         SelectableNotFoundException(this),
@@ -94,6 +98,19 @@ class _Inspectable extends EditableSelectable<_Identifier> {
   }
 
   @override
+  EditorSnapshot get snapshot =>
+      FakeEditorSnapshot(document, validation: validate);
+  @override
+  late final EditableResource resource = FakeEditableResource(
+    key: EditorResourceKey(scope: null, identity: id.resourceId),
+    current: snapshot,
+    commit: commit,
+    load: () async {
+      if (id.loading || id.failure != null) throw StateError("Unavailable");
+      return id.deleted ? null : snapshot;
+    },
+  );
+
   Future<TypedMutationResult> commit(EditorCommit commit) async {
     latestCommit = commit;
     return TypedMutationResult.success(

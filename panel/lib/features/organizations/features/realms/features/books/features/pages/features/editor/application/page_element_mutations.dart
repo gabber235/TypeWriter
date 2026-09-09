@@ -76,18 +76,12 @@ mixin _PageElementMutations
   ) async {
     state.ensureReady();
     if (changed.isEmpty) return;
-    final owners = EditorOwnerRegistry(
-      workspace: ref.read(editorWorkspaceProvider),
-      scope: (organizationId, realmId),
-    );
-    final commands = _commands;
-    final targets = <TransactionalEditorSource, (String, EditorTarget)>{};
+    final owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider));
     final changes = <TransactionalEditorSource, Map<DataPath, DataValue>>{};
     try {
       for (final (id, first, second) in changed) {
         final target = _target(id);
         final owner = owners.editor(target) as TransactionalEditorSource;
-        targets[owner] = (id, target);
         final current = encodeElementPlacement(
           owner.value(elementPlacementPath).valueOrNull!,
         );
@@ -97,42 +91,7 @@ mixin _PageElementMutations
           ),
         };
       }
-      final results = await EditorBatch.submit(
-        changes: changes,
-        send: (commits) async {
-          Future<Map<TransactionalEditorSource, TypedMutationResult>> accept(
-            wire.ApplyAuthoringBatchResponse response,
-          ) async => {
-            for (final entry in commits.entries)
-              entry.key: await acceptElementCommit(
-                response,
-                entry.value,
-                entry.key.document,
-              ),
-          };
-          try {
-            return await accept(
-              await commands.apply([
-                for (final entry in commits.entries)
-                  elementCommitOperation(
-                    targets[entry.key]!.$1,
-                    entry.value,
-                    entry.key.typeCatalog,
-                  ),
-              ]),
-            );
-          } on SubmissionException<wire.ApplyAuthoringBatchResponse> catch (
-            error
-          ) {
-            return {
-              for (final entry in commits.entries)
-                entry.key: error.toMutation(
-                  (response) async => (await accept(response))[entry.key]!,
-                ),
-            };
-          }
-        },
-      );
+      final results = await EditorBatch.submit(changes: changes);
       for (final result in results.values) {
         if (result is MutationSuccess || result is MutationUncertain) continue;
         throw ApiException.conflict(

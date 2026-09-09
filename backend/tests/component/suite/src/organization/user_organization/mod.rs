@@ -74,13 +74,14 @@ async fn create_organization_sets_up_roles_membership_and_notification(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchUserOrganizationsResponse::Add(organization))
-                    if organization.name == "alpha"
-                        && organization.logo_url == "https://example.com/alpha.png"
+                Ok(WatchUserOrganizationsResponse::List(organizations))
+                    if organizations.len() == 1 && organizations[0].name == "alpha"
+                        && organizations[0].logo_url == "https://example.com/alpha.png"
             )
         });
 
     let request = CreateOrganizationRequest {
+        operation_id: crate::framework::operation_id(),
         name: "alpha".to_string(),
         logo_url: Some("https://example.com/alpha.png".to_string()),
         _unrecognized: None,
@@ -164,9 +165,9 @@ async fn manual_join_consumes_single_use_code_and_publishes_both_views(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchUserJoinRequestsResponse::Add(request))
-                    if request.organization_name == "alpha"
-                        && request.organization_id.key.to_string() == "alpha"
+                Ok(WatchUserJoinRequestsResponse::List(requests))
+                    if requests.len() == 1 && requests[0].organization_name == "alpha"
+                        && requests[0].organization_id.key.to_string() == "alpha"
             )
         });
     context
@@ -178,9 +179,9 @@ async fn manual_join_consumes_single_use_code_and_publishes_both_views(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchOrganizationJoinRequestsResponse::Add(request))
-                    if request.user_id.key.to_string() == "applicant"
-                        && request.user_name.as_deref() == Some("applicant")
+                Ok(WatchOrganizationJoinRequestsResponse::List(requests))
+                    if requests.len() == 1 && requests[0].user_id.key.to_string() == "applicant"
+                        && requests[0].user_name.as_deref() == Some("applicant")
             )
         });
     context
@@ -192,12 +193,12 @@ async fn manual_join_consumes_single_use_code_and_publishes_both_views(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchOrganizationJoinCodesResponse::Remove(code))
-                    if code.key.to_string() == "invite"
+                Ok(WatchOrganizationJoinCodesResponse::List(codes)) if codes.is_empty()
             )
         });
 
     let request = SubmitUserJoinRequestRequest {
+        operation_id: crate::framework::operation_id(),
         code: skir_record_id("organization_join_code", "invite"),
         _unrecognized: None,
     };
@@ -380,6 +381,7 @@ async fn failed_single_use_join_rolls_back_code_deletion(
         .await?;
 
     let request = SubmitUserJoinRequestRequest {
+        operation_id: crate::framework::operation_id(),
         code: skir_record_id("organization_join_code", "invite"),
         _unrecognized: None,
     };
@@ -465,12 +467,13 @@ async fn automatic_join_creates_membership_and_consumes_code(
         .messaging_mock()?
         .expect_publish("typewriter.to.user.applicant.organization.watch");
     context.messaging_mock()?.expect_publish("typewriter.to.organization.alpha.members.watch").body_matches(|body| {
-        matches!(WatchOrganizationMembersResponse::serializer().from_bytes(body, UnrecognizedValues::Drop), Ok(WatchOrganizationMembersResponse::Add(member)) if member.user_id.key.to_string() == "applicant")
+        matches!(WatchOrganizationMembersResponse::serializer().from_bytes(body, UnrecognizedValues::Drop), Ok(WatchOrganizationMembersResponse::List(members)) if members.iter().any(|member| member.user_id.key.to_string() == "applicant"))
     });
     context
         .messaging_mock()?
         .expect_publish("typewriter.to.organization.alpha.members.join_codes.watch");
     let request = SubmitUserJoinRequestRequest {
+        operation_id: crate::framework::operation_id(),
         code: skir_record_id("organization_join_code", "automatic"),
         _unrecognized: None,
     };
@@ -521,6 +524,7 @@ async fn cancel_request_deletes_and_notifies_both_views(
         .messaging_mock()?
         .expect_publish("typewriter.to.organization.alpha.members.join_requests.watch");
     let request = CancelUserJoinRequestRequest {
+        operation_id: crate::framework::operation_id(),
         request_id: skir_record_id("request_to_join", &key),
         _unrecognized: None,
     };

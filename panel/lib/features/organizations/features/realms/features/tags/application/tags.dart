@@ -71,14 +71,18 @@ class Tags extends _$Tags {
     final before =
         expected ??
         state.requireValue.firstWhere((value) => value.tagId == tag.tagId);
-    final owners = EditorOwnerRegistry(
-      workspace: ref.read(editorWorkspaceProvider),
-      scope: (ref.read(organizationIdProvider), ref.read(realmIdProvider)),
-    );
+    final commands = ref.readAuthoringSession().notifier;
+    final owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider));
     try {
       final owner = owners.editor(
         TagSelectable(
-          ref: ref,
+          resource: TagEditorResource(
+            ref
+                .read(resourceRepositoriesProvider)
+                .authoring(commands.organizationId, commands.realmId),
+            tag.tagId,
+          ),
+          onDelete: () => deleteTag(tag.tagId),
           id: TagIdentifier(tag.tagId),
           tag: before,
           tagCollection: tagPresentationCollection(state.requireValue),

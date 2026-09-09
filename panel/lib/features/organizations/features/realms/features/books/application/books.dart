@@ -8,9 +8,11 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+part "book_inspector_definition.dart";
 part "book_model.dart";
 part "book_queries.dart";
 part "book_selection.dart";
+part "book_editor_resource.dart";
 part "books.freezed.dart";
 part "books.g.dart";
 
@@ -23,6 +25,7 @@ class Books extends _$Books {
     if (organizationId == null || realmId == null) {
       return [];
     }
+
     final provider = authoringSessionProvider(organizationId, realmId);
     ref.listen(provider, (_, value) {
       if (value.sequence != null) state = AsyncData(_projectBooks(value));
@@ -67,14 +70,18 @@ class Books extends _$Books {
     final before =
         expected ??
         state.requireValue.firstWhere((value) => value.bookId == book.bookId);
-    final owners = EditorOwnerRegistry(
-      workspace: ref.read(editorWorkspaceProvider),
-      scope: (ref.read(organizationIdProvider), ref.read(realmIdProvider)),
-    );
+    final commands = ref.readAuthoringSession().notifier;
+    final owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider));
     try {
       final owner = owners.editor(
         BookSelection(
-          ref: ref,
+          resource: BookEditorResource(
+            ref
+                .read(resourceRepositoriesProvider)
+                .authoring(commands.organizationId, commands.realmId),
+            book.bookId,
+          ),
+          onOpen: null,
           id: BookIdentifier(book.bookId),
           book: before,
           tagCollection: tagPresentationCollection(

@@ -1,5 +1,4 @@
 import "package:collection/collection.dart";
-import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
@@ -126,11 +125,13 @@ class OrganizationMembers extends _$OrganizationMembers {
     return roles.toList();
   }
 
-  /// Updates the roles for a member.
+  /// Applies a role choice atomically to the captured member selection.
   Future<void> updateMemberRoles(
-    skir.RecordId memberId,
+    Iterable<skir.RecordId> memberIds,
     List<OrganizationRole> requestedRoles,
   ) async {
+    final ids = List<skir.RecordId>.unmodifiable(memberIds);
+    final requested = List<OrganizationRole>.unmodifiable(requestedRoles);
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) {
       throw ApiException.notAuthenticated();
@@ -141,30 +142,31 @@ class OrganizationMembers extends _$OrganizationMembers {
     }
 
     state.ensureReady();
-    final previousState = state;
-
-    final roles = await ensureCorrectRoles(memberId, requestedRoles);
-
-    // Optimistically update the member's roles
-    state = AsyncValue.data(
-      state.requireValue
-          .map((m) => m.userId == memberId ? m.copyWith(roles: roles) : m)
-          .toList(),
-    );
-
     try {
       final request = skir.UpdateOrganizationMemberRolesRequest(
-        userId: memberId,
-        roleIds: roles.map((r) => r.roleId),
+        operationId: uuid.v4(),
+        userIds: ids,
+        roleIds: requested
+            .where((role) => role.assignable)
+            .map((role) => role.roleId),
       );
 
       final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.update",
         skir.UpdateOrganizationMemberRolesRequest.serializer.toBytes(request),
         skir.UpdateOrganizationMemberRolesResponse.serializer,
-        label:
-            "Update roles: ${state.requireValue.firstWhereOrNull((member) => member.userId == memberId)?.name ?? memberId.id}",
-        resources: {(organizationId, memberId)},
+        onResponse: (_) async {
+          if (!ref.mounted ||
+              ref.read(organizationIdProvider) != organizationId) {
+            return;
+          }
+          ref.invalidateSelf();
+          await future;
+        },
+        submissionId: request.operationId,
+        replay: SubmissionReplay.identicalRequest,
+        label: "Update member roles",
+        resources: {for (final id in ids) (organizationId, id)},
         classify: (response) => switch (response) {
           skir.UpdateOrganizationMemberRolesResponse_successWrapper() =>
             MutationResponseDisposition.confirmed,
@@ -190,27 +192,22 @@ class OrganizationMembers extends _$OrganizationMembers {
           throw ApiException.notFound("Roles");
         case skir.UpdateOrganizationMemberRolesResponse_rolesNotAssignableErrorWrapper():
           throw ApiException.badRequest("One or more roles cannot be assigned");
+        case skir.UpdateOrganizationMemberRolesResponse_operationIdentityReusedErrorWrapper():
+          throw ApiException.conflict(
+            "Operation identity was reused with different input",
+          );
+        case skir.UpdateOrganizationMemberRolesResponse_invalidSelectionErrorWrapper():
+          throw ApiException.badRequest("Select distinct organization members");
         case skir.UpdateOrganizationMemberRolesResponse_rolesRequiredErrorWrapper():
           throw ApiException.badRequest("At least one role is required");
         case skir.UpdateOrganizationMemberRolesResponse_founderRoleRequiredErrorWrapper():
           throw ApiException.conflict(
             "Organization must retain at least one founder",
           );
-        case skir.UpdateOrganizationMemberRolesResponse_successWrapper(
-          :final value,
-        ):
-          state = AsyncValue.data(
-            state.requireValue
-                .map(
-                  (m) => m.userId == memberId
-                      ? OrganizationMember.fromSkir(value)
-                      : m,
-                )
-                .toList(),
-          );
+        case skir.UpdateOrganizationMemberRolesResponse_successWrapper():
+          break;
       }
     } catch (e) {
-      state = previousState;
       ref.invalidateSelf();
       rethrow;
     }
@@ -228,15 +225,27 @@ class OrganizationMembers extends _$OrganizationMembers {
     }
 
     state.ensureReady();
-    final previousState = state;
 
     try {
-      final request = skir.RemoveOrganizationMemberRequest(userId: memberId);
+      final request = skir.RemoveOrganizationMemberRequest(
+        operationId: uuid.v4(),
+        userId: memberId,
+      );
 
       final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.remove",
         skir.RemoveOrganizationMemberRequest.serializer.toBytes(request),
         skir.RemoveOrganizationMemberResponse.serializer,
+        onResponse: (_) async {
+          if (!ref.mounted ||
+              ref.read(organizationIdProvider) != organizationId) {
+            return;
+          }
+          ref.invalidateSelf();
+          await future;
+        },
+        submissionId: request.operationId,
+        replay: SubmissionReplay.identicalRequest,
         label:
             "Remove member: ${state.requireValue.firstWhereOrNull((member) => member.userId == memberId)?.name ?? memberId.id}",
         resources: {(organizationId, memberId)},
@@ -251,6 +260,12 @@ class OrganizationMembers extends _$OrganizationMembers {
       );
 
       switch (response) {
+        case skir.RemoveOrganizationMemberResponse_invalidOperationIdErrorWrapper():
+          throw ApiException.badRequest("Operation identity is required");
+        case skir.RemoveOrganizationMemberResponse_operationIdentityReusedErrorWrapper():
+          throw ApiException.conflict(
+            "Operation identity was reused with different input",
+          );
         case skir.RemoveOrganizationMemberResponse_unknown():
           throw ApiException.unknownResponseMessage();
         case skir.RemoveOrganizationMemberResponse_internalErrorWrapper():
@@ -264,14 +279,9 @@ class OrganizationMembers extends _$OrganizationMembers {
         case skir.RemoveOrganizationMemberResponse_founderCannotBeRemovedErrorWrapper():
           throw ApiException.conflict("Organization founder cannot be removed");
         case skir.RemoveOrganizationMemberResponse_successWrapper():
-          state = AsyncData(
-            state.requireValue
-                .where((member) => member.userId != memberId)
-                .toList(),
-          );
+          break;
       }
     } catch (e) {
-      state = previousState;
       ref.invalidateSelf();
       rethrow;
     }

@@ -24,7 +24,7 @@ void main() {
       final value = selectionOwner(container)?.value(path);
 
       expect(value, isA<ReadyEditorValue>());
-      expect((value as ReadyEditorValue).value, const StringValue("hello"));
+      expect((value! as ReadyEditorValue).value, const StringValue("hello"));
     });
   });
 

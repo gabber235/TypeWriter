@@ -43,7 +43,7 @@ class ServicesGraph extends ConsumerWidget {
   }
 
   _ServicesGraphProjection _project(BuildContext context, WidgetRef ref) {
-    final availability = ref.watch(serviceConnectionsProvider(services));
+    final availability = ref.watch(serviceConnectionsProvider);
     final servicesById = {
       for (final service in services) service.serviceId: service,
     };
@@ -213,8 +213,7 @@ class ServicesGraph extends ConsumerWidget {
     final connected = connections[service?.serviceId] ?? false;
     return _ServiceGraphItem(
       selectableId: EngineInstanceIdentifier(engine.engineId),
-      title:
-          "${engine.target.engineId.formatted} ${engine.target.versionConstraint}",
+      title: "${engine.target.engineId} ${engine.target.versionConstraint}",
       badge: "Engine",
       status: connected
           ? childRuntimeStatusLabel(engine.state.status)

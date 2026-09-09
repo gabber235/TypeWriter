@@ -51,7 +51,7 @@ final class OrganizationServicesProvider
 }
 
 String _$organizationServicesHash() =>
-    r'4ed5dc3223862b5b25c28b1e0c7f9aac09fc0b04';
+    r'1e755f6fbc29097b084ec213c5e6a06cfce381c5';
 
 final class OrganizationServicesFamily extends $Family
     with
@@ -213,16 +213,20 @@ abstract class _$Services extends $StreamNotifier<List<Service>> {
   }
 }
 
-@ProviderFor(OrganizationTopologyStream)
+@ProviderFor(organizationTopologyStream)
 final organizationTopologyStreamProvider =
     OrganizationTopologyStreamProvider._();
 
 final class OrganizationTopologyStreamProvider
     extends
-        $StreamNotifierProvider<
-          OrganizationTopologyStream,
-          OrganizationTopology
-        > {
+        $FunctionalProvider<
+          AsyncValue<OrganizationTopology>,
+          OrganizationTopology,
+          Stream<OrganizationTopology>
+        >
+    with
+        $FutureModifier<OrganizationTopology>,
+        $StreamProvider<OrganizationTopology> {
   OrganizationTopologyStreamProvider._()
     : super(
         from: null,
@@ -239,73 +243,57 @@ final class OrganizationTopologyStreamProvider
 
   @$internal
   @override
-  OrganizationTopologyStream create() => OrganizationTopologyStream();
-}
+  $StreamProviderElement<OrganizationTopology> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
-String _$organizationTopologyStreamHash() =>
-    r'785f7be8ae1563a38f775fc1651c7f93f92fd86f';
-
-abstract class _$OrganizationTopologyStream
-    extends $StreamNotifier<OrganizationTopology> {
-  Stream<OrganizationTopology> build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final ref =
-        this.ref
-            as $Ref<AsyncValue<OrganizationTopology>, OrganizationTopology>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<OrganizationTopology>,
-                OrganizationTopology
-              >,
-              AsyncValue<OrganizationTopology>,
-              Object?,
-              Object?
-            >;
-    element.handleCreate(ref, build);
+  Stream<OrganizationTopology> create(Ref ref) {
+    return organizationTopologyStream(ref);
   }
 }
 
-@ProviderFor(ScopedOrganizationTopology)
-final scopedOrganizationTopologyProvider = ScopedOrganizationTopologyFamily._();
+String _$organizationTopologyStreamHash() =>
+    r'9bb2fbcc6854c48e401a910ea007417828c91951';
 
-final class ScopedOrganizationTopologyProvider
+@ProviderFor(OrganizationTopologyController)
+final organizationTopologyControllerProvider =
+    OrganizationTopologyControllerFamily._();
+
+final class OrganizationTopologyControllerProvider
     extends
         $StreamNotifierProvider<
-          ScopedOrganizationTopology,
+          OrganizationTopologyController,
           OrganizationTopology
         > {
-  ScopedOrganizationTopologyProvider._({
-    required ScopedOrganizationTopologyFamily super.from,
+  OrganizationTopologyControllerProvider._({
+    required OrganizationTopologyControllerFamily super.from,
     required skir.RecordId super.argument,
   }) : super(
          retry: null,
-         name: r'scopedOrganizationTopologyProvider',
+         name: r'organizationTopologyControllerProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$scopedOrganizationTopologyHash();
+  String debugGetCreateSourceHash() => _$organizationTopologyControllerHash();
 
   @override
   String toString() {
-    return r'scopedOrganizationTopologyProvider'
+    return r'organizationTopologyControllerProvider'
         ''
         '($argument)';
   }
 
   @$internal
   @override
-  ScopedOrganizationTopology create() => ScopedOrganizationTopology();
+  OrganizationTopologyController create() => OrganizationTopologyController();
 
   @override
   bool operator ==(Object other) {
-    return other is ScopedOrganizationTopologyProvider &&
+    return other is OrganizationTopologyControllerProvider &&
         other.argument == argument;
   }
 
@@ -315,38 +303,38 @@ final class ScopedOrganizationTopologyProvider
   }
 }
 
-String _$scopedOrganizationTopologyHash() =>
-    r'ccad5eb053a284e21e9d8166ad5ba491367e798e';
+String _$organizationTopologyControllerHash() =>
+    r'aa04502bebbe260b8e17dd4179f734ea8567b85c';
 
-final class ScopedOrganizationTopologyFamily extends $Family
+final class OrganizationTopologyControllerFamily extends $Family
     with
         $ClassFamilyOverride<
-          ScopedOrganizationTopology,
+          OrganizationTopologyController,
           AsyncValue<OrganizationTopology>,
           OrganizationTopology,
           Stream<OrganizationTopology>,
           skir.RecordId
         > {
-  ScopedOrganizationTopologyFamily._()
+  OrganizationTopologyControllerFamily._()
     : super(
         retry: null,
-        name: r'scopedOrganizationTopologyProvider',
+        name: r'organizationTopologyControllerProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  ScopedOrganizationTopologyProvider call(skir.RecordId organizationId) =>
-      ScopedOrganizationTopologyProvider._(
+  OrganizationTopologyControllerProvider call(skir.RecordId organizationId) =>
+      OrganizationTopologyControllerProvider._(
         argument: organizationId,
         from: this,
       );
 
   @override
-  String toString() => r'scopedOrganizationTopologyProvider';
+  String toString() => r'organizationTopologyControllerProvider';
 }
 
-abstract class _$ScopedOrganizationTopology
+abstract class _$OrganizationTopologyController
     extends $StreamNotifier<OrganizationTopology> {
   late final _$args = ref.$arg as skir.RecordId;
   skir.RecordId get organizationId => _$args;
@@ -373,58 +361,10 @@ abstract class _$ScopedOrganizationTopology
   }
 }
 
-@ProviderFor(serviceConnectionClock)
-final serviceConnectionClockProvider = ServiceConnectionClockProvider._();
-
-final class ServiceConnectionClockProvider
-    extends
-        $FunctionalProvider<
-          DateTime Function(),
-          DateTime Function(),
-          DateTime Function()
-        >
-    with $Provider<DateTime Function()> {
-  ServiceConnectionClockProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'serviceConnectionClockProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$serviceConnectionClockHash();
-
-  @$internal
-  @override
-  $ProviderElement<DateTime Function()> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  DateTime Function() create(Ref ref) {
-    return serviceConnectionClock(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(DateTime Function() value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<DateTime Function()>(value),
-    );
-  }
-}
-
-String _$serviceConnectionClockHash() =>
-    r'fd215b05162559c0812275fda4f5012bb204b95b';
-
 /// Shares one deadline projection for a service list across its consumers.
 
 @ProviderFor(serviceConnections)
-final serviceConnectionsProvider = ServiceConnectionsFamily._();
+final serviceConnectionsProvider = ServiceConnectionsProvider._();
 
 /// Shares one deadline projection for a service list across its consumers.
 
@@ -437,26 +377,19 @@ final class ServiceConnectionsProvider
         >
     with $Provider<Map<skir.RecordId, bool>> {
   /// Shares one deadline projection for a service list across its consumers.
-  ServiceConnectionsProvider._({
-    required ServiceConnectionsFamily super.from,
-    required List<Service> super.argument,
-  }) : super(
-         retry: null,
-         name: r'serviceConnectionsProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  ServiceConnectionsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'serviceConnectionsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$serviceConnectionsHash();
-
-  @override
-  String toString() {
-    return r'serviceConnectionsProvider'
-        ''
-        '($argument)';
-  }
 
   @$internal
   @override
@@ -466,8 +399,7 @@ final class ServiceConnectionsProvider
 
   @override
   Map<skir.RecordId, bool> create(Ref ref) {
-    final argument = this.argument as List<Service>;
-    return serviceConnections(ref, argument);
+    return serviceConnections(ref);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -477,42 +409,10 @@ final class ServiceConnectionsProvider
       providerOverride: $SyncValueProvider<Map<skir.RecordId, bool>>(value),
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ServiceConnectionsProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
 }
 
 String _$serviceConnectionsHash() =>
-    r'1dd5ee28c85434ffe187290a8746954a457eaa40';
-
-/// Shares one deadline projection for a service list across its consumers.
-
-final class ServiceConnectionsFamily extends $Family
-    with $FunctionalFamilyOverride<Map<skir.RecordId, bool>, List<Service>> {
-  ServiceConnectionsFamily._()
-    : super(
-        retry: null,
-        name: r'serviceConnectionsProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  /// Shares one deadline projection for a service list across its consumers.
-
-  ServiceConnectionsProvider call(List<Service> services) =>
-      ServiceConnectionsProvider._(argument: services, from: this);
-
-  @override
-  String toString() => r'serviceConnectionsProvider';
-}
+    r'76071ad90e4e70ecbf5abf6ff2176f674530a307';
 
 @ProviderFor(hostConnected)
 final hostConnectedProvider = HostConnectedFamily._();
@@ -570,7 +470,7 @@ final class HostConnectedProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$hostConnectedHash() => r'087aa6f1d7bf48579e82fe937831637c759492e7';
+String _$hostConnectedHash() => r'09b1ee4918132ecf7c243b785b39033369b3ff63';
 
 final class HostConnectedFamily extends $Family
     with $FunctionalFamilyOverride<bool, skir.RecordId> {

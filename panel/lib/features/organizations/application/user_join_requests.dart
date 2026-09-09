@@ -102,12 +102,17 @@ class UserJoinRequests extends _$UserJoinRequests {
     final code = _extractCode(urlOrCode);
     final codeId = recordId("organization_join_code:$code");
 
-    final request = skir.SubmitUserJoinRequestRequest(code: codeId);
+    final request = skir.SubmitUserJoinRequestRequest(
+      operationId: uuid.v4(),
+      code: codeId,
+    );
 
     final response = await ref.mutateSkir(
       "cloud.to.user.$userId.organization.join_requests.request",
       skir.SubmitUserJoinRequestRequest.serializer.toBytes(request),
       skir.SubmitUserJoinRequestResponse.serializer,
+      submissionId: request.operationId,
+      replay: SubmissionReplay.identicalRequest,
       label: "Request membership",
       classify: (response) => switch (response) {
         skir.SubmitUserJoinRequestResponse_requestMadeWrapper() ||
@@ -121,6 +126,12 @@ class UserJoinRequests extends _$UserJoinRequests {
     );
 
     switch (response) {
+      case skir.SubmitUserJoinRequestResponse_invalidOperationIdErrorWrapper():
+        throw ApiException.badRequest("Operation identity is required");
+      case skir.SubmitUserJoinRequestResponse_operationIdentityReusedErrorWrapper():
+        throw ApiException.conflict(
+          "Operation identity was reused with different input",
+        );
       case skir.SubmitUserJoinRequestResponse_unknown():
         throw ApiException.unknownResponseMessage();
       case skir.SubmitUserJoinRequestResponse_codeNotFoundErrorWrapper():
@@ -172,12 +183,17 @@ class UserJoinRequests extends _$UserJoinRequests {
     );
 
     try {
-      final request = skir.CancelUserJoinRequestRequest(requestId: requestId);
+      final request = skir.CancelUserJoinRequestRequest(
+        operationId: uuid.v4(),
+        requestId: requestId,
+      );
 
       final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.join_requests.cancel",
         skir.CancelUserJoinRequestRequest.serializer.toBytes(request),
         skir.CancelUserJoinRequestResponse.serializer,
+        submissionId: request.operationId,
+        replay: SubmissionReplay.identicalRequest,
         label: "Cancel membership request",
         classify: (response) => switch (response) {
           skir.CancelUserJoinRequestResponse_successWrapper() =>
@@ -190,6 +206,12 @@ class UserJoinRequests extends _$UserJoinRequests {
       );
 
       switch (response) {
+        case skir.CancelUserJoinRequestResponse_invalidOperationIdErrorWrapper():
+          throw ApiException.badRequest("Operation identity is required");
+        case skir.CancelUserJoinRequestResponse_operationIdentityReusedErrorWrapper():
+          throw ApiException.conflict(
+            "Operation identity was reused with different input",
+          );
         case skir.CancelUserJoinRequestResponse_unknown():
           throw ApiException.unknownResponseMessage();
         case skir.CancelUserJoinRequestResponse_internalErrorWrapper():

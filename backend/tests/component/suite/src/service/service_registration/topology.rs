@@ -343,6 +343,33 @@ async fn configure_rejects_invalid_relationships_without_partial_writes(
         ConfigureServiceHostResponse::RealmNotFoundError(_)
     ));
 
+    let missing_external_with_hosted_realm = configure(
+        context,
+        1,
+        HostExecutionConfiguration {
+            realm: Some(HostedRealmConfiguration {
+                primary_engine: paper_target(),
+                _unrecognized: None,
+            }),
+            primary_engine: Some(HostedEngineConfiguration {
+                target: paper_target(),
+                realm: EngineRealmSelection::ExistingRealm(Box::new(
+                    EngineRealmSelection_ExistingRealm {
+                        realm_id: skir_record_id("realm_instance", "missing"),
+                        _unrecognized: None,
+                    },
+                )),
+                _unrecognized: None,
+            }),
+            _unrecognized: None,
+        },
+    )
+    .await?;
+    assert!(matches!(
+        missing_external_with_hosted_realm,
+        ConfigureServiceHostResponse::RealmNotFoundError(_)
+    ));
+
     let incompatible = configure(
         context,
         1,
@@ -520,6 +547,7 @@ async fn configure(
         context,
         "typewriter.from.user.actor.organization.test_org.topology.configure",
         &ConfigureServiceHostRequest {
+            operation_id: crate::framework::operation_id(),
             host_id: skir_record_id("service_host", "host"),
             expected_revision,
             execution,

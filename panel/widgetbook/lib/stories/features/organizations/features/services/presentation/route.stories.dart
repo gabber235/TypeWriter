@@ -15,11 +15,11 @@ Widget servicesPageStory() {
   final scenario = completeTopologyScenario();
   return FakeApp(
     overrides: [
-      scopedOrganizationTopologyProvider.overrideWith(
-        () => _StoryTopology(scenario.topology),
+      organizationTopologyControllerProvider.overrideWith2(
+        (_) => _StoryTopology(scenario.topology),
       ),
-      organizationServicesProvider.overrideWith(
-        () => _StoryServices(scenario.services),
+      organizationServicesProvider.overrideWith2(
+        (_) => _StoryServices(scenario.services),
       ),
       ...organizationProviderOverrides(),
       ...organizationsProviderOverrides(state: DisplayState.fewItems),
@@ -40,7 +40,7 @@ class _StoryServices extends OrganizationServices {
       Stream.value(services);
 }
 
-class _StoryTopology extends ScopedOrganizationTopology {
+class _StoryTopology extends OrganizationTopologyController {
   _StoryTopology(this.topology);
 
   final OrganizationTopology topology;

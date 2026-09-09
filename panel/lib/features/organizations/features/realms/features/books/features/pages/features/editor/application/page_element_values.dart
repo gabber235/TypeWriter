@@ -18,10 +18,7 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
     DataPath path,
     DataValue value,
   ) async {
-    final owners = EditorOwnerRegistry(
-      workspace: ref.read(editorWorkspaceProvider),
-      scope: (organizationId, realmId),
-    );
+    final owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider));
     try {
       final result = await owners.editor(_target(elementId)).applyChanges({
         elementValuePath.followedBy(path): value,
@@ -46,11 +43,6 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
     }
   }
 
-  Future<TypedMutationResult> commitElementValue(
-    String elementId,
-    EditorCommit commit,
-  ) => _target(elementId).commit(commit);
-
   EditorTarget _target(String elementId) {
     state.ensureReady();
     final current = state.requireValue.singleWhere(
@@ -66,10 +58,14 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
     final canonical = codec.codec
         .decodeValue(_wireElement(elementId).value)
         .valueOrNull;
-    if (canonical == null)
+    if (canonical == null) {
       throw ApiException.badRequest("The element value cannot be decoded");
+    }
     return authoringElementTarget(
-      session: _commands,
+      repository: ref
+          .read(resourceRepositoriesProvider)
+          .authoring(this.organizationId, this.realmId),
+      state: ref.read(_sessionProvider),
       identity: EntryIdentifier(elementId),
       pageId: _pageId.id,
       label: _elementName(current),

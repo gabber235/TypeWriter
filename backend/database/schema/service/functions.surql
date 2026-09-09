@@ -72,3 +72,36 @@ DEFINE FUNCTION OVERWRITE fn::service::valid_supported_engines($engines: array<o
     };
     RETURN true;
 };
+
+DEFINE FUNCTION OVERWRITE fn::service::realm_view($realm: object) -> object {
+    RETURN {
+        id: $realm.id,
+        revision: $realm.revision,
+        target_engine: $realm.target_engine,
+        state: $realm.state,
+        owner_host: {
+            id: $realm.owner_host_id,
+            name: $realm.owner_host_id.service_id.name,
+        },
+    };
+};
+
+DEFINE FUNCTION OVERWRITE fn::service::engine_view($engine: object) -> object {
+    RETURN {
+        id: $engine.id,
+        revision: $engine.revision,
+        target: $engine.target,
+        state: $engine.state,
+        owner_host: {
+            id: $engine.owner_host_id,
+            name: $engine.owner_host_id.service_id.name,
+        },
+        realm: {
+            realm_id: $engine.realm_id,
+            owner_host: {
+                id: $engine.realm_id.owner_host_id,
+                name: $engine.realm_id.owner_host_id.service_id.name,
+            },
+        },
+    };
+};

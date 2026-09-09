@@ -12,6 +12,7 @@ final class TestEditorSource extends ChangeNotifier implements EditorSource {
     this.rootPresentation,
   }) : _value = value;
 
+  @override
   final TypeExpression rootType;
 
   final TypeRegistry? registry;

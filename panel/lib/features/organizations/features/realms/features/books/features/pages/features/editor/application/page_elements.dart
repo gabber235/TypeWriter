@@ -185,7 +185,7 @@ class PageElements extends _$PageElements
     }
 
     ref.listen(documentsProvider, (_, documents) => applyDocuments(documents));
-    final workspace = ref.read(editorWorkspaceProvider);
+    final workspace = ref.read(localWorkProvider);
     void refreshDrafts() => applyDocuments(ref.read(documentsProvider));
     workspace.addListener(refreshDrafts);
     ref.onDispose(() => workspace.removeListener(refreshDrafts));
@@ -197,7 +197,7 @@ class PageElements extends _$PageElements
   }
 
   List<PageElement> _withDraftPlacements(List<PageElement> elements) {
-    final resources = ref.read(editorWorkspaceProvider).resources;
+    final resources = ref.read(localWorkProvider).resources;
     return [
       for (final element in elements) _withDraftPlacement(element, resources),
     ];
@@ -209,7 +209,7 @@ class PageElements extends _$PageElements
   ) {
     final source =
         resources[EditorResourceKey(
-              scope: (organizationId, realmId),
+              scope: (this.organizationId, this.realmId),
               identity: recordId("element:${element.id}"),
             )]
             ?.source;

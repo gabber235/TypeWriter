@@ -29,20 +29,40 @@ class ServiceIdentifier extends SelectableIdentifier {
 
   @override
   String get id => serviceId.id;
+  @override
+  Object get resourceId => serviceId;
 
   @override
   AsyncValue<Selectable> create(Ref ref) {
-    final services = ref.watch(servicesProvider).value ?? const <Service>[];
-    final connections = ref.watch(serviceConnectionsProvider(services));
-    return ref.watch(serviceProvider(serviceId)).whenData((value) {
-      if (value == null) throw SelectableNotFoundException(this);
-      return ServiceSelectable(
-        ref: ref,
+    final connections = ref.watch(serviceConnectionsProvider);
+    final organization = ref.watch(organizationIdProvider);
+    if (organization == null) {
+      return AsyncError(ApiException.noOrganization(), StackTrace.current);
+    }
+    final repository = ref.watch(
+      organizationServicesProvider(organization).notifier,
+    );
+    final serviceAsync = ref.watch(serviceProvider(serviceId));
+    if (serviceAsync.mapUnready<Selectable>() case final value?) return value;
+    final service = serviceAsync.requireValue;
+    if (service == null) throw SelectableNotFoundException(this);
+
+    return AsyncData(
+      ServiceSelectable(
+        editTarget: serviceIdentityTarget(
+          id: this,
+          service: service,
+
+          repository: ref
+              .watch(resourceRepositoriesProvider)
+              .services(organization),
+        ),
+        onUnbind: () => repository.deleteService(serviceId),
         id: this,
-        service: value,
+        service: service,
         connected: connections[serviceId] ?? false,
-      );
-    });
+      ),
+    );
   }
 
   @override
@@ -58,8 +78,9 @@ class ServiceIdentifier extends SelectableIdentifier {
 }
 
 class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
-  ServiceSelectable({
-    required this.ref,
+  const ServiceSelectable({
+    required this.editTarget,
+    required this.onUnbind,
     required this.id,
     required this.service,
     required this.connected,
@@ -69,75 +90,13 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
   final ServiceIdentifier id;
   final Service service;
   final bool connected;
-  final Ref ref;
+  final EditorTarget editTarget;
+  final Future<void> Function() onUnbind;
 
   RecordValue get _data => service.observationValue(connected);
 
   @override
   String get name => service.displayName;
-
-  EditorTarget get editTarget {
-    final organization = ref.read(organizationIdProvider);
-    if (organization == null) throw ApiException.noOrganization();
-    final repository = ref.read(
-      organizationServicesProvider(organization).notifier,
-    );
-    return ResourceEditorTarget(
-      targetId: id,
-      label: "$name: identity",
-      updates: repository
-          .watchValues()
-          .where((value) => value.hasValue || value.hasError)
-          .map((value) {
-            final current = value.requireValue
-                .where((item) => item.serviceId == service.serviceId)
-                .firstOrNull;
-            return current == null
-                ? null
-                : EditorDocument(
-                    rootType: _serviceIdentityType,
-                    typeCatalog: _serviceInspectorCatalog,
-                    confirmedValue: current.identityValue,
-                    revision: current.revision,
-                  );
-          }),
-      document: EditorDocument(
-        rootType: _serviceIdentityType,
-        typeCatalog: _serviceInspectorCatalog,
-        confirmedValue: RecordValue({"name": StringValue(service.name)}),
-        revision: service.revision,
-      ),
-      commit: (commit) async {
-        final value = commit.rootValue;
-        if (value is! RecordValue)
-          return invalidMutation("Service identity is invalid");
-        final name = value.fields["name"]?.stringOrNull;
-        if (name == null || name.trim().isEmpty)
-          return invalidMutation("Name must not be empty");
-        final result = await repository.updateService(
-          service.copyWith(revision: commit.expectedRevision, name: name),
-        );
-        return switch (result) {
-          MutationSuccess(:final revision, :final value) =>
-            TypedMutationResult.success(
-              revision: revision,
-              value: _identityValue(value),
-            ),
-          MutationConflict(
-            :final expectedRevision,
-            :final actualRevision,
-            :final actualValue,
-          ) =>
-            TypedMutationResult.conflict(
-              expectedRevision: expectedRevision,
-              actualRevision: actualRevision,
-              actualValue: _identityValue(actualValue),
-            ),
-          _ => result,
-        };
-      },
-    );
-  }
 
   @override
   PresentationModel buildPresentation(
@@ -166,10 +125,7 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
 
   @override
   List<SelectionCapability> get capabilities => [
-    UnbindSelectionCapability(
-      onUnbind: () =>
-          ref.read(servicesProvider.notifier).deleteService(service.serviceId),
-    ),
+    UnbindSelectionCapability(onUnbind: onUnbind),
   ];
 
   @override
@@ -178,17 +134,6 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
     name: service.displayName,
     color: service.color,
   );
-
-  @override
-  int get hashCode => Object.hash(id, service, connected);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ServiceSelectable &&
-          other.id == id &&
-          other.service == service &&
-          other.connected == connected;
 }
 
 extension ServiceInspectorValue on Service {
@@ -205,5 +150,14 @@ final _serviceIdentityType = RecordType(
   fields: {"name": TypeField(name: "name", type: identifierStringType)},
 );
 
-RecordValue _identityValue(DataValue value) =>
-    RecordValue({"name": (value as RecordValue).fields["name"]!});
+/// Builds an identity editor from resolved service state and scoped commands.
+ResourceEditorTarget serviceIdentityTarget({
+  required ServiceIdentifier id,
+  required Service service,
+  required ServiceResourceRepository repository,
+}) => ResourceEditorTarget(
+  targetId: id,
+  label: "${service.displayName}: identity",
+  resource: ServiceEditorResource(repository, service.serviceId),
+  snapshot: serviceEditorSnapshot(service),
+);

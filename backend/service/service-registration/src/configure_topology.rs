@@ -17,9 +17,11 @@ use wasmcloud_utils::{
         ConfigureServiceHostResponse_ConflictError,
         ConfigureServiceHostResponse_IncompatibleEngineError,
         ConfigureServiceHostResponse_InvalidConfigurationError,
-        ConfigureServiceHostResponse_RealmNotFoundError, HostConfigurationChange,
-        EngineRealmSelection, EngineTarget, WatchHostExecutionResponse,
-        WatchHostExecutionResponse_Desired, WatchOrganizationTopologyResponse,
+        ConfigureServiceHostResponse_InvalidOperationIdError,
+        ConfigureServiceHostResponse_OperationIdentityReusedError,
+        ConfigureServiceHostResponse_RealmNotFoundError, EngineRealmSelection, EngineTarget,
+        HostConfigurationChange, WatchHostExecutionResponse, WatchHostExecutionResponse_Desired,
+        WatchOrganizationTopologyResponse,
     },
     skir_transaction_outcome, skir_variant,
     wasmcloud::messaging::types::BrokerMessage,
@@ -126,12 +128,25 @@ pub async fn handle_configure(
 
     let host_id = RecordId::from(&request.host_id);
     let organization_id = RecordId::new("organization", org_id);
+    if request.operation_id.is_empty() {
+        return Ok(skir_variant!(
+            ConfigureServiceHostResponse::InvalidOperationIdError
+        ));
+    }
+    let receipt = wasmcloud_utils::database::mutation::receipt_id(
+        actor_id,
+        org_id,
+        "topology.configure",
+        &request.operation_id,
+    );
     let outcome = transaction_query!(
         ConfigureTopologyOutcome,
         r#"
         BEGIN TRANSACTION;
 
         RETURN {
+            LET $previous = fn::mutation::recall($receipt, $request_bytes);
+            IF $previous != NONE { RETURN $previous };
             LET $hosts = SELECT * FROM $host_id
                 WHERE service_id.organization = $organization_id;
             IF array::is_empty($hosts) {
@@ -142,36 +157,19 @@ pub async fn handle_configure(
             };
             LET $host = array::first($hosts);
             IF $host.revision != $expected_revision {
-                RETURN { outcome: 'conflict-error', host: $host,
-                realm: array::first(SELECT
-                        id,
-                        revision,
-                        target_engine,
-                        state,
-                        {
-                            id: owner_host_id,
-                            name: owner_host_id.service_id.name,
-                        } AS owner_host
-                    FROM realm_instance
-                    WHERE owner_host_id = $host_id),
-                engine: array::first(SELECT
-                        id,
-                        revision,
-                        target,
-                        state,
-                        {
-                            id: owner_host_id,
-                            name: owner_host_id.service_id.name,
-                        } AS owner_host,
-                        {
-                            realm_id: realm_id,
-                            owner_host: {
-                                id: realm_id.owner_host_id,
-                                name: realm_id.owner_host_id.service_id.name,
-                            },
-                        } AS realm
-                    FROM engine_instance
-                    WHERE owner_host_id = $host_id),
+                RETURN {
+                    outcome: 'conflict-error',
+                    host: $host,
+                    realm: array::first(
+                        (SELECT * FROM realm_instance
+                            WHERE owner_host_id = $host_id)
+                            .map(|$row| fn::service::realm_view($row))
+                    ),
+                    engine: array::first(
+                        (SELECT * FROM engine_instance
+                            WHERE owner_host_id = $host_id)
+                            .map(|$row| fn::service::engine_view($row))
+                    ),
                 }
             };
             IF $has_realm AND !$host.can_host_realm {
@@ -190,6 +188,33 @@ pub async fn handle_configure(
             LET $current_realm = array::first(SELECT * FROM realm_instance WHERE owner_host_id = $host_id);
             LET $current_engine = array::first(SELECT * FROM engine_instance WHERE owner_host_id = $host_id);
 
+            LET $external_realm = IF $has_engine AND !$uses_hosted_realm {
+                array::first(
+                    SELECT * FROM $existing_realm_id
+                    WHERE owner_host_id.service_id.organization = $organization_id
+                )
+            } ELSE {
+                NONE
+            };
+            IF $has_engine AND !$uses_hosted_realm AND $external_realm = NONE {
+                RETURN { outcome: 'realm-not-found-error', realm_id: $existing_realm_id }
+            };
+            LET $assigned_target = IF $uses_hosted_realm { $realm_target } ELSE { $external_realm.target_engine };
+            IF $has_engine AND $assigned_target != $engine_target {
+                RETURN { outcome: 'incompatible-engine-error', target: $engine_target }
+            };
+            IF !$has_realm AND $current_realm != NONE {
+                LET $dependents = SELECT id FROM engine_instance
+                    WHERE realm_id = $current_realm.id
+                    AND (id != $current_engine.id OR ($has_engine AND $existing_realm_id = $current_realm.id));
+                IF !array::is_empty($dependents) {
+                    RETURN {
+                        outcome: 'invalid-configuration-error',
+                        message: 'Realm is still assigned to an execution engine',
+                    }
+                };
+            };
+
             LET $realm = IF $has_realm {
                 IF $current_realm = NONE {
                     CREATE ONLY realm_instance SET
@@ -207,21 +232,7 @@ pub async fn handle_configure(
                 NONE
             };
 
-            LET $external_realm = IF $has_engine AND !$uses_hosted_realm {
-                array::first(
-                    SELECT * FROM $existing_realm_id
-                    WHERE owner_host_id.service_id.organization = $organization_id
-                )
-            } ELSE {
-                NONE
-            };
-            IF $has_engine AND !$uses_hosted_realm AND $external_realm = NONE {
-                RETURN { outcome: 'realm-not-found-error', realm_id: $existing_realm_id }
-            };
             LET $assigned_realm = IF $uses_hosted_realm { $realm } ELSE { $external_realm };
-            IF $has_engine AND $assigned_realm.target_engine != $engine_target {
-                RETURN { outcome: 'incompatible-engine-error', target: $engine_target }
-            };
 
             LET $engine = IF $has_engine {
                 IF $current_engine = NONE {
@@ -258,13 +269,6 @@ pub async fn handle_configure(
                 NONE
             };
             IF $removed_realm != NONE {
-                LET $dependents = SELECT id FROM engine_instance WHERE realm_id = $removed_realm;
-                IF !array::is_empty($dependents) {
-                    RETURN {
-                        outcome: 'invalid-configuration-error',
-                        message: 'Realm is still assigned to an execution engine',
-                    }
-                };
                 DELETE $removed_realm
             };
 
@@ -274,41 +278,23 @@ pub async fn handle_configure(
                 state = { status: 'RECONCILING', updated_at: time::now() }
             RETURN AFTER;
 
-            RETURN {
+            LET $result = {
                 outcome: 'configured',
                 host: $updated_host,
-                realm: array::first(SELECT
-                        id,
-                        revision,
-                        target_engine,
-                        state,
-                        {
-                            id: owner_host_id,
-                            name: owner_host_id.service_id.name,
-                        } AS owner_host
-                    FROM realm_instance
-                    WHERE owner_host_id = $host_id),
-                engine: array::first(SELECT
-                        id,
-                        revision,
-                        target,
-                        state,
-                        {
-                            id: owner_host_id,
-                            name: owner_host_id.service_id.name,
-                        } AS owner_host,
-                        {
-                            realm_id: realm_id,
-                            owner_host: {
-                                id: realm_id.owner_host_id,
-                                name: realm_id.owner_host_id.service_id.name,
-                            },
-                        } AS realm
-                    FROM engine_instance
-                    WHERE owner_host_id = $host_id),
+                realm: array::first(
+                    (SELECT * FROM realm_instance
+                        WHERE owner_host_id = $host_id)
+                        .map(|$row| fn::service::realm_view($row))
+                ),
+                engine: array::first(
+                    (SELECT * FROM engine_instance
+                        WHERE owner_host_id = $host_id)
+                        .map(|$row| fn::service::engine_view($row))
+                ),
                 removed_realm: $removed_realm,
                 removed_engine: $removed_engine,
             };
+            RETURN fn::mutation::commit($receipt, $request_bytes, $result);
         };
 
         COMMIT TRANSACTION;
@@ -323,6 +309,8 @@ pub async fn handle_configure(
     .bind("engine_target", engine_target.map(EngineTargetRecord::from))
     .bind("uses_hosted_realm", uses_hosted_realm)
     .bind("existing_realm_id", existing_realm_id)
+    .bind("receipt", receipt)
+    .bind("request_bytes", msg.body.clone())
     .execute()
     .await
     .error_with_slug("service-host-configure-query-failed")?
@@ -333,7 +321,8 @@ pub async fn handle_configure(
         TransactionOutcome::Committed(outcome) => outcome,
         TransactionOutcome::Rejected(error) => wasmcloud_utils::skir_domain_result!(
             ConfigureServiceHostResponse,
-            TransactionOutcome::Rejected(error)
+            TransactionOutcome::Rejected(error),
+            "operation-identity-reused-error" => {}
         ),
     };
     let change = skir_transaction_outcome!(
@@ -380,7 +369,9 @@ async fn publish_configuration(
     change: &HostConfigurationChange,
 ) -> Result<(), otel_wasi::Error> {
     wasmcloud_utils::skir_subjects::organization_topology(organization_id)
-        .publish(WatchOrganizationTopologyResponse::ConfigurationChanged(Box::new(change.clone())))
+        .publish(WatchOrganizationTopologyResponse::ConfigurationChanged(
+            Box::new(change.clone()),
+        ))
         .await?;
     wasmcloud_utils::skir_subjects::host_execution(&change.host.service_id.key.to_string())
         .publish(skir_variant!(WatchHostExecutionResponse::Desired {

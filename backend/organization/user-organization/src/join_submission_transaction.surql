@@ -1,5 +1,8 @@
 BEGIN TRANSACTION;
-
+        RETURN {
+            LET $previous = fn::mutation::recall($receipt, $request_bytes);
+            IF $previous != NONE { RETURN $previous.value };
+            LET $result = {
 RETURN {
     LET $codes = SELECT organization.*, single_use, auto_accept_roles
         FROM $code
@@ -77,5 +80,11 @@ RETURN {
         FETCH roles)
     }
 };
-
-COMMIT TRANSACTION;
+            };
+            IF $result.kind IN ['request_made', 'auto_accepted'] {
+                LET $stored = fn::mutation::commit($receipt, $request_bytes, { value: $result });
+                RETURN $stored.value;
+            };
+            RETURN $result;
+        };
+        COMMIT TRANSACTION;

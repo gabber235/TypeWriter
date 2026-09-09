@@ -4033,6 +4033,7 @@ class HostConfigurationChange private constructor(
 }
 
 sealed interface ConfigureServiceHostRequest_OrMutable {
+    val operationId: kotlin.String;
     val hostId: skirout.kernel.v1.record_id.RecordId_OrMutable;
     val expectedRevision: kotlin.Long;
     val execution: skirout.service.v1.topology.HostExecutionConfiguration_OrMutable;
@@ -4043,6 +4044,7 @@ sealed interface ConfigureServiceHostRequest_OrMutable {
 /** Deeply immutable. */
 @kotlin.Suppress("UNUSED_PARAMETER")
 class ConfigureServiceHostRequest private constructor(
+    override val operationId: kotlin.String,
     override val hostId: skirout.kernel.v1.record_id.RecordId,
     override val expectedRevision: kotlin.Long,
     override val execution: skirout.service.v1.topology.HostExecutionConfiguration,
@@ -4052,12 +4054,14 @@ class ConfigureServiceHostRequest private constructor(
     constructor(
         _mustNameArguments: _MustNameArguments =
             _MustNameArguments,
+        operationId: kotlin.String,
         hostId: skirout.kernel.v1.record_id.RecordId_OrMutable,
         expectedRevision: kotlin.Long,
         execution: skirout.service.v1.topology.HostExecutionConfiguration_OrMutable,
         _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostRequest>? =
             null,
     ): this(
+        operationId,
         hostId.toFrozen(),
         expectedRevision,
         execution.toFrozen(),
@@ -4069,6 +4073,7 @@ class ConfigureServiceHostRequest private constructor(
 
     /** Returns a mutable shallow copy of this instance */
     fun toMutable() = Mutable(
+        operationId = this.operationId,
         hostId = this.hostId,
         expectedRevision = this.expectedRevision,
         execution = this.execution,
@@ -4078,6 +4083,8 @@ class ConfigureServiceHostRequest private constructor(
     fun copy(
         _mustNameArguments: _MustNameArguments =
             _MustNameArguments,
+        operationId: kotlin.String =
+            this.operationId,
         hostId: skirout.kernel.v1.record_id.RecordId_OrMutable =
             this.hostId,
         expectedRevision: kotlin.Long =
@@ -4085,6 +4092,7 @@ class ConfigureServiceHostRequest private constructor(
         execution: skirout.service.v1.topology.HostExecutionConfiguration_OrMutable =
             this.execution,
     ) = skirout.service.v1.topology.ConfigureServiceHostRequest(
+        operationId,
         hostId.toFrozen(),
         expectedRevision,
         execution.toFrozen(),
@@ -4095,11 +4103,11 @@ class ConfigureServiceHostRequest private constructor(
     fun copy() = this;
 
     override fun equals(other: kotlin.Any?): kotlin.Boolean {
-        return this === other || (other is skirout.service.v1.topology.ConfigureServiceHostRequest && this.hostId == other.hostId && this.expectedRevision == other.expectedRevision && this.execution == other.execution);
+        return this === other || (other is skirout.service.v1.topology.ConfigureServiceHostRequest && this.operationId == other.operationId && this.hostId == other.hostId && this.expectedRevision == other.expectedRevision && this.execution == other.execution);
     }
 
     override fun hashCode(): kotlin.Int {
-        return kotlin.collections.listOf<kotlin.Any?>(this.hostId, this.expectedRevision, this.execution).hashCode();
+        return kotlin.collections.listOf<kotlin.Any?>(this.operationId, this.hostId, this.expectedRevision, this.execution).hashCode();
     }
 
     override fun toString(): kotlin.String {
@@ -4113,6 +4121,8 @@ class ConfigureServiceHostRequest private constructor(
     class Mutable internal constructor(
         _mustNameArguments: _MustNameArguments =
             _MustNameArguments,
+        override var operationId: kotlin.String =
+            "",
         override var hostId: skirout.kernel.v1.record_id.RecordId_OrMutable =
             skirout.kernel.v1.record_id.RecordId.partial(),
         override var expectedRevision: kotlin.Long =
@@ -4124,6 +4134,7 @@ class ConfigureServiceHostRequest private constructor(
     ): skirout.service.v1.topology.ConfigureServiceHostRequest_OrMutable {
         /** Returns a deeply immutable copy of this instance */
         override fun toFrozen() = skirout.service.v1.topology.ConfigureServiceHostRequest(
+            operationId = this.operationId,
             hostId = this.hostId,
             expectedRevision = this.expectedRevision,
             execution = this.execution,
@@ -4166,6 +4177,7 @@ class ConfigureServiceHostRequest private constructor(
     companion object {
         private val default =
             skirout.service.v1.topology.ConfigureServiceHostRequest(
+                "",
                 skirout.kernel.v1.record_id.RecordId.partial(),
                 0L,
                 skirout.service.v1.topology.HostExecutionConfiguration.partial(),
@@ -4182,6 +4194,8 @@ class ConfigureServiceHostRequest private constructor(
         fun partial(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
+            operationId: kotlin.String =
+                "",
             hostId: skirout.kernel.v1.record_id.RecordId_OrMutable =
                 skirout.kernel.v1.record_id.RecordId.partial(),
             expectedRevision: kotlin.Long =
@@ -4189,6 +4203,7 @@ class ConfigureServiceHostRequest private constructor(
             execution: skirout.service.v1.topology.HostExecutionConfiguration_OrMutable =
                 skirout.service.v1.topology.HostExecutionConfiguration.partial(),
         ) = skirout.service.v1.topology.ConfigureServiceHostRequest(
+            operationId = operationId,
             hostId = hostId,
             expectedRevision = expectedRevision,
             execution = execution,
@@ -4213,9 +4228,18 @@ class ConfigureServiceHostRequest private constructor(
 
         init {
             serializerImpl.addField(
+                "operation_id",
+                "operationId",
+                0,
+                build.skir.Serializers.string,
+                "",
+                { it.operationId },
+                { mut, v -> mut.operationId = v },
+            );
+            serializerImpl.addField(
                 "host_id",
                 "hostId",
-                0,
+                1,
                 skirout.kernel.v1.record_id.RecordId.serializer,
                 "",
                 { it.hostId },
@@ -4224,7 +4248,7 @@ class ConfigureServiceHostRequest private constructor(
             serializerImpl.addField(
                 "expected_revision",
                 "expectedRevision",
-                1,
+                2,
                 build.skir.Serializers.int64,
                 "",
                 { it.expectedRevision },
@@ -4233,7 +4257,7 @@ class ConfigureServiceHostRequest private constructor(
             serializerImpl.addField(
                 "execution",
                 "execution",
-                2,
+                3,
                 skirout.service.v1.topology.HostExecutionConfiguration.serializer,
                 "",
                 { it.execution },
@@ -4254,6 +4278,8 @@ sealed class ConfigureServiceHostResponse private constructor() {
         INVALID_CONFIGURATION_ERROR_WRAPPER,
         INCOMPATIBLE_ENGINE_ERROR_WRAPPER,
         REALM_NOT_FOUND_ERROR_WRAPPER,
+        INVALID_OPERATION_ID_ERROR_WRAPPER,
+        OPERATION_IDENTITY_REUSED_ERROR_WRAPPER,
         INVALID_RECORD_ID_ERROR_WRAPPER,
         INTERNAL_ERROR_WRAPPER,
     }
@@ -4360,6 +4386,42 @@ sealed class ConfigureServiceHostResponse private constructor() {
 
         override fun hashCode(): kotlin.Int {
             return this.value.hashCode() + 1477655023;
+        }
+    }
+
+    class InvalidOperationIdErrorWrapper private constructor (
+        val value: skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError,
+    ) : skirout.service.v1.topology.ConfigureServiceHostResponse() {
+        constructor(
+            value: skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.INVALID_OPERATION_ID_ERROR_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdErrorWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + 1583533316;
+        }
+    }
+
+    class OperationIdentityReusedErrorWrapper private constructor (
+        val value: skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError,
+    ) : skirout.service.v1.topology.ConfigureServiceHostResponse() {
+        constructor(
+            value: skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.OPERATION_IDENTITY_REUSED_ERROR_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedErrorWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + -981047678;
         }
     }
 
@@ -4483,6 +4545,24 @@ sealed class ConfigureServiceHostResponse private constructor() {
             )
         );
 
+        /** Shortcut for `InvalidOperationIdErrorWrapper(skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createInvalidOperationIdError(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+        ) = InvalidOperationIdErrorWrapper(
+            skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError()
+        );
+
+        /** Shortcut for `OperationIdentityReusedErrorWrapper(skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createOperationIdentityReusedError(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+        ) = OperationIdentityReusedErrorWrapper(
+            skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError()
+        );
+
         /** Shortcut for `InvalidRecordIdErrorWrapper(skirout.kernel.v1.errors.InvalidRecordIdError(...))`. */
         @kotlin.Suppress("UNUSED_PARAMETER")
         fun createInvalidRecordIdError(
@@ -4579,6 +4659,24 @@ sealed class ConfigureServiceHostResponse private constructor() {
                 );
                 _serializerImpl.addWrapperVariant(
                     6,
+                    "invalid_operation_id_error",
+                    Kind.INVALID_OPERATION_ID_ERROR_WRAPPER.ordinal,
+                    skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError.serializer,
+                    "",
+                    { InvalidOperationIdErrorWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.addWrapperVariant(
+                    7,
+                    "operation_identity_reused_error",
+                    Kind.OPERATION_IDENTITY_REUSED_ERROR_WRAPPER.ordinal,
+                    skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError.serializer,
+                    "",
+                    { OperationIdentityReusedErrorWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.addWrapperVariant(
+                    8,
                     "invalid_record_id_error",
                     Kind.INVALID_RECORD_ID_ERROR_WRAPPER.ordinal,
                     skirout.kernel.v1.errors.InvalidRecordIdError.serializer,
@@ -4587,7 +4685,7 @@ sealed class ConfigureServiceHostResponse private constructor() {
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
-                    7,
+                    9,
                     "internal_error",
                     Kind.INTERNAL_ERROR_WRAPPER.ordinal,
                     skirout.kernel.v1.errors.InternalError.serializer,
@@ -5171,6 +5269,194 @@ sealed class ConfigureServiceHostResponse private constructor() {
                     { it.realmId },
                     { mut, v -> mut.realmId = v },
                 );
+                serializerImpl.finalizeStruct();
+            }
+        }
+    }
+
+    sealed interface InvalidOperationIdError_OrMutable {
+        fun toFrozen(): skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError;
+    }
+
+    /** Deeply immutable. */
+    @kotlin.Suppress("UNUSED_PARAMETER")
+    class InvalidOperationIdError private constructor(
+        private val _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError>? =
+            null,
+    ): skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError_OrMutable {
+        constructor(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError>? =
+                null,
+        ): this(
+            _unrecognizedFields,
+        ) {}
+
+        @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+        override fun toFrozen() = this;
+
+        /** Returns a mutable shallow copy of this instance */
+        fun toMutable() = Mutable();
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return this === other || (other is skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError);
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return kotlin.collections.listOf<kotlin.Any?>().hashCode();
+        }
+
+        override fun toString(): kotlin.String {
+            return build.skir.internal.toStringImpl(
+                this,
+                skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError.serializerImpl,
+            )
+        }
+
+        /** Mutable version of [InvalidOperationIdError]. */
+        class Mutable internal constructor(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            internal var _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError>? =
+                null,
+        ): skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError_OrMutable {
+            /** Returns a deeply immutable copy of this instance */
+            override fun toFrozen() = skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError(
+                _unrecognizedFields = this._unrecognizedFields,
+            );
+        }
+
+        companion object {
+            private val default =
+                skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError();
+
+            /** Returns an instance with all fields set to their default values. */
+            fun partial() = default;
+
+            /**
+             * Creates a new instance of [InvalidOperationIdError].
+             * Unlike the constructor, does not require all fields to be specified.
+             * Missing fields will be set to their default values.
+             */
+            fun partial(
+                _mustNameArguments: _MustNameArguments =
+                    _MustNameArguments,
+            ) = skirout.service.v1.topology.ConfigureServiceHostResponse.InvalidOperationIdError(
+                _unrecognizedFields = null,
+            );
+
+            private val serializerImpl = build.skir.internal.StructSerializer(
+                recordId = "service/v1/topology.skir:ConfigureServiceHostResponse.InvalidOperationIdError",
+                doc = "",
+                defaultInstance = default,
+                newMutableFn = { it?.toMutable() ?: Mutable() },
+                toFrozenFn = { it.toFrozen() },
+                getUnrecognizedFields = { it._unrecognizedFields },
+                setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+            );
+
+            /** Serializer for [InvalidOperationIdError] instances. */
+            val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+            /** Describes the [InvalidOperationIdError] type. Provides runtime introspection capabilities. */
+            val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+            init {
+                serializerImpl.finalizeStruct();
+            }
+        }
+    }
+
+    sealed interface OperationIdentityReusedError_OrMutable {
+        fun toFrozen(): skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError;
+    }
+
+    /** Deeply immutable. */
+    @kotlin.Suppress("UNUSED_PARAMETER")
+    class OperationIdentityReusedError private constructor(
+        private val _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError>? =
+            null,
+    ): skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError_OrMutable {
+        constructor(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError>? =
+                null,
+        ): this(
+            _unrecognizedFields,
+        ) {}
+
+        @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+        override fun toFrozen() = this;
+
+        /** Returns a mutable shallow copy of this instance */
+        fun toMutable() = Mutable();
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return this === other || (other is skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError);
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return kotlin.collections.listOf<kotlin.Any?>().hashCode();
+        }
+
+        override fun toString(): kotlin.String {
+            return build.skir.internal.toStringImpl(
+                this,
+                skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError.serializerImpl,
+            )
+        }
+
+        /** Mutable version of [OperationIdentityReusedError]. */
+        class Mutable internal constructor(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            internal var _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError>? =
+                null,
+        ): skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError_OrMutable {
+            /** Returns a deeply immutable copy of this instance */
+            override fun toFrozen() = skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError(
+                _unrecognizedFields = this._unrecognizedFields,
+            );
+        }
+
+        companion object {
+            private val default =
+                skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError();
+
+            /** Returns an instance with all fields set to their default values. */
+            fun partial() = default;
+
+            /**
+             * Creates a new instance of [OperationIdentityReusedError].
+             * Unlike the constructor, does not require all fields to be specified.
+             * Missing fields will be set to their default values.
+             */
+            fun partial(
+                _mustNameArguments: _MustNameArguments =
+                    _MustNameArguments,
+            ) = skirout.service.v1.topology.ConfigureServiceHostResponse.OperationIdentityReusedError(
+                _unrecognizedFields = null,
+            );
+
+            private val serializerImpl = build.skir.internal.StructSerializer(
+                recordId = "service/v1/topology.skir:ConfigureServiceHostResponse.OperationIdentityReusedError",
+                doc = "",
+                defaultInstance = default,
+                newMutableFn = { it?.toMutable() ?: Mutable() },
+                toFrozenFn = { it.toFrozen() },
+                getUnrecognizedFields = { it._unrecognizedFields },
+                setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+            );
+
+            /** Serializer for [OperationIdentityReusedError] instances. */
+            val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+            /** Describes the [OperationIdentityReusedError] type. Provides runtime introspection capabilities. */
+            val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+            init {
                 serializerImpl.finalizeStruct();
             }
         }

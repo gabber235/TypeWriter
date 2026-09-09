@@ -20,7 +20,7 @@ void main() {
       mockNats.dispose();
     });
 
-    test("preserves non-assignable roles from current member", () async {
+    test("leaves protected role preservation to the atomic backend", () async {
       final nonAssignableRole = createRole(
         id: "owner",
         name: "Owner",
@@ -72,25 +72,27 @@ void main() {
             .fromBytes(data);
         capturedRoleIds = request.roleIds.toList();
         return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.createSuccess(
-            userId: recordId("user:m1"),
-            name: "Test",
-            email: "test@test.com",
-            avatarUrl: "",
-            roles: [],
-            joinedAt: testTimestamp,
-          ),
+          skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+            skir.OrganizationMember(
+              userId: recordId("user:m1"),
+              name: "Test",
+              email: "test@test.com",
+              avatarUrl: "",
+              roles: [],
+              joinedAt: testTimestamp,
+            ),
+          ]),
         );
       });
 
       await container
           .read(organizationMembersProvider.notifier)
-          .updateMemberRoles(recordId("user:m1"), [newRole]);
+          .updateMemberRoles([recordId("user:m1")], [newRole]);
 
       expect(capturedRoleIds, isNotNull);
       expect(
         capturedRoleIds!.contains(recordId("organization_role:owner")),
-        true,
+        false,
       );
       expect(
         capturedRoleIds!.contains(recordId("organization_role:viewer")),
@@ -140,23 +142,25 @@ void main() {
             .fromBytes(data);
         capturedRoleIds = request.roleIds.toList();
         return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.createSuccess(
-            userId: recordId("user:m1"),
-            name: "Test",
-            email: "test@test.com",
-            avatarUrl: "",
-            roles: [],
-            joinedAt: testTimestamp,
-          ),
+          skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+            skir.OrganizationMember(
+              userId: recordId("user:m1"),
+              name: "Test",
+              email: "test@test.com",
+              avatarUrl: "",
+              roles: [],
+              joinedAt: testTimestamp,
+            ),
+          ]),
         );
       });
 
       await container
           .read(organizationMembersProvider.notifier)
-          .updateMemberRoles(recordId("user:m1"), [
-            assignableRole,
-            nonAssignableRequested,
-          ]);
+          .updateMemberRoles(
+            [recordId("user:m1")],
+            [assignableRole, nonAssignableRequested],
+          );
 
       expect(capturedRoleIds, isNotNull);
       expect(
@@ -169,67 +173,72 @@ void main() {
       );
     });
 
-    test("falls back to default roles when result is empty", () async {
-      final defaultRole = OrganizationRole(
-        roleId: recordId("organization_role:default"),
-        name: "Default",
-        color: Colors.grey,
-        defaultRole: true,
-        assignable: true,
-      );
-      final currentRole = createRole(
-        id: "member",
-        name: "Member",
-        color: Colors.blue,
-        assignable: true,
-      );
-
-      final member = createMember(roles: [currentRole]);
-
-      final container = ProviderContainer.test(
-        overrides: [
-          userIdProvider.overrideWith((ref) async => testUserId),
-          organizationIdProvider.overrideWith((ref) => testOrganizationId),
-          natsProvider.overrideWithValue(mockNats),
-          organizationMembersProvider.overrideWith(
-            () => MockMembersNotifier([member]),
-          ),
-          organizationRolesProvider.overrideWith(
-            () => MockRolesNotifier([defaultRole, currentRole]),
-          ),
-        ],
-      );
-
-      await readMembers(container);
-      await readRoles(container);
-
-      List<skir.RecordId>? capturedRoleIds;
-      mockNats.registerHandler(memberUpdateSubject, (data) {
-        final request = skir.UpdateOrganizationMemberRolesRequest.serializer
-            .fromBytes(data);
-        capturedRoleIds = request.roleIds.toList();
-        return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.createSuccess(
-            userId: recordId("user:m1"),
-            name: "Test",
-            email: "test@test.com",
-            avatarUrl: "",
-            roles: [],
-            joinedAt: testTimestamp,
-          ),
+    test(
+      "leaves empty role selection defaults to the atomic backend",
+      () async {
+        final defaultRole = OrganizationRole(
+          roleId: recordId("organization_role:default"),
+          name: "Default",
+          color: Colors.grey,
+          defaultRole: true,
+          assignable: true,
         );
-      });
+        final currentRole = createRole(
+          id: "member",
+          name: "Member",
+          color: Colors.blue,
+          assignable: true,
+        );
 
-      await container
-          .read(organizationMembersProvider.notifier)
-          .updateMemberRoles(recordId("user:m1"), []);
+        final member = createMember(roles: [currentRole]);
 
-      expect(capturedRoleIds, isNotNull);
-      expect(
-        capturedRoleIds!.contains(recordId("organization_role:default")),
-        true,
-      );
-      expect(capturedRoleIds!.length, 1);
-    });
+        final container = ProviderContainer.test(
+          overrides: [
+            userIdProvider.overrideWith((ref) async => testUserId),
+            organizationIdProvider.overrideWith((ref) => testOrganizationId),
+            natsProvider.overrideWithValue(mockNats),
+            organizationMembersProvider.overrideWith(
+              () => MockMembersNotifier([member]),
+            ),
+            organizationRolesProvider.overrideWith(
+              () => MockRolesNotifier([defaultRole, currentRole]),
+            ),
+          ],
+        );
+
+        await readMembers(container);
+        await readRoles(container);
+
+        List<skir.RecordId>? capturedRoleIds;
+        mockNats.registerHandler(memberUpdateSubject, (data) {
+          final request = skir.UpdateOrganizationMemberRolesRequest.serializer
+              .fromBytes(data);
+          capturedRoleIds = request.roleIds.toList();
+          return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
+            skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+              skir.OrganizationMember(
+                userId: recordId("user:m1"),
+                name: "Test",
+                email: "test@test.com",
+                avatarUrl: "",
+                roles: [],
+                joinedAt: testTimestamp,
+              ),
+            ]),
+          );
+        });
+
+        await container
+            .read(organizationMembersProvider.notifier)
+            .updateMemberRoles([recordId("user:m1")], []);
+
+        expect(capturedRoleIds, isNotNull);
+        expect(
+          capturedRoleIds!.contains(recordId("organization_role:default")),
+          false,
+        );
+        expect(capturedRoleIds, isEmpty);
+      },
+    );
   });
 }

@@ -1,3 +1,4 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -38,22 +39,17 @@ class BulkMemberActions extends HookConsumerWidget {
       isApplying.value = true;
       final members = ref.read(organizationMembersProvider.notifier);
       final roles = List<OrganizationRole>.unmodifiable(bulkRoles.value);
-      final succeeded = <skir.RecordId>{};
+      final ids = Set<skir.RecordId>.unmodifiable(selectedIds);
       try {
-        for (final id in Set.of(selectedIds)) {
-          try {
-            await members.updateMemberRoles(id, roles);
-            succeeded.add(id);
-          } on ApiException catch (error) {
-            if (context.mounted) showErrorSnackBar(context, error.message);
-          } on SubmissionException {
-            continue;
-          }
-        }
+        await members.updateMemberRoles(ids, roles);
         if (context.mounted) {
-          if (succeeded.length == selectedIds.length) bulkRoles.value = [];
-          onUnselect(succeeded);
+          if (listEquals(bulkRoles.value, roles)) bulkRoles.value = [];
+          onUnselect(ids);
         }
+      } on ApiException catch (error) {
+        if (context.mounted) showErrorSnackBar(context, error.message);
+      } on SubmissionException {
+        // The shared activity retains unresolved delivery.
       } finally {
         if (context.mounted) isApplying.value = false;
       }

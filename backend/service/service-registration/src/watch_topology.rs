@@ -34,6 +34,10 @@ pub async fn handle_watch(
         "actor.id" = actor_id.to_string(),
         "organization.id" = org_id.to_string(),
     );
+    snapshot(org_id).await
+}
+
+pub async fn snapshot(org_id: &str) -> Result<WatchOrganizationTopologyResponse, otel_wasi::Error> {
     let organization_id = RecordId::new("organization", org_id);
     let topology = read_query!(
         r#"
@@ -41,37 +45,18 @@ pub async fn handle_watch(
             hosts: (SELECT * FROM service_host
                 WHERE service_id.organization = $organization_id
                 ORDER BY id),
-            realms: (SELECT
-                    id,
-                    revision,
-                    target_engine,
-                    state,
-                    {
-                        id: owner_host_id,
-                        name: owner_host_id.service_id.name,
-                    } AS owner_host
-                FROM realm_instance
-                WHERE owner_host_id.service_id.organization = $organization_id
-                ORDER BY id),
-            engines: (SELECT
-                    id,
-                    revision,
-                    target,
-                    state,
-                    {
-                        id: owner_host_id,
-                        name: owner_host_id.service_id.name,
-                    } AS owner_host,
-                    {
-                        realm_id: realm_id,
-                        owner_host: {
-                            id: realm_id.owner_host_id,
-                            name: realm_id.owner_host_id.service_id.name,
-                        },
-                    } AS realm
-                FROM engine_instance
-                WHERE owner_host_id.service_id.organization = $organization_id
-                ORDER BY id),
+            realms: (
+                (SELECT * FROM realm_instance
+                    WHERE owner_host_id.service_id.organization = $organization_id
+                    ORDER BY id)
+                    .map(|$row| fn::service::realm_view($row))
+            ),
+            engines: (
+                (SELECT * FROM engine_instance
+                    WHERE owner_host_id.service_id.organization = $organization_id
+                    ORDER BY id)
+                    .map(|$row| fn::service::engine_view($row))
+            ),
         };
         "#,
     )

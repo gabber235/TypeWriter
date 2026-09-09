@@ -1,6 +1,7 @@
 import "dart:async";
 import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 final _type = RecordType(
   fields: const {"name": TypeField(name: "name", type: StringType())},
@@ -61,11 +62,12 @@ void main() {
         const StringValue("Quest"),
       );
       final saving = identity.flush();
-      session.refresh(model("Failed"));
-      session.update(
-        BindingReference(bindingId: const BindingId(37), path: _path),
-        const StringValue("Fabric"),
-      );
+      session
+        ..refresh(model("Failed"))
+        ..update(
+          BindingReference(bindingId: const BindingId(37), path: _path),
+          const StringValue("Fabric"),
+        );
       await config.flush();
       expect(identity.value(_path).valueOrNull, const StringValue("Quest"));
       expect(identity.document.revision, 12);
@@ -93,7 +95,7 @@ void main() {
       var firstSaves = 0;
       var secondSaves = 0;
       EditorTarget target(String id, EditorCommitter commit) =>
-          ResourceEditorTarget(
+          fakeEditorTarget(
             targetId: id,
             label: id,
             document: EditorDocument(

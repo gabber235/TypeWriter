@@ -21,15 +21,25 @@ void _testHostApply() {
       addTearDown(owners.dispose);
       final model = harness.selectable.buildPresentation(owners);
       final owner =
-          (model.inputs[const BindingId(1)] as PresentationEditInput).owner
+          (model.inputs[const BindingId(1)]! as PresentationEditInput).owner
               as EditorSource;
       final path = DataPath.root.field("realm");
       final interaction = owner.beginInteraction(path);
       owner.update(path, _mode("RealmHosted", {"target": StringValue("")}));
       await interaction.commit();
-      expect(harness.nats.requests, isEmpty);
+      expect(
+        harness.nats.requests.where(
+          (request) => request.subject == _configureSubject,
+        ),
+        isEmpty,
+      );
       expect(await owner.flush(), isA<MutationInvalid>());
-      expect(harness.nats.requests, isEmpty);
+      expect(
+        harness.nats.requests.where(
+          (request) => request.subject == _configureSubject,
+        ),
+        isEmpty,
+      );
 
       owner.update(
         path,
@@ -46,7 +56,12 @@ void _testHostApply() {
         isA<AppliedEditorMutation>(),
       );
       expect(owner.draftDiagnostics, isEmpty);
-      expect(harness.nats.requests, isEmpty);
+      expect(
+        harness.nats.requests.where(
+          (request) => request.subject == _configureSubject,
+        ),
+        isEmpty,
+      );
       skir.ConfigureServiceHostRequest? submitted;
       harness.respond(_configureSubject, (bytes) {
         submitted = skir.ConfigureServiceHostRequest.serializer.fromBytes(
@@ -75,7 +90,12 @@ void _testHostApply() {
         );
       });
       expect(await owner.flush(), isA<MutationSuccess>());
-      expect(harness.nats.requests, hasLength(1));
+      expect(
+        harness.nats.requests.where(
+          (request) => request.subject == _configureSubject,
+        ),
+        hasLength(1),
+      );
       expect(submitted!.execution.realm, isNotNull);
       expect(
         submitted!.execution.primaryEngine!.realm,
@@ -85,55 +105,49 @@ void _testHostApply() {
     },
   );
 
-  test(
-    "retained Host draft saves to its original organization after navigation",
-    () async {
-      var organization = _organizationId;
-      final harness = await _Harness.create(organization: () => organization);
-      addTearDown(harness.dispose);
-      final workspace = EditorWorkspace();
-      addTearDown(workspace.dispose);
-      final view = EditorOwnerRegistry(
-        workspace: workspace,
-        scope: (_organizationId, null),
-      );
-      final owner =
-          (harness.selectable.buildPresentation(view).inputs[const BindingId(
-                        1,
-                      )]!
+  test("changing organization discards a retained Host draft", () async {
+    var organization = _organizationId;
+    final harness = await _Harness.create(organization: () => organization);
+    addTearDown(harness.dispose);
+    await harness.container.read(userIdProvider.future);
+    final workspace = harness.container.read(localWorkProvider);
+    final view = EditorOwnerRegistry(workspace: workspace);
+    final owner =
+        ((harness.selectable.buildPresentation(view).inputs[const BindingId(1)]!
                       as PresentationEditInput)
                   .owner
-              as EditorSource;
-      owner.update(
-        DataPath.root.field("realm"),
-        _mode("RealmHosted", {"target": StringValue("paper@*")}),
-      );
-      view.dispose();
-      harness.servicesSubscription.close();
-      harness.topologySubscription.close();
-      organization = recordId("organization:org2");
-      harness.container.invalidate(organizationIdProvider);
-      await harness.container.pump();
-      harness.respond(
-        _configureSubject,
-        (_) => skir.ConfigureServiceHostResponse.serializer.toBytes(
-          skir.ConfigureServiceHostResponse.createSuccess(
-            host: _hostWithRevision(harness.host, 2),
-            realm: harness.realm,
-            engine: null,
-            removedResources: [],
-          ),
+              as EditorSource)
+          ..update(
+            DataPath.root.field("realm"),
+            _mode("RealmHosted", {"target": StringValue("paper@*")}),
+          );
+    view.dispose();
+    harness.servicesSubscription.close();
+    harness.topologySubscription.close();
+    organization = recordId("organization:org2");
+    harness.container.invalidate(organizationIdProvider);
+    await harness.container.pump();
+    harness.respond(
+      _configureSubject,
+      (_) => skir.ConfigureServiceHostResponse.serializer.toBytes(
+        skir.ConfigureServiceHostResponse.createSuccess(
+          host: _hostWithRevision(harness.host, 2),
+          realm: harness.realm,
+          engine: null,
+          removedResources: [],
         ),
-      );
-      expect(await owner.flush(), isA<MutationSuccess>());
-      expect(
-        harness.nats.requests
-            .where((request) => request.subject.endsWith(".topology.configure"))
-            .map((request) => request.subject),
-        [_configureSubject],
-      );
-    },
-  );
+      ),
+    );
+    expect(harness.container.read(localWorkProvider), isNot(same(workspace)));
+    expect(workspace.resources, isEmpty);
+    expect(await owner.flush(), isA<MutationUnavailable>());
+    expect(
+      harness.nats.requests
+          .where((request) => request.subject.endsWith(".topology.configure"))
+          .map((request) => request.subject),
+      isEmpty,
+    );
+  });
 
   test(
     "Host draft requires an existing Realm when Realm hosting is disabled",
@@ -145,7 +159,7 @@ void _testHostApply() {
       final owner =
           (harness.selectable.buildPresentation(owners).inputs[const BindingId(
                         1,
-                      )]
+                      )]!
                       as PresentationEditInput)
                   .owner
               as EditorSource;
@@ -164,7 +178,12 @@ void _testHostApply() {
         contains(DataPath.root.field("engine").field("realm")),
       );
       expect(await owner.flush(), isA<MutationInvalid>());
-      expect(harness.nats.requests, isEmpty);
+      expect(
+        harness.nats.requests.where(
+          (request) => request.subject == _configureSubject,
+        ),
+        isEmpty,
+      );
       owner.update(
         DataPath.root.field("realm"),
         _mode("RealmHosted", {"target": StringValue("paper@*")}),
@@ -172,7 +191,12 @@ void _testHostApply() {
       expect(owner.draftDiagnostics, isEmpty);
       owner.update(DataPath.root.field("realm"), _mode("RealmDisabled"));
       expect(await owner.flush(), isA<MutationInvalid>());
-      expect(harness.nats.requests, isEmpty);
+      expect(
+        harness.nats.requests.where(
+          (request) => request.subject == _configureSubject,
+        ),
+        isEmpty,
+      );
       owner.discardDraft();
       expect(owner.hasWork, isFalse);
     },

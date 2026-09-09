@@ -59,6 +59,19 @@ extension AsyncValueExtension<T> on AsyncValue<T> {
       throw StateException("Cannot perform operation while in error state");
     }
   }
+
+  /// Returns `null` if the value is ready, otherwise returns the provided state transformed to the new type.
+  AsyncValue<O>? mapUnready<O>() => switch (this) {
+    AsyncLoading(:final progress, :final value)
+        when progress != null && value == null =>
+      AsyncValue.loading(progress: progress),
+    AsyncLoading(:final value) when value == null => AsyncValue.loading(),
+    AsyncError(:final error, :final stackTrace) => AsyncValue.error(
+      error,
+      stackTrace,
+    ),
+    _ => null,
+  };
 }
 
 extension RefExtension on Ref {

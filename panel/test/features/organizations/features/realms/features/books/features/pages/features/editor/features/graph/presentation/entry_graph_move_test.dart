@@ -35,6 +35,7 @@ void main() {
         overrides: [
           organizationIdProvider.overrideWithValue(organizationId),
           realmIdProvider.overrideWithValue(realmId),
+          selectedProvider.overrideWithValue(const AsyncData([])),
           ...pageElementsProviderOverrides(overwriteElements: elements),
           ...entryProviderOverrides(definition: definition),
           pageDocumentHealthProvider(

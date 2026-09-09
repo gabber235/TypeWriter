@@ -223,7 +223,7 @@ final class SelectedProvider
   }
 }
 
-String _$selectedHash() => r'd3ec270254d95bc662ca45115f3bde037972decd';
+String _$selectedHash() => r'22bff495d8332e0320ef87ba235ee6eb400d9c38';
 
 abstract class _$Selected
     extends $Notifier<AsyncValue<List<Selectable<SelectableIdentifier>>>> {

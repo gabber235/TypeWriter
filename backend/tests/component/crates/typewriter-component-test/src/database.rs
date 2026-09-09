@@ -271,6 +271,7 @@ mod tests {
         };
         let service = vec![
             "kernel/id.surql",
+            "kernel/mutation.surql",
             "service/functions.surql",
             "service/service.surql",
             "service/topology.surql",
@@ -280,6 +281,7 @@ mod tests {
             "kernel/color.surql",
             "kernel/url.surql",
             "user.surql",
+            "kernel/mutation.surql",
             "organization/functions.surql",
             "organization/organization.surql",
             "organization/organization_role.surql",
@@ -289,6 +291,7 @@ mod tests {
         ];
         let combined = vec![
             "kernel/id.surql",
+            "kernel/mutation.surql",
             "service/functions.surql",
             "service/service.surql",
             "service/topology.surql",

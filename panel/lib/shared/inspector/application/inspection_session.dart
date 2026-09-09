@@ -6,9 +6,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 /// Composes selections while retaining drafts by resource identity.
 final class InspectionSession extends ChangeNotifier {
   InspectionSession(this.ref)
-    : owners = EditorOwnerRegistry(
-        workspace: ref.read(editorWorkspaceProvider),
-      ) {
+    : owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider)) {
     ref.listen(inspectedSelectionProvider, (_, next) {
       if (next.asError?.error case SelectableNotFoundException(:final id)) {
         owners.deleted(id);
@@ -16,6 +14,13 @@ final class InspectionSession extends ChangeNotifier {
           if (!_disposed) ref.read(selectionProvider.notifier).unselect(id);
         });
         SchedulerBinding.instance.ensureVisualUpdate();
+      } else if (next.isLoading || next.hasError) {
+        owners.unavailable(
+          next.hasError
+              ? "The selected resources could not be refreshed"
+              : "The selected resources are refreshing",
+        );
+        notifyListeners();
       } else {
         _refresh();
       }
@@ -45,10 +50,6 @@ final class InspectionSession extends ChangeNotifier {
       identity: identity,
     );
     owners.begin();
-    owners.scope = (
-      ref.read(organizationIdProvider),
-      ref.read(realmIdProvider),
-    );
     final models = selection
         .map((item) => item.buildPresentation(owners))
         .toList();

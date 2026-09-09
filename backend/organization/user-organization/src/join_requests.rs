@@ -3,16 +3,9 @@ use std::collections::HashMap;
 use otel_wasi::ResultWithSlug;
 use serde::Deserialize;
 use wasmcloud_utils::{
-    database::{
-        RecordId as DatabaseRecordId, read_query, transaction_query, transaction_query_file,
-    },
+    database::{RecordId as DatabaseRecordId, transaction_query, transaction_query_file},
     decode_skir, extract_param,
-    skir::base::{
-        kernel::v1::record_id::RecordId,
-        organization::v1::{
-            join_codes::*, join_request::*, member::*, role::OrganizationRole, user::*,
-        },
-    },
+    skir::base::organization::v1::{join_request::*, role::OrganizationRole, user::*},
     skir_domain_result, skir_variant,
     wasmcloud::messaging::types::BrokerMessage,
 };
@@ -50,35 +43,10 @@ pub async fn handle_watch(
     otel_wasi::main_attribute!("user.id" = user_id.to_string());
     let _request = decode_skir!(WatchUserJoinRequestsRequest, &msg.body)?;
 
-    let user_id = DatabaseRecordId::new("user", user_id);
-    let join_requests = read_query!(
-        r#"
-        SELECT
-            id,
-            in.* as user,
-            out.* as organization,
-            requested_at,
-            expires_at
-        FROM request_to_join
-        WHERE in = $user_id
-          AND expires_at > time::now()
-        "#,
-    )
-    .bind("user_id", user_id)
-    .execute()
+    wasmcloud_utils::database::organization::snapshots::user_join_requests(DatabaseRecordId::new(
+        "user", user_id,
+    ))
     .await
-    .error_with_slug("join-request-watch-query-failed")?
-    .take::<Vec<JoinRequestProjection>>()
-    .error_with_slug("join-request-watch-result-parse-failed")?
-    .into_iter()
-    .map(UserJoinRequest::from)
-    .collect::<Vec<_>>();
-
-    otel_wasi::main_attribute!(
-        "join_request.result_count" = join_requests.len() as i64,
-        "join_request.outcome" = "listed"
-    );
-    Ok(WatchUserJoinRequestsResponse::List(join_requests))
 }
 
 #[tracing::instrument(skip(msg, params))]
@@ -91,6 +59,17 @@ pub async fn handle_request(
     let user_key = user_id;
     let user_id = DatabaseRecordId::new("user", user_key);
     let request = decode_skir!(SubmitUserJoinRequestRequest, &msg.body)?;
+    if request.operation_id.is_empty() {
+        return Ok(wasmcloud_utils::skir_variant!(
+            SubmitUserJoinRequestResponse::InvalidOperationIdError
+        ));
+    }
+    let receipt = wasmcloud_utils::database::mutation::receipt_id(
+        user_key,
+        "join_requests",
+        "SubmitUserJoinRequest",
+        &request.operation_id,
+    );
     wasmcloud_utils::validate_record_ids!(
         SubmitUserJoinRequestResponse,
         request.code,
@@ -104,13 +83,16 @@ pub async fn handle_request(
     )
     .bind("user", user_id)
     .bind("code", DatabaseRecordId::from(&code))
+    .bind("receipt", receipt)
+    .bind("request_bytes", msg.body.clone())
     .execute()
     .await
     .error_with_slug("join-request-query-failed")?
     .decode()
     .error_with_slug("join-request-result-parse-failed")?;
 
-    let outcome = skir_domain_result!(SubmitUserJoinRequestResponse, result);
+    let outcome = skir_domain_result!(SubmitUserJoinRequestResponse, result,
+        "operation-identity-reused-error" => {});
     match outcome {
         JoinSubmissionOutcome::CodeNotFoundError => {
             otel_wasi::main_attribute!("join_request.outcome" = "code_not_found");
@@ -148,16 +130,22 @@ pub async fn handle_request(
         } => {
             let organization_id = request.organization.id.key.to_string();
             wasmcloud_utils::skir_subjects::user_join_requests(user_key)
-                .publish(WatchUserJoinRequestsResponse::Add(Box::new(
-                    request.clone().into(),
-                )))
+                .publish(
+                    wasmcloud_utils::database::organization::snapshots::user_join_requests(
+                        DatabaseRecordId::new("user", user_key),
+                    )
+                    .await?,
+                )
                 .await?;
             wasmcloud_utils::skir_subjects::organization_join_requests(&organization_id)
-                .publish(WatchOrganizationJoinRequestsResponse::Add(Box::new(
-                    request.clone().into(),
-                )))
+                .publish(
+                    wasmcloud_utils::database::organization::snapshots::join_requests(
+                        request.organization.id.clone(),
+                    )
+                    .await?,
+                )
                 .await?;
-            publish_consumed_code(&organization_id, &code, single_use).await?;
+            publish_consumed_code(&organization_id, single_use).await?;
 
             otel_wasi::main_attribute!("join_request.outcome" = "request_made");
             Ok(SubmitUserJoinRequestResponse::RequestMade(Box::new(
@@ -177,16 +165,22 @@ pub async fn handle_request(
                 .map(OrganizationRole::from)
                 .collect();
             wasmcloud_utils::skir_subjects::user_organizations(user_key)
-                .publish(WatchUserOrganizationsResponse::Add(Box::new(
-                    organization.clone().into(),
-                )))
+                .publish(
+                    wasmcloud_utils::database::organization::snapshots::organizations(
+                        DatabaseRecordId::new("user", user_key),
+                    )
+                    .await?,
+                )
                 .await?;
             wasmcloud_utils::skir_subjects::organization_members(&organization_id)
-                .publish(WatchOrganizationMembersResponse::Add(Box::new(
-                    member.into(),
-                )))
+                .publish(
+                    wasmcloud_utils::database::organization::snapshots::members(
+                        organization.id.clone(),
+                    )
+                    .await?,
+                )
                 .await?;
-            publish_consumed_code(&organization_id, &code, single_use).await?;
+            publish_consumed_code(&organization_id, single_use).await?;
 
             otel_wasi::main_attribute!("join_request.outcome" = "auto_accepted");
             Ok(SubmitUserJoinRequestResponse::AutoAccepted(Box::new(
@@ -204,14 +198,16 @@ pub async fn handle_request(
 
 async fn publish_consumed_code(
     organization_id: &str,
-    code: &RecordId,
     single_use: bool,
 ) -> Result<(), otel_wasi::Error> {
     if single_use {
         wasmcloud_utils::skir_subjects::organization_join_codes(organization_id)
-            .publish(WatchOrganizationJoinCodesResponse::Remove(
-                code.clone().into(),
-            ))
+            .publish(
+                wasmcloud_utils::database::organization::snapshots::join_codes(
+                    DatabaseRecordId::new("organization", organization_id),
+                )
+                .await?,
+            )
             .await?;
     }
     Ok(())
@@ -227,6 +223,17 @@ pub async fn handle_cancel(
     let user_key = user_id;
     let user_id = DatabaseRecordId::new("user", user_id);
     let request = decode_skir!(CancelUserJoinRequestRequest, &msg.body)?;
+    if request.operation_id.is_empty() {
+        return Ok(wasmcloud_utils::skir_variant!(
+            CancelUserJoinRequestResponse::InvalidOperationIdError
+        ));
+    }
+    let receipt = wasmcloud_utils::database::mutation::receipt_id(
+        user_key,
+        "join_requests",
+        "CancelUserJoinRequest",
+        &request.operation_id,
+    );
     wasmcloud_utils::validate_record_ids!(
         CancelUserJoinRequestResponse,
         request.request_id,
@@ -239,14 +246,24 @@ pub async fn handle_cancel(
         Option<JoinRequestProjection>,
         r#"
             BEGIN TRANSACTION;
-
-            LET $request = SELECT id, in.* as user, out.* as organization, requested_at, expires_at FROM $request
+        RETURN {
+            LET $previous = fn::mutation::recall($receipt, $request_bytes);
+            IF $previous != NONE { RETURN $previous.value };
+            LET $result = {
+LET $request = SELECT id, in.* as user, out.* as organization, requested_at, expires_at FROM $request
             WHERE in = $user_id;
 
             DELETE $request.id;
 
             RETURN $request[0];
-            COMMIT TRANSACTION;
+            };
+            IF $result != NONE {
+                LET $stored = fn::mutation::commit($receipt, $request_bytes, { value: $result });
+                RETURN $stored.value;
+            };
+            RETURN $result;
+        };
+        COMMIT TRANSACTION;
             "#,
     )
     .bind(
@@ -254,12 +271,15 @@ pub async fn handle_cancel(
         DatabaseRecordId::from(&request_id),
     )
     .bind("user_id", user_id)
+    .bind("receipt", receipt)
+    .bind("request_bytes", msg.body.clone())
     .execute()
     .await
     .error_with_slug("join-request-cancel-query-failed")?
     .decode()
     .error_with_slug("join-request-cancel-result-parse-failed")?;
-    let join_request = skir_domain_result!(CancelUserJoinRequestResponse, join_request);
+    let join_request = skir_domain_result!(CancelUserJoinRequestResponse, join_request,
+        "operation-identity-reused-error" => {});
 
     let Some(join_request) = join_request else {
         otel_wasi::main_attribute!("join_request.outcome" = "request_not_found");
@@ -269,17 +289,23 @@ pub async fn handle_cancel(
     };
 
     wasmcloud_utils::skir_subjects::user_join_requests(user_key)
-        .publish(WatchUserJoinRequestsResponse::Remove(Box::new(
-            join_request.id.clone().into(),
-        )))
+        .publish(
+            wasmcloud_utils::database::organization::snapshots::user_join_requests(
+                DatabaseRecordId::new("user", user_key),
+            )
+            .await?,
+        )
         .await?;
 
     wasmcloud_utils::skir_subjects::organization_join_requests(
         join_request.organization.id.key.to_string(),
     )
-    .publish(WatchOrganizationJoinRequestsResponse::Remove(Box::new(
-        join_request.id.into(),
-    )))
+    .publish(
+        wasmcloud_utils::database::organization::snapshots::join_requests(
+            join_request.organization.id.clone(),
+        )
+        .await?,
+    )
     .await?;
 
     otel_wasi::main_attribute!(

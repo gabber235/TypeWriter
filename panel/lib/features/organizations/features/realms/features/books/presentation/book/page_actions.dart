@@ -198,15 +198,21 @@ Future<bool> showPageDeletionDialogue(
       result.requireApplied(conflictMessage: "The page no longer exists");
       final context = ref.context;
       if (!context.mounted) return;
+      final organizationId = ref.read(organizationIdProvider);
       final bookId = ref.read(bookIdProvider);
       final realmId = ref.read(realmIdProvider);
-      if (bookId != null && realmId != null) {
+      if (organizationId != null && bookId != null && realmId != null) {
         unawaited(
-          router.push(BookRoute(realmId: realmId.id, bookId: bookId.id)),
+          router.push(
+            BookRoute(
+              organizationId: organizationId.id,
+              realmId: realmId.id,
+              bookId: bookId.id,
+            ),
+          ),
         );
       }
 
-      final organizationId = ref.read(organizationIdProvider);
       if (organizationId != null) {
         unawaited(
           router.push(OrganizationRoute(organizationId: organizationId.id)),

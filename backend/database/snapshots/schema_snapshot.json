@@ -7,7 +7,7 @@
     },
     {
       "path": "database/schema/kernel/id.surql",
-      "hash": "2cf9e8be4f3022be693f20a513b1bcf3ed37f0ba4210d2ac38c1b097ada82245"
+      "hash": "106062a1769635b746c8be70be298885b18629d9faa47c5652a08e9dee3f897c"
     },
     {
       "path": "database/schema/kernel/url.surql",
@@ -39,7 +39,7 @@
     },
     {
       "path": "database/schema/service/functions.surql",
-      "hash": "a2d6a3aa27bbaa590c73596a6bd9e9749bcbcc25780dd870c7e4d3b262b46d4b"
+      "hash": "a8bd0e64e8ae1916a21149fc57d192809ee05c7959f96378c2828ab461fc56d4"
     },
     {
       "path": "database/schema/service/service.surql",
@@ -47,7 +47,7 @@
     },
     {
       "path": "database/schema/service/topology.surql",
-      "hash": "0002e182e3030de3402b6855f0bbc97c271b616c2134b02058ec4727a8d32930"
+      "hash": "727f3042a9d1df799bca47b7218786c77bfea5229ec12213bfcc76d61ca9ba1a"
     },
     {
       "path": "database/schema/user.surql",

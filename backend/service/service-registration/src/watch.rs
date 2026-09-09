@@ -24,6 +24,10 @@ pub async fn handle_watch(
     );
     let _ = decode_skir!(WatchOrganizationServicesRequest, &msg.body)?;
 
+    snapshot(org_id).await
+}
+
+pub async fn snapshot(org_id: &str) -> Result<WatchOrganizationServicesResponse, otel_wasi::Error> {
     let organization_id = RecordId::new("organization", org_id);
     let records = read_query!(
         r#"

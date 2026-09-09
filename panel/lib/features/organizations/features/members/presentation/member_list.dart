@@ -61,8 +61,9 @@ class MembersTab extends HookConsumerWidget {
                 continue;
               }
             }
-            if (context.mounted)
+            if (context.mounted) {
               selectedIds.value = selectedIds.value.difference(succeeded);
+            }
           },
         );
       } finally {

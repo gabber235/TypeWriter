@@ -2,10 +2,13 @@ import "package:flutter/widgets.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 part "selection_editor_source_test_support.dart";
+part "selection_editor_availability_test_cases.dart";
 
 void main() {
+  _testEditorAvailability();
   group("InspectionSession values", () {
     test("has no presentation before a selection resolves", () {
       final container = ProviderContainer.test();

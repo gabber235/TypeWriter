@@ -104,8 +104,8 @@ class ServicesMock extends OrganizationServices {
 List<Override> servicesProviderOverrides({
   DisplayState state = DisplayState.loading,
 }) => [
-  organizationServicesProvider.overrideWith(
-    () => ServicesMock(displayState: state),
+  organizationServicesProvider.overrideWith2(
+    (_) => ServicesMock(displayState: state),
   ),
 ];
 

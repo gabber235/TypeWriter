@@ -75,20 +75,15 @@ void main() {
   test("invalid element update restores the session value", () async {
     final harness = await _Harness.create();
     harness.respondWithInvalid();
-    final changedValue = RecordValue({"title": const StringValue("Rejected")});
-
-    final result = await harness.notifier.commitElementValue(
-      _element.id,
-      EditorCommit(
-        expectedRevision: 1,
-        localRevision: 2,
-        rootValue: changedValue,
-        baseValue: harness.value,
-        changedPaths: {DataPath.root.field("title")},
+    await expectLater(
+      harness.notifier.updateEntryFieldValue(
+        _element.id,
+        DataPath.root.field("title"),
+        const StringValue("Rejected"),
       ),
+      throwsA(isA<ApiException>()),
     );
 
-    expect(result, isA<MutationInvalid>());
     expect(harness.value.fields["title"], const StringValue("Initial"));
 
     await harness.dispose();
@@ -414,7 +409,7 @@ void main() {
       harness.nats.requests.where(
         (request) => request.subject == _snapshotSubject,
       ),
-      hasLength(2),
+      hasLength(3),
     );
 
     entryOwner.close();
@@ -436,7 +431,13 @@ void main() {
         DataPath.root.field("title"),
         const StringValue("Local"),
       ),
-      throwsA(isA<ApiException>()),
+      throwsA(
+        isA<ApiException>().having(
+          (error) => error.message,
+          "message",
+          contains("Rejected"),
+        ),
+      ),
     );
 
     expect(harness.value.fields["title"], const StringValue("Remote"));
@@ -464,7 +465,7 @@ void main() {
 
       expect(harness.placement.x, 4);
       final draft = harness.container
-          .read(editorWorkspaceProvider)
+          .read(localWorkProvider)
           .resources
           .values
           .single
@@ -498,9 +499,10 @@ final class _Harness {
           realmEditorCatalogProvider.overrideWith((ref) {
             ref.watch(realmIdProvider);
             return catalogStates.stream;
-          })
-        else
-          realmEditorCatalogSourceProvider.overrideWithValue(catalogSource),
+          }),
+        realmEditorCatalogSourceProvider.overrideWithValue(
+          catalogSource ?? _SnapshotCatalogSource(() => catalog),
+        ),
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
         ),
@@ -766,4 +768,21 @@ final class _TrackingCatalogSource implements RealmEditorCatalogSource {
   }
 
   Future<void> close() => events.close();
+}
+
+final class _SnapshotCatalogSource implements RealmEditorCatalogSource {
+  const _SnapshotCatalogSource(this.snapshot);
+  final RealmEditorCatalogSnapshot Function() snapshot;
+
+  @override
+  Future<RealmEditorCatalogFetchResult> fetch(
+    RealmEditorCatalogRoute route,
+    RealmEditorCatalogRequest request, {
+    CatalogGeneration? expectedGeneration,
+  }) async => RealmEditorCatalogFetchResult.fetched(snapshot());
+
+  @override
+  Stream<RealmEditorCatalogWatchEvent> watchInvalidations(
+    RealmEditorCatalogRoute route,
+  ) => const Stream.empty();
 }

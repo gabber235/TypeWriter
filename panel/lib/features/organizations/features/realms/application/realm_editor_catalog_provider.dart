@@ -207,64 +207,64 @@ extension RealmEditorCatalogElementResolution
     ElementDefinition definition,
     T Function(TypeCatalog catalog, List<PresentationDefinition> presentations)
     create,
-  ) => when(
-    data: (state) {
-      final snapshot = state.snapshot;
-      if (snapshot == null) {
-        return switch (state) {
-          RealmEditorCatalogUnavailable(:final diagnostics) => AsyncValue.error(
-            ElementDefinitionException(diagnostics),
-            StackTrace.current,
+  ) {
+    if (mapUnready<T>() case final value?) {
+      return value;
+    }
+    final state = requireValue;
+    final snapshot = state.snapshot;
+    if (snapshot == null) {
+      return switch (state) {
+        RealmEditorCatalogUnavailable(:final diagnostics) => AsyncValue.error(
+          ElementDefinitionException(diagnostics),
+          StackTrace.current,
+        ),
+        _ => const AsyncValue.loading(),
+      };
+    }
+    final catalog = bootstrapTypeCatalog(snapshot.catalog.definitions);
+    final availablePresentationIds = {
+      ...builtinPresentationDefinitions().map((definition) => definition.id),
+      ...snapshot.presentations.keys,
+    };
+    final missingPresentationIds = {
+      for (final type in catalog.definitions)
+        ...[
+          ?type.defaultPresentationId,
+          ...type.namedPresentations.values,
+        ].where((id) => !availablePresentationIds.contains(id)),
+    };
+    if (missingPresentationIds.isNotEmpty) {
+      final missingPresentationNames =
+          missingPresentationIds
+              .map((id) => "${id.namespace}/${id.name}")
+              .toList()
+            ..sort();
+      return AsyncValue.error(
+        ElementDefinitionException([
+          TypeDiagnostic(
+            code: TypeDiagnosticCode.invalidPresentation,
+            message:
+                "Realm catalog omitted required presentations: "
+                "${missingPresentationNames.join(", ")}",
+            pathPresent: false,
           ),
-          _ => const AsyncValue.loading(),
-        };
-      }
-      final catalog = bootstrapTypeCatalog(snapshot.catalog.definitions);
-      final availablePresentationIds = {
-        ...builtinPresentationDefinitions().map((definition) => definition.id),
-        ...snapshot.presentations.keys,
-      };
-      final missingPresentationIds = {
-        for (final type in catalog.definitions)
-          ...[
-            ?type.defaultPresentationId,
-            ...type.namedPresentations.values,
-          ].where((id) => !availablePresentationIds.contains(id)),
-      };
-      if (missingPresentationIds.isNotEmpty) {
-        final missingPresentationNames =
-            missingPresentationIds
-                .map((id) => "${id.namespace}/${id.name}")
-                .toList()
-              ..sort();
-        return AsyncValue.error(
-          ElementDefinitionException([
-            TypeDiagnostic(
-              code: TypeDiagnosticCode.invalidPresentation,
-              message:
-                  "Realm catalog omitted required presentations: "
-                  "${missingPresentationNames.join(", ")}",
-              pathPresent: false,
-            ),
-          ]),
-          StackTrace.current,
-        );
-      }
-      final resolved = definition.resolve(TypeRegistry(catalog));
-      if (resolved.valueOrNull == null) {
-        if (state is RealmEditorCatalogLoading) {
-          return const AsyncValue.loading();
-        }
-        return AsyncValue.error(
-          ElementDefinitionException(resolved.diagnostics),
-          StackTrace.current,
-        );
-      }
-      return AsyncValue.data(
-        create(catalog, snapshot.presentations.values.toList()),
+        ]),
+        StackTrace.current,
       );
-    },
-    error: AsyncValue.error,
-    loading: () => const AsyncValue.loading(),
-  );
+    }
+    final resolved = definition.resolve(TypeRegistry(catalog));
+    if (resolved.valueOrNull == null) {
+      if (state is RealmEditorCatalogLoading) {
+        return const AsyncValue.loading();
+      }
+      return AsyncValue.error(
+        ElementDefinitionException(resolved.diagnostics),
+        StackTrace.current,
+      );
+    }
+    return AsyncValue.data(
+      create(catalog, snapshot.presentations.values.toList()),
+    );
+  }
 }

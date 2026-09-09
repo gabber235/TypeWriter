@@ -29,27 +29,13 @@ class Services extends _$Services {
 }
 
 @riverpod
-class OrganizationTopologyStream extends _$OrganizationTopologyStream {
-  @override
-  Stream<OrganizationTopology> build() async* {
-    final organization = ref.watch(organizationIdProvider);
-    if (organization == null) {
-      yield OrganizationTopology.empty;
-      return;
-    }
-    final provider = scopedOrganizationTopologyProvider(organization);
-    ref.listen(provider, (_, next) => state = next);
-    yield await ref.read(provider.future);
+Stream<OrganizationTopology> organizationTopologyStream(Ref ref) async* {
+  final organization = ref.watch(organizationIdProvider);
+  if (organization == null) {
+    yield OrganizationTopology.empty;
+    return;
   }
-
-  Future<TopologyConfigurationResult> configureHost({
-    required TopologyHost host,
-    required skir.HostExecutionConfiguration execution,
-  }) {
-    final organization = ref.read(organizationIdProvider);
-    if (organization == null) throw ApiException.noOrganization();
-    return ref
-        .read(scopedOrganizationTopologyProvider(organization).notifier)
-        .configureHost(host: host, execution: execution);
-  }
+  yield await ref.watch(
+    organizationTopologyControllerProvider(organization).future,
+  );
 }

@@ -16,7 +16,13 @@ void main() {
             ).overrideWithValue(true),
             routeParamProvider("realmId").overrideWithValue("test"),
             organizationTopologyStreamProvider.overrideWith(
-              () => _FixtureTopology(realm),
+              (ref) => Stream.value(
+                OrganizationTopology(
+                  hosts: [],
+                  realmInstances: [realm],
+                  engineInstances: [],
+                ),
+              ),
             ),
           ],
         )..listen(realmConnectionProvider, (_, next) {
@@ -35,16 +41,16 @@ void main() {
     var connected = true;
     final states = <RealmConnectionState>[];
     final provider = hostConnectedProvider(recordId("service_host:host"));
-    final container = ProviderContainer.test(
-      overrides: [
-        realmIdProvider.overrideWithValue(recordId("realm_instance:test")),
-        selectedRealmProvider.overrideWith((ref) async => _realm()),
-        provider.overrideWith((ref) => connected),
-      ],
-    );
-    container.listen(realmConnectionProvider, (_, next) {
-      if (next.hasValue) states.add(next.requireValue);
-    });
+    final container =
+        ProviderContainer.test(
+          overrides: [
+            realmIdProvider.overrideWithValue(recordId("realm_instance:test")),
+            selectedRealmProvider.overrideWith((ref) async => _realm()),
+            provider.overrideWith((ref) => connected),
+          ],
+        )..listen(realmConnectionProvider, (_, next) {
+          if (next.hasValue) states.add(next.requireValue);
+        });
     await _waitForState(states, RealmConnectionState.online);
     connected = false;
     container.invalidate(provider);
@@ -239,19 +245,4 @@ Future<void> _waitForState(
     await Future<void>.delayed(const Duration(milliseconds: 10));
   }
   fail("Did not observe $expected. States: $states");
-}
-
-class _FixtureTopology extends OrganizationTopologyStream {
-  _FixtureTopology(this.realm);
-
-  final TopologyRealm realm;
-
-  @override
-  Stream<OrganizationTopology> build() => Stream.value(
-    OrganizationTopology(
-      hosts: [],
-      realmInstances: [realm],
-      engineInstances: [],
-    ),
-  );
 }

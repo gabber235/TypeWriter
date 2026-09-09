@@ -5,6 +5,7 @@ import "package:flutter_test/flutter_test.dart" hide Tags;
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/heroicons_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 import "../../../../../../../support/test_utils.dart";
 
@@ -16,8 +17,6 @@ class _Tags extends Tags {
   @override
   Future<List<Tag>> build() async => tags;
 }
-
-final _refProvider = Provider<Ref>((ref) => ref);
 
 Tag _tag(String id, {List<String> parents = const []}) => Tag(
   tagId: recordId("tag:$id"),
@@ -97,6 +96,11 @@ void main() {
       final container = ProviderContainer.test(
         overrides: [
           tagsProvider.overrideWith(() => _Tags([tag, _tag("parent")])),
+          organizationIdProvider.overrideWith(
+            (ref) => recordId("organization:test"),
+          ),
+          realmIdProvider.overrideWith((ref) => recordId("realm:test")),
+          userIdProvider.overrideWith((ref) async => "user"),
         ],
       );
       final subscription = container.listen(
@@ -199,9 +203,15 @@ void main() {
     "empty parents stay editable while inheritance hides and layout uses a grid",
     (tester) async {
       final tag = _tag("current");
-      final container = ProviderContainer.test();
       final selected = TagSelectable(
-        ref: container.read(_refProvider),
+        resource: FakeEditableResource(
+          key: EditorResourceKey(scope: null, identity: tag.tagId),
+          current: TagEditorSnapshot(tag),
+          commit: (_) async =>
+              throw StateError("No save in this rendering test"),
+        ),
+        onDelete: () async =>
+            throw StateError("No deletion in this rendering test"),
         id: TagIdentifier(tag.tagId),
         tag: tag,
         tagCollection: tagPresentationCollection([

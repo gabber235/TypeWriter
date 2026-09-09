@@ -7,23 +7,40 @@ typedef EditorBatchSender =
 
 /// Reserves all participating drafts before capturing one atomic submission.
 final class EditorBatch {
-  EditorBatch._(this._commits, this._mutations, this._send);
-  final EditorBatchSender _send;
+  EditorBatch._(
+    this._commits,
+    this._send, {
+    Map<TransactionalEditorSource, Set<DataPath>>? paths,
+  }) : _paths =
+           paths ??
+           {
+             for (final entry in _commits.entries)
+               entry.key: entry.value.changedPaths.toSet(),
+           };
+  final EditorBatchSender? _send;
   final Map<TransactionalEditorSource, EditorCommit> _commits;
-  final Map<TransactionalEditorSource, List<_PendingStructuralMutation>>
-  _mutations;
+  final Map<TransactionalEditorSource, Set<DataPath>> _paths;
   Map<TransactionalEditorSource, TypedMutationResult> _results = {};
   Future<Map<TransactionalEditorSource, TypedMutationResult>>? _recovery;
 
   static Future<Map<TransactionalEditorSource, TypedMutationResult>> submit({
     required Map<TransactionalEditorSource, Map<DataPath, DataValue>> changes,
-    required EditorBatchSender send,
+    EditorBatchSender? send,
   }) async {
     while (changes.keys.any((source) => source._activeCommit != null)) {
       await Future.wait([
-        for (final source in changes.keys)
-          if (source._activeCommit case final active?) active,
+        for (final source in changes.keys) ?source._activeCommit,
       ]);
+    }
+    final resourceBatch = changes.keys.any((source) => source.resource != null);
+    if (resourceBatch &&
+        changes.keys.any((source) => source.resource == null)) {
+      throw StateError(
+        "A resource transaction cannot include local editor callbacks",
+      );
+    }
+    if (!resourceBatch && send == null) {
+      throw StateError("A local editor batch requires a sender");
     }
     final invalid = <TypeDiagnostic>[];
     final accepted = <TransactionalEditorSource, Map<DataPath, DataValue>>{};
@@ -58,11 +75,12 @@ final class EditorBatch {
         }
       }
     }
-    if (invalid.isNotEmpty)
+    if (invalid.isNotEmpty) {
       return {
         for (final source in changes.keys)
           source: TypedMutationResult.invalid(invalid),
       };
+    }
     final completions = {
       for (final source in changes.keys)
         source: Completer<TypedMutationResult>(),
@@ -72,8 +90,6 @@ final class EditorBatch {
       source._cancelScheduledTasks();
     }
     final commits = <TransactionalEditorSource, EditorCommit>{};
-    final mutations =
-        <TransactionalEditorSource, List<_PendingStructuralMutation>>{};
     for (final entry in changes.entries) {
       final source = entry.key;
       for (final change in accepted[source]!.entries) {
@@ -89,24 +105,51 @@ final class EditorBatch {
         );
         source._states.markEdited(change.key);
       }
-      final paths = entry.value.keys.toSet();
-      mutations[source] = source._mutationsFor(paths);
-      commits[source] = EditorCommit(
-        expectedRevision: source.document.revision,
-        localRevision: source._localRevision,
-        baseValue: source.document.confirmedValue,
-        rootValue: source._commitValue(paths),
-        changedPaths: paths,
-        mutations: mutations[source]!
-            .map((pending) => pending.mutation)
-            .toList(),
-      );
+    }
+    if (resourceBatch) {
+      final saved = await _ResourceSave.run({
+        for (final entry in changes.entries)
+          entry.key: entry.value.keys.toSet(),
+      });
+      final batch =
+          EditorBatch._(
+              saved.commits,
+              send,
+              paths: {
+                for (final entry in changes.entries)
+                  entry.key: entry.value.keys.toSet(),
+              },
+            )
+            .._results = saved.results
+            .._settle();
+      for (final source in changes.keys) {
+        final result = saved.results[source] ?? source._settledResult();
+        if (!saved.commits.containsKey(source) && result is! MutationSuccess) {
+          source._rejectedBatch = batch;
+          source._failPaths(changes[source]!.keys.toSet(), [
+            _diagnostic("The batch could not be prepared"),
+          ]);
+        }
+        source._activeCommit = null;
+        completions[source]!.complete(result);
+        source._notify();
+      }
+      return {
+        for (final source in changes.keys)
+          source: saved.results[source] ?? source._settledResult(),
+      };
+    }
+    for (final entry in changes.entries) {
+      final source = entry.key;
+      final paths = source._states.flushCandidates(entry.value.keys.toSet());
+      if (paths.isEmpty) continue;
+      commits[source] = source.captureCommit(paths);
       source._states.markSaving(paths);
       source._notify();
     }
-    final batch = EditorBatch._(Map.unmodifiable(commits), mutations, send);
+    final batch = EditorBatch._(Map.unmodifiable(commits), send);
     try {
-      batch._results = await send(batch._commits);
+      batch._results = commits.isEmpty ? {} : await send!(batch._commits);
     } on Object catch (error, stackTrace) {
       batch._results = {
         for (final source in changes.keys)
@@ -120,11 +163,17 @@ final class EditorBatch {
     batch._settle();
     for (final source in changes.keys) {
       source._activeCommit = null;
-      completions[source]!.complete(batch._results[source]);
-      source._notify();
-      source._scheduleAutoFlush();
+      completions[source]!.complete(
+        batch._results[source] ?? source._settledResult(),
+      );
+      source
+        .._notify()
+        .._scheduleAutoFlush();
     }
-    return batch._results;
+    return {
+      for (final source in changes.keys)
+        source: batch._results[source] ?? source._settledResult(),
+    };
   }
 
   void _settle() {
@@ -134,53 +183,27 @@ final class EditorBatch {
       final commit = entry.value;
       final result = _results[source] ?? _unavailable("Missing batch result");
       source._states.clearSaving();
-      source._unresolved = null;
-      source._rejectedBatch =
-          result is MutationSuccess || result is MutationUncertain
-          ? null
-          : this;
-      switch (result) {
-        case MutationSuccess(:final revision, :final value):
-          source._acceptSuccess(
-            revision < source.document.revision
-                ? source.document.revision
-                : revision,
-            revision < source.document.revision
-                ? source.document.confirmedValue
-                : value,
-            commit.rootValue,
-            commit.changedPaths,
-            commit.localRevision,
-          );
-          source._pendingMutations.removeWhere(_mutations[source]!.contains);
-        case MutationUncertain():
-          source._unresolved = _UnresolvedCommit(
-            commit,
-            result.copyWith(
-              replay: result.replay == null
-                  ? null
-                  : () async => (await _retry())[source]!,
-            ),
-            _mutations[source]!,
-          );
-        case MutationConflict(:final actualRevision, :final actualValue):
-          source.acceptRemote(revision: actualRevision, value: actualValue);
-          source._states.fail(
-            {
-              for (final path in commit.changedPaths)
-                if (source.saveState(path).phase != EditorSavePhase.conflict)
-                  path,
-            },
-            [_diagnostic("The batch changed elsewhere")],
-          );
-        case MutationInvalid(:final diagnostics) ||
-            MutationUnavailable(:final diagnostics):
-          source._failPaths(commit.changedPaths, diagnostics);
-        case MutationPermissionDenied(:final message):
-          source._failPaths(commit.changedPaths, [_diagnostic(message)]);
+      source
+        .._unresolved = null
+        .._rejectedBatch =
+            result is MutationSuccess || result is MutationUncertain
+            ? null
+            : this;
+      if (result is MutationUncertain) {
+        source._unresolved = _UnresolvedCommit(
+          commit,
+          result.copyWith(
+            replay: result.replay == null
+                ? null
+                : () async => (await _retry())[source]!,
+          ),
+        );
+      } else {
+        source.acceptCommit(commit, result);
       }
-      source._notify();
-      source._scheduleAutoFlush();
+      source
+        .._notify()
+        .._scheduleAutoFlush();
     }
   }
 }

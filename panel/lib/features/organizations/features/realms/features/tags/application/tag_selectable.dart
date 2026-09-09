@@ -2,8 +2,11 @@ import "package:flutter/material.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v1/authoring.dart"
+    as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+part "tag_editor_resource.dart";
 part "tag_inspector_definition.dart";
 
 class TagIdentifier extends SelectableIdentifier implements GraphDragData {
@@ -22,23 +25,40 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
 
   @override
   AsyncValue<Selectable> create(Ref ref) {
+    final organization = ref.watch(organizationIdProvider);
+    final realm = ref.watch(realmIdProvider);
+    if (organization == null || realm == null) {
+      return AsyncError(
+        ApiException.badRequest("No realm selected"),
+        StackTrace.current,
+      );
+    }
+    final tagsCommands = ref.watch(tagsProvider.notifier);
     final tagAsync = ref.watch(tagProvider(tagId));
+    if (tagAsync.mapUnready<Selectable>() case final value?) return value;
+    final tag = tagAsync.requireValue;
+    if (tag == null) {
+      throw SelectableNotFoundException(this);
+    }
     final tags = ref.watch(tagsProvider).value ?? const <Tag>[];
-    return tagAsync.whenData((value) {
-      if (value == null) {
-        throw SelectableNotFoundException(this);
-      }
-      return TagSelectable(
-        ref: ref,
+    return AsyncValue.data(
+      TagSelectable(
+        resource: TagEditorResource(
+          ref
+              .watch(resourceRepositoriesProvider)
+              .authoring(organization, realm),
+          tagId,
+        ),
+        onDelete: () => tagsCommands.deleteTag(tagId),
         id: this,
-        tag: value,
+        tag: tag,
         tagCollection: tagPresentationCollection(
           tags,
-          editingTagId: value.tagId,
-          existingParentIds: value.parentIds,
+          editingTagId: tag.tagId,
+          existingParentIds: tag.parentIds,
         ),
-      );
-    });
+      ),
+    );
   }
 
   @override
@@ -55,12 +75,13 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
 }
 
 class TagSelectable extends EditableSelectable<TagIdentifier> {
-  TagSelectable({
-    required this.ref,
+  const TagSelectable({
+    required this.resource,
+    required this.onDelete,
     required this.id,
     required this.tag,
     required this.tagCollection,
-  }) : _data = tag.inspectorValue;
+  });
 
   @override
   final TagIdentifier id;
@@ -71,26 +92,9 @@ class TagSelectable extends EditableSelectable<TagIdentifier> {
   @override
   String get name => tag.name;
 
-  final Ref ref;
-  late final AuthoringSession _commands = ref.readAuthoringSession().notifier;
-
   @override
-  Stream<EditorDocument?> get updates =>
-      _commands.watchSnapshots(_commands.acquireLibrary).map((snapshot) {
-        final value = snapshot.tags[id.tagId];
-        if (snapshot.sequence == null) return document;
-        return value == null
-            ? null
-            : document.copyWith(
-                confirmedValue: Tag.fromWire(
-                  value,
-                  snapshot.sequence!,
-                ).inspectorValue,
-                revision: snapshot.sequence!,
-              );
-      });
-
-  final RecordValue _data;
+  final EditableResource resource;
+  final Future<void> Function() onDelete;
 
   @override
   List<PresentationDefinition> get presentations => [_tagInspectorPresentation];
@@ -98,128 +102,15 @@ class TagSelectable extends EditableSelectable<TagIdentifier> {
   List<PresentationCollectionSource> get collections => [tagCollection];
 
   @override
-  EditorDocument get document => EditorDocument(
-    rootType: NamedType(tagInspectorTypeRef),
-    typeCatalog: _tagInspectorCatalog,
-    confirmedValue: _data,
-    revision: tag.authoringSequence,
-    mergePolicies: {DataPath.root.field("parents"): EditorMergePolicy.set},
-  );
-
+  EditorSnapshot get snapshot => TagEditorSnapshot(tag);
   @override
   List<SelectionCapability> get capabilities => [
-    DeleteSelectionCapability(
-      onDelete: () => ref.read(tagsProvider.notifier).deleteTag(tag.tagId),
-    ),
+    DeleteSelectionCapability(onDelete: onDelete),
   ];
 
   @override
   Widget? buildInspectorHeader() => TagHeader(tag: tag);
 
   @override
-  EditorMutationResult validate(DataPath path, DataValue value) {
-    final result = super.validate(path, value);
-    if (result is! AppliedEditorMutation || value is! IntegerValue) {
-      return result;
-    }
-    final widthPath = DataPath.root.field("layout").field("width");
-    final heightPath = DataPath.root.field("layout").field("height");
-    if ((path == widthPath || path == heightPath) && value.value < BigInt.one) {
-      return EditorMutationResult.invalid([
-        TypeDiagnostic(
-          code: TypeDiagnosticCode.invalidValue,
-          message: "Tag dimensions must be greater than zero",
-          path: path,
-        ),
-      ]);
-    }
-    return result;
-  }
-
-  @override
-  Future<TypedMutationResult> commit(EditorCommit commit) {
-    final next = _tagFromInspectorValue(
-      commit.rootValue,
-      expectedRevision: commit.expectedRevision,
-    );
-    if (next == null) {
-      return Future.value(
-        TypedMutationResult.invalid([
-          const TypeDiagnostic(
-            code: TypeDiagnosticCode.invalidValue,
-            message: "The Tag inspector value is invalid",
-          ),
-        ]),
-      );
-    }
-    final expected = _tagFromInspectorValue(
-      commit.baseValue,
-      expectedRevision: commit.expectedRevision,
-    );
-    if (expected == null)
-      return Future.value(invalidMutation("The confirmed value is invalid"));
-    return _commands.commitTag(next, expected: expected);
-  }
-
-  @override
-  int get hashCode => Object.hash(id, tag);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! TagSelectable) return false;
-    return other.id == id && other.tag == tag;
-  }
-
-  @override
   String toString() => "TagSelectable(id: $id, tag: $tag)";
-
-  Tag? _tagFromInspectorValue(
-    DataValue value, {
-    required int expectedRevision,
-  }) {
-    if (value is! RecordValue) return null;
-    final name = value.fields["name"];
-    final color = value.fields["color"];
-    final parents = value.fields["parents"];
-    final layout = value.fields["layout"];
-    if (name is! StringValue ||
-        name.value.trim().isEmpty ||
-        color is! IntegerValue ||
-        parents is! ListValue ||
-        layout is! RecordValue) {
-      return null;
-    }
-    final decodedColor = color.colorOrNull;
-    final parentIds = parents.values
-        .whereType<StringValue>()
-        .map((parent) => recordId("tag:${parent.value}"))
-        .toList();
-    final x = layout.fields["x"];
-    final y = layout.fields["y"];
-    final width = layout.fields["width"];
-    final height = layout.fields["height"];
-    if (decodedColor == null ||
-        parentIds.length != parents.values.length ||
-        x is! IntegerValue ||
-        y is! IntegerValue ||
-        width is! IntegerValue ||
-        height is! IntegerValue ||
-        width.value < BigInt.one ||
-        height.value < BigInt.one) {
-      return null;
-    }
-    return tag.copyWith(
-      authoringSequence: expectedRevision,
-      name: name.value,
-      color: decodedColor,
-      parentIds: parentIds,
-      placement: Placement(
-        x: x.value.toInt(),
-        y: y.value.toInt(),
-        width: width.value.toInt(),
-        height: height.value.toInt(),
-      ),
-    );
-  }
 }
