@@ -16,6 +16,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 import java.io.File
 import java.nio.file.Files
 import java.util.zip.ZipEntry
@@ -526,14 +527,77 @@ val ImprintPluginTest by testSuite {
             "Cyclic extension source set inclusion: first > second > first"
     }
 
-    test("manifest generation is incremental and path independent") {
-        val fixture = fixture()
-        fixture.writeBuild(capabilityBuild("typewritermc:items"))
+    test("relationship inputs track producers constraints and artifact contents") {
+        val fixture = fixture("base")
+        fixture.writeBuild("base", capabilityBuild("typewritermc:base"))
+        val build =
+            capabilityBuild(
+                "typewritermc:items",
+                requires = "capability(project(\":base\"), version = \"^1\")",
+            )
+        fixture.writeBuild(build)
 
-        fixture.run("jar")
-        val second = fixture.run("jar").output
+        fixture.run("generateImprintManifest").task(":base:jar")?.outcome shouldBe TaskOutcome.SUCCESS
+        val original = fixture.manifestBytes()
+        fixture.run("generateImprintManifest").task(":generateImprintManifest")?.outcome shouldBe TaskOutcome.UP_TO_DATE
 
-        second shouldContain ":generateImprintManifest UP-TO-DATE"
+        fixture.write("base/src/main/resources/content.txt", "changed artifact content")
+        fixture.run("generateImprintManifest").task(":generateImprintManifest")?.outcome shouldBe TaskOutcome.SUCCESS
+        fixture.manifestBytes().toList() shouldBe original.toList()
+
+        fixture.writeBuild(build.replace("^1", "^1.0"))
+        fixture.run("generateImprintManifest").task(":generateImprintManifest")?.outcome shouldBe TaskOutcome.SUCCESS
+        val manifest = ImprintManifestCodec.decode(fixture.manifestBytes()) as CapabilityManifest
+        manifest.directRequirements
+            .single()
+            .version.expression shouldBe "^1.0"
+    }
+
+    test("equivalent relationship inputs produce identical manifests in different directories") {
+        val manifests =
+            List(2) {
+                val fixture = fixture("base")
+                fixture.writeBuild("base", capabilityBuild("typewritermc:base"))
+                fixture.writeBuild(
+                    capabilityBuild(
+                        "typewritermc:items",
+                        requires = "capability(project(\":base\"), version = \"^1\")",
+                    ),
+                )
+                fixture.run("generateImprintManifest")
+                fixture.manifestBytes().toList()
+            }
+
+        manifests[0] shouldBe manifests[1]
+    }
+
+    test("source part inclusion changes invalidate the manifest") {
+        val fixture = fixture("base")
+        fixture.writeBuild("base", capabilityBuild("typewritermc:base"))
+        val build =
+            """
+            plugins { id("com.typewritermc.imprint") }
+            typewriter {
+                extension {
+                    id = "typewritermc:quests"
+                    version = "1.0.0"
+                    sourceSet("base") {
+                        capabilities { capability(project(":base"), version = "^1") }
+                    }
+                    sourceSet("items") {
+                        capabilities { capability(project(":base"), version = "^1") }
+                    }
+                }
+            }
+            """.trimIndent()
+        fixture.writeBuild(build)
+        fixture.run("generateImprintManifest")
+        fixture.run("generateImprintManifest").task(":generateImprintManifest")?.outcome shouldBe TaskOutcome.UP_TO_DATE
+
+        fixture.writeBuild(build.replace("sourceSet(\"items\") {", "sourceSet(\"items\") { includes(\"base\")"))
+        fixture.run("generateImprintManifest").task(":generateImprintManifest")?.outcome shouldBe TaskOutcome.SUCCESS
+        val manifest = ImprintManifestCodec.decode(fixture.manifestBytes()) as ExtensionManifest
+        manifest.sourceParts.single { it.name == "items" }.includes shouldContainExactly listOf("base")
     }
 
     test("DSL version rejects a conflicting project version") {
@@ -619,6 +683,8 @@ private class FunctionalFixture(
                 .withPluginClasspath()
         return if (expectFailure) runner.buildAndFail() else runner.build()
     }
+
+    fun manifestBytes(): ByteArray = directory.resolve("build/generated/imprint/artifact.cbor").readBytes()
 
     fun singleJar(path: String): File =
         directory.resolve(path).listFiles { file -> file.extension == "jar" }?.single()

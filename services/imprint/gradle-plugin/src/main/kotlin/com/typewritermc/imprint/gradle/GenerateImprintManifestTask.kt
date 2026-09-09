@@ -30,21 +30,19 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import java.io.File
-import java.security.MessageDigest
 import java.util.zip.ZipFile
 
-private const val RECORD_SEPARATOR = '\u001F'
-private const val LIST_SEPARATOR = '\u001E'
 private const val HOSTED_RUNTIME_PROVIDER = "META-INF/services/com.typewritermc.loader.api.HostedRuntimeProvider"
 
 /**
- * Wires manifest generation to production KSP outputs and resolved artifact relationships. Input records preserve
- * source part, expected kind, constraint, and a digest identifying the direct artifact. Hosted artifacts also
+ * Wires manifest generation to production KSP outputs and resolved artifact relationships. Nested inputs preserve
+ * source part, expected kind, constraint, and the direct artifact provider. Hosted artifacts also
  * provide service registration inputs so generation can verify the runtime provider contract.
  */
 internal fun Project.registerManifestTask(
@@ -67,39 +65,41 @@ internal fun Project.registerManifestTask(
         task.artifactId.set(declaration.id.value)
         task.artifactVersion.set(declaration.version.value)
         task.hostApiConstraint.set(declaration.hostApi?.expression.orEmpty())
-        task.sourcePartKinds.set(
+        task.sourceParts.set(
             declaration.sourceParts.map { sourcePart ->
-                val kind =
-                    when (sourcePart) {
-                        is DeclaredEngineSourcePart -> ArtifactKind.ENGINE
-                        is DeclaredCapabilitySourcePart -> ArtifactKind.CAPABILITY
-                    }
-                listOf(
-                    sourcePart.name,
-                    kind.name,
-                    sourcePart.includes.joinToString(LIST_SEPARATOR.toString()),
-                ).joinToString(RECORD_SEPARATOR.toString())
-            },
-        )
-        task.relationshipRecords.set(
-            providers.provider {
-                relationships.map { relationship ->
-                    val direct =
-                        relationship.directFiles.files.singleOrNull()
-                            ?: throw GradleException(
-                                "Imprint relationship ${relationship.sourcePart} ${relationship.index} must resolve one artifact.",
-                            )
-                    listOf(
-                        relationship.sourcePart,
-                        relationship.index.toString(),
-                        relationship.expectedKind.name,
-                        relationship.constraint,
-                        direct.sha256(),
-                    ).joinToString(RECORD_SEPARATOR.toString())
+                objects.newInstance(ManifestSourcePartInput::class.java).apply {
+                    name.set(sourcePart.name)
+                    kind.set(
+                        when (sourcePart) {
+                            is DeclaredEngineSourcePart -> ArtifactKind.ENGINE
+                            is DeclaredCapabilitySourcePart -> ArtifactKind.CAPABILITY
+                        },
+                    )
+                    includes.set(sourcePart.includes)
                 }
             },
         )
-        task.relationshipArtifacts.from(relationships.map(ConfiguredRelationship::directFiles))
+        task.relationships.set(
+            relationships.map { relationship ->
+                val description = "${relationship.sourcePart} ${relationship.index}"
+                objects.newInstance(ManifestRelationshipInput::class.java).apply {
+                    sourcePart.set(relationship.sourcePart)
+                    index.set(relationship.index)
+                    expectedKind.set(relationship.expectedKind)
+                    constraint.set(relationship.constraint)
+                    artifact.set(
+                        layout.file(
+                            relationship.directFiles.elements.map { files ->
+                                files.singleOrNull()?.asFile
+                                    ?: throw GradleException(
+                                        "Imprint relationship $description must resolve one artifact.",
+                                    )
+                            },
+                        ),
+                    )
+                }
+            },
+        )
         task.graphArtifacts.from(relationships.map(ConfiguredRelationship::configuration))
         task.contributionFiles.from(contributionFiles)
         task.engineCoreArtifacts.from(engineCoreArtifacts)
@@ -135,15 +135,11 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
     @get:Input
     abstract val hostApiConstraint: Property<String>
 
-    @get:Input
-    abstract val sourcePartKinds: ListProperty<String>
+    @get:Nested
+    abstract val sourceParts: ListProperty<ManifestSourcePartInput>
 
-    @get:Input
-    abstract val relationshipRecords: ListProperty<String>
-
-    @get:InputFiles
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    abstract val relationshipArtifacts: ConfigurableFileCollection
+    @get:Nested
+    abstract val relationships: ListProperty<ManifestRelationshipInput>
 
     @get:InputFiles
     @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -270,34 +266,31 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
     }
 
     private fun readRelationships(allManifests: Map<ArtifactId, ImprintManifest>): List<ResolvedRelationship> =
-        relationshipRecords
+        relationships
             .get()
-            .map { record ->
-                val fields = record.split(RECORD_SEPARATOR)
-                if (fields.size != 5) throw GradleException("Invalid internal Imprint relationship record.")
-                val file =
-                    relationshipArtifacts.files.singleOrNull { it.sha256() == fields[4] }
-                        ?: throw GradleException("Cannot associate an Imprint relationship with its resolved artifact.")
+            .map { relationship ->
+                val sourcePart = relationship.sourcePart.get()
+                val file = relationship.artifact.get().asFile
                 val manifest =
                     readManifestOrNull(file)
                         ?: throw GradleException("Dependency ${file.name} does not contain $IMPRINT_MANIFEST_PATH.")
-                val expectedKind = ArtifactKind.valueOf(fields[2])
+                val expectedKind = relationship.expectedKind.get()
                 val actual = manifest.descriptor()
                 if (actual.kind != expectedKind) {
                     throw GradleException(
-                        "Dependency path ${fields[0]} requires $expectedKind but ${manifest.id} is ${actual.kind}.",
+                        "Dependency path $sourcePart requires $expectedKind but ${manifest.id} is ${actual.kind}.",
                     )
                 }
-                val constraint = VersionConstraint(fields[3])
+                val constraint = VersionConstraint(relationship.constraint.get())
                 if (!constraint.accepts(manifest.version)) {
                     throw GradleException(
-                        "Dependency path ${fields[0]} ${manifest.id} ${manifest.version} does not satisfy $constraint.",
+                        "Dependency path $sourcePart ${manifest.id} ${manifest.version} does not satisfy $constraint.",
                     )
                 }
                 if (allManifests[manifest.id] == null) {
                     throw GradleException("Resolved Imprint dependency ${manifest.id} is absent from the dependency graph.")
                 }
-                ResolvedRelationship(fields[0], fields[1].toInt(), constraint, manifest)
+                ResolvedRelationship(sourcePart, relationship.index.get(), constraint, manifest)
             }.sortedWith(compareBy(ResolvedRelationship::sourcePart, ResolvedRelationship::index))
 
     private fun engineManifest(
@@ -347,18 +340,11 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
         val parts = mutableListOf<ExtensionSourcePart>(CommonExtensionSourcePart)
         val provenance = linkedMapOf<ArtifactId, ResolvedArtifact>()
         val guarantees = linkedMapOf<String, SourcePartGuarantee>()
-        sourcePartKinds.get().sorted().forEach { sourcePartRecord ->
-            val fields = sourcePartRecord.split(RECORD_SEPARATOR, limit = 3)
-            val name = fields[0]
-            val kindName = fields[1]
-            val includes =
-                fields
-                    .getOrElse(2) { "" }
-                    .split(LIST_SEPARATOR)
-                    .filter(String::isNotBlank)
-                    .sorted()
+        sourceParts.get().sortedBy { it.name.get() }.forEach { sourcePart ->
+            val name = sourcePart.name.get()
+            val includes = sourcePart.includes.get().sorted()
             val sourceRelationships = relationships.filter { it.sourcePart == name }
-            when (val kind = ArtifactKind.valueOf(kindName)) {
+            when (val kind = sourcePart.kind.get()) {
                 ArtifactKind.ENGINE -> {
                     val relationship = sourceRelationships.single()
                     val engine = relationship.manifest as EngineManifest
@@ -639,6 +625,3 @@ private fun readManifestOrNull(file: File): ImprintManifest? {
         }
     }
 }
-
-private fun File.sha256(): String =
-    MessageDigest.getInstance("SHA-256").digest(readBytes()).joinToString("") { byte -> "%02x".format(byte) }
