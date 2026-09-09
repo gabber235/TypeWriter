@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
@@ -249,8 +251,7 @@ void main() {
   testWidgets("read only presentation disables inline Apply and Cancel", (
     tester,
   ) async {
-    final owner = _owner();
-    owner.update(DataPath.root, const StringValue("draft"));
+    final owner = (_owner())..update(DataPath.root, const StringValue("draft"));
     await _pump(tester, owner, _commit, readOnly: true);
     expect(find.text("Fallback configuration"), findsNothing);
     expect(
@@ -263,5 +264,84 @@ void main() {
       tester.widget<LoadingButton>(find.byType(LoadingButton)).onPressed,
       isNull,
     );
+  });
+
+  testWidgets("pending Apply keeps an edit invocation mounted", (tester) async {
+    final reply = Completer<TypedMutationResult>();
+    final owner = _owner(commit: (_) => reply.future);
+    const id = PresentationId(namespace: "test", name: "pending");
+    const local = BindingId(0);
+    const content = "Configuration content";
+    await _pump(
+      tester,
+      owner,
+      PresentationNode(
+        id: "call",
+        element: PresentationInvocationElement(
+          presentationId: id,
+          arguments: {local: _binding},
+        ),
+      ),
+      presentations: const [
+        PresentationDefinition(
+          id: id,
+          inputs: [
+            PresentationInputParameter(
+              id: local,
+              name: "configuration",
+              type: StringType(),
+              access: PresentationInputAccess.edit,
+            ),
+          ],
+          root: PresentationNode(
+            id: "content",
+            element: ColumnElement(
+              children: [
+                PresentationNode(
+                  id: "label",
+                  element: TextElement(
+                    TypedExpression(
+                      resultType: StringType(),
+                      expression: LiteralExpression(StringValue(content)),
+                    ),
+                  ),
+                ),
+                PresentationNode(
+                  id: "commit",
+                  element: CommitControlsElement(
+                    binding: BindingReference(bindingId: local),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+
+    await tester.tap(find.text("Apply"));
+    await tester.pump();
+
+    expect(find.text(content), findsOneWidget);
+    expect(
+      find.text("Presentation input requires editing: configuration"),
+      findsNothing,
+    );
+    expect(
+      tester
+          .widget<TextButton>(find.widgetWithText(TextButton, "Cancel"))
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester.widget<LoadingButton>(find.byType(LoadingButton)).onPressed,
+      isNull,
+    );
+
+    reply.complete(
+      const MutationSuccess(revision: 2, value: StringValue("draft")),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text(content), findsOneWidget);
   });
 }

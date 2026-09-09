@@ -67,6 +67,8 @@ class _ComposedEditorState extends State<ComposedEditor> {
       expansionStore: _expansion,
       readOnly: widget.readOnly,
       historyNamespace: widget.historyNamespace,
+      inputAccess: widget.model.inputAccess,
+      ownerBindings: widget.model.ownerBindings,
       collections: {
         for (final source in widget.model.collections) source.id: source,
       },

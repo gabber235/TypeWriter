@@ -177,11 +177,13 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
     return alias.at(reference.path);
   }
 
+  /// Returns lexical access without granting undeclared edit capability.
+  PresentationInputAccess accessOf(BindingReference reference) =>
+      inputAccess[reference.bindingId] ?? PresentationInputAccess.read;
+
   /// Resolves the transaction origin, including inputs with a virtual representation.
   BindingReference? ownerReference(BindingReference reference) =>
-      ownerBindings.containsKey(reference.bindingId)
-      ? ownerBindings[reference.bindingId]?.at(reference.path)
-      : canonical(reference);
+      ownerBindings[reference.bindingId]?.at(reference.path);
 
   TypeResult<ResolvedBinding> resolve(BindingReference reference) =>
       expressions.bindings.resolve(reference, registry: registry);
@@ -222,10 +224,7 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
   ) => copyWith(
     expressions: expressions.withBinding(id, snapshot),
     aliases: {...aliases, id: canonical(source)},
-    inputAccess: {
-      ...inputAccess,
-      id: inputAccess[source.bindingId] ?? PresentationInputAccess.edit,
-    },
+    inputAccess: {...inputAccess, id: accessOf(source)},
     ownerBindings: {...ownerBindings, id: ownerReference(source)},
   );
 
@@ -241,7 +240,7 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
             ? (host._snapshot.writable
                   ? PresentationInputAccess.edit
                   : PresentationInputAccess.read)
-            : inputAccess[source.bindingId] ?? PresentationInputAccess.edit,
+            : accessOf(source),
       },
       ownerBindings: {
         ...ownerBindings,

@@ -141,8 +141,7 @@ extension on PresentationElement {
       final MapInputElement element => element.renderInput(context, scope),
       final RecordInputElement element => element.renderInput(context, scope),
       final CommitControlsElement element =>
-        scope.inputAccess[element.binding.bindingId] !=
-                    PresentationInputAccess.read &&
+        scope.accessOf(element.binding) == PresentationInputAccess.edit &&
                 scope.ownerReference(element.binding) != null &&
                 scope.resolve(element.binding) is TypeSuccess
             ? EditorCommitPlacement(

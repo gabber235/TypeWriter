@@ -13,8 +13,9 @@ extension PresentationInvocationRendering on PresentationInvocationElement {
       ]);
     }
     final bound = scope.bindPresentation(definition, arguments);
-    if (bound case TypeFailure(:final diagnostics))
+    if (bound case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
+    }
     return PresentationNodeRenderer(
       node: bound.valueOrNull!.$1,
       scope: bound.valueOrNull!.$2,
@@ -34,15 +35,18 @@ extension PresentationInputScope on PresentationRenderScope {
     final owners = <BindingId, BindingReference?>{};
     if (definition.inputs.map((input) => input.id).toSet().length !=
             definition.inputs.length ||
-        arguments.length != definition.inputs.length)
+        arguments.length != definition.inputs.length) {
       return _inputFailure("Presentation input count does not match");
+    }
     for (final input in definition.inputs) {
       final argument = arguments[input.id];
-      if (argument == null)
+      if (argument == null) {
         return _inputFailure("Missing presentation input: ${input.name}");
+      }
       final resolved = resolve(argument);
-      if (resolved case TypeFailure(:final diagnostics))
+      if (resolved case TypeFailure(:final diagnostics)) {
         return TypeResult.failure(diagnostics);
+      }
       final value = resolved.valueOrNull!;
       final expected = input.type.substitute(substitutions);
       final actual = value.type;
@@ -54,18 +58,20 @@ extension PresentationInputScope on PresentationRenderScope {
         final representation = actual.bindingRepresentation(registry);
         inferred = expected.inferPresentationSubstitutions(representation);
         if (inferred == null &&
-            representation.isStructurallyAssignableTo(expected, registry))
+            representation.isStructurallyAssignableTo(expected, registry)) {
           inferred = {};
+        }
       }
-      if (inferred == null)
+      if (inferred == null) {
         return _inputFailure("Incompatible presentation input: ${input.name}");
+      }
       substitutions.addAll(inferred);
       if (input.access == PresentationInputAccess.edit &&
-          (!value.writable ||
-              inputAccess[argument.bindingId] == PresentationInputAccess.read))
+          accessOf(argument) != PresentationInputAccess.edit) {
         return _inputFailure(
           "Presentation input requires editing: ${input.name}",
         );
+      }
       snapshots[input.id] = BindingSnapshot(
         type: value.type,
         value: value.value,

@@ -12,16 +12,21 @@ const _root = PresentationNode(
   ),
 );
 
-PresentationRenderScope _scope(Map<BindingId, BindingSnapshot> bindings) =>
-    PresentationRenderScope(
-      expressions: ExpressionContext(bindings: BindingEnvironment(bindings)),
-      registry: TypeRegistry(const TypeCatalog([])),
-      budget: const ExpressionBudget(),
-      expansionStore: HeaderExpansionStore(),
-      setBinding: (_, _, _, _) {},
-      executeAction: (_, _, _) {},
-      resolvePresentation: (_, _) => null,
-    );
+PresentationRenderScope _scope(
+  Map<BindingId, BindingSnapshot> bindings, {
+  Map<BindingId, PresentationInputAccess> inputAccess = const {},
+  Map<BindingId, BindingReference?> ownerBindings = const {},
+}) => PresentationRenderScope(
+  expressions: ExpressionContext(bindings: BindingEnvironment(bindings)),
+  registry: TypeRegistry(const TypeCatalog([])),
+  budget: const ExpressionBudget(),
+  expansionStore: HeaderExpansionStore(),
+  inputAccess: inputAccess,
+  ownerBindings: ownerBindings,
+  setBinding: (_, _, _, _) {},
+  executeAction: (_, _, _) {},
+  resolvePresentation: (_, _) => null,
+);
 BindingSnapshot _text(String value, {bool writable = true}) => BindingSnapshot(
   type: const StringType(),
   value: StringValue(value),
@@ -33,10 +38,16 @@ void main() {
   test(
     "input swaps resolve in caller scope and retain canonical destinations",
     () {
-      final scope = _scope({
-        const BindingId(7): _text("first"),
-        const BindingId(9): _text("second"),
-      });
+      final scope = _scope(
+        {
+          const BindingId(7): _text("first"),
+          const BindingId(9): _text("second"),
+        },
+        inputAccess: {
+          const BindingId(7): PresentationInputAccess.edit,
+          const BindingId(9): PresentationInputAccess.edit,
+        },
+      );
       final definition = ResolvedPresentationDefinition(
         id: _id,
         root: _root,
@@ -99,7 +110,8 @@ void main() {
   test("a read declaration cannot escalate access through an invocation", () {
     final caller = _scope(
       {const BindingId(7): _text("read")},
-    ).copyWith(inputAccess: {const BindingId(7): PresentationInputAccess.read});
+      inputAccess: {const BindingId(7): PresentationInputAccess.read},
+    );
     final definition = ResolvedPresentationDefinition(
       id: _id,
       root: _root,
@@ -123,8 +135,12 @@ void main() {
   test(
     "virtual and scoped inputs preserve transaction origin and read access",
     () {
-      final scope = _scope({const BindingId(7): _text("value")}).copyWith(
+      final scope = _scope(
+        {const BindingId(7): _text("value")},
         inputAccess: {const BindingId(7): PresentationInputAccess.read},
+        ownerBindings: {
+          const BindingId(7): const BindingReference(bindingId: BindingId(7)),
+        },
       );
       final virtual = scope.withVirtualBinding(
         VirtualBindingHost(
@@ -183,16 +199,19 @@ void main() {
         ),
       ],
     );
-    final bound = scope
-        .bindPresentation(definition, {
-          const BindingId(7): const BindingReference(bindingId: BindingId(50)),
-        })
-        .valueOrNull!
-        .$2;
-    bound.update(
-      const BindingReference(bindingId: BindingId(7)),
-      const StringValue("changed"),
-    );
+    final bound =
+        (scope
+              .bindPresentation(definition, {
+                const BindingId(7): const BindingReference(
+                  bindingId: BindingId(50),
+                ),
+              })
+              .valueOrNull!
+              .$2)
+          ..update(
+            const BindingReference(bindingId: BindingId(7)),
+            const StringValue("changed"),
+          );
     expect(changed, const StringValue("changed"));
     bound.invoke(
       LocalEditorAction(
@@ -227,6 +246,47 @@ void main() {
         const BindingId(7): const BindingReference(bindingId: BindingId(3)),
       }),
       isA<TypeFailure>(),
+    );
+  });
+
+  test("temporarily locked edit input remains a valid edit invocation", () {
+    const source = BindingId(3);
+    const local = BindingId(7);
+    final scope = _scope(
+      {source: _text("saving", writable: false)},
+      inputAccess: {source: PresentationInputAccess.edit},
+      ownerBindings: {source: const BindingReference(bindingId: source)},
+    );
+    final definition = ResolvedPresentationDefinition(
+      id: _id,
+      root: _root,
+      inputs: const [
+        PresentationInputParameter(
+          id: local,
+          name: "configuration",
+          type: StringType(),
+          access: PresentationInputAccess.edit,
+        ),
+      ],
+    );
+
+    final bound = scope
+        .bindPresentation(definition, {
+          local: const BindingReference(bindingId: source),
+        })
+        .valueOrNull!
+        .$2;
+
+    expect(
+      bound.accessOf(const BindingReference(bindingId: local)),
+      PresentationInputAccess.edit,
+    );
+    expect(
+      bound
+          .resolve(const BindingReference(bindingId: local))
+          .valueOrNull!
+          .writable,
+      isFalse,
     );
   });
 

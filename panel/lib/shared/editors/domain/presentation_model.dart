@@ -81,6 +81,24 @@ abstract class PresentationModel with _$PresentationModel {
       diagnostics: diagnostics,
     );
   }
+
+  /// Declares root lexical access independently of current write availability.
+  Map<BindingId, PresentationInputAccess> get inputAccess => {
+    for (final entry in inputs.entries)
+      entry.key: switch (entry.value) {
+        PresentationValueInput() => PresentationInputAccess.read,
+        PresentationEditInput() => PresentationInputAccess.edit,
+      },
+  };
+
+  /// Identifies root transaction origins. Value inputs have no edit owner.
+  Map<BindingId, BindingReference?> get ownerBindings => {
+    for (final entry in inputs.entries)
+      entry.key: switch (entry.value) {
+        PresentationValueInput() => null,
+        PresentationEditInput() => BindingReference(bindingId: entry.key),
+      },
+  };
 }
 
 PresentationNode _singlePresentationRoot(
