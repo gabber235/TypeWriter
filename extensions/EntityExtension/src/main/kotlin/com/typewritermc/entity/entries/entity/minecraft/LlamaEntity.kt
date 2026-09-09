@@ -19,7 +19,7 @@ import com.typewritermc.entity.entries.data.minecraft.living.horse.*
 import com.typewritermc.entity.entries.entity.WrapperFakeEntity
 import org.bukkit.entity.Player
 
-@Entry("llaama_definition", "A llama entity", Colors.ORANGE, "simple-icons:ollama")
+@Entry("llama_definition", "A llama entity", Colors.ORANGE, "simple-icons:ollama")
 @Tags("llama_definition")
 /**
  * The `LlamaDefinition` class is an entry that represents a llama entity.
