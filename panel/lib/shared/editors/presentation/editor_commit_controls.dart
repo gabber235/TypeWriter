@@ -29,7 +29,7 @@ class EditorCommitControls extends StatelessWidget {
                   width: double.infinity,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    spacing: 8,
+                    spacing: context.spacing.space2,
                     children: [
                       if (label != null)
                         Text(
@@ -39,12 +39,12 @@ class EditorCommitControls extends StatelessWidget {
                       for (final issue in issues)
                         Text(
                           issue.message,
-                          style: TextStyle(
+                          style: context.theme.textTheme.bodySmall?.copyWith(
                             color: Theme.of(context).colorScheme.error,
                           ),
                         ),
                       Wrap(
-                        spacing: 8,
+                        spacing: context.spacing.space2,
                         children: [
                           TextButton(
                             onPressed:
