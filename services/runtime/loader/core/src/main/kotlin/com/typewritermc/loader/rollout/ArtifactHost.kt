@@ -478,7 +478,6 @@ internal fun List<RealmHostPresence>.toReadyTopology(): RealmTopology? {
         active.values
             .filter { RuntimePlacement.PRIMARY_ENGINE in it.assignedRoles }
             .mapTo(linkedSetOf(), RealmHostPresence::hostId)
-    if (primaryHosts.isEmpty()) return null
     return RealmTopology(
         realmHost = realmHosts.single().hostId,
         primaryEngineHosts = primaryHosts,

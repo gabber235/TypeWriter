@@ -91,7 +91,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TestTimeSource
 
 val ArtifactDistributionTest by testSuite {
-    test("Realm topology waits for one unambiguous Realm host and a primary engine") {
+    test("Realm topology requires one unambiguous Realm host and permits no primary engine") {
         val realmId = RealmId("realm")
         val host = HostId("combined")
         val probe = ProbeRealmHosts(realmId)
@@ -106,7 +106,8 @@ val ArtifactDistributionTest by testSuite {
         val combined = realmOnly.copy(assignedRoles = RuntimePlacement.entries.toSet())
 
         emptyList<RealmHostPresence>().toReadyTopology() shouldBe null
-        listOf(realmOnly).toReadyTopology() shouldBe null
+        listOf(realmOnly).toReadyTopology() shouldBe
+            RealmTopology(host, emptySet(), mapOf(host to ArtifactVersion("1.0.0")))
         listOf(realmOnly, combined).toReadyTopology() shouldBe null
         listOf(combined).toReadyTopology() shouldBe
             RealmTopology(host, setOf(host), mapOf(host to ArtifactVersion("1.0.0")))
@@ -227,6 +228,106 @@ val ArtifactDistributionTest by testSuite {
             shouldThrow<IllegalArgumentException> {
                 repository.fetch(reference.copy(hostId = HostId("another")))
             }
+        }
+    }
+
+    test("Realm and panel roll out without a primary engine host") {
+        runTest {
+            val root = Files.createTempDirectory("typewriter-realm-only-rollout")
+            val realmId = RealmId("realm")
+            val host = HostId("realm-host")
+            val hostApi = ArtifactVersion("1.0.0")
+            val assignedRoles = setOf(RuntimePlacement.REALM, RuntimePlacement.PANEL_ENGINE)
+            val presence = RealmHostPresence(ProbeRealmHosts(realmId).probeId, host, hostApi, assignedRoles, null)
+            val topology = requireNotNull(listOf(presence).toReadyTopology())
+            val realm = artifact("typewritermc:realm", ArtifactKind.REALM, "realm")
+            val panel = artifact("typewritermc:panel", ArtifactKind.ENGINE, "panel")
+            val primary = artifact("typewritermc:paper", ArtifactKind.ENGINE, "paper")
+            val content = DeploymentContent(realm = realm, primaryEngine = primary, panelEngine = panel, extensions = emptyList())
+            val snapshot = DeploymentSnapshot(DeploymentGeneration(1), DeploymentContentCodec.digest(content), content)
+            val manifests =
+                mapOf(
+                    realm.coordinate.id to
+                        RealmManifest(
+                            id = realm.coordinate.id,
+                            version = realm.coordinate.version,
+                            hostApi = VersionConstraint("^1"),
+                            contributions = emptyList(),
+                        ),
+                    panel.coordinate.id to engineManifest(panel),
+                    primary.coordinate.id to engineManifest(primary),
+                )
+            val state = FileRolloutStateRepository(realmId, root)
+            val commands = mutableListOf<RolloutEnvelope>()
+            var currentStatus: ParticipantStatus? = null
+            val messenger =
+                object : RolloutMessenger {
+                    override suspend fun discover(
+                        probe: ProbeRealmHosts,
+                        expected: Set<HostId>,
+                        timeout: Duration,
+                    ) = listOf(presence.copy(probeId = probe.probeId))
+
+                    override suspend fun command(
+                        envelope: RolloutEnvelope,
+                        timeout: Duration,
+                    ): List<CommandAcceptance> {
+                        commands += envelope
+                        val reference = envelope.projections.getValue(host)
+                        currentStatus =
+                            when (envelope.command) {
+                                RolloutCommand.Stage -> {
+                                    ParticipantStatus.Staged(envelope.attempt, host, reference, ActiveBaseline.Empty)
+                                }
+
+                                RolloutCommand.Commit -> {
+                                    ParticipantStatus.Active(
+                                        envelope.attempt,
+                                        host,
+                                        ActiveProjectionReference(reference, RuntimeHealthSnapshot.Healthy),
+                                        RetainedProjection.None,
+                                    )
+                                }
+
+                                RolloutCommand.Abort -> {
+                                    ParticipantStatus.Idle(envelope.attempt, host)
+                                }
+
+                                is RolloutCommand.Rollback -> {
+                                    error("Rollback was not expected.")
+                                }
+                            }
+                        return listOf(CommandAcceptance(host, true))
+                    }
+
+                    override suspend fun statuses(
+                        probe: ProbeParticipantStatus,
+                        expected: Set<HostId>,
+                        timeout: Duration,
+                    ): Map<HostId, ParticipantStatus> = currentStatus?.let { mapOf(host to it) }.orEmpty()
+                }
+            val projectionRepository = BlobProjectionRepository(FileDigestBlobStore(root))
+            val rollout =
+                CoordinatedRollout(
+                    realmId,
+                    topology,
+                    manifests,
+                    messenger,
+                    projectionRepository,
+                    state,
+                    requestTimeout = 1.seconds,
+                    participantDeadline = 1.seconds,
+                    healthyDuration = Duration.ZERO,
+                )
+
+            rollout.rollOut(snapshot)
+
+            val committed = requireNotNull(state.current())
+            val projection = projectionRepository.fetch(committed.projections.getValue(host))
+            commands.map { it.command } shouldContainExactly listOf(RolloutCommand.Stage, RolloutCommand.Commit)
+            commands.forEach { it.participants shouldBe setOf(host) }
+            projection.runtimes.map { it.placement } shouldContainExactly
+                listOf(RuntimePlacement.PANEL_ENGINE, RuntimePlacement.REALM)
         }
     }
 
