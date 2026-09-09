@@ -14,8 +14,9 @@ extension BindingReferenceMutation on BindingReference {
       return LocalMutationInvalid(diagnostics);
     }
     final snapshot = replaced.valueOrNull!.bindings[bindingId];
-    if (snapshot == null)
+    if (snapshot == null) {
       return invalidLocalMutation("Updated binding is absent");
+    }
     return LocalMutationApplied(bindingId: bindingId, value: snapshot.value);
   }
 }

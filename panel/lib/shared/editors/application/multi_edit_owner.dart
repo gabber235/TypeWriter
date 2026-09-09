@@ -22,13 +22,15 @@ final class MultiEditOwner extends ChangeNotifier implements EditOwner {
   @override
   EditorValue value(DataPath path) {
     final values = owners.map((owner) => owner.value(path)).toList();
-    if (values.any((value) => value is LoadingEditorValue))
+    if (values.any((value) => value is LoadingEditorValue)) {
       return const EditorValue.loading();
+    }
     final invalid = values.whereType<InvalidEditorValue>().firstOrNull;
     if (invalid != null) return invalid;
     final first = values.firstOrNull?.valueOrNull;
-    if (first == null || values.any((value) => value.valueOrNull != first))
+    if (first == null || values.any((value) => value.valueOrNull != first)) {
       return const EditorValue.mixed();
+    }
     return EditorValue.ready(first);
   }
 

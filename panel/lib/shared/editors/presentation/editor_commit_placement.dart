@@ -69,8 +69,7 @@ class EditorCommitPlacementScope extends InheritedWidget {
   const EditorCommitPlacementScope({
     required this.placements,
     required this.resolve,
-    this.labels = const {},
-    required super.child,
+    required super.child, this.labels = const {},
     super.key,
   });
   final Map<EditOwner, String> labels;

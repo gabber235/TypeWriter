@@ -166,8 +166,9 @@ extension SkirPresentationDataDecoder on SkirPresentationDecoder {
     wire.PresentationInvocation value,
   ) {
     final id = value.presentationId._decodeDomain();
-    if (id case TypeFailure(:final diagnostics))
+    if (id case TypeFailure(:final diagnostics)) {
       return TypeResult.failure(diagnostics);
+    }
     final arguments = <BindingId, BindingReference>{};
     for (final argument in value.arguments) {
       final input = argument.input.value;
@@ -175,8 +176,9 @@ extension SkirPresentationDataDecoder on SkirPresentationDecoder {
         return invalidWire("Invalid or duplicate presentation argument");
       }
       final binding = expressions.binding(argument.binding);
-      if (binding case TypeFailure(:final diagnostics))
+      if (binding case TypeFailure(:final diagnostics)) {
         return TypeResult.failure(diagnostics);
+      }
       arguments[BindingId(input)] = binding.valueOrNull!;
     }
     return TypeResult.success(

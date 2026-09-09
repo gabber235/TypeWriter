@@ -222,8 +222,9 @@ extension SkirPresentationDataEncoder on SkirPresentationEncoder {
     final arguments = <wire.PresentationArgument>[];
     for (final entry in value.arguments.entries) {
       final binding = expressions.binding(entry.value);
-      if (binding case TypeFailure(:final diagnostics))
+      if (binding case TypeFailure(:final diagnostics)) {
         return TypeResult.failure(diagnostics);
+      }
       arguments.add(
         wire.PresentationArgument(
           input: wire_binding.BindingId(value: entry.key.value),

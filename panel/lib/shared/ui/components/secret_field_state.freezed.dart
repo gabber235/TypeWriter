@@ -194,7 +194,7 @@ return error(_that.message);case _:
 
 class SecretFieldIdle implements SecretFieldState {
   const SecretFieldIdle();
-
+  
 
 
 
@@ -226,7 +226,7 @@ String toString() {
 
 class SecretFieldLoading implements SecretFieldState {
   const SecretFieldLoading();
-
+  
 
 
 
@@ -258,7 +258,7 @@ String toString() {
 
 class SecretFieldRevealed implements SecretFieldState {
   const SecretFieldRevealed({required this.value, this.expiresAt});
-
+  
 
  final  String value;
  final  DateTime? expiresAt;
@@ -326,7 +326,7 @@ as DateTime?,
 
 class SecretFieldExpired implements SecretFieldState {
   const SecretFieldExpired({required this.value});
-
+  
 
  final  String value;
 
@@ -392,7 +392,7 @@ as String,
 
 class SecretFieldError implements SecretFieldState {
   const SecretFieldError({required this.message});
-
+  
 
  final  String message;
 

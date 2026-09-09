@@ -31,8 +31,9 @@ final class LocalEditor extends ChangeNotifier implements EditOwner {
     final result = validate(path, value);
     if (result is! AppliedEditorMutation) return result;
     final replaced = path.replace(_value, value);
-    if (replaced case TypeFailure(:final diagnostics))
+    if (replaced case TypeFailure(:final diagnostics)) {
       return EditorMutationResult.invalid(diagnostics);
+    }
     _value = replaced.valueOrNull!;
     notifyListeners();
     return result;
@@ -52,10 +53,11 @@ final class LocalEditor extends ChangeNotifier implements EditOwner {
   @override
   EditorInteractionSession beginInteraction(DataPath path) {
     final interaction = _LocalInteraction(this, path, value(path).valueOrNull);
-    if (_disposed)
+    if (_disposed) {
       interaction.active = false;
-    else
+    } else {
       _interactions.add(interaction);
+    }
     return interaction;
   }
 

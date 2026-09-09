@@ -11,8 +11,10 @@ abstract interface class EditorSource implements EditOwner {
 
   void discardDraft();
 
+  @override
   EditorValue value(DataPath path);
 
+  @override
   EditorMutationResult update(
     DataPath path,
     DataValue value, {
@@ -21,6 +23,7 @@ abstract interface class EditorSource implements EditOwner {
 
   void refreshDocument(EditorDocument document);
 
+  @override
   EditorInteractionSession beginInteraction(DataPath path);
 
   EditorSaveState saveState(DataPath path);
@@ -35,5 +38,6 @@ abstract interface class EditorSource implements EditOwner {
 
   Future<TypedMutationResult> keepLocal(DataPath path);
 
+  @override
   void dispose();
 }

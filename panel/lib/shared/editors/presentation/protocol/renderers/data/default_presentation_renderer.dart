@@ -36,16 +36,18 @@ extension DefaultPresentationElementRendering on DefaultPresentationElement {
       ]);
     }
     final input = selected.primaryInput;
-    if (input == null)
+    if (input == null) {
       return presentationDiagnostic(context, [
         const TypeDiagnostic(
           code: TypeDiagnosticCode.invalidPresentation,
           message: "Default presentation requires one primary input",
         ),
       ]);
+    }
     final bound = scope.bindPresentation(selected, {input: binding});
-    if (bound case TypeFailure(:final diagnostics))
+    if (bound case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
+    }
     return PresentationNodeRenderer(
       node: bound.valueOrNull!.$1,
       scope: bound.valueOrNull!.$2,

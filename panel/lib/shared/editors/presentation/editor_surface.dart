@@ -53,13 +53,14 @@ class EditorSurface extends StatelessWidget {
               registry: registry ?? TypeRegistry(source.typeCatalog),
             )
             .valueOrNull;
-        if (type != null)
+        if (type != null) {
           model = model.copyWith(
             inputs: {
               const BindingId(0): PresentationInput.edit(source, path: path),
             },
             root: type.generateDefaultPresentation(),
           );
+        }
       }
       return ComposedEditor(
         model: model,

@@ -6,8 +6,9 @@ extension OrganizationTopologyConfiguration on OrganizationTopology {
       (host) => host.hostId == incoming.hostId,
     );
     if (previous == null) return copyWith(hosts: [...hosts, incoming]);
-    if (incoming.state.updatedAt.isBefore(previous.state.updatedAt))
+    if (incoming.state.updatedAt.isBefore(previous.state.updatedAt)) {
       return this;
+    }
     return copyWith(
       hosts: _upsertById(
         hosts,
@@ -27,8 +28,9 @@ extension OrganizationTopologyConfiguration on OrganizationTopology {
       (realm) => realm.realmId == incoming.realmId,
     );
     if (previous == null ||
-        incoming.state.updatedAt.isBefore(previous.state.updatedAt))
+        incoming.state.updatedAt.isBefore(previous.state.updatedAt)) {
       return this;
+    }
     return copyWith(
       realmInstances: _upsertById(
         realmInstances,
@@ -43,8 +45,9 @@ extension OrganizationTopologyConfiguration on OrganizationTopology {
       (engine) => engine.engineId == incoming.engineId,
     );
     if (previous == null ||
-        incoming.state.updatedAt.isBefore(previous.state.updatedAt))
+        incoming.state.updatedAt.isBefore(previous.state.updatedAt)) {
       return this;
+    }
     return copyWith(
       engineInstances: _upsertById(
         engineInstances,

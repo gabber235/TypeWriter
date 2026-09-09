@@ -1,6 +1,6 @@
+import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/binding.dart"
     as wire_binding;
-import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/capability.dart"
     as wire_capability;
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/presentation.dart"
@@ -89,8 +89,9 @@ final class SkirCatalogDefinitionCodec {
     final inputs = <wire_presentation.PresentationInput>[];
     for (final input in value.inputs) {
       final type = types.encodeExpression(input.type);
-      if (type case TypeFailure(:final diagnostics))
+      if (type case TypeFailure(:final diagnostics)) {
         return TypeResult.failure(diagnostics);
+      }
       inputs.add(
         wire_presentation.PresentationInput(
           bindingId: wire_binding.BindingId(value: input.id.value),

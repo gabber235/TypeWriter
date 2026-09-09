@@ -183,10 +183,11 @@ TypeResult<ResolvedBinding> _resolved(
       ),
     ]);
   }
-  if (resolved case TypeSuccess(:final value))
+  if (resolved case TypeSuccess(:final value)) {
     return TypeResult.success(
       value.copyWith(type: value.type.bindingRepresentation(registry)),
     );
+  }
   return resolved;
 }
 

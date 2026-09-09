@@ -89,14 +89,15 @@ final class PresentationSession extends ChangeNotifier {
     EditorStructuralMutation? structuralMutation,
   }) {
     final target = owner(reference);
-    if (target == null || target.readOnly)
+    if (target == null || target.readOnly) {
       return EditorMutationResult.invalid([
         const TypeDiagnostic(
           code: TypeDiagnosticCode.invalidPath,
           message: "Binding has no writable edit owner",
         ),
       ]);
-    final input = model.inputs[reference.bindingId] as PresentationEditInput;
+    }
+    final input = model.inputs[reference.bindingId]! as PresentationEditInput;
     return target.update(
       input.path.followedBy(reference.path),
       value,
@@ -122,7 +123,7 @@ final class PresentationSession extends ChangeNotifier {
     final target = owner(destination);
     if (target is MultiEditOwner) {
       final input =
-          model.inputs[destination.bindingId] as PresentationEditInput;
+          model.inputs[destination.bindingId]! as PresentationEditInput;
       final destinationPath = input.path.followedBy(destination.path);
       final prepared = <(EditOwner, DataValue, EditorStructuralMutation?)>[];
       for (final member in target.owners) {
@@ -133,7 +134,7 @@ final class PresentationSession extends ChangeNotifier {
           ).canonicalizedWith(aliases);
           if (address.bindingId != destination.bindingId) continue;
           final input =
-              model.inputs[address.bindingId] as PresentationEditInput;
+              model.inputs[address.bindingId]! as PresentationEditInput;
           final value = member
               .value(input.path.followedBy(address.path))
               .valueOrNull;
@@ -148,8 +149,9 @@ final class PresentationSession extends ChangeNotifier {
         );
         final registry = TypeRegistry(member.typeCatalog);
         final result = action.execute(memberContext, registry: registry);
-        if (result case LocalMutationInvalid(:final diagnostics))
+        if (result case LocalMutationInvalid(:final diagnostics)) {
           return EditorMutationResult.invalid(diagnostics);
+        }
         final local = action.action.mutationReference;
         final value = local.path
             .read((result as LocalMutationApplied).value)
@@ -183,14 +185,16 @@ final class PresentationSession extends ChangeNotifier {
     }
     final registry = TypeRegistry(model.catalog);
     final result = action.execute(context, registry: registry);
-    if (result case LocalMutationInvalid(:final diagnostics))
+    if (result case LocalMutationInvalid(:final diagnostics)) {
       return EditorMutationResult.invalid(diagnostics);
+    }
     final applied = result as LocalMutationApplied;
     final local = action.action.mutationReference;
     final canonical = local.canonicalizedWith(aliases);
     final value = local.path.read(applied.value);
-    if (value case TypeFailure(:final diagnostics))
+    if (value case TypeFailure(:final diagnostics)) {
       return EditorMutationResult.invalid(diagnostics);
+    }
     final prefix = DataPath.root.followedBy(
       BindingReference(
         bindingId: local.bindingId,

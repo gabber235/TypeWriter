@@ -144,8 +144,9 @@ extension on PresentationInvocationElement {
   ) {
     final definition = scope.resolvePresentation(null, presentationId);
     if (definition == null ||
-        scope.activePresentations.contains(presentationId))
+        scope.activePresentations.contains(presentationId)) {
       return null;
+    }
     return scope.bindPresentation(definition, arguments).valueOrNull;
   }
 }

@@ -91,13 +91,14 @@ class _EditorProtocolRendererState extends State<EditorProtocolRenderer> {
   void didUpdateWidget(EditorProtocolRenderer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.envelope != widget.envelope ||
-        oldWidget.readOnly != widget.readOnly)
+        oldWidget.readOnly != widget.readOnly) {
       _replaceLocal();
-    else
+    } else {
       _local?.refreshSchema(
         NamedType(widget.envelope.rootType),
         widget.typeCatalog,
       );
+    }
   }
 
   @override
