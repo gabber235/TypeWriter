@@ -2,7 +2,6 @@ import "dart:async";
 
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
@@ -19,7 +18,7 @@ class OpenSelectionCapability extends SelectionCapability {
 
 /// The open operation exposed when every selected item provides an
 /// [OpenSelectionCapability].
-class OpenOperation extends ActivatorShortcutOperation {
+class OpenOperation extends IntentShortcutOperation {
   const OpenOperation();
 
   @override
@@ -29,9 +28,7 @@ class OpenOperation extends ActivatorShortcutOperation {
   String get description => "Open selected items";
 
   @override
-  List<ShortcutActivator> get activators => const [
-    SingleActivator(LogicalKeyboardKey.enter),
-  ];
+  Type get intent => PrimaryActionIntent;
 
   @override
   bool canExecuteOn(List<Selectable> selection) {

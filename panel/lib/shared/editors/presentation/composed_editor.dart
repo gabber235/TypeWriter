@@ -87,7 +87,22 @@ class _ComposedEditorState extends State<ComposedEditor> {
         if (input case PresentationEditInput(:final owner))
           ..._resources(owner),
     };
-    return EditorCommitPlacementScope(
+    final applyOwners = owners
+        .where(
+          (owner) => owner.commitPolicy == EditorCommitPolicy.applyResource,
+        )
+        .toList();
+    final candidate = applyOwners.length == 1 ? applyOwners.single : null;
+    final primaryOwner =
+        !widget.readOnly &&
+            candidate != null &&
+            candidate.hasWork &&
+            !candidate.readOnly &&
+            candidate.draftDiagnostics.isEmpty &&
+            candidate.saveState(DataPath.root).phase != EditorSavePhase.saving
+        ? candidate
+        : null;
+    final editor = EditorCommitPlacementScope(
       placements: _placements,
       labels: widget.model.ownerLabels,
       resolve: (reference) {
@@ -101,7 +116,7 @@ class _ComposedEditorState extends State<ComposedEditor> {
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        spacing: 8,
+        spacing: context.spacing.space2,
         children: [
           for (final owner in owners)
             if ({
@@ -141,6 +156,20 @@ class _ComposedEditorState extends State<ComposedEditor> {
               ),
         ],
       ),
+    );
+    return ManagedActionSet(
+      shortcuts: [
+        if (primaryOwner != null)
+          ActionShortcut.intent(
+            id: "editor.apply",
+            label: "Apply",
+            description: "Apply editor changes",
+            intent: PrimaryActionIntent,
+            priority: 100,
+            onInvoke: (_) => primaryOwner.flush(),
+          ),
+      ],
+      child: editor,
     );
   }
 

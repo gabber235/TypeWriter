@@ -73,6 +73,8 @@ class ConfirmationDialogue extends HookWidget {
   Widget build(BuildContext context) {
     final secondsLeft = useState(delayConfirm.inSeconds);
     final canConfirm = secondsLeft.value <= 0;
+    final confirmController = useLoadingButtonController();
+    useListenable(confirmController);
 
     useTimer(1.seconds, (timer) {
       secondsLeft.value--;
@@ -81,49 +83,76 @@ class ConfirmationDialogue extends HookWidget {
       }
     });
 
-    return AlertDialog(
-      title: Text(
-        title,
-        style: Theme.of(
-          context,
-        ).textTheme.titleLarge!.copyWith(color: titleColor),
-      ),
-      content: body ?? Text(content!),
-      actions: [
-        TextButton.icon(
-          autofocus: !canConfirm,
-          icon: Icones(
-            cancelIcon,
-            color: Theme.of(context).textTheme.bodySmall?.color,
+    void cancel() {
+      Navigator.of(context).pop(false);
+      onCancel?.call();
+    }
+
+    Future<void> confirm() async {
+      await onConfirm?.call();
+      if (!context.mounted) return;
+      Navigator.of(context).pop(true);
+    }
+
+    return ManagedActionSet(
+      shortcuts: [
+        if (canConfirm && !confirmController.isLoading)
+          ActionShortcut.intent(
+            id: "dialog.confirm",
+            label: confirmText,
+            description: "$confirmText this action",
+            intent: PrimaryActionIntent,
+            priority: 100,
+            onInvoke: (_) {
+              confirmController.trigger();
+            },
           ),
-          label: Text(cancelText),
-          onPressed: () {
-            Navigator.of(context).pop(false);
-            onCancel?.call();
-          },
-          style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
-          ),
-        ),
-        LoadingButton.filledIcon(
-          autofocus: canConfirm,
-          style: FilledButton.styleFrom(
-            backgroundColor: confirmColor,
-            foregroundColor: onConfirmColor,
-          ),
-          icon: Icones(confirmIcon, size: 16),
-          label: Text(
-            canConfirm ? confirmText : "$confirmText (${secondsLeft.value})",
-          ),
-          onPressed: canConfirm
-              ? () async {
-                  await onConfirm?.call();
-                  if (!context.mounted) return;
-                  Navigator.of(context).pop(true);
-                }
-              : null,
+        ActionShortcut.intent(
+          id: "dialog.dismiss",
+          label: cancelText,
+          description: "Dismiss this dialog",
+          intent: DismissIntent,
+          priority: 99,
+          onInvoke: (_) => cancel(),
+          show: false,
         ),
       ],
+      child: AlertDialog(
+        title: Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge!.copyWith(color: titleColor),
+        ),
+        content: body ?? Text(content!),
+        actions: [
+          TextButton.icon(
+            autofocus: !canConfirm,
+            icon: Icones(
+              cancelIcon,
+              color: Theme.of(context).textTheme.bodySmall?.color,
+            ),
+            label: Text(cancelText),
+            onPressed: cancel,
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
+            ),
+          ),
+          LoadingButton.filledIcon(
+            controller: confirmController,
+            autofocus: canConfirm,
+            style: FilledButton.styleFrom(
+              backgroundColor: confirmColor,
+              foregroundColor: onConfirmColor,
+            ),
+            icon: Icones(confirmIcon, size: 16),
+            label: Text(
+              canConfirm ? confirmText : "$confirmText (${secondsLeft.value})",
+            ),
+            onPressed: canConfirm ? confirm : null,
+          ),
+        ],
+      ),
     );
   }
 }

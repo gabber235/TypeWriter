@@ -10,6 +10,17 @@ final typewriterShortcuts = <ShortcutActivator, Intent>{
       ActivateAllIntent(),
   SingleActivator(LogicalKeyboardKey.space, shift: true): ActivateAllIntent(),
 
+  AdaptiveSingleActivator(
+    LogicalKeyboardKey.enter,
+    control: true,
+    includeRepeats: false,
+  ): PrimaryActionIntent(),
+  AdaptiveSingleActivator(
+    LogicalKeyboardKey.numpadEnter,
+    control: true,
+    includeRepeats: false,
+  ): PrimaryActionIntent(),
+
   AdaptiveSingleActivator(LogicalKeyboardKey.escape, control: true):
       CancelIntent(),
 
@@ -99,6 +110,10 @@ class FirstItemIntent extends Intent {
 
 class LastItemIntent extends Intent {
   const LastItemIntent();
+}
+
+class PrimaryActionIntent extends Intent {
+  const PrimaryActionIntent();
 }
 
 List<ShortcutActivator> shortcutsFor(Type intent) {

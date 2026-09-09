@@ -1,6 +1,17 @@
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 import "../../../support/test_utils.dart";
+
+Future<void> _invokePrimaryAction(WidgetTester tester) async {
+  final modifier = isApple
+      ? LogicalKeyboardKey.metaLeft
+      : LogicalKeyboardKey.controlLeft;
+  await tester.sendKeyDownEvent(modifier);
+  await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+  await tester.sendKeyUpEvent(modifier);
+}
 
 void main() {
   testWidgets("commit controls appear for work and disappear after discard", (
@@ -28,6 +39,38 @@ void main() {
     await tester.tap(find.text("Cancel"));
     await tester.pumpAndSettle();
     expect(find.text("Apply"), findsNothing);
+  });
+
+  testWidgets("primary action applies the focused single resource", (
+    tester,
+  ) async {
+    final submitted = <DataValue>[];
+    final owner = TransactionalEditorSource(
+      document: const EditorDocument(
+        rootType: StringType(),
+        typeCatalog: TypeCatalog([]),
+        confirmedValue: StringValue("original"),
+        revision: 1,
+      ),
+      commitPolicy: EditorCommitPolicy.applyResource,
+      commit: (change) async {
+        submitted.add(change.rootValue);
+        return MutationSuccess(revision: 2, value: change.rootValue);
+      },
+    );
+    addTearDown(owner.dispose);
+    owner.update(DataPath.root, const StringValue("draft"));
+
+    await tester.pumpTestApp(
+      child: ComposedEditor(model: PresentationModel.editor(owner: owner)),
+    );
+    await tester.tap(find.byType(EditableText));
+    await tester.pump();
+    await _invokePrimaryAction(tester);
+    await tester.pumpAndSettle();
+
+    expect(submitted, [const StringValue("draft")]);
+    expect(owner.hasWork, isFalse);
   });
 
   testWidgets(
@@ -152,6 +195,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(EditorCommitControls), findsNWidgets(2));
     expect(find.text("Second resource"), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await _invokePrimaryAction(tester);
+    await tester.pumpAndSettle();
+    expect(attempts, isEmpty);
     await tester.tap(find.text("Apply").first);
     await tester.pumpAndSettle();
     expect(attempts, ["saved"]);

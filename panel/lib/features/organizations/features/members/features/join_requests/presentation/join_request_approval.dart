@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
@@ -25,13 +24,11 @@ class JoinRequestApproval extends StatelessWidget {
     return ManagedActionSet(
       shortcuts: [
         if (selectedRoles.isNotEmpty)
-          ActionShortcut(
+          ActionShortcut.intent(
             id: "confirm_${request.requestId}",
             label: "Confirm",
             description: "Confirm adding member",
-            activators: [
-              AdaptiveSingleActivator(LogicalKeyboardKey.enter, control: true),
-            ],
+            intent: PrimaryActionIntent,
             priority: 1,
             onInvoke: (ref) => onConfirm(),
           ),
