@@ -31,6 +31,7 @@ extension RefNatsExtension on Ref {
     return serializer.fromBytes(response.payload);
   }
 
+  /// Reduces at delivery so each result reaches its listener before the next reduction.
   Stream<TData> watchRequest<TData, TResponse>({
     required String subject,
     required String listenSubject,
@@ -39,7 +40,7 @@ extension RefNatsExtension on Ref {
     required TData Function(TData?, TResponse) transformer,
   }) {
     final client = watch(natsProvider);
-    return Stream<TData>.multi((controller) async {
+    final responses = Stream<TResponse>.multi((controller) async {
       NatsSubscription? subscription;
       var active = true;
       Future<void>? unsubscribeOperation;
@@ -72,22 +73,11 @@ extension RefNatsExtension on Ref {
         );
         if (!active) return;
 
-        TData? lastData;
-        final initialData = transformer(
-          null,
-          serializer.fromBytes(initial.payload),
-        );
-        lastData = initialData;
-        controller.add(initialData);
+        controller.add(serializer.fromBytes(initial.payload));
 
         await for (final message in subscription.messages) {
           if (!active) return;
-          final response = transformer(
-            lastData,
-            serializer.fromBytes(message.payload),
-          );
-          lastData = response;
-          controller.add(response);
+          controller.add(serializer.fromBytes(message.payload));
         }
       } on Object catch (error, stackTrace) {
         if (active) controller.addError(error, stackTrace);
@@ -98,5 +88,27 @@ extension RefNatsExtension on Ref {
         }
       }
     });
+    return responses.transform(
+      StreamTransformer<TResponse, TData>((stream, cancelOnError) {
+        TData? previous;
+        return stream
+            .transform(
+              StreamTransformer<TResponse, TData>.fromHandlers(
+                handleData: (response, sink) {
+                  try {
+                    final next = transformer(previous, response);
+                    previous = next;
+                    sink.add(next);
+                  } on Object catch (error, stackTrace) {
+                    sink
+                      ..addError(error, stackTrace)
+                      ..close();
+                  }
+                },
+              ),
+            )
+            .listen(null, cancelOnError: cancelOnError);
+      }),
+    );
   }
 }
