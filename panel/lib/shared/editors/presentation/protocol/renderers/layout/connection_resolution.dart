@@ -81,8 +81,10 @@ _ResolvedConnectorStyle? _resolveConnectorStyle(
     ...widthResult.diagnostics,
     ...radiusResult.diagnostics,
   ]);
+
   final colorValue = colorResult.valueOrNull;
-  final color = colorValue is IntegerValue ? colorValue.colorOrNull : null;
+
+  final color = colorValue?.asColorOrNull;
   if (colorResult is TypeSuccess && color == null) {
     diagnostics.add(
       _connectionDiagnostic("Connector color must evaluate to a Color"),

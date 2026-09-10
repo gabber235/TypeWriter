@@ -8,28 +8,24 @@ extension _HostConfigurationValue on HostEditorSnapshot {
     "realm": realm == null
         ? _draftVariant(_realmDisabled)
         : _draftVariant(_realmHosted, {
-            "target": StringValue(
-              _encodeTarget(
-                realm.targetEngine.engineId,
-                realm.targetEngine.versionConstraint,
-              ),
-            ),
+            "target": _encodeTarget(
+              realm.targetEngine.engineId,
+              realm.targetEngine.versionConstraint,
+            ).asValue,
           }),
     "engine": engine == null
         ? _draftVariant(_engineDisabled)
         : _draftVariant(_engineEnabled, {
-            "target": StringValue(
-              _encodeTarget(
-                engine.target.engineId,
-                engine.target.versionConstraint,
-              ),
-            ),
-            "realm": StringValue(
-              realm?.realmId == engine.realm.realmId &&
-                      realm?.targetEngine == engine.target
-                  ? ""
-                  : engine.realm.realmId.id,
-            ),
+            "target": _encodeTarget(
+              engine.target.engineId,
+              engine.target.versionConstraint,
+            ).asValue,
+            "realm":
+                (realm?.realmId == engine.realm.realmId &&
+                            realm?.targetEngine == engine.target
+                        ? ""
+                        : engine.realm.realmId.id)
+                    .asValue,
           }),
   });
 
@@ -115,7 +111,7 @@ extension _HostConfigurationValue on HostEditorSnapshot {
 }
 
 String? _draftString(DataValue value, String field) =>
-    DataPath.root.field(field).read(value).valueOrNull?.stringOrNull;
+    DataPath.root.field(field).read(value).valueOrNull?.asStringOrNull;
 
 bool _usesHostedRealm(PolymorphicValue realm, PolymorphicValue engine) =>
     realm.concreteType == _realmHosted &&

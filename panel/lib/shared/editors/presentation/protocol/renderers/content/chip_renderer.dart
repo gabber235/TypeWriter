@@ -32,7 +32,7 @@ extension ChipElementRendering on ChipElement {
     }
     final entityColor = colorValue == null
         ? Theme.of(context).colorScheme.primary
-        : (colorValue as IntegerValue).colorOrNull;
+        : colorValue.asColorOrNull;
     if (entityColor == null) {
       return presentationDiagnostic(context, [
         const TypeDiagnostic(

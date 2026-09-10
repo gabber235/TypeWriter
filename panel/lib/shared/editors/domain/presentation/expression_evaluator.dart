@@ -305,9 +305,11 @@ final class _ExpressionEvaluator {
     if (color case TypeFailure()) return color;
     final alpha = evaluate(expression.alpha, depth + 1);
     if (alpha case TypeFailure()) return alpha;
+
     final colorValue = color.valueOrNull;
     final alphaValue = alpha.valueOrNull;
-    if (colorValue is! IntegerValue || colorValue.colorOrNull == null) {
+    final decodedColor = colorValue?.asColorOrNull;
+    if (decodedColor == null) {
       return _failure("Color operation requires a Color");
     }
     if (alphaValue is! IntegerValue ||
@@ -315,7 +317,8 @@ final class _ExpressionEvaluator {
         alphaValue.value > BigInt.from(255)) {
       return _failure("Color alpha must be between 0 and 255");
     }
-    final value = colorValue.colorOrNull!.withAlpha(alphaValue.value.toInt());
+
+    final value = decodedColor.withAlpha(alphaValue.value.toInt());
     return TypeResult.success(IntegerValue(BigInt.from(value.toARGB32())));
   }
 

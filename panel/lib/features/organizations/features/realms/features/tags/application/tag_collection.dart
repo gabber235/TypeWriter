@@ -65,23 +65,23 @@ PresentationCollectionSource tagPresentationCollection(
     searchPredicate: (row, query) {
       if (row is! RecordValue) return false;
       final name = row.fields["name"];
-      return name is StringValue &&
-          name.value.toLowerCase().contains(
+      return name?.asStringOrNull?.toLowerCase().contains(
             query.normalizedQuery.toLowerCase(),
-          );
+          ) ??
+          false;
     },
   );
 }
 
 RecordValue _tagCollectionRow(Tag tag, {String? unavailableReason}) =>
     RecordValue({
-      "key": StringValue(tag.tagId.id),
-      "name": StringValue(tag.name),
-      "color": tag.color.integerValue,
+      "key": tag.tagId.id.asValue,
+      "name": tag.name.asValue,
+      "color": tag.color.asValue,
       "parents": ListValue(
-        tag.parentIds.map((parent) => StringValue(parent.id)).toList(),
+        tag.parentIds.map((parent) => parent.id.asValue).toList(),
       ),
-      "selectable": BooleanValue(unavailableReason == null),
+      "selectable": (unavailableReason == null).asValue,
       "unavailableReason": _optionalTagText(unavailableReason),
     });
 
@@ -116,7 +116,7 @@ DataValue _optionalTagText(String? value) {
   }
   return PolymorphicValue(
     concreteType: standardTypeRefs.someOf(valueType),
-    value: RecordValue({"value": StringValue(value)}),
+    value: RecordValue({"value": value.asValue}),
   );
 }
 

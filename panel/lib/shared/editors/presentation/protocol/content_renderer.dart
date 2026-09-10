@@ -24,7 +24,7 @@ TypeResult<Color?> resolvePresentationColor(
     return TypeResult.failure(diagnostics);
   }
   final value = result.valueOrNull;
-  final color = value is IntegerValue ? value.colorOrNull : null;
+  final color = value?.asColorOrNull;
   return color == null
       ? TypeResult.failure([
           const TypeDiagnostic(

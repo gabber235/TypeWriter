@@ -115,7 +115,8 @@ extension on PresentationBorderSide {
       return TypeResult.failure(diagnostics);
     }
     final value = resolved.valueOrNull;
-    final resolvedColor = value is IntegerValue ? value.colorOrNull : null;
+
+    final resolvedColor = value?.asColorOrNull;
     if (resolvedColor == null) {
       return TypeResult.failure([
         const TypeDiagnostic(

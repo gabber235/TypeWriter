@@ -28,7 +28,8 @@ final class BookEditorSnapshot extends EditorSnapshot {
         tags is! ListValue) {
       return null;
     }
-    final decodedColor = color.colorOrNull;
+
+    final decodedColor = color.asColorOrNull;
     final tagIds = tags.values
         .whereType<StringValue>()
         .map((tag) => recordId("tag:${tag.value}"))

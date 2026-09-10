@@ -171,8 +171,3 @@ final _realmInstanceInspectorCatalog = TypeCatalog([
 final _engineInstanceInspectorCatalog = TypeCatalog([
   _engineInstanceInspectorType,
 ]);
-
-extension on DataValue {
-  String? get stringOrNull =>
-      this is StringValue ? (this as StringValue).value : null;
-}

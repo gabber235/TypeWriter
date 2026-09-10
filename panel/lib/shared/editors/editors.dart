@@ -62,6 +62,7 @@ export "domain/types/type_validation.dart";
 export "domain/types/type_variance.dart";
 export "domain/values/data_path.dart";
 export "domain/values/data_value.dart";
+export "domain/values/data_value_extensions.dart";
 export "domain/values/data_value_json_converter.dart";
 export "domain/values/icon_value.dart";
 export "domain/values/initial_value.dart";

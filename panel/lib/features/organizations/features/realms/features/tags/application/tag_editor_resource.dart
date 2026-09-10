@@ -48,7 +48,8 @@ final class TagEditorSnapshot extends EditorSnapshot {
         layout is! RecordValue) {
       return null;
     }
-    final decodedColor = color.colorOrNull;
+
+    final decodedColor = color.asColorOrNull;
     final parentIds = parents.values
         .whereType<StringValue>()
         .map((parent) => recordId("tag:${parent.value}"))

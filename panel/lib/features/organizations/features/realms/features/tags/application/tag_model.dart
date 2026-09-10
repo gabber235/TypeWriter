@@ -56,16 +56,16 @@ abstract class Tag with _$Tag {
 
 extension TagInspectorValue on Tag {
   RecordValue get inspectorValue => RecordValue({
-    "name": StringValue(name),
-    "color": color.integerValue,
+    "name": name.asValue,
+    "color": color.asValue,
     "parents": ListValue(
-      parentIds.map((parentId) => StringValue(parentId.id)).toList(),
+      parentIds.map((parentId) => parentId.id.asValue).toList(),
     ),
     "layout": RecordValue({
-      "x": IntegerValue(BigInt.from(placement.x)),
-      "y": IntegerValue(BigInt.from(placement.y)),
-      "width": IntegerValue(BigInt.from(placement.width)),
-      "height": IntegerValue(BigInt.from(placement.height)),
+      "x": placement.x.asValue,
+      "y": placement.y.asValue,
+      "width": placement.width.asValue,
+      "height": placement.height.asValue,
     }),
   });
 }

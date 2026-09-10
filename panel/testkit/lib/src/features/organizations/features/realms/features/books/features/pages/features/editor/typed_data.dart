@@ -28,7 +28,7 @@ GeneratedTypedData generateRandomTypedData({int depth = 0, int maxDepth = 2}) {
     0 => const (type: UnitType(), value: UnitValue()),
     1 => (
       type: const BooleanType(),
-      value: BooleanValue(faker.randomGenerator.boolean()),
+      value: faker.randomGenerator.boolean().asValue,
     ),
     2 => _stringData(),
     3 => _integerData(),
@@ -60,7 +60,7 @@ GeneratedTypedData _stringData() {
       .join(" ");
   return (
     type: StringType(minimumLength: 0, maximumLength: value.length + 12),
-    value: StringValue(value),
+    value: value.asValue,
   );
 }
 
@@ -72,7 +72,7 @@ GeneratedTypedData _integerData() {
       minimum: BigInt.from(-100),
       maximum: BigInt.from(1000),
     ),
-    value: IntegerValue(BigInt.from(value)),
+    value: value.asValue,
   );
 }
 
@@ -94,11 +94,11 @@ GeneratedTypedData _timestampData() {
     faker.randomGenerator.integer(12, min: 1),
     faker.randomGenerator.integer(28, min: 1),
   );
-  return (type: const TimestampType(), value: TimestampValue(value));
+  return (type: const TimestampType(), value: value.asValue);
 }
 
 GeneratedTypedData _enumData() {
-  final value = StringValue(faker.lorem.word().toLowerCase());
+  final value = faker.lorem.word().toLowerCase().asValue;
   return (
     type: EnumType(valueType: const StringType(), values: [value]),
     value: value,
@@ -126,7 +126,7 @@ GeneratedTypedData _mapData(int depth, int maxDepth) {
   final key = faker.lorem.word().toLowerCase();
   return (
     type: MapType(key: const StringType(), value: item.type, maximumLength: 6),
-    value: MapValue([DataMapEntry(key: StringValue(key), value: item.value)]),
+    value: [DataMapEntry(key: key.asValue, value: item.value)].asValue,
   );
 }
 

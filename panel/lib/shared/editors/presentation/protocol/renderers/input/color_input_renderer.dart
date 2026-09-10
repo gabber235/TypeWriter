@@ -33,7 +33,7 @@ extension ColorInputElementRendering on ColorInputElement {
           onInteractionStart: field.interaction.begin,
           onInteractionCommit: field.interaction.commit,
           onInteractionCancel: field.interaction.cancel,
-          onChanged: (next) => field.update(next.integerValue),
+          onChanged: (next) => field.update(next.asValue),
         );
       },
     );

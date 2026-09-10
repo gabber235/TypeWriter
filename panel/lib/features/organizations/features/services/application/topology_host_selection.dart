@@ -59,7 +59,7 @@ class _ServiceHostSelectable
           const BindingId(2): PresentationInput.value(
             type: _serviceIdentityType,
             value: EditorValue.ready(
-              RecordValue({"name": StringValue("Unavailable")}),
+              RecordValue({"name": "Unavailable".asValue}),
             ),
           ),
       },
@@ -96,34 +96,28 @@ class _ServiceHostSelectable
   ) {
     return RecordValue({
       _HostInspectorFields.service: RecordValue({
-        _HostInspectorFields.version: StringValue(
-          currentService?.role.version ?? "Unavailable",
-        ),
-        _HostInspectorFields.state: StringValue(
-          connected ? "Connected" : "Offline",
-        ),
+        _HostInspectorFields.version:
+            (currentService?.role.version ?? "Unavailable").asValue,
+        _HostInspectorFields.state:
+            (connected ? "Connected" : "Offline").asValue,
         _HostInspectorFields.lastSeen: _optionalTimestamp(
           currentService?.lastSeen,
         ),
       }),
       _HostInspectorFields.host: RecordValue({
-        _HostInspectorFields.entrypoint: StringValue(
-          currentHost.entrypoint.formatted,
-        ),
-        _HostInspectorFields.canHostRealm: BooleanValue(
-          currentHost.canHostRealm,
-        ),
+        _HostInspectorFields.entrypoint:
+            currentHost.entrypoint.formatted.asValue,
+        _HostInspectorFields.canHostRealm: currentHost.canHostRealm.asValue,
         _HostInspectorFields.supportedEngines: ListValue(
           currentHost.supportedEngines
-              .map((supported) => StringValue(supported.engineId))
+              .map((supported) => supported.engineId.asValue)
               .toList(),
         ),
-        _HostInspectorFields.state: StringValue(
-          hostRuntimeStatusLabel(currentHost.state.status),
-        ),
-        _HostInspectorFields.message: StringValue(
-          currentHost.state.message ?? "None",
-        ),
+        _HostInspectorFields.state: hostRuntimeStatusLabel(
+          currentHost.state.status,
+        ).asValue,
+        _HostInspectorFields.message:
+            (currentHost.state.message ?? "None").asValue,
         _HostInspectorFields.updatedAt: TimestampValue(
           currentHost.state.updatedAt,
         ),

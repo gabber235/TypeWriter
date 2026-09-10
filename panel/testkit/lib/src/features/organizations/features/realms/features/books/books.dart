@@ -95,8 +95,8 @@ List<Override> booksProviderOverrides({
 }) => [booksProvider.overrideWith(() => BooksMock(state))];
 
 RecordValue bookMockInspectorValue(Book book) => RecordValue({
-  "title": StringValue(book.title),
+  "title": book.title.asValue,
   "icon": IconValue.from(book.icon).typedValue,
-  "color": book.color.integerValue,
-  "tags": ListValue(book.tagIds.map((tagId) => StringValue(tagId.id)).toList()),
+  "color": book.color.asValue,
+  "tags": book.tagIds.map((tagId) => tagId.id.asValue).toList().asValue,
 });

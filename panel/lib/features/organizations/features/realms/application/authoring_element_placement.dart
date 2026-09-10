@@ -28,7 +28,7 @@ RecordValue elementPlacementValue(wire.ElementPlacement placement) =>
           "Unknown element placement",
         ),
       }.entries)
-        entry.key: IntegerValue(BigInt.from(entry.value)),
+        entry.key: entry.value.asValue,
     });
 
 RecordType elementPlacementType(wire.ElementPlacement placement) => RecordType(

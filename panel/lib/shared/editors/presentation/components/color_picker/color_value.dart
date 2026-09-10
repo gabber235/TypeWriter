@@ -18,11 +18,13 @@ extension ColorArgbFormatting on Color {
     return "#${value.toRadixString(16).padLeft(width, "0").toUpperCase()}";
   }
 
-  IntegerValue get integerValue => IntegerValue(BigInt.from(argbValue));
+  IntegerValue get asValue => IntegerValue(BigInt.from(argbValue));
 }
 
-extension IntegerValueColor on IntegerValue {
-  Color? get colorOrNull {
+extension DataValueColor on DataValue {
+  Color? get asColorOrNull {
+    if (this is! IntegerValue) return null;
+    final value = (this as IntegerValue).value;
     final maximum = BigInt.from(0xFFFFFFFF);
     if (value.isNegative || value > maximum) return null;
     return Color(value.toInt());

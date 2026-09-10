@@ -13,13 +13,11 @@ extension PageEditingRef on WidgetRef {
     wire.Int32Change? priority,
   }) => _pageEditing().edit({
     id: {
-      if (name != null) DataPath.root.field("name"): StringValue(name.value),
+      if (name != null) DataPath.root.field("name"): name.value.asValue,
       if (chapter != null)
-        DataPath.root.field("chapter"): StringValue(chapter.value),
+        DataPath.root.field("chapter"): chapter.value.asValue,
       if (priority != null)
-        DataPath.root.field("priority"): IntegerValue(
-          BigInt.from(priority.value),
-        ),
+        DataPath.root.field("priority"): priority.value.asValue,
     },
   });
 
@@ -30,9 +28,11 @@ extension PageEditingRef on WidgetRef {
   ) => _pageEditing().edit({
     for (final page in pages)
       page.pageId: {
-        DataPath.root.field("chapter"): StringValue(
-          replacePageChapter(page.chapter, oldChapter, newChapter),
-        ),
+        DataPath.root.field("chapter"): replacePageChapter(
+          page.chapter,
+          oldChapter,
+          newChapter,
+        ).asValue,
       },
   });
   PageEditing _pageEditing() {
@@ -149,9 +149,9 @@ EditorSnapshot pageEditorSnapshot(wire.Page page, int sequence) =>
         typeCatalog: const TypeCatalog([]),
         revision: sequence,
         confirmedValue: RecordValue({
-          "name": StringValue(page.name),
-          "chapter": StringValue(page.chapter),
-          "priority": IntegerValue(BigInt.from(page.priority)),
+          "name": page.name.asValue,
+          "chapter": page.chapter.asValue,
+          "priority": page.priority.asValue,
         }),
       ),
     );

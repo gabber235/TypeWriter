@@ -123,7 +123,7 @@ PresentationNode _statusElement({
     cases: [
       for (final entry in tones.entries)
         StatusCase(
-          match: StringValue(entry.key),
+          match: entry.key.asValue,
           appearance: StatusAppearance(tone: entry.value),
         ),
     ],

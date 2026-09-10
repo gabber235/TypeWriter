@@ -113,9 +113,9 @@ BindingReference _bookField(String name) => BindingReference(
 
 extension BookInspectorValue on Book {
   RecordValue get inspectorValue => RecordValue({
-    "title": StringValue(title),
+    "title": title.asValue,
     "icon": IconValue.from(icon).typedValue,
-    "color": color.integerValue,
-    "tags": ListValue(tagIds.map((tagId) => StringValue(tagId.id)).toList()),
+    "color": color.asValue,
+    "tags": ListValue(tagIds.map((tagId) => tagId.id.asValue).toList()),
   });
 }

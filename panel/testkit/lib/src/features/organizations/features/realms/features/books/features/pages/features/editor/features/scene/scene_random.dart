@@ -72,10 +72,8 @@ class _SceneMockBuilder {
         height: 72,
       ),
       data: RecordValue({
-        "entryType": StringValue(
-          rootChildren.length.isEven ? "entity" : "title",
-        ),
-        "label": StringValue("Scene Entry ${entryIndex + 1}"),
+        "entryType": (rootChildren.length.isEven ? "entity" : "title").asValue,
+        "label": "Scene Entry ${entryIndex + 1}".asValue,
       }),
       children: rootChildren,
     );
@@ -144,11 +142,9 @@ class _SceneMockBuilder {
             icon: _pickKeyframeIcon(),
             frame: _generateRelativeKeyframe(endFrame - startFrame),
             data: RecordValue({
-              "channel": StringValue(kind.channel),
-              "event": StringValue(_pickKeyframeEvent(depth)),
-              "label": StringValue(
-                "${kind.name} Keyframe ${keyframeIndex + 1}",
-              ),
+              "channel": kind.channel.asValue,
+              "event": _pickKeyframeEvent(depth).asValue,
+              "label": "${kind.name} Keyframe ${keyframeIndex + 1}".asValue,
             }),
           ),
         );
@@ -162,9 +158,9 @@ class _SceneMockBuilder {
       start: startFrame,
       end: endFrame,
       data: RecordValue({
-        "channel": StringValue(kind.channel),
-        "label": StringValue("${kind.name} ${entryIndex + 1}.$nodePath"),
-        "mode": StringValue(_pickSegmentMode(depth)),
+        "channel": kind.channel.asValue,
+        "label": "${kind.name} ${entryIndex + 1}.$nodePath".asValue,
+        "mode": _pickSegmentMode(depth).asValue,
       }),
       children: children,
     );

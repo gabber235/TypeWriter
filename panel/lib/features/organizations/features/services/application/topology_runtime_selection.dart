@@ -128,16 +128,15 @@ RecordValue _runtimeValue({
   required TopologyRuntimeState state,
   String? assignedRealm,
 }) => RecordValue({
-  _RuntimeInspectorFields.ownerHost: StringValue(ownerHost),
+  _RuntimeInspectorFields.ownerHost: ownerHost.asValue,
   if (assignedRealm != null)
-    _RuntimeInspectorFields.assignedRealm: StringValue(assignedRealm),
-  _RuntimeInspectorFields.target: StringValue(_targetLabel(target)),
-  _RuntimeInspectorFields.runtimeStatus: StringValue(
-    childRuntimeStatusLabel(state.status),
-  ),
-  _RuntimeInspectorFields.artifactVersion: StringValue(
-    state.activeArtifactVersion ?? "None",
-  ),
-  _RuntimeInspectorFields.runtimeMessage: StringValue(state.message ?? "None"),
+    _RuntimeInspectorFields.assignedRealm: assignedRealm.asValue,
+  _RuntimeInspectorFields.target: _targetLabel(target).asValue,
+  _RuntimeInspectorFields.runtimeStatus: childRuntimeStatusLabel(
+    state.status,
+  ).asValue,
+  _RuntimeInspectorFields.artifactVersion:
+      (state.activeArtifactVersion ?? "None").asValue,
+  _RuntimeInspectorFields.runtimeMessage: (state.message ?? "None").asValue,
   _RuntimeInspectorFields.updatedAt: TimestampValue(state.updatedAt),
 });

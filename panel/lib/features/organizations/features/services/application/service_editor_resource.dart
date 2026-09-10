@@ -39,7 +39,7 @@ final class ServiceEditorResource implements EditableResource {
         .field("name")
         .read(commit.rootValue)
         .valueOrNull
-        ?.stringOrNull;
+        ?.asStringOrNull;
     if (name == null || name.trim().isEmpty) {
       throw StateError("Name must not be empty");
     }

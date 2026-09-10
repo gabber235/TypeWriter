@@ -105,12 +105,13 @@ Widget colorInputRendererUseCase(BuildContext context) {
     max: 760,
   );
   final sampleLibrary = context.knobs.boolean(label: "Sample library");
+
   final base = inputRendererScenarios[7];
   final scenario = RendererStoryScenario(
     kind: base.kind,
     name: base.name,
     type: base.type,
-    value: color.integerValue,
+    value: color.asValue,
     definitions: base.definitions,
     presentation: storyNode(
       "colorInput",
