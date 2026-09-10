@@ -84,11 +84,22 @@ class _ServiceHostSelectable
   ];
 
   @override
-  Widget? buildInspectorHeader() => ServiceHeader(
-    id: host.hostId.id,
-    name: name,
-    color: service?.color ?? standaloneServiceColor,
-  );
+  InspectionContent buildInspection(EditorOwnerRegistry owners) {
+    final id = host.hostId.id;
+    final fallbackName = name;
+    final fallbackColor = service?.color ?? standaloneServiceColor;
+    return InspectionContent(
+      model: buildPresentation(owners),
+      header: serviceIdentityTarget != null
+          ? ManagedInspectorHeader(
+              id: id,
+              owner: owners.editor(serviceIdentityTarget!),
+              fallbackName: fallbackName,
+              fallbackColor: fallbackColor,
+            )
+          : InspectorHeader(id: id, name: fallbackName, color: fallbackColor),
+    );
+  }
 
   RecordValue _hostObservation(
     TopologyHost currentHost,

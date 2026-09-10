@@ -4,8 +4,18 @@ import "package:typewriter_panel/typewriter_panel.dart";
 abstract class InspectableSelectable<I extends SelectableIdentifier>
     extends Selectable<I> {
   const InspectableSelectable();
+
   PresentationModel buildPresentation(EditorOwnerRegistry owners);
-  Widget? buildInspectorHeader();
+
+  InspectionContent buildInspection(EditorOwnerRegistry owners) =>
+      InspectionContent(model: buildPresentation(owners));
+}
+
+final class InspectionContent {
+  const InspectionContent({required this.model, this.header});
+
+  final PresentationModel model;
+  final Widget? header;
 }
 
 abstract class EditableSelectable<I extends SelectableIdentifier>
@@ -40,27 +50,41 @@ abstract class EditableSelectable<I extends SelectableIdentifier>
   @override
   EditorValue value(DataPath path) =>
       document.confirmedValue.readEditorValue(path);
+
   @override
   EditorMutationResult validate(DataPath path, DataValue value) => document
       .rootType
       .validateEditorMutation(path, value, registry: typeRegistry);
+
   EditorMutationResult validateUpdate(DataPath path, DataValue value) =>
       validate(path, value);
+
   List<PresentationDefinition> get presentations => const [];
   List<PresentationCollectionSource> get collections => const [];
   DataPath get presentationPath => DataPath.root;
   PresentationNode? get rootPresentation => null;
 
+  Widget? buildInspectorHeader(EditOwner owner);
+
   @override
-  PresentationModel buildPresentation(EditorOwnerRegistry owners) =>
-      PresentationModel.editor(
-        owner: owners.editor(this),
-        path: presentationPath,
-        presentation: rootPresentation,
-        presentations: presentations,
-        collections: collections,
-        diagnostics: document.diagnostics,
-      );
+  PresentationModel buildPresentation(EditorOwnerRegistry owners) {
+    return PresentationModel.editor(
+      owner: owners.editor(this),
+      path: presentationPath,
+      presentation: rootPresentation,
+      presentations: presentations,
+      collections: collections,
+      diagnostics: document.diagnostics,
+    );
+  }
+
+  @override
+  InspectionContent buildInspection(EditorOwnerRegistry owners) {
+    return InspectionContent(
+      header: buildInspectorHeader(owners.editor(this)),
+      model: buildPresentation(owners),
+    );
+  }
 }
 
 extension InspectableSelectableCatalogMerge on Iterable<EditableSelectable> {

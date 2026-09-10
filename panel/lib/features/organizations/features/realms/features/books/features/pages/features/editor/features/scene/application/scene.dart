@@ -160,7 +160,7 @@ class CueSelection extends EditableSelectable<CueIdentifier> {
   List<SelectionCapability> get capabilities => const [];
 
   @override
-  Widget? buildInspectorHeader() {
+  Widget? buildInspectorHeader(EditOwner owner) {
     return CueHeader(id: id.id, name: name, color: cue.elementDefinition.color);
   }
 

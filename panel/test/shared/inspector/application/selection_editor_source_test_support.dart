@@ -88,7 +88,7 @@ class _Inspectable extends EditableSelectable<_Identifier> {
   );
 
   @override
-  Widget? buildInspectorHeader() => null;
+  Widget? buildInspectorHeader(EditOwner owner) => null;
 
   @override
   EditorMutationResult validate(DataPath path, DataValue value) {

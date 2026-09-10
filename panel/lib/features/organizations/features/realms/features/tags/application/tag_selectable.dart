@@ -110,7 +110,12 @@ class TagSelectable extends EditableSelectable<TagIdentifier> {
   ];
 
   @override
-  Widget? buildInspectorHeader() => TagHeader(tag: tag);
+  Widget? buildInspectorHeader(EditOwner owner) => ManagedInspectorHeader(
+    id: tag.tagId.id,
+    owner: owner,
+    fallbackName: tag.name.formatted,
+    fallbackColor: tag.color,
+  );
 
   @override
   String toString() => "TagSelectable(id: $id, tag: $tag)";

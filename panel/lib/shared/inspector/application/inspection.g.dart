@@ -66,7 +66,7 @@ final class InspectedSelectionProvider
 }
 
 String _$inspectedSelectionHash() =>
-    r'403e1791575d1980022006a7024a19233db027e5';
+    r'fdba8a3d317c067c0afab2040f701d5c23ebca8d';
 
 @ProviderFor(hasInspectableSelection)
 final hasInspectableSelectionProvider = HasInspectableSelectionProvider._();
@@ -156,44 +156,3 @@ final class InspectionSessionProvider
 }
 
 String _$inspectionSessionHash() => r'a868b7baa20bfc6f0ad563c882929f25c10f0895';
-
-@ProviderFor(inspectedHeader)
-final inspectedHeaderProvider = InspectedHeaderProvider._();
-
-final class InspectedHeaderProvider
-    extends $FunctionalProvider<Widget?, Widget?, Widget?>
-    with $Provider<Widget?> {
-  InspectedHeaderProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'inspectedHeaderProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$inspectedHeaderHash();
-
-  @$internal
-  @override
-  $ProviderElement<Widget?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  Widget? create(Ref ref) {
-    return inspectedHeader(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Widget? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Widget?>(value),
-    );
-  }
-}
-
-String _$inspectedHeaderHash() => r'6ff81ff07e2b42ada33b6d29f99c52ea618485f1';

@@ -53,11 +53,15 @@ class _RealmInstanceSelectable
   ];
 
   @override
-  Widget? buildInspectorHeader() => ServiceHeader(
-    id: realm.realmId.id,
-    name: name,
-    color: realmServiceRoleColor,
-  );
+  InspectionContent buildInspection(EditorOwnerRegistry owners) =>
+      InspectionContent(
+        model: buildPresentation(owners),
+        header: InspectorHeader(
+          id: realm.realmId.id,
+          name: name,
+          color: realmServiceRoleColor,
+        ),
+      );
 }
 
 OrganizationRoute realmNavigationRoute(
@@ -115,11 +119,15 @@ class _EngineInstanceSelectable
   List<SelectionCapability> get capabilities => [];
 
   @override
-  Widget? buildInspectorHeader() => ServiceHeader(
-    id: engine.engineId.id,
-    name: name,
-    color: engineServiceRoleColor,
-  );
+  InspectionContent buildInspection(EditorOwnerRegistry owners) =>
+      InspectionContent(
+        model: buildPresentation(owners),
+        header: InspectorHeader(
+          id: engine.engineId.id,
+          name: name,
+          color: engineServiceRoleColor,
+        ),
+      );
 }
 
 RecordValue _runtimeValue({

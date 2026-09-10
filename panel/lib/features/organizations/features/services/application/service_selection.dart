@@ -129,19 +129,25 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
   ];
 
   @override
-  Widget? buildInspectorHeader() => ServiceHeader(
-    id: service.serviceId.id,
-    name: service.displayName,
-    color: service.color,
-  );
+  InspectionContent buildInspection(EditorOwnerRegistry owners) =>
+      InspectionContent(
+        model: buildPresentation(owners),
+        header: ManagedInspectorHeader(
+          id: service.serviceId.id,
+          owner: owners.editor(editTarget),
+          fallbackName: service.displayName,
+          fallbackColor: service.color,
+          colorField: null,
+        ),
+      );
 }
 
 extension ServiceInspectorValue on Service {
-  RecordValue get identityValue => RecordValue({"name": StringValue(name)});
+  RecordValue get identityValue => RecordValue({"name": name.asValue});
 
   RecordValue observationValue(bool connected) => RecordValue({
-    "version": StringValue(role.version),
-    "state": StringValue(connected ? "Connected" : "Offline"),
+    "version": role.version.asValue,
+    "state": (connected ? "Connected" : "Offline").asValue,
     "lastSeen": _optionalTimestamp(lastSeen),
   });
 }

@@ -122,7 +122,7 @@ class EntrySelection extends EditableSelectable<EntryIdentifier> {
   List<SelectionCapability> get capabilities => [];
 
   @override
-  Widget? buildInspectorHeader() {
+  Widget? buildInspectorHeader(EditOwner owner) {
     return EntryHeader(
       id: id.id,
       name: name,

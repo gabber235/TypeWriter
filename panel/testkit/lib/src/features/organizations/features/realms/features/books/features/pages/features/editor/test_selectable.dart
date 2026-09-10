@@ -1,6 +1,5 @@
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart" hide Title;
-import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
@@ -81,10 +80,9 @@ class TestSelectableIdentifier extends SelectableIdentifier {
     ).createInitialValue(registry: TypeRegistry(typeCatalog)).valueOrNull;
     final data =
         ref.watch(testDataProvider(id)) ??
-        (initial is RecordValue ? initial : RecordValue(const {})).withField(
-          "name",
-          StringValue(id.formatted),
-        );
+        (initial is RecordValue ? initial : RecordValue(const {}))
+            .withField("name", id.formatted.asValue)
+            .withField("color", color.asValue);
 
     final snapshot = DocumentEditorSnapshot(
       EditorDocument(
@@ -176,7 +174,7 @@ class TestSelectable extends EditableSelectable<TestSelectableIdentifier> {
   ];
 
   @override
-  int get hashCode => Object.hash(id, rootType, data, color);
+  int get hashCode => Object.hash(id, rootType, data);
 
   @override
   bool operator ==(Object other) =>
@@ -185,18 +183,22 @@ class TestSelectable extends EditableSelectable<TestSelectableIdentifier> {
           runtimeType == other.runtimeType &&
           id == other.id &&
           rootType == other.rootType &&
-          data == other.data &&
-          color == other.color;
+          data == other.data;
 
   @override
   String get name {
     final value = data.fields["name"];
-    final name = value is StringValue ? value.value : null;
+    final name = value?.asStringOrNull;
     return (name?.nullIfEmpty ?? id.id).formatted;
   }
 
   @override
-  Widget? buildInspectorHeader() => TestSelectableHeader(selectable: this);
+  Widget? buildInspectorHeader(EditOwner owner) => ManagedInspectorHeader(
+    id: id.id,
+    owner: owner,
+    fallbackName: name,
+    fallbackColor: color,
+  );
 
   @override
   EditorSnapshot get snapshot => DocumentEditorSnapshot(document);
@@ -204,23 +206,5 @@ class TestSelectable extends EditableSelectable<TestSelectableIdentifier> {
   @override
   String toString() {
     return "TestSelectable(id: $id, name: $name)";
-  }
-}
-
-class TestSelectableHeader extends HookConsumerWidget {
-  const TestSelectableHeader({required this.selectable, super.key});
-
-  final TestSelectable selectable;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Title(title: selectable.name, color: selectable.color),
-        const SizedBox(height: 8),
-        Identifier(id: selectable.id.id),
-      ],
-    );
   }
 }

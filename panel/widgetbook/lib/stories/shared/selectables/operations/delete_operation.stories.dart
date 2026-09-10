@@ -117,7 +117,7 @@ class _DeleteSelectable
   ];
 
   @override
-  Widget? buildInspectorHeader() => null;
+  Widget? buildInspectorHeader(EditOwner owner) => null;
 
   @override
   EditorMutationResult validate(DataPath path, DataValue value) =>

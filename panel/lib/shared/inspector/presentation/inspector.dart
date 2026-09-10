@@ -375,33 +375,33 @@ class _InspectorContent extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: Add shimmer when loading.
-    final selectedHeader = ref.watch(inspectedHeaderProvider);
     final session = ref.watch(inspectionSessionProvider);
     final runtime = ref.watch(editorRealmRuntimeProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: context.spacing.space3,
-      children: [
-        ?selectedHeader,
-        ListenableBuilder(
-          listenable: session,
-          builder: (context, _) {
-            final model = session.model;
-            if (model == null) return const SizedBox.shrink();
-            return ComposedEditor(
-              key: ValueKey(ref.watch(selectionProvider)),
-              model: model,
-              runtime: runtime?.executeAction,
-              realmSearchSourceBuilder: runtime?.searchSourceBuilder,
-              executePanelInstruction: runtime?.executePanelInstruction,
-            );
-          },
-        ),
-        const SizedBox(height: 5),
-        InspectorOperations(),
-        const SizedBox(height: 30),
-      ],
+    return ListenableBuilder(
+      listenable: session,
+      builder: (context, _) {
+        final model = session.model;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: context.spacing.space3,
+          children: [
+            ?session.header,
+            if (model != null)
+              ComposedEditor(
+                key: ValueKey(ref.watch(selectionProvider)),
+                model: model,
+                runtime: runtime?.executeAction,
+                realmSearchSourceBuilder: runtime?.searchSourceBuilder,
+                executePanelInstruction: runtime?.executePanelInstruction,
+              ),
+            const SizedBox(height: 5),
+            InspectorOperations(),
+            const SizedBox(height: 30),
+          ],
+        );
+      },
     );
   }
 }

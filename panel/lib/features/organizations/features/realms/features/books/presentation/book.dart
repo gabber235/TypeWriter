@@ -409,29 +409,3 @@ class _TagChip extends HookWidget {
     );
   }
 }
-
-/// Header for a book displaying title and identifier.
-class BookHeader extends HookWidget {
-  const BookHeader({
-    required this.id,
-    required this.name,
-    required this.color,
-    super.key,
-  });
-
-  final String id;
-  final String name;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Title(title: name, color: color),
-        SizedBox(height: context.spacing.space2),
-        Identifier(id: id),
-      ],
-    );
-  }
-}

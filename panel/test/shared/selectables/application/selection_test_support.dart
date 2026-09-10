@@ -92,7 +92,7 @@ class MockSelectable extends EditableSelectable<MockSelectableIdentifier> {
   List<SelectionCapability> get capabilities => [];
 
   @override
-  Widget? buildInspectorHeader() => null;
+  Widget? buildInspectorHeader(EditOwner owner) => null;
 
   @override
   EditorSnapshot get snapshot =>

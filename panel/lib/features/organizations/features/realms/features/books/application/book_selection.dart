@@ -99,10 +99,12 @@ class BookSelection extends EditableSelectable<BookIdentifier> {
   ];
 
   @override
-  Widget? buildInspectorHeader() => BookHeader(
+  Widget? buildInspectorHeader(EditOwner owner) => ManagedInspectorHeader(
     id: book.bookId.id,
-    name: book.title.formatted,
-    color: book.color,
+    owner: owner,
+    fallbackName: book.title.formatted,
+    fallbackColor: book.color,
+    nameField: "title",
   );
 }
 

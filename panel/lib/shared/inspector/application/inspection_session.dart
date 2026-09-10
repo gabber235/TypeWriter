@@ -1,5 +1,5 @@
-import "package:flutter/foundation.dart";
 import "package:flutter/scheduler.dart";
+import "package:flutter/widgets.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
@@ -31,34 +31,47 @@ final class InspectionSession extends ChangeNotifier {
   bool _disposed = false;
   final EditorOwnerRegistry owners;
   final List<MultiEditOwner> _groups = [];
+
+  Widget? header;
   PresentationModel? model;
 
   void _refresh() {
     final selection = ref.read(inspectedSelectionProvider).value;
     if (selection == null) return;
+
     for (final group in _groups) {
       group.dispose();
     }
+
     _groups.clear();
+
     final router = ref.read(appRouterProvider);
     final path = router.currentPath;
     final container = ref.container;
+
     owners.destinationFor = (identity) => InspectorDestination(
       container: container,
       router: router,
       path: path,
       identity: identity,
     );
+
     owners.begin();
-    final models = selection
-        .map((item) => item.buildPresentation(owners))
+    final contents = selection
+        .map((item) => item.buildInspection(owners))
         .toList();
     owners.end();
+
+    header = contents.length == 1 ? contents.single.header : null;
+
+    final models = contents.map((content) => content.model).toList();
+
     model = switch (models.length) {
       0 => null,
       1 => models.single,
       _ => _combine(models),
     };
+
     model = model?.copyWith(ownerLabels: owners.labels);
     notifyListeners();
   }
