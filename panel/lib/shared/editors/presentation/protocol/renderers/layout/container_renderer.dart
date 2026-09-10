@@ -13,7 +13,9 @@ extension ContainerElementRendering on ContainerElement {
     if (diagnostics.isNotEmpty) {
       return presentationDiagnostic(context, diagnostics);
     }
+
     final radiusValue = resolvedRadius.valueOrNull!;
+
     final background = resolvedBackground.valueOrNull;
     final content = DecoratedBox(
       decoration: BoxDecoration(

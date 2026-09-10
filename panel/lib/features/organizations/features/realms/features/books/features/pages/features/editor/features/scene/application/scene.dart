@@ -61,6 +61,7 @@ class CueIdentifier extends SelectableIdentifier {
     final asyncElements = ref.watch(
       pageElementsProvider(organizationId, realmId, pageId),
     );
+
     if (asyncElements.mapUnready<Selectable<CueIdentifier>>()
         case final value?) {
       return value;

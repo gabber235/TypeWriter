@@ -36,6 +36,7 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
     final tagsCommands = ref.watch(tagsProvider.notifier);
     final tagAsync = ref.watch(tagProvider(tagId));
     if (tagAsync.mapUnready<Selectable>() case final value?) return value;
+
     final tag = tagAsync.requireValue;
     if (tag == null) {
       throw SelectableNotFoundException(this);

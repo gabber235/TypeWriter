@@ -33,12 +33,16 @@ void _resolveMarkers({
       markerScope,
       "marker position",
     );
+
     final aligned = _evaluateBoolean(template.alignToPath, markerScope, false);
+
     diagnostics.addAll([...position.diagnostics, ...aligned.diagnostics]);
+
     if (position.valueOrNull == null || aligned.valueOrNull == null) continue;
     final tangent = metric.getTangentForOffset(
       metric.length * position.valueOrNull!,
     );
+
     if (tangent == null) continue;
     output.add(
       _ResolvedMarker(
@@ -110,6 +114,7 @@ _ResolvedEndpointMarker? _resolveEndpointMarker(
   };
   final extent = _evaluateNonnegative(expression, scope, "marker size");
   diagnostics.addAll(extent.diagnostics);
+
   if (extent.valueOrNull == null) return null;
   return _ResolvedEndpointMarker(
     kind: marker is ArrowConnectorMarker

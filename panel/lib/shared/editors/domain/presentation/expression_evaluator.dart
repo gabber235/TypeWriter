@@ -53,7 +53,9 @@ final class _ExpressionEvaluator {
     evaluations++;
     final budgetFailure = _checkBudget(depth);
     if (budgetFailure != null) return budgetFailure;
+
     final result = _evaluate(typed.expression, depth);
+
     if (result case TypeFailure()) return result;
     final diagnostics = (result.valueOrNull!).validateAgainst(
       typed.resultType,
@@ -109,6 +111,7 @@ final class _ExpressionEvaluator {
     if (value is! RecordValue) {
       return _failure("Field access requires a record");
     }
+
     final field = value.fields[expression.fieldName];
     return field == null
         ? _failure("Field '${expression.fieldName}' is absent")
@@ -137,7 +140,9 @@ final class _ExpressionEvaluator {
     final right = evaluate(expression.right, depth + 1);
     if (left case TypeFailure()) return left;
     if (right case TypeFailure()) return right;
+
     final leftValue = left.valueOrNull!;
+
     final rightValue = right.valueOrNull!;
     if (expression.operator == ComparisonOperator.equal) {
       return TypeResult.success(BooleanValue(leftValue == rightValue));
@@ -145,7 +150,9 @@ final class _ExpressionEvaluator {
     if (expression.operator == ComparisonOperator.notEqual) {
       return TypeResult.success(BooleanValue(leftValue != rightValue));
     }
+
     final comparison = compareExpressionValues(leftValue, rightValue);
+
     if (comparison == null) return _failure("Values are not comparable");
     return TypeResult.success(
       BooleanValue(switch (expression.operator) {
@@ -233,9 +240,11 @@ final class _ExpressionEvaluator {
       MapType(value: final valueType) => valueType,
       _ => null,
     };
+
     if (itemType == null) {
       return _failure("Projection source type must be a collection");
     }
+
     final projected = <DataValue>[];
     for (final item in items) {
       final remainingNodes = budget.maximumNodes - nodes;
@@ -260,9 +269,13 @@ final class _ExpressionEvaluator {
         ),
         registry,
       );
+
       final result = child.evaluate(expression.transform, depth + 1);
+
       nodes += child.nodes;
+
       evaluations += child.evaluations;
+
       if (result case TypeFailure()) return result;
       projected.add(result.valueOrNull!);
     }

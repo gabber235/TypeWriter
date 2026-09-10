@@ -27,9 +27,11 @@ final class MultiEditOwner extends ChangeNotifier implements EditOwner {
     }
     final invalid = values.whereType<InvalidEditorValue>().firstOrNull;
     if (invalid != null) return invalid;
+
     final first = values.firstOrNull?.valueOrNull;
     if (first == null || values.any((value) => value.valueOrNull != first)) {
       return const EditorValue.mixed();
+
     }
     return EditorValue.ready(first);
   }
@@ -77,11 +79,14 @@ final class MultiEditOwner extends ChangeNotifier implements EditOwner {
 
 final class _MultiInteraction implements EditorInteractionSession {
   _MultiInteraction(this.path, this.sessions);
+
   @override
   final DataPath path;
   final List<EditorInteractionSession> sessions;
+
   @override
   bool get active => sessions.any((session) => session.active);
+
   @override
   Future<void> commit() async {
     await Future.wait(sessions.map((session) => session.commit()));
@@ -108,6 +113,7 @@ extension SelectionEditorMutationAggregation on Iterable<EditorMutationResult> {
     if (results.any((result) => result is ConflictingEditorMutation)) {
       return const EditorMutationResult.conflict();
     }
+
     final applied = results.whereType<AppliedEditorMutation>().toList();
     if (applied.isEmpty) {
       return EditorMutationResult.invalid([
@@ -117,10 +123,13 @@ extension SelectionEditorMutationAggregation on Iterable<EditorMutationResult> {
           path: path,
         ),
       ]);
+
     }
+
     final accepted = applied.first.value;
     if (applied.skip(1).any((result) => result.value != accepted)) {
       return const EditorMutationResult.conflict();
+
     }
     return EditorMutationResult.applied(accepted);
   }

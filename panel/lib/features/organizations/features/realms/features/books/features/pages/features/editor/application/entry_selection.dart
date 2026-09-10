@@ -27,6 +27,7 @@ class EntryIdentifier extends SelectableIdentifier
       return state;
     }
     final location = index.requireValue[id];
+
     if (location == null) {
       return AsyncError(SelectableNotFoundException(this), StackTrace.current);
     }
@@ -40,6 +41,7 @@ class EntryIdentifier extends SelectableIdentifier
       return value;
     }
     final value = asyncEntry.requireValue;
+
     if (value == null) {
       throw SelectableNotFoundException(this);
     }

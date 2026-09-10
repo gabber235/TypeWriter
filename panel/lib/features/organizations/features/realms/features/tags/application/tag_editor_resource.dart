@@ -57,6 +57,7 @@ final class TagEditorSnapshot extends EditorSnapshot {
     final y = layout.fields["y"];
     final width = layout.fields["width"];
     final height = layout.fields["height"];
+
     if (decodedColor == null ||
         parentIds.length != parents.values.length ||
         x is! IntegerValue ||

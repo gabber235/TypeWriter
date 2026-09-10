@@ -43,6 +43,7 @@ Color parseColorHex(String source, {required bool includeAlpha}) {
           : "Enter six RGB hexadecimal digits",
     );
   }
+
   final parsed = int.parse(value, radix: 16);
   return Color(value.length == 6 ? 0xFF000000 | parsed : parsed);
 }
