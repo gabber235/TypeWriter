@@ -123,8 +123,6 @@ void main() {
     final secondLeaf = _tag("tag:secondLeaf", name: "Second leaf");
     late StateSetter rebuild;
 
-    var revision = firstRoot.authoringSequence;
-
     await tester.pumpTestApp(
       child: StatefulBuilder(
         builder: (context, setState) {
@@ -133,13 +131,7 @@ void main() {
             child: SizedBox(
               width: 400,
               child: _renderer(
-                [
-                  firstRoot.copyWith(authoringSequence: revision),
-                  secondRoot,
-                  shared,
-                  firstLeaf,
-                  secondLeaf,
-                ],
+                [firstRoot, secondRoot, shared, firstLeaf, secondLeaf],
                 [firstRoot.tagId.id, secondRoot.tagId.id],
               ),
             ),
@@ -161,7 +153,7 @@ void main() {
     expect(find.text(secondLeaf.name), findsOneWidget);
     expect(find.text(firstLeaf.name, skipOffstage: false), findsNWidgets(2));
 
-    rebuild(() => revision++);
+    rebuild(() {});
     await tester.pump();
 
     expect(find.text(firstLeaf.name), findsOneWidget);
@@ -188,7 +180,6 @@ void main() {
 Tag _tag(String id, {required String name, List<String> parents = const []}) =>
     Tag(
       tagId: recordId(id),
-      authoringSequence: 1,
       name: name,
       color: Colors.blue,
       parentIds: parents.map(recordId).toList(),

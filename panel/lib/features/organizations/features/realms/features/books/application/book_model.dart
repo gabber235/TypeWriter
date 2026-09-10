@@ -6,7 +6,6 @@ abstract class Book with _$Book {
   @Assert("icon != \"\"", "Icon must not be empty.")
   const factory Book({
     required skir.RecordId bookId,
-    required int authoringSequence,
     required String title,
     required String icon,
     required Color color,
@@ -15,9 +14,8 @@ abstract class Book with _$Book {
 
   const Book._();
 
-  factory Book.fromWire(wire.Book book, int authoringSequence) => Book(
+  factory Book.fromWire(wire.Book book) => Book(
     bookId: book.id,
-    authoringSequence: authoringSequence,
     title: book.title,
     icon: book.icon,
     color: book.color.toFlutterColor(),

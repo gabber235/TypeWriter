@@ -2,39 +2,6 @@ part of "page_elements.dart";
 
 mixin _PageElementMutations
     on _$PageElements, _PageElementMutationContext, _PageElementValues {
-  void optimisticMoveAll(List<(String, int, int)> changed) {
-    final positions = {for (final item in changed) item.$1: (item.$2, item.$3)};
-    state = AsyncData([
-      for (final element in state.requireValue)
-        if (positions[element.id] case final position?)
-          element.moveTo(position.$1, position.$2)
-        else
-          element,
-    ]);
-  }
-
-  void optimisticResizeAll(List<(String, int, int)> changed) {
-    final sizes = {for (final item in changed) item.$1: (item.$2, item.$3)};
-    state = AsyncData([
-      for (final element in state.requireValue)
-        if (sizes[element.id] case final size?)
-          element.resizeTo(size.$1, size.$2)
-        else
-          element,
-    ]);
-  }
-
-  void optimisticCuesUpdate(List<(String, int, int)> changed) {
-    final timings = {for (final item in changed) item.$1: (item.$2, item.$3)};
-    state = AsyncData([
-      for (final element in state.requireValue)
-        if (timings[element.id] case final timing?)
-          element.updateCueTo(timing.$1, timing.$2)
-        else
-          element,
-    ]);
-  }
-
   Future<void> moveAll(List<(String, int, int)> changed) => _commitPlacements(
     changed,
     (element, x, y) => wire.ElementPlacement.createGraph(
@@ -112,21 +79,11 @@ mixin _PageElementMutations
   Future<void> deleteAll(List<String> elementIds) async {
     state.ensureReady();
     if (elementIds.isEmpty) return;
-    state = AsyncData(
-      state.requireValue
-          .where((element) => !elementIds.contains(element.id))
-          .toList(),
+    await _submit(
+      _commands.deleteElements([
+        for (final id in elementIds) recordId("element:$id"),
+      ]),
     );
-    try {
-      await _submit(
-        _commands.deleteElements([
-          for (final id in elementIds) recordId("element:$id"),
-        ]),
-      );
-    } on Object {
-      _replaceFromSession();
-      rethrow;
-    }
   }
 
   Future<List<String>> createEntries(
@@ -172,7 +129,6 @@ mixin _PageElementMutations
           ),
       ]),
     );
-    _replaceFromSession();
     return ids;
   }
 
@@ -188,8 +144,6 @@ mixin _PageElementMutations
         for (final id in elementIds) elements[id]!: ids[id]!,
       }),
     );
-    _replaceFromSession();
-
     return [for (final id in elementIds) ids[id]!.id];
   }
 
@@ -203,11 +157,6 @@ mixin _PageElementMutations
       _commands.moveElementsToPage([
         for (final id in elementIds) elements[id]!,
       ], recordId("page:$targetPageId")),
-    );
-    state = AsyncData(
-      state.requireValue
-          .where((element) => !elementIds.contains(element.id))
-          .toList(),
     );
   }
 }

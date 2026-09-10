@@ -15,7 +15,7 @@ class TagNode extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncTag = ref.watch(tagProvider(tagId));
+    final asyncTag = ref.watch(projectedTagProvider(tagId));
 
     return asyncTag(
       name: "Tag",
@@ -85,14 +85,18 @@ class _TagNode extends HookConsumerWidget {
                 child: DragTarget<TagIdentifier>(
                   onWillAcceptWithDetails: (details) =>
                       tagParentDropAction(
-                        ref.read(tagsProvider).value ?? const [],
+                        ref.read(projectedTagsProvider).value ?? const [],
                         childId: tag.tagId,
                         parentId: details.data.tagId,
                       ) !=
                       null,
                   onAcceptWithDetails: (details) => ref
-                      .read(tagsProvider.notifier)
-                      .toggleTagParent(tag.tagId, details.data.tagId),
+                      .read(canonicalTagsProvider.notifier)
+                      .toggleTagParent(
+                        ref.read(projectedTagsProvider).value ?? const [],
+                        tag.tagId,
+                        details.data.tagId,
+                      ),
                   builder: (context, candidateData, rejectedData) {
                     final isDropTarget = candidateData.isNotEmpty;
                     final isRejected = rejectedData.isNotEmpty;
@@ -183,10 +187,8 @@ class _TagNodeContent extends StatelessWidget {
       child: Center(
         child: Text(
           tag.name.formatted,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: textColor,
-            fontWeight: FontWeight.w500,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium!
+              .copyWith(color: textColor, fontWeight: FontWeight.w500),
           overflow: TextOverflow.ellipsis,
         ),
       ),
@@ -278,10 +280,8 @@ class PlaceholderTagNode extends StatelessWidget {
             child: Center(
               child: Text(
                 name.formatted,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium!
+                    .copyWith(color: color, fontWeight: FontWeight.w500),
                 overflow: TextOverflow.ellipsis,
               ),
             ),

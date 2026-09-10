@@ -11,7 +11,7 @@ class PagePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final page = ref.watch(pagesProvider(recordId("page:$pageId")));
+    final page = ref.watch(projectedPageProvider(recordId("page:$pageId")));
     return Pane(
       id: "pagepage",
       primary: true,

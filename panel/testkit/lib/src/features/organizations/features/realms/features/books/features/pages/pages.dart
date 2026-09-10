@@ -51,7 +51,6 @@ Page generateRandomPage([PageType? pageType]) {
 
   return Page(
     pageId: recordId("page:${faker.guid.guid()}"),
-    authoringSequence: 1,
     bookId: recordId("book:${faker.guid.guid()}"),
     name: pageName,
     kind: type.kind,
@@ -60,30 +59,22 @@ Page generateRandomPage([PageType? pageType]) {
   );
 }
 
-class BookPagesMock extends BookPages {
+class BookPagesMock extends CanonicalBookPages {
   BookPagesMock({required this.displayState});
 
   final DisplayState displayState;
 
   @override
-  Future<List<Page>> build(skir.RecordId bookId, String search) async {
+  Future<List<Page>> build(skir.RecordId bookId) async {
     await ref.debounce(300.ms);
     await Future<void>.delayed(100.ms);
     final pages = await displayState.generate(generateRandomPage);
 
-    if (search.isEmpty) return pages;
-
-    return pages
-        .where(
-          (page) =>
-              page.name.toLowerCase().contains(search.toLowerCase()) ||
-              page.chapter.toLowerCase().contains(search.toLowerCase()),
-        )
-        .toList();
+    return pages;
   }
 }
 
-class PagesMock extends Pages {
+class PagesMock extends CanonicalPage {
   PagesMock({this.page, this.pageType});
 
   final Page? page;
@@ -142,13 +133,27 @@ class PageElementsMock extends PageElements {
   @override
   Future<void> moveAll(List<(String, int, int)> changed) async {
     state.ensureReady();
-    optimisticMoveAll(changed);
+    final positions = {for (final item in changed) item.$1: (item.$2, item.$3)};
+    state = AsyncData([
+      for (final element in state.requireValue)
+        if (positions[element.id] case final position?)
+          element.moveTo(position.$1, position.$2)
+        else
+          element,
+    ]);
   }
 
   @override
   Future<void> resizeAll(List<(String, int, int)> changed) async {
     state.ensureReady();
-    optimisticResizeAll(changed);
+    final sizes = {for (final item in changed) item.$1: (item.$2, item.$3)};
+    state = AsyncData([
+      for (final element in state.requireValue)
+        if (sizes[element.id] case final size?)
+          element.resizeTo(size.$1, size.$2)
+        else
+          element,
+    ]);
   }
 }
 
@@ -200,11 +205,15 @@ class EntryMock extends Entry {
 List<Override> bookPagesProviderOverrides({
   DisplayState state = DisplayState.loading,
 }) => [
-  bookPagesProvider.overrideWith2((_) => BookPagesMock(displayState: state)),
+  canonicalBookPagesProvider.overrideWith2(
+    (_) => BookPagesMock(displayState: state),
+  ),
 ];
 
 List<Override> pagesProviderOverrides({Page? page, PageType? pageType}) => [
-  pagesProvider.overrideWith2((_) => PagesMock(page: page, pageType: pageType)),
+  canonicalPageProvider.overrideWith2(
+    (_) => PagesMock(page: page, pageType: pageType),
+  ),
 ];
 
 List<Override> pageElementsProviderOverrides({

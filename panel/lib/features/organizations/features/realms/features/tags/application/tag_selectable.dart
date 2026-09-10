@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:riverpod_annotation/riverpod_annotation.dart";
+import "package:riverpod/riverpod.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v1/authoring.dart"
@@ -33,15 +33,24 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
         StackTrace.current,
       );
     }
-    final tagsCommands = ref.watch(tagsProvider.notifier);
-    final tagAsync = ref.watch(tagProvider(tagId));
-    if (tagAsync.mapUnready<Selectable>() case final value?) return value;
-
-    final tag = tagAsync.requireValue;
+    final tagsCommands = ref.watch(canonicalTagsProvider.notifier);
+    final canonicalTags = ref.watch(canonicalTagsProvider);
+    if (canonicalTags.mapUnready<Selectable>() case final value?) return value;
+    final tag = canonicalTags.requireValue
+        .where((value) => value.tagId == tagId)
+        .firstOrNull;
     if (tag == null) {
       throw SelectableNotFoundException(this);
     }
-    final tags = ref.watch(tagsProvider).value ?? const <Tag>[];
+    final tagsAsync = ref.watch(projectedTagsProvider);
+    if (tagsAsync.mapUnready<Selectable>() case final value?) return value;
+    final tags = tagsAsync.requireValue;
+    final revision = ref.watch(
+      authoringSessionProvider(
+        organization,
+        realm,
+      ).select((value) => value.sequence ?? 0),
+    );
     return AsyncValue.data(
       TagSelectable(
         resource: TagEditorResource(
@@ -53,6 +62,7 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
         onDelete: () => tagsCommands.deleteTag(tagId),
         id: this,
         tag: tag,
+        revision: revision,
         tagCollection: tagPresentationCollection(
           tags,
           editingTagId: tag.tagId,
@@ -81,6 +91,7 @@ class TagSelectable extends EditableSelectable<TagIdentifier> {
     required this.onDelete,
     required this.id,
     required this.tag,
+    required this.revision,
     required this.tagCollection,
   });
 
@@ -88,6 +99,7 @@ class TagSelectable extends EditableSelectable<TagIdentifier> {
   final TagIdentifier id;
 
   final Tag tag;
+  final int revision;
   final PresentationCollectionSource tagCollection;
 
   @override
@@ -103,7 +115,7 @@ class TagSelectable extends EditableSelectable<TagIdentifier> {
   List<PresentationCollectionSource> get collections => [tagCollection];
 
   @override
-  EditorSnapshot get snapshot => TagEditorSnapshot(tag);
+  EditorSnapshot get snapshot => TagEditorSnapshot(tag, revision);
   @override
   List<SelectionCapability> get capabilities => [
     DeleteSelectionCapability(onDelete: onDelete),

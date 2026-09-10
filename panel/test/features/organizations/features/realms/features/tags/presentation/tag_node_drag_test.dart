@@ -20,7 +20,6 @@ class _TagRefresh extends Notifier<int> {
 
 Tag _testTag({int x = 0, int y = 0}) => Tag(
   tagId: _testTagId,
-  authoringSequence: 1,
   name: "Test Tag",
   color: Colors.blue,
   parentIds: const [],
@@ -39,7 +38,7 @@ void main() {
       await tester.pumpTestApp(
         settle: false,
         overrides: [
-          tags_lib.tagProvider(_testTagId).overrideWith((ref) {
+          tags_lib.canonicalTagProvider(_testTagId).overrideWith((ref) {
             ref.watch(_tagRefreshProvider);
             buildCount++;
             if (buildCount == 1) return tag;
@@ -72,7 +71,7 @@ void main() {
 
       expect(buildCount, 2);
       expect(
-        container.read(tags_lib.tagProvider(_testTagId)).isLoading,
+        container.read(tags_lib.projectedTagProvider(_testTagId)).isLoading,
         isTrue,
       );
 
@@ -95,7 +94,9 @@ void main() {
 
       await tester.pumpTestApp(
         overrides: [
-          tags_lib.tagProvider(_testTagId).overrideWith((ref) => tag),
+          tags_lib
+              .projectedTagProvider(_testTagId)
+              .overrideWith((ref) => AsyncData(tag)),
         ],
         child: Center(
           child: SizedBox(
@@ -139,7 +140,9 @@ void main() {
 
       await tester.pumpTestApp(
         overrides: [
-          tags_lib.tagProvider(_testTagId).overrideWith((ref) => tag),
+          tags_lib
+              .projectedTagProvider(_testTagId)
+              .overrideWith((ref) => AsyncData(tag)),
         ],
         child: Center(
           child: SizedBox(
@@ -178,7 +181,9 @@ void main() {
 
       await tester.pumpTestApp(
         overrides: [
-          tags_lib.tagProvider(_testTagId).overrideWith((ref) => tag),
+          tags_lib
+              .projectedTagProvider(_testTagId)
+              .overrideWith((ref) => AsyncData(tag)),
         ],
         child: Center(
           child: SizedBox(
@@ -216,7 +221,9 @@ void main() {
 
       await tester.pumpTestApp(
         overrides: [
-          tags_lib.tagProvider(_testTagId).overrideWith((ref) => tag),
+          tags_lib
+              .projectedTagProvider(_testTagId)
+              .overrideWith((ref) => AsyncData(tag)),
         ],
         child: Center(
           child: SizedBox(
@@ -253,7 +260,9 @@ void main() {
 
       await tester.pumpTestApp(
         overrides: [
-          tags_lib.tagProvider(_testTagId).overrideWith((ref) => tag),
+          tags_lib
+              .projectedTagProvider(_testTagId)
+              .overrideWith((ref) => AsyncData(tag)),
         ],
         child: Center(
           child: SizedBox(
@@ -286,7 +295,9 @@ void main() {
 
       await tester.pumpTestApp(
         overrides: [
-          tags_lib.tagProvider(_testTagId).overrideWith((ref) => tag),
+          tags_lib
+              .projectedTagProvider(_testTagId)
+              .overrideWith((ref) => AsyncData(tag)),
         ],
         child: Center(
           child: SizedBox(
@@ -319,7 +330,9 @@ void main() {
 
       await tester.pumpTestApp(
         overrides: [
-          tags_lib.tagProvider(_testTagId).overrideWith((ref) => tag),
+          tags_lib
+              .projectedTagProvider(_testTagId)
+              .overrideWith((ref) => AsyncData(tag)),
         ],
         child: Center(
           child: SizedBox(

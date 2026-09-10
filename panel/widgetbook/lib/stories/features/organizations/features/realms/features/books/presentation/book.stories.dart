@@ -8,7 +8,6 @@ import "package:widgetbook_annotation/widgetbook_annotation.dart" as widgetbook;
 Widget bookUseCase(BuildContext context) {
   final inheritedTag = Tag(
     tagId: recordId("tag:inherited_lore"),
-    authoringSequence: 1,
     name: "inherited_lore",
     color: Colors.purple,
     parentIds: const [],
@@ -16,7 +15,6 @@ Widget bookUseCase(BuildContext context) {
   );
   final directTag = Tag(
     tagId: recordId("tag:direct_story"),
-    authoringSequence: 1,
     name: "direct_story",
     color: Colors.blue,
     parentIds: [inheritedTag.tagId],
@@ -24,7 +22,6 @@ Widget bookUseCase(BuildContext context) {
   );
   final book = Book(
     bookId: recordId("book:widgetbook"),
-    authoringSequence: 1,
     title: "widgetbook",
     icon: "mdi:book",
     color: Colors.teal,
@@ -39,13 +36,13 @@ Widget bookUseCase(BuildContext context) {
       ),
       realmIdProvider.overrideWithValue(recordId("service:widgetbook")),
       ...tagsProviderOverrides(tags: [directTag, inheritedTag]),
-      booksProvider.overrideWith(() => _BookStoryBooks(book)),
+      canonicalBooksProvider.overrideWith(() => _BookStoryBooks(book)),
     ],
     child: InspectorScaffold(child: const Center(child: _BookWidgetStory())),
   );
 }
 
-class _BookStoryBooks extends Books {
+class _BookStoryBooks extends CanonicalBooks {
   _BookStoryBooks(this.book);
 
   final Book book;
@@ -55,12 +52,10 @@ class _BookStoryBooks extends Books {
 
   @override
   Future<TypedMutationResult> updateBook(Book book, {Book? expected}) async {
-    final canonical = book.copyWith(
-      authoringSequence: book.authoringSequence + 1,
-    );
+    final canonical = book;
     state = AsyncData([canonical]);
     return TypedMutationResult.success(
-      revision: canonical.authoringSequence,
+      revision: 1,
       value: bookMockInspectorValue(canonical),
     );
   }
@@ -71,8 +66,8 @@ class _BookWidgetStory extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final books = ref.watch(booksProvider);
-    final tags = ref.watch(tagsProvider).value ?? const <Tag>[];
+    final books = ref.watch(projectedBooksProvider);
+    final tags = ref.watch(projectedTagsProvider).value ?? const <Tag>[];
     return books(
       name: "books",
       shrink: true,

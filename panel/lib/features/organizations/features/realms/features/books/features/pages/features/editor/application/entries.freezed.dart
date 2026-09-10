@@ -564,7 +564,7 @@ $EntryPlacementCopyWith<$Res> get placement {
 /// @nodoc
 mixin _$EntryDefinition implements DiagnosticableTreeMixin {
 
- String get id; String get name; ElementDefinition get elementDefinition; EntryPlacement get placement; RecordValue get data; List<ElementLink> get inwardEdges; List<ElementLink> get outwardEdges; int get authoringSequence; List<EntryMetadata> get metadata;
+ String get id; String get name; ElementDefinition get elementDefinition; EntryPlacement get placement; RecordValue get data; List<ElementLink> get inwardEdges; List<ElementLink> get outwardEdges; List<EntryMetadata> get metadata;
 /// Create a copy of EntryDefinition
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -577,26 +577,26 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   final _this = this as EntryDefinition;
   properties
     ..add(DiagnosticsProperty('type', 'EntryDefinition'))
-    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('name', _this.name))..add(DiagnosticsProperty('elementDefinition', _this.elementDefinition))..add(DiagnosticsProperty('placement', _this.placement))..add(DiagnosticsProperty('data', _this.data))..add(DiagnosticsProperty('inwardEdges', _this.inwardEdges))..add(DiagnosticsProperty('outwardEdges', _this.outwardEdges))..add(DiagnosticsProperty('authoringSequence', _this.authoringSequence))..add(DiagnosticsProperty('metadata', _this.metadata));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('name', _this.name))..add(DiagnosticsProperty('elementDefinition', _this.elementDefinition))..add(DiagnosticsProperty('placement', _this.placement))..add(DiagnosticsProperty('data', _this.data))..add(DiagnosticsProperty('inwardEdges', _this.inwardEdges))..add(DiagnosticsProperty('outwardEdges', _this.outwardEdges))..add(DiagnosticsProperty('metadata', _this.metadata));
 }
 
 @override
 bool operator ==(Object other) {
   final _this = this as EntryDefinition;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntryDefinition&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.elementDefinition, _this.elementDefinition) || other.elementDefinition == _this.elementDefinition)&&(identical(other.placement, _this.placement) || other.placement == _this.placement)&&(identical(other.data, _this.data) || other.data == _this.data)&&const DeepCollectionEquality().equals(other.inwardEdges, _this.inwardEdges)&&const DeepCollectionEquality().equals(other.outwardEdges, _this.outwardEdges)&&(identical(other.authoringSequence, _this.authoringSequence) || other.authoringSequence == _this.authoringSequence)&&const DeepCollectionEquality().equals(other.metadata, _this.metadata));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntryDefinition&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.elementDefinition, _this.elementDefinition) || other.elementDefinition == _this.elementDefinition)&&(identical(other.placement, _this.placement) || other.placement == _this.placement)&&(identical(other.data, _this.data) || other.data == _this.data)&&const DeepCollectionEquality().equals(other.inwardEdges, _this.inwardEdges)&&const DeepCollectionEquality().equals(other.outwardEdges, _this.outwardEdges)&&const DeepCollectionEquality().equals(other.metadata, _this.metadata));
 }
 
 
 @override
 int get hashCode {
   final _this = this as EntryDefinition;
-  return Object.hash(runtimeType,_this.id,_this.name,_this.elementDefinition,_this.placement,_this.data,const DeepCollectionEquality().hash(_this.inwardEdges),const DeepCollectionEquality().hash(_this.outwardEdges),_this.authoringSequence,const DeepCollectionEquality().hash(_this.metadata));
+  return Object.hash(runtimeType,_this.id,_this.name,_this.elementDefinition,_this.placement,_this.data,const DeepCollectionEquality().hash(_this.inwardEdges),const DeepCollectionEquality().hash(_this.outwardEdges),const DeepCollectionEquality().hash(_this.metadata));
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   final _this = this as EntryDefinition;
-  return 'EntryDefinition(id: ${_this.id}, name: ${_this.name}, elementDefinition: ${_this.elementDefinition}, placement: ${_this.placement}, data: ${_this.data}, inwardEdges: ${_this.inwardEdges}, outwardEdges: ${_this.outwardEdges}, authoringSequence: ${_this.authoringSequence}, metadata: ${_this.metadata})';
+  return 'EntryDefinition(id: ${_this.id}, name: ${_this.name}, elementDefinition: ${_this.elementDefinition}, placement: ${_this.placement}, data: ${_this.data}, inwardEdges: ${_this.inwardEdges}, outwardEdges: ${_this.outwardEdges}, metadata: ${_this.metadata})';
 }
 
 
@@ -607,7 +607,7 @@ abstract mixin class $EntryDefinitionCopyWith<$Res>  {
   factory $EntryDefinitionCopyWith(EntryDefinition value, $Res Function(EntryDefinition) _then) = _$EntryDefinitionCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, ElementDefinition elementDefinition, EntryPlacement placement, RecordValue data, List<ElementLink> inwardEdges, List<ElementLink> outwardEdges, int authoringSequence, List<EntryMetadata> metadata
+ String id, String name, ElementDefinition elementDefinition, EntryPlacement placement, RecordValue data, List<ElementLink> inwardEdges, List<ElementLink> outwardEdges, List<EntryMetadata> metadata
 });
 
 
@@ -624,7 +624,7 @@ class _$EntryDefinitionCopyWithImpl<$Res>
 
 /// Create a copy of EntryDefinition
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? elementDefinition = null,Object? placement = null,Object? data = null,Object? inwardEdges = null,Object? outwardEdges = null,Object? authoringSequence = null,Object? metadata = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? elementDefinition = null,Object? placement = null,Object? data = null,Object? inwardEdges = null,Object? outwardEdges = null,Object? metadata = null,}) {
   return _then(EntryDefinition(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -633,8 +633,7 @@ as ElementDefinition,placement: null == placement ? _self.placement : placement 
 as EntryPlacement,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as RecordValue,inwardEdges: null == inwardEdges ? _self.inwardEdges : inwardEdges // ignore: cast_nullable_to_non_nullable
 as List<ElementLink>,outwardEdges: null == outwardEdges ? _self.outwardEdges : outwardEdges // ignore: cast_nullable_to_non_nullable
-as List<ElementLink>,authoringSequence: null == authoringSequence ? _self.authoringSequence : authoringSequence // ignore: cast_nullable_to_non_nullable
-as int,metadata: null == metadata ? _self.metadata : metadata // ignore: cast_nullable_to_non_nullable
+as List<ElementLink>,metadata: null == metadata ? _self.metadata : metadata // ignore: cast_nullable_to_non_nullable
 as List<EntryMetadata>,
   ));
 }
@@ -738,10 +737,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  ElementDefinition elementDefinition,  EntryPlacement placement,  RecordValue data,  List<ElementLink> inwardEdges,  List<ElementLink> outwardEdges,  int authoringSequence,  List<EntryMetadata> metadata)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  ElementDefinition elementDefinition,  EntryPlacement placement,  RecordValue data,  List<ElementLink> inwardEdges,  List<ElementLink> outwardEdges,  List<EntryMetadata> metadata)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EntryDefinition() when $default != null:
-return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_that.data,_that.inwardEdges,_that.outwardEdges,_that.authoringSequence,_that.metadata);case _:
+return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_that.data,_that.inwardEdges,_that.outwardEdges,_that.metadata);case _:
   return orElse();
 
 }
@@ -759,10 +758,10 @@ return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  ElementDefinition elementDefinition,  EntryPlacement placement,  RecordValue data,  List<ElementLink> inwardEdges,  List<ElementLink> outwardEdges,  int authoringSequence,  List<EntryMetadata> metadata)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  ElementDefinition elementDefinition,  EntryPlacement placement,  RecordValue data,  List<ElementLink> inwardEdges,  List<ElementLink> outwardEdges,  List<EntryMetadata> metadata)  $default,) {final _that = this;
 switch (_that) {
 case _EntryDefinition():
-return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_that.data,_that.inwardEdges,_that.outwardEdges,_that.authoringSequence,_that.metadata);case _:
+return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_that.data,_that.inwardEdges,_that.outwardEdges,_that.metadata);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -779,10 +778,10 @@ return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  ElementDefinition elementDefinition,  EntryPlacement placement,  RecordValue data,  List<ElementLink> inwardEdges,  List<ElementLink> outwardEdges,  int authoringSequence,  List<EntryMetadata> metadata)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  ElementDefinition elementDefinition,  EntryPlacement placement,  RecordValue data,  List<ElementLink> inwardEdges,  List<ElementLink> outwardEdges,  List<EntryMetadata> metadata)?  $default,) {final _that = this;
 switch (_that) {
 case _EntryDefinition() when $default != null:
-return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_that.data,_that.inwardEdges,_that.outwardEdges,_that.authoringSequence,_that.metadata);case _:
+return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_that.data,_that.inwardEdges,_that.outwardEdges,_that.metadata);case _:
   return null;
 
 }
@@ -794,7 +793,7 @@ return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_tha
 
 
 class _EntryDefinition with DiagnosticableTreeMixin implements EntryDefinition {
-  const _EntryDefinition({required this.id, required this.name, required this.elementDefinition, required this.placement, required this.data, required  List<ElementLink> inwardEdges, required  List<ElementLink> outwardEdges, this.authoringSequence = 0,  List<EntryMetadata> metadata = const []}): assert(id != "", 'ID must not be empty.'),_inwardEdges = inwardEdges,_outwardEdges = outwardEdges,_metadata = metadata;
+  const _EntryDefinition({required this.id, required this.name, required this.elementDefinition, required this.placement, required this.data, required  List<ElementLink> inwardEdges, required  List<ElementLink> outwardEdges,  List<EntryMetadata> metadata = const []}): assert(id != "", 'ID must not be empty.'),_inwardEdges = inwardEdges,_outwardEdges = outwardEdges,_metadata = metadata;
 
 
 @override final  String id;
@@ -816,7 +815,6 @@ class _EntryDefinition with DiagnosticableTreeMixin implements EntryDefinition {
   return EqualUnmodifiableListView(_outwardEdges);
 }
 
-@override@JsonKey() final  int authoringSequence;
  final  List<EntryMetadata> _metadata;
 @override@JsonKey() List<EntryMetadata> get metadata {
   if (_metadata is EqualUnmodifiableListView) return _metadata;
@@ -836,23 +834,23 @@ _$EntryDefinitionCopyWith<_EntryDefinition> get copyWith => __$EntryDefinitionCo
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
     ..add(DiagnosticsProperty('type', 'EntryDefinition'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('elementDefinition', elementDefinition))..add(DiagnosticsProperty('placement', placement))..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('inwardEdges', inwardEdges))..add(DiagnosticsProperty('outwardEdges', outwardEdges))..add(DiagnosticsProperty('authoringSequence', authoringSequence))..add(DiagnosticsProperty('metadata', metadata));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('elementDefinition', elementDefinition))..add(DiagnosticsProperty('placement', placement))..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('inwardEdges', inwardEdges))..add(DiagnosticsProperty('outwardEdges', outwardEdges))..add(DiagnosticsProperty('metadata', metadata));
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntryDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other.inwardEdges, _inwardEdges)&&const DeepCollectionEquality().equals(other.outwardEdges, _outwardEdges)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&const DeepCollectionEquality().equals(other.metadata, _metadata));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntryDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other.inwardEdges, _inwardEdges)&&const DeepCollectionEquality().equals(other.outwardEdges, _outwardEdges)&&const DeepCollectionEquality().equals(other.metadata, _metadata));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,elementDefinition,placement,data,const DeepCollectionEquality().hash(_inwardEdges),const DeepCollectionEquality().hash(_outwardEdges),authoringSequence,const DeepCollectionEquality().hash(_metadata));
+    return Object.hash(runtimeType,id,name,elementDefinition,placement,data,const DeepCollectionEquality().hash(_inwardEdges),const DeepCollectionEquality().hash(_outwardEdges),const DeepCollectionEquality().hash(_metadata));
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-    return 'EntryDefinition(id: $id, name: $name, elementDefinition: $elementDefinition, placement: $placement, data: $data, inwardEdges: $inwardEdges, outwardEdges: $outwardEdges, authoringSequence: $authoringSequence, metadata: $metadata)';
+    return 'EntryDefinition(id: $id, name: $name, elementDefinition: $elementDefinition, placement: $placement, data: $data, inwardEdges: $inwardEdges, outwardEdges: $outwardEdges, metadata: $metadata)';
 }
 
 
@@ -863,7 +861,7 @@ abstract mixin class _$EntryDefinitionCopyWith<$Res> implements $EntryDefinition
   factory _$EntryDefinitionCopyWith(_EntryDefinition value, $Res Function(_EntryDefinition) _then) = __$EntryDefinitionCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, ElementDefinition elementDefinition, EntryPlacement placement, RecordValue data, List<ElementLink> inwardEdges, List<ElementLink> outwardEdges, int authoringSequence, List<EntryMetadata> metadata
+ String id, String name, ElementDefinition elementDefinition, EntryPlacement placement, RecordValue data, List<ElementLink> inwardEdges, List<ElementLink> outwardEdges, List<EntryMetadata> metadata
 });
 
 
@@ -880,7 +878,7 @@ class __$EntryDefinitionCopyWithImpl<$Res>
 
 /// Create a copy of EntryDefinition
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? elementDefinition = null,Object? placement = null,Object? data = null,Object? inwardEdges = null,Object? outwardEdges = null,Object? authoringSequence = null,Object? metadata = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? elementDefinition = null,Object? placement = null,Object? data = null,Object? inwardEdges = null,Object? outwardEdges = null,Object? metadata = null,}) {
   return _then(_EntryDefinition(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -889,8 +887,7 @@ as ElementDefinition,placement: null == placement ? _self.placement : placement 
 as EntryPlacement,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as RecordValue,inwardEdges: null == inwardEdges ? _self._inwardEdges : inwardEdges // ignore: cast_nullable_to_non_nullable
 as List<ElementLink>,outwardEdges: null == outwardEdges ? _self._outwardEdges : outwardEdges // ignore: cast_nullable_to_non_nullable
-as List<ElementLink>,authoringSequence: null == authoringSequence ? _self.authoringSequence : authoringSequence // ignore: cast_nullable_to_non_nullable
-as int,metadata: null == metadata ? _self._metadata : metadata // ignore: cast_nullable_to_non_nullable
+as List<ElementLink>,metadata: null == metadata ? _self._metadata : metadata // ignore: cast_nullable_to_non_nullable
 as List<EntryMetadata>,
   ));
 }

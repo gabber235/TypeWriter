@@ -1,6 +1,7 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:riverpod/riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
@@ -17,7 +18,7 @@ part "books.freezed.dart";
 part "books.g.dart";
 
 @riverpod
-class Books extends _$Books {
+class CanonicalBooks extends _$CanonicalBooks {
   @override
   Future<List<Book>> build() async {
     final organizationId = ref.watch(organizationIdProvider);
@@ -46,23 +47,16 @@ class Books extends _$Books {
     state.ensureReady();
     final book = Book(
       bookId: newResourceId(AuthoringResource.book),
-      authoringSequence: ref.readAuthoringSession().state.sequence ?? 0,
       title: title,
       icon: icon ?? "mdi:book",
       color: color ?? Colors.grey,
       tagIds: tagIds,
     );
-    state = AsyncData([...state.requireValue, book]);
-    try {
-      final response = await ref.readAuthoringSession().notifier.createBook(
-        book.toWire(),
-      );
-      response.requireApplied(conflictMessage: "The book already exists");
-      return book;
-    } on Object {
-      _replaceFromSession();
-      rethrow;
-    }
+    final response = await ref.readAuthoringSession().notifier.createBook(
+      book.toWire(),
+    );
+    response.requireApplied(conflictMessage: "The book already exists");
+    return book;
   }
 
   Future<TypedMutationResult> updateBook(Book book, {Book? expected}) async {
@@ -84,8 +78,9 @@ class Books extends _$Books {
           onOpen: null,
           id: BookIdentifier(book.bookId),
           book: before,
+          revision: ref.readAuthoringSession().state.sequence ?? 0,
           tagCollection: tagPresentationCollection(
-            ref.read(tagsProvider).value ?? const [],
+            ref.read(projectedTagsProvider).value ?? const [],
           ),
         ),
       );
@@ -96,15 +91,8 @@ class Books extends _$Books {
       owners.dispose();
     }
   }
-
-  void _replaceFromSession() {
-    state = AsyncData(_projectBooks(ref.readAuthoringSession().state));
-  }
 }
 
 List<Book> _projectBooks(AuthoringSessionState value) {
-  final sequence = value.sequence ?? 0;
-  return value.books.values
-      .map((book) => Book.fromWire(book, sequence))
-      .toList();
+  return value.books.values.map(Book.fromWire).toList();
 }

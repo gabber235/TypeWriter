@@ -470,7 +470,8 @@ void main() {
         throwsA(isA<ApiException>()),
       );
 
-      expect(harness.placement.x, 4);
+      expect(harness.placement.x, 8);
+      expect(harness.projectedPlacement.x, 4);
       final draft = harness.container
           .read(localWorkProvider)
           .resources
@@ -556,6 +557,15 @@ final class _Harness {
 
   EntryPlacement get placement {
     final element = container.read(provider).requireValue.single;
+    final entry = (element as PageElementEntry).entry as DefinitionPageEntry;
+    return entry.definition.placement;
+  }
+
+  EntryPlacement get projectedPlacement {
+    final element = container
+        .read(projectedPageElementsProvider(_organization, _realm, _page.id))
+        .requireValue
+        .single;
     final entry = (element as PageElementEntry).entry as DefinitionPageEntry;
     return entry.definition.placement;
   }

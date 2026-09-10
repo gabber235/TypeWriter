@@ -1,6 +1,7 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:riverpod/riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
@@ -16,7 +17,7 @@ part "tag_inspector_presentation.dart";
 part "tag_inheritance_presentation.dart";
 
 @riverpod
-class Tags extends _$Tags {
+class CanonicalTags extends _$CanonicalTags {
   @override
   Future<List<Tag>> build() async {
     final organizationId = ref.watch(organizationIdProvider);
@@ -48,23 +49,16 @@ class Tags extends _$Tags {
     state.ensureReady();
     final tag = Tag(
       tagId: newResourceId(AuthoringResource.tag),
-      authoringSequence: ref.readAuthoringSession().state.sequence ?? 0,
       name: name,
       color: color ?? Colors.grey,
       parentIds: parentIds,
       placement: Placement(x: x, y: y, width: width, height: height),
     );
-    state = AsyncData([...state.requireValue, tag]);
-    try {
-      final response = await ref.readAuthoringSession().notifier.createTag(
-        tag.toWire(),
-      );
-      response.requireApplied(conflictMessage: "The tag already exists");
-      return tag;
-    } on Object {
-      _replaceFromSession();
-      rethrow;
-    }
+    final response = await ref.readAuthoringSession().notifier.createTag(
+      tag.toWire(),
+    );
+    response.requireApplied(conflictMessage: "The tag already exists");
+    return tag;
   }
 
   Future<TypedMutationResult> updateTag(Tag tag, {Tag? expected}) async {
@@ -86,6 +80,7 @@ class Tags extends _$Tags {
           onDelete: () => deleteTag(tag.tagId),
           id: TagIdentifier(tag.tagId),
           tag: before,
+          revision: ref.readAuthoringSession().state.sequence ?? 0,
           tagCollection: tagPresentationCollection(state.requireValue),
         ),
       );
@@ -98,11 +93,11 @@ class Tags extends _$Tags {
   }
 
   Future<void> toggleTagParent(
+    List<Tag> tags,
     skir.RecordId childId,
     skir.RecordId parentId,
   ) async {
     state.ensureReady();
-    final tags = state.requireValue;
     final action = tagParentDropAction(
       tags,
       childId: childId,
@@ -121,34 +116,56 @@ class Tags extends _$Tags {
 
   Future<void> deleteTag(skir.RecordId tagId) async {
     state.ensureReady();
-    state = AsyncData(
-      state.requireValue.where((tag) => tag.tagId != tagId).toList(),
-    );
-    try {
-      final response = await ref.readAuthoringSession().notifier.deleteTag(
-        tagId,
-      );
-      response.requireApplied(
-        conflictMessage: "The tag changed before deletion",
-      );
-    } on Object {
-      _replaceFromSession();
-      rethrow;
-    }
-  }
-
-  void _replaceFromSession() {
-    state = AsyncData(_projectTags(ref.readAuthoringSession().state));
+    final response = await ref.readAuthoringSession().notifier.deleteTag(tagId);
+    response.requireApplied(conflictMessage: "The tag changed before deletion");
   }
 }
 
 @riverpod
-Future<Tag?> tag(Ref ref, skir.RecordId tagId) async {
-  final tags = await ref.watch(tagsProvider.future);
+Future<Tag?> canonicalTag(Ref ref, skir.RecordId tagId) async {
+  final tags = await ref.watch(canonicalTagsProvider.future);
   return tags.firstWhereOrNull((tag) => tag.tagId == tagId);
 }
 
 List<Tag> _projectTags(AuthoringSessionState value) {
-  final sequence = value.sequence ?? 0;
-  return value.tags.values.map((tag) => Tag.fromWire(tag, sequence)).toList();
+  return value.tags.values.map(Tag.fromWire).toList();
+}
+
+@riverpod
+AsyncValue<List<Tag>> projectedTags(Ref ref) {
+  final canonicalTags = ref.watch(canonicalTagsProvider);
+  if (canonicalTags.mapUnready<List<Tag>>() case final value?) return value;
+
+  final local = ref.watch(localEditorValuesProvider);
+  final organizationId = ref.watch(organizationIdProvider);
+  final realmId = ref.watch(realmIdProvider);
+  if (organizationId == null || realmId == null) {
+    return AsyncData(canonicalTags.requireValue);
+  }
+  return AsyncData([
+    for (final tag in canonicalTags.requireValue)
+      tag.projected(
+        local[EditorResourceKey(
+          scope: (organizationId, realmId),
+          identity: tag.tagId,
+        )],
+      ),
+  ]);
+}
+
+@riverpod
+AsyncValue<Tag?> projectedTag(Ref ref, skir.RecordId tagId) {
+  final canonical = ref.watch(canonicalTagProvider(tagId));
+  if (canonical.mapUnready<Tag?>() case final value?) return value;
+  final organizationId = ref.watch(organizationIdProvider);
+  final realmId = ref.watch(realmIdProvider);
+  if (organizationId == null || realmId == null) return canonical;
+  final key = EditorResourceKey(
+    scope: (organizationId, realmId),
+    identity: tagId,
+  );
+  final local = ref.watch(
+    localEditorValuesProvider.select((value) => value[key]),
+  );
+  return AsyncData(canonical.requireValue?.projected(local));
 }

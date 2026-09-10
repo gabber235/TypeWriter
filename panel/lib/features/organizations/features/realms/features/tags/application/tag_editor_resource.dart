@@ -1,14 +1,15 @@
 part of "tag_selectable.dart";
 
 final class TagEditorSnapshot extends EditorSnapshot {
-  const TagEditorSnapshot(this.tag);
+  const TagEditorSnapshot(this.tag, this.revision);
   final Tag tag;
+  final int revision;
   @override
   EditorDocument get document => EditorDocument(
     rootType: NamedType(tagInspectorTypeRef),
     typeCatalog: _tagInspectorCatalog,
     confirmedValue: tag.inspectorValue,
-    revision: tag.authoringSequence,
+    revision: revision,
     mergePolicies: {DataPath.root.field("parents"): EditorMergePolicy.set},
   );
 
@@ -32,61 +33,9 @@ final class TagEditorSnapshot extends EditorSnapshot {
     return result;
   }
 
-  Tag? _tagFromInspectorValue(
-    DataValue value, {
-    required int expectedRevision,
-  }) {
-    if (value is! RecordValue) return null;
-    final name = value.fields["name"];
-    final color = value.fields["color"];
-    final parents = value.fields["parents"];
-    final layout = value.fields["layout"];
-    if (name is! StringValue ||
-        name.value.trim().isEmpty ||
-        color is! IntegerValue ||
-        parents is! ListValue ||
-        layout is! RecordValue) {
-      return null;
-    }
-
-    final decodedColor = color.asColorOrNull;
-    final parentIds = parents.values
-        .whereType<StringValue>()
-        .map((parent) => recordId("tag:${parent.value}"))
-        .toList();
-    final x = layout.fields["x"];
-    final y = layout.fields["y"];
-    final width = layout.fields["width"];
-    final height = layout.fields["height"];
-
-    if (decodedColor == null ||
-        parentIds.length != parents.values.length ||
-        x is! IntegerValue ||
-        y is! IntegerValue ||
-        width is! IntegerValue ||
-        height is! IntegerValue ||
-        width.value < BigInt.one ||
-        height.value < BigInt.one) {
-      return null;
-    }
-    return tag.copyWith(
-      authoringSequence: expectedRevision,
-      name: name.value,
-      color: decodedColor,
-      parentIds: parentIds,
-      placement: Placement(
-        x: x.value.toInt(),
-        y: y.value.toInt(),
-        width: width.value.toInt(),
-        height: height.value.toInt(),
-      ),
-    );
-  }
-
   @override
   List<TypeDiagnostic> validateDraft(DataValue value) =>
-      _tagFromInspectorValue(value, expectedRevision: tag.authoringSequence) ==
-          null
+      tag.withInspectorValue(value) == null
       ? [
           const TypeDiagnostic(
             code: TypeDiagnosticCode.invalidValue,
@@ -106,7 +55,7 @@ final class TagEditorResource extends AuthoringEditorResource {
       if (slice case wire.AuthoringSnapshotSlice_libraryWrapper(:final value)) {
         for (final tag in value.tags) {
           if (tag.id == id) {
-            return TagEditorSnapshot(Tag.fromWire(tag, snapshot.sequence));
+            return TagEditorSnapshot(Tag.fromWire(tag), snapshot.sequence);
           }
         }
       }
@@ -120,14 +69,8 @@ final class TagEditorResource extends AuthoringEditorResource {
     EditorCommit commit,
   ) {
     final current = snapshot as TagEditorSnapshot;
-    final next = current._tagFromInspectorValue(
-      commit.rootValue,
-      expectedRevision: commit.expectedRevision,
-    );
-    final expected = current._tagFromInspectorValue(
-      commit.baseValue,
-      expectedRevision: commit.expectedRevision,
-    );
+    final next = current.tag.withInspectorValue(commit.rootValue);
+    final expected = current.tag.withInspectorValue(commit.baseValue);
     if (next == null || expected == null) {
       throw StateError("The Tag value is invalid");
     }

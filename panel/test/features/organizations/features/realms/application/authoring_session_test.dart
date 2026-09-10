@@ -202,28 +202,33 @@ void main() {
     );
 
     final booksSubscription = harness.container.listen(
-      booksProvider,
+      canonicalBooksProvider,
       (_, _) {},
     );
-    final tagsSubscription = harness.container.listen(tagsProvider, (_, _) {});
-    final book = (await harness.container.read(booksProvider.future)).single;
-    final tag = (await harness.container.read(tagsProvider.future)).single;
+    final tagsSubscription = harness.container.listen(
+      canonicalTagsProvider,
+      (_, _) {},
+    );
+    final book = (await harness.container.read(canonicalBooksProvider.future))
+        .single;
+    final tag = (await harness.container.read(canonicalTagsProvider.future))
+        .single;
 
     final bookResult = await harness.container
-        .read(booksProvider.notifier)
+        .read(canonicalBooksProvider.notifier)
         .updateBook(book.copyWith(title: "Rejected book"), expected: book);
     final tagResult = await harness.container
-        .read(tagsProvider.notifier)
+        .read(canonicalTagsProvider.notifier)
         .updateTag(tag.copyWith(name: "Rejected tag"), expected: tag);
 
     expect(bookResult, isA<MutationInvalid>());
     expect(tagResult, isA<MutationInvalid>());
     expect(
-      harness.container.read(booksProvider).requireValue.single.title,
+      harness.container.read(canonicalBooksProvider).requireValue.single.title,
       "Initial",
     );
     expect(
-      harness.container.read(tagsProvider).requireValue.single.name,
+      harness.container.read(canonicalTagsProvider).requireValue.single.name,
       "Initial tag",
     );
 
@@ -240,12 +245,15 @@ void main() {
       return _snapshot(1, title: "Initial");
     });
 
-    final subscription = harness.container.listen(booksProvider, (_, _) {});
-    await harness.container.read(booksProvider.future);
+    final subscription = harness.container.listen(
+      canonicalBooksProvider,
+      (_, _) {},
+    );
+    await harness.container.read(canonicalBooksProvider.future);
     harness.emit(_change(2, title: "Updated"));
     await waitForProvider(
       harness.container,
-      booksProvider,
+      canonicalBooksProvider,
       (state) => state.value?.single.title == "Updated",
       description: "updated book projection",
     );

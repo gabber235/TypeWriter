@@ -117,7 +117,6 @@ abstract class EntryDefinition with _$EntryDefinition {
     required RecordValue data,
     required List<ElementLink> inwardEdges,
     required List<ElementLink> outwardEdges,
-    @Default(0) int authoringSequence,
     @Default([]) List<EntryMetadata> metadata,
   }) = _EntryDefinition;
 }

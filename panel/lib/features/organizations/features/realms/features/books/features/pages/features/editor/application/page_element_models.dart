@@ -98,6 +98,82 @@ extension PageElementId on PageElement {
         ),
         _ => this,
       };
+
+  RecordValue? get editorValue => switch (this) {
+    PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
+      RecordValue({
+        "value": definition.data,
+        "placement": elementPlacementValue(switch (definition.placement.kind) {
+          EntryPlacementKind.graph => wire.ElementPlacement.createGraph(
+            x: definition.placement.x,
+            y: definition.placement.y,
+            width: definition.placement.width,
+            height: definition.placement.height,
+          ),
+          EntryPlacementKind.timelineEntry =>
+            wire.ElementPlacement.createTimelineEntry(
+              trackIndex: definition.placement.x,
+            ),
+        }),
+      }),
+    PageElementCue(:final cue) when cue is Segment => RecordValue({
+      "value": cue.data,
+      "placement": elementPlacementValue(
+        wire.ElementPlacement.createTimelineSegment(
+          startFrame: cue.startFrame,
+          endFrame: cue.endFrame,
+        ),
+      ),
+    }),
+    PageElementCue(:final cue) when cue is Keyframe => RecordValue({
+      "value": cue.data,
+      "placement": elementPlacementValue(
+        wire.ElementPlacement.createTimelineKeyframe(frame: cue.frame),
+      ),
+    }),
+    _ => null,
+  };
+
+  PageElement projected(LocalEditorValue? local) {
+    final canonical = editorValue;
+    if (local == null || canonical == null) return this;
+    final root = local.projectOnto(canonical);
+    if (root is! RecordValue) return this;
+    final data = root.fields["value"];
+    final placement = root.fields["placement"];
+    if (data is! RecordValue || placement == null) return this;
+    final withData = switch (this) {
+      PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
+        PageElement.entry(
+          entry: PageEntry.definition(
+            definition: definition.copyWith(data: data),
+          ),
+        ),
+      PageElementCue(:final cue) => PageElement.cue(
+        cue: switch (cue) {
+          Segment() => cue.copyWith(data: data),
+          Keyframe() => cue.copyWith(data: data),
+          _ => cue,
+        },
+      ),
+      _ => this,
+    };
+    try {
+      return switch (encodeElementPlacement(placement)) {
+        wire.ElementPlacement_graphWrapper(:final value) =>
+          withData.moveTo(value.x, value.y).resizeTo(value.width, value.height),
+        wire.ElementPlacement_timelineEntryWrapper(:final value) =>
+          withData.moveTo(value.trackIndex, 0),
+        wire.ElementPlacement_timelineSegmentWrapper(:final value) =>
+          withData.updateCueTo(value.startFrame, value.endFrame),
+        wire.ElementPlacement_timelineKeyframeWrapper(:final value) =>
+          withData.updateCueTo(value.frame, value.frame),
+        _ => withData,
+      };
+    } on ArgumentError {
+      return this;
+    }
+  }
 }
 
 extension on RecordValue {

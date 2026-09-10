@@ -21,7 +21,7 @@ class LibraryPage extends HookConsumerWidget {
       final title = await _showBookTitleDialog(context);
       if (title == null || title.isEmpty) return;
       final newBook = await ref
-          .read(booksProvider.notifier)
+          .read(canonicalBooksProvider.notifier)
           .createBook(title: title);
       ref
           .read(selectionProvider.notifier)
@@ -63,8 +63,7 @@ class LibraryPage extends HookConsumerWidget {
               children: [
                 const PageHeading(
                   title: "Library",
-                  subtext:
-                      "Browse books containing your quests, dialogues, and cinematics. Search by title or tag, organize related content, then open a book to continue editing its pages.",
+                  subtext: "Browse books containing your quests, dialogues, and cinematics. Search by title or tag, organize related content, then open a book to continue editing its pages.",
                 ),
                 Padding(
                   padding: EdgeInsets.all(context.spacing.space4),
@@ -118,8 +117,9 @@ class LibraryPage extends HookConsumerWidget {
                                 color: book.color,
                                 tags: book.tagIds
                                     .map(
-                                      (tagId) =>
-                                          ref.watch(tagProvider(tagId)).value,
+                                      (tagId) => ref
+                                          .watch(projectedTagProvider(tagId))
+                                          .value,
                                     )
                                     .nonNulls
                                     .toList(),
@@ -170,9 +170,10 @@ class LibraryPage extends HookConsumerWidget {
                   icon: const Icones(Fa6Solid.xmark),
                   label: Text("Cancel"),
                   style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.color,
+                    foregroundColor: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.color,
                   ),
                   onPressed: () => Navigator.of(context).pop(),
                 ),

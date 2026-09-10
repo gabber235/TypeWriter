@@ -96,4 +96,4 @@ final class _ViewingPagesProvider
   }
 }
 
-String _$_viewingPagesHash() => r'a1c693da0e6f17b362fc73d0354f9838347dc528';
+String _$_viewingPagesHash() => r'a467bc68d6477bec5bead598f4d2592c9e3047bf';

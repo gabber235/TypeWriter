@@ -9,7 +9,7 @@ import "package:typewriter_testkit/typewriter_testkit.dart";
 
 import "../../../../../../../support/test_utils.dart";
 
-class _Tags extends Tags {
+class _Tags extends CanonicalTags {
   _Tags(this.tags);
 
   final List<Tag> tags;
@@ -20,7 +20,6 @@ class _Tags extends Tags {
 
 Tag _tag(String id, {List<String> parents = const []}) => Tag(
   tagId: recordId("tag:$id"),
-  authoringSequence: 1,
   name: id,
   color: Colors.blue,
   parentIds: parents.map((parent) => recordId("tag:$parent")).toList(),
@@ -96,21 +95,27 @@ void main() {
       final tag = _tag("current", parents: ["parent"]);
       final container = ProviderContainer.test(
         overrides: [
-          tagsProvider.overrideWith(() => _Tags([tag, _tag("parent")])),
+          canonicalTagsProvider.overrideWith(
+            () => _Tags([tag, _tag("parent")]),
+          ),
           organizationIdProvider.overrideWith(
             (ref) => recordId("organization:test"),
           ),
           realmIdProvider.overrideWith((ref) => recordId("realm:test")),
           userIdProvider.overrideWith((ref) async => "user"),
+          natsProvider.overrideWithValue(FakeNatsClient()),
+          panelTelemetryProvider.overrideWithValue(
+            const AsyncData(NoopPanelTelemetry()),
+          ),
         ],
       );
       final subscription = container.listen(
-        tagsProvider,
+        canonicalTagsProvider,
         (_, _) {},
         fireImmediately: true,
       );
       addTearDown(subscription.close);
-      await container.read(tagsProvider.future);
+      await container.read(canonicalTagsProvider.future);
       container
           .read(selectionProvider.notifier)
           .select(TagIdentifier(tag.tagId));
@@ -118,9 +123,8 @@ void main() {
       final selected = await _selected(container);
       final inspector = selected as TagSelectable;
       final document = inspector.document;
-      final resolved = TypeRegistry(
-        document.typeCatalog,
-      ).resolve(document.rootType as NamedType);
+      final resolved = TypeRegistry(document.typeCatalog)
+          .resolve(document.rootType as NamedType);
       final root = inspector.presentations.single.root.element as ColumnElement;
       final layoutNode = root.children.singleWhere(
         (node) => node.id == "tag.layout",
@@ -215,7 +219,7 @@ void main() {
       final selected = TagSelectable(
         resource: FakeEditableResource(
           key: EditorResourceKey(scope: null, identity: tag.tagId),
-          current: TagEditorSnapshot(tag),
+          current: TagEditorSnapshot(tag, 1),
           commit: (_) async =>
               throw StateError("No save in this rendering test"),
         ),
@@ -223,6 +227,7 @@ void main() {
             throw StateError("No deletion in this rendering test"),
         id: TagIdentifier(tag.tagId),
         tag: tag,
+        revision: 1,
         tagCollection: tagPresentationCollection([
           tag,
         ], editingTagId: tag.tagId),

@@ -9,7 +9,7 @@ Future<void> _changePagesChapter(
   if (bookId == null) {
     throw Exception("Book ID is null");
   }
-  final pages = await ref.read(bookPagesProvider(bookId, "").future);
+  final pages = await ref.read(canonicalBookPagesProvider(bookId).future);
   final changed = pages
       .where(
         (page) =>
@@ -38,9 +38,8 @@ class _AddPageButton extends HookConsumerWidget {
     final isFocused = useState(false);
     final isHovered = useState(false);
 
-    final color = Theme.of(context).colorScheme.onSurface.withValues(
-      alpha: isFocused.value || isHovered.value ? 1 : 0.6,
-    );
+    final color = Theme.of(context).colorScheme.onSurface
+        .withValues(alpha: isFocused.value || isHovered.value ? 1 : 0.6);
 
     final animation = useAnimationController(duration: 200.ms);
     useListenable(animation);
@@ -186,8 +185,7 @@ Future<bool> showPageDeletionDialogue(
   return showConfirmationDialogue(
     context: ref.context,
     title: "Delete ${pageName.formatted}?",
-    content:
-        "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
+    content: "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
     delayConfirm: 3.seconds,
     confirmText: "Delete",
     confirmIcon: MaterialSymbols.delete_forever,

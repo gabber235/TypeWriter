@@ -20,7 +20,10 @@ Future<List<Page>> _viewingPages(Ref ref) async {
 
   await ref.debounce(300.ms);
 
-  return await ref.watch(bookPagesProvider(bookId, search).future);
+  final projected = ref.watch(projectedBookPagesProvider(bookId, search));
+  if (projected.hasValue) return projected.requireValue;
+  await ref.watch(canonicalBookPagesProvider(bookId).future);
+  return ref.read(projectedBookPagesProvider(bookId, search)).requireValue;
 }
 
 class BookSidebarContent extends HookConsumerWidget {
@@ -67,9 +70,8 @@ class BookSidebarContent extends HookConsumerWidget {
                   ref.read(_pageSearchProvider.notifier).search(value),
               decoration: InputDecoration(
                 hintText: "Search pages...",
-                hintStyle: Theme.of(
-                  context,
-                ).textTheme.bodyMedium!.copyWith(fontSize: 12),
+                hintStyle: Theme.of(context).textTheme.bodyMedium!
+                    .copyWith(fontSize: 12),
               ),
             ),
             SizedBox(height: context.spacing.space3),

@@ -1,54 +1,17 @@
 part of "books.dart";
 
 final class BookEditorSnapshot extends EditorSnapshot {
-  const BookEditorSnapshot(this.book);
+  const BookEditorSnapshot(this.book, this.revision);
   final Book book;
+  final int revision;
   @override
   EditorDocument get document => EditorDocument(
     rootType: NamedType(bookInspectorTypeRef),
     typeCatalog: _bookInspectorCatalog,
     confirmedValue: book.inspectorValue,
-    revision: book.authoringSequence,
+    revision: revision,
     mergePolicies: {DataPath.root.field("tags"): EditorMergePolicy.set},
   );
-
-  Book? _bookFromInspectorValue(
-    DataValue value, {
-    required int expectedRevision,
-  }) {
-    if (value is! RecordValue) return null;
-    final title = value.fields["title"];
-    final icon = value.fields["icon"]?.iconValueOrNull;
-    final color = value.fields["color"];
-    final tags = value.fields["tags"];
-    if (title is! StringValue ||
-        title.value.trim().isEmpty ||
-        icon == null ||
-        color is! IntegerValue ||
-        tags is! ListValue) {
-      return null;
-    }
-
-    final decodedColor = color.asColorOrNull;
-    final tagIds = tags.values
-        .whereType<StringValue>()
-        .map((tag) => recordId("tag:${tag.value}"))
-        .toList();
-    if (decodedColor == null || tagIds.length != tags.values.length) {
-      return null;
-    }
-    final encodedIcon = switch (icon) {
-      IconifyIconValue(:final value) => value,
-      SvgIconValue(:final source) => source,
-    };
-    return book.copyWith(
-      authoringSequence: expectedRevision,
-      title: title.value,
-      icon: encodedIcon,
-      color: decodedColor,
-      tagIds: tagIds,
-    );
-  }
 }
 
 final class BookEditorResource extends AuthoringEditorResource {
@@ -61,7 +24,7 @@ final class BookEditorResource extends AuthoringEditorResource {
       if (slice case wire.AuthoringSnapshotSlice_libraryWrapper(:final value)) {
         for (final book in value.books) {
           if (book.id == id) {
-            return BookEditorSnapshot(Book.fromWire(book, snapshot.sequence));
+            return BookEditorSnapshot(Book.fromWire(book), snapshot.sequence);
           }
         }
       }
@@ -75,14 +38,8 @@ final class BookEditorResource extends AuthoringEditorResource {
     EditorCommit commit,
   ) {
     final current = snapshot as BookEditorSnapshot;
-    final next = current._bookFromInspectorValue(
-      commit.rootValue,
-      expectedRevision: commit.expectedRevision,
-    );
-    final expected = current._bookFromInspectorValue(
-      commit.baseValue,
-      expectedRevision: commit.expectedRevision,
-    );
+    final next = current.book.withInspectorValue(commit.rootValue);
+    final expected = current.book.withInspectorValue(commit.baseValue);
     if (next == null || expected == null) {
       throw StateError("The Book value is invalid");
     }

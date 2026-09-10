@@ -198,7 +198,7 @@ void main() {
         ),
       ],
     );
-    final provider = pagesProvider(_page);
+    final provider = canonicalPageProvider(_page);
     final subscription = container.listen(provider, (_, _) {});
     await container.read(provider.future);
 
@@ -211,7 +211,10 @@ void main() {
     expect(result, isA<wire.ApplyAuthoringBatchResponse_invalidWrapper>());
 
     expect(container.read(provider).requireValue.name, "Remote");
-    expect(container.read(provider).requireValue.authoringSequence, 2);
+    expect(
+      container.read(authoringSessionProvider(_organization, _realm)).sequence,
+      2,
+    );
 
     subscription.close();
     container.dispose();

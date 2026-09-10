@@ -400,7 +400,14 @@ class _TestPageElements extends PageElements {
     } else {
       updateCalls.add(changed);
     }
-    optimisticCuesUpdate(changed);
+    final timings = {for (final item in changed) item.$1: (item.$2, item.$3)};
+    state = AsyncData([
+      for (final element in state.requireValue)
+        if (timings[element.id] case final timing?)
+          element.updateCueTo(timing.$1, timing.$2)
+        else
+          element,
+    ]);
   }
 
   bool _hasResizeChanges(

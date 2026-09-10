@@ -59,7 +59,9 @@ Future<void> showAddEntryDialog(
   String pageId,
   EntryPlacementKind placementKind,
 ) async {
-  final page = await ref.read(pagesProvider(recordId("page:$pageId")).future);
+  final page = await ref.read(
+    canonicalPageProvider(recordId("page:$pageId")).future,
+  );
   final typeState = await ref.read(pageElementTypesProvider(page.kind).future);
   switch (typeState) {
     case PageElementTypesReady():

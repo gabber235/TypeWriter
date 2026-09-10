@@ -27,7 +27,6 @@ abstract class Tag with _$Tag {
   @Assert("name != \"\"", "Name must not be empty.")
   const factory Tag({
     required skir.RecordId tagId,
-    required int authoringSequence,
     required String name,
     required Color color,
     required List<skir.RecordId> parentIds,
@@ -36,9 +35,8 @@ abstract class Tag with _$Tag {
 
   const Tag._();
 
-  factory Tag.fromWire(wire.Tag tag, int authoringSequence) => Tag(
+  factory Tag.fromWire(wire.Tag tag) => Tag(
     tagId: tag.id,
-    authoringSequence: authoringSequence,
     name: tag.name,
     color: tag.color.toFlutterColor(),
     parentIds: tag.parents.toList(),
@@ -68,6 +66,58 @@ extension TagInspectorValue on Tag {
       "height": placement.height.asValue,
     }),
   });
+
+  Tag? withInspectorValue(DataValue value) {
+    if (value is! RecordValue) return null;
+    final name = value.fields["name"];
+    final color = value.fields["color"];
+    final parents = value.fields["parents"];
+    final layout = value.fields["layout"];
+    if (name is! StringValue ||
+        name.value.trim().isEmpty ||
+        color is! IntegerValue ||
+        parents is! ListValue ||
+        layout is! RecordValue) {
+      return null;
+    }
+
+    final decodedColor = color.asColorOrNull;
+    final parentIds = parents.values
+        .whereType<StringValue>()
+        .map((parent) => recordId("tag:${parent.value}"))
+        .toList();
+    final x = layout.fields["x"];
+    final y = layout.fields["y"];
+    final width = layout.fields["width"];
+    final height = layout.fields["height"];
+
+    if (decodedColor == null ||
+        parentIds.length != parents.values.length ||
+        x is! IntegerValue ||
+        y is! IntegerValue ||
+        width is! IntegerValue ||
+        height is! IntegerValue ||
+        width.value < BigInt.one ||
+        height.value < BigInt.one) {
+      return null;
+    }
+    return copyWith(
+      name: name.value,
+      color: decodedColor,
+      parentIds: parentIds,
+      placement: Placement(
+        x: x.value.toInt(),
+        y: y.value.toInt(),
+        width: width.value.toInt(),
+        height: height.value.toInt(),
+      ),
+    );
+  }
+
+  Tag projected(LocalEditorValue? local) {
+    if (local == null) return this;
+    return withInspectorValue(local.projectOnto(inspectorValue)) ?? this;
+  }
 }
 
 enum TagParentDropAction { link, unlink }

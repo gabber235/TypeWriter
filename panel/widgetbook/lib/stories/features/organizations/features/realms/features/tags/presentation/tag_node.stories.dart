@@ -7,7 +7,6 @@ import "package:widgetbook_annotation/widgetbook_annotation.dart" as widgetbook;
 Widget tagNodeUseCase(BuildContext context) {
   final previewTag = Tag(
     tagId: recordId("tag:current_tag"),
-    authoringSequence: 1,
     name: "current_tag",
     color: Colors.purple,
     parentIds: const [],
@@ -15,7 +14,6 @@ Widget tagNodeUseCase(BuildContext context) {
   );
   final parentCandidate = Tag(
     tagId: recordId("tag:candidate_parent"),
-    authoringSequence: 1,
     name: "candidate_parent",
     color: Colors.teal,
     parentIds: const [],
@@ -57,7 +55,6 @@ Widget tagNodeColorsUseCase(BuildContext context) {
   final tags = colors.asMap().entries.map((entry) {
     return Tag(
       tagId: recordId("tag:tag_${entry.key}"),
-      authoringSequence: 1,
       name: "tag_${entry.key}",
       color: entry.value,
       parentIds: const [],

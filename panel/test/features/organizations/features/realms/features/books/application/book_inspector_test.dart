@@ -8,7 +8,7 @@ import "package:typewriter_testkit/typewriter_testkit.dart";
 
 import "../../../../../../../support/test_utils.dart";
 
-class _Books extends Books {
+class _Books extends CanonicalBooks {
   _Books(this.books);
 
   final List<Book> books;
@@ -17,7 +17,7 @@ class _Books extends Books {
   Future<List<Book>> build() async => books;
 }
 
-class _Tags extends Tags {
+class _Tags extends CanonicalTags {
   _Tags(this.tags);
 
   final List<Tag> tags;
@@ -32,7 +32,6 @@ void main() {
   test("Book inspector exposes direct and effective Tags", () async {
     final directTag = Tag(
       tagId: recordId("tag:direct"),
-      authoringSequence: 1,
       name: "Direct",
       color: Colors.blue,
       parentIds: [recordId("tag:parent")],
@@ -40,7 +39,6 @@ void main() {
     );
     final parentTag = Tag(
       tagId: recordId("tag:parent"),
-      authoringSequence: 1,
       name: "Parent",
       color: Colors.green,
       parentIds: const [],
@@ -48,7 +46,6 @@ void main() {
     );
     final book = Book(
       bookId: recordId("book:test"),
-      authoringSequence: 4,
       title: "Test Book",
       icon: "mdi:book",
       color: Colors.deepPurple,
@@ -63,25 +60,25 @@ void main() {
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
         ),
-        booksProvider.overrideWith(() => _Books([book])),
-        tagsProvider.overrideWith(() => _Tags([directTag, parentTag])),
+        canonicalBooksProvider.overrideWith(() => _Books([book])),
+        canonicalTagsProvider.overrideWith(() => _Tags([directTag, parentTag])),
       ],
     );
     final bookSubscription = container.listen(
-      booksProvider,
+      canonicalBooksProvider,
       (_, _) {},
       fireImmediately: true,
     );
     final tagSubscription = container.listen(
-      tagsProvider,
+      canonicalTagsProvider,
       (_, _) {},
       fireImmediately: true,
     );
     addTearDown(bookSubscription.close);
     addTearDown(tagSubscription.close);
     await Future.wait([
-      container.read(booksProvider.future),
-      container.read(tagsProvider.future),
+      container.read(canonicalBooksProvider.future),
+      container.read(canonicalTagsProvider.future),
     ]);
 
     container
@@ -96,9 +93,8 @@ void main() {
     expect(open.allowMultiSelect, isFalse);
     final inspector = selected as BookSelection;
     final document = inspector.document;
-    final resolved = TypeRegistry(
-      document.typeCatalog,
-    ).resolve(document.rootType as NamedType);
+    final resolved = TypeRegistry(document.typeCatalog)
+        .resolve(document.rootType as NamedType);
     final root = inspector.presentations.single.root.element as ColumnElement;
     final direct =
         root.children
@@ -121,7 +117,7 @@ void main() {
         directSummary.presentation.item.element as CollectionLookupElement;
     final summaryChip = summaryLookup.found.element as ChipElement;
 
-    expect(document.revision, 4);
+    expect(document.revision, 0);
     expect(resolved.diagnostics, isEmpty);
     expect(resolved.valueOrNull, isNotNull);
     expect(inspector.collections.single.id, tagCollectionSourceId);
@@ -174,7 +170,6 @@ void main() {
     (tester) async {
       final book = Book(
         bookId: recordId("book:empty"),
-        authoringSequence: 1,
         title: "Empty Book",
         icon: "mdi:book",
         color: Colors.deepPurple,
@@ -183,13 +178,14 @@ void main() {
       final selected = BookSelection(
         resource: FakeEditableResource(
           key: EditorResourceKey(scope: null, identity: book.bookId),
-          current: BookEditorSnapshot(book),
+          current: BookEditorSnapshot(book, 1),
           commit: (_) async =>
               throw StateError("No save in this rendering test"),
         ),
         onOpen: null,
         id: BookIdentifier(book.bookId),
         book: book,
+        revision: 1,
         tagCollection: tagPresentationCollection(const []),
       );
 

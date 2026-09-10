@@ -110,8 +110,13 @@ class EntryGraph extends HookConsumerWidget {
     if (organizationId == null || realmId == null) {
       return const SizedBox.shrink();
     }
-    final provider = pageElementsProvider(organizationId, realmId, pageId);
+    final provider = projectedPageElementsProvider(
+      organizationId,
+      realmId,
+      pageId,
+    );
     final elements = ref.watch(provider);
+    final commands = pageElementsProvider(organizationId, realmId, pageId);
 
     return elements(
       name: "elements",
@@ -130,13 +135,13 @@ class EntryGraph extends HookConsumerWidget {
                 final changed = changes
                     .map((entry) => (entry.id.id, entry.x, entry.y))
                     .toList(growable: false);
-                ref.read(provider.notifier).moveAll(changed);
+                ref.read(commands.notifier).moveAll(changed);
               },
               onElementsResized: (changes) {
                 final changed = changes
                     .map((entry) => (entry.id.id, entry.width, entry.height))
                     .toList(growable: false);
-                ref.read(provider.notifier).resizeAll(changed);
+                ref.read(commands.notifier).resizeAll(changed);
               },
             ),
             Align(

@@ -25,11 +25,21 @@ class BookIdentifier extends SelectableIdentifier {
         .watch(resourceRepositoriesProvider)
         .authoring(organization, realm);
     final router = ref.watch(appRouterProvider);
-    final asyncBook = ref.watch(bookProvider(bookId));
-    if (asyncBook.mapUnready<Selectable>() case final value?) return value;
-    final book = asyncBook.requireValue;
+    final canonicalBooks = ref.watch(canonicalBooksProvider);
+    if (canonicalBooks.mapUnready<Selectable>() case final value?) return value;
+    final book = canonicalBooks.requireValue
+        .where((value) => value.bookId == bookId)
+        .firstOrNull;
 
-    final tags = ref.watch(tagsProvider).value ?? const <Tag>[];
+    final tagsAsync = ref.watch(projectedTagsProvider);
+    if (tagsAsync.mapUnready<Selectable>() case final value?) return value;
+    final tags = tagsAsync.requireValue;
+    final revision = ref.watch(
+      authoringSessionProvider(
+        organization,
+        realm,
+      ).select((value) => value.sequence ?? 0),
+    );
     if (book == null) throw SelectableNotFoundException(this);
     return AsyncData(
       BookSelection(
@@ -45,6 +55,7 @@ class BookIdentifier extends SelectableIdentifier {
         },
         id: this,
         book: book,
+        revision: revision,
         tagCollection: tagPresentationCollection(tags),
       ),
     );
@@ -68,12 +79,14 @@ class BookSelection extends EditableSelectable<BookIdentifier> {
     required this.onOpen,
     required this.id,
     required this.book,
+    required this.revision,
     required this.tagCollection,
   });
 
   @override
   final BookIdentifier id;
   final Book book;
+  final int revision;
   @override
   final EditableResource resource;
   final VoidCallback? onOpen;
@@ -91,7 +104,7 @@ class BookSelection extends EditableSelectable<BookIdentifier> {
   List<PresentationCollectionSource> get collections => [tagCollection];
 
   @override
-  EditorSnapshot get snapshot => BookEditorSnapshot(book);
+  EditorSnapshot get snapshot => BookEditorSnapshot(book, revision);
   @override
   List<SelectionCapability> get capabilities => [
     if (onOpen case final open?)
@@ -120,4 +133,42 @@ extension BookInspectorValue on Book {
     "color": color.asValue,
     "tags": ListValue(tagIds.map((tagId) => tagId.id.asValue).toList()),
   });
+
+  Book? withInspectorValue(DataValue value) {
+    if (value is! RecordValue) return null;
+    final title = value.fields["title"];
+    final icon = value.fields["icon"]?.iconValueOrNull;
+    final color = value.fields["color"];
+    final tags = value.fields["tags"];
+    if (title is! StringValue ||
+        title.value.trim().isEmpty ||
+        icon == null ||
+        color is! IntegerValue ||
+        tags is! ListValue) {
+      return null;
+    }
+    final decodedColor = color.asColorOrNull;
+    final tagIds = tags.values
+        .whereType<StringValue>()
+        .map((tag) => recordId("tag:${tag.value}"))
+        .toList();
+    if (decodedColor == null || tagIds.length != tags.values.length) {
+      return null;
+    }
+    final encodedIcon = switch (icon) {
+      IconifyIconValue(:final value) => value,
+      SvgIconValue(:final source) => source,
+    };
+    return copyWith(
+      title: title.value,
+      icon: encodedIcon,
+      color: decodedColor,
+      tagIds: tagIds,
+    );
+  }
+
+  Book projected(LocalEditorValue? local) {
+    if (local == null) return this;
+    return withInspectorValue(local.projectOnto(inspectorValue)) ?? this;
+  }
 }

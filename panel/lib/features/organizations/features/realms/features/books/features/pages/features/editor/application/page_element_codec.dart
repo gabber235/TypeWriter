@@ -5,9 +5,8 @@ TypedValue _initialElementValue(
   TypeRegistry registry,
   SkirEditorCodec codec,
 ) {
-  final initial = NamedType(
-    definition.rootType,
-  ).createInitialValue(registry: registry);
+  final initial = NamedType(definition.rootType)
+      .createInitialValue(registry: registry);
   final value = initial.valueOrNull;
   if (value == null) {
     throw ApiException.badRequest(initial.diagnostics.join("; "));
@@ -20,7 +19,6 @@ TypedValue _initialElementValue(
 List<PageElement> _decodePageElements(
   wire.PageDocument document,
   RealmEditorCatalogSnapshot snapshot,
-  int authoringSequence,
 ) {
   final codec = SkirEditorCodec(
     TypeRegistry(bootstrapTypeCatalog(snapshot.catalog.definitions)),
@@ -60,7 +58,6 @@ List<PageElement> _decodePageElements(
           PageElement.cue(
             cue: Cue.segment(
               id: element.id.id,
-              authoringSequence: authoringSequence,
               startFrame: timing.startFrame,
               endFrame: timing.endFrame,
               elementDefinition: definition,
@@ -81,7 +78,6 @@ List<PageElement> _decodePageElements(
           PageElement.cue(
             cue: Cue.keyframe(
               id: element.id.id,
-              authoringSequence: authoringSequence,
               frame: timing.frame,
               elementDefinition: definition,
               data: data,
@@ -113,7 +109,6 @@ List<PageElement> _decodePageElements(
         ? PageEntry.definition(
             definition: EntryDefinition(
               id: element.id.id,
-              authoringSequence: authoringSequence,
               name: element.name,
               elementDefinition: definition,
               placement: entryPlacement,

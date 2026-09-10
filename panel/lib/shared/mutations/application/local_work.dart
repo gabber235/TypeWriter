@@ -1,4 +1,5 @@
 import "dart:async";
+
 import "package:flutter/foundation.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:riverpod/riverpod.dart";
@@ -219,6 +220,11 @@ final class LocalWork extends ChangeNotifier {
     };
 
     source.addListener(resource.listener!);
+    scheduleMicrotask(() {
+      if (!_disposed && identical(_resources[key], resource)) {
+        notifyListeners();
+      }
+    });
     return source;
   }
 
@@ -238,6 +244,7 @@ final class LocalWork extends ChangeNotifier {
     resource.destination = null;
     resource.source.removeListener(resource.listener!);
     resource.source.dispose();
+    notifyListeners();
   }
 
   @override

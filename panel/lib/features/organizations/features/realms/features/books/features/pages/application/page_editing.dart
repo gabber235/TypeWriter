@@ -40,9 +40,8 @@ extension PageEditingRef on WidgetRef {
     return PageEditing(
       session,
       read(localWorkProvider),
-      read(
-        resourceRepositoriesProvider,
-      ).authoring(session.organizationId, session.realmId),
+      read(resourceRepositoriesProvider)
+          .authoring(session.organizationId, session.realmId),
     );
   }
 }
@@ -148,11 +147,7 @@ EditorSnapshot pageEditorSnapshot(wire.Page page, int sequence) =>
         ),
         typeCatalog: const TypeCatalog([]),
         revision: sequence,
-        confirmedValue: RecordValue({
-          "name": page.name.asValue,
-          "chapter": page.chapter.asValue,
-          "priority": page.priority.asValue,
-        }),
+        confirmedValue: Page.fromWire(page).editorValue,
       ),
     );
 

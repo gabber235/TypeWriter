@@ -365,11 +365,11 @@ class EntryMoveToPageOperation extends ActivatorShortcutOperation {
       );
     }
 
-    final books = await ref.read(booksProvider.future);
+    final books = await ref.read(canonicalBooksProvider.future);
     final pages =
         (await Future.wait([
               for (final book in books)
-                ref.read(bookPagesProvider(book.bookId, "").future),
+                ref.read(canonicalBookPagesProvider(book.bookId).future),
             ]))
             .expand((values) => values)
             .where((page) {

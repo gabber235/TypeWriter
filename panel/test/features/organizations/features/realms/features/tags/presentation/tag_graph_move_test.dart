@@ -19,7 +19,7 @@ void main() {
     ];
 
     await tester.pumpTestApp(
-      overrides: [tagsProvider.overrideWith(() => _DelayedTags(tags))],
+      overrides: [canonicalTagsProvider.overrideWith(() => _DelayedTags(tags))],
       child: const SizedBox(width: 800, height: 600, child: TagGraph()),
     );
 
@@ -47,7 +47,7 @@ void main() {
     await tester.pumpTestApp(
       settle: false,
       overrides: [
-        tagsProvider.overrideWith(() => notifier = _DelayedTags(tags)),
+        canonicalTagsProvider.overrideWith(() => notifier = _DelayedTags(tags)),
       ],
       child: const SizedBox(width: 800, height: 600, child: TagGraph()),
     );
@@ -75,7 +75,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final moved = {
-      for (final tag in tester.container().read(tagsProvider).requireValue)
+      for (final tag
+          in tester.container().read(canonicalTagsProvider).requireValue)
         tag.tagId: tag.placement.x,
     };
     expect(moved[firstId], 1);
@@ -92,7 +93,6 @@ Tag _tag(
 }) {
   return Tag(
     tagId: identifier.tagId,
-    authoringSequence: 1,
     name: name,
     color: Colors.blue,
     parentIds: parentIds,
@@ -100,7 +100,7 @@ Tag _tag(
   );
 }
 
-class _DelayedTags extends Tags {
+class _DelayedTags extends CanonicalTags {
   _DelayedTags(this.initialTags);
 
   final List<Tag> initialTags;
@@ -118,7 +118,7 @@ class _DelayedTags extends Tags {
       state.requireValue.upsertByKey((value) => value.tagId, tag),
     );
     return TypedMutationResult.success(
-      revision: tag.authoringSequence,
+      revision: 1,
       value: StringValue(tag.name),
     );
   }

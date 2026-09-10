@@ -61,7 +61,7 @@ class EntryIdentifier extends SelectableIdentifier
             rootType: NamedType(value.elementDefinition.rootType),
             typeCatalog: catalog,
             confirmedValue: value.data,
-            revision: value.authoringSequence,
+            revision: state.sequence ?? 0,
           ),
         ),
         id: EntryIdentifier(id, pageId: location.pageId),

@@ -11,15 +11,17 @@ part "editor_batch_recovery.dart";
 part "transactional_editor_interactions.dart";
 part "transactional_editor_reconciliation.dart";
 
-typedef EditorCommitter =
-    Future<TypedMutationResult> Function(EditorCommit commit);
-typedef EditorMutationValidator =
-    EditorMutationResult Function(DataPath path, DataValue value);
-typedef EditorRealmActionExecutor =
-    Future<RealmCommandResult> Function(
-      RealmAction action,
-      ExpressionContext context,
-    );
+typedef EditorCommitter = Future<TypedMutationResult> Function(
+  EditorCommit commit,
+);
+typedef EditorMutationValidator = EditorMutationResult Function(
+  DataPath path,
+  DataValue value,
+);
+typedef EditorRealmActionExecutor = Future<RealmCommandResult> Function(
+  RealmAction action,
+  ExpressionContext context,
+);
 
 final class TransactionalEditorSource extends ChangeNotifier
     implements EditorSource {
@@ -58,6 +60,8 @@ final class TransactionalEditorSource extends ChangeNotifier
       _states.dirtyPaths.isNotEmpty ||
       _activeCommit != null ||
       _unresolved != null;
+
+  Set<DataPath> get editedPaths => Set.unmodifiable(_states.dirtyPaths);
 
   @override
   List<TypeDiagnostic> get draftDiagnostics =>

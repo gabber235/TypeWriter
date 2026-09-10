@@ -18,7 +18,6 @@ abstract class Cue with _$Cue {
     required RecordValue data,
     required List<ElementLink> inwardLinks,
     required List<ElementLink> outwardLinks,
-    @Default(0) int authoringSequence,
   }) = Segment;
 
   @Assert("id != \"\"", "ID must not be empty.")
@@ -29,7 +28,6 @@ abstract class Cue with _$Cue {
     required ElementDefinition elementDefinition,
     required RecordValue data,
     required List<ElementLink> inwardLinks,
-    @Default(0) int authoringSequence,
   }) = Keyframe;
 }
 
@@ -59,7 +57,7 @@ class CueIdentifier extends SelectableIdentifier {
         .watch(resourceRepositoriesProvider)
         .authoring(organizationId, realmId);
     final asyncElements = ref.watch(
-      pageElementsProvider(organizationId, realmId, pageId),
+      projectedPageElementsProvider(organizationId, realmId, pageId),
     );
 
     if (asyncElements.mapUnready<Selectable<CueIdentifier>>()
@@ -70,9 +68,8 @@ class CueIdentifier extends SelectableIdentifier {
 
     Cue? cue;
     for (final element in elements) {
-      if (element case PageElementCue(
-        cue: final candidate,
-      ) when candidate.id == id) {
+      if (element case PageElementCue(cue: final candidate)
+          when candidate.id == id) {
         cue = candidate;
         break;
       }
@@ -99,7 +96,7 @@ class CueIdentifier extends SelectableIdentifier {
             rootType: NamedType(resolvedCue.elementDefinition.rootType),
             typeCatalog: catalog,
             confirmedValue: resolvedCue.data,
-            revision: resolvedCue.authoringSequence,
+            revision: state.sequence ?? 0,
           ),
         ),
         id: this,

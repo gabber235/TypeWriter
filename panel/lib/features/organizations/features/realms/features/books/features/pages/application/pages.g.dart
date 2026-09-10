@@ -9,39 +9,39 @@ part of 'pages.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(BookPages)
-final bookPagesProvider = BookPagesFamily._();
+@ProviderFor(CanonicalBookPages)
+final canonicalBookPagesProvider = CanonicalBookPagesFamily._();
 
-final class BookPagesProvider
-    extends $AsyncNotifierProvider<BookPages, List<Page>> {
-  BookPagesProvider._({
-    required BookPagesFamily super.from,
-    required (skir.RecordId, String) super.argument,
+final class CanonicalBookPagesProvider
+    extends $AsyncNotifierProvider<CanonicalBookPages, List<Page>> {
+  CanonicalBookPagesProvider._({
+    required CanonicalBookPagesFamily super.from,
+    required skir.RecordId super.argument,
   }) : super(
          retry: null,
-         name: r'bookPagesProvider',
+         name: r'canonicalBookPagesProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$bookPagesHash();
+  String debugGetCreateSourceHash() => _$canonicalBookPagesHash();
 
   @override
   String toString() {
-    return r'bookPagesProvider'
+    return r'canonicalBookPagesProvider'
         ''
-        '$argument';
+        '($argument)';
   }
 
   @$internal
   @override
-  BookPages create() => BookPages();
+  CanonicalBookPages create() => CanonicalBookPages();
 
   @override
   bool operator ==(Object other) {
-    return other is BookPagesProvider && other.argument == argument;
+    return other is CanonicalBookPagesProvider && other.argument == argument;
   }
 
   @override
@@ -50,39 +50,39 @@ final class BookPagesProvider
   }
 }
 
-String _$bookPagesHash() => r'5f58cca5e5e7babc8565bef5ded4b69a7162c188';
+String _$canonicalBookPagesHash() =>
+    r'ba469908442a6355a0fac21b3d894ee3b97e7dc7';
 
-final class BookPagesFamily extends $Family
+final class CanonicalBookPagesFamily extends $Family
     with
         $ClassFamilyOverride<
-          BookPages,
+          CanonicalBookPages,
           AsyncValue<List<Page>>,
           List<Page>,
           FutureOr<List<Page>>,
-          (skir.RecordId, String)
+          skir.RecordId
         > {
-  BookPagesFamily._()
+  CanonicalBookPagesFamily._()
     : super(
         retry: null,
-        name: r'bookPagesProvider',
+        name: r'canonicalBookPagesProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  BookPagesProvider call(skir.RecordId bookId, String search) =>
-      BookPagesProvider._(argument: (bookId, search), from: this);
+  CanonicalBookPagesProvider call(skir.RecordId bookId) =>
+      CanonicalBookPagesProvider._(argument: bookId, from: this);
 
   @override
-  String toString() => r'bookPagesProvider';
+  String toString() => r'canonicalBookPagesProvider';
 }
 
-abstract class _$BookPages extends $AsyncNotifier<List<Page>> {
-  late final _$args = ref.$arg as (skir.RecordId, String);
-  skir.RecordId get bookId => _$args.$1;
-  String get search => _$args.$2;
+abstract class _$CanonicalBookPages extends $AsyncNotifier<List<Page>> {
+  late final _$args = ref.$arg as skir.RecordId;
+  skir.RecordId get bookId => _$args;
 
-  FutureOr<List<Page>> build(skir.RecordId bookId, String search);
+  FutureOr<List<Page>> build(skir.RecordId bookId);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -95,42 +95,43 @@ abstract class _$BookPages extends $AsyncNotifier<List<Page>> {
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
-@ProviderFor(Pages)
-final pagesProvider = PagesFamily._();
+@ProviderFor(CanonicalPage)
+final canonicalPageProvider = CanonicalPageFamily._();
 
-final class PagesProvider extends $AsyncNotifierProvider<Pages, Page> {
-  PagesProvider._({
-    required PagesFamily super.from,
+final class CanonicalPageProvider
+    extends $AsyncNotifierProvider<CanonicalPage, Page> {
+  CanonicalPageProvider._({
+    required CanonicalPageFamily super.from,
     required skir.RecordId super.argument,
   }) : super(
          retry: null,
-         name: r'pagesProvider',
+         name: r'canonicalPageProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$pagesHash();
+  String debugGetCreateSourceHash() => _$canonicalPageHash();
 
   @override
   String toString() {
-    return r'pagesProvider'
+    return r'canonicalPageProvider'
         ''
         '($argument)';
   }
 
   @$internal
   @override
-  Pages create() => Pages();
+  CanonicalPage create() => CanonicalPage();
 
   @override
   bool operator ==(Object other) {
-    return other is PagesProvider && other.argument == argument;
+    return other is CanonicalPageProvider && other.argument == argument;
   }
 
   @override
@@ -139,34 +140,34 @@ final class PagesProvider extends $AsyncNotifierProvider<Pages, Page> {
   }
 }
 
-String _$pagesHash() => r'9849099229125c56f172e4737caae22cbb35ac76';
+String _$canonicalPageHash() => r'f481bfbd075a8d4f3d30f07826624af98effe5a9';
 
-final class PagesFamily extends $Family
+final class CanonicalPageFamily extends $Family
     with
         $ClassFamilyOverride<
-          Pages,
+          CanonicalPage,
           AsyncValue<Page>,
           Page,
           FutureOr<Page>,
           skir.RecordId
         > {
-  PagesFamily._()
+  CanonicalPageFamily._()
     : super(
         retry: null,
-        name: r'pagesProvider',
+        name: r'canonicalPageProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  PagesProvider call(skir.RecordId pageId) =>
-      PagesProvider._(argument: pageId, from: this);
+  CanonicalPageProvider call(skir.RecordId pageId) =>
+      CanonicalPageProvider._(argument: pageId, from: this);
 
   @override
-  String toString() => r'pagesProvider';
+  String toString() => r'canonicalPageProvider';
 }
 
-abstract class _$Pages extends $AsyncNotifier<Page> {
+abstract class _$CanonicalPage extends $AsyncNotifier<Page> {
   late final _$args = ref.$arg as skir.RecordId;
   skir.RecordId get pageId => _$args;
 
@@ -185,6 +186,176 @@ abstract class _$Pages extends $AsyncNotifier<Page> {
             >;
     return element.handleCreate(ref, () => build(_$args));
   }
+}
+
+@ProviderFor(projectedBookPages)
+final projectedBookPagesProvider = ProjectedBookPagesFamily._();
+
+final class ProjectedBookPagesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Page>>,
+          AsyncValue<List<Page>>,
+          AsyncValue<List<Page>>
+        >
+    with $Provider<AsyncValue<List<Page>>> {
+  ProjectedBookPagesProvider._({
+    required ProjectedBookPagesFamily super.from,
+    required (skir.RecordId, String) super.argument,
+  }) : super(
+         retry: null,
+         name: r'projectedBookPagesProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedBookPagesHash();
+
+  @override
+  String toString() {
+    return r'projectedBookPagesProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<List<Page>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<List<Page>> create(Ref ref) {
+    final argument = this.argument as (skir.RecordId, String);
+    return projectedBookPages(ref, argument.$1, argument.$2);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<Page>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<Page>>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectedBookPagesProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$projectedBookPagesHash() =>
+    r'e783e7224092655bb1ff1dc05dc6c0e71c496481';
+
+final class ProjectedBookPagesFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<List<Page>>,
+          (skir.RecordId, String)
+        > {
+  ProjectedBookPagesFamily._()
+    : super(
+        retry: null,
+        name: r'projectedBookPagesProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ProjectedBookPagesProvider call(skir.RecordId bookId, String search) =>
+      ProjectedBookPagesProvider._(argument: (bookId, search), from: this);
+
+  @override
+  String toString() => r'projectedBookPagesProvider';
+}
+
+@ProviderFor(projectedPage)
+final projectedPageProvider = ProjectedPageFamily._();
+
+final class ProjectedPageProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Page>,
+          AsyncValue<Page>,
+          AsyncValue<Page>
+        >
+    with $Provider<AsyncValue<Page>> {
+  ProjectedPageProvider._({
+    required ProjectedPageFamily super.from,
+    required skir.RecordId super.argument,
+  }) : super(
+         retry: null,
+         name: r'projectedPageProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedPageHash();
+
+  @override
+  String toString() {
+    return r'projectedPageProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<Page>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AsyncValue<Page> create(Ref ref) {
+    final argument = this.argument as skir.RecordId;
+    return projectedPage(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Page> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<Page>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectedPageProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$projectedPageHash() => r'b7c91a2bbb75173a9dc8960c651ab22891ea329f';
+
+final class ProjectedPageFamily extends $Family
+    with $FunctionalFamilyOverride<AsyncValue<Page>, skir.RecordId> {
+  ProjectedPageFamily._()
+    : super(
+        retry: null,
+        name: r'projectedPageProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ProjectedPageProvider call(skir.RecordId pageId) =>
+      ProjectedPageProvider._(argument: pageId, from: this);
+
+  @override
+  String toString() => r'projectedPageProvider';
 }
 
 @ProviderFor(pageId)

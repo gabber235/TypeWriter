@@ -116,7 +116,9 @@ void main() {
         [TagIdentifier(childId)],
       );
       await tester.pumpTestApp(
-        overrides: [tagsProvider.overrideWith(() => _RecordingTags(tags))],
+        overrides: [
+          canonicalTagsProvider.overrideWith(() => _RecordingTags(tags)),
+        ],
         child: SizedBox(width: 200, height: 100, child: rejectedTarget),
       );
       await tester.pumpAndSettle();
@@ -142,7 +144,6 @@ DragTargetDetails<TagIdentifier> _details(skir.RecordId id) =>
 
 Tag _tag(skir.RecordId id, {List<skir.RecordId> parentIds = const []}) => Tag(
   tagId: id,
-  authoringSequence: 1,
   name: id.id,
   color: Colors.blue,
   parentIds: parentIds,
@@ -157,7 +158,7 @@ Future<_RecordingTags> _pumpTagTarget(
   late _RecordingTags notifier;
   await tester.pumpTestApp(
     overrides: [
-      tagsProvider.overrideWith(() => notifier = _RecordingTags(tags)),
+      canonicalTagsProvider.overrideWith(() => notifier = _RecordingTags(tags)),
     ],
     child: Center(
       child: SizedBox(
@@ -174,7 +175,7 @@ Future<_RecordingTags> _pumpTagTarget(
   return notifier;
 }
 
-class _RecordingTags extends Tags {
+class _RecordingTags extends CanonicalTags {
   _RecordingTags(this.tags);
 
   final List<Tag> tags;
@@ -192,7 +193,7 @@ class _RecordingTags extends Tags {
           .toList(),
     );
     return TypedMutationResult.success(
-      revision: tag.authoringSequence,
+      revision: 1,
       value: StringValue(tag.name),
     );
   }

@@ -29,7 +29,6 @@ Book Function() generateRandomBook(List<Tag> tags) {
 
     return Book(
       bookId: recordId("book:$title"),
-      authoringSequence: 1,
       title: title,
       icon: generateRandomIconName(),
       color: safeColors.randomElement(),
@@ -38,13 +37,13 @@ Book Function() generateRandomBook(List<Tag> tags) {
   };
 }
 
-class BooksMock extends Books {
+class BooksMock extends CanonicalBooks {
   BooksMock(this.displayState);
   final DisplayState displayState;
 
   @override
   Future<List<Book>> build() async {
-    final tagsIds = await ref.watch(tagsProvider.future);
+    final tagsIds = await ref.watch(canonicalTagsProvider.future);
     return displayState.generate(generateRandomBook(tagsIds));
   }
 
@@ -60,7 +59,6 @@ class BooksMock extends Books {
       bookId: recordId(
         "book:${faker.lorem.words(random.integer(4, min: 1)).join(" ").snakeCase()}",
       ),
-      authoringSequence: 1,
       title: title,
       icon: icon ?? "mdi:book",
       color: color ?? safeColors.randomElement(),
@@ -75,16 +73,14 @@ class BooksMock extends Books {
   @override
   Future<TypedMutationResult> updateBook(Book book, {Book? expected}) async {
     await Future.delayed(500.ms);
-    final canonical = book.copyWith(
-      authoringSequence: book.authoringSequence + 1,
-    );
+    final canonical = book;
     state = AsyncData(
       (await future)
           .map((value) => value.bookId == book.bookId ? canonical : value)
           .toList(),
     );
     return TypedMutationResult.success(
-      revision: canonical.authoringSequence,
+      revision: 1,
       value: bookMockInspectorValue(canonical),
     );
   }
@@ -92,7 +88,7 @@ class BooksMock extends Books {
 
 List<Override> booksProviderOverrides({
   DisplayState state = DisplayState.loading,
-}) => [booksProvider.overrideWith(() => BooksMock(state))];
+}) => [canonicalBooksProvider.overrideWith(() => BooksMock(state))];
 
 RecordValue bookMockInspectorValue(Book book) => RecordValue({
   "title": book.title.asValue,

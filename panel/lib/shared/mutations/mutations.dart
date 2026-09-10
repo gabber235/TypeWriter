@@ -1,3 +1,4 @@
+export "application/local_editor_values.dart";
 export "application/local_work.dart";
 export "application/mutation_coordinator.dart";
 export "application/mutation_submission.dart";

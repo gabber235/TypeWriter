@@ -16,7 +16,7 @@ class EntryScene extends HookConsumerWidget {
       return const SizedBox.shrink();
     }
     final pageElements = ref.watch(
-      pageElementsProvider(organizationId, realmId, pageId),
+      projectedPageElementsProvider(organizationId, realmId, pageId),
     );
 
     return pageElements(
@@ -113,10 +113,8 @@ Set<String> _resolveCues({
 
   return <String>{
     for (final item in selected)
-      if (item case CueIdentifier(
-        pageId: final selectedPageId,
-        id: final cueId,
-      ) when selectedPageId == pageId && elementsById.containsKey(cueId))
+      if (item case CueIdentifier(pageId: final selectedPageId, id: final cueId)
+          when selectedPageId == pageId && elementsById.containsKey(cueId))
         cueId,
   };
 }

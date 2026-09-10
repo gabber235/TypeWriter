@@ -9,32 +9,33 @@ part of 'books.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(Books)
-final booksProvider = BooksProvider._();
+@ProviderFor(CanonicalBooks)
+final canonicalBooksProvider = CanonicalBooksProvider._();
 
-final class BooksProvider extends $AsyncNotifierProvider<Books, List<Book>> {
-  BooksProvider._()
+final class CanonicalBooksProvider
+    extends $AsyncNotifierProvider<CanonicalBooks, List<Book>> {
+  CanonicalBooksProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'booksProvider',
+        name: r'canonicalBooksProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$booksHash();
+  String debugGetCreateSourceHash() => _$canonicalBooksHash();
 
   @$internal
   @override
-  Books create() => Books();
+  CanonicalBooks create() => CanonicalBooks();
 }
 
-String _$booksHash() => r'fab7d68b8a7ec4c7fcfc1284b331a4a4aa378cea';
+String _$canonicalBooksHash() => r'91e314c11adee72d4f3bbfbd3882cee240fe065c';
 
-abstract class _$Books extends $AsyncNotifier<List<Book>> {
+abstract class _$CanonicalBooks extends $AsyncNotifier<List<Book>> {
   FutureOr<List<Book>> build();
   @$mustCallSuper
   @override
@@ -59,10 +60,10 @@ final class FilteredBooksProvider
     extends
         $FunctionalProvider<
           AsyncValue<List<Book>>,
-          List<Book>,
-          FutureOr<List<Book>>
+          AsyncValue<List<Book>>,
+          AsyncValue<List<Book>>
         >
-    with $FutureModifier<List<Book>>, $FutureProvider<List<Book>> {
+    with $Provider<AsyncValue<List<Book>>> {
   FilteredBooksProvider._({
     required FilteredBooksFamily super.from,
     required String super.argument,
@@ -86,13 +87,22 @@ final class FilteredBooksProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<Book>> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $ProviderElement<AsyncValue<List<Book>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
-  FutureOr<List<Book>> create(Ref ref) {
+  AsyncValue<List<Book>> create(Ref ref) {
     final argument = this.argument as String;
     return filteredBooks(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<Book>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<Book>>>(value),
+    );
   }
 
   @override
@@ -106,10 +116,10 @@ final class FilteredBooksProvider
   }
 }
 
-String _$filteredBooksHash() => r'a92cfb7fc28f666129d71306550ced5d675c5cc6';
+String _$filteredBooksHash() => r'0e92e57f11f3e60af7c06e43862d13346de4854b';
 
 final class FilteredBooksFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<List<Book>>, String> {
+    with $FunctionalFamilyOverride<AsyncValue<List<Book>>, String> {
   FilteredBooksFamily._()
     : super(
         retry: null,
@@ -167,29 +177,29 @@ final class BookIdProvider
 
 String _$bookIdHash() => r'167ce138e263f44eb212912668031e5954892725';
 
-@ProviderFor(book)
-final bookProvider = BookFamily._();
+@ProviderFor(canonicalBook)
+final canonicalBookProvider = CanonicalBookFamily._();
 
-final class BookProvider
+final class CanonicalBookProvider
     extends $FunctionalProvider<AsyncValue<Book?>, Book?, FutureOr<Book?>>
     with $FutureModifier<Book?>, $FutureProvider<Book?> {
-  BookProvider._({
-    required BookFamily super.from,
+  CanonicalBookProvider._({
+    required CanonicalBookFamily super.from,
     required skir.RecordId super.argument,
   }) : super(
          retry: null,
-         name: r'bookProvider',
+         name: r'canonicalBookProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$bookHash();
+  String debugGetCreateSourceHash() => _$canonicalBookHash();
 
   @override
   String toString() {
-    return r'bookProvider'
+    return r'canonicalBookProvider'
         ''
         '($argument)';
   }
@@ -202,12 +212,12 @@ final class BookProvider
   @override
   FutureOr<Book?> create(Ref ref) {
     final argument = this.argument as skir.RecordId;
-    return book(ref, argument);
+    return canonicalBook(ref, argument);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is BookProvider && other.argument == argument;
+    return other is CanonicalBookProvider && other.argument == argument;
   }
 
   @override
@@ -216,22 +226,152 @@ final class BookProvider
   }
 }
 
-String _$bookHash() => r'20bfbeffa6ce209e3be685d1e40434c922472683';
+String _$canonicalBookHash() => r'4792d2e5ec03050b83447ee8f7f590c7e94ee241';
 
-final class BookFamily extends $Family
+final class CanonicalBookFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Book?>, skir.RecordId> {
-  BookFamily._()
+  CanonicalBookFamily._()
     : super(
         retry: null,
-        name: r'bookProvider',
+        name: r'canonicalBookProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  BookProvider call(skir.RecordId bookId) =>
-      BookProvider._(argument: bookId, from: this);
+  CanonicalBookProvider call(skir.RecordId bookId) =>
+      CanonicalBookProvider._(argument: bookId, from: this);
 
   @override
-  String toString() => r'bookProvider';
+  String toString() => r'canonicalBookProvider';
+}
+
+@ProviderFor(projectedBooks)
+final projectedBooksProvider = ProjectedBooksProvider._();
+
+final class ProjectedBooksProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Book>>,
+          AsyncValue<List<Book>>,
+          AsyncValue<List<Book>>
+        >
+    with $Provider<AsyncValue<List<Book>>> {
+  ProjectedBooksProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'projectedBooksProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedBooksHash();
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<List<Book>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<List<Book>> create(Ref ref) {
+    return projectedBooks(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<Book>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<Book>>>(value),
+    );
+  }
+}
+
+String _$projectedBooksHash() => r'966cf92c52a0237d002b56578cba179cab62265d';
+
+@ProviderFor(projectedBook)
+final projectedBookProvider = ProjectedBookFamily._();
+
+final class ProjectedBookProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Book?>,
+          AsyncValue<Book?>,
+          AsyncValue<Book?>
+        >
+    with $Provider<AsyncValue<Book?>> {
+  ProjectedBookProvider._({
+    required ProjectedBookFamily super.from,
+    required skir.RecordId super.argument,
+  }) : super(
+         retry: null,
+         name: r'projectedBookProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedBookHash();
+
+  @override
+  String toString() {
+    return r'projectedBookProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<Book?>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<Book?> create(Ref ref) {
+    final argument = this.argument as skir.RecordId;
+    return projectedBook(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Book?> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<Book?>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectedBookProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$projectedBookHash() => r'24270735077a8ea1c6272c41ac6872fcd53e9b1f';
+
+final class ProjectedBookFamily extends $Family
+    with $FunctionalFamilyOverride<AsyncValue<Book?>, skir.RecordId> {
+  ProjectedBookFamily._()
+    : super(
+        retry: null,
+        name: r'projectedBookProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ProjectedBookProvider call(skir.RecordId bookId) =>
+      ProjectedBookProvider._(argument: bookId, from: this);
+
+  @override
+  String toString() => r'projectedBookProvider';
 }

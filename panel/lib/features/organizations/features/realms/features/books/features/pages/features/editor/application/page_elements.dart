@@ -3,6 +3,7 @@ import "dart:async";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart"
     show ProviderScope, WidgetRef;
+import "package:riverpod/riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
@@ -56,11 +57,7 @@ AsyncValue<Map<String, List<PageElement>>> decodedRealmDocuments(
     data: (state) => switch (state) {
       RealmEditorCatalogReady(:final value) => AsyncData({
         for (final document in session.documents.entries)
-          document.key.id: _decodePageElements(
-            document.value,
-            value,
-            session.sequence!,
-          ),
+          document.key.id: _decodePageElements(document.value, value),
       }),
       RealmEditorCatalogUnavailable(:final diagnostics) => AsyncError(
         ElementDefinitionException(diagnostics),
@@ -79,21 +76,23 @@ AsyncValue<Map<String, CachedPageEntry>> realmEntryIndex(
   skir.RecordId organizationId,
   skir.RecordId realmId,
 ) {
-  return ref
-      .watch(decodedRealmDocumentsProvider(organizationId, realmId))
-      .whenData(
-        (documents) => {
-          for (final document in documents.entries)
-            for (final element in document.value)
-              if (element case PageElementEntry(
-                entry: DefinitionPageEntry(:final definition),
-              ))
-                definition.id: CachedPageEntry(
-                  pageId: document.key,
-                  definition: definition,
-                ),
-        },
-      );
+  final documents = ref.watch(
+    decodedRealmDocumentsProvider(organizationId, realmId),
+  );
+  if (documents.mapUnready<Map<String, CachedPageEntry>>() case final value?) {
+    return value;
+  }
+  return AsyncData({
+    for (final document in documents.requireValue.entries)
+      for (final element in document.value)
+        if (element case PageElementEntry(
+          entry: DefinitionPageEntry(:final definition),
+        ))
+          definition.id: CachedPageEntry(
+            pageId: document.key,
+            definition: definition,
+          ),
+  });
 }
 
 @riverpod
@@ -159,7 +158,7 @@ class PageElements extends _$PageElements
       if (!scopeReady) return;
       final AsyncValue<List<PageElement>>? projected = switch (documents) {
         AsyncData(:final value) when value[pageId] != null => AsyncData(
-          _withDraftPlacements(value[pageId]!),
+          value[pageId]!,
         ),
         AsyncData() => AsyncError(
           ApiException.notFound("Page"),
@@ -186,10 +185,6 @@ class PageElements extends _$PageElements
     }
 
     ref.listen(documentsProvider, (_, documents) => applyDocuments(documents));
-    final workspace = ref.read(localWorkProvider);
-    void refreshDrafts() => applyDocuments(ref.read(documentsProvider));
-    workspace.addListener(refreshDrafts);
-    ref.onDispose(() => workspace.removeListener(refreshDrafts));
     await lease.ready;
 
     if (!ref.mounted) return initial.future;
@@ -197,35 +192,52 @@ class PageElements extends _$PageElements
     applyDocuments(ref.read(documentsProvider));
     return initial.future;
   }
+}
 
-  List<PageElement> _withDraftPlacements(List<PageElement> elements) {
-    final resources = ref.read(localWorkProvider).resources;
-    return [
-      for (final element in elements) _withDraftPlacement(element, resources),
-    ];
-  }
+@riverpod
+AsyncValue<List<PageElement>> projectedPageElements(
+  Ref ref,
+  skir.RecordId organizationId,
+  skir.RecordId realmId,
+  String pageId,
+) {
+  final canonical = ref.watch(
+    pageElementsProvider(organizationId, realmId, pageId),
+  );
+  if (canonical.mapUnready<List<PageElement>>() case final value?) return value;
+  final local = ref.watch(localEditorValuesProvider);
+  return AsyncData([
+    for (final element in canonical.requireValue)
+      element.projected(
+        local[EditorResourceKey(
+          scope: (organizationId, realmId),
+          identity: recordId("element:${element.id}"),
+        )],
+      ),
+  ]);
+}
 
-  PageElement _withDraftPlacement(
-    PageElement element,
-    Map<EditorResourceKey, EditorResource> resources,
-  ) {
-    final source =
-        resources[EditorResourceKey(
-              scope: (this.organizationId, this.realmId),
-              identity: recordId("element:${element.id}"),
-            )]
-            ?.source;
-    if (source == null || !source.hasWork) return element;
-    final value = source.value(elementPlacementPath).valueOrNull;
-    if (value == null) return element;
-    return switch (encodeElementPlacement(value)) {
-      wire.ElementPlacement_graphWrapper(:final value) =>
-        element.moveTo(value.x, value.y).resizeTo(value.width, value.height),
-      wire.ElementPlacement_timelineSegmentWrapper(:final value) =>
-        element.updateCueTo(value.startFrame, value.endFrame),
-      wire.ElementPlacement_timelineKeyframeWrapper(:final value) =>
-        element.updateCueTo(value.frame, value.frame),
-      _ => element,
-    };
-  }
+@riverpod
+AsyncValue<PageElement?> projectedPageElement(
+  Ref ref,
+  skir.RecordId organizationId,
+  skir.RecordId realmId,
+  String pageId,
+  String elementId,
+) {
+  final canonical = ref.watch(
+    pageElementsProvider(organizationId, realmId, pageId),
+  );
+  if (canonical.mapUnready<PageElement?>() case final value?) return value;
+  final key = EditorResourceKey(
+    scope: (organizationId, realmId),
+    identity: recordId("element:$elementId"),
+  );
+  final local = ref.watch(
+    localEditorValuesProvider.select((value) => value[key]),
+  );
+  final element = canonical.requireValue
+      .where((value) => value.id == elementId)
+      .firstOrNull;
+  return AsyncData(element?.projected(local));
 }

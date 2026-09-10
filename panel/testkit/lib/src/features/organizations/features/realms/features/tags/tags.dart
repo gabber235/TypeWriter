@@ -59,7 +59,6 @@ List<Tag> _generateRawTags(int count) {
     tags.add(
       Tag(
         tagId: recordId("tag:${faker.guid.guid()}"),
-        authoringSequence: 1,
         name: faker.lorem
             .words(random.integer(3, min: 1))
             .join(" ")
@@ -78,7 +77,6 @@ List<Tag> _generateRawTags(int count) {
 Tag generateRandomTag() {
   return Tag(
     tagId: recordId("tag:${faker.guid.guid()}"),
-    authoringSequence: 1,
     name: faker.lorem.words(random.integer(4, min: 1)).join(" ").snakeCase(),
     color: safeColors.randomElement(),
     parentIds: const [],
@@ -91,7 +89,7 @@ Tag generateRandomTag() {
   );
 }
 
-class TagsMock extends Tags {
+class TagsMock extends CanonicalTags {
   TagsMock({required this.displayState, this.specificTags});
 
   final DisplayState displayState;
@@ -120,7 +118,6 @@ class TagsMock extends Tags {
 
     final newTag = Tag(
       tagId: recordId("tag:${faker.guid.guid()}"),
-      authoringSequence: 1,
       name: name,
       color: color ?? safeColors.randomElement(),
       parentIds: parentIds,
@@ -134,16 +131,14 @@ class TagsMock extends Tags {
   @override
   Future<TypedMutationResult> updateTag(Tag tag, {Tag? expected}) async {
     final tags = await future;
-    final canonical = tag.copyWith(
-      authoringSequence: tag.authoringSequence + 1,
-    );
+    final canonical = tag;
     state = AsyncData(
       tags
           .map((value) => value.tagId == tag.tagId ? canonical : value)
           .toList(),
     );
     return TypedMutationResult.success(
-      revision: canonical.authoringSequence,
+      revision: 1,
       value: canonical.inspectorValue,
     );
   }
@@ -159,7 +154,7 @@ List<Override> tagsProviderOverrides({
   DisplayState state = DisplayState.loading,
   List<Tag>? tags,
 }) => [
-  tagsProvider.overrideWith(
+  canonicalTagsProvider.overrideWith(
     () => TagsMock(displayState: state, specificTags: tags),
   ),
 ];

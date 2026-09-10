@@ -91,7 +91,7 @@ final class DecodedRealmDocumentsProvider
 }
 
 String _$decodedRealmDocumentsHash() =>
-    r'd3a28367a2b490ec452c1387c5eb5ab286b38d2f';
+    r'4a0ccfc47b17cd520a63a57462920a535037d2aa';
 
 final class DecodedRealmDocumentsFamily extends $Family
     with
@@ -184,7 +184,7 @@ final class RealmEntryIndexProvider
   }
 }
 
-String _$realmEntryIndexHash() => r'419d7274aef04943c4593a137c7df3bf905c2f7b';
+String _$realmEntryIndexHash() => r'1ac282a6315c4bb3e9939a2e2bc6cd34da52ae72';
 
 final class RealmEntryIndexFamily extends $Family
     with
@@ -349,7 +349,7 @@ final class PageElementsProvider
   }
 }
 
-String _$pageElementsHash() => r'26ff59f150d98883ecf11a657069f045ecf7c012';
+String _$pageElementsHash() => r'ae8bd5842053bdd5532ec519345beddadb5c5000';
 
 final class PageElementsFamily extends $Family
     with
@@ -411,4 +411,202 @@ abstract class _$PageElements extends $AsyncNotifier<List<PageElement>> {
       () => build(_$args.$1, _$args.$2, _$args.$3),
     );
   }
+}
+
+@ProviderFor(projectedPageElements)
+final projectedPageElementsProvider = ProjectedPageElementsFamily._();
+
+final class ProjectedPageElementsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<PageElement>>,
+          AsyncValue<List<PageElement>>,
+          AsyncValue<List<PageElement>>
+        >
+    with $Provider<AsyncValue<List<PageElement>>> {
+  ProjectedPageElementsProvider._({
+    required ProjectedPageElementsFamily super.from,
+    required (skir.RecordId, skir.RecordId, String) super.argument,
+  }) : super(
+         retry: null,
+         name: r'projectedPageElementsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedPageElementsHash();
+
+  @override
+  String toString() {
+    return r'projectedPageElementsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<List<PageElement>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<List<PageElement>> create(Ref ref) {
+    final argument = this.argument as (skir.RecordId, skir.RecordId, String);
+    return projectedPageElements(ref, argument.$1, argument.$2, argument.$3);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<PageElement>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<PageElement>>>(
+        value,
+      ),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectedPageElementsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$projectedPageElementsHash() =>
+    r'a1d2f80b2239d6ed942aa1c594a9a34a9d3a2c6c';
+
+final class ProjectedPageElementsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<List<PageElement>>,
+          (skir.RecordId, skir.RecordId, String)
+        > {
+  ProjectedPageElementsFamily._()
+    : super(
+        retry: null,
+        name: r'projectedPageElementsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ProjectedPageElementsProvider call(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+    String pageId,
+  ) => ProjectedPageElementsProvider._(
+    argument: (organizationId, realmId, pageId),
+    from: this,
+  );
+
+  @override
+  String toString() => r'projectedPageElementsProvider';
+}
+
+@ProviderFor(projectedPageElement)
+final projectedPageElementProvider = ProjectedPageElementFamily._();
+
+final class ProjectedPageElementProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<PageElement?>,
+          AsyncValue<PageElement?>,
+          AsyncValue<PageElement?>
+        >
+    with $Provider<AsyncValue<PageElement?>> {
+  ProjectedPageElementProvider._({
+    required ProjectedPageElementFamily super.from,
+    required (skir.RecordId, skir.RecordId, String, String) super.argument,
+  }) : super(
+         retry: null,
+         name: r'projectedPageElementProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedPageElementHash();
+
+  @override
+  String toString() {
+    return r'projectedPageElementProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<PageElement?>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<PageElement?> create(Ref ref) {
+    final argument =
+        this.argument as (skir.RecordId, skir.RecordId, String, String);
+    return projectedPageElement(
+      ref,
+      argument.$1,
+      argument.$2,
+      argument.$3,
+      argument.$4,
+    );
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<PageElement?> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<PageElement?>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectedPageElementProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$projectedPageElementHash() =>
+    r'1289b040fe783a27abec443292f4d4ac6909f4dd';
+
+final class ProjectedPageElementFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<PageElement?>,
+          (skir.RecordId, skir.RecordId, String, String)
+        > {
+  ProjectedPageElementFamily._()
+    : super(
+        retry: null,
+        name: r'projectedPageElementProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ProjectedPageElementProvider call(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+    String pageId,
+    String elementId,
+  ) => ProjectedPageElementProvider._(
+    argument: (organizationId, realmId, pageId, elementId),
+    from: this,
+  );
+
+  @override
+  String toString() => r'projectedPageElementProvider';
 }
